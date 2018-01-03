@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require ::File.expand_path('../lib/gitlab/popen', __dir__)
+
+tasks = [
+  %w[bundle exec rake config_lint],
+  %w[bundle exec rake flay],
+  %w[bundle exec rake haml_lint],
+  %w[bundle exec rake scss_lint],
+  %w[bundle exec license_finder],
+  %w[yarn run eslint],
+  %w[bundle exec rubocop --parallel],
+  %w[scripts/lint-conflicts.sh],
+  %w[bundle exec rake gettext:lint],
+  %w[scripts/lint-changelog-yaml]
+]
+
+failed_tasks = tasks.reduce({}) do |failures, task|
+  start = Time.now
+  puts
+  puts "$ #{task.join(' ')}"
+
+  output, status = Gitlab::Popen.popen(task)
+  puts "==> Finished in #{Time.now - start} seconds"
+  puts
+
+  failures[task.join(' ')] = output unless status.zero?
+
+  failures
+end
+
+puts
+puts '==================================================='
+puts
+puts
+
+if failed_tasks.empty?
+  puts 'All static analyses passed successfully.'
+else
+  puts 'Some static analyses failed:'
+
+  failed_tasks.each do |failed_task, output|
+    puts
+    puts "**** #{failed_task} failed with the following error:"
+    puts
+    puts output
+  end
+
+  exit 1
+end

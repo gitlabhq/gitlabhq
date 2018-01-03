@@ -14,171 +14,107 @@ ul.notes {
   margin: 0;
   padding: 0;
 
-  .timeline-icon {
-    float: left;
-  }
-
-  .timeline-content {
-    margin-left: 55px;
-
-    &.timeline-content-form {
-      @media (max-width: $screen-sm-max) {
-        margin-left: 0;
-      }
-    }
-  }
-
   .note-created-ago,
   .note-updated-at {
     white-space: nowrap;
   }
 
-  .system-note {
-    font-size: 14px;
+  .discussion-body {
+    padding-top: 8px;
+
+    .panel {
+      margin-bottom: 0;
+    }
+  }
+
+  .discussion {
+    display: block;
+    position: relative;
+
+    .diff-content {
+      overflow: visible;
+    }
+  }
+
+  > li { // .timeline-entry
     padding: 0;
-    clear: both;
+    display: block;
+    position: relative;
+    border-bottom: 0;
 
-    &.timeline-entry::after {
-      clear: none;
+    @include notes-media('min', $screen-sm-min) {
+      padding-left: $note-icon-gutter-width;
     }
 
-    .system-note-message {
-      display: inline-block;
-
-      &::first-letter {
-        text-transform: lowercase;
-      }
-
-      a {
-        color: $gl-link-color;
-        text-decoration: none;
-      }
-
-      p {
-        display: inline-block;
-        margin: 0;
-
-        &::first-letter {
-          text-transform: lowercase;
-        }
-      }
+    .timeline-entry-inner {
+      padding: $gl-padding $gl-btn-padding;
+      border-bottom: 1px solid $white-normal;
     }
 
-    .timeline-content {
-      padding: 14px 10px;
-    }
+    &:target,
+    &.target {
+      border-bottom: 1px solid $white-normal;
 
-    .note-body {
-      overflow: hidden;
-
-      .system-note-commit-list-toggler {
-        display: none;
-        padding: 10px 0 0;
-        cursor: pointer;
-        position: relative;
-        z-index: 2;
-
-        &:hover {
-          color: $gl-link-color;
-          text-decoration: underline;
-        }
+      &:not(:first-child) {
+        border-top: 1px solid $white-normal;
+        margin-top: -1px;
       }
 
-      .note-text {
-        & p:first-child {
-          display: none;
-        }
-
-        &.system-note-commit-list {
-          max-height: 70px;
-          overflow: hidden;
-          display: block;
-
-          ul {
-            margin: 3px 0 3px 16px !important;
-
-            .gfm-commit {
-              font-family: $monospace_font;
-              font-size: 12px;
-            }
-          }
-
-          p:first-child {
-            display: none;
-          }
-
-          p:last-child {
-            a {
-              color: $gl-text-color;
-
-              &:hover {
-                color: $gl-link-color;
-              }
-            }
-          }
-
-          &::after {
-            content: '';
-            width: 100%;
-            height: 67px;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
-          }
-        }
+      .timeline-entry-inner {
+        border-bottom: 0;
       }
     }
 
     .timeline-icon {
-      display: none;
-
-      .avatar {
-        visibility: hidden;
-
-        .discussion-body & {
-          visibility: visible;
-        }
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: -$note-icon-gutter-width;
       }
     }
-  }
 
-  .discussion-body {
-    padding-top: 15px;
-  }
+    .timeline-content {
+      margin-left: $note-icon-gutter-width;
 
-  .discussion {
-    overflow: hidden;
-    display: block;
-    position: relative;
-  }
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: 0;
+      }
+    }
 
-  .note {
-    display: block;
-    position: relative;
-    border-bottom: 1px solid $white-normal;
+    &.being-posted {
+      pointer-events: none;
+      opacity: 0.5;
+
+      .dummy-avatar {
+        background-color: $kdb-border;
+        border: 1px solid darken($kdb-border, 25%);
+      }
+
+      .note-headline-light,
+      .fa-spinner {
+        margin-left: 3px;
+      }
+    }
 
     &.note-discussion {
-      &.timeline-entry {
-        padding: 14px 10px;
-      }
-
-      .system-note {
-        padding: 0;
+      .timeline-entry-inner {
+        padding: $gl-padding 10px;
       }
     }
 
-    &.is-editting {
+    .editing-spinner {
+      display: none;
+    }
+
+    &.is-requesting {
+      .note-timestamp {
+        display: none;
+      }
+
+      .editing-spinner {
+        display: inline-block;
+      }
+    }
+
+    &.is-editing {
       .note-header,
       .note-text,
       .edited-text {
@@ -195,38 +131,36 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .note-text {
-        overflow: auto;
-        word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
         @include bulleted-list;
+        word-wrap: break-word;
+
         ul.task-list {
           ul:not(.task-list) {
             padding-left: 1.3em;
           }
+        }
+
+        table {
+          @include markdown-table;
         }
       }
     }
 
     .note-awards {
       .js-awards-block {
-        padding: 2px;
-        margin-top: 10px;
+        margin-top: 16px;
       }
     }
 
     .note-header {
-      padding-bottom: 3px;
-      padding-right: 20px;
 
-      @media (min-width: $screen-sm-min) {
-        padding-right: 0;
-      }
-
-      @media (max-width: $screen-xs-min) {
+      @include notes-media('max', $screen-xs-min) {
         .inline {
           display: block;
         }
@@ -234,6 +168,9 @@ ul.notes {
     }
 
     .note-emoji-button {
+      position: relative;
+      line-height: 1;
+
       .fa-spinner {
         display: none;
       }
@@ -248,21 +185,112 @@ ul.notes {
         }
       }
     }
-
   }
-}
 
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-md-max) {
-    .note-header {
-      .note-headline-light {
-        display: block;
+  .system-note {
+    font-size: 14px;
+    clear: both;
+
+    .note-header-info {
+      padding-bottom: 0;
+    }
+
+    &.timeline-entry::after {
+      clear: none;
+    }
+
+    .system-note-message {
+      display: inline;
+
+      &::first-letter {
+        text-transform: lowercase;
       }
 
-      .note-actions {
-        position: absolute;
-        right: 0;
-        top: 0;
+      a {
+        color: $gl-link-color;
+      }
+
+      p {
+        display: inline;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
+      }
+    }
+
+    .timeline-icon {
+      float: left;
+
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: 0;
+        width: auto;
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+        fill: $gray-darkest;
+        margin-top: 2px;
+      }
+    }
+
+    .timeline-content {
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: 30px;
+      }
+    }
+
+    .note-header {
+      padding-bottom: 0;
+    }
+
+    .note-body {
+      overflow: hidden;
+
+      .system-note-commit-list-toggler {
+        color: $gl-link-color;
+        display: none;
+        padding: 10px 0 0;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
+      }
+
+      .note-text {
+        p:first-child {
+          display: none;
+        }
+
+        &.system-note-commit-list:not(.hide-shade) {
+          max-height: 70px;
+          overflow: hidden;
+          display: block;
+
+          ul {
+            margin: 3px 0 3px 16px !important;
+          }
+
+          p:first-child {
+            display: none;
+          }
+
+          &::after {
+            content: '';
+            width: 100%;
+            height: 70px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
+          }
+        }
       }
     }
   }
@@ -278,79 +306,144 @@ ul.notes {
     }
   }
 
-  .diff-header > span {
-    margin-right: 10px;
-  }
-
   .line_content {
     white-space: pre-wrap;
   }
 }
 
-.diff-file .notes_holder {
-  font-family: $regular_font;
-
-  td {
-    border: 1px solid $white-normal;
-    border-left: none;
-
-    &.notes_line {
-      vertical-align: middle;
-      text-align: center;
-      padding: 10px 0;
-      background: $gray-light;
-      color: $text-color;
+.diff-file {
+  .is-over {
+    .add-diff-note {
+      display: inline-block;
     }
+  }
 
-    &.notes_line2 {
-      text-align: center;
-      padding: 10px 0;
-      border-left: 1px solid $note-line2-border !important;
-    }
+  // Merge request notes in diffs
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
+  }
 
-    &.notes_content {
-      background-color: $gray-light;
-      border-width: 1px 0;
-      padding: 0;
-      vertical-align: top;
-      white-space: normal;
+  .notes_holder {
+    font-family: $regular_font;
 
-      &.parallel {
-        border-width: 1px;
+    td {
+      border: 1px solid $white-normal;
+      border-left: 0;
+
+      &.notes_line {
+        vertical-align: middle;
+        text-align: center;
+        padding: 10px 0;
+        background: $gray-light;
+        color: $text-color;
       }
 
-      .notes {
-        background-color: $white-light;
+      &.notes_line2 {
+        text-align: center;
+        padding: 10px 0;
+        border-left: 1px solid $note-line2-border !important;
       }
 
-      a code {
-        top: 0;
-        margin-right: 0;
+      &.notes_content {
+        background-color: $gray-light;
+        border-width: 1px 0;
+        padding: 0;
+        vertical-align: top;
+        white-space: normal;
+
+        &.parallel {
+          border-width: 1px;
+        }
+
+        .discussion-notes {
+          &:not(:first-child) {
+            border-top: 1px solid $white-normal;
+            margin-top: 20px;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid $white-normal;
+            margin-bottom: 20px;
+          }
+        }
+
+        .notes {
+          background-color: $white-light;
+        }
+
+        a code {
+          top: 0;
+          margin-right: 0;
+        }
       }
     }
   }
 }
 
 .discussion-header,
-.note-header {
-  position: relative;
-
+.note-header-info {
   a {
     color: inherit;
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &:focus,
+    &:hover {
       text-decoration: none;
+
+      .note-header-author-name {
+        text-decoration: underline;
+      }
     }
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
 .discussion-header {
   font-size: 14px;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+
+  @include notes-media('max', $screen-xs-max) {
+    flex-flow: row wrap;
+  }
+}
+
+.note-header-info {
+  min-width: 0;
+  padding-bottom: 8px;
+
+  &.discussion {
+    padding-bottom: 0;
+  }
+}
+
+.system-note .note-header-info {
+  padding-bottom: 0;
+}
+
+.note-header-author-name {
+  @include notes-media('max', $screen-xs-max) {
+    display: none;
+  }
+}
+
+.note-headline-light {
+  display: inline;
+
+  @include notes-media('max', $screen-xs-min) {
+    display: block;
+  }
 }
 
 .note-headline-light,
@@ -364,68 +457,156 @@ ul.notes {
   }
 }
 
+.note-headline-meta {
+  display: inline-block;
+  white-space: nowrap;
+
+  .system-note-message {
+    white-space: normal;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
 /**
  * Actions for Discussions/Notes
  */
 
-.discussion-actions,
-.note-actions {
+.discussion-actions {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
-}
 
-.note-actions {
-  position: absolute;
-  right: 0;
-  top: 0;
+  @include notes-media('max', $screen-md-max) {
+    float: none;
+    margin-left: 0;
+  }
 
-  .note-action-button {
-    margin-left: 10px;
+  .btn-group > .discussion-next-btn {
+    margin-left: -1px;
   }
 }
 
-.discussion-actions {
-  @media (max-width: $screen-md-max) {
+.note-actions {
+  align-self: flex-start;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  color: $gray-darkest;
+
+  @include notes-media('max', $screen-xs-max) {
     float: none;
     margin-left: 0;
+  }
+}
 
-    .note-action-button {
-      margin-left: 0;
-    }
+.more-actions {
+  display: flex;
+  align-items: flex-end;
+
+  .tooltip {
+    white-space: nowrap;
+  }
+}
+
+.more-actions-toggle {
+  &:hover .icon,
+  &:focus .icon {
+    color: $blue-600;
+  }
+}
+
+.more-actions-dropdown {
+  width: 180px;
+  min-width: 180px;
+}
+
+.note-actions-item {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+
+  &.more-actions {
+    // compensate for narrow icon
+    margin-left: 10px;
   }
 }
 
 .note-action-button {
-  display: inline-block;
-  margin-left: 0;
-  line-height: 20px;
-
-  @media (min-width: $screen-sm-min) {
-    margin-left: 10px;
-    line-height: 24px;
-  }
+  line-height: 1;
+  padding: 0;
+  min-width: 16px;
+  color: $gray-darkest;
+  fill: $gray-darkest;
 
   .fa {
-    color: $gray-darkest;
     position: relative;
-    font-size: 17px;
+    font-size: 16px;
   }
 
-  &:hover {
+  svg {
+    @include btn-svg;
+  }
+
+  .award-control-icon-positive,
+  .award-control-icon-super-positive {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  &:hover,
+  &.is-active {
     .danger-highlight {
       color: $gl-text-red;
     }
 
     .link-highlight {
       color: $gl-link-color;
+      fill: $gl-link-color;
+    }
+
+    .award-control-icon-neutral {
+      opacity: 0;
+    }
+
+    .award-control-icon-positive {
+      opacity: 1;
+    }
+  }
+
+  &.is-active {
+    .award-control-icon-positive {
+      opacity: 0;
+    }
+
+    .award-control-icon-super-positive {
+      opacity: 1;
     }
   }
 }
 
 .discussion-toggle-button {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
   line-height: 20px;
   font-size: 13px;
+  transition: color 0.1s linear;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+
+  &:focus {
+    text-decoration: underline;
+    outline: none;
+    color: $gl-link-color;
+  }
 
   .fa {
     margin-right: 3px;
@@ -436,69 +617,61 @@ ul.notes {
 }
 
 .note-role {
-  position: relative;
-  top: -2px;
-  display: inline-block;
-  padding-left: 4px;
-  padding-right: 4px;
-  color: $notes-role-color;
-  font-size: 12px;
-  line-height: 20px;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
+  margin: 0 3px;
 }
 
+.note-role-special {
+  position: relative;
+  display: inline-block;
+  color: $gl-text-color-secondary;
+  font-size: 12px;
+  text-shadow: 0 0 15px $gl-text-color-inverted;
+}
 
 /**
  * Line note button on the side of diffs
  */
 
-.diff-file tr.line_holder {
-  @mixin show-add-diff-note {
-    display: inline-block;
-  }
-
+.line_holder .is-over:not(.no-comment-btn) {
   .add-diff-note {
-    margin-top: -4px;
-    border-radius: 40px;
-    background: $white-light;
-    padding: 4px;
-    font-size: 16px;
-    color: $gl-link-color;
-    margin-left: -56px;
-    position: absolute;
-    z-index: 10;
-    width: 32px;
-    // "hide" it by default
-    display: none;
-
-    &:hover {
-      background: $gl-info;
-      color: $white-light;
-      @include show-add-diff-note;
-    }
+    opacity: 1;
   }
+}
 
-  // "show" the icon also if we just hover somewhere over the line
-  &:hover > td {
-    .add-diff-note {
-      @include show-add-diff-note;
+.add-diff-note {
+  @include btn-comment-icon;
+  opacity: 0;
+  margin-top: -2px;
+  margin-left: -55px;
+  position: absolute;
+  z-index: 10;
+}
+
+.discussion-body,
+.diff-file {
+  .notes .note {
+    border-bottom: 1px solid $white-normal;
+
+    .timeline-entry-inner {
+      padding-left: $gl-padding;
+      padding-right: $gl-padding;
+      border-bottom: 0;
     }
   }
 }
 
 .disabled-comment {
-  margin-left: -$gl-padding-top;
-  margin-right: -$gl-padding-top;
   background-color: $gray-light;
   border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
-  line-height: 200px;
+  padding: 90px 0;
 
-  .disabled-comment-text {
-    line-height: normal;
+  &.discussion-locked {
+    border: 0;
+    background-color: $white-light;
   }
+
 
   a {
     color: $gl-link-color;
@@ -506,8 +679,16 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+  @include notes-media('min', $screen-sm-min) {
+    margin-right: 0;
+    padding-left: $gl-padding;
+  }
+
+  > div {
+    white-space: nowrap;
+  }
+
   .btn-group {
-    margin-top: -1px;
     margin-left: -4px;
   }
 
@@ -515,11 +696,34 @@ ul.notes {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  .btn {
+    svg path {
+      fill: $gray-darkest;
+    }
+
+    &.discussion-create-issue-btn {
+      margin-left: -4px;
+      border-radius: 0;
+      border-right: 0;
+
+      a {
+        padding: 0;
+        line-height: 0;
+
+        &:hover {
+          text-decoration: none;
+          border: 0;
+        }
+      }
+    }
+  }
 }
 
 .line-resolve-all {
+  vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px;
+  padding: 5px 10px 6px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -527,69 +731,54 @@ ul.notes {
   &.has-next-btn {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: 0;
   }
 
   .line-resolve-btn {
-    vertical-align: middle;
     margin-right: 5px;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 }
 
-.line-resolve-text {
-  vertical-align: middle;
-}
-
 .line-resolve-btn {
-  display: inline-block;
   position: relative;
-  top: 2px;
+  top: 0;
   padding: 0;
   background-color: transparent;
-  border: none;
+  border: 0;
   outline: 0;
+  color: $gray-darkest;
+  transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
     cursor: default;
   }
 
-  &:not(.is-disabled):hover,
-  &:not(.is-disabled):focus,
+  &:not(.is-disabled) {
+    &:hover,
+    &:focus {
+      color: $gl-text-green;
+    }
+  }
+
   &.is-active {
     color: $gl-text-green;
 
-    svg {
-      fill: $gl-text-green;
+    &:hover,
+    &:focus {
+      color: $gl-text-green-hover;
     }
   }
 
-  svg {
-    position: relative;
-    fill: $gray-darkest;
-  }
-}
-
-.discussion-next-btn {
-  svg {
+  .loading {
     margin: 0;
-
-    path {
-      fill: $gray-darkest;
-    }
+    height: auto;
   }
 }
 
-// Merge request notes in diffs
-.diff-file {
-
-  // Diff is side by side
-  .notes_content.parallel .note-header .note-headline-light {
-    display: block;
-    position: relative;
-  }
-
-  // Diff is inline
-  .notes_content .note-header .note-headline-light {
-    display: inline-block;
-    position: relative;
-  }
+.line-resolve-text {
+  vertical-align: middle;
 }

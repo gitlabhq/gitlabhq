@@ -6,7 +6,21 @@
 
   .pagination {
     padding: 0;
+
+    a {
+      cursor: pointer;
+    }
+
+    .separator,
+    .separator:hover {
+      a {
+        cursor: default;
+        background-color: $gray-light;
+        padding: $gl-vert-padding;
+      }
+    }
   }
+
 
   .gap,
   .gap:hover {

@@ -1,6 +1,7 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :commit_status, class: CommitStatus do
     name 'default'
+    stage 'test'
     status 'success'
     description 'commit status'
     pipeline factory: :ci_pipeline_with_one_job
@@ -33,6 +34,10 @@ FactoryGirl.define do
 
     trait :created do
       status 'created'
+    end
+
+    trait :manual do
+      status 'manual'
     end
 
     after(:build) do |build, evaluator|

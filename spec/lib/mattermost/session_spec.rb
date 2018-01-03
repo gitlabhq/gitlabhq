@@ -20,9 +20,10 @@ describe Mattermost::Session, type: :request do
 
   describe '#with session' do
     let(:location) { 'http://location.tld' }
+    let(:cookie_header) {'MMOAUTH=taskik8az7rq8k6rkpuas7htia; Path=/;'}
     let!(:stub) do
-      WebMock.stub_request(:get, "#{mattermost_url}/api/v3/oauth/gitlab/login").
-        to_return(headers: { 'location' => location }, status: 307)
+      WebMock.stub_request(:get, "#{mattermost_url}/api/v3/oauth/gitlab/login")
+        .to_return(headers: { 'location' => location, 'Set-Cookie' => cookie_header }, status: 307)
     end
 
     context 'without oauth uri' do
@@ -34,9 +35,9 @@ describe Mattermost::Session, type: :request do
     context 'with oauth_uri' do
       let!(:doorkeeper) do
         Doorkeeper::Application.create(
-          name: "GitLab Mattermost",
+          name: 'GitLab Mattermost',
           redirect_uri: "#{mattermost_url}/signup/gitlab/complete\n#{mattermost_url}/login/gitlab/complete",
-          scopes: "")
+          scopes: '')
       end
 
       context 'without token_uri' do
@@ -60,9 +61,9 @@ describe Mattermost::Session, type: :request do
         end
 
         before do
-          WebMock.stub_request(:get, "#{mattermost_url}/signup/gitlab/complete").
-            with(query: hash_including({ 'state' => state })).
-            to_return do |request|
+          WebMock.stub_request(:get, "#{mattermost_url}/signup/gitlab/complete")
+            .with(query: hash_including({ 'state' => state }))
+            .to_return do |request|
               post "/oauth/token",
                 client_id: doorkeeper.uid,
                 client_secret: doorkeeper.secret,
@@ -75,8 +76,8 @@ describe Mattermost::Session, type: :request do
               end
             end
 
-          WebMock.stub_request(:post, "#{mattermost_url}/api/v3/users/logout").
-            to_return(headers: { Authorization: 'token thisworksnow' }, status: 200)
+          WebMock.stub_request(:post, "#{mattermost_url}/api/v3/users/logout")
+            .to_return(headers: { Authorization: 'token thisworksnow' }, status: 200)
         end
 
         it 'can setup a session' do

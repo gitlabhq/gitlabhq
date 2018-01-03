@@ -1,4 +1,4 @@
-# System hooks
+# System hooks API
 
 All methods require administrator authorization.
 
@@ -20,7 +20,7 @@ GET /hooks
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/hooks
 ```
 
 Example response:
@@ -59,7 +59,7 @@ POST /hooks
 Example request:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/hooks?url=https://gitlab.example.com/hook"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/hooks?url=https://gitlab.example.com/hook"
 ```
 
 Example response:
@@ -90,7 +90,7 @@ GET /hooks/:id
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/hooks/2
 ```
 
 Example response:
@@ -123,24 +123,5 @@ DELETE /hooks/:id
 Example request:
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
-```
-
-Example response:
-
-```json
-{
-   "note_events" : false,
-   "project_id" : null,
-   "enable_ssl_verification" : true,
-   "url" : "https://gitlab.example.com/hook",
-   "updated_at" : "2015-11-04T20:12:15.931Z",
-   "issues_events" : false,
-   "merge_requests_events" : false,
-   "created_at" : "2015-11-04T20:12:15.931Z",
-   "service_id" : null,
-   "id" : 2,
-   "push_events" : true,
-   "tag_push_events" : false
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/hooks/2
 ```

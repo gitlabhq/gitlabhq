@@ -3,19 +3,26 @@ module API
     include PaginationParams
 
     before { authenticate! }
-    AWARDABLES = %w[issue merge_request snippet]
+    AWARDABLES = [
+      { type: 'issue', find_by: :iid },
+      { type: 'merge_request', find_by: :iid },
+      { type: 'snippet', find_by: :id }
+    ].freeze
 
-    resource :projects do
-      AWARDABLES.each do |awardable_type|
-        awardable_string = awardable_type.pluralize
-        awardable_id_string = "#{awardable_type}_id"
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      AWARDABLES.each do |awardable_params|
+        awardable_string = awardable_params[:type].pluralize
+        awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
 
         params do
-          requires :id, type: String, desc: 'The ID of a project'
           requires :"#{awardable_id_string}", type: Integer, desc: "The ID of an Issue, Merge Request or Snippet"
         end
 
-        [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
+        [
+          ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
 
@@ -28,8 +35,8 @@ module API
           end
           get endpoint do
             if can_read_awardable?
-              awards = paginate(awardable.award_emoji)
-              present awards, with: Entities::AwardEmoji
+              awards = awardable.award_emoji
+              present paginate(awards), with: Entities::AwardEmoji
             else
               not_found!("Award Emoji")
             end
@@ -81,8 +88,7 @@ module API
 
             unauthorized! unless award.user == current_user || current_user.admin?
 
-            award.destroy
-            present award, with: Entities::AwardEmoji
+            destroy_conditionally!(award)
           end
         end
       end
@@ -104,10 +110,10 @@ module API
               note_id = params.delete(:note_id)
 
               awardable.notes.find(note_id)
-            elsif params.include?(:issue_id)
-              user_project.issues.find(params[:issue_id])
-            elsif params.include?(:merge_request_id)
-              user_project.merge_requests.find(params[:merge_request_id])
+            elsif params.include?(:issue_iid)
+              user_project.issues.find_by!(iid: params[:issue_iid])
+            elsif params.include?(:merge_request_iid)
+              user_project.merge_requests.find_by!(iid: params[:merge_request_iid])
             else
               user_project.snippets.find(params[:snippet_id])
             end

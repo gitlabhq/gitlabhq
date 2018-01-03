@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::CloseService, services: true do
+describe MergeRequests::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
@@ -9,12 +9,14 @@ describe MergeRequests::CloseService, services: true do
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
+    it_behaves_like 'cache counters invalidator'
+
     context 'valid params' do
       let(:service) { described_class.new(project, user, {}) }
 
@@ -29,9 +31,9 @@ describe MergeRequests::CloseService, services: true do
       it { expect(@merge_request).to be_valid }
       it { expect(@merge_request).to be_closed }
 
-      it 'should execute hooks with close action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(@merge_request, 'close')
+      it 'executes hooks with close action' do
+        expect(service).to have_received(:execute_hooks)
+                               .with(@merge_request, 'close')
       end
 
       it 'sends email to user2 about assign of new merge_request' do
@@ -48,6 +50,13 @@ describe MergeRequests::CloseService, services: true do
       it 'marks todos as done' do
         expect(todo.reload).to be_done
       end
+    end
+
+    it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do
+      service = described_class.new(project, user, {})
+
+      expect { service.execute(merge_request) }
+        .to change { project.open_merge_requests_count }.from(1).to(0)
     end
 
     context 'current user is not authorized to close merge request' do

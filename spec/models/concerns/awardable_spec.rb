@@ -1,26 +1,36 @@
 require 'spec_helper'
 
-describe Issue, "Awardable" do
+describe Awardable do
   let!(:issue)        { create(:issue) }
   let!(:award_emoji)  { create(:award_emoji, :downvote, awardable: issue) }
 
   describe "Associations" do
+    subject { build(:issue) }
+
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
   end
 
   describe "ClassMethods" do
     let!(:issue2) { create(:issue) }
+    let!(:award_emoji2) { create(:award_emoji, awardable: issue2) }
 
-    before do
-      create(:award_emoji, awardable: issue2)
+    describe "orders" do
+      it "orders on upvotes" do
+        expect(Issue.order_upvotes_desc.to_a).to eq [issue2, issue]
+      end
+
+      it "orders on downvotes" do
+        expect(Issue.order_downvotes_desc.to_a).to eq [issue, issue2]
+      end
     end
 
-    it "orders on upvotes" do
-      expect(Issue.order_upvotes_desc.to_a).to eq [issue2, issue]
-    end
-
-    it "orders on downvotes" do
-      expect(Issue.order_downvotes_desc.to_a).to eq [issue, issue2]
+    describe ".awarded" do
+      it "filters by user and emoji name" do
+        expect(Issue.awarded(award_emoji.user, "thumbsup")).to be_empty
+        expect(Issue.awarded(award_emoji.user, "thumbsdown")).to eq [issue]
+        expect(Issue.awarded(award_emoji2.user, "thumbsup")).to eq [issue2]
+        expect(Issue.awarded(award_emoji2.user, "thumbsdown")).to be_empty
+      end
     end
   end
 

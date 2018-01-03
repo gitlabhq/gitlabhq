@@ -1,10 +1,6 @@
-FactoryGirl.define do
-  sequence :issue_created_at do |n|
-    4.hours.ago + ( 2 * n ).seconds
-  end
-
+FactoryBot.define do
   factory :issue do
-    title
+    title { generate(:title) }
     author
     project
 
@@ -12,16 +8,17 @@ FactoryGirl.define do
       confidential true
     end
 
-    trait :closed do
-      state :closed
+    trait :opened do
+      state :opened
     end
 
-    trait :reopened do
-      state :reopened
+    trait :closed do
+      state :closed
+      closed_at { Time.now }
     end
 
     factory :closed_issue, traits: [:closed]
-    factory :reopened_issue, traits: [:reopened]
+    factory :reopened_issue, traits: [:opened]
 
     factory :labeled_issue do
       transient do

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Members::ApproveAccessRequestService, services: true do
+describe Members::ApproveAccessRequestService do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
-  let(:project) { create(:empty_project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable) }
   let(:group) { create(:group, :public, :access_requestable) }
   let(:opts) { {} }
 
@@ -123,7 +123,7 @@ describe Members::ApproveAccessRequestService, services: true do
 
     context 'when current user can approve access request to the project' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         group.add_owner(user)
       end
 

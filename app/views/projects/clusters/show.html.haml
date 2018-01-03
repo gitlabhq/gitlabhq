@@ -1,0 +1,46 @@
+- @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs "Clusters", project_clusters_path(@project)
+- breadcrumb_title @cluster.id
+- page_title _("Cluster")
+
+- expanded = Rails.env.test?
+
+- status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
+.edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
+  install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
+  install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
+  install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
+  toggle_status: @cluster.enabled? ? 'true': 'false',
+  cluster_status: @cluster.status_name,
+  cluster_status_reason: @cluster.status_reason,
+  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
+
+  .js-cluster-application-notice
+    .flash-container
+
+  %section.settings.no-animate.expanded
+    = render 'banner'
+    = render 'enabled'
+
+  .cluster-applications-table#js-cluster-applications
+
+  %section.settings#js-cluster-details{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4= s_('ClusterIntegration|Cluster details')
+      %button.btn.js-settings-toggle
+        = expanded ? 'Collapse' : 'Expand'
+      %p= s_('ClusterIntegration|See and edit the details for your cluster')
+    .settings-content
+      - if @cluster.managed?
+        = render 'projects/clusters/gcp/show'
+      - else
+        = render 'projects/clusters/user/show'
+
+  %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4= _('Advanced settings')
+      %button.btn.js-settings-toggle
+        = expanded ? 'Collapse' : 'Expand'
+      %p= s_('ClusterIntegration|Manage cluster integration on your GitLab project')
+    .settings-content
+      = render 'advanced_settings'

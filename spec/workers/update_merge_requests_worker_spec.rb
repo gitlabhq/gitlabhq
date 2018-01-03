@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UpdateMergeRequestsWorker do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   subject { described_class.new }
@@ -24,15 +24,16 @@ describe UpdateMergeRequestsWorker do
       perform
     end
 
-    it 'executes SystemHooksService with expected values' do
-      push_data = double('push_data')
-      expect(Gitlab::DataBuilder::Push).to receive(:build).with(project, user, oldrev, newrev, ref, []).and_return(push_data)
+    context 'when slow' do
+      before do
+        stub_const("UpdateMergeRequestsWorker::LOG_TIME_THRESHOLD", -1)
+      end
 
-      system_hook_service = double('system_hook_service')
-      expect(SystemHooksService).to receive(:new).and_return(system_hook_service)
-      expect(system_hook_service).to receive(:execute_hooks).with(push_data, :push_hooks)
+      it 'logs debug info' do
+        expect(Rails.logger).to receive(:info).with(a_string_matching(/\AUpdateMergeRequestsWorker#perform.*project_id=#{project.id},user_id=#{user.id},oldrev=#{oldrev},newrev=#{newrev},ref=#{ref}/))
 
-      perform
+        perform
+      end
     end
   end
 end

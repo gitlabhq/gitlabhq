@@ -5,6 +5,10 @@ module Projects
     end
 
     def execute
+      if @params[:template_name]&.present?
+        return ::Projects::CreateFromTemplateService.new(current_user, params).execute
+      end
+
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
       @skip_wiki = params.delete(:skip_wiki)
@@ -12,7 +16,7 @@ module Projects
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
         deny_visibility_level(@project)
         return @project
       end
@@ -22,17 +26,7 @@ module Projects
         return @project
       end
 
-      # Set project name from path
-      if @project.name.present? && @project.path.present?
-        # if both name and path set - everything is ok
-      elsif @project.path.present?
-        # Set project name from path
-        @project.name = @project.path.dup
-      elsif @project.name.present?
-        # For compatibility - set path from name
-        # TODO: remove this in 8.0
-        @project.path = @project.name.dup.parameterize
-      end
+      set_project_name_from_path
 
       # get namespace id
       namespace_id = params[:namespace_id]
@@ -50,6 +44,8 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
+      yield(@project) if block_given?
+
       @project.creator = current_user
 
       if forked_from_project_id
@@ -58,16 +54,18 @@ module Projects
 
       save_project_and_import_data(import_data)
 
-      @project.import_start if @project.import?
-
       after_create_actions if @project.persisted?
 
       if @project.errors.empty?
-        @project.add_import_job if @project.import?
+        @project.import_schedule if @project.import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end
+
       @project
+    rescue ActiveRecord::RecordInvalid => e
+      message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "
+      fail(error: message)
     rescue => e
       fail(error: e.message)
     end
@@ -103,11 +101,19 @@ module Projects
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
-      unless @project.group || @project.gitlab_project_import?
-        @project.team << [current_user, :master, current_user]
-      end
+      setup_authorizations
+    end
 
-      @project.group.refresh_members_authorized_projects if @project.group
+    # Refresh the current user's authorizations inline (so they can access the
+    # project immediately after this request completes), and any other affected
+    # users in the background
+    def setup_authorizations
+      if @project.group
+        @project.group.refresh_members_authorized_projects(blocking: false)
+        current_user.refresh_authorized_projects
+      else
+        @project.add_master(@project.namespace.owner, current_user: current_user)
+      end
     end
 
     def skip_wiki?
@@ -142,6 +148,20 @@ module Projects
       Service.where(template: true, active: true).each do |template|
         service = Service.build_from_template(project.id, template)
         service.save!
+      end
+    end
+
+    def set_project_name_from_path
+      # Set project name from path
+      if @project.name.present? && @project.path.present?
+        # if both name and path set - everything is ok
+      elsif @project.path.present?
+        # Set project name from path
+        @project.name = @project.path.dup
+      elsif @project.name.present?
+        # For compatibility - set path from name
+        # TODO: remove this in 8.0
+        @project.path = @project.name.dup.parameterize
       end
     end
   end

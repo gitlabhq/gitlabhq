@@ -2,7 +2,7 @@
 # file path string when combined in a request parameter
 module ExtractsPath
   # Raised when given an invalid file path
-  class InvalidPathError < StandardError; end
+  InvalidPathError = Class.new(StandardError)
 
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.
@@ -40,9 +40,9 @@ module ExtractsPath
   def extract_ref(id)
     pair = ['', '']
 
-    return pair unless @project
+    return pair unless @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    if id.match(/^([[:alnum:]]{40})(.+)/)
+    if id =~ /^(\h{40})(.+)/
       # If the ref appears to be a SHA, we're done, just split the string
       pair = $~.captures
     else
@@ -104,6 +104,7 @@ module ExtractsPath
   #
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
     # assign allowed options
     allowed_options = ["filter_ref"]
@@ -126,15 +127,19 @@ module ExtractsPath
     raise InvalidPathError unless @commit
 
     @hex_path = Digest::SHA1.hexdigest(@path)
-    @logs_path = logs_file_namespace_project_ref_path(@project.namespace,
-                                                      @project, @ref, @path)
-
+    @logs_path = logs_file_project_ref_path(@project, @ref, @path)
   rescue RuntimeError, NoMethodError, InvalidPathError
     render_404
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def tree
-    @tree ||= @repo.tree(@commit.id, @path)
+    @tree ||= @repo.tree(@commit.id, @path) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def lfs_blob_ids
+    blob_ids = tree.blobs.map(&:id)
+    @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   private
@@ -147,8 +152,8 @@ module ExtractsPath
   end
 
   def ref_names
-    return [] unless @project
+    return [] unless @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    @ref_names ||= @project.repository.ref_names
+    @ref_names ||= @project.repository.ref_names # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

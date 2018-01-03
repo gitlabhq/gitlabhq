@@ -1,7 +1,10 @@
+# rubocop:disable Migration/UpdateColumnInBatches
 class MakeProjectOwnersMasters < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+
+  disable_ddl_transaction!
 
   def up
     update_column_in_batches(:members, :access_level, 40) do |table, query|

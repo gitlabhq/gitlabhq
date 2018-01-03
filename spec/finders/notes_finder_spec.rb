@@ -2,15 +2,13 @@ require 'spec_helper'
 
 describe NotesFinder do
   let(:user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#execute' do
-    it 'finds notes on snippets when project is public and user isnt a member'
-
     it 'finds notes on merge requests' do
       create(:note_on_merge_request, project: project)
 
@@ -28,7 +26,7 @@ describe NotesFinder do
     end
 
     it "excludes notes on commits the author can't download" do
-      project = create(:project, :private)
+      project = create(:project, :private, :repository)
       note = create(:note_on_commit, project: project)
       params = { target_type: 'commit', target_id: note.noteable.id }
 
@@ -45,9 +43,11 @@ describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE,
-                                        snippets_access_level: ProjectFeature::PRIVATE,
-                                        merge_requests_access_level: ProjectFeature::PRIVATE)
+        create(:project,
+               :public,
+               :issues_private,
+               :snippets_private,
+               :merge_requests_private)
       end
 
       it 'publicly excludes notes on merge requests' do
@@ -76,7 +76,7 @@ describe NotesFinder do
     end
 
     context 'for target' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:note1) { create :note_on_commit, project: project }
       let(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
@@ -110,8 +110,17 @@ describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
+      it 'finds notes on personal snippets' do
+        note = create(:note_on_personal_snippet)
+        params = { target_type: 'personal_snippet', target_id: note.noteable_id }
+
+        notes = described_class.new(project, user, params).execute
+
+        expect(notes.count).to eq(1)
+      end
+
       it 'raises an exception for an invalid target_type' do
-        params.merge!(target_type: 'invalid')
+        params[:target_type] = 'invalid'
         expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
       end
 
@@ -138,7 +147,7 @@ describe NotesFinder do
 
         it 'raises an error for project members with guest role' do
           user = create(:user)
-          project.team << [user, :guest]
+          project.add_guest(user)
 
           expect { described_class.new(project, user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
         end
@@ -147,7 +156,7 @@ describe NotesFinder do
   end
 
   describe '.search' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:note) { create(:note_on_issue, note: 'WoW', project: project) }
 
     it 'returns notes with matching content' do
@@ -180,7 +189,7 @@ describe NotesFinder do
 
       it "does not return notes with matching content for project members with guest role" do
         user = create(:user)
-        project.team << [user, :guest]
+        project.add_guest(user)
         expect(described_class.new(confidential_note.project, user, search: confidential_note.note).execute).to be_empty
       end
 
@@ -199,6 +208,47 @@ describe NotesFinder do
 
       specify 'search filter' do
         expect(sql.scan(/LIKE/).count).to be >= number_of_noteable_types
+      end
+    end
+  end
+
+  describe '#target' do
+    subject { described_class.new(project, user, params) }
+
+    context 'for a issue target' do
+      let(:issue) { create(:issue, project: project) }
+      let(:params) { { target_type: 'issue', target_id: issue.id } }
+
+      it 'returns the issue' do
+        expect(subject.target).to eq(issue)
+      end
+    end
+
+    context 'for a merge request target' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:params) { { target_type: 'merge_request', target_id: merge_request.id } }
+
+      it 'returns the merge_request' do
+        expect(subject.target).to eq(merge_request)
+      end
+    end
+
+    context 'for a snippet target' do
+      let(:snippet) { create(:project_snippet, project: project) }
+      let(:params) { { target_type: 'snippet', target_id: snippet.id } }
+
+      it 'returns the snippet' do
+        expect(subject.target).to eq(snippet)
+      end
+    end
+
+    context 'for a commit target' do
+      let(:project) { create(:project, :repository) }
+      let(:commit) { project.commit }
+      let(:params) { { target_type: 'commit', target_id: commit.id } }
+
+      it 'returns the commit' do
+        expect(subject.target).to eq(commit)
       end
     end
   end

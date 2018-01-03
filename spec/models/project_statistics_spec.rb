@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe ProjectStatistics, models: true do
-  let(:project) { create :empty_project }
+describe ProjectStatistics do
+  let(:project) { create :project }
   let(:statistics) { project.statistics }
 
   describe 'constants' do
@@ -35,7 +35,7 @@ describe ProjectStatistics, models: true do
         commit_count: 8.exabytes - 1,
         repository_size: 2.exabytes,
         lfs_objects_size: 2.exabytes,
-        build_artifacts_size: 4.exabytes - 1,
+        build_artifacts_size: 4.exabytes - 1
       )
 
       statistics.reload
@@ -107,7 +107,7 @@ describe ProjectStatistics, models: true do
 
   describe '#update_repository_size' do
     before do
-      allow(project.repository).to receive(:size).and_return(12.megabytes)
+      allow(project.repository).to receive(:size).and_return(12)
       statistics.update_repository_size
     end
 
@@ -133,15 +133,29 @@ describe ProjectStatistics, models: true do
 
   describe '#update_build_artifacts_size' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:build1) { create(:ci_build, pipeline: pipeline, artifacts_size: 45.megabytes) }
-    let!(:build2) { create(:ci_build, pipeline: pipeline, artifacts_size: 56.megabytes) }
 
-    before do
-      statistics.update_build_artifacts_size
+    context 'when new job artifacts are calculated' do
+      let(:ci_build) { create(:ci_build, pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :archive, project: pipeline.project, job: ci_build)
+      end
+
+      it "stores the size of related build artifacts" do
+        statistics.update_build_artifacts_size
+
+        expect(statistics.build_artifacts_size).to be(106365)
+      end
     end
 
-    it "stores the size of related build artifacts" do
-      expect(statistics.build_artifacts_size).to eq 101.megabytes
+    context 'when legacy artifacts are used' do
+      let!(:ci_build) { create(:ci_build, pipeline: pipeline, artifacts_size: 10.megabytes) }
+
+      it "stores the size of related build artifacts" do
+        statistics.update_build_artifacts_size
+
+        expect(statistics.build_artifacts_size).to eq(10.megabytes)
+      end
     end
   end
 
@@ -149,7 +163,7 @@ describe ProjectStatistics, models: true do
     it "sums all storage counters" do
       statistics.update!(
         repository_size: 2,
-        lfs_objects_size: 3,
+        lfs_objects_size: 3
       )
 
       statistics.reload

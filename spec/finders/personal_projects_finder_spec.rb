@@ -15,7 +15,7 @@ describe PersonalProjectsFinder do
   end
 
   before do
-    private_project.team << [current_user, Gitlab::Access::DEVELOPER]
+    private_project.add_developer(current_user)
   end
 
   describe 'without a current user' do
@@ -32,7 +32,9 @@ describe PersonalProjectsFinder do
     end
 
     context 'external' do
-      before { current_user.update_attributes(external: true) }
+      before do
+        current_user.update_attributes(external: true)
+      end
 
       it { is_expected.to eq([private_project, public_project]) }
     end

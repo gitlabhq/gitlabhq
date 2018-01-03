@@ -5,9 +5,9 @@ module Milestones
 
       case state
       when 'activate'
-        Milestones::ReopenService.new(project, current_user, {}).execute(milestone)
+        Milestones::ReopenService.new(parent, current_user, {}).execute(milestone)
       when 'close'
-        Milestones::CloseService.new(project, current_user, {}).execute(milestone)
+        Milestones::CloseService.new(parent, current_user, {}).execute(milestone)
       end
 
       if params.present?

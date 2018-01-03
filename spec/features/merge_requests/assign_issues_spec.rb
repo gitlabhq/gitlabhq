@@ -1,24 +1,24 @@
 require 'rails_helper'
 
-feature 'Merge request issue assignment', js: true, feature: true do
+feature 'Merge request issue assignment', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue1) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue1.to_reference} and #{issue2.to_reference}") }
   let(:service) { MergeRequests::AssignIssuesService.new(merge_request, user, user, project) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   def visit_merge_request(current_user = nil)
-    login_as(current_user || user)
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    sign_in(current_user || user)
+    visit project_merge_request_path(project, merge_request)
   end
 
   context 'logged in as author' do
-    scenario 'updates related issues' do
+    it 'updates related issues' do
       visit_merge_request
       click_link "Assign yourself to these issues"
 
@@ -33,7 +33,7 @@ feature 'Merge request issue assignment', js: true, feature: true do
     end
 
     it "doesn't display if related issues are already assigned" do
-      [issue1, issue2].each { |issue| issue.update!(assignee: user) }
+      [issue1, issue2].each { |issue| issue.update!(assignees: [user]) }
 
       visit_merge_request
 

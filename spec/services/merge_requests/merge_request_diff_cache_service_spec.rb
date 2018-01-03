@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeRequestDiffCacheService do
-  let(:subject) { MergeRequests::MergeRequestDiffCacheService.new }
+  let(:subject) { described_class.new }
 
   describe '#execute' do
     it 'retrieves the diff files to cache the highlighted result' do
@@ -10,8 +10,8 @@ describe MergeRequests::MergeRequestDiffCacheService do
 
       expect(Rails.cache).to receive(:read).with(cache_key).and_return({})
       expect(Rails.cache).to receive(:write).with(cache_key, anything)
-      allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(double("text?" => true))
-      allow_any_instance_of(Repository).to receive(:diffable?).and_return(true)
+      allow_any_instance_of(Gitlab::Diff::File).to receive(:text?).and_return(true)
+      allow_any_instance_of(Gitlab::Diff::File).to receive(:diffable?).and_return(true)
 
       subject.execute(merge_request)
     end

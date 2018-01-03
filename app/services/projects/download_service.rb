@@ -2,7 +2,7 @@ module Projects
   class DownloadService < BaseService
     WHITELIST = [
       /^[^.]+\.fogbugz.com$/
-    ]
+    ].freeze
 
     def initialize(project, url)
       @project, @url = project, url
@@ -25,7 +25,7 @@ module Projects
     end
 
     def http?(url)
-      url =~ /\A#{URI::regexp(['http', 'https'])}\z/
+      url =~ /\A#{URI.regexp(%w(http https))}\z/
     end
 
     def valid_domain?(url)

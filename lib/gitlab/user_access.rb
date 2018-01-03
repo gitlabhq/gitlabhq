@@ -1,5 +1,11 @@
 module Gitlab
   class UserAccess
+    extend Gitlab::Cache::RequestCache
+
+    request_cache_key do
+      [user&.id, project&.id]
+    end
+
     attr_reader :user, :project
 
     def initialize(user, project: nil)
@@ -8,7 +14,7 @@ module Gitlab
     end
 
     def can_do_action?(action)
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       @permission_cache ||= {}
       @permission_cache[action] ||= user.can?(action, project)
@@ -19,7 +25,7 @@ module Gitlab
     end
 
     def allowed?
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       if user.requires_ldap_check? && user.try_obtain_ldap_lease
         return false unless Gitlab::LDAP::Access.allowed?(user)
@@ -28,40 +34,80 @@ module Gitlab
       true
     end
 
-    def can_push_to_branch?(ref)
-      return false if no_user_or_blocked?
+    request_cache def can_create_tag?(ref)
+      return false unless can_access_git?
 
-      if project.protected_branch?(ref)
-        return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
-
-        access_levels = project.protected_branches.matching(ref).map(&:push_access_levels).flatten
-        access_levels.any? { |access_level| access_level.check_access(user) }
+      if protected?(ProtectedTag, project, ref)
+        protected_tag_accessible_to?(ref, action: :create)
       else
         user.can?(:push_code, project)
       end
     end
 
-    def can_merge_to_branch?(ref)
-      return false if no_user_or_blocked?
+    request_cache def can_delete_branch?(ref)
+      return false unless can_access_git?
 
-      if project.protected_branch?(ref)
-        access_levels = project.protected_branches.matching(ref).map(&:merge_access_levels).flatten
-        access_levels.any? { |access_level| access_level.check_access(user) }
+      if protected?(ProtectedBranch, project, ref)
+        user.can?(:delete_protected_branch, project)
+      else
+        user.can?(:push_code, project)
+      end
+    end
+
+    def can_update_branch?(ref)
+      can_push_to_branch?(ref) || can_merge_to_branch?(ref)
+    end
+
+    request_cache def can_push_to_branch?(ref)
+      return false unless can_access_git?
+
+      if protected?(ProtectedBranch, project, ref)
+        return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
+
+        protected_branch_accessible_to?(ref, action: :push)
+      else
+        user.can?(:push_code, project)
+      end
+    end
+
+    request_cache def can_merge_to_branch?(ref)
+      return false unless can_access_git?
+
+      if protected?(ProtectedBranch, project, ref)
+        protected_branch_accessible_to?(ref, action: :merge)
       else
         user.can?(:push_code, project)
       end
     end
 
     def can_read_project?
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       user.can?(:read_project, project)
     end
 
     private
 
-    def no_user_or_blocked?
-      user.nil? || user.blocked?
+    def can_access_git?
+      user && user.can?(:access_git)
+    end
+
+    def protected_branch_accessible_to?(ref, action:)
+      ProtectedBranch.protected_ref_accessible_to?(
+        ref, user,
+        action: action,
+        protected_refs: project.protected_branches)
+    end
+
+    def protected_tag_accessible_to?(ref, action:)
+      ProtectedTag.protected_ref_accessible_to?(
+        ref, user,
+        action: action,
+        protected_refs: project.protected_tags)
+    end
+
+    request_cache def protected?(kind, project, ref)
+      kind.protected?(project, ref)
     end
   end
 end

@@ -1,43 +1,54 @@
 require 'spec_helper'
 
-describe Issues::CloseService, services: true do
+describe Issues::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:issue) { create(:issue, assignee: user2) }
+  let(:issue) { create(:issue, assignees: [user2]) }
   let(:project) { issue.project }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
     let(:service) { described_class.new(project, user) }
 
     it 'checks if the user is authorized to update the issue' do
-      expect(service).to receive(:can?).with(user, :update_issue, issue).
-        and_call_original
+      expect(service).to receive(:can?).with(user, :update_issue, issue)
+        .and_call_original
 
       service.execute(issue)
     end
 
     it 'does not close the issue when the user is not authorized to do so' do
-      allow(service).to receive(:can?).with(user, :update_issue, issue).
-        and_return(false)
+      allow(service).to receive(:can?).with(user, :update_issue, issue)
+        .and_return(false)
 
       expect(service).not_to receive(:close_issue)
       expect(service.execute(issue)).to eq(issue)
     end
 
     it 'closes the issue when the user is authorized to do so' do
-      allow(service).to receive(:can?).with(user, :update_issue, issue).
-        and_return(true)
+      allow(service).to receive(:can?).with(user, :update_issue, issue)
+        .and_return(true)
 
-      expect(service).to receive(:close_issue).
-        with(issue, commit: nil, notifications: true, system_note: true)
+      expect(service).to receive(:close_issue)
+        .with(issue, commit: nil, notifications: true, system_note: true)
+
+      service.execute(issue)
+    end
+
+    it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
+      expect { service.execute(issue) }
+        .to change { project.open_issues_count }.from(1).to(0)
+    end
+
+    it 'invalidates counter cache for assignees' do
+      expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
 
       service.execute(issue)
     end
@@ -51,8 +62,10 @@ describe Issues::CloseService, services: true do
         end
       end
 
-      it { expect(issue).to be_valid }
-      it { expect(issue).to be_closed }
+      it 'closes the issue' do
+        expect(issue).to be_valid
+        expect(issue).to be_closed
+      end
 
       it 'sends email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
@@ -90,15 +103,17 @@ describe Issues::CloseService, services: true do
       end
     end
 
-    context 'external issue tracker' do
+    context 'internal issues disabled' do
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
-        described_class.new(project, user).close_issue(issue)
+        project.issues_enabled = false
+        project.save!
       end
 
-      it { expect(issue).to be_valid }
-      it { expect(issue).to be_opened }
-      it { expect(todo.reload).to be_pending }
+      it 'does not close the issue' do
+        expect(issue).to be_valid
+        expect(issue).to be_opened
+        expect(todo.reload).to be_pending
+      end
     end
   end
 end

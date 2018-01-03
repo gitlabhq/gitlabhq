@@ -1,17 +1,17 @@
 .gitlab-ui-dev-kit {
   > h2 {
     margin: 35px 0 20px;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .example {
+    padding: 15px;
+    border: 1px dashed $ui-dev-kit-example-border;
+    margin-bottom: 15px;
+
     &::before {
       content: "Example";
       color: $ui-dev-kit-example-color;
     }
-
-    padding: 15px;
-    border: 1px dashed $ui-dev-kit-example-border;
-    margin-bottom: 15px;
   }
 }

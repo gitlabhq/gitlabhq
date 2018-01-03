@@ -1,43 +1,70 @@
 module Ci
-  # Currently this is artificial object, constructed dynamically
-  # We should migrate this object to actual database record in the future
-  class Stage
-    include StaticModel
+  class Stage < ActiveRecord::Base
+    extend Gitlab::Ci::Model
+    include Importable
+    include HasStatus
+    include Gitlab::OptimisticLocking
 
-    attr_reader :pipeline, :name
+    enum status: HasStatus::STATUSES_ENUM
 
-    delegate :project, to: :pipeline
+    belongs_to :project
+    belongs_to :pipeline
 
-    def initialize(pipeline, name:, status: nil)
-      @pipeline = pipeline
-      @name = name
-      @status = status
+    has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
+    has_many :builds, foreign_key: :stage_id
+
+    validates :project, presence: true, unless: :importing?
+    validates :pipeline, presence: true, unless: :importing?
+    validates :name, presence: true, unless: :importing?
+
+    after_initialize do |stage|
+      self.status = DEFAULT_STATUS if self.status.nil?
     end
 
-    def to_param
-      name
+    state_machine :status, initial: :created do
+      event :enqueue do
+        transition created: :pending
+        transition [:success, :failed, :canceled, :skipped] => :running
+      end
+
+      event :run do
+        transition any - [:running] => :running
+      end
+
+      event :skip do
+        transition any - [:skipped] => :skipped
+      end
+
+      event :drop do
+        transition any - [:failed] => :failed
+      end
+
+      event :succeed do
+        transition any - [:success] => :success
+      end
+
+      event :cancel do
+        transition any - [:canceled] => :canceled
+      end
+
+      event :block do
+        transition any - [:manual] => :manual
+      end
     end
 
-    def statuses_count
-      @statuses_count ||= statuses.count
-    end
-
-    def status
-      @status ||= statuses.latest.status
-    end
-
-    def detailed_status(current_user)
-      Gitlab::Ci::Status::Stage::Factory
-        .new(self, current_user)
-        .fabricate!
-    end
-
-    def statuses
-      @statuses ||= pipeline.statuses.where(stage: name)
-    end
-
-    def builds
-      @builds ||= pipeline.builds.where(stage: name)
+    def update_status
+      retry_optimistic_lock(self) do
+        case statuses.latest.status
+        when 'pending' then enqueue
+        when 'running' then run
+        when 'success' then succeed
+        when 'failed' then drop
+        when 'canceled' then cancel
+        when 'manual' then block
+        when 'skipped' then skip
+        else skip
+        end
+      end
     end
   end
 end

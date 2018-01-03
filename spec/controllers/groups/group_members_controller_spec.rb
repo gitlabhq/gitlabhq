@@ -8,7 +8,7 @@ describe Groups::GroupMembersController do
     it 'renders index with 200 status code' do
       get :index, group_id: group
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:index)
     end
   end
@@ -16,23 +16,29 @@ describe Groups::GroupMembersController do
   describe 'POST create' do
     let(:group_user) { create(:user) }
 
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+    end
 
     context 'when user does not have enough rights' do
-      before { group.add_developer(user) }
+      before do
+        group.add_developer(user)
+      end
 
       it 'returns 403' do
         post :create, group_id: group,
                       user_ids: group_user.id,
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
         expect(group.users).not_to include group_user
       end
     end
 
     context 'when user has enough rights' do
-      before { group.add_owner(user) }
+      before do
+        group.add_owner(user)
+      end
 
       it 'adds user to members' do
         post :create, group_id: group,
@@ -56,33 +62,58 @@ describe Groups::GroupMembersController do
     end
   end
 
+  describe 'PUT update' do
+    let(:requester) { create(:group_member, :access_request, group: group) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    Gitlab::Access.options.each do |label, value|
+      it "can change the access level to #{label}" do
+        xhr :put, :update, group_member: { access_level: value },
+                           group_id: group,
+                           id: requester
+
+        expect(requester.reload.human_access).to eq(label)
+      end
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:member) { create(:group_member, :developer, group: group) }
 
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+    end
 
     context 'when member is not found' do
       it 'returns 403' do
         delete :destroy, group_id: group, id: 42
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
-        before { group.add_developer(user) }
+        before do
+          group.add_developer(user)
+        end
 
         it 'returns 403' do
           delete :destroy, group_id: group, id: member
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
           expect(group.members).to include member
         end
       end
 
       context 'when user has enough rights' do
-        before { group.add_owner(user) }
+        before do
+          group.add_owner(user)
+        end
 
         it '[HTML] removes user from members' do
           delete :destroy, group_id: group, id: member
@@ -103,19 +134,23 @@ describe Groups::GroupMembersController do
   end
 
   describe 'DELETE leave' do
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+    end
 
     context 'when member is not found' do
       it 'returns 404' do
         delete :leave, group_id: group
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when member is found' do
       context 'and is not an owner' do
-        before { group.add_developer(user) }
+        before do
+          group.add_developer(user)
+        end
 
         it 'removes user from members' do
           delete :leave, group_id: group
@@ -124,20 +159,31 @@ describe Groups::GroupMembersController do
           expect(response).to redirect_to(dashboard_groups_path)
           expect(group.users).not_to include user
         end
+
+        it 'supports json request' do
+          delete :leave, group_id: group, format: :json
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['notice']).to eq "You left the \"#{group.name}\" group."
+        end
       end
 
       context 'and is an owner' do
-        before { group.add_owner(user) }
+        before do
+          group.add_owner(user)
+        end
 
         it 'cannot removes himself from the group' do
           delete :leave, group_id: group
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
       context 'and is a requester' do
-        before { group.request_access(user) }
+        before do
+          group.request_access(user)
+        end
 
         it 'removes user from members' do
           delete :leave, group_id: group
@@ -152,7 +198,9 @@ describe Groups::GroupMembersController do
   end
 
   describe 'POST request_access' do
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+    end
 
     it 'creates a new GroupMember that is not a team member' do
       post :request_access, group_id: group
@@ -167,30 +215,36 @@ describe Groups::GroupMembersController do
   describe 'POST approve_access_request' do
     let(:member) { create(:group_member, :access_request, group: group) }
 
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+    end
 
     context 'when member is not found' do
       it 'returns 403' do
         post :approve_access_request, group_id: group, id: 42
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
-        before { group.add_developer(user) }
+        before do
+          group.add_developer(user)
+        end
 
         it 'returns 403' do
           post :approve_access_request, group_id: group, id: member
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
           expect(group.members).not_to include member
         end
       end
 
       context 'when user has enough rights' do
-        before { group.add_owner(user) }
+        before do
+          group.add_owner(user)
+        end
 
         it 'adds user to members' do
           post :approve_access_request, group_id: group, id: member

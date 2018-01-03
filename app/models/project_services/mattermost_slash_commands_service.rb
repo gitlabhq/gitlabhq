@@ -1,4 +1,4 @@
-class MattermostSlashCommandsService < ChatSlashCommandsService
+class MattermostSlashCommandsService < SlashCommandsService
   include TriggersHelper
 
   prop_accessor :token
@@ -8,28 +8,28 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
   end
 
   def title
-    'Mattermost Command'
+    'Mattermost slash commands'
   end
 
   def description
-    "Perform common operations on GitLab in Mattermost"
+    "Perform common operations in Mattermost"
   end
 
-  def to_param
+  def self.to_param
     'mattermost_slash_commands'
   end
 
   def configure(user, params)
-    token = Mattermost::Command.new(user).
-      create(command(params))
+    token = Mattermost::Command.new(user)
+      .create(command(params))
 
     update(active: true, token: token) if token
   rescue Mattermost::Error => e
     [false, e.message]
   end
 
-  def list_teams(user)
-    Mattermost::Team.new(user).all
+  def list_teams(current_user)
+    [Mattermost::Team.new(current_user).all, nil]
   rescue Mattermost::Error => e
     [[], e.message]
   end

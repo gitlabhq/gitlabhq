@@ -11,8 +11,8 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid $list-border-light;
     border-bottom: 1px solid $list-border;
+    word-wrap: break-word;
 
     &::after {
       content: " ";
@@ -43,7 +43,7 @@
     }
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
 
       &.bottom {
         background: $gray-light;
@@ -93,17 +93,7 @@ ul.unstyled-list {
 }
 
 ul.unstyled-list > li {
-  border-bottom: none;
-}
-
-ul.task-list {
-  li.task-list-item {
-    list-style-type: none;
-  }
-
-  ul:not(.task-list) {
-    padding-left: 1.3em;
-  }
+  border-bottom: 0;
 }
 
 // Generic content list
@@ -124,15 +114,15 @@ ul.content-list {
     }
 
     .title {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
 
     a {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     .member-group-link {
-      color: $blue-normal;
+      color: $blue-600;
     }
 
     .description {
@@ -155,14 +145,20 @@ ul.content-list {
       }
 
       > .btn,
-      > .btn-group {
+      > .btn-group,
+      > .dropdown.inline {
         margin-right: $gl-padding-top;
         display: inline-block;
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.has-tooltip,
         &:last-child {
           margin-right: 0;
+
+          @media(max-width: $screen-xs-max) {
+            margin: 0 auto;
+          }
         }
       }
 
@@ -181,7 +177,7 @@ ul.content-list {
 
     // When dragging a list item
     &.ui-sortable-helper {
-      border-bottom: none;
+      border-bottom: 0;
     }
 
     &.list-placeholder {
@@ -215,7 +211,7 @@ ul.content-list {
   }
 
   .row-title {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 
   .row-second-line {
@@ -230,23 +226,23 @@ ul.content-list {
   }
 
   .label-default {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
+  }
+
+  .avatar-cell {
+    align-self: flex-start;
   }
 }
 
 .panel > .content-list > li {
   padding: $gl-padding-top $gl-padding;
-
-  &.commit {
-    @media (min-width: $screen-sm-min) {
-      padding-left: 46px + $gl-padding;
-    }
-  }
 }
 
 ul.controls {
   float: right;
   list-style: none;
+  display: flex;
+  align-items: center;
 
   .btn {
     padding: 10px 14px;
@@ -266,7 +262,213 @@ ul.controls {
       .avatar-inline {
         margin-left: 0;
         margin-right: 0;
+        margin-bottom: 0;
       }
     }
+  }
+
+  .issuable-pipeline-broken a,
+  .issuable-pipeline-status a,
+  .author_link {
+    display: flex;
+  }
+}
+
+ul.indent-list {
+  padding: 10px 0 0 30px;
+}
+
+
+// Specific styles for tree list
+@keyframes spin-avatar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.groups-list-tree-container {
+  .has-no-search-results {
+    text-align: center;
+    padding: $gl-padding;
+    font-style: italic;
+    color: $well-light-text-color;
+  }
+
+  > .group-list-tree > .group-row.has-children:first-child {
+    border-top: 0;
+  }
+}
+
+.group-list-tree {
+  .avatar-container.content-loading {
+    position: relative;
+
+    > a,
+    > a .avatar {
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    > a {
+      padding: 2px;
+
+      .avatar {
+        border: 2px solid $white-normal;
+
+        &.identicon {
+          line-height: 30px;
+        }
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: transparent;
+      border: 2px outset $kdb-border;
+      border-radius: 50%;
+      animation: spin-avatar 3s infinite linear;
+    }
+  }
+
+  .folder-toggle-wrap {
+    float: left;
+    line-height: $list-text-height;
+    font-size: 0;
+
+    span {
+      font-size: $gl-font-size;
+    }
+  }
+
+  .folder-caret,
+  .item-type-icon {
+    display: inline-block;
+  }
+
+  .folder-caret {
+    width: 15px;
+  }
+
+  .item-type-icon {
+    width: 20px;
+  }
+
+  > .group-row:not(.has-children) {
+    .folder-caret .fa {
+      opacity: 0;
+    }
+  }
+
+  .content-list li:last-child {
+    padding-bottom: 0;
+  }
+
+  .group-list-tree {
+    margin-bottom: 0;
+    margin-left: 30px;
+    position: relative;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0;
+      position: absolute;
+      top: 5px;
+      bottom: 0;
+      left: -16px;
+      border-left: 2px solid $border-white-normal;
+    }
+
+    .group-row {
+      position: relative;
+
+      &::before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 0;
+        border-top: 2px solid $border-white-normal;
+        position: absolute;
+        top: 30px;
+        left: -16px;
+      }
+
+      &:last-child::before {
+        background: $white-light;
+        height: auto;
+        top: 30px;
+        bottom: 0;
+      }
+
+      &.being-removed {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .group-row {
+    padding: 0;
+
+    &.has-children {
+      border-top: 0;
+    }
+
+    &:first-child {
+      border-top: 1px solid $white-normal;
+    }
+
+    &:last-of-type {
+      .group-row-contents:not(:hover) {
+        border-bottom: 1px solid transparent;
+      }
+    }
+  }
+
+  .group-row-contents {
+    padding: 10px 10px 8px;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px $white-normal;
+
+    &:hover {
+      border-color: $row-hover-border;
+      background-color: $row-hover;
+      cursor: pointer;
+    }
+
+    .avatar-container > a {
+      width: 100%;
+    }
+
+    &.has-more-items {
+      display: block;
+      padding: 20px 10px;
+    }
+  }
+}
+
+.namespace-title {
+  .tooltip-inner {
+    max-width: 350px;
+  }
+}
+
+ul.group-list-tree {
+  li.group-row {
+    &.has-description .title {
+      line-height: inherit;
+    }
+
+    &:not(.has-description) .title {
+      line-height: $list-text-height;
+    }
+  }
+}
+
+.js-groups-list-holder {
+  .groups-list-loading {
+    font-size: 34px;
+    text-align: center;
   }
 }

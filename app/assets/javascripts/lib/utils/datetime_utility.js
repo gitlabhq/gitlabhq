@@ -1,103 +1,180 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, comma-dangle, no-unused-expressions, prefer-template, padded-blocks, max-len */
-/* global timeago */
-/* global dateFormat */
+import timeago from 'timeago.js';
+import dateFormat from 'vendor/date.format';
+import { pluralize } from './text_utility';
+import {
+  languageCode,
+  s__,
+} from '../../locale';
 
-/*= require timeago */
-/*= require date.format */
+window.timeago = timeago;
+window.dateFormat = dateFormat;
 
-(function() {
-  (function(w) {
-    var base;
-    if (w.gl == null) {
-      w.gl = {};
-    }
-    if ((base = w.gl).utils == null) {
-      base.utils = {};
-    }
-    w.gl.utils.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+/**
+ * Given a date object returns the day of the week in English
+ * @param {date} date
+ * @returns {String}
+ */
+export const getDayName = date => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
 
-    w.gl.utils.formatDate = function(datetime) {
-      return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+/**
+ * @example
+ * dateFormat('2017-12-05','mmm d, yyyy h:MMtt Z' ) -> "Dec 5, 2017 12:00am GMT+0000"
+ * @param {date} datetime
+ * @returns {String}
+ */
+export const formatDate = datetime => dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+
+/**
+ * Timeago uses underscores instead of dashes to separate language from country code.
+ *
+ * see https://github.com/hustcc/timeago.js/tree/v3.0.0/locales
+ */
+const timeagoLanguageCode = languageCode().replace(/-/g, '_');
+
+let timeagoInstance;
+
+/**
+ * Sets a timeago Instance
+ */
+export function getTimeago() {
+  if (!timeagoInstance) {
+    const localeRemaining = function getLocaleRemaining(number, index) {
+      return [
+        [s__('Timeago|less than a minute ago'), s__('Timeago|in a while')],
+        [s__('Timeago|less than a minute ago'), s__('Timeago|%s seconds remaining')],
+        [s__('Timeago|about a minute ago'), s__('Timeago|1 minute remaining')],
+        [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
+        [s__('Timeago|about an hour ago'), s__('Timeago|1 hour remaining')],
+        [s__('Timeago|about %s hours ago'), s__('Timeago|%s hours remaining')],
+        [s__('Timeago|a day ago'), s__('Timeago|1 day remaining')],
+        [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
+        [s__('Timeago|a week ago'), s__('Timeago|1 week remaining')],
+        [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
+        [s__('Timeago|a month ago'), s__('Timeago|1 month remaining')],
+        [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
+        [s__('Timeago|a year ago'), s__('Timeago|1 year remaining')],
+        [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
+      ][index];
+    };
+    const locale = function getLocale(number, index) {
+      return [
+        [s__('Timeago|less than a minute ago'), s__('Timeago|in a while')],
+        [s__('Timeago|less than a minute ago'), s__('Timeago|in %s seconds')],
+        [s__('Timeago|about a minute ago'), s__('Timeago|in 1 minute')],
+        [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
+        [s__('Timeago|about an hour ago'), s__('Timeago|in 1 hour')],
+        [s__('Timeago|about %s hours ago'), s__('Timeago|in %s hours')],
+        [s__('Timeago|a day ago'), s__('Timeago|in 1 day')],
+        [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
+        [s__('Timeago|a week ago'), s__('Timeago|in 1 week')],
+        [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
+        [s__('Timeago|a month ago'), s__('Timeago|in 1 month')],
+        [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
+        [s__('Timeago|a year ago'), s__('Timeago|in 1 year')],
+        [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
+      ][index];
     };
 
-    w.gl.utils.getDayName = function(date) {
-      return this.days[date.getDay()];
-    };
+    timeago.register(timeagoLanguageCode, locale);
+    timeago.register(`${timeagoLanguageCode}-remaining`, localeRemaining);
+    timeagoInstance = timeago();
+  }
 
-    w.gl.utils.localTimeAgo = function($timeagoEls, setTimeago) {
-      if (setTimeago == null) {
-        setTimeago = true;
-      }
+  return timeagoInstance;
+}
 
-      $timeagoEls.filter(':not([data-timeago-rendered])').each(function() {
-        var $el = $(this);
-        $el.attr('title', gl.utils.formatDate($el.attr('datetime')));
+/**
+ * For the given element, renders a timeago instance.
+ * @param {jQuery} $els
+ */
+export const renderTimeago = ($els) => {
+  const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
 
-        if (setTimeago) {
-          // Recreate with custom template
-          $el.tooltip({
-            template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-          });
-        }
+  // timeago.js sets timeouts internally for each timeago value to be updated in real time
+  getTimeago().render(timeagoEls, timeagoLanguageCode);
+};
 
-        $el.attr('data-timeago-rendered', true);
-        gl.utils.renderTimeago($el);
+/**
+ * For the given elements, sets a tooltip with a formatted date.
+ * @param {jQuery}
+ * @param {Boolean} setTimeago
+ */
+export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
+  $timeagoEls.each((i, el) => {
+    if (setTimeago) {
+      // Recreate with custom template
+      $(el).tooltip({
+        template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
       });
-    };
+    }
 
-    w.gl.utils.getTimeago = function() {
-      var locale = function(number, index) {
-        return [
-          ['less than a minute ago', 'a while'],
-          ['less than a minute ago', 'in %s seconds'],
-          ['about a minute ago', 'in 1 minute'],
-          ['%s minutes ago', 'in %s minutes'],
-          ['about an hour ago', 'in 1 hour'],
-          ['about %s hours ago', 'in %s hours'],
-          ['a day ago', 'in 1 day'],
-          ['%s days ago', 'in %s days'],
-          ['a week ago', 'in 1 week'],
-          ['%s weeks ago', 'in %s weeks'],
-          ['a month ago', 'in 1 month'],
-          ['%s months ago', 'in %s months'],
-          ['a year ago', 'in 1 year'],
-          ['%s years ago', 'in %s years']
-        ][index];
-      };
+    el.classList.add('js-timeago-render');
+  });
 
-      timeago.register('gl_en', locale);
-      return timeago();
-    };
+  renderTimeago($timeagoEls);
+};
 
-    w.gl.utils.timeFor = function(time, suffix, expiredLabel) {
-      var timefor;
-      if (!time) {
-        return '';
-      }
-      suffix || (suffix = 'remaining');
-      expiredLabel || (expiredLabel = 'Past due');
-      timefor = gl.utils.getTimeago().format(time).replace('in', '');
-      if (timefor.indexOf('ago') > -1) {
-        timefor = expiredLabel;
-      } else {
-        timefor = timefor.trim() + ' ' + suffix;
-      }
-      return timefor;
-    };
+/**
+ * Returns remaining or passed time over the given time.
+ * @param {*} time
+ * @param {*} expiredLabel
+ */
+export const timeFor = (time, expiredLabel) => {
+  if (!time) {
+    return '';
+  }
+  if (new Date(time) < new Date()) {
+    return expiredLabel || s__('Timeago|Past due');
+  }
+  return getTimeago().format(time, `${timeagoLanguageCode}-remaining`).trim();
+};
 
-    w.gl.utils.renderTimeago = function($element) {
-      var timeagoInstance = gl.utils.getTimeago();
-      timeagoInstance.render($element, 'gl_en');
-    };
+export const getDayDifference = (a, b) => {
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  const date1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const date2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-    w.gl.utils.getDayDifference = function(a, b) {
-      var millisecondsPerDay = 1000 * 60 * 60 * 24;
-      var date1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-      var date2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  return Math.floor((date2 - date1) / millisecondsPerDay);
+};
 
-      return Math.floor((date2 - date1) / millisecondsPerDay);
-    };
+/**
+ * Port of ruby helper time_interval_in_words.
+ *
+ * @param  {Number} seconds
+ * @return {String}
+ */
+// eslint-disable-next-line import/prefer-default-export
+export function timeIntervalInWords(intervalInSeconds) {
+  const secondsInteger = parseInt(intervalInSeconds, 10);
+  const minutes = Math.floor(secondsInteger / 60);
+  const seconds = secondsInteger - (minutes * 60);
+  let text = '';
 
-  })(window);
+  if (minutes >= 1) {
+    text = `${minutes} ${pluralize('minute', minutes)} ${seconds} ${pluralize('second', seconds)}`;
+  } else {
+    text = `${seconds} ${pluralize('second', seconds)}`;
+  }
+  return text;
+}
 
-}).call(this);
+export function dateInWords(date, abbreviated = false) {
+  if (!date) return date;
+
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  const monthNames = [s__('January'), s__('February'), s__('March'), s__('April'), s__('May'), s__('June'), s__('July'), s__('August'), s__('September'), s__('October'), s__('November'), s__('December')];
+  const monthNamesAbbr = [s__('Jan'), s__('Feb'), s__('Mar'), s__('Apr'), s__('May'), s__('Jun'), s__('Jul'), s__('Aug'), s__('Sep'), s__('Oct'), s__('Nov'), s__('Dec')];
+
+  const monthName = abbreviated ? monthNamesAbbr[month] : monthNames[month];
+
+  return `${monthName} ${date.getDate()}, ${year}`;
+}
+
+window.gl = window.gl || {};
+window.gl.utils = {
+  ...(window.gl.utils || {}),
+  getTimeago,
+  localTimeAgo,
+};

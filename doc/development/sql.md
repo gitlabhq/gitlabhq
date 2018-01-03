@@ -216,4 +216,30 @@ exact same results. This also means there's no need to add an index on
 `created_at` to ensure consistent performance as `id` is already indexed by
 default.
 
+## Use WHERE EXISTS instead of WHERE IN
+
+While `WHERE IN` and `WHERE EXISTS` can be used to produce the same data it is
+recommended to use `WHERE EXISTS` whenever possible. While in many cases
+PostgreSQL can optimise `WHERE IN` quite well there are also many cases where
+`WHERE EXISTS` will perform (much) better.
+
+In Rails you have to use this by creating SQL fragments:
+
+```ruby
+Project.where('EXISTS (?)', User.select(1).where('projects.creator_id = users.id AND users.foo = X'))
+```
+
+This would then produce a query along the lines of the following:
+
+```sql
+SELECT *
+FROM projects
+WHERE EXISTS (
+    SELECT 1
+    FROM users
+    WHERE projects.creator_id = users.id
+    AND users.foo = X
+)
+```
+
 [gin-index]: http://www.postgresql.org/docs/current/static/gin.html

@@ -3,23 +3,20 @@ class SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
 
-  skip_before_action :check_2fa_requirement, only: [:destroy]
+  skip_before_action :check_two_factor_requirement, only: [:destroy]
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
     if: :two_factor_enabled?, only: [:create]
-  prepend_before_action :store_redirect_path, only: [:new]
-
+  prepend_before_action :store_redirect_uri, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
+  after_action :log_failed_login, only: [:new], if: :failed_login?
+
   def new
     set_minimum_password_length
-    if Gitlab.config.ldap.enabled
-      @ldap_servers = Gitlab::LDAP::Config.servers
-    else
-      @ldap_servers = []
-    end
+    @ldap_servers = Gitlab::LDAP::Config.available_servers
 
     super
   end
@@ -33,17 +30,31 @@ class SessionsController < Devise::SessionsController
       end
       # hide the signed-in notification
       flash[:notice] = nil
-      log_audit_event(current_user, with: authentication_method)
+      log_audit_event(current_user, resource, with: authentication_method)
+      log_user_activity(current_user)
     end
   end
 
   def destroy
+    Gitlab::AppLogger.info("User Logout: username=#{current_user.username} ip=#{request.remote_ip}")
     super
     # hide the signed_out notice
     flash[:notice] = nil
   end
 
   private
+
+  def log_failed_login
+    Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
+  end
+
+  def failed_login?
+    (options = env["warden.options"]) && options[:action] == "unauthenticated"
+  end
+
+  def login_counter
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
+  end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
@@ -52,12 +63,13 @@ class SessionsController < Devise::SessionsController
 
     user = User.admins.last
 
-    return unless user && user.require_password?
+    return unless user && user.require_password_creation_for_web?
 
-    token = user.generate_reset_token
-    user.save
+    Users::UpdateService.new(current_user, user: user).execute do |user|
+      @token = user.generate_reset_token
+    end
 
-    redirect_to edit_user_password_path(reset_password_token: token),
+    redirect_to edit_user_password_path(reset_password_token: @token),
       notice: "Please create a password for your new account."
   end
 
@@ -73,33 +85,45 @@ class SessionsController < Devise::SessionsController
     end
   end
 
-  def store_redirect_path
-    redirect_path =
+  def stored_redirect_uri
+    @redirect_to ||= stored_location_for(:redirect)
+  end
+
+  def store_redirect_uri
+    redirect_uri =
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
-        referer_uri = URI(request.referer)
-        if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
-        else
-          request.fullpath
-        end
+        URI(request.referer)
       else
-        request.fullpath
+        URI(request.url)
       end
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless redirect_path == new_user_session_path
-      store_location_for(:redirect, redirect_path)
-    end
+    return true if redirect_uri.path == new_user_session_path
+
+    redirect_to = redirect_uri.to_s if redirect_allowed_to?(redirect_uri)
+
+    @redirect_to = redirect_to
+    store_location_for(:redirect, redirect_to)
+  end
+
+  # Overridden in EE
+  def redirect_allowed_to?(uri)
+    uri.host == Gitlab.config.gitlab.host &&
+      uri.port == Gitlab.config.gitlab.port
   end
 
   def two_factor_enabled?
-    find_user.try(:two_factor_enabled?)
+    find_user&.two_factor_enabled?
   end
 
   def auto_sign_in_with_provider
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
+
+    # If a "auto_sign_in" query parameter is set to a falsy value, don't auto sign-in.
+    # Otherwise, the default is to auto sign-in.
+    return if Gitlab::Utils.to_boolean(params[:auto_sign_in]) == false
 
     # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is
     # registered or no alert at all. In case of another alert (such as a blocked user), it is safer
@@ -117,9 +141,15 @@ class SessionsController < Devise::SessionsController
       user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 
-  def log_audit_event(user, options = {})
-    AuditEventService.new(user, user, options).
-      for_authentication.security_event
+  def log_audit_event(user, resource, options = {})
+    Gitlab::AppLogger.info("Successful Login: username=#{resource.username} ip=#{request.remote_ip} method=#{options[:with]} admin=#{resource.admin?}")
+    AuditEventService.new(user, user, options)
+      .for_authentication.security_event
+  end
+
+  def log_user_activity(user)
+    login_counter.increment
+    Users::ActivityService.new(user, 'login').execute
   end
 
   def load_recaptcha

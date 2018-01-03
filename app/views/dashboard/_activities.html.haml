@@ -1,11 +1,7 @@
-.hidden-xs
-  = render "events/event_last_push", event: @last_push
-
-.nav-block
-  - if current_user
-    .controls
-      = link_to dashboard_projects_path(:atom, { private_token: current_user.private_token }), class: 'btn rss-btn' do
-        %i.fa.fa-rss
+.nav-block.activities
+  .controls
+    = link_to dashboard_projects_path(rss_url_options), class: 'btn rss-btn has-tooltip', title: 'Subscribe' do
+      %i.fa.fa-rss
   = render 'shared/event_filter'
 
 .content_list

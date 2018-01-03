@@ -1,6 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
+# rubocop:disable RemoveIndex
 class AddPipelineIdToMergeRequestMetrics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -25,9 +26,15 @@ class AddPipelineIdToMergeRequestMetrics < ActiveRecord::Migration
   # comments:
   # disable_ddl_transaction!
 
-  def change
+  def up
     add_column :merge_request_metrics, :pipeline_id, :integer
+    add_foreign_key :merge_request_metrics, :ci_commits, column: :pipeline_id, on_delete: :cascade # rubocop: disable Migration/AddConcurrentForeignKey
     add_concurrent_index :merge_request_metrics, :pipeline_id
-    add_foreign_key :merge_request_metrics, :ci_commits, column: :pipeline_id, on_delete: :cascade
+  end
+
+  def down
+    remove_foreign_key :merge_request_metrics, column: :pipeline_id
+    remove_index :merge_request_metrics, :pipeline_id if index_exists? :merge_request_metrics, :pipeline_id
+    remove_column :merge_request_metrics, :pipeline_id
   end
 end

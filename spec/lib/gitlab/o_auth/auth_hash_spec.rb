@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::AuthHash, lib: true do
+describe Gitlab::OAuth::AuthHash do
+  let(:provider) { 'ldap'.freeze }
   let(:auth_hash) do
-    Gitlab::OAuth::AuthHash.new(
+    described_class.new(
       OmniAuth::AuthHash.new(
-        provider: provider_ascii,
+        provider: provider,
         uid: uid_ascii,
         info: info_hash
       )
@@ -20,7 +21,6 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   let(:last_name_raw) { "K\xC3\xBC\xC3\xA7\xC3\xBCk" }
   let(:name_raw) { "Onur K\xC3\xBC\xC3\xA7\xC3\xBCk" }
 
-  let(:provider_ascii) { 'ldap'.force_encoding(Encoding::ASCII_8BIT) }
   let(:uid_ascii) { uid_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:email_ascii) { email_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:nickname_ascii) { nickname_raw.force_encoding(Encoding::ASCII_8BIT) }
@@ -28,7 +28,6 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   let(:last_name_ascii) { last_name_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:name_ascii) { name_raw.force_encoding(Encoding::ASCII_8BIT) }
 
-  let(:provider_utf8) { provider_ascii.force_encoding(Encoding::UTF_8) }
   let(:uid_utf8) { uid_ascii.force_encoding(Encoding::UTF_8) }
   let(:email_utf8) { email_ascii.force_encoding(Encoding::UTF_8) }
   let(:nickname_utf8) { nickname_ascii.force_encoding(Encoding::UTF_8) }
@@ -46,7 +45,7 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'defaults' do
-    it { expect(auth_hash.provider).to eql provider_utf8 }
+    it { expect(auth_hash.provider).to eq provider }
     it { expect(auth_hash.uid).to eql uid_utf8 }
     it { expect(auth_hash.email).to eql email_utf8 }
     it { expect(auth_hash.username).to eql nickname_utf8 }
@@ -55,7 +54,9 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'email not provided' do
-    before { info_hash.delete(:email) }
+    before do
+      info_hash.delete(:email)
+    end
 
     it 'generates a temp email' do
       expect( auth_hash.email).to start_with('temp-email-for-oauth')
@@ -63,7 +64,9 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'username not provided' do
-    before { info_hash.delete(:nickname) }
+    before do
+      info_hash.delete(:nickname)
+    end
 
     it 'takes the first part of the email as username' do
       expect(auth_hash.username).to eql 'onur.kucuk_ABC-123'
@@ -71,7 +74,9 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'name not provided' do
-    before { info_hash.delete(:name) }
+    before do
+      info_hash.delete(:name)
+    end
 
     it 'concats first and lastname as the name' do
       expect(auth_hash.name).to eql name_utf8

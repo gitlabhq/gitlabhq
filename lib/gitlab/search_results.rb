@@ -1,15 +1,43 @@
 module Gitlab
   class SearchResults
+    class FoundBlob
+      attr_reader :id, :filename, :basename, :ref, :startline, :data
+
+      def initialize(opts = {})
+        @id = opts.fetch(:id, nil)
+        @filename = opts.fetch(:filename, nil)
+        @basename = opts.fetch(:basename, nil)
+        @ref = opts.fetch(:ref, nil)
+        @startline = opts.fetch(:startline, nil)
+        @data = opts.fetch(:data, nil)
+      end
+
+      def path
+        filename
+      end
+
+      def no_highlighting?
+        false
+      end
+    end
+
     attr_reader :current_user, :query
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
     attr_reader :limit_projects
 
-    def initialize(current_user, limit_projects, query)
+    # Whether a custom filter is used to restrict scope of projects.
+    # If the default filter (which lists all projects user has access to)
+    # is used, we can skip it when filtering merge requests and optimize the
+    # query
+    attr_reader :default_project_filter
+
+    def initialize(current_user, limit_projects, query, default_project_filter: false)
       @current_user = current_user
       @limit_projects = limit_projects || Project.all
-      @query = Shellwords.shellescape(query) if query.present?
+      @query = query
+      @default_project_filter = default_project_filter
     end
 
     def objects(scope, page = nil)
@@ -43,6 +71,10 @@ module Gitlab
       @milestones_count ||= milestones.count
     end
 
+    def single_commit_result?
+      false
+    end
+
     private
 
     def projects
@@ -52,11 +84,12 @@ module Gitlab
     def issues
       issues = IssuesFinder.new(current_user).execute.where(project_id: project_ids_relation)
 
-      if query =~ /#(\d+)\z/
-        issues = issues.where(iid: $1)
-      else
-        issues = issues.full_search(query)
-      end
+      issues =
+        if query =~ /#(\d+)\z/
+          issues.where(iid: $1)
+        else
+          issues.full_search(query)
+        end
 
       issues.order('updated_at DESC')
     end
@@ -68,12 +101,17 @@ module Gitlab
     end
 
     def merge_requests
-      merge_requests = MergeRequestsFinder.new(current_user).execute.in_projects(project_ids_relation)
-      if query =~ /[#!](\d+)\z/
-        merge_requests = merge_requests.where(iid: $1)
-      else
-        merge_requests = merge_requests.full_search(query)
+      merge_requests = MergeRequestsFinder.new(current_user).execute
+      unless default_project_filter
+        merge_requests = merge_requests.in_projects(project_ids_relation)
       end
+
+      merge_requests =
+        if query =~ /[#!](\d+)\z/
+          merge_requests.where(iid: $1)
+        else
+          merge_requests.full_search(query)
+        end
       merge_requests.order('updated_at DESC')
     end
 

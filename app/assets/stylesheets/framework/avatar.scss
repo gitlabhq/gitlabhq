@@ -10,6 +10,8 @@
   border-radius: $avatar_radius;
   border: 1px solid $avatar-border;
   &.s16 { @include avatar-size(16px, 6px); }
+  &.s18 { @include avatar-size(18px, 6px); }
+  &.s19 { @include avatar-size(19px, 6px); }
   &.s20 { @include avatar-size(20px, 7px); }
   &.s24 { @include avatar-size(24px, 8px); }
   &.s26 { @include avatar-size(26px, 8px); }
@@ -21,6 +23,7 @@
   &.s60 { @include avatar-size(60px, 12px); }
   &.s70 { @include avatar-size(70px, 14px); }
   &.s90 { @include avatar-size(90px, 15px); }
+  &.s100 { @include avatar-size(100px, 15px); }
   &.s110 { @include avatar-size(110px, 15px); }
   &.s140 { @include avatar-size(140px, 15px); }
   &.s160 { @include avatar-size(160px, 20px); }
@@ -28,15 +31,20 @@
 
 .avatar {
   @extend .avatar-circle;
+  @include transition-property(none);
+
   width: 40px;
   height: 40px;
   padding: 0;
+  background: $avatar-background;
+  overflow: hidden;
 
   &.avatar-inline {
     float: none;
     display: inline-block;
-    margin-left: 4px;
-    margin-bottom: 2px;
+    margin-left: 2px;
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
 
     &.s16 { margin-right: 4px; }
     &.s24 { margin-right: 4px; }
@@ -50,7 +58,11 @@
 
   &.avatar-tile {
     border-radius: 0;
-    border: none;
+    border: 0;
+  }
+
+  &:not([href]):hover {
+    border-color: darken($avatar-border, 10%);
   }
 }
 
@@ -66,7 +78,8 @@
   &.s60 { font-size: 32px; line-height: 58px; }
   &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 88px; }
-  &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
+  &.s100 { font-size: 36px; line-height: 98px; }
+  &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
 }
@@ -76,12 +89,29 @@
   overflow: hidden;
   display: flex;
 
+  a {
+    display: flex;
+  }
+
   .avatar {
     border-radius: 0;
-    border: none;
+    border: 0;
     height: auto;
     width: 100%;
     margin: 0;
     align-self: center;
   }
+
+  &.s40 { min-width: 40px; min-height: 40px; }
+}
+
+.avatar-counter {
+  background-color: $gray-darkest;
+  color: $white-light;
+  border: 1px solid $avatar-border;
+  border-radius: 1em;
+  font-family: $regular_font;
+  font-size: 9px;
+  line-height: 16px;
+  text-align: center;
 }

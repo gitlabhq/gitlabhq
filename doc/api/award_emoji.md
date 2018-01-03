@@ -1,4 +1,4 @@
-# Award Emoji
+# Award Emoji API
 
 > [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
 
@@ -14,20 +14,20 @@ requests, snippets, and notes/comments. Issues, merge requests, snippets, and no
 Gets a list of all award emoji
 
 ```
-GET /projects/:id/issues/:issue_id/award_emoji
-GET /projects/:id/merge_requests/:merge_request_id/award_emoji
+GET /projects/:id/issues/:issue_iid/award_emoji
+GET /projects/:id/merge_requests/:merge_request_iid/award_emoji
 GET /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `awardable_id` | integer | yes | The ID of an awardable |
+| Attribute      | Type    | Required | Description                                                                 |
+| ---------      | ----    | -------- | -----------                                                                 |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                         |
+| `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji
 ```
 
 Example Response:
@@ -74,21 +74,21 @@ Example Response:
 Gets a single award emoji from an issue, snippet, or merge request.
 
 ```
-GET /projects/:id/issues/:issue_id/award_emoji/:award_id
-GET /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+GET /projects/:id/issues/:issue_iid/award_emoji/:award_id
+GET /projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id
 GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `awardable_id` | integer | yes | The ID of an awardable |
-| `award_id` | integer | yes | The ID of the award emoji |
+| Attribute      | Type    | Required | Description                                                                 |
+| ---------      | ----    | -------- | -----------                                                                 |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
+| `award_id`     | integer | yes      | The ID of the award emoji                                                   |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/1
 ```
 
 Example Response:
@@ -117,65 +117,21 @@ Example Response:
 This end point creates an award emoji on the specified resource
 
 ```
-POST /projects/:id/issues/:issue_id/award_emoji
-POST /projects/:id/merge_requests/:merge_request_id/award_emoji
+POST /projects/:id/issues/:issue_iid/award_emoji
+POST /projects/:id/merge_requests/:merge_request_iid/award_emoji
 POST /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `awardable_id` | integer | yes | The ID of an awardable |
-| `name` | string | yes | The name of the emoji, without colons |
+| Attribute      | Type    | Required | Description                                                                 |
+| ---------      | ----    | -------- | -----------                                                                 |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
+| `name`         | string  | yes      | The name of the emoji, without colons                                       |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
-```
-
-Example Response:
-
-```json
-{
-  "id": 344,
-  "name": "blowfish",
-  "user": {
-    "name": "Administrator",
-    "username": "root",
-    "id": 1,
-    "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
-  },
-  "created_at": "2016-06-17T17:47:29.266Z",
-  "updated_at": "2016-06-17T17:47:29.266Z",
-  "awardable_id": 80,
-  "awardable_type": "Issue"
-}  
-```
-
-### Delete an award emoji
-
-Sometimes its just not meant to be, and you'll have to remove your award. Only available to
-admins or the author of the award.
-
-```
-DELETE /projects/:id/issues/:issue_id/award_emoji/:award_id
-DELETE /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
-DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of an issue |
-| `award_id` | integer | yes | The ID of a award_emoji |
-
-```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji?name=blowfish
 ```
 
 Example Response:
@@ -199,6 +155,29 @@ Example Response:
 }
 ```
 
+### Delete an award emoji
+
+Sometimes its just not meant to be, and you'll have to remove your award. Only available to
+admins or the author of the award.
+
+```
+DELETE /projects/:id/issues/:issue_iid/award_emoji/:award_id
+DELETE /projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id
+DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
+```
+
+Parameters:
+
+| Attribute   | Type    | Required | Description                 |
+| ---------   | ----    | -------- | -----------                 |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of an issue |
+| `award_id`  | integer | yes      | The ID of a award_emoji     |
+
+```bash
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
+```
+
 ## Award Emoji on Notes
 
 The endpoints documented above are available for Notes as well. Notes
@@ -209,20 +188,20 @@ easily adapted for notes on a Merge Request.
 ### List a note's award emoji
 
 ```
-GET /projects/:id/issues/:issue_id/notes/:note_id/award_emoji
+GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of an issue |
-| `note_id` | integer | yes | The ID of an note |
+| Attribute   | Type    | Required | Description                 |
+| ---------   | ----    | -------- | -----------                 |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `issue_iid` | integer | yes      | The internal ID of an issue |
+| `note_id`   | integer | yes      | The ID of an note           |
 
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji
 ```
 
 Example Response:
@@ -251,20 +230,20 @@ Example Response:
 ### Get single note's award emoji
 
 ```
-GET /projects/:id/issues/:issue_id/notes/:note_id/award_emoji/:award_id
+GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of an issue |
-| `note_id` | integer | yes | The ID of a note |
-| `award_id` | integer | yes | The ID of the award emoji |
+| Attribute   | Type    | Required | Description                 |
+| ---------   | ----    | -------- | -----------                 |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of an issue |
+| `note_id`   | integer | yes      | The ID of a note            |
+| `award_id`  | integer | yes      | The ID of the award emoji   |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji/2
 ```
 
 Example Response:
@@ -291,20 +270,20 @@ Example Response:
 ### Award a new emoji on a note
 
 ```
-POST /projects/:id/issues/:issue_id/notes/:note_id/award_emoji
+POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of an issue |
-| `note_id` | integer | yes | The ID of a note |
-| `name` | string | yes | The name of the emoji, without colons |
+| Attribute   | Type    | Required | Description                           |
+| ---------   | ----    | -------- | -----------                           |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `issue_iid` | integer | yes      | The internal ID of an issue           |
+| `note_id`   | integer | yes      | The ID of a note                      |
+| `name`      | string  | yes      | The name of the emoji, without colons |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji?name=rocket
 ```
 
 Example Response:
@@ -334,41 +313,20 @@ Sometimes its just not meant to be, and you'll have to remove your award. Only a
 admins or the author of the award.
 
 ```
-DELETE /projects/:id/issues/:issue_id/notes/:note_id/award_emoji/:award_id
+DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of an issue |
-| `note_id` | integer | yes | The ID of a note |
-| `award_id` | integer | yes | The ID of a award_emoji |
+| Attribute   | Type    | Required | Description                 |
+| ---------   | ----    | -------- | -----------                 |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of an issue |
+| `note_id`   | integer | yes      | The ID of a note            |
+| `award_id`  | integer | yes      | The ID of a award_emoji     |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
-```
-
-Example Response:
-
-```json
-{
-  "id": 345,
-  "name": "rocket",
-  "user": {
-    "name": "Administrator",
-    "username": "root",
-    "id": 1,
-    "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
-  },
-  "created_at": "2016-06-17T19:59:55.888Z",
-  "updated_at": "2016-06-17T19:59:55.888Z",
-  "awardable_id": 1,
-  "awardable_type": "Note"
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/345
 ```
 
 [ce-4575]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575

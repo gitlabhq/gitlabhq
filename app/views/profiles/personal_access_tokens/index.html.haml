@@ -1,8 +1,11 @@
+- breadcrumb_title "Access Tokens"
 - page_title "Personal Access Tokens"
+- @content_class = "limit-container-width" unless fluid_layout
+
 = render 'profiles/head'
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
@@ -11,89 +14,55 @@
       You can also use personal access tokens to authenticate against Git over HTTP.
       They are the only accepted password when you have Two-Factor Authentication (2FA) enabled.
 
-  .col-lg-9
-
-    - if flash[:personal_access_token]
+  .col-lg-8
+    - if @new_personal_access_token
       .created-personal-access-token-container
         %h5.prepend-top-0
           Your New Personal Access Token
         .form-group
-          = text_field_tag 'created-personal-access-token', flash[:personal_access_token], readonly: true, class: "form-control", 'aria-describedby' => "created-personal-access-token-help-block"
-          = clipboard_button(clipboard_text: flash[:personal_access_token])
+          = text_field_tag 'created-personal-access-token', @new_personal_access_token, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-personal-access-token-help-block"
+          = clipboard_button(text: @new_personal_access_token, title: "Copy personal access token to clipboard", placement: "left")
           %span#created-personal-access-token-help-block.help-block.text-danger Make sure you save it - you won't be able to access it again.
 
       %hr
 
-    %h5.prepend-top-0
-      Add a Personal Access Token
-    %p.profile-settings-content
-      Pick a name for the application, and we'll give you a unique token.
+    = render "shared/personal_access_tokens_form", path: profile_personal_access_tokens_path, impersonation: false, token: @personal_access_token, scopes: @scopes
 
-    = render "form", personal_access_token: @personal_access_token, scopes: @scopes
+    = render "shared/personal_access_tokens_table", impersonation: false, active_tokens: @active_personal_access_tokens, inactive_tokens: @inactive_personal_access_tokens
 
-    %hr
+%hr
+.row.prepend-top-default
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      RSS token
+    %p
+      Your RSS token is used to authenticate you when your RSS reader loads a personalized RSS feed, and is included in your personal RSS feed URLs.
+    %p
+      It cannot be used to access any other data.
+  .col-lg-8.rss-token-reset
+    = label_tag :rss_token, 'RSS token', class: "label-light"
+    = text_field_tag :rss_token, current_user.rss_token, class: 'form-control', readonly: true, onclick: 'this.select()'
+    %p.help-block
+      Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds as if they were you.
+      You should
+      = link_to 'reset it', [:reset, :rss_token, :profile], method: :put, data: { confirm: 'Are you sure? Any RSS URLs currently in use will stop working.' }
+      if that ever happens.
 
-    %h5 Active Personal Access Tokens (#{@active_personal_access_tokens.length})
-
-    - if @active_personal_access_tokens.present?
-      .table-responsive
-        %table.table.active-personal-access-tokens
-          %thead
-            %tr
-              %th Name
-              %th Created
-              %th Expires
-              %th Scopes
-              %th
-          %tbody
-            - @active_personal_access_tokens.each do |token|
-              %tr
-                %td= token.name
-                %td= token.created_at.to_date.to_s(:medium)
-                %td
-                  - if token.expires_at.present?
-                    = token.expires_at.to_date.to_s(:medium)
-                  - else
-                    %span.personal-access-tokens-never-expires-label Never
-                %td= token.scopes.present? ? token.scopes.join(", ") : "<no scopes selected>"
-                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this token? This action cannot be undone." }
-
-    - else
-      .settings-message.text-center
-        You don't have any active tokens yet.
-
-    %hr
-
-    %h5 Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.length})
-
-    - if @inactive_personal_access_tokens.present?
-      .table-responsive
-        %table.table.inactive-personal-access-tokens
-          %thead
-            %tr
-              %th Name
-              %th Created
-          %tbody
-            - @inactive_personal_access_tokens.each do |token|
-              %tr
-                %td= token.name
-                %td= token.created_at.to_date.to_s(:medium)
-
-    - else
-      .settings-message.text-center
-        There are no inactive tokens.
-
-
-:javascript
-  var date = $('#personal_access_token_expires_at').val();
-
-  var datepicker = $(".datepicker").datepicker({
-    dateFormat: "yy-mm-dd",
-    minDate: 0
-  });
-
-  $("#created-personal-access-token").click(function() {
-    this.select();
-  });
-
-  $("#created-personal-access-token").effect('highlight', { color: '#ffff99' }, 2000);
+- if incoming_email_token_enabled?
+  %hr
+  .row.prepend-top-default
+    .col-lg-4.profile-settings-sidebar
+      %h4.prepend-top-0
+        Incoming email token
+      %p
+        Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses.
+      %p
+        It cannot be used to access any other data.
+    .col-lg-8.incoming-email-token-reset
+      = label_tag :incoming_email_token, 'Incoming email token', class: "label-light"
+      = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control', readonly: true, onclick: 'this.select()'
+      %p.help-block
+        Keep this token secret. Anyone who gets ahold of it can create issues as if they were you.
+        You should
+        = link_to 'reset it', [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: 'Are you sure? Any issue email addresses currently in use will stop working.' }
+        if that ever happens.

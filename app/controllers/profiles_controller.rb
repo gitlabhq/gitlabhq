@@ -9,49 +9,57 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update
-    user_params.except!(:email) if @user.ldap_user?
-
     respond_to do |format|
-      if @user.update_attributes(user_params)
+      result = Users::UpdateService.new(current_user, user_params.merge(user: @user)).execute
+
+      if result[:status] == :success
         message = "Profile was successfully updated"
+
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
         format.json { render json: { message: message } }
       else
-        message = @user.errors.full_messages.uniq.join('. ')
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: "Failed to update profile. #{message}" }) }
-        format.json { render json: { message: message }, status: :unprocessable_entity }
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: result[:message] }) }
+        format.json { render json: result }
       end
     end
   end
 
-  def reset_private_token
-    if current_user.reset_authentication_token!
-      flash[:notice] = "Private token was successfully reset"
+  def reset_incoming_email_token
+    Users::UpdateService.new(current_user, user: @user).execute! do |user|
+      user.reset_incoming_email_token!
     end
 
-    redirect_to profile_account_path
+    flash[:notice] = "Incoming email token was successfully reset"
+
+    redirect_to profile_personal_access_tokens_path
   end
 
-  def reset_incoming_email_token
-    if current_user.reset_incoming_email_token!
-      flash[:notice] = "Incoming email token was successfully reset"
+  def reset_rss_token
+    Users::UpdateService.new(current_user, user: @user).execute! do |user|
+      user.reset_rss_token!
     end
 
-    redirect_to profile_account_path
+    flash[:notice] = "RSS token was successfully reset"
+
+    redirect_to profile_personal_access_tokens_path
   end
 
   def audit_log
-    @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id).
-      order("created_at DESC").
-      page(params[:page])
+    @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id)
+      .order("created_at DESC")
+      .page(params[:page])
   end
 
   def update_username
-    @user.update_attributes(username: user_params[:username])
+    result = Users::UpdateService.new(current_user, user: @user, username: user_params[:username]).execute
 
-    respond_to do |format|
-      format.js
-    end
+    options = if result[:status] == :success
+                { notice: "Username successfully changed" }
+              else
+                { alert: "Username change failed - #{result[:message]}" }
+              end
+
+    redirect_back_or_default(default: { action: 'show' }, options: options)
   end
 
   private
@@ -65,7 +73,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(
+    @user_params ||= params.require(:user).permit(
       :avatar,
       :bio,
       :email,
@@ -82,7 +90,8 @@ class ProfilesController < Profiles::ApplicationController
       :twitter,
       :username,
       :website_url,
-      :organization
+      :organization,
+      :preferred_language
     )
   end
 end

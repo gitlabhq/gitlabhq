@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Label, models: true do
+describe Label do
   describe 'modules' do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Subscribable) }
@@ -31,12 +31,40 @@ describe Label, models: true do
     it 'validates title' do
       is_expected.not_to allow_value('G,ITLAB').for(:title)
       is_expected.not_to allow_value('').for(:title)
+      is_expected.not_to allow_value('s' * 256).for(:title)
 
       is_expected.to allow_value('GITLAB').for(:title)
       is_expected.to allow_value('gitlab').for(:title)
       is_expected.to allow_value('G?ITLAB').for(:title)
       is_expected.to allow_value('G&ITLAB').for(:title)
       is_expected.to allow_value("customer's request").for(:title)
+      is_expected.to allow_value('s' * 255).for(:title)
+    end
+  end
+
+  describe '#color' do
+    it 'strips color' do
+      label = described_class.new(color: '   #abcdef   ')
+      label.valid?
+
+      expect(label.color).to eq('#abcdef')
+    end
+
+    it 'uses default color if color is missing' do
+      label = described_class.new(color: nil)
+
+      expect(label.color).to be(Label::DEFAULT_COLOR)
+    end
+  end
+
+  describe '#text_color' do
+    it 'uses default color if color is missing' do
+      expect(LabelsHelper).to receive(:text_color_for_bg).with(Label::DEFAULT_COLOR)
+        .and_return(spy)
+
+      label = described_class.new(color: nil)
+
+      label.text_color
     end
   end
 
@@ -44,6 +72,13 @@ describe Label, models: true do
     it 'sanitizes title' do
       label = described_class.new(title: '<b>foo & bar?</b>')
       expect(label.title).to eq('foo & bar?')
+    end
+
+    it 'strips title' do
+      label = described_class.new(title: '   label   ')
+      label.valid?
+
+      expect(label.title).to eq('label')
     end
   end
 

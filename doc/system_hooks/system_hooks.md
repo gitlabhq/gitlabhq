@@ -1,6 +1,26 @@
 # System hooks
 
-Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `project_rename`, `project_transfer`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create`, `key_destroy`, `group_create`, `group_destroy`, `user_add_to_group` and `user_remove_from_group`.
+Your GitLab instance can perform HTTP POST requests on the following events:
+
+- `project_create`
+- `project_destroy`
+- `project_rename`
+- `project_transfer`
+- `project_update`
+- `user_add_to_team`
+- `user_remove_from_team`
+- `user_create`
+- `user_destroy`
+- `user_rename`
+- `key_create`
+- `key_destroy`
+- `group_create`
+- `group_destroy`
+- `group_rename`
+- `user_add_to_group`
+- `user_remove_from_group`
+
+The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repo URL, you can just listen for `project_rename`).
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -31,7 +51,7 @@ X-Gitlab-Event: System Hook
                 "path": "storecloud",
  "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
-  "project_visibility": "private",
+  "project_visibility": "private"
 }
 ```
 
@@ -48,7 +68,7 @@ X-Gitlab-Event: System Hook
                 "path": "underscore",
  "path_with_namespace": "jsmith/underscore",
           "project_id": 73,
-  "project_visibility": "internal",
+  "project_visibility": "internal"
 }
 ```
 
@@ -66,9 +86,12 @@ X-Gitlab-Event: System Hook
                "owner_name": "John Smith",
               "owner_email": "johnsmith@gmail.com",
        "project_visibility": "internal",
-  "old_path_with_namespace": "jsmith/overscore",
+  "old_path_with_namespace": "jsmith/overscore"
 }
 ```
+
+Note that `project_rename` is not triggered if the namespace changes.
+Please refer to `group_rename` and `user_rename` for that case.
 
 **Project transferred:**
 
@@ -84,7 +107,24 @@ X-Gitlab-Event: System Hook
                "owner_name": "John Smith",
               "owner_email": "johnsmith@gmail.com",
        "project_visibility": "internal",
-  "old_path_with_namespace": "jsmith/overscore",
+  "old_path_with_namespace": "jsmith/overscore"
+}
+```
+
+**Project updated:**
+
+```json
+{
+          "created_at": "2012-07-21T07:30:54Z",
+          "updated_at": "2012-07-21T07:38:22Z",
+          "event_name": "project_update",
+                "name": "StoreCloud",
+         "owner_email": "johnsmith@gmail.com",
+          "owner_name": "John Smith",
+                "path": "storecloud",
+ "path_with_namespace": "jsmith/storecloud",
+          "project_id": 74,
+  "project_visibility": "private"
 }
 ```
 
@@ -104,7 +144,7 @@ X-Gitlab-Event: System Hook
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
-          "project_visibility": "private",
+          "project_visibility": "private"
 }
 ```
 
@@ -124,7 +164,7 @@ X-Gitlab-Event: System Hook
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
-          "project_visibility": "private",
+          "project_visibility": "private"
 }
 ```
 
@@ -153,6 +193,21 @@ X-Gitlab-Event: System Hook
          "name": "John Smith",
      "username": "js",
       "user_id": 41
+}
+```
+
+**User renamed:**
+
+```json
+{
+    "event_name": "user_rename",
+    "created_at": "2017-11-01T11:21:04Z",
+    "updated_at": "2017-11-01T14:04:47Z",
+          "name": "new-name",
+         "email": "best-email@example.tld",
+       "user_id": 58,
+      "username": "new-exciting-name",
+  "old_username": "old-boring-name"
 }
 ```
 
@@ -190,12 +245,14 @@ X-Gitlab-Event: System Hook
    "updated_at": "2012-07-21T07:38:22Z",
    "event_name": "group_create",
          "name": "StoreCloud",
-  "owner_email": "johnsmith@gmail.com",
-   "owner_name": "John Smith",
+  "owner_email": null,
+   "owner_name": null,
          "path": "storecloud",
      "group_id": 78
 }
 ```
+
+`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
 
 **Group removed:**
 
@@ -205,12 +262,34 @@ X-Gitlab-Event: System Hook
    "updated_at": "2012-07-21T07:38:22Z",
    "event_name": "group_destroy",
          "name": "StoreCloud",
-  "owner_email": "johnsmith@gmail.com",
-   "owner_name": "John Smith",
+  "owner_email": null,
+   "owner_name": null,
          "path": "storecloud",
      "group_id": 78
 }
 ```
+
+`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
+
+**Group renamed:**
+
+```json
+{
+     "event_name": "group_rename",
+     "created_at": "2017-10-30T15:09:00Z",
+     "updated_at": "2017-11-01T10:23:52Z",
+           "name": "Better Name",
+           "path": "better-name",
+      "full_path": "parent-group/better-name",
+       "group_id": 64,
+     "owner_name": null,
+    "owner_email": null,
+       "old_path": "old-name",
+  "old_full_path": "parent-group/old-name"
+}
+```
+
+`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
 
 **New Group Member:**
 
@@ -249,7 +328,8 @@ X-Gitlab-Event: System Hook
 
 ## Push events
 
-Triggered when you push to the repository except when pushing tags.
+Triggered when you push to the repository, except when pushing tags.
+It generates one event per modified branch.
 
 **Request header**:
 
@@ -296,14 +376,26 @@ X-Gitlab-Event: System Hook
     "git_ssh_url":"git@example.com:mike/diaspora.git",
     "visibility_level":0
   },
-  "commits": [],
-  "total_commits_count": 0
+  "commits": [
+    {
+      "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "message": "Add simple search to projects in public area",
+      "timestamp": "2013-05-13T18:18:08+00:00",
+      "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "author": {
+        "name": "Dmitriy Zaporozhets",
+        "email": "dmitriy.zaporozhets@gmail.com"
+      }
+    }
+  ],
+  "total_commits_count": 1
 }
 ```
 
 ## Tag events
 
 Triggered when you create (or delete) tags to the repository.
+It generates one event per modified tag.
 
 **Request header**:
 
@@ -351,5 +443,51 @@ X-Gitlab-Event: System Hook
   },
   "commits": [],
   "total_commits_count": 0
+}
+```
+## Repository Update events
+
+Triggered only once when you push to the repository (including tags).
+
+**Request header**:
+
+```
+X-Gitlab-Event: System Hook
+```
+
+**Request body:**
+
+```json
+{
+  "event_name": "repository_update",
+  "user_id": 1,
+  "user_name": "John Smith",
+  "user_email": "admin@example.com",
+  "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
+  "project_id": 1,
+  "project": {
+    "name":"Example",
+    "description":"",
+    "web_url":"http://example.com/jsmith/example",
+    "avatar_url":null,
+    "git_ssh_url":"git@example.com:jsmith/example.git",
+    "git_http_url":"http://example.com/jsmith/example.git",
+    "namespace":"Jsmith",
+    "visibility_level":0,
+    "path_with_namespace":"jsmith/example",
+    "default_branch":"master",
+    "homepage":"http://example.com/jsmith/example",
+    "url":"git@example.com:jsmith/example.git",
+    "ssh_url":"git@example.com:jsmith/example.git",
+    "http_url":"http://example.com/jsmith/example.git",
+  },
+  "changes": [
+    {
+      "before":"8205ea8d81ce0c6b90fbe8280d118cc9fdad6130",
+      "after":"4045ea7a3df38697b3730a20fb73c8bed8a3e69e",
+      "ref":"refs/heads/master"
+    }
+  ],
+  "refs":["refs/heads/master"]
 }
 ```

@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "path",
+    "location",
+    "tags_path"
+  ],
+  "properties" : {
+    "id": {
+      "type": "integer"
+    },
+    "path": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tags_path": {
+      "type": "string"
+    },
+    "destroy_path": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

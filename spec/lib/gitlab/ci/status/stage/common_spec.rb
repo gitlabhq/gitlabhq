@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Common do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:stage) do
@@ -27,7 +27,7 @@ describe Gitlab::Ci::Status::Stage::Common do
 
   context 'when user has permission to read pipeline' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it 'has details' do

@@ -5,3 +5,5 @@
 ### Proposal
 
 ### Links / references
+
+/label ~"feature proposal"

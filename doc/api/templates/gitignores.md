@@ -1,4 +1,4 @@
-# Gitignores
+# Gitignores API
 
 ## List gitignore templates
 
@@ -9,7 +9,7 @@ GET /templates/gitignores
 ```
 
 ```bash
-curl https://gitlab.example.com/api/v3/templates/gitignores
+curl https://gitlab.example.com/api/v4/templates/gitignores
 ```
 
 Example response:
@@ -566,7 +566,7 @@ GET /templates/gitignores/:key
 | `key`      | string | yes      | The key of the gitignore template |
 
 ```bash
-curl https://gitlab.example.com/api/v3/templates/gitignores/Ruby
+curl https://gitlab.example.com/api/v4/templates/gitignores/Ruby
 ```
 
 Example response:

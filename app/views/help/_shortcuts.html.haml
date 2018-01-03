@@ -1,8 +1,8 @@
-#modal-shortcuts.modal{tabindex: -1}
+#modal-shortcuts.modal{ tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h4
           Keyboard Shortcuts
           %small
@@ -23,6 +23,11 @@
                   %td.shortcut
                     .key f
                   %td Focus Filter
+                - if performance_bar_enabled?
+                  %tr
+                    %td.shortcut
+                      .key p b
+                    %td Show/hide the Performance Bar
                 %tr
                   %td.shortcut
                     .key ?
@@ -39,24 +44,46 @@
                     .key
                       %i.fa.fa-arrow-up
                   %td Edit last comment (when focused on an empty textarea)
-              %tbody
-                %tr
-                  %th
-                  %th Project Files browsing
                 %tr
                   %td.shortcut
-                    .key
-                      %i.fa.fa-arrow-up
-                  %td Move selection up
+                    .key shift t
+                  %td
+                    Go to todos
                 %tr
                   %td.shortcut
-                    .key
-                      %i.fa.fa-arrow-down
-                  %td Move selection down
+                    .key shift a
+                  %td
+                    Go to the activity feed
                 %tr
                   %td.shortcut
-                    .key enter
-                  %td Open Selection
+                    .key shift p
+                  %td
+                    Go to projects
+                %tr
+                  %td.shortcut
+                    .key shift i
+                  %td
+                    Go to issues
+                %tr
+                  %td.shortcut
+                    .key shift m
+                  %td
+                    Go to merge requests
+                %tr
+                  %td.shortcut
+                    .key shift g
+                  %td
+                    Go to groups
+                %tr
+                  %td.shortcut
+                    .key shift l
+                  %td
+                    Go to milestones
+                %tr
+                  %td.shortcut
+                    .key shift s
+                  %td
+                    Go to snippets
               %tbody
                 %tr
                   %th
@@ -79,37 +106,8 @@
                   %td.shortcut
                     .key esc
                   %td Go back
-
           .col-lg-4
             %table.shortcut-mappings
-              %tbody{ class: 'hidden-shortcut project', style: 'display:none' }
-                %tr
-                  %th
-                  %th Global Dashboard
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key a
-                  %td
-                    Go to the activity feed
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key p
-                  %td
-                    Go to projects
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key i
-                  %td
-                    Go to issues
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key m
-                  %td
-                    Go to merge requests
               %tbody
                 %tr
                   %th
@@ -119,7 +117,7 @@
                     .key g
                     .key p
                   %td
-                    Go to the project's home page
+                    Go to the project's overview page
                 %tr
                   %td.shortcut
                     .key g
@@ -141,9 +139,9 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key b
+                    .key j
                   %td
-                    Go to builds
+                    Go to jobs
                 %tr
                   %td.shortcut
                     .key g
@@ -153,9 +151,9 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key g
+                    .key d
                   %td
-                    Go to graphs
+                    Go to repository charts
                 %tr
                   %td.shortcut
                     .key g
@@ -165,7 +163,7 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key l
+                    .key b
                   %td
                     Go to issue boards
                 %tr
@@ -182,15 +180,48 @@
                     Go to snippets
                 %tr
                   %td.shortcut
+                    .key g
+                    .key w
+                  %td
+                    Go to wiki
+                %tr
+                  %td.shortcut
                     .key t
                   %td Go to finding file
                 %tr
                   %td.shortcut
                     .key i
                   %td New issue
+
+              %tbody
+                %tr
+                  %th
+                  %th Project Files browsing
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-up
+                  %td Move selection up
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-down
+                  %td Move selection down
+                %tr
+                  %td.shortcut
+                    .key enter
+                  %td Open Selection
+              %tbody
+                %tr
+                  %th
+                  %th Project File
+                %tr
+                  %td.shortcut
+                    .key y
+                  %td Go to file permalink
           .col-lg-4
             %table.shortcut-mappings
-              %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
+              %tbody.hidden-shortcut.network{ style: 'display:none' }
                 %tr
                   %th
                   %th Network Graph
@@ -240,7 +271,7 @@
                     .key
                       shift j
                   %td Scroll to bottom
-              %tbody{ class: 'hidden-shortcut issues', style: 'display:none' }
+              %tbody.hidden-shortcut.issues{ style: 'display:none' }
                 %tr
                   %th
                   %th Issues
@@ -264,7 +295,7 @@
                   %td.shortcut
                     .key l
                   %td Change Label
-              %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
+              %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
                 %tr
                   %th
                   %th Merge Requests
@@ -288,3 +319,11 @@
                   %td.shortcut
                     .key l
                   %td Change Label
+              %tbody.hidden-shortcut.wiki{ style: 'display:none' }
+                %tr
+                  %th
+                  %th Wiki pages
+                %tr
+                  %td.shortcut
+                    .key e
+                  %td Edit wiki page

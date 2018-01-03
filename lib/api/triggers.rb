@@ -5,39 +5,32 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
-      desc 'Trigger a GitLab project build' do
-        success Entities::TriggerRequest
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+      desc 'Trigger a GitLab project pipeline' do
+        success Entities::Pipeline
       end
       params do
         requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
         requires :token, type: String, desc: 'The unique token of trigger'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
-      post ":id/(ref/:ref/)trigger/builds" do
-        project = find_project(params[:id])
-        trigger = Ci::Trigger.find_by_token(params[:token].to_s)
-        not_found! unless project && trigger
-        unauthorized! unless trigger.project == project
-
+      post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
         # validate variables
-        variables = params[:variables]
-        if variables
-          unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
-            render_api_error!('variables needs to be a map of key-valued strings', 400)
-          end
-
-          # convert variables from Mash to Hash
-          variables = variables.to_h
+        params[:variables] = params[:variables].to_h
+        unless params[:variables].all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+          render_api_error!('variables needs to be a map of key-valued strings', 400)
         end
 
-        # create request and trigger builds
-        trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
-        if trigger_request
-          present trigger_request, with: Entities::TriggerRequest
+        project = find_project(params[:id])
+        not_found! unless project
+
+        result = Ci::PipelineTriggerService.new(project, nil, params).execute
+        not_found! unless result
+
+        if result[:http_status]
+          render_api_error!(result[:message], result[:http_status])
         else
-          errors = 'No builds created'
-          render_api_error!(errors, 400)
+          present result[:pipeline], with: Entities::Pipeline
         end
       end
 
@@ -60,13 +53,13 @@ module API
         success Entities::Trigger
       end
       params do
-        requires :token, type: String, desc: 'The unique token of trigger'
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
       end
-      get ':id/triggers/:token' do
+      get ':id/triggers/:trigger_id' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
         present trigger, with: Entities::Trigger
@@ -75,31 +68,79 @@ module API
       desc 'Create a trigger' do
         success Entities::Trigger
       end
+      params do
+        requires :description, type: String,  desc: 'The trigger description'
+      end
       post ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.create
+        trigger = user_project.triggers.create(
+          declared_params(include_missing: false).merge(owner: current_user))
 
-        present trigger, with: Entities::Trigger
+        if trigger.valid?
+          present trigger, with: Entities::Trigger
+        else
+          render_validation_error!(trigger)
+        end
+      end
+
+      desc 'Update a trigger' do
+        success Entities::Trigger
+      end
+      params do
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+        optional :description, type: String,  desc: 'The trigger description'
+      end
+      put ':id/triggers/:trigger_id' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
+        return not_found!('Trigger') unless trigger
+
+        if trigger.update(declared_params(include_missing: false))
+          present trigger, with: Entities::Trigger
+        else
+          render_validation_error!(trigger)
+        end
+      end
+
+      desc 'Take ownership of trigger' do
+        success Entities::Trigger
+      end
+      params do
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+      end
+      post ':id/triggers/:trigger_id/take_ownership' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
+        return not_found!('Trigger') unless trigger
+
+        if trigger.update(owner: current_user)
+          status :ok
+          present trigger, with: Entities::Trigger
+        else
+          render_validation_error!(trigger)
+        end
       end
 
       desc 'Delete a trigger' do
         success Entities::Trigger
       end
       params do
-        requires :token, type: String, desc: 'The unique token of trigger'
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
       end
-      delete ':id/triggers/:token' do
+      delete ':id/triggers/:trigger_id' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
-        trigger.destroy
-
-        present trigger, with: Entities::Trigger
+        destroy_conditionally!(trigger)
       end
     end
   end

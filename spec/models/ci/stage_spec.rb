@@ -1,148 +1,90 @@
 require 'spec_helper'
 
-describe Ci::Stage, models: true do
-  let(:stage) { build(:ci_stage) }
-  let(:pipeline) { stage.pipeline }
-  let(:stage_name) { stage.name }
+describe Ci::Stage, :models do
+  let(:stage) { create(:ci_stage_entity) }
 
-  describe '#expectations' do
-    subject { stage }
-
-    it { is_expected.to include_module(StaticModel) }
-
-    it { is_expected.to respond_to(:pipeline) }
-    it { is_expected.to respond_to(:name) }
-
-    it { is_expected.to delegate_method(:project).to(:pipeline) }
-  end
-
-  describe '#statuses' do
-    let!(:stage_build) { create_job(:ci_build) }
-    let!(:commit_status) { create_job(:commit_status) }
-    let!(:other_build) { create_job(:ci_build, stage: 'other stage') }
-
-    subject { stage.statuses }
-
-    it "returns only matching statuses" do
-      is_expected.to contain_exactly(stage_build, commit_status)
-    end
-  end
-
-  describe '#statuses_count' do
+  describe 'associations' do
     before do
-      create_job(:ci_build)
-      create_job(:ci_build, stage: 'other stage')
+      create(:ci_build, stage_id: stage.id)
+      create(:commit_status, stage_id: stage.id)
     end
 
-    subject { stage.statuses_count }
-
-    it "counts statuses only from current stage" do
-      is_expected.to eq(1)
+    describe '#statuses' do
+      it 'returns all commit statuses' do
+        expect(stage.statuses.count).to be 2
+      end
     end
-  end
 
-  describe '#builds' do
-    let!(:stage_build) { create_job(:ci_build) }
-    let!(:commit_status) { create_job(:commit_status) }
-
-    subject { stage.builds }
-
-    it "returns only builds" do
-      is_expected.to contain_exactly(stage_build)
+    describe '#builds' do
+      it 'returns only builds' do
+        expect(stage.builds).to be_one
+      end
     end
   end
 
   describe '#status' do
-    subject { stage.status }
+    context 'when stage is pending' do
+      let(:stage) { create(:ci_stage_entity, status: 'pending') }
 
-    context 'if status is already defined' do
-      let(:stage) { build(:ci_stage, status: 'success') }
-
-      it "returns defined status" do
-        is_expected.to eq('success')
+      it 'has a correct status value' do
+        expect(stage.status).to eq 'pending'
       end
     end
 
-    context 'if status has to be calculated' do
-      let!(:stage_build) { create_job(:ci_build, status: :failed) }
+    context 'when stage is success' do
+      let(:stage) { create(:ci_stage_entity, status: 'success') }
 
-      it "returns status of a build" do
-        is_expected.to eq('failed')
-      end
-
-      context 'and builds are retried' do
-        let!(:new_build) { create_job(:ci_build, status: :success) }
-
-        it "returns status of latest build" do
-          is_expected.to eq('success')
-        end
-      end
-    end
-  end
-
-  describe '#detailed_status' do
-    let(:user) { create(:user) }
-
-    subject { stage.detailed_status(user) }
-
-    context 'when build is created' do
-      let!(:stage_build) { create_job(:ci_build, status: :created) }
-
-      it 'returns detailed status for created stage' do
-        expect(subject.text).to eq 'created'
+      it 'has a correct status value' do
+        expect(stage.status).to eq 'success'
       end
     end
 
-    context 'when build is pending' do
-      let!(:stage_build) { create_job(:ci_build, status: :pending) }
-
-      it 'returns detailed status for pending stage' do
-        expect(subject.text).to eq 'pending'
+    context 'when stage status is not defined' do
+      before do
+        stage.update_column(:status, nil)
       end
-    end
 
-    context 'when build is running' do
-      let!(:stage_build) { create_job(:ci_build, status: :running) }
-
-      it 'returns detailed status for running stage' do
-        expect(subject.text).to eq 'running'
-      end
-    end
-
-    context 'when build is successful' do
-      let!(:stage_build) { create_job(:ci_build, status: :success) }
-
-      it 'returns detailed status for successful stage' do
-        expect(subject.text).to eq 'passed'
-      end
-    end
-
-    context 'when build is failed' do
-      let!(:stage_build) { create_job(:ci_build, status: :failed) }
-
-      it 'returns detailed status for failed stage' do
-        expect(subject.text).to eq 'failed'
-      end
-    end
-
-    context 'when build is canceled' do
-      let!(:stage_build) { create_job(:ci_build, status: :canceled) }
-
-      it 'returns detailed status for canceled stage' do
-        expect(subject.text).to eq 'canceled'
-      end
-    end
-
-    context 'when build is skipped' do
-      let!(:stage_build) { create_job(:ci_build, status: :skipped) }
-
-      it 'returns detailed status for skipped stage' do
-        expect(subject.text).to eq 'skipped'
+      it 'sets the default value' do
+        expect(described_class.find(stage.id).status)
+          .to eq 'created'
       end
     end
   end
 
-  def create_job(type, status: 'success', stage: stage_name)
-    create(type, pipeline: pipeline, stage: stage, status: status)
+  describe 'update_status' do
+    context 'when stage objects needs to be updated' do
+      before do
+        create(:ci_build, :success, stage_id: stage.id)
+        create(:ci_build, :running, stage_id: stage.id)
+      end
+
+      it 'updates stage status correctly' do
+        expect { stage.update_status }
+          .to change { stage.reload.status }
+          .to 'running'
+      end
+    end
+
+    context 'when stage is skipped' do
+      it 'updates status to skipped' do
+        expect { stage.update_status }
+          .to change { stage.reload.status }
+          .to 'skipped'
+      end
+    end
+
+    context 'when stage object is locked' do
+      before do
+        create(:ci_build, :failed, stage_id: stage.id)
+      end
+
+      it 'retries a lock to update a stage status' do
+        stage.lock_version = 100
+
+        stage.update_status
+
+        expect(stage.reload).to be_failed
+      end
+    end
   end
 end

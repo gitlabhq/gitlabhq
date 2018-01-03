@@ -5,15 +5,8 @@
     - include_private = @project.team.member?(current_user) || current_user.admin?
     = render partial: 'snippets/snippets_scope_menu', locals: { subject: @project, include_private: include_private }
 
-    .nav-controls.hidden-xs
+    .nav-controls
       - if can?(current_user, :create_project_snippet, @project)
-        = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New snippet" do
-          New snippet
-
-- if can?(current_user, :create_project_snippet, @project)
-  .visible-xs
-    &nbsp;
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new btn-block", title: "New snippet" do
-      New snippet
+        = link_to "New snippet", new_project_snippet_path(@project), class: "btn btn-new", title: "New snippet"
 
 = render 'snippets/snippets'

@@ -9,7 +9,7 @@ module WorkhorseHelpers
       header = split_header.join(':')
       [
         type,
-        JSON.parse(Base64.urlsafe_decode64(header)),
+        JSON.parse(Base64.urlsafe_decode64(header))
       ]
     end
   end

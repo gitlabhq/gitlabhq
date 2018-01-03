@@ -4,13 +4,6 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
-GitLab already supports [managing large files with git annex](http://docs.gitlab.com/ee/workflow/git_annex.html)
-(EE only), however in certain environments it is not always convenient to use
-different commands to differentiate between the large files and regular ones.
-
-Git LFS makes this simpler for the end user by removing the requirement to
-learn new commands.
-
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
@@ -62,6 +55,12 @@ git add .                             # add the large file to the project
 git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
+
+>**Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
+ LFS will not be working properly for people cloning the project.
+ ```bash
+ git add .gitattributes
+ ```
 
 Cloning the repository works the same as before. Git automatically detects the
 LFS-tracked files and clones them via HTTP. If you performed the git clone
@@ -164,3 +163,11 @@ For Windows, you can use `wincred` or Microsoft's [Git Credential Manager for Wi
 
 More details about various methods of storing the user credentials can be found
 on [Git Credential Storage documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+
+### LFS objects are missing on push
+
+GitLab checks files to detect LFS pointers on push. If LFS pointers are detected, GitLab tries to verify that those files already exist in LFS on GitLab.
+
+Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
+
+If you are storing LFS files outside of GitLab you can disable LFS on the project by settting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).

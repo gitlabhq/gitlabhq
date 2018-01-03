@@ -13,6 +13,8 @@ module MergeRequests
       create_note(merge_request)
       notification_service.merge_mr(merge_request, current_user)
       execute_hooks(merge_request, 'merge')
+      invalidate_cache_counts(merge_request, users: merge_request.assignees)
+      merge_request.update_project_counter_caches
     end
 
     private

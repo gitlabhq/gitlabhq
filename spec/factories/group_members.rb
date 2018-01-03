@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :group_member do
     access_level { GroupMember::OWNER }
     group
@@ -10,5 +10,11 @@ FactoryGirl.define do
     trait(:master)    { access_level GroupMember::MASTER }
     trait(:owner)     { access_level GroupMember::OWNER }
     trait(:access_request) { requested_at Time.now }
+
+    trait(:invited) do
+      user_id nil
+      invite_token 'xxx'
+      invite_email 'email@email.com'
+    end
   end
 end

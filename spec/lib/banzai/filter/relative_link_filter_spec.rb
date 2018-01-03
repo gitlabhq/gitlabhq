@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RelativeLinkFilter, lib: true do
+describe Banzai::Filter::RelativeLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         commit,
       project:        project,
+      group:          group,
       project_wiki:   project_wiki,
       ref:            ref,
       requested_path: requested_path
@@ -25,8 +26,13 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     %(<a href="#{path}">#{path}</a>)
   end
 
-  let(:project)        { create(:project) }
-  let(:project_path)   { project.path_with_namespace }
+  def nested(element)
+    %(<div>#{element}</div>)
+  end
+
+  let(:project)        { create(:project, :repository) }
+  let(:group)          { nil }
+  let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }
@@ -56,7 +62,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   end
 
   context 'without a repository' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     include_examples :preserve_unchanged
   end
 
@@ -70,17 +76,22 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     expect { filter(act) }.not_to raise_error
   end
 
+  it 'does not raise an exception with a garbled path' do
+    act = link("open(/var/tmp/):%20/location%0Afrom:%20/test")
+    expect { filter(act) }.not_to raise_error
+  end
+
   it 'ignores ref if commit is passed' do
     doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
-    expect(doc.at_css('a')['href']).
-      to eq "/#{project_path}/#{ref}/non/existent.file" # non-existent files have no leading blob/raw/tree
+    expect(doc.at_css('a')['href'])
+      .to eq "/#{project_path}/#{ref}/non/existent.file" # non-existent files have no leading blob/raw/tree
   end
 
   shared_examples :valid_repository do
     it 'rebuilds absolute URL for a file in the repo' do
       doc = filter(link('/doc/api/README.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'ignores absolute URLs with two leading slashes' do
@@ -90,71 +101,71 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
 
     it 'rebuilds relative URL for a file in the repo' do
       doc = filter(link('doc/api/README.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo with leading ./' do
       doc = filter(link('./doc/api/README.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo up one directory' do
       relative_link = link('../api/README.md')
       doc = filter(relative_link, requested_path: 'doc/update/7.14-to-8.0.md')
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo up multiple directories' do
       relative_link = link('../../../api/README.md')
       doc = filter(relative_link, requested_path: 'doc/foo/bar/baz/README.md')
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repository root' do
       relative_link = link('../README.md')
       doc = filter(relative_link, requested_path: 'doc/some-file.md')
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo with an anchor' do
       doc = filter(link('README.md#section'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/README.md#section"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/README.md#section"
     end
 
     it 'rebuilds relative URL for a directory in the repo' do
       doc = filter(link('doc/api/'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/tree/#{ref}/doc/api"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/tree/#{ref}/doc/api"
     end
 
     it 'rebuilds relative URL for an image in the repo' do
       doc = filter(image('files/images/logo-black.png'))
 
-      expect(doc.at_css('img')['src']).
-        to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+      expect(doc.at_css('img')['src'])
+        .to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
     end
 
     it 'rebuilds relative URL for link to an image in the repo' do
       doc = filter(link('files/images/logo-black.png'))
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
     end
 
     it 'rebuilds relative URL for a video in the repo' do
       doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
 
-      expect(doc.at_css('video')['src']).
-        to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
+      expect(doc.at_css('video')['src'])
+        .to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
     end
 
     it 'does not modify relative URL with an anchor only' do
@@ -222,5 +233,80 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   context 'with a valid ref' do
     let(:commit) { nil } # force filter to use ref instead of commit
     include_examples :valid_repository
+  end
+
+  context 'with a /upload/ URL' do
+    # not needed
+    let(:commit) { nil }
+    let(:ref) { nil }
+    let(:requested_path) { nil }
+
+    context 'to a project upload' do
+      it 'rebuilds relative URL for a link' do
+        doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+        expect(doc.at_css('a')['href'])
+          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+        doc = filter(nested(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')))
+        expect(doc.at_css('a')['href'])
+          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+      end
+
+      it 'rebuilds relative URL for an image' do
+        doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+        expect(doc.at_css('img')['src'])
+          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+        doc = filter(nested(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')))
+        expect(doc.at_css('img')['src'])
+          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+
+      it 'supports Unicode filenames' do
+        path = '/uploads/한글.png'
+        escaped = Addressable::URI.escape(path)
+
+        # Stub these methods so the file doesn't actually need to be in the repo
+        allow_any_instance_of(described_class)
+          .to receive(:file_exists?).and_return(true)
+        allow_any_instance_of(described_class)
+          .to receive(:image?).with(path).and_return(true)
+
+        doc = filter(image(escaped))
+        expect(doc.at_css('img')['src']).to match "/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png"
+      end
+    end
+
+    context 'to a group upload' do
+      let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+      let(:group) { create(:group) }
+      let(:project) { nil }
+      let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+      it 'rewrites the link correctly' do
+        doc = filter(upload_link)
+
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'rewrites the link correctly for subgroup' do
+        group.update!(parent: create(:group))
+
+        doc = filter(upload_link)
+
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+    end
   end
 end

@@ -4,8 +4,8 @@ module Sherlock
 
     def find_transaction
       if params[:transaction_id]
-        @transaction = Gitlab::Sherlock.collection.
-          find_transaction(params[:transaction_id])
+        @transaction = Gitlab::Sherlock.collection
+          .find_transaction(params[:transaction_id])
       end
     end
   end

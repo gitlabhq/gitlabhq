@@ -12,7 +12,7 @@ shared_examples 'TokenAuthenticatable' do
 end
 
 describe User, 'TokenAuthenticatable' do
-  let(:token_field) { :authentication_token }
+  let(:token_field) { :rss_token }
   it_behaves_like 'TokenAuthenticatable'
 
   describe 'ensures authentication token' do
@@ -49,7 +49,10 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
     end
 
     context 'token is generated' do
-      before { subject.send("reset_#{token_field}!") }
+      before do
+        subject.send("reset_#{token_field}!")
+      end
+
       it 'persists a new token' do
         expect(subject.send(:read_attribute, token_field)).to be_a String
       end

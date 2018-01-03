@@ -1,6 +1,8 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :email do
     user
-    email { FFaker::Internet.email('alias') }
+    email { generate(:email_alias) }
+
+    trait(:confirmed) { confirmed_at Time.now }
   end
 end

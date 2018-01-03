@@ -1,8 +1,12 @@
 ---
+comments: false
+---
+
+---
 title: University | Process
 ---
 
-## Suggesting improvements
+# Suggesting improvements
 
 If you would like to teach a class or participate or help in any way please
 submit a merge request and assign it to [Job](https://gitlab.com/u/JobV).
@@ -27,4 +31,4 @@ please submit a merge request to add an upcoming class, assign to
 1. Please upload any video recordings to our Youtube channel. We prefer them to
    be public, if needed they can be unlisted but if so they should be linked from
    this page.
-1. Please create a merge request and assign to [SeanPackham](https://gitlab.com/u/SeanPackham).
+1. Please create a merge request and assign to [Erica](https://gitlab.com/u/Erica).

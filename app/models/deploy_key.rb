@@ -1,5 +1,5 @@
 class DeployKey < Key
-  has_many :deploy_keys_projects, dependent: :destroy
+  has_many :deploy_keys_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :deploy_keys_projects
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where('deploy_keys_projects.project_id in (?)', projects) }
@@ -27,11 +27,5 @@ class DeployKey < Key
 
   def can_push_to?(project)
     can_push? && has_access_to?(project)
-  end
-
-  private
-
-  # we don't want to notify the user for deploy keys
-  def notify_user
   end
 end

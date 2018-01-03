@@ -29,7 +29,7 @@ describe Bitbucket::Representation::Repo do
   end
 
   describe '#owner_and_slug' do
-    it { expect(described_class.new({ 'full_name' => 'ben/test' }).owner_and_slug).to eq(['ben', 'test']) }
+    it { expect(described_class.new({ 'full_name' => 'ben/test' }).owner_and_slug).to eq(%w(ben test)) }
   end
 
   describe '#owner' do
@@ -42,7 +42,7 @@ describe Bitbucket::Representation::Repo do
 
   describe '#clone_url' do
     it 'builds url' do
-      data = { 'links' => { 'clone' => [ { 'name' => 'https', 'href' => 'https://bibucket.org/test/test.git' }] } }
+      data = { 'links' => { 'clone' => [{ 'name' => 'https', 'href' => 'https://bibucket.org/test/test.git' }] } }
       expect(described_class.new(data).clone_url('abc')).to eq('https://x-token-auth:abc@bibucket.org/test/test.git')
     end
   end

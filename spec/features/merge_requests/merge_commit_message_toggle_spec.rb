@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Clicking toggle commit message link', feature: true, js: true do
+feature 'Clicking toggle commit message link', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue_1) { create(:issue, project: project)}
   let(:issue_2) { create(:issue, project: project)}
   let(:merge_request) do
@@ -14,14 +14,12 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
     )
   end
   let(:textbox) { page.find(:css, '.js-commit-message', visible: false) }
-  let(:include_link) { page.find(:css, '.js-with-description-link', visible: false) }
-  let(:do_not_include_link) { page.find(:css, '.js-without-description-link', visible: false) }
   let(:default_message) do
     [
       "Merge branch 'feature' into 'master'",
       merge_request.title,
       "Closes #{issue_1.to_reference} and #{issue_2.to_reference}",
-      "See merge request #{merge_request.to_reference}"
+      "See merge request #{merge_request.to_reference(full: true)}"
     ].join("\n\n")
   end
   let(:message_with_description) do
@@ -29,19 +27,19 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
       "Merge branch 'feature' into 'master'",
       merge_request.title,
       merge_request.description,
-      "See merge request #{merge_request.to_reference}"
+      "See merge request #{merge_request.to_reference(full: true)}"
     ].join("\n\n")
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
-    login_as user
+    sign_in user
 
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
 
-    expect(textbox).not_to be_visible
-    click_link "Modify commit message"
+    expect(page).not_to have_selector('.js-commit-message')
+    click_button "Modify commit message"
     expect(textbox).to be_visible
   end
 
@@ -55,20 +53,5 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
     click_link "Don't include description in commit message"
 
     expect(textbox.value).to eq(default_message)
-  end
-
-  it "toggles link between 'Include description' and 'Don't include description'" do
-    expect(include_link).to be_visible
-    expect(do_not_include_link).not_to be_visible
-
-    click_link "Include description in commit message"
-
-    expect(include_link).not_to be_visible
-    expect(do_not_include_link).to be_visible
-
-    click_link "Don't include description in commit message"
-
-    expect(include_link).to be_visible
-    expect(do_not_include_link).not_to be_visible
   end
 end

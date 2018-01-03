@@ -1,13 +1,12 @@
-- page_title "Network", @ref
+- breadcrumb_title "Graph"
+- page_title "Graph", @ref
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/raphael.js')
-  = page_specific_javascript_tag('network/network_bundle.js')
-= render "projects/commits/head"
+  = page_specific_javascript_bundle_tag('network')
 = render "head"
 %div{ class: container_class }
   .project-network
     .controls
-      = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
+      = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
         = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Git revision", class: 'search-input form-control input-mx-250 search-sha'
         = button_tag class: 'btn btn-success' do
           = icon('search')

@@ -2,11 +2,13 @@
 
 // MarkupPreview
 //
-// Handles toggling the "Write" and "Preview" tab clicks, rendering the preview,
-// and showing a warning when more than `x` users are referenced.
+// Handles toggling the "Write" and "Preview" tab clicks, rendering the preview
+// (including the explanation of quick actions), and showing a warning when
+// more than `x` users are referenced.
 //
 (function () {
   var lastTextareaPreviewed;
+  var lastTextareaHeight = null;
   var markdownPreview;
   var previewButtonSelector;
   var writeButtonSelector;
@@ -16,6 +18,7 @@
 
     // Minimum number of users referenced before triggering a warning
     MarkupPreview.prototype.referenceThreshold = 10;
+    MarkupPreview.prototype.emptyMessage = 'Nothing to preview.';
 
     MarkupPreview.prototype.ajaxCache = {};
 
@@ -23,6 +26,7 @@
       var markupFormat;
       var markupText;
       var preview = $form.find('.js-md-preview');
+      var url = preview.data('url');
       if (preview.hasClass('md-preview-loading')) {
         return;
       }
@@ -30,20 +34,31 @@
       markupFormat = $form.find('#wiki_format').val() || 'markdown';
 
       if (markupText.trim().length === 0) {
-        preview.text('Nothing to preview.');
+        preview.text(this.emptyMessage);
         this.hideReferencedUsers($form);
       } else {
         preview.addClass('md-preview-loading').text('Loading...');
-        this.fetchMarkupPreview(markupFormat, markupText, (function (response) {
-          preview.removeClass('md-preview-loading').html(response.body);
+        this.fetchMarkupPreview(markupFormat, markupText, url, (function (response) {
+          var body;
+          if (response.body.length > 0) {
+            body = response.body;
+          } else {
+            body = this.emptyMessage;
+          }
+
+          preview.removeClass('md-preview-loading').html(body);
           preview.renderGFM();
           this.renderReferencedUsers(response.references.users, $form);
+
+          if (response.references.commands) {
+            this.renderReferencedCommands(response.references.commands, $form);
+          }
         }).bind(this));
       }
     };
 
-    MarkupPreview.prototype.fetchMarkupPreview = function (format, text, success) {
-      if (!window.preview_markup_path) {
+    MarkdownPreview.prototype.fetchMarkupPreview = function (format, text, url, success) {
+      if (!url) {
         return;
       }
       if (format === this.ajaxCache.format && text === this.ajaxCache.text) {
@@ -52,7 +67,7 @@
       }
       $.ajax({
         type: 'POST',
-        url: window.preview_markup_path,
+        url: url,
         data: {
           format: format,
           text: text
@@ -86,16 +101,30 @@
       }
     };
 
+    MarkupPreview.prototype.hideReferencedCommands = function ($form) {
+      $form.find('.referenced-commands').hide();
+    };
+
+    MarkupPreview.prototype.renderReferencedCommands = function (commands, $form) {
+      var referencedCommands;
+      referencedCommands = $form.find('.referenced-commands');
+      if (commands.length > 0) {
+        referencedCommands.html(commands);
+        referencedCommands.show();
+      } else {
+        referencedCommands.html('');
+        referencedCommands.hide();
+      }
+    };
+
     return MarkupPreview;
   }());
 
   markdownPreview = new window.MarkupPreview();
-
   previewButtonSelector = '.js-md-preview-button';
-
   writeButtonSelector = '.js-md-write-button';
-
   lastTextareaPreviewed = null;
+  const markdownToolbar = $('.md-header-toolbar');
 
   $.fn.setupMarkupPreview = function () {
     var $form = $(this);
@@ -108,13 +137,18 @@
     if (!$form) {
       return;
     }
+
     lastTextareaPreviewed = $form.find('textarea.markdown-area');
+    lastTextareaHeight = lastTextareaPreviewed.height();
+
     // toggle tabs
     $form.find(writeButtonSelector).parent().removeClass('active');
     $form.find(previewButtonSelector).parent().addClass('active');
+
     // toggle content
     $form.find('.md-write-holder').hide();
     $form.find('.md-preview-holder').show();
+    markdownToolbar.removeClass('active');
     markdownPreview.showPreview($form);
   });
 
@@ -123,13 +157,22 @@
       return;
     }
     lastTextareaPreviewed = null;
+
+    if (lastTextareaHeight) {
+      $form.find('textarea.markdown-area').height(lastTextareaHeight);
+    }
+
     // toggle tabs
     $form.find(writeButtonSelector).parent().addClass('active');
     $form.find(previewButtonSelector).parent().removeClass('active');
+
     // toggle content
     $form.find('.md-write-holder').show();
     $form.find('textarea.markdown-area').focus();
     $form.find('.md-preview-holder').hide();
+    markdownToolbar.addClass('active');
+
+    markdownPreview.hideReferencedCommands($form);
   });
 
   $(document).on('markdown-preview:toggle', function (e, keyboardEvent) {

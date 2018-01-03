@@ -2,23 +2,9 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Stop < SimpleDelegator
-          include Status::Extended
-
-          def text
-            'manual'
-          end
-
+        class Stop < Status::Extended
           def label
             'manual stop action'
-          end
-
-          def icon
-            'icon_status_manual'
-          end
-
-          def group
-            'manual'
           end
 
           def has_action?
@@ -34,9 +20,7 @@ module Gitlab
           end
 
           def action_path
-            play_namespace_project_build_path(subject.project.namespace,
-                                              subject.project,
-                                              subject)
+            play_project_job_path(subject.project, subject)
           end
 
           def action_method

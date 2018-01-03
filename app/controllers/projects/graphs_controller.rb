@@ -5,7 +5,6 @@ class Projects::GraphsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
-  before_action :builds_enabled, only: :ci
 
   def show
     respond_to do |format|
@@ -17,6 +16,25 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def commits
+    redirect_to action: 'charts'
+  end
+
+  def languages
+    redirect_to action: 'charts'
+  end
+
+  def charts
+    get_commits
+    get_languages
+  end
+
+  def ci
+    redirect_to charts_project_pipelines_path(@project)
+  end
+
+  private
+
+  def get_commits
     @commits = @project.repository.commits(@ref, limit: 2000, skip_merges: true)
     @commits_graph = Gitlab::Graphs::Commits.new(@commits)
     @commits_per_week_days = @commits_graph.commits_per_week_days
@@ -24,35 +42,9 @@ class Projects::GraphsController < Projects::ApplicationController
     @commits_per_month = @commits_graph.commits_per_month
   end
 
-  def ci
-    @charts = {}
-    @charts[:week] = Ci::Charts::WeekChart.new(project)
-    @charts[:month] = Ci::Charts::MonthChart.new(project)
-    @charts[:year] = Ci::Charts::YearChart.new(project)
-    @charts[:build_times] = Ci::Charts::BuildTime.new(project)
+  def get_languages
+    @languages = @project.repository.languages
   end
-
-  def languages
-    @languages = Linguist::Repository.new(@repository.rugged, @repository.rugged.head.target_id).languages
-    total = @languages.map(&:last).sum
-
-    @languages = @languages.map do |language|
-      name, share = language
-      color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
-      {
-        value: (share.to_f * 100 / total).round(2),
-        label: name,
-        color: color,
-        highlight: color
-      }
-    end
-
-    @languages.sort! do |x, y|
-      y[:value] <=> x[:value]
-    end
-  end
-
-  private
 
   def fetch_graph
     @commits = @project.repository.commits(@ref, limit: 6000, skip_merges: true)

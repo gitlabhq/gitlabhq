@@ -1,11 +1,14 @@
 require 'rails_helper'
 
-feature 'Admin disables Git access protocol', feature: true do
-  let(:project) { create(:empty_project, :empty_repo) }
+feature 'Admin disables Git access protocol' do
+  include StubENV
+
+  let(:project) { create(:project, :empty_repo) }
   let(:admin) { create(:admin) }
 
   background do
-    login_as(admin)
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+    sign_in(admin)
   end
 
   context 'with HTTP disabled' do
@@ -48,7 +51,7 @@ feature 'Admin disables Git access protocol', feature: true do
   end
 
   def visit_project
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def disable_http_protocol

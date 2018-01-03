@@ -14,7 +14,7 @@ module API
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
+        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: %w(specific shared))
         present paginate(runners), with: Entities::Runner
       end
 
@@ -55,13 +55,16 @@ module API
         optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
         optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
         optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
-        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked
+        optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
+                                desc: 'The access_level of the runner'
+        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
       end
       put ':id' do
         runner = get_runner(params.delete(:id))
         authenticate_update_runner!(runner)
+        update_service = Ci::UpdateRunnerService.new(runner)
 
-        if runner.update(declared_params(include_missing: false))
+        if update_service.update(declared_params(include_missing: false))
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)
@@ -76,17 +79,34 @@ module API
       end
       delete ':id' do
         runner = get_runner(params[:id])
-        authenticate_delete_runner!(runner)
-        runner.destroy!
 
-        present runner, with: Entities::Runner
+        authenticate_delete_runner!(runner)
+
+        destroy_conditionally!(runner)
+      end
+
+      desc 'List jobs running on a runner' do
+        success Entities::JobBasicWithProject
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the runner'
+        optional :status, type: String, desc: 'Status of the job', values: Ci::Build::AVAILABLE_STATUSES
+        use :pagination
+      end
+      get  ':id/jobs' do
+        runner = get_runner(params[:id])
+        authenticate_list_runners_jobs!(runner)
+
+        jobs = RunnerJobsFinder.new(runner, params).execute
+
+        present paginate(jobs), with: Entities::JobBasicWithProject
       end
     end
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       before { authorize_admin_project }
 
       desc 'Get runners available for project' do
@@ -134,9 +154,7 @@ module API
         runner = runner_project.runner
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
-        runner_project.destroy
-
-        present runner, with: Entities::Runner
+        destroy_conditionally!(runner_project)
       end
     end
 
@@ -153,7 +171,7 @@ module API
           render_api_error!('Scope contains invalid value', 400)
         end
 
-        runners.send(scope)
+        runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def get_runner(id)
@@ -163,18 +181,21 @@ module API
       end
 
       def authenticate_show_runner!(runner)
-        return if runner.is_shared || current_user.is_admin?
+        return if runner.is_shared || current_user.admin?
+
         forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 
       def authenticate_update_runner!(runner)
-        return if current_user.is_admin?
+        return if current_user.admin?
+
         forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 
       def authenticate_delete_runner!(runner)
-        return if current_user.is_admin?
+        return if current_user.admin?
+
         forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner associated with more than one project") if runner.projects.count > 1
         forbidden!("No access granted") unless user_can_access_runner?(runner)
@@ -183,7 +204,14 @@ module API
       def authenticate_enable_runner!(runner)
         forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner is locked") if runner.locked?
-        return if current_user.is_admin?
+        return if current_user.admin?
+
+        forbidden!("No access granted") unless user_can_access_runner?(runner)
+      end
+
+      def authenticate_list_runners_jobs!(runner)
+        return if current_user.admin?
+
         forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 

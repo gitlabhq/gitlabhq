@@ -3,41 +3,12 @@
 The purpose of this guide is to document potential "gotchas" that contributors
 might encounter or should avoid during development of GitLab CE and EE.
 
-## Don't `describe` symbols
-
-Consider the following model spec:
-
-```ruby
-require 'rails_helper'
-
-describe User do
-  describe :to_param do
-    it 'converts the username to a param' do
-      user = described_class.new(username: 'John Smith')
-
-      expect(user.to_param).to eq 'john-smith'
-    end
-  end
-end
-```
-
-When run, this spec doesn't do what we might expect:
-
-```sh
-spec/models/user_spec.rb|6 error|  Failure/Error: u = described_class.new NoMethodError: undefined method `new' for :to_param:Symbol
-```
-
-### Solution
-
-Except for the top-level `describe` block, always provide a String argument to
-`describe`.
-
-## Don't assert against the absolute value of a sequence-generated attribute
+## Do not assert against the absolute value of a sequence-generated attribute
 
 Consider the following factory:
 
 ```ruby
-FactoryGirl.define do
+FactoryBot.define do
   factory :label do
     sequence(:title) { |n| "label#{n}" }
   end
@@ -82,7 +53,7 @@ When run, this spec doesn't do what we might expect:
      (compared using ==)
 ```
 
-That's because FactoryGirl sequences are not reseted for each example.
+That's because FactoryBot sequences are not reseted for each example.
 
 Please remember that sequence-generated values exist only to avoid having to
 explicitly set attributes that have a uniqueness constraint when using a factory.
@@ -121,7 +92,7 @@ describe API::Labels do
 end
 ```
 
-## Don't `rescue Exception`
+## Do not `rescue Exception`
 
 See ["Why is it bad style to `rescue Exception => e` in Ruby?"][Exception].
 
@@ -130,7 +101,7 @@ Rubocop](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-4-stable/.rubocop.yml#L9
 
 [Exception]: http://stackoverflow.com/q/10048173/223897
 
-## Don't use inline JavaScript in views
+## Do not use inline JavaScript in views
 
 Using the inline `:javascript` Haml filters comes with a
 performance overhead. Using inline JavaScript is not a good way to structure your code and should be avoided.

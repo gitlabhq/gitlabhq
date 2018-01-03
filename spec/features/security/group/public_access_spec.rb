@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Public Group access', feature: true do
+describe 'Public Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :public) }
@@ -49,6 +49,7 @@ describe 'Public Group access', feature: true do
   end
 
   describe 'GET /groups/:path/merge_requests' do
+    let(:project) { create(:project, :public, :repository, group: group) }
     subject { merge_requests_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }

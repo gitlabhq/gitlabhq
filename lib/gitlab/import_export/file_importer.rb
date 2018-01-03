@@ -47,11 +47,15 @@ module Gitlab
       end
 
       def remove_symlinks!
-        Dir["#{@shared.export_path}/**/*"].each do |path|
+        extracted_files.each do |path|
           FileUtils.rm(path) if File.lstat(path).symlink?
         end
 
         true
+      end
+
+      def extracted_files
+        Dir.glob("#{@shared.export_path}/**/*", File::FNM_DOTMATCH).reject { |f| f =~ /.*\/\.{1,2}$/ }
       end
     end
   end

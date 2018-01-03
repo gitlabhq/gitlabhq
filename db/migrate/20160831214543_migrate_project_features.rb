@@ -3,7 +3,7 @@ class MigrateProjectFeatures < ActiveRecord::Migration
 
   DOWNTIME = true
   DOWNTIME_REASON =
-    <<-EOT
+    <<-EOT.freeze
       Migrating issues_enabled, merge_requests_enabled, wiki_enabled, builds_enabled, snippets_enabled fields from projects to
       a new table called project_features.
     EOT

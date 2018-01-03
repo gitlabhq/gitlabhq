@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Members::DestroyService, services: true do
+describe Members::DestroyService do
   let(:user) { create(:user) }
   let(:member_user) { create(:user) }
   let(:project) { create(:project, :public) }
@@ -71,7 +71,7 @@ describe Members::DestroyService, services: true do
 
   context 'when a member is found' do
     before do
-      project.team << [member_user, :developer]
+      project.add_developer(member_user)
       group.add_developer(member_user)
     end
     let(:params) { { user_id: member_user.id } }
@@ -88,7 +88,7 @@ describe Members::DestroyService, services: true do
 
     context 'when current user can destroy the given member' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         group.add_owner(user)
       end
 
@@ -104,8 +104,8 @@ describe Members::DestroyService, services: true do
         let(:params) { { id: project.members.find_by!(user_id: user.id).id } }
 
         it 'destroys the member' do
-          expect { described_class.new(project, user, params).execute }.
-            to change { project.members.count }.by(-1)
+          expect { described_class.new(project, user, params).execute }
+            .to change { project.members.count }.by(-1)
         end
       end
     end

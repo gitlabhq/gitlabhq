@@ -1,20 +1,20 @@
 module Boards
   module Issues
-    class MoveService < BaseService
+    class MoveService < Boards::BaseService
       def execute(issue)
         return false unless can?(current_user, :update_issue, issue)
-        return false unless valid_move?
+        return false if issue_params.empty?
 
-        update_service.execute(issue)
+        update(issue)
       end
 
       private
 
       def board
-        @board ||= project.boards.find(params[:board_id])
+        @board ||= parent.boards.find(params[:board_id])
       end
 
-      def valid_move?
+      def move_between_lists?
         moving_from_list.present? && moving_to_list.present? &&
           moving_from_list != moving_to_list
       end
@@ -27,21 +27,29 @@ module Boards
         @moving_to_list ||= board.lists.find_by(id: params[:to_list_id])
       end
 
-      def update_service
-        ::Issues::UpdateService.new(project, current_user, issue_params)
+      def update(issue)
+        ::Issues::UpdateService.new(issue.project, current_user, issue_params).execute(issue)
       end
 
       def issue_params
-        {
-          add_label_ids: add_label_ids,
-          remove_label_ids: remove_label_ids,
-          state_event: issue_state
-        }
+        attrs = {}
+
+        if move_between_lists?
+          attrs.merge!(
+            add_label_ids: add_label_ids,
+            remove_label_ids: remove_label_ids,
+            state_event: issue_state
+          )
+        end
+
+        attrs[:move_between_ids] = move_between_ids if move_between_ids
+
+        attrs
       end
 
       def issue_state
-        return 'reopen' if moving_from_list.done?
-        return 'close'  if moving_to_list.done?
+        return 'reopen' if moving_from_list.closed?
+        return 'close'  if moving_to_list.closed?
       end
 
       def add_label_ids
@@ -53,10 +61,16 @@ module Boards
           if moving_to_list.movable?
             moving_from_list.label_id
           else
-            project.boards.joins(:lists).merge(List.movable).pluck(:label_id)
+            Label.on_project_boards(parent.id).pluck(:label_id)
           end
 
         Array(label_ids).compact
+      end
+
+      def move_between_ids
+        return unless params[:move_after_id] || params[:move_before_id]
+
+        [params[:move_after_id], params[:move_before_id]]
       end
     end
   end

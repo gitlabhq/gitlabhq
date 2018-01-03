@@ -6,16 +6,17 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
 
   class Project < ActiveRecord::Base
     def self.find_including_path(id)
-      select("projects.*, CONCAT(namespaces.path, '/', projects.path) AS path_with_namespace").
-        joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id').
-        find_by(id: id)
+      select("projects.*, CONCAT(namespaces.path, '/', projects.path) AS path_with_namespace")
+        .joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id')
+        .find_by(id: id)
     end
 
     def repository_storage_path
-      Gitlab.config.repositories.storages[repository_storage]
+      Gitlab.config.repositories.storages[repository_storage]['path']
     end
 
     def repository_path
+      # TODO: review if the change from Legacy storage needs to reflect here as well.
       File.join(repository_storage_path, read_attribute(:path_with_namespace) + '.git')
     end
 
@@ -34,7 +35,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
       new_jobs = []
 
       while job = redis.lpop('queue:process_commit')
-        payload = JSON.load(job)
+        payload = JSON.parse(job)
         project = Project.find_including_path(payload['args'][0])
 
         next unless project
@@ -75,7 +76,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
       new_jobs = []
 
       while job = redis.lpop('queue:process_commit')
-        payload = JSON.load(job)
+        payload = JSON.parse(job)
 
         payload['args'][2] = payload['args'][2]['id']
 

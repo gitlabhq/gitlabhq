@@ -9,7 +9,7 @@
     To import a GitHub project, you first need to authorize GitLab to access
     the list of your GitHub repositories:
 
-  = link_to 'List Your GitHub Repositories', status_import_github_path, class: 'btn btn-success'
+  = link_to 'List your GitHub repositories', status_import_github_path, class: 'btn btn-success'
 
   %hr
 
@@ -28,7 +28,7 @@
 = form_tag personal_access_token_import_github_path, method: :post, class: 'form-inline' do
   .form-group
     = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "Personal Access Token", size: 40
-    = submit_tag 'List Your GitHub Repositories', class: 'btn btn-success'
+    = submit_tag 'List your GitHub repositories', class: 'btn btn-success'
 
 - unless github_import_configured?
   %hr

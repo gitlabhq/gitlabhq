@@ -1,18 +1,16 @@
 require 'spec_helper'
 
-feature 'Find file keyboard shortcuts', feature: true, js: true do
-  include WaitForAjax
-
+feature 'Find file keyboard shortcuts', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
-    project.team << [user, :master]
-    login_as user
+    project.add_master(user)
+    sign_in user
 
-    visit namespace_project_find_file_path(project.namespace, project, project.repository.root_ref)
+    visit project_find_file_path(project, project.repository.root_ref)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   it 'opens file when pressing enter key' do
@@ -22,7 +20,7 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
 
     expect(page).to have_selector('.blob-content-holder')
 
-    page.within('.file-title') do
+    page.within('.js-file-title') do
       expect(page).to have_content('CHANGELOG')
     end
   end
@@ -35,7 +33,7 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
 
     expect(page).to have_selector('.blob-content-holder')
 
-    page.within('.file-title') do
+    page.within('.js-file-title') do
       expect(page).to have_content('application.js')
     end
   end

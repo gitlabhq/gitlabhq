@@ -99,7 +99,7 @@ module TabHelper
       return 'active'
     end
 
-    if ['services', 'hooks', 'deploy_keys', 'protected_branches'].include? controller.controller_name
+    if %w(services hooks deploy_keys protected_branches).include? controller.controller_name
       "active"
     end
   end
@@ -107,8 +107,7 @@ module TabHelper
   def branches_tab_class
     if current_controller?(:protected_branches) ||
         current_controller?(:branches) ||
-        current_page?(namespace_project_repository_path(@project.namespace,
-                                                        @project))
+        current_page?(project_repository_path(@project))
       'active'
     end
   end

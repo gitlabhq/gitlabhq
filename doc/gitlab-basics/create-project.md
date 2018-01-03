@@ -1,24 +1,37 @@
 # How to create a project in GitLab
 
-There are two ways to create a new project in GitLab.
+>**Notes:**
+- For a list of words that are not allowed to be used as project names see the
+  [reserved names][reserved].
 
-1. While in your dashboard, you can create a new project using the **New project**
-   green button or you can use the cross icon in the upper right corner next to
-   your avatar which is always visible.
+1. In your dashboard, click the green **New project** button or use the plus
+   icon in the upper right corner of the navigation bar.
 
     ![Create a project](img/create_new_project_button.png)
 
-1. From there you can see several options.
+1. This opens the **New project** page.
 
     ![Project information](img/create_new_project_info.png)
 
-1. Fill out the information:
+1. Choose if you want start a blank project, or with one of the predefined
+   [Project Templates](https://gitlab.com/gitlab-org/project-templates):
+   this will kickstart your repository code and CI automatically.
+   Otherwise, if you have a project in a different repository, you can [import it] by
+   clicking on the **Import project** tab, provided this is enabled in
+   your GitLab instance. Ask your administrator if not.
 
-  1. "Project name" is the name of your project (you can't use special characters,
-     but you can use spaces, hyphens, underscores or even emojis).
-  1. The "Project description" is optional and will be shown in your project's
-     dashboard so others can briefly understand what your project is about.
-  1. Select a [visibility level](../public_access/public_access.md).
-  1. You can also [import your existing projects](../workflow/importing/README.md).
+1. Provide the following information:
+    - Enter the name of your project in the **Project name** field. You can't use
+      special characters, but you can use spaces, hyphens, underscores or even
+      emoji.
+    - The **Project description (optional)** field enables you to enter a
+      description for your project's dashboard, which will help others
+      understand what your project is about. Though it's not required, it's a good
+      idea to fill this in.
+    - Changing the **Visibility Level** modifies the project's
+      [viewing and access rights](../public_access/public_access.md) for users.
 
-1. Finally, click **Create project**.
+1. Click **Create project**.
+
+[import it]: ../workflow/importing/README.md
+[reserved]:  ../user/reserved_names.md

@@ -11,9 +11,6 @@ project_tree:
     - :user
 
 included_attributes:
-  project:
-    - :name
-    - :path
   merge_requests:
     - :id
   user:
@@ -22,3 +19,6 @@ included_attributes:
 excluded_attributes:
   merge_requests:
     - :iid
+  project:
+    - :id
+    - :created_at

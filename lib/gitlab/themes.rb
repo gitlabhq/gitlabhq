@@ -5,19 +5,18 @@ module Gitlab
     extend self
 
     # Theme ID used when no `default_theme` configuration setting is provided.
-    APPLICATION_DEFAULT = 2
+    APPLICATION_DEFAULT = 1
 
     # Struct class representing a single Theme
     Theme = Struct.new(:id, :name, :css_class)
 
     # All available Themes
     THEMES = [
-      Theme.new(1, 'Graphite', 'ui_graphite'),
-      Theme.new(2, 'Charcoal', 'ui_charcoal'),
-      Theme.new(3, 'Green',    'ui_green'),
-      Theme.new(4, 'Black',    'ui_black'),
-      Theme.new(5, 'Violet',   'ui_violet'),
-      Theme.new(6, 'Blue',     'ui_blue')
+      Theme.new(1, 'Indigo', 'ui_indigo'),
+      Theme.new(2, 'Dark', 'ui_dark'),
+      Theme.new(3, 'Light', 'ui_light'),
+      Theme.new(4, 'Blue', 'ui_blue'),
+      Theme.new(5, 'Green', 'ui_green')
     ].freeze
 
     # Convenience method to get a space-separated String of all the theme
@@ -74,13 +73,11 @@ module Gitlab
     private
 
     def default_id
-      id = Gitlab.config.gitlab.default_theme.to_i
+      @default_id ||= begin
+        id = Gitlab.config.gitlab.default_theme.to_i
+        theme_ids = THEMES.map(&:id)
 
-      # Prevent an invalid configuration setting from causing an infinite loop
-      if id < THEMES.first.id || id > THEMES.last.id
-        APPLICATION_DEFAULT
-      else
-        id
+        theme_ids.include?(id) ? id : APPLICATION_DEFAULT
       end
     end
   end

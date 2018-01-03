@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Environment do
   let(:entry) { described_class.new(config) }
 
-  before { entry.compose! }
+  before do
+    entry.compose!
+  end
 
   context 'when configuration is a string' do
     let(:config) { 'production' }
@@ -151,8 +153,8 @@ describe Gitlab::Ci::Config::Entry::Environment do
 
   context 'when variables are used for environment' do
     let(:config) do
-      { name: 'review/$CI_BUILD_REF_NAME',
-        url: 'https://$CI_BUILD_REF_NAME.review.gitlab.com' }
+      { name: 'review/$CI_COMMIT_REF_NAME',
+        url: 'https://$CI_COMMIT_REF_NAME.review.gitlab.com' }
     end
 
     describe '#valid?' do
@@ -193,23 +195,6 @@ describe Gitlab::Ci::Config::Entry::Environment do
         it 'contains error about missing environment name' do
           expect(entry.errors)
             .to include "environment name can't be blank"
-        end
-      end
-    end
-
-    context 'when invalid URL is used' do
-      let(:config) { { name: 'test', url: 'invalid-example.gitlab.com' } }
-
-      describe '#valid?' do
-        it 'is not valid' do
-          expect(entry).not_to be_valid
-        end
-      end
-
-      describe '#errors?' do
-        it 'contains error about invalid URL' do
-          expect(entry.errors)
-            .to include "environment url must be a valid url"
         end
       end
     end

@@ -42,9 +42,7 @@ class InvitesController < ApplicationController
     @token = params[:id]
     @member = Member.find_by_invite_token(@token)
 
-    unless @member
-      render_404 and return
-    end
+    return render_404 unless @member
 
     @member
   end
@@ -53,7 +51,7 @@ class InvitesController < ApplicationController
     return if current_user
 
     notice = "To accept this invitation, sign in"
-    notice << " or create an account" if current_application_settings.signup_enabled?
+    notice << " or create an account" if current_application_settings.allow_signup?
     notice << "."
 
     store_location_for :user, request.fullpath
@@ -65,7 +63,7 @@ class InvitesController < ApplicationController
     when Project
       project = member.source
       label = "project #{project.name_with_namespace}"
-      path = namespace_project_path(project.namespace, project)
+      path = project_path(project)
     when Group
       group = member.source
       label = "group #{group.name}"

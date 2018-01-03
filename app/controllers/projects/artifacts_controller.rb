@@ -1,11 +1,13 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
+  include RendersBlob
 
   layout 'project'
   before_action :authorize_read_build!
   before_action :authorize_update_build!, only: [:keep]
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!
+  before_action :entry, only: [:file]
 
   def download
     if artifacts_file.file_storage?
@@ -16,25 +18,42 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def browse
-    directory = params[:path] ? "#{params[:path]}/" : ''
+    @path = params[:path]
+    directory = @path ? "#{@path}/" : ''
     @entry = build.artifacts_metadata_entry(directory)
 
     render_404 unless @entry.exists?
   end
 
   def file
-    entry = build.artifacts_metadata_entry(params[:path])
+    blob = @entry.blob
+    conditionally_expand_blob(blob)
 
-    if entry.exists?
-      send_artifacts_entry(build, entry)
+    if blob.external_link?(build)
+      redirect_to blob.external_url(@project, build)
     else
-      render_404
+      respond_to do |format|
+        format.html do
+          render 'file'
+        end
+
+        format.json do
+          render_blob_json(blob)
+        end
+      end
     end
+  end
+
+  def raw
+    path = Gitlab::Ci::Build::Artifacts::Path
+      .new(params[:path])
+
+    send_artifacts_entry(build, path)
   end
 
   def keep
     build.keep_artifacts!
-    redirect_to namespace_project_build_path(project.namespace, project, build)
+    redirect_to project_job_path(project, build)
   end
 
   def latest_succeeded
@@ -60,11 +79,14 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build
-    @build ||= build_from_id || build_from_ref
+    @build ||= begin
+      build = build_from_id || build_from_ref
+      build&.present(current_user: current_user)
+    end
   end
 
   def build_from_id
-    project.builds.find_by(id: params[:build_id]) if params[:build_id]
+    project.builds.find_by(id: params[:job_id]) if params[:job_id]
   end
 
   def build_from_ref
@@ -76,5 +98,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifacts_file
     @artifacts_file ||= build.artifacts_file
+  end
+
+  def entry
+    @entry = build.artifacts_metadata_entry(params[:path])
+
+    render_404 unless @entry.exists?
   end
 end

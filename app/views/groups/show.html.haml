@@ -1,58 +1,45 @@
 - @no_container = true
+- breadcrumb_title "Details"
+- can_create_subgroups = can?(current_user, :create_subgroup, @group)
 
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
+  = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 
-.group-home-panel.text-center
-  %div{ class: container_class }
-    .avatar-container.s70.group-avatar
-      = image_tag group_icon(@group), class: "avatar s70 avatar-tile"
-    %h1.group-title
-      @#{@group.path}
-      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-        = visibility_level_icon(@group.visibility_level, fw: false)
+= render 'groups/home_panel'
 
-    - if @group.description.present?
-      .group-home-desc
-        = markdown_field(@group, :description)
-
-    - if current_user
-      .group-buttons
-        = render 'shared/members/access_request_buttons', source: @group
-        = render 'shared/notifications/button', notification_setting: @notification_setting
-
-%div.groups-header{ class: container_class }
-  .top-area
-    %ul.nav-links
-      %li.active
-        = link_to "#projects", 'data-toggle' => 'tab' do
-          All Projects
-      - if @shared_projects.present?
-        %li
-          = link_to "#shared", 'data-toggle' => 'tab' do
-            Shared Projects
-      - if @nested_groups.present?
-        %li
-          = link_to "#groups", 'data-toggle' => 'tab' do
-            Subgroups
-    .nav-controls
-      = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-        = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
-      = render 'shared/projects/dropdown'
+.groups-header{ class: container_class }
+  .group-nav-container
+    .nav-controls.clearfix
+      = render "shared/groups/search_form"
+      = render "shared/groups/dropdown", show_archive_options: true
       - if can? current_user, :create_projects, @group
-        = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
-          New Project
+        - new_project_label = _("New project")
+        - new_subgroup_label = _("New subgroup")
+        - if can_create_subgroups
+          .btn-group.new-project-subgroup.droplab-dropdown.js-new-project-subgroup{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
+            %input.btn.btn-success.dropdown-primary.js-new-group-child{ type: "button", value: new_project_label, data: { action: "new-project" } }
+            %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown" } }
+              = icon("caret-down", class: "dropdown-btn-icon")
+            %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-align-right{ data: { dropdown: true } }
+              %li.droplab-item-selected{ role: "button", data: { value: "new-project", text: new_project_label } }
+                .menu-item
+                  .icon-container
+                    = icon("check", class: "list-item-checkmark")
+                  .description
+                    %strong= new_project_label
+                    %span= s_("GroupsTree|Create a project in this group.")
+              %li.divider.droplap-item-ignore
+              %li{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
+                .menu-item
+                  .icon-container
+                    = icon("check", class: "list-item-checkmark")
+                  .description
+                    %strong= new_subgroup_label
+                    %span= s_("GroupsTree|Create a subgroup in this group.")
+        - else
+          = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success"
 
-  .tab-content
-    .tab-pane.active#projects
-      = render "projects", projects: @projects
-
-    - if @shared_projects.present?
-      .tab-pane#shared
-        = render "shared_projects", projects: @shared_projects
-
-    - if @nested_groups.present?
-      .tab-pane#groups
-        %ul.content-list
-          = render partial: 'shared/groups/group', collection: @nested_groups
+  - if params[:filter].blank? && !@has_children
+    = render "shared/groups/empty_state"
+  - else
+    = render "children", children: @children, group: @group

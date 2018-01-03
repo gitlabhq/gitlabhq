@@ -9,7 +9,7 @@ describe Gitlab::Allowable do
     let(:user) { create(:user) }
 
     context 'when user is allowed to do something' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       it 'reports correct ability to perform action' do
         expect(subject.can?(user, :read_project, project)).to be true
@@ -17,7 +17,7 @@ describe Gitlab::Allowable do
     end
 
     context 'when user is not allowed to do something' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
 
       it 'reports correct ability to perform action' do
         expect(subject.can?(user, :read_project, project)).to be false

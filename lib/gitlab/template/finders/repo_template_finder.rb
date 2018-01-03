@@ -4,7 +4,7 @@ module Gitlab
     module Finders
       class RepoTemplateFinder < BaseTemplateFinder
         # Raised when file is not found
-        class FileNotFoundError < StandardError; end
+        FileNotFoundError = Class.new(StandardError)
 
         def initialize(project, base_dir, extension, categories = {})
           @categories     = categories
@@ -18,6 +18,7 @@ module Gitlab
         def read(path)
           blob = @repository.blob_at(@commit.id, path) if @commit
           raise FileNotFoundError if blob.nil?
+
           blob.data
         end
 

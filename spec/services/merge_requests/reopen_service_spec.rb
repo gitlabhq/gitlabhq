@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::ReopenService, services: true do
+describe MergeRequests::ReopenService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
@@ -8,12 +8,14 @@ describe MergeRequests::ReopenService, services: true do
   let(:project) { merge_request.project }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
+    it_behaves_like 'cache counters invalidator'
+
     context 'valid params' do
       let(:service) { described_class.new(project, user, {}) }
 
@@ -26,11 +28,11 @@ describe MergeRequests::ReopenService, services: true do
       end
 
       it { expect(merge_request).to be_valid }
-      it { expect(merge_request).to be_reopened }
+      it { expect(merge_request).to be_opened }
 
       it 'executes hooks with reopen action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(merge_request, 'reopen')
+        expect(service).to have_received(:execute_hooks)
+                               .with(merge_request, 'reopen')
       end
 
       it 'sends email to user2 about reopen of merge_request' do
@@ -43,6 +45,13 @@ describe MergeRequests::ReopenService, services: true do
         note = merge_request.notes.last
         expect(note.note).to include 'reopened'
       end
+    end
+
+    it 'refreshes the number of open merge requests for a valid MR' do
+      service = described_class.new(project, user, {})
+
+      expect { service.execute(merge_request) }
+        .to change { project.open_merge_requests_count }.from(0).to(1)
     end
 
     context 'current user is not authorized to reopen merge request' do

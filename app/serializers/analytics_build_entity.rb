@@ -25,7 +25,7 @@ class AnalyticsBuildEntity < Grape::Entity
   end
 
   expose :url do |build|
-    url_to(:namespace_project_build, build)
+    url_to(:namespace_project_job, build)
   end
 
   expose :commit_url do |build|
@@ -35,6 +35,6 @@ class AnalyticsBuildEntity < Grape::Entity
   private
 
   def url_to(route, build, id = nil)
-    public_send("#{route}_url", build.project.namespace, build.project, id || build)
+    public_send("#{route}_url", build.project.namespace, build.project, id || build) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

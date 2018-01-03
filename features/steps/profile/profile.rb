@@ -36,7 +36,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I should see new avatar' do
     expect(@user.avatar).to be_instance_of AvatarUploader
-    expect(@user.avatar.url).to eq "/uploads/user/avatar/#{@user.id}/banana_sample.gif"
+    expect(@user.avatar.url).to eq "/uploads/-/system/user/avatar/#{@user.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -162,10 +162,10 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I have group with projects' do
     @group = create(:group)
     @group.add_owner(current_user)
-    @project = create(:project, namespace: @group)
+    @project = create(:project, :repository, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
-    @project.team << [current_user, :master]
+    @project.add_master(current_user)
   end
 
   step 'I should see groups I belong to' do

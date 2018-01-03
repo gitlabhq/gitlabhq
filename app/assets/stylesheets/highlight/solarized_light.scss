@@ -13,8 +13,14 @@ $solarized-light-pre-bg: #002b36;
 $solarized-light-pre-bg: #fdf6e3;
 $solarized-light-pre-color: #586e75;
 $solarized-light-line-bg: #fdf6e3;
+$solarized-light-line-color: rgba(0, 0, 0, 0.3);
+$solarized-light-line-color-new: #a1a080;
+$solarized-light-line-color-old: #ad9186;
 $solarized-light-highlight: #eee8d5;
 $solarized-light-hll-bg: #ddd8c5;
+$solarized-light-over-bg: #ded7fc;
+$solarized-light-expanded-border: #d2cdbd;
+$solarized-light-expanded-bg: #ece6d4;
 $solarized-light-c: #93a1a1;
 $solarized-light-err: #586e75;
 $solarized-light-g: #586e75;
@@ -98,7 +104,7 @@ $solarized-light-il: #2aa198;
 
   .diff-line-num,
   .diff-line-num a {
-    color: $black-transparent;
+    color: $solarized-light-line-color;
   }
 
   // Code itself
@@ -130,15 +136,53 @@ $solarized-light-il: #2aa198;
     .line_content.new {
       @include diff_background($solarized-light-new-bg,
       $solarized-light-new-idiff, $solarized-light-border);
+
+      &::before,
+      a {
+        color: $solarized-light-line-color-new;
+      }
     }
 
     .diff-line-num.old,
     .line_content.old {
       @include diff_background($solarized-light-old-bg, $solarized-light-old-idiff, $solarized-light-border);
+
+      &::before,
+      a {
+        color: $solarized-light-line-color-old;
+      }
+    }
+
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $solarized-light-over-bg;
+        border-color: darken($solarized-light-over-bg, 5%);
+
+        a {
+          color: darken($solarized-light-over-bg, 15%);
+        }
+      }
     }
 
     .line_content.match {
       @include matchLine;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $solarized-light-expanded-border;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $solarized-light-expanded-bg;
+        border-color: $solarized-light-expanded-bg;
+      }
     }
   }
 
@@ -150,6 +194,11 @@ $solarized-light-il: #2aa198;
   // Search result highlight
   span.highlight_word {
     background-color: $solarized-light-highlight !important;
+  }
+
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $solarized-light-kd;
   }
 
   /* Solarized Light
@@ -190,7 +239,7 @@ $solarized-light-il: #2aa198;
   .gi { color: $solarized-light-gi; } /* Generic.Inserted */
   .go { color: $solarized-light-go; } /* Generic.Output */
   .gp { color: $solarized-light-gp; } /* Generic.Prompt */
-  .gs { color: $solarized-light-gs; font-weight: bold; } /* Generic.Strong */
+  .gs { color: $solarized-light-gs; font-weight: $gl-font-weight-bold; } /* Generic.Strong */
   .gu { color: $solarized-light-gu; } /* Generic.Subheading */
   .gt { color: $solarized-light-gt; } /* Generic.Traceback */
   .kc { color: $solarized-light-kc; } /* Keyword.Constant */

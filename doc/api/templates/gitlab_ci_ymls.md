@@ -1,4 +1,4 @@
-# GitLab CI YMLs
+# GitLab CI YMLs API
 
 ## List GitLab CI YML templates
 
@@ -9,7 +9,7 @@ GET /templates/gitlab_ci_ymls
 ```
 
 ```bash
-curl https://gitlab.example.com/api/v3/templates/gitlab_ci_ymls
+curl https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls
 ```
 
 Example response:
@@ -107,7 +107,7 @@ GET /templates/gitlab_ci_ymls/:key
 | `key`      | string | yes      | The key of the GitLab CI YML template |
 
 ```bash
-curl https://gitlab.example.com/api/v3/templates/gitlab_ci_ymls/Ruby
+curl https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls/Ruby
 ```
 
 Example response:

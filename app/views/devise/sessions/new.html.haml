@@ -6,15 +6,15 @@
   - else
     = render 'devise/shared/tabs_normal'
   .tab-content
-    - if signin_enabled? || ldap_enabled? || crowd_enabled?
+    - if password_authentication_enabled_for_web? || ldap_enabled? || crowd_enabled?
       = render 'devise/shared/signin_box'
 
     -# Signup only makes sense if you can also sign-in
-    - if signin_enabled? && signup_enabled?
+    - if allow_signup?
       = render 'devise/shared/signup_box'
 
   -# Show a message if none of the mechanisms above are enabled
-  - if !signin_enabled? && !ldap_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
+  - if !password_authentication_enabled_for_web? && !ldap_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
     %div
       No authentication methods configured.
 

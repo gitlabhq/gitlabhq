@@ -1,7 +1,8 @@
 - page_title "Applications"
+- @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
@@ -10,7 +11,7 @@
         and applications that you've authorized to use your account.
       - else
         Manage applications that you've authorized to use your account.
-  .col-lg-9
+  .col-lg-8
     - if user_oauth_applications?
       %h5.prepend-top-0
         Add new application
@@ -31,7 +32,7 @@
                   %th.last-heading
               %tbody
                 - @applications.each do |application|
-                  %tr{id: "application_#{application.id}"}
+                  %tr{ id: "application_#{application.id}" }
                     %td= link_to application.name, oauth_application_path(application)
                     %td
                       - application.redirect_uri.split.each do |uri|
@@ -63,7 +64,7 @@
             %tbody
               - @authorized_apps.each do |app|
                 - token = app.authorized_tokens.order('created_at desc').first
-                %tr{id: "application_#{app.id}"}
+                %tr{ id: "application_#{app.id}" }
                   %td= app.name
                   %td= token.created_at
                   %td= token.scopes
@@ -72,7 +73,7 @@
                 %tr
                   %td
                     Anonymous
-                    %div.help-block
+                    .help-block
                       %em Authorization was granted by entering your username and password in the application.
                   %td= token.created_at
                   %td= token.scopes

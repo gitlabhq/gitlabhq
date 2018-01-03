@@ -1,44 +1,27 @@
 require 'spec_helper'
 
 describe Projects::GraphsController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
-  describe 'GET #languages' do
-    let(:linguist_repository) do
-      double(languages: {
-               'Ruby'         => 1000,
-               'CoffeeScript' => 350,
-               'PowerShell'   => 15
-             })
+  describe 'GET languages' do
+    it "redirects_to action charts" do
+      get(:commits, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
+
+      expect(response).to redirect_to action: :charts
     end
+  end
 
-    let(:expected_values) do
-      ps_color = "##{Digest::SHA256.hexdigest('PowerShell')[0...6]}"
-      [
-        # colors from Linguist:
-        { label: "Ruby",         color: "#701516", highlight: "#701516" },
-        { label: "CoffeeScript", color: "#244776", highlight: "#244776" },
-        # colors from SHA256 fallback:
-        { label: "PowerShell",   color: ps_color,  highlight: ps_color  }
-      ]
-    end
+  describe 'GET commits' do
+    it "redirects_to action charts" do
+      get(:commits, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
 
-    before do
-      allow(Linguist::Repository).to receive(:new).and_return(linguist_repository)
-    end
-
-    it 'sets the correct colour according to language' do
-      get(:languages, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
-
-      expected_values.each do |val|
-        expect(assigns(:languages)).to include(a_hash_including(val))
-      end
+      expect(response).to redirect_to action: :charts
     end
   end
 end

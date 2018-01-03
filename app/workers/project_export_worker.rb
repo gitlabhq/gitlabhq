@@ -1,6 +1,6 @@
 class ProjectExportWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
+  include ExceptionBacktrace
 
   sidekiq_options retry: 3
 

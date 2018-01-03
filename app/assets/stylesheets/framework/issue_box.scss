@@ -24,8 +24,12 @@
   font-size: $gl-font-size;
   line-height: 25px;
 
-  &.status-box-closed {
+  &.status-box-mr-closed {
     background-color: $gl-danger;
+  }
+
+  &.status-box-issue-closed {
+    background-color: $gl-primary;
   }
 
   &.status-box-merged {
@@ -33,7 +37,7 @@
   }
 
   &.status-box-open {
-    background-color: $green-light;
+    background-color: $green-500;
   }
 
   &.status-box-expired {
@@ -41,6 +45,6 @@
   }
 
   &.status-box-upcoming {
-    background: $gl-gray-light;
+    background: $gl-text-color-secondary;
   }
 }

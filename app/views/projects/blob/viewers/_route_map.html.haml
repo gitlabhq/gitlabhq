@@ -1,0 +1,9 @@
+- if viewer.valid?
+  = icon('check fw')
+  This Route Map is valid.
+- else
+  = icon('warning fw')
+  This Route Map is invalid:
+  = viewer.validation_message
+
+= link_to 'Learn more', help_page_path('ci/environments', anchor: 'go-directly-from-source-files-to-public-pages-on-the-environment')

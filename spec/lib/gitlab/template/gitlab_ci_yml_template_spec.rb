@@ -25,8 +25,16 @@ describe Gitlab::Template::GitlabCiYmlTemplate do
     it 'returns the GitlabCiYml object of a valid file' do
       ruby = subject.find('Ruby')
 
-      expect(ruby).to be_a Gitlab::Template::GitlabCiYmlTemplate
+      expect(ruby).to be_a described_class
       expect(ruby.name).to eq('Ruby')
+    end
+  end
+
+  describe '.by_category' do
+    it 'returns sorted results' do
+      result = described_class.by_category('General')
+
+      expect(result).to eq(result.sort)
     end
   end
 
@@ -36,6 +44,16 @@ describe Gitlab::Template::GitlabCiYmlTemplate do
 
       expect(gitignore.name).to eq 'Ruby'
       expect(gitignore.content).to start_with('#')
+    end
+  end
+
+  describe '#<=>' do
+    it 'sorts lexicographically' do
+      one = described_class.new('a.gitlab-ci.yml')
+      other = described_class.new('z.gitlab-ci.yml')
+
+      expect(one.<=>(other)).to be(-1)
+      expect([other, one].sort).to eq([one, other])
     end
   end
 end

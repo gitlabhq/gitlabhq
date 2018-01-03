@@ -8,6 +8,8 @@ module Banzai
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
+      include RequestStoreReferenceCache
+
       class << self
         attr_accessor :reference_type
       end
@@ -20,18 +22,22 @@ module Banzai
       # Examples:
       #
       #   data_attribute(project: 1, issue: 2)
-      #   # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
+      #   # => "data-reference-type=\"SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
       #
       #   data_attribute(project: 3, merge_request: 4)
-      #   # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
+      #   # => "data-reference-type=\"SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
       #
       # Returns a String
       def data_attribute(attributes = {})
         attributes = attributes.reject { |_, v| v.nil? }
 
         attributes[:reference_type] ||= self.class.reference_type
+        attributes[:container] ||= 'body'
+        attributes[:placement] ||= 'bottom'
         attributes.delete(:original) if context[:no_original_data]
-        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
+        attributes.map do |key, value|
+          %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
+        end.join(' ')
       end
 
       def escape_once(html)
@@ -49,6 +55,14 @@ module Banzai
 
       def project
         context[:project]
+      end
+
+      def group
+        context[:group]
+      end
+
+      def skip_project_check?
+        context[:skip_project_check]
       end
 
       def reference_class(type)

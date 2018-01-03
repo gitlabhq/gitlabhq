@@ -1,14 +1,13 @@
 class Explore::ProjectsController < Explore::ApplicationController
-  include FilterProjects
+  include ParamsBackwardCompatibility
+  include RendersMemberAccess
+
+  before_action :set_non_archived_param
 
   def index
-    @projects = ProjectsFinder.new.execute(current_user)
-    @tags = @projects.tags_on(:tags)
-    @projects = @projects.tagged_with(params[:tag]) if params[:tag].present?
-    @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
-    @projects = filter_projects(@projects)
-    @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.includes(:namespace).page(params[:page])
+    params[:sort] ||= 'latest_activity_desc'
+    @sort = params[:sort]
+    @projects = load_projects
 
     respond_to do |format|
       format.html
@@ -21,8 +20,9 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def trending
-    @projects = filter_projects(Project.trending)
-    @projects = @projects.page(params[:page])
+    params[:trending] = true
+    @sort = params[:sort]
+    @projects = load_projects
 
     respond_to do |format|
       format.html
@@ -35,10 +35,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def starred
-    @projects = ProjectsFinder.new.execute(current_user)
-    @projects = filter_projects(@projects)
-    @projects = @projects.reorder('star_count DESC')
-    @projects = @projects.page(params[:page])
+    @projects = load_projects.reorder('star_count DESC')
 
     respond_to do |format|
       format.html
@@ -48,5 +45,17 @@ class Explore::ProjectsController < Explore::ApplicationController
         }
       end
     end
+  end
+
+  private
+
+  def load_projects
+    projects = ProjectsFinder.new(current_user: current_user, params: params)
+                 .execute
+                 .includes(:route, namespace: :route)
+                 .page(params[:page])
+                 .without_count
+
+    prepare_projects_for_rendering(projects)
   end
 end

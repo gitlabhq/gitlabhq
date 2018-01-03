@@ -17,7 +17,7 @@ module MarkdownMatchers
       image = actual.at_css('img[alt="Relative Image"]')
 
       expect(link['href']).to end_with('master/doc/README.md')
-      expect(image['src']).to end_with('master/app/assets/images/touch-icon-ipad.png')
+      expect(image['data-src']).to end_with('master/app/assets/images/touch-icon-ipad.png')
     end
   end
 
@@ -26,10 +26,11 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('img.emoji', count: 10)
+      expect(actual).to have_selector('gl-emoji', count: 10)
 
-      image = actual.at_css('img.emoji')
-      expect(image['src'].to_s).to start_with(Gitlab.config.gitlab.url + '/assets')
+      emoji_element = actual.at_css('gl-emoji')
+      expect(emoji_element['data-name'].to_s).not_to be_empty
+      expect(emoji_element['data-unicode-version'].to_s).not_to be_empty
     end
   end
 
@@ -69,7 +70,7 @@ module MarkdownMatchers
   # GollumTagsFilter
   matcher :parse_gollum_tags do
     def have_image(src)
-      have_css("img[src$='#{src}']")
+      have_css("img[data-src$='#{src}']")
     end
 
     prefix = '/namespace1/gitlabhq/wikis'
@@ -154,7 +155,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 6)
+      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 8)
     end
   end
 

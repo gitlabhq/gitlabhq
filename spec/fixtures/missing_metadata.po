@@ -1,0 +1,4 @@
+msgid "1 commit"
+msgid_plural "%d commits"
+msgstr[0] "1 cambio"
+msgstr[1] "%d cambios"

@@ -1,13 +1,12 @@
+- @hide_top_links = true
 - page_title "Groups"
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
-- if @group_members.empty?
-  = render 'empty_state'
-- else
-  %ul.content-list
-    - @group_members.each do |group_member|
-      - group = group_member.group
-      = render 'shared/groups/group', group: group, group_member: group_member
+= webpack_bundle_tag 'common_vue'
+= webpack_bundle_tag 'groups'
 
-  = paginate @group_members, theme: 'gitlab'
+- if params[:filter].blank? && @groups.empty?
+  = render 'shared/groups/empty_state'
+- else
+  = render 'groups'

@@ -746,3 +746,5 @@ u2f.getApiVersion = function(callback, opt_timeoutSeconds) {
         port.postMessage(req);
     });
 };
+
+window.u2f || (window.u2f = u2f);

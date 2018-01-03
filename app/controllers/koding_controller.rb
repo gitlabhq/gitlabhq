@@ -1,5 +1,5 @@
 class KodingController < ApplicationController
-  before_action :check_integration!, :authenticate_user!, :reject_blocked!
+  before_action :check_integration!
   layout 'koding'
 
   def index

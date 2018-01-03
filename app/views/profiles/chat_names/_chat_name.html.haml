@@ -10,7 +10,7 @@
   %td
     %strong
       - if can?(current_user, :admin_project, project)
-        = link_to service.title, edit_namespace_project_service_path(project.namespace, project, service)
+        = link_to service.title, edit_project_service_path(project, service)
       - else
         = service.title
   %td

@@ -1,36 +1,3 @@
-.page-with-sidebar {
-  padding: $header-height 0 25px;
-  transition: padding $sidebar-transition-duration;
-
-  &.page-sidebar-pinned {
-    .sidebar-wrapper {
-      box-shadow: none;
-    }
-  }
-
-  .sidebar-wrapper {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    width: 0;
-    overflow: hidden;
-    transition: width $sidebar-transition-duration;
-    box-shadow: 2px 0 16px 0 $black-transparent;
-  }
-}
-
-.sidebar-wrapper {
-  z-index: 1000;
-  background: $gray-light;
-
-  .nicescroll-rails-hr {
-    // TODO: Figure out why nicescroll doesn't hide horizontal bar
-    display: none!important;
-  }
-}
-
 .content-wrapper {
   width: 100%;
   transition: padding $sidebar-transition-duration;
@@ -42,106 +9,7 @@
     &.container-blank {
       background: none;
       padding: 0;
-      border: none;
-    }
-  }
-}
-
-.nav-sidebar {
-  position: absolute;
-  top: 50px;
-  bottom: 0;
-  width: $sidebar_width;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  &.navbar-collapse {
-    padding: 0 !important;
-  }
-
-  li {
-    &.separate-item {
-      padding-top: 10px;
-      margin-top: 10px;
-    }
-
-    .icon-container {
-      width: 34px;
-      display: inline-block;
-      text-align: center;
-    }
-
-    a {
-      padding: 7px $gl-sidebar-padding;
-      font-size: $gl-font-size;
-      line-height: 24px;
-      display: block;
-      text-decoration: none;
-      font-weight: normal;
-
-      &:hover,
-      &:active,
-      &:focus {
-        text-decoration: none;
-      }
-
-      i {
-        font-size: 16px;
-      }
-
-      i,
-      svg {
-        margin-right: 13px;
-      }
-    }
-  }
-
-  .count {
-    float: right;
-    padding: 0 8px;
-    border-radius: 6px;
-  }
-
-  .about-gitlab {
-    padding: 7px $gl-sidebar-padding;
-    font-size: $gl-font-size;
-    line-height: 24px;
-    display: block;
-    text-decoration: none;
-    font-weight: normal;
-    position: absolute;
-    bottom: 10px;
-  }
-}
-
-.sidebar-action-buttons {
-  width: $sidebar_width;
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 50px;
-  padding: 5px 0;
-  font-size: 18px;
-  line-height: 30px;
-
-  .toggle-nav-collapse {
-    left: 0;
-  }
-
-  .pin-nav-btn {
-    right: 0;
-    display: none;
-
-    @media (min-width: $sidebar-breakpoint) {
-      display: block;
-    }
-
-    .fa {
-      transition: transform .15s;
-
-      .page-sidebar-pinned & {
-        transform: rotate(90deg);
-      }
+      border: 0;
     }
   }
 }
@@ -161,89 +29,127 @@
   }
 }
 
-.page-sidebar-expanded {
-  .sidebar-wrapper {
-    width: $sidebar_width;
-  }
-}
-
-.page-sidebar-pinned {
-  .content-wrapper,
-  .layout-nav {
-    @media (min-width: $sidebar-breakpoint) {
-      padding-left: $sidebar_width;
-    }
-  }
-
-  .merge-request-tabs-holder.affix {
-    @media (min-width: $sidebar-breakpoint) {
-      left: $sidebar_width;
-    }
-  }
-
-  &.right-sidebar-expanded {
-    .line-resolve-all-container {
-      display: none;
-    }
-  }
-}
-
-header.header-sidebar-pinned {
-  @media (min-width: $sidebar-breakpoint) {
-    padding-left: ($sidebar_width + $gl-padding);
-
-    .side-nav-toggle {
-      display: none;
-    }
-
-    .header-content {
-      padding-left: 0;
-    }
-  }
-}
-
 .right-sidebar-collapsed {
   padding-right: 0;
 
   @media (min-width: $screen-sm-min) {
-    padding-right: $sidebar_collapsed_width;
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
+      padding-right: $gutter_collapsed_width;
+    }
 
     .merge-request-tabs-holder.affix {
-      right: $sidebar_collapsed_width;
+      right: $gutter_collapsed_width;
     }
   }
 
   .sidebar-collapsed-icon {
-    cursor: pointer;
-
     .btn {
       background-color: $gray-light;
+    }
+
+    &:not(.disabled) {
+      cursor: pointer;
+    }
+
+    svg {
+      width: $gl-padding;
+      height: $gl-padding;
     }
   }
 }
 
 .right-sidebar-expanded {
   padding-right: 0;
+  z-index: 300;
+
+  .btn-sidebar-action {
+    display: inline-flex;
+  }
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    &:not(.build-sidebar):not(.wiki-sidebar) {
-      padding-right: $sidebar_collapsed_width;
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
+      padding-right: $gutter_collapsed_width;
     }
   }
 
   @media (min-width: $screen-md-min) {
-    padding-right: $gutter_width;
+    .content-wrapper {
+      padding-right: $gutter_width;
+    }
 
-    .merge-request-tabs-holder.affix {
+    &:not(.with-overlay) .merge-request-tabs-holder.affix {
       right: $gutter_width;
     }
-  }
 
-  &.with-overlay {
-    padding-right: $sidebar_collapsed_width;
+    &.with-overlay .merge-request-tabs-holder.affix {
+      right: $gutter_collapsed_width;
+    }
   }
 }
 
 .right-sidebar {
   border-left: 1px solid $border-color;
+  height: calc(100% - #{$header-height});
+}
+
+.with-performance-bar .right-sidebar.affix {
+  top: $header-height + $performance-bar-height;
+}
+
+@mixin maintain-sidebar-dimensions {
+  display: block;
+  width: $gutter-width;
+}
+
+.issues-bulk-update.right-sidebar {
+  @include maintain-sidebar-dimensions;
+  width: 0;
+  padding: 0;
+  transition: width $sidebar-transition-duration;
+
+  &.right-sidebar-expanded {
+    @include maintain-sidebar-dimensions;
+    width: $gutter-width;
+
+    .issuable-sidebar-header {
+      // matches `.top-area .nav-controls` for issuable index pages
+      padding: 11px 0;
+    }
+
+    .block:last-of-type {
+      border: 0;
+    }
+  }
+
+  &.right-sidebar-collapsed {
+    @include maintain-sidebar-dimensions;
+    width: 0;
+    padding: 0;
+
+    .block {
+      padding: 16px 0;
+      width: 250px;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
+  .issuable-sidebar {
+    padding: 0 3px;
+    width: calc(100% + 35px);
+  }
+}
+
+.pikaday-container {
+  .pika-single {
+    margin-top: 2px;
+    width: 250px;
+  }
+
+  .dropdown-menu-toggle {
+    line-height: 20px;
+  }
+}
+
+.sidebar-collapsed-icon .sidebar-collapsed-value {
+  font-size: 12px;
 }

@@ -18,4 +18,14 @@ shared_examples 'badge metadata' do
     it { is_expected.to include metadata.image_url }
     it { is_expected.to include metadata.link_url }
   end
+
+  describe '#to_asciidoc' do
+    subject { metadata.to_asciidoc }
+
+    it { is_expected.to include metadata.image_url }
+    it { is_expected.to include metadata.link_url }
+    it { is_expected.to include 'image:' }
+    it { is_expected.to include 'link=' }
+    it { is_expected.to include 'title=' }
+  end
 end

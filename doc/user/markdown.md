@@ -41,7 +41,7 @@ Line-breaks, or softreturns, are rendered if you end a line with two or more spa
 
     Sugar is sweet
 
-Roses are red  
+Roses are red
 Violets are blue
 
 Sugar is sweet
@@ -195,12 +195,23 @@ With inline diffs tags you can display {+ additions +} or [- deletions -].
 
 The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
 
+Examples:
+
+```
+- {+ additions +}
+- [+ additions +]
+- {- deletions -}
+- [- deletions -]
+```
+
 However the wrapping tags cannot be mixed as such:
 
+```
 - {+ additions +]
 - [+ additions +}
 - {- deletions -]
 - [- deletions -}
+```
 
 ### Emoji
 
@@ -237,23 +248,24 @@ GFM will turn that reference into a link so you can navigate between them easily
 
 GFM will recognize the following:
 
-| input                  | references                   |
-|:-----------------------|:---------------------------  |
-| `@user_name`           | specific user                |
-| `@group_name`          | specific group               |
-| `@all`                 | entire team                  |
-| `#123`                 | issue                        |
-| `!123`                 | merge request                |
-| `$123`                 | snippet                      |
-| `~123`                 | label by ID                  |
-| `~bug`                 | one-word label by name       |
-| `~"feature request"`   | multi-word label by name     |
-| `%123`                 | milestone by ID              |
-| `%v1.23`               | one-word milestone by name   |
-| `%"release candidate"` | multi-word milestone by name |
-| `9ba12248`             | specific commit              |
-| `9ba12248...b19a04f5`  | commit range comparison      |
-| `[README](doc/README)` | repository file references   |
+| input                      | references                      |
+|:---------------------------|:--------------------------------|
+| `@user_name`               | specific user                   |
+| `@group_name`              | specific group                  |
+| `@all`                     | entire team                     |
+| `#123`                     | issue                           |
+| `!123`                     | merge request                   |
+| `$123`                     | snippet                         |
+| `~123`                     | label by ID                     |
+| `~bug`                     | one-word label by name          |
+| `~"feature request"`       | multi-word label by name        |
+| `%123`                     | project milestone by ID         |
+| `%v1.23`                   | one-word milestone by name      |
+| `%"release candidate"`     | multi-word milestone by name    |
+| `9ba12248`                 | specific commit                 |
+| `9ba12248...b19a04f5`      | commit range comparison         |
+| `[README](doc/README)`     | repository file references      |
+| `[README](doc/README#L13)` | repository file line references |
 
 GFM also recognizes certain cross-project references:
 
@@ -261,7 +273,7 @@ GFM also recognizes certain cross-project references:
 |:----------------------------------------|:------------------------|
 | `namespace/project#123`                 | issue                   |
 | `namespace/project!123`                 | merge request           |
-| `namespace/project%123`                 | milestone               |
+| `namespace/project%123`                 | project milestone       |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
@@ -273,7 +285,7 @@ It also has a shorthand version to reference other projects from the same namesp
 |:------------------------------|:------------------------|
 | `project#123`                 | issue                   |
 | `project!123`                 | merge request           |
-| `project%123`                 | milestone               |
+| `project%123`                 | project milestone       |
 | `project$123`                 | snippet                 |
 | `project@9ba12248`            | specific commit         |
 | `project@9ba12248...b19a04f5` | commit range comparison |
@@ -299,6 +311,20 @@ You can add task lists to issues, merge requests and comments. To create a task 
     - [ ] Sub-task 1
     - [x] Sub-task 2
     - [ ] Sub-task 3
+
+Tasks formatted as ordered lists are supported as well:
+
+```no-highlight
+1. [x] Completed task
+1. [ ] Incomplete task
+    1. [ ] Sub-task 1
+    1. [x] Sub-task 2
+```
+
+1. [x] Completed task
+1. [ ] Incomplete task
+    1. [ ] Sub-task 1
+    1. [x] Sub-task 2
 
 Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
@@ -352,6 +378,40 @@ _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
 >**Note:**
 This also works for the asciidoctor `:stem: latexmath`. For details see the [asciidoctor user manual][asciidoctor-manual].
+
+### Mermaid
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
+GitLab 10.3.
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
+
+It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
+
+Example:
+
+    ```mermaid
+    graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+    ```
+
+Becomes:
+
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
+
+For details see the [Mermaid official page][mermaid].
 
 ## Standard Markdown
 
@@ -509,34 +569,11 @@ There are two ways to create links, inline-style and reference-style.
     [1]: http://slashdot.org
     [link text itself]: https://www.reddit.com
 
-[I'm an inline-style link](https://www.google.com)
-
-[I'm a reference-style link][Arbitrary case-insensitive reference text]
-
-[I'm a relative reference to a repository file](LICENSE)[^1]
-
-[I am an absolute reference within the repository](/doc/user/markdown.md)
-
-[I link to the Milestones page](/../milestones)
-
-[You can use numbers for reference-style link definitions][1]
-
-Or leave it empty and use the [link text itself][]
-
-Some text to show that the reference links can follow later.
-
-[arbitrary case-insensitive reference text]: https://www.mozilla.org
-[1]: http://slashdot.org
-[link text itself]: https://www.reddit.com
-
-**Note**
-
-Relative links do not allow referencing project files in a wiki page or wiki page in a project file. The reason for this is that, in GitLab, wiki is always a separate git repository. For example:
-
-`[I'm a reference-style link](style)`
-
+>**Note:**
+Relative links do not allow referencing project files in a wiki page or wiki
+page in a project file. The reason for this is that, in GitLab, wiki is always
+a separate Git repository. For example, `[I'm a reference-style link](style)`
 will point the link to `wikis/style` when the link is inside of a wiki markdown file.
-
 
 ### Images
 
@@ -584,7 +621,7 @@ Quote break.
 
 You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
-See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows `span` elements.
+See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
 ```no-highlight
 <dl>
@@ -603,6 +640,30 @@ See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubyd
   <dt>Markdown in HTML</dt>
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
+
+#### Details and Summary
+
+Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details) and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary) tags. This is especially useful for collapsing long logs so they take up less screen space.
+
+<p>
+<details>
+<summary>Click me to collapse/fold.</summary>
+These details will remain hidden until expanded.
+
+<pre><code>PASTE LOGS HERE</code></pre>
+</details>
+</p>
+
+**Note:** Unfortunately Markdown is not supported inside these tags, as described by the [markdown specification](https://daringfireball.net/projects/markdown/syntax#html). You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting).
+
+```html
+<details>
+<summary>Click me to collapse/fold.</summary>
+These details will remain hidden until expanded.
+
+<pre><code>PASTE LOGS HERE</code></pre>
+</details>
+```
 
 ### Horizontal Rule
 
@@ -648,10 +709,11 @@ Here's a line for us to start with.
 This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
 
 This line is also a separate paragraph, but...
-This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
-This line is on its own line, because the previous line ends with two
+This line is also a separate paragraph, and...
+This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
+
 spaces.
 ```
 
@@ -659,11 +721,12 @@ Here's a line for us to start with.
 
 This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
 
-This line is also begins a separate paragraph, but...
-This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+This line is also a separate paragraph, but...
+This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
-This line is on its own line, because the previous line ends with two
+This line is also a separate paragraph, and...
+This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
+
 spaces.
 
 ### Tables
@@ -796,6 +859,7 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
+[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

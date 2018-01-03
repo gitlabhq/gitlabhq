@@ -1,149 +1,72 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, padded-blocks, consistent-return */
-/* global FilesCommentButton */
+/* Developer beware! Do not add logic to showButton or hideButton
+ * that will force a reflow. Doing so will create a signficant performance
+ * bottleneck for pages with large diffs. For a comprehensive list of what
+ * causes reflows, visit https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+ */
 
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+import Cookies from 'js-cookie';
 
-  this.FilesCommentButton = (function() {
-    var COMMENT_BUTTON_CLASS, COMMENT_BUTTON_TEMPLATE, DEBOUNCE_TIMEOUT_DURATION, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
+const LINE_NUMBER_CLASS = 'diff-line-num';
+const UNFOLDABLE_LINE_CLASS = 'js-unfold';
+const NO_COMMENT_CLASS = 'no-comment-btn';
+const EMPTY_CELL_CLASS = 'empty-cell';
+const OLD_LINE_CLASS = 'old_line';
+const LINE_COLUMN_CLASSES = `.${LINE_NUMBER_CLASS}, .line_content`;
+const DIFF_CONTAINER_SELECTOR = '.files';
+const DIFF_EXPANDED_CLASS = 'diff-expanded';
 
-    COMMENT_BUTTON_CLASS = '.add-diff-note';
+export default {
+  init($diffFile) {
+    /* Caching is used only when the following members are *true*.
+     * This is because there are likely to be
+     * differently configured versions of diffs in the same session.
+     * However if these values are true, they
+     * will be true in all cases */
 
-    COMMENT_BUTTON_TEMPLATE = _.template('<button name="button" type="submit" class="btn <%- COMMENT_BUTTON_CLASS %> js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>');
-
-    LINE_HOLDER_CLASS = '.line_holder';
-
-    LINE_NUMBER_CLASS = 'diff-line-num';
-
-    LINE_CONTENT_CLASS = 'line_content';
-
-    UNFOLDABLE_LINE_CLASS = 'js-unfold';
-
-    EMPTY_CELL_CLASS = 'empty-cell';
-
-    OLD_LINE_CLASS = 'old_line';
-
-    LINE_COLUMN_CLASSES = "." + LINE_NUMBER_CLASS + ", .line_content";
-
-    TEXT_FILE_SELECTOR = '.text-file';
-
-    DEBOUNCE_TIMEOUT_DURATION = 100;
-
-    function FilesCommentButton(filesContainerElement) {
-      var debounce;
-      this.filesContainerElement = filesContainerElement;
-      this.destroy = bind(this.destroy, this);
-      this.render = bind(this.render, this);
-      this.VIEW_TYPE = $('input#view[type=hidden]').val();
-      debounce = _.debounce(this.render, DEBOUNCE_TIMEOUT_DURATION);
-      $(this.filesContainerElement).off('mouseover', LINE_COLUMN_CLASSES).off('mouseleave', LINE_COLUMN_CLASSES).on('mouseover', LINE_COLUMN_CLASSES, debounce).on('mouseleave', LINE_COLUMN_CLASSES, this.destroy);
+    if (!this.userCanCreateNote) {
+      // data-can-create-note is an empty string when true, otherwise undefined
+      this.userCanCreateNote = $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('can-create-note') === '';
     }
 
-    FilesCommentButton.prototype.render = function(e) {
-      var $currentTarget, buttonParentElement, lineContentElement, textFileElement;
-      $currentTarget = $(e.currentTarget);
+    this.isParallelView = Cookies.get('diff_view') === 'parallel';
 
-      buttonParentElement = this.getButtonParent($currentTarget);
-      if (!this.validateButtonParent(buttonParentElement)) return;
-      lineContentElement = this.getLineContent($currentTarget);
-      if (!this.validateLineContent(lineContentElement)) return;
-
-      textFileElement = this.getTextFileElement($currentTarget);
-      buttonParentElement.append(this.buildButton({
-        noteableType: textFileElement.attr('data-noteable-type'),
-        noteableID: textFileElement.attr('data-noteable-id'),
-        commitID: textFileElement.attr('data-commit-id'),
-        noteType: lineContentElement.attr('data-note-type'),
-        position: lineContentElement.attr('data-position'),
-        lineType: lineContentElement.attr('data-line-type'),
-        discussionID: lineContentElement.attr('data-discussion-id'),
-        lineCode: lineContentElement.attr('data-line-code')
-      }));
-    };
-
-    FilesCommentButton.prototype.destroy = function(e) {
-      if (this.isMovingToSameType(e)) {
-        return;
-      }
-      $(COMMENT_BUTTON_CLASS, this.getButtonParent($(e.currentTarget))).remove();
-    };
-
-    FilesCommentButton.prototype.buildButton = function(buttonAttributes) {
-      var initializedButtonTemplate;
-      initializedButtonTemplate = COMMENT_BUTTON_TEMPLATE({
-        COMMENT_BUTTON_CLASS: COMMENT_BUTTON_CLASS.substr(1)
-      });
-      return $(initializedButtonTemplate).attr({
-        'data-noteable-type': buttonAttributes.noteableType,
-        'data-noteable-id': buttonAttributes.noteableID,
-        'data-commit-id': buttonAttributes.commitID,
-        'data-note-type': buttonAttributes.noteType,
-        'data-line-code': buttonAttributes.lineCode,
-        'data-position': buttonAttributes.position,
-        'data-discussion-id': buttonAttributes.discussionID,
-        'data-line-type': buttonAttributes.lineType
-      });
-    };
-
-    FilesCommentButton.prototype.getTextFileElement = function(hoveredElement) {
-      return $(hoveredElement.closest(TEXT_FILE_SELECTOR));
-    };
-
-    FilesCommentButton.prototype.getLineContent = function(hoveredElement) {
-      if (hoveredElement.hasClass(LINE_CONTENT_CLASS)) {
-        return hoveredElement;
-      }
-      if (this.VIEW_TYPE === 'inline') {
-        return $(hoveredElement).closest(LINE_HOLDER_CLASS).find("." + LINE_CONTENT_CLASS);
-      } else {
-        return $(hoveredElement).next("." + LINE_CONTENT_CLASS);
-      }
-    };
-
-    FilesCommentButton.prototype.getButtonParent = function(hoveredElement) {
-      if (this.VIEW_TYPE === 'inline') {
-        if (hoveredElement.hasClass(OLD_LINE_CLASS)) {
-          return hoveredElement;
-        }
-        return hoveredElement.parent().find("." + OLD_LINE_CLASS);
-      } else {
-        if (hoveredElement.hasClass(LINE_NUMBER_CLASS)) {
-          return hoveredElement;
-        }
-        return $(hoveredElement).prev("." + LINE_NUMBER_CLASS);
-      }
-    };
-
-    FilesCommentButton.prototype.isMovingToSameType = function(e) {
-      var newButtonParent;
-      newButtonParent = this.getButtonParent($(e.toElement));
-      if (!newButtonParent) {
-        return false;
-      }
-      return newButtonParent.is(this.getButtonParent($(e.currentTarget)));
-    };
-
-    FilesCommentButton.prototype.validateButtonParent = function(buttonParentElement) {
-      return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS) && $(COMMENT_BUTTON_CLASS, buttonParentElement).length === 0;
-    };
-
-    FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
-      return lineContentElement.attr('data-discussion-id') && lineContentElement.attr('data-discussion-id') !== '';
-    };
-
-    return FilesCommentButton;
-
-  })();
-
-  $.fn.filesCommentButton = function() {
-    if (!(this && (this.parent().data('can-create-note') != null))) {
-      return;
+    if (this.userCanCreateNote) {
+      $diffFile.on('mouseover', LINE_COLUMN_CLASSES, e => this.showButton(this.isParallelView, e))
+        .on('mouseleave', LINE_COLUMN_CLASSES, e => this.hideButton(this.isParallelView, e));
     }
-    return this.each(function() {
-      if (!$.data(this, 'filesCommentButton')) {
-        return $.data(this, 'filesCommentButton', new FilesCommentButton($(this)));
-      }
-    });
-  };
+  },
 
-}).call(this);
+  showButton(isParallelView, e) {
+    const buttonParentElement = this.getButtonParent(e.currentTarget, isParallelView);
+
+    if (!this.validateButtonParent(buttonParentElement)) return;
+
+    buttonParentElement.classList.add('is-over');
+    buttonParentElement.nextElementSibling.classList.add('is-over');
+  },
+
+  hideButton(isParallelView, e) {
+    const buttonParentElement = this.getButtonParent(e.currentTarget, isParallelView);
+
+    buttonParentElement.classList.remove('is-over');
+    buttonParentElement.nextElementSibling.classList.remove('is-over');
+  },
+
+  getButtonParent(hoveredElement, isParallelView) {
+    if (isParallelView) {
+      if (!hoveredElement.classList.contains(LINE_NUMBER_CLASS)) {
+        return hoveredElement.previousElementSibling;
+      }
+    } else if (!hoveredElement.classList.contains(OLD_LINE_CLASS)) {
+      return hoveredElement.parentNode.querySelector(`.${OLD_LINE_CLASS}`);
+    }
+    return hoveredElement;
+  },
+
+  validateButtonParent(buttonParentElement) {
+    return !buttonParentElement.classList.contains(EMPTY_CELL_CLASS) &&
+      !buttonParentElement.classList.contains(UNFOLDABLE_LINE_CLASS) &&
+      !buttonParentElement.classList.contains(NO_COMMENT_CLASS) &&
+      !buttonParentElement.parentNode.classList.contains(DIFF_EXPANDED_CLASS);
+  },
+};

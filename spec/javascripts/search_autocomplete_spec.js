@@ -1,24 +1,17 @@
-/* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
 
-/*= require gl_dropdown */
-/*= require search_autocomplete */
-/*= require jquery */
-/*= require lib/utils/common_utils */
-/*= require lib/utils/type_utility */
-/*= require fuzzaldrin-plus */
-/*= require turbolinks */
-/*= require jquery.turbolinks */
+import '~/gl_dropdown';
+import SearchAutocomplete from '~/search_autocomplete';
+import '~/lib/utils/common_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 
 (function() {
-  var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
+  var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
+  var userName = 'root';
 
   widget = null;
 
   userId = 1;
-
-  window.gon || (window.gon = {});
-
-  window.gon.current_user_id = userId;
 
   dashboardIssuesPath = '/dashboard/issues';
 
@@ -36,27 +29,37 @@
 
   groupName = 'Gitlab Org';
 
-  // Add required attributes to body before starting the test.
-  // section would be dashboard|group|project
-  addBodyAttributes = function(section) {
-    var $body;
-    if (section == null) {
-      section = 'dashboard';
-    }
-    $body = $('body');
+  const removeBodyAttributes = function() {
+    const $body = $('body');
+
     $body.removeAttr('data-page');
     $body.removeAttr('data-project');
     $body.removeAttr('data-group');
+  };
+
+  // Add required attributes to body before starting the test.
+  // section would be dashboard|group|project
+  const addBodyAttributes = function(section) {
+    if (section == null) {
+      section = 'dashboard';
+    }
+
+    const $body = $('body');
+    removeBodyAttributes();
     switch (section) {
       case 'dashboard':
-        return $body.data('page', 'root:index');
+        return $body.attr('data-page', 'root:index');
       case 'group':
-        $body.data('page', 'groups:show');
+        $body.attr('data-page', 'groups:show');
         return $body.data('group', 'gitlab-org');
       case 'project':
-        $body.data('page', 'projects:show');
+        $body.attr('data-page', 'projects:show');
         return $body.data('project', 'gitlab-ce');
     }
+  };
+
+  const disableProjectIssues = function() {
+    document.querySelector('.js-search-project-options').setAttribute('data-issues-disabled', true);
   };
 
   // Mock `gl` object in window for dashboard specific page. App code will need it.
@@ -93,18 +96,20 @@
 
   assertLinks = function(list, issuesPath, mrsPath) {
     var a1, a2, a3, a4, issuesAssignedToMeLink, issuesIHaveCreatedLink, mrsAssignedToMeLink, mrsIHaveCreatedLink;
-    issuesAssignedToMeLink = issuesPath + "/?assignee_id=" + userId;
-    issuesIHaveCreatedLink = issuesPath + "/?author_id=" + userId;
-    mrsAssignedToMeLink = mrsPath + "/?assignee_id=" + userId;
-    mrsIHaveCreatedLink = mrsPath + "/?author_id=" + userId;
-    a1 = "a[href='" + issuesAssignedToMeLink + "']";
-    a2 = "a[href='" + issuesIHaveCreatedLink + "']";
+    if (issuesPath) {
+      issuesAssignedToMeLink = issuesPath + "/?assignee_username=" + userName;
+      issuesIHaveCreatedLink = issuesPath + "/?author_username=" + userName;
+      a1 = "a[href='" + issuesAssignedToMeLink + "']";
+      a2 = "a[href='" + issuesIHaveCreatedLink + "']";
+      expect(list.find(a1).length).toBe(1);
+      expect(list.find(a1).text()).toBe('Issues assigned to me');
+      expect(list.find(a2).length).toBe(1);
+      expect(list.find(a2).text()).toBe("Issues I've created");
+    }
+    mrsAssignedToMeLink = mrsPath + "/?assignee_username=" + userName;
+    mrsIHaveCreatedLink = mrsPath + "/?author_username=" + userName;
     a3 = "a[href='" + mrsAssignedToMeLink + "']";
     a4 = "a[href='" + mrsIHaveCreatedLink + "']";
-    expect(list.find(a1).length).toBe(1);
-    expect(list.find(a1).text()).toBe('Issues assigned to me');
-    expect(list.find(a2).length).toBe(1);
-    expect(list.find(a2).text()).toBe("Issues I've created");
     expect(list.find(a3).length).toBe(1);
     expect(list.find(a3).text()).toBe('Merge requests assigned to me');
     expect(list.find(a4).length).toBe(1);
@@ -112,16 +117,30 @@
   };
 
   describe('Search autocomplete dropdown', function() {
-    fixture.preload('search_autocomplete.html');
+    preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
-      fixture.load('search_autocomplete.html');
-      return widget = new gl.SearchAutocomplete;
+      loadFixtures('static/search_autocomplete.html.raw');
+
+      // Prevent turbolinks from triggering within gl_dropdown
+      spyOn(urlUtils, 'visitUrl').and.returnValue(true);
+
+      window.gon = {};
+      window.gon.current_user_id = userId;
+      window.gon.current_username = userName;
+
+      return widget = new SearchAutocomplete();
+    });
+
+    afterEach(function() {
+      // Undo what we did to the shared <body>
+      removeBodyAttributes();
+      window.gon = {};
     });
     it('should show Dashboard specific dropdown menu', function() {
       var list;
       addBodyAttributes();
       mockDashboardOptions();
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
     });
@@ -129,7 +148,7 @@
       var list;
       addBodyAttributes('group');
       mockGroupOptions();
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, groupIssuesPath, groupMRsPath);
     });
@@ -137,16 +156,24 @@
       var list;
       addBodyAttributes('project');
       mockProjectOptions();
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, projectIssuesPath, projectMRsPath);
+    });
+    it('should show only Project mergeRequest dropdown menu items when project issues are disabled', function() {
+      addBodyAttributes('project');
+      disableProjectIssues();
+      mockProjectOptions();
+      widget.searchInput.triggerHandler('focus');
+      const list = widget.wrap.find('.dropdown-menu').find('ul');
+      assertLinks(list, null, projectMRsPath);
     });
     it('should not show category related menu if there is text in the input', function() {
       var link, list;
       addBodyAttributes('project');
       mockProjectOptions();
       widget.searchInput.val('help');
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       link = "a[href='" + projectIssuesPath + "/?assignee_id=" + userId + "']";
       return expect(list.find(link).length).toBe(0);
@@ -157,7 +184,7 @@
       addBodyAttributes();
       mockDashboardOptions(true);
       var submitSpy = spyOnEvent('form', 'submit');
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       widget.wrap.trigger($.Event('keydown', { which: DOWN }));
       var enterKeyEvent = $.Event('keydown', { which: ENTER });
       widget.searchInput.trigger(enterKeyEvent);
@@ -165,9 +192,6 @@
       // browsers will not trigger default behavior (form submit, in this
       // example) on JavaScript-created keypresses.
       expect(submitSpy).not.toHaveBeenTriggered();
-      // Does a worse job at capturing the intent of the test, but works.
-      expect(enterKeyEvent.isDefaultPrevented()).toBe(true);
     });
   });
-
-}).call(this);
+}).call(window);

@@ -1,5 +1,8 @@
 class Dashboard::GroupsController < Dashboard::ApplicationController
+  include GroupTree
+
   def index
-    @group_members = current_user.group_members.includes(:source).page(params[:page])
+    groups = GroupsFinder.new(current_user, all_available: false).execute
+    render_group_tree(groups)
   end
 end

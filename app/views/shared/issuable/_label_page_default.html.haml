@@ -8,20 +8,19 @@
   - if show_boards_content
     .issue-board-dropdown-content
       %p
-        Create lists from the labels you use in your project. Issues with that
-        label will automatically be added to the list.
+        Create lists from labels. Issues with that label appear in that list.
   = dropdown_filter(filter_placeholder)
   = dropdown_content
-  - if @project && show_footer
+  - if current_board_parent && show_footer
     = dropdown_footer do
       %ul.dropdown-footer-list
-        - if can?(current_user, :admin_label, @project)
+        - if can?(current_user, :admin_label, current_board_parent)
           %li
-            %a.dropdown-toggle-page{href: "#"}
+            %a.dropdown-toggle-page{ href: "#" }
               Create new label
         %li
-          = link_to namespace_project_labels_path(@project.namespace, @project), :"data-is-link" => true do
-            - if show_create && @project && can?(current_user, :admin_label, @project)
+          = link_to labels_path, :"data-is-link" => true do
+            - if show_create && can?(current_user, :admin_label, current_board_parent)
               Manage labels
             - else
               View labels

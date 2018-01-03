@@ -2,7 +2,7 @@
   Project #{@old_path_with_namespace} was moved to another location
 %p
   The project is now located under
-  = link_to namespace_project_url(@project.namespace, @project) do
+  = link_to project_url(@project) do
     = @project.name_with_namespace
 %p
   To update the remote url in your local repository run (for ssh):

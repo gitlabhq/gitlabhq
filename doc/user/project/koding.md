@@ -1,6 +1,9 @@
-# Koding & GitLab
+# Koding integration
 
-> [Introduced][ce-5909] in GitLab 8.11.
+>**Notes:**
+- **As of GitLab 10.0, the Koding integration is deprecated and will be removed
+  in a future version.**
+- [Introduced][ce-5909] in GitLab 8.11.
 
 This document will guide you through using Koding integration on GitLab in
 detail. For configuring and installing please follow the

@@ -6,76 +6,110 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
-    attr_reader :merge_request
+    MergeError = Class.new(StandardError)
+
+    attr_reader :merge_request, :source
+
+    delegate :merge_jid, :state, to: :@merge_request
 
     def execute(merge_request)
+      if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
-      return log_merge_error('Merge request is not mergeable', true) unless @merge_request.mergeable?
+      error_check!
 
       merge_request.in_locked_state do
         if commit
           after_merge
+          clean_merge_jid
           success
-        else
-          log_merge_error('Can not merge changes', true)
         end
       end
+      log_info("Merge process finished on JID #{merge_jid} with state #{state}")
+    rescue MergeError => e
+      handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
     private
 
+    def error_check!
+      error =
+        if @merge_request.should_be_rebased?
+          'Only fast-forward merge is allowed for your project. Please update your source branch'
+        elsif !@merge_request.mergeable?
+          'Merge request is not mergeable'
+        elsif !source
+          'No source for merge'
+        end
+
+      raise MergeError, error if error
+    end
+
     def commit
-      committer = repository.user_to_committer(current_user)
+      message = params[:commit_message] || merge_request.merge_commit_message
 
-      options = {
-        message: params[:commit_message] || merge_request.merge_commit_message,
-        author: committer,
-        committer: committer
-      }
+      log_info("Git merge started on JID #{merge_jid}")
+      commit_id = repository.merge(current_user, source, merge_request, message)
+      log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
 
-      commit_id = repository.merge(current_user, merge_request, options)
+      raise MergeError, 'Conflicts detected during merge' unless commit_id
 
-      if commit_id
-        merge_request.update(merge_commit_sha: commit_id)
-      else
-        merge_request.update(merge_error: 'Conflicts detected during merge')
-        false
-      end
-    rescue GitHooksService::PreReceiveError => e
-      merge_request.update(merge_error: e.message)
-      false
+      merge_request.update(merge_commit_sha: commit_id)
+    rescue Gitlab::Git::HooksService::PreReceiveError => e
+      raise MergeError, e.message
     rescue StandardError => e
-      merge_request.update(merge_error: "Something went wrong during merge: #{e.message}")
-      log_merge_error(e.message)
-      false
+      raise MergeError, "Something went wrong during merge: #{e.message}"
     ensure
       merge_request.update(in_progress_merge_commit_sha: nil)
     end
 
     def after_merge
+      log_info("Post merge started on JID #{merge_jid} with state #{state}")
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
+      log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
-      if params[:should_remove_source_branch].present? || @merge_request.force_remove_source_branch?
-        DeleteBranchService.new(@merge_request.source_project, branch_deletion_user).
-          execute(merge_request.source_branch)
+      if delete_source_branch?
+        DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
+          .execute(merge_request.source_branch)
       end
+    end
+
+    def clean_merge_jid
+      merge_request.update_column(:merge_jid, nil)
     end
 
     def branch_deletion_user
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
 
-    def log_merge_error(message, http_error = false)
-      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{message}")
+    # Verify again that the source branch can be removed, since branch may be protected,
+    # or the source branch may have been updated, or the user may not have permission
+    #
+    def delete_source_branch?
+      params.fetch('should_remove_source_branch', @merge_request.force_remove_source_branch?) &&
+        @merge_request.can_remove_source_branch?(branch_deletion_user)
+    end
 
-      error(message) if http_error
+    def handle_merge_error(log_message:, save_message_on_model: false)
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
+      @merge_request.update(merge_error: log_message) if save_message_on_model
+    end
+
+    def log_info(message)
+      @logger ||= Rails.logger
+      @logger.info("#{merge_request_info} - #{message}")
     end
 
     def merge_request_info
-      project = merge_request.project
+      merge_request.to_reference(full: true)
+    end
 
-      "#{project.to_reference}#{merge_request.to_reference}"
+    def source
+      @source ||= @merge_request.diff_head_sha
     end
   end
 end

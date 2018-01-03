@@ -35,13 +35,15 @@ module Banzai
           src: element['src'],
           width: '400',
           controls: true,
-          'data-setup' => '{}')
+          'data-setup' => '{}',
+          'data-title' => element['title'] || element['alt'])
 
         link = doc.document.create_element(
           'a',
           element['title'] || element['alt'],
           href: element['src'],
           target: '_blank',
+          rel: 'noopener noreferrer',
           title: "Download '#{element['title'] || element['alt']}'")
         download_paragraph = doc.document.create_element('p')
         download_paragraph.children = link

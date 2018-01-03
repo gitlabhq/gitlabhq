@@ -13,7 +13,7 @@
 #
 
 class TodosFinder
-  NONE = '0'
+  NONE = '0'.freeze
 
   attr_accessor :current_user, :params
 
@@ -39,7 +39,7 @@ class TodosFinder
   private
 
   def action_id?
-    action_id.present? && Todo::ACTION_NAMES.has_key?(action_id.to_i)
+    action_id.present? && Todo::ACTION_NAMES.key?(action_id.to_i)
   end
 
   def action_id
@@ -83,6 +83,8 @@ class TodosFinder
     if project?
       @project = Project.find(params[:project_id])
 
+      @project = nil if @project.pending_delete?
+
       unless Ability.allowed?(current_user, :read_project, @project)
         @project = nil
       end
@@ -93,13 +95,22 @@ class TodosFinder
     @project
   end
 
+  def project_ids(items)
+    ids = items.except(:order).select(:project_id)
+    if Gitlab::Database.mysql?
+      # To make UPDATE work on MySQL, wrap it in a SELECT with an alias
+      ids = Todo.except(:order).select('*').from("(#{ids.to_sql}) AS t")
+    end
+
+    ids
+  end
+
   def projects(items)
-    item_project_ids = items.reorder(nil).select(:project_id)
-    ProjectsFinder.new.execute(current_user, item_project_ids)
+    ProjectsFinder.new(current_user: current_user, project_ids_relation: project_ids(items)).execute
   end
 
   def type?
-    type.present? && ['Issue', 'MergeRequest'].include?(type)
+    type.present? && %w(Issue MergeRequest).include?(type)
   end
 
   def type
@@ -107,7 +118,7 @@ class TodosFinder
   end
 
   def sort(items)
-    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
+    params[:sort] ? items.sort(params[:sort]) : items.order_id_desc
   end
 
   def by_action(items)

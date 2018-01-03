@@ -7,10 +7,10 @@ exclude:
 
 linters:
   AltText:
-    enabled: false
+    enabled: true
 
   ClassAttributeWithStaticValue:
-    enabled: false
+    enabled: true
 
   ClassesBeforeIds:
     enabled: false
@@ -29,13 +29,25 @@ linters:
     enabled: true
 
   FinalNewline:
-    enabled: false
+    enabled: true
     present: true
 
   HtmlAttributes:
+    enabled: true
+
+  IdNames:
     enabled: false
 
   ImplicitDiv:
+    enabled: true
+
+  InlineJavaScript:
+    enabled: true
+
+  InlineStyles:
+    enabled: false
+
+  InstanceVariables:
     enabled: false
 
   LeadingCommentSpace:
@@ -46,13 +58,16 @@ linters:
     max: 80
 
   MultilinePipe:
-    enabled: false
+    enabled: true
 
   MultilineScript:
     enabled: true
 
   ObjectReferenceAttributes:
     enabled: true
+
+  RepeatedId:
+    enabled: false
 
   RuboCop:
     enabled: false
@@ -77,13 +92,13 @@ linters:
       - Style/WhileUntilModifier
 
   RubyComments:
-    enabled: false
+    enabled: true
 
   SpaceBeforeScript:
-    enabled: false
+    enabled: true
 
   SpaceInsideHashAttributes:
-    enabled: false
+    enabled: true
     style: space
 
   Indentation:
@@ -94,10 +109,13 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   UnnecessaryInterpolation:
-    enabled: false
+    enabled: true
 
   UnnecessaryStringOutput:
+    enabled: true
+
+  ViewLength:
     enabled: false

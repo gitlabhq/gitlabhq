@@ -1,45 +1,26 @@
+- @hide_top_links = true
 - page_title    "Groups"
 - header_title  "Groups", dashboard_groups_path
+
+= webpack_bundle_tag 'common_vue'
+= webpack_bundle_tag 'groups'
 
 - if current_user
   = render 'dashboard/groups_head'
 - else
   = render 'explore/head'
+  = render 'nav'
 
-.row-content-block.clearfix
-  .pull-left
-    = form_tag explore_groups_path, method: :get, class: 'form-inline form-tiny' do |f|
-      = hidden_field_tag :sort, @sort
-      .form-group
-        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "groups_search", spellcheck: false
-      .form-group
-        = button_tag 'Search', class: "btn btn-default"
+- if cookies[:explore_groups_landing_dismissed] != 'true'
+  .explore-groups.landing.content-block.js-explore-groups-landing.hidden
+    %button.dismiss-button{ type: 'button', 'aria-label' => 'Dismiss' }= icon('times')
+    .svg-container
+      = custom_icon('icon_explore_groups_splash')
+    .inner-content
+      %p Below you will find all the groups that are public.
+      %p You can easily contribute to them by requesting to join these groups.
 
-  .pull-right
-    .dropdown.inline
-      %button.dropdown-toggle{type: 'button', 'data-toggle' => 'dropdown'}
-        %span.light
-        - if @sort.present?
-          = sort_options_hash[@sort]
-        - else
-          = sort_title_recently_created
-        = icon('chevron-down')
-      %ul.dropdown-menu.dropdown-menu-align-right
-        %li
-          = link_to explore_groups_path(sort: sort_value_recently_created) do
-            = sort_title_recently_created
-          = link_to explore_groups_path(sort: sort_value_oldest_created) do
-            = sort_title_oldest_created
-          = link_to explore_groups_path(sort: sort_value_recently_updated) do
-            = sort_title_recently_updated
-          = link_to explore_groups_path(sort: sort_value_oldest_updated) do
-            = sort_title_oldest_updated
-
-%ul.content-list
-  - @groups.each do |group|
-    = render 'shared/groups/group', group: group
-  - unless @groups.present?
-    .nothing-here-block No public groups
-
-
-= paginate @groups, theme: "gitlab"
+- if params[:filter].blank? && @groups.empty?
+  .nothing-here-block No public groups
+- else
+  = render 'groups'

@@ -1,4 +1,6 @@
 module AuthHelper
+  include Gitlab::CurrentSettings
+
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq).freeze
   FORM_BASED_PROVIDERS = [/\Aldap/, 'crowd'].freeze
 
@@ -64,16 +66,8 @@ module AuthHelper
     current_user.identities.exists?(provider: provider.to_s)
   end
 
-  def two_factor_skippable?
-    current_application_settings.require_two_factor_authentication &&
-      !current_user.two_factor_enabled? &&
-      current_application_settings.two_factor_grace_period &&
-      !two_factor_grace_period_expired?
-  end
-
-  def two_factor_grace_period_expired?
-    current_user.otp_grace_period_started_at &&
-      (current_user.otp_grace_period_started_at + current_application_settings.two_factor_grace_period.hours) < Time.current
+  def unlink_allowed?(provider)
+    %w(saml cas3).exclude?(provider.to_s)
   end
 
   extend self

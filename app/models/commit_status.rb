@@ -5,47 +5,66 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
-  belongs_to :project, foreign_key: :gl_project_id
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
+  belongs_to :project
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
+  belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
   delegate :commit, to: :pipeline
+  delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
-
-  validates_presence_of :name
+  validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
-
-  scope :latest, -> do
-    max_id = unscope(:select).select("max(#{quoted_table_name}.id)")
-
-    where(id: max_id.group(:name, :commit_id))
-  end
-
-  scope :retried, -> { where.not(id: latest) }
-  scope :ordered, -> { order(:name) }
+  alias_attribute :pipeline_id, :commit_id
 
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end
 
   scope :exclude_ignored, -> do
-    # We want to ignore failed_but_allowed jobs
+    # We want to ignore failed but allowed to fail jobs.
+    #
+    # TODO, we also skip ignored optional manual actions.
     where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled])
+      false, all_state_names - [:failed, :canceled, :manual])
   end
 
+  scope :latest, -> { where(retried: [false, nil]) }
+  scope :retried, -> { where(retried: true) }
+  scope :ordered, -> { order(:name) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
+  scope :after_stage, -> (index) { where('stage_idx > ?', index) }
+
+  enum failure_reason: {
+    unknown_failure: nil,
+    script_failure: 1,
+    api_failure: 2,
+    stuck_or_timeout_failure: 3,
+    runner_system_failure: 4,
+    missing_dependency_failure: 5
+  }
+
+  ##
+  # We still create some CommitStatuses outside of CreatePipelineService.
+  #
+  # These are pages deployments and external statuses.
+  #
+  before_create unless: :importing? do
+    Ci::EnsureStageService.new(project, user).execute(self) do |stage|
+      self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
+    end
+  end
 
   state_machine :status do
-    event :enqueue do
-      transition [:created, :skipped] => :pending
+    event :process do
+      transition [:skipped, :manual] => :created
     end
 
-    event :process do
-      transition skipped: :created
+    event :enqueue do
+      transition [:created, :skipped, :manual] => :pending
     end
 
     event :run do
@@ -65,7 +84,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:created, :pending, :running] => :canceled
+      transition [:created, :pending, :running, :manual] => :canceled
     end
 
     before_transition created: [:pending, :running] do |commit_status|
@@ -80,36 +99,49 @@ class CommitStatus < ActiveRecord::Base
       commit_status.finished_at = Time.now
     end
 
+    before_transition any => :failed do |commit_status, transition|
+      failure_reason = transition.args.first
+      commit_status.failure_reason = failure_reason
+    end
+
     after_transition do |commit_status, transition|
+      next unless commit_status.project
       next if transition.loopback?
 
       commit_status.run_after_commit do
-        pipeline.try do |pipeline|
-          if complete?
-            PipelineProcessWorker.perform_async(pipeline.id)
+        if pipeline_id
+          if complete? || manual?
+            PipelineProcessWorker.perform_async(pipeline_id)
           else
-            PipelineUpdateWorker.perform_async(pipeline.id)
+            PipelineUpdateWorker.perform_async(pipeline_id)
           end
         end
+
+        StageUpdateWorker.perform_async(stage_id)
+        ExpireJobCacheWorker.perform_async(id)
       end
     end
 
     after_transition any => :failed do |commit_status|
+      next unless commit_status.project
+
       commit_status.run_after_commit do
         MergeRequests::AddTodoWhenBuildFailsService
-          .new(pipeline.project, nil).execute(self)
+          .new(project, nil).execute(self)
       end
     end
   end
 
-  delegate :sha, :short_sha, to: :pipeline
+  def locking_enabled?
+    status_changed?
+  end
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def group_name
-    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
+    name.to_s.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
   def failed_but_allowed?
@@ -124,6 +156,16 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
+  # To be overriden when inherrited from
+  def retryable?
+    false
+  end
+
+  # To be overriden when inherrited from
+  def cancelable?
+    false
+  end
+
   def stuck?
     false
   end
@@ -132,9 +174,19 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
+  def auto_canceled?
+    canceled? && auto_canceled_by_id?
+  end
+
   def detailed_status(current_user)
     Gitlab::Ci::Status::Factory
       .new(self, current_user)
       .fabricate!
+  end
+
+  def sortable_name
+    name.to_s.split(/(\d+)/).map do |v|
+      v =~ /\d+/ ? v.to_i : v
+    end
   end
 end

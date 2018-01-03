@@ -1,7 +1,7 @@
 module Milestones
   class CloseService < Milestones::BaseService
     def execute(milestone)
-      if milestone.close
+      if milestone.close && milestone.project_milestone?
         event_service.close_milestone(milestone, current_user)
       end
 

@@ -1,40 +1,26 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Entry::Configurable do
-  let(:entry) { Class.new }
-
-  before do
-    entry.include(described_class)
+  let(:entry) do
+    Class.new(Gitlab::Ci::Config::Entry::Node) do
+      include Gitlab::Ci::Config::Entry::Configurable
+    end
   end
 
   describe 'validations' do
-    let(:validator) { entry.validator.new(instance) }
-
-    before do
-      entry.class_eval do
-        attr_reader :config
-
-        def initialize(config)
-          @config = config
-        end
-      end
-
-      validator.validate
-    end
-
-    context 'when entry validator is invalid' do
-      let(:instance) { entry.new('ls') }
-
-      it 'returns invalid validator' do
-        expect(validator).to be_invalid
-      end
-    end
-
-    context 'when entry instance is valid' do
+    context 'when entry is a hash' do
       let(:instance) { entry.new(key: 'value') }
 
-      it 'returns valid validator' do
-        expect(validator).to be_valid
+      it 'correctly validates an instance' do
+        expect(instance).to be_valid
+      end
+    end
+
+    context 'when entry is not a hash' do
+      let(:instance) { entry.new('ls') }
+
+      it 'invalidates the instance' do
+        expect(instance).not_to be_valid
       end
     end
   end

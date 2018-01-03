@@ -1,6 +1,5 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'constraints/group_url_constrainer'
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -22,13 +21,13 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  use_doorkeeper_openid_connect
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
-
-  # Emojis
-  resources :emojis, only: :index
+  get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
 
   # Search
   get 'search' => 'search#show'
@@ -39,6 +38,29 @@ Rails.application.routes.draw do
 
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
+
+  scope path: '-' do
+    get 'liveness' => 'health#liveness'
+    get 'readiness' => 'health#readiness'
+    post 'storage_check' => 'health#storage_check'
+    get 'ide' => 'ide#index'
+    get 'ide/*vueroute' => 'ide#index', format: false
+    resources :metrics, only: [:index]
+    mount Peek::Railtie => '/peek'
+
+    # Boards resources shared between group and projects
+    resources :boards, only: [] do
+      resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
+        collection do
+          post :generate
+        end
+
+        resources :issues, only: [:index, :create, :update]
+      end
+
+      resources :issues, module: :boards, only: [:index, :update]
+    end
+  end
 
   # Koding route
   get 'koding' => 'koding#index'
@@ -68,6 +90,7 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
+  draw :google_api
   draw :import
   draw :uploads
   draw :explore
@@ -79,20 +102,6 @@ Rails.application.routes.draw do
   draw :project
 
   root to: "root#index"
-
-  # Since group show page is wildcard routing
-  # we want all other routing to be checked before matching this one
-  constraints(GroupUrlConstrainer.new) do
-    scope(path: '*id',
-          as: :group,
-          constraints: { id: Gitlab::Regex.namespace_route_regex, format: /(html|json|atom)/ },
-          controller: :groups) do
-      get '/', action: :show
-      patch '/', action: :update
-      put '/', action: :update
-      delete '/', action: :destroy
-    end
-  end
 
   get '*unmatched_route', to: 'application#route_not_found'
 end

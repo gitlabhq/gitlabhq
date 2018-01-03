@@ -10,14 +10,12 @@ class RenameReservedProjectNames < ActiveRecord::Migration
 
   KNOWN_PATHS = %w(.well-known
                    all
-                   assets
                    blame
                    blob
                    commits
                    create
                    create_dir
                    edit
-                   files
                    files
                    find_file
                    groups
@@ -26,11 +24,8 @@ class RenameReservedProjectNames < ActiveRecord::Migration
                    logs_tree
                    merge_requests
                    new
-                   new
                    preview
-                   profile
                    projects
-                   public
                    raw
                    repository
                    robots.txt
@@ -42,7 +37,7 @@ class RenameReservedProjectNames < ActiveRecord::Migration
                    unsubscribes
                    update
                    users
-                   wikis)
+                   wikis).freeze
 
   def up
     queues = Array.new(THREAD_COUNT) { Queue.new }
@@ -84,17 +79,17 @@ class RenameReservedProjectNames < ActiveRecord::Migration
   private
 
   def reserved_projects
-    Project.unscoped.
-      includes(:namespace).
-      where('EXISTS (SELECT 1 FROM namespaces WHERE projects.namespace_id = namespaces.id)').
-      where('projects.path' => KNOWN_PATHS)
+    Project.unscoped
+      .includes(:namespace)
+      .where('EXISTS (SELECT 1 FROM namespaces WHERE projects.namespace_id = namespaces.id)')
+      .where('projects.path' => KNOWN_PATHS)
   end
 
   def route_exists?(full_path)
     quoted_path = ActiveRecord::Base.connection.quote_string(full_path)
 
-    ActiveRecord::Base.connection.
-      select_all("SELECT id, path FROM routes WHERE path = '#{quoted_path}'").present?
+    ActiveRecord::Base.connection
+      .select_all("SELECT id, path FROM routes WHERE path = '#{quoted_path}'").present?
   end
 
   # Adds number to the end of the path that is not taken by other route

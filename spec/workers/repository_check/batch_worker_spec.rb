@@ -30,7 +30,7 @@ describe RepositoryCheck::BatchWorker do
   end
 
   it 'does nothing when repository checks are disabled' do
-    create(:empty_project, created_at: 1.week.ago)
+    create(:project, created_at: 1.week.ago)
     current_settings = double('settings', repository_checks_enabled: false)
     expect(subject).to receive(:current_settings) { current_settings }
 
@@ -38,9 +38,9 @@ describe RepositoryCheck::BatchWorker do
   end
 
   it 'skips projects created less than 24 hours ago' do
-    project = create(:empty_project)
+    project = create(:project)
     project.update_column(:created_at, 23.hours.ago)
-  
+
     expect(subject.perform).to eq([])
   end
 end

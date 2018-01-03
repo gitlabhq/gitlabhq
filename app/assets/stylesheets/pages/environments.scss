@@ -5,134 +5,336 @@
   }
 }
 
-.environments-list-loading {
-  width: 100%;
-  font-size: 34px;
+.environments-folder-name {
+  font-weight: $gl-font-weight-normal;
+  padding-top: 20px;
 }
 
-@media (max-width: $screen-xs-max) {
-  .environments-container {
-    width: 100%;
-    overflow: auto;
-  }
-}
-
-.environments {
-  table-layout: fixed;
-
-  .environments-commit,
-  .environments-actions,
-  .environments-deploy,
-  .environments-build,
-  .environments-date {
-    position: static;
-    float: none;
-    display: table-cell;
-  }
-
-  .environments-name,
-  .environments-commit,
-  .environments-actions {
-    width: 20%;
-  }
-
-  .environments-date {
-    width: 10%;
-  }
-
-  .environments-deploy,
-  .environments-build {
-    width: 15%;
-  }
-
-  .environment-name,
-  .environments-build-cell,
-  .deployment-column {
-    word-break: break-all;
-  }
-
-  .deployment-column {
-    .avatar {
-      float: none;
-    }
-  }
-
-  .commit-title {
-    margin: 0;
-  }
-
-  .avatar-image-container {
-    text-decoration: none;
-  }
-
-  .icon-play {
-    height: 13px;
-    width: 12px;
-  }
-
-  .external-url,
-  .dropdown-new {
-    color: $gl-gray-light;
-  }
-
-  .dropdown-menu {
-
-    .fa {
-      margin-right: 6px;
-      color: $gl-gray-light;
-    }
-  }
-
-  .build-link,
-  .branch-name {
-    color: $gl-dark-link-color;
-  }
-
-  .stop-env-link,
-  .external-url {
-    color: $gl-gray-light;
-
-    .stop-env-icon {
-      font-size: 14px;
-    }
-  }
-
-  .deployment {
-    .build-column {
-
-      .build-link {
-        color: $gl-dark-link-color;
+.environments-container {
+  .ci-table {
+    .deployment-column {
+      > span {
+        word-break: break-all;
       }
 
       .avatar {
         float: none;
       }
     }
-  }
 
-  .children-row .environment-name {
-    margin-left: 17px;
-    margin-right: -17px;
-  }
+    .btn-group {
 
-  .folder-icon {
-    padding: 0 5px 0 0;
-  }
+      > a {
+        color: $gl-text-color-secondary;
+      }
 
-  .folder-name {
-    cursor: pointer;
+      svg path {
+        fill: $gl-text-color-secondary;
+      }
+
+      .dropdown {
+        outline: none;
+      }
+    }
+
+    .btn .text-center {
+      display: inline;
+    }
+
+    .commit-title {
+      margin: 0;
+    }
+
+    .icon-play {
+      height: 13px;
+      width: 12px;
+    }
+
+    .external-url,
+    .dropdown-new {
+      color: $gl-text-color-secondary;
+    }
+
+    .dropdown-menu {
+      .fa {
+        margin-right: 6px;
+        color: $gl-text-color-secondary;
+      }
+    }
+
+    .build-link,
+    .ref-name {
+      color: $gl-text-color;
+    }
+
+    .stop-env-link,
+    .external-url {
+      color: $gl-text-color-secondary;
+
+      .stop-env-icon {
+        font-size: 14px;
+      }
+    }
+
+    .deployment .build-column {
+      .build-link {
+        color: $gl-text-color;
+      }
+
+      .avatar {
+        float: none;
+        margin-right: 0;
+      }
+    }
+
+    .folder-icon {
+      margin-right: 3px;
+      color: $gl-text-color-secondary;
+      display: inline-block;
+
+      .fa:nth-child(1) {
+        margin-right: 3px;
+      }
+    }
+
+    .folder-name {
+      cursor: pointer;
+      color: $gl-text-color-secondary;
+      display: inline-block;
+    }
+
+    .icon-container {
+      width: 20px;
+      text-align: center;
+    }
+
+    .branch-commit {
+      .commit-sha {
+        margin-right: 0;
+      }
+    }
+
+    .no-btn {
+      border: 0;
+      background: none;
+      outline: none;
+      width: 100%;
+      text-align: left;
+    }
   }
 }
 
-.table.ci-table.environments {
-  .icon-container {
-    width: 20px;
-    text-align: center;
+.gl-responsive-table-row {
+  .branch-commit {
+    max-width: 100%;
+  }
+}
+
+.folder-row {
+  border-left: 0;
+  border-right: 0;
+
+  @media (min-width: $screen-sm-max) {
+    border-top: 0;
+  }
+}
+
+.x-axis path,
+.y-axis path,
+.label-x-axis-line,
+.label-y-axis-line {
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.x-axis path,
+.y-axis path {
+  stroke: $stat-graph-axis-fill;
+}
+
+.label-x-axis-line,
+.label-y-axis-line {
+  stroke: $border-color;
+}
+
+.y-axis {
+  line {
+    stroke: $stat-graph-axis-fill;
+    stroke-width: 1;
+  }
+}
+
+.metric-area {
+  opacity: 0.25;
+}
+
+.prometheus-graph-overlay {
+  fill: none;
+  opacity: 0;
+  pointer-events: all;
+}
+
+.rect-text-metric {
+  fill: $white-light;
+  stroke-width: 1;
+  stroke: $gray-darkest;
+}
+
+.rect-axis-text {
+  fill: $white-light;
+}
+
+.text-metric {
+  font-size: 12px;
+}
+
+.selected-metric-line {
+  stroke: $gl-gray-dark;
+  stroke-width: 1;
+}
+
+.deployment-line {
+  stroke: $black;
+  stroke-width: 1;
+}
+
+.divider-line {
+  stroke-width: 1;
+  stroke: $gray-darkest;
+}
+
+.prometheus-state {
+  max-width: 430px;
+  margin: 10px auto;
+  text-align: center;
+
+  .state-svg {
+    max-width: 80vw;
+    margin: 0 auto;
+  }
+}
+
+.environments-actions {
+  .external-url,
+  .monitoring-url,
+  .terminal-button,
+  .stop-env-link {
+    width: 38px;
+  }
+}
+
+.prometheus-panel {
+  margin-top: 20px;
+}
+
+.prometheus-graph-group {
+  display: flex;
+  flex-wrap: wrap;
+  padding: $gl-padding / 2;
+}
+
+.prometheus-graph {
+  flex: 1 0 auto;
+  min-width: 450px;
+  padding: $gl-padding / 2;
+
+  h5 {
+    font-size: 16px;
   }
 
-  .branch-commit {
-    .commit-id {
-      margin-right: 0;
+  @media (max-width: $screen-sm-max) {
+    min-width: 100%;
+  }
+}
+
+.prometheus-svg-container {
+  position: relative;
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
+
+  .text-metric-usage,
+  .legend-metric-title {
+    fill: $black;
+    font-weight: $gl-font-weight-normal;
+    font-size: 12px;
+  }
+
+  > svg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+
+    text {
+      fill: $gl-text-color;
+      stroke-width: 0;
+    }
+
+    .text-metric-bold {
+      font-weight: $gl-font-weight-bold;
+    }
+
+    .label-axis-text {
+      fill: $black;
+      font-weight: $gl-font-weight-normal;
+      font-size: 10px;
+    }
+
+    .legend-axis-text {
+      fill: $black;
+    }
+
+    .tick {
+      > line {
+        stroke: $gray-darker;
+      }
+
+      > text {
+        font-size: 12px;
+      }
+    }
+
+    .text-metric-title {
+      font-size: 12px;
+    }
+
+    .y-label-text,
+    .x-label-text {
+      fill: $gray-darkest;
+    }
+
+    .axis-tick {
+      stroke: $gray-darker;
+    }
+
+    .deploy-info-text {
+      dominant-baseline: text-before-edge;
+      font-size: 12px;
+    }
+
+    .deploy-info-text-link {
+      font-family: $monospace_font;
+      fill: $gl-link-color;
+
+      &:hover {
+        fill: $gl-link-hover-color;
+      }
+    }
+
+    @media (max-width: $screen-sm-max) {
+      .label-axis-text,
+      .text-metric-usage,
+      .legend-axis-text {
+        font-size: 8px;
+      }
+
+      .tick > text {
+        font-size: 8px;
+      }
     }
   }
 }

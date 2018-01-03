@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Boards::CreateService, services: true do
+describe Boards::CreateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject(:service) { described_class.new(project, double) }
 
@@ -11,12 +11,12 @@ describe Boards::CreateService, services: true do
         expect { service.execute }.to change(Board, :count).by(1)
       end
 
-      it 'creates default lists' do
+      it 'creates the default lists' do
         board = service.execute
 
         expect(board.lists.size).to eq 2
         expect(board.lists.first).to be_backlog
-        expect(board.lists.last).to be_done
+        expect(board.lists.last).to be_closed
       end
     end
 
@@ -26,6 +26,8 @@ describe Boards::CreateService, services: true do
       end
 
       it 'does not create a new board' do
+        expect(service).to receive(:can_create_board?) { false }
+
         expect { service.execute }.not_to change(project.boards, :count)
       end
     end

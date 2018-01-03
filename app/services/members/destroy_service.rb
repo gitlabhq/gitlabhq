@@ -4,7 +4,7 @@ module Members
 
     attr_accessor :source
 
-    ALLOWED_SCOPES = %i[members requesters all]
+    ALLOWED_SCOPES = %i[members requesters all].freeze
 
     def initialize(source, current_user, params = {})
       @source = source
@@ -31,12 +31,21 @@ module Members
         source.members.find_by(condition) ||
           source.requesters.find_by!(condition)
       else
-        source.public_send(scope).find_by!(condition)
+        source.public_send(scope).find_by!(condition) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
 
     def can_destroy_member?(member)
-      member && can?(current_user, action_member_permission(:destroy, member), member)
+      member && can?(current_user, destroy_member_permission(member), member)
+    end
+
+    def destroy_member_permission(member)
+      case member
+      when GroupMember
+        :destroy_group_member
+      when ProjectMember
+        :destroy_project_member
+      end
     end
   end
 end

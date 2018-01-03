@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupPolicy, models: true do
+describe GroupPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:developer) { create(:user) }
@@ -9,11 +9,15 @@ describe GroupPolicy, models: true do
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
 
+  let(:guest_permissions) { [:read_group, :upload_file, :read_namespace] }
+
+  let(:reporter_permissions) { [:admin_label] }
+
+  let(:developer_permissions) { [:admin_milestones] }
+
   let(:master_permissions) do
     [
-      :create_projects,
-      :admin_milestones,
-      :admin_label
+      :create_projects
     ]
   end
 
@@ -22,8 +26,9 @@ describe GroupPolicy, models: true do
       :admin_group,
       :admin_namespace,
       :admin_group_member,
-      :change_visibility_level
-    ]
+      :change_visibility_level,
+      (Gitlab::Database.postgresql? ? :create_subgroup : nil)
+    ].compact
   end
 
   before do
@@ -34,15 +39,27 @@ describe GroupPolicy, models: true do
     group.add_owner(owner)
   end
 
-  subject { described_class.abilities(current_user, group).to_set }
+  subject { described_class.new(current_user, group) }
+
+  def expect_allowed(*permissions)
+    permissions.each { |p| is_expected.to be_allowed(p) }
+  end
+
+  def expect_disallowed(*permissions)
+    permissions.each { |p| is_expected.not_to be_allowed(p) }
+  end
 
   context 'with no user' do
     let(:current_user) { nil }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_disallowed(:upload_file)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
+      expect_disallowed(:read_namespace)
     end
   end
 
@@ -50,9 +67,11 @@ describe GroupPolicy, models: true do
     let(:current_user) { guest }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(*guest_permissions)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -60,9 +79,11 @@ describe GroupPolicy, models: true do
     let(:current_user) { reporter }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(*guest_permissions)
+      expect_allowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -70,9 +91,11 @@ describe GroupPolicy, models: true do
     let(:current_user) { developer }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(*guest_permissions)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -80,9 +103,11 @@ describe GroupPolicy, models: true do
     let(:current_user) { master }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(*guest_permissions)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
+      expect_allowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -90,9 +115,13 @@ describe GroupPolicy, models: true do
     let(:current_user) { owner }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.to include(*master_permissions)
-      is_expected.to include(*owner_permissions)
+      allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
+      expect_allowed(*guest_permissions)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
+      expect_allowed(*master_permissions)
+      expect_allowed(*owner_permissions)
     end
   end
 
@@ -100,24 +129,72 @@ describe GroupPolicy, models: true do
     let(:current_user) { admin }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.to include(*master_permissions)
-      is_expected.to include(*owner_permissions)
+      allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
+      expect_allowed(*guest_permissions)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
+      expect_allowed(*master_permissions)
+      expect_allowed(*owner_permissions)
     end
   end
 
-  describe 'private nested group inherit permissions' do
+  describe 'when nested group support feature is disabled' do
+    before do
+      allow(Group).to receive(:supports_nested_groups?).and_return(false)
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it 'allows every owner permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_owner_permissions = owner_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_owner_permissions)
+      end
+    end
+
+    context 'owner' do
+      let(:current_user) { owner }
+
+      it 'allows every owner permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_owner_permissions = owner_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_owner_permissions)
+      end
+    end
+  end
+
+  describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
     let(:nested_group) { create(:group, :private, parent: group) }
 
-    subject { described_class.abilities(current_user, nested_group).to_set }
+    before do
+      nested_group.add_guest(guest)
+      nested_group.add_guest(reporter)
+      nested_group.add_guest(developer)
+      nested_group.add_guest(master)
+
+      group.owners.destroy_all
+
+      group.add_guest(owner)
+      nested_group.add_owner(owner)
+    end
+
+    subject { described_class.new(current_user, nested_group) }
 
     context 'with no user' do
       let(:current_user) { nil }
 
       it do
-        is_expected.not_to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_disallowed(*guest_permissions)
+        expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -125,9 +202,11 @@ describe GroupPolicy, models: true do
       let(:current_user) { guest }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -135,9 +214,11 @@ describe GroupPolicy, models: true do
       let(:current_user) { reporter }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -145,9 +226,11 @@ describe GroupPolicy, models: true do
       let(:current_user) { developer }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -155,9 +238,11 @@ describe GroupPolicy, models: true do
       let(:current_user) { master }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -165,10 +250,104 @@ describe GroupPolicy, models: true do
       let(:current_user) { owner }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.to include(*master_permissions)
-        is_expected.to include(*owner_permissions)
+        allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*master_permissions)
+        expect_allowed(*owner_permissions)
       end
+    end
+  end
+
+  describe 'change_share_with_group_lock' do
+    context 'when the current_user owns the group' do
+      let(:current_user) { owner }
+
+      context 'when the group share_with_group_lock is enabled' do
+        let(:group) { create(:group, share_with_group_lock: true, parent: parent) }
+
+        context 'when the parent group share_with_group_lock is enabled' do
+          context 'when the group has a grandparent' do
+            let(:parent) { create(:group, share_with_group_lock: true, parent: grandparent) }
+
+            context 'when the grandparent share_with_group_lock is enabled' do
+              let(:grandparent) { create(:group, share_with_group_lock: true) }
+
+              context 'when the current_user owns the parent' do
+                before do
+                  parent.add_owner(current_user)
+                end
+
+                context 'when the current_user owns the grandparent' do
+                  before do
+                    grandparent.add_owner(current_user)
+                  end
+
+                  it { expect_allowed(:change_share_with_group_lock) }
+                end
+
+                context 'when the current_user does not own the grandparent' do
+                  it { expect_disallowed(:change_share_with_group_lock) }
+                end
+              end
+
+              context 'when the current_user does not own the parent' do
+                it { expect_disallowed(:change_share_with_group_lock) }
+              end
+            end
+
+            context 'when the grandparent share_with_group_lock is disabled' do
+              let(:grandparent) { create(:group) }
+
+              context 'when the current_user owns the parent' do
+                before do
+                  parent.add_owner(current_user)
+                end
+
+                it { expect_allowed(:change_share_with_group_lock) }
+              end
+
+              context 'when the current_user does not own the parent' do
+                it { expect_disallowed(:change_share_with_group_lock) }
+              end
+            end
+          end
+
+          context 'when the group does not have a grandparent' do
+            let(:parent) { create(:group, share_with_group_lock: true) }
+
+            context 'when the current_user owns the parent' do
+              before do
+                parent.add_owner(current_user)
+              end
+
+              it { expect_allowed(:change_share_with_group_lock) }
+            end
+
+            context 'when the current_user does not own the parent' do
+              it { expect_disallowed(:change_share_with_group_lock) }
+            end
+          end
+        end
+
+        context 'when the parent group share_with_group_lock is disabled' do
+          let(:parent) { create(:group) }
+
+          it { expect_allowed(:change_share_with_group_lock) }
+        end
+      end
+
+      context 'when the group share_with_group_lock is disabled' do
+        it { expect_allowed(:change_share_with_group_lock) }
+      end
+    end
+
+    context 'when the current_user does not own the group' do
+      let(:current_user) { create(:user) }
+
+      it { expect_disallowed(:change_share_with_group_lock) }
     end
   end
 end

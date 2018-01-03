@@ -1,4 +1,4 @@
-# Todos
+# Todos API
 
 > [Introduced][ce-3188] in GitLab 8.10.
 
@@ -22,7 +22,7 @@ Parameters:
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos
 ```
 
 Example Response:
@@ -92,7 +92,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -165,7 +165,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -184,7 +184,7 @@ Marks a single pending todo given by its ID for the current user as done. The
 todo marked as done is returned in the response.
 
 ```
-DELETE /todos/:id
+POST /todos/:id/mark_as_done
 ```
 
 Parameters:
@@ -194,7 +194,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/130
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/130/mark_as_done
 ```
 
 Example Response:
@@ -263,7 +263,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -277,20 +277,15 @@ Example Response:
 
 ## Mark all todos as done
 
-Marks all pending todos for the current user as done. It returns the number of marked todos.
+Marks all pending todos for the current user as done. It returns the HTTP status code `204` with an empty response.
 
 ```
-DELETE /todos
+POST /todos/mark_as_done
 ```
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/donmark_as_donee
 ```
 
-Example Response:
-
-```json
-3
-```
 
 [ce-3188]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3188

@@ -55,10 +55,24 @@ describe AuthHelper do
     context 'all the button based providers are disabled via application_setting' do
       it 'returns false' do
         stub_application_setting(
-          disabled_oauth_sign_in_sources: ['github', 'twitter']
+          disabled_oauth_sign_in_sources: %w(github twitter)
         )
 
         expect(helper.button_based_providers_enabled?).to be false
+      end
+    end
+  end
+
+  describe 'unlink_allowed?' do
+    [:saml, :cas3].each do |provider|
+      it "returns true if the provider is #{provider}" do
+        expect(helper.unlink_allowed?(provider)).to be false
+      end
+    end
+
+    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0, :authentiq].each do |provider|
+      it "returns false if the provider is #{provider}" do
+        expect(helper.unlink_allowed?(provider)).to be true
       end
     end
   end

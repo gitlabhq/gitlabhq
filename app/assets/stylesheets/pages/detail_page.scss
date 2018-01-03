@@ -1,20 +1,50 @@
 .detail-page-header {
   padding: $gl-padding-top 0;
   border-bottom: 1px solid $border-color;
-  color: $gl-text-color-dark;
+  color: $gl-text-color;
   line-height: 34px;
+  display: flex;
 
-  .author {
-    color: $gl-text-color-dark;
-  }
-
-  .identifier {
-    color: $gl-text-color-dark;
+  a {
+    color: $gl-text-color;
   }
 
   .issue_created_ago,
   .author_link {
     white-space: nowrap;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+  }
+}
+
+.detail-page-header-body {
+  position: relative;
+  line-height: 35px;
+  display: flex;
+  flex-grow: 1;
+
+  @media (min-width: $screen-sm-min) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.detail-page-header-actions {
+  align-self: center;
+  flex-shrink: 0;
+  flex: 0 0 auto;
+
+  @media (max-width: $screen-xs-max) {
+    width: 100%;
+    margin-top: 10px;
+
+    > .issue-btn-group {
+      > .btn {
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -22,18 +52,12 @@
   .title {
     margin: 0 0 16px;
     font-size: 2em;
-    color: $gl-gray-dark;
+    color: $gl-text-color;
     padding: 0 0 0.3em;
     border-bottom: 1px solid $white-dark;
   }
 
   .description {
     margin-top: 6px;
-
-    p {
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
   }
 }

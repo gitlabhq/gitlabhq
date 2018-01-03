@@ -5,11 +5,26 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def update
-    if @application_setting.update_attributes(application_setting_params)
+    successful = ApplicationSettings::UpdateService
+      .new(@application_setting, current_user, application_setting_params)
+      .execute
+
+    if successful
       redirect_to admin_application_settings_path,
         notice: 'Application settings saved successfully'
     else
       render :show
+    end
+  end
+
+  def usage_data
+    respond_to do |format|
+      format.html do
+        usage_data_json = JSON.pretty_generate(Gitlab::UsageData.data)
+
+        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json)
+      end
+      format.json { render json: Gitlab::UsageData.to_json }
     end
   end
 
@@ -41,15 +56,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
-    restricted_levels = params[:application_setting][:restricted_visibility_levels]
-    if restricted_levels.nil?
-      params[:application_setting][:restricted_visibility_levels] = []
-    else
-      restricted_levels.map! do |level|
-        level.to_i
-      end
-    end
-
     import_sources = params[:application_setting][:import_sources]
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
@@ -64,72 +70,23 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
+
+    params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
-      :default_projects_limit,
-      :default_branch_protection,
-      :signup_enabled,
-      :signin_enabled,
-      :require_two_factor_authentication,
-      :two_factor_grace_period,
-      :gravatar_enabled,
-      :sign_in_text,
-      :after_sign_up_text,
-      :help_page_text,
-      :home_page_url,
-      :after_sign_out_path,
-      :max_attachment_size,
-      :session_expire_delay,
-      :default_project_visibility,
-      :default_snippet_visibility,
-      :default_group_visibility,
-      :domain_whitelist_raw,
-      :domain_blacklist_enabled,
-      :domain_blacklist_raw,
+      visible_application_setting_attributes
+    )
+  end
+
+  def visible_application_setting_attributes
+    ApplicationSettingsHelper.visible_attributes + [
       :domain_blacklist_file,
-      :version_check_enabled,
-      :admin_notification_email,
-      :user_oauth_applications,
-      :user_default_external,
-      :shared_runners_enabled,
-      :shared_runners_text,
-      :max_artifacts_size,
-      :metrics_enabled,
-      :metrics_host,
-      :metrics_port,
-      :metrics_pool_size,
-      :metrics_timeout,
-      :metrics_method_call_threshold,
-      :metrics_sample_interval,
-      :recaptcha_enabled,
-      :recaptcha_site_key,
-      :recaptcha_private_key,
-      :sentry_enabled,
-      :sentry_dsn,
-      :akismet_enabled,
-      :akismet_api_key,
-      :koding_enabled,
-      :koding_url,
-      :email_author_in_body,
-      :html_emails_enabled,
-      :repository_checks_enabled,
-      :metrics_packet_size,
-      :send_user_confirmation_email,
-      :container_registry_token_expire_delay,
-      :enabled_git_access_protocol,
-      :sidekiq_throttling_enabled,
-      :sidekiq_throttling_factor,
-      :housekeeping_enabled,
-      :housekeeping_bitmaps_enabled,
-      :housekeeping_incremental_repack_period,
-      :housekeeping_full_repack_period,
-      :housekeeping_gc_period,
+      disabled_oauth_sign_in_sources: [],
+      import_sources: [],
       repository_storages: [],
       restricted_visibility_levels: [],
-      import_sources: [],
-      disabled_oauth_sign_in_sources: [],
       sidekiq_throttling_queues: []
-    )
+    ]
   end
 end

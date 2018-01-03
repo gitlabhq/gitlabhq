@@ -12,17 +12,17 @@ class FlowdockService < Service
     'Flowdock is a collaboration web app for technical teams.'
   end
 
-  def to_param
+  def self.to_param
     'flowdock'
   end
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: 'Flowdock Git source token' }
+      { type: 'text', name: 'token', placeholder: 'Flowdock Git source token', required: true }
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
@@ -35,9 +35,9 @@ class FlowdockService < Service
       data[:after],
       token: token,
       repo: project.repository.path_to_repo,
-      repo_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}",
-      commit_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/%s",
-      diff_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/compare/%s...%s",
+      repo_url: "#{Gitlab.config.gitlab.url}/#{project.full_path}",
+      commit_url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/%s",
+      diff_url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/compare/%s...%s"
     )
   end
 end

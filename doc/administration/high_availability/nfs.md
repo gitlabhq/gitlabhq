@@ -1,34 +1,66 @@
 # NFS
 
-## Required NFS Server features
+You can view information and options set for each of the mounted NFS file
+systems by running `sudo nfsstat -m`.
+
+## NFS Server features
+
+### Required features
 
 **File locking**: GitLab **requires** advisory file locking, which is only
 supported natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
 
-**no_root_squash**: NFS normally changes the `root` user to `nobody`. This is
-a good security measure when NFS shares will be accessed by many different
-users. However, in this case only GitLab will use the NFS share so it
-is safe. GitLab requires the `no_root_squash` setting because we need to
-manage file permissions automatically. Without the setting you will receive
-errors when the Omnibus package tries to alter permissions. Note that GitLab
-and other bundled components do **not** run as `root` but as non-privileged
-users. The requirement for `no_root_squash` is to allow the Omnibus package to
-set ownership and permissions on files, as needed.
-
 ### Recommended options
 
 When you define your NFS exports, we recommend you also add the following
 options:
 
+- `no_root_squash` - NFS normally changes the `root` user to `nobody`. This is
+  a good security measure when NFS shares will be accessed by many different
+  users. However, in this case only GitLab will use the NFS share so it
+  is safe. GitLab recommends the `no_root_squash` setting because we need to
+  manage file permissions automatically. Without the setting you may receive
+  errors when the Omnibus package tries to alter permissions. Note that GitLab
+  and other bundled components do **not** run as `root` but as non-privileged
+  users. The recommendation for `no_root_squash` is to allow the Omnibus package
+  to set ownership and permissions on files, as needed.
 - `sync` - Force synchronous behavior. Default is asynchronous and under certain
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
-## Client mount options
+## AWS Elastic File System
 
-Below is an example of an NFS mount point we use on GitLab.com:
+GitLab does not recommend using AWS Elastic File System (EFS).
+
+Customers and users have reported that AWS EFS does not perform well for GitLab's
+use-case. There are several issues that can cause problems. For these reasons
+GitLab does not recommend using EFS with GitLab.
+
+- EFS bases allowed IOPS on volume size. The larger the volume, the more IOPS
+  are allocated. For smaller volumes, users may experience decent performance
+  for a period of time due to 'Burst Credits'. Over a period of weeks to months
+  credits may run out and performance will bottom out.
+- To keep "Burst Credits" available, it may be necessary to provision more space
+  with 'dummy data'.  However, this may get expensive.
+- Another option to maintain "Burst Credits" is to use FS Cache on the server so
+  that AWS doesn't always have to go into EFS to access files.
+- For larger volumes, allocated IOPS may not be the problem. Workloads where
+  many small files are written in a serialized manner are not well-suited for EFS.
+  EBS with an NFS server on top will perform much better.
+
+In addition, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
+because this will also affect performance. We recommend that the log files be
+stored on a local volume.
+
+For more details on another person's experience with EFS, see
+[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
+
+## NFS Client mount options
+
+Below is an example of an NFS mount point defined in `/etc/fstab` we use on
+GitLab.com:
 
 ```
 10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
@@ -47,13 +79,13 @@ When using default Omnibus configuration you will need to share 5 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
 following are the 5 locations you need to mount:
 
-| Location | Description |
-| -------- | ----------- |
-| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data
-| `/var/opt/gitlab/.ssh` | SSH `authorized_keys` file and keys used to import repositories from some other Git services
-| `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments
-| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data
-| `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI build traces
+| Location | Description | Default configuration |
+| -------- | ----------- | --------------------- |
+| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => "/var/opt/gitlab/git-data"})`
+| `/var/opt/gitlab/.ssh` | SSH `authorized_keys` file and keys used to import repositories from some other Git services | `user['home'] = '/var/opt/gitlab/'`
+| `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
+| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
+| `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI build traces | `gitlab_ci['builds_directory'] = '/var/opt/gitlab/gitlab-ci/builds'`
 
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
@@ -73,10 +105,10 @@ as subdirectories. Mount `/gitlab-data` then use the following Omnibus
 configuration to move each data location to a subdirectory:
 
 ```ruby
+git_data_dirs({"default" => "/gitlab-data/git-data"})
 user['home'] = '/gitlab-data/home'
-git_data_dir '/gitlab-data/git-data'
-gitlab_rails['shared_path'] = '/gitlab-data/shared'
 gitlab_rails['uploads_directory'] = '/gitlab-data/uploads'
+gitlab_rails['shared_path'] = '/gitlab-data/shared'
 gitlab_ci['builds_directory'] = '/gitlab-data/builds'
 ```
 

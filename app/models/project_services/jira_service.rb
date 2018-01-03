@@ -1,23 +1,24 @@
 class JiraService < IssueTrackerService
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   validates :url, url: true, presence: true, if: :activated?
-  validates :project_key, presence: true, if: :activated?
+  validates :api_url, url: true, allow_blank: true
+  validates :username, presence: true, if: :activated?
+  validates :password, presence: true, if: :activated?
 
-  prop_accessor :username, :password, :url, :project_key,
-                :jira_issue_transition_id, :title, :description
+  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
 
   # This is confusing, but JiraService does not really support these events.
   # The values here are required to display correct options in the service
   # configuration screen.
-  def supported_events
+  def self.supported_events
     %w(commit merge_request)
   end
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-  def reference_pattern
+  def self.reference_pattern(only_long: true)
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
@@ -25,20 +26,18 @@ class JiraService < IssueTrackerService
     super do
       self.properties = {
         title: issues_tracker['title'],
-        url: issues_tracker['url']
+        url: issues_tracker['url'],
+        api_url: issues_tracker['api_url']
       }
     end
   end
 
   def reset_password
-    # don't reset the password if a new one is provided
-    if url_changed? && !password_touched?
-      self.password = nil
-    end
+    self.password = nil if reset_password?
   end
 
   def options
-    url = URI.parse(self.url)
+    url = URI.parse(client_url)
 
     {
       username: self.username,
@@ -47,6 +46,8 @@ class JiraService < IssueTrackerService
       context_path: url.path,
       auth_type: :basic,
       read_timeout: 120,
+      use_cookies: true,
+      additional_cookies: ['OBBasicAuth=fromDialog'],
       use_ssl: url.scheme == 'https'
     }
   end
@@ -55,14 +56,10 @@ class JiraService < IssueTrackerService
     @client ||= JIRA::Client.new(options)
   end
 
-  def jira_project
-    @jira_project ||= jira_request { client.Project.find(project_key) }
-  end
-
   def help
-    'You need to configure JIRA before enabling this service. For more details
+    "You need to configure JIRA before enabling this service. For more details
     read the
-    [JIRA service documentation](https://docs.gitlab.com/ce/project_services/jira.html).'
+    [JIRA service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
   def title
@@ -81,23 +78,18 @@ class JiraService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'jira'
   end
 
   def fields
     [
-      { type: 'text', name: 'url', title: 'URL', placeholder: 'https://jira.example.com' },
-      { type: 'text', name: 'project_key', placeholder: 'Project Key' },
-      { type: 'text', name: 'username', placeholder: '' },
-      { type: 'password', name: 'password', placeholder: '' },
-      { type: 'text', name: 'jira_issue_transition_id', placeholder: '2' }
+      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com', required: true },
+      { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
+      { type: 'text', name: 'username', placeholder: '', required: true },
+      { type: 'password', name: 'password', placeholder: '', required: true },
+      { type: 'text', name: 'jira_issue_transition_id', title: 'Transition ID', placeholder: '' }
     ]
-  end
-
-  # URLs to redirect from Gitlab issues pages to jira issue tracker
-  def project_url
-    "#{url}/issues/?jql=project=#{project_key}"
   end
 
   def issues_url
@@ -116,7 +108,7 @@ class JiraService < IssueTrackerService
   def close_issue(entity, external_issue)
     issue = jira_request { client.Issue.find(external_issue.iid) }
 
-    return if issue.nil? || issue.resolution.present? || !jira_issue_transition_id.present?
+    return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
 
     commit_id = if entity.is_a?(Commit)
                   entity.id
@@ -130,7 +122,7 @@ class JiraService < IssueTrackerService
     # may or may not be allowed. Refresh the issue after transition and check
     # if it is closed, so we don't have one comment for every commit.
     issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
-    add_issue_solved_comment(issue, commit_id, commit_url) if issue.resolution
+    add_issue_solved_comment(issue, commit_id, commit_url) if has_resolution?(issue)
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
@@ -149,11 +141,11 @@ class JiraService < IssueTrackerService
     data = {
       user: {
         name: author.name,
-        url: resource_url(user_path(author)),
+        url: resource_url(user_path(author))
       },
       project: {
-        name: self.project.path_with_namespace,
-        url: resource_url(namespace_project_path(project.namespace, self.project))
+        name: project.full_path,
+        url: resource_url(namespace_project_path(project.namespace, project)) # rubocop:disable Cop/ProjectPathHelper
       },
       entity: {
         name: noteable_type.humanize.downcase,
@@ -172,11 +164,10 @@ class JiraService < IssueTrackerService
 
   def test(_)
     result = test_settings
-    { success: result.present?, result: result }
-  end
+    success = result.present?
+    result = @error if @error && !success
 
-  def can_test?
-    username.present? && password.present?
+    { success: success, result: result }
   end
 
   # JIRA does not need test data.
@@ -186,9 +177,10 @@ class JiraService < IssueTrackerService
   end
 
   def test_settings
-    return unless url.present?
+    return unless client_url.present?
+
     # Test settings by getting the project
-    jira_request { jira_project.present? }
+    jira_request { client.ServerInfo.all.attrs }
   end
 
   private
@@ -229,6 +221,10 @@ class JiraService < IssueTrackerService
     end
   end
 
+  def has_resolution?(issue)
+    issue.respond_to?(:resolution) && issue.resolution.present?
+  end
+
   def comment_exists?(issue, message)
     comments = jira_request { issue.comments }
 
@@ -236,34 +232,33 @@ class JiraService < IssueTrackerService
   end
 
   def send_message(issue, message, remote_link_props)
-    return unless url.present?
+    return unless client_url.present?
 
     jira_request do
-      if issue.comments.build.save!(body: message)
-        remote_link = issue.remotelink.build
+      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+      if remote_link
         remote_link.save!(remote_link_props)
-        result_message = "#{self.class.name} SUCCESS: Successfully posted to #{url}."
+      elsif issue.comments.build.save!(body: message)
+        new_remote_link = issue.remotelink.build
+        new_remote_link.save!(remote_link_props)
       end
 
+      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
       Rails.logger.info(result_message)
       result_message
     end
   end
 
-  # Build remote link on JIRA properties
-  # Icons here must be available on WEB so JIRA can read the URL
-  # We are using a open word graphics icon which have LGPL license
+  def find_remote_link(issue, url)
+    links = jira_request { issue.remotelink.all }
+
+    links.find { |link| link.object["url"] == url }
+  end
+
   def build_remote_link_props(url:, title:, resolved: false)
     status = {
       resolved: resolved
     }
-
-    if resolved
-      status[:icon] = {
-        title: 'Closed',
-        url16x16: 'http://www.openwebgraphics.com/resources/data/1768/16x16_apply.png'
-      }
-    end
 
     {
       GlobalID: 'GitLab',
@@ -304,8 +299,22 @@ class JiraService < IssueTrackerService
   def jira_request
     yield
 
-  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError => e
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{url} - #{e.message}"
+  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
+    @error = e.message
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{@error}"
     nil
+  end
+
+  def client_url
+    api_url.present? ? api_url : url
+  end
+
+  def reset_password?
+    # don't reset the password if a new one is provided
+    return false if password_touched?
+    return true if api_url_changed?
+    return false if api_url.present?
+
+    url_changed?
   end
 end

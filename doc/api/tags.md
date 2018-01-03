@@ -1,4 +1,4 @@
-# Tags
+# Tags API
 
 ## List project repository tags
 
@@ -12,23 +12,30 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string| yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user|
+| `order_by` | string | no | Return tags ordered by `name` or `updated` fields. Default is `updated` |
+| `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
 
 ```json
 [
   {
     "commit": {
+      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+      "short_id": "2695effb",
+      "title": "Initial commit",
+      "created_at": "2017-07-26T11:08:53.000+02:00",
+      "parent_ids": [
+        "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
+      ],
+      "message": "Initial commit",
       "author_name": "John Smith",
       "author_email": "john@example.com",
       "authored_date": "2012-05-28T04:42:42-07:00",
-      "committed_date": "2012-05-28T04:42:42-07:00",
       "committer_name": "Jack Smith",
       "committer_email": "jack@example.com",
-      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-      "message": "Initial commit",
-      "parents_ids": [
-        "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
-      ]
+      "committed_date": "2012-05-28T04:42:42-07:00"
     },
     "release": {
       "tag_name": "1.0.0",
@@ -53,11 +60,11 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `tag_name` | string | yes | The name of the tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/tags/v1.0.0
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0
 ```
 
 Example Response:
@@ -68,16 +75,19 @@ Example Response:
   "message": null,
   "commit": {
     "id": "60a8ff033665e1207714d6670fcd7b65304ec02f",
-    "message": "v5.0.0\n",
+    "short_id": "60a8ff03",
+    "title": "Initial commit",
+    "created_at": "2017-07-26T11:08:53.000+02:00",
     "parent_ids": [
       "f61c062ff8bcbdb00e0a1b3317a91aed6ceee06b"
     ],
-    "authored_date": "2015-02-01T21:56:31.000+01:00",
+    "message": "v5.0.0\n",
     "author_name": "Arthur Verschaeve",
     "author_email": "contact@arthurverschaeve.be",
-    "committed_date": "2015-02-01T21:56:31.000+01:00",
+    "authored_date": "2015-02-01T21:56:31.000+01:00",
     "committer_name": "Arthur Verschaeve",
-    "committer_email": "contact@arthurverschaeve.be"
+    "committer_email": "contact@arthurverschaeve.be",
+    "committed_date": "2015-02-01T21:56:31.000+01:00"
   },
   "release": null
 }
@@ -93,7 +103,7 @@ POST /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 - `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
 - `message` (optional) - Creates annotated tag.
@@ -102,17 +112,20 @@ Parameters:
 ```json
 {
   "commit": {
+    "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+    "short_id": "2695effb",
+    "title": "Initial commit",
+    "created_at": "2017-07-26T11:08:53.000+02:00",
+    "parent_ids": [
+      "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
+    ],
+    "message": "Initial commit",
     "author_name": "John Smith",
     "author_email": "john@example.com",
     "authored_date": "2012-05-28T04:42:42-07:00",
-    "committed_date": "2012-05-28T04:42:42-07:00",
     "committer_name": "Jack Smith",
     "committer_email": "jack@example.com",
-    "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-    "message": "Initial commit",
-    "parents_ids": [
-      "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
-    ]
+    "committed_date": "2012-05-28T04:42:42-07:00"
   },
   "release": {
     "tag_name": "1.0.0",
@@ -122,7 +135,7 @@ Parameters:
   "message": null
 }
 ```
-The message will be `nil` when creating a lightweight tag otherwise
+The message will be `null` when creating a lightweight tag otherwise
 it will contain the annotation.
 
 In case of an error,
@@ -138,14 +151,9 @@ DELETE /projects/:id/repository/tags/:tag_name
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 
-```json
-{
-  "tag_name": "v4.3.0"
-}
-```
 
 ## Create a new release
 
@@ -158,7 +166,7 @@ POST /projects/:id/repository/tags/:tag_name/release
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 - `description` (required) - Release notes with markdown support
 
@@ -179,7 +187,7 @@ PUT /projects/:id/repository/tags/:tag_name/release
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 - `description` (required) - Release notes with markdown support
 

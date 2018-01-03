@@ -10,7 +10,6 @@
 }
 
 .axis {
-  fill: $stat-graph-axis-fill;
   font-size: 10px;
 }
 
@@ -40,23 +39,21 @@
     @media (max-width: $screen-xs-max) {
       width: 100%;
     }
-  }
 
-  .person .spark {
-    display: block;
-    background: $stat-graph-common-bg;
-    width: 100%;
-  }
+    .spark {
+      display: block;
+      background: $stat-graph-common-bg;
+      width: 100%;
+    }
 
-  .person .area-contributor {
-    fill: $stat-graph-orange-fill;
+    .area-contributor {
+      fill: $stat-graph-orange-fill;
+    }
   }
 }
 
 .selection rect {
-  fill: $stat-graph-selection-fill;
   fill-opacity: 0.1;
-  stroke: $stat-graph-selection-stroke;
   stroke-width: 1px;
   stroke-opacity: 0.4;
   shape-rendering: crispedges;

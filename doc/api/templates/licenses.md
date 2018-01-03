@@ -1,4 +1,4 @@
-# Licenses
+# Licenses API
 
 ## List license templates
 
@@ -13,7 +13,7 @@ GET /templates/licenses
 | `popular` | boolean | no       | If passed, returns only popular licenses |
 
 ```bash
-curl https://gitlab.example.com/api/v3/templates/licenses?popular=1
+curl https://gitlab.example.com/api/v4/templates/licenses?popular=1
 ```
 
 Example response:
@@ -116,7 +116,7 @@ If you omit the `fullname` parameter but authenticate your request, the name of
 the authenticated user will be used to replace the copyright holder placeholder.
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/templates/licenses/mit?project=My+Cool+Project
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/templates/licenses/mit?project=My+Cool+Project
 ```
 
 Example response:

@@ -12,11 +12,11 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
     Network::Graph.stub(max_count: 10)
 
     @project = Project.find_by(name: "Shop")
-    visit namespace_project_network_path(@project.namespace, @project, "master")
+    visit project_network_path(@project, "master")
   end
 
   step "I visit project network page on branch 'test'" do
-    visit namespace_project_network_path(@project.namespace, @project, "'test'")
+    visit project_network_path(@project, "'test'")
   end
 
   step 'page should select "master" in select box' do
@@ -66,7 +66,7 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should have "v1.0.0" in title' do
-    expect(page).to have_css 'title', text: 'Network · v1.0.0', visible: false
+    expect(page).to have_css 'title', text: 'Graph · v1.0.0', visible: false
   end
 
   step 'page should only have content from "v1.0.0"' do

@@ -2,7 +2,7 @@
   - nonce = SecureRandom.hex
   - descriptions = local_assigns.slice(:message_with_description, :message_without_description)
   = label_tag "commit_message-#{nonce}", class: 'control-label' do
-    Commit message
+    #{ _('Commit message') }
   .col-sm-10
     .commit-message-container
       .max-width-marker
@@ -17,9 +17,9 @@
         Try to keep the first line under 52 characters
         and the others under 72.
     - if descriptions.present?
-      %p.hint.js-with-description-hint
+      .hint.js-with-description-hint
         = link_to "#", class: "js-with-description-link" do
           Include description in commit message
-      %p.hint.js-without-description-hint.hide
+      .hint.js-without-description-hint.hide
         = link_to "#", class: "js-without-description-link" do
           Don't include description in commit message

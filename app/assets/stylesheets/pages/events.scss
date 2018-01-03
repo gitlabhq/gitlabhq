@@ -4,14 +4,18 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
+  padding: $gl-padding-top 0 $gl-padding-top 40px;
   border-bottom: 1px solid $white-normal;
   color: $list-text-color;
+  position: relative;
 
   &.event-inline {
-    .avatar {
-      position: relative;
-      top: -2px;
+    .system-note-image {
+      top: 20px;
+    }
+
+    .user-avatar {
+      top: 14px;
     }
 
     .event-title,
@@ -21,16 +25,39 @@
   }
 
   a {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
-  .avatar {
-    margin-left: -($gl-avatar-size + $gl-padding-top);
+  .system-note-image {
+    position: absolute;
+    left: 0;
+    top: 14px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: $gl-text-color-secondary;
+    }
+
+    &.opened-icon,
+    &.created-icon {
+      svg {
+        fill: $green-300;
+      }
+    }
+
+    &.closed-icon svg {
+      fill: $red-300;
+    }
+
+    &.accepted-icon svg {
+      fill: $blue-300;
+    }
   }
 
   .event-title {
     @include str-truncated(calc(100% - 174px));
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     color: $list-text-color;
   }
 
@@ -41,7 +68,6 @@
       word-wrap: break-word;
 
       .md {
-        color: $gl-grayish-blue;
         font-size: $gl-font-size;
 
         .label {
@@ -59,11 +85,10 @@
       }
 
       pre {
-        border: none;
+        border: 0;
         background: $gray-light;
         border-radius: 0;
         color: $events-pre-color;
-        margin: 0 20px;
         overflow: hidden;
       }
 
@@ -103,15 +128,14 @@
     }
   }
 
-  &:last-child { border: none; }
+  &:last-child { border: 0; }
 
   .event_commits {
     li {
       &.commit {
         background: transparent;
-        padding: 3px;
-        padding-left: 0;
-        border: none;
+        padding: 0;
+        border: 0;
 
         .commit-row-title {
           font-size: $gl-font-size;
@@ -135,7 +159,6 @@
   }
 }
 
-
 /*
  * Last push widget
  */
@@ -156,7 +179,13 @@
 
 @media (max-width: $screen-xs-max) {
   .event-item {
-    padding-left: $gl-padding;
+    padding-left: 0;
+
+    &.event-inline {
+      .event-title {
+        line-height: 20px;
+      }
+    }
 
     .event-title {
       white-space: normal;
@@ -164,14 +193,13 @@
       max-width: 100%;
     }
 
-    .avatar {
+    .system-note-image {
       display: none;
     }
 
     .event-body {
       margin: 0;
-      border-left: 2px solid $events-body-border;
-      padding-left: 10px;
+      padding-left: 0;
     }
 
     .event-item-timestamp {

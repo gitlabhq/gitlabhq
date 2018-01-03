@@ -1,0 +1,10 @@
+- unless @project.pages_deployed?
+  .panel.panel-info
+    .panel-heading
+      Configure pages
+    .panel-body
+      %p
+        Learn how to upload your static site and have it served by
+        GitLab by following the
+        = succeed '.' do
+          = link_to 'documentation on GitLab Pages', help_page_path('user/project/pages/index.md'), target: '_blank'

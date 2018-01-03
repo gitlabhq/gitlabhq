@@ -1,8 +1,14 @@
+##
+# NOTE:
+# We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.
+# After we've migrated data, we'll remove KubernetesService. This would happen in a few months.
+# If you're modyfiyng this class, please note that you should update the same change in Clusters::Platforms::Kubernetes.
 class KubernetesService < DeploymentService
+  include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
   include ReactiveCaching
 
-  self.reactive_cache_key = ->(service) { [ service.class.model_name.singular, service.project_id ] }
+  self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
 
   # Namespace defaults to the project path, but can be overridden in case that
   # is an invalid or inappropriate name
@@ -21,22 +27,23 @@ class KubernetesService < DeploymentService
   with_options presence: true, if: :activated? do
     validates :api_url, url: true
     validates :token
-
-    validates :namespace,
-      format: {
-        with: Gitlab::Regex.kubernetes_namespace_regex,
-        message: Gitlab::Regex.kubernetes_namespace_regex_message,
-      },
-      length: 1..63
   end
+
+  before_validation :enforce_namespace_to_lower_case
+
+  validates :namespace,
+    allow_blank: true,
+    length: 1..63,
+    if: :activated?,
+    format: {
+      with: Gitlab::Regex.kubernetes_namespace_regex,
+      message: Gitlab::Regex.kubernetes_namespace_regex_message
+    }
 
   after_save :clear_reactive_cache!
 
   def initialize_properties
-    if properties.nil?
-      self.properties = {}
-      self.namespace = project.path if project.present?
-    end
+    self.properties = {} if properties.nil?
   end
 
   def title
@@ -52,33 +59,37 @@ class KubernetesService < DeploymentService
     'deployments with `app=$CI_ENVIRONMENT_SLUG`'
   end
 
-  def to_param
+  def self.to_param
     'kubernetes'
   end
 
   def fields
     [
         { type: 'text',
-          name: 'namespace',
-          title: 'Kubernetes namespace',
-          placeholder: 'Kubernetes namespace',
-        },
-        { type: 'text',
           name: 'api_url',
           title: 'API URL',
-          placeholder: 'Kubernetes API URL, like https://kube.example.com/',
-        },
-        { type: 'text',
-          name: 'token',
-          title: 'Service token',
-          placeholder: 'Service token',
-        },
+          placeholder: 'Kubernetes API URL, like https://kube.example.com/' },
         { type: 'textarea',
           name: 'ca_pem',
-          title: 'Custom CA bundle',
-          placeholder: 'Certificate Authority bundle (PEM format)',
-        },
+          title: 'CA Certificate',
+          placeholder: 'Certificate Authority bundle (PEM format)' },
+        { type: 'text',
+          name: 'namespace',
+          title: 'Project namespace (optional/unique)',
+          placeholder: namespace_placeholder },
+        { type: 'text',
+          name: 'token',
+          title: 'Token',
+          placeholder: 'Service token' }
     ]
+  end
+
+  def actual_namespace
+    if namespace.present?
+      namespace
+    else
+      default_namespace
+    end
   end
 
   # Check we can connect to the Kubernetes API
@@ -92,12 +103,20 @@ class KubernetesService < DeploymentService
   end
 
   def predefined_variables
+    config = YAML.dump(kubeconfig)
+
     variables = [
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
-      { key: 'KUBE_NAMESPACE', value: namespace, public: true }
+      { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
+      { key: 'KUBECONFIG', value: config, public: false, file: true }
     ]
-    variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true } if ca_pem.present?
+
+    if ca_pem.present?
+      variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true }
+      variables << { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
+    end
+
     variables
   end
 
@@ -107,36 +126,50 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
-      pods = data.fetch(:pods, nil)
-      filter_pods(pods, app: environment.slug).
-        flat_map { |pod| terminals_for_pod(api_url, namespace, pod) }.
-        map { |terminal| add_terminal_auth(terminal, token, ca_pem) }
+      pods = filter_by_label(data[:pods], app: environment.slug)
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+      terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
 
-  # Caches all pods in the namespace so other calls don't need to block on
-  # network access.
+  # Caches resources in the namespace so other calls don't need to block on
+  # network access
   def calculate_reactive_cache
     return unless active? && project && !project.pending_delete?
 
-    kubeclient = build_kubeclient!
-
-    # Store as hashes, rather than as third-party types
-    pods = begin
-      kubeclient.get_pods(namespace: namespace).as_json
-    rescue KubeException => err
-      raise err unless err.error_code == 404
-      []
-    end
-
     # We may want to cache extra things in the future
-    { pods: pods }
+    { pods: read_pods }
   end
+
+  def kubeclient
+    @kubeclient ||= build_kubeclient!
+  end
+
+  TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
 
+  def kubeconfig
+    to_kubeconfig(
+      url: api_url,
+      namespace: actual_namespace,
+      token: token,
+      ca_pem: ca_pem)
+  end
+
+  def namespace_placeholder
+    default_namespace || TEMPLATE_PLACEHOLDER
+  end
+
+  def default_namespace
+    return unless project
+
+    slug = "#{project.path}-#{project.id}".downcase
+    slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
+  end
+
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
-    raise "Incomplete settings" unless api_url && namespace && token
+    raise "Incomplete settings" unless api_url && actual_namespace && token
 
     ::Kubeclient::Client.new(
       join_api_url(api_path),
@@ -145,6 +178,17 @@ class KubernetesService < DeploymentService
       ssl_options: kubeclient_ssl_options,
       http_proxy_uri: ENV['http_proxy']
     )
+  end
+
+  # Returns a hash of all pods in the namespace
+  def read_pods
+    kubeclient = build_kubeclient!
+
+    kubeclient.get_pods(namespace: actual_namespace).as_json
+  rescue KubeException => err
+    raise err unless err.error_code == 404
+
+    []
   end
 
   def kubeclient_ssl_options
@@ -162,12 +206,24 @@ class KubernetesService < DeploymentService
     { bearer_token: token }
   end
 
-  def join_api_url(*parts)
+  def join_api_url(api_path)
     url = URI.parse(api_url)
     prefix = url.path.sub(%r{/+\z}, '')
 
-    url.path = [ prefix, *parts ].join("/")
+    url.path = [prefix, api_path].join("/")
 
     url.to_s
+  end
+
+  def terminal_auth
+    {
+      token: token,
+      ca_pem: ca_pem,
+      max_session_time: current_application_settings.terminal_max_session_time
+    }
+  end
+
+  def enforce_namespace_to_lower_case
+    self.namespace = self.namespace&.downcase
   end
 end

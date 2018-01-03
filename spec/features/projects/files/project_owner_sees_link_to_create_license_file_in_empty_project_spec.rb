@@ -1,48 +1,44 @@
 require 'spec_helper'
 
-feature 'project owner sees a link to create a license file in empty project', feature: true, js: true do
-  include WaitForAjax
-
+feature 'project owner sees a link to create a license file in empty project', :js do
   let(:project_master) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project_empty_repo) }
+
   background do
-    project.team << [project_master, :master]
-    login_as(project_master)
+    project.add_master(project_master)
+    sign_in(project_master)
   end
 
   scenario 'project master creates a license file from a template' do
-    visit namespace_project_path(project.namespace, project)
-    click_link 'Create empty bare repository'
+    visit project_path(project)
     click_on 'LICENSE'
-    expect(page).to have_content('New File')
+    expect(page).to have_content('New file')
 
     expect(current_path).to eq(
-      namespace_project_new_blob_path(project.namespace, project, 'master'))
+      project_new_blob_path(project, 'master'))
     expect(find('#file_name').value).to eq('LICENSE')
     expect(page).to have_selector('.license-selector')
 
     select_template('MIT License')
 
     file_content = first('.file-editor')
-    expect(file_content).to have_content('The MIT License (MIT)')
+    expect(file_content).to have_content('MIT License')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
-    # Remove pre-receive hook so we can push without auth
-    FileUtils.rm_f(File.join(project.repository.path, 'hooks', 'pre-receive'))
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
 
     expect(current_path).to eq(
-      namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
-    expect(page).to have_content('The MIT License (MIT)')
+      project_blob_path(project, 'master/LICENSE'))
+    expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end
 
   def select_template(template)
     page.within('.js-license-selector-wrap') do
-      click_button 'Choose a License template'
+      click_button 'Apply a license template'
       click_link template
-      wait_for_ajax
+      wait_for_requests
     end
   end
 end

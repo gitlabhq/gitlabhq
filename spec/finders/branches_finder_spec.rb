@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BranchesFinder do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 
   describe '#execute' do
@@ -39,6 +39,15 @@ describe BranchesFinder do
     context 'filter only' do
       it 'filters branches by name' do
         branches_finder = described_class.new(repository, { search: 'fix' })
+
+        result = branches_finder.execute
+
+        expect(result.first.name).to eq('fix')
+        expect(result.count).to eq(1)
+      end
+
+      it 'filters branches by name ignoring letter case' do
+        branches_finder = described_class.new(repository, { search: 'FiX' })
 
         result = branches_finder.execute
 

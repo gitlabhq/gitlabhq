@@ -1,0 +1,30 @@
+.panel.panel-default.protected-tags-list.js-protected-tags-list
+  - if @protected_tags.empty?
+    .panel-heading
+      %h3.panel-title
+        Protected tag (#{@protected_tags.size})
+    %p.settings-message.text-center
+      There are currently no protected tags, protect a tag with the form above.
+  - else
+    - can_admin_project = can?(current_user, :admin_project, @project)
+
+    %table.table.table-bordered
+      %colgroup
+        %col{ width: "25%" }
+        %col{ width: "25%" }
+        %col{ width: "50%" }
+        - if can_admin_project
+          %col
+      %thead
+        %tr
+          %th Protected tag (#{@protected_tags.size})
+          %th Last commit
+          %th Allowed to create
+          - if can_admin_project
+            %th
+      %tbody
+        %tr
+          %td.flash-container{ colspan: 4 }
+        = yield
+
+    = paginate @protected_tags, theme: 'gitlab'

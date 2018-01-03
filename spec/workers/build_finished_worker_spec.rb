@@ -3,7 +3,7 @@ require 'spec_helper'
 describe BuildFinishedWorker do
   describe '#perform' do
     context 'when build exists' do
-      let(:build) { create(:ci_build) }
+      let!(:build) { create(:ci_build) }
 
       it 'calculates coverage and calls hooks' do
         expect(BuildCoverageWorker)
@@ -11,6 +11,8 @@ describe BuildFinishedWorker do
         expect(BuildHooksWorker)
           .to receive(:new).ordered.and_call_original
 
+        expect(BuildTraceSectionsWorker)
+          .to receive(:perform_async)
         expect_any_instance_of(BuildCoverageWorker)
           .to receive(:perform)
         expect_any_instance_of(BuildHooksWorker)

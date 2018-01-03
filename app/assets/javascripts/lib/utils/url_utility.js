@@ -1,81 +1,85 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, one-var, one-var-declaration-per-line, no-void, no-plusplus, guard-for-in, no-restricted-syntax, prefer-template, quotes, padded-blocks, max-len */
-(function() {
-  (function(w) {
-    var base;
-    if (w.gl == null) {
-      w.gl = {};
-    }
-    if ((base = w.gl).utils == null) {
-      base.utils = {};
-    }
-    // Returns an array containing the value(s) of the
-    // of the key passed as an argument
-    w.gl.utils.getParameterValues = function(sParam) {
-      var i, sPageURL, sParameterName, sURLVariables, values;
-      sPageURL = decodeURIComponent(window.location.search.substring(1));
-      sURLVariables = sPageURL.split('&');
-      sParameterName = void 0;
-      values = [];
-      i = 0;
-      while (i < sURLVariables.length) {
-        sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] === sParam) {
-          values.push(sParameterName[1].replace(/\+/g, ' '));
-        }
-        i++;
-      }
-      return values;
-    };
-    // @param {Object} params - url keys and value to merge
-    // @param {String} url
-    w.gl.utils.mergeUrlParams = function(params, url) {
-      var lastChar, newUrl, paramName, paramValue, pattern;
-      newUrl = decodeURIComponent(url);
-      for (paramName in params) {
-        paramValue = params[paramName];
-        pattern = new RegExp("\\b(" + paramName + "=).*?(&|$)");
-        if (paramValue == null) {
-          newUrl = newUrl.replace(pattern, '');
-        } else if (url.search(pattern) !== -1) {
-          newUrl = newUrl.replace(pattern, "$1" + paramValue + "$2");
-        } else {
-          newUrl = "" + newUrl + (newUrl.indexOf('?') > 0 ? '&' : '?') + paramName + "=" + paramValue;
-        }
-      }
-      // Remove a trailing ampersand
-      lastChar = newUrl[newUrl.length - 1];
-      if (lastChar === '&') {
-        newUrl = newUrl.slice(0, -1);
-      }
-      return newUrl;
-    };
-    // removes parameter query string from url. returns the modified url
-    w.gl.utils.removeParamQueryString = function(url, param) {
-      var urlVariables, variables;
-      url = decodeURIComponent(url);
-      urlVariables = url.split('&');
-      return ((function() {
-        var j, len, results;
-        results = [];
-        for (j = 0, len = urlVariables.length; j < len; j++) {
-          variables = urlVariables[j];
-          if (variables.indexOf(param) === -1) {
-            results.push(variables);
-          }
-        }
-        return results;
-      })()).join('&');
-    };
-    w.gl.utils.getLocationHash = function(url) {
-      var hashIndex;
-      if (typeof url === 'undefined') {
-        // Note: We can't use window.location.hash here because it's
-        // not consistent across browsers - Firefox will pre-decode it
-        url = window.location.href;
-      }
-      hashIndex = url.indexOf('#');
-      return hashIndex === -1 ? null : url.substring(hashIndex + 1);
-    };
-  })(window);
+// Returns an array containing the value(s) of the
+// of the key passed as an argument
+export function getParameterValues(sParam) {
+  const sPageURL = decodeURIComponent(window.location.search.substring(1));
 
-}).call(this);
+  return sPageURL.split('&').reduce((acc, urlParam) => {
+    const sParameterName = urlParam.split('=');
+
+    if (sParameterName[0] === sParam) {
+      acc.push(sParameterName[1].replace(/\+/g, ' '));
+    }
+
+    return acc;
+  }, []);
+}
+
+// @param {Object} params - url keys and value to merge
+// @param {String} url
+export function mergeUrlParams(params, url) {
+  let newUrl = Object.keys(params).reduce((acc, paramName) => {
+    const paramValue = params[paramName];
+    const pattern = new RegExp(`\\b(${paramName}=).*?(&|$)`);
+
+    if (paramValue === null) {
+      return acc.replace(pattern, '');
+    } else if (url.search(pattern) !== -1) {
+      return acc.replace(pattern, `$1${paramValue}$2`);
+    }
+
+    return `${acc}${acc.indexOf('?') > 0 ? '&' : '?'}${paramName}=${paramValue}`;
+  }, decodeURIComponent(url));
+
+  // Remove a trailing ampersand
+  const lastChar = newUrl[newUrl.length - 1];
+
+  if (lastChar === '&') {
+    newUrl = newUrl.slice(0, -1);
+  }
+
+  return newUrl;
+}
+
+export function removeParamQueryString(url, param) {
+  const decodedUrl = decodeURIComponent(url);
+  const urlVariables = decodedUrl.split('&');
+
+  return urlVariables.filter(variable => variable.indexOf(param) === -1).join('&');
+}
+
+export function removeParams(params) {
+  const url = document.createElement('a');
+  url.href = window.location.href;
+
+  params.forEach((param) => {
+    url.search = removeParamQueryString(url.search, param);
+  });
+
+  return url.href;
+}
+
+export function getLocationHash(url = window.location.href) {
+  const hashIndex = url.indexOf('#');
+
+  return hashIndex === -1 ? null : url.substring(hashIndex + 1);
+}
+
+export function visitUrl(url, external = false) {
+  if (external) {
+    // Simulate `target="blank" rel="noopener noreferrer"`
+    // See https://mathiasbynens.github.io/rel-noopener/
+    const otherWindow = window.open();
+    otherWindow.opener = null;
+    otherWindow.location = url;
+  } else {
+    window.location.href = url;
+  }
+}
+
+export function refreshCurrentPage() {
+  visitUrl(window.location.href);
+}
+
+export function redirectTo(url) {
+  return window.location.assign(url);
+}

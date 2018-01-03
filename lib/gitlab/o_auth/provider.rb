@@ -19,10 +19,26 @@ module Gitlab
         name.to_s.start_with?('ldap')
       end
 
+      def self.sync_profile_from_provider?(provider)
+        return true if ldap_provider?(provider)
+
+        providers = Gitlab.config.omniauth.sync_profile_from_provider
+
+        if providers.is_a?(Array)
+          providers.include?(provider)
+        else
+          providers
+        end
+      end
+
       def self.config_for(name)
         name = name.to_s
         if ldap_provider?(name)
-          Gitlab::LDAP::Config.new(name).options
+          if Gitlab::LDAP::Config.valid_provider?(name)
+            Gitlab::LDAP::Config.new(name).options
+          else
+            nil
+          end
         else
           Gitlab.config.omniauth.providers.find { |provider| provider.name == name }
         end

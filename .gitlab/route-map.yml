@@ -1,0 +1,3 @@
+# Documentation
+- source: /doc/(.+?)\.md/ # doc/administration/build_artifacts.md
+  public: '\1.html' # doc/administration/build_artifacts.html

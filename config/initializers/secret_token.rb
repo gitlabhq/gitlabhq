@@ -24,7 +24,8 @@ def create_tokens
   defaults = {
     secret_key_base: file_secret_key || generate_new_secure_token,
     otp_key_base: env_secret_key || file_secret_key || generate_new_secure_token,
-    db_key_base: generate_new_secure_token
+    db_key_base: generate_new_secure_token,
+    openid_connect_signing_key: generate_new_rsa_private_key
   }
 
   missing_secrets = set_missing_keys(defaults)
@@ -39,6 +40,10 @@ end
 
 def generate_new_secure_token
   SecureRandom.hex(64)
+end
+
+def generate_new_rsa_private_key
+  OpenSSL::PKey::RSA.new(2048).to_pem
 end
 
 def warn_missing_secret(secret)

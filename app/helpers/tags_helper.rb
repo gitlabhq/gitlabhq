@@ -10,7 +10,7 @@ module TagsHelper
     }
 
     options = exist_opts.merge(options)
-    namespace_project_tags_path(@project.namespace, @project, @id, options)
+    project_tags_path(@project, @id, options)
   end
 
   def tag_list(project)
@@ -20,5 +20,9 @@ module TagsHelper
     end
 
     html.html_safe
+  end
+
+  def protected_tag?(project, tag)
+    ProtectedTag.protected?(project, tag.name)
   end
 end

@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 class Gitlab::Seeder::Pipelines
   STAGES = %w[build test deploy notify]
   BUILDS = [
@@ -96,7 +98,7 @@ class Gitlab::Seeder::Pipelines
 
 
   def create_pipeline!(project, ref, commit)
-    project.pipelines.create(sha: commit.id, ref: ref)
+    project.pipelines.create(sha: commit.id, ref: ref, source: :push)
   end
 
   def build_create!(pipeline, opts = {})
@@ -110,6 +112,10 @@ class Gitlab::Seeder::Pipelines
 
       setup_artifacts(build)
       setup_build_log(build)
+
+      build.project.environments.
+        find_or_create_by(name: build.expanded_environment_name)
+
       build.save
     end
   end
@@ -118,17 +124,17 @@ class Gitlab::Seeder::Pipelines
     return unless %w[build test].include?(build.stage)
 
     artifacts_cache_file(artifacts_archive_path) do |file|
-      build.artifacts_file = file
+      build.job_artifacts.build(project: build.project, file_type: :archive, file: file)
     end
 
     artifacts_cache_file(artifacts_metadata_path) do |file|
-      build.artifacts_metadata = file
+      build.job_artifacts.build(project: build.project, file_type: :metadata, file: file)
     end
   end
 
   def setup_build_log(build)
     if %w(running success failed).include?(build.status)
-      build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
+      build.trace.set(FFaker::Lorem.paragraphs(6).join("\n\n"))
     end
   end
 

@@ -8,13 +8,13 @@ module Gitlab
     )
 
     # Filters an array of pods (as returned by the kubernetes API) by their labels
-    def filter_pods(pods, labels = {})
-      pods.select do |pod|
-        metadata = pod.fetch("metadata", {})
-        pod_labels = metadata.fetch("labels", nil)
-        next unless pod_labels
+    def filter_by_label(items, labels = {})
+      items.select do |item|
+        metadata = item.fetch("metadata", {})
+        item_labels = metadata.fetch("labels", nil)
+        next unless item_labels
 
-        labels.all? { |k, v| pod_labels[k.to_s] == v }
+        labels.all? { |k, v| item_labels[k.to_s] == v }
       end
     end
 
@@ -38,15 +38,15 @@ module Gitlab
           url:          container_exec_url(api_url, namespace, pod_name, container["name"]),
           subprotocols: ['channel.k8s.io'],
           headers:      Hash.new { |h, k| h[k] = [] },
-          created_at:   created_at,
+          created_at:   created_at
         }
       end
     end
 
-    def add_terminal_auth(terminal, token, ca_pem = nil)
+    def add_terminal_auth(terminal, token:, max_session_time:, ca_pem: nil)
       terminal[:headers]['Authorization'] << "Bearer #{token}"
+      terminal[:max_session_time] = max_session_time
       terminal[:ca_pem] = ca_pem if ca_pem.present?
-      terminal
     end
 
     def container_exec_url(api_url, namespace, pod_name, container_name)
@@ -64,7 +64,7 @@ module Gitlab
         tty: true,
         stdin: true,
         stdout: true,
-        stderr: true,
+        stderr: true
       }.to_query + '&' + EXEC_COMMAND
 
       case url.scheme
@@ -75,6 +75,45 @@ module Gitlab
       end
 
       url.to_s
+    end
+
+    def to_kubeconfig(url:, namespace:, token:, ca_pem: nil)
+      config = {
+        apiVersion: 'v1',
+        clusters: [
+          name: 'gitlab-deploy',
+          cluster: {
+            server: url
+          }
+        ],
+        contexts: [
+          name: 'gitlab-deploy',
+          context: {
+            cluster: 'gitlab-deploy',
+            namespace: namespace,
+            user: 'gitlab-deploy'
+          }
+        ],
+        'current-context': 'gitlab-deploy',
+        kind: 'Config',
+        users: [
+          {
+            name: 'gitlab-deploy',
+            user: { token: token }
+          }
+        ]
+      }
+
+      kubeconfig_embed_ca_pem(config, ca_pem) if ca_pem
+
+      config.deep_stringify_keys
+    end
+
+    private
+
+    def kubeconfig_embed_ca_pem(config, ca_pem)
+      cluster = config.dig(:clusters, 0, :cluster)
+      cluster[:'certificate-authority-data'] = Base64.strict_encode64(ca_pem)
     end
   end
 end

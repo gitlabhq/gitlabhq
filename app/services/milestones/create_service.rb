@@ -1,9 +1,9 @@
 module Milestones
   class CreateService < Milestones::BaseService
     def execute
-      milestone = project.milestones.new(params)
+      milestone = parent.milestones.new(params)
 
-      if milestone.save
+      if milestone.save && milestone.project_milestone?
         event_service.open_milestone(milestone, current_user)
       end
 

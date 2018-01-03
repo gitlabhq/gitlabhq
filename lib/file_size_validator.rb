@@ -8,6 +8,7 @@ class FileSizeValidator < ActiveModel::EachValidator
   def initialize(options)
     if range = (options.delete(:in) || options.delete(:within))
       raise ArgumentError, ":in and :within must be a Range" unless range.is_a?(Range)
+
       options[:minimum], options[:maximum] = range.begin, range.end
       options[:maximum] -= 1 if range.exclude_end?
     end
@@ -32,9 +33,9 @@ class FileSizeValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    raise(ArgumentError, "A CarrierWave::Uploader::Base object was expected") unless value.kind_of? CarrierWave::Uploader::Base
+    raise(ArgumentError, "A CarrierWave::Uploader::Base object was expected") unless value.is_a? CarrierWave::Uploader::Base
 
-    value = (options[:tokenizer] || DEFAULT_TOKENIZER).call(value) if value.kind_of?(String)
+    value = (options[:tokenizer] || DEFAULT_TOKENIZER).call(value) if value.is_a?(String)
 
     CHECKS.each do |key, validity_check|
       next unless check_value = options[key]
@@ -44,13 +45,13 @@ class FileSizeValidator < ActiveModel::EachValidator
         when Integer
           check_value
         when Symbol
-          record.send(check_value)
+          record.public_send(check_value) # rubocop:disable GitlabSecurity/PublicSend
         end
 
       value ||= [] if key == :maximum
 
       value_size = value.size
-      next if value_size.send(validity_check, check_value)
+      next if value_size.public_send(validity_check, check_value) # rubocop:disable GitlabSecurity/PublicSend
 
       errors_options = options.except(*RESERVED_OPTIONS)
       errors_options[:file_size] = help.number_to_human_size check_value

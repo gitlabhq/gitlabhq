@@ -47,7 +47,11 @@ describe Gitlab::Ci::Status::Build::Cancelable do
 
     describe '#has_action?' do
       context 'when user is allowed to update build' do
-        before { build.project.team << [user, :developer] }
+        before do
+          stub_not_protect_default_branch
+
+          build.project.add_developer(user)
+        end
 
         it { is_expected.to have_action }
       end
@@ -62,7 +66,7 @@ describe Gitlab::Ci::Status::Build::Cancelable do
     end
 
     describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'ban' }
+      it { expect(subject.action_icon).to eq 'cancel' }
     end
 
     describe '#action_title' do

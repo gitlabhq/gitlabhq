@@ -1,10 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :board do
-    project factory: :empty_project
+    project
 
     after(:create) do |board|
-      board.lists.create(list_type: :backlog)
-      board.lists.create(list_type: :done)
+      board.lists.create(list_type: :closed)
     end
   end
 end

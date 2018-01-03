@@ -13,7 +13,7 @@ module Gitlab
           medium: '#dfb317',
           low: '#e05d44',
           unknown: '#9f9f9f'
-        }
+        }.freeze
 
         def initialize(badge)
           @entity = badge.entity

@@ -11,26 +11,31 @@ class Label < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#428BCA'
+  DEFAULT_COLOR = '#428BCA'.freeze
 
   default_value_for :color, DEFAULT_COLOR
 
-  has_many :lists, dependent: :destroy
+  has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
-  has_many :label_links, dependent: :destroy
+  has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
+
+  before_validation :strip_whitespace_from_title_and_color
 
   validates :color, color: true, allow_blank: false
 
   # Don't allow ',' for label titles
   validates :title, presence: true, format: { with: /\A[^,]+\z/ }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
+  validates :title, length: { maximum: 255 }
 
   default_scope { order(title: :asc) }
 
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
+  scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
+  scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
 
   def self.prioritized(project)
     joins(:priorities)
@@ -42,9 +47,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id))).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id)))
+                              .join_sources
 
     joins(label_priorities).where(priorities[:priority].eq(nil))
   end
@@ -53,9 +58,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id])).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]))
+                              .join_sources
 
     joins(label_priorities)
   end
@@ -122,11 +127,20 @@ class Label < ActiveRecord::Base
   end
 
   def priority(project)
-    priorities.find_by(project: project).try(:priority)
+    priority = if priorities.loaded?
+                 priorities.first { |p| p.project == project }
+               else
+                 priorities.find_by(project: project)
+               end
+    priority.try(:priority)
   end
 
   def template?
     template
+  end
+
+  def color
+    super || DEFAULT_COLOR
   end
 
   def text_color
@@ -146,17 +160,17 @@ class Label < ActiveRecord::Base
   #
   #   Label.first.to_reference                                     # => "~1"
   #   Label.first.to_reference(format: :name)                      # => "~\"bug\""
-  #   Label.first.to_reference(project, same_namespace_project)    # => "gitlab-ce~1"
-  #   Label.first.to_reference(project, another_namespace_project) # => "gitlab-org/gitlab-ce~1"
+  #   Label.first.to_reference(project, target_project: same_namespace_project)    # => "gitlab-ce~1"
+  #   Label.first.to_reference(project, target_project: another_namespace_project) # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
   #
-  def to_reference(source_project = nil, target_project = nil, format: :id)
+  def to_reference(from = nil, target_project: nil, format: :id, full: false)
     format_reference = label_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if source_project
-      "#{source_project.to_reference(target_project)}#{reference}"
+    if from
+      "#{from.to_reference(target_project, full: full)}#{reference}"
     else
       reference
     end
@@ -164,8 +178,13 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:priority] = priority(options[:project]) if options.has_key?(:project)
+      json[:type] = self.try(:type)
+      json[:priority] = priority(options[:project]) if options.key?(:project)
     end
+  end
+
+  def hook_attrs
+    attributes
   end
 
   private
@@ -187,5 +206,9 @@ class Label < ActiveRecord::Base
 
   def sanitize_title(value)
     CGI.unescapeHTML(Sanitize.clean(value.to_s))
+  end
+
+  def strip_whitespace_from_title_and_color
+    %w(color title).each { |attr| self[attr] = self[attr]&.strip }
   end
 end

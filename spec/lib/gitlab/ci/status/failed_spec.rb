@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Failed do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'failed' }
+    it { expect(subject.text).to eq 'failed' }
   end
 
   describe '#label' do
@@ -14,7 +14,11 @@ describe Gitlab::Ci::Status::Failed do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_failed' }
+    it { expect(subject.icon).to eq 'status_failed' }
+  end
+
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_failed' }
   end
 
   describe '#group' do

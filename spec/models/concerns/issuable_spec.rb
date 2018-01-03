@@ -1,13 +1,15 @@
 require 'spec_helper'
 
-describe Issue, "Issuable" do
-  let(:issue) { create(:issue) }
+describe Issuable do
+  let(:issuable_class) { Issue }
+  let(:issue) { create(:issue, title: 'An issue', description: 'A description') }
   let(:user) { create(:user) }
 
   describe "Associations" do
+    subject { build(:issue) }
+
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:author) }
-    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
 
@@ -23,10 +25,14 @@ describe Issue, "Issuable" do
   end
 
   describe 'Included modules' do
+    let(:described_class) { issuable_class }
+
     it { is_expected.to include_module(Awardable) }
   end
 
   describe "Validation" do
+    subject { build(:issue) }
+
     before do
       allow(subject).to receive(:set_iid).and_return(false)
     end
@@ -39,100 +45,98 @@ describe Issue, "Issuable" do
   end
 
   describe "Scope" do
-    it { expect(described_class).to respond_to(:opened) }
-    it { expect(described_class).to respond_to(:closed) }
-    it { expect(described_class).to respond_to(:assigned) }
+    subject { build(:issue) }
+
+    it { expect(issuable_class).to respond_to(:opened) }
+    it { expect(issuable_class).to respond_to(:closed) }
+    it { expect(issuable_class).to respond_to(:assigned) }
   end
 
-  describe "before_save" do
-    describe "#update_cache_counts" do
-      context "when previous assignee exists" do
-        before do
-          assignee = create(:user)
-          issue.project.team << [assignee, :developer]
-          issue.update(assignee: assignee)
-        end
+  describe 'author_name' do
+    it 'is delegated to author' do
+      expect(issue.author_name).to eq issue.author.name
+    end
 
-        it "updates cache counts for new assignee" do
-          user = create(:user)
+    it 'returns nil when author is nil' do
+      issue.author_id = nil
+      issue.save(validate: false)
 
-          expect(user).to receive(:update_cache_counts)
-
-          issue.update(assignee: user)
-        end
-
-        it "updates cache counts for previous assignee" do
-          old_assignee = issue.assignee
-          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
-
-          expect(old_assignee).to receive(:update_cache_counts)
-
-          issue.update(assignee: nil)
-        end
-      end
-
-      context "when previous assignee does not exist" do
-        before{ issue.update(assignee: nil) }
-
-        it "updates cache count for the new assignee" do
-          expect_any_instance_of(User).to receive(:update_cache_counts)
-
-          issue.update(assignee: user)
-        end
-      end
+      expect(issue.author_name).to eq nil
     end
   end
 
   describe ".search" do
-    let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
+    let!(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
+    let!(:searchable_issue2) { create(:issue, title: 'Aw') }
 
-    it 'returns notes with a matching title' do
-      expect(described_class.search(searchable_issue.title)).
-        to eq([searchable_issue])
+    it 'returns issues with a matching title' do
+      expect(issuable_class.search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching title' do
-      expect(described_class.search('able')).to eq([searchable_issue])
+    it 'returns issues with a partially matching title' do
+      expect(issuable_class.search('able')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title regardless of the casing' do
-      expect(described_class.search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+    it 'returns issues with a matching title regardless of the casing' do
+      expect(issuable_class.search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
+    end
+
+    it 'returns issues with a fuzzy matching title' do
+      expect(issuable_class.search('searchable issue')).to eq([searchable_issue])
+    end
+
+    it 'returns issues with a matching title for a query shorter than 3 chars' do
+      expect(issuable_class.search(searchable_issue2.title.downcase)).to eq([searchable_issue2])
     end
   end
 
   describe ".full_search" do
     let!(:searchable_issue) do
-      create(:issue, title: "Searchable issue", description: 'kittens')
+      create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
+    end
+    let!(:searchable_issue2) { create(:issue, title: "Aw", description: "Cu") }
+
+    it 'returns issues with a matching title' do
+      expect(issuable_class.full_search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title' do
-      expect(described_class.full_search(searchable_issue.title)).
-        to eq([searchable_issue])
+    it 'returns issues with a partially matching title' do
+      expect(issuable_class.full_search('able')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching title' do
-      expect(described_class.full_search('able')).to eq([searchable_issue])
+    it 'returns issues with a matching title regardless of the casing' do
+      expect(issuable_class.full_search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title regardless of the casing' do
-      expect(described_class.full_search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+    it 'returns issues with a fuzzy matching title' do
+      expect(issuable_class.full_search('searchable issue')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching description' do
-      expect(described_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+    it 'returns issues with a matching description' do
+      expect(issuable_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching description' do
-      expect(described_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+    it 'returns issues with a partially matching description' do
+      expect(issuable_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching description regardless of the casing' do
-      expect(described_class.full_search(searchable_issue.description.upcase)).
-        to eq([searchable_issue])
+    it 'returns issues with a matching description regardless of the casing' do
+      expect(issuable_class.full_search(searchable_issue.description.upcase))
+        .to eq([searchable_issue])
+    end
+
+    it 'returns issues with a fuzzy matching description' do
+      expect(issuable_class.full_search('many kittens')).to eq([searchable_issue])
+    end
+
+    it 'returns issues with a matching description for a query shorter than 3 chars' do
+      expect(issuable_class.full_search(searchable_issue2.description.downcase)).to eq([searchable_issue2])
     end
   end
 
@@ -167,13 +171,13 @@ describe Issue, "Issuable" do
 
     it "returns false when record has been updated" do
       allow(issue).to receive(:today?).and_return(true)
-      issue.touch
+      issue.update_attribute(:updated_at, 1.hour.ago)
       expect(issue.new?).to be_falsey
     end
   end
 
   describe "#sort" do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { create(:project) }
 
     context "by milestone due date" do
       # Correct order is:
@@ -218,7 +222,9 @@ describe Issue, "Issuable" do
     let(:project) { issue.project }
 
     context 'user is not a participant in the issue' do
-      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+      before do
+        allow(issue).to receive(:participants).with(user).and_return([])
+      end
 
       it 'returns false when no subcription exists' do
         expect(issue.subscribed?(user, project)).to be_falsey
@@ -238,7 +244,9 @@ describe Issue, "Issuable" do
     end
 
     context 'user is a participant in the issue' do
-      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+      before do
+        allow(issue).to receive(:participants).with(user).and_return([user])
+      end
 
       it 'returns false when no subcription exists' do
         expect(issue.subscribed?(user, project)).to be_truthy
@@ -258,45 +266,89 @@ describe Issue, "Issuable" do
     end
   end
 
-  describe "#to_hook_data" do
-    let(:data) { issue.to_hook_data(user) }
-    let(:project) { issue.project }
+  describe '#to_hook_data' do
+    let(:builder) { double }
 
-    it "returns correct hook data" do
-      expect(data[:object_kind]).to eq("issue")
-      expect(data[:user]).to eq(user.hook_attrs)
-      expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).not_to have_key(:assignee)
-    end
+    context 'labels are updated' do
+      let(:labels) { create_list(:label, 2) }
 
-    context "issue is assigned" do
-      before { issue.update_attribute(:assignee, user) }
+      before do
+        issue.update(labels: [labels[1]])
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
 
-      it "returns correct hook data" do
-        expect(data[:object_attributes]['assignee_id']).to eq(user.id)
-        expect(data[:assignee]).to eq(user.hook_attrs)
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'labels' => [[labels[0].hook_attrs], [labels[1].hook_attrs]]
+          ))
+
+        issue.to_hook_data(user, old_associations: { labels: [labels[0]] })
       end
     end
 
-    include_examples 'project hook data'
-    include_examples 'deprecated repository hook data'
-  end
+    context 'total_time_spent is updated' do
+      before do
+        issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.now)
+        issue.save
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
 
-  describe '#card_attributes' do
-    it 'includes the author name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(nil)
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'total_time_spent' => [1, 2]
+          ))
 
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+        issue.to_hook_data(user, old_associations: { total_time_spent: 1 })
+      end
     end
 
-    it 'includes the assignee name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
+    context 'issue is assigned' do
+      let(:user2) { create(:user) }
 
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      before do
+        issue.assignees << user << user2
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
+          ))
+
+        issue.to_hook_data(user, old_associations: { assignees: [user] })
+      end
+    end
+
+    context 'merge_request is assigned' do
+      let(:merge_request) { create(:merge_request) }
+      let(:user2) { create(:user) }
+
+      before do
+        merge_request.update(assignee: user)
+        merge_request.update(assignee: user2)
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(merge_request).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'assignee_id' => [user.id, user2.id],
+            'assignee' => [user.hook_attrs, user2.hook_attrs]
+          ))
+
+        merge_request.to_hook_data(user, old_associations: { assignees: [user] })
+      end
     end
   end
 
@@ -305,7 +357,7 @@ describe Issue, "Issuable" do
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:issue) { create(:issue, project: project) }
 
-    before(:each) do
+    before do
       issue.labels << bug
     end
 
@@ -344,6 +396,46 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '.order_due_date_and_labels_priority' do
+    let(:project) { create(:project) }
+
+    def create_issue(milestone, labels)
+      create(:labeled_issue, milestone: milestone, labels: labels, project: project)
+    end
+
+    it 'sorts issues in order of milestone due date, then label priority' do
+      first_priority = create(:label, project: project, priority: 1)
+      second_priority = create(:label, project: project, priority: 2)
+      no_priority = create(:label, project: project)
+
+      first_milestone = create(:milestone, project: project, due_date: Time.now)
+      second_milestone = create(:milestone, project: project, due_date: Time.now + 1.month)
+      third_milestone = create(:milestone, project: project)
+
+      # The issues here are ordered by label priority, to ensure that we don't
+      # accidentally just sort by creation date.
+      second_milestone_first_priority = create_issue(second_milestone, [first_priority, second_priority, no_priority])
+      third_milestone_first_priority = create_issue(third_milestone, [first_priority, second_priority, no_priority])
+      first_milestone_second_priority = create_issue(first_milestone, [second_priority, no_priority])
+      second_milestone_second_priority = create_issue(second_milestone, [second_priority, no_priority])
+      no_milestone_second_priority = create_issue(nil, [second_priority, no_priority])
+      first_milestone_no_priority = create_issue(first_milestone, [no_priority])
+      second_milestone_no_labels = create_issue(second_milestone, [])
+      third_milestone_no_priority = create_issue(third_milestone, [no_priority])
+
+      result = Issue.order_due_date_and_labels_priority
+
+      expect(result).to eq([first_milestone_second_priority,
+                            first_milestone_no_priority,
+                            second_milestone_first_priority,
+                            second_milestone_second_priority,
+                            second_milestone_no_labels,
+                            third_milestone_first_priority,
+                            no_milestone_second_priority,
+                            third_milestone_no_priority])
+    end
+  end
+
   describe '.order_labels_priority' do
     let(:label_1) { create(:label, title: 'label_1', project: issue.project, priority: 1) }
     let(:label_2) { create(:label, title: 'label_2', project: issue.project, priority: 2) }
@@ -367,7 +459,7 @@ describe Issue, "Issuable" do
     let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
     let(:issue3) { create(:issue, title: "Feature1", project: project) }
 
-    before(:each) do
+    before do
       issue1.labels << bug
       issue1.labels << feature
       issue2.labels << bug
@@ -388,24 +480,108 @@ describe Issue, "Issuable" do
     end
   end
 
-  describe '#assignee_or_author?' do
-    let(:user) { build(:user, id: 1) }
-    let(:issue) { build(:issue) }
+  describe '#spend_time' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
 
-    it 'returns true for a user that is assigned to an issue' do
-      issue.assignee = user
-
-      expect(issue.assignee_or_author?(user)).to eq(true)
+    def spend_time(seconds)
+      issue.spend_time(duration: seconds, user_id: user.id)
+      issue.save!
     end
 
-    it 'returns true for a user that is the author of an issue' do
-      issue.author = user
+    context 'adding time' do
+      it 'should update the total time spent' do
+        spend_time(1800)
 
-      expect(issue.assignee_or_author?(user)).to eq(true)
+        expect(issue.total_time_spent).to eq(1800)
+      end
     end
 
-    it 'returns false for a user that is not the assignee or author' do
-      expect(issue.assignee_or_author?(user)).to eq(false)
+    context 'substracting time' do
+      before do
+        spend_time(1800)
+      end
+
+      it 'should update the total time spent' do
+        spend_time(-900)
+
+        expect(issue.total_time_spent).to eq(900)
+      end
+
+      context 'when time to substract exceeds the total time spent' do
+        it 'raise a validation error' do
+          expect do
+            spend_time(-3600)
+          end.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+  end
+
+  describe '#first_contribution?' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, namespace: group) }
+    let(:other_project) { create(:project) }
+    let(:owner) { create(:owner) }
+    let(:master) { create(:user) }
+    let(:reporter) { create(:user) }
+    let(:guest) { create(:user) }
+
+    let(:contributor) { create(:user) }
+    let(:first_time_contributor) { create(:user) }
+
+    before do
+      group.add_owner(owner)
+      project.add_master(master)
+      project.add_reporter(reporter)
+      project.add_guest(guest)
+      project.add_guest(contributor)
+      project.add_guest(first_time_contributor)
+    end
+
+    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
+
+    context "for merge requests" do
+      it "is false for MASTER" do
+        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is false for OWNER" do
+        mr = create(:merge_request, author: owner, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is false for REPORTER" do
+        mr = create(:merge_request, author: reporter, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is true when you don't have any merged MR" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr).not_to be_first_contribution
+      end
+
+      it "handles multiple projects separately" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr_other_project).not_to be_first_contribution
+      end
+    end
+
+    context "for issues" do
+      let(:contributor_issue) { create(:issue, author: contributor, project: project) }
+      let(:first_time_contributor_issue) { create(:issue, author: first_time_contributor, project: project) }
+
+      it "is false even without merged MR" do
+        expect(merged_mr).to be
+        expect(first_time_contributor_issue).not_to be_first_contribution
+        expect(contributor_issue).not_to be_first_contribution
+      end
     end
   end
 end

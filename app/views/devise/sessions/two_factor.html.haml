@@ -1,13 +1,13 @@
 - if inject_u2f_api?
   - content_for :page_specific_javascripts do
-    = page_specific_javascript_tag('u2f.js')
+    = page_specific_javascript_bundle_tag('u2f')
 
 %div
   = render 'devise/shared/tab_single', tab_title: 'Two-Factor Authentication'
   .login-box
     .login-body
       - if @user.two_factor_otp_enabled?
-        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: 'edit_user gl-show-field-errors' }) do |f|
+        = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: "edit_user gl-show-field-errors js-2fa-form #{'hidden' if @user.two_factor_u2f_enabled?}" }) do |f|
           - resource_params = params[resource_name].presence || params
           = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
           %div

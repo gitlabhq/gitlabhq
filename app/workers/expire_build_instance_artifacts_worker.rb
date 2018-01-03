@@ -1,6 +1,5 @@
 class ExpireBuildInstanceArtifactsWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(build_id)
     build = Ci::Build
@@ -8,7 +7,7 @@ class ExpireBuildInstanceArtifactsWorker
       .reorder(nil)
       .find_by(id: build_id)
 
-    return unless build.try(:project)
+    return unless build&.project && !build.project.pending_delete
 
     Rails.logger.info "Removing artifacts for build #{build.id}..."
     build.erase_artifacts!

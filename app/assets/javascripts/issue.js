@@ -1,157 +1,138 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, padded-blocks, max-len */
-/* global Flash */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, max-len */
+import 'vendor/jquery.waitforimages';
+import { addDelimiter } from './lib/utils/text_utility';
+import Flash from './flash';
+import TaskList from './task_list';
+import CreateMergeRequestDropdown from './create_merge_request_dropdown';
+import IssuablesHelper from './helpers/issuables_helper';
 
-/*= require flash */
-/*= require jquery.waitforimages */
-/*= require task_list */
+export default class Issue {
+  constructor() {
+    if ($('a.btn-close').length) this.initIssueBtnEventListeners();
 
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    Issue.$btnNewBranch = $('#new-branch');
+    Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
-  this.Issue = (function() {
-    function Issue() {
-      this.submitNoteForm = bind(this.submitNoteForm, this);
-      // Prevent duplicate event bindings
-      this.disableTaskList();
-      if ($('a.btn-close').length) {
-        this.initTaskList();
-        this.initIssueBtnEventListeners();
-      }
-      this.initMergeRequests();
-      this.initRelatedBranches();
-      this.initCanCreateBranch();
+    Issue.initMergeRequests();
+    Issue.initRelatedBranches();
+
+    this.closeButtons = $('a.btn-close');
+    this.reopenButtons = $('a.btn-reopen');
+
+    this.initCloseReopenReport();
+
+    if (Issue.createMrDropdownWrap) {
+      this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
     }
+  }
 
-    Issue.prototype.initTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('enable');
-      return $(document).on('tasklist:changed', '.detail-page-description .js-task-list-container', this.updateTaskList);
-    };
+  initIssueBtnEventListeners() {
+    const issueFailMessage = 'Unable to update this issue at this time.';
 
-    Issue.prototype.initIssueBtnEventListeners = function() {
-      var _this, issueFailMessage;
-      _this = this;
-      issueFailMessage = 'Unable to update this issue at this time.';
-      return $('a.btn-close, a.btn-reopen').on('click', function(e) {
-        var $this, isClose, shouldSubmit, url;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        $this = $(this);
-        isClose = $this.hasClass('btn-close');
-        shouldSubmit = $this.hasClass('btn-comment');
-        if (shouldSubmit) {
-          _this.submitNoteForm($this.closest('form'));
-        }
-        $this.prop('disabled', true);
-        url = $this.attr('href');
-        return $.ajax({
-          type: 'PUT',
-          url: url,
-          error: function(jqXHR, textStatus, errorThrown) {
-            var issueStatus;
-            issueStatus = isClose ? 'close' : 'open';
-            return new Flash(issueFailMessage, 'alert');
-          },
-          success: function(data, textStatus, jqXHR) {
-            if ('id' in data) {
-              $(document).trigger('issuable:change');
-              if (isClose) {
-                $('a.btn-close').addClass('hidden');
-                $('a.btn-reopen').removeClass('hidden');
-                $('div.status-box-closed').removeClass('hidden');
-                $('div.status-box-open').addClass('hidden');
-              } else {
-                $('a.btn-reopen').addClass('hidden');
-                $('a.btn-close').removeClass('hidden');
-                $('div.status-box-closed').addClass('hidden');
-                $('div.status-box-open').removeClass('hidden');
-              }
-            } else {
-              new Flash(issueFailMessage, 'alert');
-            }
-            return $this.prop('disabled', false);
-          }
-        });
-      });
-    };
-
-    Issue.prototype.submitNoteForm = function(form) {
-      var noteText;
-      noteText = form.find("textarea.js-note-text").val();
-      if (noteText.trim().length > 0) {
-        return form.submit();
+    return $(document).on('click', '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen', (e) => {
+      var $button, shouldSubmit, url;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      $button = $(e.currentTarget);
+      shouldSubmit = $button.hasClass('btn-comment');
+      if (shouldSubmit) {
+        Issue.submitNoteForm($button.closest('form'));
       }
-    };
 
-    Issue.prototype.disableTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.detail-page-description .js-task-list-container');
-    };
+      this.disableCloseReopenButton($button);
 
-    Issue.prototype.updateTaskList = function() {
-      var patchData;
-      patchData = {};
-      patchData['issue'] = {
-        'description': $('.js-task-list-field', this).val()
-      };
+      url = $button.attr('href');
       return $.ajax({
-        type: 'PATCH',
-        url: $('form.js-issuable-update').attr('action'),
-        data: patchData,
-        success: function(issue) {
-          document.querySelector('#task_status').innerText = issue.task_status;
-          document.querySelector('#task_status_short').innerText = issue.task_status_short;
-        }
-      });
-    // TODO (rspeicher): Make the issue description inline-editable like a note so
-    // that we can re-use its form here
-    };
+        type: 'PUT',
+        url: url
+      })
+      .fail(() => new Flash(issueFailMessage))
+      .done((data) => {
+        const isClosedBadge = $('div.status-box-issue-closed');
+        const isOpenBadge = $('div.status-box-open');
+        const projectIssuesCounter = $('.issue_counter');
 
-    Issue.prototype.initMergeRequests = function() {
-      var $container;
-      $container = $('#merge-requests');
-      return $.getJSON($container.data('url')).error(function() {
-        return new Flash('Failed to load referenced merge requests', 'alert');
-      }).success(function(data) {
-        if ('html' in data) {
-          return $container.html(data.html);
-        }
-      });
-    };
+        if ('id' in data) {
+          const isClosed = $button.hasClass('btn-close');
+          isClosedBadge.toggleClass('hidden', !isClosed);
+          isOpenBadge.toggleClass('hidden', isClosed);
 
-    Issue.prototype.initRelatedBranches = function() {
-      var $container;
-      $container = $('#related-branches');
-      return $.getJSON($container.data('url')).error(function() {
-        return new Flash('Failed to load related branches', 'alert');
-      }).success(function(data) {
-        if ('html' in data) {
-          return $container.html(data.html);
-        }
-      });
-    };
+          $(document).trigger('issuable:change', isClosed);
+          this.toggleCloseReopenButton(isClosed);
 
-    Issue.prototype.initCanCreateBranch = function() {
-      var $container;
-      $container = $('#new-branch');
-      // If the user doesn't have the required permissions the container isn't
-      // rendered at all.
-      if ($container.length === 0) {
-        return;
-      }
-      return $.getJSON($container.data('path')).error(function() {
-        $container.find('.unavailable').show();
-        return new Flash('Failed to check if a new branch can be created.', 'alert');
-      }).success(function(data) {
-        if (data.can_create_branch) {
-          $container.find('.available').show();
+          let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
+          numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
+          projectIssuesCounter.text(addDelimiter(numProjectIssues));
+
+          if (this.createMergeRequestDropdown) {
+            if (isClosed) {
+              this.createMergeRequestDropdown.unavailable();
+              this.createMergeRequestDropdown.disable();
+            } else {
+              // We should check in case a branch was created in another tab
+              this.createMergeRequestDropdown.checkAbilityToCreateBranch();
+            }
+          }
         } else {
-          return $container.find('.unavailable').show();
+          new Flash(issueFailMessage);
         }
+      })
+      .then(() => {
+        this.disableCloseReopenButton($button, false);
       });
-    };
+    });
+  }
 
-    return Issue;
+  initCloseReopenReport() {
+    this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
 
-  })();
+    if (this.closeButtons) this.closeButtons = this.closeButtons.not('.issuable-close-button');
+    if (this.reopenButtons) this.reopenButtons = this.reopenButtons.not('.issuable-close-button');
+  }
 
-}).call(this);
+  disableCloseReopenButton($button, shouldDisable) {
+    if (this.closeReopenReportToggle) {
+      this.closeReopenReportToggle.setDisable(shouldDisable);
+    } else {
+      $button.prop('disabled', shouldDisable);
+    }
+  }
+
+  toggleCloseReopenButton(isClosed) {
+    if (this.closeReopenReportToggle) this.closeReopenReportToggle.updateButton(isClosed);
+    this.closeButtons.toggleClass('hidden', isClosed);
+    this.reopenButtons.toggleClass('hidden', !isClosed);
+  }
+
+  static submitNoteForm(form) {
+    var noteText;
+    noteText = form.find("textarea.js-note-text").val();
+    if (noteText && noteText.trim().length > 0) {
+      return form.submit();
+    }
+  }
+
+  static initMergeRequests() {
+    var $container;
+    $container = $('#merge-requests');
+    return $.getJSON($container.data('url')).fail(function() {
+      return new Flash('Failed to load referenced merge requests');
+    }).done(function(data) {
+      if ('html' in data) {
+        return $container.html(data.html);
+      }
+    });
+  }
+
+  static initRelatedBranches() {
+    var $container;
+    $container = $('#related-branches');
+    return $.getJSON($container.data('url')).fail(function() {
+      return new Flash('Failed to load related branches');
+    }).done(function(data) {
+      if ('html' in data) {
+        return $container.html(data.html);
+      }
+    });
+  }
+}

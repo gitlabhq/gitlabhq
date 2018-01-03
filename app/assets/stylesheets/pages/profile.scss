@@ -73,8 +73,7 @@
 .profile-link-holder {
   display: inline;
 
-  a {
-    color: $blue-dark;
+  a:not(.text-link) {
     text-decoration: none;
   }
 }
@@ -84,7 +83,7 @@
   &::after {
     content: "\00B7"; // Middle Dot
     padding: 0 6px;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   &:last-child {
@@ -106,6 +105,15 @@
   .file-name {
     display: inline-block;
     padding-left: 10px;
+  }
+}
+
+.subkeys-list {
+  @include basic-list;
+
+  li {
+    padding: 3px 0;
+    border: 0;
   }
 }
 
@@ -201,10 +209,6 @@
   color: $note-disabled-comment-color;
 }
 
-.datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
-  text-align: center;
-}
-
 .created-personal-access-token-container {
   #created-personal-access-token {
     width: 90%;
@@ -216,8 +220,8 @@
   }
 }
 
-.user-profile {
 
+.user-profile {
   .cover-controls a {
     margin-left: 5px;
   }
@@ -231,8 +235,19 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  .user-profile-nav {
+    font-size: 0;
+  }
 
+  .fade-right {
+    right: 0;
+  }
+
+  .fade-left {
+    left: 0;
+  }
+
+  @media (max-width: $screen-xs-max) {
     .cover-block {
       padding-top: 20px;
     }
@@ -253,6 +268,12 @@
         }
       }
     }
+
+    .user-profile-nav {
+      a {
+        margin-right: 0;
+      }
+    }
   }
 }
 
@@ -265,10 +286,140 @@ table.u2f-registrations {
 
 .oauth-application-show {
   .scope-name {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 
   .scopes-list {
     padding-left: 18px;
+  }
+}
+
+.user-callout {
+  margin: 20px -5px 0;
+
+  .bordered-box {
+    border: 1px solid $blue-300;
+    border-radius: $border-radius-default;
+    background-color: $blue-50;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .landing {
+    padding: 32px;
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      opacity: 1;
+
+      .dismiss-icon {
+        float: right;
+        cursor: pointer;
+        color: $blue-300;
+      }
+
+      &:hover {
+        background-color: transparent;
+        border: 0;
+
+        .dismiss-icon {
+          color: $blue-400;
+        }
+      }
+    }
+
+    .svg-container {
+      margin-right: 30px;
+      display: inline-block;
+
+      svg {
+        height: 110px;
+        vertical-align: top;
+      }
+
+      &.convdev {
+        margin: 0 0 0 30px;
+
+        svg {
+          height: 127px;
+        }
+      }
+    }
+
+    .user-callout-copy {
+      display: inline-block;
+      vertical-align: top;
+      max-width: 570px;
+    }
+  }
+
+  @media(max-width: $screen-xs-max) {
+    text-align: center;
+
+    .bordered-box {
+      display: block;
+    }
+
+    .landing {
+      .svg-container,
+      .user-callout-copy {
+        margin: 0 auto;
+        display: block;
+
+        svg {
+          height: 75px;
+        }
+
+        &.convdev {
+          margin: $gl-padding auto 0;
+
+          svg {
+            height: 120px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.nav-wip {
+  border: 1px solid $blue-500;
+  background: $blue-50;
+  padding: $gl-padding;
+  margin-bottom: $gl-padding;
+
+  a {
+    color: $blue-500;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.email-badge {
+  display: inline;
+  margin-right: $gl-padding / 2;
+
+  .email-badge-email {
+    display: inline;
+    margin-right: $gl-padding / 4;
+  }
+
+  .label-verification-status {
+    border-width: 1px;
+    border-style: solid;
+
+    &.verified {
+      @include green-status-color;
+    }
+
+    &.unverified {
+      @include status-color($gray-dark, $gray, $common-gray-dark);
+    }
   }
 }

@@ -1,5 +1,6 @@
 class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
+  include MembersPresentation
   include SortingHelper
 
   # Authorize
@@ -9,47 +10,26 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @sort = params[:sort].presence || sort_value_name
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
 
-    @members = @group.group_members
+    @members = GroupMembersFinder.new(@group).execute
     @members = @members.non_invite unless can?(current_user, :admin_group, @group)
     @members = @members.search(params[:search]) if params[:search].present?
     @members = @members.sort(@sort)
     @members = @members.page(params[:page]).per(50)
+    @members = present_members(@members.includes(:user))
 
-    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
+    @requesters = present_members(
+      AccessRequestsFinder.new(@group).execute(current_user))
 
     @group_member = @group.group_members.new
   end
 
-  def create
-    if params[:user_ids].blank?
-      return redirect_to(group_group_members_path(@group), alert: 'No users specified.')
-    end
-
-    @group.add_users(
-      params[:user_ids].split(','),
-      params[:access_level],
-      current_user: current_user,
-      expires_at: params[:expires_at]
-    )
-
-    redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
-  end
-
   def update
-    @group_member = @group.group_members.find(params[:id])
+    @group_member = @group.members_and_requesters.find(params[:id])
+      .present(current_user: current_user)
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
     @group_member.update_attributes(member_params)
-  end
-
-  def destroy
-    Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
-
-    respond_to do |format|
-      format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-      format.js { head :ok }
-    end
   end
 
   def resend_invite

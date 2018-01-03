@@ -6,15 +6,17 @@
 #   current_user - which user use
 #   params:
 #     scope: 'created-by-me' or 'assigned-to-me' or 'all'
-#     state: 'open' or 'closed' or 'all'
+#     state: 'open', 'closed', 'merged', or 'all'
 #     group_id: integer
 #     project_id: integer
-#     milestone_id: integer
+#     milestone_title: string
+#     author_id: integer
 #     assignee_id: integer
 #     search: string
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     my_reaction_emoji: string
 #
 class MergeRequestsFinder < IssuableFinder
   def klass
@@ -23,11 +25,7 @@ class MergeRequestsFinder < IssuableFinder
 
   private
 
-  def iid_pattern
-    @iid_pattern ||= %r{\A[
-      #{Regexp.escape(MergeRequest.reference_prefix)}
-      #{Regexp.escape(Issue.reference_prefix)}
-      ](?<iid>\d+)\z
-    }x
+  def item_project_ids(items)
+    items&.reorder(nil)&.select(:target_project_id)
   end
 end

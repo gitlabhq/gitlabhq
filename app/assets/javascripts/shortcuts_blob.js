@@ -1,31 +1,26 @@
-/* eslint-disable func-names, space-before-function-paren, max-len, one-var, no-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, consistent-return, padded-blocks */
-/* global Shortcuts */
 /* global Mousetrap */
+import { getLocationHash, visitUrl } from './lib/utils/url_utility';
+import Shortcuts from './shortcuts';
 
-/*= require shortcuts */
+const defaults = {
+  skipResetBindings: false,
+  fileBlobPermalinkUrl: null,
+};
 
-(function() {
-  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+export default class ShortcutsBlob extends Shortcuts {
+  constructor(opts) {
+    const options = Object.assign({}, defaults, opts);
+    super(options.skipResetBindings);
+    this.options = options;
 
-  this.ShortcutsBlob = (function(superClass) {
-    extend(ShortcutsBlob, superClass);
+    Mousetrap.bind('y', this.moveToFilePermalink.bind(this));
+  }
 
-    function ShortcutsBlob(skipResetBindings) {
-      ShortcutsBlob.__super__.constructor.call(this, skipResetBindings);
-      Mousetrap.bind('y', ShortcutsBlob.copyToClipboard);
+  moveToFilePermalink() {
+    if (this.options.fileBlobPermalinkUrl) {
+      const hash = getLocationHash();
+      const hashUrlString = hash ? `#${hash}` : '';
+      visitUrl(`${this.options.fileBlobPermalinkUrl}${hashUrlString}`);
     }
-
-    ShortcutsBlob.copyToClipboard = function() {
-      var clipboardButton;
-      clipboardButton = $('.btn-clipboard');
-      if (clipboardButton) {
-        return clipboardButton.click();
-      }
-    };
-
-    return ShortcutsBlob;
-
-  })(Shortcuts);
-
-}).call(this);
+  }
+}

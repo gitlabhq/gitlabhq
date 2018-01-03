@@ -1,3 +1,4 @@
+- @hide_top_links = true
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
@@ -6,10 +7,5 @@
 - else
   = render 'explore/head'
 
-.top-area
-  = render 'explore/projects/nav'
-
-  .nav-controls
-    = render 'filter'
-
+= render 'explore/projects/nav'
 = render 'projects', projects: @projects

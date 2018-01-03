@@ -1,113 +1,133 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-else-return, newline-per-chained-call, no-shadow, semi, vars-on-top, indent, prefer-template, padded-blocks, max-len */
-/* global Cookies */
-/* global Turbolinks */
-/* global ProjectSelect */
+/* eslint-disable func-names, space-before-function-paren, no-var, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
 
-(function() {
-  this.Project = (function() {
-    function Project() {
-      $('ul.clone-options-dropdown a').click(function() {
-        var url;
-        if ($(this).hasClass('active')) {
-          return;
-        }
-        $('.active').not($(this)).removeClass('active');
-        $(this).toggleClass('active');
-        url = $("#project_clone").val();
-        $('#project_clone').val(url);
-        return $('.clone').text(url);
-      // Git protocol switcher
-      // Remove the active class for all buttons (ssh, http, kerberos if shown)
-      // Add the active class for the clicked button
-      // Update the input field
-      // Update the command line instructions
-      });
-      // Ref switcher
-      this.initRefSwitcher();
-      $('.project-refs-select').on('change', function() {
-        return $(this).parents('form').submit();
-      });
-      $('.hide-no-ssh-message').on('click', function(e) {
-        Cookies.set('hide_no_ssh_message', 'false');
-        $(this).parents('.no-ssh-key-message').remove();
-        return e.preventDefault();
-      });
-      $('.hide-no-password-message').on('click', function(e) {
-        Cookies.set('hide_no_password_message', 'false');
-        $(this).parents('.no-password-message').remove();
-        return e.preventDefault();
-      });
-      this.projectSelectDropdown();
+import Cookies from 'js-cookie';
+import { visitUrl } from './lib/utils/url_utility';
+import projectSelect from './project_select';
+
+export default class Project {
+  constructor() {
+    const $cloneOptions = $('ul.clone-options-dropdown');
+    const $projectCloneField = $('#project_clone');
+    const $cloneBtnText = $('a.clone-dropdown-btn span');
+
+    const selectedCloneOption = $cloneBtnText.text().trim();
+    if (selectedCloneOption.length > 0) {
+      $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
     }
 
-    Project.prototype.projectSelectDropdown = function() {
-      new ProjectSelect();
-      $('.project-item-select').on('click', (function(_this) {
-        return function(e) {
-          return _this.changeProject($(e.currentTarget).val());
-        };
-      })(this));
-      return $('.js-projects-dropdown-toggle').on('click', function(e) {
-        e.preventDefault();
-        return $('.js-projects-dropdown').select2('open');
-      });
-    };
+    $('a', $cloneOptions).on('click', (e) => {
+      const $this = $(e.currentTarget);
+      const url = $this.attr('href');
+      const activeText = $this.find('.dropdown-menu-inner-title').text();
 
-    Project.prototype.changeProject = function(url) {
-      return window.location = url;
-    };
+      e.preventDefault();
 
-    Project.prototype.initRefSwitcher = function() {
-      return $('.js-project-refs-dropdown').each(function() {
-        var $dropdown, selected;
-        $dropdown = $(this);
-        selected = $dropdown.data('selected');
-        return $dropdown.glDropdown({
-          data: function(term, callback) {
-            return $.ajax({
-              url: $dropdown.data('refs-url'),
-              data: {
-                ref: $dropdown.data('ref')
-              },
-              dataType: "json"
-            }).done(function(refs) {
-              return callback(refs);
-            });
-          },
-          selectable: true,
-          filterable: true,
-          filterByText: true,
-          fieldName: $dropdown.data('field-name'),
-          renderRow: function(ref) {
-            var link;
-            if (ref.header != null) {
-              return $('<li />').addClass('dropdown-header').text(ref.header);
-            } else {
-              link = $('<a />').attr('href', '#').addClass(ref === selected ? 'is-active' : '').text(ref).attr('data-ref', ref);
-              return $('<li />').append(link);
+      $('.is-active', $cloneOptions).not($this).removeClass('is-active');
+      $this.toggleClass('is-active');
+      $projectCloneField.val(url);
+      $cloneBtnText.text(activeText);
+
+      return $('.clone').text(url);
+    });
+    // Ref switcher
+    Project.initRefSwitcher();
+    $('.project-refs-select').on('change', function() {
+      return $(this).parents('form').submit();
+    });
+    $('.hide-no-ssh-message').on('click', function(e) {
+      Cookies.set('hide_no_ssh_message', 'false');
+      $(this).parents('.no-ssh-key-message').remove();
+      return e.preventDefault();
+    });
+    $('.hide-no-password-message').on('click', function(e) {
+      Cookies.set('hide_no_password_message', 'false');
+      $(this).parents('.no-password-message').remove();
+      return e.preventDefault();
+    });
+    Project.projectSelectDropdown();
+  }
+
+  static projectSelectDropdown () {
+    projectSelect();
+    $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
+  }
+
+  static changeProject(url) {
+    return window.location = url;
+  }
+
+  static initRefSwitcher() {
+    var refListItem = document.createElement('li');
+    var refLink = document.createElement('a');
+
+    refLink.href = '#';
+
+    return $('.js-project-refs-dropdown').each(function() {
+      var $dropdown, selected;
+      $dropdown = $(this);
+      selected = $dropdown.data('selected');
+      return $dropdown.glDropdown({
+        data: function(term, callback) {
+          return $.ajax({
+            url: $dropdown.data('refs-url'),
+            data: {
+              ref: $dropdown.data('ref'),
+              search: term,
+            },
+            dataType: 'json',
+          }).done(function(refs) {
+            return callback(refs);
+          });
+        },
+        selectable: true,
+        filterable: true,
+        filterRemote: true,
+        filterByText: true,
+        inputFieldName: $dropdown.data('input-field-name'),
+        fieldName: $dropdown.data('field-name'),
+        renderRow: function(ref) {
+          var li = refListItem.cloneNode(false);
+
+          if (ref.header != null) {
+            li.className = 'dropdown-header';
+            li.textContent = ref.header;
+          } else {
+            var link = refLink.cloneNode(false);
+
+            if (ref === selected) {
+              link.className = 'is-active';
             }
-          },
-          id: function(obj, $el) {
-            return $el.attr('data-ref');
-          },
-          toggleLabel: function(obj, $el) {
-            return $el.text().trim();
-          },
-          clicked: function(selected, $el, e) {
-            e.preventDefault()
-            if ($('input[name="ref"]').length) {
-              var $form = $dropdown.closest('form'),
-                  action = $form.attr('action'),
-                  divider = action.indexOf('?') < 0 ? '?' : '&';
-              Turbolinks.visit(action + '' + divider + '' + $form.serialize());
+
+            link.textContent = ref;
+            link.dataset.ref = ref;
+
+            li.appendChild(link);
+          }
+
+          return li;
+        },
+        id: function(obj, $el) {
+          return $el.attr('data-ref');
+        },
+        toggleLabel: function(obj, $el) {
+          return $el.text().trim();
+        },
+        clicked: function(options) {
+          const { e } = options;
+          e.preventDefault();
+          if ($('input[name="ref"]').length) {
+            var $form = $dropdown.closest('form');
+
+            var $visit = $dropdown.data('visit');
+            var shouldVisit = $visit ? true : $visit;
+            var action = $form.attr('action');
+            var divider = action.indexOf('?') === -1 ? '?' : '&';
+            if (shouldVisit) {
+              visitUrl(`${action}${divider}${$form.serialize()}`);
             }
           }
-        });
+        },
       });
-    };
-
-    return Project;
-
-  })();
-
-}).call(this);
+    });
+  }
+}

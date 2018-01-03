@@ -1,20 +1,20 @@
 require 'spec_helper'
 
 describe Projects::CompareController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:ref_from) { "improve%2Fawesome" }
   let(:ref_to) { "feature" }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   it 'compare shows some diffs' do
     get(:show,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         from: ref_from,
         to: ref_to)
 
@@ -25,8 +25,8 @@ describe Projects::CompareController do
 
   it 'compare shows some diffs with ignore whitespace change option' do
     get(:show,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         from: '08f22f25',
         to: '66eceea0',
         w: 1)
@@ -43,8 +43,8 @@ describe Projects::CompareController do
   describe 'non-existent refs' do
     it 'uses invalid source ref' do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           from: 'non-existent',
           to: ref_to)
 
@@ -55,8 +55,8 @@ describe Projects::CompareController do
 
     it 'uses invalid target ref' do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           from: ref_from,
           to: 'non-existent')
 
@@ -64,13 +64,43 @@ describe Projects::CompareController do
       expect(assigns(:diffs)).to eq(nil)
       expect(assigns(:commits)).to eq(nil)
     end
+
+    it 'redirects back to index when params[:from] is empty and preserves params[:to]' do
+      post(:create,
+           namespace_id: project.namespace,
+           project_id: project,
+           from: '',
+           to: 'master')
+
+      expect(response).to redirect_to(project_compare_index_path(project, to: 'master'))
+    end
+
+    it 'redirects back to index when params[:to] is empty and preserves params[:from]' do
+      post(:create,
+           namespace_id: project.namespace,
+           project_id: project,
+           from: 'master',
+           to: '')
+
+      expect(response).to redirect_to(project_compare_index_path(project, from: 'master'))
+    end
+
+    it 'redirects back to index when params[:from] and params[:to] are empty' do
+      post(:create,
+           namespace_id: project.namespace,
+           project_id: project,
+           from: '',
+           to: '')
+
+      expect(response).to redirect_to(namespace_project_compare_index_path)
+    end
   end
 
   describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
       }
 
       get :diff_for_path, params.merge(extra_params)
@@ -98,10 +128,12 @@ describe Projects::CompareController do
         end
 
         context 'when the path does not exist in the diff' do
-          before { diff_for_path(from: ref_from, to: ref_to, old_path: existing_path.succ, new_path: existing_path.succ) }
+          before do
+            diff_for_path(from: ref_from, to: ref_to, old_path: existing_path.succ, new_path: existing_path.succ)
+          end
 
           it 'returns a 404' do
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -113,24 +145,28 @@ describe Projects::CompareController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
 
     context 'when the from ref does not exist' do
-      before { diff_for_path(from: ref_from.succ, to: ref_to, old_path: existing_path, new_path: existing_path) }
+      before do
+        diff_for_path(from: ref_from.succ, to: ref_to, old_path: existing_path, new_path: existing_path)
+      end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     context 'when the to ref does not exist' do
-      before { diff_for_path(from: ref_from, to: ref_to.succ, old_path: existing_path, new_path: existing_path) }
+      before do
+        diff_for_path(from: ref_from, to: ref_to.succ, old_path: existing_path, new_path: existing_path)
+      end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Projects::EnableDeployKeyService, services: true do
+describe Projects::EnableDeployKeyService do
   let(:deploy_key)  { create(:deploy_key, public: true) }
-  let(:project)     { create(:empty_project) }
+  let(:project)     { create(:project) }
   let(:user)        { project.creator}
   let!(:params)     { { key_id: deploy_key.id } }
 
@@ -18,6 +18,16 @@ describe Projects::EnableDeployKeyService, services: true do
 
     it 'returns nil if the key cannot be added' do
       expect(service.execute).to be nil
+    end
+  end
+
+  context 'add the same key twice' do
+    before do
+      project.deploy_keys << deploy_key
+    end
+
+    it 'returns existing key' do
+      expect(service.execute).to eq(deploy_key)
     end
   end
 

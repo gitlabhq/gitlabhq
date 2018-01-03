@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::Blame, lib: true do
-  let(:project) { create(:project) }
+describe Gitlab::Blame do
+  let(:project) { create(:project, :repository) }
   let(:path) { 'files/ruby/popen.rb' }
   let(:commit) { project.commit('master') }
   let(:blob) { project.repository.blob_at(commit.id, path) }

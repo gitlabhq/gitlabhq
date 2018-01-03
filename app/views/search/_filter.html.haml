@@ -3,7 +3,7 @@
 - if params[:project_id].present?
   = hidden_field_tag :project_id, params[:project_id]
 .dropdown
-  %button.dropdown-menu-toggle.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown", default_label: "Group:" } }
+  %button.dropdown-menu-toggle.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown", default_label: "Group:", group_id: params[:group_id] } }
     %span.dropdown-toggle-text
       Group:
       - if @group.present?

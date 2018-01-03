@@ -24,9 +24,9 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-describe 'GitLab Markdown', feature: true do
+describe 'GitLab Markdown' do
   include Capybara::Node::Matchers
-  include GitlabMarkdownHelper
+  include MarkupHelper
   include MarkdownMatchers
 
   # Sometimes it can be useful to see the parsed output of the Markdown document
@@ -58,14 +58,20 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'allows Markdown in tables' do
-        expect(doc.at_css('td:contains("Baz")').children.to_html).
-          to eq '<strong>Baz</strong>'
+        expect(doc.at_css('td:contains("Baz")').children.to_html)
+          .to eq '<strong>Baz</strong>'
       end
 
       it 'parses fenced code blocks' do
         aggregate_failures do
           expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.c')
           expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.python')
+        end
+      end
+
+      it 'parses mermaid code block' do
+        aggregate_failures do
+          expect(doc).to have_selector('pre.code.js-render-mermaid')
         end
       end
 
@@ -100,7 +106,7 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'permits img elements' do
-        expect(doc).to have_selector('img[src*="smile.png"]')
+        expect(doc).to have_selector('img[data-src*="smile.png"]')
       end
 
       it 'permits br elements' do
@@ -113,6 +119,14 @@ describe 'GitLab Markdown', feature: true do
 
       it 'permits span elements' do
         expect(doc).to have_selector('span:contains("span tag")')
+      end
+
+      it 'permits details elements' do
+        expect(doc).to have_selector('details:contains("Hiding the details")')
+      end
+
+      it 'permits summary elements' do
+        expect(doc).to have_selector('details summary:contains("collapsible")')
       end
 
       it 'permits style attribute in th elements' do
@@ -150,14 +164,14 @@ describe 'GitLab Markdown', feature: true do
     describe 'Edge Cases' do
       it 'allows markup inside link elements' do
         aggregate_failures do
-          expect(doc.at_css('a[href="#link-emphasis"]').to_html).
-            to eq %{<a href="#link-emphasis"><em>text</em></a>}
+          expect(doc.at_css('a[href="#link-emphasis"]').to_html)
+            .to eq %{<a href="#link-emphasis"><em>text</em></a>}
 
-          expect(doc.at_css('a[href="#link-strong"]').to_html).
-            to eq %{<a href="#link-strong"><strong>text</strong></a>}
+          expect(doc.at_css('a[href="#link-strong"]').to_html)
+            .to eq %{<a href="#link-strong"><strong>text</strong></a>}
 
-          expect(doc.at_css('a[href="#link-code"]').to_html).
-            to eq %{<a href="#link-code"><code>text</code></a>}
+          expect(doc.at_css('a[href="#link-code"]').to_html)
+            .to eq %{<a href="#link-code"><code>text</code></a>}
         end
       end
     end
@@ -193,8 +207,9 @@ describe 'GitLab Markdown', feature: true do
   before do
     @feat = MarkdownFeature.new
 
-    # `markdown` helper expects a `@project` variable
+    # `markdown` helper expects a `@project` and `@group` variable
     @project = @feat.project
+    @group = @feat.group
   end
 
   context 'default pipeline' do

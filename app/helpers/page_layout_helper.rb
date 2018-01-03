@@ -4,8 +4,12 @@ module PageLayoutHelper
 
     @page_title.push(*titles.compact) if titles.any?
 
+    if titles.any? && !defined?(@breadcrumb_title)
+      @breadcrumb_title = @page_title.last
+    end
+
     # Segments are seperated by middot
-    @page_title.join(" \u00b7 ")
+    @page_title.join(" · ")
   end
 
   # Define or get a description for the current page
@@ -32,6 +36,10 @@ module PageLayoutHelper
     elsif @page_description.present?
       sanitize(@page_description, tags: []).truncate_words(30)
     end
+  end
+
+  def favicon
+    Rails.env.development? ? 'favicon-blue.ico' : 'favicon.ico'
   end
 
   def page_image
@@ -72,7 +80,9 @@ module PageLayoutHelper
       @header_title     = title
       @header_title_url = title_url
     else
-      @header_title_url ? link_to(@header_title, @header_title_url) : @header_title
+      return @header_title unless @header_title_url
+
+      breadcrumb_list_item(link_to(@header_title, @header_title_url))
     end
   end
 

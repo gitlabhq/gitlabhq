@@ -6,8 +6,8 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 - if current_page.last?
-  %li{ class: "next disabled" }
+  %li.next.disabled
     %span= raw(t 'views.pagination.next')
 - else
-  %li{ class: "next" }
+  %li.next
     = link_to raw(t 'views.pagination.next'), url, rel: 'next', remote: remote

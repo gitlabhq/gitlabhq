@@ -30,7 +30,7 @@
     - if link_project && snippet.project_id?
       %span.hidden-xs
         in
-        = link_to namespace_project_path(snippet.project.namespace, snippet.project) do
+        = link_to project_path(snippet.project) do
           = snippet.project.name_with_namespace
 
     .pull-right.snippet-updated-at

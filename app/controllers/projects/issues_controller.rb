@@ -1,41 +1,34 @@
 class Projects::IssuesController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
   include IssuableCollections
   include SpammableActions
 
-  before_action :redirect_to_external_issue_tracker, only: [:index, :new]
-  before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch]
+  prepend_before_action :authenticate_user!, only: [:new]
 
-  # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show]
+  before_action :check_issues_available!
+  before_action :issue, except: [:index, :new, :create, :bulk_update]
+  before_action :set_issuables_index, only: [:index]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:edit, :update]
+  before_action :authorize_update_issuable!, only: [:edit, :update, :move]
+
+  # Allow create a new branch and empty WIP merge request from current issue
+  before_action :authorize_create_merge_request!, only: [:create_merge_request]
 
   respond_to :html
 
   def index
-    @issues = issues_collection
-    @issues = @issues.page(params[:page])
-    if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages))
-    end
-
-    if params[:label_name].present?
-      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
-    end
+    @issues = @issuables
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+      format.atom { render layout: 'xml.atom' }
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),
@@ -47,10 +40,17 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def new
     params[:issue] ||= ActionController::Parameters.new(
-      assignee_id: ""
+      assignee_ids: ""
     )
-    build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
-    @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
+    build_params = issue_params.merge(
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
+    service = Issues::BuildService.new(project, current_user, build_params)
+
+    @issue = @noteable = service.execute
+    @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
+    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
     respond_with(@issue)
   end
@@ -59,37 +59,40 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_with(@issue)
   end
 
-  def show
-    raw_notes = @issue.notes.inc_relations_for_view.fresh
+  def discussions
+    notes = @issue.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
 
-    @notes = Banzai::NoteRenderer.
-      render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-    @note     = @project.notes.new(noteable: @issue)
-    @noteable = @issue
+    discussions = Discussion.build_collection(notes, @issue)
 
-    preload_max_access_for_authors(@notes, @project)
-
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: IssueSerializer.new.represent(@issue)
-      end
-    end
+    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
   end
 
   def create
-    extra_params = { request: request,
-                     merge_request_for_resolving_discussions: merge_request_for_resolving_discussions }
-    @issue = Issues::CreateService.new(project, current_user, issue_params.merge(extra_params)).execute
+    create_params = issue_params.merge(spammable_params).merge(
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
+
+    service = Issues::CreateService.new(project, current_user, create_params)
+    @issue = service.execute
+
+    if service.discussions_to_resolve.count(&:resolved?) > 0
+      flash[:notice] = if service.discussion_to_resolve_id
+                         "Resolved 1 discussion."
+                       else
+                         "Resolved all discussions."
+                       end
+    end
 
     respond_to do |format|
       format.html do
-        if @issue.valid?
-          redirect_to issue_path(@issue)
-        else
-          render :new
-        end
+        recaptcha_check_with_fallback { render :new }
       end
       format.js do
         @link = @issue.attachment.url.to_js
@@ -97,34 +100,24 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def update
-    @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
+  def move
+    params.require(:move_to_project_id)
 
     if params[:move_to_project_id].to_i > 0
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      move_service = Issues::MoveService.new(project, current_user)
-      @issue = move_service.execute(@issue, new_project)
+      @issue = Issues::UpdateService.new(project, current_user, target_project: new_project).execute(issue)
     end
 
     respond_to do |format|
-      format.html do
-        if @issue.valid?
-          redirect_to issue_path(@issue)
-        else
-          render :edit
-        end
-      end
-
       format.json do
-        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        render_issue_json
       end
     end
 
   rescue ActiveRecord::StaleObjectError
-    @conflict = true
-    render :edit
+    render_conflict_response
   end
 
   def referenced_merge_requests
@@ -159,77 +152,103 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create }
+        render json: { can_create_branch: can_create, has_related_branch: @issue.has_related_branch? }
       end
+    end
+  end
+
+  def create_merge_request
+    create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
+    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, create_params).execute
+
+    if result[:status] == :success
+      render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
+    else
+      render json: result[:messsage], status: :unprocessable_entity
     end
   end
 
   protected
 
   def issue
+    return @issue if defined?(@issue)
+
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take || redirect_old
+    @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @note = @project.notes.new(noteable: @issuable)
+
+    return render_404 unless can?(current_user, :read_issue, @issue)
+
+    @issue
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
   alias_method :spammable, :issue
 
-  def merge_request_for_resolving_discussions
-    return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
-
-    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
-                                                   execute.
-                                                   find_by(iid: merge_request_iid)
+  def spammable_path
+    project_issue_path(@project, @issue)
   end
 
-  def authorize_read_issue!
-    return render_404 unless can?(current_user, :read_issue, @issue)
+  def authorize_create_merge_request!
+    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
-  def authorize_update_issue!
-    return render_404 unless can?(current_user, :update_issue, @issue)
+  def check_issues_available!
+    return render_404 unless @project.feature_available?(:issues, current_user)
   end
 
-  def authorize_admin_issues!
-    return render_404 unless can?(current_user, :admin_issue, @project)
-  end
-
-  def module_enabled
-    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
-  end
-
-  def redirect_to_external_issue_tracker
-    external = @project.external_issue_tracker
-
-    return unless external
-
-    if action_name == 'new'
-      redirect_to external.new_issue_path
+  def render_issue_json
+    if @issue.valid?
+      render json: serializer.represent(@issue)
     else
-      redirect_to external.project_path
-    end
-  end
-
-  # Since iids are implemented only in 6.1
-  # user may navigate to issue page using old global ids.
-  #
-  # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
-  #
-  def redirect_old
-    issue = @project.issues.find_by(id: params[:id])
-
-    if issue
-      redirect_to issue_path(issue)
-    else
-      raise ActiveRecord::RecordNotFound.new
+      render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def issue_params
-    params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
-    )
+    params.require(:issue).permit(*issue_params_attributes)
+  end
+
+  def issue_params_attributes
+    %i[
+      title
+      assignee_id
+      position
+      description
+      confidential
+      milestone_id
+      due_date
+      state_event
+      task_num
+      lock_version
+      discussion_locked
+    ] + [{ label_ids: [], assignee_ids: [] }]
+  end
+
+  def authenticate_user!
+    return if current_user
+
+    notice = "Please sign in to create the new issue."
+
+    if request.get? && !request.xhr?
+      store_location_for :user, request.fullpath
+    end
+
+    redirect_to new_user_session_path, notice: notice
+  end
+
+  def serializer
+    IssueSerializer.new(current_user: current_user, project: issue.project)
+  end
+
+  def update_service
+    update_params = issue_params.merge(spammable_params)
+    Issues::UpdateService.new(project, current_user, update_params)
+  end
+
+  def set_issuables_index
+    @finder_type = IssuesFinder
+    super
   end
 end

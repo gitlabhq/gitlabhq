@@ -10,24 +10,67 @@
 * [Tables](#tables)
 * [Blocks](#blocks)
 * [Panels](#panels)
+* [Modals](#modals)
 * [Alerts](#alerts)
 * [Forms](#forms)
+* [Search box](#search-box)
 * [File holders](#file-holders)
 * [Data formats](#data-formats)
 
 ---
 
 ## Tooltips
+Tooltips identify elements or provide additional, useful information about the referring elements. Tooltips are different from ALT-attributes, which are intended primarily for static images. Tooltips are summoned by:
+
+* Hovering over an element with a cursor
+* Focusing on an element with a keyboard (usually the tab key)
+* Upon touch
 
 ### Usage
-A tooltip should only be added if additional information is required.
+A tooltip should be used:
+* When there isn’t enough space to show the information
+* When it isn’t critical for the user to see the information
+* For icons that don’t have a label
+
+Tooltips shouldn’t repeat information that is shown near the referring element. However, they can show the same data in a different format (e.g. date or timestamps).
 
 ![Tooltip usage](img/tooltip-usage.png)
 
 ### Placement
-By default, tooltips should be placed below the element that they refer to. However, if there is not enough space in the viewpoint, the tooltip should be moved to the side as needed.
+By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport, the tooltip should be moved to the side as needed.
 
 ![Tooltip placement location](img/tooltip-placement.png)
+
+---
+
+## Popovers
+
+Popovers provide additional, useful, unique information about the referring elements and can provide one or multiple actionable elements. They inform the user of additional information within the context of their original view, but without forcing the user to act upon it like a modal. Popovers are different from tooltips, which do not provide rich markup and actionable items. A popover can contain a header section with a different background color.
+
+Popovers are summoned:
+
+* Upon hover or touch on an element
+
+### Usage
+A popover should be used:
+* When you don't want to let the user lose context, but still want to provide additional useful unique information about referring elements
+* When it isn’t critical for the user to act upon the information
+* When you want to give a user a summary of extended information and the option to switch context if they want to dive in deeper.
+
+### Styling
+
+A popover can contain a header section with a different background color if that improves readability and separation of content within.
+
+![Popover usage](img/popover-placement-below.png)
+
+This example shows two sections, where each section includes an actionable element. The first section shows a summary of the content shown when clicking the "read more" link. With this information the user can decide to dive deeper or start their GitLab Enterprise Edition trial immediately.
+
+### Placement
+By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport or it blocks related content, the tooltip should be moved to the side or above as needed.
+
+![Tooltip placement location](img/popover-placement-above.png)
+
+In this example we let the user know more about the setting they are deciding over, without loosing context. If they want to know even more they can do so, but with the expectation of opening that content in a new view.
 
 ---
 
@@ -95,6 +138,20 @@ Since secondary buttons only have a border on their resting state, their hover a
 | Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--hover.png) | ![](img/button-close--hover.png) | ![](img/button-spam--hover.png) |
 | Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-success-secondary--active.png) | ![](img/button-close--active.png) | ![](img/button-spam--active.png) |
 
+### Placement
+
+When there are a group of buttons in a dialog or a form, we need to be consistent with the placement.
+
+#### Dismissive actions on the left
+The dismissive action returns the user to the previous state.
+
+> Example: Cancel
+
+#### Affirmative actions on the right
+Affirmative actions continue to progress towards the user goal that triggered the dialog or form.
+
+> Example: Submit, Ok, Delete
+
 ---
 
 
@@ -108,7 +165,7 @@ Dropdowns are used to allow users to choose one (or many) options from a list of
 
 ### Max size
 
-The max height for dropdowns should target **10-15 items**. If the height of the dropdown is too large, the list becomes very hard to parse and it is easy to visually lose track of the item you are looking for. Usability also suffers as more mouse movement is required, and you have a larger area in which you hijack the scroll away from the page level. While it may initially seem counterintuitive to not show as many items as you can, it is actually quicker and easier to process the information when it is cropped at a reasonable height.
+The max height for dropdowns should target **10-15** single line items, or **7-10** multi-line items. If the height of the dropdown is too large, the list becomes very hard to parse and it is easy to visually lose track of the item you are looking for. Usability also suffers as more mouse movement is required, and you have a larger area in which you hijack the scroll away from the page level. While it may initially seem counterintuitive to not show as many items as you can, it is actually quicker and easier to process the information when it is cropped at a reasonable height.
 
 ---
 
@@ -179,6 +236,57 @@ Cover blocks are generally used to create a heading element for a page, such as 
 
 ---
 
+## Skeleton loading
+
+Skeleton loading is a way to convey to the user what kind of content is currently being loaded. It's a paradigm with which content can independently and asynchronously be loaded, while still adhering to the structure and look of the completely loaded view.
+
+### Requirements
+
+* A skeleton should represent an organism in a recognisable way
+* Atom elements within organisms (for reference see this article on [atomic design methodology](http://atomicdesign.bradfrost.com/chapter-2/)) may be represented in a maximum of 3 repetitions, if applicable.
+* Skeletons should only be presented in grayscale using the HEX colors: `#fafafa` or `#ffffff` (except for shadows)
+* Animate the grey atoms in a pulsating way to show motion, as if "loading". The pulse animation transitions colors horizontally from left to right, starting with `#f2f2f2` to `#fafafa`.
+
+![Skeleton loading animation](img/skeleton-loading.gif)
+
+### Usage
+
+Skeleton loading can replace any existing UI elements for the period in which they are loaded and should aim for maintaining a similar structure visually.
+
+---
+
+## Modals
+
+Modals are only used for having a conversation and confirmation with the user. The user is not able to access the features on the main page until closing the modal.
+
+### Usage
+
+* When the action is irreversible, modals provide the details and confirm with the user before they take an advanced action.
+* When the action will affect privacy or authorization, modals provide advanced information and confirm with the user.
+
+### Style
+
+* Modals contain the header, body, and actions.
+  * **Header(1):** The header title is a question instead of a descriptive phrase.
+  * **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
+  * **Actions(3):** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
+* Confirmations regarding labels should keep labeling styling.
+* References to commits, branches, and tags should be **monospaced**.
+
+![layout-modal](img/modals-layout-for-modals.png)
+
+### Placement
+
+* Modals should always be the center of the screen horizontally and be positioned **72px** from the top.
+
+| Modal with 2 actions | Modal with 3 actions | Special confirmation |
+| --------------------- | --------------------- | -------------------- |
+| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
+
+> TODO: Special case for modal.
+
+---
+
 ## Panels
 
 > TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
@@ -212,6 +320,18 @@ Form (`form`) with label rendered above input.
 Horizontal form (`form.horizontal-form`) with label rendered inline with input.
 
 ![Horizontal form](img/components-horizontalform.png)
+
+---
+
+## Search box
+
+Search boxes across GitLab have a consistent rest, active and text entered state. When text isn't entered in the box, there should be a magnifying glass right aligned with the input field. When text is entered, the magnifying glass should become a x, allowing users to clear their text.
+
+![Search box](img/components-searchbox.png)
+
+If needed, we indicate the scope of the search in the search box.
+
+![Scoped Search box](img/components-searchboxscoped.png)
 
 ---
 

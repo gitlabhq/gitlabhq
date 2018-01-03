@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Skipped do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'skipped' }
+    it { expect(subject.text).to eq 'skipped' }
   end
 
   describe '#label' do
@@ -14,7 +14,11 @@ describe Gitlab::Ci::Status::Skipped do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_skipped' }
+    it { expect(subject.icon).to eq 'status_skipped' }
+  end
+
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_skipped' }
   end
 
   describe '#group' do

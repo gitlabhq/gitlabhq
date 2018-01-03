@@ -1,0 +1,8 @@
+.gl-pagination
+  %ul.pagination.clearfix
+    - if previous_path
+      %li.prev
+        = link_to(t('views.pagination.previous'), previous_path, rel: 'prev')
+    - if next_path
+      %li.next
+        = link_to(t('views.pagination.next'), next_path, rel: 'next')

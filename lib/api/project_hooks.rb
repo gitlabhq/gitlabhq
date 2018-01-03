@@ -13,9 +13,9 @@ module API
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
-        optional :build_events, type: Boolean, desc: "Trigger hook on build events"
+        optional :job_events, type: Boolean, desc: "Trigger hook on job events"
         optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
-        optional :wiki_events, type: Boolean, desc: "Trigger hook on wiki events"
+        optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
       end
@@ -24,7 +24,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get project hooks' do
         success Entities::ProjectHook
       end
@@ -32,9 +32,7 @@ module API
         use :pagination
       end
       get ":id/hooks" do
-        hooks = paginate user_project.hooks
-
-        present hooks, with: Entities::ProjectHook
+        present paginate(user_project.hooks), with: Entities::ProjectHook
       end
 
       desc 'Get a project hook' do
@@ -55,7 +53,9 @@ module API
         use :project_hook_properties
       end
       post ":id/hooks" do
-        hook = user_project.hooks.new(declared_params(include_missing: false))
+        hook_params = declared_params(include_missing: false)
+
+        hook = user_project.hooks.new(hook_params)
 
         if hook.save
           present hook, with: Entities::ProjectHook
@@ -76,7 +76,9 @@ module API
       put ":id/hooks/:hook_id" do
         hook = user_project.hooks.find(params.delete(:hook_id))
 
-        if hook.update_attributes(declared_params(include_missing: false))
+        update_params = declared_params(include_missing: false)
+
+        if hook.update_attributes(update_params)
           present hook, with: Entities::ProjectHook
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?
@@ -92,12 +94,9 @@ module API
         requires :hook_id, type: Integer, desc: 'The ID of the hook to delete'
       end
       delete ":id/hooks/:hook_id" do
-        begin
-          present user_project.hooks.destroy(params[:hook_id]), with: Entities::ProjectHook
-        rescue
-          # ProjectHook can raise Error if hook_id not found
-          not_found!("Error deleting hook #{params[:hook_id]}")
-        end
+        hook = user_project.hooks.find(params.delete(:hook_id))
+
+        destroy_conditionally!(hook)
       end
     end
   end

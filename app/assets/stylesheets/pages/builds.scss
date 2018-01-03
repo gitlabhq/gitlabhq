@@ -6,161 +6,210 @@
 @keyframes blinking-dots {
   0% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   25% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   75% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,1);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 1);
   }
 
   100% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 }
 
-.build-page {
-  pre.trace {
-    background: $builds-trace-bg;
-    color: $white-light;
-    font-family: $monospace_font;
-    white-space: pre-wrap;
-    overflow: auto;
-    overflow-y: hidden;
-    font-size: 12px;
+@keyframes blinking-scroll-button {
+  0% { opacity: 0.2; }
+  25% { opacity: 0.5; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
 
-    .fa-refresh {
-      font-size: 24px;
-      margin-left: 20px;
+.build-page {
+  .build-trace-container {
+    position: relative;
+  }
+
+  .build-trace {
+    background: $black;
+    color: $gray-darkest;
+    white-space: pre;
+    overflow-x: auto;
+    font-size: 12px;
+    border-radius: 0;
+    border: 0;
+    padding: $grid-size;
+
+    .bash {
+      display: block;
+    }
+  }
+
+  .top-bar {
+    height: 35px;
+    background: $gray-light;
+    border: 1px solid $border-color;
+    color: $gl-text-color;
+    position: sticky;
+    position: -webkit-sticky;
+    top: $header-height;
+    padding: $grid-size;
+
+    &.affix {
+      top: $header-height;
+
+      // with sidebar
+      &.sidebar-expanded {
+        right: 306px;
+        left: 16px;
+      }
+
+      // without sidebar
+      &.sidebar-collapsed {
+        right: 16px;
+        left: 16px;
+      }
+    }
+
+    &.affix-top {
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: 0;
+    }
+
+    .truncated-info {
+      .truncated-info-size {
+        margin: 0 5px;
+      }
+
+      .raw-link {
+        color: $gl-text-color;
+        margin-left: 5px;
+        text-decoration: underline;
+      }
+    }
+
+    .controllers {
+      display: flex;
+      font-size: 15px;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        height: 15px;
+        display: block;
+        fill: $gl-text-color;
+      }
+
+      .controllers-buttons {
+        color: $gl-text-color;
+        margin: 0 $grid-size;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
+      .btn-scroll.animate {
+        .first-triangle {
+          animation: blinking-scroll-button 1s ease infinite;
+          animation-delay: .3s;
+        }
+
+        .second-triangle {
+          animation: blinking-scroll-button 1s ease infinite;
+          animation-delay: .2s;
+        }
+
+        .third-triangle {
+          animation: blinking-scroll-button 1s ease infinite;
+        }
+
+        &:disabled {
+          opacity: 1;
+        }
+      }
+
+      .btn-scroll:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
     }
   }
 
   .environment-information {
-    background-color: $gray-light;
     border: 1px solid $border-color;
-    padding: 12px $gl-padding;
+    padding: 8px $gl-padding 12px;
     border-radius: $border-radius-default;
 
     svg {
       position: relative;
-      top: 1px;
+      top: 5px;
       margin-right: 5px;
+      width: 22px;
+      height: 22px;
     }
+  }
+
+  .build-loader-animation {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    margin: auto auto 12px 2px;
+    border-radius: 50%;
+    animation: blinking-dots 1s linear infinite;
   }
 }
 
-.scroll-controls {
-  height: 100%;
+.with-performance-bar .build-page {
+  .top-bar {
+    top: $header-height + $performance-bar-height;
 
-  .scroll-step {
-    width: 31px;
-    margin: 0 0 0 auto;
-  }
-
-  .scroll-link,
-  .autoscroll-container {
-    right: 25px;
-    z-index: 1;
-  }
-
-  .scroll-link {
-    position: fixed;
-    display: block;
-    margin-bottom: 10px;
-
-    &.scroll-top .gitlab-icon-scroll-up-hover,
-    &.scroll-top:hover .gitlab-icon-scroll-up,
-    &.scroll-bottom .gitlab-icon-scroll-down-hover,
-    &.scroll-bottom:hover .gitlab-icon-scroll-down {
-      display: none;
+    &.affix {
+      top: $header-height + $performance-bar-height;
     }
-
-    &.scroll-top:hover .gitlab-icon-scroll-up-hover,
-    &.scroll-bottom:hover .gitlab-icon-scroll-down-hover {
-      display: inline-block;
-    }
-
-    &.scroll-top {
-      top: 110px;
-    }
-
-    &.scroll-bottom {
-      bottom: -2px;
-    }
-  }
-
-  .autoscroll-container {
-    position: absolute;
-  }
-
-  &.sidebar-expanded {
-
-    .scroll-link,
-    .autoscroll-container {
-      right: ($gutter_width + ($gl-padding * 2));
-    }
-  }
-}
-
-.status-message {
-  display: inline-block;
-  color: $white-light;
-
-  .status-icon {
-    display: inline-block;
-    width: 16px;
-    height: 33px;
-  }
-
-  .status-text {
-    float: left;
-    opacity: 0;
-    margin-right: 10px;
-    font-weight: normal;
-    line-height: 1.8;
-    transition: opacity 1s ease-out;
-
-    &.animate {
-      animation: fade-out-status 2s ease;
-    }
-  }
-
-  &:hover .status-text {
-    opacity: 1;
   }
 }
 
 .build-header {
-  position: relative;
-  padding: 0;
-  display: flex;
-  min-height: 58px;
-  align-items: center;
+  .ci-header-container,
+  .header-action-buttons {
+    display: flex;
+  }
 
-  @media (max-width: $screen-sm-max) {
-    padding-right: 40px;
-    margin-top: 6px;
+  .ci-header-container {
+    min-height: 54px;
+  }
 
-    .btn-inverted {
-      display: none;
+  .page-content-header {
+    padding: 10px 0 9px;
+  }
+
+  .header-action-buttons {
+    @media (max-width: $screen-xs-max) {
+      .sidebar-toggle-btn {
+        margin-top: 0;
+        margin-left: 10px;
+        max-height: 34px;
+      }
     }
   }
 
   .header-content {
-    flex: 1;
-
     a {
-      color: $gl-gray;
+      color: $gl-text-color;
 
       &:hover {
         color: $gl-link-color;
@@ -180,44 +229,33 @@
   }
 }
 
-.build-trace {
-  background: $black;
-  color: $gray-darkest;
-  white-space: pre;
-  overflow-x: auto;
-  font-size: 12px;
-
-  .fa-refresh {
-    font-size: 24px;
-  }
-
-  .bash {
-    display: block;
-  }
-
-  .build-loader-animation {
-    position: relative;
-    width: 6px;
-    height: 6px;
-    margin: auto auto 12px 2px;
-    border-radius: 50%;
-    animation: blinking-dots 1s linear infinite;
-  }
-}
-
 .right-sidebar.build-sidebar {
-  padding: $gl-padding 0;
+  padding: 0;
 
   &.right-sidebar-collapsed {
     display: none;
   }
 
+  .sidebar-container {
+    width: calc(100% + 100px);
+    padding-right: 100px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .blocks-container {
     padding: 0 $gl-padding;
+    width: 289px;
   }
 
   .block {
     width: 100%;
+
+    &:last-child {
+      border-bottom: 1px solid $border-gray-normal;
+    }
 
     &.coverage {
       padding: 0 16px 11px;
@@ -228,34 +266,51 @@
     }
   }
 
-  .js-build-variable {
+  .block-last {
+    padding: 16px 0;
+  }
+
+  .trigger-build-variables {
+    margin: 0;
+    overflow-x: auto;
+    -ms-overflow-style: scrollbar;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .trigger-build-variable {
+    font-weight: $gl-font-weight-normal;
     color: $code-color;
   }
 
-  .js-build-value {
+  .trigger-build-value {
     padding: 2px 4px;
     color: $black;
     background-color: $white-light;
   }
 
-  .build-sidebar-header {
-    padding: 0 $gl-padding $gl-padding;
-
-    .gutter-toggle {
-      margin-top: 0;
-    }
+  .label {
+    margin-left: 2px;
   }
 
   .retry-link {
-    color: $gl-link-color;
     display: none;
 
-    &:hover {
-      text-decoration: underline;
+    .btn-inverted-secondary {
+      color: $blue-500;
+
+      &:hover {
+        color: $white-light;
+      }
     }
 
     @media (max-width: $screen-sm-max) {
       display: block;
+
+      .btn {
+        i {
+          margin-left: 5px;
+        }
+      }
     }
   }
 
@@ -268,16 +323,19 @@
   }
 
   .build-dropdown {
-    padding: $gl-padding 0;
+    margin: $gl-padding 0;
+    padding: 0;
 
     .dropdown-menu-toggle {
-      margin-top: 8px;
+      margin-top: #{$gl-padding / 2};
     }
 
-    .dropdown-menu {
-      right: $gl-padding;
-      left: $gl-padding;
-      width: auto;
+    svg {
+      position: relative;
+      top: 3px;
+      margin-right: 3px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -286,13 +344,15 @@
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     max-height: 300px;
+    width: 289px;
     overflow: auto;
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
-      height: 13px;
+      height: 14px;
+      width: 14px;
     }
 
     a {
@@ -311,7 +371,7 @@
     .build-job {
       position: relative;
 
-      .fa-arrow-right {
+      .icon-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -319,9 +379,9 @@
       }
 
       &.active {
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
 
-        .fa-arrow-right {
+        .icon-arrow-right {
           display: block;
         }
       }
@@ -334,17 +394,24 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
-        font-size: 13px;
+      .icon-retry {
         margin-left: 3px;
       }
     }
+  }
+
+  .link-commit {
+    color: $blue-600;
   }
 }
 
 .build-sidebar {
   .container-fluid.container-limited {
     max-width: 100%;
+  }
+
+  .content-wrapper {
+    padding-bottom: 6px;
   }
 }
 
@@ -357,7 +424,8 @@
 }
 
 .build-light-text {
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
+  word-wrap: break-word;
 }
 
 .build-gutter-toggle {
@@ -365,10 +433,4 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
-}
-
-@media (min-width: $screen-md-min) {
-  .sub-nav.build {
-    width: calc(100% + #{$gutter_width});
-  }
 }

@@ -83,7 +83,9 @@ module Gitlab
       # +value+ existing model to be included in the hash
       # +json_config_hash+ the original hash containing the root model
       def add_model_value(current_key, value, json_config_hash)
-        @attributes_finder.parse(value) { |hash| value = { value => hash } }
+        @attributes_finder.parse(value) do |hash|
+          value = { value => hash } unless value.is_a?(Hash)
+        end
 
         add_to_array(current_key, json_config_hash, value)
       end

@@ -19,7 +19,7 @@ class BugzillaService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'bugzilla'
   end
 end

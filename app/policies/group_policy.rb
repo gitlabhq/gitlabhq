@@ -1,52 +1,77 @@
 class GroupPolicy < BasePolicy
-  def rules
-    can! :read_group if @subject.public?
-    return unless @user
+  desc "Group is public"
+  with_options scope: :subject, score: 0
+  condition(:public_group) { @subject.public? }
 
-    globally_viewable = @subject.public? || (@subject.internal? && !@user.external?)
-    member = @subject.users_with_parents.include?(@user)
-    owner = @user.admin? || @subject.has_owner?(@user)
-    master = owner || @subject.has_master?(@user)
+  with_score 0
+  condition(:logged_in_viewable) { @user && @subject.internal? && !@user.external? }
 
-    can_read = false
-    can_read ||= globally_viewable
-    can_read ||= member
-    can_read ||= @user.admin?
-    can_read ||= GroupProjectsFinder.new(@subject).execute(@user).any?
-    can! :read_group if can_read
+  condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
-    # Only group masters and group owners can create new projects
-    if master
-      can! :create_projects
-      can! :admin_milestones
-      can! :admin_label
-    end
+  condition(:guest) { access_level >= GroupMember::GUEST }
+  condition(:developer) { access_level >= GroupMember::DEVELOPER }
+  condition(:owner) { access_level >= GroupMember::OWNER }
+  condition(:master) { access_level >= GroupMember::MASTER }
+  condition(:reporter) { access_level >= GroupMember::REPORTER }
 
-    # Only group owner and administrators can admin group
-    if owner
-      can! :admin_group
-      can! :admin_namespace
-      can! :admin_group_member
-      can! :change_visibility_level
-    end
+  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
 
-    if globally_viewable && @subject.request_access_enabled && !member
-      can! :request_access
-    end
+  condition(:has_parent, scope: :subject) { @subject.has_parent? }
+  condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
+  condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
+  condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
 
-    additional_rules!(master)
+  condition(:has_projects) do
+    GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
   end
 
-  def can_read_group?
-    return true if @subject.public?
-    return true if @user.admin?
-    return true if @subject.internal? && !@user.external?
-    return true if @subject.users.include?(@user)
+  with_options scope: :subject, score: 0
+  condition(:request_access_enabled) { @subject.request_access_enabled }
 
-    GroupProjectsFinder.new(@subject).execute(@user).any?
+  rule { public_group }      .enable :read_group
+  rule { logged_in_viewable }.enable :read_group
+
+  rule { guest }.policy do
+    enable :read_group
+    enable :upload_file
   end
 
-  def additional_rules!(master)
-    # This is meant to be overriden in EE
+  rule { admin }             .enable :read_group
+  rule { has_projects }      .enable :read_group
+
+  rule { has_access }.enable :read_namespace
+
+  rule { developer }.enable :admin_milestones
+  rule { reporter }.enable :admin_label
+
+  rule { master }.policy do
+    enable :create_projects
+    enable :admin_pipeline
+    enable :admin_build
+  end
+
+  rule { owner }.policy do
+    enable :admin_group
+    enable :admin_namespace
+    enable :admin_group_member
+    enable :change_visibility_level
+  end
+
+  rule { owner & nested_groups_supported }.enable :create_subgroup
+
+  rule { public_group | logged_in_viewable }.enable :view_globally
+
+  rule { default }.enable(:request_access)
+
+  rule { ~request_access_enabled }.prevent :request_access
+  rule { ~can?(:view_globally) }.prevent   :request_access
+  rule { has_access }.prevent              :request_access
+
+  rule { owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock) }.enable :change_share_with_group_lock
+
+  def access_level
+    return GroupMember::NO_ACCESS if @user.nil?
+
+    @access_level ||= @subject.max_member_access_for_user(@user)
   end
 end

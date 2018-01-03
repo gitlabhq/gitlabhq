@@ -1,18 +1,87 @@
 require "spec_helper"
 
-describe WikiPage, models: true do
-  let(:project) { create(:empty_project) }
+describe WikiPage do
+  let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
-  subject { WikiPage.new(wiki) }
+  subject { described_class.new(wiki) }
+
+  describe '.group_by_directory' do
+    context 'when there are no pages' do
+      it 'returns an empty array' do
+        expect(described_class.group_by_directory(nil)).to eq([])
+        expect(described_class.group_by_directory([])).to eq([])
+      end
+    end
+
+    context 'when there are pages' do
+      before do
+        create_page('dir_1/dir_1_1/page_3', 'content')
+        create_page('dir_1/page_2', 'content')
+        create_page('dir_2/page_5', 'content')
+        create_page('dir_2/page_4', 'content')
+        create_page('page_1', 'content')
+      end
+      let(:page_1) { wiki.find_page('page_1') }
+      let(:dir_1) do
+        WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
+      end
+      let(:dir_1_1) do
+        WikiDirectory.new('dir_1/dir_1_1', [wiki.find_page('dir_1/dir_1_1/page_3')])
+      end
+      let(:dir_2) do
+        pages = [wiki.find_page('dir_2/page_5'),
+                 wiki.find_page('dir_2/page_4')]
+        WikiDirectory.new('dir_2', pages)
+      end
+
+      it 'returns an array with pages and directories' do
+        expected_grouped_entries = [page_1, dir_1, dir_1_1, dir_2]
+
+        grouped_entries = described_class.group_by_directory(wiki.pages)
+
+        grouped_entries.each_with_index do |page_or_dir, i|
+          expected_page_or_dir = expected_grouped_entries[i]
+          expected_slugs = get_slugs(expected_page_or_dir)
+          slugs = get_slugs(page_or_dir)
+
+          expect(slugs).to match_array(expected_slugs)
+        end
+      end
+
+      it 'returns an array sorted by alphabetical position' do
+        # Directories and pages within directories are sorted alphabetically.
+        # Pages at root come before everything.
+        expected_order = ['page_1', 'dir_1/page_2', 'dir_1/dir_1_1/page_3',
+                          'dir_2/page_4', 'dir_2/page_5']
+
+        grouped_entries = described_class.group_by_directory(wiki.pages)
+
+        actual_order =
+          grouped_entries.map do |page_or_dir|
+            get_slugs(page_or_dir)
+          end
+          .flatten
+        expect(actual_order).to eq(expected_order)
+      end
+    end
+  end
+
+  describe '.unhyphenize' do
+    it 'removes hyphens from a name' do
+      name = 'a-name--with-hyphens'
+
+      expect(described_class.unhyphenize(name)).to eq('a name with hyphens')
+    end
+  end
 
   describe "#initialize" do
     context "when initialized with an existing gollum page" do
       before do
         create_page("test page", "test content")
-        @page = wiki.wiki.paged("test page")
-        @wiki_page = WikiPage.new(wiki, @page, true)
+        @page = wiki.wiki.page(title: "test page")
+        @wiki_page = described_class.new(wiki, @page, true)
       end
 
       it "sets the slug attribute" do
@@ -36,7 +105,7 @@ describe WikiPage, models: true do
       end
 
       it "sets the version attribute" do
-        expect(@wiki_page.version).to be_a Gollum::Git::Commit
+        expect(@wiki_page.version).to be_a Gitlab::Git::WikiPageVersion
       end
     end
   end
@@ -109,12 +178,12 @@ describe WikiPage, models: true do
       end
 
       it "updates the content of the page" do
-        @page.update("new content")
+        @page.update(content: "new content")
         @page = wiki.find_page(title)
       end
 
       it "returns true" do
-        expect(@page.update("more content")).to be_truthy
+        expect(@page.update(content: "more content")).to be_truthy
       end
     end
   end
@@ -126,17 +195,42 @@ describe WikiPage, models: true do
     end
 
     after do
-      destroy_page("Update")
+      destroy_page(@page.title)
     end
 
     context "with valid attributes" do
       it "updates the content of the page" do
-        @page.update("new content")
+        new_content = "new content"
+
+        @page.update(content: new_content)
         @page = wiki.find_page("Update")
+
+        expect(@page.content).to eq("new content")
+      end
+
+      it "updates the title of the page" do
+        new_title = "Index v.1.2.4"
+
+        @page.update(title: new_title)
+        @page = wiki.find_page(new_title)
+
+        expect(@page.title).to eq(new_title)
       end
 
       it "returns true" do
-        expect(@page.update("more content")).to be_truthy
+        expect(@page.update(content: "more content")).to be_truthy
+      end
+    end
+
+    context 'with same last commit sha' do
+      it 'returns true' do
+        expect(@page.update(content: 'more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
+      end
+    end
+
+    context 'with different last commit sha' do
+      it 'raises exception' do
+        expect { @page.update(content: 'more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
       end
     end
   end
@@ -168,7 +262,7 @@ describe WikiPage, models: true do
     end
 
     it "returns an array of all commits for the page" do
-      3.times { |i| @page.update("content #{i}") }
+      3.times { |i| @page.update(content: "content #{i}") }
       expect(@page.versions.count).to eq(4)
     end
   end
@@ -187,13 +281,39 @@ describe WikiPage, models: true do
       @page.title = "Import-existing-repositories-into-GitLab"
       expect(@page.title).to eq("Import existing repositories into GitLab")
     end
+
+    it 'unescapes html' do
+      @page.title = 'foo &amp; bar'
+
+      expect(@page.title).to eq('foo & bar')
+    end
+  end
+
+  describe '#directory' do
+    context 'when the page is at the root directory' do
+      it 'returns an empty string' do
+        create_page('file', 'content')
+        page = wiki.find_page('file')
+
+        expect(page.directory).to eq('')
+      end
+    end
+
+    context 'when the page is inside an actual directory' do
+      it 'returns the full directory hierarchy' do
+        create_page('dir_1/dir_1_1/file', 'content')
+        page = wiki.find_page('dir_1/dir_1_1/file')
+
+        expect(page.directory).to eq('dir_1/dir_1_1')
+      end
+    end
   end
 
   describe '#historical?' do
     before do
       create_page('Update', 'content')
       @page = wiki.find_page('Update')
-      3.times { |i| @page.update("content #{i}") }
+      3.times { |i| @page.update(content: "content #{i}") }
     end
 
     after do
@@ -201,14 +321,14 @@ describe WikiPage, models: true do
     end
 
     it 'returns true when requesting an old version' do
-      old_version = @page.versions.last.to_s
+      old_version = @page.versions.last.id
       old_page = wiki.find_page('Update', old_version)
 
       expect(old_page.historical?).to eq true
     end
 
     it 'returns false when requesting latest version' do
-      latest_version = @page.versions.first.to_s
+      latest_version = @page.versions.first.id
       latest_page = wiki.find_page('Update', latest_version)
 
       expect(latest_page.historical?).to eq false
@@ -221,6 +341,51 @@ describe WikiPage, models: true do
     end
   end
 
+  describe '#to_partial_path' do
+    it 'returns the relative path to the partial to be used' do
+      page = build(:wiki_page)
+
+      expect(page.to_partial_path).to eq('projects/wikis/wiki_page')
+    end
+  end
+
+  describe '#==' do
+    let(:original_wiki_page) { create(:wiki_page) }
+
+    it 'returns true for identical wiki page' do
+      expect(original_wiki_page).to eq(original_wiki_page)
+    end
+
+    it 'returns false for updated wiki page' do
+      updated_wiki_page = original_wiki_page.update(content: "Updated content")
+      expect(original_wiki_page).not_to eq(updated_wiki_page)
+    end
+  end
+
+  describe '#last_commit_sha' do
+    before do
+      create_page("Update", "content")
+      @page = wiki.find_page("Update")
+    end
+
+    after do
+      destroy_page("Update")
+    end
+
+    it 'returns commit sha' do
+      expect(@page.last_commit_sha).to eq @page.last_version.sha
+    end
+
+    it 'is changed after page updated' do
+      last_commit_sha_before_update = @page.last_commit_sha
+
+      @page.update(content: "new content")
+      @page = wiki.find_page("Update")
+
+      expect(@page.last_commit_sha).not_to eq last_commit_sha_before_update
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
@@ -228,7 +393,7 @@ describe WikiPage, models: true do
   end
 
   def commit_details
-    { name: user.name, email: user.email, message: "test commit" }
+    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
   end
 
   def create_page(name, content)
@@ -236,7 +401,15 @@ describe WikiPage, models: true do
   end
 
   def destroy_page(title)
-    page = wiki.wiki.paged(title)
-    wiki.wiki.delete_page(page, commit_details)
+    page = wiki.wiki.page(title: title)
+    wiki.delete_page(page, "test commit")
+  end
+
+  def get_slugs(page_or_dir)
+    if page_or_dir.is_a? WikiPage
+      [page_or_dir.slug]
+    else
+      page_or_dir.pages.present? ? page_or_dir.pages.map(&:slug) : []
+    end
   end
 end

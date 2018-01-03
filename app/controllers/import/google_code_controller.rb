@@ -44,13 +44,13 @@ class Import::GoogleCodeController < Import::BaseController
     rescue
       flash.now[:alert] = "The entered user map is not a valid JSON user map."
 
-      render "new_user_map" and return
+      return render "new_user_map"
     end
 
     unless user_map.is_a?(Hash) && user_map.all? { |k, v| k.is_a?(String) && v.is_a?(String) }
       flash.now[:alert] = "The entered user map is not a valid JSON user map."
 
-      render "new_user_map" and return
+      return render "new_user_map"
     end
 
     # This is the default, so let's not save it into the database.

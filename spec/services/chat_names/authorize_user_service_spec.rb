@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatNames::AuthorizeUserService, services: true do
+describe ChatNames::AuthorizeUserService do
   describe '#execute' do
     let(:service) { create(:service) }
 

@@ -7,6 +7,8 @@ module MergeRequests
     end
 
     def execute(changes)
+      return [] unless project.printing_merge_request_link_enabled
+
       branches = get_branches(changes)
       merge_requests_map = opened_merge_requests_from_source_branches(branches)
       branches.map do |branch|
@@ -23,10 +25,7 @@ module MergeRequests
 
     def opened_merge_requests_from_source_branches(branches)
       merge_requests = MergeRequest.from_project(project).opened.from_source_branches(branches)
-      merge_requests.inject({}) do |hash, mr|
-        hash[mr.source_branch] = mr
-        hash
-      end
+      merge_requests.index_by(&:source_branch)
     end
 
     def get_branches(changes)
@@ -50,13 +49,13 @@ module MergeRequests
 
     def url_for_new_merge_request(branch_name)
       merge_request_params = { source_branch: branch_name }
-      url = Gitlab::Routing.url_helpers.new_namespace_project_merge_request_url(project.namespace, project, merge_request: merge_request_params)
+      url = Gitlab::Routing.url_helpers.project_new_merge_request_url(project, merge_request: merge_request_params)
       { branch_name: branch_name, url: url, new_merge_request: true }
     end
 
     def url_for_existing_merge_request(merge_request)
       target_project = merge_request.target_project
-      url = Gitlab::Routing.url_helpers.namespace_project_merge_request_url(target_project.namespace, target_project, merge_request)
+      url = Gitlab::Routing.url_helpers.project_merge_request_url(target_project, merge_request)
       { branch_name: merge_request.source_branch, url: url, new_merge_request: false }
     end
   end

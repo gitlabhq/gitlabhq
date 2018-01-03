@@ -1,0 +1,16 @@
+- confirmation_link = confirmation_url(@resource, confirmation_token: @token)
+- if @resource.unconfirmed_email.present?
+  #content
+    = email_default_heading(@resource.unconfirmed_email)
+    %p Click the link below to confirm your email address.
+    #cta
+      = link_to 'Confirm your email address', confirmation_link
+- else
+  #content
+    - if Gitlab.com?
+      = email_default_heading('Thanks for signing up to GitLab!')
+    - else
+      = email_default_heading("Welcome, #{@resource.name}!")
+    %p To get started, click the link below to confirm your account.
+    #cta
+      = link_to 'Confirm your account', confirmation_link

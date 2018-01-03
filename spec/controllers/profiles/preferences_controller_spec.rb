@@ -45,7 +45,8 @@ describe Profiles::PreferencesController do
           theme_id: '2'
         }.with_indifferent_access
 
-        expect(user).to receive(:update_attributes).with(prefs)
+        expect(user).to receive(:assign_attributes).with(prefs)
+        expect(user).to receive(:save)
 
         go params: prefs
       end
@@ -53,7 +54,7 @@ describe Profiles::PreferencesController do
 
     context 'on failed update' do
       it 'sets the flash' do
-        expect(user).to receive(:update_attributes).and_return(false)
+        expect(user).to receive(:save).and_return(false)
 
         go
 

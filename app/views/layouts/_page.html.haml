@@ -1,31 +1,15 @@
-.page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
-  .sidebar-wrapper.nicescroll
-    .sidebar-action-buttons
-      .nav-header-btn.toggle-nav-collapse{ title: "Open/Close" }
-        %span.sr-only Toggle navigation
-        = icon('bars')
-
-      %div{ class: "nav-header-btn pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: { placement: 'right', container: 'body' } }
-        %span.sr-only Toggle navigation pinning
-        = icon('fw thumb-tack')
-
-    - if defined?(sidebar) && sidebar
-      = render "layouts/nav/#{sidebar}"
-    - elsif current_user
-      = render 'layouts/nav/dashboard'
-    - else
-      = render 'layouts/nav/explore'
-
+.layout-page{ class: page_with_sidebar_class }
   - if defined?(nav) && nav
-    .layout-nav
-      .container-fluid
-        = render "layouts/nav/#{nav}"
-  .content-wrapper{ class: "#{layout_nav_class}" }
-    = yield :sub_nav
+    = render "layouts/nav/sidebar/#{nav}"
+  .content-wrapper
+    = render 'shared/outdated_browser'
+    .mobile-overlay
     .alert-wrapper
       = render "layouts/broadcast"
-      = render "layouts/flash"
       = yield :flash_message
+      - unless @hide_breadcrumbs
+        = render "layouts/nav/breadcrumbs"
+      = render "layouts/flash"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield

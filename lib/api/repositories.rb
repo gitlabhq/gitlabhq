@@ -2,12 +2,14 @@ require 'mime/types'
 
 module API
   class Repositories < Grape::API
+    include PaginationParams
+
     before { authorize! :download_code, user_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
@@ -15,61 +17,67 @@ module API
           end
           not_found!
         end
+
+        def assign_blob_vars!
+          authorize! :download_code, user_project
+
+          @repo = user_project.repository
+
+          begin
+            @blob = Gitlab::Git::Blob.raw(@repo, params[:sha])
+            @blob.load_all_data!(@repo)
+          rescue
+            not_found! 'Blob'
+          end
+
+          not_found! 'Blob' unless @blob
+        end
       end
 
       desc 'Get a project repository tree' do
-        success Entities::RepoTreeObject
+        success Entities::TreeObject
       end
       params do
-        optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
+        optional :ref, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
         optional :path, type: String, desc: 'The path of the tree'
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+        use :pagination
       end
       get ':id/repository/tree' do
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        ref = params[:ref] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
         commit = user_project.commit(ref)
         not_found!('Tree') unless commit
 
         tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
-
-        present tree.sorted_entries, with: Entities::RepoTreeObject
+        entries = ::Kaminari.paginate_array(tree.sorted_entries)
+        present paginate(entries), with: Entities::TreeObject
       end
 
-      desc 'Get a raw file contents'
+      desc 'Get raw blob contents from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
-        requires :filepath, type: String, desc: 'The path to the file to display'
+        requires :sha, type: String, desc: 'The commit hash'
       end
-      get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
-        repo = user_project.repository
+      get ':id/repository/blobs/:sha/raw' do
+        assign_blob_vars!
 
-        commit = repo.commit(params[:sha])
-        not_found! "Commit" unless commit
-
-        blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
-        not_found! "File" unless blob
-
-        send_git_blob repo, blob
+        send_git_blob @repo, @blob
       end
 
-      desc 'Get a raw blob contents by blob sha'
+      desc 'Get a blob from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
-      get ':id/repository/raw_blobs/:sha' do
-        repo = user_project.repository
+      get ':id/repository/blobs/:sha' do
+        assign_blob_vars!
 
-        begin
-          blob = Gitlab::Git::Blob.raw(repo, params[:sha])
-        rescue
-          not_found! 'Blob'
-        end
-
-        not_found! 'Blob' unless blob
-
-        send_git_blob repo, blob
+        {
+          size: @blob.size,
+          encoding: "base64",
+          content: Base64.strict_encode64(@blob.data),
+          sha: @blob.id
+        }
       end
 
       desc 'Get an archive of the repository'
@@ -77,7 +85,7 @@ module API
         optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
         optional :format, type: String, desc: 'The archive format'
       end
-      get ':id/repository/archive', requirements: { format: Gitlab::Regex.archive_formats_regex } do
+      get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         begin
           send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
         rescue
@@ -100,10 +108,15 @@ module API
       desc 'Get repository contributors' do
         success Entities::Contributor
       end
+      params do
+        use :pagination
+        optional :order_by, type: String, values: %w[email name commits], default: nil, desc: 'Return contributors ordered by `name` or `email` or `commits`'
+        optional :sort, type: String, values: %w[asc desc], default: nil, desc: 'Sort by asc (ascending) or desc (descending)'
+      end
       get ':id/repository/contributors' do
         begin
-          present user_project.repository.contributors,
-                  with: Entities::Contributor
+          contributors = ::Kaminari.paginate_array(user_project.repository.contributors(order_by: params[:order_by], sort: params[:sort]))
+          present paginate(contributors), with: Entities::Contributor
         rescue
           not_found!
         end

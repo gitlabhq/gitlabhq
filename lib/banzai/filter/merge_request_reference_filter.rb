@@ -4,20 +4,16 @@ module Banzai
     # to merge requests that do not exist are ignored.
     #
     # This filter supports cross-project references.
-    class MergeRequestReferenceFilter < AbstractReferenceFilter
+    class MergeRequestReferenceFilter < IssuableReferenceFilter
       self.reference_type = :merge_request
 
       def self.object_class
         MergeRequest
       end
 
-      def find_object(project, id)
-        project.merge_requests.find_by(iid: id)
-      end
-
       def url_for_object(mr, project)
         h = Gitlab::Routing.url_helpers
-        h.namespace_project_merge_request_url(project.namespace, project, mr,
+        h.project_merge_request_url(project, mr,
                                             only_path: context[:only_path])
       end
 
@@ -35,6 +31,12 @@ module Banzai
         end
 
         extras
+      end
+
+      def parent_records(parent, ids)
+        parent.merge_requests
+          .where(iid: ids.to_a)
+          .includes(target_project: :namespace)
       end
     end
   end

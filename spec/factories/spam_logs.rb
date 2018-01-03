@@ -1,9 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :spam_log do
     user
-    source_ip { FFaker::Internet.ip_v4_address }
+    sequence(:source_ip) { |n| "42.42.42.#{n % 255}" }
     noteable_type 'Issue'
-    title { FFaker::Lorem.sentence }
-    description { FFaker::Lorem.paragraph(5) }
+    sequence(:title) { |n| "Spam title #{n}" }
+    description { "Spam description\nwith\nmultiple\nlines" }
   end
 end

@@ -1,13 +1,12 @@
 # Web terminals
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
-in GitLab 8.15. Only project masters and owners can access web terminals.
+> [Introduced][ce-7690] in GitLab 8.15. Only project masters and owners can
+  access web terminals.
 
-With the introduction of the [Kubernetes](../../project_services/kubernetes.md)
-project service, GitLab gained the ability to store and use credentials for a
-Kubernetes cluster. One of the things it uses these credentials for is providing
-access to [web terminals](../../ci/environments.html#web-terminals)
-for environments.
+With the introduction of the [Kubernetes project service][kubservice], GitLab
+gained the ability to store and use credentials for a Kubernetes cluster. One
+of the things it uses these credentials for is providing access to
+[web terminals](../../ci/environments.html#web-terminals) for environments.
 
 ## How it works
 
@@ -33,7 +32,7 @@ In brief:
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse needs to be configured to pass the `Connection` and `Upgrade` headers
-through to the next one in the chain. If you installed Gitlab using Omnibus, or
+through to the next one in the chain. If you installed GitLab using Omnibus, or
 from source, starting with GitLab 8.15, this should be done by the default
 configuration, so there's no need for you to do anything.
 
@@ -59,7 +58,7 @@ document for more details.
 If you'd like to disable web terminal support in GitLab, just stop passing
 the `Connection` and `Upgrade` hop-by-hop headers in the *first* HTTP reverse
 proxy in the chain. For most users, this will be the NGINX server bundled with
-Omnibus Gitlab, in which case, you need to:
+Omnibus GitLab, in which case, you need to:
 
 * Find the `nginx['proxy_set_headers']` section of your `gitlab.rb` file
 * Ensure the whole block is uncommented, and then comment out or remove the
@@ -71,3 +70,16 @@ by the above guides.
 When these headers are not passed through, Workhorse will return a
 `400 Bad Request` response to users attempting to use a web terminal. In turn,
 they will receive a `Connection failed` message.
+
+## Limiting WebSocket connection time
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8413)
+in GitLab 8.17.
+
+Terminal sessions use long-lived connections; by default, these may last
+forever. You can configure a maximum session time in the Admin area of your
+GitLab instance if you find this undesirable from a scalability or security
+point of view.
+
+[ce-7690]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690
+[kubservice]: ../../user/project/integrations/kubernetes.md

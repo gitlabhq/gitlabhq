@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "description": { "type": "string" },
+    "ref": { "type": "string" },
+    "cron": { "type": "string" },
+    "cron_timezone": { "type": "string" },
+    "next_run_at": { "type": "date" },
+    "active": { "type": "boolean" },
+    "created_at": { "type": "date" },
+    "updated_at": { "type": "date" },
+    "last_pipeline": { 
+      "type": ["object", "null"],
+      "properties": {
+        "id": { "type": "integer" },
+        "sha": { "type": "string" },
+        "ref": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "id": { "type": "integer" },
+        "state": { "type": "string" },
+        "avatar_url": { "type": "uri" },
+        "web_url": { "type": "uri" }
+      },
+      "additionalProperties": false
+    },
+    "variables": {
+      "type": ["array", "null"],
+      "items": { "$ref": "pipeline_schedule_variable.json" }
+    }
+  },
+  "required": [
+    "id", "description", "ref", "cron", "cron_timezone", "next_run_at", 
+    "active", "created_at", "updated_at", "owner"
+  ],
+  "additionalProperties": false
+}

@@ -2,11 +2,35 @@
  * MR -> show: Automerge widget
  *
  */
+
+.space-children {
+  @include clearfix;
+
+  > * {
+    float: left;
+  }
+
+  > *:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
 .mr-state-widget {
-  background: $gray-light;
-  color: $gl-gray;
+  color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 2px;
+  line-height: 28px;
+
+  .mr-widget-heading,
+  .mr-widget-section,
+  .mr-widget-footer {
+    padding: $gl-padding;
+    border-top: solid 1px $border-color;
+  }
+
+  .mr-widget-footer {
+    padding: 0;
+  }
 
   form {
     margin-bottom: 0;
@@ -16,20 +40,36 @@
     }
   }
 
+  label {
+    margin-bottom: 0;
+  }
+
+  .btn {
+    font-size: $gl-font-size;
+
+    &[disabled] {
+      opacity: 0.3;
+    }
+
+    &.btn-xs {
+      line-height: 1;
+      padding: 5px 10px;
+      margin-top: 1px;
+    }
+
+    &.dropdown-toggle {
+      .fa {
+        color: inherit;
+      }
+    }
+  }
+
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
       float: left;
 
-      .btn-success.dropdown-toggle .fa {
-        color: inherit;
-      }
-
-      .btn-success.dropdown-toggle:disabled {
-        background-color: $gl-success;
-      }
-
-      .accept_merge_request {
+      .accept-merge-request {
         &.ci-pending,
         &.ci-running {
           @include btn-blue;
@@ -56,65 +96,137 @@
       &.right {
         float: right;
         padding-right: 0;
+      }
 
-        a {
-          color: $gl-gray;
+      .modify-merge-commit-link {
+        padding: 0;
+
+        background-color: transparent;
+        border: 0;
+
+        color: $gl-text-color;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
         }
       }
 
-      .remove_source_checkbox {
+      .merge-param-checkbox {
         margin: 0;
       }
-    }
-  }
 
-  .ci_widget {
-    border-bottom: 1px solid $well-inner-border;
-    color: $gl-gray;
+      a .fa-question-circle {
+        color: $gl-text-color-secondary;
 
-    svg {
-      margin-right: 4px;
-      position: relative;
-      top: 1px;
-      overflow: visible;
-    }
-
-    &.ci-success_with_warnings {
-
-      i {
-        color: $gl-warning;
+        &:hover,
+        &:focus {
+          color: $link-hover-color;
+        }
       }
     }
   }
 
-  .mr-widget-body,
-  .ci_widget,
-  .mr-widget-footer {
-    padding: $gl-padding;
+  .ci-widget {
+    color: $gl-text-color;
+    display: flex;
+
+    @media (max-width: $screen-xs-max) {
+      flex-wrap: wrap;
+    }
+  }
+
+  .mr-widget-icon {
+    font-size: 22px;
+    margin-right: $status-icon-margin;
+  }
+
+  .ci-status-icon svg {
+    width: $status-icon-size;
+    height: $status-icon-size;
+    margin: 3px 0;
+    position: relative;
+    overflow: visible;
+    display: block;
+  }
+
+  .mr-widget-pipeline-graph {
+    padding: 0 4px;
+
+    .dropdown-menu {
+      z-index: 300;
+    }
+
+    .ci-action-icon-wrapper {
+      line-height: 16px;
+    }
+  }
+
+  .mini-pipeline-graph-dropdown-toggle {
+    vertical-align: top;
   }
 
   .normal {
-    color: $gl-text-color-dark;
+    line-height: 28px;
   }
 
-  .js-deployment-link {
-    display: inline-block;
+  .capitalize {
+    text-transform: capitalize;
+  }
+
+  .label-branch {
+    @extend .ref-name;
+
+    color: $gl-text-color;
+    font-weight: $gl-font-weight-bold;
+    overflow: hidden;
+    word-break: break-all;
+
+    &.label-truncated {
+      position: relative;
+      display: inline-block;
+      width: 250px;
+      margin-bottom: -3px;
+      white-space: nowrap;
+      text-overflow: clip;
+      line-height: 14px;
+
+      &::after {
+        position: absolute;
+        content: '...';
+        right: 0;
+        font-family: $regular_font;
+        background-color: $gray-light;
+      }
+    }
   }
 
   .mr-widget-body {
+    @include clearfix;
+
+    &.media > *:first-child {
+      margin-right: 10px;
+    }
+
+    .approve-btn {
+      margin-right: 5px;
+    }
+
     h4 {
-      font-weight: 600;
-      font-size: 16px;
-      margin: 5px 0;
-      color: $gl-gray-dark;
+      float: left;
+      font-weight: $gl-font-weight-bold;
+      font-size: 14px;
+      line-height: inherit;
+      margin-top: 0;
+      margin-bottom: 0;
 
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-    }
 
-    p:last-child {
-      margin-bottom: 0;
+      time {
+        font-weight: $gl-font-weight-normal;
+      }
     }
 
     .btn-grouped {
@@ -122,19 +234,61 @@
       margin-right: 7px;
     }
 
-    @media (max-width: $screen-xs-max) {
-      h4 {
-        font-size: 14px;
+    label {
+      font-weight: $gl-font-weight-normal;
+    }
+
+    .spacing {
+      margin: 0 0 0 10px;
+    }
+
+    .bold {
+      font-weight: $gl-font-weight-bold;
+      color: $gl-gray-light;
+    }
+
+    .state-label {
+      font-weight: $gl-font-weight-bold;
+      padding-right: 10px;
+    }
+
+    .danger {
+      color: $gl-danger;
+    }
+
+    .spacing,
+    .bold {
+      vertical-align: middle;
+    }
+
+    .dropdown-menu {
+      li a {
+        padding: 5px;
       }
 
+      .merge-opt-icon {
+        line-height: 1.5;
+      }
+
+      .merge-opt-title {
+        margin-left: 8px;
+      }
+    }
+
+    .dropdown-toggle {
+      .fa {
+        margin-left: 0;
+        color: inherit;
+      }
+    }
+
+    .has-custom-error {
+      display: inline-block;
+    }
+
+    @media (max-width: $screen-xs-max) {
       p {
         font-size: 13px;
-      }
-
-      .btn,
-      .btn-group,
-      .accept-action {
-        margin-bottom: 4px;
       }
 
       .btn-grouped {
@@ -153,10 +307,35 @@
         margin: 0;
       }
     }
+
+    .commit-message-editor {
+      label {
+        padding: 0;
+      }
+    }
+
+    &.mr-widget-empty-state {
+      line-height: 20px;
+
+      .artwork {
+        margin-bottom: $gl-padding;
+      }
+
+      .text {
+        span {
+          font-weight: $gl-font-weight-bold;
+        }
+
+        p {
+          margin-top: $gl-padding;
+        }
+      }
+    }
   }
 
-  .mr-widget-footer {
-    border-top: 1px solid $gray-darker;
+  .mr-widget-help {
+    padding: 10px 16px 10px 48px;
+    font-style: italic;
   }
 
   .ci-coverage {
@@ -173,30 +352,23 @@
   }
 }
 
+.mr-widget-body-controls {
+  flex-wrap: wrap;
+}
+
 .mr_source_commit,
 .mr_target_commit {
   margin-bottom: 0;
 
   .commit {
     margin: 0;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 10px;
     list-style: none;
 
     &:hover {
       background: none;
     }
   }
-}
-
-.label-branch {
-  color: $gl-gray-dark;
-  font-family: $monospace_font;
-  font-weight: bold;
-  overflow: hidden;
-  font-size: 90%;
-  margin: 0 3px;
-  word-break: break-all;
 }
 
 .commits-empty {
@@ -212,10 +384,23 @@
   }
 }
 
+.nothing-here-block {
+  img {
+    width: 230px;
+  }
+}
+
 .mr-list {
   .merge-request {
-    padding: 10px 15px;
+    padding: 10px  0 10px 15px;
     position: relative;
+    display: -webkit-flex;
+    display: flex;
+
+    .issue-info-container {
+      -webkit-flex: 1;
+      flex: 1;
+    }
 
     .merge-request-title {
       margin-bottom: 2px;
@@ -256,15 +441,11 @@
 }
 
 #modal_merge_info .modal-dialog {
-  width: 600px;
-
   .dark {
     margin-right: 40px;
   }
 
   .btn-clipboard {
-    @extend .pull-right;
-
     margin-right: 20px;
     margin-top: 5px;
     position: absolute;
@@ -272,14 +453,55 @@
   }
 }
 
+.mr-links {
+  padding-left: $status-icon-size + $status-icon-margin;
+}
+
+.mr-info-list {
+  clear: left;
+  position: relative;
+  padding-top: 4px;
+
+  p {
+    margin: 0;
+    position: relative;
+    padding: 4px 0;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  &.mr-memory-usage {
+    p {
+      float: left;
+    }
+
+    .memory-graph-container {
+      float: left;
+      margin-left: 5px;
+    }
+  }
+}
+
 .mr-source-target {
-  line-height: 31px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $gray-light;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+  padding: $gl-padding / 2 $gl-padding;
+
+  .dropdown-toggle .fa {
+    color: $gl-text-color;
+  }
 }
 
 .panel-new-merge-request {
   .panel-heading {
     padding: 5px 10px;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     line-height: 25px;
   }
 
@@ -288,7 +510,7 @@
   }
 
   .panel-footer {
-    padding: 5px 10px;
+    padding: 0;
 
     .btn {
       min-width: auto;
@@ -309,10 +531,6 @@
     .avatar {
       left: 0;
       top: 2px;
-    }
-
-    .commit-row-info {
-      line-height: 20px;
     }
   }
 
@@ -362,12 +580,21 @@
   }
 }
 
+.target-branch-select-dropdown-container {
+  position: relative;
+}
+
+.assign-to-me-link {
+  padding-left: 12px;
+  white-space: nowrap;
+}
+
 .table-holder {
   .ci-table {
 
     th {
       background-color: $white-light;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
   }
 }
@@ -375,17 +602,14 @@
 .merged-buttons {
   .btn {
     float: left;
-
-    &:not(:last-child) {
-      margin-right: 10px;
-    }
   }
 }
 
 .mr-version-controls {
+  position: relative;
   background: $gray-light;
-  border-bottom: 1px solid $border-color;
   color: $gl-text-color;
+  z-index: 199;
 
   .mr-version-menus-container {
     display: -webkit-flex;
@@ -396,11 +620,12 @@
   }
 
   .content-block {
-    border-top: 1px solid $border-color;
     padding: $gl-padding-top $gl-padding;
   }
 
   .comments-disabled-notif {
+    line-height: 28px;
+
     .btn {
       margin-left: 5px;
     }
@@ -416,27 +641,89 @@
   }
 
   .fa-info-circle {
-    color: $orange-normal;
+    color: $orange-500;
     padding-right: 5px;
   }
 }
 
 .merge-request-tabs-holder {
+  top: $header-height;
+  z-index: 200;
   background-color: $white-light;
+  border-bottom: 1px solid $border-color;
 
-  .container-limited {
-    max-width: $limited-layout-width;
+  @media (min-width: $screen-sm-min) {
+    position: sticky;
+    position: -webkit-sticky;
   }
 
   &.affix {
-    top: 100px;
     left: 0;
-    z-index: 10;
     transition: right .15s;
+
+    @media (max-width: $screen-xs-max) {
+      right: 0;
+    }
+
+    .merge-request-tabs-container {
+      padding-left: $gl-padding;
+      padding-right: $gl-padding;
+    }
   }
 
-  &:not(.affix) .container-fluid {
-    padding-left: 0;
-    padding-right: 0;
+  .nav-links {
+    border: 0;
   }
+}
+
+.with-performance-bar .merge-request-tabs-holder {
+  top: $header-height + $performance-bar-height;
+}
+
+.merge-request-tabs {
+  display: flex;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.limit-container-width {
+  .merge-request-tabs-container {
+    max-width: $limited-layout-width;
+    margin-left: auto;
+    margin-right: auto;
+
+    .inner-page-scroll-tabs {
+      background-color: $white-light;
+      margin-left: -$gl-padding;
+      padding-left: $gl-padding;
+    }
+  }
+}
+
+.merge-request-tabs-container {
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column-reverse;
+  }
+}
+
+.limit-container-width:not(.container-limited) {
+  .merge-request-tabs-holder:not(.affix) {
+    .merge-request-tabs-container {
+      max-width: $limited-layout-width - ($gl-padding * 2);
+    }
+  }
+}
+
+.mr-memory-usage {
+  p.usage-info-loading .usage-info-load-spinner {
+    margin-right: 10px;
+    font-size: 16px;
+  }
+}
+
+.fork-sprite {
+  margin-right: -5px;
 }

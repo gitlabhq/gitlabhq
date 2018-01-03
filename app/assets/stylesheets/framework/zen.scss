@@ -9,7 +9,7 @@
     z-index: 1031;
 
     textarea {
-      border: none;
+      border: 0;
       box-shadow: none;
       border-radius: 0;
       color: $black;
@@ -20,8 +20,9 @@
       outline: none;
       resize: none;
       height: 100vh;
+      max-height: calc(100vh - 10px);
       max-width: 900px;
-      margin: 0 auto;
+      margin: 0 auto 10px;
     }
 
     .zen-control-leave {
@@ -40,7 +41,7 @@
 }
 
 .zen-control-full {
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
 
   &:hover {
     color: $gl-link-color;

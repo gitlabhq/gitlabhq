@@ -7,7 +7,7 @@ require 'spec_helper'
 # to be included as part of the export, or blacklist them using the import_export.yml configuration file.
 # Likewise, new models added to import_export.yml, will need to be added with their correspondent attributes
 # to this spec.
-describe 'Import/Export attribute configuration', lib: true do
+describe 'Import/Export attribute configuration' do
   include ConfigurationHelper
 
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
@@ -17,7 +17,7 @@ describe 'Import/Export attribute configuration', lib: true do
     # Remove duplicated or add missing models
     # - project is not part of the tree, so it has to be added manually.
     # - milestone, labels have both singular and plural versions in the tree, so remove the duplicates.
-    names.flatten.uniq - ['milestones', 'labels'] + ['project']
+    names.flatten.uniq - %w(milestones labels) + ['project']
   end
 
   let(:safe_attributes_file) { 'spec/lib/gitlab/import_export/safe_model_attributes.yml' }

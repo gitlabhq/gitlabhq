@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 class MigrateProjectStatistics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -16,8 +17,9 @@ class MigrateProjectStatistics < ActiveRecord::Migration
     remove_column :projects, :commit_count
   end
 
+  # rubocop: disable Migration/AddColumn
   def down
-    add_column_with_default :projects, :repository_size, :float, default: 0.0
-    add_column_with_default :projects, :commit_count, :integer, default: 0
+    add_column :projects, :repository_size, :float, default: 0.0
+    add_column :projects, :commit_count, :integer, default: 0
   end
 end

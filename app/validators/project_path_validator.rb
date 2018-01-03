@@ -1,37 +1,19 @@
-# ProjectPathValidator
-#
-# Custom validator for GitLab project path values.
-#
-# Values are checked for formatting and exclusion from a list of reserved path
-# names.
-class ProjectPathValidator < ActiveModel::EachValidator
-  # All project routes with wildcard argument must be listed here.
-  # Otherwise it can lead to routing issues when route considered as project name.
-  #
-  # Example:
-  #  /group/project/tree/deploy_keys
-  #
-  #  without tree as reserved name routing can match 'group/project' as group name,
-  #  'tree' as project name and 'deploy_keys' as route.
-  #
-  RESERVED = (NamespaceValidator::RESERVED -
-              %w[dashboard help ci admin search notes services] +
-              %w[tree commits wikis new edit create update logs_tree
-                 preview blob blame raw files create_dir find_file]).freeze
+class ProjectPathValidator < AbstractPathValidator
+  extend Gitlab::EncodingHelper
 
-  def self.valid?(value)
-    !reserved?(value)
+  def self.path_regex
+    Gitlab::PathRegex.full_project_path_regex
   end
 
-  def self.reserved?(value)
-    RESERVED.include?(value)
+  def self.format_regex
+    Gitlab::PathRegex.project_path_format_regex
   end
 
-  delegate :reserved?, to: :class
+  def self.format_error_message
+    Gitlab::PathRegex.project_path_format_message
+  end
 
-  def validate_each(record, attribute, value)
-    if reserved?(value)
-      record.errors.add(attribute, "#{value} is a reserved name")
-    end
+  def self.full_path(record, value)
+    record.build_full_path
   end
 end

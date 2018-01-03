@@ -1,8 +1,7 @@
 class Explore::GroupsController < Explore::ApplicationController
+  include GroupTree
+
   def index
-    @groups = GroupsFinder.new.execute(current_user)
-    @groups = @groups.search(params[:search]) if params[:search].present?
-    @groups = @groups.sort(@sort = params[:sort])
-    @groups = @groups.page(params[:page])
+    render_group_tree GroupsFinder.new(current_user).execute
   end
 end

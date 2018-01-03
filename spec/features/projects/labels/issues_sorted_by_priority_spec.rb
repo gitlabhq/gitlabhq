@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Issue prioritization', feature: true do
+feature 'Issue prioritization' do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
@@ -28,16 +28,16 @@ feature 'Issue prioritization', feature: true do
       issue_2.labels << label_4
       issue_1.labels << label_5
 
-      login_as user
-      visit namespace_project_issues_path(project.namespace, project, sort: 'priority')
+      sign_in user
+      visit project_issues_path(project, sort: 'label_priority')
 
       # Ensure we are indicating that issues are sorted by priority
-      expect(page).to have_selector('.dropdown-toggle', text: 'Priority')
+      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
 
-        expect(issue_titles).to eq(['issue_4', 'issue_3', 'issue_5', 'issue_2', 'issue_1'])
+        expect(issue_titles).to eq(%w(issue_4 issue_3 issue_5 issue_2 issue_1))
       end
     end
   end
@@ -67,17 +67,17 @@ feature 'Issue prioritization', feature: true do
       issue_4.labels << label_4 # 7
       issue_6.labels << label_5 # 8 - No priority
 
-      login_as user
-      visit namespace_project_issues_path(project.namespace, project, sort: 'priority')
+      sign_in user
+      visit project_issues_path(project, sort: 'label_priority')
 
-      expect(page).to have_selector('.dropdown-toggle', text: 'Priority')
+      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
 
         expect(issue_titles[0..1]).to contain_exactly('issue_5', 'issue_8')
         expect(issue_titles[2..4]).to contain_exactly('issue_1', 'issue_3', 'issue_7')
-        expect(issue_titles[5..-1]).to eq(['issue_2', 'issue_4', 'issue_6'])
+        expect(issue_titles[5..-1]).to eq(%w(issue_2 issue_4 issue_6))
       end
     end
   end

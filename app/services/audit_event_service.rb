@@ -8,7 +8,7 @@ class AuditEventService
       with: @details[:with],
       target_id: @author.id,
       target_type: 'User',
-      target_details: @author.name,
+      target_details: @author.name
     }
 
     self

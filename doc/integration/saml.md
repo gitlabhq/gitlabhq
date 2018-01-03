@@ -74,7 +74,7 @@ in your SAML IdP:
                    idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                    idp_sso_target_url: 'https://login.example.com/idp',
                    issuer: 'https://gitlab.example.com',
-                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
                  },
           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
         }
@@ -91,7 +91,7 @@ in your SAML IdP:
                  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                  idp_sso_target_url: 'https://login.example.com/idp',
                  issuer: 'https://gitlab.example.com',
-                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
                },
           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
         }
@@ -109,7 +109,8 @@ in your SAML IdP:
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
-1.  Restart GitLab for the changes to take effect.
+1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+    installed GitLab via Omnibus or from source respectively.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
     in `issuer`.
@@ -131,14 +132,17 @@ On the sign in page there should now be a SAML button below the regular sign in 
 Click the icon to begin the authentication process. If everything goes well the user
 will be returned to GitLab and will be signed in.
 
-## External Groups
+## Marking Users as External based on SAML Groups
 
 >**Note:**
 This setting is only available on GitLab 8.7 and above.
 
-SAML login includes support for external groups. You can define in the SAML
-settings which groups, to which your users belong in your IdP, you wish to be
-marked as [external](../user/permissions.md).
+SAML login includes support for automatically identifying whether a user should
+be considered an [external](../user/permissions.md) user based on the user's group
+membership in the SAML identity provider. This feature **does not** allow you to
+automatically add users to GitLab [Groups](../user/group/index.md), it simply 
+allows you to mark users as External if they are members of certain groups in the 
+Identity Provider.
 
 ### Requirements
 
@@ -171,7 +175,7 @@ tell GitLab which groups are external via the `external_groups:` element:
           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
-          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         } }
 ```
 
@@ -200,6 +204,9 @@ Please keep in mind that every sign in attempt will be redirected to the SAML se
 so you will not be able to sign in using local credentials. Make sure that at least one
 of the SAML users has admin permissions.
 
+You may also bypass the auto signin feature by browsing to
+https://gitlab.example.com/users/sign_in?auto_sign_in=false.
+
 ### `attribute_statements`
 
 >**Note:**
@@ -226,7 +233,7 @@ args: {
         idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
-        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] }
 }
 ```
@@ -244,7 +251,7 @@ args: {
         idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
-        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] },
         allowed_clock_drift: 1 # for one second clock drift
 }
@@ -314,3 +321,6 @@ For this you need take the following into account:
 
 Make sure that one of the above described scenarios is valid, or the requests will
 fail with one of the mentioned errors.
+
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

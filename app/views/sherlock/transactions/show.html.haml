@@ -3,15 +3,15 @@
 
 %ul.nav-links
   %li.active
-    %a(href="#tab-general" data-toggle="tab")
+    %a{ href: "#tab-general", data: { toggle: "tab" } }
       = t('sherlock.general')
   %li
-    %a(href="#tab-queries" data-toggle="tab")
+    %a{ href: "#tab-queries", data: { toggle: "tab" } }
       = t('sherlock.queries')
       %span.badge
         #{@transaction.queries.length}
   %li
-    %a(href="#tab-file-samples" data-toggle="tab")
+    %a{ href: "#tab-file-samples", data: { toggle: "tab" } }
       = t('sherlock.file_samples')
       %span.badge
         #{@transaction.file_samples.length}

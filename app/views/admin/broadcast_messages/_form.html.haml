@@ -4,7 +4,7 @@
     - if @broadcast_message.message.present?
       = render_broadcast_message(@broadcast_message)
     - else
-      = "Your message here"
+      Your message here
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)
@@ -21,11 +21,11 @@
   .form-group.js-toggle-colors-container.hide
     = f.label :color, "Background Color", class: 'control-label'
     .col-sm-10
-      = f.text_field :color, class: "form-control"
+      = f.color_field :color, class: "form-control"
   .form-group.js-toggle-colors-container.hide
     = f.label :font, "Font Color", class: 'control-label'
     .col-sm-10
-      = f.text_field :font, class: "form-control"
+      = f.color_field :font, class: "form-control"
   .form-group
     = f.label :starts_at, class: 'control-label'
     .col-sm-10.datetime-controls

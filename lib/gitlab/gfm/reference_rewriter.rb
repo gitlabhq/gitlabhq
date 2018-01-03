@@ -29,6 +29,8 @@ module Gitlab
     #  http://gitlab.com/some/link/#1234, and code `puts #1234`'
     #
     class ReferenceRewriter
+      RewriteError = Class.new(StandardError)
+
       def initialize(text, source_project, current_user)
         @text = text
         @source_project = source_project
@@ -61,6 +63,10 @@ module Gitlab
         cross_reference = build_cross_reference(referable, target_project)
         return reference if reference == cross_reference
 
+        if cross_reference.nil?
+          raise RewriteError, "Unspecified reference detected for #{referable.class.name}"
+        end
+
         new_text = before + cross_reference + after
         substitution_valid?(new_text) ? cross_reference : reference
       end
@@ -76,7 +82,7 @@ module Gitlab
         if referable.respond_to?(:project)
           referable.to_reference(target_project)
         else
-          referable.to_reference(@source_project, target_project)
+          referable.to_reference(@source_project, target_project: target_project)
         end
       end
 

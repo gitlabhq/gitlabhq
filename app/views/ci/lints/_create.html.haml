@@ -22,10 +22,10 @@
                 %b Tag list:
                 = build[:tag_list].to_a.join(", ")
                 %br
-                %b Refs only:
+                %b Only policy:
                 = @jobs[build[:name].to_sym][:only].to_a.join(", ")
                 %br
-                %b Refs except:
+                %b Except policy:
                 = @jobs[build[:name].to_sym][:except].to_a.join(", ")
                 %br
                 %b Environment:
@@ -36,7 +36,7 @@
                 - if build[:allow_failure]
                   %b Allowed to fail
 
--else
+- else
   %p
     %b Status:
     syntax is incorrect

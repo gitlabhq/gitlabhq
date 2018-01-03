@@ -3,6 +3,8 @@ module Gitlab
     class << self
       def execute!
         if Gitlab::CurrentSettings.sidekiq_throttling_enabled?
+          require 'sidekiq-limit_fetch'
+
           Gitlab::CurrentSettings.current_application_settings.sidekiq_throttling_queues.each do |queue|
             Sidekiq::Queue[queue].limit = queue_limit
           end

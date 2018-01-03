@@ -1,17 +1,12 @@
-%ul.nav.nav-sidebar
+%ul.list-unstyled.navbar-sub-nav
   = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
-    = link_to explore_root_path, title: 'Projects' do
-      %span
-        Projects
+    = link_to explore_root_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+      Projects
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to explore_groups_path, title: 'Groups' do
-      %span
-        Groups
+    = link_to explore_groups_path, title: 'Groups', class: 'dashboard-shortcuts-groups' do
+      Groups
   = nav_link(controller: :snippets) do
-    = link_to explore_snippets_path, title: 'Snippets' do
-      %span
-        Snippets
-  = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
-      %span
-        Help
+    = link_to explore_snippets_path, title: 'Snippets', class: 'dashboard-shortcuts-snippets' do
+      Snippets
+  %li
+    = link_to "Help", help_path, title: 'About GitLab CE'

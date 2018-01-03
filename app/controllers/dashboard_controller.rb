@@ -4,12 +4,11 @@ class DashboardController < Dashboard::ApplicationController
 
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
+  before_action :set_show_full_reference, only: [:issues, :merge_requests]
 
   respond_to :html
 
   def activity
-    @last_push = current_user.recent_push
-
     respond_to do |format|
       format.html
 
@@ -25,13 +24,19 @@ class DashboardController < Dashboard::ApplicationController
   def load_events
     projects =
       if params[:filter] == "starred"
-        current_user.viewable_starred_projects
+        ProjectsFinder.new(current_user: current_user, params: { starred: true }).execute
       else
         current_user.authorized_projects
       end
 
-    @events = Event.in_projects(projects)
-    @events = @event_filter.apply_filter(@events).with_associations
-    @events = @events.limit(20).offset(params[:offset] || 0)
+    @events = EventCollection
+      .new(projects, offset: params[:offset].to_i, filter: @event_filter)
+      .to_a
+
+    Events::RenderService.new(current_user).execute(@events)
+  end
+
+  def set_show_full_reference
+    @show_full_reference = true
   end
 end

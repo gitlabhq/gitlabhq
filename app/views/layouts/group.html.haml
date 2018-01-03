@@ -1,6 +1,13 @@
 - page_title       @group.name
 - page_description @group.description  unless page_description
 - header_title     group_title(@group) unless header_title
-- nav              "group"
+- nav            "group"
+- @left_sidebar = true
+
+- content_for :page_specific_javascripts do
+  - if current_user
+    -# haml-lint:disable InlineJavaScript
+    :javascript
+      window.uploads_path = "#{group_uploads_path(@group)}";
 
 = render template: "layouts/application"

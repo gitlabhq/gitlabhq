@@ -1,8 +1,11 @@
 require 'spec_helper'
 
-describe LfsObjectsProject, models: true do
-  subject { create(:lfs_objects_project, project: project) }
-  let(:project) { create(:empty_project) }
+describe LfsObjectsProject do
+  set(:project) { create(:project) }
+
+  subject do
+    create(:lfs_objects_project, project: project)
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -11,9 +14,13 @@ describe LfsObjectsProject, models: true do
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:lfs_object_id) }
-    it { is_expected.to validate_uniqueness_of(:lfs_object_id).scoped_to(:project_id).with_message("already exists in project") }
-
     it { is_expected.to validate_presence_of(:project_id) }
+
+    it 'validates object id' do
+      is_expected.to validate_uniqueness_of(:lfs_object_id)
+        .scoped_to(:project_id)
+        .with_message("already exists in project")
+    end
   end
 
   describe '#update_project_statistics' do

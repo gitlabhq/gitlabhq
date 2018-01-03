@@ -1,19 +1,30 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid
+  acts_as_paranoid without_default_scope: true
 
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
+  include Gitlab::CurrentSettings
+  include Gitlab::VisibilityLevel
   include Routable
+  include AfterCommitQueue
+  include Storage::LegacyNamespace
+  include Gitlab::SQL::Pattern
+
+  # Prevent users from creating unreasonably deep level of nesting.
+  # The number 20 was taken based on maximum nesting level of
+  # Android repo (15) + some extra backup.
+  NUMBER_OF_ANCESTORS_ALLOWED = 20
 
   cache_markdown_field :description, pipeline: :description
 
-  has_many :projects, dependent: :destroy
+  has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
+  has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -26,18 +37,26 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    namespace: true
+    namespace_path: true
+
+  validate :nesting_level_allowed
+  validate :allowed_path_by_redirects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
-  after_update :move_dir, if: :path_changed?
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
-  # Save the storage paths before the projects are destroyed to use them on after destroy
-  before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
+  before_create :sync_share_with_group_lock_with_parent
+  before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
+  after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
+
+  # Legacy Storage specific hooks
+
+  after_update :move_dir, if: :path_changed?
+  before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
+  scope :for_user, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -47,7 +66,7 @@ class Namespace < ActiveRecord::Base
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
       )
   end
 
@@ -69,10 +88,7 @@ class Namespace < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:name].matches(pattern).or(t[:path].matches(pattern)))
+      fuzzy_search(query, [:name, :path])
     end
 
     def clean_path(path)
@@ -90,15 +106,13 @@ class Namespace < ActiveRecord::Base
       # Work around that by setting their username to "blank", followed by a counter.
       path = "blank" if path.blank?
 
-      counter = 0
-      base = path
-      while Namespace.find_by_path_or_name(path)
-        counter += 1
-        path = "#{base}#{counter}"
-      end
-
-      path
+      uniquify = Uniquify.new
+      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
+  end
+
+  def visibility_level_field
+    :visibility_level
   end
 
   def to_param
@@ -109,47 +123,13 @@ class Namespace < ActiveRecord::Base
     owner_name
   end
 
-  def move_dir
-    if any_project_has_container_registry_tags?
-      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
-    end
-
-    # Move the namespace directory in all storages paths used by member projects
-    repository_storage_paths.each do |repository_storage_path|
-      # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, path_was)
-
-      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
-
-        # if we cannot move namespace directory we should rollback
-        # db changes in order to prevent out of sync between db and fs
-        raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
-      end
-    end
-
-    Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
-
-    # If repositories moved successfully we need to
-    # send update instructions to users.
-    # However we cannot allow rollback since we moved namespace dir
-    # So we basically we mute exceptions in next actions
-    begin
-      send_update_instructions
-    rescue
-      # Returning false does not rollback after_* transaction but gives
-      # us information about failing some of tasks
-      false
-    end
-  end
-
   def any_project_has_container_registry_tags?
-    projects.any?(&:has_container_registry_tags?)
+    all_projects.any?(&:has_container_registry_tags?)
   end
 
   def send_update_instructions
     projects.each do |project|
-      project.send_move_instructions("#{path_was}/#{project.path}")
+      project.send_move_instructions("#{full_path_was}/#{project.path}")
     end
   end
 
@@ -158,7 +138,19 @@ class Namespace < ActiveRecord::Base
   end
 
   def find_fork_of(project)
-    projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+    return nil unless project.fork_network
+
+    if RequestStore.active?
+      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+        Hash.new do |found_forks, project|
+          found_forks[project] = project.fork_network.find_forks_in(projects).first
+        end
+      end
+
+      forks_in_namespace[project]
+    else
+      project.fork_network.find_forks_in(projects).first
+    end
   end
 
   def lfs_enabled?
@@ -166,64 +158,114 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
-  def full_path
-    if parent
-      parent.full_path + '/' + path
-    else
-      path
-    end
+  def shared_runners_enabled?
+    projects.with_shared_runners.any?
   end
 
-  def full_name
-    @full_name ||=
-      if parent
-        parent.full_name + ' / ' + name
-      else
-        name
-      end
+  # Returns all the ancestors of the current namespaces.
+  def ancestors
+    return self.class.none unless parent_id
+
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: parent_id))
+      .base_and_ancestors
   end
 
-  def parents
-    @parents ||= parent ? parent.parents + [parent] : []
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
+  end
+
+  def self_and_ancestors
+    return self.class.where(id: id) unless parent_id
+
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .base_and_ancestors
+  end
+
+  # Returns all the descendants of the current namespace.
+  def descendants
+    Gitlab::GroupHierarchy
+      .new(self.class.where(parent_id: id))
+      .base_and_descendants
+  end
+
+  def self_and_descendants
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .base_and_descendants
+  end
+
+  def user_ids_for_project_authorizations
+    [owner_id]
+  end
+
+  def parent_changed?
+    parent_id_changed?
+  end
+
+  # Includes projects from this namespace and projects from all subgroups
+  # that belongs to this namespace
+  def all_projects
+    Project.inside_path(full_path)
+  end
+
+  def has_parent?
+    parent.present?
+  end
+
+  def subgroup?
+    has_parent?
+  end
+
+  def soft_delete_without_removing_associations
+    # We can't use paranoia's `#destroy` since this will hard-delete projects.
+    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
+    self.deleted_at = Time.now
   end
 
   private
 
-  def repository_storage_paths
-    # We need to get the storage paths for all the projects, even the ones that are
-    # pending delete. Unscoping also get rids of the default order, which causes
-    # problems with SELECT DISTINCT.
-    Project.unscoped do
-      projects.select('distinct(repository_storage)').to_a.map(&:repository_storage_path)
-    end
-  end
-
-  def rm_dir
-    # Remove the namespace directory in all storages paths used by member projects
-    @old_repository_storage_paths.each do |repository_storage_path|
-      # Move namespace directory into trash.
-      # We will remove it later async
-      new_path = "#{path}+#{id}+deleted"
-
-      if gitlab_shell.mv_namespace(repository_storage_path, path, new_path)
-        message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
-        Gitlab::AppLogger.info message
-
-        # Remove namespace directroy async with delay so
-        # GitLab has time to remove all projects first
-        GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
-      end
-    end
-  end
-
   def refresh_access_of_projects_invited_groups
-    Group.
-      joins(project_group_links: :project).
-      where(projects: { namespace_id: id }).
-      find_each(&:refresh_members_authorized_projects)
+    Group
+      .joins(project_group_links: :project)
+      .where(projects: { namespace_id: id })
+      .find_each(&:refresh_members_authorized_projects)
   end
 
-  def full_path_changed?
-    path_changed? || parent_id_changed?
+  def nesting_level_allowed
+    if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
+      errors.add(:parent_id, "has too deep level of nesting")
+    end
+  end
+
+  def sync_share_with_group_lock_with_parent
+    if parent&.share_with_group_lock?
+      self.share_with_group_lock = true
+    end
+  end
+
+  def force_share_with_group_lock_on_descendants
+    return unless Group.supports_nested_groups?
+
+    # We can't use `descendants.update_all` since Rails will throw away the WITH
+    # RECURSIVE statement. We also can't use WHERE EXISTS since we can't use
+    # different table aliases, hence we're just using WHERE IN. Since we have a
+    # maximum of 20 nested groups this should be fine.
+    Namespace.where(id: descendants.select(:id))
+      .update_all(share_with_group_lock: true)
+  end
+
+  def allowed_path_by_redirects
+    return if path.nil?
+
+    errors.add(:path, "#{path} has been taken before. Please use another one") if namespace_previously_created_with_same_path?
+  end
+
+  def namespace_previously_created_with_same_path?
+    RedirectRoute.permanent.exists?(path: path)
   end
 end

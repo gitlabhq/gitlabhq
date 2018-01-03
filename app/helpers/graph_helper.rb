@@ -3,11 +3,12 @@ module GraphHelper
     refs = ""
     # Commit::ref_names already strips the refs/XXX from important refs (e.g. refs/heads/XXX)
     # so anything leftover is internally used by GitLab
-    commit_refs = commit.ref_names(repo).reject{ |name| name.starts_with?('refs/') }
+    commit_refs = commit.ref_names(repo).reject { |name| name.starts_with?('refs/') }
     refs << commit_refs.join(' ')
 
     # append note count
-    refs << "[#{@graph.notes[commit.id]}]" if @graph.notes[commit.id] > 0
+    notes_count = @graph.notes[commit.id]
+    refs << "[#{pluralize(notes_count, 'note')}]" if notes_count > 0
 
     refs
   end
@@ -17,13 +18,10 @@ module GraphHelper
     ids.zip(parent_spaces)
   end
 
-  def success_ratio(success_builds, failed_builds)
-    failed_builds = failed_builds.count(:all)
-    success_builds = success_builds.count(:all)
+  def success_ratio(counts)
+    return 100 if counts[:failed].zero?
 
-    return 100 if failed_builds.zero?
-
-    ratio = (success_builds.to_f / (success_builds + failed_builds)) * 100
+    ratio = (counts[:success].to_f / (counts[:success] + counts[:failed])) * 100
     ratio.to_i
   end
 end

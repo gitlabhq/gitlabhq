@@ -18,7 +18,7 @@ shared_context :email_shared_context do
   end
 end
 
-shared_examples :email_shared_examples do
+shared_examples :reply_processing_shared_examples do
   context "when the user could not be found" do
     before do
       user.destroy

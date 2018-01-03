@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'trusted_proxies', lib: true do
+describe 'trusted_proxies' do
   context 'with default config' do
     before do
       set_trusted_proxies([])
@@ -27,7 +27,7 @@ describe 'trusted_proxies', lib: true do
 
   context 'with private IP ranges added' do
     before do
-      set_trusted_proxies([ "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16" ])
+      set_trusted_proxies(["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"])
     end
 
     it 'filters out private and local IPs' do
@@ -39,7 +39,7 @@ describe 'trusted_proxies', lib: true do
 
   context 'with proxy IP added' do
     before do
-      set_trusted_proxies([ "60.98.25.47" ])
+      set_trusted_proxies(["60.98.25.47"])
     end
 
     it 'filters out proxy IP' do
@@ -56,7 +56,7 @@ describe 'trusted_proxies', lib: true do
   end
 
   def stub_request(headers = {})
-    ActionDispatch::RemoteIp.new(Proc.new { }, false, Rails.application.config.action_dispatch.trusted_proxies).call(headers)
+    ActionDispatch::RemoteIp.new(proc { }, false, Rails.application.config.action_dispatch.trusted_proxies).call(headers)
     ActionDispatch::Request.new(headers)
   end
 

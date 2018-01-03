@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::Upgrader, lib: true do
-  let(:upgrader) { Gitlab::Upgrader.new }
+describe Gitlab::Upgrader do
+  let(:upgrader) { described_class.new }
   let(:current_version) { Gitlab::VERSION }
 
   describe 'current_version_raw' do
@@ -32,7 +32,8 @@ describe Gitlab::Upgrader, lib: true do
         '43af3e65a486a9237f29f56d96c3b3da59c24ae0  refs/tags/v7.11.2',
         'dac18e7728013a77410e926a1e64225703754a2d  refs/tags/v7.11.2^{}',
         '0bf21fd4b46c980c26fd8c90a14b86a4d90cc950  refs/tags/v7.9.4',
-        'b10de29edbaff7219547dc506cb1468ee35065c3  refs/tags/v7.9.4^{}'])
+        'b10de29edbaff7219547dc506cb1468ee35065c3  refs/tags/v7.9.4^{}'
+      ])
       expect(upgrader.latest_version_raw).to eq("v7.11.2")
     end
   end

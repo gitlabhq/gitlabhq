@@ -1,17 +1,16 @@
 require 'spec_helper'
 
-describe Boards::Lists::MoveService, services: true do
+describe Boards::Lists::MoveService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
 
-    let!(:backlog)     { create(:backlog_list, board: board) }
     let!(:planning)    { create(:list, board: board, position: 0) }
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }
     let!(:staging)     { create(:list, board: board, position: 3) }
-    let!(:done)        { create(:done_list, board: board) }
+    let!(:closed)      { create(:closed_list, board: board) }
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do
@@ -87,18 +86,10 @@ describe Boards::Lists::MoveService, services: true do
       end
     end
 
-    it 'keeps position of lists when list type is backlog' do
+    it 'keeps position of lists when list type is closed' do
       service = described_class.new(project, user, position: 2)
 
-      service.execute(backlog)
-
-      expect(current_list_positions).to eq [0, 1, 2, 3]
-    end
-
-    it 'keeps position of lists when list type is done' do
-      service = described_class.new(project, user, position: 2)
-
-      service.execute(done)
+      service.execute(closed)
 
       expect(current_list_positions).to eq [0, 1, 2, 3]
     end

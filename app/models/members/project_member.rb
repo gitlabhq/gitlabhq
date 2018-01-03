@@ -1,5 +1,5 @@
 class ProjectMember < Member
-  SOURCE_TYPE = 'Project'
+  SOURCE_TYPE = 'Project'.freeze
 
   include Gitlab::ShellAdapter
 
@@ -7,7 +7,7 @@ class ProjectMember < Member
 
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
-  validates_format_of :source_type, with: /\AProject\z/
+  validates :source_type, format: { with: /\AProject\z/ }
   validates :access_level, inclusion: { in: Gitlab::Access.values }
   default_scope { where(source_type: SOURCE_TYPE) }
 
@@ -16,7 +16,7 @@ class ProjectMember < Member
   before_destroy :delete_member_todos
 
   class << self
-    # Add users to project teams with passed access option
+    # Add users to projects with passed access option
     #
     # access can be an integer representing a access code
     # or symbol like :master representing role
@@ -39,7 +39,7 @@ class ProjectMember < Member
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          add_users_to_source(
+          add_users(
             project,
             users,
             access_level,
@@ -79,16 +79,16 @@ class ProjectMember < Member
     end
   end
 
-  def access_field
-    access_level
-  end
-
   def project
     source
   end
 
   def owner?
     project.owner == user
+  end
+
+  def notifiable_options
+    { project: project }
   end
 
   private

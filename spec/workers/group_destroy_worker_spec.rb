@@ -5,7 +5,7 @@ describe GroupDestroyWorker do
   let(:user) { create(:admin) }
   let!(:project) { create(:project, namespace: group) }
 
-  subject { GroupDestroyWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     it "deletes the project" do

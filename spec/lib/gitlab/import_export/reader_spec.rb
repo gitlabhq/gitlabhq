@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Reader, lib: true  do
+describe Gitlab::ImportExport::Reader  do
   let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: '') }
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do
     {
-      only: [:name, :path],
+      except: [:id, :created_at],
       include: [:issues, :labels,
                 { merge_requests: {
                   only: [:id],
@@ -84,6 +84,10 @@ describe Gitlab::ImportExport::Reader, lib: true  do
       setup_yaml(project_tree: [:issues], methods: { issues: [:name] })
 
       expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { methods: [:name] } }])
+    end
+
+    it 'generates the correct hash for group members' do
+      expect(described_class.new(shared: shared).group_members_tree).to match({ include: { user: { only: [:email] } } })
     end
 
     def setup_yaml(hash)

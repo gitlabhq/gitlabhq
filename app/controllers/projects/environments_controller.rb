@@ -5,19 +5,48 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
-    @scope = params[:scope]
     @environments = project.environments
+      .with_state(params[:scope] || :available)
 
     respond_to do |format|
       format.html
       format.json do
-        render json: EnvironmentSerializer
-          .new(project: @project, user: current_user)
-          .represent(@environments)
+        Gitlab::PollingInterval.set_header(response, interval: 3_000)
+
+        render json: {
+          environments: EnvironmentSerializer
+            .new(project: @project, current_user: @current_user)
+            .with_pagination(request, response)
+            .within_folders
+            .represent(@environments),
+          available_count: project.environments.available.count,
+          stopped_count: project.environments.stopped.count
+        }
+      end
+    end
+  end
+
+  def folder
+    folder_environments = project.environments.where(environment_type: params[:id])
+    @environments = folder_environments.with_state(params[:scope] || :available)
+      .order(:name)
+    @folder = params[:id]
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          environments: EnvironmentSerializer
+            .new(project: @project, current_user: @current_user)
+            .with_pagination(request, response)
+            .represent(@environments),
+          available_count: folder_environments.available.count,
+          stopped_count: folder_environments.stopped.count
+        }
       end
     end
   end
@@ -37,7 +66,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @environment = project.environments.create(environment_params)
 
     if @environment.persisted?
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      redirect_to project_environment_path(project, @environment)
     else
       render :new
     end
@@ -45,17 +74,28 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def update
     if @environment.update(environment_params)
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      redirect_to project_environment_path(project, @environment)
     else
       render :edit
     end
   end
 
   def stop
-    return render_404 unless @environment.stoppable?
+    return render_404 unless @environment.available?
 
-    new_action = @environment.stop!(current_user)
-    redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, new_action])
+    stop_action = @environment.stop_with_action!(current_user)
+
+    action_or_env_url =
+      if stop_action
+        polymorphic_url([project.namespace.becomes(Namespace), project, stop_action])
+      else
+        project_environment_url(project, @environment)
+      end
+
+    respond_to do |format|
+      format.html { redirect_to action_or_env_url }
+      format.json { render json: { redirect_url: action_or_env_url } }
+    end
   end
 
   def terminal
@@ -76,6 +116,29 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
       render text: 'Not found', status: 404
+    end
+  end
+
+  def metrics
+    # Currently, this acts as a hint to load the metrics details into the cache
+    # if they aren't there already
+    @metrics = environment.metrics || {}
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @metrics, status: @metrics.any? ? :ok : :no_content
+      end
+    end
+  end
+
+  def additional_metrics
+    respond_to do |format|
+      format.json do
+        additional_metrics = environment.additional_metrics || {}
+
+        render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+      end
     end
   end
 

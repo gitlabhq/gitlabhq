@@ -1,3 +1,5 @@
+require_relative '../../migration_helpers'
+
 module RuboCop
   module Cop
     module Migration
@@ -5,7 +7,7 @@ module RuboCop
       class AddIndex < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = 'add_index requires downtime, use add_concurrent_index instead'
+        MSG = '`add_index` requires downtime, use `add_concurrent_index` instead'.freeze
 
         def on_def(node)
           return unless in_migration?(node)
@@ -25,7 +27,7 @@ module RuboCop
             # data in these tables yet.
             next if new_tables.include?(first_arg)
 
-            add_offense(send_node, :selector)
+            add_offense(send_node, location: :selector)
           end
         end
 

@@ -1,36 +1,22 @@
 module MergeRequests
   class BaseService < ::IssuableBaseService
-    def create_note(merge_request)
-      SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
+    def create_note(merge_request, state = merge_request.state)
+      SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
 
-    def create_title_change_note(issuable, old_title)
-      removed_wip = MergeRequest.work_in_progress?(old_title) && !issuable.work_in_progress?
-      added_wip = !MergeRequest.work_in_progress?(old_title) && issuable.work_in_progress?
-      changed_title = MergeRequest.wipless_title(old_title) != issuable.wipless_title
-
-      if removed_wip
-        SystemNoteService.remove_merge_request_wip(issuable, issuable.project, current_user)
-      elsif added_wip
-        SystemNoteService.add_merge_request_wip(issuable, issuable.project, current_user)
-      end
-
-      super if changed_title
-    end
-
-    def hook_data(merge_request, action, oldrev = nil)
-      hook_data = merge_request.to_hook_data(current_user)
-      hook_data[:object_attributes][:url] = Gitlab::UrlBuilder.build(merge_request)
+    def hook_data(merge_request, action, old_rev: nil, old_associations: {})
+      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action
-      if oldrev && !Gitlab::Git.blank_ref?(oldrev)
-        hook_data[:object_attributes][:oldrev] = oldrev
+      if old_rev && !Gitlab::Git.blank_ref?(old_rev)
+        hook_data[:object_attributes][:oldrev] = old_rev
       end
+
       hook_data
     end
 
-    def execute_hooks(merge_request, action = 'open', oldrev = nil)
+    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
       if merge_request.project
-        merge_data = hook_data(merge_request, action, oldrev)
+        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
         merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
         merge_request.project.execute_services(merge_data, :merge_request_hooks)
       end
@@ -38,15 +24,18 @@ module MergeRequests
 
     private
 
-    def merge_requests_for(branch)
-      origin_merge_requests = @project.origin_merge_requests
-        .opened.where(source_branch: branch).to_a
+    def create_assignee_note(merge_request)
+      SystemNoteService.change_assignee(
+        merge_request, merge_request.project, current_user, merge_request.assignee)
+    end
 
-      fork_merge_requests = @project.fork_merge_requests
-        .opened.where(source_branch: branch).to_a
-
-      (origin_merge_requests + fork_merge_requests)
-        .uniq.select(&:source_project)
+    # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
+    def merge_requests_for(source_branch, mr_states: [:opened])
+      MergeRequest
+        .with_state(mr_states)
+        .where(source_branch: source_branch, source_project_id: @project.id)
+        .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
+        .select(&:source_project)
     end
 
     def pipeline_merge_requests(pipeline)

@@ -3,17 +3,23 @@ project_tree:
   - labels:
       :priorities
   - milestones:
-    - :events
+    - events:
+      - :push_event_payload
   - issues:
-    - :events
+    - events:
+      - :push_event_payload
+    - :timelogs
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
     - label_links:
       - label:
           :priorities
     - milestone:
-      - :events
+      - events:
+        - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
@@ -24,35 +30,42 @@ project_tree:
   - merge_requests:
     - notes:
       - :author
-      - :events
-    - :merge_request_diff
-    - :events
+      - events:
+        - :push_event_payload
+    - merge_request_diff:
+      - :merge_request_diff_commits
+      - :merge_request_diff_files
+    - events:
+      - :push_event_payload
+    - :timelogs
     - label_links:
       - label:
           :priorities
     - milestone:
-      - :events
+      - events:
+        - :push_event_payload
   - pipelines:
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
+    - :stages
     - :statuses
-  - :variables
+  - :auto_devops
   - :triggers
-  - :deploy_keys
+  - :pipeline_schedules
   - :services
   - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
+  - protected_tags:
+    - :create_access_levels
   - :project_feature
+  - :custom_attributes
 
 # Only include the following attributes for the models specified.
 included_attributes:
-  project:
-    - :description
-    - :visibility_level
-    - :archived
   user:
     - :id
     - :email
@@ -62,16 +75,54 @@ included_attributes:
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
+  project:
+    - :name
+    - :path
+    - :namespace_id
+    - :creator_id
+    - :import_url
+    - :import_status
+    - :avatar
+    - :import_type
+    - :import_source
+    - :import_error
+    - :mirror
+    - :runners_token
+    - :repository_storage
+    - :repository_read_only
+    - :lfs_enabled
+    - :import_jid
+    - :created_at
+    - :updated_at
+    - :import_jid
+    - :import_jid
+    - :id
+    - :star_count
+    - :last_activity_at
+    - :last_repository_updated_at
+    - :last_repository_check_at
+    - :storage_version
   snippets:
     - :expired_at
   merge_request_diff:
     - :st_diffs
+  merge_request_diff_files:
+    - :diff
   issues:
     - :milestone_id
   merge_requests:
     - :milestone_id
+    - :ref_fetched
+    - :merge_jid
+    - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
+  statuses:
+    - :trace
+    - :token
+    - :when
+  push_event_payload:
+    - :event_id
 
 methods:
   labels:
@@ -82,5 +133,15 @@ methods:
     - :type
   services:
     - :type
-  merge_request_diff:
-    - :utf8_st_diffs
+  merge_request_diff_files:
+    - :utf8_diff
+  merge_requests:
+    - :diff_head_sha
+    - :source_branch_sha
+    - :target_branch_sha
+  project:
+    - :description_html
+  events:
+    - :action
+  push_event_payload:
+    - :action

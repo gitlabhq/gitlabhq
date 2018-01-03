@@ -1,103 +1,123 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-plusplus, no-else-return, comma-dangle, padded-blocks, max-len */
-/* global Mousetrap */
-/* global Turbolinks */
-/* global findFileURL */
+import Cookies from 'js-cookie';
+import Mousetrap from 'mousetrap';
+import { refreshCurrentPage, visitUrl } from './lib/utils/url_utility';
+import findAndFollowLink from './shortcuts_dashboard_navigation';
 
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+const defaultStopCallback = Mousetrap.stopCallback;
+Mousetrap.stopCallback = (e, element, combo) => {
+  if (['ctrl+shift+p', 'command+shift+p'].indexOf(combo) !== -1) {
+    return false;
+  }
 
-  this.Shortcuts = (function() {
-    function Shortcuts(skipResetBindings) {
-      this.onToggleHelp = bind(this.onToggleHelp, this);
-      this.enabledHelp = [];
-      if (!skipResetBindings) {
-        Mousetrap.reset();
-      }
-      Mousetrap.bind('?', this.onToggleHelp);
-      Mousetrap.bind('s', Shortcuts.focusSearch);
-      Mousetrap.bind('f', (function(_this) {
-        return function(e) {
-          return _this.focusFilter(e);
-        };
-      })(this));
-      Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkupPreview);
-      if (typeof findFileURL !== "undefined" && findFileURL !== null) {
-        Mousetrap.bind('t', function() {
-          return Turbolinks.visit(findFileURL);
-        });
-      }
+  return defaultStopCallback(e, element, combo);
+};
+
+export default class Shortcuts {
+  constructor(skipResetBindings) {
+    this.onToggleHelp = this.onToggleHelp.bind(this);
+    this.enabledHelp = [];
+    if (!skipResetBindings) {
+      Mousetrap.reset();
+    }
+    Mousetrap.bind('?', this.onToggleHelp);
+    Mousetrap.bind('s', Shortcuts.focusSearch);
+    Mousetrap.bind('f', this.focusFilter.bind(this));
+    Mousetrap.bind('p b', Shortcuts.onTogglePerfBar);
+
+    const findFileURL = document.body.dataset.findFile;
+
+    Mousetrap.bind('shift+t', () => findAndFollowLink('.shortcuts-todos'));
+    Mousetrap.bind('shift+a', () => findAndFollowLink('.dashboard-shortcuts-activity'));
+    Mousetrap.bind('shift+i', () => findAndFollowLink('.dashboard-shortcuts-issues'));
+    Mousetrap.bind('shift+m', () => findAndFollowLink('.dashboard-shortcuts-merge_requests'));
+    Mousetrap.bind('shift+p', () => findAndFollowLink('.dashboard-shortcuts-projects'));
+    Mousetrap.bind('shift+g', () => findAndFollowLink('.dashboard-shortcuts-groups'));
+    Mousetrap.bind('shift+l', () => findAndFollowLink('.dashboard-shortcuts-milestones'));
+    Mousetrap.bind('shift+s', () => findAndFollowLink('.dashboard-shortcuts-snippets'));
+
+    Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], Shortcuts.toggleMarkupPreview);
+
+    if (typeof findFileURL !== 'undefined' && findFileURL !== null) {
+      Mousetrap.bind('t', () => {
+        visitUrl(findFileURL);
+      });
     }
 
-    Shortcuts.prototype.onToggleHelp = function(e) {
+    $(document).on('click.more_help', '.js-more-help-button', function clickMoreHelp(e) {
+      $(this).remove();
+      $('.hidden-shortcut').show();
       e.preventDefault();
-      return Shortcuts.toggleHelp(this.enabledHelp);
-    };
+    });
+  }
 
-    Shortcuts.prototype.toggleMarkupPreview = function(e) {
-      return $(document).triggerHandler('markdown-preview:toggle', [e]);
-    };
+  onToggleHelp(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
 
-    Shortcuts.toggleHelp = function(location) {
-      var $modal;
-      $modal = $('#modal-shortcuts');
-      if ($modal.length) {
-        $modal.modal('toggle');
-        return;
-      }
-      return $.ajax({
-        url: gon.shortcuts_path,
-        dataType: 'script',
-        success: function(e) {
-          var i, l, len, results;
-          if (location && location.length > 0) {
-            results = [];
-            for (i = 0, len = location.length; i < len; i++) {
-              l = location[i];
-              results.push($(l).show());
-            }
-            return results;
-          } else {
-            $('.hidden-shortcut').show();
-            return $('.js-more-help-button').remove();
+    Shortcuts.toggleHelp(this.enabledHelp);
+  }
+
+  static onTogglePerfBar(e) {
+    e.preventDefault();
+    const performanceBarCookieName = 'perf_bar_enabled';
+    if (Cookies.get(performanceBarCookieName) === 'true') {
+      Cookies.remove(performanceBarCookieName, { path: '/' });
+    } else {
+      Cookies.set(performanceBarCookieName, 'true', { path: '/' });
+    }
+    refreshCurrentPage();
+  }
+
+  static toggleMarkupPreview(e) {
+    // Check if short-cut was triggered while in Write Mode
+    const $target = $(e.target);
+    const $form = $target.closest('form');
+
+    if ($target.hasClass('js-note-text')) {
+      $('.js-md-preview-button', $form).focus();
+    }
+    $(document).triggerHandler('markdown-preview:toggle', [e]);
+  }
+
+  static toggleHelp(location) {
+    const $modal = $('#modal-shortcuts');
+
+    if ($modal.length) {
+      $modal.modal('toggle');
+    }
+
+    $.ajax({
+      url: gon.shortcuts_path,
+      dataType: 'script',
+      success() {
+        if (location && location.length > 0) {
+          const results = [];
+          for (let i = 0, len = location.length; i < len; i += 1) {
+            results.push($(location[i]).show());
           }
+          return results;
         }
-      });
-    };
 
-    Shortcuts.prototype.focusFilter = function(e) {
-      if (this.filterInput == null) {
-        this.filterInput = $('input[type=search]', '.nav-controls');
-      }
-      this.filterInput.focus();
-      return e.preventDefault();
-    };
+        $('.hidden-shortcut').show();
+        return $('.js-more-help-button').remove();
+      },
+    });
+  }
 
-    Shortcuts.focusSearch = function(e) {
-      $('#search').focus();
-      return e.preventDefault();
-    };
+  focusFilter(e) {
+    if (!this.filterInput) {
+      this.filterInput = $('input[type=search]', '.nav-controls');
+    }
+    this.filterInput.focus();
+    e.preventDefault();
+  }
 
-    return Shortcuts;
+  static focusSearch(e) {
+    $('#search').focus();
 
-  })();
-
-  $(document).on('click.more_help', '.js-more-help-button', function(e) {
-    $(this).remove();
-    $('.hidden-shortcut').show();
-    return e.preventDefault();
-  });
-
-  Mousetrap.stopCallback = (function() {
-    var defaultStopCallback;
-    defaultStopCallback = Mousetrap.stopCallback;
-    return function(e, element, combo) {
-      // allowed shortcuts if textarea, input, contenteditable are focused
-      if (['ctrl+shift+p', 'command+shift+p'].indexOf(combo) !== -1) {
-        return false;
-      } else {
-        return defaultStopCallback.apply(this, arguments);
-      }
-    };
-  })();
-
-}).call(this);
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+  }
+}

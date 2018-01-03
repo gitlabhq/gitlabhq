@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :service_hook do
-    url { FFaker::Internet.uri('http') }
+    url { generate(:url) }
     service
   end
 end

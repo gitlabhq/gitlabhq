@@ -1,24 +1,28 @@
 class Todo < ActiveRecord::Base
   include Sortable
 
-  ASSIGNED          = 1
-  MENTIONED         = 2
-  BUILD_FAILED      = 3
-  MARKED            = 4
-  APPROVAL_REQUIRED = 5 # This is an EE-only feature
+  ASSIGNED           = 1
+  MENTIONED          = 2
+  BUILD_FAILED       = 3
+  MARKED             = 4
+  APPROVAL_REQUIRED  = 5 # This is an EE-only feature
+  UNMERGEABLE        = 6
+  DIRECTLY_ADDRESSED = 7
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
     MENTIONED => :mentioned,
     BUILD_FAILED => :build_failed,
     MARKED => :marked,
-    APPROVAL_REQUIRED => :approval_required
-  }
+    APPROVAL_REQUIRED => :approval_required,
+    UNMERGEABLE => :unmergeable,
+    DIRECTLY_ADDRESSED => :directly_addressed
+  }.freeze
 
   belongs_to :author, class_name: "User"
   belongs_to :note
   belongs_to :project
-  belongs_to :target, polymorphic: true, touch: true
+  belongs_to :target, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
@@ -44,8 +48,14 @@ class Todo < ActiveRecord::Base
   after_save :keep_around_commit
 
   class << self
+    # Priority sorting isn't displayed in the dropdown, because we don't show
+    # milestones, but still show something if the user has a URL with that
+    # selected.
     def sort(method)
-      method == "priority" ? order_by_labels_priority : order_by(method)
+      case method.to_s
+      when 'priority', 'label_priority' then order_by_labels_priority
+      else order_by(method)
+      end
     end
 
     # Order by priority depending on which issue/merge request the Todo belongs to
@@ -60,14 +70,22 @@ class Todo < ActiveRecord::Base
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
-        order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC')).
-        order('todos.created_at')
+      select("#{table_name}.*, (#{highest_priority}) AS highest_priority")
+        .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+        .order('todos.created_at')
     end
+  end
+
+  def unmergeable?
+    action == UNMERGEABLE
   end
 
   def build_failed?
     action == BUILD_FAILED
+  end
+
+  def assigned?
+    action == ASSIGNED
   end
 
   def action_name
@@ -97,10 +115,18 @@ class Todo < ActiveRecord::Base
 
   def target_reference
     if for_commit?
-      target.short_id
+      target.reference_link_text(full: true)
     else
-      target.to_reference
+      target.to_reference(full: true)
     end
+  end
+
+  def self_added?
+    author == user
+  end
+
+  def self_assigned?
+    assigned? && self_added?
   end
 
   private

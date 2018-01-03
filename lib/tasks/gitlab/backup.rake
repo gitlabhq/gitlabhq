@@ -13,6 +13,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:uploads:create"].invoke
       Rake::Task["gitlab:backup:builds:create"].invoke
       Rake::Task["gitlab:backup:artifacts:create"].invoke
+      Rake::Task["gitlab:backup:pages:create"].invoke
       Rake::Task["gitlab:backup:lfs:create"].invoke
       Rake::Task["gitlab:backup:registry:create"].invoke
 
@@ -32,30 +33,36 @@ namespace :gitlab do
       backup.unpack
 
       unless backup.skipped?('db')
-        unless ENV['force'] == 'yes'
-          warning = <<-MSG.strip_heredoc
-            Before restoring the database we recommend removing all existing
-            tables to avoid future upgrade problems. Be aware that if you have
-            custom tables in the GitLab database these tables and all data will be
-            removed.
-          MSG
-          puts warning.color(:red)
-          ask_to_continue
-          puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
-          sleep(5)
+        begin
+          unless ENV['force'] == 'yes'
+            warning = <<-MSG.strip_heredoc
+              Before restoring the database, we will remove all existing
+              tables to avoid future upgrade problems. Be aware that if you have
+              custom tables in the GitLab database these tables and all data will be
+              removed.
+            MSG
+            puts warning.color(:red)
+            ask_to_continue
+            puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
+            sleep(5)
+          end
+          # Drop all tables Load the schema to ensure we don't have any newer tables
+          # hanging out from a failed upgrade
+          $progress.puts 'Cleaning the database ... '.color(:blue)
+          Rake::Task['gitlab:db:drop_tables'].invoke
+          $progress.puts 'done'.color(:green)
+          Rake::Task['gitlab:backup:db:restore'].invoke
+        rescue Gitlab::TaskAbortedByUserError
+          puts "Quitting...".color(:red)
+          exit 1
         end
-        # Drop all tables Load the schema to ensure we don't have any newer tables
-        # hanging out from a failed upgrade
-        $progress.puts 'Cleaning the database ... '.color(:blue)
-        Rake::Task['gitlab:db:drop_tables'].invoke
-        $progress.puts 'done'.color(:green)
-        Rake::Task['gitlab:backup:db:restore'].invoke
       end
 
       Rake::Task['gitlab:backup:repo:restore'].invoke unless backup.skipped?('repositories')
       Rake::Task['gitlab:backup:uploads:restore'].invoke unless backup.skipped?('uploads')
       Rake::Task['gitlab:backup:builds:restore'].invoke unless backup.skipped?('builds')
       Rake::Task['gitlab:backup:artifacts:restore'].invoke unless backup.skipped?('artifacts')
+      Rake::Task["gitlab:backup:pages:restore"].invoke unless backup.skipped?('pages')
       Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
       Rake::Task['gitlab:backup:registry:restore'].invoke unless backup.skipped?('registry')
       Rake::Task['gitlab:shell:setup'].invoke
@@ -155,6 +162,25 @@ namespace :gitlab do
       task restore: :environment do
         $progress.puts "Restoring artifacts ... ".color(:blue)
         Backup::Artifacts.new.restore
+        $progress.puts "done".color(:green)
+      end
+    end
+
+    namespace :pages do
+      task create: :environment do
+        $progress.puts "Dumping pages ... ".color(:blue)
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("pages")
+          $progress.puts "[SKIPPED]".color(:cyan)
+        else
+          Backup::Pages.new.dump
+          $progress.puts "done".color(:green)
+        end
+      end
+
+      task restore: :environment do
+        $progress.puts "Restoring pages ... ".color(:blue)
+        Backup::Pages.new.restore
         $progress.puts "done".color(:green)
       end
     end

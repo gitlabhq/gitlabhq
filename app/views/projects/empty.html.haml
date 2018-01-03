@@ -1,9 +1,7 @@
 - @no_container = true
+- breadcrumb_title "Details"
 
-= content_for :flash_message do
-  - if current_user && can?(current_user, :download_code, @project)
-    = render 'shared/no_ssh'
-    = render 'shared/no_password'
+= render partial: 'flash_messages', locals: { project: @project }
 
 = render "home_panel"
 
@@ -16,15 +14,22 @@
     %p
       Otherwise you can start with adding a
       = succeed ',' do
-        = link_to "README", add_special_file_path(@project, file_name: 'README.md'), class: 'underlined-link'
+        = link_to "README", add_special_file_path(@project, file_name: 'README.md')
       a
       = succeed ',' do
-        = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
+        = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE')
       or a
-      = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore'), class: 'underlined-link'
+      = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore')
       to this project.
     %p
       You will need to be owner or have the master permission level for the initial push, as the master branch is automatically protected.
+
+    - if show_auto_devops_callout?(@project)
+      %p
+        - link = link_to(s_('AutoDevOps|Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
+        = s_('AutoDevOps|You can activate %{link_to_settings} for this project.').html_safe % { link_to_settings: link }
+      %p
+        = s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
 
 - if can?(current_user, :push_code, @project)
   %div{ class: container_class }
@@ -32,7 +37,7 @@
     .empty_wrapper
       %h3.page-title-empty
         Command line instructions
-      %div.git-empty
+      .git-empty
         %fieldset
           %h5 Git global setup
           %pre.light-well
@@ -52,15 +57,25 @@
               git push -u origin master
 
         %fieldset
-          %h5 Existing folder or Git repository
+          %h5 Existing folder
           %pre.light-well
             :preserve
               cd existing_folder
               git init
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               git add .
-              git commit
+              git commit -m "Initial commit"
               git push -u origin master
+
+        %fieldset
+          %h5 Existing Git repository
+          %pre.light-well
+            :preserve
+              cd existing_repo
+              git remote rename origin old-origin
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git push -u origin --all
+              git push -u origin --tags
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20

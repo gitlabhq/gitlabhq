@@ -1,45 +1,43 @@
-/* eslint-disable space-before-function-paren, no-var, padded-blocks */
+import '~/behaviors/requires_input';
 
-/*= require behaviors/requires_input */
+describe('requiresInput', () => {
+  let submitButton;
+  preloadFixtures('branches/new_branch.html.raw');
 
-(function() {
-  describe('requiresInput', function() {
-    fixture.preload('behaviors/requires_input.html');
-    beforeEach(function() {
-      return fixture.load('behaviors/requires_input.html');
-    });
-    it('disables submit when any field is required', function() {
-      $('.js-requires-input').requiresInput();
-      return expect($('.submit')).toBeDisabled();
-    });
-    it('enables submit when no field is required', function() {
-      $('*[required=required]').removeAttr('required');
-      $('.js-requires-input').requiresInput();
-      return expect($('.submit')).not.toBeDisabled();
-    });
-    it('enables submit when all required fields are pre-filled', function() {
-      $('*[required=required]').remove();
-      $('.js-requires-input').requiresInput();
-      return expect($('.submit')).not.toBeDisabled();
-    });
-    it('enables submit when all required fields receive input', function() {
-      $('.js-requires-input').requiresInput();
-      $('#required1').val('input1').change();
-      expect($('.submit')).toBeDisabled();
-      $('#optional1').val('input1').change();
-      expect($('.submit')).toBeDisabled();
-      $('#required2').val('input2').change();
-      $('#required3').val('input3').change();
-      $('#required4').val('input4').change();
-      $('#required5').val('1').change();
-      return expect($('.submit')).not.toBeDisabled();
-    });
-    return it('is called on page:load event', function() {
-      var spy;
-      spy = spyOn($.fn, 'requiresInput');
-      $(document).trigger('page:load');
-      return expect(spy).toHaveBeenCalled();
-    });
+  beforeEach(() => {
+    loadFixtures('branches/new_branch.html.raw');
+    submitButton = $('button[type="submit"]');
   });
 
-}).call(this);
+  it('disables submit when any field is required', () => {
+    $('.js-requires-input').requiresInput();
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('enables submit when no field is required', () => {
+    $('*[required=required]').removeAttr('required');
+    $('.js-requires-input').requiresInput();
+    expect(submitButton).not.toBeDisabled();
+  });
+
+  it('enables submit when all required fields are pre-filled', () => {
+    $('*[required=required]').remove();
+    $('.js-requires-input').requiresInput();
+    expect($('.submit')).not.toBeDisabled();
+  });
+
+  it('enables submit when all required fields receive input', () => {
+    $('.js-requires-input').requiresInput();
+    $('#required1').val('input1').change();
+    expect(submitButton).toBeDisabled();
+
+    $('#optional1').val('input1').change();
+    expect(submitButton).toBeDisabled();
+
+    $('#required2').val('input2').change();
+    $('#required3').val('input3').change();
+    $('#required4').val('input4').change();
+    $('#required5').val('1').change();
+    expect($('.submit')).not.toBeDisabled();
+  });
+});

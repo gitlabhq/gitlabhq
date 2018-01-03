@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Download buttons in project main page', feature: true do
+feature 'Download buttons in project main page' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   given(:pipeline) do
     create(:ci_pipeline,
@@ -22,22 +22,27 @@ feature 'Download buttons in project main page', feature: true do
   end
 
   background do
-    login_as(user)
-    project.team << [user, role]
+    sign_in(user)
+    project.add_role(user, role)
   end
 
   describe 'when checking project main page' do
     context 'with artifacts' do
       before do
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
       end
 
       scenario 'shows download artifacts button' do
-        href = latest_succeeded_namespace_project_artifacts_path(
-          project.namespace, project, "#{project.default_branch}/download",
-          job: 'build')
+        href = latest_succeeded_project_artifacts_path(project, "#{project.default_branch}/download", job: 'build')
 
         expect(page).to have_link "Download '#{build.name}'", href: href
+      end
+
+      scenario 'download links have download attribute' do
+        expect(page).to have_selector('a', text: 'Download')
+        page.all('a', text: 'Download').each do |link|
+          expect(link[:download]).to eq ''
+        end
       end
     end
   end

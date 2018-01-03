@@ -31,7 +31,7 @@ Database: nice_marmot
 ```
 
 If you are wondering why we used `postgres` for the `Host`, read more at
-[How is service linked to the build](../docker/using_docker_images.md#how-is-service-linked-to-the-build).
+[How is service linked to the job](../docker/using_docker_images.md#how-is-service-linked-to-the-job).
 
 You can also use any other docker image available on [Docker Hub][hub-pg].
 For example, to use PostgreSQL 9.3 the service becomes `postgres:9.3`.
@@ -108,7 +108,7 @@ convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
-moments the changes will be picked by a public runner and the build will begin.
+moments the changes will be picked by a public runner and the job will begin.
 
 [hub-pg]: https://hub.docker.com/r/_/postgres/
 [postgres-example-repo]: https://gitlab.com/gitlab-examples/postgres

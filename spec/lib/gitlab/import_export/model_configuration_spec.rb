@@ -3,7 +3,7 @@ require 'spec_helper'
 # Part of the test security suite for the Import/Export feature
 # Finds if a new model has been added that can potentially be part of the Import/Export
 # If it finds a new model, it will show a +failure_message+ with the options available.
-describe 'Import/Export model configuration', lib: true do
+describe 'Import/Export model configuration' do
   include ConfigurationHelper
 
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
@@ -14,7 +14,7 @@ describe 'Import/Export model configuration', lib: true do
     # - project is not part of the tree, so it has to be added manually.
     # - milestone, labels have both singular and plural versions in the tree, so remove the duplicates.
     # - User, Author... Models we do not care about for checking models
-    names.flatten.uniq - ['milestones', 'labels', 'user', 'author'] + ['project']
+    names.flatten.uniq - %w(milestones labels user author) + ['project']
   end
 
   let(:all_models_yml) { 'spec/lib/gitlab/import_export/all_models.yml' }

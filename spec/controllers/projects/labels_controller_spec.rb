@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Projects::LabelsController do
   let(:group)   { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:user)    { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
@@ -67,26 +67,26 @@ describe Projects::LabelsController do
     end
 
     def list_labels
-      get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
+      get :index, namespace_id: project.namespace.to_param, project_id: project
     end
   end
 
   describe 'POST #generate' do
     context 'personal project' do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       it 'creates labels' do
-        post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project.to_param
+        post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
     context 'project belonging to a group' do
       it 'creates labels' do
-        post :generate, namespace_id: project.namespace.to_param, project_id: project.to_param
+        post :generate, namespace_id: project.namespace.to_param, project_id: project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
   end
@@ -97,7 +97,7 @@ describe Projects::LabelsController do
 
       toggle_subscription(label)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'allows user to toggle subscription on group labels' do
@@ -105,11 +105,126 @@ describe Projects::LabelsController do
 
       toggle_subscription(group_label)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     def toggle_subscription(label)
-      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: label.to_param
+      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project, id: label.to_param
     end
+  end
+
+  describe 'POST #promote' do
+    let!(:promoted_label_name) { "Promoted Label" }
+    let!(:label_1) { create(:label, title: promoted_label_name, project: project) }
+
+    context 'not group reporters' do
+      it 'denies access' do
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'group reporter' do
+      before do
+        group.add_reporter(user)
+      end
+
+      it 'gives access' do
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(response).to redirect_to(namespace_project_labels_path)
+      end
+
+      it 'promotes the label' do
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(Label.where(id: label_1.id)).to be_empty
+        expect(GroupLabel.find_by(title: promoted_label_name)).not_to be_nil
+      end
+
+      context 'service raising InvalidRecord' do
+        before do
+          expect_any_instance_of(Labels::PromoteService).to receive(:execute) do |label|
+            raise ActiveRecord::RecordInvalid.new(label_1)
+          end
+        end
+
+        it 'returns to label list' do
+          post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+          expect(response).to redirect_to(namespace_project_labels_path)
+        end
+      end
+    end
+  end
+
+  describe '#ensure_canonical_path' do
+    before do
+      sign_in(user)
+    end
+
+    context 'for a GET request' do
+      context 'when requesting the canonical path' do
+        context 'non-show path' do
+          context 'with exactly matching casing' do
+            it 'does not redirect' do
+              get :index, namespace_id: project.namespace, project_id: project.to_param
+
+              expect(response).not_to have_gitlab_http_status(301)
+            end
+          end
+
+          context 'with different casing' do
+            it 'redirects to the correct casing' do
+              get :index, namespace_id: project.namespace, project_id: project.to_param.upcase
+
+              expect(response).to redirect_to(project_labels_path(project))
+              expect(controller).not_to set_flash[:notice]
+            end
+          end
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+
+        it 'redirects to the canonical path' do
+          get :index, namespace_id: project.namespace, project_id: project.to_param + 'old'
+
+          expect(response).to redirect_to(project_labels_path(project))
+          expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, project))
+        end
+      end
+    end
+  end
+
+  context 'for a non-GET request' do
+    context 'when requesting the canonical path with different casing' do
+      it 'does not 404' do
+        post :generate, namespace_id: project.namespace, project_id: project
+
+        expect(response).not_to have_gitlab_http_status(404)
+      end
+
+      it 'does not redirect to the correct casing' do
+        post :generate, namespace_id: project.namespace, project_id: project
+
+        expect(response).not_to have_gitlab_http_status(301)
+      end
+    end
+
+    context 'when requesting a redirected path' do
+      let!(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+
+      it 'returns not found' do
+        post :generate, namespace_id: project.namespace, project_id: project.to_param + 'old'
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  def project_moved_message(redirect_route, project)
+    "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

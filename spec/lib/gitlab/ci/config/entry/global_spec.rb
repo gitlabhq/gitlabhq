@@ -4,31 +4,38 @@ describe Gitlab::Ci::Config::Entry::Global do
   let(:global) { described_class.new(hash) }
 
   describe '.nodes' do
-    it 'can contain global config keys' do
-      expect(described_class.nodes).to include :before_script
+    it 'returns a hash' do
+      expect(described_class.nodes).to be_a(Hash)
     end
 
-    it 'returns a hash' do
-      expect(described_class.nodes).to be_a Hash
+    context 'when filtering all the entry/node names' do
+      it 'contains the expected node names' do
+        expect(described_class.nodes.keys)
+          .to match_array(%i[before_script image services
+                             after_script variables stages
+                             types cache])
+      end
     end
   end
 
   context 'when configuration is valid' do
     context 'when some entries defined' do
       let(:hash) do
-        { before_script: ['ls', 'pwd'],
+        { before_script: %w(ls pwd),
           image: 'ruby:2.2',
           services: ['postgres:9.1', 'mysql:5.5'],
           variables: { VAR: 'value' },
           after_script: ['make clean'],
-          stages: ['build', 'pages'],
+          stages: %w(build pages),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
           spinach: { before_script: [], variables: {}, script: 'spinach' } }
       end
 
       describe '#compose!' do
-        before { global.compose! }
+        before do
+          global.compose!
+        end
 
         it 'creates nodes hash' do
           expect(global.descendants).to be_an Array
@@ -74,7 +81,9 @@ describe Gitlab::Ci::Config::Entry::Global do
       end
 
       context 'when composed' do
-        before { global.compose! }
+        before do
+          global.compose!
+        end
 
         describe '#errors' do
           it 'has no errors' do
@@ -84,19 +93,19 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         describe '#before_script_value' do
           it 'returns correct script' do
-            expect(global.before_script_value).to eq ['ls', 'pwd']
+            expect(global.before_script_value).to eq %w(ls pwd)
           end
         end
 
         describe '#image_value' do
           it 'returns valid image' do
-            expect(global.image_value).to eq 'ruby:2.2'
+            expect(global.image_value).to eq(name: 'ruby:2.2')
           end
         end
 
         describe '#services_value' do
           it 'returns array of services' do
-            expect(global.services_value).to eq ['postgres:9.1', 'mysql:5.5']
+            expect(global.services_value).to eq [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }]
           end
         end
 
@@ -108,7 +117,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         describe '#variables_value' do
           it 'returns variables' do
-            expect(global.variables_value).to eq(VAR: 'value')
+            expect(global.variables_value).to eq('VAR' => 'value')
           end
         end
 
@@ -121,7 +130,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
           context 'when deprecated types key defined' do
             let(:hash) do
-              { types: ['test', 'deploy'],
+              { types: %w(test deploy),
                 rspec: { script: 'rspec' } }
             end
 
@@ -134,7 +143,7 @@ describe Gitlab::Ci::Config::Entry::Global do
         describe '#cache_value' do
           it 'returns cache configuration' do
             expect(global.cache_value)
-              .to eq(key: 'k', untracked: true, paths: ['public/'])
+              .to eq(key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push')
           end
         end
 
@@ -143,24 +152,26 @@ describe Gitlab::Ci::Config::Entry::Global do
             expect(global.jobs_value).to eq(
               rspec: { name: :rspec,
                        script: %w[rspec ls],
-                       before_script: ['ls', 'pwd'],
+                       before_script: %w(ls pwd),
                        commands: "ls\npwd\nrspec\nls",
-                       image: 'ruby:2.2',
-                       services: ['postgres:9.1', 'mysql:5.5'],
+                       image: { name: 'ruby:2.2' },
+                       services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
-                       cache: { key: 'k', untracked: true, paths: ['public/'] },
-                       variables: { VAR: 'value' },
+                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
+                       variables: { 'VAR' => 'value' },
+                       ignore: false,
                        after_script: ['make clean'] },
               spinach: { name: :spinach,
                          before_script: [],
                          script: %w[spinach],
                          commands: 'spinach',
-                         image: 'ruby:2.2',
-                         services: ['postgres:9.1', 'mysql:5.5'],
+                         image: { name: 'ruby:2.2' },
+                         services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
-                         cache: { key: 'k', untracked: true, paths: ['public/'] },
+                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
                          variables: {},
-                         after_script: ['make clean'] },
+                         ignore: false,
+                         after_script: ['make clean'] }
             )
           end
         end
@@ -168,7 +179,9 @@ describe Gitlab::Ci::Config::Entry::Global do
     end
 
     context 'when most of entires not defined' do
-      before { global.compose! }
+      before do
+        global.compose!
+      end
 
       let(:hash) do
         { cache: { key: 'a' }, rspec: { script: %w[ls] } }
@@ -181,7 +194,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         it 'contains unspecified nodes' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+            .not_to be_specified
         end
       end
 
@@ -199,7 +212,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
       describe '#cache_value' do
         it 'returns correct cache definition' do
-          expect(global.cache_value).to eq(key: 'a')
+          expect(global.cache_value).to eq(key: 'a', policy: 'pull-push')
         end
       end
     end
@@ -211,7 +224,9 @@ describe Gitlab::Ci::Config::Entry::Global do
     # details.
     #
     context 'when entires specified but not defined' do
-      before { global.compose! }
+      before do
+        global.compose!
+      end
 
       let(:hash) do
         { variables: nil, rspec: { script: 'rspec' } }
@@ -226,7 +241,9 @@ describe Gitlab::Ci::Config::Entry::Global do
   end
 
   context 'when configuration is not valid' do
-    before { global.compose! }
+    before do
+      global.compose!
+    end
 
     context 'when before script is not an array' do
       let(:hash) do
@@ -290,7 +307,9 @@ describe Gitlab::Ci::Config::Entry::Global do
   end
 
   describe '#[]' do
-    before { global.compose! }
+    before do
+      global.compose!
+    end
 
     let(:hash) do
       { cache: { key: 'a' }, rspec: { script: 'ls' } }

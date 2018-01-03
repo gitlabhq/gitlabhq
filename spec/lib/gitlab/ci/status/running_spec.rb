@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Running do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'running' }
+    it { expect(subject.text).to eq 'running' }
   end
 
   describe '#label' do
@@ -14,7 +14,11 @@ describe Gitlab::Ci::Status::Running do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_running' }
+    it { expect(subject.icon).to eq 'status_running' }
+  end
+
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_running' }
   end
 
   describe '#group' do

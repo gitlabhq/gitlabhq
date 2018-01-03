@@ -15,7 +15,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
       format.json do
         available_labels = LabelsFinder.new(current_user, group_id: @group.id).execute
-        render json: available_labels.as_json(only: [:id, :title, :color])
+        render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end
   end
@@ -26,7 +26,7 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def create
-    @label = @group.labels.create(label_params)
+    @label = Labels::CreateService.new(label_params).execute(group: group)
 
     if @label.valid?
       redirect_to group_labels_path(@group)
@@ -40,7 +40,9 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
+    @label = Labels::UpdateService.new(label_params).execute(@label)
+
+    if @label.valid?
       redirect_back_or_group_labels_path
     else
       render :edit
@@ -52,7 +54,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to group_labels_path(@group), notice: 'Label was removed'
+        redirect_to group_labels_path(@group), status: 302, notice: 'Label was removed'
       end
       format.js
     end

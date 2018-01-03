@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard access", feature: true  do
+describe "Dashboard access"  do
   include AccessMatchers
 
   describe "GET /dashboard" do

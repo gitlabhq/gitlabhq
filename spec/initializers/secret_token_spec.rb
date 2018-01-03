@@ -1,11 +1,15 @@
 require 'spec_helper'
 require_relative '../../config/initializers/secret_token'
 
-describe 'create_tokens', lib: true do
+describe 'create_tokens' do
+  include StubENV
+
   let(:secrets) { ActiveSupport::OrderedOptions.new }
 
+  HEX_KEY = /\h{128}/
+  RSA_KEY = /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m
+
   before do
-    allow(ENV).to receive(:[]).and_call_original
     allow(File).to receive(:write)
     allow(File).to receive(:delete)
     allow(Rails).to receive_message_chain(:application, :secrets).and_return(secrets)
@@ -14,28 +18,38 @@ describe 'create_tokens', lib: true do
     allow(self).to receive(:exit)
   end
 
-  context 'setting secret_key_base and otp_key_base' do
+  context 'setting secret keys' do
     context 'when none of the secrets exist' do
       before do
-        allow(ENV).to receive(:[]).with('SECRET_KEY_BASE').and_return(nil)
+        stub_env('SECRET_KEY_BASE', nil)
         allow(File).to receive(:exist?).with('.secret').and_return(false)
         allow(File).to receive(:exist?).with('config/secrets.yml').and_return(false)
         allow(self).to receive(:warn_missing_secret)
       end
 
-      it 'generates different secrets for secret_key_base, otp_key_base, and db_key_base' do
+      it 'generates different hashes for secret_key_base, otp_key_base, and db_key_base' do
         create_tokens
 
         keys = secrets.values_at(:secret_key_base, :otp_key_base, :db_key_base)
 
         expect(keys.uniq).to eq(keys)
-        expect(keys.map(&:length)).to all(eq(128))
+        expect(keys).to all(match(HEX_KEY))
+      end
+
+      it 'generates an RSA key for openid_connect_signing_key' do
+        create_tokens
+
+        keys = secrets.values_at(:openid_connect_signing_key)
+
+        expect(keys.uniq).to eq(keys)
+        expect(keys).to all(match(RSA_KEY))
       end
 
       it 'warns about the secrets to add to secrets.yml' do
         expect(self).to receive(:warn_missing_secret).with('secret_key_base')
         expect(self).to receive(:warn_missing_secret).with('otp_key_base')
         expect(self).to receive(:warn_missing_secret).with('db_key_base')
+        expect(self).to receive(:warn_missing_secret).with('openid_connect_signing_key')
 
         create_tokens
       end
@@ -47,6 +61,7 @@ describe 'create_tokens', lib: true do
           expect(new_secrets['secret_key_base']).to eq(secrets.secret_key_base)
           expect(new_secrets['otp_key_base']).to eq(secrets.otp_key_base)
           expect(new_secrets['db_key_base']).to eq(secrets.db_key_base)
+          expect(new_secrets['openid_connect_signing_key']).to eq(secrets.openid_connect_signing_key)
         end
 
         create_tokens
@@ -62,6 +77,7 @@ describe 'create_tokens', lib: true do
     context 'when the other secrets all exist' do
       before do
         secrets.db_key_base = 'db_key_base'
+        secrets.openid_connect_signing_key = 'openid_connect_signing_key'
 
         allow(File).to receive(:exist?).with('.secret').and_return(true)
         allow(File).to receive(:read).with('.secret').and_return('file_key')
@@ -69,9 +85,10 @@ describe 'create_tokens', lib: true do
 
       context 'when secret_key_base exists in the environment and secrets.yml' do
         before do
-          allow(ENV).to receive(:[]).with('SECRET_KEY_BASE').and_return('env_key')
+          stub_env('SECRET_KEY_BASE', 'env_key')
           secrets.secret_key_base = 'secret_key_base'
           secrets.otp_key_base = 'otp_key_base'
+          secrets.openid_connect_signing_key = 'openid_connect_signing_key'
         end
 
         it 'does not issue a warning' do
@@ -97,6 +114,7 @@ describe 'create_tokens', lib: true do
         before do
           secrets.secret_key_base = 'secret_key_base'
           secrets.otp_key_base = 'otp_key_base'
+          secrets.openid_connect_signing_key = 'openid_connect_signing_key'
         end
 
         it 'does not write any files' do
@@ -111,6 +129,7 @@ describe 'create_tokens', lib: true do
           expect(secrets.secret_key_base).to eq('secret_key_base')
           expect(secrets.otp_key_base).to eq('otp_key_base')
           expect(secrets.db_key_base).to eq('db_key_base')
+          expect(secrets.openid_connect_signing_key).to eq('openid_connect_signing_key')
         end
 
         it 'deletes the .secret file' do
@@ -134,6 +153,7 @@ describe 'create_tokens', lib: true do
             expect(new_secrets['secret_key_base']).to eq('file_key')
             expect(new_secrets['otp_key_base']).to eq('file_key')
             expect(new_secrets['db_key_base']).to eq('db_key_base')
+            expect(new_secrets['openid_connect_signing_key']).to eq('openid_connect_signing_key')
           end
 
           create_tokens

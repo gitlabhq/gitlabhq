@@ -21,7 +21,7 @@ describe Gitlab::Ci::Config::Entry::Paths do
     end
 
     context 'when entry value is not valid' do
-      let(:config) { [ 1 ] }
+      let(:config) { [1] }
 
       describe '#errors' do
         it 'saves errors' do

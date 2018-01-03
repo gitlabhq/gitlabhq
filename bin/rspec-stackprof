@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'bundler/setup'
 require 'stackprof'
 $:.unshift 'spec'
 require 'rails_helper'
@@ -13,4 +14,4 @@ StackProf.run(mode: :wall, out: output_file, interval: interval) do
   RSpec::Core::Runner.run(ARGV, $stderr, $stdout)
 end
 
-system("stackprof #{output_file} --text --limit #{limit}")
+system("bundle exec stackprof #{output_file} --text --limit #{limit}")

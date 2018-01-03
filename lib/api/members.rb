@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize do
+      resource source_type.pluralize, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         desc 'Gets a list of group or project members viewable by the authenticated user.' do
           success Entities::Member
         end
@@ -55,24 +55,15 @@ module API
           authorize_admin_source!(source_type, source)
 
           member = source.members.find_by(user_id: params[:user_id])
+          conflict!('Member already exists') if member
 
-          # We need this explicit check because `source.add_user` doesn't
-          # currently return the member created so it would return 201 even if
-          # the member already existed...
-          # The `source_type == 'group'` check is to ensure back-compatibility
-          # but 409 behavior should be used for both project and group members in 9.0!
-          conflict!('Member already exists') if source_type == 'group' && member
+          member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
-          unless member
-            member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
-          end
-
-          if member.persisted? && member.valid?
+          if !member
+            not_allowed! # This currently can only be reached in EE
+          elsif member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -86,18 +77,14 @@ module API
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
         end
         put ":id/members/:user_id" do
-          source = find_source(source_type, params[:id])
+          source = find_source(source_type, params.delete(:id))
           authorize_admin_source!(source_type, source)
 
-          member = source.members.find_by!(user_id: params[:user_id])
-          attrs = attributes_for_keys [:access_level, :expires_at]
+          member = source.members.find_by!(user_id: params.delete(:user_id))
 
-          if member.update_attributes(attrs)
+          if member.update_attributes(declared_params(include_missing: false))
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -108,23 +95,10 @@ module API
         end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
+          member = source.members.find_by!(user_id: params[:user_id])
 
-          # This is to ensure back-compatibility but find_by! should be used
-          # in that casse in 9.0!
-          member = source.members.find_by(user_id: params[:user_id])
-
-          # This is to ensure back-compatibility but this should be removed in
-          # favor of find_by! in 9.0!
-          not_found!("Member: user_id:#{params[:user_id]}") if source_type == 'group' && member.nil?
-
-          # This is to ensure back-compatibility but 204 behavior should be used
-          # for all DELETE endpoints in 9.0!
-          if member.nil?
-            { message: "Access revoked", id: params[:user_id].to_i }
-          else
+          destroy_conditionally!(member) do
             ::Members::DestroyService.new(source, current_user, declared_params).execute
-
-            present member.user, with: Entities::Member, member: member
           end
         end
       end

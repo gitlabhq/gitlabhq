@@ -1,60 +1,52 @@
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id } }
-  - if @bulk_edit
-    .issue-check
-      = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
+  .issue-box
+    - if @can_bulk_update
+      .issue-check.hidden
+        = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
+    .issue-info-container
+      .issue-main-info
+        .issue-title.title
+          %span.issue-title-text
+            = confidential_icon(issue)
+            = link_to issue.title, issue_path(issue)
+          - if issue.tasks?
+            %span.task-status.hidden-xs
+              &nbsp;
+              = issue.task_status
 
-  .issue-title.title
-    %span.issue-title-text
-      = confidential_icon(issue)
-      = link_to issue.title, issue_path(issue)
-    %ul.controls
-      - if issue.closed?
-        %li
-          CLOSED
+        .issuable-info
+          %span.issuable-reference
+            #{issuable_reference(issue)}
+          %span.issuable-authored.hidden-xs
+            &middot;
+            opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
+            by #{link_to_member(@project, issue.author, avatar: false)}
+          - if issue.milestone
+            %span.issuable-milestone.hidden-xs
+              &nbsp;
+              = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 1, toggle: 'tooltip', title: milestone_tooltip_title(issue.milestone) } do
+                = icon('clock-o')
+                = issue.milestone.title
+          - if issue.due_date
+            %span.issuable-due-date.hidden-xs{ class: "#{'cred' if issue.overdue?}" }
+              &nbsp;
+              = icon('calendar')
+              = issue.due_date.to_s(:medium)
+          - if issue.labels.any?
+            &nbsp;
+            - issue.labels.each do |label|
+              = link_to_label(label, subject: issue.project, css_class: 'label-link')
 
-      - if issue.assignee
-        %li
-          = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+      .issuable-meta
+        %ul.controls
+          - if issue.closed?
+            %li.issuable-status
+              CLOSED
+          - if issue.assignees.any?
+            %li
+              = render 'shared/issuable/assignees', project: @project, issue: issue
 
-      - upvotes, downvotes = issue.upvotes, issue.downvotes
-      - if upvotes > 0
-        %li
-          = icon('thumbs-up')
-          = upvotes
+          = render 'shared/issuable_meta_data', issuable: issue
 
-      - if downvotes > 0
-        %li
-          = icon('thumbs-down')
-          = downvotes
-
-      - note_count = issue.notes.user.count
-      %li
-        = link_to issue_path(issue, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
-          = icon('comments')
-          = note_count
-
-  .issue-info
-    #{issue.to_reference} &middot;
-    opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
-    by #{link_to_member(@project, issue.author, avatar: false)}
-    - if issue.milestone
-      &nbsp;
-      = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
-        = icon('clock-o')
-        = issue.milestone.title
-    - if issue.due_date
-      %span{class: "#{'cred' if issue.overdue?}"}
-        &nbsp;
-        = icon('calendar')
-        = issue.due_date.to_s(:medium)
-    - if issue.labels.any?
-      &nbsp;
-      - issue.labels.each do |label|
-        = link_to_label(label, subject: issue.project)
-    - if issue.tasks?
-      &nbsp;
-      %span.task-status
-        = issue.task_status
-
-    .pull-right.issue-updated-at
-      %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
+        .pull-right.issuable-updated-at.hidden-xs
+          %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}

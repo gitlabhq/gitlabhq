@@ -8,20 +8,8 @@ describe Gitlab::Ci::Status::Build::Stop do
     described_class.new(status)
   end
 
-  describe '#text' do
-    it { expect(subject.text).to eq 'manual' }
-  end
-
   describe '#label' do
     it { expect(subject.label).to eq 'manual stop action' }
-  end
-
-  describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_manual' }
-  end
-
-  describe '#group' do
-    it { expect(subject.group).to eq 'manual' }
   end
 
   describe 'action details' do
@@ -31,7 +19,11 @@ describe Gitlab::Ci::Status::Build::Stop do
 
     describe '#has_action?' do
       context 'when user is allowed to update build' do
-        before { build.project.team << [user, :developer] }
+        before do
+          stub_not_protect_default_branch
+
+          build.project.add_developer(user)
+        end
 
         it { is_expected.to have_action }
       end

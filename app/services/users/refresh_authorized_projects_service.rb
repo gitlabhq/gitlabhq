@@ -26,8 +26,26 @@ module Users
       user.reload
     end
 
-    # This method returns the updated User object.
     def execute
+      lease_key = "refresh_authorized_projects:#{user.id}"
+      lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
+
+      until uuid = lease.try_obtain
+        # Keep trying until we obtain the lease. If we don't do so we may end up
+        # not updating the list of authorized projects properly. To prevent
+        # hammering Redis too much we'll wait for a bit between retries.
+        sleep(0.1)
+      end
+
+      begin
+        execute_without_lease
+      ensure
+        Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+      end
+    end
+
+    # This method returns the updated User object.
+    def execute_without_lease
       current = current_authorizations_per_project
       fresh = fresh_access_levels_per_project
 
@@ -35,7 +53,7 @@ module Users
         # rows not in the new list or with a different access level should be
         # removed.
         if !fresh[project_id] || fresh[project_id] != row.access_level
-          array << row.id
+          array << row.project_id
         end
       end
 
@@ -47,26 +65,7 @@ module Users
         end
       end
 
-      update_with_lease(remove, add)
-    end
-
-    # Updates the list of authorizations using an exclusive lease.
-    def update_with_lease(remove = [], add = [])
-      lease_key = "refresh_authorized_projects:#{user.id}"
-      lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
-
-      until uuid = lease.try_obtain
-        # Keep trying until we obtain the lease. If we don't do so we may end up
-        # not updating the list of authorized projects properly. To prevent
-        # hammering Redis too much we'll wait for a bit between retries.
-        sleep(1)
-      end
-
-      begin
-        update_authorizations(remove, add)
-      ensure
-        Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-      end
+      update_authorizations(remove, add)
     end
 
     # Updates the list of authorizations for the current user.
@@ -74,12 +73,11 @@ module Users
     # remove - The IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[user id, project id, access level]`
     def update_authorizations(remove = [], add = [])
-      return if remove.empty? && add.empty? && user.authorized_projects_populated
+      return if remove.empty? && add.empty?
 
       User.transaction do
         user.remove_project_authorizations(remove) unless remove.empty?
         ProjectAuthorization.insert_authorizations(add) unless add.empty?
-        user.set_authorized_projects_column
       end
 
       # Since we batch insert authorization rows, Rails' associations may get
@@ -94,35 +92,21 @@ module Users
     end
 
     def current_authorizations_per_project
-      current_authorizations.each_with_object({}) do |row, hash|
-        hash[row.project_id] = row
-      end
+      current_authorizations.index_by(&:project_id)
     end
 
     def current_authorizations
-      user.project_authorizations.select(:id, :project_id, :access_level)
+      user.project_authorizations.select(:project_id, :access_level)
     end
 
     def fresh_authorizations
-      ProjectAuthorization.
-        unscoped.
-        select('project_id, MAX(access_level) AS access_level').
-        from("(#{project_authorizations_union.to_sql}) #{ProjectAuthorization.table_name}").
-        group(:project_id)
-    end
+      klass = if Group.supports_nested_groups?
+                Gitlab::ProjectAuthorizations::WithNestedGroups
+              else
+                Gitlab::ProjectAuthorizations::WithoutNestedGroups
+              end
 
-    private
-
-    # Returns a union query of projects that the user is authorized to access
-    def project_authorizations_union
-      relations = [
-        user.personal_projects.select("#{user.id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
-        user.groups_projects.select_for_project_authorization,
-        user.projects.select_for_project_authorization,
-        user.groups.joins(:shared_projects).select_for_project_authorization
-      ]
-
-      Gitlab::SQL::Union.new(relations)
+      klass.new(user).calculate
     end
   end
 end

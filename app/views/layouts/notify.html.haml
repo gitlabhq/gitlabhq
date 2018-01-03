@@ -1,14 +1,14 @@
-%html{lang: "en"}
+%html{ lang: "en" }
   %head
-    %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
+    %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
     %title
       GitLab
     = stylesheet_link_tag 'notify'
     = yield :head
   %body
-    %div.content
+    .content
       = yield
-    %div.footer{style: "margin-top: 10px;"}
+    .footer{ style: "margin-top: 10px;" }
       %p
         &mdash;
         %br
@@ -25,8 +25,8 @@
           - if @labels_url
             adjust your #{link_to 'label subscriptions', @labels_url}.
           - else
-            - if @sent_notification_url
-              = link_to "unsubscribe", @sent_notification_url
+            - if @unsubscribe_url
+              = link_to "unsubscribe", @unsubscribe_url
               from this thread or
             adjust your notification settings.
 

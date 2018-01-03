@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ProjectSearchResults, lib: true do
+describe Gitlab::ProjectSearchResults do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:query) { 'hello world' }
@@ -22,10 +22,40 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'blob search' do
-    let(:results) { described_class.new(user, project, 'files').objects('blobs') }
+    let(:project) { create(:project, :public, :repository) }
+
+    subject(:results) { described_class.new(user, project, 'files').objects('blobs') }
+
+    context 'when repository is disabled' do
+      let(:project) { create(:project, :public, :repository, :repository_disabled) }
+
+      it 'hides blobs from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when repository is internal' do
+      let(:project) { create(:project, :public, :repository, :repository_private) }
+
+      it 'finds blobs for members' do
+        project.add_reporter(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
 
     it 'finds by name' do
-      expect(results).to include(["files/images/wm.svg", nil])
+      expect(results.map(&:first)).to include('files/images/wm.svg')
     end
 
     it 'finds by content' do
@@ -40,8 +70,19 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
       subject { described_class.parse_search_result(search_result) }
 
-      it "returns a valid OpenStruct object" do
-        is_expected.to be_an OpenStruct
+      it 'can correctly parse filenames including ":"' do
+        special_char_result = "\nmaster:testdata/project::function1.yaml-1----\nmaster:testdata/project::function1.yaml:2:test: data1\n"
+
+        blob = described_class.parse_search_result(special_char_result)
+
+        expect(blob.ref).to eq('master')
+        expect(blob.filename).to eq('testdata/project::function1.yaml')
+      end
+
+      it "returns a valid FoundBlob" do
+        is_expected.to be_an Gitlab::SearchResults::FoundBlob
+        expect(subject.id).to be_nil
+        expect(subject.path).to eq('CHANGELOG')
         expect(subject.filename).to eq('CHANGELOG')
         expect(subject.basename).to eq('CHANGELOG')
         expect(subject.ref).to eq('master')
@@ -52,6 +93,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       context "when filename has extension" do
         let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
+        it { expect(subject.path).to eq('CONTRIBUTE.md') }
         it { expect(subject.filename).to eq('CONTRIBUTE.md') }
         it { expect(subject.basename).to eq('CONTRIBUTE') }
       end
@@ -59,9 +101,50 @@ describe Gitlab::ProjectSearchResults, lib: true do
       context "when file under directory" do
         let(:search_result) { "master:a/b/c.md:5:a b c\n" }
 
+        it { expect(subject.path).to eq('a/b/c.md') }
         it { expect(subject.filename).to eq('a/b/c.md') }
         it { expect(subject.basename).to eq('a/b/c') }
       end
+    end
+  end
+
+  describe 'wiki search' do
+    let(:project) { create(:project, :public) }
+    let(:wiki) { build(:project_wiki, project: project) }
+    let!(:wiki_page) { wiki.create_page('Title', 'Content') }
+
+    subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
+
+    context 'when wiki is disabled' do
+      let(:project) { create(:project, :public, :wiki_disabled) }
+
+      it 'hides wiki blobs from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides wiki blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when wiki is internal' do
+      let(:project) { create(:project, :public, :wiki_private) }
+
+      it 'finds wiki blobs for guest' do
+        project.add_guest(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides wiki blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    it 'finds by content' do
+      expect(results).to include("master:Title.md:1:Content\n")
     end
   end
 
@@ -80,10 +163,10 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
-    let(:project) { create(:empty_project, :internal) }
+    let(:project) { create(:project, :internal) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
     it 'does not list project confidential issues for non project members' do
       results = described_class.new(non_member, project, query)
@@ -96,7 +179,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it 'does not list project confidential issues for project members with guest role' do
-      project.team << [member, :guest]
+      project.add_guest(member)
 
       results = described_class.new(member, project, query)
       issues = results.objects('issues')
@@ -128,7 +211,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it 'lists project confidential issues for project members' do
-      project.team << [member, :developer]
+      project.add_developer(member)
 
       results = described_class.new(member, project, query)
       issues = results.objects('issues')
@@ -152,7 +235,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
   describe 'notes search' do
     it 'lists notes' do
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       note = create(:note, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -161,7 +244,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it "doesn't list issue notes when access is restricted" do
-      project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      project = create(:project, :public, :issues_private)
       note = create(:note_on_issue, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -170,12 +253,128 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it "doesn't list merge_request notes when access is restricted" do
-      project = create(:empty_project, :public, merge_requests_access_level: ProjectFeature::PRIVATE)
+      project = create(:project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
       results = described_class.new(user, project, note.note)
 
       expect(results.objects('notes')).not_to include note
+    end
+  end
+
+  # Examples for commit access level test
+  #
+  # params:
+  # * search_phrase
+  # * commit
+  #
+  shared_examples 'access restricted commits' do
+    context 'when project is internal' do
+      let(:project) { create(:project, :internal, :repository) }
+
+      it 'does not search if user is not authenticated' do
+        commits = described_class.new(nil, project, search_phrase).objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      it 'searches if user is authenticated' do
+        commits = described_class.new(user, project, search_phrase).objects('commits')
+
+        expect(commits).to contain_exactly commit
+      end
+    end
+
+    context 'when project is private' do
+      let!(:creator) { create(:user, username: 'private-project-author') }
+      let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
+      let(:team_master) do
+        user = create(:user, username: 'private-project-master')
+        private_project.add_master(user)
+        user
+      end
+      let(:team_reporter) do
+        user = create(:user, username: 'private-project-reporter')
+        private_project.add_reporter(user)
+        user
+      end
+
+      it 'does not show commit to stranger' do
+        commits = described_class.new(nil, private_project, search_phrase).objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      context 'team access' do
+        it 'shows commit to creator' do
+          commits = described_class.new(creator, private_project, search_phrase).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+
+        it 'shows commit to master' do
+          commits = described_class.new(team_master, private_project, search_phrase).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+
+        it 'shows commit to reporter' do
+          commits = described_class.new(team_reporter, private_project, search_phrase).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+      end
+    end
+  end
+
+  describe 'commit search' do
+    context 'by commit message' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }
+      let(:message) { 'Sorry, I did a mistake' }
+
+      it 'finds commit by message' do
+        commits = described_class.new(user, project, message).objects('commits')
+
+        expect(commits).to contain_exactly commit
+      end
+
+      it 'handles when no commit match' do
+        commits = described_class.new(user, project, 'not really an existing description').objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      it_behaves_like 'access restricted commits' do
+        let(:search_phrase) { message }
+        let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }
+      end
+    end
+
+    context 'by commit hash' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:commit) { project.repository.commit('0b4bc9a') }
+
+      commit_hashes = { short: '0b4bc9a', full: '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
+
+      commit_hashes.each do |type, commit_hash|
+        it "shows commit by #{type} hash id" do
+          commits = described_class.new(user, project, commit_hash).objects('commits')
+
+          expect(commits).to contain_exactly commit
+        end
+      end
+
+      it 'handles not existing commit hash correctly' do
+        commits = described_class.new(user, project, 'deadbeef').objects('commits')
+
+        expect(commits).to be_empty
+      end
+
+      it_behaves_like 'access restricted commits' do
+        let(:search_phrase) { '0b4bc9a49' }
+        let(:commit) { project.repository.commit('0b4bc9a') }
+      end
     end
   end
 end

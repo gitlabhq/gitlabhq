@@ -1,4 +1,4 @@
-require 'sidekiq/testing'
+require './spec/support/sidekiq'
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
@@ -14,7 +14,7 @@ Sidekiq::Testing.inline! do
 
     Project.all.each do |project|
       User.all.sample(4).each do |user|
-        if project.team << [user, Gitlab::Access.values.sample]
+        if project.add_role(user, Gitlab::Access.sym_options.keys.sample)
           print '.'
         else
           print 'F'

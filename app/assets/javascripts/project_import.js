@@ -1,16 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, padded-blocks, max-len */
-/* global Turbolinks */
+import { visitUrl } from './lib/utils/url_utility';
 
-(function() {
-  this.ProjectImport = (function() {
-    function ProjectImport() {
-      setTimeout(function() {
-        return Turbolinks.visit(location.href);
-      }, 5000);
-    }
+export default function projectImport() {
+  setTimeout(() => {
+    visitUrl(location.href);
+  }, 5000);
+}
 
-    return ProjectImport;
-
-  })();
-
-}).call(this);

@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe AnalyticsIssueSerializer do
-  let(:serializer) do
+  subject do
     described_class
       .new(project: project, entity: :merge_request)
       .represent(resource)
   end
 
   let(:user) { create(:user) }
-  let(:json) { serializer.as_json }
   let(:project) { create(:project) }
   let(:resource) do
     {
@@ -17,13 +16,13 @@ describe AnalyticsIssueSerializer do
       iid: "1",
       id: "1",
       created_at: "2016-11-12 15:04:02.948604",
-      author: user,
+      author: user
     }
   end
 
   context 'when there is a single object provided' do
     it 'contains important elements of the issue' do
-      expect(json).to include(:title, :iid, :created_at, :total_time, :url, :author)
+      expect(subject).to include(:title, :iid, :created_at, :total_time, :url, :author)
     end
   end
 end

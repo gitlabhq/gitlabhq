@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExternalIssue, models: true do
+describe ExternalIssue do
   let(:project) { double('project', id: 1, to_reference: 'namespace1/project1') }
   let(:issue)   { described_class.new('EXT-1234', project) }
 
@@ -40,6 +40,14 @@ describe ExternalIssue, models: true do
   describe '#project_id' do
     it 'returns the ID of the project' do
       expect(issue.project_id).to eq(project.id)
+    end
+  end
+
+  describe '#hash' do
+    it 'returns the hash of its [class, to_s] pair' do
+      issue_2 = described_class.new(issue.to_s, project)
+
+      expect(issue.hash).to eq(issue_2.hash)
     end
   end
 end

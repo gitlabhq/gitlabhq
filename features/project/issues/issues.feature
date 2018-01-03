@@ -12,11 +12,13 @@ Feature: Project Issues
     Given I should see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
 
+  @javascript
   Scenario: I should see closed issues
     Given I click link "Closed"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
 
+  @javascript
   Scenario: I should see all issues
     Given I click link "All"
     Then I should see "Release 0.3" in issues
@@ -25,12 +27,6 @@ Feature: Project Issues
   Scenario: I visit issue page
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
-
-  @javascript
-  Scenario: I filter by author
-    Given I add a user to project "Shop"
-    And I click "author" dropdown
-    Then I see current user as the first user
 
   Scenario: I submit new unassigned issue
     Given I click link "New Issue"
@@ -55,87 +51,38 @@ Feature: Project Issues
   @javascript
   Scenario: Visiting Issues after being sorted the list
     Given I visit project "Shop" issues page
-    And I sort the list by "Oldest updated"
+    And I sort the list by "Last updated"
     And I visit my project's home page
     And I visit project "Shop" issues page
-    Then The list should be sorted by "Oldest updated"
+    Then The list should be sorted by "Last updated"
 
   @javascript
   Scenario: Visiting Merge Requests after being sorted the list
-    Given I visit project "Shop" issues page
-    And I sort the list by "Oldest updated"
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit project "Shop" issues page
+    And I sort the list by "Last updated"
     And I visit project "Shop" merge requests page
-    Then The list should be sorted by "Oldest updated"
+    Then The list should be sorted by "Last updated"
 
   @javascript
   Scenario: Visiting Merge Requests from a differente Project after sorting
-    Given I visit project "Shop" merge requests page
-    And I sort the list by "Oldest updated"
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit project "Shop" merge requests page
+    And I sort the list by "Last updated"
     And I visit dashboard merge requests page
-    Then The list should be sorted by "Oldest updated"
+    Then The list should be sorted by "Last updated"
 
   @javascript
   Scenario: Sort issues by upvotes/downvotes
     Given project "Shop" have "Bugfix" open issue
     And issue "Release 0.4" have 2 upvotes and 1 downvote
     And issue "Tweet control" have 1 upvote and 2 downvotes
-    And I sort the list by "Most popular"
-    Then The list should be sorted by "Most popular"
-    And I sort the list by "Least popular"
-    Then The list should be sorted by "Least popular"
-
-  @javascript
-  Scenario: I search issue
-    Given I fill in issue search with "Re"
-    Then I should see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
-  @javascript
-  Scenario: I search issue that not exist
-    Given I fill in issue search with "Bu"
-    Then I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-
-  @javascript
-  Scenario: I search all issues
-    Given I click link "All"
-    And I fill in issue search with ".3"
-    Then I should see "Release 0.3" in issues
-    And I should not see "Release 0.4" in issues
-
-  @javascript
-  Scenario: Search issues when search string exactly matches issue description
-    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
-    And I fill in issue search with 'Description for issue1'
-    Then I should see 'Bugfix1' in issues
-    And I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
-  @javascript
-  Scenario: Search issues when search string partially matches issue description
-    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
-    And project 'Shop' has issue 'Feature1' with description: 'Feature submitted for issue1'
-    And I fill in issue search with 'issue1'
-    Then I should see 'Feature1' in issues
-    Then I should see 'Bugfix1' in issues
-    And I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
-  @javascript
-  Scenario: Search issues when search string matches no issue description
-    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
-    And I fill in issue search with 'Rock and roll'
-    Then I should not see 'Bugfix1' in issues
-    And I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
+    And I sort the list by "Popularity"
+    Then The list should be sorted by "Popularity"
 
   # Markdown
 
+  @javascript
   Scenario: Headers inside the description should have ids generated for them.
     Given I visit issue page "Release 0.4"
     Then Header "Description header" should have correct id and link
@@ -231,9 +178,3 @@ Feature: Project Issues
     And I should not see labels field
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
-
-  @javascript
-  Scenario: Another user adds a comment to issue I'm currently viewing
-    Given I visit issue page "Release 0.4"
-    And another user adds a comment with text "Yay!" to issue "Release 0.4"
-    Then I should see a new comment with text "Yay!"

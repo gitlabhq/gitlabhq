@@ -1,5 +1,5 @@
 module Mattermost
-  class ClientError < Mattermost::Error; end
+  ClientError = Class.new(Mattermost::Error)
 
   class Client
     attr_reader :user
@@ -8,21 +8,41 @@ module Mattermost
       @user = user
     end
 
-    private
-
     def with_session(&blk)
       Mattermost::Session.new(user).with_session(&blk)
     end
 
-    def json_get(path, options = {})
+    private
+
+    # Should be used in a session manually
+    def get(session, path, options = {})
+      json_response session.get(path, options)
+    end
+
+    # Should be used in a session manually
+    def post(session, path, options = {})
+      json_response session.post(path, options)
+    end
+
+    def delete(session, path, options)
+      json_response session.delete(path, options)
+    end
+
+    def session_get(path, options = {})
       with_session do |session|
-        json_response session.get(path, options)
+        get(session, path, options)
       end
     end
 
-    def json_post(path, options = {})
+    def session_post(path, options = {})
       with_session do |session|
-        json_response session.post(path, options)
+        post(session, path, options)
+      end
+    end
+
+    def session_delete(path, options = {})
+      with_session do |session|
+        delete(session, path, options)
       end
     end
 

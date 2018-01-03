@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateLargeTable
 class AddRequestAccessEnabledToGroups < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!

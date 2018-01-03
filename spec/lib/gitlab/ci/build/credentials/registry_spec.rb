@@ -4,14 +4,14 @@ describe Gitlab::Ci::Build::Credentials::Registry do
   let(:build) { create(:ci_build, name: 'spinach', stage: 'test', stage_idx: 0) }
   let(:registry_url) { 'registry.example.com:5005' }
 
-  subject { Gitlab::Ci::Build::Credentials::Registry.new(build) }
+  subject { described_class.new(build) }
 
   before do
     stub_container_registry_config(host_port: registry_url)
   end
 
   it 'contains valid DockerRegistry credentials' do
-    expect(subject).to be_kind_of(Gitlab::Ci::Build::Credentials::Registry)
+    expect(subject).to be_kind_of(described_class)
 
     expect(subject.username).to eq 'gitlab-ci-token'
     expect(subject.password).to eq build.token
@@ -20,7 +20,7 @@ describe Gitlab::Ci::Build::Credentials::Registry do
   end
 
   describe '.valid?' do
-    subject { Gitlab::Ci::Build::Credentials::Registry.new(build).valid? }
+    subject { described_class.new(build).valid? }
 
     context 'when registry is enabled' do
       before do

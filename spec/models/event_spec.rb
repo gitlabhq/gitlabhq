@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Event, models: true do
+describe Event do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:target) }
@@ -11,17 +11,42 @@ describe Event, models: true do
     it { is_expected.to respond_to(:author_email) }
     it { is_expected.to respond_to(:issue_title) }
     it { is_expected.to respond_to(:merge_request_title) }
-    it { is_expected.to respond_to(:commits) }
   end
 
   describe 'Callbacks' do
+    let(:project) { create(:project) }
+
     describe 'after_create :reset_project_activity' do
-      let(:project) { create(:empty_project) }
-
       it 'calls the reset_project_activity method' do
-        expect_any_instance_of(Event).to receive(:reset_project_activity)
+        expect_any_instance_of(described_class).to receive(:reset_project_activity)
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
+      end
+    end
+
+    describe 'after_create :set_last_repository_updated_at' do
+      context 'with a push event' do
+        it 'updates the project last_repository_updated_at' do
+          project.update(last_repository_updated_at: 1.year.ago)
+
+          create_push_event(project, project.owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+        end
+      end
+
+      context 'without a push event' do
+        it 'does not update the project last_repository_updated_at' do
+          project.update(last_repository_updated_at: 1.year.ago)
+
+          create(:closed_issue_event, project: project, author: project.owner)
+
+          project.reload
+
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+        end
       end
     end
   end
@@ -29,7 +54,7 @@ describe Event, models: true do
   describe "Push event" do
     let(:project) { create(:project, :private) }
     let(:user) { project.owner }
-    let(:event) { create_event(project, user) }
+    let(:event) { create_push_event(project, user) }
 
     it do
       expect(event.push?).to be_truthy
@@ -43,33 +68,33 @@ describe Event, models: true do
 
   describe '#membership_changed?' do
     context "created" do
-      subject { build(:event, action: Event::CREATED).membership_changed? }
+      subject { build(:event, :created).membership_changed? }
       it { is_expected.to be_falsey }
     end
 
     context "updated" do
-      subject { build(:event, action: Event::UPDATED).membership_changed? }
+      subject { build(:event, :updated).membership_changed? }
       it { is_expected.to be_falsey }
     end
 
     context "expired" do
-      subject { build(:event, action: Event::EXPIRED).membership_changed? }
+      subject { build(:event, :expired).membership_changed? }
       it { is_expected.to be_truthy }
     end
 
     context "left" do
-      subject { build(:event, action: Event::LEFT).membership_changed? }
+      subject { build(:event, :left).membership_changed? }
       it { is_expected.to be_truthy }
     end
 
     context "joined" do
-      subject { build(:event, action: Event::JOINED).membership_changed? }
+      subject { build(:event, :joined).membership_changed? }
       it { is_expected.to be_truthy }
     end
   end
 
   describe '#note?' do
-    subject { Event.new(project: target.project, target: target) }
+    subject { described_class.new(project: target.project, target: target) }
 
     context 'issue note event' do
       let(:target) { create(:note_on_issue) }
@@ -85,23 +110,23 @@ describe Event, models: true do
   end
 
   describe '#visible_to_user?' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:guest) { create(:user) }
     let(:author) { create(:author) }
     let(:assignee) { create(:user) }
     let(:admin) { create(:admin) }
-    let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
-    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+    let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
+    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
     let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
-    let(:event) { Event.new(project: project, target: target, author_id: author.id) }
+    let(:event) { described_class.new(project: project, target: target, author_id: author.id) }
 
     before do
-      project.team << [member, :developer]
-      project.team << [guest, :guest]
+      project.add_developer(member)
+      project.add_guest(guest)
     end
 
     context 'commit note event' do
@@ -117,7 +142,7 @@ describe Event, models: true do
       end
 
       context 'private project' do
-        let(:project) { create(:empty_project, :private) }
+        let(:project) { create(:project, :private) }
 
         it do
           aggregate_failures do
@@ -221,29 +246,29 @@ describe Event, models: true do
     let!(:event2) { create(:closed_issue_event) }
 
     describe 'without an explicit limit' do
-      subject { Event.limit_recent }
+      subject { described_class.limit_recent }
 
       it { is_expected.to eq([event2, event1]) }
     end
 
     describe 'with an explicit limit' do
-      subject { Event.limit_recent(1) }
+      subject { described_class.limit_recent(1) }
 
       it { is_expected.to eq([event2]) }
     end
   end
 
   describe '#reset_project_activity' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when a project was updated less than 1 hour ago' do
       it 'does not update the project' do
         project.update(last_activity_at: Time.now)
 
-        expect(project).not_to receive(:update_column).
-          with(:last_activity_at, a_kind_of(Time))
+        expect(project).not_to receive(:update_column)
+          .with(:last_activity_at, a_kind_of(Time))
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
       end
     end
 
@@ -251,11 +276,11 @@ describe Event, models: true do
       it 'updates the project' do
         project.update(last_activity_at: 1.year.ago)
 
-        create_event(project, project.owner)
+        create_push_event(project, project.owner)
 
         project.reload
 
-        project.last_activity_at <= 1.minute.ago
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
       end
     end
   end
@@ -278,27 +303,59 @@ describe Event, models: true do
     end
   end
 
-  def create_event(project, user, attrs = {})
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/master",
-      user_id: user.id,
-      user_name: user.name,
-      repository: {
-        name: project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
+  describe '#body?' do
+    let(:push_event) do
+      event = build(:push_event)
 
-    Event.create({
-      project: project,
-      action: Event::PUSHED,
-      data: data,
-      author_id: user.id
-    }.merge!(attrs))
+      allow(event).to receive(:push?).and_return(true)
+
+      event
+    end
+
+    it 'returns true for a push event with commits' do
+      allow(push_event).to receive(:push_with_commits?).and_return(true)
+
+      expect(push_event).to be_body
+    end
+
+    it 'returns false for a push event without a valid commit range' do
+      allow(push_event).to receive(:push_with_commits?).and_return(false)
+
+      expect(push_event).not_to be_body
+    end
+
+    it 'returns true for a Note event' do
+      event = build(:event)
+
+      allow(event).to receive(:note?).and_return(true)
+
+      expect(event).to be_body
+    end
+
+    it 'returns true if the target responds to #title' do
+      event = build(:event)
+
+      allow(event).to receive(:target).and_return(double(:target, title: 'foo'))
+
+      expect(event).to be_body
+    end
+
+    it 'returns false for a regular event without a target' do
+      event = build(:event)
+
+      expect(event).not_to be_body
+    end
+  end
+
+  def create_push_event(project, user)
+    event = create(:push_event, project: project, author: user)
+
+    create(:push_event_payload,
+           event: event,
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 0,
+           ref: 'master')
+
+    event
   end
 end

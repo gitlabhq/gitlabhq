@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Banzai::Filter::BlockquoteFenceFilter, lib: true do
+describe Banzai::Filter::BlockquoteFenceFilter do
   include FilterSpecHelper
 
   it 'converts blockquote fences to blockquote lines' do

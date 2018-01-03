@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe ProtectedBranches::CreateService, services: true do
-  let(:project) { create(:empty_project) }
+describe ProtectedBranches::CreateService do
+  let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:params) do
     {
       name: 'master',
-      merge_access_levels_attributes: [ { access_level: Gitlab::Access::MASTER } ],
-      push_access_levels_attributes: [ { access_level: Gitlab::Access::MASTER } ]
+      merge_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }],
+      push_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }]
     }
   end
 

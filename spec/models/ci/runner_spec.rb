@@ -1,7 +1,9 @@
 require 'spec_helper'
 
-describe Ci::Runner, models: true do
+describe Ci::Runner do
   describe 'validation' do
+    it { is_expected.to validate_presence_of(:access_level) }
+
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
         it 'is not valid' do
@@ -19,26 +21,54 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe '#access_level' do
+    context 'when creating new runner and access_level is nil' do
+      let(:runner) do
+        build(:ci_runner, access_level: nil)
+      end
+
+      it "object is invalid" do
+        expect(runner).not_to be_valid
+      end
+    end
+
+    context 'when creating new runner and access_level is defined in enum' do
+      let(:runner) do
+        build(:ci_runner, access_level: :not_protected)
+      end
+
+      it "object is valid" do
+        expect(runner).to be_valid
+      end
+    end
+
+    context 'when creating new runner and access_level is not defined in enum' do
+      it "raises an error" do
+        expect { build(:ci_runner, access_level: :this_is_not_defined) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe '#display_name' do
     it 'returns the description if it has a value' do
-      runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
+      runner = FactoryBot.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
       expect(runner.display_name).to eq 'Linux/Ruby-1.9.3-p448'
     end
 
     it 'returns the token if it does not have a description' do
-      runner = FactoryGirl.create(:ci_runner)
+      runner = FactoryBot.create(:ci_runner)
       expect(runner.display_name).to eq runner.description
     end
 
     it 'returns the token if the description is an empty string' do
-      runner = FactoryGirl.build(:ci_runner, description: '', token: 'token')
+      runner = FactoryBot.build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
     end
   end
 
   describe '#assign_to' do
-    let!(:project) { FactoryGirl.create :empty_project }
-    let!(:shared_runner) { FactoryGirl.create(:ci_runner, :shared) }
+    let!(:project) { FactoryBot.create :project }
+    let!(:shared_runner) { FactoryBot.create(:ci_runner, :shared) }
 
     before do
       shared_runner.assign_to(project)
@@ -50,18 +80,18 @@ describe Ci::Runner, models: true do
   end
 
   describe '.online' do
-    subject { Ci::Runner.online }
+    subject { described_class.online }
 
     before do
-      @runner1 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.year.ago)
-      @runner2 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago)
+      @runner1 = FactoryBot.create(:ci_runner, :shared, contacted_at: 1.year.ago)
+      @runner2 = FactoryBot.create(:ci_runner, :shared, contacted_at: 1.second.ago)
     end
 
     it { is_expected.to eq([@runner2])}
   end
 
   describe '#online?' do
-    let(:runner) { FactoryGirl.create(:ci_runner, :shared) }
+    let(:runner) { FactoryBot.create(:ci_runner, :shared) }
 
     subject { runner.online? }
 
@@ -91,10 +121,11 @@ describe Ci::Runner, models: true do
   end
 
   describe '#can_pick?' do
-    let(:project) { create(:project) }
-    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner) { create(:ci_runner) }
+
+    subject { runner.can_pick?(build) }
 
     before do
       build.project.runners << runner
@@ -114,7 +145,7 @@ describe Ci::Runner, models: true do
 
     context 'when runner has tags' do
       before do
-        runner.tag_list = ['bb', 'cc']
+        runner.tag_list = %w(bb cc)
       end
 
       shared_examples 'tagged build picker' do
@@ -152,81 +183,92 @@ describe Ci::Runner, models: true do
       end
     end
 
-    context 'when runner is locked' do
+    context 'when runner is shared' do
       before do
-        runner.locked = true
+        runner.is_shared = true
+        build.project.runners = []
       end
 
-      shared_examples 'locked build picker' do
-        context 'when runner cannot pick untagged jobs' do
-          before do
-            runner.run_untagged = false
-          end
-
-          it 'cannot handle builds without tags' do
-            expect(runner.can_pick?(build)).to be_falsey
-          end
-        end
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = ['bb', 'cc']
-          end
-
-          it 'cannot handle it for builds without matching tags' do
-            build.tag_list = ['aa']
-
-            expect(runner.can_pick?(build)).to be_falsey
-          end
-        end
+      it 'can handle builds' do
+        expect(runner.can_pick?(build)).to be_truthy
       end
 
-      context 'when serving the same project' do
-        it 'can handle it' do
+      context 'when runner is locked' do
+        before do
+          runner.locked = true
+        end
+
+        it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
         end
+      end
+    end
 
-        it_behaves_like 'locked build picker'
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = ['bb', 'cc']
-            build.tag_list = ['bb']
-          end
-
-          it 'can handle it for matching tags' do
-            expect(runner.can_pick?(build)).to be_truthy
-          end
+    context 'when runner is not shared' do
+      context 'when runner is assigned to a project' do
+        it 'can handle builds' do
+          expect(runner.can_pick?(build)).to be_truthy
         end
       end
 
-      context 'serving a different project' do
+      context 'when runner is not assigned to a project' do
         before do
-          runner.runner_projects.destroy_all
+          build.project.runners = []
         end
 
-        it 'cannot handle it' do
+        it 'cannot handle builds' do
           expect(runner.can_pick?(build)).to be_falsey
         end
+      end
+    end
 
-        it_behaves_like 'locked build picker'
+    context 'when access_level of runner is not_protected' do
+      before do
+        runner.not_protected!
+      end
 
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = ['bb', 'cc']
-            build.tag_list = ['bb']
-          end
-
-          it 'cannot handle it for matching tags' do
-            expect(runner.can_pick?(build)).to be_falsey
-          end
+      context 'when build is protected' do
+        before do
+          build.protected = true
         end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is unprotected' do
+        before do
+          build.protected = false
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when access_level of runner is ref_protected' do
+      before do
+        runner.ref_protected!
+      end
+
+      context 'when build is protected' do
+        before do
+          build.protected = true
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is unprotected' do
+        before do
+          build.protected = false
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end
 
   describe '#status' do
-    let(:runner) { FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
+    let(:runner) { FactoryBot.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
 
     subject { runner.status }
 
@@ -263,6 +305,81 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe '#tick_runner_queue' do
+    let(:runner) { create(:ci_runner) }
+
+    it 'returns a new last_update value' do
+      expect(runner.tick_runner_queue).not_to be_empty
+    end
+  end
+
+  describe '#ensure_runner_queue_value' do
+    let(:runner) { create(:ci_runner) }
+
+    it 'sets a new last_update value when it is called the first time' do
+      last_update = runner.ensure_runner_queue_value
+
+      expect_value_in_queues.to eq(last_update)
+    end
+
+    it 'does not change if it is not expired and called again' do
+      last_update = runner.ensure_runner_queue_value
+
+      expect(runner.ensure_runner_queue_value).to eq(last_update)
+      expect_value_in_queues.to eq(last_update)
+    end
+
+    context 'updates runner queue after changing editable value' do
+      let!(:last_update) { runner.ensure_runner_queue_value }
+
+      before do
+        Ci::UpdateRunnerService.new(runner).update(description: 'new runner')
+      end
+
+      it 'sets a new last_update value' do
+        expect_value_in_queues.not_to eq(last_update)
+      end
+    end
+
+    context 'does not update runner value after save' do
+      let!(:last_update) { runner.ensure_runner_queue_value }
+
+      before do
+        runner.touch
+      end
+
+      it 'has an old last_update value' do
+        expect_value_in_queues.to eq(last_update)
+      end
+    end
+
+    def expect_value_in_queues
+      Gitlab::Redis::Queues.with do |redis|
+        runner_queue_key = runner.send(:runner_queue_key)
+        expect(redis.get(runner_queue_key))
+      end
+    end
+  end
+
+  describe '#destroy' do
+    let(:runner) { create(:ci_runner) }
+
+    context 'when there is a tick in the queue' do
+      let!(:queue_key) { runner.send(:runner_queue_key) }
+
+      before do
+        runner.tick_runner_queue
+        runner.destroy
+      end
+
+      it 'cleans up the queue' do
+        Gitlab::Redis::Queues.with do |redis|
+          expect(redis.get(queue_key)).to be_nil
+        end
+      end
+    end
+  end
+
   describe '.assignable_for' do
     let(:runner) { create(:ci_runner) }
     let(:project) { create(:project) }
@@ -278,13 +395,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does not give shared runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to be_empty }
       end
@@ -292,13 +409,13 @@ describe Ci::Runner, models: true do
 
     context 'with unlocked runner' do
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does give a specific runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to contain_exactly(runner) }
       end
@@ -310,13 +427,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does not give a locked runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to be_empty }
       end
@@ -325,9 +442,9 @@ describe Ci::Runner, models: true do
 
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
-      runner = FactoryGirl.create(:ci_runner)
-      project = FactoryGirl.create(:empty_project)
-      project1 = FactoryGirl.create(:empty_project)
+      runner = FactoryBot.create(:ci_runner)
+      project = FactoryBot.create(:project)
+      project1 = FactoryBot.create(:project)
       project.runners << runner
       project1.runners << runner
 
@@ -335,8 +452,8 @@ describe Ci::Runner, models: true do
     end
 
     it "returns true" do
-      runner = FactoryGirl.create(:ci_runner)
-      project = FactoryGirl.create(:empty_project)
+      runner = FactoryBot.create(:ci_runner)
+      project = FactoryBot.create(:project)
       project.runners << runner
 
       expect(runner.belongs_to_one_project?).to be_truthy
@@ -356,7 +473,7 @@ describe Ci::Runner, models: true do
   end
 
   describe '.search' do
-    let(:runner) { create(:ci_runner, token: '123abc') }
+    let(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
 
     it 'returns runners with a matching token' do
       expect(described_class.search(runner.token)).to eq([runner])

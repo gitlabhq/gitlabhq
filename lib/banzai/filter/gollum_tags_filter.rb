@@ -118,7 +118,7 @@ module Banzai
         end
 
         if path
-          content_tag(:img, nil, src: path, class: 'gfm')
+          content_tag(:img, nil, data: { src: path }, class: 'gfm')
         end
       end
 
@@ -149,11 +149,12 @@ module Banzai
           name, reference = *parts.compact.map(&:strip)
         end
 
-        if url?(reference)
-          href = reference
-        else
-          href = ::File.join(project_wiki_base_path, reference)
-        end
+        href =
+          if url?(reference)
+            reference
+          else
+            ::File.join(project_wiki_base_path, reference)
+          end
 
         content_tag(:a, name || reference, href: href, class: 'gfm')
       end

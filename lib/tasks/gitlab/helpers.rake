@@ -4,5 +4,5 @@ require 'tasks/gitlab/task_helpers'
 StateMachines::Machine.ignore_method_conflicts = true if ENV['CRON']
 
 namespace :gitlab do
-  include Gitlab::TaskHelpers
+  extend SystemCheck::Helpers
 end

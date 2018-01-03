@@ -1,0 +1,18 @@
+* {
+  -o-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -webkit-transition: none !important;
+  transition: none !important;
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  -ms-animation: none !important;
+  animation: none !important;
+}
+
+// Disable sticky changes bar for tests
+.diff-files-changed {
+  position: relative !important;
+  top: 0 !important;
+}

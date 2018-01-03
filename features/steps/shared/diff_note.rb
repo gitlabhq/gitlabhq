@@ -1,10 +1,10 @@
 module SharedDiffNote
   include Spinach::DSL
   include RepoHelpers
-  include WaitForAjax
+  include WaitForRequests
 
   after do
-    wait_for_ajax if javascript_test?
+    wait_for_requests if javascript_test?
   end
 
   step 'I cancel the diff comment' do
@@ -196,7 +196,7 @@ module SharedDiffNote
   step 'The diff comment preview tab should display rendered Markdown' do
     page.within(diff_file_selector) do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
+      expect(find('.js-md-preview')).to have_css('gl-emoji', visible: true)
     end
   end
 
@@ -210,12 +210,12 @@ module SharedDiffNote
 
   step 'I should see a diff comment with an emoji image' do
     page.within("#{diff_file_selector} .note") do
-      expect(page).to have_xpath("//img[@alt=':smile:']")
+      expect(page).to have_xpath("//gl-emoji[@data-name='smile']")
     end
   end
 
   step 'I click side-by-side diff button' do
-    find('#parallel-diff-btn').trigger('click')
+    find('#parallel-diff-btn').click
   end
 
   step 'I see side-by-side diff button' do
@@ -227,12 +227,11 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find(".line_holder[id='#{code}'] td:nth-of-type(1)").trigger 'mouseover'
-    find(".line_holder[id='#{code}'] button").trigger 'click'
+    find(".line_holder[id='#{code}'] button").click
   end
 
   def click_parallel_diff_line(code, line_type)
-    find(".line_content.parallel.#{line_type}[data-line-code='#{code}']").trigger 'mouseover'
-    find(".line_holder.parallel button[data-line-code='#{code}']").trigger 'click'
+    find(".line_holder.parallel td[id='#{code}']").find(:xpath, 'preceding-sibling::*[1][self::td]').hover
+    find(".line_holder.parallel button[data-line-code='#{code}']").click
   end
 end

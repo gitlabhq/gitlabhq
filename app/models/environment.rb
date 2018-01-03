@@ -1,11 +1,14 @@
 class Environment < ActiveRecord::Base
   # Used to generate random suffixes for the slug
+  LETTERS = 'a'..'z'
   NUMBERS = '0'..'9'
-  SUFFIX_CHARS = ('a'..'z').to_a + NUMBERS.to_a
+  SUFFIX_CHARS = LETTERS.to_a + NUMBERS.to_a
 
   belongs_to :project, required: true, validate: true
 
-  has_many :deployments
+  has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+  has_one :last_deployment, -> { order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -27,7 +30,6 @@ class Environment < ActiveRecord::Base
                       message: Gitlab::Regex.environment_slug_regex_message }
 
   validates :external_url,
-            uniqueness: { scope: :project_id },
             length: { maximum: 255 },
             allow_nil: true,
             addressable_url: true
@@ -36,6 +38,14 @@ class Environment < ActiveRecord::Base
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
+  scope :order_by_last_deployed_at, -> do
+    max_deployment_id_sql =
+      Deployment.select(Deployment.arel_table[:id].maximum)
+      .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
+      .to_sql
+    order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
+  end
+  scope :in_review_folder, -> { where(environment_type: "review") }
 
   state_machine :state, initial: :available do
     event :start do
@@ -48,21 +58,21 @@ class Environment < ActiveRecord::Base
 
     state :available
     state :stopped
+
+    after_transition do |environment|
+      environment.expire_etag_cache
+    end
   end
 
   def predefined_variables
     [
       { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
-      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true },
+      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true }
     ]
   end
 
   def recently_updated_on_branch?(ref)
     ref.to_s == last_deployment.try(:ref)
-  end
-
-  def last_deployment
-    deployments.last
   end
 
   def nullify_external_url
@@ -72,12 +82,7 @@ class Environment < ActiveRecord::Base
   def set_environment_type
     names = name.split('/')
 
-    self.environment_type =
-      if names.many?
-        names.first
-      else
-        nil
-      end
+    self.environment_type = names.many? ? names.first : nil
   end
 
   def includes_commit?(commit)
@@ -86,8 +91,12 @@ class Environment < ActiveRecord::Base
     last_deployment.includes_commit?(commit)
   end
 
+  def last_deployed_at
+    last_deployment.try(:created_at)
+  end
+
   def update_merge_request_metrics?
-    self.name == "production"
+    folder_name == "production"
   end
 
   def first_deployment_for(commit)
@@ -100,7 +109,7 @@ class Environment < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/environments/#{Shellwords.shellescape(name)}"
+    "refs/#{Repository::REF_ENVIRONMENTS}/#{slug}"
   end
 
   def formatted_external_url
@@ -109,15 +118,15 @@ class Environment < ActiveRecord::Base
     external_url.gsub(/\A.*?:\/\//, '')
   end
 
-  def stoppable?
+  def stop_action?
     available? && stop_action.present?
   end
 
-  def stop!(current_user)
-    return unless stoppable?
+  def stop_with_action!(current_user)
+    return unless available?
 
-    stop
-    stop_action.play(current_user)
+    stop!
+    stop_action&.play(current_user)
   end
 
   def actions_for(environment)
@@ -129,11 +138,33 @@ class Environment < ActiveRecord::Base
   end
 
   def has_terminals?
-    project.deployment_service.present? && available? && last_deployment.present?
+    project.deployment_platform.present? && available? && last_deployment.present?
   end
 
   def terminals
-    project.deployment_service.terminals(self) if has_terminals?
+    project.deployment_platform.terminals(self) if has_terminals?
+  end
+
+  def has_metrics?
+    project.monitoring_service.present? && available? && last_deployment.present?
+  end
+
+  def metrics
+    project.monitoring_service.environment_metrics(self) if has_metrics?
+  end
+
+  def has_additional_metrics?
+    project.prometheus_service.present? && available? && last_deployment.present?
+  end
+
+  def additional_metrics
+    if has_additional_metrics?
+      project.prometheus_service.additional_environment_metrics(self)
+    end
+  end
+
+  def slug
+    super.presence || generate_slug
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS
@@ -148,19 +179,51 @@ class Environment < ActiveRecord::Base
     slugified = name.to_s.downcase.gsub(/[^a-z0-9]/, '-')
 
     # Must start with a letter
-    slugified = "env-" + slugified if NUMBERS.cover?(slugified[0])
+    slugified = 'env-' + slugified unless LETTERS.cover?(slugified[0])
+
+    # Repeated dashes are invalid (OpenShift limitation)
+    slugified.gsub!(/\-+/, '-')
 
     # Maximum length: 24 characters (OpenShift limitation)
     slugified = slugified[0..23]
 
-    # Cannot end with a "-" character (Kubernetes label limitation)
-    slugified = slugified[0..-2] if slugified[-1] == "-"
+    # Cannot end with a dash (Kubernetes label limitation)
+    slugified.chop! if slugified.end_with?('-')
 
     # Add a random suffix, shortening the current string if necessary, if it
     # has been slugified. This ensures uniqueness.
-    slugified = slugified[0..16] + "-" + random_suffix if slugified != name
+    if slugified != name
+      slugified = slugified[0..16]
+      slugified << '-' unless slugified.end_with?('-')
+      slugified << random_suffix
+    end
 
     self.slug = slugified
+  end
+
+  def external_url_for(path, commit_sha)
+    return unless self.external_url
+
+    public_path = project.public_path_for_source_path(path, commit_sha)
+    return unless public_path
+
+    [external_url, public_path].join('/')
+  end
+
+  def expire_etag_cache
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(etag_cache_key)
+    end
+  end
+
+  def etag_cache_key
+    Gitlab::Routing.url_helpers.project_environments_path(
+      project,
+      format: :json)
+  end
+
+  def folder_name
+    self.environment_type || self.name
   end
 
   private

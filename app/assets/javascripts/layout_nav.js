@@ -1,47 +1,51 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, no-unused-vars, one-var, one-var-declaration-per-line, indent, vars-on-top, padded-blocks, max-len */
-(function() {
-  var hideEndFade;
+import ContextualSidebar from './contextual_sidebar';
+import initFlyOutNav from './fly_out_nav';
 
-  hideEndFade = function($scrollingTabs) {
-    return $scrollingTabs.each(function() {
-      var $this;
-      $this = $(this);
-      return $this.siblings('.fade-right').toggleClass('scrolling', $this.width() < $this.prop('scrollWidth'));
-    });
-  };
+function hideEndFade($scrollingTabs) {
+  $scrollingTabs.each(function scrollTabsLoop() {
+    const $this = $(this);
+    $this.siblings('.fade-right').toggleClass('scrolling', $this.width() < $this.prop('scrollWidth'));
+  });
+}
 
-  $(function() {
-    var $scrollingTabs = $('.scrolling-tabs');
+export default function initLayoutNav() {
+  const contextualSidebar = new ContextualSidebar();
+  contextualSidebar.bindEvents();
 
-    hideEndFade($scrollingTabs);
-    $(window).off('resize.nav').on('resize.nav', function() {
-      return hideEndFade($scrollingTabs);
-    });
-    $scrollingTabs.off('scroll').on('scroll', function(event) {
-      var $this, currentPosition, maxPosition;
-      $this = $(this);
-      currentPosition = $this.scrollLeft();
-      maxPosition = $this.prop('scrollWidth') - $this.outerWidth();
+  initFlyOutNav();
+
+  $(document).on('init.scrolling-tabs', () => {
+    const $scrollingTabs = $('.scrolling-tabs').not('.is-initialized');
+    $scrollingTabs.addClass('is-initialized');
+
+    $(window).on('resize.nav', () => {
+      hideEndFade($scrollingTabs);
+    }).trigger('resize.nav');
+
+    $scrollingTabs.on('scroll', function tabsScrollEvent() {
+      const $this = $(this);
+      const currentPosition = $this.scrollLeft();
+      const maxPosition = $this.prop('scrollWidth') - $this.outerWidth();
+
       $this.siblings('.fade-left').toggleClass('scrolling', currentPosition > 0);
-      return $this.siblings('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1);
+      $this.siblings('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1);
     });
 
-    $scrollingTabs.each(function () {
-      var $this = $(this),
-          scrollingTabWidth = $this.width(),
-          $active = $this.find('.active'),
-          activeWidth = $active.width();
+    $scrollingTabs.each(function scrollTabsEachLoop() {
+      const $this = $(this);
+      const scrollingTabWidth = $this.width();
+      const $active = $this.find('.active');
+      const activeWidth = $active.width();
 
       if ($active.length) {
-        var offset = $active.offset().left + activeWidth;
+        const offset = $active.offset().left + activeWidth;
 
         if (offset > scrollingTabWidth - 30) {
-          var scrollLeft = scrollingTabWidth / 2;
-          scrollLeft = (offset - scrollLeft) - (activeWidth / 2);
+          const scrollLeft = (offset - (scrollingTabWidth / 2)) - (activeWidth / 2);
+
           $this.scrollLeft(scrollLeft);
         }
       }
     });
-  });
-
-}).call(this);
+  }).trigger('init.scrolling-tabs');
+}

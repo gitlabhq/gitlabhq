@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
@@ -17,8 +17,7 @@ module API
         end
 
         def snippets_for_current_user
-          finder_params = { filter: :by_project, project: user_project }
-          SnippetsFinder.new.execute(current_user, finder_params)
+          SnippetsFinder.new(current_user, project: user_project).execute
         end
       end
 
@@ -50,18 +49,19 @@ module API
         requires :title, type: String, desc: 'The title of the snippet'
         requires :file_name, type: String, desc: 'The file name of the snippet'
         requires :code, type: String, desc: 'The content of the snippet'
-        requires :visibility_level, type: Integer,
-                                    values: [Gitlab::VisibilityLevel::PRIVATE,
-                                             Gitlab::VisibilityLevel::INTERNAL,
-                                             Gitlab::VisibilityLevel::PUBLIC],
-                                    desc: 'The visibility level of the snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
+        requires :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the snippet'
       end
       post ":id/snippets" do
         authorize! :create_project_snippet, user_project
-        snippet_params = declared_params
+        snippet_params = declared_params.merge(request: request, api: true)
         snippet_params[:content] = snippet_params.delete(:code)
 
         snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute
+
+        render_spam_error! if snippet.spam?
 
         if snippet.persisted?
           present snippet, with: Entities::ProjectSnippet
@@ -78,11 +78,10 @@ module API
         optional :title, type: String, desc: 'The title of the snippet'
         optional :file_name, type: String, desc: 'The file name of the snippet'
         optional :code, type: String, desc: 'The content of the snippet'
-        optional :visibility_level, type: Integer,
-                                    values: [Gitlab::VisibilityLevel::PRIVATE,
-                                             Gitlab::VisibilityLevel::INTERNAL,
-                                             Gitlab::VisibilityLevel::PUBLIC],
-                                    desc: 'The visibility level of the snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the snippet'
         at_least_one_of :title, :file_name, :code, :visibility_level
       end
       put ":id/snippets/:snippet_id" do
@@ -92,12 +91,16 @@ module API
         authorize! :update_project_snippet, snippet
 
         snippet_params = declared_params(include_missing: false)
+          .merge(request: request, api: true)
+
         snippet_params[:content] = snippet_params.delete(:code) if snippet_params[:code].present?
 
         UpdateSnippetService.new(user_project, current_user, snippet,
                                  snippet_params).execute
 
-        if snippet.persisted?
+        render_spam_error! if snippet.spam?
+
+        if snippet.valid?
           present snippet, with: Entities::ProjectSnippet
         else
           render_validation_error!(snippet)
@@ -113,7 +116,8 @@ module API
         not_found!('Snippet') unless snippet
 
         authorize! :admin_project_snippet, snippet
-        snippet.destroy
+
+        destroy_conditionally!(snippet)
       end
 
       desc 'Get a raw project snippet'
@@ -127,6 +131,22 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         present snippet.content
+      end
+
+      desc 'Get the user agent details for a project snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+      end
+      get ":id/snippets/:snippet_id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

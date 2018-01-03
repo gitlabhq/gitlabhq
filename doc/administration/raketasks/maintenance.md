@@ -27,6 +27,7 @@ Ruby Version:     2.1.5p273
 Gem Version:      2.4.3
 Bundler Version:  1.7.6
 Rake Version:     10.3.2
+Redis Version:    3.2.5
 Sidekiq Version:  2.17.8
 
 GitLab information
@@ -57,7 +58,9 @@ Runs the following rake tasks:
 
 It will check that each component was setup according to the installation guide and suggest fixes for issues found.
 
-You may also have a look at our [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide).
+You may also have a look at our Trouble Shooting Guides:
+- [Trouble Shooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)
+- [Trouble Shooting Guide (Omnibus Gitlab)](http://docs.gitlab.com/omnibus/README.html#troubleshooting)
 
 **Omnibus Installation**
 
@@ -171,14 +174,14 @@ Omnibus packages.
 
 ```
 cd /home/git/gitlab
-sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 ```
 
 For omnibus versions, the unoptimized assets (JavaScript, CSS) are frozen at
 the release of upstream GitLab. The omnibus version includes optimized versions
 of those assets. Unless you are modifying the JavaScript / CSS code on your
 production machine after installing the package, there should be no reason to redo
-rake assets:precompile on the production machine. If you suspect that assets
+rake gitlab:assets:compile on the production machine. If you suspect that assets
 have been corrupted, you should reinstall the omnibus package.
 
 ## Tracking Deployments
@@ -217,4 +220,23 @@ sudo gitlab-rake gitlab:shell:create_hooks
 ```
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:create_hooks RAILS_ENV=production
+```
+
+## Check TCP connectivity to a remote site
+
+Sometimes you need to know if your GitLab installation can connect to a TCP
+service on another machine - perhaps a PostgreSQL or HTTPS server. A rake task
+is included to help you with this:
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake gitlab:tcp_check[example.com,80]
+```
+
+**Source Installation**
+
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
 ```

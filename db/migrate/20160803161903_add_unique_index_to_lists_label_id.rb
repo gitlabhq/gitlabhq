@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddUniqueIndexToListsLabelId < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

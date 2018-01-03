@@ -3,6 +3,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include SharedMarkdown
+  include CapybaraHelpers
 
   step 'I should see milestone "v2.2"' do
     milestone = @project.milestones.find_by(title: "v2.2")
@@ -16,7 +17,9 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   end
 
   step 'I click link "New Milestone"' do
-    click_link "New Milestone"
+    page.within('.nav-controls') do
+      click_link "New milestone"
+    end
   end
 
   step 'I submit new milestone "v2.3"' do
@@ -63,7 +66,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   end
 
   step 'I click link to remove milestone' do
-    click_link 'Delete'
+    confirm_modal_if_present { click_link 'Delete' }
   end
 
   step 'I should see no milestones' do

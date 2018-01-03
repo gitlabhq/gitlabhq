@@ -1,4 +1,0 @@
----
-title: Fix a Grape deprecation, use `#request_method` instead of `#route_method`
-merge_request:
-author:

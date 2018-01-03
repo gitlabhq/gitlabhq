@@ -25,7 +25,7 @@ You can create a Personal Access Token here:
 http://app.asana.com/-/account_api'
   end
 
-  def to_param
+  def self.to_param
     'asana'
   end
 
@@ -34,7 +34,8 @@ http://app.asana.com/-/account_api'
       {
         type: 'text',
         name: 'api_key',
-        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.'
+        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.',
+        required: true
       },
       {
         type: 'text',
@@ -44,7 +45,7 @@ http://app.asana.com/-/account_api'
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

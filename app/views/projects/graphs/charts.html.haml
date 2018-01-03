@@ -1,0 +1,82 @@
+- @no_container = true
+- page_title "Charts"
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('common_d3')
+  = webpack_bundle_tag('graphs')
+  = webpack_bundle_tag('graphs_charts')
+
+.repo-charts{ class: container_class }
+  %h4.sub-header
+    Programming languages used in this repository
+
+  .row
+    .col-md-4
+      %ul.bordered-list
+        - @languages.each do |language|
+          %li
+            %span{ style: "color: #{language[:color]}" }
+              = icon('circle')
+            &nbsp;
+            = language[:label]
+            .pull-right
+              = language[:value]
+              \%
+    .col-md-8
+      %canvas#languages-chart{ height: 400 }
+
+.repo-charts{ class: container_class }
+  .sub-header-block.border-top
+
+  .row.tree-ref-header
+    .col-md-6
+      %h4
+        Commit statistics for
+        %strong= @ref
+        #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+
+    .col-md-6
+      .tree-ref-container
+        .tree-ref-holder
+          = render 'shared/ref_switcher', destination: 'graphs_commits'
+        %ul.breadcrumb.repo-breadcrumb
+          = commits_breadcrumbs
+
+  .row
+    .col-md-6
+      %ul.commit-stats
+        %li
+          Total:
+          %strong #{@commits_graph.commits.size} commits
+        %li
+          Average per day:
+          %strong #{@commits_graph.commit_per_day} commits
+        %li
+          Authors:
+          %strong= @commits_graph.authors
+    .col-md-6
+      %div
+        %p.slead
+          Commits per day of month
+        %canvas#month-chart
+  .row
+    .col-md-6
+    .col-md-6
+      %div
+        %p.slead
+          Commits per weekday
+        %canvas#weekday-chart
+  .row
+    .col-md-6
+    .col-md-6
+      %div
+        %p.slead
+          Commits per day hour (UTC)
+        %canvas#hour-chart
+
+%script#projectChartData{ type: "application/json" }
+  - projectChartData = {};
+  - projectChartData['hour'] = @commits_per_time
+  - projectChartData['weekDays'] = @commits_per_week_days
+  - projectChartData['month'] = @commits_per_month
+  - projectChartData['languages'] = @languages
+  = projectChartData.to_json.html_safe

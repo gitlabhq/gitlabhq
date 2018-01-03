@@ -1,7 +1,6 @@
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
@@ -32,8 +31,8 @@ class ProjectCacheWorker
   private
 
   def try_obtain_lease_for(project_id, section)
-    Gitlab::ExclusiveLease.
-      new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT).
-      try_obtain
+    Gitlab::ExclusiveLease
+      .new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT)
+      .try_obtain
   end
 end

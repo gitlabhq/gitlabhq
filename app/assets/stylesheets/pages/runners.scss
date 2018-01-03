@@ -30,6 +30,30 @@
   }
 
   h4 {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
+  }
+}
+
+.admin-runner-btn-group-cell {
+  min-width: 150px;
+
+  .btn-sm {
+    padding: 4px 9px;
+  }
+
+  .btn-default {
+    color: $gl-text-color-secondary;
+  }
+
+  .fa-pause,
+  .fa-play {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: $screen-md-max) {
+  .runners-content {
+    width: 100%;
+    overflow: auto;
   }
 }

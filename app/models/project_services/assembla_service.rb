@@ -12,18 +12,18 @@ class AssemblaService < Service
     'Project Management Software (Source Commits Endpoint)'
   end
 
-  def to_param
+  def self.to_param
     'assembla'
   end
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: '' },
+      { type: 'text', name: 'token', placeholder: '', required: true },
       { type: 'text', name: 'subdomain', placeholder: '' }
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

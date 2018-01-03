@@ -1,0 +1,7 @@
+Hi <%= @user.name %>!
+
+A new GPG key was added to your account:
+
+Fingerprint: <%= @gpg_key.fingerprint %>
+
+If this key was added in error, you can remove it at <%= profile_gpg_keys_url %>

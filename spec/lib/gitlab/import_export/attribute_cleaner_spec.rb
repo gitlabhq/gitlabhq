@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AttributeCleaner, lib: true do
-  let(:relation_class){ double('relation_class').as_null_object }
+describe Gitlab::ImportExport::AttributeCleaner do
+  let(:relation_class) { double('relation_class').as_null_object }
   let(:unsafe_hash) do
     {
       'id' => 101,

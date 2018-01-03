@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Internal Group access', feature: true do
+describe 'Internal Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :internal) }
@@ -49,6 +49,7 @@ describe 'Internal Group access', feature: true do
   end
 
   describe 'GET /groups/:path/merge_requests' do
+    let(:project) { create(:project, :internal, :repository, group: group) }
     subject { merge_requests_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }

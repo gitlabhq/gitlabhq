@@ -1,23 +1,21 @@
 - @no_container = true
-- page_title "Pages", "Wiki"
+- add_to_breadcrumbs "Wiki", get_project_wiki_path(@project)
+- breadcrumb_title s_("Wiki|Pages")
+- page_title s_("Wiki|Pages"), _("Wiki")
 
 %div{ class: container_class }
   .wiki-page-header
 
     .nav-text
       %h2.wiki-page-title
-        Wiki Pages
+        = s_("Wiki|Wiki Pages")
 
     .nav-controls
-      = link_to namespace_project_wikis_git_access_path(@project.namespace, @project), class: 'btn' do
+      = link_to project_wikis_git_access_path(@project), class: 'btn' do
         = icon('cloud-download')
-        Clone repository
+        = _("Clone repository")
 
-  %ul.content-list
-    - @wiki_pages.each do |wiki_page|
-      %li
-        = link_to wiki_page.title, namespace_project_wiki_path(@project.namespace, @project, wiki_page)
-        %small (#{wiki_page.format})
-        .pull-right
-          %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
+  %ul.wiki-pages-list.content-list
+    = render @wiki_entries, context: 'pages'
+
   = paginate @wiki_pages, theme: 'gitlab'

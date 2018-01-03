@@ -18,7 +18,7 @@ class ProjectFeature < ActiveRecord::Base
   PRIVATE  = 10
   ENABLED  = 20
 
-  FEATURES = %i(issues merge_requests wiki snippets builds repository)
+  FEATURES = %i(issues merge_requests wiki snippets builds repository).freeze
 
   class << self
     def access_level_attribute(feature)
@@ -27,12 +27,21 @@ class ProjectFeature < ActiveRecord::Base
 
       "#{feature}_access_level".to_sym
     end
+
+    def quoted_access_level_column(feature)
+      attribute = connection.quote_column_name(access_level_attribute(feature))
+      table = connection.quote_table_name(table_name)
+
+      "#{table}.#{attribute}"
+    end
   end
 
   # Default scopes force us to unscope here since a service may need to check
   # permissions for a project in pending_delete
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
   belongs_to :project, -> { unscope(where: :pending_delete) }
+
+  validates :project, presence: true
 
   validate :repository_children_level
 
@@ -44,8 +53,11 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
-    access_level = public_send(ProjectFeature.access_level_attribute(feature))
-    get_permission(user, access_level)
+    get_permission(user, access_level(feature))
+  end
+
+  def access_level(feature)
+    public_send(ProjectFeature.access_level_attribute(feature)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def builds_enabled?
@@ -70,7 +82,7 @@ class ProjectFeature < ActiveRecord::Base
   # which cannot be higher than repository access level
   def repository_children_level
     validator = lambda do |field|
-      level = public_send(field) || ProjectFeature::ENABLED
+      level = public_send(field) || ProjectFeature::ENABLED # rubocop:disable GitlabSecurity/PublicSend
       not_allowed = level > repository_access_level
       self.errors.add(field, "cannot have higher visibility level than repository access level") if not_allowed
     end
@@ -83,7 +95,7 @@ class ProjectFeature < ActiveRecord::Base
     when DISABLED
       false
     when PRIVATE
-      user && (project.team.member?(user) || user.admin?)
+      user && (project.team.member?(user) || user.full_private_access?)
     when ENABLED
       true
     else

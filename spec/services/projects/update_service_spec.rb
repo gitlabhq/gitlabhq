@@ -1,145 +1,255 @@
 require 'spec_helper'
 
-describe Projects::UpdateService, services: true do
-  describe :update_by_user do
-    before do
-      @user = create :user
-      @admin = create :user, admin: true
-      @project = create :project, creator_id: @user.id, namespace: @user.namespace
-      @opts = {}
+describe Projects::UpdateService do
+  include ProjectForksHelper
+
+  let(:user) { create(:user) }
+  let(:project) do
+    create(:project, creator: user, namespace: user.namespace)
+  end
+
+  describe '#execute' do
+    let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:admin) { create(:admin) }
+
+    context 'when changing visibility level' do
+      context 'when visibility_level is INTERNAL' do
+        it 'updates the project to internal' do
+          result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
+          expect(result).to eq({ status: :success })
+          expect(project).to be_internal
+        end
+      end
+
+      context 'when visibility_level is PUBLIC' do
+        it 'updates the project to public' do
+          result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          expect(result).to eq({ status: :success })
+          expect(project).to be_public
+        end
+      end
+
+      context 'when visibility levels are restricted to PUBLIC only' do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+        end
+
+        context 'when visibility_level is INTERNAL' do
+          it 'updates the project to internal' do
+            result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            expect(result).to eq({ status: :success })
+            expect(project).to be_internal
+          end
+        end
+
+        context 'when visibility_level is PUBLIC' do
+          it 'does not update the project to public' do
+            result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+            expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
+            expect(project).to be_private
+          end
+
+          context 'when updated by an admin' do
+            it 'updates the project to public' do
+              result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+              expect(result).to eq({ status: :success })
+              expect(project).to be_public
+            end
+          end
+        end
+      end
+
+      context 'When project visibility is higher than parent group' do
+        let(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+        before do
+          project.update(namespace: group, visibility_level: group.visibility_level)
+        end
+
+        it 'does not update project visibility level' do
+          result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          expect(result).to eq({ status: :error, message: 'Visibility level public is not allowed in a internal group.' })
+          expect(project.reload).to be_internal
+        end
+      end
     end
 
-    context 'is private when updated to private' do
+    describe 'when updating project that has forks' do
+      let(:project) { create(:project, :internal) }
+      let(:forked_project) { fork_project(project) }
+
+      it 'updates forks visibility level when parent set to more restrictive' do
+        opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
+
+        expect(project).to be_internal
+        expect(forked_project).to be_internal
+
+        expect(update_project(project, admin, opts)).to eq({ status: :success })
+
+        expect(project).to be_private
+        expect(forked_project.reload).to be_private
+      end
+
+      it 'does not update forks visibility level when parent set to less restrictive' do
+        opts = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
+
+        expect(project).to be_internal
+        expect(forked_project).to be_internal
+
+        expect(update_project(project, admin, opts)).to eq({ status: :success })
+
+        expect(project).to be_public
+        expect(forked_project.reload).to be_internal
+      end
+    end
+
+    context 'when updating a default branch' do
+      let(:project) { create(:project, :repository) }
+
+      it 'changes a default branch' do
+        update_project(project, admin, default_branch: 'feature')
+
+        expect(Project.find(project.id).default_branch).to eq 'feature'
+      end
+
+      it 'does not change a default branch' do
+        # The branch 'unexisted-branch' does not exist.
+        update_project(project, admin, default_branch: 'unexisted-branch')
+
+        expect(Project.find(project.id).default_branch).to eq 'master'
+      end
+    end
+
+    context 'when updating a project that contains container images' do
       before do
-        @created_private = @project.private?
-
-        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        update_project(@project, @user, @opts)
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
       end
 
-      it { expect(@created_private).to be_truthy }
-      it { expect(@project.private?).to be_truthy }
+      it 'does not allow to rename the project' do
+        result = update_project(project, admin, path: 'renamed')
+
+        expect(result).to include(status: :error)
+        expect(result[:message]).to match(/contains container registry tags/)
+      end
+
+      it 'allows to update other settings' do
+        result = update_project(project, admin, public_builds: true)
+
+        expect(result[:status]).to eq :success
+        expect(project.reload.public_builds).to be true
+      end
     end
 
-    context 'is internal when updated to internal' do
-      before do
-        @created_private = @project.private?
+    context 'when renaming a project' do
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
-        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-        update_project(@project, @user, @opts)
+      context 'with legacy storage' do
+        before do
+          gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
+        end
+
+        after do
+          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        end
+
+        it 'does not allow renaming when new path matches existing repository on disk' do
+          result = update_project(project, admin, path: 'existing')
+
+          expect(result).to include(status: :error)
+          expect(result[:message]).to match('There is already a repository with that name on disk')
+          expect(project).not_to be_valid
+          expect(project.errors.messages).to have_key(:base)
+          expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+        end
       end
 
-      it { expect(@created_private).to be_truthy }
-      it { expect(@project.internal?).to be_truthy }
+      context 'with hashed storage' do
+        let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+
+        before do
+          stub_application_setting(hashed_storage_enabled: true)
+        end
+
+        it 'does not check if new path matches existing repository on disk' do
+          expect(project).not_to receive(:repository_with_same_path_already_exists?)
+
+          result = update_project(project, admin, path: 'existing')
+
+          expect(result).to include(status: :success)
+        end
+      end
     end
 
-    context 'is public when updated to public' do
-      before do
-        @created_private = @project.private?
+    context 'when passing invalid parameters' do
+      it 'returns an error result when record cannot be updated' do
+        result = update_project(project, admin, { name: 'foo&bar' })
 
-        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        update_project(@project, @user, @opts)
-      end
-
-      it { expect(@created_private).to be_truthy }
-      it { expect(@project.public?).to be_truthy }
-    end
-
-    context 'respect configured visibility restrictions setting' do
-      before(:each) do
-        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-      end
-
-      context 'is private when updated to private' do
-        before do
-          @created_private = @project.private?
-
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          update_project(@project, @user, @opts)
-        end
-
-        it { expect(@created_private).to be_truthy }
-        it { expect(@project.private?).to be_truthy }
-      end
-
-      context 'is internal when updated to internal' do
-        before do
-          @created_private = @project.private?
-
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          update_project(@project, @user, @opts)
-        end
-
-        it { expect(@created_private).to be_truthy }
-        it { expect(@project.internal?).to be_truthy }
-      end
-
-      context 'is private when updated to public' do
-        before do
-          @created_private = @project.private?
-
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          update_project(@project, @user, @opts)
-        end
-
-        it { expect(@created_private).to be_truthy }
-        it { expect(@project.private?).to be_truthy }
-      end
-
-      context 'is public when updated to public by admin' do
-        before do
-          @created_private = @project.private?
-
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          update_project(@project, @admin, @opts)
-        end
-
-        it { expect(@created_private).to be_truthy }
-        it { expect(@project.public?).to be_truthy }
+        expect(result).to eq({
+          status: :error,
+          message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
+        })
       end
     end
   end
 
-  describe :visibility_level do
-    let(:user) { create :user, admin: true }
-    let(:project) { create(:project, :internal) }
-    let(:forked_project) { create(:forked_project_with_submodules, :internal) }
-    let(:opts) { {} }
+  describe '#run_auto_devops_pipeline?' do
+    subject { described_class.new(project, user).run_auto_devops_pipeline? }
 
-    before do
-      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
-      forked_project.save
-
-      @created_internal = project.internal?
-      @fork_created_internal = forked_project.internal?
-    end
-
-    context 'updates forks visibility level when parent set to more restrictive' do
+    context 'when master contains a .gitlab-ci.yml file' do
       before do
-        opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        update_project(project, user, opts).inspect
+        allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
       end
 
-      it { expect(@created_internal).to be_truthy }
-      it { expect(@fork_created_internal).to be_truthy }
-      it { expect(project.private?).to be_truthy }
-      it { expect(project.forks.first.private?).to be_truthy }
+      it { is_expected.to eq(false) }
     end
 
-    context 'does not update forks visibility level when parent set to less restrictive' do
+    context 'when auto devops is explicitly enabled' do
       before do
-        opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        update_project(project, user, opts).inspect
+        project.create_auto_devops!(enabled: true)
       end
 
-      it { expect(@created_internal).to be_truthy }
-      it { expect(@fork_created_internal).to be_truthy }
-      it { expect(project.public?).to be_truthy }
-      it { expect(project.forks.first.internal?).to be_truthy }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when auto devops is explicitly disabled' do
+      before do
+        project.create_auto_devops!(enabled: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto devops is set to instance setting' do
+      before do
+        project.create_auto_devops!(enabled: nil)
+        allow(project.auto_devops).to receive(:previous_changes).and_return('enabled' => true)
+      end
+
+      context 'when auto devops is enabled system-wide' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when auto devops is disabled system-wide' do
+        before do
+          stub_application_setting(auto_devops_enabled: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 
   def update_project(project, user, opts)
-    Projects::UpdateService.new(project, user, opts).execute
+    described_class.new(project, user, opts).execute
   end
 end

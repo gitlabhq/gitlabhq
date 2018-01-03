@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-describe 'CycleAnalytics#plan', feature: true do
+describe 'CycleAnalytics#plan' do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
-  subject { CycleAnalytics.new(project, user, from: from_date) }
+  subject { CycleAnalytics.new(project, from: from_date) }
 
   generate_cycle_analytics_spec(
     phase: :plan,
     data_fn: -> (context) do
       {
         issue: context.create(:issue, project: context.project),
-        branch_name: context.random_git_name
+        branch_name: context.generate(:branch)
       }
     end,
     start_time_conditions: [["issue associated with a milestone",
@@ -35,7 +35,7 @@ describe 'CycleAnalytics#plan', feature: true do
 
   context "when a regular label (instead of a list label) is added to the issue" do
     it "returns nil" do
-      branch_name = random_git_name
+      branch_name = generate(:branch)
       label = create(:label)
       issue = create(:issue, project: project)
       issue.update(label_ids: [label.id])
@@ -44,7 +44,7 @@ describe 'CycleAnalytics#plan', feature: true do
       create_merge_request_closing_issue(issue, source_branch: branch_name)
       merge_merge_requests_closing_issue(issue)
 
-      expect(subject.issue).to be_nil
+      expect(subject[:issue].median).to be_nil
     end
   end
 end

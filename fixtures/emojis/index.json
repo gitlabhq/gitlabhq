@@ -4023,7 +4023,7 @@
     ],
     "aliases_ascii": [],
     "keywords": [],
-    "moji": "🤸🏾,"
+    "moji": "🤸🏾"
   },
   "cartwheel_tone5": {
     "unicode": "1F938-1F3FF",
@@ -14475,6 +14475,19 @@
     ],
     "moji": "💎"
   },
+  "gay_pride_flag": {
+    "unicode": "1F3F3-1F308",
+    "unicode_alternates": [],
+    "name": "gay_pride_flag",
+    "shortname": ":gay_pride_flag:",
+    "category": "extras",
+    "aliases": [
+      ":rainbow_flag:"
+    ],
+    "aliases_ascii": [],
+    "keywords": [],
+    "moji": "🏳🌈"
+  },
   "gemini": {
     "unicode": "264A",
     "unicode_alternates": [
@@ -16830,7 +16843,6 @@
       "0:-)",
       "0:)",
       "0;^)",
-      "O:-)",
       "O:)",
       "O;-)",
       "O=)",
@@ -28505,6 +28517,21 @@
       "free speech"
     ],
     "moji": "💬"
+  },
+  "speech_left": {
+    "unicode": "1F5E8",
+    "unicode_alternates": [
+      "1F5E8-FE0F"
+    ],
+    "name": "left speech bubble",
+    "shortname": ":speech_left:",
+    "category": "symbols",
+    "aliases": [
+      ":left_speech_bubble:"
+    ],
+    "aliases_ascii": [],
+    "keywords": [],
+    "moji": "🗨"
   },
   "speedboat": {
     "unicode": "1F6A4",

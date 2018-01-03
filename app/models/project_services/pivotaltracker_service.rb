@@ -1,7 +1,7 @@
 class PivotaltrackerService < Service
   include HTTParty
 
-  API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
+  API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'.freeze
 
   prop_accessor :token, :restrict_to_branch
   validates :token, presence: true, if: :activated?
@@ -14,7 +14,7 @@ class PivotaltrackerService < Service
     'Project Management Software (Source Commits Endpoint)'
   end
 
-  def to_param
+  def self.to_param
     'pivotaltracker'
   end
 
@@ -23,7 +23,8 @@ class PivotaltrackerService < Service
       {
         type: 'text',
         name: 'token',
-        placeholder: 'Pivotal Tracker API token.'
+        placeholder: 'Pivotal Tracker API token.',
+        required: true
       },
       {
         type: 'text',
@@ -34,7 +35,7 @@ class PivotaltrackerService < Service
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 

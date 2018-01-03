@@ -1,14 +1,12 @@
-/* eslint-disable space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-return-assign, quotes, padded-blocks, max-len */
-/* global NewBranchForm */
+/* eslint-disable space-before-function-paren, one-var, no-var, one-var-declaration-per-line, no-return-assign, quotes, max-len */
 
-/*= require jquery-ui/autocomplete */
-/*= require new_branch_form */
+import NewBranchForm from '~/new_branch_form';
 
 (function() {
   describe('Branch', function() {
     return describe('create a new branch', function() {
       var expectToHaveError, fillNameWith;
-      fixture.preload('new_branch.html');
+      preloadFixtures('branches/new_branch.html.raw');
       fillNameWith = function(value) {
         return $('.js-branch-name').val(value).trigger('blur');
       };
@@ -16,7 +14,7 @@
         return expect($('.js-branch-name-error span').text()).toEqual(error);
       };
       beforeEach(function() {
-        fixture.load('new_branch.html');
+        loadFixtures('branches/new_branch.html.raw');
         $('form').on('submit', function(e) {
           return e.preventDefault();
         });
@@ -166,5 +164,4 @@
       });
     });
   });
-
-}).call(this);
+}).call(window);

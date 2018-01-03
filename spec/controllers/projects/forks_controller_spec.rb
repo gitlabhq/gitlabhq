@@ -2,19 +2,21 @@ require 'spec_helper'
 
 describe Projects::ForksController do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(project, user).execute }
   let(:group) { create(:group, owner: forked_project.creator) }
 
   describe 'GET index' do
     def get_forks
       get :index,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
     end
 
     context 'when fork is public' do
-      before { forked_project.update_attribute(:visibility_level, Project::PUBLIC) }
+      before do
+        forked_project.update_attribute(:visibility_level, Project::PUBLIC)
+      end
 
       it 'is visible for non logged in users' do
         get_forks
@@ -35,7 +37,9 @@ describe Projects::ForksController do
       end
 
       context 'when user is logged in' do
-        before { sign_in(project.creator) }
+        before do
+          sign_in(project.creator)
+        end
 
         context 'when user is not a Project member neither a group member' do
           it 'does not see the Project listed' do
@@ -46,7 +50,9 @@ describe Projects::ForksController do
         end
 
         context 'when user is a member of the Project' do
-          before { forked_project.team << [project.creator, :developer] }
+          before do
+            forked_project.add_developer(project.creator)
+          end
 
           it 'sees the project listed' do
             get_forks
@@ -56,7 +62,9 @@ describe Projects::ForksController do
         end
 
         context 'when user is a member of the Group' do
-          before { forked_project.group.add_developer(project.creator) }
+          before do
+            forked_project.group.add_developer(project.creator)
+          end
 
           it 'sees the project listed' do
             get_forks
@@ -71,8 +79,8 @@ describe Projects::ForksController do
   describe 'GET new' do
     def get_new
       get :new,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
     end
 
     context 'when user is signed in' do
@@ -81,7 +89,7 @@ describe Projects::ForksController do
 
         get_new
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -99,8 +107,8 @@ describe Projects::ForksController do
   describe 'POST create' do
     def post_create
       post :create,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         namespace_key: user.namespace.id
     end
 
@@ -110,7 +118,7 @@ describe Projects::ForksController do
 
         post_create
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
       end
     end

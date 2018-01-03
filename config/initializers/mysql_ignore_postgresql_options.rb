@@ -31,7 +31,7 @@ if defined?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
         end
 
         def add_index_options(table_name, column_name, options = {})
-          if options[:using] and options[:using] == :gin
+          if options[:using] && options[:using] == :gin
             options = options.dup
             options.delete(:using)
           end

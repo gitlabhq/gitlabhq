@@ -3,11 +3,35 @@
   margin: 24px auto 0;
   position: relative;
 
+  .landing {
+    margin-top: 0;
+
+    .inner-content {
+      white-space: normal;
+
+      h4,
+      p {
+        margin: 7px 0 0;
+        max-width: 480px;
+        padding: 0 $gl-padding;
+
+        @media (max-width: $screen-sm-min) {
+          margin: 0 auto;
+        }
+      }
+    }
+
+    svg {
+      width: 136px;
+      height: 136px;
+    }
+  }
+
   .col-headers {
     ul {
+      @include clearfix;
       margin: 0;
       padding: 0;
-      @include clearfix;
     }
 
     li {
@@ -20,6 +44,10 @@
 
     .fa {
       color: $cycle-analytics-light-gray;
+
+      &:hover {
+        color: $gl-text-color;
+      }
     }
 
     .stage-header {
@@ -43,14 +71,14 @@
     }
 
     .stage-name {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
   }
 
   .panel {
     .content-block {
       padding: 24px 0;
-      border-bottom: none;
+      border-bottom: 0;
       position: relative;
 
       @media (max-width: $screen-xs-max) {
@@ -68,7 +96,7 @@
       .header {
         font-size: 30px;
         line-height: 38px;
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
         margin: 0;
       }
 
@@ -89,11 +117,6 @@
     top: $gl-padding-top;
   }
 
-  .bordered-box {
-    border: 1px solid $border-color;
-    border-radius: $border-radius-default;
-  }
-
   .content-list {
     li {
       padding: 18px $gl-padding $gl-padding;
@@ -110,15 +133,15 @@
         &.title {
           line-height: 19px;
           font-size: 14px;
-          font-weight: 600;
-          color: $gl-title-color;
+          font-weight: $gl-font-weight-bold;
+          color: $gl-text-color;
         }
 
         &.text {
           color: $layout-link-gray;
 
           &.value-col {
-            color: $gl-title-color;
+            color: $gl-text-color;
           }
         }
       }
@@ -131,44 +154,6 @@
         position: relative;
         vertical-align: middle;
         top: 3px;
-      }
-    }
-  }
-
-  .landing {
-    margin-bottom: $gl-padding;
-    overflow: hidden;
-
-    .dismiss-icon {
-      position: absolute;
-      right: $cycle-analytics-box-padding;
-      cursor: pointer;
-      color: $cycle-analytics-dismiss-icon-color;
-    }
-
-    .svg-container {
-      text-align: center;
-
-      svg {
-        width: 136px;
-        height: 136px;
-      }
-    }
-
-    .inner-content {
-      @media (max-width: $screen-xs-max) {
-        padding: 0 28px;
-        text-align: center;
-      }
-
-      h4 {
-        color: $gl-text-color;
-        font-size: 17px;
-      }
-
-      p {
-        color: $cycle-analytics-box-text-color;
-        margin-bottom: $gl-padding;
       }
     }
   }
@@ -204,12 +189,12 @@
     }
 
     li {
-      list-style-type: none;
       @include clearfix;
+      list-style-type: none;
     }
 
     .stage-nav-item {
-      display: block;
+      display: flex;
       line-height: 65px;
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
@@ -224,7 +209,7 @@
         box-shadow: inset 2px 0 0 0 $active-item-blue;
 
         .stage-name {
-          font-weight: 600;
+          font-weight: $gl-font-weight-bold;
         }
       }
 
@@ -235,22 +220,18 @@
       }
 
       &:first-child {
-        border-top: none;
+        border-top: 0;
       }
 
       &:last-child {
-        border-bottom: none;
+        border-bottom: 0;
       }
 
       .stage-nav-item-cell {
-        float: left;
-
-        &.stage-name {
-          width: 65%;
-        }
-
         &.stage-median {
-          width: 35%;
+          margin-left: auto;
+          margin-right: $gl-padding;
+          min-width: calc(35% - #{$gl-padding});
         }
       }
 
@@ -260,7 +241,7 @@
 
       .stage-empty,
       .not-available {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
       }
     }
   }
@@ -280,7 +261,11 @@
 
     .events-description {
       line-height: 65px;
-      padding-left: $gl-padding;
+      padding: 0 $gl-padding;
+    }
+
+    .events-info {
+      color: $gl-text-color-secondary;
     }
   }
 
@@ -296,14 +281,14 @@
   }
 
   .stage-event-item {
+    @include clearfix;
     list-style-type: none;
     padding: 0 0 $gl-padding;
     margin: 0 $gl-padding $gl-padding;
     border-bottom: 1px solid $gray-darker;
-    @include clearfix;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
       margin-bottom: 0;
     }
 
@@ -322,12 +307,12 @@
       &.issue-title,
       &.commit-title,
       &.merge-merquest-title {
+        @include text-overflow();
         max-width: 100%;
         display: block;
-        @include text-overflow();
 
         a {
-          color: $gl-dark-link-color;
+          color: $gl-text-color;
         }
       }
     }
@@ -355,19 +340,17 @@
     .issue-link,
     .commit-author-link,
     .issue-author-link {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     // Custom CSS for components
     .item-conmmit-component {
       .commit-icon {
-        position: relative;
-        top: 3px;
-        left: 1px;
-        display: inline-block;
-
         svg {
-          float: left;
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          vertical-align: bottom;
         }
       }
     }
@@ -396,15 +379,15 @@
       }
 
       .item-build-name {
-        color: $gl-title-color;
+        color: $gl-text-color;
       }
 
       .pipeline-id {
-        color: $gl-title-color;
+        color: $gl-text-color;
         padding: 0 3px 0 0;
       }
 
-      .branch-name {
+      .ref-name {
         color: $black;
         display: inline-block;
         max-width: 180px;
@@ -415,15 +398,15 @@
         vertical-align: top;
       }
 
-      .short-sha {
+      .commit-sha {
         color: $gl-link-color;
         line-height: 1.3;
         vertical-align: top;
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
       }
 
       .fa {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
         font-size: $code_font_size;
       }
     }
@@ -435,7 +418,7 @@
     width: 75%;
     margin: 0 auto;
     padding-top: 130px;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
 
     h4 {
       color: $gl-text-color;

@@ -34,25 +34,20 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step 'I submit new branch form' do
     fill_in 'branch_name', with: 'deploy_keys'
-    fill_in 'ref', with: 'master'
+    select_branch('master')
     click_button 'Create branch'
   end
 
   step 'I submit new branch form with invalid name' do
     fill_in 'branch_name', with: '1.0 stable'
-    fill_in 'ref', with: 'master'
-    click_button 'Create branch'
-  end
-
-  step 'I submit new branch form with invalid reference' do
-    fill_in 'branch_name', with: 'foo'
-    fill_in 'ref', with: 'foo'
+    page.find("body").click # defocus the branch_name input
+    select_branch('master')
     click_button 'Create branch'
   end
 
   step 'I submit new branch form with branch that already exists' do
     fill_in 'branch_name', with: 'master'
-    fill_in 'ref', with: 'master'
+    select_branch('master')
     click_button 'Create branch'
   end
 
@@ -63,10 +58,6 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   step 'I should see new an error that branch is invalid' do
     expect(page).to have_content 'Branch name is invalid'
     expect(page).to have_content "can't contain spaces"
-  end
-
-  step 'I should see new an error that ref is invalid' do
-    expect(page).to have_content 'Invalid reference name'
   end
 
   step 'I should see new an error that branch already exists' do
@@ -80,12 +71,19 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step "I click branch 'improve/awesome' delete link" do
     page.within '.js-branch-improve\/awesome' do
-      find('.btn-remove').click
-      sleep 0.05
+      accept_alert { find('.btn-remove').click }
     end
   end
 
   step "I should not see branch 'improve/awesome'" do
-    expect(page.all(visible: true)).not_to have_content 'improve/awesome'
+    expect(page).to have_css('.js-branch-improve\\/awesome', visible: :hidden)
+  end
+
+  def select_branch(branch_name)
+    find('.git-revision-dropdown-toggle').click
+
+    page.within '#new-branch-form .dropdown-menu' do
+      click_link branch_name
+    end
   end
 end

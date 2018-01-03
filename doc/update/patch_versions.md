@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Universal update guide for patch versions
 
 ## Select Version to Install
@@ -14,6 +18,7 @@ user on the database version)
 
 ```bash
 cd /home/git/gitlab
+
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
@@ -32,28 +37,13 @@ current version with `cat VERSION`).
 
 ```bash
 cd /home/git/gitlab
+
 sudo -u git -H git fetch --all
-sudo -u git -H git checkout -- Gemfile.lock db/schema.rb
+sudo -u git -H git checkout -- Gemfile.lock db/schema.rb locale
 sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
 
-### 3. Update gitlab-shell to the corresponding version
-
-```bash
-cd /home/git/gitlab-shell
-sudo -u git -H git fetch
-sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
-```
-
-### 4. Update gitlab-workhorse to the corresponding version
-
-```bash
-cd /home/git/gitlab
-
-sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
-```
-
-### 5. Install libs, migrations, etc.
+### 3. Install libs, migrations, etc.
 
 ```bash
 cd /home/git/gitlab
@@ -70,22 +60,56 @@ sudo -u git -H bundle clean
 # Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
+# Compile GetText PO files
+# Internationalization was added in `v9.2.0` so these commands are only
+# required for versions equal or major to it.
+sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
+sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+
 # Clean up assets and cache
-sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production
 ```
 
-### 6. Start application
+### 4. Update gitlab-workhorse to the corresponding version
+
+```bash
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
+```
+
+### 5. Update gitaly to the corresponding version
+
+```bash
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+```
+
+### 6. Update gitlab-shell to the corresponding version
+
+```bash
+cd /home/git/gitlab-shell
+
+sudo -u git -H git fetch --all --tags
+sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
+sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
+```
+
+### 7. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 7. Check application status
+### 8. Check application status
 
 Check if GitLab and its environment are configured correctly:
 
 ```bash
+cd /home/git/gitlab
+
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 

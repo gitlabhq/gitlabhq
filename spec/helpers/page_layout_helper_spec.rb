@@ -40,15 +40,27 @@ describe PageLayoutHelper do
     end
   end
 
+  describe 'favicon' do
+    it 'defaults to favicon.ico' do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+      expect(helper.favicon).to eq 'favicon.ico'
+    end
+
+    it 'has blue favicon for development' do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+      expect(helper.favicon).to eq 'favicon-blue.ico'
+    end
+  end
+
   describe 'page_image' do
     it 'defaults to the GitLab logo' do
-      expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+      expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
     end
 
     %w(project user group).each do |type|
       context "with @#{type} assigned" do
         it "uses #{type.titlecase} avatar if available" do
-          object = double(avatar_url: 'http://example.com/uploads/avatar.png')
+          object = double(avatar_url: 'http://example.com/uploads/-/system/avatar.png')
           assign(type, object)
 
           expect(helper.page_image).to eq object.avatar_url
@@ -58,13 +70,13 @@ describe PageLayoutHelper do
           object = double(avatar_url: nil)
           assign(type, object)
 
-          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
         end
       end
 
       context "with no assignments" do
         it 'falls back to the default' do
-          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
         end
       end
     end
@@ -74,8 +86,8 @@ describe PageLayoutHelper do
     it 'raises ArgumentError when given more than two attributes' do
       map = { foo: 'foo', bar: 'bar', baz: 'baz' }
 
-      expect { helper.page_card_attributes(map) }.
-        to raise_error(ArgumentError, /more than two attributes/)
+      expect { helper.page_card_attributes(map) }
+        .to raise_error(ArgumentError, /more than two attributes/)
     end
 
     it 'rejects blank values' do

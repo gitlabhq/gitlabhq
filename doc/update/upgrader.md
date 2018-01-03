@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab Upgrader (deprecated)
 
 *DEPRECATED* We recommend to [switch to the Omnibus package and repository server](https://about.gitlab.com/update/) instead of using this script.
@@ -60,6 +64,7 @@ GitLab Shell might be outdated, running the commands below ensures you're using 
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
 sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
+sudo -u git -H sh -c 'if [ -x bin/compile ] ; then bin/compile ; fi'
 ```
 
 ## One line upgrade command
@@ -78,6 +83,7 @@ cd /home/git/gitlab; \
   cd /home/git/gitlab-shell; \
   sudo -u git -H git fetch; \
   sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`; \
+  sudo -u git -H sh -c 'if [ -x bin/compile ] ; then bin/compile ; fi'; \
   cd /home/git/gitlab; \
   sudo service gitlab start; \
   sudo service nginx restart; \

@@ -1,10 +1,7 @@
 # GitLab Container Registry administration
 
-> [Introduced][ce-4040] in GitLab 8.8.
-
----
-
 > **Notes:**
+- [Introduced][ce-4040] in GitLab 8.8.
 - Container Registry manifest `v1` support was added in GitLab 8.9 to support
   Docker versions earlier than 1.10.
 - This document is about the admin guide. To learn how to use GitLab Container
@@ -115,7 +112,7 @@ GitLab from source respectively.
 
 >**Note:**
 Be careful to choose a port different than the one that Registry listens to (`5000` by default),
-otherwise you will run into conflicts .
+otherwise you will run into conflicts.
 
 ---
 
@@ -379,6 +376,10 @@ Read more about the individual driver's config options in the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
 
+> **Important** Enabling storage driver other than `filesystem` would mean
+that your Docker client needs to be able to access the storage backend directly.
+So you must use an address that resolves and is accessible outside GitLab server.
+
 ---
 
 **Omnibus GitLab installations**
@@ -462,18 +463,146 @@ If Registry is enabled in your GitLab instance, but you don't need it for your
 project, you can disable it from your project's settings. Read the user guide
 on how to achieve that.
 
+## Disable Container Registry but use GitLab as an auth endpoint
+
+**Omnibus GitLab**
+
+You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
+
+1. Open `/etc/gitlab/gitlab.rb` and set necessary configurations:
+
+    ```ruby
+    gitlab_rails['registry_enabled'] = true
+    gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+    gitlab_rails['registry_port'] = "5005"
+    gitlab_rails['registry_api_url'] = "http://localhost:5000"
+    gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
+    gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+    ```
+
+1. A certificate keypair is required for GitLab and the Container Registry to
+   communicate securely.  By default omnibus-gitlab will generate one keypair,
+   which is saved to `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key`.
+   When using an non-bundled Container Registry, you will need to supply a
+   custom certificate key. To do that, add the following to
+   `/etc/gitlab/gitlab.rb`
+
+    ```ruby
+    gitlab_rails['registry_key_path'] = "/custom/path/to/registry-key.key"
+    # registry['internal_key'] should contain the contents of the custom key
+    # file. Line breaks in the key file should be marked using `\n` character
+    # Example:
+    registry['internal_key'] = "---BEGIN RSA PRIVATE KEY---\nMIIEpQIBAA\n"
+    ```
+
+    **Note:** The file specified at `registry_key_path` gets populated with the
+    content specified by `internal_key`, each time reconfigure is executed. If
+    no file is specified, omnibus-gitlab will default it to
+    `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and will populate
+    it.
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+**Installations from source**
+
+1. Open `/home/git/gitlab/config/gitlab.yml`, and edit the configuration settings under `registry`:
+
+    ```
+    ## Container Registry
+
+    registry:
+      enabled: true
+      host: "registry.gitlab.example.com"
+      port: "5005"
+      api_url: "http://localhost:5000"
+      path: /var/opt/gitlab/gitlab-rails/shared/registry
+      key: /var/opt/gitlab/gitlab-rails/certificate.key
+      issuer: omnibus-gitlab-issuer
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+
 ## Storage limitations
 
 Currently, there is no storage limitation, which means a user can upload an
 infinite amount of Docker images with arbitrary sizes. This setting will be
 configurable in future releases.
 
-## Changelog
+## Configure Container Registry notifications
 
-**GitLab 8.8 ([source docs][8-8-docs])**
+You can configure the Container Registry to send webhook notifications in
+response to events happening within the registry.
 
-- GitLab Container Registry feature was introduced.
+Read more about the Container Registry notifications config options in the
+[Docker Registry notifications documentation][notifications-config].
 
+>**Note:**
+Multiple endpoints can be configured for the Container Registry.
+
+
+**Omnibus GitLab installations**
+
+To configure a notification endpoint in Omnibus:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['notifications'] = [
+      {
+        'name' => 'test_endpoint',
+        'url' => 'https://gitlab.example.com/notify',
+        'timeout' => '500ms',
+        'threshold' => 5,
+        'backoff' => '1s',
+        'headers' => {
+          "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
+        }
+      }
+    ]
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**Installations from source**
+
+Configuring the notification endpoint is done in your registry config YML file created
+when you [deployed your docker registry][registry-deploy].
+
+Example:
+
+```
+notifications:
+  endpoints:
+    - name: alistener
+      disabled: false
+      url: https://my.listener.com/event
+      headers: <http.Header>
+      timeout: 500
+      threshold: 5
+      backoff: 1000
+```
+
+## Using self-signed certificates with Container Registry
+
+If you're using a self-signed certificate with your Container Registry, you
+might encounter issues during the CI jobs like the following:
+
+```
+Error response from daemon: Get registry.example.com/v1/users/: x509: certificate signed by unknown authority
+```
+
+The Docker daemon running the command expects a cert signed by a recognized CA,
+thus the error above.
+
+While GitLab doesn't support using self-signed certificates with Container
+Registry out of the box, it is possible to make it work if you follow
+[Docker's documentation][docker-insecure]. You may find some additional
+information in [issue 18239][ce-18239].
+
+[ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
+[docker-insecure]: https://docs.docker.com/registry/insecure/#using-self-signed-certificates
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate
@@ -488,3 +617,5 @@ configurable in future releases.
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl
 [existing-domain]: #configure-container-registry-under-an-existing-gitlab-domain
 [new-domain]: #configure-container-registry-under-its-own-domain
+[notifications-config]: https://docs.docker.com/registry/notifications/
+[registry-notifications-config]: https://docs.docker.com/registry/configuration/#notifications

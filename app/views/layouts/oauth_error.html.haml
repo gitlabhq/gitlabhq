@@ -1,0 +1,127 @@
+!!! 5
+%html{ lang: "en" }
+  %head
+    %meta{ :content => "width=device-width, initial-scale=1, maximum-scale=1", :name => "viewport" }
+    %title= yield(:title)
+    :css
+      body {
+        color: #666;
+        text-align: center;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin: auto;
+        font-size: 16px;
+      }
+
+      .container {
+        margin: auto 20px;
+      }
+
+      h3 {
+        color: #456;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      p {
+        max-width: 470px;
+        margin: 16px auto;
+      }
+
+      .subtitle {
+        margin: 0 auto 20px;
+      }
+
+      svg {
+        width: 280px;
+        height: 280px;
+        display: block;
+        margin: 40px auto;
+      }
+
+      .tv-screen path {
+        animation: move-lines 1s linear infinite;
+      }
+
+
+      @keyframes move-lines {
+        0% {transform: translateY(0)}
+        50% {transform: translateY(-10px)}
+        100% {transform: translateY(-20px)}
+      }
+
+      .tv-screen path:nth-child(1) {
+        animation-delay: .2s
+      }
+
+      .tv-screen path:nth-child(2) {
+        animation-delay: .4s
+      }
+
+      .tv-screen path:nth-child(3) {
+        animation-delay: .6s
+      }
+
+      .tv-screen path:nth-child(4) {
+        animation-delay: .8s
+      }
+
+      .tv-screen path:nth-child(5) {
+        animation-delay: 2s
+      }
+
+      .text-422 {
+        animation: flicker 1s infinite;
+      }
+
+      @keyframes flicker {
+        0% {opacity: 0.3;}
+        10% {opacity: 1;}
+        15% {opacity: .3;}
+        20% {opacity: .5;}
+        25% {opacity: 1;}
+      }
+
+      .light {
+        color: #8D8D8D;
+      }
+
+      hr {
+        max-width: 600px;
+        margin: 18px auto;
+        border: 0;
+        border-top: 1px solid #EEE;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        border-radius: 3px;
+        border: 1px solid;
+        display: inline-block;
+        text-decoration: none;
+        margin: 4px 8px;
+        font-size: 14px;
+      }
+
+      .primary {
+        color: #fff;
+        background-color: #1aaa55;
+        border-color: #168f48;
+      }
+
+      .primary:hover {
+        background-color: #168f48;
+      }
+
+      .secondary {
+        color: #1aaa55;
+        background-color: #fff;
+        border-color: #1aaa55;
+      }
+
+      .secondary:hover {
+        background-color: #f3fff8;
+      }
+
+%body
+  = yield

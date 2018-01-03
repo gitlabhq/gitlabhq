@@ -3,6 +3,8 @@
 This styleguide recommends best practices to improve documentation and to keep
 it organized and easy to find.
 
+See also [writing documentation](writing_documentation.md).
+
 ## Location and naming of documents
 
 >**Note:**
@@ -16,6 +18,10 @@ like `docs.gitlab.com/user/project/merge_requests.html`. With this pattern,
 you can immediately tell that you are navigating a user related documentation
 and is about the project and its merge requests.
 
+Do not create summaries of similar types of content (e.g. an index of all articles, videos, etc.),
+rather organise content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
 The table below shows what kind of documentation goes where.
 
 | Directory | What belongs here |
@@ -27,6 +33,8 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/` | Legal documents about contributing to GitLab. |
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
+| `doc/articles/` | [Technical Articles](writing_documentation.md#technical-articles): user guides, admin guides, technical overviews, tutorials (`doc/articles/article-title/index.md`). |
 
 ---
 
@@ -56,6 +64,10 @@ The table below shows what kind of documentation goes where.
          own document located at `doc/user/admin_area/settings/`. For example,
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+1. For technical articles, place their images under `doc/articles/article-title/img/`.
 
 ---
 
@@ -97,21 +109,20 @@ merge request.
   considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`,
-  `@SeanPackham`. This is to ensure that no document with wrong heading is going
+  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`.
+  This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected
 - Leave exactly one newline after a heading
 
 ## Links
 
-- If a link makes the paragraph to span across multiple lines, do not use
-  the regular Markdown approach: `[Text](https://example.com)`. Instead use
-  `[Text][identifier]` and at the very bottom of the document add:
-  `[identifier]: https://example.com`. This is another way to create Markdown
-  links which keeps the document clear and concise. Bonus points if you also
-  add an alternative text: `[identifier]: https://example.com "Alternative text"`
-  that appears when hovering your mouse on a link
+- Use the regular inline link markdown markup `[Text](https://example.com)`.
+  It's easier to read, review, and maintain.
+- If there's a link that repeats several times through the same document,
+  you can use `[Text][identifier]` and at the bottom of the section or the
+  document add: `[identifier]: https://example.com`, in which case, we do
+  encourage you to also add an alternative text: `[identifier]: https://example.com "Alternative text"` that appears when hovering your mouse on a link.
 
 ### Linking to inline docs
 
@@ -163,12 +174,6 @@ You can combine one or more of the following:
     = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
     ```
 
-1. **Underlining a link.**
-
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions'), class: 'underlined-link'
-    ```
-
 1. **Using links inline of some text.**
 
     ```haml
@@ -190,10 +195,17 @@ You can combine one or more of the following:
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`.
+  could be `twitter_login_screen.png`. [**Exception**: images for
+  [articles](writing_documentation.md#technical-articles) should be
+  put in a directory called `img` underneath `/articles/article_title/img/`, therefore,
+  there's no need to prepend the document name to their filenames.]
 - Images should have a specific, non-generic name that will differentiate them.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
+- Compress all images with <https://tinypng.com/> or similar tool.
+- Compress gifs with <https://ezgif.com/optimize> or similar toll.
+- Images should be used (only when necessary) to _illustrate_ the description
+of a process, not to _replace_ it.
 
 Inside the document:
 
@@ -289,10 +301,10 @@ GitLab.com or http://docs.gitlab.com. Make sure this is discussed with the
 Documentation team beforehand.
 
 If you indeed need to change a document's location, do NOT remove the old
-document, but rather put a text in it that points to the new location, like:
+document, but rather replace all of its contents with a new line:
 
 ```
-This document was moved to [path/to/new_doc.md](path/to/new_doc.md).
+This document was moved to [another location](path/to/new_doc.md).
 ```
 
 where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
@@ -306,7 +318,7 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
 1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
 
     ```
-    This document was moved to [administration/lfs.md](../../administration/lfs.md).
+    This document was moved to [another location](../../administration/lfs.md).
     ```
 
 1. Find and replace any occurrences of the old location with the new one.
@@ -373,8 +385,8 @@ the style below as a guide:
 1. Save the file and [restart] GitLab for the changes to take effect.
 
 
-[reconfigure]: path/to/administration/gitlab_restart.md#omnibus-gitlab-reconfigure
-[restart]: path/to/administration/gitlab_restart.md#installations-from-source
+[reconfigure]: path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: path/to/administration/restart_gitlab.md#installations-from-source
 ````
 
 In this case:
@@ -444,12 +456,12 @@ Rendered example:
 
 ### cURL commands
 
-- Use `https://gitlab.example.com/api/v3/` as an endpoint.
-- Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
+- Use `https://gitlab.example.com/api/v4/` as an endpoint.
+- Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
 - Use double quotes to the URL when it includes additional parameters.
-- Prefer to use examples using the private token and don't pass data of
+- Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
 | Methods | Description |
@@ -468,7 +480,7 @@ Below is a set of [cURL][] examples that you can use in the API documentation.
 Get the details of a group:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/gitlab-org
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/gitlab-org
 ```
 
 #### cURL example with parameters passed in the URL
@@ -476,7 +488,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 Create a new project under the authenticated user's namespace:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects?name=foo"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
 #### Post data using cURL's --data
@@ -486,7 +498,7 @@ cURL's `--data` option. The example below will create a new project `foo` under
 the authenticated user's namespace.
 
 ```bash
-curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
+curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
 ```
 
 #### Post data using JSON content
@@ -495,7 +507,7 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://g
 and double quotes.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v4/groups
 ```
 
 #### Post data using form-data
@@ -504,7 +516,7 @@ Instead of using JSON or urlencode you can use multipart/form-data which
 properly handles data encoding:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v3/users/25/keys
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v4/users/25/keys
 ```
 
 The above example is run by and administrator and will add an SSH public key
@@ -518,7 +530,7 @@ contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/42/issues?title=Hello%20Dude"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
 ```
 
 Use `%2F` for slashes (`/`).
@@ -530,7 +542,7 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 `example.net`, you would do something like this:
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v3/application/settings
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 
 [cURL]: http://curl.haxx.se/ "cURL website"

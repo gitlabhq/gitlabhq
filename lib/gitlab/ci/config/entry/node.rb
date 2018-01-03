@@ -6,7 +6,7 @@ module Gitlab
         # Base abstract class for each configuration entry node.
         #
         class Node
-          class InvalidError < StandardError; end
+          InvalidError = Class.new(StandardError)
 
           attr_reader :config, :metadata
           attr_accessor :key, :parent, :description
@@ -16,8 +16,9 @@ module Gitlab
             @metadata = metadata
             @entries = {}
 
-            @validator = self.class.validator.new(self)
-            @validator.validate(:new)
+            self.class.aspects.to_a.each do |aspect|
+              instance_exec(&aspect)
+            end
           end
 
           def [](key)
@@ -47,7 +48,7 @@ module Gitlab
           end
 
           def errors
-            @validator.messages + descendants.flat_map(&:errors)
+            []
           end
 
           def value
@@ -70,12 +71,29 @@ module Gitlab
             true
           end
 
+          def location
+            name = @key.presence || self.class.name.to_s.demodulize
+                                        .underscore.humanize.downcase
+
+            ancestors.map(&:key).append(name).compact.join(':')
+          end
+
+          def inspect
+            val = leaf? ? config : descendants
+            unspecified = specified? ? '' : '(unspecified) '
+            "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
+          end
+
           def self.default
           end
 
-          def self.validator
-            Validator
+          def self.aspects
+            @aspects ||= []
           end
+
+          private
+
+          attr_reader :entries
         end
       end
     end

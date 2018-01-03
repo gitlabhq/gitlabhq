@@ -104,7 +104,7 @@
 }
 
 .color-label {
-  padding: 3px 7px;
+  padding: 3px $label-padding;
   border-radius: $label-border-radius;
 }
 
@@ -116,12 +116,29 @@
 }
 
 .manage-labels-list {
+  > li:not(.empty-message):not(.is-not-draggable) {
+    background-color: $white-light;
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+
+    &:active {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+    }
+
+    &.sortable-ghost {
+      opacity: 0.3;
+    }
+  }
+
   .btn-action {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
 
     .fa {
       font-size: 18px;
       vertical-align: middle;
+      pointer-events: none;
     }
 
     &:hover {
@@ -203,6 +220,10 @@
     z-index: 3;
     border-radius: $label-border-radius;
     padding: 6px 10px 6px 9px;
+
+    &:hover {
+      box-shadow: inset 0 0 0 80px $label-remove-border;
+    }
   }
 
   .btn {
@@ -253,5 +274,14 @@
     .label-subscribe-button-loading {
       display: block;
     }
+  }
+}
+
+.label-link {
+  display: inline-block;
+  vertical-align: top;
+
+  .label {
+    vertical-align: inherit;
   }
 }

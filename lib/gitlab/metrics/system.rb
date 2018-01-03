@@ -11,7 +11,7 @@ module Gitlab
           mem   = 0
           match = File.read('/proc/self/status').match(/VmRSS:\s+(\d+)/)
 
-          if match and match[1]
+          if match && match[1]
             mem = match[1].to_f * 1024
           end
 
@@ -34,28 +34,28 @@ module Gitlab
       # THREAD_CPUTIME is not supported on OS X
       if Process.const_defined?(:CLOCK_THREAD_CPUTIME_ID)
         def self.cpu_time
-          Process.
-            clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :millisecond)
+          Process
+            .clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :float_second)
         end
       else
         def self.cpu_time
-          Process.
-            clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :millisecond)
+          Process
+            .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
         end
       end
 
       # Returns the current real time in a given precision.
       #
-      # Returns the time as a Float.
-      def self.real_time(precision = :millisecond)
+      # Returns the time as a Float for precision = :float_second.
+      def self.real_time(precision = :float_second)
         Process.clock_gettime(Process::CLOCK_REALTIME, precision)
       end
 
-      # Returns the current monotonic clock time in a given precision.
+      # Returns the current monotonic clock time as seconds with microseconds precision.
       #
       # Returns the time as a Float.
-      def self.monotonic_time(precision = :millisecond)
-        Process.clock_gettime(Process::CLOCK_MONOTONIC, precision)
+      def self.monotonic_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
       end
     end
   end

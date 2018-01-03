@@ -1,13 +1,13 @@
 xml.entry do
-  xml.id      namespace_project_issue_url(issue.project.namespace, issue.project, issue)
-  xml.link    href: namespace_project_issue_url(issue.project.namespace, issue.project, issue)
+  xml.id      project_issue_url(issue.project, issue)
+  xml.link    href: project_issue_url(issue.project, issue)
   xml.title   truncate(issue.title, length: 80)
-  xml.updated issue.created_at.xmlschema
+  xml.updated issue.updated_at.xmlschema
   xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
 
   xml.author do
     xml.name issue.author_name
-    xml.email issue.author_email
+    xml.email issue.author_public_email
   end
 
   xml.summary issue.title
@@ -23,10 +23,19 @@ xml.entry do
     end
   end
 
-  if issue.assignee
+  if issue.assignees.any?
+    xml.assignees do
+      issue.assignees.each do |assignee|
+        xml.assignee do
+          xml.name assignee.name
+          xml.email assignee.public_email
+        end
+      end
+    end
+
     xml.assignee do
-      xml.name issue.assignee.name
-      xml.email issue.assignee.email
+      xml.name issue.assignees.first.name
+      xml.email issue.assignees.first.public_email
     end
   end
 end

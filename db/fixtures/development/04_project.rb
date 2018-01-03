@@ -1,12 +1,12 @@
-require 'sidekiq/testing'
+require './spec/support/sidekiq'
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     project_urls = [
       'https://gitlab.com/gitlab-org/gitlab-test.git',
-      'https://gitlab.com/gitlab-org/gitlab-ce.git',
-      'https://gitlab.com/gitlab-org/gitlab-ci.git',
       'https://gitlab.com/gitlab-org/gitlab-shell.git',
+      'https://gitlab.com/gnuwget/wget2.git',
+      'https://gitlab.com/Commit451/LabCoat.git',
       'https://github.com/documentcloud/underscore.git',
       'https://github.com/twitter/flight.git',
       'https://github.com/twitter/typeahead.js.git',
@@ -71,7 +71,9 @@ Sidekiq::Testing.inline! do
       # hook won't run until after the fixture is loaded. That is too late
       # since the Sidekiq::Testing block has already exited. Force clearing
       # the `after_commit` queue to ensure the job is run now.
-      project.send(:_run_after_commit_queue)
+      Sidekiq::Worker.skipping_transaction_check do
+        project.send(:_run_after_commit_queue)
+      end
 
       if project.valid? && project.valid_repo?
         print '.'

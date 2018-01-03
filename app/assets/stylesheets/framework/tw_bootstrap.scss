@@ -86,6 +86,16 @@
   position: fixed;
 }
 
+/*
+ * Fix <summary> elements on firefox
+ * See https://github.com/necolas/normalize.css/issues/640
+ * and https://github.com/twbs/bootstrap/issues/21060
+ *
+ */
+summary {
+  display: list-item;
+}
+
 @import "bootstrap/responsive-utilities";
 
 // Labels
@@ -93,12 +103,12 @@
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   display: inline-block;
 
   &.label-gray {
     background-color: $label-gray-bg;
-    color: $gl-gray;
+    color: $gl-text-color;
     text-shadow: none;
   }
 
@@ -155,12 +165,20 @@
     .panel-heading {
       padding: 6px 15px;
       font-size: 13px;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
 
       a {
         color: $panel-heading-link-color;
       }
     }
+  }
+
+  &.panel-without-border {
+    border: 0;
+  }
+
+  &.panel-without-margin {
+    margin: 0;
   }
 }
 
@@ -175,33 +193,6 @@
     color: $white-light;
     text-decoration: underline;
   }
-}
-
-// Typography =================================================================
-
-.text-primary,
-.text-primary:hover {
-  color: $brand-primary;
-}
-
-.text-success,
-.text-success:hover {
-  color: $brand-success;
-}
-
-.text-danger,
-.text-danger:hover {
-  color: $brand-danger;
-}
-
-.text-warning,
-.text-warning:hover {
-  color: $brand-warning;
-}
-
-.text-info,
-.text-info:hover {
-  color: $brand-info;
 }
 
 // Prevent datetimes on tooltips to break into two lines

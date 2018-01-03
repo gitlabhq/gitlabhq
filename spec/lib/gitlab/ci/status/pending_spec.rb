@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Pending do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'pending' }
+    it { expect(subject.text).to eq 'pending' }
   end
 
   describe '#label' do
@@ -14,7 +14,11 @@ describe Gitlab::Ci::Status::Pending do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_pending' }
+    it { expect(subject.icon).to eq 'status_pending' }
+  end
+
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_pending' }
   end
 
   describe '#group' do

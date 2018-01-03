@@ -1,0 +1,3 @@
+development: unix:/path/to/old/redis.shared_state.sock
+test: unix:/path/to/old/redis.shared_state.sock
+production: unix:/path/to/old/redis.shared_state.sock

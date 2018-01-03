@@ -6,8 +6,8 @@ feature 'test coverage badge' do
 
   context 'when user has access to view badge' do
     background do
-      project.team << [user, :developer]
-      login_as(user)
+      project.add_developer(user)
+      sign_in(user)
     end
 
     scenario 'user requests coverage badge image for pipeline' do
@@ -45,17 +45,17 @@ feature 'test coverage badge' do
   end
 
   context 'when user does not have access to view badge' do
-    background { login_as(user) }
+    background { sign_in(user) }
 
     scenario 'user requests test coverage badge image' do
       show_test_coverage_badge
 
-      expect(page).to have_http_status(404)
+      expect(page).to have_gitlab_http_status(404)
     end
   end
 
   def create_pipeline
-    opts = { project: project, ref: 'master', sha: project.commit.id }
+    opts = { project: project }
 
     create(:ci_pipeline, opts).tap do |pipeline|
       yield pipeline
@@ -70,8 +70,7 @@ feature 'test coverage badge' do
   end
 
   def show_test_coverage_badge(job: nil)
-    visit coverage_namespace_project_badges_path(
-      project.namespace, project, ref: :master, job: job, format: :svg)
+    visit coverage_project_badges_path(project, ref: :master, job: job, format: :svg)
   end
 
   def expect_coverage_badge(coverage)

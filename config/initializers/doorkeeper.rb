@@ -6,9 +6,14 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     # Put your resource owner authentication logic here.
-    # Ensure user is redirected to redirect_uri after login
-    session[:user_return_to] = request.fullpath
-    current_user || redirect_to(new_user_session_url)
+    if current_user
+      current_user
+    else
+      # Ensure user is redirected to redirect_uri after login
+      session[:user_return_to] = request.fullpath
+      redirect_to(new_user_session_url)
+      nil
+    end
   end
 
   resource_owner_from_credentials do |routes|
@@ -53,7 +58,7 @@ Doorkeeper.configure do
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
   default_scopes(*Gitlab::Auth::DEFAULT_SCOPES)
-  optional_scopes(*Gitlab::Auth::OPTIONAL_SCOPES)
+  optional_scopes(*Gitlab::Auth.optional_scopes)
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -82,16 +87,14 @@ Doorkeeper.configure do
   # "password"           => Resource Owner Password Credentials Grant Flow
   # "client_credentials" => Client Credentials Grant Flow
   #
-  # If not specified, Doorkeeper enables all the four grant flows.
-  #
-  grant_flows %w(authorization_code password client_credentials)
+  grant_flows %w(authorization_code implicit password client_credentials)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
   # For example if dealing with trusted a application.
-  # skip_authorization do |resource_owner, client|
-  #   client.superapp? or resource_owner.admin?
-  # end
+  skip_authorization do |resource_owner, client|
+    client.application.trusted?
+  end
 
   # WWW-Authenticate Realm (default "Doorkeeper").
   # realm "Doorkeeper"

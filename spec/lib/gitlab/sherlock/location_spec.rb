@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::Location, lib: true do
+describe Gitlab::Sherlock::Location do
   let(:location) { described_class.new(__FILE__, 1) }
 
   describe 'from_ruby_location' do

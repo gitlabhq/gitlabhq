@@ -1,17 +1,28 @@
 module Search
   class GlobalService
     attr_accessor :current_user, :params
+    attr_reader :default_project_filter
 
     def initialize(user, params)
       @current_user, @params = user, params.dup
+      @default_project_filter = true
     end
 
     def execute
-      group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
-      projects = ProjectsFinder.new.execute(current_user)
-      projects = projects.in_namespace(group.id) if group
+      Gitlab::SearchResults.new(current_user, projects, params[:search],
+                                default_project_filter: default_project_filter)
+    end
 
-      Gitlab::SearchResults.new(current_user, projects, params[:search])
+    def projects
+      @projects ||= ProjectsFinder.new(current_user: current_user).execute
+    end
+
+    def scope
+      @scope ||= begin
+        allowed_scopes = %w[issues merge_requests milestones]
+
+        allowed_scopes.delete(params[:scope]) { 'projects' }
+      end
     end
   end
 end

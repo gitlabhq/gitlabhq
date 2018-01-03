@@ -40,7 +40,7 @@ module Gitlab
     end
 
     def highlighted_lines
-      @blob.load_all_data!(repository)
+      @blob.load_all_data!
       @highlighted_lines ||=
         Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: repository).lines
     end

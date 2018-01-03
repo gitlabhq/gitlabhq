@@ -8,11 +8,11 @@ module API
     resource :snippets do
       helpers do
         def snippets_for_current_user
-          SnippetsFinder.new.execute(current_user, filter: :by_user, user: current_user)
+          SnippetsFinder.new(current_user, author: current_user).execute
         end
 
         def public_snippets
-          SnippetsFinder.new.execute(current_user, filter: :public)
+          SnippetsFinder.new(current_user, visibility: Snippet::PUBLIC).execute
         end
       end
 
@@ -58,14 +58,17 @@ module API
         requires :title, type: String, desc: 'The title of a snippet'
         requires :file_name, type: String, desc: 'The name of a snippet file'
         requires :content, type: String, desc: 'The content of a snippet'
-        optional :visibility_level, type: Integer,
-                                    values: Gitlab::VisibilityLevel.values,
-                                    default: Gitlab::VisibilityLevel::INTERNAL,
-                                    desc: 'The visibility level of the snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              default: 'internal',
+                              desc: 'The visibility of the snippet'
       end
       post do
-        attrs = declared_params(include_missing: false)
+        attrs = declared_params(include_missing: false).merge(request: request, api: true)
         snippet = CreateSnippetService.new(nil, current_user, attrs).execute
+
+        render_spam_error! if snippet.spam?
 
         if snippet.persisted?
           present snippet, with: Entities::PersonalSnippet
@@ -83,19 +86,24 @@ module API
         optional :title, type: String, desc: 'The title of a snippet'
         optional :file_name, type: String, desc: 'The name of a snippet file'
         optional :content, type: String, desc: 'The content of a snippet'
-        optional :visibility_level, type: Integer,
-                                    values: Gitlab::VisibilityLevel.values,
-                                    desc: 'The visibility level of the snippet'
-        at_least_one_of :title, :file_name, :content, :visibility_level
+        optional :description, type: String, desc: 'The description of a snippet'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the snippet'
+        at_least_one_of :title, :file_name, :content, :visibility
       end
       put ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         return not_found!('Snippet') unless snippet
+
         authorize! :update_personal_snippet, snippet
 
-        attrs = declared_params(include_missing: false)
+        attrs = declared_params(include_missing: false).merge(request: request, api: true)
 
         UpdateSnippetService.new(nil, current_user, snippet, attrs).execute
+
+        render_spam_error! if snippet.spam?
+
         if snippet.persisted?
           present snippet, with: Entities::PersonalSnippet
         else
@@ -113,9 +121,10 @@ module API
       delete ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         return not_found!('Snippet') unless snippet
+
         authorize! :destroy_personal_snippet, snippet
-        snippet.destroy
-        no_content!
+
+        destroy_conditionally!(snippet)
       end
 
       desc 'Get a raw snippet' do
@@ -131,6 +140,22 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         present snippet.content
+      end
+
+      desc 'Get the user agent details for a snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a snippet'
+      end
+      get ":id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

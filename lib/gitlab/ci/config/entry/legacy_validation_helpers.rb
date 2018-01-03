@@ -21,11 +21,23 @@ module Gitlab
 
           def validate_variables(variables)
             variables.is_a?(Hash) &&
-              variables.all? { |key, value| validate_string(key) && validate_string(value) }
+              variables.flatten.all? do |value|
+                validate_string(value) || validate_integer(value)
+              end
+          end
+
+          def validate_integer(value)
+            value.is_a?(Integer)
           end
 
           def validate_string(value)
             value.is_a?(String) || value.is_a?(Symbol)
+          end
+
+          def validate_regexp(value)
+            !value.nil? && Regexp.new(value.to_s) && true
+          rescue RegexpError, TypeError
+            false
           end
 
           def validate_string_or_regexp(value)
@@ -33,12 +45,10 @@ module Gitlab
             return false unless value.is_a?(String)
 
             if value.first == '/' && value.last == '/'
-              Regexp.new(value[1...-1])
+              validate_regexp(value[1...-1])
             else
               true
             end
-          rescue RegexpError
-            false
           end
 
           def validate_boolean(value)

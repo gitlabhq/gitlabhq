@@ -5,8 +5,8 @@
 class DeploymentService < Service
   default_value_for :category, 'deployment'
 
-  def supported_events
-    []
+  def self.supported_events
+    %w()
   end
 
   def predefined_variables
@@ -29,5 +29,9 @@ class DeploymentService < Service
   # terminal
   def terminals(environment)
     raise NotImplementedError
+  end
+
+  def can_test?
+    false
   end
 end

@@ -18,15 +18,3 @@ p.details {
 pre.commit-message {
   white-space: pre-wrap;
 }
-
-.file-stats > a {
-  text-decoration: none;
-
-  > .new-file {
-    color: $notify-new-file;
-  }
-
-  > .deleted-file {
-    color: $notify-deleted-file;
-  }
-}

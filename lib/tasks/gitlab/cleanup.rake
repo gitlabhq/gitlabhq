@@ -1,12 +1,16 @@
 namespace :gitlab do
   namespace :cleanup do
+    HASHED_REPOSITORY_NAME = '@hashed'.freeze
+
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :environment  do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
-      namespaces = Namespace.pluck(:path)
-      Gitlab.config.repositories.storages.each do |name, git_base_path|
+      namespaces  = Namespace.pluck(:path)
+      namespaces << HASHED_REPOSITORY_NAME  # add so that it will be ignored
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        git_base_path = repository_storage['path']
         all_dirs = Dir.glob(git_base_path + '/*')
 
         puts git_base_path.color(:yellow)
@@ -25,7 +29,6 @@ namespace :gitlab do
         end
 
         all_dirs.each do |dir_path|
-
           if remove_flag
             if FileUtils.rm_rf dir_path
               puts "Removed...#{dir_path}".color(:red)
@@ -48,17 +51,22 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       move_suffix = "+orphaned+#{Time.now.to_i}"
-      Gitlab.config.repositories.storages.each do |name, repo_root|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_root = repository_storage['path']
         # Look for global repos (legacy, depth 1) and normal repos (depth 2)
         IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
           find.each_line do |path|
             path.chomp!
-            repo_with_namespace = path.
-              sub(repo_root, '').
-              sub(%r{^/*}, '').
-              chomp('.git').
-              chomp('.wiki')
-            next if Project.find_with_namespace(repo_with_namespace)
+            repo_with_namespace = path
+              .sub(repo_root, '')
+              .sub(%r{^/*}, '')
+              .chomp('.git')
+              .chomp('.wiki')
+
+            # TODO ignoring hashed repositories for now.  But revisit to fully support
+            # possible orphaned hashed repos
+            next if repo_with_namespace.start_with?("#{HASHED_REPOSITORY_NAME}/") || Project.find_by_full_path(repo_with_namespace)
+
             new_path = path + move_suffix
             puts path.inspect + ' -> ' + new_path.inspect
             File.rename(path, new_path)
@@ -74,6 +82,7 @@ namespace :gitlab do
 
       User.find_each do |user|
         next unless user.ldap_user?
+
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
         if Gitlab::LDAP::Access.allowed?(user)
           puts " [OK]".color(:green)
@@ -110,7 +119,7 @@ namespace :gitlab do
           next unless id > max_iid
 
           project.deployments.find(id).create_ref
-          rugged.references.delete(ref)
+          project.repository.delete_refs(ref)
         end
       end
     end

@@ -1,0 +1,8 @@
+- css_classes = %w(label label-verification-status)
+- css_classes << (verified ? 'verified': 'unverified')
+- text = verified ? 'Verified' : 'Unverified'
+
+.email-badge
+  .email-badge-email= email
+  %div{ class: css_classes }
+    = text

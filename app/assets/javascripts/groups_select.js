@@ -1,73 +1,86 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, padded-blocks, max-len */
-/* global Api */
+import Api from './api';
+import { normalizeCRLFHeaders } from './lib/utils/common_utils';
 
-(function() {
-  var slice = [].slice;
+export default function groupsSelect() {
+  // Needs to be accessible in rspec
+  window.GROUP_SELECT_PER_PAGE = 20;
+  $('.ajax-groups-select').each(function setAjaxGroupsSelect2() {
+    const $select = $(this);
+    const allAvailable = $select.data('all-available');
+    const skipGroups = $select.data('skip-groups') || [];
+    $select.select2({
+      placeholder: 'Search for a group',
+      multiple: $select.hasClass('multiselect'),
+      minimumInputLength: 0,
+      ajax: {
+        url: Api.buildUrl(Api.groupsPath),
+        dataType: 'json',
+        quietMillis: 250,
+        transport(params) {
+          return $.ajax(params)
+            .then((data, status, xhr) => {
+              const results = data || [];
 
-  this.GroupsSelect = (function() {
-    function GroupsSelect() {
-      $('.ajax-groups-select').each((function(_this) {
-        return function(i, select) {
-          var all_available, skip_groups;
-          all_available = $(select).data('all-available');
-          skip_groups = $(select).data('skip-groups') || [];
-          return $(select).select2({
-            placeholder: "Search for a group",
-            multiple: $(select).hasClass('multiselect'),
-            minimumInputLength: 0,
-            query: function(query) {
-              var options = { all_available: all_available, skip_groups: skip_groups };
-              return Api.groups(query.term, options, function(groups) {
-                var data;
-                data = {
-                  results: groups
-                };
-                return query.callback(data);
-              });
-            },
-            initSelection: function(element, callback) {
-              var id;
-              id = $(element).val();
-              if (id !== "") {
-                return Api.group(id, callback);
-              }
-            },
-            formatResult: function() {
-              var args;
-              args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-              return _this.formatResult.apply(_this, args);
-            },
-            formatSelection: function() {
-              var args;
-              args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-              return _this.formatSelection.apply(_this, args);
-            },
-            dropdownCssClass: "ajax-groups-dropdown",
-            // we do not want to escape markup since we are displaying html in results
-            escapeMarkup: function(m) {
-              return m;
-            }
-          });
-        };
-      })(this));
-    }
+              const headers = normalizeCRLFHeaders(xhr.getAllResponseHeaders());
+              const currentPage = parseInt(headers['X-PAGE'], 10) || 0;
+              const totalPages = parseInt(headers['X-TOTAL-PAGES'], 10) || 0;
+              const more = currentPage < totalPages;
 
-    GroupsSelect.prototype.formatResult = function(group) {
-      var avatar;
-      if (group.avatar_url) {
-        avatar = group.avatar_url;
-      } else {
-        avatar = gon.default_avatar_url;
-      }
-      return "<div class='group-result'> <div class='group-name'>" + group.name + "</div> <div class='group-path'>" + group.path + "</div> </div>";
-    };
+              return {
+                results,
+                pagination: {
+                  more,
+                },
+              };
+            })
+            .then(params.success)
+            .fail(params.error);
+        },
+        data(search, page) {
+          return {
+            search,
+            page,
+            per_page: window.GROUP_SELECT_PER_PAGE,
+            all_available: allAvailable,
+          };
+        },
+        results(data, page) {
+          if (data.length) return { results: [] };
 
-    GroupsSelect.prototype.formatSelection = function(group) {
-      return group.name;
-    };
+          const groups = data.length ? data : data.results || [];
+          const more = data.pagination ? data.pagination.more : false;
+          const results = groups.filter(group => skipGroups.indexOf(group.id) === -1);
 
-    return GroupsSelect;
+          return {
+            results,
+            page,
+            more,
+          };
+        },
+      },
+      // eslint-disable-next-line consistent-return
+      initSelection(element, callback) {
+        const id = $(element).val();
+        if (id !== '') {
+          return Api.group(id, callback);
+        }
+      },
+      formatResult(object) {
+        return `<div class='group-result'> <div class='group-name'>${object.full_name}</div> <div class='group-path'>${object.full_path}</div> </div>`;
+      },
+      formatSelection(object) {
+        return object.full_name;
+      },
+      dropdownCssClass: 'ajax-groups-dropdown select2-infinite',
+      // we do not want to escape markup since we are displaying html in results
+      escapeMarkup(m) {
+        return m;
+      },
+    });
 
-  })();
-
-}).call(this);
+    $select.on('select2-loaded', () => {
+      const dropdown = document.querySelector('.select2-infinite .select2-results');
+      dropdown.style.height = `${Math.floor(dropdown.scrollHeight)}px`;
+    });
+  });
+}

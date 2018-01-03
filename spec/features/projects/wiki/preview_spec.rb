@@ -7,7 +7,7 @@ feature 'Projects > Wiki > User previews changes', feature: true, js: true do
   # sample wiki contents for testing
   wiki_supported_formats = {
     'Markdown' => IO.read(Rails.root.join("spec", "fixtures", "sample.md")),
-    'AsciiDoc' => IO.read(Rails.root.join("spec", "fixtures", "sample.adoc")), 
+    'AsciiDoc' => IO.read(Rails.root.join("spec", "fixtures", "sample.adoc")),
     'RDoc' => IO.read(Rails.root.join("spec", "fixtures", "sample.rdoc"))
   }
 
@@ -81,7 +81,7 @@ feature 'Projects > Wiki > User previews changes', feature: true, js: true do
   shared_context 'using wiki' do |edit_wiki|
     # tests all supported formats
     wiki_supported_formats.each do |w_format, w_content|
-      context "user selects #{w_format}" do 
+      context "user selects #{w_format}" do
         wiki_slug_types.each do |slug_type, slug_data|
           context "when there are #{slug_type} in the page name" do
             it 'renders html as expected' do
@@ -98,7 +98,7 @@ feature 'Projects > Wiki > User previews changes', feature: true, js: true do
     end
   end
 
-  context 'when creating a new wiki page' do 
+  context 'when creating a new wiki page' do
     include_context 'using wiki', false
   end
 

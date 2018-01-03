@@ -1,144 +1,274 @@
 /**
  * Styles the GitLab application with a specific color theme
- *
- * $color-light  -
- * $color        -
- * $color-darker -
- * $color-dark   -
  */
-@mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
-  .page-with-sidebar {
-    .toggle-nav-collapse,
-    .pin-nav-btn {
-      color: $color-light;
 
-      &:hover {
-        color: $white-light;
+@mixin gitlab-theme($color-100, $color-200, $color-500, $color-700, $color-800, $color-900, $color-alternate) {
+  // Header
+
+  .navbar-gitlab {
+    background-color: $color-900;
+
+    .navbar-collapse {
+      color: $color-200;
+    }
+
+    .container-fluid {
+      .navbar-toggle {
+        border-left: 1px solid lighten($color-700, 10%);
       }
     }
 
-    .sidebar-wrapper {
-      background: $color-darker;
+    .navbar-sub-nav,
+    .navbar-nav {
+      > li {
+        > a:hover,
+        > a:focus {
+          background-color: rgba($color-200, .2);
+        }
+
+        &.active > a,
+        &.dropdown.open > a {
+          color: $color-900;
+          background-color: $color-alternate;
+        }
+
+        &.line-separator {
+          border-left: 1px solid rgba($color-200, .2);
+        }
+      }
     }
 
-    .sidebar-action-buttons {
-      color: $color-light;
-      background-color: lighten($color-darker, 5%);
+    .navbar-sub-nav {
+      color: $color-200;
     }
 
-    .nav-sidebar {
-      li {
-        a {
-          color: $color-light;
+    .nav {
+      > li {
+        color: $color-200;
+
+        > a {
+          &.header-user-dropdown-toggle {
+            .header-user-avatar {
+              border-color: $color-200;
+            }
+          }
 
           &:hover,
-          &:focus,
-          &:active {
-            background: $color-dark;
-          }
+          &:focus {
+            @media (min-width: $screen-sm-min) {
+              background-color: rgba($color-200, .2);
+            }
 
-          i {
-            color: $color-light;
+            svg {
+              fill: currentColor;
+            }
           }
+        }
 
-          path,
-          polygon {
-            fill: $color-light;
+        &.active > a,
+        &.dropdown.open > a {
+          color: $color-900;
+          background-color: $color-alternate;
+
+          &:hover {
+            svg {
+              fill: $color-900;
+            }
           }
+        }
 
-          .count {
-            color: $color-light;
-            background: $color-dark;
-          }
-
+        .impersonated-user,
+        .impersonated-user:hover {
           svg {
-            position: relative;
-            top: 3px;
-          }
-        }
-
-        &.separate-item {
-          border-top: 1px solid $color;
-        }
-
-        &.active a {
-          color: $white-light;
-          background: $color-dark;
-
-          &.no-highlight {
-            border: none;
-          }
-
-          i {
-            color: $white-light;
-          }
-
-          path,
-          polygon {
-            fill: $white-light;
+            fill: $color-900;
           }
         }
       }
+    }
+  }
 
-      .about-gitlab {
-        color: $color-light;
+  .navbar .title {
+    > a {
+      &:hover,
+      &:focus {
+        background-color: rgba($color-200, .2);
       }
+    }
+  }
+
+  .search {
+    form {
+      background-color: rgba($color-200, .2);
+
+      &:hover {
+        background-color: rgba($color-200, .3);
+      }
+    }
+
+    .location-badge {
+      color: $color-100;
+      background-color: rgba($color-200, .1);
+      border-right: 1px solid $color-800;
+    }
+
+    .search-input::placeholder {
+      color: rgba($color-200, .8);
+    }
+
+    .search-input-wrap {
+      .search-icon,
+      .clear-icon {
+        fill: rgba($color-200, .8);
+      }
+    }
+
+    &.search-active {
+      form {
+        background-color: $white-light;
+      }
+
+      .location-badge {
+        color: $gl-text-color;
+      }
+
+      .search-input-wrap {
+        .search-icon {
+          fill: rgba($color-200, .8);
+        }
+      }
+    }
+  }
+
+  .btn-sign-in {
+    background-color: $color-100;
+    color: $color-900;
+  }
+
+
+  // Sidebar
+  .nav-sidebar li.active {
+    box-shadow: inset 4px 0 0 $color-700;
+
+    > a {
+      color: $color-800;
+    }
+
+    svg {
+      fill: $color-800;
+    }
+  }
+
+  .sidebar-top-level-items > li.active .badge {
+    color: $color-800;
+  }
+
+  .nav-links li.active a {
+    border-bottom-color: $color-500;
+
+    .badge {
+      font-weight: $gl-font-weight-bold;
     }
   }
 }
 
-$theme-charcoal-light: #b9bbbe;
-$theme-charcoal: #485157;
-$theme-charcoal-dark: #3d454d;
-$theme-charcoal-darker: #383f45;
-
-$theme-blue-light: #becde9;
-$theme-blue: #2980b9;
-$theme-blue-dark: #1970a9;
-$theme-blue-darker: #096099;
-
-$theme-graphite-light: #ccc;
-$theme-graphite: #777;
-$theme-graphite-dark: #666;
-$theme-graphite-darker: #555;
-
-$theme-black-light: #979797;
-$theme-black: #373737;
-$theme-black-dark: #272727;
-$theme-black-darker: #222;
-
-$theme-green-light: #adc;
-$theme-green: #019875;
-$theme-green-dark: #018865;
-$theme-green-darker: #017855;
-
-$theme-violet-light: #98c;
-$theme-violet: #548;
-$theme-violet-dark: #436;
-$theme-violet-darker: #325;
 
 body {
+  &.ui_indigo {
+    @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900, $white-light);
+  }
+
+  &.ui_dark {
+    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900, $white-light);
+  }
+
   &.ui_blue {
-    @include gitlab-theme($theme-blue-light, $theme-blue, $theme-blue-dark, $theme-blue-darker);
-  }
-
-  &.ui_charcoal {
-    @include gitlab-theme($theme-charcoal-light, $theme-charcoal, $theme-charcoal-dark, $theme-charcoal-darker);
-  }
-
-  &.ui_graphite {
-    @include gitlab-theme($theme-graphite-light, $theme-graphite, $theme-graphite-dark, $theme-graphite-darker);
-  }
-
-  &.ui_black {
-    @include gitlab-theme($theme-black-light, $theme-black, $theme-black-dark, $theme-black-darker);
+    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900, $white-light);
   }
 
   &.ui_green {
-    @include gitlab-theme($theme-green-light, $theme-green, $theme-green-dark, $theme-green-darker);
+    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900, $white-light);
   }
 
-  &.ui_violet {
-    @include gitlab-theme($theme-violet-light, $theme-violet, $theme-violet-dark, $theme-violet-darker);
+  &.ui_light {
+    @include gitlab-theme($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-700, $theme-gray-700, $theme-gray-100, $theme-gray-700);
+
+    .navbar-gitlab {
+      background-color: $theme-gray-100;
+      box-shadow: 0 1px 0 0 $border-color;
+
+      .logo-text svg {
+        fill: $theme-gray-900;
+      }
+
+      .navbar-sub-nav,
+      .navbar-nav {
+        > li {
+          > a:hover,
+          > a:focus {
+            color: $theme-gray-900;
+          }
+
+          &.active > a,
+          &.active > a:hover {
+            color: $white-light;
+          }
+        }
+      }
+
+      .container-fluid {
+        .navbar-toggle,
+        .navbar-toggle:hover {
+          color: $theme-gray-700;
+          border-left: 1px solid $theme-gray-200;
+        }
+      }
+    }
+
+    .search {
+      form {
+        background-color: $white-light;
+        box-shadow: inset 0 0 0 1px $border-color;
+
+        &:hover {
+          background-color: $white-light;
+          box-shadow: inset 0 0 0 1px $blue-200;
+
+          .location-badge {
+            box-shadow: inset 0 0 0 1px $blue-200;
+          }
+        }
+      }
+
+      .search-input-wrap {
+        .search-icon {
+          fill: $theme-gray-200;
+        }
+
+        .search-input {
+          color: $gl-text-color;
+        }
+      }
+
+      .location-badge {
+        color: $theme-gray-700;
+        box-shadow: inset 0 0 0 1px $border-color;
+        background-color: $nav-badge-bg;
+        border-right: 0;
+      }
+    }
+
+    .nav-sidebar li.active {
+      > a {
+        color: $theme-gray-900;
+      }
+
+      svg {
+        fill: $theme-gray-900;
+      }
+    }
+
+    .sidebar-top-level-items > li.active .badge {
+      color: $theme-gray-900;
+    }
   }
 }

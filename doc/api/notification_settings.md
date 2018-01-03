@@ -1,4 +1,4 @@
-# Notification settings
+# Notification settings API
 
 >**Note:** This feature was [introduced][ce-5632] in GitLab 8.12.
 
@@ -41,7 +41,7 @@ GET /notification_settings
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/notification_settings
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/notification_settings
 ```
 
 Example response:
@@ -62,7 +62,7 @@ PUT /notification_settings
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/notification_settings?level=watch
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/notification_settings?level=watch
 ```
 
 | Attribute | Type | Required | Description |
@@ -101,8 +101,8 @@ GET /projects/:id/notification_settings
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/5/notification_settings
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/notification_settings
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/notification_settings
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/8/notification_settings
 ```
 
 | Attribute | Type | Required | Description |
@@ -127,8 +127,8 @@ PUT /projects/:id/notification_settings
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/5/notification_settings?level=watch
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/notification_settings?level=custom&new_note=true
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/notification_settings?level=watch
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/8/notification_settings?level=custom&new_note=true
 ```
 
 | Attribute | Type | Required | Description |

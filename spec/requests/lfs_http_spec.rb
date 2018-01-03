@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Git LFS API and storage' do
   include WorkhorseHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
@@ -20,16 +21,14 @@ describe 'Git LFS API and storage' do
   let(:sample_size) { lfs_object.size }
 
   describe 'when lfs is disabled' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:body) do
       {
         'objects' => [
           { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-            'size' => 1575078
-          },
+            'size' => 1575078 },
           { 'oid' => sample_oid,
-            'size' => sample_size
-          }
+            'size' => sample_size }
         ],
         'operation' => 'upload'
       }
@@ -42,22 +41,20 @@ describe 'Git LFS API and storage' do
     end
 
     it 'responds with 501' do
-      expect(response).to have_http_status(501)
+      expect(response).to have_gitlab_http_status(501)
       expect(json_response).to include('message' => 'Git LFS is not enabled on this GitLab server, contact your admin.')
     end
   end
 
   context 'project specific LFS settings' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:body) do
       {
         'objects' => [
           { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-            'size' => 1575078
-          },
+            'size' => 1575078 },
           { 'oid' => sample_oid,
-            'size' => sample_size
-          }
+            'size' => sample_size }
         ],
         'operation' => 'upload'
       }
@@ -66,7 +63,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS disabled globally' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
       end
 
@@ -78,13 +75,13 @@ describe 'Git LFS API and storage' do
         it 'responds with a 501 message on upload' do
           post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
 
-          expect(response).to have_http_status(501)
+          expect(response).to have_gitlab_http_status(501)
         end
 
         it 'responds with a 501 message on download' do
           get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
 
-          expect(response).to have_http_status(501)
+          expect(response).to have_gitlab_http_status(501)
         end
       end
 
@@ -96,20 +93,20 @@ describe 'Git LFS API and storage' do
         it 'responds with a 501 message on upload' do
           post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
 
-          expect(response).to have_http_status(501)
+          expect(response).to have_gitlab_http_status(501)
         end
 
         it 'responds with a 501 message on download' do
           get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
 
-          expect(response).to have_http_status(501)
+          expect(response).to have_gitlab_http_status(501)
         end
       end
     end
 
     context 'with LFS enabled globally' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         enable_lfs
       end
 
@@ -121,14 +118,14 @@ describe 'Git LFS API and storage' do
         it 'responds with a 403 message on upload' do
           post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
           expect(json_response).to include('message' => 'Access forbidden. Check your access level.')
         end
 
         it 'responds with a 403 message on download' do
           get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
           expect(json_response).to include('message' => 'Access forbidden. Check your access level.')
         end
       end
@@ -141,21 +138,21 @@ describe 'Git LFS API and storage' do
         it 'responds with a 200 message on upload' do
           post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['objects'].first['size']).to eq(1575078)
         end
 
         it 'responds with a 200 message on download' do
           get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end
   end
 
   describe 'deprecated API' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       enable_lfs
@@ -163,7 +160,7 @@ describe 'Git LFS API and storage' do
 
     shared_examples 'a deprecated' do
       it 'responds with 501' do
-        expect(response).to have_http_status(501)
+        expect(response).to have_gitlab_http_status(501)
       end
 
       it 'returns deprecated message' do
@@ -192,7 +189,7 @@ describe 'Git LFS API and storage' do
   end
 
   describe 'when fetching lfs object' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:update_permissions) { }
 
     before do
@@ -204,7 +201,7 @@ describe 'Git LFS API and storage' do
     context 'and request comes from gitlab-workhorse' do
       context 'without user being authorized' do
         it 'responds with status 401' do
-          expect(response).to have_http_status(401)
+          expect(response).to have_gitlab_http_status(401)
         end
       end
 
@@ -213,7 +210,7 @@ describe 'Git LFS API and storage' do
           let(:sendfile) { 'X-Sendfile' }
 
           it 'responds with status 200' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'responds with the file location' do
@@ -231,13 +228,13 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 404' do
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end
           end
 
           context 'and does have project access' do
             let(:update_permissions) do
-              project.team << [user, :master]
+              project.add_master(user)
               project.lfs_objects << lfs_object
             end
 
@@ -262,7 +259,7 @@ describe 'Git LFS API and storage' do
 
           context 'when user allowed' do
             let(:update_permissions) do
-              project.team << [user, :master]
+              project.add_master(user)
               project.lfs_objects << lfs_object
             end
 
@@ -275,7 +272,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 404' do
-              expect(response).to have_http_status(404)
+              expect(response).to have_gitlab_http_status(404)
             end
           end
         end
@@ -285,7 +282,7 @@ describe 'Git LFS API and storage' do
 
           shared_examples 'can download LFS only from own projects' do
             context 'for owned project' do
-              let(:project) { create(:empty_project, namespace: user.namespace) }
+              let(:project) { create(:project, namespace: user.namespace) }
 
               let(:update_permissions) do
                 project.lfs_objects << lfs_object
@@ -298,7 +295,7 @@ describe 'Git LFS API and storage' do
               let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
               let(:update_permissions) do
-                project.team << [user, :reporter]
+                project.add_reporter(user)
                 project.lfs_objects << lfs_object
               end
 
@@ -306,7 +303,7 @@ describe 'Git LFS API and storage' do
             end
 
             context 'for other project' do
-              let(:other_project) { create(:empty_project) }
+              let(:other_project) { create(:project) }
               let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
               let(:update_permissions) do
@@ -314,7 +311,7 @@ describe 'Git LFS API and storage' do
               end
 
               it 'rejects downloading code' do
-                expect(response).to have_http_status(other_project_status)
+                expect(response).to have_gitlab_http_status(other_project_status)
               end
             end
           end
@@ -354,7 +351,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         it 'responds with status 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -372,13 +369,14 @@ describe 'Git LFS API and storage' do
     end
 
     describe 'download' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:body) do
-        { 'operation' => 'download',
+        {
+          'operation' => 'download',
           'objects' => [
             { 'oid' => sample_oid,
-              'size' => sample_size
-            }]
+              'size' => sample_size }
+          ]
         }
       end
 
@@ -389,81 +387,93 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with status 200' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'with href to download' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'actions' => {
-                  'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => { 'Authorization' => authorization }
+            expect(json_response).to eq({
+              'objects' => [
+                {
+                  'oid' => sample_oid,
+                  'size' => sample_size,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => { 'Authorization' => authorization }
+                    }
                   }
                 }
-              }])
+              ]
+            })
           end
         end
 
         context 'when downloading an lfs object that is assigned to other project' do
-          let(:other_project) { create(:empty_project) }
+          let(:other_project) { create(:project) }
           let(:update_lfs_permissions) do
             other_project.lfs_objects << lfs_object
           end
 
           it 'responds with status 200' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'with href to download' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'error' => {
-                  'code' => 404,
-                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+            expect(json_response).to eq({
+              'objects' => [
+                {
+                  'oid' => sample_oid,
+                  'size' => sample_size,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
+                  }
                 }
-              }])
+              ]
+            })
           end
         end
 
         context 'when downloading a lfs object that does not exist' do
           let(:body) do
-            { 'operation' => 'download',
+            {
+              'operation' => 'download',
               'objects' => [
                 { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078
-                }]
+                  'size' => 1575078 }
+              ]
             }
           end
 
           it 'responds with status 200' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'with an 404 for specific object' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                'size' => 1575078,
-                'error' => {
-                  'code' => 404,
-                  'message' => "Object does not exist on the server or you don't have permissions to access it",
+            expect(json_response).to eq({
+              'objects' => [
+                {
+                  'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
+                  }
                 }
-              }])
+              ]
+            })
           end
         end
 
         context 'when downloading one new and one existing lfs object' do
           let(:body) do
-            { 'operation' => 'download',
+            {
+              'operation' => 'download',
               'objects' => [
                 { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078
-                },
+                  'size' => 1575078 },
                 { 'oid' => sample_oid,
-                  'size' => sample_size
-                }
+                  'size' => sample_size }
               ]
             }
           end
@@ -473,27 +483,32 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with status 200' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'responds with upload hypermedia link for the new object' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                'size' => 1575078,
-                'error' => {
-                  'code' => 404,
-                  'message' => "Object does not exist on the server or you don't have permissions to access it",
-                }
-              },
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'actions' => {
-                  'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => { 'Authorization' => authorization }
+            expect(json_response).to eq({
+              'objects' => [
+                {
+                  'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
+                  }
+                },
+                {
+                  'oid' => sample_oid,
+                  'size' => sample_size,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => { 'Authorization' => authorization }
+                    }
                   }
                 }
-              }])
+              ]
+            })
           end
         end
       end
@@ -502,7 +517,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         let(:update_user_permissions) do
-          project.team << [user, role]
+          project.add_role(user, role)
         end
 
         it_behaves_like 'an authorized requests' do
@@ -513,7 +528,7 @@ describe 'Git LFS API and storage' do
           let(:update_user_permissions) { nil }
 
           it 'responds with 404' do
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -521,7 +536,7 @@ describe 'Git LFS API and storage' do
           let(:role) { :guest }
 
           it 'responds with 403' do
-            expect(response).to have_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
           end
         end
       end
@@ -538,18 +553,18 @@ describe 'Git LFS API and storage' do
             let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
             let(:update_user_permissions) do
-              project.team << [user, :reporter]
+              project.add_reporter(user)
             end
 
             it_behaves_like 'an authorized requests'
           end
 
           context 'for other project' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
             it 'rejects downloading code' do
-              expect(response).to have_http_status(other_project_status)
+              expect(response).to have_gitlab_http_status(other_project_status)
             end
           end
         end
@@ -593,20 +608,25 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with status 200 and href to download' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'responds with status 200 and href to download' do
-            expect(json_response).to eq('objects' => [
-              { 'oid' => sample_oid,
-                'size' => sample_size,
-                'actions' => {
-                  'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => {}
+            expect(json_response).to eq({
+              'objects' => [
+                {
+                  'oid' => sample_oid,
+                  'size' => sample_size,
+                  'authenticated' => true,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => {}
+                    }
                   }
                 }
-              }])
+              ]
+            })
           end
         end
 
@@ -616,7 +636,7 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with authorization required' do
-            expect(response).to have_http_status(401)
+            expect(response).to have_gitlab_http_status(401)
           end
         end
       end
@@ -625,12 +645,27 @@ describe 'Git LFS API and storage' do
     describe 'upload' do
       let(:project) { create(:project, :public) }
       let(:body) do
-        { 'operation' => 'upload',
+        {
+          'operation' => 'upload',
           'objects' => [
             { 'oid' => sample_oid,
-              'size' => sample_size
-            }]
+              'size' => sample_size }
+          ]
         }
+      end
+
+      shared_examples 'pushes new LFS objects' do
+        let(:sample_size) { 150.megabytes }
+        let(:sample_oid) { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
+
+        it 'responds with upload hypermedia link' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['objects']).to be_kind_of(Array)
+          expect(json_response['objects'].first['oid']).to eq(sample_oid)
+          expect(json_response['objects'].first['size']).to eq(sample_size)
+          expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
+          expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+        end
       end
 
       describe 'when request is authenticated' do
@@ -638,17 +673,17 @@ describe 'Git LFS API and storage' do
           let(:authorization) { authorize_user }
 
           let(:update_user_permissions) do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'when pushing an lfs object that already exists' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:update_lfs_permissions) do
               other_project.lfs_objects << lfs_object
             end
 
             it 'responds with status 200' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'responds with links the object to the project' do
@@ -663,38 +698,18 @@ describe 'Git LFS API and storage' do
           end
 
           context 'when pushing a lfs object that does not exist' do
-            let(:body) do
-              { 'operation' => 'upload',
-                'objects' => [
-                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078
-                  }]
-              }
-            end
-
-            it 'responds with status 200' do
-              expect(response).to have_http_status(200)
-            end
-
-            it 'responds with upload hypermedia link' do
-              expect(json_response['objects']).to be_kind_of(Array)
-              expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-              expect(json_response['objects'].first['size']).to eq(1575078)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-              expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
-            end
+            it_behaves_like 'pushes new LFS objects'
           end
 
           context 'when pushing one new and one existing lfs object' do
             let(:body) do
-              { 'operation' => 'upload',
+              {
+                'operation' => 'upload',
                 'objects' => [
                   { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078
-                  },
+                    'size' => 1575078 },
                   { 'oid' => sample_oid,
-                    'size' => sample_size
-                  }
+                    'size' => sample_size }
                 ]
               }
             end
@@ -704,7 +719,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'responds with upload hypermedia link for the new object' do
@@ -726,7 +741,7 @@ describe 'Git LFS API and storage' do
           let(:authorization) { authorize_user }
 
           it 'responds with 403' do
-            expect(response).to have_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
           end
         end
 
@@ -739,18 +754,19 @@ describe 'Git LFS API and storage' do
             context 'tries to push to own project' do
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it 'responds with 401' do
-                expect(response).to have_http_status(401)
+              it 'responds with 403 (not 404 because project is public)' do
+                expect(response).to have_gitlab_http_status(403)
               end
             end
 
             context 'tries to push to other project' do
-              let(:other_project) { create(:empty_project) }
+              let(:other_project) { create(:project) }
               let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it 'responds with 401' do
-                expect(response).to have_http_status(401)
+              # I'm not sure what this tests that is different from the previous test
+              it 'responds with 403 (not 404 because project is public)' do
+                expect(response).to have_gitlab_http_status(403)
               end
             end
           end
@@ -758,47 +774,87 @@ describe 'Git LFS API and storage' do
           context 'does not have user' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 403 (not 404 because project is public)' do
+              expect(response).to have_gitlab_http_status(403)
             end
           end
+        end
+
+        context 'when deploy key has project push access' do
+          let(:key) { create(:deploy_key, can_push: true) }
+          let(:authorization) { authorize_deploy_key }
+
+          let(:update_user_permissions) do
+            project.deploy_keys << key
+          end
+
+          it_behaves_like 'pushes new LFS objects'
         end
       end
 
       context 'when user is not authenticated' do
         context 'when user has push access' do
           let(:update_user_permissions) do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'responds with status 401' do
-            expect(response).to have_http_status(401)
+            expect(response).to have_gitlab_http_status(401)
           end
         end
 
         context 'when user does not have push access' do
           it 'responds with status 401' do
-            expect(response).to have_http_status(401)
+            expect(response).to have_gitlab_http_status(401)
           end
         end
       end
     end
 
     describe 'unsupported' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:authorization) { authorize_user }
       let(:body) do
-        { 'operation' => 'other',
+        {
+          'operation' => 'other',
           'objects' => [
             { 'oid' => sample_oid,
-              'size' => sample_size
-            }]
+              'size' => sample_size }
+          ]
         }
       end
 
       it 'responds with status 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
+    end
+  end
+
+  describe 'when handling lfs batch request on a read-only GitLab instance' do
+    let(:authorization) { authorize_user }
+    let(:project) { create(:project) }
+    let(:path) { "#{project.http_url_to_repo}/info/lfs/objects/batch" }
+    let(:body) do
+      { 'objects' => [{ 'oid' => sample_oid, 'size' => sample_size }] }
+    end
+
+    before do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+      project.add_master(user)
+      enable_lfs
+    end
+
+    it 'responds with a 200 message on download' do
+      post_lfs_json path, body.merge('operation' => 'download'), headers
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'responds with a 403 message on upload' do
+      post_lfs_json path, body.merge('operation' => 'upload'), headers
+
+      expect(response).to have_gitlab_http_status(403)
+      expect(json_response).to include('message' => 'You cannot write to this read-only GitLab instance.')
     end
   end
 
@@ -814,7 +870,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with status 401' do
-          expect(response).to have_http_status(401)
+          expect(response).to have_gitlab_http_status(401)
         end
       end
 
@@ -824,7 +880,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with status 401' do
-          expect(response).to have_http_status(401)
+          expect(response).to have_gitlab_http_status(401)
         end
       end
 
@@ -834,7 +890,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'does not recognize it as a valid lfs command' do
-          expect(response).to have_http_status(401)
+          expect(response).to have_gitlab_http_status(401)
         end
       end
     end
@@ -846,7 +902,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with 403' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -856,7 +912,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with 403' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -866,20 +922,20 @@ describe 'Git LFS API and storage' do
         end
 
         it 'does not recognize it as a valid lfs command' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
     end
 
     describe 'to one project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       describe 'when user is authenticated' do
         let(:authorization) { authorize_user }
 
         describe 'when user has push access to the project' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'and the request bypassed workhorse' do
@@ -894,7 +950,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'uses the gitlab-workhorse content type' do
@@ -914,7 +970,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'lfs object is linked to the project' do
@@ -925,19 +981,19 @@ describe 'Git LFS API and storage' do
           context 'invalid tempfiles' do
             it 'rejects slashes in the tempfile name (path traversal' do
               put_finalize('foo/bar')
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
 
             it 'rejects tempfile names that do not start with the oid' do
               put_finalize("foo#{sample_oid}")
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
 
         describe 'and user does not have push access' do
           before do
-            project.team << [user, :reporter]
+            project.add_reporter(user)
           end
 
           it_behaves_like 'forbidden'
@@ -954,17 +1010,17 @@ describe 'Git LFS API and storage' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
             before do
-              project.team << [user, :developer]
+              project.add_developer(user)
               put_authorize
             end
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 403 (not 404 because the build user can read the project)' do
+              expect(response).to have_gitlab_http_status(403)
             end
           end
 
           context 'tries to push to other project' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
@@ -972,8 +1028,8 @@ describe 'Git LFS API and storage' do
               put_authorize
             end
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 404 (do not leak non-public project existence)' do
+              expect(response).to have_gitlab_http_status(404)
             end
           end
         end
@@ -985,8 +1041,8 @@ describe 'Git LFS API and storage' do
             put_authorize
           end
 
-          it 'responds with 401' do
-            expect(response).to have_http_status(401)
+          it 'responds with 404 (do not leak non-public project existence)' do
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -1006,7 +1062,7 @@ describe 'Git LFS API and storage' do
 
         describe 'when user has push access to the project' do
           before do
-            project.team << [user, :developer]
+            project.add_developer(user)
           end
 
           context 'and request is sent by gitlab-workhorse to authorize the request' do
@@ -1015,7 +1071,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'with location of lfs store and object details' do
@@ -1031,7 +1087,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'lfs object is linked to the source project' do
@@ -1058,18 +1114,19 @@ describe 'Git LFS API and storage' do
           context 'tries to push to own project' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 403 (not 404 because project is public)' do
+              expect(response).to have_gitlab_http_status(403)
             end
           end
 
           context 'tries to push to other project' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            # I'm not sure what this tests that is different from the previous test
+            it 'responds with 403 (not 404 because project is public)' do
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
@@ -1077,8 +1134,8 @@ describe 'Git LFS API and storage' do
         context 'does not have user' do
           let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-          it 'responds with 401' do
-            expect(response).to have_http_status(401)
+          it 'responds with 403 (not 404 because project is public)' do
+            expect(response).to have_gitlab_http_status(403)
           end
         end
       end
@@ -1088,11 +1145,11 @@ describe 'Git LFS API and storage' do
       end
 
       describe 'and second project not related to fork or a source project' do
-        let(:second_project) { create(:empty_project) }
+        let(:second_project) { create(:project) }
         let(:authorization) { authorize_user }
 
         before do
-          second_project.team << [user, :master]
+          second_project.add_master(user)
           upstream_project.lfs_objects << lfs_object
         end
 
@@ -1103,7 +1160,7 @@ describe 'Git LFS API and storage' do
           end
 
           it 'responds with status 200' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
 
           it 'links the lfs object to the project' do
@@ -1148,11 +1205,6 @@ describe 'Git LFS API and storage' do
 
   def authorize_user_key
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).token)
-  end
-
-  def fork_project(project, user, object = nil)
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-    Projects::ForkService.new(project, user, {}).execute
   end
 
   def post_lfs_json(url, body = nil, headers = nil)

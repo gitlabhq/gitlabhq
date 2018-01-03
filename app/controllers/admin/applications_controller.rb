@@ -2,7 +2,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   include OauthApplications
 
   before_action :set_application, only: [:show, :edit, :update, :destroy]
-  before_action :load_scopes, only: [:new, :edit]
+  before_action :load_scopes, only: [:new, :create, :edit, :update]
 
   def index
     @applications = Doorkeeper::Application.where("owner_id IS NULL")
@@ -19,10 +19,11 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def create
-    @application = Doorkeeper::Application.new(application_params)
+    @application = Applications::CreateService.new(current_user, application_params).execute(request)
 
-    if @application.save
+    if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+
       redirect_to admin_application_url(@application)
     else
       render :new
@@ -39,7 +40,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def destroy
     @application.destroy
-    redirect_to admin_applications_url, notice: 'Application was successfully destroyed.'
+    redirect_to admin_applications_url, status: 302, notice: 'Application was successfully destroyed.'
   end
 
   private
@@ -50,6 +51,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def application_params
-    params[:doorkeeper_application].permit(:name, :redirect_uri, :scopes)
+    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes)
   end
 end

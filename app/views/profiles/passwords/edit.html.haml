@@ -1,12 +1,14 @@
+- breadcrumb_title "Edit Password"
 - page_title "Password"
+- @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
       After a successful password update, you will be redirected to the login page where you can log in with your new password.
-  .col-lg-9
+  .col-lg-8
     %h5.prepend-top-0
       Change your password
       - unless @user.password_automatically_set?

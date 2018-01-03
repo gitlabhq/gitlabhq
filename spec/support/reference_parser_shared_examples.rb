@@ -3,7 +3,9 @@ RSpec.shared_examples "referenced feature visibility" do |*related_features|
     related_features.map { |feature| (feature + "_access_level").to_sym }
   end
 
-  before { link['data-project'] = project.id.to_s }
+  before do
+    link['data-project'] = project.id.to_s
+  end
 
   context "when feature is disabled" do
     it "does not create reference" do
@@ -13,7 +15,9 @@ RSpec.shared_examples "referenced feature visibility" do |*related_features|
   end
 
   context "when feature is enabled only for team members" do
-    before { set_features_fields_to(ProjectFeature::PRIVATE) }
+    before do
+      set_features_fields_to(ProjectFeature::PRIVATE)
+    end
 
     it "does not create reference for non member" do
       non_member = create(:user)
@@ -22,7 +26,7 @@ RSpec.shared_examples "referenced feature visibility" do |*related_features|
     end
 
     it "creates reference for member" do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
     end

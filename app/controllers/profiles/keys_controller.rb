@@ -2,7 +2,7 @@ class Profiles::KeysController < Profiles::ApplicationController
   skip_before_action :authenticate_user!, only: [:get_keys]
 
   def index
-    @keys = current_user.keys
+    @keys = current_user.keys.order_id_desc
     @key = Key.new
   end
 
@@ -10,15 +10,10 @@ class Profiles::KeysController < Profiles::ApplicationController
     @key = current_user.keys.find(params[:id])
   end
 
-  # Back-compat: We need to support this URL since git-annex webapp points to it
-  def new
-    redirect_to profile_keys_path
-  end
-
   def create
-    @key = current_user.keys.new(key_params)
+    @key = Keys::CreateService.new(current_user, key_params.merge(ip_address: request.remote_ip)).execute
 
-    if @key.save
+    if @key.persisted?
       redirect_to profile_key_path(@key)
     else
       @keys = current_user.keys.select(&:persisted?)
@@ -31,7 +26,7 @@ class Profiles::KeysController < Profiles::ApplicationController
     @key.destroy
 
     respond_to do |format|
-      format.html { redirect_to profile_keys_url }
+      format.html { redirect_to profile_keys_url, status: 302 }
       format.js { head :ok }
     end
   end
@@ -45,13 +40,13 @@ class Profiles::KeysController < Profiles::ApplicationController
         if user.present?
           render text: user.all_ssh_keys.join("\n"), content_type: "text/plain"
         else
-          render_404 and return
+          return render_404
         end
       rescue => e
         render text: e.message
       end
     else
-      render_404 and return
+      return render_404
     end
   end
 

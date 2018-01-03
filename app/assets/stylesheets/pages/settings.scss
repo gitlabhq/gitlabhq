@@ -1,5 +1,115 @@
+@keyframes expandMaxHeight {
+  0% {
+    max-height: 0;
+  }
+
+  99% {
+    max-height: 100vh;
+  }
+
+  100% {
+    max-height: none;
+  }
+}
+
+@keyframes collapseMaxHeight {
+  0% {
+    max-height: 100vh;
+  }
+
+  100% {
+    max-height: 0;
+  }
+}
+
+.settings {
+  border-bottom: 1px solid $gray-darker;
+
+  &:first-of-type {
+    margin-top: 10px;
+  }
+
+  &.animating {
+    overflow: hidden;
+  }
+}
+
+.settings-header {
+  position: relative;
+  padding: 20px 110px 10px 0;
+
+  h4 {
+    margin-top: 0;
+  }
+
+  button {
+    position: absolute;
+    top: 20px;
+    right: 6px;
+    min-width: 80px;
+  }
+}
+
+.settings-content {
+  max-height: 1px;
+  overflow-y: scroll;
+  padding-right: 110px;
+  animation: collapseMaxHeight 300ms ease-out;
+  // Keep the section from expanding when we scroll over it
+  pointer-events: none;
+
+  .settings.expanded & {
+    max-height: none;
+    overflow-y: visible;
+    animation: expandMaxHeight 300ms ease-in;
+    // Reset and allow clicks again when expanded
+    pointer-events: auto;
+  }
+
+  .settings.no-animate & {
+    animation: none;
+  }
+
+  @media(max-width: $screen-sm-max) {
+    padding-right: 20px;
+  }
+
+  &::before {
+    content: ' ';
+    display: block;
+    height: 1px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  &::after {
+    content: ' ';
+    display: block;
+    height: 1px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+
+  .sub-section {
+    margin-bottom: 32px;
+    padding: 16px;
+    border: 1px solid $border-color;
+    background-color: $gray-light;
+  }
+
+  .bs-callout,
+  .checkbox:first-child,
+  .help-block {
+    margin-top: 0;
+  }
+
+  .label-light {
+    margin-bottom: 0;
+  }
+}
+
 .settings-list-icon {
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
   font-size: $settings-icon-size;
   line-height: 42px;
 }
@@ -23,4 +133,138 @@
 
 .service-settings .control-label {
   padding-top: 0;
+}
+
+.token-token-container {
+  #impersonation-token-token {
+    width: 80%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    margin-left: 5px;
+  }
+}
+
+.visibility-level-setting {
+  .radio {
+    margin-bottom: 10px;
+
+    i.fa {
+      margin: 2px 0;
+      font-size: 20px;
+    }
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description,
+    .option-disabled-reason {
+      margin-left: 29px;
+      color: $project-option-descr-color;
+    }
+
+    .option-disabled-reason {
+      display: none;
+    }
+
+    &.disabled {
+      i.fa {
+        opacity: 0.5;
+      }
+
+      .option-description {
+        display: none;
+      }
+
+      .option-disabled-reason {
+        display: block;
+      }
+    }
+  }
+}
+
+.prometheus-metrics-monitoring {
+  .panel {
+    .panel-toggle {
+      width: 14px;
+    }
+
+    .badge {
+      font-size: inherit;
+    }
+
+    .panel-heading .badge-count {
+      color: $white-light;
+      background: $common-gray-dark;
+    }
+
+    .panel-body {
+      padding: 0;
+    }
+
+    .flash-container {
+      margin-bottom: 0;
+      cursor: default;
+
+      .flash-notice {
+        border-radius: 0;
+      }
+    }
+  }
+
+  .loading-metrics,
+  .empty-metrics {
+    padding: 30px 10px;
+
+    p,
+    .btn {
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
+
+  .loading-metrics .metrics-load-spinner {
+    color: $loading-color;
+  }
+
+  .metrics-list {
+    margin-bottom: 0;
+
+    li {
+      padding: $gl-padding;
+
+      .badge {
+        margin-left: 5px;
+        background: $badge-bg;
+      }
+
+      /* Ensure we don't add border if there's only single li */
+      + li {
+        border-top: 1px solid $border-color;
+      }
+    }
+  }
+}
+
+.modal-doorkeepr-auth,
+.doorkeeper-app-form {
+  .scope-description {
+    color: $theme-gray-700;
+  }
+}
+
+.modal-doorkeepr-auth {
+  .modal-body {
+    padding: $gl-padding;
+  }
+}
+
+.doorkeeper-app-form {
+  .scope-description {
+    margin: 0 0 5px 17px;
+  }
 }

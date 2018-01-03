@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Ci::StopEnvironmentsService, services: true do
-  let(:project) { create(:project, :private) }
+describe Ci::StopEnvironmentsService do
+  let(:project) { create(:project, :private, :repository) }
   let(:user) { create(:user) }
 
   let(:service) { described_class.new(project, user) }
@@ -15,7 +15,7 @@ describe Ci::StopEnvironmentsService, services: true do
 
       context 'when user has permission to stop environment' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         context 'when environment is associated with removed branch' do
@@ -42,10 +42,10 @@ describe Ci::StopEnvironmentsService, services: true do
           end
         end
 
-        context 'when environment is not stoppable' do
+        context 'when environment is not stopped' do
           before do
             allow_any_instance_of(Environment)
-              .to receive(:stoppable?).and_return(false)
+              .to receive(:state).and_return(:stopped)
           end
 
           it 'does not stop environment' do
@@ -55,8 +55,22 @@ describe Ci::StopEnvironmentsService, services: true do
       end
 
       context 'when user does not have permission to stop environment' do
+        context 'when user has no access to manage deployments' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not stop environment' do
+            expect_environment_not_stopped_on('master')
+          end
+        end
+      end
+
+      context 'when branch for stop action is protected' do
         before do
-          project.team << [user, :guest]
+          project.add_developer(user)
+          create(:protected_branch, :no_one_can_push,
+                 name: 'master', project: project)
         end
 
         it 'does not stop environment' do
@@ -72,7 +86,7 @@ describe Ci::StopEnvironmentsService, services: true do
 
       context 'when user has permission to stop environments' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'does not stop environment' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AssemblaService, models: true do
+describe AssemblaService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -8,10 +8,10 @@ describe AssemblaService, models: true do
 
   describe "Execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
-      @assembla_service = AssemblaService.new
+      @assembla_service = described_class.new
       allow(@assembla_service).to receive_messages(
         project_id: project.id,
         project: project,

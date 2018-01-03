@@ -3,14 +3,14 @@
 #
 production:
   adapter: mysql2
-  encoding: utf8mb4
-  collation: utf8mb4_general_ci
+  encoding: utf8
+  collation: utf8_general_ci
   reconnect: false
   database: gitlabhq_production
   pool: 10
   username: git
   password: "secure password"
-  # host: localhost
+  host: localhost
   # socket: /tmp/mysql.sock
 
 #
@@ -18,13 +18,29 @@ production:
 #
 development:
   adapter: mysql2
-  encoding: utf8mb4
-  collation: utf8mb4_general_ci
+  encoding: utf8
+  collation: utf8_general_ci
   reconnect: false
   database: gitlabhq_development
   pool: 5
   username: root
   password: "secure password"
+  host: localhost
+  # socket: /tmp/mysql.sock
+
+#
+# Staging specific
+#
+staging:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_general_ci
+  reconnect: false
+  database: gitlabhq_staging
+  pool: 10
+  username: git
+  password: "secure password"
+  host: localhost
   # socket: /tmp/mysql.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -39,4 +55,6 @@ test: &test
   pool: 5
   username: root
   password:
+  host: localhost
   # socket: /tmp/mysql.sock
+  prepared_statements: false

@@ -7,22 +7,25 @@ describe Projects::GroupLinksController do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
   describe '#create' do
     shared_context 'link project to group' do
       before do
-        post(:create, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
                       link_group_id: group.id,
                       link_group_access: ProjectGroupLink.default_access)
       end
     end
 
     context 'when user has access to group he want to link project to' do
-      before { group.add_developer(user) }
+      before do
+        group.add_developer(user)
+      end
+
       include_context 'link project to group'
 
       it 'links project with selected group' do
@@ -31,7 +34,7 @@ describe Projects::GroupLinksController do
 
       it 'redirects to project group links page' do
         expect(response).to redirect_to(
-          namespace_project_group_links_path(project.namespace, project)
+          project_project_members_path(project)
         )
       end
     end
@@ -50,8 +53,8 @@ describe Projects::GroupLinksController do
 
     context 'when project group id equal link group id' do
       before do
-        post(:create, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
                       link_group_id: group2.id,
                       link_group_access: ProjectGroupLink.default_access)
       end
@@ -62,21 +65,21 @@ describe Projects::GroupLinksController do
 
       it 'redirects to project group links page' do
         expect(response).to redirect_to(
-          namespace_project_group_links_path(project.namespace, project)
+          project_project_members_path(project)
         )
       end
     end
 
     context 'when link group id is not present' do
       before do
-        post(:create, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
                       link_group_access: ProjectGroupLink.default_access)
       end
 
       it 'redirects to project group links page' do
         expect(response).to redirect_to(
-          namespace_project_group_links_path(project.namespace, project)
+          project_project_members_path(project)
         )
         expect(flash[:alert]).to eq('Please select a group.')
       end

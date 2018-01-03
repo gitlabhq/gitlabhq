@@ -13,20 +13,24 @@ module Gitlab
     end
 
     def self.read_latest
-      path = Rails.root.join("log", file_name)
-      self.build unless File.exist?(path)
-      tail_output, _ = Gitlab::Popen.popen(%W(tail -n 2000 #{path}))
-      tail_output.split("\n")
-    end
+      path = self.full_log_path
 
-    def self.read_latest_for(filename)
-      path = Rails.root.join("log", filename)
+      return [] unless File.readable?(path)
+
       tail_output, _ = Gitlab::Popen.popen(%W(tail -n 2000 #{path}))
       tail_output.split("\n")
     end
 
     def self.build
-      new(Rails.root.join("log", file_name))
+      RequestStore[self.cache_key] ||= new(self.full_log_path)
+    end
+
+    def self.full_log_path
+      Rails.root.join("log", file_name)
+    end
+
+    def self.cache_key
+      'logger:'.freeze + self.full_log_path.to_s
     end
   end
 end

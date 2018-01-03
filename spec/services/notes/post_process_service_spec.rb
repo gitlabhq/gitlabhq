@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Notes::PostProcessService, services: true do
-  let(:project) { create(:empty_project) }
+describe Notes::PostProcessService do
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
 
   describe '#execute' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       note_opts = {
         note: 'Awesome comment',
         noteable_type: 'Issue',
@@ -21,7 +21,7 @@ describe Notes::PostProcessService, services: true do
       expect(project).to receive(:execute_hooks)
       expect(project).to receive(:execute_services)
 
-      Notes::PostProcessService.new(@note).execute
+      described_class.new(@note).execute
     end
   end
 end

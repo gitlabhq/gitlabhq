@@ -13,41 +13,40 @@ class PushoverService < Service
     'Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop.'
   end
 
-  def to_param
+  def self.to_param
     'pushover'
   end
 
   def fields
     [
-      { type: 'text', name: 'api_key', placeholder: 'Your application key' },
-      { type: 'text', name: 'user_key', placeholder: 'Your user key' },
+      { type: 'text', name: 'api_key', placeholder: 'Your application key', required: true },
+      { type: 'text', name: 'user_key', placeholder: 'Your user key', required: true },
       { type: 'text', name: 'device', placeholder: 'Leave blank for all active devices' },
-      { type: 'select', name: 'priority', choices:
+      { type: 'select', name: 'priority', required: true, choices:
         [
           ['Lowest Priority', -2],
           ['Low Priority', -1],
           ['Normal Priority', 0],
           ['High Priority', 1]
         ],
-        default_choice: 0
-      },
+        default_choice: 0 },
       { type: 'select', name: 'sound', choices:
         [
           ['Device default sound', nil],
           ['Pushover (default)', 'pushover'],
-          ['Bike', 'bike'],
-          ['Bugle', 'bugle'],
+          %w(Bike bike),
+          %w(Bugle bugle),
           ['Cash Register', 'cashregister'],
-          ['Classical', 'classical'],
-          ['Cosmic', 'cosmic'],
-          ['Falling', 'falling'],
-          ['Gamelan', 'gamelan'],
-          ['Incoming', 'incoming'],
-          ['Intermission', 'intermission'],
-          ['Magic', 'magic'],
-          ['Mechanical', 'mechanical'],
+          %w(Classical classical),
+          %w(Cosmic cosmic),
+          %w(Falling falling),
+          %w(Gamelan gamelan),
+          %w(Incoming incoming),
+          %w(Intermission intermission),
+          %w(Magic magic),
+          %w(Mechanical mechanical),
           ['Piano Bar', 'pianobar'],
-          ['Siren', 'siren'],
+          %w(Siren siren),
           ['Space Alarm', 'spacealarm'],
           ['Tug Boat', 'tugboat'],
           ['Alien Alarm (long)', 'alien'],
@@ -56,12 +55,11 @@ class PushoverService < Service
           ['Pushover Echo (long)', 'echo'],
           ['Up Down (long)', 'updown'],
           ['None (silent)', 'none']
-        ]
-      },
+        ] }
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
@@ -72,13 +70,14 @@ class PushoverService < Service
     before = data[:before]
     after = data[:after]
 
-    if Gitlab::Git.blank_ref?(before)
-      message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
-    elsif Gitlab::Git.blank_ref?(after)
-      message = "#{data[:user_name]} deleted branch \"#{ref}\"."
-    else
-      message = "#{data[:user_name]} push to branch \"#{ref}\"."
-    end
+    message =
+      if Gitlab::Git.blank_ref?(before)
+        "#{data[:user_name]} pushed new branch \"#{ref}\"."
+      elsif Gitlab::Git.blank_ref?(after)
+        "#{data[:user_name]} deleted branch \"#{ref}\"."
+      else
+        "#{data[:user_name]} push to branch \"#{ref}\"."
+      end
 
     if data[:total_commits_count] > 0
       message << "\nTotal commits count: #{data[:total_commits_count]}"
@@ -97,7 +96,7 @@ class PushoverService < Service
 
     # Sound parameter MUST NOT be sent to API if not selected
     if sound
-      pushover_data.merge!(sound: sound)
+      pushover_data[:sound] = sound
     end
 
     PushoverService.post('/messages.json', body: pushover_data)

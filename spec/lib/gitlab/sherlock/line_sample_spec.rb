@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::LineSample, lib: true do
+describe Gitlab::Sherlock::LineSample do
   let(:sample) { described_class.new(150.0, 4) }
 
   describe '#duration' do

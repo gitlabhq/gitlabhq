@@ -1,7 +1,12 @@
 module Ci
   class Build < CommitStatus
+    prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
+    include Presentable
+    include Importable
+
+    MissingDependenciesError = Class.new(StandardError)
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -9,30 +14,62 @@ module Ci
 
     has_many :deployments, as: :deployable
 
+    has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
+
+    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
       @persisted_environment ||= Environment.find_by(
         name: expanded_environment_name,
-        project_id: gl_project_id
+        project: project
       )
     end
 
-    serialize :options
-    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
+    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+
+    delegate :name, to: :project, prefix: true
 
     validates :coverage, numericality: true, allow_blank: true
-    validates_presence_of :ref
+    validates :ref, presence: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
+    scope :with_artifacts, ->() do
+      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
+        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
+    end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, ->() { where(when: :manual).relevant }
+    scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
+    scope :ref_protected, -> { where(protected: true) }
 
-    mount_uploader :artifacts_file, ArtifactUploader
-    mount_uploader :artifacts_metadata, ArtifactUploader
+    scope :matches_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id')
+        .where.not(tag_id: tag_ids).select('1')
+
+      where("NOT EXISTS (?)", matcher)
+    end
+
+    scope :with_any_tags, -> do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id').select('1')
+
+      where("EXISTS (?)", matcher)
+    end
+
+    mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
+    mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
     acts_as_taggable
 
@@ -40,57 +77,44 @@ module Ci
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
-    before_destroy { project }
+    before_destroy { unscoped_project }
 
-    after_create :execute_hooks
-    after_save :update_project_statistics, if: :artifacts_size_changed?
-    after_destroy :update_project_statistics
+    after_create do |build|
+      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+    end
+
+    after_commit :update_project_statistics_after_save, on: [:create, :update]
+    after_commit :update_project_statistics, on: :destroy
 
     class << self
+      # This is needed for url_for to work,
+      # as the controller is JobsController
+      def model_name
+        ActiveModel::Name.new(self, nil, 'job')
+      end
+
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end
 
-      def create_from(build)
-        new_build = build.dup
-        new_build.status = 'pending'
-        new_build.runner_id = nil
-        new_build.trigger_request_id = nil
-        new_build.token = nil
-        new_build.save
-      end
-
-      def retry(build, user = nil)
-        new_build = Ci::Build.create(
-          ref: build.ref,
-          tag: build.tag,
-          options: build.options,
-          commands: build.commands,
-          tag_list: build.tag_list,
-          project: build.project,
-          pipeline: build.pipeline,
-          name: build.name,
-          allow_failure: build.allow_failure,
-          stage: build.stage,
-          stage_idx: build.stage_idx,
-          trigger_request: build.trigger_request,
-          yaml_variables: build.yaml_variables,
-          when: build.when,
-          user: user,
-          environment: build.environment,
-          status_event: 'enqueue'
-        )
-
-        MergeRequests::AddTodoWhenBuildFailsService
-          .new(build.project, nil)
-          .close(new_build)
-
-        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
-        new_build
+      def retry(build, current_user)
+        Ci::RetryBuildService
+          .new(build.project, current_user)
+          .execute(build)
       end
     end
 
     state_machine :status do
+      event :actionize do
+        transition created: :manual
+      end
+
+      after_transition any => [:pending] do |build|
+        build.run_after_commit do
+          BuildQueueWorker.perform_async(id)
+        end
+      end
+
       after_transition pending: :running do |build|
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
@@ -108,6 +132,19 @@ module Ci
           BuildSuccessWorker.perform_async(id)
         end
       end
+
+      before_transition any => [:failed] do |build|
+        next unless build.project
+        next if build.retries_max.zero?
+
+        if build.retries_count < build.retries_max
+          Ci::Build.retry(build, build.user)
+        end
+      end
+
+      before_transition any => [:running] do |build|
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
+      end
     end
 
     def detailed_status(current_user)
@@ -116,27 +153,22 @@ module Ci
         .fabricate!
     end
 
-    def manual?
-      self.when == 'manual'
-    end
-
     def other_actions
       pipeline.manual_actions.where.not(name: name)
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual? && skipped?
+      action? && (manual? || complete?)
     end
 
-    def play(current_user = nil)
-      # Try to queue a current build
-      if self.enqueue
-        self.update(user: current_user)
-        self
-      else
-        # Otherwise we need to create a duplicate
-        Ci::Build.retry(self, current_user)
-      end
+    def action?
+      self.when == 'manual'
+    end
+
+    def play(current_user)
+      Ci::PlayBuildService
+        .new(project, current_user)
+        .execute(self)
     end
 
     def cancelable?
@@ -144,12 +176,19 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present? &&
-        (success? || failed? || canceled?)
+      success? || failed? || canceled?
     end
 
-    def retried?
-      !self.pipeline.statuses.latest.include?(self)
+    def retries_count
+      pipeline.builds.retried.where(name: self.name).count
+    end
+
+    def retries_max
+      self.options.fetch(:retry, 0).to_i
+    end
+
+    def latest?
+      !retried?
     end
 
     def expanded_environment_name
@@ -176,10 +215,6 @@ module Ci
       success? && !last_deployment.try(:last?)
     end
 
-    def last_deployment
-      deployments.last
-    end
-
     def depends_on_builds
       # Get builds of the same type
       latest_builds = self.pipeline.builds.latest
@@ -188,21 +223,12 @@ module Ci
       latest_builds.where('stage_idx < ?', stage_idx)
     end
 
-    def trace_html(**args)
-      trace_with_state(**args)[:html] || ''
-    end
-
-    def trace_with_state(state: nil, last_lines: nil)
-      trace_ansi = trace(last_lines: last_lines)
-      if trace_ansi.present?
-        Ci::Ansi2html.convert(trace_ansi, state)
-      else
-        {}
-      end
-    end
-
     def timeout
       project.build_timeout
+    end
+
+    def triggered_by?(current_user)
+      user == current_user
     end
 
     # A slugified version of the build ref, suitable for inclusion in URLs and
@@ -211,49 +237,56 @@ module Ci
     #   * Lowercased
     #   * Anything not matching [a-z0-9-] is replaced with a -
     #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
     def ref_slug
-      slugified = ref.to_s.downcase
-      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+      Gitlab::Utils.slugify(ref.to_s)
     end
 
-    # Variables whose value does not depend on other variables
+    # Variables whose value does not depend on environment
     def simple_variables
+      variables(environment: nil)
+    end
+
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
+    def variables(environment: persisted_environment)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+      variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
-      variables += project.secret_variables
+      variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
+      variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
+      variables += pipeline.variables.map(&:to_runner_variable)
+      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
+      variables += persisted_environment_variables if environment
+
       variables
     end
 
-    # All variables, including those dependent on other variables
-    def variables
-      variables = simple_variables
-      variables += persisted_environment.predefined_variables if persisted_environment.present?
-      variables
+    def features
+      { trace_sections: true }
     end
 
     def merge_request
-      merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref, source_project_id: pipeline.gl_project_id)
-                                   .reorder(iid: :asc)
+      return @merge_request if defined?(@merge_request)
 
-      merge_requests.find do |merge_request|
-        merge_request.commits_sha.include?(pipeline.sha)
-      end
-    end
+      @merge_request ||=
+        begin
+          merge_requests = MergeRequest.includes(:latest_merge_request_diff)
+            .where(source_branch: ref,
+                   source_project: pipeline.project)
+            .reorder(iid: :desc)
 
-    def project_id
-      pipeline.project_id
-    end
-
-    def project_name
-      project.name
+          merge_requests.find do |merge_request|
+            merge_request.commit_shas.include?(pipeline.sha)
+          end
+        end
     end
 
     def repo_url
@@ -268,165 +301,37 @@ module Ci
     end
 
     def update_coverage
-      return unless project
-      coverage_regex = project.build_coverage_regex
-      return unless coverage_regex
-      coverage = extract_coverage(trace, coverage_regex)
-
-      if coverage.is_a? Numeric
-        update_attributes(coverage: coverage)
-      end
+      coverage = trace.extract_coverage(coverage_regex)
+      update_attributes(coverage: coverage) if coverage.present?
     end
 
-    def extract_coverage(text, regex)
-      begin
-        matches = text.scan(Regexp.new(regex)).last
-        matches = matches.last if matches.kind_of?(Array)
-        coverage = matches.gsub(/\d+(\.\d+)?/).first
-
-        if coverage.present?
-          coverage.to_f
-        end
-      rescue
-        # if bad regex or something goes wrong we dont want to interrupt transition
-        # so we just silentrly ignore error for now
-      end
+    def parse_trace_sections!
+      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
 
-    def has_trace_file?
-      File.exist?(path_to_trace) || has_old_trace_file?
+    def trace
+      Gitlab::Ci::Trace.new(self)
     end
 
     def has_trace?
-      raw_trace.present?
+      trace.exist?
     end
 
-    def raw_trace(last_lines: nil)
-      if File.exist?(trace_file_path)
-        Gitlab::Ci::TraceReader.new(trace_file_path).
-          read(last_lines: last_lines)
-      else
-        # backward compatibility
-        read_attribute :trace
-      end
+    def trace=(data)
+      raise NotImplementedError
     end
 
-    ##
-    # Deprecated
-    #
-    # This is a hotfix for CI build data integrity, see #4246
-    def has_old_trace_file?
-      project.ci_id && File.exist?(old_path_to_trace)
+    def old_trace
+      read_attribute(:trace)
     end
 
-    def trace(last_lines: nil)
-      hide_secrets(raw_trace(last_lines: last_lines))
-    end
-
-    def trace_length
-      if raw_trace
-        raw_trace.bytesize
-      else
-        0
-      end
-    end
-
-    def trace=(trace)
-      recreate_trace_dir
-      trace = hide_secrets(trace)
-      File.write(path_to_trace, trace)
-    end
-
-    def recreate_trace_dir
-      unless Dir.exist?(dir_to_trace)
-        FileUtils.mkdir_p(dir_to_trace)
-      end
-    end
-    private :recreate_trace_dir
-
-    def append_trace(trace_part, offset)
-      recreate_trace_dir
-      touch if needs_touch?
-
-      trace_part = hide_secrets(trace_part)
-
-      File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
-      File.open(path_to_trace, 'ab') do |f|
-        f.write(trace_part)
-      end
+    def erase_old_trace!
+      write_attribute(:trace, nil)
+      save
     end
 
     def needs_touch?
       Time.now - updated_at > 15.minutes.to_i
-    end
-
-    def trace_file_path
-      if has_old_trace_file?
-        old_path_to_trace
-      else
-        path_to_trace
-      end
-    end
-
-    def dir_to_trace
-      File.join(
-        Settings.gitlab_ci.builds_path,
-        created_at.utc.strftime("%Y_%m"),
-        project.id.to_s
-      )
-    end
-
-    def path_to_trace
-      "#{dir_to_trace}/#{id}.log"
-    end
-
-    ##
-    # Deprecated
-    #
-    # This is a hotfix for CI build data integrity, see #4246
-    # Should be removed in 8.4, after CI files migration has been done.
-    #
-    def old_dir_to_trace
-      File.join(
-        Settings.gitlab_ci.builds_path,
-        created_at.utc.strftime("%Y_%m"),
-        project.ci_id.to_s
-      )
-    end
-
-    ##
-    # Deprecated
-    #
-    # This is a hotfix for CI build data integrity, see #4246
-    # Should be removed in 8.4, after CI files migration has been done.
-    #
-    def old_path_to_trace
-      "#{old_dir_to_trace}/#{id}.log"
-    end
-
-    ##
-    # Deprecated
-    #
-    # This contains a hotfix for CI build data integrity, see #4246
-    #
-    # This method is used by `ArtifactUploader` to create a store_dir.
-    # Warning: Uploader uses it after AND before file has been stored.
-    #
-    # This method returns old path to artifacts only if it already exists.
-    #
-    def artifacts_path
-      old = File.join(created_at.utc.strftime('%Y_%m'),
-                      project.ci_id.to_s,
-                      id.to_s)
-
-      old_store = File.join(ArtifactUploader.artifacts_path, old)
-      return old if project.ci_id && File.directory?(old_store)
-
-      File.join(
-        created_at.utc.strftime('%Y_%m'),
-        project.id.to_s,
-        id.to_s
-      )
     end
 
     def valid_token?(token)
@@ -447,18 +352,12 @@ module Ci
 
     def execute_hooks
       return unless project
+
       build_data = Gitlab::DataBuilder::Build.build(self)
-      project.execute_hooks(build_data.dup, :build_hooks)
-      project.execute_services(build_data.dup, :build_hooks)
+      project.execute_hooks(build_data.dup, :job_hooks)
+      project.execute_services(build_data.dup, :job_hooks)
+      PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
-    end
-
-    def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
-    end
-
-    def artifacts_metadata?
-      artifacts? && artifacts_metadata.exists?
     end
 
     def artifacts_metadata_entry(path, **options)
@@ -503,12 +402,21 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          Time.now + ChronicDuration.parse(value)
+          ChronicDuration.parse(value)&.seconds&.from_now
         end
+    end
+
+    def has_expiring_artifacts?
+      artifacts_expire_at.present? && artifacts_expire_at > Time.now
     end
 
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
+      self.job_artifacts.update_all(expire_at: nil)
+    end
+
+    def coverage_regex
+      super || project.try(:build_coverage_regex)
     end
 
     def when
@@ -524,36 +432,144 @@ module Ci
 
       [
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
-        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
+        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+        { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
+        { key: 'GITLAB_USER_NAME', value: user.name, public: true }
       ]
+    end
+
+    def secret_variables(environment: persisted_environment)
+      project.secret_variables_for(ref: ref, environment: environment)
+        .map(&:to_runner_variable)
+    end
+
+    def steps
+      [Gitlab::Ci::Build::Step.from_commands(self),
+       Gitlab::Ci::Build::Step.from_after_script(self)].compact
+    end
+
+    def image
+      Gitlab::Ci::Build::Image.from_image(self)
+    end
+
+    def services
+      Gitlab::Ci::Build::Image.from_services(self)
+    end
+
+    def artifacts
+      [options[:artifacts]]
+    end
+
+    def cache
+      [options[:cache]]
     end
 
     def credentials
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
+    def dependencies
+      return [] if empty_dependencies?
+
+      depended_jobs = depends_on_builds
+
+      return depended_jobs unless options[:dependencies].present?
+
+      depended_jobs.select do |job|
+        options[:dependencies].include?(job.name)
+      end
+    end
+
+    def empty_dependencies?
+      options[:dependencies]&.empty?
+    end
+
+    def validates_dependencies!
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
+      end
+    end
+
+    def valid_dependency?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
+    end
+
+    def hide_secrets(trace)
+      return unless trace
+
+      trace = trace.dup
+      Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Gitlab::Ci::MaskSecret.mask!(trace, token)
+      trace
+    end
+
+    def serializable_hash(options = {})
+      super(options).merge(when: read_attribute(:when))
+    end
+
     private
 
     def update_artifacts_size
-      self.artifacts_size = if artifacts_file.exists?
-                              artifacts_file.size
-                            else
-                              nil
-                            end
+      self.artifacts_size = legacy_artifacts_file&.size
     end
 
     def erase_trace!
-      self.trace = nil
+      trace.erase!
     end
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
     end
 
+    def unscoped_project
+      @unscoped_project ||= Project.unscoped.find_by(id: project_id)
+    end
+
+    CI_REGISTRY_USER = 'gitlab-ci-token'.freeze
+
     def predefined_variables
       variables = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_JOB_ID', value: id.to_s, public: true },
+        { key: 'CI_JOB_NAME', value: name, public: true },
+        { key: 'CI_JOB_STAGE', value: stage, public: true },
+        { key: 'CI_JOB_TOKEN', value: token, public: false },
+        { key: 'CI_COMMIT_SHA', value: sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true },
+        { key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER, public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: repo_url, public: false }
+      ]
+
+      variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
+      variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
+      variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
+      variables.concat(legacy_variables)
+    end
+
+    def persisted_environment_variables
+      return [] unless persisted_environment
+
+      variables = persisted_environment.predefined_variables
+
+      # Here we're passing unexpanded environment_url for runner to expand,
+      # and we need to make sure that CI_ENVIRONMENT_NAME and
+      # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
+      variables << { key: 'CI_ENVIRONMENT_URL', value: environment_url, public: true } if environment_url
+
+      variables
+    end
+
+    def legacy_variables
+      variables = [
         { key: 'CI_BUILD_ID', value: id.to_s, public: true },
         { key: 'CI_BUILD_TOKEN', value: token, public: false },
         { key: 'CI_BUILD_REF', value: sha, public: true },
@@ -561,15 +577,17 @@ module Ci
         { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
         { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_BUILD_NAME', value: name, public: true },
-        { key: 'CI_BUILD_STAGE', value: stage, public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+        { key: 'CI_BUILD_STAGE', value: stage, public: true }
       ]
-      variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
-      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
-      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
+
+      variables << { key: "CI_BUILD_TAG", value: ref, public: true } if tag?
+      variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
+      variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
+    end
+
+    def environment_url
+      options&.dig(:environment, :url) || persisted_environment&.external_url
     end
 
     def build_attributes_from_config
@@ -578,17 +596,16 @@ module Ci
       pipeline.config_processor.build_attributes(name)
     end
 
-    def hide_secrets(trace)
-      return unless trace
+    def update_project_statistics
+      return unless project
 
-      trace = trace.dup
-      Ci::MaskSecret.mask!(trace, project.runners_token) if project
-      Ci::MaskSecret.mask!(trace, token)
-      trace
+      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
 
-    def update_project_statistics
-      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
+    def update_project_statistics_after_save
+      if previous_changes.include?('artifacts_size')
+        update_project_statistics
+      end
     end
   end
 end

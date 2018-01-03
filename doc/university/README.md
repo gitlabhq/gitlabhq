@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab University
 
 GitLab University is the best place to learn about **Version Control with Git and GitLab**.
@@ -5,7 +9,7 @@ GitLab University is the best place to learn about **Version Control with Git an
 It doesn't replace, but accompanies our great [Documentation](https://docs.gitlab.com)
 and [Blog Articles](https://about.gitlab.com/blog/).
 
-Would you like to contribute to GitLab University? Then please take a look at our contribution [process](process) for more information.
+Would you like to contribute to GitLab University? Then please take a look at our contribution [process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) for more information.
 
 ## Gitlab University Curriculum
 
@@ -51,10 +55,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 1.5. Migrating from other Source Control
 
-1. [Migrating from BitBucket/Stash](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_bitbucket.html)
-1. [Migrating from GitHub](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_github.html)
-1. [Migrating from SVN](https://docs.gitlab.com/ee/workflow/importing/migrating_from_svn.html)
-1. [Migrating from Fogbugz](https://docs.gitlab.com/ee/workflow/importing/import_projects_from_fogbugz.html)
+1. [Migrating from BitBucket/Stash](https://docs.gitlab.com/ee/user/project/import/bitbucket.html)
+1. [Migrating from GitHub](https://docs.gitlab.com/ee/user/project/import/github.html)
+1. [Migrating from SVN](https://docs.gitlab.com/ee/user/project/import/svn.html)
+1. [Migrating from Fogbugz](https://docs.gitlab.com/ee/user/project/import/fogbugz.html)
 
 #### 1.6. GitLab Inc.
 
@@ -65,6 +69,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Using Innersourcing to Improve Collaboration](https://about.gitlab.com/2014/09/05/innersourcing-using-the-open-source-workflow-to-improve-collaboration-within-an-organization/)
 1. [The Software Development Market and GitLab - Video](https://www.youtube.com/watch?v=sXlhgPK1NTY&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e&index=6) - [Slides](https://docs.google.com/presentation/d/1vCU-NbZWz8NTNK8Vu3y4zGMAHb5DpC8PE5mHtw1PWfI/edit)
 1. [The GitLab Book Club](bookclub/index.md)
+1. [GitLab Resources](https://about.gitlab.com/resources/)
 
 #### 1.7 Community and Support
 
@@ -75,13 +80,13 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
   - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/2016/06/08/getting-started-with-gitlab-development-kit/)
 1. [Contributing Technical Articles to the GitLab Blog](https://about.gitlab.com/2016/01/26/call-for-writers/)
-1. [GitLab Training Workshops](https://about.gitlab.com/training)
+1. [GitLab Training Workshops](https://docs.gitlab.com/ce/university/training/end-user/)
+1. [GitLab Professional Services](https://about.gitlab.com/services/)
 
 #### 1.8 GitLab Training Material
 
 1. [Git and GitLab Terminology](glossary/README.md)
 1. [Git and GitLab Workshop - Slides](https://docs.google.com/presentation/d/1JzTYD8ij9slejV2-TO-NzjCvlvj6mVn9BORePXNJoMI/edit?usp=drive_web)
-1. [Git and GitLab Revision](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/university/training/end-user)
 
 ---
 
@@ -91,7 +96,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [Using any Static Site Generator with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 1. [Securing GitLab Pages with SSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/)
-1. [GitLab Pages Documentation](https://docs.gitlab.com/ee/pages/README.html)
+1. [GitLab Pages Documentation](https://docs.gitlab.com/ce/user/project/pages/)
 
 #### 2.2. GitLab Issues
 
@@ -121,6 +126,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 1. [IBM: Continuous Delivery vs Continuous Deployment - Video](https://www.youtube.com/watch?v=igwFj8PPSnw)
 1. [Amazon: Transition to Continuous Delivery - Video](https://www.youtube.com/watch?v=esEFaY0FDKc)
+2. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
 1. See **[Integrations](#integrations)** for integrations with other CI services.
 
 #### 2.4. Workflow
@@ -165,7 +171,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 3.4. Large Files
 
-1. [Big files in Git (Git LFS, Annex) - Video](https://www.youtube.com/watch?v=DawznUxYDe4)
+1. [Big files in Git (Git LFS) - Video](https://www.youtube.com/watch?v=DawznUxYDe4)
 
 #### 3.5. LDAP and Active Directory
 
@@ -189,10 +195,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 #### 3.9. Integrations
 
 1. [How to Integrate JIRA and Jenkins with GitLab - Video](https://gitlabmeetings.webex.com/gitlabmeetings/ldr.php?RCID=44b548147a67ab4d8a62274047146415)
-1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ee/integration/jira.html)
+1. [How to Integrate Jira with GitLab](https://docs.gitlab.com/ce/user/project/integrations/jira.html)
 1. [How to Integrate Jenkins with GitLab](https://docs.gitlab.com/ee/integration/jenkins.html)
-1. [How to Integrate Bamboo with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/project_services/bamboo.md)
-1. [How to Integrate Slack with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/integration/slack.md)
+1. [How to Integrate Bamboo with GitLab](https://docs.gitlab.com/ce/user/project/integrations/bamboo.html)
+1. [How to Integrate Slack with GitLab](https://docs.gitlab.com/ce/user/project/integrations/slack.html)
 1. [How to Integrate Convox with GitLab](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
 1. [Getting Started with GitLab and Shippable CI](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)
 

@@ -1,6 +1,6 @@
 class GroupDestroyWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
+  include ExceptionBacktrace
 
   def perform(group_id, user_id)
     begin
@@ -11,6 +11,6 @@ class GroupDestroyWorker
 
     user = User.find(user_id)
 
-    DestroyGroupService.new(group, user).execute
+    Groups::DestroyService.new(group, user).execute
   end
 end

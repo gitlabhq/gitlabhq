@@ -53,6 +53,14 @@ describe SidekiqHelper do
       expect(parts).to eq(['17725', '1.0', '12.1', 'Ssl', '19:20:15', 'sidekiq 4.2.1 gitlab-rails [0 of 25 busy]'])
     end
 
+    it 'parses OpenBSD output' do
+      # OpenBSD 6.1
+      line = '49258  0.5  2.3 R/0   Fri10PM  ruby23: sidekiq 4.2.7 gitlab [0 of 25 busy] (ruby23)'
+      parts = helper.parse_sidekiq_ps(line)
+
+      expect(parts).to eq(['49258', '0.5', '2.3', 'R/0', 'Fri10PM', 'ruby23: sidekiq 4.2.7 gitlab [0 of 25 busy] (ruby23)'])
+    end
+
     it 'does fail gracefully on line not matching the format' do
       line = '55137	10.0	2.1	S+	2:30pm	something'
       parts = helper.parse_sidekiq_ps(line)

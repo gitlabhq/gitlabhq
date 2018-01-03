@@ -4,7 +4,7 @@ module EntityDateHelper
   def interval_in_words(diff)
     return 'Not started' unless diff
 
-    "#{distance_of_time_in_words(Time.now, diff)} ago"
+    distance_of_time_in_words(Time.now, diff, scope: 'datetime.time_ago_in_words')
   end
 
   # Converts seconds into a hash such as:

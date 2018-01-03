@@ -118,18 +118,20 @@ module Gitlab
       def self.instrument(type, mod, name)
         return unless Metrics.enabled?
 
-        name   = name.to_sym
+        name = name.to_sym
         target = type == :instance ? mod : mod.singleton_class
 
         if type == :instance
           target = mod
-          label  = "#{mod.name}##{name}"
+          method_name = "##{name}"
           method = mod.instance_method(name)
         else
           target = mod.singleton_class
-          label  = "#{mod.name}.#{name}"
+          method_name = ".#{name}"
           method = mod.method(name)
         end
+
+        label = "#{mod.name}#{method_name}"
 
         unless instrumented?(target)
           target.instance_variable_set(PROXY_IVAR, Module.new)
@@ -143,16 +145,18 @@ module Gitlab
         # signature this would break things. As a result we'll make sure the
         # generated method _only_ accepts regular arguments if the underlying
         # method also accepts them.
-        if method.arity == 0
-          args_signature = ''
-        else
-          args_signature = '*args'
-        end
+        args_signature =
+          if method.arity == 0
+            ''
+          else
+            '*args'
+          end
 
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
             if trans = Gitlab::Metrics::Instrumentation.transaction
-              trans.method_call_for(#{label.to_sym.inspect}).measure { super }
+              trans.method_call_for(#{label.to_sym.inspect}, #{mod.name.inspect}, "#{method_name}")
+                .measure { super }
             else
               super
             end

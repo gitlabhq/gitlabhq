@@ -14,14 +14,24 @@
   }
 }
 
+@mixin set-visible {
+  transform: translateY(0);
+  display: block;
+}
+
+@mixin set-invisible {
+  transform: translateY(-10px);
+  display: none;
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
-    display: block;
+    @include set-visible;
+    min-height: 40px;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
-      min-width: 240px;
     }
   }
 
@@ -30,6 +40,15 @@
     @include chevron-active;
     border-color: $gray-darkest;
   }
+
+  [data-toggle="dropdown"] {
+    outline: 0;
+  }
+}
+
+// Get search dropdown to line up with other nav dropdowns
+.search-input-container .dropdown-menu {
+  margin-top: 11px;
 }
 
 .dropdown-toggle {
@@ -43,7 +62,7 @@
   white-space: nowrap;
 
   &[disabled] {
-    background-color: $input-bg-disabled;
+    opacity: .65;
     cursor: not-allowed;
   }
 
@@ -79,7 +98,7 @@
   .fa-chevron-down {
     font-size: $dropdown-chevron-size;
     position: relative;
-    top: -3px;
+    top: -2px;
     margin-left: 5px;
   }
 
@@ -91,12 +110,13 @@
   &:focus:active {
     @include chevron-active;
     border-color: $dropdown-toggle-active-border-color;
+    outline: 0;
   }
 }
 
 .dropdown-menu-toggle {
   @extend .dropdown-toggle;
-  padding-right: 20px;
+  padding-right: 25px;
   position: relative;
   width: 163px;
   text-overflow: ellipsis;
@@ -107,34 +127,114 @@
 
     &.fa-spinner {
       font-size: 16px;
-      margin-top: -8px;
+      margin-top: -3px;
     }
   }
 
-  .fa-chevron-down {
+  .fa-chevron-down,
+  .fa-spinner {
     position: absolute;
     top: 11px;
     right: 8px;
   }
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+  outline: 0;
+
+  // make sure the text color is not overriden
+  &.text-danger {
+    color: $brand-danger;
+  }
+
+  .avatar {
+    border-color: $white-light;
+  }
+}
+
+@mixin dropdown-link {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: block;
+  font-weight: $gl-font-weight-normal;
+  position: relative;
+  padding: 8px 16px;
+  color: $gl-text-color;
+  line-height: normal;
+  white-space: normal;
+  overflow: hidden;
+  text-align: left;
+  width: 100%;
+
+  // make sure the text color is not overriden
+  &.text-danger {
+    color: $brand-danger;
+  }
+
+  &:hover,
+  &:active,
+  &:focus,
+  &.is-focused {
+    @include dropdown-item-hover;
+
+    text-decoration: none;
+
+    .badge {
+      background-color: darken($dropdown-link-hover-bg, 5%);
+    }
+  }
+
+  &.dropdown-menu-user-link {
+    line-height: 16px;
+    padding-top: 10px;
+    padding-bottom: 7px;
+    white-space: nowrap;
+
+    .dropdown-menu-user-username {
+      display: block;
+    }
+  }
+
+  .icon-play {
+    fill: $gl-text-color-secondary;
+    margin-right: 6px;
+    height: 12px;
+    width: 11px;
+  }
+}
+
 .dropdown-menu,
 .dropdown-menu-nav {
-  display: none;
+  @include set-invisible;
   position: absolute;
+  width: auto;
   top: 100%;
   left: 0;
-  z-index: 9;
-  width: 240px;
-  margin-top: 2px;
-  margin-bottom: 0;
+  z-index: 300;
+  min-width: 240px;
+  max-width: 500px;
+  margin-top: $dropdown-vertical-offset;
+  margin-bottom: 24px;
   font-size: 14px;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   padding: 8px 0;
   background-color: $white-light;
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+
+  &.dropdown-open-top {
+    margin-bottom: $dropdown-vertical-offset;
+  }
+
+  &.dropdown-open-left {
+    right: 0;
+    left: auto;
+  }
 
   &.is-loading {
     .dropdown-content {
@@ -146,22 +246,42 @@
     }
   }
 
+  .shortcut-mappings {
+    display: none;
+  }
+
+  &.shortcuts .shortcut-mappings {
+    display: inline-block;
+    margin-right: 5px;
+  }
+
   ul {
     margin: 0;
     padding: 0;
   }
 
   li {
+    display: block;
     text-align: left;
     list-style: none;
-    padding: 0 8px;
+    padding: 0 1px;
+
+    a,
+    button,
+    .menu-item {
+      @include dropdown-link;
+    }
   }
 
   .divider {
     height: 1px;
-    margin: 8px;
+    margin: 6px 0;
     padding: 0;
     background-color: $dropdown-divider-color;
+
+    &:hover {
+      background-color: $dropdown-divider-color;
+    }
   }
 
   .separator {
@@ -172,58 +292,119 @@
     background-color: $dropdown-divider-color;
   }
 
-  a {
-    display: block;
-    position: relative;
-    padding: 5px 8px;
-    color: $dropdown-link-color;
-    line-height: initial;
-    text-overflow: ellipsis;
-    border-radius: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-
+  .dropdown-menu-empty-item a {
     &:hover,
-    &:focus,
-    &.is-focused {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-    }
-
-    &.dropdown-menu-empty-link {
-      &.is-focused {
-        background-color: $dropdown-empty-row-bg;
-      }
-    }
-
-    &.dropdown-menu-user-link {
-      line-height: 16px;
-    }
-
-    .icon-play {
-      fill: $gl-gray-light;
-      margin-right: 6px;
-      height: 12px;
-      width: 11px;
+    &:focus {
+      background-color: transparent;
     }
   }
 
   .dropdown-header {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
-    padding: 0 10px;
+    padding: 8px 16px;
   }
 
-  .separator + .dropdown-header {
-    padding-top: 2px;
+  &.capitalize-header .dropdown-header {
+    text-transform: capitalize;
+  }
+
+  .dropdown-bold-header {
+    font-weight: $gl-font-weight-bold;
+    line-height: 22px;
+    padding: 0 16px;
+  }
+
+  .separator + .dropdown-header,
+  .separator + .dropdown-bold-header {
+    padding-top: 10px;
   }
 
   .unclickable {
     cursor: not-allowed;
     padding: 5px 8px;
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
   }
+
+  .badge + span:not(.badge) {
+    // Expects up to 3 digits on the badge
+    margin-right: 40px;
+  }
+}
+
+.droplab-dropdown {
+  .dropdown-toggle > i {
+    pointer-events: none;
+  }
+
+  .dropdown-menu li {
+    cursor: pointer;
+
+    &.droplab-item-active button {
+      @include dropdown-item-hover;
+    }
+
+    > a,
+    > button {
+      display: flex;
+      margin: 0;
+      text-overflow: inherit;
+      text-align: left;
+
+      &.btn .fa:not(:last-child) {
+        margin-left: 5px;
+      }
+    }
+
+    &.droplab-item-selected i {
+      visibility: visible;
+    }
+
+    .icon {
+      visibility: hidden;
+    }
+
+    .description {
+      display: inline-block;
+      white-space: normal;
+      margin-left: 5px;
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .icon {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+}
+
+.droplab-dropdown .dropdown-menu,
+.droplab-dropdown .dropdown-menu-nav {
+  display: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.comment-type-dropdown.open .dropdown-menu {
+  display: block;
+}
+
+.filtered-search-box-input-container {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    max-width: 280px;
+  }
+}
+
+.dropdown-menu-drop-up {
+  top: auto;
+  bottom: 100%;
 }
 
 .dropdown-menu-large {
@@ -265,20 +446,15 @@
 .dropdown-menu-user {
   .avatar {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 2 * $gl-padding;
+    height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
 }
 
-.dropdown-menu-user-link {
-  padding-top: 10px;
-  padding-bottom: 7px;
-}
-
 .dropdown-menu-user-full-name {
   display: block;
-  font-weight: 500;
+  font-weight: $gl-font-weight-normal;
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -295,6 +471,10 @@
 
 .dropdown-select {
   width: $dropdown-width;
+
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+  }
 }
 
 .dropdown-menu-align-right {
@@ -303,29 +483,41 @@
 }
 
 .dropdown-menu-selectable {
-  a {
-    padding-left: 25px;
+  li {
+    a {
+      padding: 8px 40px;
+      position: relative;
 
-    &.is-indeterminate,
-    &.is-active {
-      &::before {
-        position: absolute;
-        left: 5px;
-        top: 8px;
-        font: normal normal normal 14px/1 FontAwesome;
-        font-size: inherit;
-        text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+      &.is-indeterminate,
+      &.is-active {
+        color: $gl-text-color;
+
+        &::before {
+          position: absolute;
+          left: 16px;
+          top: 16px;
+          transform: translateY(-50%);
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        &.dropdown-menu-user-link {
+          &::before {
+            top: 50%;
+          }
+        }
       }
-    }
 
-    &.is-indeterminate::before {
-      content: "\f068";
-    }
+      &.is-indeterminate::before {
+        content: "\f068";
+      }
 
-    &.is-active::before {
-      content: "\f00c";
+      &.is-active::before {
+        content: "\f00c";
+      }
     }
   }
 }
@@ -333,9 +525,9 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 10px;
+  padding: 2px 25px 10px;
   margin: 0 10px 10px;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
   line-height: 1;
   text-align: center;
   text-overflow: ellipsis;
@@ -363,7 +555,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -3px;
+  top: -1px;
 }
 
 .dropdown-menu-back {
@@ -407,6 +599,7 @@
 
 .dropdown-input-field,
 .default-dropdown-input {
+  display: block;
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -434,8 +627,13 @@
 }
 
 .dropdown-content {
-  max-height: 215px;
+  max-height: $dropdown-max-height;
   overflow-y: auto;
+}
+
+.dropdown-info-note {
+  color: $gl-text-color-secondary;
+  text-align: center;
 }
 
 .dropdown-footer {
@@ -443,6 +641,11 @@
   margin-top: 10px;
   font-size: 13px;
   border-top: 1px solid $dropdown-divider-color;
+}
+
+.dropdown-footer-content {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .dropdown-due-date-footer {
@@ -496,135 +699,245 @@
     max-height: 230px;
   }
 
-  .ui-widget {
-    table {
-      margin: 0;
-    }
-
-    &.ui-datepicker-inline {
-      padding: 0 10px;
-      border: 0;
-      width: 100%;
-    }
-
-    .ui-datepicker-header {
-      padding: 0 8px 10px;
-      border: 0;
-
-      .ui-icon {
-        background: none;
-        font-size: 20px;
-        text-indent: 0;
-
-        &::before {
-          display: block;
-          position: relative;
-          top: -2px;
-          color: $dropdown-title-btn-color;
-          font: normal normal normal 14px/1 FontAwesome;
-          font-size: inherit;
-          text-rendering: auto;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-      }
-    }
-
-    .ui-datepicker-calendar {
-      .ui-state-hover,
-      .ui-state-active {
-        color: $white-light;
-        border: 0;
-      }
-    }
-
-    .ui-datepicker-prev,
-    .ui-datepicker-next {
-      top: 0;
-      height: 15px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: transparent;
-        border: 0;
-
-        .ui-icon::before {
-          color: $md-link-color;
-        }
-      }
-    }
-
-    .ui-datepicker-prev {
-      left: 0;
-
-      .ui-icon::before {
-        content: '\f104';
-        text-align: left;
-      }
-    }
-
-    .ui-datepicker-next {
-      right: 0;
-
-      .ui-icon::before {
-        content: '\f105';
-        text-align: right;
-      }
-    }
-
-    td {
-      padding: 0;
-      border: 1px solid $calendar-border-color;
-
-      &:first-child {
-        border-left: 0;
-      }
-
-      &:last-child {
-        border-right: 0;
-      }
-
-      a {
-        line-height: 17px;
-        border: 0;
-        border-radius: 0;
-      }
-    }
-
-    .ui-datepicker-title {
-      color: $gl-gray;
-      font-size: 14px;
-      line-height: 1;
-      font-weight: normal;
-    }
+  .pika-single {
+    position: relative !important;
+    top: 0 !important;
+    border: 0;
+    box-shadow: none;
   }
 
-  th {
-    padding: 2px 0;
-    color: $note-disabled-comment-color;
-    font-weight: normal;
-    text-transform: lowercase;
-    border-top: 1px solid $calendar-border-color;
-  }
-
-  .ui-datepicker-unselectable {
-    background-color: $gray-light;
+  .pika-lendar {
+    margin-top: -5px;
+    margin-bottom: 0;
   }
 }
 
 .dropdown-menu-inner-title {
   display: block;
-  color: $gl-title-color;
-  font-weight: 600;
+  color: $gl-text-color;
+  font-weight: $gl-font-weight-bold;
 }
 
 .dropdown-menu-inner-content {
   display: block;
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
 }
 
 .dropdown-toggle-text {
   &.is-default {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
+  }
+}
+
+.droplab-item-ignore {
+  pointer-events: none;
+}
+
+.pika-single.animate-picker.is-bound,
+.pika-single.animate-picker.is-bound.is-hidden {
+  /*
+   * Having `!important` is not recommended but
+   * since `pikaday` sets positioning inline
+   * there's no way it can be gracefully overridden
+   * using config options.
+   */
+  position: absolute !important;
+  display: block;
+}
+
+.pika-single.animate-picker.is-bound {
+  @include set-visible;
+
+  &.is-hidden {
+    @include set-invisible;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .navbar-gitlab {
+    li.header-projects,
+    li.header-more,
+    li.header-new,
+    li.header-user {
+      position: static;
+    }
+  }
+
+  header.navbar-gitlab .dropdown {
+    .dropdown-menu,
+    .dropdown-menu-nav {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+
+  header.navbar-gitlab-new .header-content .dropdown {
+    .dropdown-menu {
+      left: 0;
+      min-width: 100%;
+    }
+  }
+}
+
+header.header-content .dropdown-menu.projects-dropdown-menu {
+  padding: 0;
+}
+
+.projects-dropdown-container {
+  display: flex;
+  flex-direction: row;
+  width: 500px;
+  height: 334px;
+
+  .project-dropdown-sidebar,
+  .project-dropdown-content {
+    padding: 8px 0;
+  }
+
+  .loading-animation {
+    color: $almost-black;
+  }
+
+  .project-dropdown-sidebar {
+    width: 30%;
+    border-right: 1px solid $border-color;
+  }
+
+  .project-dropdown-content {
+    position: relative;
+    width: 70%;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    flex: 1;
+
+    .project-dropdown-sidebar,
+    .project-dropdown-content {
+      width: 100%;
+    }
+
+    .project-dropdown-sidebar {
+      border-bottom: 1px solid $border-color;
+      border-right: 0;
+    }
+  }
+
+  .projects-list-frequent-container,
+  .projects-list-search-container, {
+    padding: 8px 0;
+    overflow-y: auto;
+  }
+
+  .section-header,
+  .projects-list-frequent-container li.section-empty,
+  .projects-list-search-container li.section-empty {
+    padding: 0 15px;
+    color: $gl-text-color-secondary;
+    font-size: $gl-font-size;
+  }
+
+  .projects-list-frequent-container,
+  .projects-list-search-container {
+    li.section-empty.section-failure {
+      color: $callout-danger-color;
+    }
+  }
+
+  .search-input-container {
+    position: relative;
+    padding: 4px $gl-padding;
+
+    .search-icon {
+      position: absolute;
+      top: 13px;
+      right: 25px;
+      color: $md-area-border;
+    }
+  }
+
+  .section-header {
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  .projects-list-search-container {
+    height: 284px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .projects-list-frequent-container {
+      width: auto;
+      height: auto;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.projects-list-item-container {
+  .project-item-avatar-container
+  .project-item-metadata-container {
+    float: left;
+  }
+
+  .project-title,
+  .project-namespace {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    .project-item-avatar-container .avatar {
+      border-color: $md-area-border;
+    }
+  }
+
+  .project-title {
+    font-size: $gl-font-size;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .project-namespace {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 12px;
+    color: $gl-text-color-secondary;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .project-item-metadata-container {
+      float: none;
+    }
+  }
+}
+
+.dropdown-content-faded-mask {
+  position: relative;
+
+  .dropdown-list {
+    max-height: $dropdown-max-height;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  &::after {
+    height: $dropdown-fade-mask-height;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(to top, $white-light 0, rgba($white-light, 0));
+    transition: opacity $fade-mask-transition-duration $fade-mask-transition-curve;
+    content: '';
+    pointer-events: none;
+  }
+
+  &.fade-out::after {
+    opacity: 0;
   }
 }

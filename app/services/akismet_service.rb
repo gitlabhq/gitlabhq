@@ -1,4 +1,6 @@
 class AkismetService
+  include Gitlab::CurrentSettings
+
   attr_accessor :owner, :text, :options
 
   def initialize(owner, text, options = {})
@@ -7,7 +9,7 @@ class AkismetService
     @options = options
   end
 
-  def is_spam?
+  def spam?
     return false unless akismet_enabled?
 
     params = {
@@ -16,7 +18,7 @@ class AkismetService
       created_at: DateTime.now,
       author: owner.name,
       author_email: owner.email,
-      referrer: options[:referrer],
+      referrer: options[:referrer]
     }
 
     begin
@@ -58,7 +60,7 @@ class AkismetService
     }
 
     begin
-      akismet_client.public_send(type, options[:ip_address], options[:user_agent], params)
+      akismet_client.public_send(type, options[:ip_address], options[:user_agent], params) # rubocop:disable GitlabSecurity/PublicSend
       true
     rescue => e
       Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")

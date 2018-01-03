@@ -10,10 +10,15 @@ module Banzai
     end
 
     def references(type, project, current_user = nil)
-      processor = Banzai::ReferenceParser[type].
-        new(project, current_user)
+      processor = Banzai::ReferenceParser[type]
+        .new(project, current_user)
 
       processor.process(html_documents)
+    end
+
+    def reset_memoized_values
+      @html_documents     = nil
+      @texts_and_contexts = []
     end
 
     private

@@ -15,19 +15,34 @@ class Projects::TreeController < Projects::ApplicationController
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
-        redirect_to(
-          namespace_project_blob_path(@project.namespace, @project,
+        return redirect_to(
+          project_blob_path(@project,
                                       File.join(@ref, @path))
-        ) and return
+        )
       elsif @path.present?
         return render_404
       end
     end
 
     respond_to do |format|
-      format.html
-      # Disable cache so browser history works
-      format.js { no_cache_headers }
+      format.html do
+        lfs_blob_ids
+        @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
+      end
+
+      format.js do
+        # Disable cache so browser history works
+        no_cache_headers
+      end
+
+      format.json do
+        page_title @path.presence || _("Files"), @ref, @project.name_with_namespace
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38261
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
+        end
+      end
     end
   end
 
@@ -35,19 +50,19 @@ class Projects::TreeController < Projects::ApplicationController
     return render_404 unless @commit_params.values.all?
 
     create_commit(Files::CreateDirService,  success_notice: "The directory has been successfully created.",
-                                            success_path: namespace_project_tree_path(@project.namespace, @project, File.join(@target_branch, @dir_name)),
-                                            failure_path: namespace_project_tree_path(@project.namespace, @project, @ref))
+                                            success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
+                                            failure_path: project_tree_path(@project, @ref))
   end
 
   private
 
   def assign_dir_vars
-    @target_branch = params[:target_branch]
+    @branch_name = params[:branch_name]
 
     @dir_name = File.join(@path, params[:dir_name])
     @commit_params = {
       file_path: @dir_name,
-      commit_message: params[:commit_message],
+      commit_message: params[:commit_message]
     }
   end
 end

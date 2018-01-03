@@ -1,36 +1,34 @@
 class RepositoryForkWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include Gitlab::ShellAdapter
-  include DedicatedSidekiqQueue
+  include ProjectStartImport
+  include ProjectImportOptions
 
-  def perform(project_id, forked_from_repository_storage_path, source_path, target_path)
+  def perform(project_id, forked_from_repository_storage_path, source_disk_path)
+    project = Project.find(project_id)
+
+    return unless start_fork(project)
+
     Gitlab::Metrics.add_event(:fork_repository,
-                              source_path: source_path,
-                              target_path: target_path)
+                              source_path: source_disk_path,
+                              target_path: project.disk_path)
 
-    project = Project.find_by_id(project_id)
-
-    unless project.present?
-      logger.error("Project #{project_id} no longer exists!")
-      return
-    end
-
-    result = gitlab_shell.fork_repository(forked_from_repository_storage_path, source_path,
-                                          project.repository_storage_path, target_path)
-    unless result
-      logger.error("Unable to fork project #{project_id} for repository #{source_path} -> #{target_path}")
-      project.mark_import_as_failed('The project could not be forked.')
-      return
-    end
+    result = gitlab_shell.fork_repository(forked_from_repository_storage_path, source_disk_path,
+                                          project.repository_storage_path, project.disk_path)
+    raise "Unable to fork project #{project_id} for repository #{source_disk_path} -> #{project.disk_path}" unless result
 
     project.repository.after_import
-
-    unless project.valid_repo?
-      logger.error("Project #{project_id} had an invalid repository after fork")
-      project.mark_import_as_failed('The forked repository is invalid.')
-      return
-    end
+    raise "Project #{project_id} had an invalid repository after fork" unless project.valid_repo?
 
     project.import_finish
+  end
+
+  private
+
+  def start_fork(project)
+    return true if start(project)
+
+    Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.")
+    false
   end
 end

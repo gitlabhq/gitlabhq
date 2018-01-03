@@ -1,13 +1,11 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :environment, class: Environment do
     sequence(:name) { |n| "environment#{n}" }
 
-    project factory: :empty_project
+    association :project, :repository
     sequence(:external_url) { |n| "https://env#{n}.example.gitlab.com" }
 
     trait :with_review_app do |environment|
-      project
-
       transient do
         ref 'master'
       end
@@ -18,19 +16,30 @@ FactoryGirl.define do
       # interconnected objects to simulate a review app.
       #
       after(:create) do |environment, evaluator|
+        pipeline = create(:ci_pipeline, project: environment.project)
+
+        deployable = create(:ci_build, name: "#{environment.name}:deploy",
+                                       pipeline: pipeline)
+
         deployment = create(:deployment,
                             environment: environment,
                             project: environment.project,
+                            deployable: deployable,
                             ref: evaluator.ref,
                             sha: environment.project.commit(evaluator.ref).id)
 
         teardown_build = create(:ci_build, :manual,
-                                name: "#{deployment.environment.name}:teardown",
-                                pipeline: deployment.deployable.pipeline)
+                                name: "#{environment.name}:teardown",
+                                pipeline: pipeline)
 
         deployment.update_column(:on_stop, teardown_build.name)
         environment.update_attribute(:deployments, [deployment])
       end
+    end
+
+    trait :non_playable do
+      status 'created'
+      self.when 'manual'
     end
   end
 end

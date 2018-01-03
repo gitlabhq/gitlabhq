@@ -1,53 +1,40 @@
 module NavHelper
-  def page_sidebar_class
-    if pinned_nav?
-      "page-sidebar-expanded page-sidebar-pinned"
-    end
-  end
-
-  def page_gutter_class
-    if current_path?('merge_requests#show') ||
-        current_path?('merge_requests#diffs') ||
-        current_path?('merge_requests#commits') ||
-        current_path?('merge_requests#builds') ||
-        current_path?('merge_requests#conflicts') ||
-        current_path?('merge_requests#pipelines') ||
-        current_path?('issues#show')
-      if cookies[:collapsed_gutter] == 'true'
-        "page-gutter right-sidebar-collapsed"
-      else
-        "page-gutter right-sidebar-expanded"
-      end
-    elsif current_path?('builds#show')
-      "page-gutter build-sidebar right-sidebar-expanded"
-    elsif current_path?('wikis#show') ||
-        current_path?('wikis#edit') ||
-        current_path?('wikis#history') ||
-        current_path?('wikis#git_access')
-      "page-gutter wiki-sidebar right-sidebar-expanded"
-    end
-  end
-
-  def nav_header_class
-    class_name = ''
-    class_name << " with-horizontal-nav" if defined?(nav) && nav
-
-    if pinned_nav?
-      class_name << " header-sidebar-expanded header-sidebar-pinned"
-    end
+  def page_with_sidebar_class
+    class_name = page_gutter_class
+    class_name << 'page-with-contextual-sidebar' if defined?(@left_sidebar) && @left_sidebar
+    class_name << 'page-with-icon-sidebar' if collapsed_sidebar? && @left_sidebar
 
     class_name
   end
 
-  def layout_nav_class
-    "page-with-layout-nav" if defined?(nav) && nav
+  def page_gutter_class
+    if current_path?('merge_requests#show') ||
+        current_path?('projects/merge_requests/conflicts#show') ||
+        current_path?('issues#show') ||
+        current_path?('milestones#show')
+      if cookies[:collapsed_gutter] == 'true'
+        %w[page-gutter right-sidebar-collapsed]
+      else
+        %w[page-gutter right-sidebar-expanded]
+      end
+    elsif current_path?('jobs#show')
+      %w[page-gutter build-sidebar right-sidebar-expanded]
+    elsif current_controller?('wikis') && current_action?('show', 'create', 'edit', 'update', 'history', 'git_access')
+      %w[page-gutter wiki-sidebar right-sidebar-expanded]
+    else
+      []
+    end
   end
 
   def nav_control_class
     "nav-control" if current_user
   end
 
-  def pinned_nav?
-    cookies[:pin_nav] == 'true'
+  def user_dropdown_class
+    class_names = []
+    class_names << 'header-user-dropdown-toggle'
+    class_names << 'impersonated-user' if session[:impersonator_id]
+
+    class_names
   end
 end

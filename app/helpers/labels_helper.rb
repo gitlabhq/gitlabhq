@@ -1,6 +1,13 @@
 module LabelsHelper
   include ActionView::Helpers::TagHelper
 
+  def show_label_issuables_link?(label, issuables_type, current_user: nil, project: nil)
+    return true if label.is_a?(GroupLabel)
+    return true unless project
+
+    project.feature_available?(issuables_type, current_user)
+  end
+
   # Link to a Label
   #
   # label   - Label object to link to
@@ -43,11 +50,11 @@ module LabelsHelper
   def label_filter_path(subject, label, type: :issue)
     case subject
     when Group
-      send("#{type.to_s.pluralize}_group_path",
+      send("#{type.to_s.pluralize}_group_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject,
                   label_name: [label.name])
     when Project
-      send("namespace_project_#{type.to_s.pluralize}_path",
+      send("namespace_project_#{type.to_s.pluralize}_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject.namespace,
                   subject,
                   label_name: [label.name])
@@ -57,25 +64,24 @@ module LabelsHelper
   def edit_label_path(label)
     case label
     when GroupLabel then edit_group_label_path(label.group, label)
-    when ProjectLabel then edit_namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then edit_project_label_path(label.project, label)
     end
   end
 
   def destroy_label_path(label)
     case label
     when GroupLabel then group_label_path(label.group, label)
-    when ProjectLabel then namespace_project_label_path(label.project.namespace, label.project, label)
+    when ProjectLabel then project_label_path(label.project, label)
     end
   end
 
   def render_colored_label(label, label_suffix = '', tooltip: true)
-    label_color = label.color || Label::DEFAULT_COLOR
-    text_color = text_color_for_bg(label_color)
+    text_color = text_color_for_bg(label.color)
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
     span = %(<span class="label color-label #{"has-tooltip" if tooltip}" ) +
-      %(style="background-color: #{label_color}; color: #{text_color}" ) +
+      %(style="background-color: #{label.color}; color: #{text_color}" ) +
       %(title="#{escape_once(label.description)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
 
@@ -122,33 +128,41 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path
-    return group_labels_path(@group, :json) if @group
-
+  def labels_filter_path(only_group_labels = false)
     project = @target_project || @project
 
     if project
-      namespace_project_labels_path(project.namespace, project, :json)
+      project_labels_path(project, :json)
+    elsif @group
+      options = { only_group_labels: only_group_labels } if only_group_labels
+      group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)
     end
   end
 
+  def can_subscribe_to_label_in_different_levels?(label)
+    defined?(@project) && label.is_a?(GroupLabel)
+  end
+
   def label_subscription_status(label, project)
-    return 'project-level' if label.subscribed?(current_user, project)
     return 'group-level' if label.subscribed?(current_user)
+    return 'project-level' if label.subscribed?(current_user, project)
 
     'unsubscribed'
   end
 
-  def group_label_unsubscribe_path(label, project)
+  def toggle_subscription_label_path(label, project)
+    return toggle_subscription_group_label_path(label.group, label) unless project
+
     case label_subscription_status(label, project)
-    when 'project-level' then toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)
     when 'group-level' then toggle_subscription_group_label_path(label.group, label)
+    when 'project-level' then toggle_subscription_project_label_path(project, label)
+    when 'unsubscribed' then toggle_subscription_project_label_path(project, label)
     end
   end
 
-  def label_subscription_toggle_button_text(label, project)
+  def label_subscription_toggle_button_text(label, project = nil)
     label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
   end
 

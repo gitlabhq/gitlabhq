@@ -1,0 +1,7 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	precomposeunicode = true
+[remote "origin"]
+	url = https://gitlab.com/gitlab-org/gitlab-git-test.git

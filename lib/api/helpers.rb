@@ -1,8 +1,9 @@
 module API
   module Helpers
     include Gitlab::Utils
+    include Helpers::Pagination
 
-    SUDO_HEADER = "HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
     def declared_params(options = {})
@@ -10,22 +11,67 @@ module API
       declared(params, options).to_h.symbolize_keys
     end
 
+    def check_unmodified_since!(last_modified)
+      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) rescue nil
+
+      if if_unmodified_since && last_modified && last_modified > if_unmodified_since
+        render_api_error!('412 Precondition Failed', 412)
+      end
+    end
+
+    def destroy_conditionally!(resource, last_updated: nil)
+      last_updated ||= resource.updated_at
+
+      check_unmodified_since!(last_updated)
+
+      status 204
+      if block_given?
+        yield resource
+      else
+        resource.destroy
+      end
+    end
+
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    # We can't rewrite this with StrongMemoize because `sudo!` would
+    # actually write to `@current_user`, and `sudo?` would immediately
+    # call `current_user` again which reads from `@current_user`.
+    # We should rewrite this in a way that using StrongMemoize is possible
     def current_user
       return @current_user if defined?(@current_user)
 
       @current_user = initial_current_user
 
+      Gitlab::I18n.locale = @current_user&.preferred_language
+
       sudo!
+
+      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
 
       @current_user
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo?
       initial_current_user != current_user
     end
 
+    def user_namespace
+      @user_namespace ||= find_namespace!(params[:id])
+    end
+
+    def user_group
+      @group ||= find_group!(params[:id])
+    end
+
     def user_project
       @project ||= find_project!(params[:id])
+    end
+
+    def wiki_page
+      page = user_project.wiki.find_page(params[:slug])
+
+      page || not_found!('Wiki Page')
     end
 
     def available_labels
@@ -44,7 +90,7 @@ module API
       if id =~ /^\d+$/
         Project.find_by(id: id)
       else
-        Project.find_with_namespace(id)
+        Project.find_by_full_path(id)
       end
     end
 
@@ -59,7 +105,7 @@ module API
     end
 
     def find_group(id)
-      if id =~ /^\d+$/
+      if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)
@@ -76,19 +122,50 @@ module API
       end
     end
 
+    def find_namespace(id)
+      if id.to_s =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
+    def find_namespace!(id)
+      namespace = find_namespace(id)
+
+      if can?(current_user, :read_namespace, namespace)
+        namespace
+      else
+        not_found!('Namespace')
+      end
+    end
+
     def find_project_label(id)
       label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
       label || not_found!('Label')
     end
 
-    def find_project_issue(id)
-      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_issue(iid)
+      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def paginate(relation)
-      relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
-        add_pagination_headers(data)
-      end
+    def find_project_merge_request(iid)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    end
+
+    def find_project_snippet(id)
+      finder_params = { project: user_project }
+      SnippetsFinder.new(current_user, finder_params).execute.find(id)
+    end
+
+    def find_merge_request_with_access(iid, access_level = :read_merge_request)
+      merge_request = user_project.merge_requests.find_by!(iid: iid)
+      authorize! access_level, merge_request
+      merge_request
+    end
+
+    def find_build!(id)
+      user_project.builds.find(id.to_i)
     end
 
     def authenticate!
@@ -106,12 +183,17 @@ module API
       end
     end
 
-    def authenticated_as_admin!
+    def authenticated_with_full_private_access!
       authenticate!
-      forbidden! unless current_user.is_admin?
+      forbidden! unless current_user.full_private_access?
     end
 
-    def authorize!(action, subject = nil)
+    def authenticated_as_admin!
+      authenticate!
+      forbidden! unless current_user.admin?
+    end
+
+    def authorize!(action, subject = :global)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -123,13 +205,29 @@ module API
       authorize! :admin_project, user_project
     end
 
+    def authorize_read_builds!
+      authorize! :read_build, user_project
+    end
+
+    def authorize_update_builds!
+      authorize! :update_build, user_project
+    end
+
     def require_gitlab_workhorse!
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
       end
     end
 
-    def can?(object, action, subject)
+    def require_pages_enabled!
+      not_found! unless user_project.pages_available?
+    end
+
+    def require_pages_config_enabled!
+      not_found! unless Gitlab.config.pages.enabled
+    end
+
+    def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end
 
@@ -148,31 +246,19 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? or (params_hash.has_key?(key) and params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end
       ActionController::Parameters.new(attrs).permit!
     end
 
-    # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
-    # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
-    #
-    # Parameters:
-    #   keys (required) - An array consisting of elements that must be parseable as dates from the params hash
-    def datetime_attributes!(*keys)
-      keys.each do |key|
-        begin
-          params[key] = Time.xmlschema(params[key]) if params[key].present?
-        rescue ArgumentError
-          message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
-          render_api_error!(message, 400)
-        end
-      end
-    end
-
     def filter_by_iid(items, iid)
       items.where(iid: iid)
+    end
+
+    def filter_by_search(items, text)
+      items.search(text)
     end
 
     # error helpers
@@ -185,7 +271,7 @@ module API
 
     def bad_request!(attribute)
       message = ["400 (Bad request)"]
-      message << "\"" + attribute.to_s + "\" not given"
+      message << "\"" + attribute.to_s + "\" not given" if attribute
       render_api_error!(message.join(' '), 400)
     end
 
@@ -220,21 +306,29 @@ module API
       render_api_error!('204 No Content', 204)
     end
 
+    def accepted!
+      render_api_error!('202 Accepted', 202)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
       end
     end
 
+    def render_spam_error!
+      render_api_error!({ error: 'Spam detected' }, 400)
+    end
+
     def render_api_error!(message, status)
-      error!({ 'message' => message }, status)
+      error!({ 'message' => message }, status, header)
     end
 
     def handle_api_exception(exception)
       if sentry_enabled? && report_exception?(exception)
         define_params_for_grape_middleware
         sentry_context
-        Raven.capture_exception(exception)
+        Raven.capture_exception(exception, extra: params)
       end
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
@@ -245,29 +339,41 @@ module API
       message << "  " << trace.join("\n  ")
 
       API.logger.add Logger::FATAL, message
-      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+
+      response_message =
+        if Rails.env.test?
+          message
+        else
+          '500 Internal Server Error'
+        end
+
+      rack_response({ 'message' => response_message }.to_json, 500)
     end
 
     # project helpers
 
-    def filter_projects(projects)
-      if params[:search].present?
-        projects = projects.search(params[:search])
-      end
-
-      if params[:visibility].present?
-        projects = projects.search_by_visibility(params[:visibility])
-      end
-
-      projects = projects.where(archived: params[:archived])
+    def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
+    end
+
+    def project_finder_params
+      finder_params = {}
+      finder_params[:owned] = true if params[:owned].present?
+      finder_params[:non_public] = true if params[:membership].present?
+      finder_params[:starred] = true if params[:starred].present?
+      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
+      finder_params[:archived] = params[:archived]
+      finder_params[:search] = params[:search] if params[:search]
+      finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
+      finder_params
     end
 
     # file helpers
 
     def uploaded_file(field, uploads_path)
       if params[field]
-        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        bad_request!("#{field} is not a file") unless params[field][:filename]
         return params[field]
       end
 
@@ -283,7 +389,7 @@ module API
       UploadedFile.new(
         file_path,
         params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream',
+        params["#{field}.type"] || 'application/octet-stream'
       )
     end
 
@@ -299,98 +405,57 @@ module API
         header['X-Sendfile'] = path
         body
       else
-        file FileStreamer.new(path)
+        file path
+      end
+    end
+
+    def present_artifacts!(artifacts_file)
+      return not_found! unless artifacts_file.exists?
+
+      if artifacts_file.file_storage?
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      else
+        redirect_to(artifacts_file.url)
       end
     end
 
     private
 
-    def private_token
-      params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
-    end
-
-    def warden
-      env['warden']
-    end
-
-    # Check the Rails session for valid authentication details
-    #
-    # Until CSRF protection is added to the API, disallow this method for
-    # state-changing endpoints
-    def find_user_from_warden
-      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
-    end
-
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
-      @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-      @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
-      @initial_current_user ||= find_user_from_warden
-
-      unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-        @initial_current_user = nil
+      begin
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
+      rescue Gitlab::Auth::UnauthorizedError
+        unauthorized!
       end
-
-      @initial_current_user
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo!
       return unless sudo_identifier
-      return unless initial_current_user
 
-      unless initial_current_user.is_admin?
+      unauthorized! unless initial_current_user
+
+      unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 
-      # Only private tokens should be used for the SUDO feature
-      unless private_token == initial_current_user.private_token
-        forbidden!('Private token must be specified in order to use sudo')
+      unless access_token
+        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
+
+      validate_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
+      not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      if sudoed_user
-        @current_user = sudoed_user
-      else
-        not_found!("No user id or username for: #{sudo_identifier}")
-      end
+      @current_user = sudoed_user # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def sudo_identifier
       @sudo_identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
-    end
-
-    def add_pagination_headers(paginated_data)
-      header 'X-Total',       paginated_data.total_count.to_s
-      header 'X-Total-Pages', paginated_data.total_pages.to_s
-      header 'X-Per-Page',    paginated_data.limit_value.to_s
-      header 'X-Page',        paginated_data.current_page.to_s
-      header 'X-Next-Page',   paginated_data.next_page.to_s
-      header 'X-Prev-Page',   paginated_data.prev_page.to_s
-      header 'Link',          pagination_links(paginated_data)
-    end
-
-    def pagination_links(paginated_data)
-      request_url = request.url.split('?').first
-      request_params = params.clone
-      request_params[:per_page] = paginated_data.limit_value
-
-      links = []
-
-      request_params[:page] = paginated_data.current_page - 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="prev") unless paginated_data.first_page?
-
-      request_params[:page] = paginated_data.current_page + 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="next") unless paginated_data.last_page?
-
-      request_params[:page] = 1
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="first")
-
-      request_params[:page] = paginated_data.total_pages
-      links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
-
-      links.join(', ')
     end
 
     def secret_token
@@ -407,18 +472,16 @@ module API
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     end
 
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
+    def send_artifacts_entry(build, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     end
 
-    # The Grape Error Middleware only has access to env but no params. We workaround this by
-    # defining a method that returns the right value.
+    # The Grape Error Middleware only has access to `env` but not `params` nor
+    # `request`. We workaround this by defining methods that returns the right
+    # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:params) { Rack::Request.new(env).params.symbolize_keys }
+      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 
     # We could get a Grape or a standard Ruby exception. We should only report anything that

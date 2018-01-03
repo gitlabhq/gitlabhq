@@ -1,9 +1,12 @@
+- is_lfs_blob = @lfs_blob_ids.include?(blob_item.id)
 %tr{ class: "tree-item #{tree_hex_class(blob_item)}" }
   %td.tree-item-file-name
     = tree_icon(type, blob_item.mode, blob_item.name)
     - file_name = blob_item.name
-    = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@id || @commit.id, blob_item.name)), title: file_name do
-      %span.str-truncated= file_name
+    = link_to project_blob_path(@project, tree_join(@id || @commit.id, blob_item.name)), class: 'str-truncated', title: file_name do
+      %span= file_name
+    - if is_lfs_blob
+      %span.label.label-lfs.prepend-left-5 LFS
   %td.hidden-xs.tree-commit
   %td.tree-time-ago.cgray.text-right
     = render 'projects/tree/spinner'

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HipchatService, models: true do
+describe HipchatService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -8,22 +8,26 @@ describe HipchatService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:token) }
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:token) }
     end
   end
 
   describe "Execute" do
-    let(:hipchat) { HipchatService.new }
-    let(:user)    { create(:user, username: 'username') }
-    let(:project) { create(:project, name: 'project') }
+    let(:hipchat) { described_class.new }
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, :repository) }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }
     let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
     let(:token) { 'verySecret' }
@@ -32,7 +36,7 @@ describe HipchatService, models: true do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
 
-    before(:each) do
+    before do
       allow(hipchat).to receive_messages(
         project_id: project.id,
         project: project,
@@ -165,7 +169,7 @@ describe HipchatService, models: true do
 
     context "Note events" do
       let(:user) { create(:user) }
-      let(:project) { create(:project, creator_id: user.id) }
+      let(:project) { create(:project, :repository, creator: user) }
 
       context 'when commit comment event triggered' do
         let(:commit_note) do
@@ -280,13 +284,14 @@ describe HipchatService, models: true do
       end
     end
 
-    context 'build events' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:data) { Gitlab::DataBuilder::Build.build(build.reload) }
+    context 'pipeline events' do
+      let(:pipeline) { create(:ci_empty_pipeline, user: create(:user)) }
+      let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       context 'for failed' do
-        before { build.drop }
+        before do
+          pipeline.drop
+        end
 
         it "calls Hipchat API" do
           hipchat.execute(data)
@@ -295,35 +300,36 @@ describe HipchatService, models: true do
         end
 
         it "creates a build message" do
-          message = hipchat.send(:create_build_message, data)
+          message = hipchat.__send__(:create_pipeline_message, data)
 
           project_url = project.web_url
           project_name = project.name_with_namespace.gsub(/\s/, '')
-          sha = data[:sha]
-          ref = data[:ref]
-          ref_type = data[:tag] ? 'tag' : 'branch'
-          duration = data[:commit][:duration]
+          pipeline_attributes = data[:object_attributes]
+          ref = pipeline_attributes[:ref]
+          ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
+          duration = pipeline_attributes[:duration]
+          user_name = data[:user][:name]
 
           expect(message).to eq("<a href=\"#{project_url}\">#{project_name}</a>: " \
-            "Commit <a href=\"#{project_url}/commit/#{sha}/builds\">#{Commit.truncate_sha(sha)}</a> " \
+            "Pipeline <a href=\"#{project_url}/pipelines/#{pipeline.id}\">##{pipeline.id}</a> " \
             "of <a href=\"#{project_url}/commits/#{ref}\">#{ref}</a> #{ref_type} " \
-            "by #{data[:commit][:author_name]} failed in #{duration} second(s)")
+            "by #{user_name} failed in #{duration} second(s)")
         end
       end
 
       context 'for succeeded' do
         before do
-          build.success
+          pipeline.succeed
         end
 
         it "calls Hipchat API" do
-          hipchat.notify_only_broken_builds = false
+          hipchat.notify_only_broken_pipelines = false
           hipchat.execute(data)
           expect(WebMock).to have_requested(:post, api_url).once
         end
 
         it "notifies only broken" do
-          hipchat.notify_only_broken_builds = true
+          hipchat.notify_only_broken_pipelines = true
           hipchat.execute(data)
           expect(WebMock).not_to have_requested(:post, api_url).once
         end
@@ -349,17 +355,19 @@ describe HipchatService, models: true do
 
       context 'with a successful build' do
         it 'uses the green color' do
-          build_data = { object_kind: 'build', commit: { status: 'success' } }
+          data = { object_kind: 'pipeline',
+                   object_attributes: { status: 'success' } }
 
-          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'green' })
+          expect(hipchat.__send__(:message_options, data)).to eq({ notify: false, color: 'green' })
         end
       end
 
       context 'with a failed build' do
         it 'uses the red color' do
-          build_data = { object_kind: 'build', commit: { status: 'failed' } }
+          data = { object_kind: 'pipeline',
+                   object_attributes: { status: 'failed' } }
 
-          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'red' })
+          expect(hipchat.__send__(:message_options, data)).to eq({ notify: false, color: 'red' })
         end
       end
     end

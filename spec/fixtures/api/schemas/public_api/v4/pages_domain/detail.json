@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "domain": { "type": "string" },
+    "url": { "type": "uri" },
+    "certificate": {
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string" },
+        "expired": { "type": "boolean" },
+        "certificate": { "type": "string" },
+        "certificate_text": { "type": "string" }
+      },
+      "required": ["subject", "expired"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["domain", "url"],
+  "additionalProperties": false
+}

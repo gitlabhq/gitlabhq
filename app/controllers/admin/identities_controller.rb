@@ -36,9 +36,9 @@ class Admin::IdentitiesController < Admin::ApplicationController
   def destroy
     if @identity.destroy
       RepairLdapBlockedUserService.new(@user).execute
-      redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully removed.'
+      redirect_to admin_user_identities_path(@user), status: 302, notice: 'User identity was successfully removed.'
     else
-      redirect_to admin_user_identities_path(@user), alert: 'Failed to remove user identity.'
+      redirect_to admin_user_identities_path(@user), status: 302, alert: 'Failed to remove user identity.'
     end
   end
 

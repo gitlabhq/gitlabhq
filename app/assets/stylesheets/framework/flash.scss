@@ -16,10 +16,33 @@
     @extend .alert;
     @extend .alert-danger;
     margin: 0;
+
+    .flash-text,
+    .flash-action {
+      display: inline-block;
+    }
+
+    a.flash-action {
+      margin-left: 5px;
+      text-decoration: none;
+      font-weight: $gl-font-weight-normal;
+      border-bottom: 1px solid;
+
+      &:hover {
+        border-color: transparent;
+      }
+    }
+  }
+
+  .flash-success {
+    @extend .alert;
+    @extend .alert-success;
+    margin: 0;
   }
 
   .flash-notice,
-  .flash-alert {
+  .flash-alert,
+  .flash-success {
     border-radius: $border-radius-default;
 
     .container-fluid,
@@ -32,9 +55,14 @@
     margin-bottom: 0;
 
     .flash-notice,
-    .flash-alert {
+    .flash-alert,
+    .flash-success {
       border-radius: 0;
     }
+  }
+
+  &:empty {
+    margin: 0;
   }
 }
 

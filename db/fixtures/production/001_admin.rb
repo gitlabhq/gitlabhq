@@ -12,10 +12,12 @@ else
   user_args[:password] = ENV['GITLAB_ROOT_PASSWORD']
 end
 
-user = User.new(user_args)
-user.skip_confirmation!
+# Only admins can create other admin users in Users::CreateService so to solve
+# the chicken-and-egg problem, we pass a non-persisted admin user to the service.
+transient_admin = User.new(admin: true)
+user = Users::CreateService.new(transient_admin, user_args.merge!(skip_confirmation: true)).execute
 
-if user.save
+if user.persisted?
   puts "Administrator account created:".color(:green)
   puts
   puts "login:    root".color(:green)

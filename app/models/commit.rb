@@ -1,7 +1,10 @@
+# coding: utf-8
 class Commit
   extend ActiveModel::Naming
+  extend Gitlab::Cache::RequestCache
 
   include ActiveModel::Conversion
+  include Noteable
   include Participable
   include Mentionable
   include Referable
@@ -13,7 +16,9 @@ class Commit
   participant :committer
   participant :notes_with_associations
 
-  attr_accessor :project
+  attr_accessor :project, :author
+  attr_accessor :redacted_description_html
+  attr_accessor :redacted_title_html
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -21,10 +26,20 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
+  MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
+  COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
+
+  def banzai_render_context(field)
+    context = { pipeline: :single_line, project: self.project }
+    context[:author] = self.author if self.author
+
+    context
+  end
+
   class << self
     def decorate(commits, project)
       commits.map do |commit|
-        if commit.kind_of?(Commit)
+        if commit.is_a?(Commit)
           commit
         else
           self.new(commit, project)
@@ -37,20 +52,53 @@ class Commit
       diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
     end
 
+    def order_by(collection:, order_by:, sort:)
+      return collection unless %w[email name commits].include?(order_by)
+      return collection unless %w[asc desc].include?(sort)
+
+      collection.sort do |a, b|
+        operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
+
+        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable PublicSend
+
+        # use case insensitive comparison for string values
+        order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2
+      end
+    end
+
     # Truncate sha to 8 characters
     def truncate_sha(sha)
-      sha[0..7]
+      sha[0..MIN_SHA_LENGTH]
     end
 
     def max_diff_options
       {
         max_files: DIFF_HARD_LIMIT_FILES,
-        max_lines: DIFF_HARD_LIMIT_LINES,
+        max_lines: DIFF_HARD_LIMIT_LINES
       }
     end
 
     def from_hash(hash, project)
-      new(Gitlab::Git::Commit.new(hash), project)
+      raw_commit = Gitlab::Git::Commit.new(project.repository.raw, hash)
+      new(raw_commit, project)
+    end
+
+    def valid_hash?(key)
+      !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
+    end
+
+    def lazy(project, oid)
+      BatchLoader.for({ project: project, oid: oid }).batch do |items, loader|
+        items_by_project = items.group_by { |i| i[:project] }
+
+        items_by_project.each do |project, commit_ids|
+          oids = commit_ids.map { |i| i[:oid] }
+
+          project.repository.commits_by(oids: oids).each do |commit|
+            loader.call({ project: commit.project, oid: commit.id }, commit) if commit
+          end
+        end
+      end
     end
   end
 
@@ -61,14 +109,15 @@ class Commit
 
     @raw = raw_commit
     @project = project
+    @statuses = {}
   end
 
   def id
-    @raw.id
+    raw.id
   end
 
   def ==(other)
-    (self.class === other) && (raw == other.raw)
+    other.is_a?(self.class) && raw == other.raw
   end
 
   def self.reference_prefix
@@ -77,30 +126,28 @@ class Commit
 
   # Pattern used to extract commit references from text
   #
-  # The SHA can be between 7 and 40 hex characters.
-  #
   # This pattern supports cross-project references.
   def self.reference_pattern
     @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{7,40})
+      (?<commit>#{COMMIT_SHA_PATTERN})
     }x
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
+    @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
   end
 
-  def to_reference(from_project = nil)
-    commit_reference(from_project, id)
+  def to_reference(from = nil, full: false)
+    commit_reference(from, id, full: full)
   end
 
-  def reference_link_text(from_project = nil)
-    commit_reference(from_project, short_id)
+  def reference_link_text(from = nil, full: false)
+    commit_reference(from, short_id, full: full)
   end
 
   def diff_line_count
-    @diff_line_count ||= Commit::diff_line_count(raw_diffs)
+    @diff_line_count ||= Commit.diff_line_count(raw_diffs)
     @diff_line_count
   end
 
@@ -108,33 +155,29 @@ class Commit
   #
   # Usually, the commit title is the first line of the commit message.
   # In case this first line is longer than 100 characters, it is cut off
-  # after 80 characters and ellipses (`&hellp;`) are appended.
+  # after 80 characters + `...`
   def title
-    full_title.length > 100 ? full_title[0..79] << "…" : full_title
+    return full_title if full_title.length < 100
+
+    full_title.truncate(81, separator: ' ', omission: '…')
   end
 
   # Returns the full commits title
   def full_title
-    return @full_title if @full_title
-
-    if safe_message.blank?
-      @full_title = no_commit_message
-    else
-      @full_title = safe_message.split("\n", 2).first
-    end
+    @full_title ||=
+      if safe_message.blank?
+        no_commit_message
+      else
+        safe_message.split("\n", 2).first
+      end
   end
 
-  # Returns the commits description
-  #
-  # cut off, ellipses (`&hellp;`) are prepended to the commit message.
+  # Returns full commit message if title is truncated (greater than 99 characters)
+  # otherwise returns commit message without first line
   def description
-    title_end = safe_message.index("\n")
-    @description ||=
-      if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
-        "…" << safe_message[80..-1]
-      else
-        safe_message.split("\n", 2)[1].try(:chomp)
-      end
+    return safe_message if full_title.length >= 100
+
+    safe_message.split("\n", 2)[1].try(:chomp)
   end
 
   def description?
@@ -167,19 +210,9 @@ class Commit
   end
 
   def author
-    if RequestStore.active?
-      key = "commit_author:#{author_email.downcase}"
-      # nil is a valid value since no author may exist in the system
-      if RequestStore.store.has_key?(key)
-        @author = RequestStore.store[key]
-      else
-        @author = find_author_by_any_email
-        RequestStore.store[key] = @author
-      end
-    else
-      @author ||= find_author_by_any_email
-    end
+    User.find_by_any_email(author_email.downcase)
   end
+  request_cache(:author) { author_email.downcase }
 
   def committer
     @committer ||= User.find_by_any_email(committer_email.downcase)
@@ -197,21 +230,24 @@ class Commit
     project.notes.for_commit_id(self.id)
   end
 
+  def discussion_notes
+    notes.non_diff_notes
+  end
+
   def notes_with_associations
     notes.includes(:author)
   end
 
-  def method_missing(m, *args, &block)
-    @raw.send(m, *args, &block)
+  def method_missing(method, *args, &block)
+    @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
     @raw.respond_to?(method, include_private) || super
   end
 
-  # Truncate sha to 8 characters
   def short_id
-    @raw.short_id(7)
+    @raw.short_id(MIN_SHA_LENGTH)
   end
 
   def diff_refs
@@ -225,13 +261,27 @@ class Commit
     project.pipelines.where(sha: sha)
   end
 
-  def status(ref = nil)
-    @statuses ||= {}
+  def last_pipeline
+    @last_pipeline ||= pipelines.last
+  end
 
+  def status(ref = nil)
     return @statuses[ref] if @statuses.key?(ref)
 
-    @statuses[ref] = pipelines.latest_status(ref)
+    @statuses[ref] = project.pipelines.latest_status_per_commit(id, ref)[id]
   end
+
+  def set_status_for_ref(ref, status)
+    @statuses[ref] = status
+  end
+
+  def signature
+    return @signature if defined?(@signature)
+
+    @signature = gpg_commit.signature
+  end
+
+  delegate :has_signature?, to: :gpg_commit
 
   def revert_branch_name
     "revert-#{short_id}"
@@ -239,6 +289,28 @@ class Commit
 
   def cherry_pick_branch_name
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
+  end
+
+  def cherry_pick_description(user)
+    message_body = "(cherry picked from commit #{sha})"
+
+    if merged_merge_request?(user)
+      commits_in_merge_request = merged_merge_request(user).commits
+
+      if commits_in_merge_request.present?
+        message_body << "\n"
+
+        commits_in_merge_request.reverse.each do |commit_in_merge|
+          message_body << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
+        end
+      end
+    end
+
+    message_body
+  end
+
+  def cherry_pick_message(user)
+    %Q{#{message}\n\n#{cherry_pick_description(user)}}
   end
 
   def revert_description(user)
@@ -301,7 +373,7 @@ class Commit
   def uri_type(path)
     entry = @raw.tree.path(path)
     if entry[:type] == :blob
-      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]))
+      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob
     else
       entry[:type]
@@ -314,14 +386,32 @@ class Commit
     raw.diffs(*args)
   end
 
-  def diffs(diff_options = nil)
+  def raw_deltas
+    @deltas ||= raw.deltas
+  end
+
+  def diffs(diff_options = {})
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
+  end
+
+  def persisted?
+    true
+  end
+
+  def touch
+    # no-op but needs to be defined since #persisted? is defined
+  end
+
+  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
+
+  def work_in_progress?
+    !!(title =~ WIP_REGEX)
   end
 
   private
 
-  def commit_reference(from_project, referable_commit_id)
-    reference = project.to_reference(from_project)
+  def commit_reference(from, referable_commit_id, full: false)
+    reference = project.to_reference(from, full: full)
 
     if reference.present?
       "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"
@@ -330,14 +420,10 @@ class Commit
     end
   end
 
-  def find_author_by_any_email
-    User.find_by_any_email(author_email.downcase)
-  end
-
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    raw_diffs(deltas_only: true).each do |diff|
+    raw_deltas.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file
@@ -356,5 +442,9 @@ class Commit
 
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
+  end
+
+  def gpg_commit
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::InlineDiffFilter, lib: true do
+describe Banzai::Filter::InlineDiffFilter do
   include FilterSpecHelper
 
   it 'adds inline diff span tags for deletions when using square brackets' do

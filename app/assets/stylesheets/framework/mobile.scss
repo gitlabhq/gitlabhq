@@ -23,7 +23,7 @@
     margin-right: 0;
   }
 
-  .issues-details-filters,
+  .issues-details-filters:not(.filtered-search-block),
   .dash-projects-filters,
   .check-all-holder {
     display: none;
@@ -34,10 +34,6 @@
   }
 
   .project-home-links {
-    display: none;
-  }
-
-  .project-avatar {
     display: none;
   }
 
@@ -100,8 +96,7 @@
 
 @media (max-width: $screen-sm-max) {
   .issues-filters {
-    .milestone-filter,
-    .labels-filter {
+    .milestone-filter {
       display: none;
     }
   }
@@ -113,29 +108,7 @@
     }
   }
 
-  .issue_edited_ago,
-  .note_edited_ago {
-    display: none;
-  }
-
   aside:not(.right-sidebar) {
     display: none;
   }
-
-  .show-aside {
-    display: block !important;
-  }
-}
-
-.show-aside {
-  display: none;
-  position: fixed;
-  right: 0;
-  top: 30%;
-  padding: 5px 15px;
-  background: $show-aside-bg;
-  font-size: 20px;
-  color: $show-aside-color;
-  z-index: 100;
-  box-shadow: 0 1px 2px $show-aside-shadow;
 }

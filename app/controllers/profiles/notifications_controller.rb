@@ -7,7 +7,9 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   end
 
   def update
-    if current_user.update_attributes(user_params)
+    result = Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute
+
+    if result[:status] == :success
       flash[:notice] = "Notification settings saved"
     else
       flash[:alert] = "Failed to save new settings"
@@ -17,6 +19,6 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:notification_email)
+    params.require(:user).permit(:notification_email, :notified_of_own_activity)
   end
 end

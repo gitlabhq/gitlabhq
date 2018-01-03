@@ -1,5 +1,5 @@
 class ExpireBuildArtifactsWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform
@@ -8,6 +8,6 @@ class ExpireBuildArtifactsWorker
     build_ids = Ci::Build.with_expired_artifacts.pluck(:id)
     build_ids = build_ids.map { |build_id| [build_id] }
 
-    Sidekiq::Client.push_bulk('class' => ExpireBuildInstanceArtifactsWorker, 'args' => build_ids )
+    ExpireBuildInstanceArtifactsWorker.bulk_perform_async(build_ids)
   end
 end

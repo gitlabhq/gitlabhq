@@ -21,6 +21,11 @@ Guidance on the timing, curving and motion for GitLab.
 
 ---
 
+### [Illustrations](illustrations.md)
+Guidelines for principals and styles related to illustrations for GitLab.
+
+---
+
 ### [Copy](copy.md)
 Conventions on text and messaging within labels, buttons, and other components.
 

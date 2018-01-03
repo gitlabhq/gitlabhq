@@ -6,11 +6,11 @@ module ExportFileHelper
   ObjectWithParent = Struct.new(:object, :parent, :key_found)
 
   def setup_project
-    project = create(:project, :public)
+    project = create(:project, :public, :repository)
 
     create(:release, project: project)
 
-    issue = create(:issue, assignee: user, project: project)
+    issue = create(:issue, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)
     label = create(:label, project: project)
     milestone = create(:milestone, project: project)
@@ -35,7 +35,8 @@ module ExportFileHelper
            project: project,
            commit_id: ci_pipeline.sha)
 
-    create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+    event = create(:event, :created, target: milestone, project: project, author: user, action: 5)
+    create(:push_event_payload, event: event)
     create(:project_member, :master, user: user, project: project)
     create(:ci_variable, project: project)
     create(:ci_trigger, project: project)

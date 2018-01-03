@@ -1,0 +1,28 @@
+.edit-cluster-form {
+  .clipboard-addon {
+    background-color: $white-light;
+  }
+}
+
+.cluster-applications-table {
+  // Wait for the Vue to kick-in and render the applications block
+  min-height: 400px;
+}
+
+.clusters-dropdown-menu {
+  max-width: 100%;
+}
+
+.clusters-container {
+  .nav-bar-right {
+    padding: $gl-padding-top $gl-padding;
+  }
+
+  .empty-state .svg-content img {
+    width: 145px;
+  }
+
+  .top-area .nav-controls > .btn.btn-add-cluster {
+    margin-right: 0;
+  }
+}

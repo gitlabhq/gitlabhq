@@ -1,14 +1,15 @@
 module Ci
   class Trigger < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
 
     acts_as_paranoid
 
-    belongs_to :project, foreign_key: :gl_project_id
-    has_many :trigger_requests, dependent: :destroy
+    belongs_to :project
+    belongs_to :owner, class_name: "User"
 
-    validates_presence_of :token
-    validates_uniqueness_of :token
+    has_many :trigger_requests
+
+    validates :token, presence: true, uniqueness: true
 
     before_validation :set_default_values
 
@@ -25,7 +26,15 @@ module Ci
     end
 
     def short_token
-      token[0...10]
+      token[0...4]
+    end
+
+    def legacy?
+      self.owner_id.blank?
+    end
+
+    def can_access_project?
+      self.owner_id.blank? || Ability.allowed?(self.owner, :create_build, project)
     end
   end
 end

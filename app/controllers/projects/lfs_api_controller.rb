@@ -2,6 +2,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
   skip_before_action :lfs_check_access!, only: [:deprecated]
+  before_action :lfs_check_batch_operation!, only: [:batch]
 
   def batch
     unless objects.present?
@@ -22,7 +23,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     render(
       json: {
         message: 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: "#{Gitlab.config.gitlab.url}/help"
       },
       status: 501
     )
@@ -48,10 +49,14 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     objects.each do |object|
       if existing_oids.include?(object[:oid])
         object[:actions] = download_actions(object)
+
+        if Guest.can?(:download_code, project)
+          object[:authenticated] = true
+        end
       else
         object[:error] = {
           code: 404,
-          message: "Object does not exist on the server or you don't have permissions to access it",
+          message: "Object does not exist on the server or you don't have permissions to access it"
         }
       end
     end
@@ -85,5 +90,22 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         }.compact
       }
     }
+  end
+
+  def lfs_check_batch_operation!
+    if upload_request? && Gitlab::Database.read_only?
+      render(
+        json: {
+          message: lfs_read_only_message
+        },
+        content_type: 'application/vnd.git-lfs+json',
+        status: 403
+      )
+    end
+  end
+
+  # Overridden in EE
+  def lfs_read_only_message
+    _('You cannot write to this read-only GitLab instance.')
   end
 end

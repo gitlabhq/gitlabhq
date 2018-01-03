@@ -13,11 +13,15 @@ $dark-main-bg: #1d1f21;
 $dark-main-color: #1d1f21;
 $dark-line-color: #c5c8c6;
 $dark-line-num-color: rgba(255, 255, 255, 0.3);
+$dark-line-num-color-new: #627165;
+$dark-line-num-color-old: #806565;
 $dark-diff-not-empty-bg: #557;
 $dark-highlight-bg: #ffe792;
 $dark-highlight-color: $black;
 $dark-pre-hll-bg: #373b41;
 $dark-hll-bg: #373b41;
+$dark-over-bg: #9f9ab5;
+$dark-expanded-bg: #3e3e3e;
 $dark-c: #969896;
 $dark-err: #c66;
 $dark-k: #b294bb;
@@ -89,7 +93,6 @@ $dark-il: #de935f;
 
   .diff-line-num,
   .diff-line-num a {
-    color: $dark-main-color;
     color: $dark-line-num-color;
   }
 
@@ -121,15 +124,53 @@ $dark-il: #de935f;
     .diff-line-num.new,
     .line_content.new {
       @include diff_background($dark-new-bg, $dark-new-idiff, $dark-border);
+
+      &::before,
+      a {
+        color: $dark-line-num-color-new;
+      }
     }
 
     .diff-line-num.old,
     .line_content.old {
       @include diff_background($dark-old-bg, $dark-old-idiff, $dark-border);
+
+      &::before,
+      a {
+        color: $dark-line-num-color-old;
+      }
+    }
+
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $dark-over-bg;
+        border-color: darken($dark-over-bg, 5%);
+
+        a {
+          color: darken($dark-over-bg, 15%);
+        }
+      }
     }
 
     .line_content.match {
       @include dark-diff-match-line;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $black;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $dark-expanded-bg;
+        border-color: $dark-expanded-bg;
+      }
     }
   }
 
@@ -142,6 +183,11 @@ $dark-il: #de935f;
   span.highlight_word {
     background-color: $dark-highlight-bg !important;
     color: $dark-highlight-color !important;
+  }
+
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $dark-na;
   }
 
   .hll { background-color: $dark-hll-bg; }
@@ -158,11 +204,11 @@ $dark-il: #de935f;
   .cs { color: $dark-cs; } /* Comment.Special */
   .gd { color: $dark-gd; } /* Generic.Deleted */
   .ge { font-style: italic; } /* Generic.Emph */
-  .gh { color: $dark-gh; font-weight: bold; } /* Generic.Heading */
+  .gh { color: $dark-gh; font-weight: $gl-font-weight-bold; } /* Generic.Heading */
   .gi { color: $dark-gi; } /* Generic.Inserted */
-  .gp { color: $dark-gp; font-weight: bold; } /* Generic.Prompt */
-  .gs { font-weight: bold; } /* Generic.Strong */
-  .gu { color: $dark-gu; font-weight: bold; } /* Generic.Subheading */
+  .gp { color: $dark-gp; font-weight: $gl-font-weight-bold; } /* Generic.Prompt */
+  .gs { font-weight: $gl-font-weight-bold; } /* Generic.Strong */
+  .gu { color: $dark-gu; font-weight: $gl-font-weight-bold; } /* Generic.Subheading */
   .kc { color: $dark-kc; } /* Keyword.Constant */
   .kd { color: $dark-kd; } /* Keyword.Declaration */
   .kn { color: $dark-kn; } /* Keyword.Namespace */

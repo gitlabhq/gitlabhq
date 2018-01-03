@@ -1,0 +1,58 @@
+- public_project_count = ProjectsFinder.new(current_user: current_user).execute.count
+
+.blank-state-row
+  - if current_user.can_create_project?
+    = link_to new_project_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_project", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Create a project
+          %p.blank-state-text
+            Projects are where you store your code, access issues, wiki and other features of GitLab.
+  - else
+    .blank-state
+      .blank-state-icon
+        = custom_icon("add_new_project", size: 50)
+      .blank-state-body
+        %h3.blank-state-title
+          Create a project
+        %p.blank-state-text
+          If you are added to a project, it will be displayed here.
+
+  - if current_user.can_create_group?
+    = link_to new_group_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_group", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Create a group
+          %p.blank-state-text
+            Groups are the best way to manage projects and members.
+
+  - if public_project_count > 0
+    = link_to trending_explore_projects_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("globe", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Explore public projects
+          %p.blank-state-text
+            There are
+            = number_with_delimiter(public_project_count)
+            public projects on this server.
+            Public projects are an easy way to allow
+            everyone to have read-only access.
+
+  = link_to "https://docs.gitlab.com/", class: "blank-state-link" do
+    .blank-state
+      .blank-state-icon
+        = custom_icon("lightbulb", size: 50)
+      .blank-state-body
+        %h3.blank-state-title
+          Learn more about GitLab
+        %p.blank-state-text
+          Take a look at the documentation to discover all of GitLab's capabilities.

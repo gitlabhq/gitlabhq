@@ -32,8 +32,8 @@ table {
 
       th {
         background-color: $gray-light;
-        font-weight: normal;
-        border-bottom: none;
+        font-weight: $gl-font-weight-normal;
+        border-bottom: 0;
 
         &.wide {
           width: 55%;

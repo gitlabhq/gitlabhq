@@ -1,8 +1,8 @@
-%div#bitbucket_import_modal.modal
+#bitbucket_import_modal.modal
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3 Import projects from Bitbucket
       .modal-body
         To enable importing projects from Bitbucket,
@@ -10,4 +10,4 @@
           as administrator you need to configure
         - else
           ask your GitLab administrator to configure
-        == #{link_to 'OAuth integration', help_page_path("integration/bitbucket")}.
+        = link_to 'OAuth integration', help_page_path("integration/bitbucket")

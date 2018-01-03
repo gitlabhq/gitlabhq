@@ -1,0 +1,211 @@
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+  .nav-sidebar-inner-scroll
+    .context-header
+      = link_to admin_root_path, title: 'Admin Overview' do
+        .avatar-container.s40.settings-avatar
+          = sprite_icon('admin', size: 24)
+        .sidebar-context-title Admin Area
+    %ul.sidebar-top-level-items
+      = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts conversational_development_index), html_options: {class: 'home'}) do
+        = link_to admin_root_path, class: 'shortcuts-tree' do
+          .nav-icon-container
+            = sprite_icon('overview')
+          %span.nav-item-name
+            Overview
+        %ul.sidebar-sub-level-items
+          = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts conversational_development_index), html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_root_path do
+              %strong.fly-out-top-item-name
+                #{ _('Overview') }
+          %li.divider.fly-out-top-item
+          = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
+            = link_to admin_root_path, title: 'Overview' do
+              %span
+                Dashboard
+          = nav_link(controller: [:admin, :projects]) do
+            = link_to admin_projects_path, title: 'Projects' do
+              %span
+                Projects
+          = nav_link(controller: :users) do
+            = link_to admin_users_path, title: 'Users' do
+              %span
+                Users
+          = nav_link(controller: :groups) do
+            = link_to admin_groups_path, title: 'Groups' do
+              %span
+                Groups
+          = nav_link path: 'jobs#index' do
+            = link_to admin_jobs_path, title: 'Jobs' do
+              %span
+                Jobs
+          = nav_link path: ['runners#index', 'runners#show'] do
+            = link_to admin_runners_path, title: 'Runners' do
+              %span
+                Runners
+          = nav_link path: 'cohorts#index' do
+            = link_to admin_cohorts_path, title: 'Cohorts' do
+              %span
+                Cohorts
+          = nav_link(controller: :conversational_development_index) do
+            = link_to admin_conversational_development_index_path, title: 'ConvDev Index' do
+              %span
+                ConvDev Index
+
+      = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
+        = link_to admin_system_info_path do
+          .nav-icon-container
+            = sprite_icon('monitor')
+          %span.nav-item-name
+            Monitoring
+
+        %ul.sidebar-sub-level-items
+          = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles), html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_system_info_path do
+              %strong.fly-out-top-item-name
+                #{ _('Monitoring') }
+          %li.divider.fly-out-top-item
+          = nav_link(controller: :system_info) do
+            = link_to admin_system_info_path, title: 'System Info' do
+              %span
+                System Info
+          = nav_link(controller: :background_jobs) do
+            = link_to admin_background_jobs_path, title: 'Background Jobs' do
+              %span
+                Background Jobs
+          = nav_link(controller: :logs) do
+            = link_to admin_logs_path, title: 'Logs' do
+              %span
+                Logs
+          = nav_link(controller: :health_check) do
+            = link_to admin_health_check_path, title: 'Health Check' do
+              %span
+                Health Check
+          = nav_link(controller: :requests_profiles) do
+            = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
+              %span
+                Requests Profiles
+
+      = nav_link(controller: :broadcast_messages) do
+        = link_to admin_broadcast_messages_path do
+          .nav-icon-container
+            = sprite_icon('messages')
+          %span.nav-item-name
+            Messages
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :broadcast_messages, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_broadcast_messages_path do
+              %strong.fly-out-top-item-name
+                #{ _('Messages') }
+
+      = nav_link(controller: [:hooks, :hook_logs]) do
+        = link_to admin_hooks_path do
+          .nav-icon-container
+            = sprite_icon('hook')
+          %span.nav-item-name
+            System Hooks
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: [:hooks, :hook_logs], html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_hooks_path do
+              %strong.fly-out-top-item-name
+                #{ _('System Hooks') }
+
+      = nav_link(controller: :applications) do
+        = link_to admin_applications_path do
+          .nav-icon-container
+            = sprite_icon('applications')
+          %span.nav-item-name
+            Applications
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :applications, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_applications_path do
+              %strong.fly-out-top-item-name
+                #{ _('Applications') }
+
+      = nav_link(controller: :abuse_reports) do
+        = link_to admin_abuse_reports_path do
+          .nav-icon-container
+            = sprite_icon('slight-frown')
+          %span.nav-item-name
+            Abuse Reports
+          %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :abuse_reports, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_abuse_reports_path do
+              %strong.fly-out-top-item-name
+                #{ _('Abuse Reports') }
+              %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
+
+      - if akismet_enabled?
+        = nav_link(controller: :spam_logs) do
+          = link_to admin_spam_logs_path do
+            .nav-icon-container
+              = sprite_icon('spam')
+            %span.nav-item-name
+              Spam Logs
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :spam_logs, html_options: { class: "fly-out-top-item" } ) do
+              = link_to admin_spam_logs_path do
+                %strong.fly-out-top-item-name
+                  #{ _('Spam Logs') }
+
+      = nav_link(controller: :deploy_keys) do
+        = link_to admin_deploy_keys_path do
+          .nav-icon-container
+            = sprite_icon('key')
+          %span.nav-item-name
+            Deploy Keys
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :deploy_keys, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_deploy_keys_path do
+              %strong.fly-out-top-item-name
+                #{ _('Deploy Keys') }
+
+      = nav_link(controller: :services) do
+        = link_to admin_application_settings_services_path do
+          .nav-icon-container
+            = sprite_icon('template')
+          %span.nav-item-name
+            Service Templates
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :services, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_application_settings_services_path do
+              %strong.fly-out-top-item-name
+                #{ _('Service Templates') }
+
+      = nav_link(controller: :labels) do
+        = link_to admin_labels_path do
+          .nav-icon-container
+            = sprite_icon('labels')
+          %span.nav-item-name
+            Labels
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :labels, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_labels_path do
+              %strong.fly-out-top-item-name
+                #{ _('Labels') }
+
+      = nav_link(controller: :appearances) do
+        = link_to admin_appearances_path do
+          .nav-icon-container
+            = sprite_icon('appearance')
+          %span.nav-item-name
+            Appearance
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :appearances, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_appearances_path do
+              %strong.fly-out-top-item-name
+                #{ _('Appearance') }
+
+      = nav_link(controller: :application_settings) do
+        = link_to admin_application_settings_path do
+          .nav-icon-container
+            = sprite_icon('settings')
+          %span.nav-item-name
+            Settings
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
+            = link_to admin_application_settings_path do
+              %strong.fly-out-top-item-name
+                #{ _('Settings') }
+
+    = render 'shared/sidebar_toggle_button'

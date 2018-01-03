@@ -1,4 +1,5 @@
 module IconsHelper
+  extend self
   include FontAwesome::Rails::IconHelper
 
   # Creates an icon tag given icon name(s) and possible icon modifiers.
@@ -7,12 +8,39 @@ module IconsHelper
   # font-awesome-rails gem, but should we ever use a different icon pack in the
   # future we won't have to change hundreds of method calls.
   def icon(names, options = {})
+    if (options.keys & %w[aria-hidden aria-label data-hidden]).empty?
+      # Add 'aria-hidden' and 'data-hidden' if they are not set in options.
+      options['aria-hidden'] = true
+      options['data-hidden'] = true
+    end
+
     options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
+  end
+
+  def custom_icon(icon_name, size: 16)
+    # We can't simply do the below, because there are some .erb SVGs.
+    #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
+    render "shared/icons/#{icon_name}.svg", size: size
+  end
+
+  def sprite_icon_path
+    # SVG Sprites currently don't work across domains, so in the case of a CDN
+    # we have to set the current path deliberately to prevent addition of asset_host
+    sprite_base_url = Gitlab.config.gitlab.url if ActionController::Base.asset_host
+    ActionController::Base.helpers.image_path('icons.svg', host: sprite_base_url)
+  end
+
+  def sprite_icon(icon_name, size: nil, css_class: nil)
+    css_classes = size ? "s#{size}" : ""
+    css_classes << " #{css_class}" unless css_class.blank?
+    content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes)
   end
 
   def audit_icon(names, options = {})
     case names
     when "standard"
+      names = "key"
+    when "two-factor"
       names = "key"
     end
 

@@ -18,7 +18,7 @@ module Banzai
           define_method(meth) do |text, context|
             context = transform_context(context)
 
-            html_pipeline.send(meth, text, context)
+            html_pipeline.__send__(meth, text, context) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
       end

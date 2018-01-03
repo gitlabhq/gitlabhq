@@ -71,13 +71,15 @@ describe Admin::ProjectsController, "routing" do
   end
 end
 
-# admin_hook_test GET    /admin/hooks/:hook_id/test(.:format) admin/hooks#test
+# admin_hook_test GET    /admin/hooks/:id/test(.:format)      admin/hooks#test
 #     admin_hooks GET    /admin/hooks(.:format)               admin/hooks#index
 #                 POST   /admin/hooks(.:format)               admin/hooks#create
 #      admin_hook DELETE /admin/hooks/:id(.:format)           admin/hooks#destroy
+#                 PUT    /admin/hooks/:id(.:format)           admin/hooks#update
+# edit_admin_hook GET    /admin/hooks/:id(.:format)           admin/hooks#edit
 describe Admin::HooksController, "routing" do
   it "to #test" do
-    expect(get("/admin/hooks/1/test")).to route_to('admin/hooks#test', hook_id: '1')
+    expect(get("/admin/hooks/1/test")).to route_to('admin/hooks#test', id: '1')
   end
 
   it "to #index" do
@@ -88,8 +90,28 @@ describe Admin::HooksController, "routing" do
     expect(post("/admin/hooks")).to route_to('admin/hooks#create')
   end
 
+  it "to #edit" do
+    expect(get("/admin/hooks/1/edit")).to route_to('admin/hooks#edit', id: '1')
+  end
+
+  it "to #update" do
+    expect(put("/admin/hooks/1")).to route_to('admin/hooks#update', id: '1')
+  end
+
   it "to #destroy" do
     expect(delete("/admin/hooks/1")).to route_to('admin/hooks#destroy', id: '1')
+  end
+end
+
+# admin_hook_hook_log_retry GET    /admin/hooks/:hook_id/hook_logs/:id/retry(.:format) admin/hook_logs#retry
+# admin_hook_hook_log       GET    /admin/hooks/:hook_id/hook_logs/:id(.:format)       admin/hook_logs#show
+describe Admin::HookLogsController, 'routing' do
+  it 'to #retry' do
+    expect(get('/admin/hooks/1/hook_logs/1/retry')).to route_to('admin/hook_logs#retry', hook_id: '1', id: '1')
+  end
+
+  it 'to #show' do
+    expect(get('/admin/hooks/1/hook_logs/1')).to route_to('admin/hook_logs#show', hook_id: '1', id: '1')
   end
 end
 

@@ -14,10 +14,52 @@ module Gitlab
       str.force_encoding(Encoding::UTF_8)
     end
 
+    # A slugified version of the string, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
+    def slugify(str)
+      return str.downcase
+        .gsub(/[^a-z0-9]/, '-')[0..62]
+        .gsub(/(\A-+|-+\z)/, '')
+    end
+
     def to_boolean(value)
       return value if [true, false].include?(value)
       return true if value =~ /^(true|t|yes|y|1|on)$/i
       return false if value =~ /^(false|f|no|n|0|off)$/i
+
+      nil
+    end
+
+    def boolean_to_yes_no(bool)
+      if bool
+        'Yes'
+      else
+        'No'
+      end
+    end
+
+    def random_string
+      Random.rand(Float::MAX.to_i).to_s(36)
+    end
+
+    # See: http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+    # Cross-platform way of finding an executable in the $PATH.
+    #
+    #   which('ruby') #=> /usr/bin/ruby
+    def which(cmd, env = ENV)
+      exts = env['PATHEXT'] ? env['PATHEXT'].split(';') : ['']
+
+      env['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each do |ext|
+          exe = File.join(path, "#{cmd}#{ext}")
+          return exe if File.executable?(exe) && !File.directory?(exe)
+        end
+      end
 
       nil
     end

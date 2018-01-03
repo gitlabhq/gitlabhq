@@ -5,7 +5,7 @@ describe Gitlab::Ci::Config::Entry::Script do
 
   describe 'validations' do
     context 'when entry config value is correct' do
-      let(:config) { ['ls', 'pwd'] }
+      let(:config) { %w(ls pwd) }
 
       describe '#value' do
         it 'returns array of strings' do

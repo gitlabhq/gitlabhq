@@ -1,32 +1,31 @@
 module Gitlab
   module Conflict
     class FileCollection
-      class ConflictSideMissing < StandardError
-      end
-
-      attr_reader :merge_request, :our_commit, :their_commit
+      attr_reader :merge_request, :resolver
 
       def initialize(merge_request)
+        our_commit = merge_request.source_branch_head.raw
+        their_commit = merge_request.target_branch_head.raw
+        target_repo = merge_request.target_project.repository.raw
+        @source_repo = merge_request.source_project.repository.raw
+        @resolver = Gitlab::Git::Conflict::Resolver.new(target_repo, our_commit.id, their_commit.id)
         @merge_request = merge_request
-        @our_commit = merge_request.source_branch_head.raw.raw_commit
-        @their_commit = merge_request.target_branch_head.raw.raw_commit
       end
 
-      def repository
-        merge_request.project.repository
-      end
-
-      def merge_index
-        @merge_index ||= repository.rugged.merge_commits(our_commit, their_commit)
+      def resolve(user, commit_message, files)
+        args = {
+          source_branch: merge_request.source_branch,
+          target_branch: merge_request.target_branch,
+          commit_message: commit_message || default_commit_message
+        }
+        resolver.resolve_conflicts(@source_repo, user, files, args)
+      ensure
+        @merge_request.clear_memoized_shas
       end
 
       def files
-        @files ||= merge_index.conflicts.map do |conflict|
-          raise ConflictSideMissing unless conflict[:theirs] && conflict[:ours]
-
-          Gitlab::Conflict::File.new(merge_index.merge_file(conflict[:ours][:path]),
-                                     conflict,
-                                     merge_request: merge_request)
+        @files ||= resolver.conflicts.map do |conflict_file|
+          Gitlab::Conflict::File.new(conflict_file, merge_request: merge_request)
         end
       end
 
@@ -45,8 +44,8 @@ module Gitlab
       end
 
       def default_commit_message
-        conflict_filenames = merge_index.conflicts.map do |conflict|
-          "#   #{conflict[:ours][:path]}"
+        conflict_filenames = files.map do |conflict|
+          "#   #{conflict.our_path}"
         end
 
         <<EOM.chomp

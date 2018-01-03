@@ -8,15 +8,33 @@ body {
   &.navless {
     background-color: $white-light !important;
   }
+
+  &.card-content {
+    background-color: $gray-darker;
+
+    .content-wrapper {
+      padding: 0;
+
+      .container-fluid,
+      .container-limited {
+        background-color: $gray-darker;
+      }
+    }
+  }
+}
+
+.content-wrapper {
+  margin-top: $header-height;
+  padding-bottom: 100px;
 }
 
 .container {
   padding-top: 0;
   z-index: 5;
-}
 
-.container .content {
-  margin: 0;
+  .content {
+    margin: 0;
+  }
 }
 
 .navless-container {
@@ -30,6 +48,10 @@ body {
   &.limit-container-width {
     max-width: $limited-layout-width;
   }
+
+  &.limit-container-width-sm {
+    max-width: $limited-layout-width-sm;
+  }
 }
 
 .alert-wrapper {
@@ -41,42 +63,59 @@ body {
     }
   }
 
+  .alert-link-group {
+    float: right;
+  }
+
+  /* Center alert text and alert action links on smaller screens */
+  @media (max-width: $screen-sm-max) {
+    .alert {
+      text-align: center;
+    }
+
+    .alert-link-group {
+      float: none;
+    }
+  }
+
   /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */
   .alert-warning {
     transition: background-color 0.15s, border-color 0.15s;
-    background-color: lighten($gl-warning, 4%);
-    border-color: lighten($gl-warning, 4%);
-  }
+    background-color: $orange-500;
+    border-color: $orange-500;
 
-  .alert-warning + .alert-warning {
-    background-color: $gl-warning;
-    border-color: $gl-warning;
-  }
+    &:only-of-type {
+      background-color: $orange-500;
+      border-color: $orange-500;
+    }
 
-  .alert-warning + .alert-warning + .alert-warning {
-    background-color: darken($gl-warning, 4%);
-    border-color: darken($gl-warning, 4%);
-  }
+    + .alert-warning {
+      background-color: $orange-600;
+      border-color: $orange-600;
 
-  .alert-warning + .alert-warning + .alert-warning + .alert-warning {
-    background-color: darken($gl-warning, 8%);
-    border-color: darken($gl-warning, 8%);
-  }
+      + .alert-warning {
+        background-color: $orange-700;
+        border-color: $orange-700;
 
-  .alert-warning:only-of-type {
-    background-color: $gl-warning;
-    border-color: $gl-warning;
+        + .alert-warning {
+          background-color: $orange-800;
+          border-color: $orange-800;
+        }
+      }
+    }
   }
 }
 
+.layout-page > .content-wrapper {
+  min-height: calc(100vh - #{$header-height});
+}
 
-/* The following prevents side effects related to iOS Safari's implementation of -webkit-overflow-scrolling: touch,
-which is applied to the body by jquery.nicescroling plugin to force hardware acceleration for momentum scrolling. Side
-effects are commonly related to inconsisent z-index behavior (e.g. tooltips). By applying the following to direct children
-of the body element here, we negate cascading side effects but allow momentum scrolling to be applied to the body  */
+.with-performance-bar .layout-page {
+  margin-top: $header-height + $performance-bar-height;
+}
 
-.navbar,
-.page-gutter,
-.page-with-sidebar {
-  -webkit-overflow-scrolling: auto;
+.vertical-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }

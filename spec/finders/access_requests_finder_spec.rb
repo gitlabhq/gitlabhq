@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe AccessRequestsFinder, services: true do
+describe AccessRequestsFinder do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
 
   let(:project) do
-    create(:empty_project, :public, :access_requestable) do |project|
+    create(:project, :public, :access_requestable) do |project|
       project.request_access(access_requester)
     end
   end
@@ -51,7 +51,7 @@ describe AccessRequestsFinder, services: true do
 
     context 'when current user can see access requests' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         group.add_owner(user)
       end
 
@@ -78,7 +78,7 @@ describe AccessRequestsFinder, services: true do
 
     context 'when current user can see access requests' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         group.add_owner(user)
       end
 

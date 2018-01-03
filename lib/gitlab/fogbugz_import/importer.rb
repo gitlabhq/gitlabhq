@@ -18,6 +18,7 @@ module Gitlab
 
       def execute
         return true unless repo.valid?
+
         client = Gitlab::FogbugzImport::Client.new(token: fb_session[:token], uri: fb_session[:uri])
 
         @cases = client.cases(@repo.id.to_i)
@@ -122,15 +123,15 @@ module Gitlab
           author_id = user_info(bug['ixPersonOpenedBy'])[:gitlab_id] || project.creator_id
 
           issue = Issue.create!(
-            iid:         bug['ixBug'],
-            project_id:  project.id,
-            title:       bug['sTitle'],
-            description: body,
-            author_id:   author_id,
-            assignee_id: assignee_id,
-            state:       bug['fOpen'] == 'true' ? 'opened' : 'closed',
-            created_at:  date,
-            updated_at:  DateTime.parse(bug['dtLastUpdated'])
+            iid:          bug['ixBug'],
+            project_id:   project.id,
+            title:        bug['sTitle'],
+            description:  body,
+            author_id:    author_id,
+            assignee_ids: [assignee_id],
+            state:        bug['fOpen'] == 'true' ? 'opened' : 'closed',
+            created_at:   date,
+            updated_at:   DateTime.parse(bug['dtLastUpdated'])
           )
 
           issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)
@@ -206,6 +207,7 @@ module Gitlab
 
       def format_content(raw_content)
         return raw_content if raw_content.nil?
+
         linkify_issues(escape_for_markdown(raw_content))
       end
 

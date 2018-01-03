@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::FileCollection, lib: true do
+describe Gitlab::Conflict::FileCollection do
   let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start') }
-  let(:file_collection) { Gitlab::Conflict::FileCollection.new(merge_request) }
+  let(:file_collection) { described_class.new(merge_request) }
 
   describe '#files' do
     it 'returns an array of Conflict::Files' do

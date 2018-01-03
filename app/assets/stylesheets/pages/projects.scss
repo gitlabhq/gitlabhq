@@ -2,45 +2,20 @@
   margin: -16px;
 
   .alert-link {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
 .new_project,
-.edit-project {
-
-  fieldset {
-
-    &.features {
-
-      .label-light {
-        margin-bottom: 0;
-      }
-
-      .help-block {
-        margin-top: 0;
-      }
-    }
-
-    .form-group {
-      margin-bottom: 5px;
-    }
-
-    &> .form-group {
-      padding-left: 0;
-    }
-  }
+.edit-project,
+.import-project {
 
   .help-block {
     margin-bottom: 10px;
   }
 
-  .project-path {
-    padding-right: 0;
-
-    .form-control {
-      border-radius: $border-radius-base;
-    }
+  .project-path .form-control {
+    border-radius: $border-radius-base;
   }
 
   .input-group > div {
@@ -73,10 +48,81 @@
       border: 1px solid $border-color;
     }
 
-    &+ .select2 a {
+    + .select2 a,
+    + .btn-default {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
+  }
+}
+
+.toggle-wrapper {
+  margin-top: 5px;
+}
+
+.project-feature-row > .toggle-wrapper {
+  margin: 10px 0;
+}
+
+.project-visibility-setting,
+.project-feature-settings {
+  border: 1px solid $border-color;
+  padding: 10px 32px;
+
+  @media (max-width: $screen-xs-min) {
+    padding: 10px 20px;
+  }
+}
+
+.project-visibility-setting .request-access {
+  line-height: 2;
+}
+
+.project-feature-settings {
+  background: $gray-lighter;
+  border-top: 0;
+  margin-bottom: 16px;
+}
+
+.project-repo-select {
+  transition: background 2s ease-out;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .highlight-changes & {
+    background: $highlight-changes-color;
+    transition: none;
+  }
+}
+
+.project-feature-controls {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  max-width: 432px;
+
+  .toggle-wrapper {
+    flex: 0;
+    margin-right: 10px;
+  }
+
+  .select-wrapper {
+    flex: 1;
+  }
+}
+
+.project-feature-setting-group {
+  padding-left: 32px;
+
+  .project-feature-controls {
+    max-width: 400px;
+  }
+
+  @media (max-width: $screen-xs-min) {
+    padding-left: 20px;
   }
 }
 
@@ -104,8 +150,9 @@
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
-    font-weight: 400;
+    font-weight: $gl-font-weight-normal;
     line-height: 1;
+    word-wrap: break-word;
 
     .fa {
       margin-left: 2px;
@@ -157,14 +204,7 @@
     }
 
     svg {
-
-      path {
-        fill: $layout-link-gray;
-      }
-
-      use {
-        stroke: $layout-link-gray;
-      }
+      fill: $layout-link-gray;
     }
 
     .fa-caret-down {
@@ -248,9 +288,8 @@
       border-width: 1px;
       border-style: solid;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
       padding: 6px 14px;
       text-align: center;
@@ -269,6 +308,25 @@
       }
     }
   }
+
+  .clone-dropdown-btn {
+    background-color: $white-light;
+  }
+
+  .clone-options-dropdown {
+    min-width: 240px;
+
+    .dropdown-menu-inner-content {
+      min-width: 320px;
+    }
+  }
+}
+
+.project-repo-buttons {
+  .project-action-button .dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
+  }
 }
 
 .split-one {
@@ -277,28 +335,6 @@
 
   > a {
     margin: -1px;
-  }
-}
-
-.project-visibility-level-holder {
-  .radio {
-    margin-bottom: 10px;
-
-    i {
-      margin: 2px 0;
-      font-size: 20px;
-    }
-
-    .option-title {
-      font-weight: normal;
-      display: inline-block;
-      color: $gl-gray-dark;
-    }
-
-    .option-descr {
-      margin-left: 29px;
-      color: $project-option-descr-color;
-    }
   }
 }
 
@@ -331,7 +367,7 @@
 a.deploy-project-label {
   padding: 5px;
   margin-right: 5px;
-  color: $gl-gray;
+  color: $gl-text-color;
   background-color: $row-hover;
 
   &:hover {
@@ -360,10 +396,11 @@ a.deploy-project-label {
 }
 
 .breadcrumb.repo-breadcrumb {
+  flex: 1;
   padding: 0;
   background: transparent;
-  border: none;
-  line-height: 36px;
+  border: 0;
+  line-height: 34px;
   margin: 0;
 
   > li + li::before {
@@ -372,7 +409,7 @@ a.deploy-project-label {
   }
 
   a {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
   .dropdown-menu {
@@ -380,71 +417,146 @@ a.deploy-project-label {
   }
 }
 
-.last-push-widget {
-  margin-top: -1px;
+.fork-thumbnail {
+  height: 200px;
+  width: calc((100% / 2) - #{$gl-padding * 2});
+
+  @media (min-width: $screen-md-min) {
+    width: calc((100% / 4) - #{$gl-padding * 2});
+  }
+
+  @media (min-width: $screen-lg-min) {
+    width: calc((100% / 5) - #{$gl-padding * 2});
+  }
+
+  &:hover:not(.disabled),
+  &.forked {
+    background-color: $row-hover;
+    border-color: $row-hover-border;
+  }
+
+  .avatar-container,
+  .identicon {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding-top: $gl-padding;
+    text-decoration: none;
+
+    &.disabled {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+  }
 }
 
-.fork-namespaces {
-  .row {
-    -webkit-flex-wrap: wrap;
-    display: -webkit-flex;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+.fork-thumbnail-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
 
-    .fork-thumbnail {
-      border-radius: $border-radius-base;
+  > h5 {
+    width: 100%;
+  }
+}
+
+.project-template {
+  > .form-group {
+    margin-bottom: 0;
+  }
+
+  .template-option {
+    padding: $gl-padding $gl-padding $gl-padding ($gl-padding * 4);
+    position: relative;
+
+    &:not(:first-child) {
+      border-top: 1px solid $border-color;
+    }
+  }
+
+  .template-title {
+    font-size: 16px;
+  }
+
+  .template-description {
+    margin: 6px 0 12px;
+  }
+
+  .template-button {
+    input {
+      position: absolute;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  svg {
+    position: absolute;
+    left: $gl-padding;
+    top: $gl-padding;
+  }
+
+  .project-fields-form {
+    display: none;
+
+    &.selected {
+      display: block;
+      padding: $gl-padding;
+    }
+  }
+
+  .template-input-group {
+    position: relative;
+
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+    }
+
+    .input-group-addon {
+      flex: 1;
+      text-align: left;
+      padding-left: ($gl-padding * 3);
       background-color: $white-light;
-      border: 1px solid $border-white-light;
-      height: 202px;
-      margin: $gl-padding;
-      text-align: center;
-      width: 169px;
+    }
 
-      &:hover,
-      &.forked {
-        background-color: $row-hover;
-        border-color: $row-hover-border;
-      }
+    .selected-template {
+      line-height: 20px;
+    }
 
-      .no-avatar {
-        width: 100px;
-        height: 100px;
-        background-color: $gray-light;
-        border: 1px solid $white-normal;
-        margin: 0 auto;
-        border-radius: 50%;
+    .selected-icon {
+      svg {
+        display: none;
+        top: 7px;
+        height: 20px;
+        width: 20px;
 
-        i {
-          font-size: 100px;
-          color: $white-normal;
+        &.active {
+          display: block;
         }
-      }
-
-      a {
-        display: block;
-        width: 100%;
-        height: 100%;
-        padding-top: $gl-padding;
-        color: $gl-gray;
-
-        .caption {
-          min-height: 30px;
-          padding: $gl-padding 0;
-        }
-      }
-
-      img {
-        border-radius: 50%;
-        max-width: 100px;
       }
     }
   }
 }
 
+.gitlab-tab-content {
+  .import-project-pane {
+    padding-bottom: 6px;
+  }
+}
+
 .project-import {
-  .form-group {
-    margin-bottom: 5px;
+  .import-btn-container {
+    margin-bottom: 0;
+  }
+
+  .toggle-import-form {
+    padding-bottom: 10px;
   }
 
   .import-buttons {
@@ -455,80 +567,169 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-right: 10px;
+    }
+
+    .btn-template-icon {
+      height: 24px;
+      width: inherit;
+      display: block;
+      margin: 0 auto 4px;
+      font-size: 24px;
+
+      @media (min-width: $screen-xs-max) {
+        top: 0;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      .btn-template-icon {
+        display: inline-block;
+        height: 14px;
+        font-size: 14px;
+        margin: 0;
+      }
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
+    }
+  }
+}
 
-      &:last-child {
-        margin-bottom: 0;
+.create-project-options {
+  display: flex;
 
-        .btn {
-          margin-right: 0;
-        }
+  @media (max-width: $screen-xs-max) {
+    display: block;
+  }
+
+  .first-column {
+    @media(min-width: $screen-xs-min) {
+      max-width: 50%;
+      padding-right: 30px;
+    }
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+
+  .second-column {
+    @media(min-width: $screen-xs-min) {
+      width: 50%;
+      flex: 1;
+      padding-left: 30px;
+      position: relative;
+    }
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
+      padding-left: 0;
+      position: relative;
+    }
+
+    // Mobile
+    @media (max-width: $screen-xs-max) {
+      padding-top: 30px;
+    }
+
+    &::before {
+      content: "OR";
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      z-index: 10;
+      padding: 8px 0;
+      text-align: center;
+      background-color: $white-light;
+      color: $gl-text-color-tertiary;
+      transform: translateY(-50%);
+      font-size: 12px;
+      font-weight: $gl-font-weight-bold;
+      line-height: 20px;
+
+      // Mobile
+      @media (max-width: $screen-xs-max) {
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        padding: 0 8px;
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      background-color: $border-color;
+      bottom: 0;
+      left: 0;
+      right: auto;
+      height: 100%;
+      width: 1px;
+      top: 0;
+
+      // Mobile
+      @media (max-width: $screen-xs-max) {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 1px;
+        width: auto;
       }
     }
   }
 }
 
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
-    }
-  }
-}
 
 .project-stats {
   font-size: 0;
   text-align: center;
+  max-width: 100%;
   border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-  }
 
-  .nav > li {
-    display: inline-block;
+    > li {
+      display: inline-block;
 
-    &:not(:last-child) {
-      margin-right: $gl-padding;
-    }
+      &:not(:last-child) {
+        margin-right: $gl-padding;
+      }
 
-    &.right {
-      vertical-align: top;
-      margin-top: 0;
+      &.right {
+        vertical-align: top;
+        margin-top: 0;
 
-      @media (min-width: $screen-lg-min) {
-        float: right;
+        @media (min-width: $screen-lg-min) {
+          float: right;
+        }
+      }
+
+      > a {
+        padding: 0;
+        background-color: transparent;
+        font-size: 14px;
+        line-height: 29px;
+        color: $notes-light-color;
+
+        &:hover,
+        &:focus {
+          color: $gl-text-color;
+          text-decoration: underline;
+        }
       }
     }
   }
 
-  .nav > li > a {
-    padding: 0;
-    background-color: transparent;
-    font-size: 14px;
-    line-height: 29px;
-    color: $notes-light-color;
-
-    &:hover,
-    &:focus {
-      color: darken($notes-light-color, 15%);
-    }
-  }
-
   li.missing {
-    border: 1px dashed $border-gray-normal;
+    border: 1px dashed $border-gray-normal-dashed;
     border-radius: $border-radius-default;
 
     a {
@@ -552,7 +753,7 @@ pre.light-well {
   margin: 0 7px 7px;
 
   h5 {
-    color: $gl-text-color-dark;
+    color: $gl-text-color;
   }
 
   .light-well {
@@ -578,38 +779,66 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
-  .project-row {
-    border-color: $white-normal;
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
 
-    .project-full-name {
-      @include str-truncated;
-    }
-
-    .controls {
-      line-height: $list-text-height;
-
-      a:hover {
-        text-decoration: none;
-      }
-
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
+    .project-row {
+      display: block;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .project-row {
+    @include basic-list-stats;
+    display: flex;
+    align-items: center;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
+
+  .avatar-container {
+    align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
+  }
+
+  .project-details {
+    min-width: 0;
+
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -618,86 +847,9 @@ pre.light-well {
   margin: 0;
 }
 
-
-.activity-filter-block {
-  .controls {
-    padding-bottom: 7px;
-    margin-top: 8px;
-    border-bottom: 1px solid $border-color;
-  }
-}
-
 .commits-search-form {
   .input-short {
     min-width: 200px;
-  }
-}
-
-.project-last-commit {
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  &.container-fluid {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background-color: $gray-light;
-    border: 1px solid $border-color;
-    border-right-width: 0;
-    border-left-width: 0;
-
-    @media (min-width: $screen-sm-min) {
-      border-right-width: 1px;
-      border-left-width: 1px;
-    }
-  }
-
-  &.container-limited {
-    @media (min-width: 1281px) {
-      border-radius: $border-radius-base;
-    }
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-gray;
-  }
-
-  .commit_short_id {
-    margin-right: 5px;
-    color: $gl-link-color;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
   }
 }
 
@@ -742,31 +894,34 @@ pre.light-well {
   }
 }
 
-.new_protected_branch {
+.new-protected-branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
-.protected-branches-list {
-  a {
-    color: $gl-gray;
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
+  @include dropdown-link;
 
-    &:hover {
-      color: $gl-link-color;
-    }
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+}
 
-    &.is-active {
-      font-weight: 600;
-    }
-  }
+.protected-branches-list,
+.protected-tags-list {
+  margin-bottom: 30px;
 
   .settings-message {
     margin: 0;
     border-radius: 0 0 1px 1px;
     padding: 20px 0;
-    border: none;
+    border: 0;
   }
 
   .table-bordered {
@@ -776,6 +931,18 @@ pre.light-well {
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
+  }
+}
+
+.protected-tags-list,
+.protected-branches-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 
@@ -810,8 +977,25 @@ pre.light-well {
 }
 
 .compare-form-group {
-  .dropdown-menu {
-    width: 300px;
+  .dropdown-menu,
+  .inline-input-group {
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: 300px;
+    }
+  }
+
+  + .compare-ellipsis {
+    width: 100%;
+    vertical-align: middle;
+    text-align: center;
+    margin-top: -20px;
+
+    @media (min-width: $screen-sm-min) {
+      margin-top: 0;
+      width: auto;
+    }
   }
 }
 
@@ -828,7 +1012,7 @@ pre.light-well {
 
     &::before {
       font-family: FontAwesome;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       font-style: normal;
     }
   }
@@ -844,6 +1028,12 @@ pre.light-well {
 .project-path {
   .form-control {
     min-width: 100px;
+  }
+
+  &.form-group {
+    @media (min-width: $screen-sm-min) {
+      margin-bottom: 0;
+    }
   }
 
   .select2-choice {
@@ -866,24 +1056,45 @@ pre.light-well {
   }
 }
 
-.project-feature-nested {
+.project-feature {
+  padding-top: 10px;
+
   @media (min-width: $screen-sm-min) {
     padding-left: 45px;
   }
-}
 
-.project-repo-select {
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
+  &.nested {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 90px;
+    }
   }
 }
 
 .variables-table {
   table-layout: fixed;
 
+  &.table-responsive {
+    border: 0;
+  }
+
   .variable-key {
-    width: 30%;
+    max-width: 120px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-value {
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 
@@ -905,4 +1116,9 @@ pre.light-well {
     margin: 32px 0;
     border-color: $border-color;
   }
+}
+
+.issuable-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
 }

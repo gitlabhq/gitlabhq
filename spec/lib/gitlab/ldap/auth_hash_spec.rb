@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::AuthHash, lib: true do
+describe Gitlab::LDAP::AuthHash do
   let(:auth_hash) do
-    Gitlab::LDAP::AuthHash.new(
+    described_class.new(
       OmniAuth::AuthHash.new(
-        uid: '123456', 
-        provider: 'ldapmain', 
+        uid: given_uid,
+        provider: 'ldapmain',
         info: info,
         extra: {
           raw_info: raw_info
@@ -32,19 +32,23 @@ describe Gitlab::LDAP::AuthHash, lib: true do
   end
 
   context "without overridden attributes" do
+    let(:given_uid) { 'uid=John Smith,ou=People,dc=example,dc=com' }
+
     it "has the correct username" do
-      expect(auth_hash.username).to eq("123456") 
+      expect(auth_hash.username).to eq("123456")
     end
 
     it "has the correct name" do
-      expect(auth_hash.name).to eq("Smith, J.") 
+      expect(auth_hash.name).to eq("Smith, J.")
     end
   end
 
   context "with overridden attributes" do
+    let(:given_uid) { 'uid=John Smith,ou=People,dc=example,dc=com' }
+
     let(:attributes) do
       {
-        'username'  => ['mail', 'email'],
+        'username'  => %w(mail email),
         'name'      => 'fullName'
       }
     end
@@ -54,11 +58,29 @@ describe Gitlab::LDAP::AuthHash, lib: true do
     end
 
     it "has the correct username" do
-      expect(auth_hash.username).to eq("johnsmith@example.com") 
+      expect(auth_hash.username).to eq("johnsmith@example.com")
     end
 
     it "has the correct name" do
-      expect(auth_hash.name).to eq("John Smith") 
+      expect(auth_hash.name).to eq("John Smith")
+    end
+  end
+
+  describe '#uid' do
+    context 'when there is extraneous (but valid) whitespace' do
+      let(:given_uid) { 'uid     =john smith ,  ou = people, dc=  example,dc =com' }
+
+      it 'removes the extraneous whitespace' do
+        expect(auth_hash.uid).to eq('uid=john smith,ou=people,dc=example,dc=com')
+      end
+    end
+
+    context 'when there are upper case characters' do
+      let(:given_uid) { 'UID=John Smith,ou=People,dc=example,dc=com' }
+
+      it 'downcases' do
+        expect(auth_hash.uid).to eq('uid=john smith,ou=people,dc=example,dc=com')
+      end
     end
   end
 end

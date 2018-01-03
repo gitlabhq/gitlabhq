@@ -13,8 +13,12 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     clean_frontend_fixtures('issues/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
+  end
+
+  after do
+    remove_repository(project)
   end
 
   it 'issues/open-issue.html.raw' do |example|
@@ -36,12 +40,23 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     render_issue(example.description, issue)
   end
 
+  it 'issues/issue_list.html.raw' do |example|
+    create(:issue, project: project)
+
+    get :index,
+      namespace_id: project.namespace.to_param,
+      project_id: project
+
+    expect(response).to be_success
+    store_frontend_fixture(response, example.description)
+  end
+
   private
 
   def render_issue(fixture_file_name, issue)
     get :show,
       namespace_id: project.namespace.to_param,
-      project_id: project.to_param,
+      project_id: project,
       id: issue.to_param
 
     expect(response).to be_success

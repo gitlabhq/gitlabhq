@@ -6,7 +6,7 @@ module Gitlab
         # Factory class responsible for fabricating entry objects.
         #
         class Factory
-          class InvalidFactory < StandardError; end
+          InvalidFactory = Class.new(StandardError)
 
           def initialize(entry)
             @entry = entry

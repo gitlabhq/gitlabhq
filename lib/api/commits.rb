@@ -4,131 +4,133 @@ module API
   class Commits < Grape::API
     include PaginationParams
 
-    before { authenticate! }
     before { authorize! :download_code, user_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository commits' do
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since,    type: String, desc: 'Only commits after or in this date will be returned'
-        optional :until,    type: String, desc: 'Only commits before or in this date will be returned'
-        optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
-        optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
+        optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
+        optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
         optional :path,     type: String, desc: 'The file path'
+        use :pagination
       end
-      get ":id/repository/commits" do
-        # TODO remove the next line for 9.0, use DateTime type in the params block
-        datetime_attributes! :since, :until
-
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
-        offset = params[:page] * params[:per_page]
+      get ':id/repository/commits' do
+        path   = params[:path]
+        before = params[:until]
+        after  = params[:since]
+        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        offset = (params[:page] - 1) * params[:per_page]
 
         commits = user_project.repository.commits(ref,
-                                                  path: params[:path],
+                                                  path: path,
                                                   limit: params[:per_page],
                                                   offset: offset,
-                                                  after: params[:since],
-                                                  before: params[:until])
+                                                  before: before,
+                                                  after: after)
 
-        present commits, with: Entities::RepoCommit
+        commit_count =
+          if path || before || after
+            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after)
+          else
+            # Cacheable commit count.
+            user_project.repository.commit_count_for_ref(ref)
+          end
+
+        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+
+        present paginate(paginated_commits), with: Entities::Commit
       end
 
       desc 'Commit multiple file changes as one commit' do
-        success Entities::RepoCommitDetail
+        success Entities::CommitDetail
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :id, type: Integer, desc: 'The project ID'
-        requires :branch_name, type: String, desc: 'The name of branch'
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
+        optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
       end
-      post ":id/repository/commits" do
+      post ':id/repository/commits' do
         authorize! :push_code, user_project
 
         attrs = declared_params
-        attrs[:source_branch] = attrs[:branch_name]
-        attrs[:target_branch] = attrs[:branch_name]
-        attrs[:actions].map! do |action|
-          action[:action] = action[:action].to_sym
-          action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-          action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-          action
-        end
+        attrs[:branch_name] = attrs.delete(:branch)
+        attrs[:start_branch] ||= attrs[:branch_name]
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
         if result[:status] == :success
-          commit_detail = user_project.repository.commits(result[:result], limit: 1).first
-          present commit_detail, with: Entities::RepoCommitDetail
+          commit_detail = user_project.repository.commit(result[:result])
+          present commit_detail, with: Entities::CommitDetail
         else
           render_api_error!(result[:message], 400)
         end
       end
 
       desc 'Get a specific commit of a project' do
-        success Entities::RepoCommitDetail
-        failure [[404, 'Not Found']]
+        success Entities::CommitDetail
+        failure [[404, 'Commit Not Found']]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ":id/repository/commits/:sha" do
+      get ':id/repository/commits/:sha', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
-        not_found! "Commit" unless commit
+        not_found! 'Commit' unless commit
 
-        present commit, with: Entities::RepoCommitDetail
+        present commit, with: Entities::CommitDetail
       end
 
       desc 'Get the diff for a specific commit of a project' do
-        failure [[404, 'Not Found']]
+        failure [[404, 'Commit Not Found']]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ":id/repository/commits/:sha/diff" do
+      get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
-        not_found! "Commit" unless commit
+        not_found! 'Commit' unless commit
 
-        commit.raw_diffs.to_a
+        present commit.raw_diffs.to_a, with: Entities::Diff
       end
 
       desc "Get a commit's comments" do
         success Entities::CommitNote
-        failure [[404, 'Not Found']]
+        failure [[404, 'Commit Not Found']]
       end
       params do
         use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha/comments' do
+      get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = Note.where(commit_id: commit.id).order(:created_at)
+        notes = commit.notes.order(:created_at)
 
         present paginate(notes), with: Entities::CommitNote
       end
 
       desc 'Cherry pick commit into a branch' do
         detail 'This feature was introduced in GitLab 8.15'
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha to be cherry picked'
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      post ':id/repository/commits/:sha/cherry_pick' do
+      post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         commit = user_project.commit(params[:sha])
@@ -139,17 +141,15 @@ module API
 
         commit_params = {
           commit: commit,
-          create_merge_request: false,
-          source_project: user_project,
-          source_branch: commit.cherry_pick_branch_name,
-          target_branch: params[:branch]
+          start_branch: params[:branch],
+          branch_name: params[:branch]
         }
 
         result = ::Commits::CherryPickService.new(user_project, current_user, commit_params).execute
 
         if result[:status] == :success
           branch = user_project.repository.find_branch(params[:branch])
-          present user_project.repository.commit(branch.dereferenced_target), with: Entities::RepoCommit
+          present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
         else
           render_api_error!(result[:message], 400)
         end
@@ -159,15 +159,15 @@ module API
         success Entities::CommitNote
       end
       params do
-        requires :sha, type: String, regexp: /\A\h{6,40}\z/, desc: "The commit's SHA"
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to post a comment'
         requires :note, type: String, desc: 'The text of the comment'
         optional :path, type: String, desc: 'The file path'
         given :path do
           requires :line, type: Integer, desc: 'The line number'
-          requires :line_type, type: String, values: ['new', 'old'], default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
-      post ':id/repository/commits/:sha/comments' do
+      post ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
@@ -178,13 +178,15 @@ module API
         }
 
         if params[:path]
-          commit.raw_diffs(all_diffs: true).each do |diff|
+          commit.raw_diffs(limits: false).each do |diff|
             next unless diff.new_path == params[:path]
+
             lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 
             lines.each do |line|
               next unless line.new_pos == params[:line] && line.type == params[:line_type]
-              break opts[:line_code] = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
+
+              break opts[:line_code] = Gitlab::Git.diff_line_code(diff.new_path, line.new_pos, line.old_pos)
             end
 
             break if opts[:line_code]

@@ -121,6 +121,10 @@ after_fork do |server, worker|
   defined?(ActiveRecord::Base) and
     ActiveRecord::Base.establish_connection
 
+  # reset prometheus client, this will cause any opened metrics files to be closed
+  defined?(::Prometheus::Client.reinitialize_on_pid_change) &&
+    Prometheus::Client.reinitialize_on_pid_change
+
   # if preload_app is true, then you may also want to check and
   # restart any other shared sockets/descriptors such as Memcached,
   # and Redis.  TokyoCabinet file handles are safe to reuse

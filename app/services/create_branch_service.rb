@@ -1,42 +1,36 @@
 class CreateBranchService < BaseService
-  def execute(branch_name, ref, source_project: @project)
-    valid_branch = Gitlab::GitRefValidator.validate(branch_name)
+  def execute(branch_name, ref)
+    create_master_branch if project.empty_repo?
 
-    unless valid_branch
-      return error('Branch name is invalid')
-    end
+    result = ValidateNewBranchService.new(project, current_user)
+      .execute(branch_name)
 
-    repository = project.repository
-    existing_branch = repository.find_branch(branch_name)
+    return result if result[:status] == :error
 
-    if existing_branch
-      return error('Branch already exists')
-    end
-
-    new_branch = if source_project != @project
-                   repository.fetch_ref(
-                     source_project.repository.path_to_repo,
-                     "refs/heads/#{ref}",
-                     "refs/heads/#{branch_name}"
-                   )
-
-                   repository.after_create_branch
-
-                   repository.find_branch(branch_name)
-                 else
-                   repository.add_branch(current_user, branch_name, ref)
-                 end
+    new_branch = repository.add_branch(current_user, branch_name, ref)
 
     if new_branch
       success(new_branch)
     else
       error('Invalid reference name')
     end
-  rescue GitHooksService::PreReceiveError => ex
+  rescue Gitlab::Git::HooksService::PreReceiveError => ex
     error(ex.message)
   end
 
   def success(branch)
     super().merge(branch: branch)
+  end
+
+  private
+
+  def create_master_branch
+    project.repository.create_file(
+      current_user,
+      '/README.md',
+      '',
+      message: 'Add README.md',
+      branch_name: 'master'
+    )
   end
 end

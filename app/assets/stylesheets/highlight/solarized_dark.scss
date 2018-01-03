@@ -13,8 +13,12 @@ $solarized-dark-pre-color: #93a1a1;
 $solarized-dark-pre-border: #113b46;
 $solarized-dark-line-bg: #002b36;
 $solarized-dark-line-color: rgba(255, 255, 255, 0.3);
+$solarized-dark-line-color-new: #5a766c;
+$solarized-dark-line-color-old: #7a6c71;
 $solarized-dark-highlight: #094554;
 $solarized-dark-hll-bg: #174652;
+$solarized-dark-over-bg: #9f9ab5;
+$solarized-dark-expanded-bg: #010d10;
 $solarized-dark-c: #586e75;
 $solarized-dark-err: #93a1a1;
 $solarized-dark-g: #93a1a1;
@@ -124,15 +128,53 @@ $solarized-dark-il: #2aa198;
     .diff-line-num.new,
     .line_content.new {
       @include diff_background($solarized-dark-new-bg, $solarized-dark-new-idiff, $solarized-dark-border);
+
+      &::before,
+      a {
+        color: $solarized-dark-line-color-new;
+      }
     }
 
     .diff-line-num.old,
     .line_content.old {
       @include diff_background($solarized-dark-old-bg, $solarized-dark-old-idiff, $solarized-dark-border);
+
+      &::before,
+      a {
+        color: $solarized-dark-line-color-old;
+      }
+    }
+
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $solarized-dark-over-bg;
+        border-color: darken($solarized-dark-over-bg, 5%);
+
+        a {
+          color: darken($solarized-dark-over-bg, 15%);
+        }
+      }
     }
 
     .line_content.match {
       @include dark-diff-match-line;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $black;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $solarized-dark-expanded-bg;
+        border-color: $solarized-dark-expanded-bg;
+      }
     }
   }
 
@@ -144,6 +186,11 @@ $solarized-dark-il: #2aa198;
   // Search result highlight
   span.highlight_word {
     background-color: $solarized-dark-highlight !important;
+  }
+
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $solarized-dark-kd;
   }
 
   /* Solarized Dark
@@ -184,7 +231,7 @@ $solarized-dark-il: #2aa198;
   .gi { color: $solarized-dark-gi; } /* Generic.Inserted */
   .go { color: $solarized-dark-go; } /* Generic.Output */
   .gp { color: $solarized-dark-gp; } /* Generic.Prompt */
-  .gs { color: $solarized-dark-gs; font-weight: bold; } /* Generic.Strong */
+  .gs { color: $solarized-dark-gs; font-weight: $gl-font-weight-bold; } /* Generic.Strong */
   .gu { color: $solarized-dark-gu; } /* Generic.Subheading */
   .gt { color: $solarized-dark-gt; } /* Generic.Traceback */
   .kc { color: $solarized-dark-kc; } /* Keyword.Constant */
