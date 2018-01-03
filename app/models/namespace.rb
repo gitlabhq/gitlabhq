@@ -281,4 +281,11 @@ class Namespace < ActiveRecord::Base
   def namespace_previously_created_with_same_path?
     RedirectRoute.permanent.exists?(path: path)
   end
+
+  def write_projects_repository_config
+    all_projects.find_each do |project|
+      project.expires_full_path_cache # we need to clear cache to validate renames correctly
+      project.write_repository_config
+    end
+  end
 end
