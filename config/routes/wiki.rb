@@ -9,6 +9,7 @@ scope(controller: :wikis) do
   scope(path: 'wikis/*id', as: :wiki, format: false) do
     get :edit
     get :history
+    post :preview_markdown
     get '/', action: :show
     put '/', action: :update
     delete '/', action: :destroy

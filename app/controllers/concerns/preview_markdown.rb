@@ -13,8 +13,20 @@ module PreviewMarkdown
       else {}
       end
 
+    format = params[:format]
+
+    formatted_text =
+      case format
+      when 'rdoc'
+        view_context.rdoc(result[:text], markdown_params)
+      when 'asciidoc'
+        view_context.asciidoc(result[:text], markdown_params)
+      else
+        view_context.markdown(result[:text], markdown_params)
+      end
+
     render json: {
-      body: view_context.markdown(result[:text], markdown_params),
+      body: formatted_text,
       references: {
         users: result[:users],
         commands: view_context.markdown(result[:commands])
