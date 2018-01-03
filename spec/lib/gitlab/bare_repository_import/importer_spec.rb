@@ -141,6 +141,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
       expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
     end
 
     it 'moves an existing project to the correct path' do
@@ -170,6 +171,9 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it 'creates the Wiki git repo in disk' do
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.wiki.git"))
+
+      expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
+                                                                                  import_type: 'bare_repository')).and_call_original
 
       importer.create_project_if_needed
 
