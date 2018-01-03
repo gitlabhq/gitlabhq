@@ -27,11 +27,11 @@ module Projects
           result &&= move_repository("#{@old_wiki_disk_path}", "#{@new_disk_path}.wiki")
         end
 
-        unless result
+        if result
+          project.write_repository_config
+        else
           rollback_folder_move
           project.storage_version = nil
-        else
-          project.write_repository_config
         end
 
         project.repository_read_only = false
