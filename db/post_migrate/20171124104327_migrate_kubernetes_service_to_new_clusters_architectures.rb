@@ -5,16 +5,17 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
 
-    has_many :cluster_projects, class_name: 'ClustersProject'
-    has_many :clusters, through: :cluster_projects, class_name: 'Cluster'
+    has_many :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::ClustersProject'
+    has_many :clusters, through: :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Cluster'
+    has_many :services, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Service'
   end
 
   class Cluster < ActiveRecord::Base
     self.table_name = 'clusters'
 
-    has_many :cluster_projects, class_name: 'ClustersProject'
-    has_many :projects, through: :cluster_projects, class_name: 'Project'
-    has_one :platform_kubernetes, class_name: 'PlatformsKubernetes'
+    has_many :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::ClustersProject'
+    has_many :projects, through: :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
+    has_one :platform_kubernetes, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::PlatformsKubernetes'
 
     accepts_nested_attributes_for :platform_kubernetes
 
@@ -31,12 +32,14 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   class ClustersProject < ActiveRecord::Base
     self.table_name = 'cluster_projects'
 
-    belongs_to :cluster, class_name: 'Cluster'
-    belongs_to :project, class_name: 'Project'
+    belongs_to :cluster, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Cluster'
+    belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
   end
 
   class PlatformsKubernetes < ActiveRecord::Base
     self.table_name = 'cluster_platforms_kubernetes'
+
+    belongs_to :cluster, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Cluster'
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
@@ -49,7 +52,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     self.table_name = 'services'
 
-    belongs_to :project, class_name: 'Project'
+    belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
 
     scope :kubernetes_service, -> do
       where("services.category = 'deployment'")
@@ -84,15 +87,15 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   end
 
   def up
-    Service.kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
+    MigrateKubernetesServiceToNewClustersArchitectures::Service.kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
       unless managed_by_clusters?(kubernetes_service)
-        Cluster.create(
+        MigrateKubernetesServiceToNewClustersArchitectures::Cluster.create(
           enabled: kubernetes_service.active,
           user_id: nil, # KubernetesService doesn't have
           name: DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME,
-          provider_type: Cluster.provider_types[:user],
-          platform_type: Cluster.platform_types[:kubernetes],
-          projects: [kubernetes_service.project],
+          provider_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.provider_types[:user],
+          platform_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.platform_types[:kubernetes],
+          projects: [kubernetes_service.project.becomes(MigrateKubernetesServiceToNewClustersArchitectures::Project)],
           environment_scope: find_dedicated_environement_scope(kubernetes_service.project),
           platform_kubernetes_attributes: {
             api_url: kubernetes_service.api_url,
