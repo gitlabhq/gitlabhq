@@ -60,10 +60,13 @@ describe API::Issues, :mailer do
   before(:all) do
     project.add_reporter(user)
     project.add_guest(guest)
+<<<<<<< HEAD
   end
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
+=======
+>>>>>>> upstream/master
   end
 
   describe "GET /issues" do

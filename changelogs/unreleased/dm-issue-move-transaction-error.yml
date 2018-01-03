@@ -1,5 +1,0 @@
----
-title: Execute project hooks and services after commit when moving an issue
-merge_request:
-author:
-type: fixed

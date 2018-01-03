@@ -13,8 +13,11 @@ describe 'New/edit issue', :js do
   let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
+<<<<<<< HEAD
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
 
+=======
+>>>>>>> upstream/master
     project.add_master(user)
     project.add_master(user2)
     sign_in(user)

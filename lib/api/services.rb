@@ -1,5 +1,143 @@
 module API
   class Services < Grape::API
+    chat_notification_settings = [
+      {
+        required: true,
+        name: :webhook,
+        type: String,
+        desc: 'The chat webhook'
+      },
+      {
+        required: false,
+        name: :username,
+        type: String,
+        desc: 'The chat username'
+      },
+      {
+        required: false,
+        name: :channel,
+        type: String,
+        desc: 'The default chat channel'
+      }
+    ]
+
+    chat_notification_flags = [
+      {
+        required: false,
+        name: :notify_only_broken_pipelines,
+        type: Boolean,
+        desc: 'Send notifications for broken pipelines'
+      },
+      {
+        required: false,
+        name: :notify_only_default_branch,
+        type: Boolean,
+        desc: 'Send notifications only for the default branch'
+      }
+    ]
+
+    chat_notification_channels = [
+      {
+        required: false,
+        name: :push_channel,
+        type: String,
+        desc: 'The name of the channel to receive push_events notifications'
+      },
+      {
+        required: false,
+        name: :issue_channel,
+        type: String,
+        desc: 'The name of the channel to receive issues_events notifications'
+      },
+      {
+        required: false,
+        name: :confidential_issue_channel,
+        type: String,
+        desc: 'The name of the channel to receive confidential_issues_events notifications'
+      },
+      {
+        required: false,
+        name: :merge_request_channel,
+        type: String,
+        desc: 'The name of the channel to receive merge_requests_events notifications'
+      },
+      {
+        required: false,
+        name: :note_channel,
+        type: String,
+        desc: 'The name of the channel to receive note_events notifications'
+      },
+      {
+        required: false,
+        name: :tag_push_channel,
+        type: String,
+        desc: 'The name of the channel to receive tag_push_events notifications'
+      },
+      {
+        required: false,
+        name: :pipeline_channel,
+        type: String,
+        desc: 'The name of the channel to receive pipeline_events notifications'
+      },
+      {
+        required: false,
+        name: :wiki_page_channel,
+        type: String,
+        desc: 'The name of the channel to receive wiki_page_events notifications'
+      }
+    ]
+
+    chat_notification_events = [
+      {
+        required: false,
+        name: :push_events,
+        type: Boolean,
+        desc: 'Enable notifications for push_events'
+      },
+      {
+        required: false,
+        name: :issues_events,
+        type: Boolean,
+        desc: 'Enable notifications for issues_events'
+      },
+      {
+        required: false,
+        name: :confidential_issues_events,
+        type: Boolean,
+        desc: 'Enable notifications for confidential_issues_events'
+      },
+      {
+        required: false,
+        name: :merge_requests_events,
+        type: Boolean,
+        desc: 'Enable notifications for merge_requests_events'
+      },
+      {
+        required: false,
+        name: :note_events,
+        type: Boolean,
+        desc: 'Enable notifications for note_events'
+      },
+      {
+        required: false,
+        name: :tag_push_events,
+        type: Boolean,
+        desc: 'Enable notifications for tag_push_events'
+      },
+      {
+        required: false,
+        name: :pipeline_events,
+        type: Boolean,
+        desc: 'Enable notifications for pipeline_events'
+      },
+      {
+        required: false,
+        name: :wiki_page_events,
+        type: Boolean,
+        desc: 'Enable notifications for wiki_page_events'
+      }
+    ]
+
     services = {
       'asana' => [
         {
@@ -488,25 +626,11 @@ module API
         }
       ],
       'slack' => [
-        {
-          required: true,
-          name: :webhook,
-          type: String,
-          desc: 'The Slack webhook. e.g. https://hooks.slack.com/services/...'
-        },
-        {
-          required: false,
-          name: :new_issue_url,
-          type: String,
-          desc: 'The user name'
-        },
-        {
-          required: false,
-          name: :channel,
-          type: String,
-          desc: 'The channel name'
-        }
-      ],
+        chat_notification_settings,
+        chat_notification_flags,
+        chat_notification_channels,
+        chat_notification_events
+      ].flatten,
       'microsoft-teams' => [
         {
           required: true,
@@ -516,19 +640,11 @@ module API
         }
       ],
       'mattermost' => [
-        {
-          required: true,
-          name: :webhook,
-          type: String,
-          desc: 'The Mattermost webhook. e.g. http://mattermost_host/hooks/...'
-        },
-        {
-          required: false,
-          name: :username,
-          type: String,
-          desc: 'The username to use to post the message'
-        }
-      ],
+        chat_notification_settings,
+        chat_notification_flags,
+        chat_notification_channels,
+        chat_notification_events
+      ].flatten,
       'teamcity' => [
         {
           required: true,

@@ -34,6 +34,14 @@ describe Projects::ImportsController do
     context 'when repository exists' do
       let(:project) { create(:project_empty_repo, import_url: 'https://github.com/vim/vim.git') }
 
+<<<<<<< HEAD
+=======
+      before do
+        sign_in(user)
+        project.add_master(user)
+      end
+
+>>>>>>> upstream/master
       context 'when import is in progress' do
         before do
           project.update_attribute(:import_status, :started)

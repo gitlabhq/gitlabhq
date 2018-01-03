@@ -226,5 +226,8 @@ export default class MilestoneSelect {
     });
   }
 }
+<<<<<<< HEAD
 
 window.MilestoneSelect = MilestoneSelect;
+=======
+>>>>>>> upstream/master
