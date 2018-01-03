@@ -1730,7 +1730,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         # This 'nil' signals that the merge was not applied
         expect(result).to be_nil
 
-        # Our concurrent ref update should not have been reversed
+        # Our concurrent ref update should not have been undone
         expect(repository.find_branch(target_branch).target).to eq(concurrent_update_id)
       end
     end
