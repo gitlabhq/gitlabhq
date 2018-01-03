@@ -111,10 +111,8 @@ describe('MRWidgetMerged', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeSourceBranch').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return {
-                message: 'Branch was removed',
-              };
+            data: {
+              message: 'Branch was removed',
             },
           });
         }));

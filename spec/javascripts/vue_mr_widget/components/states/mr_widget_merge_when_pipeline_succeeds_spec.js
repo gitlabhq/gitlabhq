@@ -108,9 +108,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'cancelAutomaticMerge').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return mrObj;
-            },
+            data: mrObj,
           });
         }));
 
@@ -129,10 +127,8 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service.mergeResource, 'save').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return {
-                status: 'merge_when_pipeline_succeeds',
-              };
+            data: {
+              status: 'merge_when_pipeline_succeeds',
             },
           });
         }));
