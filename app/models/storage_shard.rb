@@ -4,11 +4,10 @@
 class StorageShard
   include ActiveModel::Model
 
-  attr_accessor :name, :path, :gitaly_address, :gitaly_token
+  attr_accessor :name, :path
 
   validates :name, presence: true
   validates :path, presence: true
-  validates :gitaly_address, presence: true
 
   # Generates an array of StorageShard objects from the currrent storage
   # configuration using the gitlab.yml array of key/value pairs:
@@ -25,6 +24,6 @@ class StorageShard
   end
 
   def self.allowed_params
-    %i(name path gitaly_address gitaly_token).freeze
+    %i(name path).freeze
   end
 end

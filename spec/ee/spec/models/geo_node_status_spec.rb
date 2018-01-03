@@ -409,7 +409,7 @@ describe GeoNodeStatus, :geo do
       data = GeoNodeStatusSerializer.new.represent(status).as_json
       data['id'] = 10000
 
-      result = GeoNodeStatus.from_json(data)
+      result = described_class.from_json(data)
 
       expect(result.id).to be_nil
       expect(result.attachments_count).to eq(status.attachments_count)
@@ -419,16 +419,14 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#storage_shards_match?' do
-    before do
-      allow(Gitlab::Geo).to receive(:primary?).and_return(true)
-    end
+    before { stub_primary_node }
 
     it 'returns false if the storage shards do not match' do
       status = create(:geo_node_status)
       data = GeoNodeStatusSerializer.new.represent(status).as_json
       data['storage_shards'].first['name'] = 'broken-shard'
 
-      result = GeoNodeStatus.from_json(data)
+      result = described_class.from_json(data)
 
       expect(result.storage_shards_match?).to be false
     end
@@ -438,7 +436,7 @@ describe GeoNodeStatus, :geo do
 
       status.storage_shards.shuffle!
       data = GeoNodeStatusSerializer.new.represent(status).as_json
-      result = GeoNodeStatus.from_json(data)
+      result = described_class.from_json(data)
 
       expect(result.storage_shards_match?).to be true
     end
