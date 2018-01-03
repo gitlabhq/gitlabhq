@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class ConflictsService
+      include Gitlab::EncodingHelper
+
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
       def initialize(repository, our_commit_oid, their_commit_oid)
@@ -22,7 +24,7 @@ module Gitlab
       end
 
       def resolve_conflicts(target_repository, resolution, source_branch, target_branch)
-        reader = GitalyClient.binary_stringio(resolution.files.to_json)
+        reader = binary_stringio(resolution.files.to_json)
 
         req_enum = Enumerator.new do |y|
           header = resolve_conflicts_request_header(target_repository, resolution, source_branch, target_branch)
