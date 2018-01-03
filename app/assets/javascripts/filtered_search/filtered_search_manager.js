@@ -182,7 +182,6 @@ class FilteredSearchManager {
   }
 
   checkForBackspace(e) {
-
     // closure for keeping track of the number of backspace keystrokes
     // 8 = Backspace Key, 46 = Delete Key
     if (e.keyCode === 8 || e.keyCode === 46) {
@@ -199,7 +198,6 @@ class FilteredSearchManager {
           gl.FilteredSearchVisualTokens.removeLastTokenPartial();
         }
       }
-
 
       // Reposition dropdown so that it is aligned with cursor
       this.dropdownManager.updateCurrentDropdownOffset();
@@ -242,7 +240,7 @@ class FilteredSearchManager {
   addInputContainerFocus() {
     addClassIfElementExists(this.filteredSearchInput.closest('.filtered-search-box'), 'focus');
     const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
-    if(lastVisualToken !== null) {
+    if (lastVisualToken !== null) {
       this.backspaceCount = 1;
     }
   }
