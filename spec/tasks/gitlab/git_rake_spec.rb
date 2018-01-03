@@ -1,3 +1,5 @@
+
+
 require 'rake_helper'
 
 describe 'gitlab:git rake tasks' do
@@ -6,7 +8,7 @@ describe 'gitlab:git rake tasks' do
 
     storages = { 'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') } }
 
-    FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/repo/test.git'))
+    FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/@repo/1/2/test.git'))
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     stub_warn_user_is_not_gitlab
   end
