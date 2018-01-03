@@ -15,7 +15,7 @@ describe MergeRequests::RebaseService do
   subject(:service) { described_class.new(project, user, {}) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#execute' do

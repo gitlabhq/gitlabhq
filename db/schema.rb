@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171214160629) do
+ActiveRecord::Schema.define(version: 20171220191323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -660,6 +660,15 @@ ActiveRecord::Schema.define(version: 20171214160629) do
     t.text "status_reason"
   end
 
+  create_table "clusters_applications_prometheus", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -970,6 +979,12 @@ ActiveRecord::Schema.define(version: 20171214160629) do
     t.datetime "updated_at", null: false
     t.datetime "last_successful_status_check_at"
     t.string "status_message"
+    t.integer "replication_slots_count"
+    t.integer "replication_slots_used_count"
+    t.integer "replication_slots_max_retained_wal_bytes"
+    t.integer "wikis_count"
+    t.integer "wikis_synced_count"
+    t.integer "wikis_failed_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree

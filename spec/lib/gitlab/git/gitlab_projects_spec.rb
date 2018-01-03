@@ -41,7 +41,8 @@ describe Gitlab::Git::GitlabProjects do
     end
 
     it "fails if the source path doesn't exist" do
-      expect(logger).to receive(:error).with("mv-project failed: source path <#{tmp_repos_path}/bad-src.git> does not exist.")
+      expected_source_path = File.join(tmp_repos_path, 'bad-src.git')
+      expect(logger).to receive(:error).with("mv-project failed: source path <#{expected_source_path}> does not exist.")
 
       result = build_gitlab_projects(tmp_repos_path, 'bad-src.git').mv_project('repo.git')
       expect(result).to be_falsy
@@ -50,7 +51,8 @@ describe Gitlab::Git::GitlabProjects do
     it 'fails if the destination path already exists' do
       FileUtils.mkdir_p(File.join(tmp_repos_path, 'already-exists.git'))
 
-      message = "mv-project failed: destination path <#{tmp_repos_path}/already-exists.git> already exists."
+      expected_distination_path = File.join(tmp_repos_path, 'already-exists.git')
+      message = "mv-project failed: destination path <#{expected_distination_path}> already exists."
       expect(logger).to receive(:error).with(message)
 
       expect(gl_projects.mv_project('already-exists.git')).to be_falsy

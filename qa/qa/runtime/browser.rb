@@ -51,6 +51,9 @@ module QA
           driver.browser.save_screenshot(path)
         end
 
+        # Keep only the screenshots generated from the last failing test suite
+        Capybara::Screenshot.prune_strategy = :keep_last_run
+
         Capybara.configure do |config|
           config.default_driver = :chrome
           config.javascript_driver = :chrome

@@ -25,6 +25,7 @@ class GeoNodeStatus {
     this.$healthStatus = $('.js-health-status', this.$el);
     this.$status = $('.js-geo-node-status', this.$el);
     this.$repositories = $('.js-repositories', this.$status);
+    this.$wikis = $('.js-wikis', this.$status);
     this.$lfsObjects = $('.js-lfs-objects', this.$status);
     this.$attachments = $('.js-attachments', this.$status);
     this.$syncSettings = $('.js-sync-settings', this.$status);
@@ -217,6 +218,15 @@ class GeoNodeStatus {
         totalCount: status.repositories_count,
       });
       GeoNodeStatus.renderSyncGraph(this.$repositories, repositoriesStats);
+    }
+
+    if (status.wikis_count > 0) {
+      const wikisStats = GeoNodeStatus.getSyncStatistics({
+        syncedCount: status.wikis_synced_count,
+        failedCount: status.wikis_failed_count,
+        totalCount: status.wikis_count,
+      });
+      GeoNodeStatus.renderSyncGraph(this.$wikis, wikisStats);
     }
 
     if (status.lfs_objects_count > 0) {

@@ -1,5 +1,0 @@
----
-title: Fix an exception in Geo scheduler workers
-merge_request: 3740
-author:
-type: fixed

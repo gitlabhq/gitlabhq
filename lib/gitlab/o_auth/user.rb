@@ -14,7 +14,7 @@ module Gitlab
 
       def initialize(auth_hash)
         self.auth_hash = auth_hash
-        update_profile if sync_profile_from_provider?
+        update_profile
         add_or_update_user_identities
       end
 
@@ -197,29 +197,31 @@ module Gitlab
       end
 
       def sync_profile_from_provider?
-        providers = Gitlab.config.omniauth.sync_profile_from_provider
-
-        if providers.is_a?(Array)
-          providers.include?(auth_hash.provider)
-        else
-          providers
-        end
+        Gitlab::OAuth::Provider.sync_profile_from_provider?(auth_hash.provider)
       end
 
       def update_profile
-        user_synced_attributes_metadata = gl_user.user_synced_attributes_metadata || gl_user.build_user_synced_attributes_metadata
+        return unless sync_profile_from_provider? || creating_linked_ldap_user?
 
-        UserSyncedAttributesMetadata::SYNCABLE_ATTRIBUTES.each do |key|
-          if auth_hash.has_attribute?(key) && gl_user.sync_attribute?(key)
-            gl_user[key] = auth_hash.public_send(key) # rubocop:disable GitlabSecurity/PublicSend
-            user_synced_attributes_metadata.set_attribute_synced(key, true)
-          else
-            user_synced_attributes_metadata.set_attribute_synced(key, false)
+        metadata = gl_user.user_synced_attributes_metadata || gl_user.build_user_synced_attributes_metadata
+
+        if sync_profile_from_provider?
+          UserSyncedAttributesMetadata::SYNCABLE_ATTRIBUTES.each do |key|
+            if auth_hash.has_attribute?(key) && gl_user.sync_attribute?(key)
+              gl_user[key] = auth_hash.public_send(key) # rubocop:disable GitlabSecurity/PublicSend
+              metadata.set_attribute_synced(key, true)
+            else
+              metadata.set_attribute_synced(key, false)
+            end
           end
+
+          metadata.provider = auth_hash.provider
         end
 
-        user_synced_attributes_metadata.provider = auth_hash.provider
-        gl_user.user_synced_attributes_metadata = user_synced_attributes_metadata
+        if creating_linked_ldap_user? && gl_user.email == ldap_person.email.first
+          metadata.set_attribute_synced(:email, true)
+          metadata.provider = ldap_person.provider
+        end
       end
 
       def log

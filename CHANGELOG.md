@@ -2,6 +2,184 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.3 (2018-01-02)
+
+### Fixed (3 changes)
+
+- Fix links to old commits in merge request comments.
+- Fix 404 errors after a user edits an issue description and solves the reCAPTCHA.
+- Gracefully handle orphaned write deploy keys in /internal/post_receive.
+
+
+## 10.3.2 (2017-12-28)
+
+### Fixed (1 change)
+
+- Fix migration for removing orphaned issues.moved_to_id values in MySQL and PostgreSQL.
+
+
+## 10.3.1 (2017-12-27)
+
+### Fixed (3 changes)
+
+- Don't link LFS objects to a project when unlinking forks when they were already linked. !16006
+- Execute project hooks and services after commit when moving an issue.
+- Fix Error 500s with anonymous clones for a project that has moved.
+
+### Changed (1 change)
+
+- Reduce the number of buckets in gitlab_cache_operation_duration_seconds metric. !15881
+
+
+## 10.3.0 (2017-12-22)
+
+### Security (1 change, 1 of them is from the community)
+
+- Upgrade jQuery to 2.2.4. !15570 (Takuya Noguchi)
+
+### Fixed (55 changes, 8 of them are from the community)
+
+- Fail jobs if its dependency is missing. !14009
+- Fix errors when selecting numeric-only labels in the labels autocomplete selector. !14607 (haseebeqx)
+- Fix pipeline status transition for single manual job. This would also fix pipeline duration becuse it is depending on status transition. !15251
+- Fix acceptance of username for Mattermost service update. !15275
+- Set the default gitlab-shell timeout to 3 hours. !15292
+- Make sure a user can add projects to subgroups they have access to. !15294
+- OAuth identity lookups case-insensitive. !15312
+- Fix filter by my reaction is not working. !15345 (Hiroyuki Sato)
+- Avoid deactivation when pipeline schedules execute a branch includes `[ci skip]` comment. !15405
+- Add recaptcha modal to issue updates detected as spam. !15408
+- Fix item name and namespace text overflow in Projects dropdown. !15451
+- Removed unused rake task, 'rake gitlab:sidekiq:drop_post_receive'. !15493
+- Fix commits page throwing 500 when the multi-file editor was enabled. !15502
+- Fix Issue comment submit button being disabled when pasting content from another GFM note. !15530
+- Reenable Prometheus metrics, add more control over Prometheus method instrumentation. !15558
+- Fix broadcast message not showing up on login page. !15578
+- Initializes the branches dropdown when the 'Start new pipeline' failed due to validation errors. !15588 (Christiaan Van den Poel)
+- Fix merge requests where the source or target branch name matches a tag name. !15591
+- Create a fork network for forks with a deleted source. !15595
+- Fix search results when a filename would contain a special character. !15606 (haseebeqx)
+- Strip leading & trailing whitespaces in CI/CD secret variable keys. !15615
+- Correctly link to a forked project from the new fork page. !15653
+- Fix the fork project functionality for projects with hashed storage. !15671
+- Added default order to UsersFinder. !15679
+- Fix graph notes number duplication. !15696 (Vladislav Kaverin)
+- Fix updateEndpoint undefined error for issue_show app root. !15698
+- Change boards page boards_data absolute urls to paths. !15703
+- Using appropiate services in the API for managing forks. !15709
+- Confirming email with invalid token should no longer generate an error. !15726
+- fix #39233 - 500 in merge request. !15774 (Martin Nowak)
+- Use Markdown styling for new project guidelines. !15785 (Markus Koller)
+- Fix error during schema dump. !15866
+- Fix broken illustration images for monitoring page empty states. !15889
+- Make sure user email is read only when synced with LDAP. !15915
+- Fixed outdated browser flash positioning.
+- Fix gitlab:import:repos Rake task moving repositories into the wrong location.
+- Gracefully handle case when repository's root ref does not exist.
+- Fix GitHub importer using removed interface.
+- Align retry button with job title with new grid size.
+- Fixed admin welcome screen new group path.
+- Fix related branches/Merge requests failing to load when the hostname setting is changed.
+- Init zen mode in snippets pages.
+- Remove extra margin from wordmark in header.
+- Fixed long commit links not wrapping correctly.
+- Fixed deploy keys remove button loading state not resetting.
+- Use app host instead of asset host when rendering image blob or diff.
+- Hide log size for mobile screens.
+- Fix sending notification emails to users with the mention level set who were mentioned in an issue or merge request description.
+- Changed validation error message on wrong milestone dates. (Xurxo Méndez Pérez)
+- Fix access to the final page of todos.
+- Fixed new group milestone breadcrumbs.
+- Fix image diff notification email from showing wrong content.
+- Fixed merge request lock icon size.
+- Make sure head pippeline always corresponds with the head sha of an MR.
+- Prevent 500 error when inspecting job after trigger was removed.
+
+### Changed (14 changes, 2 of them are from the community)
+
+- Only owner or master can erase jobs. !15216
+- Allow password authentication to be disabled entirely. !15223 (Markus Koller)
+- Add the option to automatically run a pipeline after updating AutoDevOps settings. !15380
+- Add total_time_spent to the `changes` hash in issuable Webhook payloads. !15381
+- Monitor NFS shards for circuitbreaker in a separate process. !15426
+- Add inline editing to issues on mobile. !15438
+- Add custom brand text on new project pages. !15541 (Markus Koller)
+- Show only group name by default and put full namespace in tooltip in Groups tree. !15650
+- Use custom user agent header in all GCP API requests. !15705
+- Changed the deploy markers on the prometheus dashboard to be more verbose. !38032
+- Animate contextual sidebar on collapse/expand.
+- Update emojis. Add :gay_pride_flag: and :speech_left:. Remove extraneous comma in :cartwheel_tone4:.
+- When a custom header logo is present, don't show GitLab type logo.
+- Improved diff changed files dropdown design.
+
+### Performance (19 changes)
+
+- Add timeouts for Gitaly calls. !15047
+- Performance issues when loading large number of wiki pages. !15276
+- Add performance logging to UpdateMergeRequestsWorker. !15360
+- Keep track of all circuitbreaker keys in a set. !15613
+- Improve the performance for counting commits. !15628
+- Reduce requests for project forks on show page of projects that have forks. !15663
+- Perform SQL matching of Build&Runner tags to greatly speed-up job picking.
+- Only load branch names for protected branch checks.
+- Optimize API /groups/:id/projects by preloading associations.
+- Remove allocation tracking code from InfluxDB sampler for performance.
+- Throttle the number of UPDATEs triggered by touch.
+- Make finding most recent merge request diffs more efficient.
+- Fetch blobs in bulk when generating diffs.
+- Cache commits for MergeRequest diffs.
+- Use fuzzy search with minimum length of 3 characters where appropriate.
+- Add axios to common file.
+- Remove template selector from global namespace.
+- check the import_status field before doing SQL operations to check the import url.
+- Stop sending milestone and labels data over the wire for MR widget requests.
+
+### Added (22 changes, 15 of them are from the community)
+
+- Limit autocomplete menu to applied labels. !11110 (Vitaliy @blackst0ne Klachkov)
+- Make diff notes created on a commit in a merge request to persist a rebase. !12148
+- Allow creation of merge request from email. !13817 (janp)
+- Add an ability to use a custom branch name on creation from issues. !13884 (Vitaliy @blackst0ne Klachkov)
+- Add anonymous rate limit per IP, and authenticated (web or API) rate limits per user. !14708
+- Create a new form to add Existing Kubernetes Cluster. !14805
+- Add support of Mermaid (generation of diagrams and flowcharts from text). !15107 (Vitaliy @blackst0ne Klachkov)
+- Add total time spent to milestones. !15116 (George Andrinopoulos)
+- Add /groups/:id/subgroups endpoint to API. !15142 (marbemac)
+- Add administrative endpoint to list all pages domains. !15160 (Travis Miller)
+- Adds Rubocop rule for line break after guard clause. !15188 (Jacopo Beschi @jacopo-beschi)
+- Add edit button to mobile file view. !15199 (Travis Miller)
+- Add dropdown sort to group milestones. !15230 (George Andrinopoulos)
+- added support for ordering and sorting in notes api. !15342 (haseebeqx)
+- Hashed Storage migration script now supports migrating project attachments. !15352
+- New API endpoint - list jobs for a specified runner. !15432
+- Add new API endpoint - get a namespace by ID. !15442
+- Disables autocomplete in filtered searc. !15477 (Jacopo Beschi @jacopo-beschi)
+- Update empty state page of merge request 'changes' tab. !15611 (Vitaliy @blackst0ne Klachkov)
+- Allow git pull/push on group/user/project redirects. !15670
+- show status of gitlab reference links in wiki. !15694 (haseebeqx)
+- Add email confirmation parameters for user creation and update via API. (Daniel Juarez)
+
+### Other (17 changes, 7 of them are from the community)
+
+- Enable UnnecessaryMantissa in scss-lint. !15255 (Takuya Noguchi)
+- Add untracked files to uploads table. !15270
+- Move update_project_counter_caches? out of issue and merge request. !15300 (George Andrinopoulos)
+- Removed tooltip from clone dropdown. !15334
+- Clean up empty fork networks. !15373
+- Create issuable destroy service. !15604 (George Andrinopoulos)
+- Upgrade seed-fu to 2.3.7. !15607 (Takuya Noguchi)
+- Rename GKE as Kubernetes Engine. !15608 (Takuya Noguchi)
+- Prefer ci_config_path validation for leading slashes instead of sanitizing the input. !15672 (Christiaan Van den Poel)
+- Fix typo in docs about Elasticsearch. !15699 (Takuya Noguchi)
+- Add internationalization support for the prometheus integration. !33338
+- Export text utils functions as es6 module and add tests.
+- Stop reloading the page when using pagination and tabs - use API calls - in Pipelines table.
+- Clean up schema of the "issues" table.
+- Clarify wording of protected branch settings for the default branch.
+- Update svg external depencency.
+- Clean up schema of the "merge_requests" table.
+
+
 ## 10.2.5 (2017-12-15)
 
 ### Fixed (8 changes)

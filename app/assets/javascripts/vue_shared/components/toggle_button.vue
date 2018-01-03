@@ -1,5 +1,12 @@
 <script>
+  import { s__ } from '../../locale';
+  import icon from './icon.vue';
   import loadingIcon from './loading_icon.vue';
+
+  const ICON_ON = 'status_success_borderless';
+  const ICON_OFF = 'status_failed_borderless';
+  const LABEL_ON = s__('ToggleButton|Toggle Status: ON');
+  const LABEL_OFF = s__('ToggleButton|Toggle Status: OFF');
 
   export default {
     props: {
@@ -22,25 +29,25 @@
         required: false,
         default: false,
       },
-      enabledText: {
-        type: String,
-        required: false,
-        default: 'Enabled',
-      },
-      disabledText: {
-        type: String,
-        required: false,
-        default: 'Disabled',
-      },
     },
 
     components: {
+      icon,
       loadingIcon,
     },
 
     model: {
       prop: 'value',
       event: 'change',
+    },
+
+    computed: {
+      toggleIcon() {
+        return this.value ? ICON_ON : ICON_OFF;
+      },
+      ariaLabel() {
+        return this.value ? LABEL_ON : LABEL_OFF;
+      },
     },
 
     methods: {
@@ -60,10 +67,8 @@
     />
     <button
       type="button"
-      aria-label="Toggle"
       class="project-feature-toggle"
-      :data-enabled-text="enabledText"
-      :data-disabled-text="disabledText"
+      :aria-label="ariaLabel"
       :class="{
         'is-checked': value,
         'is-disabled': disabledInput,
@@ -72,6 +77,11 @@
       @click="toggleFeature"
     >
       <loadingIcon class="loading-icon" />
+      <span class="toggle-icon">
+        <icon
+          css-classes="toggle-icon-svg"
+          :name="toggleIcon"/>
+      </span>
     </button>
   </label>
 </template>

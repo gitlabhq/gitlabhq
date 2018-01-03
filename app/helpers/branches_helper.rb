@@ -27,9 +27,8 @@ module BranchesHelper
   # Returns a hash were keys are types of access levels (user, role), and
   # values are the number of access levels of the particular type.
   def access_level_frequencies(access_levels)
-    access_levels.reduce(Hash.new(0)) do |frequencies, access_level|
+    access_levels.each_with_object(Hash.new(0)) do |access_level, frequencies|
       frequencies[access_level.type] += 1
-      frequencies
     end
   end
 

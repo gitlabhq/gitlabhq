@@ -22,6 +22,14 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:repositories_failed_count) }
   it { is_expected.to have_key(:repositories_synced_count)}
   it { is_expected.to have_key(:repositories_synced_in_percentage) }
+  it { is_expected.to have_key(:wikis_count) }
+  it { is_expected.to have_key(:wikis_failed_count) }
+  it { is_expected.to have_key(:wikis_synced_count)}
+  it { is_expected.to have_key(:wikis_synced_in_percentage) }
+  it { is_expected.to have_key(:replication_slots_count) }
+  it { is_expected.to have_key(:replication_slots_used_count)}
+  it { is_expected.to have_key(:replication_slots_used_in_percentage) }
+  it { is_expected.to have_key(:replication_slots_max_retained_wal_bytes) }
   it { is_expected.to have_key(:last_successful_status_check_timestamp) }
   it { is_expected.to have_key(:namespaces) }
 
@@ -92,6 +100,15 @@ describe GeoNodeStatusEntity, :postgresql do
                                         repositories_failed_count: 0)
 
       expect(subject[:repositories_synced_in_percentage]).to eq '50.00%'
+    end
+  end
+
+  describe '#replication_slots_used_in_percentage' do
+    it 'formats as percentage' do
+      geo_node_status.assign_attributes(replication_slots_count: 4,
+                                        replication_slots_used_count: 2)
+
+      expect(subject[:replication_slots_used_in_percentage]).to eq '50.00%'
     end
   end
 

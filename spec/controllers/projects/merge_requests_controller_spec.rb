@@ -98,6 +98,14 @@ describe Projects::MergeRequestsController do
           expect(response).to match_response_schema('entities/merge_request_widget')
         end
       end
+
+      context 'when no serialiser was passed' do
+        it 'renders widget MR entity as json' do
+          go(serializer: nil, format: :json)
+
+          expect(response).to match_response_schema('entities/merge_request_widget')
+        end
+      end
     end
 
     describe "as diff" do
@@ -469,7 +477,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_issuable).with(merge_request, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_target).with(merge_request).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
       end

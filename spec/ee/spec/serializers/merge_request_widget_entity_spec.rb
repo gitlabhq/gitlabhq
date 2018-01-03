@@ -29,12 +29,12 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json).to include(:sast)
   end
 
-  it 'has clair data' do
+  it 'has sast_container data' do
     build = create(:ci_build, name: 'sast:image')
 
-    allow(subject).to receive(:expose_clair_data?).and_return(true)
-    allow(merge_request).to receive(:clair_artifact).and_return(build)
+    allow(subject).to receive(:expose_sast_container_data?).and_return(true)
+    allow(merge_request).to receive(:sast_container_artifact).and_return(build)
 
-    expect(subject.as_json).to include(:clair)
+    expect(subject.as_json).to include(:sast_container)
   end
 end

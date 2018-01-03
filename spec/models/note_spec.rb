@@ -195,7 +195,7 @@ describe Note do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_master(private_user) } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
     let(:ext_proj)  { create(:project, :public) }

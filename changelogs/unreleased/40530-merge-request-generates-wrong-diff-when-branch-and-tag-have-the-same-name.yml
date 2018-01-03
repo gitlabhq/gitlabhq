@@ -1,5 +1,0 @@
----
-title: Fix merge requests where the source or target branch name matches a tag name
-merge_request: 15591
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Update gitlab.yml.example to match the default settings for Geo sync workers
-merge_request: 3488
-author:
-type: fixed

@@ -365,7 +365,7 @@ module IssuablesHelper
       moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
       projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
-      currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
+      currentUser: UserSerializer.new.represent(current_user),
       rootPath: root_path,
       fullPath: @project.full_path,
       weightOptions: Issue.weight_options,

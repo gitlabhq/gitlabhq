@@ -1,0 +1,5 @@
+---
+title: Add missing wiki counts to prometheus metrics
+merge_request: 3875
+author:
+type: fixed

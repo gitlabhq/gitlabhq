@@ -78,7 +78,7 @@
               = elastic
               %span.light.pull-right
                 = boolean_to_icon current_application_settings.elasticsearch_search?
-            - geo = "Geo"
+            - geo = link_to 'Geo', admin_geo_nodes_path
             %p{ "aria-label" => "#{geo}: status " + (Gitlab::Geo.enabled? ? "on" : "off") }
               = geo
               %span.light.pull-right
@@ -137,7 +137,7 @@
 
             - if Gitlab::Geo.enabled?
               %p
-                Geo
+                = link_to 'Geo', admin_geo_nodes_path
                 %span.pull-right
                   - if Gitlab::Geo.current_node
                     = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'

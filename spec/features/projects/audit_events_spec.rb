@@ -6,7 +6,7 @@ feature 'Projects > Audit Events', :js do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -88,7 +88,7 @@ feature 'Projects > Audit Events', :js do
 
   describe 'changing a user access level' do
     before do
-      project.team << [pete, :developer]
+      project.add_developer(pete)
     end
 
     it "appears in the project's audit events" do

@@ -1,5 +1,5 @@
-import * as getters from '~/repo/stores/getters';
-import state from '~/repo/stores/state';
+import * as getters from '~/ide/stores/getters';
+import state from '~/ide/stores/state';
 import { file } from '../helpers';
 
 describe('Multi-file store getters', () => {
@@ -7,20 +7,6 @@ describe('Multi-file store getters', () => {
 
   beforeEach(() => {
     localState = state();
-  });
-
-  describe('treeList', () => {
-    it('returns flat tree list', () => {
-      localState.tree.push(file('1'));
-      localState.tree[0].tree.push(file('2'));
-      localState.tree[0].tree[0].tree.push(file('3'));
-
-      const treeList = getters.treeList(localState);
-
-      expect(treeList.length).toBe(3);
-      expect(treeList[1].name).toBe(localState.tree[0].tree[0].name);
-      expect(treeList[2].name).toBe(localState.tree[0].tree[0].tree[0].name);
-    });
   });
 
   describe('changedFiles', () => {
@@ -49,7 +35,7 @@ describe('Multi-file store getters', () => {
       localState.openFiles.push(file());
       localState.openFiles.push(file('active'));
 
-      expect(getters.activeFile(localState)).toBeUndefined();
+      expect(getters.activeFile(localState)).toBeNull();
     });
   });
 
@@ -64,18 +50,6 @@ describe('Multi-file store getters', () => {
       localState.openFiles[0].path = 'test.es6.js';
 
       expect(getters.activeFileExtension(localState)).toBe('.js');
-    });
-  });
-
-  describe('isCollapsed', () => {
-    it('returns true if state has open files', () => {
-      localState.openFiles.push(file());
-
-      expect(getters.isCollapsed(localState)).toBeTruthy();
-    });
-
-    it('returns false if state has no open files', () => {
-      expect(getters.isCollapsed(localState)).toBeFalsy();
     });
   });
 
@@ -106,12 +80,6 @@ describe('Multi-file store getters', () => {
 
     it('returns false if user cant commit', () => {
       localState.canCommit = false;
-
-      expect(getters.canEditFile(localState)).toBeFalsy();
-    });
-
-    it('returns false if user can commit but on a branch', () => {
-      localState.onTopOfBranch = false;
 
       expect(getters.canEditFile(localState)).toBeFalsy();
     });

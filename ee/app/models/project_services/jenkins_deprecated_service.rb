@@ -61,7 +61,7 @@ class JenkinsDeprecatedService < CiService
 
   def build_page(sha, ref = nil)
     if multiproject_enabled? && ref.present?
-      URI.encode("#{base_project_url}/#{project.name}_#{ref.tr('/', '_')}/scm/bySHA1/#{sha}").to_s
+      "#{base_project_url}/#{project.name}_#{ref.tr('/', '_')}/scm/bySHA1/#{sha}"
     else
       "#{project_url}/scm/bySHA1/#{sha}"
     end
@@ -93,8 +93,8 @@ class JenkinsDeprecatedService < CiService
     else
       get_url = build_page(sha, ref).gsub("#{parsed_url.userinfo}@", "")
       auth = {
-        username: URI.decode(parsed_url.user),
-        password: URI.decode(parsed_url.password)
+        username: CGI.unescape(parsed_url.user),
+        password: CGI.unescape(parsed_url.password)
       }
       response = HTTParty.get(get_url, verify: false, basic_auth: auth)
     end

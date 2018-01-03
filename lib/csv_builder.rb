@@ -12,6 +12,8 @@
 #     CsvBuilder.new(@posts, columns).render
 #
 class CsvBuilder
+  attr_reader :rows_written
+
   #
   # * +collection+ - The data collection to be used
   # * +header_to_hash_value+ - A hash of 'Column Heading' => 'value_method'.
@@ -44,10 +46,6 @@ class CsvBuilder
 
   def truncated?
     @truncated
-  end
-
-  def rows_written
-    @rows_written
   end
 
   def rows_expected

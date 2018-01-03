@@ -8,7 +8,7 @@ feature 'Global elastic search' do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
 
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

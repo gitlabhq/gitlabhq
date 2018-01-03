@@ -7,7 +7,6 @@ describe Gitlab::Geo::OauthSession do
   let(:dummy_state) { 'salt:hmac:return_to' }
   let(:valid_state) { described_class.new(return_to: oauth_return_to).generate_oauth_state }
   let(:access_token) { FactoryBot.create(:doorkeeper_access_token).token }
-  let(:user) { FactoryBot.build(:user) }
 
   before do
     allow(subject).to receive(:oauth_app) { oauth_app }
@@ -122,7 +121,7 @@ describe Gitlab::Geo::OauthSession do
     context 'on success' do
       it 'returns hashed user data' do
         allow(response).to receive(:status) { 200 }
-        allow(response).to receive(:parsed) { user.to_json }
+        allow(response).to receive(:parsed) { attributes_for(:user) }
 
         subject.authenticate_with_gitlab(access_token)
       end

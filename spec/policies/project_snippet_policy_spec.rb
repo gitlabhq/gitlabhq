@@ -87,7 +87,7 @@ describe ProjectSnippetPolicy do
       subject { abilities(external_user, :internal) }
 
       before do
-        project.team << [external_user, :developer]
+        project.add_developer(external_user)
       end
 
       it do
@@ -141,7 +141,7 @@ describe ProjectSnippetPolicy do
       subject { abilities(regular_user, :private) }
 
       before do
-        project.team << [regular_user, :developer]
+        project.add_developer(regular_user)
       end
 
       it do
@@ -154,7 +154,7 @@ describe ProjectSnippetPolicy do
       subject { abilities(external_user, :private) }
 
       before do
-        project.team << [external_user, :developer]
+        project.add_developer(external_user)
       end
 
       it do

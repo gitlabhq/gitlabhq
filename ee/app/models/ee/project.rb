@@ -9,7 +9,6 @@ module EE
 
     prepended do
       include Elastic::ProjectsSearch
-      prepend GeoAwareAvatar
       prepend ImportStatusStateMachine
 
       before_validation :mark_remote_mirrors_for_removal
@@ -67,9 +66,9 @@ module EE
         allow_destroy: true,
         reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
-      with_options if: :mirror? do |project|
-        project.validates :import_url, presence: true
-        project.validates :mirror_user, presence: true
+      with_options if: :mirror? do
+        validates :import_url, presence: true
+        validates :mirror_user, presence: true
       end
     end
 
@@ -358,7 +357,7 @@ module EE
       unless ::Gitlab::UrlSanitizer.valid?(value)
         self.import_url = value
         self.import_data&.user = nil
-        return value
+        value
       end
 
       url = ::Gitlab::UrlSanitizer.new(value)

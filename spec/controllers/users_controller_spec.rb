@@ -91,7 +91,7 @@ describe UsersController do
 
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         push_data = Gitlab::DataBuilder::Push.build_sample(project, user)
 
@@ -117,7 +117,7 @@ describe UsersController do
       allow_any_instance_of(User).to receive(:contributed_projects_ids).and_return([project.id])
 
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'assigns @calendar_date' do

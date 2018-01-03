@@ -39,6 +39,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 
   .next-run-cell {

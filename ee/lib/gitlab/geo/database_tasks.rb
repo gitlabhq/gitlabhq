@@ -99,9 +99,9 @@ module Gitlab
               ActiveRecord::Migrator.migrations_paths.flat_map do |path|
                 # match "20091231235959_some_name.rb" and "001_some_name.rb" pattern
                 Dir.foreach(path).grep(/^(\d{3,})_(.+)\.rb$/) do
-                  version = ActiveRecord::SchemaMigration.normalize_migration_number($1)
+                  version = ActiveRecord::SchemaMigration.normalize_migration_number(Regexp.last_match(1))
                   status = db_list.delete(version) ? 'up' : 'down'
-                  [status, version, $2.humanize]
+                  [status, version, Regexp.last_match(2).humanize]
                 end
               end
 

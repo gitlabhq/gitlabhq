@@ -122,11 +122,13 @@ Google Cloud.
 
 ## Enabling Auto DevOps
 
-**Note:**
 If you haven't done already, read the [prerequisites](#prerequisites) to make
 full use of Auto DevOps. If this is your fist time, we recommend you follow the
 [quick start guide](#quick-start).
 
+To enable Auto DevOps to your project:
+
+1. Check that your project doesn't have a `.gitlab-ci.yml`, and remove it otherwise
 1. Go to your project's **Settings > CI/CD > General pipelines settings** and
    find the Auto DevOps section
 1. Select "Enable Auto DevOps"
@@ -134,18 +136,13 @@ full use of Auto DevOps. If this is your fist time, we recommend you follow the
    that will be used by Kubernetes to deploy your application
 1. Hit **Save changes** for the changes to take effect
 
-![Project AutoDevops settings section](img/auto_devops_settings.png)
+Once saved, an Auto DevOps pipeline will be triggered on the default branch.
 
-Now that it's enabled, there are a few more steps depending on whether your project
-has a `.gitlab-ci.yml` or not:
-
-- **For projects with no `.gitlab-ci.yml` present:**
-  A pipeline needs to be triggered either by pushing a new commit to the
-  repository or manually visiting `https://example.gitlab.com/<username>/<project>/pipelines/new`
-  and creating a new pipeline for your default branch, generally `master`.
-- **For projects with a `.gitlab-ci.yml` present:**
-  All you need to do is remove your existing `.gitlab-ci.yml`, and you can even
-  do that in a branch to test Auto DevOps before committing to `master`.
+NOTE: **Note:**
+For GitLab versions 10.0 - 10.2, when enabling Auto DevOps, a pipeline needs to be
+manually triggered either by pushing a new commit to the repository or by visiting
+`https://example.gitlab.com/<username>/<project>/pipelines/new` and creating
+a new pipeline for your default branch, generally `master`.
 
 NOTE: **Note:**
 If you are a GitLab Administrator, you can enable Auto DevOps instance wide
@@ -210,6 +207,18 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also [shown in the merge request widget](../../user/project/merge_requests/sast.md).
+
+### Auto SAST
+
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+
+Static Application Security Testing (SAST) uses the
+[gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
+analysis on the current code and checks for potential security issues. Once the
+report is created, it's uploaded as an artifact which you can later download and
+check out.
+
+Any security warnings are also [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
 
 ### Auto Review Apps
 

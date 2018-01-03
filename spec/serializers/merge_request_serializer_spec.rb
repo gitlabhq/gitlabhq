@@ -36,8 +36,8 @@ describe MergeRequestSerializer do
   context 'no serializer' do
     let(:serializer) { nil }
 
-    it 'raises an error' do
-      expect { json_entity }.to raise_error(NoMethodError)
+    it 'falls back to the widget entity' do
+      expect(json_entity).to match_schema('entities/merge_request_widget')
     end
   end
 end

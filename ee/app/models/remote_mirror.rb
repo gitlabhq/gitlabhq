@@ -117,7 +117,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def url=(value)
-    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
+    super(value) && return unless Gitlab::UrlSanitizer.valid?(value)
 
     mirror_url = Gitlab::UrlSanitizer.new(value)
     self.credentials = mirror_url.credentials

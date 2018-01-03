@@ -3,6 +3,7 @@ module EE
     module LDAP
       class Group
         attr_accessor :adapter
+        attr_reader :entry
 
         def self.find_by_cn(cn, adapter)
           cn = Net::LDAP::Filter.escape(cn)
@@ -56,10 +57,6 @@ module EE
         end
 
         private
-
-        def entry
-          @entry
-        end
 
         # Active Directory range member methods
 

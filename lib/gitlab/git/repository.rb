@@ -56,11 +56,12 @@ module Gitlab
 
           # Do nothing if hooks already exist
           unless real_local_hooks_path == File.realpath(global_hooks_path)
-            # Move the existing hooks somewhere safe
-            FileUtils.mv(
-              local_hooks_path,
-              "#{local_hooks_path}.old.#{Time.now.to_i}"
-            ) if File.exist?(local_hooks_path)
+            if File.exist?(local_hooks_path)
+              # Move the existing hooks somewhere safe
+              FileUtils.mv(
+                local_hooks_path,
+                "#{local_hooks_path}.old.#{Time.now.to_i}")
+            end
 
             # Create the hooks symlink
             FileUtils.ln_sf(global_hooks_path, local_hooks_path)
@@ -538,8 +539,15 @@ module Gitlab
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
-        rugged.merge_base(from, to)
+        gitaly_migrate(:merge_base) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.find_merge_base(from, to)
+          else
+            rugged.merge_base(from, to)
+          end
+        end
       end
+      alias_method :merge_base, :merge_base_commit
 
       # Gitaly note: JV: check gitlab-ee before removing this method.
       def rugged_is_ancestor?(ancestor_id, descendant_id)
@@ -1094,17 +1102,12 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, ref, force: false)
+      def write_ref(ref_path, ref)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
 
-        ref = "refs/heads/#{ref}" unless ref.start_with?("refs") || ref =~ /\A[a-f0-9]+\z/i
-
-        rugged.references.create(ref_path, ref, force: force)
-      rescue Rugged::ReferenceError => ex
-        raise GitError, "could not create ref #{ref_path}: #{ex}"
-      rescue Rugged::OSError => ex
-        raise GitError, "could not create ref #{ref_path}: #{ex}"
+        input = "update #{ref_path}\x00#{ref}\x00\x00"
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)

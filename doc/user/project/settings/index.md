@@ -1,11 +1,20 @@
 # Project settings
 
+NOTE: **Note:**
+Only project Masters and Admin users have the [permissions] to access a project
+settings.
+
 You can adjust your [project](../index.md) settings by navigating
 to your project's homepage and clicking **Settings**.
 
 ## General settings
 
-Adjust your project's path and name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
+Under a project's general settings you can find everything concerning the
+functionality of a project.
+
+### General project settings
+
+Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
 
 ![general project settings](img/general_settings.png)
 
@@ -45,14 +54,64 @@ Here you can run housekeeping, archive, rename, transfer, or remove a project.
 
 #### Archiving a project
 
->**Note:** Only Project Owners and Admin users have the permission to archive a project
+NOTE: **Note:**
+Only project Owners and Admin users have the [permissions] to archive a project.
 
-It's possible to mark a project as archived via the Project Settings. An archived project will be hidden by default in the project listings.
+An archived project will be hidden by default in the project listings.
 
-An archived project can be fully restored and will therefore retain it's repository and all associated resources whilst in an archived state.
+1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Under "Archive project", hit the **Archive project** button.
+1. Confirm the action when asked to.
 
-#### Renaming a project
+An archived project can be fully restored and will therefore retain its
+repository and all associated resources whilst in an archived state.
 
->**Note:** Only Project Owners and Admin users have the permission to rename a project
+#### Renaming a repository
 
-It's possible to rename a project from "Rename repository" or "Transfer project" sections. When doing so, you will need to update your local repositories to point to the new location, otherwise Git operations will be rejected.
+NOTE: **Note:**
+Only project Masters and Admin users have the [permissions] to rename a
+repository. Not to be confused with a project's name where it can also be
+changed from the [general project settings](#general-project-settings).
+
+A project's repository name defines its URL (the one you use to access the
+project via a browser) and its place on the file disk where GitLab is installed.
+
+To rename a repository:
+
+1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Under "Rename repository", change the "Path" to your liking.
+1. Hit **Rename project**.
+
+Remember that this can have unintended side effects since everyone with the
+old URL will not be able to push or pull. Read more about what happens with the
+[redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
+
+#### Transferring an existing project into another namespace
+
+NOTE: **Note:**
+Only project Owners and Admin users have the [permissions] to transfer a project.
+
+You can transfer an existing project into a [group](../../group/index.md) if:
+
+1. you have at least **Master** [permissions] to that group
+1. you are an **Owner** of the project.
+
+Similarly, if you are an owner of a group, you can transfer any of its projects
+under your own user.
+
+To transfer a project:
+
+1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Under "Transfer project", choose the namespace you want to transfer the
+   project to.
+1. Confirm the transfer by typing the project's path as instructed.
+
+Once done, you will be taken to the new project's namespace. At this point,
+read what happens with the
+[redirects from the old project to the new one](../index.md#redirects-when-changing-repository-paths).
+
+NOTE: **Note:**
+GitLab administrators can use the admin interface to move any project to any
+namespace if needed.
+
+[permissions]: ../../permissions.md##project-members-permissions

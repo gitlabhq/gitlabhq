@@ -456,6 +456,7 @@ module API
       warden.try(:authenticate) if verified_request?
     end
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -465,6 +466,7 @@ module API
         unauthorized!
       end
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo!
       return unless sudo_identifier

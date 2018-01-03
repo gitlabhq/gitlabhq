@@ -48,24 +48,24 @@
           = f.label :tag_list, "Tags", class: 'label-light'
           = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
           %p.help-block Separate tags with commas.
-          %h5.prepend-top-0
-            Project avatar
+        %fieldset.features
+          %h5.prepend-top-0= _("Project avatar")
           .form-group
             - if @project.avatar?
-              .avatar-container.s160
+              .avatar-container.s160.append-bottom-15
                 = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
-            %p.light
-              - if @project.avatar_in_git
-                Project avatar in repository: #{ @project.avatar_in_git }
-            %a.choose-btn.btn.js-choose-project-avatar-button
-              Browse file...
-            %span.file_name.prepend-left-default.js-avatar-filename No file chosen
-            = f.file_field :avatar, class: "js-project-avatar-input hidden"
-            .help-block The maximum file size allowed is 200KB.
+            - if @project.avatar_in_git
+              %p.light
+                = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
+            .prepend-top-5.append-bottom-10
+              %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
+              %span.file_name.prepend-left-default.js-avatar-filename= _("No file chosen")
+              = f.file_field :avatar, class: "js-project-avatar-input hidden"
+            .help-block= _("The maximum file size allowed is 200KB.")
             - if @project.avatar?
               %hr
-              = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
-        = f.submit 'Save changes', class: "btn btn-save"
+              = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
+        = f.submit 'Save changes', class: "btn btn-success"
 
   %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
     .settings-header

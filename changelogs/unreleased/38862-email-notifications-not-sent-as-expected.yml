@@ -1,6 +1,0 @@
----
-title: Fix sending notification emails to users with the mention level set who were
-  mentioned in an issue or merge request description
-merge_request:
-author:
-type: fixed

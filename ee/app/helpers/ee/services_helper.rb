@@ -13,7 +13,7 @@ module EE
         gitlab_for_slack_gif_path: image_path('gitlab_for_slack.gif'),
         gitlab_logo_path: image_path('illustrations/gitlab_logo.svg'),
         slack_logo_path: image_path('illustrations/slack_logo.svg'),
-        docs_path: help_page_path('integration/slash_commands.md')
+        docs_path: help_page_path('user/project/integrations/gitlab_slack_application.md')
       }.to_json.html_safe
     end
   end

@@ -8,7 +8,7 @@ describe Issues::ReopenService do
     context 'when user is not authorized to reopen issue' do
       before do
         guest = create(:user)
-        project.team << [guest, :guest]
+        project.add_guest(guest)
 
         perform_enqueued_jobs do
           described_class.new(project, guest).execute(issue)
@@ -24,7 +24,7 @@ describe Issues::ReopenService do
       let(:user) { create(:user) }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'invalidates counter cache for assignees' do

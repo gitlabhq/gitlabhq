@@ -149,7 +149,7 @@ describe 'Git HTTP requests' do
 
           context 'and as a developer on the team' do
             before do
-              project.team << [user, :developer]
+              project.add_developer(user)
             end
 
             context 'but the repo is disabled' do
@@ -182,7 +182,7 @@ describe 'Git HTTP requests' do
         context 'when authenticated' do
           context 'and as a developer on the team' do
             before do
-              project.team << [user, :developer]
+              project.add_developer(user)
             end
 
             context 'but the repo is disabled' do
@@ -240,7 +240,7 @@ describe 'Git HTTP requests' do
 
           context 'as a developer on the team' do
             before do
-              project.team << [user, :developer]
+              project.add_developer(user)
             end
 
             it_behaves_like 'pulls are allowed'
@@ -365,13 +365,13 @@ describe 'Git HTTP requests' do
 
             context "when the user has access to the project" do
               before do
-                project.team << [user, :master]
+                project.add_master(user)
               end
 
               context "when the user is blocked" do
                 it "rejects pulls with 401 Unauthorized" do
                   user.block
-                  project.team << [user, :master]
+                  project.add_master(user)
 
                   download(path, env) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -434,7 +434,7 @@ describe 'Git HTTP requests' do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.team << [user, :master]
+                  project.add_master(user)
                 end
 
                 context 'when username and password are provided' do
@@ -612,7 +612,7 @@ describe 'Git HTTP requests' do
           context 'and build created by' do
             before do
               build.update(user: user)
-              project.team << [user, :reporter]
+              project.add_reporter(user)
             end
 
             shared_examples 'can download code only' do
@@ -705,13 +705,13 @@ describe 'Git HTTP requests' do
 
             context "when the user has access to the project" do
               before do
-                project.team << [user, :master]
+                project.add_master(user)
               end
 
               context "when the user is blocked" do
                 before do
                   user.block
-                  project.team << [user, :master]
+                  project.add_master(user)
                 end
 
                 it "responds with status 403 Forbidden" do
@@ -764,7 +764,7 @@ describe 'Git HTTP requests' do
           let(:env) { { user: user.username, password: user.password } }
 
           before do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'responds with status 403 Forbidden' do
@@ -783,7 +783,7 @@ describe 'Git HTTP requests' do
           before do
             allow(License).to receive(:current).and_return(nil)
 
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it_behaves_like 'pulls are allowed'
@@ -919,7 +919,7 @@ describe 'Git HTTP requests' do
 
         context 'and the user is on the team' do
           before do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it "responds with status 200" do

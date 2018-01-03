@@ -805,7 +805,7 @@ describe API::V3::Projects do
 
       describe 'permissions' do
         context 'all projects' do
-          before { project.team << [user, :master] }
+          before { project.add_master(user) }
 
           it 'contains permission information' do
             get v3_api("/projects", user)
@@ -819,7 +819,7 @@ describe API::V3::Projects do
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.team << [user, :master]
+            project.add_master(user)
             get v3_api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
@@ -1423,7 +1423,7 @@ describe API::V3::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1459,7 +1459,7 @@ describe API::V3::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1527,7 +1527,7 @@ describe API::V3::Projects do
 
       it 'does not remove a project if not an owner' do
         user3 = create(:user)
-        project.team << [user3, :developer]
+        project.add_developer(user3)
         delete v3_api("/projects/#{project.id}", user3)
         expect(response).to have_gitlab_http_status(403)
       end

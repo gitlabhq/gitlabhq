@@ -32,7 +32,7 @@
           return 'loading';
         }
         if (!this.mr.canPushToSourceBranch && !this.mr.rebaseInProgress) {
-          return 'failed';
+          return 'warning';
         }
         return 'success';
       },

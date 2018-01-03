@@ -6,7 +6,7 @@ describe MergeRequests::PostMergeService do
   let(:project) { merge_request.project }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#execute' do

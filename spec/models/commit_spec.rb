@@ -13,6 +13,45 @@ describe Commit do
     it { is_expected.to include_module(StaticModel) }
   end
 
+  describe '.lazy' do
+    set(:project) { create(:project, :repository) }
+
+    context 'when the commits are found' do
+      let(:oids) do
+        %w(
+          498214de67004b1da3d820901307bed2a68a8ef6
+          c642fe9b8b9f28f9225d7ea953fe14e74748d53b
+          6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+          048721d90c449b244b7b4c53a9186b04330174ec
+          281d3a76f31c812dbf48abce82ccf6860adedd81
+        )
+      end
+
+      subject { oids.map { |oid| described_class.lazy(project, oid) } }
+
+      it 'batches requests for commits' do
+        expect(project.repository).to receive(:commits_by).once.and_call_original
+
+        subject.first.title
+        subject.last.title
+      end
+
+      it 'maintains ordering' do
+        subject.each_with_index do |commit, i|
+          expect(commit.id).to eq(oids[i])
+        end
+      end
+    end
+
+    context 'when not found' do
+      it 'returns nil as commit' do
+        commit = described_class.lazy(project, 'deadbeef').__sync
+
+        expect(commit).to be_nil
+      end
+    end
+  end
+
   describe '#author' do
     it 'looks up the author in a case-insensitive way' do
       user = create(:user, email: commit.author_email.upcase)
@@ -154,8 +193,8 @@ eos
     let(:commiter) { create :user }
 
     before do
-      project.team << [commiter, :developer]
-      other_project.team << [commiter, :developer]
+      project.add_developer(commiter)
+      other_project.add_developer(commiter)
     end
 
     it 'detects issues that this commit is marked as closing' do

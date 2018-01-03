@@ -1,5 +1,0 @@
----
-title: Decrease scheduling delay and add rate limiting to push mirror.
-merge_request: 3575
-author:
-type: added
