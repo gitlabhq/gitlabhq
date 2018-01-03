@@ -24,17 +24,17 @@ describe ::Gitlab::BareRepositoryImport::Repository do
       it 'returns false if it is a wiki' do
         subject = described_class.new('/full/path/', '/full/path/to/a/b/my.wiki.git')
 
-        expect(subject.processable?).to eq(false)
+        expect(subject).not_to be_processable
       end
 
       it 'returns true if group path is missing' do
         subject = described_class.new('/full/path/', '/full/path/repo.git')
 
-        expect(subject.processable?).to eq(true)
+        expect(subject).to be_processable
       end
 
       it 'returns true when group path and project name are present' do
-        expect(subject.processable?).to eq(true)
+        expect(subject).to be_processable
       end
     end
 
@@ -92,18 +92,18 @@ describe ::Gitlab::BareRepositoryImport::Repository do
       it 'returns false if it is a wiki' do
         subject = described_class.new(root_path, wiki_path)
 
-        expect(subject.processable?).to eq(false)
+        expect(subject).not_to be_processable
       end
 
       it 'returns false when group and project name are missing' do
         repository = Rugged::Repository.new(repo_path)
         repository.config.delete('gitlab.fullpath')
 
-        expect(subject.processable?).to eq(false)
+        expect(subject).not_to be_processable
       end
 
       it 'returns true when group path and project name are present' do
-        expect(subject.processable?).to eq(true)
+        expect(subject).to be_processable
       end
     end
 
