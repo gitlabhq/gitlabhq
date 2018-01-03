@@ -450,6 +450,7 @@ ul.indent-list {
     }
 
     .stats {
+      position: relative;
       line-height: 46px;
 
       > span {
@@ -459,8 +460,20 @@ ul.indent-list {
         min-width: 30px;
       }
 
+      > span:last-child {
+        margin-right: 0;
+      }
+
       .stat-value {
         margin: 2px 0 0 5px;
+      }
+    }
+
+    .controls {
+      margin-left: 5px;
+
+      > .btn {
+        margin-right: $btn-xs-side-margin;
       }
     }
   }
@@ -468,11 +481,19 @@ ul.indent-list {
   .project-row-contents .stats {
     line-height: inherit;
 
-    span:first-child {
+    > span:first-child {
       margin-left: 25px;
     }
 
+    .item-visibility {
+      margin-right: 0;
+    }
+
     .last-updated {
+      position: absolute;
+      right: 12px;
+      min-width: 250px;
+      text-align: right;
       color: $gl-text-color-secondary;
     }
   }
@@ -486,11 +507,11 @@ ul.indent-list {
 
 ul.group-list-tree {
   li.group-row {
-    .title {
+    > .group-row-contents .title {
       line-height: $list-text-height;
     }
 
-    &.has-description .title {
+    &.has-description > .group-row-contents .title {
       line-height: inherit;
     }
   }
