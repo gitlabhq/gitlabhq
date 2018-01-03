@@ -16,10 +16,10 @@
           = s_("CompareBranches|There isn't anything to compare.")
         %p.slead
           - if params[:to] == params[:from]
-            - sourceBranch = capture_haml do
+            - source_branch = capture_haml do
               %span.ref-name= params[:from]
-            - targetBranch = capture_haml do
+            - target_branch = capture_haml do
               %span.ref-name= params[:to]
-            = (s_("CompareBranches|%{source_branch} and %{target_branch} are the same.") % { source_branch: sourceBranch, target_branch: targetBranch }).html_safe
+            = (s_("CompareBranches|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
           - else
             = _("You'll need to use different branch names to get a valid comparison.")
