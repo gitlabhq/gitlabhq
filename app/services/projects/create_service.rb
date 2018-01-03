@@ -88,6 +88,7 @@ module Projects
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
       unless @project.gitlab_project_import?
+        @project.write_repository_config
         @project.create_wiki unless skip_wiki?
         create_services_from_active_templates(@project)
 

@@ -1420,6 +1420,8 @@ class Project < ActiveRecord::Base
   end
 
   def after_rename_repo
+    write_repository_config
+
     path_before_change = previous_changes['path'].first
 
     # We need to check if project had been rolled out to move resource to hashed storage or not and decide
@@ -1430,6 +1432,16 @@ class Project < ActiveRecord::Base
     end
 
     Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+  end
+
+  def write_repository_config(gl_full_path: full_path)
+    # We'd need to keep track of project full path otherwise directory tree
+    # created with hashed storage enabled cannot be usefully imported using
+    # the import rake task.
+    repo.config['gitlab.fullpath'] = gl_full_path
+  rescue Gitlab::Git::Repository::NoRepository => e
+    Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
+    nil
   end
 
   def rename_repo_notify!

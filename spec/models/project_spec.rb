@@ -2626,6 +2626,14 @@ describe Project do
           project.rename_repo
         end
       end
+
+      it 'updates project full path in .git/config' do
+        allow(project_storage).to receive(:rename_repo).and_return(true)
+
+        project.rename_repo
+
+        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+      end
     end
 
     describe '#pages_path' do
@@ -2668,14 +2676,12 @@ describe Project do
   end
 
   context 'hashed storage' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
-    let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
+    let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
 
     before do
       stub_application_setting(hashed_storage_enabled: true)
-      allow(Digest::SHA2).to receive(:hexdigest) { hash }
-      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
     end
 
     describe '#legacy_storage?' do
@@ -2698,13 +2704,13 @@ describe Project do
 
     describe '#base_dir' do
       it 'returns base_dir based on hash of project id' do
-        expect(project.base_dir).to eq('@hashed/6b/86')
+        expect(project.base_dir).to eq("@hashed/#{hash[0..1]}/#{hash[2..3]}")
       end
     end
 
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
-        hashed_path = '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+        hashed_path = "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}"
 
         expect(project.disk_path).to eq(hashed_path)
       end
@@ -2712,7 +2718,9 @@ describe Project do
 
     describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '@hashed/6b/86')
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, "@hashed/#{hash[0..1]}/#{hash[2..3]}")
 
         project.ensure_storage_path_exists
       end
@@ -2772,7 +2780,7 @@ describe Project do
         end
 
         context 'when not rolled out' do
-          let(:project) { create(:project, :repository, storage_version: 1) }
+          let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
           it 'moves pages folder to new location' do
             expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
@@ -2780,6 +2788,12 @@ describe Project do
             project.rename_repo
           end
         end
+      end
+
+      it 'updates project full path in .git/config' do
+        project.rename_repo
+
+        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3139,6 +3153,28 @@ describe Project do
       let(:platform_kubernetes) { cluster.platform_kubernetes }
 
       it { is_expected.to eq(platform_kubernetes) }
+    end
+  end
+
+  describe '#write_repository_config' do
+    set(:project) { create(:project, :repository) }
+
+    it 'writes full path in .git/config when key is missing' do
+      project.write_repository_config
+
+      expect(project.repo.config['gitlab.fullpath']).to eq project.full_path
+    end
+
+    it 'updates full path in .git/config when key is present' do
+      project.write_repository_config(gl_full_path: 'old/path')
+
+      expect { project.write_repository_config }.to change { project.repo.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+    end
+
+    it 'does not raise an error with an empty repository' do
+      project = create(:project_empty_repo)
+
+      expect { project.write_repository_config }.not_to raise_error
     end
   end
 end

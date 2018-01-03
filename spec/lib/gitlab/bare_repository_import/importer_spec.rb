@@ -75,7 +75,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       end
 
       it 'creates the Git repo in disk' do
-        FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
+        create_bare_repository("#{project_path}.git")
 
         importer.create_project_if_needed
 
@@ -130,7 +130,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     end
 
     it 'creates the Git repo in disk' do
-      FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
+      create_bare_repository("#{project_path}.git")
 
       importer.create_project_if_needed
 
@@ -165,8 +165,8 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it_behaves_like 'importing a repository'
 
     it 'creates the Wiki git repo in disk' do
-      FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
-      FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.wiki.git"))
+      create_bare_repository("#{project_path}.git")
+      create_bare_repository("#{project_path}.wiki.git")
 
       expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
                                                                                   import_type: 'bare_repository')).and_call_original
@@ -191,5 +191,10 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect { importer.create_project_if_needed }.to raise_error('Nested groups are not supported on MySQL')
       end
     end
+  end
+
+  def create_bare_repository(project_path)
+    repo_path = File.join(base_dir, project_path)
+    Gitlab::Git::Repository.create(repo_path, bare: true)
   end
 end
