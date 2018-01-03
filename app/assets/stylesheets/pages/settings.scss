@@ -241,14 +241,25 @@
     }
   }
 
-  .loading-metrics,
-  .empty-metrics {
-    padding: 30px 10px;
+  .custom-monitored-metrics {
+    margin-bottom: 0;
 
+    .panel-title {
+      display: flex;
+      align-items: center;
+
+      > .btn-success {
+        margin-left: auto;
+      }
+    }
+  }
+
+  .empty-metrics,
+  .loading-metrics {
     p,
     .btn {
-      margin-top: 10px;
-      margin-bottom: 0;
+      margin: 10px 0;
+      margin-left: 10px;
     }
   }
 

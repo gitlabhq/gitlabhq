@@ -1,12 +1,4 @@
 .row.prepend-top-default.append-bottom-default
-  .col-lg-3
-    %h4.prepend-top-0
-      Metric
-    %p
-      Metric allows you measuring stuff
-      = succeed "." do
-        = link_to "Read more about queries", help_page_path("prometheus/custom_metrics")
-
   = form_for [@project.namespace.becomes(Namespace), @project, @metric], html: { class: 'col-lg-9' } do |f|
     = form_errors(@metric)
     .form-group
@@ -16,13 +8,13 @@
       = f.label :query, 'Query', class: 'label-light'
       = f.text_field :query, required: true, class: 'form-control'
     .form-group
-      = f.label :y_label, 'Y label', class: 'label-light'
+      = f.label :y_label, 'Y-axis label', class: 'label-light'
       = f.text_field :y_label, class: 'form-control'
     .form-group
-      = f.label :unit, 'Unit', class: 'label-light'
+      = f.label :unit, 'Unit label', class: 'label-light'
       = f.text_field :unit, class: 'form-control'
     .form-group
-      = f.label :legend, 'Legend', class: 'label-light'
+      = f.label :legend, 'Legend label', class: 'label-light'
       = f.text_field :legend, class: 'form-control'
 
     .form-actions
