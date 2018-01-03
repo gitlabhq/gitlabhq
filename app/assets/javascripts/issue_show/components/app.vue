@@ -172,8 +172,8 @@ export default {
     },
 
     updateIssuable() {
-      this.service.updateIssuable(this.store.formState)
-        .then(res => res.json())
+      return this.service.updateIssuable(this.store.formState)
+        .then(res => res.data)
         .then(data => this.checkForSpam(data))
         .then((data) => {
           if (location.pathname !== data.web_url) {
@@ -182,7 +182,7 @@ export default {
 
           return this.service.getData();
         })
-        .then(res => res.json())
+        .then(res => res.data)
         .then((data) => {
           this.store.updateState(data);
           eventHub.$emit('close.form');
@@ -207,7 +207,7 @@ export default {
 
     deleteIssuable() {
       this.service.deleteIssuable()
-        .then(res => res.json())
+        .then(res => res.data)
         .then((data) => {
           // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
@@ -225,7 +225,7 @@ export default {
     this.poll = new Poll({
       resource: this.service,
       method: 'getData',
-      successCallback: res => res.json().then(data => this.store.updateState(data)),
+      successCallback: res => this.store.updateState(res.data),
       errorCallback(err) {
         throw new Error(err);
       },

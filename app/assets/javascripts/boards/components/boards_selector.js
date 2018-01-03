@@ -92,7 +92,7 @@ import BoardForm from './board_form.vue';
 
         if (this.open && !this.boards.length) {
           gl.boardService.allBoards()
-            .then(res => res.json())
+            .then(res => res.data)
             .then((json) => {
               this.loading = false;
               this.boards = json;

@@ -42,9 +42,7 @@ describe('BoardsSelector', () => {
     });
 
     boardServiceResponse = Promise.resolve({
-      json() {
-        return boards;
-      },
+      data: boards,
     });
 
     spyOn(BoardService.prototype, 'allBoards').and.returnValue(boardServiceResponse);

@@ -1,11 +1,9 @@
-/* global boardsMockInterceptor */
 /* global BoardService */
 
 import Vue from 'vue';
 import '~/labels_select';
 import LabelsSelect from '~/boards/components/labels_select.vue';
 import IssuableContext from '~/issuable_context';
-import '../mock_data';
 
 let vm;
 

@@ -8,10 +8,7 @@ import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
-    json() {
-      return data;
-    },
-    body: data,
+    data,
   });
 });
 

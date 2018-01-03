@@ -47,9 +47,9 @@ export default {
     removeSourceBranch() {
       this.isMakingRequest = true;
       this.service.removeSourceBranch()
-        .then(res => res.json())
-        .then((res) => {
-          if (res.message === 'Branch was removed') {
+        .then(res => res.data)
+        .then((data) => {
+          if (data.message === 'Branch was removed') {
             eventHub.$emit('MRWidgetUpdateRequested', () => {
               this.isMakingRequest = false;
             });

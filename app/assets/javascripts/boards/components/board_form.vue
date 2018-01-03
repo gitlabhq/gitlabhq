@@ -147,7 +147,7 @@ export default {
           });
       } else {
         gl.boardService.createBoard(this.board)
-          .then(resp => resp.json())
+          .then(resp => resp.data)
           .then((data) => {
             visitUrl(data.board_path);
           })

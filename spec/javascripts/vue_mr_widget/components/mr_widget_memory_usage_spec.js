@@ -155,9 +155,7 @@ describe('MemoryUsage', () => {
     describe('loadMetrics', () => {
       const returnServicePromise = () => new Promise((resolve) => {
         resolve({
-          json() {
-            return metricsMockData;
-          },
+          data: metricsMockData,
         });
       });
 
