@@ -36,7 +36,7 @@ module QA
 
           expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-          Page::Main::Menu.perform do |menu|
+          Page::Menu::Main.perform do |menu|
             menu.go_to_projects
 
             expect(page).to have_content(geo_project_name)
