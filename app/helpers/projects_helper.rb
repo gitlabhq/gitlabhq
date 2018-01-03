@@ -542,14 +542,6 @@ module ProjectsHelper
     IssuesFinder.new(current_user, project_id: project.id).execute
   end
 
-  def preview_markup_path
-    if @project_wiki && @page
-      namespace_project_wiki_preview_path(@project.namespace, @project, @page.slug)
-    else
-      preview_markdown_namespace_project_path(@project.namespace, @project)
-    end
-  end
-
   def visibility_select_options(project, selected_level)
     level_options = Gitlab::VisibilityLevel.values.each_with_object([]) do |level, level_options|
       next if restricted_levels.include?(level)
