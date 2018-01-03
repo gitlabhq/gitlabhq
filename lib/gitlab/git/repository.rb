@@ -1208,28 +1208,20 @@ module Gitlab
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
-        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
-        env = git_env_for_user(user)
-
-        if remote_repository.is_a?(RemoteRepository)
-          env.merge!(remote_repository.fetch_env)
-          remote_repo_path = GITALY_INTERNAL_URL
-        else
-          remote_repo_path = remote_repository.path
-        end
-
-        with_worktree(rebase_path, branch, env: env) do
-          run_git!(
-            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
-            chdir: rebase_path, env: env
-          )
-
-          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
-
-          Gitlab::Git::OperationService.new(user, self)
-            .update_branch(branch, rebase_sha, branch_sha)
-
-          rebase_sha
+        gitaly_migrate(:rebase) do |is_enabled|
+          if is_enabled
+            gitaly_rebase(user, rebase_id,
+                          branch: branch,
+                          branch_sha: branch_sha,
+                          remote_repository: remote_repository,
+                          remote_branch: remote_branch)
+          else
+            git_rebase(user, rebase_id,
+                       branch: branch,
+                       branch_sha: branch_sha,
+                       remote_repository: remote_repository,
+                       remote_branch: remote_branch)
+          end
         end
       end
 
@@ -2008,6 +2000,40 @@ module Gitlab
         return false unless diff_exists?(source_sha, tree_id)
 
         tree_id
+      end
+
+      def gitaly_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        gitaly_operation_client.user_rebase(user, rebase_id,
+                                            branch: branch,
+                                            branch_sha: branch_sha,
+                                            remote_repository: remote_repository,
+                                            remote_branch: remote_branch)
+      end
+
+      def git_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
+        env = git_env_for_user(user)
+
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
+        with_worktree(rebase_path, branch, env: env) do
+          run_git!(
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
+            chdir: rebase_path, env: env
+          )
+
+          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
+
+          Gitlab::Git::OperationService.new(user, self)
+            .update_branch(branch, rebase_sha, branch_sha)
+
+          rebase_sha
+        end
       end
 
       def local_fetch_ref(source_path, source_ref:, target_ref:)
