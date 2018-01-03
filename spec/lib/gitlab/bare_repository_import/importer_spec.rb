@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::BareRepositoryImport::Importer, repository: true do
-  let(:gitlab_shell) { Gitlab::Shell.new }
   let!(:admin) { create(:admin) }
   let!(:base_dir) { Dir.mktmpdir + '/' }
   let(:bare_repository) { Gitlab::BareRepositoryImport::Repository.new(base_dir, File.join(base_dir, "#{project_path}.git")) }
