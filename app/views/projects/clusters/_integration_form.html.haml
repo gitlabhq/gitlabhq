@@ -1,6 +1,6 @@
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
-  .form-group
+  .form-group.append-bottom-20
     %h5= s_('ClusterIntegration|Integration status')
     %p
       - if @cluster.enabled?
@@ -10,7 +10,7 @@
           = s_('ClusterIntegration|Cluster integration is enabled for this project.')
       - else
         = s_('ClusterIntegration|Cluster integration is disabled for this project.')
-    %label
+    %label.append-bottom-10
       = field.hidden_field :enabled, { class: 'js-toggle-input'}
 
       %button{ type: 'button',
