@@ -17,7 +17,8 @@
     "filenames",
     "import",
     "html",
-    "promise"
+    "promise",
+    "prettier",
   ],
   "settings": {
     "html/html-extensions": [".html", ".html.raw", ".vue"],
@@ -32,6 +33,7 @@
     "import/no-commonjs": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
     "promise/catch-or-return": "error",
-    "no-underscore-dangle": ["error", { "allow": ["__"]}]
+    "no-underscore-dangle": ["error", { "allow": ["__"]}],
+    "prettier/prettier": "error"
   }
 }
