@@ -11,11 +11,14 @@
 
     .blocks-container
       .block.block-first
-        %ul.wiki-pages
-          = render @sidebar_wiki_entries, context: 'sidebar'
+        - if @sidebar_page
+          = render_wiki_content(@sidebar_page)
+        - else
+          %ul.wiki-pages
+            = render @sidebar_wiki_entries, context: 'sidebar'
 
-      .block
-        = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
-          = s_("Wiki|More Pages")
+          .block
+            = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
+              = s_("Wiki|More Pages")
 
 = render 'projects/wikis/new'
