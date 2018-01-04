@@ -155,13 +155,14 @@ export default {
           Flash('An error occurred while fetching issues.');
         });
     },
-    saveIssueOrder({ issueId, newOrder = 1 }) {
+    saveIssueOrder({ issueId, beforeId, afterId }) {
       const issueToReorder = _.find(this.state.relatedIssues, issue => issue.id === issueId);
 
       if (issueToReorder) {
         RelatedIssuesService.saveOrder({
           endpoint: issueToReorder.relation_path,
-          position: newOrder,
+          move_before_id: beforeId,
+          move_after_id: afterId,
         }).catch(() => {
           Flash('An error occurred while reordering issues.');
         });

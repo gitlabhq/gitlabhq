@@ -100,7 +100,8 @@ export default {
 
       this.$emit('saveReorder', {
         issueId: parseInt(event.item.dataset.key, 10),
-        newOrder: event.newIndex,
+        beforeId: this.relatedIssues[event.newIndex - 1].epic_issue_id,
+        afterId: this.relatedIssues[event.newIndex].epic_issue_id,
       });
     },
     addDraggingCursor() {

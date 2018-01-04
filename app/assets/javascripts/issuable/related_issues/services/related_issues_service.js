@@ -18,10 +18,11 @@ class RelatedIssuesService {
     });
   }
 
-  static saveOrder({ endpoint, position }) {
+  static saveOrder({ endpoint, move_before_id, move_after_id }) {
     return Vue.http.put(endpoint, {
       epic: {
-        position,
+        move_before_id,
+        move_after_id
       },
     });
   }
