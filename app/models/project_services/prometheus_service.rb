@@ -76,10 +76,6 @@ class PrometheusService < MonitoringService
     { success: false, result: err }
   end
 
-  def with_reactive_cache(cl, *args)
-    yield calculate_reactive_cache(cl, *args)
-  end
-
   def environment_metrics(environment)
     with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
   end

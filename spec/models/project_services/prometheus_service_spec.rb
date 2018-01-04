@@ -8,24 +8,22 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   let(:service) { project.prometheus_service }
   let(:environment_query) { Gitlab::Prometheus::Queries::EnvironmentQuery }
 
-  subject { project.prometheus_service }
-
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when manual_configuration is enabled' do
       before do
-        subject.active = true
+        subject.manual_configuration = true
       end
 
       it { is_expected.to validate_presence_of(:api_url) }
     end
 
-    context 'when service is inactive' do
+    context 'when manual configuration is disabled' do
       before do
-        subject.active = false
+        subject.manual_configuration = false
       end
 
       it { is_expected.not_to validate_presence_of(:api_url) }
@@ -33,12 +31,17 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   end
 
   describe '#test' do
+    before do
+      service.manual_configuration = true
+    end
+
     let!(:req_stub) { stub_prometheus_request(prometheus_query_url('1'), body: prometheus_value_body('vector')) }
 
     context 'success' do
       it 'reads the discovery endpoint' do
+        expect(service.test[:result]).to eq('Checked API endpoint')
         expect(service.test[:success]).to be_truthy
-        expect(req_stub).to have_been_requested
+        expect(req_stub).to have_been_requested.twice
       end
     end
 
@@ -85,7 +88,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       let(:fake_deployment_time) { 10 }
 
       before do
-        stub_reactive_cache(service, prometheus_data, deployment_query, deployment.id)
+        stub_reactive_cache(service, prometheus_data, deployment_query, deployment.environment.id, deployment.id)
       end
 
       it 'returns reactive data' do
@@ -98,13 +101,17 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
 
   describe '#calculate_reactive_cache' do
     let(:environment) { create(:environment, slug: 'env-slug') }
-
-    around do |example|
-      Timecop.freeze { example.run }
+    before do
+      service.manual_configuration = true
+      service.active = true
     end
 
     subject do
-      service.calculate_reactive_cache(environment_query.to_s, environment.id)
+      service.calculate_reactive_cache(environment_query.name, environment.id)
+    end
+
+    around do |example|
+      Timecop.freeze { example.run }
     end
 
     context 'when service is inactive' do
@@ -157,7 +164,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       let(:proxy_client) { double('proxy_client') }
 
       before do
-        subject.manual_configuration = false
+        service.manual_configuration = false
       end
 
       context 'with cluster for all environments with prometheus installed' do
@@ -165,10 +172,10 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
 
         context 'without environment supplied' do
           it 'returns client handling all environments' do
-            expect(subject).to receive(:client_from_cluster).with(cluster_for_all).and_return(proxy_client).twice
+            expect(service).to receive(:client_from_cluster).with(cluster_for_all).and_return(proxy_client).twice
 
-            expect(subject.client).to be_instance_of(Gitlab::PrometheusClient)
-            expect(subject.client.rest_client).to eq(proxy_client)
+            expect(service.client).to be_instance_of(Gitlab::PrometheusClient)
+            expect(service.client.rest_client).to eq(proxy_client)
           end
         end
 
@@ -176,10 +183,10 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
           let!(:environment) { create(:environment, project: project, name: 'dev') }
 
           it 'returns dev cluster client' do
-            expect(subject).to receive(:client_from_cluster).with(cluster_for_dev).and_return(proxy_client).twice
+            expect(service).to receive(:client_from_cluster).with(cluster_for_dev).and_return(proxy_client).twice
 
-            expect(subject.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
-            expect(subject.client(environment.id).rest_client).to eq(proxy_client)
+            expect(service.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
+            expect(service.client(environment.id).rest_client).to eq(proxy_client)
           end
         end
 
@@ -187,10 +194,10 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
           let!(:environment) { create(:environment, project: project, name: 'prod') }
 
           it 'returns dev cluster client' do
-            expect(subject).to receive(:client_from_cluster).with(cluster_for_all).and_return(proxy_client).twice
+            expect(service).to receive(:client_from_cluster).with(cluster_for_all).and_return(proxy_client).twice
 
-            expect(subject.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
-            expect(subject.client(environment.id).rest_client).to eq(proxy_client)
+            expect(service.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
+            expect(service.client(environment.id).rest_client).to eq(proxy_client)
           end
         end
       end
@@ -198,7 +205,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       context 'with cluster for all environments without prometheus installed' do
         context 'without environment supplied' do
           it 'raises PrometheusError because cluster was not found' do
-            expect{subject.client}.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
+            expect{service.client}.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
           end
         end
 
@@ -206,10 +213,10 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
           let!(:environment) { create(:environment, project: project, name: 'dev') }
 
           it 'returns dev cluster client' do
-            expect(subject).to receive(:client_from_cluster).with(cluster_for_dev).and_return(proxy_client).twice
+            expect(service).to receive(:client_from_cluster).with(cluster_for_dev).and_return(proxy_client).twice
 
-            expect(subject.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
-            expect(subject.client(environment.id).rest_client).to eq(proxy_client)
+            expect(service.client(environment.id)).to be_instance_of(Gitlab::PrometheusClient)
+            expect(service.client(environment.id).rest_client).to eq(proxy_client)
           end
         end
 
@@ -217,7 +224,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
           let!(:environment) { create(:environment, project: project, name: 'prod') }
 
           it 'raises PrometheusError because cluster was not found' do
-            expect{subject.client}.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
+            expect{service.client}.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
           end
         end
       end
@@ -225,14 +232,12 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   end
 
   describe '#prometheus_installed?' do
-    subject { project.prometheus_service }
-
     context 'clusters with installed prometheus' do
       let!(:cluster) { create(:cluster, projects: [project]) }
       let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
       it 'returns true' do
-        expect(subject.prometheus_installed?).to be(true)
+        expect(service.prometheus_installed?).to be(true)
       end
     end
 
@@ -241,7 +246,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns false' do
-        expect(subject.prometheus_installed?).to be(false)
+        expect(service.prometheus_installed?).to be(false)
       end
     end
 
@@ -249,13 +254,13 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       let(:cluster) { create(:cluster, projects: [project]) }
 
       it 'returns false' do
-        expect(subject.prometheus_installed?).to be(false)
+        expect(service.prometheus_installed?).to be(false)
       end
     end
 
     context 'no clusters' do
       it 'returns false' do
-        expect(subject.prometheus_installed?).to be(false)
+        expect(service.prometheus_installed?).to be(false)
       end
     end
   end
