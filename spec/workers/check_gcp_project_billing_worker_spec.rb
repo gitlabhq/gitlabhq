@@ -11,7 +11,7 @@ describe CheckGcpProjectBillingWorker do
       end
 
       it 'calls the service' do
-        expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute)
+        expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
 
         subject
       end
@@ -19,7 +19,7 @@ describe CheckGcpProjectBillingWorker do
       it 'stores billing status in redis' do
         redis_double = double
 
-        expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return(true)
+        expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
         expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
         expect(redis_double).to receive(:set).with(described_class.redis_shared_state_key_for(token), anything)
 
