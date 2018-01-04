@@ -652,62 +652,6 @@ describe Gitlab::Shell do
         end.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
-
-    describe '#push_remote_branches' do
-      subject(:result) do
-        gitlab_shell.push_remote_branches(
-          project.repository_storage_path,
-          project.disk_path,
-          'downstream-remote',
-          ['master']
-        )
-      end
-
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:push_branches)
-          .with('downstream-remote', timeout, true, ['master'])
-          .and_return(true)
-
-        is_expected.to be_truthy
-      end
-
-      it 'fails to execute the command' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:push_branches)
-          .with('downstream-remote', timeout, true, ['master'])
-          .and_return(false)
-
-        expect { result }.to raise_error(Gitlab::Shell::Error, 'error')
-      end
-    end
-
-    describe '#delete_remote_branches' do
-      subject(:result) do
-        gitlab_shell.delete_remote_branches(
-          project.repository_storage_path,
-          project.disk_path,
-          'downstream-remote',
-          ['master']
-        )
-      end
-
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(true)
-
-        is_expected.to be_truthy
-      end
-
-      it 'fails to execute the command' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(false)
-
-        expect { result }.to raise_error(Gitlab::Shell::Error, 'error')
-      end
-    end
   end
 
   describe 'namespace actions' do

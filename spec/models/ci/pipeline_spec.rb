@@ -1444,7 +1444,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     before do
-      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+      project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
@@ -1532,6 +1532,18 @@ describe Ci::Pipeline, :mailer do
         .count
 
       expect(query_count).to eq(1)
+    end
+  end
+
+  describe '#total_size' do
+    let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
+    let!(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
+    let!(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
+
+    it 'returns all jobs (including failed and retried)' do
+      expect(pipeline.total_size).to eq(5)
     end
   end
 end

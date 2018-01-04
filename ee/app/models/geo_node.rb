@@ -1,9 +1,5 @@
 class GeoNode < ActiveRecord::Base
-  include IgnorableColumn
   include Presentable
-
-  ignore_column :clone_protocol
-  ignore_column :geo_node_key_id
 
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
@@ -136,6 +132,24 @@ class GeoNode < ActiveRecord::Base
 
   def selective_sync?
     namespaces.exists?
+  end
+
+  def replication_slots_count
+    return unless Gitlab::Database.replication_slots_supported? && primary?
+
+    PgReplicationSlot.count
+  end
+
+  def replication_slots_used_count
+    return unless Gitlab::Database.replication_slots_supported? && primary?
+
+    PgReplicationSlot.used_slots_count
+  end
+
+  def replication_slots_max_retained_wal_bytes
+    return unless Gitlab::Database.replication_slots_supported? && primary?
+
+    PgReplicationSlot.max_retained_wal
   end
 
   def find_or_build_status

@@ -1,4 +1,5 @@
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData, {
   headIssues,
   baseIssues,
@@ -61,6 +62,18 @@ describe('MergeRequestStore', () => {
         expect(store.isPipelineSkipped).toBe(false);
       });
     });
+
+    describe('isNothingToMergeState', () => {
+      it('returns true when nothingToMerge', () => {
+        store.state = stateKey.nothingToMerge;
+        expect(store.isNothingToMergeState).toEqual(true);
+      });
+
+      it('returns false when not nothingToMerge', () => {
+        store.state = 'state';
+        expect(store.isNothingToMergeState).toEqual(false);
+      });
+    });
   });
 
   describe('compareCodeclimateMetrics', () => {
@@ -98,11 +111,23 @@ describe('MergeRequestStore', () => {
     });
   });
 
+  describe('isNothingToMergeState', () => {
+    it('returns true when nothingToMerge', () => {
+      store.state = stateKey.nothingToMerge;
+      expect(store.isNothingToMergeState).toEqual(true);
+    });
+
+    it('returns false when not nothingToMerge', () => {
+      store.state = 'state';
+      expect(store.isNothingToMergeState).toEqual(false);
+    });
+  });
+
   describe('initDockerReport', () => {
     it('sets the defaults', () => {
-      store.initDockerReport({ clair: { path: 'clair.json' } });
+      store.initDockerReport({ sast_container: { path: 'gl-sast-container.json' } });
 
-      expect(store.clair).toEqual({ path: 'clair.json' });
+      expect(store.sastContainer).toEqual({ path: 'gl-sast-container.json' });
       expect(store.dockerReport).toEqual({
         approved: [],
         unapproved: [],

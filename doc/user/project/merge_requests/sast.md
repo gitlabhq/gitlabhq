@@ -5,7 +5,10 @@
 ## Overview
 
 If you are using [GitLab CI/CD][ci], you can analyze your source code for known
-vulnerabilities using Static Application Security Testing (SAST).
+vulnerabilities using Static Application Security Testing (SAST), either by
+including the CI job in your [existing `.gitlab-ci.yml` file][cc-docs] or
+by implicitly using [Auto SAST](../../../topics/autodevops/index.md#auto-sast)
+that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 Going a step further, GitLab can show the vulnerability list right in the merge
 request widget area:
@@ -32,7 +35,7 @@ to also include other files, it will break the vulnerability display in the
 merge request.
 
 For more information on how the `sast` job should look like, check the
-example on [analyzing a project's code for vulnerabilities][cc-docs].
+[example on analyzing a project's code for vulnerabilities][cc-docs].
 
 [ee-3775]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3775
 [ee]: https://about.gitlab.com/gitlab-ee/

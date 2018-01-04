@@ -34,40 +34,25 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 import './behaviors/';
 
 // everything else
-import './activities';
-import './admin';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
-import './gl_field_error';
-import './gl_field_errors';
-import './gl_form';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
-import './layout_nav';
+import initLayoutNav from './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import initLogoAnimation from './logo';
 import './milestone_select';
-import './notifications_dropdown';
-import './notifications_form';
-import './pager';
 import './preview_markdown';
-import './project_import';
 import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
 // EE-only scripts
-import './admin_email_select';
-import './application_settings';
-import './approvals';
-import './ee_trial_banner';
-import './ldap_groups_select';
-import './path_locks';
-import './weight_select';
+import initEETrialBanner from 'ee/ee_trial_banner';
 
 import './dispatcher';
 
@@ -107,6 +92,7 @@ $(function () {
   var fitSidebarForSize;
 
   initBreadcrumbs();
+  initLayoutNav();
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
@@ -282,8 +268,6 @@ $(function () {
 
   renderTimeago();
 
-  $(document).trigger('init.scrolling-tabs');
-
   $('form.filter-form').on('submit', function (event) {
     const link = document.createElement('a');
     link.href = this.action;
@@ -305,4 +289,7 @@ $(function () {
       removeFlashClickListener(flashEl);
     });
   }
+
+  // EE specific calls
+  initEETrialBanner();
 });

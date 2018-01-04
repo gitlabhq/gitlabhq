@@ -69,6 +69,16 @@ module Gitlab
         response.value
       end
 
+      def find_merge_base(*revisions)
+        request = Gitaly::FindMergeBaseRequest.new(
+          repository: @gitaly_repo,
+          revisions: revisions.map { |r| GitalyClient.encode(r) }
+        )
+
+        response = GitalyClient.call(@storage, :repository_service, :find_merge_base, request)
+        response.base.presence
+      end
+
       def fetch_source_branch(source_repository, source_branch, local_ref)
         request = Gitaly::FetchSourceBranchRequest.new(
           repository: @gitaly_repo,

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OmniAuth::Strategies::KerberosSpnego do
   subject { described_class.new(:app) }
-  let(:session) { Hash.new }
+  let(:session) { {} }
 
   before do
     allow(subject).to receive(:session).and_return(session)

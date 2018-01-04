@@ -9,7 +9,7 @@ feature 'Projects > Members > Master adds member with expiration date', :js do
   let!(:new_member) { create(:user) }
 
   background do
-    project.team << [master, :master]
+    project.add_master(master)
     sign_in(master)
   end
 

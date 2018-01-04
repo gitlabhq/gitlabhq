@@ -6,7 +6,7 @@ feature 'Merge With Push Rules Validation', :js do
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   context 'commit message is invalid' do

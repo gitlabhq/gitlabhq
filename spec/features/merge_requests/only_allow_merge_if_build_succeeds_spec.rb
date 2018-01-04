@@ -7,7 +7,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', :js d
   before do
     sign_in merge_request.author
 
-    project.team << [merge_request.author, :master]
+    project.add_master(merge_request.author)
   end
 
   context 'project does not have CI enabled', :js do

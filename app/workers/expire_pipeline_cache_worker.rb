@@ -13,7 +13,7 @@ class ExpirePipelineCacheWorker
 
     store.touch(project_pipelines_path(project))
     store.touch(project_pipeline_path(project, pipeline))
-    store.touch(commit_pipelines_path(project, pipeline.commit)) if pipeline.commit
+    store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
     store.touch(new_merge_request_pipelines_path(project))
     each_pipelines_merge_request_path(project, pipeline) do |path|
       store.touch(path)

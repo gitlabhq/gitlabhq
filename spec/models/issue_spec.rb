@@ -23,6 +23,32 @@ describe Issue do
     it { is_expected.to have_db_index(:deleted_at) }
   end
 
+  describe 'callbacks' do
+    describe '#ensure_metrics' do
+      it 'creates metrics after saving' do
+        issue = create(:issue)
+
+        expect(issue.metrics).to be_persisted
+        expect(Issue::Metrics.count).to eq(1)
+      end
+
+      it 'does not create duplicate metrics for an issue' do
+        issue = create(:issue)
+
+        issue.close!
+
+        expect(issue.metrics).to be_persisted
+        expect(Issue::Metrics.count).to eq(1)
+      end
+
+      it 'records current metrics' do
+        expect_any_instance_of(Issue::Metrics).to receive(:record!)
+
+        create(:issue)
+      end
+    end
+  end
+
   describe '#order_by_position_and_priority' do
     let(:project) { create :project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
@@ -238,7 +264,7 @@ describe Issue do
       let(:issue) { create(:issue, project: project) }
 
       before do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
       end
 
       it { is_expected.to eq true }
@@ -254,7 +280,7 @@ describe Issue do
 
         context 'destination project allowed' do
           before do
-            to_project.team << [user, :reporter]
+            to_project.add_reporter(user)
           end
 
           it { is_expected.to eq true }
@@ -262,7 +288,7 @@ describe Issue do
 
         context 'destination project not allowed' do
           before do
-            to_project.team << [user, :guest]
+            to_project.add_guest(user)
           end
 
           it { is_expected.to eq false }
@@ -571,7 +597,7 @@ describe Issue do
 
         context 'when the user is the project owner' do
           before do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'returns true for a regular issue' do
@@ -595,7 +621,7 @@ describe Issue do
 
       context 'using a public project' do
         before do
-          project.team << [user, Gitlab::Access::DEVELOPER]
+          project.add_developer(user)
         end
 
         it 'returns true for a regular issue' do
@@ -615,7 +641,7 @@ describe Issue do
         let(:project) { create(:project, :internal) }
 
         before do
-          project.team << [user, Gitlab::Access::DEVELOPER]
+          project.add_developer(user)
         end
 
         it 'returns true for a regular issue' do
@@ -635,7 +661,7 @@ describe Issue do
         let(:project) { create(:project, :private) }
 
         before do
-          project.team << [user, Gitlab::Access::DEVELOPER]
+          project.add_developer(user)
         end
 
         it 'returns true for a regular issue' do

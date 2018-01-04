@@ -1,5 +1,0 @@
----
-title: Hide Approvals section when Merge Request Widget is showing the empty state
-merge_request: 3376
-author:
-type: fixed

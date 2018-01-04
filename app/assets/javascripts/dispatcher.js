@@ -5,10 +5,10 @@ import IssuableIndex from './issuable_index';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
-/* global MilestoneSelect */
+import MilestoneSelect from './milestone_select';
 import NewBranchForm from './new_branch_form';
-/* global NotificationsForm */
-/* global NotificationsDropdown */
+import NotificationsForm from './notifications_form';
+import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
@@ -24,15 +24,12 @@ import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-/* global PathLocks */
 import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
-/* global WeightSelect */
-/* global AdminEmailSelect */
 
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
@@ -78,7 +75,6 @@ import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
-import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
@@ -100,10 +96,15 @@ import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
 // EE-only
-import ApproversSelect from './approvers_select';
-import AuditLogs from './audit_logs';
-import initGeoInfoModal from './init_geo_info_modal';
-import initGroupAnalytics from './init_group_analytics';
+import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
+import AuditLogs from 'ee/audit_logs'; // eslint-disable-line import/first
+import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
+import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
+import AdminEmailSelect from 'ee/admin_email_select'; // eslint-disable-line import/first
+import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
+import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
+import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
+import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
 (function() {
   var Dispatcher;
@@ -121,6 +122,8 @@ import initGroupAnalytics from './init_group_analytics';
       if (!page) {
         return false;
       }
+
+      const fail = () => Flash('Error loading dynamic module');
 
       path = page.split(':');
       shortcut_handler = null;
@@ -147,7 +150,7 @@ import initGroupAnalytics from './init_group_analytics';
             path,
            } = JSON.parse(dataEl.innerHTML);
 
-          PathLocks.init(toggle_path, path);
+          initPathLocks(toggle_path, path);
         }
       }
 
@@ -324,6 +327,8 @@ import initGroupAnalytics from './init_group_analytics';
           new MilestoneSelect();
           new IssuableTemplateSelectors();
           new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
+
+          initApprovals();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -455,7 +460,7 @@ import initGroupAnalytics from './init_group_analytics';
           const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           new ProjectsList();
 
           if (newGroupChildWrapper) {
@@ -488,15 +493,12 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
-
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
-
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
 
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
-            PathLocks.init(
+            initPathLocks(
               document.querySelector('.js-tree-content').dataset.pathLocksToggle,
               document.querySelector('.js-tree-content').dataset.pathLocksPath,
             );
@@ -517,7 +519,6 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -607,7 +608,7 @@ import initGroupAnalytics from './init_group_analytics';
           new CILintEditor();
           break;
         case 'users:show':
-          new UserCallout();
+          import('./pages/users/show').then(m => m.default()).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();
@@ -658,6 +659,9 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
+        case 'groups:ldap_group_links:index':
+          initLDAPGroupsSelect();
+          break;
       }
       switch (path[0]) {
         case 'sessions':
@@ -684,6 +688,13 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'groups':
               new UsersSelect();
+
+              switch (path[2]) {
+                case 'edit':
+                  initLDAPGroupsSelect();
+                  break;
+              }
+
               break;
             case 'projects':
               document.querySelectorAll('.js-namespace-select')
@@ -712,7 +723,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'profiles':
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           break;
         case 'projects':
           new Project();
@@ -736,7 +747,7 @@ import initGroupAnalytics from './init_group_analytics';
             case 'show':
               new Star();
               new ProjectNew();
-              new NotificationsDropdown();
+              notificationsDropdown();
               break;
             case 'wikis':
               new Wikis();

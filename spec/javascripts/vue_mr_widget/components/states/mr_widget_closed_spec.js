@@ -4,13 +4,16 @@ import closedComponent from '~/vue_merge_request_widget/components/states/mr_wid
 const mr = {
   targetBranch: 'good-branch',
   targetBranchPath: '/good-branch',
-  closedEvent: {
-    author: {
+  metrics: {
+    mergedBy: {},
+    mergedAt: 'mergedUpdatedAt',
+    closedBy: {
       name: 'Fatih Acet',
       username: 'fatihacet',
     },
-    updatedAt: 'closedEventUpdatedAt',
-    formattedUpdatedAt: '',
+    closedAt: 'closedEventUpdatedAt',
+    readableMergedAt: '',
+    readableClosedAt: '',
   },
   updatedAt: 'mrUpdatedAt',
   closedAt: '1 day ago',
@@ -56,7 +59,7 @@ describe('MRWidgetClosed', () => {
 
     it('should have correct elements', () => {
       expect(el.querySelector('h4').textContent).toContain('Closed by');
-      expect(el.querySelector('h4').textContent).toContain(mr.closedEvent.author.name);
+      expect(el.querySelector('h4').textContent).toContain(mr.metrics.closedBy.name);
       expect(el.textContent).toContain('The changes were not merged into');
       expect(el.querySelector('.label-branch').getAttribute('href')).toEqual(mr.targetBranchPath);
       expect(el.querySelector('.label-branch').textContent).toContain(mr.targetBranch);

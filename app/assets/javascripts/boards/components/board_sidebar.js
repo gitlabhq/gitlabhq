@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
-/* global MilestoneSelect */
 
 import Vue from 'vue';
 import weight from 'ee/sidebar/components/weight/weight.vue';
@@ -13,6 +12,7 @@ import './sidebar/remove_issue';
 import IssuableContext from '../../issuable_context';
 import LabelsSelect from '../../labels_select';
 import subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
+import MilestoneSelect from '../../milestone_select';
 
 const Store = gl.issueBoards.BoardsStore;
 

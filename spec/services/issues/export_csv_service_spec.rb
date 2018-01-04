@@ -127,6 +127,20 @@ describe Issues::ExportCsvService do
       expect(csv[0]['Time Spent']).to eq '560'
       expect(csv[1]['Time Spent']).to eq '0'
     end
+
+    context 'with issues filtered by labels and project' do
+      let(:subject) do
+        described_class.new(
+          IssuesFinder.new(user,
+                           project_id: project.id,
+                           label_name: %w(Idea Feature)).execute)
+      end
+
+      it 'returns only filtered objects' do
+        expect(csv.count).to eq(1)
+        expect(csv[0]['Issue ID']).to eq issue.iid.to_s
+      end
+    end
   end
 
   context 'with minimal details' do

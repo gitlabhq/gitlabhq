@@ -239,6 +239,54 @@ describe Repository do
     end
   end
 
+  describe '#commits_by' do
+    set(:project) { create(:project, :repository) }
+
+    shared_examples 'batch commits fetching' do
+      let(:oids) { TestEnv::BRANCH_SHA.values }
+
+      subject { project.repository.commits_by(oids: oids) }
+
+      it 'finds each commit' do
+        expect(subject).not_to include(nil)
+        expect(subject.size).to eq(oids.size)
+      end
+
+      it 'returns only Commit instances' do
+        expect(subject).to all( be_a(Commit) )
+      end
+
+      context 'when some commits are not found ' do
+        let(:oids) do
+          ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+        end
+
+        it 'returns only found commits' do
+          expect(subject).not_to include(nil)
+          expect(subject.size).to eq(10)
+        end
+      end
+
+      context 'when no oids are passed' do
+        let(:oids) { [] }
+
+        it 'does not call #batch_by_oid' do
+          expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+          subject
+        end
+      end
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled' do
+      it_behaves_like 'batch commits fetching'
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled', :disable_gitaly do
+      it_behaves_like 'batch commits fetching'
+    end
+  end
+
   describe '#find_commits_by_message' do
     shared_examples 'finding commits by message' do
       it 'returns commits with messages containing a given string' do
@@ -1013,7 +1061,7 @@ describe Repository do
 
       it 'runs without errors' do
         # old_rev is an ancestor of new_rev
-        expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).to eq(old_rev)
 
         # old_rev is not a direct ancestor (parent) of new_rev
         expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
@@ -1035,7 +1083,7 @@ describe Repository do
 
       it 'raises an exception' do
         # The 'master' branch is NOT an ancestor of new_rev.
-        expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).not_to eq(old_rev)
 
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
@@ -1160,6 +1208,15 @@ describe Repository do
 
       expect(repository.branch_exists?('foobar')).to eq(true)
       expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#tag_exists?' do
+    it 'uses tag_names' do
+      allow(repository).to receive(:tag_names).and_return(['foobar'])
+
+      expect(repository.tag_exists?('foobar')).to eq(true)
+      expect(repository.tag_exists?('master')).to eq(false)
     end
   end
 
@@ -1964,23 +2021,6 @@ describe Repository do
 
       File.delete(path)
     end
-
-    it "attempting to call keep_around when exists a lock does not fail" do
-      ref = repository.send(:keep_around_ref_name, sample_commit.id)
-      path = File.join(repository.path, ref)
-      lock_path = "#{path}.lock"
-
-      FileUtils.mkdir_p(File.dirname(path))
-      File.open(lock_path, 'w') { |f| f.write('') }
-
-      begin
-        expect { repository.keep_around(sample_commit.id) }.not_to raise_error(Gitlab::Git::Repository::GitError)
-
-        expect(File.exist?(lock_path)).to be_falsey
-      ensure
-        File.delete(path)
-      end
-    end
   end
 
   describe '#update_ref' do
@@ -2175,24 +2215,6 @@ describe Repository do
       it 'returns the repository size as a Float' do
         expect(repository.size).to be_an_instance_of(Float)
       end
-    end
-  end
-
-  describe '#push_remote_branches' do
-    it 'push branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches)
-        .with(repository.repository_storage_path, repository.disk_path, 'remote_name', ['branch'])
-
-      repository.push_remote_branches('remote_name', ['branch'])
-    end
-  end
-
-  describe '#delete_remote_branches' do
-    it 'delete branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches)
-        .with(repository.repository_storage_path, repository.disk_path, 'remote_name', ['branch'])
-
-      repository.delete_remote_branches('remote_name', ['branch'])
     end
   end
 

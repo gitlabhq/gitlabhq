@@ -14,9 +14,9 @@ describe 'GlobalSearch' do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
 
-    project.team << [member, :developer]
-    project.team << [external_member, :developer]
-    project.team << [guest, :guest]
+    project.add_developer(member)
+    project.add_developer(external_member)
+    project.add_guest(guest)
   end
 
   after do

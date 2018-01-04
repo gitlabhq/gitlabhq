@@ -37,7 +37,7 @@ module FormHelper
         multi_select: true,
         'input-meta': 'name',
         'always-show-selectbox': true,
-        current_user_info: current_user.to_json(only: [:id, :name])
+        current_user_info: UserSerializer.new.represent(current_user)
       }
     }
   end

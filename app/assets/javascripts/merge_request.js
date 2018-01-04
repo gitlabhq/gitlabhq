@@ -1,9 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
-/* global MergeRequestTabs */
 
 import 'vendor/jquery.waitforimages';
 import TaskList from './task_list';
-import './merge_request_tabs';
+import MergeRequestTabs from './merge_request_tabs';
 import IssuablesHelper from './helpers/issuables_helper';
 import { addDelimiter } from './lib/utils/text_utility';
 
@@ -49,7 +48,7 @@ MergeRequest.prototype.initTabs = function() {
   if (window.mrTabs) {
     window.mrTabs.unbindEvents();
   }
-  window.mrTabs = new gl.MergeRequestTabs(this.opts);
+  window.mrTabs = new MergeRequestTabs(this.opts);
 };
 
 MergeRequest.prototype.showAllCommits = function() {

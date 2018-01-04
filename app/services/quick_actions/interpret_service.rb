@@ -406,7 +406,7 @@ module QuickActions
       if time_spent
         @updates[:spend_time] = {
           duration: time_spent,
-          user: current_user,
+          user_id: current_user.id,
           spent_at: time_spent_date
         }
       end
@@ -429,7 +429,7 @@ module QuickActions
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :remove_time_spent do
-      @updates[:spend_time] = { duration: :reset, user: current_user }
+      @updates[:spend_time] = { duration: :reset, user_id: current_user.id }
     end
 
     desc "Append the comment with #{SHRUG}"

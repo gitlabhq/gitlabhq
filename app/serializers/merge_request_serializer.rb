@@ -7,7 +7,7 @@ class MergeRequestSerializer < BaseSerializer
       case opts[:serializer]
       when 'basic', 'sidebar'
         MergeRequestBasicEntity
-      when 'widget'
+      else # It's 'widget'
         MergeRequestWidgetEntity
       end
 

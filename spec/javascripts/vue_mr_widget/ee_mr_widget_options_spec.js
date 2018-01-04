@@ -369,8 +369,8 @@ describe('ee merge request widget options', () => {
     beforeEach(() => {
       gl.mrWidgetData = {
         ...mockData,
-        clair: {
-          path: 'clair.json',
+        sast_container: {
+          path: 'gl-sast-container.json',
           blob_path: 'blob_path',
         },
       };
@@ -385,7 +385,7 @@ describe('ee merge request widget options', () => {
 
         expect(
           vm.$el.querySelector('.js-docker-widget').textContent.trim(),
-        ).toContain('Loading clair report');
+        ).toContain('Loading sast:container report');
       });
     });
 
@@ -394,7 +394,7 @@ describe('ee merge request widget options', () => {
 
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
-        mock.onGet('clair.json').reply(200, dockerReport);
+        mock.onGet('gl-sast-container.json').reply(200, dockerReport);
         vm = mountComponent(Component);
       });
 
@@ -433,7 +433,7 @@ describe('ee merge request widget options', () => {
 
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
-        mock.onGet('clair.json').reply(500, {});
+        mock.onGet('gl-sast-container.json').reply(500, {});
         vm = mountComponent(Component);
       });
 
@@ -445,7 +445,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-docker-widget').textContent.trim(),
-          ).toContain('Failed to load clair report');
+          ).toContain('Failed to load sast:container report');
           done();
         }, 0);
       });
@@ -496,7 +496,7 @@ describe('ee merge request widget options', () => {
         vm = mountComponent(Component, {
           mrData: {
             ...mockData,
-            clair: {
+            sast_container: {
               path: 'foo',
             },
           },

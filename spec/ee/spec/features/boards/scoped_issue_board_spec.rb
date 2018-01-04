@@ -415,7 +415,7 @@ describe 'Scoped issue boards', :js do
     before do
       stub_licensed_features(scoped_issue_boards: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       login_as(user)
 
       visit project_boards_path(project)
@@ -517,7 +517,9 @@ describe 'Scoped issue boards', :js do
     click_on_board_modal
 
     click_button 'Create'
-    expect(page).to have_selector('.board-list-loading')
+
+    wait_for_requests
+
     expect(page).not_to have_selector('.board-list-loading')
   end
 
@@ -532,7 +534,9 @@ describe 'Scoped issue boards', :js do
     click_on_board_modal
 
     click_button 'Save'
-    expect(page).to have_selector('.board-list-loading')
+
+    wait_for_requests
+
     expect(page).not_to have_selector('.board-list-loading')
   end
 

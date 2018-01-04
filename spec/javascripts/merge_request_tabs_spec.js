@@ -1,7 +1,7 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
 import * as urlUtils from '~/lib/utils/url_utility';
-import '~/merge_request_tabs';
+import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
@@ -31,7 +31,7 @@ import 'vendor/jquery.scrollTo';
     );
 
     beforeEach(function () {
-      this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
+      this.class = new MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
       this.spies = {
@@ -290,15 +290,18 @@ import 'vendor/jquery.scrollTo';
         $('body').removeAttr('data-page');
       });
 
-      it('requires an absolute pathname', function () {
-        spyOn($, 'ajax').and.callFake(function (options) {
-          expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
+      it('triggers Ajax request to JSON endpoint', function (done) {
+        const url = '/foo/bar/merge_requests/1/diffs';
+        spyOn(this.class, 'ajaxGet').and.callFake((options) => {
+          expect(options.url).toEqual(`${url}.json`);
+          done();
         });
 
-        this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+        this.class.loadDiff(url);
       });
 
-      it('triggers scroll event when diff already loaded', function () {
+      it('triggers scroll event when diff already loaded', function (done) {
+        spyOn(this.class, 'ajaxGet').and.callFake(() => done.fail());
         spyOn(document, 'dispatchEvent');
 
         this.class.diffsLoaded = true;
@@ -307,6 +310,7 @@ import 'vendor/jquery.scrollTo';
         expect(
           document.dispatchEvent,
         ).toHaveBeenCalledWith(new CustomEvent('scroll'));
+        done();
       });
 
       describe('with inline diff', () => {

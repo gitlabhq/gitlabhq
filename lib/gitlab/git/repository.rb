@@ -21,6 +21,7 @@ module Gitlab
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
+      GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -56,11 +57,12 @@ module Gitlab
 
           # Do nothing if hooks already exist
           unless real_local_hooks_path == File.realpath(global_hooks_path)
-            # Move the existing hooks somewhere safe
-            FileUtils.mv(
-              local_hooks_path,
-              "#{local_hooks_path}.old.#{Time.now.to_i}"
-            ) if File.exist?(local_hooks_path)
+            if File.exist?(local_hooks_path)
+              # Move the existing hooks somewhere safe
+              FileUtils.mv(
+                local_hooks_path,
+                "#{local_hooks_path}.old.#{Time.now.to_i}")
+            end
 
             # Create the hooks symlink
             FileUtils.ln_sf(global_hooks_path, local_hooks_path)
@@ -82,7 +84,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -92,6 +94,12 @@ module Gitlab
         @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        @gitlab_projects = Gitlab::Git::GitlabProjects.new(
+          storage_path,
+          relative_path,
+          global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+          logger: Rails.logger
+        )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -538,8 +546,15 @@ module Gitlab
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
-        rugged.merge_base(from, to)
+        gitaly_migrate(:merge_base) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.find_merge_base(from, to)
+          else
+            rugged.merge_base(from, to)
+          end
+        end
       end
+      alias_method :merge_base, :merge_base_commit
 
       # Gitaly note: JV: check gitlab-ee before removing this method.
       def rugged_is_ancestor?(ancestor_id, descendant_id)
@@ -1094,17 +1109,12 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, ref, force: false)
+      def write_ref(ref_path, ref)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
 
-        ref = "refs/heads/#{ref}" unless ref.start_with?("refs") || ref =~ /\A[a-f0-9]+\z/i
-
-        rugged.references.create(ref_path, ref, force: force)
-      rescue Rugged::ReferenceError => ex
-        raise GitError, "could not create ref #{ref_path}: #{ex}"
-      rescue Rugged::OSError => ex
-        raise GitError, "could not create ref #{ref_path}: #{ex}"
+        input = "update #{ref_path}\x00#{ref}\x00\x00"
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)
@@ -1217,9 +1227,16 @@ module Gitlab
         rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
         env = git_env_for_user(user)
 
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
         with_worktree(rebase_path, branch, env: env) do
           run_git!(
-            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
             chdir: rebase_path, env: env
           )
 
@@ -1269,6 +1286,18 @@ module Gitlab
 
       def squash_in_progress?(squash_id)
         fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+      end
+
+      def push_remote_branches(remote_name, branch_names, forced: true)
+        success = @gitlab_projects.push_branches(remote_name, GITLAB_PROJECTS_TIMEOUT, forced, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
       end
 
       def gitaly_repository
@@ -1916,6 +1945,10 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitlab_projects_error
+        raise CommandError, @gitlab_projects.output
       end
     end
   end

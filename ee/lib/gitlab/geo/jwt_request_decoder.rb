@@ -1,6 +1,7 @@
 module Gitlab
   module Geo
     InvalidDecryptionKeyError = Class.new(StandardError)
+    InvalidSignatureTimeError = Class.new(StandardError)
 
     class JwtRequestDecoder
       include LogHelpers
@@ -8,7 +9,7 @@ module Gitlab
       IAT_LEEWAY = 60.seconds.to_i
 
       def self.geo_auth_attempt?(header)
-        token_type, _ = header&.split(' ', 2)
+        token_type, = header&.split(' ', 2)
         token_type == ::Gitlab::Geo::BaseRequest::GITLAB_GEO_AUTH_TOKEN_TYPE
       end
 
@@ -55,6 +56,10 @@ module Gitlab
           data = JSON.parse(message['data']) if message
           data&.deep_symbolize_keys!
           data
+        rescue JWT::ImmatureSignature, JWT::ExpiredSignature
+          message = "Signature not within leeway of #{IAT_LEEWAY} seconds. Check your system clocks!"
+          log_error(message)
+          raise InvalidSignatureTimeError.new(message)
         rescue JWT::DecodeError => e
           log_error("Error decoding Geo request: #{e}")
           return

@@ -92,7 +92,7 @@ describe API::Services do
       end
 
       it "returns error when authenticated but not a project owner" do
-        project.team << [user2, :developer]
+        project.add_developer(user2)
         get api("/projects/#{project.id}/services/#{dashed_service}", user2)
 
         expect(response).to have_gitlab_http_status(403)

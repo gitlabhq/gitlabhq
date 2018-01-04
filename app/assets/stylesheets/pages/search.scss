@@ -108,13 +108,6 @@ input[type="checkbox"]:hover {
 
     // Custom dropdown positioning
     .dropdown-menu {
-      transition-property: opacity, transform;
-      transition-duration: 250ms, 250ms;
-      transition-delay: 0ms, 25ms;
-      transition-timing-function: $dropdown-animation-timing;
-      transform: translateY(0);
-      opacity: 0;
-      display: block;
       left: -5px;
     }
 
@@ -151,13 +144,6 @@ input[type="checkbox"]:hover {
       transition: all $default-transition-duration;
       background-color: $nav-badge-bg;
       border-color: $border-color;
-    }
-
-    .dropdown-menu {
-      transition-duration: 100ms, 75ms;
-      transition-delay: 75ms, 100ms;
-      transform: translateY(7px);
-      opacity: 1;
     }
   }
 

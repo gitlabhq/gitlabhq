@@ -55,7 +55,6 @@ module IssuableActions
 
   def destroy
     Issuable::DestroyService.new(issuable.project, current_user).execute(issuable)
-    TodoService.new.destroy_issuable(issuable, current_user)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."

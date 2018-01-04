@@ -40,7 +40,7 @@ module Geo
     private
 
     def schedule_file_removal(uploads)
-      paths_to_remove = uploads.find_each(batch_size: BATCH_SIZE).reduce([]) do |to_remove, upload|
+      paths_to_remove = uploads.find_each(batch_size: BATCH_SIZE).each_with_object([]) do |upload, to_remove|
         file_path = File.join(base_dir, upload.path)
 
         if File.exist?(file_path)
@@ -48,8 +48,6 @@ module Geo
 
           log_info("Scheduled to remove file", file_path: file_path)
         end
-
-        to_remove
       end
 
       Geo::FileRemovalWorker.bulk_perform_async(paths_to_remove)

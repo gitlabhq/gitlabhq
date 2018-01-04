@@ -1,0 +1,5 @@
+---
+title: Allow sidekiq to react to becoming a Geo primary or secondary without a restart
+merge_request: 3878
+author:
+type: changed

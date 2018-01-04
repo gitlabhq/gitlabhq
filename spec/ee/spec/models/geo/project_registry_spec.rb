@@ -17,27 +17,31 @@ describe Geo::ProjectRegistry do
     it { is_expected.to validate_uniqueness_of(:project) }
   end
 
-  describe '.failed' do
+  describe '.failed_repos' do
     it 'returns projects where last attempt to sync failed' do
       create(:geo_project_registry, :synced)
       create(:geo_project_registry, :synced, :dirty)
       create(:geo_project_registry, :repository_syncing)
       create(:geo_project_registry, :wiki_syncing)
+      create(:geo_project_registry, :wiki_sync_failed)
 
       repository_sync_failed = create(:geo_project_registry, :repository_sync_failed)
-      wiki_sync_failed = create(:geo_project_registry, :wiki_sync_failed)
 
-      expect(described_class.failed).to match_array([repository_sync_failed, wiki_sync_failed])
+      expect(described_class.failed_repos).to match_array([repository_sync_failed])
     end
   end
 
-  describe '.synced' do
-    it 'returns synced projects' do
+  describe '.failed_wikis' do
+    it 'returns projects where last attempt to sync failed' do
+      create(:geo_project_registry, :synced)
       create(:geo_project_registry, :synced, :dirty)
-      create(:geo_project_registry, :sync_failed)
-      synced_project = create(:geo_project_registry, :synced)
+      create(:geo_project_registry, :repository_syncing)
+      create(:geo_project_registry, :wiki_syncing)
+      create(:geo_project_registry, :repository_sync_failed)
 
-      expect(described_class.synced).to match_array([synced_project])
+      wiki_sync_failed = create(:geo_project_registry, :wiki_sync_failed)
+
+      expect(described_class.failed_wikis).to match_array([wiki_sync_failed])
     end
   end
 

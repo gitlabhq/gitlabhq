@@ -28,6 +28,13 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
         },
+        prometheus: {
+          title: s__('ClusterIntegration|Prometheus'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+        },
       },
     };
   }

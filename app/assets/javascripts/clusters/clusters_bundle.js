@@ -30,6 +30,7 @@ export default class Clusters {
       installHelmPath,
       installIngressPath,
       installRunnerPath,
+      installPrometheusPath,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -44,6 +45,7 @@ export default class Clusters {
       installHelmEndpoint: installHelmPath,
       installIngressEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
+      installPrometheusEndpoint: installPrometheusPath,
     });
 
     this.toggle = this.toggle.bind(this);

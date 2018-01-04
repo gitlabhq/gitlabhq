@@ -1,5 +1,85 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.3.3 (2018-01-02)
+
+- No changes.
+
+## 10.3.2 (2017-12-28)
+
+- No changes.
+
+## 10.3.1 (2017-12-27)
+
+### Changed (1 change)
+
+- Geo: Show sync percent on bar graph and count within tooltips. !3794
+
+
+## 10.3.0 (2017-12-22)
+
+### Removed (2 changes)
+
+- Remove the full-scan option from the Geo log cursor. !3412
+- Remove Geo SSH repo sync support. !3553
+
+### Fixed (14 changes)
+
+- Hide Approvals section when Merge Request Widget is showing the empty state. !3376
+- Fix error when entering an invalid url to push to or pull from a remote repository. !3389
+- Update gitlab.yml.example to match the default settings for Geo sync workers. !3488
+- Remove duplicate read-only flash message on admin pages. !3495
+- Strip leading & trailing whitespaces in CI/CD secret variable's environment scope. !3563
+- Fix Advanced Search Syntax documentation. !3571
+- Fix Git message when pushing to Geo secondary. !3616
+- Fix a bug in the Geo metrics update service. !3623
+- Fix validation of environment scope for Ci::Variable. !3641
+- Fix an exception in Geo scheduler workers. !3740
+- Fix Merge Request Widget Approvals responsiveness on mobile.
+- Geo - Does not sync repositories on unhealthy shards in non-backfill conditions.
+- Record EE Ultimate usage pings correctly.
+- Fix board filter for predefined milestones.
+
+### Changed (4 changes)
+
+- Improve Geo logging of repository errors. !3402
+- ProtectedBranches API allows individual users and group to be specified. !3516
+- EE Protected Branches API access levels include user_id/group_id where relevant. !3535
+- Enhancements for Geo admin screen. !3545
+
+### Performance (1 change)
+
+- Geo - Improve performance when calculating the node status. !3595
+
+### Added (20 changes)
+
+- Show SAST results in MR widget. !3207
+- Add option for projects to only mirror protected branches. !3326
+- Add option to remote mirrors to only push protected branches. !3350
+- Add warning when Geo is configured insecurely. !3368
+- Added enpoint that triggers the pull mirroring process. !3453
+- Add performance metrics to the merge request widget. !3507
+- Geo: replicate Attachments migration to Hashed Storage in secondary node. !3544
+- View, add, and edit weight on Issue from the Issue Board contextual sidebar. !3566
+- Decrease scheduling delay and add rate limiting to push mirror. !3575
+- Allow admins to disable mirroring. !3586
+- Support multiple Kubernetes cluster per project. !3603
+- Geo: Increase parallelism by scheduling project repositories by shard. !3606
+- Geo: rake task to refresh foreign table schema (FDW support). !3626
+- Support mentioning epics.
+- Handle outdated replicas in the DB load balancer.
+- Add geo:set_secondary_as_primary rake task.
+- Transfer job archives to object storage after creation.
+- Geo - Show GitLab version for each node in the Geo status page.
+- Add epic information to issue sidebar.
+- Add system notes for issue - epic association.
+
+### Other (3 changes)
+
+- Add fade mask to the bottom of the boards selector dropdown list if it can be scrolled down. !3384
+- Document how to set up GitLab Geo for HA. !3468
+- Add border for epic edit button.
+
+
 ## 10.2.5 (2017-12-15)
 
 ### Fixed (1 change)

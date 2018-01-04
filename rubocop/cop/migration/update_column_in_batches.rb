@@ -18,7 +18,7 @@ module RuboCop
           spec_path = spec_filename(node)
 
           unless File.exist?(File.expand_path(spec_path, rails_root))
-            add_offense(node, :expression, format(MSG, spec_path))
+            add_offense(node, location: :expression, message: format(MSG, spec_path))
           end
         end
 

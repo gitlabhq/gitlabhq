@@ -217,6 +217,25 @@ describe GeoNodeStatus, :geo do
     end
   end
 
+  describe '#wikis_failed_count' do
+    before do
+      create(:geo_project_registry, :sync_failed, project: project_1)
+      create(:geo_project_registry, :sync_failed, project: project_3)
+      create(:geo_project_registry, :repository_syncing, project: project_4)
+      create(:geo_project_registry, :wiki_syncing)
+    end
+
+    it 'returns the right number of failed repos with no group restrictions' do
+      expect(subject.wikis_failed_count).to eq(2)
+    end
+
+    it 'returns the right number of failed repos with group restrictions' do
+      secondary.update_attribute(:namespaces, [group])
+
+      expect(subject.wikis_failed_count).to eq(1)
+    end
+  end
+
   describe '#repositories_synced_in_percentage' do
     it 'returns 0 when no projects are available' do
       expect(subject.repositories_synced_in_percentage).to eq(0)
@@ -239,6 +258,71 @@ describe GeoNodeStatus, :geo do
       create(:geo_project_registry, :synced, project: project_1)
 
       expect(subject.repositories_synced_in_percentage).to be_within(0.0001).of(50)
+    end
+  end
+
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#wikis_synced_in_percentage', :delete do
+    it 'returns 0 when no projects are available' do
+      expect(subject.wikis_synced_in_percentage).to eq(0)
+    end
+
+    it 'returns 0 when project count is unknown' do
+      allow(subject).to receive(:wikis_count).and_return(nil)
+
+      expect(subject.wikis_synced_in_percentage).to eq(0)
+    end
+
+    it 'returns the right percentage with no group restrictions' do
+      create(:geo_project_registry, :synced, project: project_1)
+
+      expect(subject.wikis_synced_in_percentage).to be_within(0.0001).of(25)
+    end
+
+    it 'returns the right percentage with group restrictions' do
+      secondary.update_attribute(:namespaces, [group])
+      create(:geo_project_registry, :synced, project: project_1)
+
+      expect(subject.wikis_synced_in_percentage).to be_within(0.0001).of(50)
+    end
+  end
+
+  describe '#replication_slots_used_count' do
+    it 'returns the right number of used replication slots' do
+      stub_current_geo_node(primary)
+      allow(primary).to receive(:replication_slots_used_count).and_return(1)
+
+      expect(subject.replication_slots_used_count).to eq(1)
+    end
+  end
+
+  describe '#replication_slots_used_in_percentage' do
+    it 'returns 0 when no replication slots are available' do
+      expect(subject.replication_slots_used_in_percentage).to eq(0)
+    end
+
+    it 'returns 0 when replication slot count is unknown' do
+      allow(subject).to receive(:replication_slot_count).and_return(nil)
+
+      expect(subject.replication_slots_used_in_percentage).to eq(0)
+    end
+
+    it 'returns the right percentage' do
+      stub_current_geo_node(primary)
+      allow(subject).to receive(:replication_slots_count).and_return(2)
+      allow(subject).to receive(:replication_slots_used_count).and_return(1)
+
+      expect(subject.replication_slots_used_in_percentage).to be_within(0.0001).of(50)
+    end
+  end
+
+  describe '#replication_slots_max_retained_wal_bytes' do
+    it 'returns the number of bytes replication slots are using' do
+      stub_current_geo_node(primary)
+      allow(primary).to receive(:replication_slots_max_retained_wal_bytes).and_return(2.megabytes)
+
+      expect(subject.replication_slots_max_retained_wal_bytes).to eq(2.megabytes)
     end
   end
 

@@ -72,7 +72,9 @@
           Preview
         </a>
       </li>
-      <li class="md-header-toolbar">
+      <li
+        class="md-header-toolbar"
+        :class="{ active: !previewMarkdown }">
         <toolbar-button
           tag="**"
           button-title="Add bold text"

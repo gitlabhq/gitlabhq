@@ -8,6 +8,7 @@ class GeoNodeStatusEntity < Grape::Entity
     node.healthy? ? 'Healthy' : node.health
   end
   expose :health_status
+  expose :missing_oauth_application, as: :missing_oauth_application
 
   expose :attachments_count
   expose :attachments_synced_count
@@ -32,6 +33,20 @@ class GeoNodeStatusEntity < Grape::Entity
     number_to_percentage(node.repositories_synced_in_percentage, precision: 2)
   end
 
+  expose :wikis_count
+  expose :wikis_failed_count
+  expose :wikis_synced_count
+  expose :wikis_synced_in_percentage do |node|
+    number_to_percentage(node.wikis_synced_in_percentage, precision: 2)
+  end
+
+  expose :replication_slots_count
+  expose :replication_slots_used_count
+  expose :replication_slots_used_in_percentage do |node|
+    number_to_percentage(node.replication_slots_used_in_percentage, precision: 2)
+  end
+  expose :replication_slots_max_retained_wal_bytes
+
   expose :last_event_id
   expose :last_event_timestamp
   expose :cursor_last_event_id
@@ -48,6 +63,10 @@ class GeoNodeStatusEntity < Grape::Entity
 
   def namespaces
     object.geo_node.namespaces
+  end
+
+  def missing_oauth_application
+    object.geo_node.missing_oauth_application?
   end
 
   def version

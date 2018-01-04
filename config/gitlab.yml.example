@@ -497,6 +497,7 @@ production: &base
     # Sync user's profile from the specified Omniauth providers every time the user logs in (default: empty).
     # Define the allowed providers using an array, e.g. ["cas3", "saml", "twitter"],
     # or as true/false to allow all providers or none.
+    # When authenticating using LDAP, the user's email is always synced.
     # sync_profile_from_provider: []
 
     # Select which info to sync from the providers above. (default: email).

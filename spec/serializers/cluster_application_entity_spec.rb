@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ClusterApplicationEntity do
   describe '#as_json' do
-    let(:application) { build(:cluster_applications_helm) }
+    let(:application) { build(:clusters_applications_helm) }
     subject { described_class.new(application).as_json }
 
     it 'has name' do
@@ -18,7 +18,7 @@ describe ClusterApplicationEntity do
     end
 
     context 'when application is errored' do
-      let(:application) { build(:cluster_applications_helm, :errored) }
+      let(:application) { build(:clusters_applications_helm, :errored) }
 
       it 'has corresponded data' do
         expect(subject[:status]).to eq(:errored)

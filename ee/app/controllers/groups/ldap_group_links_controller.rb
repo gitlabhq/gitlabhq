@@ -33,9 +33,7 @@ class Groups::LdapGroupLinksController < Groups::ApplicationController
   private
 
   def authorize_manage_ldap_group_links!
-    unless can?(current_user, :admin_ldap_group_links, group)
-      return render_404
-    end
+    render_404 unless can?(current_user, :admin_ldap_group_links, group)
   end
 
   def require_ldap_enabled

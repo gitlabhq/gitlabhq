@@ -12,9 +12,6 @@ module Gitlab
       geo_oauth_application
     ).freeze
 
-    COMMON_CRON_JOBS = %i(geo_metrics_update_worker).freeze
-    SECONDARY_CRON_JOBS = %i(geo_repository_sync_worker geo_file_download_dispatch_worker).freeze
-
     FDW_SCHEMA = 'gitlab_secondary'.freeze
 
     def self.current_node
@@ -80,41 +77,10 @@ module Gitlab
       FDW_SCHEMA + ".#{table_name}"
     end
 
-    def self.configure_primary_jobs!
-      self.enable_all_cron_jobs!
-      SECONDARY_CRON_JOBS.each { |job_name| Sidekiq::Cron::Job.find(job_name).try(:disable!) }
-    end
-
-    def self.configure_secondary_jobs!
-      self.disable_all_cron_jobs!
-      (COMMON_CRON_JOBS + SECONDARY_CRON_JOBS).each { |job_name| Sidekiq::Cron::Job.find(job_name).try(:enable!) }
-    end
-
-    def self.disable_all_geo_jobs!
-      (COMMON_CRON_JOBS + SECONDARY_CRON_JOBS).each { |job_name| Sidekiq::Cron::Job.find(job_name).try(:disable!) }
-    end
-
-    def self.disable_all_cron_jobs!
-      self.cron_jobs.select(&:enabled?).each { |job| job.disable! }
-    end
-
-    def self.enable_all_cron_jobs!
-      self.cron_jobs.reject(&:enabled?).each { |job| job.enable! }
-    end
-
-    def self.cron_jobs
-      Sidekiq::Cron::Job.all
-    end
-
     def self.configure_cron_jobs!
-      if self.connected? && self.primary?
-        self.configure_primary_jobs!
-      elsif self.connected? && self.secondary?
-        self.configure_secondary_jobs!
-      else
-        self.enable_all_cron_jobs!
-        self.disable_all_geo_jobs!
-      end
+      manager = CronManager.new
+      manager.create_watcher!
+      manager.execute
     end
 
     def self.oauth_authentication

@@ -125,7 +125,7 @@ describe Note, elastic: true do
       issue = create :issue, :confidential, author: user
 
       member = create(:user)
-      issue.project.team << [member, :developer]
+      issue.project.add_developer(member)
 
       Sidekiq::Testing.inline! do
         create_notes_for(issue, 'bla-bla term')
@@ -142,7 +142,7 @@ describe Note, elastic: true do
       issue = create :issue, :confidential, author: user
 
       member = create(:user)
-      issue.project.team << [member, :guest]
+      issue.project.add_guest(member)
 
       Sidekiq::Testing.inline! do
         create_notes_for(issue, 'bla-bla term')

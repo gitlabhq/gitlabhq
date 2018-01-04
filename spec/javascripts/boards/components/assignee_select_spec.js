@@ -1,13 +1,11 @@
-/* global boardsMockInterceptor */
-/* global boardObj */
 /* global BoardService */
-/* global mockBoardService */
 
 import Vue from 'vue';
 import AssigneeSelect from '~/boards/components/assignee_select.vue';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import IssuableContext from '~/issuable_context';
+import { boardObj, mockBoardService } from '../mock_data';
 
 let vm;
 

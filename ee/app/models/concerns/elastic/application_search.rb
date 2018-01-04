@@ -93,9 +93,8 @@ module Elastic
       end
 
       def highlight_options(fields)
-        es_fields = fields.map { |field| field.split('^').first }.inject({}) do |memo, field|
+        es_fields = fields.map { |field| field.split('^').first }.each_with_object({}) do |field, memo|
           memo[field.to_sym] = {}
-          memo
         end
 
         { fields: es_fields }

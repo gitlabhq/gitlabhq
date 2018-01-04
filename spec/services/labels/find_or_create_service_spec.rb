@@ -17,7 +17,7 @@ describe Labels::FindOrCreateService do
       let(:user) { create(:user) }
       subject(:service) { described_class.new(user, project, params) }
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context 'when label does not exist at group level' do

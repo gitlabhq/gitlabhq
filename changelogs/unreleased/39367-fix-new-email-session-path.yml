@@ -1,5 +1,0 @@
----
-title: Confirming email with invalid token should no longer generate an error
-merge_request: 15726
-author:
-type: fixed

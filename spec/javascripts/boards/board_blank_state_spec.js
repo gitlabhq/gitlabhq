@@ -1,9 +1,8 @@
 /* global BoardService */
-/* global mockBoardService */
 import Vue from 'vue';
 import '~/boards/stores/boards_store';
 import boardBlankState from '~/boards/components/board_blank_state';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('Boards blank state', () => {
   let vm;
@@ -20,17 +19,15 @@ describe('Boards blank state', () => {
         reject();
       } else {
         resolve({
-          json() {
-            return [{
-              id: 1,
-              title: 'To Do',
-              label: { id: 1 },
-            }, {
-              id: 2,
-              title: 'Doing',
-              label: { id: 2 },
-            }];
-          },
+          data: [{
+            id: 1,
+            title: 'To Do',
+            label: { id: 1 },
+          }, {
+            id: 2,
+            title: 'Doing',
+            label: { id: 2 },
+          }],
         });
       }
     }));

@@ -12,7 +12,7 @@ export default {
   },
   template: `
     <div class="media">
-      <status-icon status="failed" showDisabledButton />
+      <status-icon status="warning" showDisabledButton />
       <div class="media-body">
         <span class="bold">
           Merge requests are read-only in a secondary Geo node

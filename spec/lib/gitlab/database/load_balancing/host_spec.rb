@@ -199,9 +199,7 @@ describe Gitlab::Database::LoadBalancing::Host, :postgresql do
     it 'returns the lag size as an Integer' do
       # On newer versions of Ruby the class is Integer, but on CI we run a
       # version that still uses Fixnum.
-      classes = [Fixnum, Integer] # rubocop: disable Lint/UnifiedInteger
-
-      expect(classes).to include(host.replication_lag_size.class)
+      expect([Fixnum, Integer]).to include(host.replication_lag_size.class) # rubocop: disable Lint/UnifiedInteger
     end
 
     it 'returns nil when the database query returned no rows' do

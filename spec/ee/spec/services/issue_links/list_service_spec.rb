@@ -9,7 +9,7 @@ describe IssueLinks::ListService do
   before do
     stub_licensed_features(related_issues: true)
 
-    project.team << [user, user_role]
+    project.add_role(user, user_role)
   end
 
   describe '#execute' do

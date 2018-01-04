@@ -1,5 +1,0 @@
----
-title: Add timeouts for Gitaly calls
-merge_request: 15047
-author:
-type: performance

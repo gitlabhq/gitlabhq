@@ -1,3 +1,4 @@
+# rubocop:disable Rails/ReversibleMigration
 class UpdateGroupLinks < ActiveRecord::Migration
   def change
     provider = quote_string(Gitlab::LDAP::Config.providers.first)

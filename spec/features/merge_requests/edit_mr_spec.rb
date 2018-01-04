@@ -7,7 +7,7 @@ feature 'Edit Merge Request' do
 
   context 'editing a MR' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in user
 
@@ -73,7 +73,8 @@ feature 'Edit Merge Request' do
 
   context 'saving the MR that needs approvals' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
+
       project.update_attributes(approvals_before_merge: 2)
 
       visit_edit_mr_page

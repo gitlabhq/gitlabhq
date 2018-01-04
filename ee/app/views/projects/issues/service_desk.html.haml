@@ -12,7 +12,7 @@
 - content_for :breadcrumbs_extra do
   = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
 
-- support_bot_attrs = User.support_bot.to_json(only: [:id, :name, :username, :avatar_url])
+- support_bot_attrs = UserSerializer.new.represent(User.support_bot).to_json
 
 %div{ class: "#{container_class} js-service-desk-issues service-desk-issues", data: { support_bot: support_bot_attrs } }
   .top-area
