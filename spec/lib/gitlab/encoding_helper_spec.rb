@@ -120,6 +120,24 @@ describe Gitlab::EncodingHelper do
     it 'returns empty string on conversion errors' do
       expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
     end
+
+    context 'with strings that can be forcefully encoded into utf8' do
+      let(:test_string) do
+        "refs/heads/FixSymbolsTitleDropdown".encode("ASCII-8BIT")
+      end
+      let(:expected_string) do
+        "refs/heads/FixSymbolsTitleDropdown".encode("UTF-8")
+      end
+
+      subject { ext_class.encode_utf8(test_string) }
+
+      it "doesn't use CharlockHolmes if the encoding can be forced into utf_8" do
+        expect(CharlockHolmes::EncodingDetector).not_to receive(:detect)
+
+        expect(subject).to eq(expected_string)
+        expect(subject.encoding.name).to eq('UTF-8')
+      end
+    end
   end
 
   describe '#clean' do
