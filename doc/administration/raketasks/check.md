@@ -34,13 +34,13 @@ This task loops through all repositories on the GitLab server and runs the
 **Omnibus Installation**
 
 ```
-sudo gitlab-rake gitlab:repo:check
+sudo gitlab-rake gitlab:git:fsck
 ```
 
 **Source Installation**
 
 ```bash
-sudo -u git -H bundle exec rake gitlab:repo:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
 
 ### Check repositories for a specific user

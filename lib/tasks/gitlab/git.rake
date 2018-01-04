@@ -36,6 +36,7 @@ namespace :gitlab do
         check_config_lock(repo)
         check_ref_locks(repo)
       end
+
       if failures.empty?
         puts "Done".color(:green)
       else
