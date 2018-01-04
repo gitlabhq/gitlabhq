@@ -53,6 +53,10 @@ describe API::Services do
     describe "DELETE /projects/:id/services/#{service.dasherize}" do
       include_context service
 
+      before do
+        initialize_service(service)
+      end
+
       it "deletes #{service}" do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
@@ -67,9 +71,7 @@ describe API::Services do
 
       # inject some properties into the service
       before do
-        service_object = project.find_or_initialize_service(service)
-        service_object.properties = service_attrs
-        service_object.save
+        initialize_service(service)
       end
 
       it 'returns authentication error when unauthenticated' do
