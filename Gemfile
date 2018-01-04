@@ -281,6 +281,7 @@ group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
+  gem 'bullet', '~> 5.7', require: false
 
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
@@ -303,7 +304,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 

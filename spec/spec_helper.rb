@@ -163,6 +163,17 @@ RSpec.configure do |config|
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
   end
+
+  if Bullet.enable?
+    config.before do
+      Bullet.start_request
+    end
+
+    config.after do
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    end
+  end
 end
 
 # add simpler way to match asset paths containing digest strings
