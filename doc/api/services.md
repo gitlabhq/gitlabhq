@@ -494,6 +494,9 @@ DELETE /projects/:id/services/jira
 
 Kubernetes / Openshift integration
 
+CAUTION: **Warning:**
+Kubernetes service integration has been deprecated in GitLab 10.3. API service endpoints will continue to work as long as the Kubernetes service is active, however if the service is inactive API endpoints will automatically return a `400 Bad Request`. Read [GitLab 10.3 release post](https://about.gitlab.com/2017/12/22/gitlab-10-3-released/#kubernetes-integration-service) for more information.
+
 ### Create/Edit Kubernetes service
 
 Set Kubernetes service for a project.
