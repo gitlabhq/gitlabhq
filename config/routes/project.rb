@@ -407,7 +407,9 @@ constraints(ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
+        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+          get :reset_cache
+        end
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository
       end
@@ -436,7 +438,6 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        get :reset_cache
         put :new_issuable_address
       end
     end
