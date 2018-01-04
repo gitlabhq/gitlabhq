@@ -50,10 +50,12 @@ module Gitlab
       response = rest_client[path].get(params: args)
       handle_response(response)
     rescue SocketError
-      raise PrometheusError, "Can't connect to #{url}"
+      raise PrometheusError, "Can't connect to #{rest_client.url}"
     rescue OpenSSL::SSL::SSLError
-      raise PrometheusError, "#{url} contains invalid SSL data"
-    rescue HTTParty::Error
+      raise PrometheusError, "#{rest_client.url} contains invalid SSL data"
+    rescue RestClient::ExceptionWithResponse => ex
+      handle_exception_response(ex.response)
+    rescue RestClient::Exception
       raise PrometheusError, "Network connection error"
     end
 
@@ -61,7 +63,14 @@ module Gitlab
       json_data = JSON.parse(response.body)
       if response.code == 200 && json_data['status'] == 'success'
         json_data['data'] || {}
-      elsif response.code == 400
+      else
+        raise PrometheusError, "#{response.code} - #{response.body}"
+      end
+    end
+
+    def handle_exception_response(response)
+      if response.code == 400
+        json_data = JSON.parse(response.body)
         raise PrometheusError, json_data['error'] || 'Bad data received'
       else
         raise PrometheusError, "#{response.code} - #{response.body}"
