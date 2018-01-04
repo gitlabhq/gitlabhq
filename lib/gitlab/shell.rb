@@ -102,7 +102,7 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def import_repository(storage, name, url)
-      if url.start_with?('.') || url.start_with?('/')
+      if url.start_with?('.', '/')
         raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
       end
 
