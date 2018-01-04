@@ -101,6 +101,7 @@ module Gitlab
         request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
 
         branch_update = response_enum.next.branch_update
+        return if branch_update.nil?
         raise Gitlab::Git::CommitError.new('failed to apply merge to branch') unless branch_update.commit_id.present?
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)

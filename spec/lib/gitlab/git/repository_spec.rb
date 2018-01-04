@@ -1727,6 +1727,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(result.repo_created).to eq(false)
         expect(result.branch_created).to eq(false)
       end
+
+      it 'returns nil if there was a concurrent branch update' do
+        concurrent_update_id = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
+        result = repository.merge(user, source_sha, target_branch, 'Test merge') do
+          # This ref update should make the merge fail
+          repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
+        end
+
+        # This 'nil' signals that the merge was not applied
+        expect(result).to be_nil
+
+        # Our concurrent ref update should not have been undone
+        expect(repository.find_branch(target_branch).target).to eq(concurrent_update_id)
+      end
     end
 
     context 'with gitaly' do
