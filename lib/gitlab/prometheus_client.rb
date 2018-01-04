@@ -6,7 +6,7 @@ module Gitlab
     attr_reader :rest_client, :headers
 
     def initialize(rest_client)
-      @rest_client = rest_client || RestClient::Resource.new(api_url)
+      @rest_client = rest_client
     end
 
     def ping

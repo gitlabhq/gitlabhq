@@ -116,31 +116,41 @@ class PrometheusService < MonitoringService
     { success: false, result: err.message }
   end
 
-  def client(environment_id)
+  def client(environment_id = nil)
     if manual_configuration?
       Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
     else
       cluster = cluster_with_prometheus(environment_id)
       raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
+      rest_client = client_from_cluster(cluster)
 
-      Gitlab::PrometheusClient.new(cluster.application_prometheus.proxy_client)
+      raise Gitlab::PrometheusError, "couldn't create proxy Prometheus client" unless rest_client
+      Gitlab::PrometheusClient.new(rest_client)
     end
   end
 
   def prometheus_installed?
-    cluster_with_prometheus.present?
+    project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
   end
 
   private
 
   def cluster_with_prometheus(environment_id = nil)
     clusters = if environment_id
-                 ::Environment.find_by(id: environment_id).try(:enabled_clusters) || []
+                 ::Environment.find_by(id: environment_id).try do |env|
+                   # sort results by descending order based on environment_scope being longer
+                   # thus more closely matching environment slug
+                   project.clusters.enabled.for_environment(env).sort_by { |c| c.environment_scope&.length }.reverse!
+                 end
                else
-                 project.clusters.enabled.select { |c| c.environment_scope == '*' || c.environment_scope == '' }
+                 project.clusters.enabled.for_all_environments
                end
 
-    clusters.detect { |cluster| cluster.application_prometheus&.installed? }
+    clusters&.detect { |cluster| cluster.application_prometheus&.installed? }
+  end
+
+  def client_from_cluster(cluster)
+    cluster.application_prometheus.proxy_client
   end
 
   def rename_data_to_metrics(metrics)
