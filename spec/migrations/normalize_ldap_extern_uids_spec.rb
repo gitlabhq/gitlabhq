@@ -27,11 +27,11 @@ describe NormalizeLdapExternUids, :migration, :sidekiq do
         migrate!
 
         expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([described_class::MIGRATION, [1, 2]])
-        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.seconds.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(5.minutes.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([described_class::MIGRATION, [3, 4]])
-        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.seconds.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(10.minutes.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs[2]['args']).to eq([described_class::MIGRATION, [5, 5]])
-        expect(BackgroundMigrationWorker.jobs[2]['at']).to eq(30.seconds.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[2]['at']).to eq(15.minutes.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end
