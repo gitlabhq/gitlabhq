@@ -416,6 +416,7 @@ ee_compat_check:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   retry: 0
