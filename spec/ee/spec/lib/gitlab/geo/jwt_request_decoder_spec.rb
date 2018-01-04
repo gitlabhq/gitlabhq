@@ -33,16 +33,16 @@ describe Gitlab::Geo::JwtRequestDecoder do
       Timecop.travel(30.seconds.ago) { expect(subject.decode).to eq(data) }
     end
 
-    it 'fails to decode after expiring' do
+    it 'raises InvalidSignatureTimeError after expiring' do
       subject
 
-      Timecop.travel(2.minutes) { expect(subject.decode).to be_nil }
+      Timecop.travel(2.minutes) { expect { subject.decode }.to raise_error(Gitlab::Geo::InvalidSignatureTimeError) }
     end
 
-    it 'fails to decode when clocks are not in sync' do
+    it 'raises InvalidSignatureTimeError to decode when clocks are not in sync' do
       subject
 
-      Timecop.travel(2.minutes.ago) { expect(subject.decode).to be_nil }
+      Timecop.travel(2.minutes.ago) { expect { subject.decode }.to raise_error(Gitlab::Geo::InvalidSignatureTimeError) }
     end
 
     it 'raises invalid decryption key error' do
