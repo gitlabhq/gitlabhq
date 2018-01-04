@@ -54,7 +54,21 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
 
-    scope :kubernetes_service, -> do
+    scope :unmanaged_kubernetes_service, -> do
+      where(category: 'deployment')
+      .where(type: 'KubernetesService')
+      .where(template: false)
+      .where("NOT EXISTS (?)",
+        MigrateKubernetesServiceToNewClustersArchitectures::PlatformsKubernetes
+          .joins('INNER JOIN projects ON projects.id = services.project_id')
+          .joins('INNER JOIN cluster_projects ON cluster_projects.project_id = projects.id')
+          .where('cluster_projects.cluster_id = cluster_platforms_kubernetes.cluster_id')
+          .where("services.properties LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')")
+          .select('1') )
+      .order(project_id: :asc)
+     end
+
+    scope :kubernetes_service_without_template, -> do
       where(category: 'deployment')
       .where(type: 'KubernetesService')
       .where(template: false)
@@ -78,41 +92,29 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     end
   end
 
-  # KubernetesService might be already managed by clusters
-  def managed_by_clusters?(kubernetes_service)
-    kubernetes_service.project.clusters
-      .joins('INNER JOIN cluster_platforms_kubernetes ON clusters.id = cluster_platforms_kubernetes.cluster_id')
-      .where('cluster_platforms_kubernetes.api_url = ?', kubernetes_service.api_url)
-      .exists?
-  end
-
   def up
-    MigrateKubernetesServiceToNewClustersArchitectures::Service.kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
-      unless managed_by_clusters?(kubernetes_service)
-        MigrateKubernetesServiceToNewClustersArchitectures::Cluster.create(
-          enabled: kubernetes_service.active,
-          user_id: nil, # KubernetesService doesn't have
-          name: DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME,
-          provider_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.provider_types[:user],
-          platform_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.platform_types[:kubernetes],
-          projects: [kubernetes_service.project.becomes(MigrateKubernetesServiceToNewClustersArchitectures::Project)],
-          environment_scope: find_dedicated_environement_scope(kubernetes_service.project),
-          platform_kubernetes_attributes: {
-            api_url: kubernetes_service.api_url,
-            ca_cert: kubernetes_service.ca_pem,
-            namespace: kubernetes_service.namespace,
-            username: nil, # KubernetesService doesn't have
-            encrypted_password: nil, # KubernetesService doesn't have
-            encrypted_password_iv: nil, # KubernetesService doesn't have
-            token: kubernetes_service.token # encrypted_token and encrypted_token_iv
-          } )
-      end
-
-      # Disable the KubernetesService. Platforms::Kubernetes will be used from next time.
-      kubernetes_service.active = false
-      kubernetes_service.properties.merge!( { migrated: true } )
-      kubernetes_service.save!
+    MigrateKubernetesServiceToNewClustersArchitectures::Service
+      .unmanaged_kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
+      MigrateKubernetesServiceToNewClustersArchitectures::Cluster.create(
+        enabled: kubernetes_service.active,
+        user_id: nil, # KubernetesService doesn't have
+        name: DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME,
+        provider_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.provider_types[:user],
+        platform_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.platform_types[:kubernetes],
+        projects: [kubernetes_service.project.becomes(MigrateKubernetesServiceToNewClustersArchitectures::Project)],
+        environment_scope: find_dedicated_environement_scope(kubernetes_service.project),
+        platform_kubernetes_attributes: {
+          api_url: kubernetes_service.api_url,
+          ca_cert: kubernetes_service.ca_pem,
+          namespace: kubernetes_service.namespace,
+          username: nil, # KubernetesService doesn't have
+          encrypted_password: nil, # KubernetesService doesn't have
+          encrypted_password_iv: nil, # KubernetesService doesn't have
+          token: kubernetes_service.token # encrypted_token and encrypted_token_iv
+        } )
     end
+
+    MigrateKubernetesServiceToNewClustersArchitectures::Service.kubernetes_service_without_template.update_all(active: false)
   end
 
   def down

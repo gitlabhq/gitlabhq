@@ -28,7 +28,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
             expect(cluster.platform_kubernetes.ca_pem).to eq(project.kubernetes_service.ca_pem)
             expect(cluster.platform_kubernetes.token).to eq(project.kubernetes_service.token)
             expect(project.kubernetes_service).not_to be_active
-            expect(project.kubernetes_service.properties['migrated']).to be_truthy
           end
         end
       end
@@ -85,7 +84,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
           expect(cluster.platform_kubernetes.ca_pem).to eq(project.kubernetes_service.ca_pem)
           expect(cluster.platform_kubernetes.token).to eq(project.kubernetes_service.token)
           expect(project.kubernetes_service).not_to be_active
-          expect(project.kubernetes_service.properties['migrated']).to be_truthy
         end
       end
     end
@@ -110,7 +108,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
 
       kubernetes_service.reload
       expect(kubernetes_service).not_to be_active
-      expect(kubernetes_service.properties['migrated']).to be_truthy
     end
   end
 
@@ -129,7 +126,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
         expect(cluster.platform_kubernetes.ca_pem).to eq(kubernetes_service.ca_pem)
         expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
         expect(kubernetes_service).not_to be_active
-        expect(kubernetes_service.properties['migrated']).to be_truthy
       end
     end
   end
@@ -149,7 +145,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
         expect(cluster.platform_kubernetes.ca_pem).to eq(kubernetes_service.ca_pem)
         expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
         expect(kubernetes_service).not_to be_active
-        expect(kubernetes_service.properties['migrated']).to be_truthy
       end
     end
   end
@@ -170,7 +165,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
         expect(cluster.platform_kubernetes.ca_pem).to eq(kubernetes_service.ca_pem)
         expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
         expect(kubernetes_service).not_to be_active
-        expect(kubernetes_service.properties['migrated']).to be_truthy
       end
     end
   end
