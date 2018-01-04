@@ -494,6 +494,7 @@ module API
     class Epic < Grape::Entity
       expose :id
       expose :iid
+      expose :group_id
       expose :title
       expose :description
       expose :author, using: Entities::UserBasic

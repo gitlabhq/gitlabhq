@@ -14,6 +14,7 @@
         "id": { "type": "integer" },
         "iid": { "type": "integer" },
         "title": { "type": "string" },
+        "group_id": { "type": "integer" },
         "description": { "type": ["string", "null"] },
         "author": { "type": ["object", "null"] },
         "start_date": { "type": ["string", "null"] },
