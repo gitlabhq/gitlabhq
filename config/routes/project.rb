@@ -493,7 +493,6 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        get :reset_cache
         put :new_issuable_address
       end
     end
