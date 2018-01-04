@@ -8,6 +8,6 @@ class AddCacheIndexToProject < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :projects, :cache_index, :integer
+    add_column :projects, :jobs_cache_index, :integer
   end
 end

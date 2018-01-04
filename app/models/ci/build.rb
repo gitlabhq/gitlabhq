@@ -461,8 +461,8 @@ module Ci
     end
 
     def cache
-      if options[:cache] && project.cache_index
-        options[:cache].merge(key: "#{options[:cache][:key]}:#{project.cache_index}")
+      if options[:cache] && project.jobs_cache_index
+        options[:cache].merge(key: "#{options[:cache][:key]}:#{project.jobs_cache_index}")
       else
         [options[:cache]]
       end

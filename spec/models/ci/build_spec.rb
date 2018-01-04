@@ -265,17 +265,17 @@ describe Ci::Build do
         allow(build).to receive(:options).and_return(options)
       end
 
-      context 'when project has cache_index' do
+      context 'when project has jobs_cache_index' do
         before do
-          allow_any_instance_of(Project).to receive(:cache_index).and_return(1)
+          allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
         it { is_expected.to include(key: "key:1") }
       end
 
-      context 'when project does not have cache_index' do
+      context 'when project does not have jobs_cache_index' do
         before do
-          allow_any_instance_of(Project).to receive(:cache_index).and_return(nil)
+          allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(nil)
         end
 
         it { is_expected.to eq([options[:cache]]) }
