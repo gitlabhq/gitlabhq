@@ -15,6 +15,10 @@ module Gitlab
         execute(%W(#{git_bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all))
       end
 
+      def git_clone_bundle(repo_path:, bundle_path:)
+        execute(%W(#{git_bin_path} clone --bare -- #{bundle_path} #{repo_path}))
+      end
+
       def mkdir_p(path)
         FileUtils.mkdir_p(path, mode: DEFAULT_MODE)
         FileUtils.chmod(DEFAULT_MODE, path)
