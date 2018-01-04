@@ -7,7 +7,8 @@ describe SystemHook do
     it 'sets defined default parameters' do
       attrs = {
         push_events: false,
-        repository_update_events: true
+        repository_update_events: true,
+        merge_requests_events: false
       }
       expect(system_hook).to have_attributes(attrs)
     end
