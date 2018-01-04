@@ -4,6 +4,7 @@ import subscriptionSelect from './subscription_select';
 import UsersSelect from './users_select';
 import issueStatusSelect from './issue_status_select';
 import MilestoneSelect from './milestone_select';
+
 import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
 
 export default () => {
