@@ -264,4 +264,70 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#synchronize_service_state! before_save callback' do
+    context 'no clusters with prometheus are installed' do
+      context 'when service is inactive' do
+        before do
+          service.active = false
+        end
+
+        it 'activates service when manual_configuration is enabled' do
+          expect { service.update!(manual_configuration: true) }.to change { service.active }.from(false).to(true)
+        end
+
+        it 'keeps service inactive when manual_configuration is disabled' do
+          expect { service.update!(manual_configuration: false) }.not_to change { service.active }.from(false)
+        end
+      end
+
+      context 'when service is active' do
+        before do
+          service.active = true
+        end
+
+        it 'keeps the service active when manual_configuration is enabled' do
+          expect { service.update!(manual_configuration: true) }.not_to change { service.active }.from(true)
+        end
+
+        it 'inactivates the service when manual_configuration is disabled' do
+          expect { service.update!(manual_configuration: false) }.to change { service.active }.from(true).to(false)
+        end
+      end
+    end
+
+    context 'with prometheus installed in the cluster' do
+      before do
+        allow(service).to receive(:prometheus_installed?).and_return(true)
+      end
+
+      context 'when service is inactive' do
+        before do
+          service.active = false
+        end
+
+        it 'activates service when manual_configuration is enabled' do
+          expect { service.update!(manual_configuration: true) }.to change { service.active }.from(false).to(true)
+        end
+
+        it 'activates service when manual_configuration is disabled' do
+          expect { service.update!(manual_configuration: false) }.to change { service.active }.from(false).to(true)
+        end
+      end
+
+      context 'when service is active' do
+        before do
+          service.active = true
+        end
+
+        it 'keeps service active when manual_configuration is enabled' do
+          expect { service.update!(manual_configuration: true) }.not_to change { service.active }.from(true)
+        end
+
+        it 'keeps service active when manual_configuration is disabled' do
+          expect { service.update!(manual_configuration: false) }.not_to change { service.active }.from(true)
+        end
+      end
+    end
+  end
 end
