@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'toggleSidebar',
+    name: 'ToggleSidebar',
     props: {
       collapsed: {
         type: Boolean,
@@ -25,6 +25,6 @@
       aria-label="toggle collapse"
       class="fa"
       :class="{ 'fa-angle-double-right': !collapsed, 'fa-angle-double-left': collapsed }"
-    ></i>
+    />
   </button>
 </template>

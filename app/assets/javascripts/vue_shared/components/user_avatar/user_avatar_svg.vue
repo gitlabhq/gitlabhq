@@ -40,6 +40,6 @@ export default {
     :height="size"
     :width="size"
     v-html="svg"
-    />
+  />
 </template>
 

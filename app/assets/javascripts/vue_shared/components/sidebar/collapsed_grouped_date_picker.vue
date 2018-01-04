@@ -4,7 +4,11 @@
   import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
 
   export default {
-    name: 'sidebarCollapsedGroupedDatePicker',
+    name: 'SidebarCollapsedGroupedDatePicker',
+    components: {
+      toggleSidebar,
+      collapsedCalendarIcon,
+    },
     props: {
       collapsed: {
         type: Boolean,
@@ -29,10 +33,6 @@
         required: false,
         default: false,
       },
-    },
-    components: {
-      toggleSidebar,
-      collapsedCalendarIcon,
     },
     computed: {
       hasMinAndMaxDates() {

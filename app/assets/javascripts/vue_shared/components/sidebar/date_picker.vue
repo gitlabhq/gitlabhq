@@ -6,7 +6,13 @@
   import { dateInWords } from '../../../lib/utils/datetime_utility';
 
   export default {
-    name: 'sidebarDatePicker',
+    name: 'SidebarDatePicker',
+    components: {
+      datePicker,
+      toggleSidebar,
+      loadingIcon,
+      collapsedCalendarIcon,
+    },
     props: {
       collapsed: {
         type: Boolean,
@@ -50,12 +56,6 @@
       return {
         editing: false,
       };
-    },
-    components: {
-      datePicker,
-      toggleSidebar,
-      loadingIcon,
-      collapsedCalendarIcon,
     },
     computed: {
       selectedAndEditable() {

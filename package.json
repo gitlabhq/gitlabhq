@@ -90,11 +90,11 @@
   "devDependencies": {
     "@gitlab-org/gitlab-svgs": "^1.4.0",
     "babel-plugin-istanbul": "^4.1.5",
-    "eslint": "^3.10.1",
+    "eslint": "3.18.0",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-import-resolver-webpack": "^0.8.3",
     "eslint-plugin-filenames": "^1.1.0",
-    "eslint-plugin-html": "^4.0.1",
+    "eslint-plugin-html": "2.0.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jasmine": "^2.1.0",
     "eslint-plugin-promise": "^3.5.0",

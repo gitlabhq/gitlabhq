@@ -3,7 +3,7 @@
   import { parsePikadayDate, pikadayToString } from '../../lib/utils/datefix';
 
   export default {
-    name: 'datePicker',
+    name: 'DatePicker',
     props: {
       label: {
         type: String,
@@ -21,14 +21,6 @@
       maxDate: {
         type: Date,
         required: false,
-      },
-    },
-    methods: {
-      selected(dateText) {
-        this.$emit('newDateSelected', this.calendar.toString(dateText));
-      },
-      toggled() {
-        this.$emit('hidePicker');
       },
     },
     mounted() {
@@ -53,6 +45,14 @@
     beforeDestroy() {
       this.calendar.destroy();
     },
+    methods: {
+      selected(dateText) {
+        this.$emit('newDateSelected', this.calendar.toString(dateText));
+      },
+      toggled() {
+        this.$emit('hidePicker');
+      },
+    },
   };
 </script>
 
@@ -66,7 +66,7 @@
         @click="toggled"
       >
         <span class="dropdown-toggle-text">
-          {{label}}
+          {{ label }}
         </span>
         <i
           class="fa fa-chevron-down"

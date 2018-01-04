@@ -37,6 +37,16 @@
     "import/no-commonjs": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
     "promise/catch-or-return": "error",
-    "no-underscore-dangle": ["error", { "allow": ["__"]}]
+    "no-underscore-dangle": ["error", { "allow": ["__"]}],
+    "vue/html-self-closing": ["error", {
+      "html": {
+        "void": "always",
+        "normal": "any",
+        "component": "always"
+      },
+      "svg": "always",
+      "math": "any"
+    }]
+
   }
 }
