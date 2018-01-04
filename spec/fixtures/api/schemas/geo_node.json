@@ -5,6 +5,7 @@
     "url",
     "primary",
     "enabled",
+    "current",
     "files_max_capacity",
     "repos_max_capacity",
     "clone_protocol"
@@ -14,6 +15,7 @@
     "url": { "type": ["string", "null"] },
     "primary": { "type": "boolean" },
     "enabled": { "type": "boolean" },
+    "current": { "type": "boolean" },
     "files_max_capacity": { "type": "integer" },
     "repos_max_capacity": { "type": "integer" },
     "clone_protocol": { "type": ["string"] }
