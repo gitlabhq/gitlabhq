@@ -49,6 +49,11 @@ export default {
       rightPanelCollapsed: collapsed,
     });
   },
+  [types.SET_RESIZING_STATUS](state, resizing) {
+    Object.assign(state, {
+      panelResizing: resizing,
+    });
+  },
   [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {
     Object.assign(entry.lastCommit, {
       id: lastCommit.commit.id,
