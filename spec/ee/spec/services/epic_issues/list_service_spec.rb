@@ -11,9 +11,9 @@ describe EpicIssues::ListService do
   let(:issue2) { create :issue, project: project }
   let(:issue3) { create :issue, project: other_project }
 
-  let!(:epic_issue1) { create(:epic_issue, issue: issue1, epic: epic) }
-  let!(:epic_issue2) { create(:epic_issue, issue: issue2, epic: epic) }
-  let!(:epic_issue3) { create(:epic_issue, issue: issue3, epic: epic) }
+  let!(:epic_issue1) { create(:epic_issue, issue: issue1, epic: epic, relative_position: 2) }
+  let!(:epic_issue2) { create(:epic_issue, issue: issue2, epic: epic, relative_position: 1) }
+  let!(:epic_issue3) { create(:epic_issue, issue: issue3, epic: epic, relative_position: 3) }
 
   describe '#execute' do
     subject { described_class.new(epic, user).execute }
@@ -39,20 +39,20 @@ describe EpicIssues::ListService do
         it 'returns related issues JSON' do
           expected_result = [
             {
-              id: issue1.id,
-              title: issue1.title,
-              state: issue1.state,
-              reference: issue1.to_reference(full: true),
-              path: "/#{project.full_path}/issues/#{issue1.iid}",
-              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}"
-            },
-            {
               id: issue2.id,
               title: issue2.title,
               state: issue2.state,
               reference: issue2.to_reference(full: true),
               path: "/#{project.full_path}/issues/#{issue2.iid}",
               relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue2.id}"
+            },
+            {
+              id: issue1.id,
+              title: issue1.title,
+              state: issue1.state,
+              reference: issue1.to_reference(full: true),
+              path: "/#{project.full_path}/issues/#{issue1.iid}",
+              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}"
             },
             {
               id: issue3.id,
@@ -63,7 +63,7 @@ describe EpicIssues::ListService do
               relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue3.id}"
             }
           ]
-          expect(subject).to match_array(expected_result)
+          expect(subject).to eq(expected_result)
         end
       end
 
@@ -75,24 +75,24 @@ describe EpicIssues::ListService do
         it 'returns related issues JSON' do
           expected_result = [
             {
-              id: issue1.id,
-              title: issue1.title,
-              state: issue1.state,
-              reference: issue1.to_reference(full: true),
-              path: "/#{project.full_path}/issues/#{issue1.iid}",
-              relation_path: nil
-            },
-            {
               id: issue2.id,
               title: issue2.title,
               state: issue2.state,
               reference: issue2.to_reference(full: true),
               path: "/#{project.full_path}/issues/#{issue2.iid}",
               relation_path: nil
+            },
+            {
+              id: issue1.id,
+              title: issue1.title,
+              state: issue1.state,
+              reference: issue1.to_reference(full: true),
+              path: "/#{project.full_path}/issues/#{issue1.iid}",
+              relation_path: nil
             }
           ]
 
-          expect(subject).to match_array(expected_result)
+          expect(subject).to eq(expected_result)
         end
       end
     end

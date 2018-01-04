@@ -2,16 +2,10 @@ module EpicIssues
   class CreateService < IssuableLinks::CreateService
     private
 
-    def after_create
-      issuable.epic_issues
-        .where('id NOT IN (?)', @created_links.map(&:id))
-        .update_all("position = position + #{@created_links.count}")
-    end
-
     def relate_issues(referenced_issue)
       link = existing_links.find { |link| link.issue == referenced_issue } || EpicIssue.new(issue: referenced_issue)
       link.epic = issuable
-      link.position = @created_links.count + 1
+      link.move_to_start
       link.save
 
       link

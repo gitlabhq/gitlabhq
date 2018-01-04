@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :epic_issue do
     epic
     issue
-    position 1
+    relative_position Gitlab::Database::MAX_INT_VALUE / 2
   end
 end

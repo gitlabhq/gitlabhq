@@ -11,7 +11,6 @@ module IssuableLinks
       return error('No Issue Link found', 404) unless permission_to_remove_relation?
 
       remove_relation
-      after_remove
       create_notes
 
       success(message: 'Relation was removed')
@@ -21,9 +20,6 @@ module IssuableLinks
 
     def remove_relation
       link.destroy!
-    end
-
-    def after_remove
     end
   end
 end

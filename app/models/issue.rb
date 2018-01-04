@@ -47,6 +47,8 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
+  alias_attribute :parent_id, :project_id
+
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
@@ -92,6 +94,11 @@ class Issue < ActiveRecord::Base
   end
 
   acts_as_paranoid
+
+  class << self
+    alias_method :in_parent, :in_projects
+  end
+
 
   def self.reference_prefix
     '#'

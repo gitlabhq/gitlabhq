@@ -172,11 +172,11 @@ describe Groups::EpicIssuesController do
 
   describe 'PUT #update' do
     let(:issue2) { create(:issue, project: project) }
-    let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issue, position: 1) }
-    let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issue2, position: 2) }
+    let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issue, relative_position: 1) }
+    let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issue2, relative_position: 2) }
 
     subject do
-      put :update, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, epic: { position: 1 }
+      put :update, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, epic: { move_before_id: epic_issue2.id }
     end
 
     it_behaves_like 'unlicensed epics action'
@@ -194,7 +194,7 @@ describe Groups::EpicIssuesController do
         end
 
         it 'updates the issue position value' do
-          expect { subject }.to change { epic_issue1.reload.position }.from(1).to(2)
+          expect { subject }.to change { epic_issue1.reload.relative_position }
         end
       end
 
@@ -204,15 +204,11 @@ describe Groups::EpicIssuesController do
 
           expect(response.status).to eq(403)
         end
-
-        it 'does not change the position value' do
-          expect { subject }.not_to change { epic_issue1.reload.position }.from(1)
-        end
       end
 
       context 'when the epic from the association does not equal epic from the path' do
         subject do
-          put :update, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, epic: { position: 2 }
+          put :update, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, epic: { after_move_id: epic_issue1.id }
         end
 
         let(:another_epic) { create(:epic, group: group) }
@@ -225,10 +221,6 @@ describe Groups::EpicIssuesController do
           subject
 
           expect(response.status).to eq(404)
-        end
-
-        it 'does not change the position value' do
-          expect { subject }.not_to change { epic_issue1.position }.from(1)
         end
       end
 

@@ -6,10 +6,11 @@ describe API::EpicIssues do
   let(:project) { create(:project, :public, group: group) }
   let(:epic) { create(:epic, group: group) }
   let(:issues) { create_list(:issue, 2, project: project) }
-  let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issues[0], position: 1) }
+  let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issues[0], relative_position: 1) }
+  let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issues[1], relative_position: 2) }
 
   describe 'PUT /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id' do
-    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}?position=1" }
+    let(:url) { "/groups/#{group.path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}?move_after_id=#{epic_issue2.id}" }
 
     context 'when epics feature is disabled' do
       it 'returns 403 forbidden error' do
@@ -49,7 +50,7 @@ describe API::EpicIssues do
         it 'returns 403 forbidden error for the link of another epic' do
           group.add_developer(user)
           another_epic = create(:epic, group: group)
-          url = "/groups/#{group.path}/-/epics/#{another_epic.iid}/issues/#{epic_issue1.id}?position=1"
+          url = "/groups/#{group.path}/-/epics/#{another_epic.iid}/issues/#{epic_issue1.id}?move_after_id=#{epic_issue2.id}"
 
           put api(url, user)
 
@@ -58,8 +59,6 @@ describe API::EpicIssues do
       end
 
       context 'when the request is correct' do
-        let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issues[1], position: 2) }
-
         before do
           group.add_developer(user)
           put api(url, user)
@@ -70,8 +69,7 @@ describe API::EpicIssues do
         end
 
         it 'updates the positions values' do
-          expect(epic_issue1.reload.position).to eq(2)
-          expect(epic_issue2.reload.position).to eq(1)
+          expect(epic_issue1.reload.relative_position).to be < epic_issue2.relative_position
         end
       end
     end

@@ -21,5 +21,9 @@ module EpicIssues
     def reference(issue)
       issue.to_reference(full: true)
     end
+
+    def to_hash(issue)
+      super.merge(epic_issue_id: issue.epic_issue_id)
+    end
   end
 end

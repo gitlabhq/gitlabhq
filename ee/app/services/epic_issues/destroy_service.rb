@@ -2,10 +2,6 @@ module EpicIssues
   class DestroyService < IssuableLinks::DestroyService
     private
 
-    def after_remove
-      source.epic_issues.where('position > ?', link.position).update_all("position = position - 1 ")
-    end
-
     def source
       @source ||= link.epic
     end

@@ -7,7 +7,7 @@ describe EpicIssues::DestroyService do
     let(:project) { create(:project, group: group) }
     let(:epic) { create(:epic, group: group) }
     let(:issue) { create(:issue, project: project) }
-    let!(:epic_issue) { create(:epic_issue, epic: epic, issue: issue, position: 2) }
+    let!(:epic_issue) { create(:epic_issue, epic: epic, issue: issue) }
 
     subject { described_class.new(epic_issue, user).execute }
 
@@ -41,16 +41,6 @@ describe EpicIssues::DestroyService do
 
         it 'creates 2 system notes' do
           expect { subject }.to change { Note.count }.from(0).to(2)
-        end
-
-        it 'updates the position value of other issues correctly' do
-          epic_issue2 = create(:epic_issue, epic: epic, issue: create(:issue, project: project), position: 1)
-          epic_issue3 = create(:epic_issue, epic: epic, issue: create(:issue, project: project), position: 3)
-
-          subject
-
-          expect(epic_issue2.reload.position).to eq(1)
-          expect(epic_issue3.reload.position).to eq(2)
         end
 
         it 'creates a note for epic correctly' do

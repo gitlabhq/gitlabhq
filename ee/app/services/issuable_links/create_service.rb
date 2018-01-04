@@ -12,7 +12,6 @@ module IssuableLinks
       end
 
       create_issue_links
-      after_create
       success
     end
 
@@ -67,9 +66,6 @@ module IssuableLinks
 
     def relate_issues(referenced_issue)
       raise NotImplementedError
-    end
-
-    def after_create
     end
   end
 end

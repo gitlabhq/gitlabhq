@@ -11,7 +11,7 @@ describe EpicIssues::CreateService do
     let(:user) { create(:user) }
     let(:valid_reference) { issue.to_reference(full: true) }
 
-    let!(:existing_link) { create(:epic_issue, epic: epic, issue: issue3, position: 1) }
+    let!(:existing_link) { create(:epic_issue, epic: epic, issue: issue3) }
 
     def assign_issue(references)
       params = { issue_references: references }
@@ -31,8 +31,7 @@ describe EpicIssues::CreateService do
       it 'orders the epic issue to the first place and moves the existing ones down' do
         subject
 
-        expect(created_link.position).to eq(1)
-        expect(existing_link.reload.position).to eq(2)
+        expect(created_link.relative_position).to be < existing_link.reload.relative_position
       end
 
       it 'returns success status' do
@@ -137,12 +136,12 @@ describe EpicIssues::CreateService do
               allow(extractor).to receive(:issues).and_return(issues)
               params = { issue_references: issues.map { |i| i.to_reference(full: true) } }
 
-              # threshold 16 because 4 queries are generated for each insert
-              # (savepoint, exists, insert, release savepoint)
+              # threshold 20 because 5 queries are generated for each insert
+              # (savepoint, exists, relative_position get, insert, release savepoint)
               # and we insert 5 issues instead of 1 which we do for control count
               expect { described_class.new(epic, user, params).execute }
                 .not_to exceed_query_limit(control_count)
-                .with_threshold(16)
+                .with_threshold(20)
             end
           end
 
@@ -178,9 +177,8 @@ describe EpicIssues::CreateService do
             it 'orders the epic issues to the first place and moves the existing ones down' do
               subject
 
-              expect(created_link1.position).to eq(1)
-              expect(created_link2.position).to eq(2)
-              expect(existing_link.reload.position).to eq(3)
+              expect(created_link2.relative_position).to be < created_link1.relative_position
+              expect(created_link1.relative_position).to be < existing_link.reload.relative_position
             end
 
             it 'returns success status' do

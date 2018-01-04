@@ -6,13 +6,11 @@ class AddPositionToEpicIssues < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:epic_issues, :position, :integer, default: 1, allow_null: false)
-    add_timestamps_with_timezone :epic_issues, null: true
+    default_position = Gitlab::Database::MAX_INT_VALUE / 2
+    add_column_with_default(:epic_issues, :relative_position, :integer, default: default_position, allow_null: false)
   end
 
   def down
-    remove_column(:epic_issues, :position)
-    remove_column(:epic_issues, :created_at)
-    remove_column(:epic_issues, :updated_at)
+    remove_column(:epic_issues, :relative_position)
   end
 end

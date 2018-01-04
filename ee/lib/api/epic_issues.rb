@@ -36,14 +36,20 @@ module API
       end
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
-        requires :epic_issue_id, type: Integer, desc: 'The id of the epic issue association'
-        requires :position, type: Integer, desc: 'The new position of the issue in the epic (index starting with 0)'
+        requires :epic_issue_id, type: Integer, desc: 'The id of the epic issue association to update'
+        optional :move_before_id, type: Integer, desc: 'The id of the epic issue association that should be positioned before the actual issue'
+        optional :move_after_id, type: Integer, desc: 'The id of the epic issue association that should be positioned after the actual issue'
       end
       put ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
         authorize_can_admin!
         check_epic_link!
 
-        result = ::EpicIssues::UpdateService.new(link, current_user, { position: params[:position].to_i }).execute
+        update_params = {
+          move_before_id: params[:move_before_id],
+          move_after_id: params[:move_after_id],
+        }
+
+        result = ::EpicIssues::UpdateService.new(link, current_user, update_params).execute
 
         # For now we return empty body
         # The issues list in the correct order in body will be returned as part of #4250

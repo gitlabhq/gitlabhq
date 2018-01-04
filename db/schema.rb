@@ -765,9 +765,7 @@ ActiveRecord::Schema.define(version: 20171221154744) do
   create_table "epic_issues", force: :cascade do |t|
     t.integer "epic_id", null: false
     t.integer "issue_id", null: false
-    t.integer "position", default: 1, null: false
-    t.datetime_with_timezone "created_at"
-    t.datetime_with_timezone "updated_at"
+    t.integer "relative_position", default: 1073741823, null: false
   end
 
   add_index "epic_issues", ["epic_id"], name: "index_epic_issues_on_epic_id", using: :btree
