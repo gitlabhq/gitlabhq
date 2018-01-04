@@ -1056,6 +1056,9 @@ ActiveRecord::Schema.define(version: 20171220191323) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "pipeline_id"
+    t.integer "merged_by_id"
+    t.integer "latest_closed_by_id"
+    t.datetime_with_timezone "latest_closed_at"
   end
 
   add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
@@ -1995,6 +1998,8 @@ ActiveRecord::Schema.define(version: 20171220191323) do
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_request_metrics", "users", column: "latest_closed_by_id", name: "fk_ae440388cc", on_delete: :nullify
+  add_foreign_key "merge_request_metrics", "users", column: "merged_by_id", name: "fk_7f28d925f3", on_delete: :nullify
   add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify
   add_foreign_key "merge_requests", "merge_request_diffs", column: "latest_merge_request_diff_id", name: "fk_06067f5644", on_delete: :nullify
   add_foreign_key "merge_requests", "milestones", name: "fk_6a5165a692", on_delete: :nullify
