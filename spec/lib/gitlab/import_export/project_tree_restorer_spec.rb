@@ -188,7 +188,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'correctly restores association between a stage and a job' do
-          expect(pipeline.statuses).to all(have_attributes(stage_id: a_value > 10))
+          expect(pipeline.statuses).to all(have_attributes(stage_id: a_value > 0))
         end
       end
     end
