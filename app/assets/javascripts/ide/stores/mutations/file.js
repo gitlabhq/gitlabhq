@@ -38,6 +38,11 @@ export default {
       raw,
     });
   },
+  [types.SET_FILE_TARGET_RAW_DATA](state, { file, raw }) {
+    Object.assign(file, {
+      targetRaw: raw,
+    });
+  },
   [types.UPDATE_FILE_CONTENT](state, { file, content }) {
     const changed = content !== file.raw;
 
@@ -62,6 +67,11 @@ export default {
       editorColumn,
     });
   },
+  [types.SET_FILE_VIEWMODE](state, { file, viewMode }) {
+    Object.assign(file, {
+      viewMode,
+    });
+  },
   [types.DISCARD_FILE_CHANGES](state, file) {
     Object.assign(file, {
       content: file.raw,
@@ -70,5 +80,16 @@ export default {
   },
   [types.CREATE_TMP_FILE](state, { file, parent }) {
     parent.tree.push(file);
+  },
+  [types.SET_FILE_MR_DIFF](state, { file, mrDiff }) {
+    Object.assign(file, {
+      mrDiff,
+      viewMode: 'mrchanges',
+    });
+  },
+  [types.SET_FILE_TARGET_BRANCH](state, { file, targetBranch }) {
+    Object.assign(file, {
+      targetBranch,
+    });
   },
 };

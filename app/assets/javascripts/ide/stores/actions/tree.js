@@ -87,7 +87,7 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   } else if (row.type === 'blob' && row.opened) {
     dispatch('setFileActive', row);
   } else {
-    dispatch('getFileData', row);
+    return dispatch('getFileData', row);
   }
 };
 

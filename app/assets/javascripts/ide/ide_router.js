@@ -119,10 +119,12 @@ router.beforeEach((to, from, next) => {
 
                 const changeTreeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${mr.source_branch}`, change.new_path);
 
-                console.log('Tree ENtry for the change ' , changeTreeEntry);
+                console.log('Tree ENtry for the change ' , changeTreeEntry, change.diff);
 
                 if (changeTreeEntry) {
-                  store.dispatch('handleTreeEntryAction', changeTreeEntry);
+                  store.dispatch('setFileMrDiff', { file: changeTreeEntry, mrDiff: change.diff });
+                  store.dispatch('setFileTargetBranch', { file: changeTreeEntry, targetBranch: mrChanges.target_branch });
+                  store.dispatch('getFileData', changeTreeEntry);
                 }
               });
             })

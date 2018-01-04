@@ -1,4 +1,6 @@
+import { parsePatch, applyPatches } from 'diff';
 import { normalizeHeaders } from '../../../lib/utils/common_utils';
+import { revertPatch } from '../../lib/diff/revert_patch';
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -51,26 +53,36 @@ export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
 };
 
 export const getFileData = ({ state, commit, dispatch }, file) => {
-  commit(types.TOGGLE_LOADING, file);
+  return new Promise((resolve, reject) => {
+    commit(types.TOGGLE_LOADING, file);
+    service.getFileData(file.url)
+      .then((res) => {
+        const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
 
-  service.getFileData(file.url)
-    .then((res) => {
-      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
+        setPageTitle(pageTitle);
 
-      setPageTitle(pageTitle);
+        return res.json();
+      })
+      .then((data) => {
+        commit(types.SET_FILE_DATA, { data, file });
+        commit(types.TOGGLE_FILE_OPEN, file);
+        dispatch('setFileActive', file);
+        commit(types.TOGGLE_LOADING, file);
+      })
+      .catch(() => {
+        commit(types.TOGGLE_LOADING, file);
+        flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
+      });
+  });
+};
+export const processFileMrDiff = ({ state, commit }, file) => {
+  const patchObj = parsePatch(file.mrDiff);
+  const transformedContent = applyPatch(file.raw, file.mrDiff);
+  debugger;
 
-      return res.json();
-    })
-    .then((data) => {
-      commit(types.SET_FILE_DATA, { data, file });
-      commit(types.TOGGLE_FILE_OPEN, file);
-      dispatch('setFileActive', file);
-      commit(types.TOGGLE_LOADING, file);
-    })
-    .catch(() => {
-      commit(types.TOGGLE_LOADING, file);
-      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
-    });
+
+export const setFileMrDiff = ({ state, commit }, { file, mrDiff }) => {
+  commit(types.SET_FILE_MR_DIFF, { file, mrDiff });
 };
 
 export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFileData(file)
@@ -78,6 +90,63 @@ export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFile
     commit(types.SET_FILE_RAW_DATA, { file, raw });
   })
   .catch(() => flash('Error loading file content. Please try again.', 'alert', document, null, false, true));
+
+export const setFileTargetBranch = ({ state, commit }, { file, targetBranch }) => {
+  commit(types.SET_FILE_TARGET_BRANCH, { file, targetBranch, targetRawPath: file.rawPath.replace(file.branchId, targetBranch) });
+};
+
+export const getRawFileData = ({ commit, dispatch }, file) => {
+  return new Promise((resolve, reject) => {
+    service.getRawFileData(file)
+      .then((raw) => {
+        commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (file.mrDiff) {
+          service.getRawTargetFileData(file)
+          .then((targetRaw) => {
+            const patchObj = parsePatch(file.mrDiff);
+            patchObj[0].hunks.forEach((hunk) => {
+              console.log('H ', hunk);
+              /*hunk.lines.forEach((line) => {
+                if (line.substr(0, 1) === '+') {
+                  line = '-' + line.substr(1);
+                } else if (line.substr(0, 1) === '-') {
+                  line = '+' + line.substr(1);
+                }
+              })*/
+            });
+
+            console.log('PATCH OBJ : ' + JSON.stringify(patchObj));
+
+            const transformedContent = revertPatch(raw, patchObj, {
+              compareLine: (lineNumber, line, operation, patchContent) => {
+                const tempLine = line;
+                //line = patchContent;
+                //patchContent = tempLine;
+                if (operation==='-') operation = '+';
+                console.log('COMPARE : ' + line + ' - ' + operation + ' - ' + patchContent);
+                return true;
+              }
+            });
+            console.log('TRANSFORMED : ',transformedContent);
+            commit(types.SET_FILE_TARGET_RAW_DATA, { file, raw: transformedContent });
+            resolve(raw);
+          });
+        }
+        
+      })
+      .catch(() => {
+        flash('Error loading file content. Please try again.');
+        reject();
+      });
+  });
+};
+
+export const getRawTargetFileData = ({ commit, dispatch }, file) =>
+  service.getRawTargetFileData(file)
+    .then((raw) => {
+      commit(types.SET_FILE_TARGET_RAW_DATA, { file, raw });
+    })
+    .catch(() => flash('Error loading file content. Please try again.'));
 
 export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
@@ -99,6 +168,10 @@ export const setEditorPosition = ({ state, commit }, { editorRow, editorColumn }
   if (state.selectedFile) {
     commit(types.SET_FILE_POSITION, { file: state.selectedFile, editorRow, editorColumn });
   }
+};
+
+export const setFileViewMode = ({ state, commit }, viewMode) => {
+  commit(types.SET_FILE_VIEWMODE, { file: state.selectedFile, viewMode });
 };
 
 export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) => {

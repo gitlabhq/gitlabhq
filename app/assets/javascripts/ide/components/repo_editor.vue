@@ -58,6 +58,7 @@ export default {
       'changeFileContent',
       'setFileLanguage',
       'setEditorPosition',
+      'setFileViewMode',
       'setFileEOL',
     ]),
     initMonaco() {
@@ -112,6 +113,9 @@ export default {
         eol: model.eol,
       });
     },
+    selectViewMode(e) {
+      console.log('Selected View Mode : ',e);
+    }
   },
 };
 </script>
@@ -121,6 +125,46 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
+    <div
+      class="ide-mode-tabs"
+      v-if="!shouldHideEditor">
+      <ul class="nav nav-pills">
+        <li
+          :class="activeFile.viewMode==='edit' ? 'active':''">
+          <a
+            href="javascript:void(0);"
+            @click.prevent="setFileViewMode('edit')">
+            Edit
+          </a>
+        </li>
+        <li
+          :class="activeFile.viewMode==='changes' ? 'active':''">
+          <a
+            href="javascript:void(0);"
+            @click.prevent="setFileViewMode('changes')">
+            Changes
+          </a>
+        </li>
+        <li
+          v-if="activeFile.mrDiff"
+          :class="activeFile.viewMode==='mrchanges' ? 'active':''">
+          <a
+            href="javascript:void(0);"
+            @click.prevent="setFileViewMode('mrchanges')">
+            Merge Request Changes
+          </a>
+        </li>
+        <li
+          :class="activeFile.viewMode==='preview' ? 'active':''">
+          <a
+            v-if="activeFile.previewable"
+            href="javascript:void(0);"
+            @click.prevent="setFileViewMode('preview')">
+            Preview
+          </a>
+        </li>
+      </ul>
+    </div>
     <div
       v-if="shouldHideEditor"
       v-html="activeFile.html"
