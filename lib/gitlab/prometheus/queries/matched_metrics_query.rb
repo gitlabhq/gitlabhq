@@ -4,7 +4,7 @@ module Gitlab
       class MatchedMetricsQuery < BaseQuery
         MAX_QUERY_ITEMS = 40.freeze
 
-        def query
+        def query(_ = nil)
           groups_data.map do |group, data|
             {
               group: group.name,

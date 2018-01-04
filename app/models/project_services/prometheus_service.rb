@@ -1,3 +1,7 @@
+module Gitlab
+  PrometheusError = Class.new(StandardError)
+end
+
 class PrometheusService < MonitoringService
   include ReactiveService
 
@@ -8,7 +12,6 @@ class PrometheusService < MonitoringService
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
   boolean_accessor :manual_configuration
-  boolean_accessor :prometheus_installed
 
   with_options presence: true, if: :manual_configuration? do
     validates :api_url, url: true
@@ -18,10 +21,9 @@ class PrometheusService < MonitoringService
 
   after_save :clear_reactive_cache!
 
-
   def initialize_properties
     if properties.nil?
-      self.properties = { prometheus_installed: false }
+      self.properties = { }
     end
   end
 
@@ -54,7 +56,6 @@ class PrometheusService < MonitoringService
           }
         ]
       },
-
       {
         type: 'text',
         name: 'api_url',
@@ -126,6 +127,10 @@ class PrometheusService < MonitoringService
     end
   end
 
+  def prometheus_installed?
+    cluster_with_prometheus.present?
+  end
+
   private
 
   def cluster_with_prometheus(environment_id = nil)
@@ -135,7 +140,7 @@ class PrometheusService < MonitoringService
                  project.clusters.enabled.select { |c| c.environment_scope == '*' || c.environment_scope == '' }
                end
 
-    clusters.detect { |cluster| cluster.application_prometheus.installed? }
+    clusters.detect { |cluster| cluster.application_prometheus&.installed? }
   end
 
   def rename_data_to_metrics(metrics)
@@ -144,7 +149,8 @@ class PrometheusService < MonitoringService
   end
 
   def synchronize_service_state!
-    self.active = prometheus_installed? || manual_configuration? || cluster_with_prometheus.present?
-    self.prometheus_installed = !manual_configuration? && cluster_with_prometheus.present?
+    self.active = prometheus_installed? || self.manual_configuration?
+
+    true
   end
 end

@@ -1,0 +1,10 @@
+.row.prepend-top-default.append-bottom-default
+  %p
+    - unless @service.manual_configuration?
+      - if @service.prometheus_installed?
+        = link_to 'Manage installed Prometheus', project_clusters_path(@project), class: 'btn btn-cancel'
+      - else
+        = link_to 'Install Prometheus', project_clusters_path(@project), class: 'btn btn-cancel'
+    - else
+      To automatically install prometheus disable manual configuration
+
