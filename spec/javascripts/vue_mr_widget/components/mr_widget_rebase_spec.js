@@ -88,11 +88,9 @@ describe('Merge request widget rebase component', () => {
           },
           poll() {
             return Promise.resolve({
-              json() {
-                return {
-                  rebase_in_progress: false,
-                  merge_error: null,
-                };
+              data: {
+                rebase_in_progress: false,
+                merge_error: null,
               },
             });
           },
