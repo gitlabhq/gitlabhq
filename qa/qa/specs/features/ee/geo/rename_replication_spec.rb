@@ -38,7 +38,7 @@ module QA
 
         expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-        Page::Main::Menu.perform do |menu|
+        Page::Menu::Main.perform do |menu|
           menu.go_to_projects
 
           expect(page).to have_content(geo_project_name)
@@ -57,7 +57,7 @@ module QA
 
         # rename the project
         visit(Runtime::Browser.url_for(:geo_primary, QA::Page::Main::Home))
-        Page::Main::Menu.act { go_to_projects }
+        Page::Menu::Main.act { go_to_projects }
 
         Page::Dashboard::Projects.perform do |dashboard|
           dashboard.go_to_project(geo_project_name)
@@ -80,7 +80,7 @@ module QA
 
         expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-        Page::Main::Menu.perform do |menu|
+        Page::Menu::Main.perform do |menu|
           menu.go_to_projects
 
           expect(page).to have_content(geo_project_newname)

@@ -7,7 +7,7 @@ module QA
             page.within(selector) do
               find_button('Expand').click
 
-              yield
+              yield if block_given?
             end
           end
         end
