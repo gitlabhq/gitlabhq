@@ -2,11 +2,18 @@
 import { mapState, mapActions } from 'vuex';
 import projectTree from './ide_project_tree.vue';
 import icon from '../../vue_shared/components/icon.vue';
+import panelResizer from '../../vue_shared/components/panel_resizer.vue';
 
 export default {
+  data() {
+    return {
+      width: 290,
+    };
+  },
   components: {
     projectTree,
     icon,
+    panelResizer,
   },
   computed: {
     ...mapState([
@@ -16,16 +23,32 @@ export default {
     currentIcon() {
       return this.leftPanelCollapsed ? 'angle-double-right' : 'angle-double-left';
     },
+    maxSize() {
+      return window.innerWidth / 2;
+    },
+    panelStyle() {
+      if (!this.leftPanelCollapsed) {
+        return { width: `${this.width}px` };
+      }
+      return {};
+    },
   },
   methods: {
     ...mapActions([
       'setPanelCollapsedStatus',
+      'setResizingStatus',
     ]),
     toggleCollapsed() {
       this.setPanelCollapsedStatus({
         side: 'left',
         collapsed: !this.leftPanelCollapsed,
       });
+    },
+    resizingStarted() {
+      this.setResizingStatus(true);
+    },
+    resizingEnded() {
+      this.setResizingStatus(false);
     },
   },
 };
@@ -37,6 +60,7 @@ export default {
       :class="{
         'is-collapsed': leftPanelCollapsed,
       }"
+      :style="panelStyle"
     >
     <div class="multi-file-commit-panel-inner">
       <project-tree
@@ -58,5 +82,14 @@ export default {
         class="collapse-text"
       >Collapse sidebar</span>
     </button>
+    <panel-resizer
+      :size.sync="width"
+      :enabled="!leftPanelCollapsed"
+      :start-size="290"
+      :min-size="200"
+      :max-size="maxSize"
+      @resize-start="resizingStarted"
+      @resize-end="resizingEnded"
+      side="right"/>
   </div>
 </template>
