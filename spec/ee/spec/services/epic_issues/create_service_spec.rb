@@ -136,12 +136,12 @@ describe EpicIssues::CreateService do
               allow(extractor).to receive(:issues).and_return(issues)
               params = { issue_references: issues.map { |i| i.to_reference(full: true) } }
 
-              # threshold 20 because 5 queries are generated for each insert
-              # (savepoint, exists, relative_position get, insert, release savepoint)
+              # threshold 24 because 6 queries are generated for each insert
+              # (savepoint, find, exists, relative_position get, insert, release savepoint)
               # and we insert 5 issues instead of 1 which we do for control count
               expect { described_class.new(epic, user, params).execute }
                 .not_to exceed_query_limit(control_count)
-                .with_threshold(20)
+                .with_threshold(24)
             end
           end
 

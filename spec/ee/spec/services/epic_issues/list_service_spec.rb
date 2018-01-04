@@ -44,7 +44,8 @@ describe EpicIssues::ListService do
               state: issue2.state,
               reference: issue2.to_reference(full: true),
               path: "/#{project.full_path}/issues/#{issue2.iid}",
-              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue2.id}"
+              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue2.id}",
+              epic_issue_id: epic_issue2.id
             },
             {
               id: issue1.id,
@@ -52,7 +53,8 @@ describe EpicIssues::ListService do
               state: issue1.state,
               reference: issue1.to_reference(full: true),
               path: "/#{project.full_path}/issues/#{issue1.iid}",
-              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}"
+              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue1.id}",
+              epic_issue_id: epic_issue1.id
             },
             {
               id: issue3.id,
@@ -60,7 +62,8 @@ describe EpicIssues::ListService do
               state: issue3.state,
               reference: issue3.to_reference(full: true),
               path: "/#{other_project.full_path}/issues/#{issue3.iid}",
-              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue3.id}"
+              relation_path: "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue3.id}",
+              epic_issue_id: epic_issue3.id
             }
           ]
           expect(subject).to eq(expected_result)
@@ -80,7 +83,8 @@ describe EpicIssues::ListService do
               state: issue2.state,
               reference: issue2.to_reference(full: true),
               path: "/#{project.full_path}/issues/#{issue2.iid}",
-              relation_path: nil
+              relation_path: nil,
+              epic_issue_id: epic_issue2.id
             },
             {
               id: issue1.id,
@@ -88,7 +92,8 @@ describe EpicIssues::ListService do
               state: issue1.state,
               reference: issue1.to_reference(full: true),
               path: "/#{project.full_path}/issues/#{issue1.iid}",
-              relation_path: nil
+              relation_path: nil,
+              epic_issue_id: epic_issue1.id
             }
           ]
 

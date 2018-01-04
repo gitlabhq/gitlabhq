@@ -14,16 +14,12 @@ module API
         authorize!(:admin_epic, epic)
       end
 
-      def check_epic_link!
-        forbidden! if link.epic != epic
-      end
-
       def epic
         @epic ||= user_group.epics.find_by(iid: params[:epic_iid])
       end
 
       def link
-        @link ||= EpicIssue.find(params[:epic_issue_id])
+        @link ||= epic.epic_issues.find(params[:epic_issue_id])
       end
     end
 
@@ -42,7 +38,6 @@ module API
       end
       put ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
         authorize_can_admin!
-        check_epic_link!
 
         update_params = {
           move_before_id: params[:move_before_id],

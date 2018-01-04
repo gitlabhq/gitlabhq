@@ -24,6 +24,29 @@ describe EpicIssues::UpdateService do
       EpicIssue.all.order('relative_position, id')
     end
 
+    context 'when moving issues between different epics' do
+      before do
+        epic_issue3.update_attribute(:epic, create(:epic, group: group))
+      end
+
+      let(:params) { { move_before_id: epic_issue3.id, move_after_id: epic_issue4.id } }
+
+      subject { order_issue(epic_issue1, params) }
+
+      it 'returns an error' do
+        is_expected.to eq(message: 'Epic issue not found for given params', status: :error, http_status: 404)
+      end
+
+      it 'does not change the relative_position values' do
+        subject
+
+        expect(epic_issue1.relative_position).to eq(3)
+        expect(epic_issue2.relative_position).to eq(600)
+        expect(epic_issue3.relative_position).to eq(1200)
+        expect(epic_issue4.relative_position).to eq(2000)
+      end
+    end
+
     context 'moving issue to the first position' do
       let(:params) { { move_after_id: epic_issue1.id } }
 

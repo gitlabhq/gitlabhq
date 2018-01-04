@@ -3,10 +3,10 @@ module EpicIssues
     private
 
     def relate_issues(referenced_issue)
-      link = existing_links.find { |link| link.issue == referenced_issue } || EpicIssue.new(issue: referenced_issue)
+      link = EpicIssue.find_or_initialize_by(issue: referenced_issue)
       link.epic = issuable
       link.move_to_start
-      link.save
+      link.save!
 
       link
     end
@@ -28,10 +28,6 @@ module EpicIssues
 
     def issuable_group_descendants
       @descendants ||= issuable.group.self_and_descendants
-    end
-
-    def existing_links
-      @existing_links ||= EpicIssue.where(issue_id: referenced_issues.map(&:id))
     end
   end
 end
