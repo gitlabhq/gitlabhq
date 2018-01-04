@@ -1,0 +1,5 @@
+---
+title: Fix API endpoints to edit wiki pages where project belongs to a group
+merge_request: 16170
+author:
+type: fixed
