@@ -8,7 +8,7 @@ describe Projects::TemplatesController do
   let(:body) { JSON.parse(response.body) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
   end
 

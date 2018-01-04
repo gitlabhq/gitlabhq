@@ -18,9 +18,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:storage_path) { TestEnv.repos_path }
 
   describe '.create_hooks' do
-    let(:repo_path) { File.join(TestEnv.repos_path, 'hook-test.git') }
+    let(:repo_path) { File.join(storage_path, 'hook-test.git') }
     let(:hooks_dir) { File.join(repo_path, 'hooks') }
     let(:target_hooks_dir) { Gitlab.config.gitlab_shell.hooks_path }
     let(:existing_target) { File.join(repo_path, 'foobar') }
@@ -645,7 +646,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      Gitlab::Shell.new.remove_repository(TestEnv.repos_path, 'my_project')
+      Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
     end
 
     it 'fetches a repository as a mirror remote' do
@@ -698,21 +699,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
       expect(subject.first.name).to eq(tag_name)
       expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
-    end
-  end
-
-  describe '#remote_exists?' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.add_remote("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
-    end
-
-    it 'returns true for an existing remote' do
-      expect(@repo.remote_exists?('new_remote')).to eq(true)
-    end
-
-    it 'returns false for a non-existing remote' do
-      expect(@repo.remote_exists?('foo')).to eq(false)
     end
   end
 
@@ -1030,7 +1016,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
-          options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+          options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(25)
         end
@@ -1038,7 +1024,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       context 'with before timestamp' do
         it 'returns the number of commits before timestamp' do
-          options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+          options = { ref: 'feature', before: Time.iso8601('2015-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(9)
         end
@@ -1046,9 +1032,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       context 'with path' do
         it 'returns the number of commits with path ' do
-          options = { ref: 'master', limit: nil, path: "encoding" }
+          options = { ref: 'master', path: "encoding" }
 
           expect(repository.count_commits(options)).to eq(2)
+        end
+      end
+
+      context 'with max_count' do
+        it 'returns the number of commits up to the passed limit' do
+          options = { ref: 'master', max_count: 10, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+
+          expect(repository.count_commits(options)).to eq(10)
         end
       end
     end
@@ -1670,7 +1664,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:branch_name) { "to-be-deleted-soon" }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         repository.create_branch(branch_name)
       end
 
@@ -1733,6 +1727,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(result.newrev).to eq(merge_commit_id)
         expect(result.repo_created).to eq(false)
         expect(result.branch_created).to eq(false)
+      end
+
+      it 'returns nil if there was a concurrent branch update' do
+        concurrent_update_id = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
+        result = repository.merge(user, source_sha, target_branch, 'Test merge') do
+          # This ref update should make the merge fail
+          repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
+        end
+
+        # This 'nil' signals that the merge was not applied
+        expect(result).to be_nil
+
+        # Our concurrent ref update should not have been undone
+        expect(repository.find_branch(target_branch).target).to eq(concurrent_update_id)
       end
     end
 
@@ -1840,6 +1848,166 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(repository.ref_exists?("refs/keep/c")).to be(true)
       expect(repository.ref_exists?("refs/also-keep/d")).to be(true)
       expect(repository.ref_exists?("refs/heads/master")).to be(true)
+    end
+  end
+
+  describe 'remotes' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+    let(:remote_name) { 'my-remote' }
+
+    after do
+      ensure_seeds
+    end
+
+    describe '#add_remote' do
+      let(:url) { 'http://my-repo.git' }
+      let(:mirror_refmap) { '+refs/*:refs/*' }
+
+      it 'creates a new remote via Gitaly' do
+        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+          .to receive(:add_remote).with(remote_name, url, mirror_refmap)
+
+        repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
+      end
+
+      context 'with Gitaly disabled', :skip_gitaly_mock do
+        it 'creates a new remote via Rugged' do
+          expect_any_instance_of(Rugged::RemoteCollection).to receive(:create)
+            .with(remote_name, url)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+          .with("remote.#{remote_name}.mirror", true)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+          .with("remote.#{remote_name}.prune", true)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+            .with("remote.#{remote_name}.fetch", mirror_refmap)
+
+          repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
+        end
+      end
+    end
+
+    describe '#remove_remote' do
+      it 'removes the remote via Gitaly' do
+        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+          .to receive(:remove_remote).with(remote_name)
+
+        repository.remove_remote(remote_name)
+      end
+
+      context 'with Gitaly disabled', :skip_gitaly_mock do
+        it 'removes the remote via Rugged' do
+          expect_any_instance_of(Rugged::RemoteCollection).to receive(:delete)
+            .with(remote_name)
+
+          repository.remove_remote(remote_name)
+        end
+      end
+    end
+  end
+
+  describe '#gitlab_projects' do
+    subject { repository.gitlab_projects }
+
+    it { expect(subject.shard_path).to eq(storage_path) }
+    it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
+  end
+
+  context 'gitlab_projects commands' do
+    let(:gitlab_projects) { repository.gitlab_projects }
+    let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
+
+    describe '#push_remote_branches' do
+      subject do
+        repository.push_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:push_branches)
+          .with('downstream-remote', timeout, true, ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:push_branches)
+          .with('downstream-remote', timeout, true, ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#delete_remote_branches' do
+      subject do
+        repository.delete_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#delete_remote_branches' do
+      subject do
+        repository.delete_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#delete_remote_branches' do
+      subject do
+        repository.delete_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
     end
   end
 

@@ -12,8 +12,8 @@ describe API::V3::Todos do
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do
-    project_1.team << [john_doe, :developer]
-    project_2.team << [john_doe, :developer]
+    project_1.add_developer(john_doe)
+    project_2.add_developer(john_doe)
   end
 
   describe 'DELETE /todos/:id' do

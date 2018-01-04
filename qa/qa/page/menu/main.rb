@@ -1,7 +1,7 @@
 module QA
   module Page
-    module Main
-      class Menu < Page::Base
+    module Menu
+      class Main < Page::Base
         def go_to_groups
           within_top_menu { click_link 'Groups' }
         end

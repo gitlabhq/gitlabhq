@@ -3,6 +3,8 @@ require 'stringio'
 module Gitlab
   module GitalyClient
     class WikiService
+      include Gitlab::EncodingHelper
+
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
       def initialize(repository)
@@ -13,12 +15,12 @@ module Gitlab
       def write_page(name, format, content, commit_details)
         request = Gitaly::WikiWritePageRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(name),
+          name: encode_binary(name),
           format: format.to_s,
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = GitalyClient.binary_stringio(content)
+        strio = binary_stringio(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
@@ -39,13 +41,13 @@ module Gitlab
       def update_page(page_path, title, format, content, commit_details)
         request = Gitaly::WikiUpdatePageRequest.new(
           repository: @gitaly_repo,
-          page_path: GitalyClient.encode(page_path),
-          title: GitalyClient.encode(title),
+          page_path: encode_binary(page_path),
+          title: encode_binary(title),
           format: format.to_s,
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = GitalyClient.binary_stringio(content)
+        strio = binary_stringio(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
@@ -63,7 +65,7 @@ module Gitlab
       def delete_page(page_path, commit_details)
         request = Gitaly::WikiDeletePageRequest.new(
           repository: @gitaly_repo,
-          page_path: GitalyClient.encode(page_path),
+          page_path: encode_binary(page_path),
           commit_details: gitaly_commit_details(commit_details)
         )
 
@@ -73,9 +75,9 @@ module Gitlab
       def find_page(title:, version: nil, dir: nil)
         request = Gitaly::WikiFindPageRequest.new(
           repository: @gitaly_repo,
-          title: GitalyClient.encode(title),
-          revision: GitalyClient.encode(version),
-          directory: GitalyClient.encode(dir)
+          title: encode_binary(title),
+          revision: encode_binary(version),
+          directory: encode_binary(dir)
         )
 
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request)
@@ -102,8 +104,8 @@ module Gitlab
       def find_file(name, revision)
         request = Gitaly::WikiFindFileRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(name),
-          revision: GitalyClient.encode(revision)
+          name: encode_binary(name),
+          revision: encode_binary(revision)
         )
 
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_file, request)
@@ -158,9 +160,9 @@ module Gitlab
 
       def gitaly_commit_details(commit_details)
         Gitaly::WikiCommitDetails.new(
-          name: GitalyClient.encode(commit_details.name),
-          email: GitalyClient.encode(commit_details.email),
-          message: GitalyClient.encode(commit_details.message)
+          name: encode_binary(commit_details.name),
+          email: encode_binary(commit_details.email),
+          message: encode_binary(commit_details.message)
         )
       end
     end

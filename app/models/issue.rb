@@ -276,6 +276,11 @@ class Issue < ActiveRecord::Base
 
   private
 
+  def ensure_metrics
+    super
+    metrics.record!
+  end
+
   # Returns `true` if the given User can read the current Issue.
   #
   # This method duplicates the same check of issue_policy.rb

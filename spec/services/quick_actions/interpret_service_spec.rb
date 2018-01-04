@@ -12,7 +12,7 @@ describe QuickActions::InterpretService do
   let(:service) { described_class.new(project, developer) }
 
   before do
-    project.team << [developer, :developer]
+    project.add_developer(developer)
   end
 
   describe '#execute' do
@@ -440,7 +440,7 @@ describe QuickActions::InterpretService do
       let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
 
       before do
-        project.team << [developer2, :developer]
+        project.add_developer(developer2)
       end
 
       context 'Issue' do

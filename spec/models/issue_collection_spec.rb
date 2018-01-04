@@ -42,7 +42,7 @@ describe IssueCollection do
 
     context 'using a user that has reporter access to the project' do
       it 'returns the issues of the project' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(collection.updatable_by_user(user)).to eq([issue1, issue2])
       end

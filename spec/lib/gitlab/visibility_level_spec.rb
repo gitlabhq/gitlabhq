@@ -49,4 +49,31 @@ describe Gitlab::VisibilityLevel do
         .to eq([Gitlab::VisibilityLevel::PUBLIC])
     end
   end
+
+  describe '.allowed_levels' do
+    it 'only includes the levels that arent restricted' do
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+      expect(described_class.allowed_levels)
+        .to contain_exactly(described_class::PRIVATE, described_class::PUBLIC)
+    end
+  end
+
+  describe '.closest_allowed_level' do
+    it 'picks INTERNAL instead of PUBLIC if public is restricted' do
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+
+      expect(described_class.closest_allowed_level(described_class::PUBLIC))
+        .to eq(described_class::INTERNAL)
+    end
+
+    it 'picks PRIVATE if nothing is available' do
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC,
+                                                              Gitlab::VisibilityLevel::INTERNAL,
+                                                              Gitlab::VisibilityLevel::PRIVATE])
+
+      expect(described_class.closest_allowed_level(described_class::PUBLIC))
+        .to eq(described_class::PRIVATE)
+    end
+  end
 end

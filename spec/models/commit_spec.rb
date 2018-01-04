@@ -193,8 +193,8 @@ eos
     let(:commiter) { create :user }
 
     before do
-      project.team << [commiter, :developer]
-      other_project.team << [commiter, :developer]
+      project.add_developer(commiter)
+      other_project.add_developer(commiter)
     end
 
     it 'detects issues that this commit is marked as closing' do

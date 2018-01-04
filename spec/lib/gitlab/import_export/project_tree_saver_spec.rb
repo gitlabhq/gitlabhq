@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     let!(:project) { setup_project }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
       allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')

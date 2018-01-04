@@ -36,10 +36,6 @@
   }
 }
 
-.with-performance-bar .ide-view {
-  height: calc(100vh - #{$header-height});
-}
-
 .ide-file-list {
   flex: 1;
 
@@ -96,8 +92,14 @@
   padding: 6px 12px;
 }
 
-.multi-file-table-name {
+table.table tr td.multi-file-table-name {
   width: 350px;
+  padding: 6px 12px;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 2px;
+  }
 }
 
 .multi-file-table-col-commit-message {
@@ -131,6 +133,10 @@
   border-right: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
   cursor: pointer;
+
+  svg {
+    vertical-align: middle;
+  }
 
   &.active {
     background-color: $white-light;
@@ -232,12 +238,13 @@
 
 .multi-file-commit-panel {
   display: flex;
+  position: relative;
   flex-direction: column;
   height: 100%;
   width: 290px;
   padding: 0;
   background-color: $gray-light;
-  border-left: 1px solid $white-dark;
+  padding-right: 3px;
 
   .projects-sidebar {
     display: flex;
@@ -485,4 +492,31 @@
 .ide-flash-container.flash-container {
   margin-top: $header-height;
   margin-bottom: 0;
+}
+
+.with-performance-bar {
+  .ide-flash-container.flash-container {
+    margin-top: $header-height + $performance-bar-height;
+  }
+
+  .ide-view {
+    height: calc(100vh - #{$header-height + $performance-bar-height});
+  }
+}
+
+
+.dragHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: $white-dark;
+
+  &.dragright {
+    right: 0;
+  }
+
+  &.dragleft {
+    left: 0;
+  }
 }

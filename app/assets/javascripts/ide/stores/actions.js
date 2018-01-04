@@ -63,6 +63,10 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
+export const setResizingStatus = ({ commit }, resizing) => {
+  commit(types.SET_RESIZING_STATUS, resizing);
+};
+
 export const checkCommitStatus = ({ state }) =>
   service
     .getBranchData(state.currentProjectId, state.currentBranchId)

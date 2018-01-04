@@ -1,9 +1,7 @@
 /* eslint-disable no-new */
 import Vue from 'vue';
-import VueResource from 'vue-resource';
+import axios from '../../lib/utils/axios_utils';
 import notebookLab from '../../notebook/index.vue';
-
-Vue.use(VueResource);
 
 export default () => {
   const el = document.getElementById('js-notebook-viewer');
@@ -50,14 +48,14 @@ export default () => {
     `,
     methods: {
       loadFile() {
-        this.$http.get(el.dataset.endpoint)
-          .then(response => response.json())
-          .then((res) => {
-            this.json = res;
+        axios.get(el.dataset.endpoint)
+          .then(res => res.data)
+          .then((data) => {
+            this.json = data;
             this.loading = false;
           })
           .catch((e) => {
-            if (e.status) {
+            if (e.status !== 200) {
               this.loadError = true;
             }
 

@@ -6,7 +6,7 @@ feature 'Edit Merge Request' do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in user
 

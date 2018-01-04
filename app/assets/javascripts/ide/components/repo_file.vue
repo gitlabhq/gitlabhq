@@ -3,6 +3,7 @@
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
   import newDropdown from './new_dropdown/index.vue';
+  import fileIcon from '../../vue_shared/components/file_icon.vue';
 
   export default {
     mixins: [
@@ -11,6 +12,7 @@
     components: {
       skeletonLoadingContainer,
       newDropdown,
+      fileIcon,
     },
     props: {
       file: {
@@ -26,13 +28,6 @@
       ...mapState([
         'leftPanelCollapsed',
       ]),
-      fileIcon() {
-        return {
-          'fa-spinner fa-spin': this.file.loading,
-          [this.file.icon]: !this.file.loading,
-          'fa-folder-open': !this.file.loading && this.file.opened,
-        };
-      },
       isSubmodule() {
         return this.file.type === 'submodule';
       },
@@ -94,16 +89,18 @@
       class="multi-file-table-name"
       :colspan="submoduleColSpan"
     >
-      <i
-        class="fa fa-fw file-icon"
-        :class="fileIcon"
-        :style="levelIndentation"
-        aria-hidden="true"
-      >
-      </i>
       <a
         class="repo-file-name"
       >
+        <file-icon
+          :file-name="file.name"
+          :loading="file.loading"
+          :folder="file.type === 'tree'"
+          :opened="file.opened"
+          :style="levelIndentation"
+          :size="16"
+        >
+        </file-icon>
         {{ file.name }}
       </a>
       <new-dropdown

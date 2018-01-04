@@ -1,5 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
+import fileIcon from '../../vue_shared/components/file_icon.vue';
 
 export default {
   props: {
@@ -8,7 +9,9 @@ export default {
       required: true,
     },
   },
-
+  components: {
+    fileIcon,
+  },
   computed: {
     closeLabel() {
       if (this.tab.changed || this.tab.tempFile) {
@@ -63,6 +66,11 @@ export default {
       :class="{active : tab.active }"
       :title="tab.url"
     >
+      <file-icon
+        :file-name="tab.name"
+        :size="16"
+      >
+      </file-icon>
       {{ tab.name }}
     </div>
   </li>
