@@ -364,47 +364,6 @@ module Gitlab
       end
     end
 
-    # Push branch to remote repository
-    #
-    # storage - project's storage path
-    # project_name - project's disk path
-    # remote_name - remote name
-    # branch_names - remote branch names to push
-    # forced - should we use --force flag
-    #
-    # Ex.
-    #   push_remote_branches('/path/to/storage', 'gitlab-org/gitlab-test' 'upstream', ['feature'])
-    #
-    def push_remote_branches(storage, project_name, remote_name, branch_names, forced: true)
-      cmd = gitlab_projects(storage, "#{project_name}.git")
-
-      success = cmd.push_branches(remote_name, git_timeout, forced, branch_names)
-
-      raise Error, cmd.output unless success
-
-      success
-    end
-
-    # Delete branch from remote repository
-    #
-    # storage - project's storage path
-    # project_name - project's disk path
-    # remote_name - remote name
-    # branch_names - remote branch names
-    #
-    # Ex.
-    #   delete_remote_branches('/path/to/storage', 'gitlab-org/gitlab-test', 'upstream', ['feature'])
-    #
-    def delete_remote_branches(storage, project_name, remote_name, branch_names)
-      cmd = gitlab_projects(storage, "#{project_name}.git")
-
-      success = cmd.delete_remote_branches(remote_name, branch_names)
-
-      raise Error, cmd.output unless success
-
-      success
-    end
-
     protected
 
     def gitlab_shell_path

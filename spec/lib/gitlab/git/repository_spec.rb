@@ -18,9 +18,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:storage_path) { TestEnv.repos_path }
 
   describe '.create_hooks' do
-    let(:repo_path) { File.join(TestEnv.repos_path, 'hook-test.git') }
+    let(:repo_path) { File.join(storage_path, 'hook-test.git') }
     let(:hooks_dir) { File.join(repo_path, 'hooks') }
     let(:target_hooks_dir) { Gitlab.config.gitlab_shell.hooks_path }
     let(:existing_target) { File.join(repo_path, 'foobar') }
@@ -645,7 +646,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      Gitlab::Shell.new.remove_repository(TestEnv.repos_path, 'my_project')
+      Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
     end
 
     it 'fetches a repository as a mirror remote' do
@@ -1840,6 +1841,64 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(repository.ref_exists?("refs/keep/c")).to be(true)
       expect(repository.ref_exists?("refs/also-keep/d")).to be(true)
       expect(repository.ref_exists?("refs/heads/master")).to be(true)
+    end
+  end
+
+  describe '#gitlab_projects' do
+    subject { repository.gitlab_projects }
+
+    it { expect(subject.shard_path).to eq(storage_path) }
+    it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
+  end
+
+  context 'gitlab_projects commands' do
+    let(:gitlab_projects) { repository.gitlab_projects }
+    let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
+
+    describe '#push_remote_branches' do
+      subject do
+        repository.push_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:push_branches)
+          .with('downstream-remote', timeout, true, ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:push_branches)
+          .with('downstream-remote', timeout, true, ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#delete_remote_branches' do
+      subject do
+        repository.delete_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
     end
   end
 
