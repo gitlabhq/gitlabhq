@@ -1,4 +1,5 @@
 /* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len */
+import Cookies from 'js-cookie';
 import Flash from '../flash';
 import { getPagePath } from '../lib/utils/common_utils';
 
@@ -7,6 +8,8 @@ import { getPagePath } from '../lib/utils/common_utils';
     constructor({ form } = {}) {
       this.onSubmitForm = this.onSubmitForm.bind(this);
       this.form = form || $('.edit-user');
+      this.newRepoActivated = Cookies.get('new_repo');
+      this.setRepoRadio();
       this.bindEvents();
       this.initAvatarGlCrop();
     }
@@ -25,6 +28,7 @@ import { getPagePath } from '../lib/utils/common_utils';
 
     bindEvents() {
       $('.js-preferences-form').on('change.preference', 'input[type=radio]', this.submitForm);
+      $('input[name="user[multi_file]"]').on('change', this.setNewRepoCookie);
       $('#user_notification_email').on('change', this.submitForm);
       $('#user_notified_of_own_activity').on('change', this.submitForm);
       $('.update-username').on('ajax:before', this.beforeUpdateUsername);
@@ -81,6 +85,23 @@ import { getPagePath } from '../lib/utils/common_utils';
           return self.form.find(':input[disabled]').enable();
         }
       });
+    }
+
+    setNewRepoCookie() {
+      if (this.value === 'off') {
+        Cookies.remove('new_repo');
+      } else {
+        Cookies.set('new_repo', true, { expires_in: 365 });
+      }
+    }
+
+    setRepoRadio() {
+      const multiEditRadios = $('input[name="user[multi_file]"]');
+      if (this.newRepoActivated || this.newRepoActivated === 'true') {
+        multiEditRadios.filter('[value=on]').prop('checked', true);
+      } else {
+        multiEditRadios.filter('[value=off]').prop('checked', true);
+      }
     }
   }
 
