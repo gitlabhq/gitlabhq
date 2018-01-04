@@ -263,6 +263,14 @@ class Service < ActiveRecord::Base
     service
   end
 
+  def deprecated?
+    false
+  end
+
+  def deprecation_message
+    nil
+  end
+
   private
 
   def cache_project_has_external_issue_tracker

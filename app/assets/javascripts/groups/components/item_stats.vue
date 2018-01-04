@@ -1,15 +1,19 @@
 <script>
-import tooltip from '../../vue_shared/directives/tooltip';
+import icon from '~/vue_shared/components/icon.vue';
+import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   ITEM_TYPE,
   VISIBILITY_TYPE_ICON,
   GROUP_VISIBILITY_TYPE,
-  PROJECT_VISIBILITY_TYPE,
+  PROJECT_VISIBILITY_TYPE
 } from '../constants';
+import itemStatsValue from './item_stats_value.vue';
 
 export default {
-  directives: {
-    tooltip,
+  components: {
+    icon,
+    timeAgoTooltip,
+    itemStatsValue,
   },
   props: {
     item: {
@@ -39,65 +43,47 @@ export default {
 
 <template>
   <div class="stats">
-    <span
-      v-tooltip
+    <item-stats-value
       v-if="isGroup"
+      css-class="number-subgroups"
+      icon-name="folder"
       :title="s__('Subgroups')"
-      class="number-subgroups"
-      data-placement="top"
-      data-container="body">
-      <i
-        class="fa fa-folder"
-        aria-hidden="true"
-      />
-      {{item.subgroupCount}}
-    </span>
-    <span
-      v-tooltip
+      :value=item.subgroupCount
+    />
+    <item-stats-value
       v-if="isGroup"
+      css-class="number-projects"
+      icon-name="bookmark"
       :title="s__('Projects')"
-      class="number-projects"
-      data-placement="top"
-      data-container="body">
-      <i
-        class="fa fa-bookmark"
-        aria-hidden="true"
-      />
-      {{item.projectCount}}
-    </span>
-    <span
-      v-tooltip
+      :value=item.projectCount
+    />
+    <item-stats-value
       v-if="isGroup"
+      css-class="number-users"
+      icon-name="users"
       :title="s__('Members')"
-      class="number-users"
-      data-placement="top"
-      data-container="body">
-      <i
-        class="fa fa-users"
-        aria-hidden="true"
-      />
-      {{item.memberCount}}
-    </span>
-    <span
+      :value=item.memberCount
+    />
+    <item-stats-value
       v-if="isProject"
-      class="project-stars">
-      <i
-        class="fa fa-star"
-        aria-hidden="true"
-      />
-      {{item.starCount}}
-    </span>
-    <span
-      v-tooltip
+      css-class="project-stars"
+      icon-name="star"
+      :value=item.starCount
+    />
+    <item-stats-value
+      css-class="item-visibility"
+      tooltip-placement="left"
+      :icon-name="visibilityIcon"
       :title="visibilityTooltip"
-      data-placement="left"
-      data-container="body"
-      class="item-visibility">
-      <i
-        :class="visibilityIcon"
-        class="fa"
-        aria-hidden="true"
+    />
+    <div
+      class="last-updated"
+      v-if="isProject"
+    >
+      <time-ago-tooltip
+        tooltip-placement="bottom"
+        :time="item.updatedAt"
       />
-    </span>
+    </div>
   </div>
 </template>
