@@ -23,103 +23,6 @@ export default class ImageFile {
         });
       };
     })(this));
-
-    this.views = {
-      'two-up': function() {
-        return $('.two-up.view .wrap', this.file).each((function(_this) {
-          return function(index, wrap) {
-            $('img', wrap).each(function() {
-              var currentWidth;
-              currentWidth = $(this).width();
-              if (currentWidth > availWidth / 2) {
-                return $(this).width(availWidth / 2);
-              }
-            });
-            return _this.requestImageInfo($('img', wrap), function(width, height) {
-              $('.image-info .meta-width', wrap).text(width + "px");
-              $('.image-info .meta-height', wrap).text(height + "px");
-              return $('.image-info', wrap).removeClass('hide');
-            });
-          };
-        })(this));
-      },
-      'swipe': function() {
-        var maxHeight, maxWidth;
-        maxWidth = 0;
-        maxHeight = 0;
-        return $('.swipe.view', this.file).each((function(_this) {
-          return function(index, view) {
-            var $swipeWrap, $swipeBar, $swipeFrame, wrapPadding, ref;
-            ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
-            $swipeFrame = $('.swipe-frame', view);
-            $swipeWrap = $('.swipe-wrap', view);
-            $swipeBar = $('.swipe-bar', view);
-
-            $swipeFrame.css({
-              width: maxWidth + 16,
-              height: maxHeight + 28
-            });
-            $swipeWrap.css({
-              width: maxWidth + 1,
-              height: maxHeight + 2
-            });
-            // Set swipeBar left position to match image frame
-            $swipeBar.css({
-              left: 1
-            });
-
-            wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);
-
-            _this.initDraggable($swipeBar, wrapPadding, function(e, left) {
-              if (left > 0 && left < $swipeFrame.width() - (wrapPadding * 2)) {
-                $swipeWrap.width((maxWidth + 1) - left);
-                $swipeBar.css('left', left);
-              }
-            });
-          };
-        })(this));
-      },
-      'onion-skin': function() {
-        var dragTrackWidth, maxHeight, maxWidth;
-        maxWidth = 0;
-        maxHeight = 0;
-        dragTrackWidth = $('.drag-track', this.file).width() - $('.dragger', this.file).width();
-        return $('.onion-skin.view', this.file).each((function(_this) {
-          return function(index, view) {
-            var $frame, $track, $dragger, $frameAdded, framePadding, ref, dragging = false;
-            ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
-            $frame = $('.onion-skin-frame', view);
-            $frameAdded = $('.frame.added', view);
-            $track = $('.drag-track', view);
-            $dragger = $('.dragger', $track);
-
-            $frame.css({
-              width: maxWidth + 16,
-              height: maxHeight + 28
-            });
-            $('.swipe-wrap', view).css({
-              width: maxWidth + 1,
-              height: maxHeight + 2
-            });
-            $dragger.css({
-              left: dragTrackWidth
-            });
-
-            $frameAdded.css('opacity', 1);
-            framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
-
-            _this.initDraggable($dragger, framePadding, function(e, left) {
-              var opacity = left / dragTrackWidth;
-
-              if (opacity >= 0 && opacity <= 1) {
-                $dragger.css('left', left);
-                $frameAdded.css('opacity', opacity);
-              }
-            });
-          };
-        })(this));
-      }
-    };
   }
 
   initViewModes() {
@@ -190,6 +93,103 @@ export default class ImageFile {
       height: maxHeight
     });
     return [maxWidth, maxHeight];
+  }
+
+  views = {
+    'two-up': function() {
+      return $('.two-up.view .wrap', this.file).each((function(_this) {
+        return function(index, wrap) {
+          $('img', wrap).each(function() {
+            var currentWidth;
+            currentWidth = $(this).width();
+            if (currentWidth > availWidth / 2) {
+              return $(this).width(availWidth / 2);
+            }
+          });
+          return _this.requestImageInfo($('img', wrap), function(width, height) {
+            $('.image-info .meta-width', wrap).text(width + "px");
+            $('.image-info .meta-height', wrap).text(height + "px");
+            return $('.image-info', wrap).removeClass('hide');
+          });
+        };
+      })(this));
+    },
+    'swipe': function() {
+      var maxHeight, maxWidth;
+      maxWidth = 0;
+      maxHeight = 0;
+      return $('.swipe.view', this.file).each((function(_this) {
+        return function(index, view) {
+          var $swipeWrap, $swipeBar, $swipeFrame, wrapPadding, ref;
+          ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
+          $swipeFrame = $('.swipe-frame', view);
+          $swipeWrap = $('.swipe-wrap', view);
+          $swipeBar = $('.swipe-bar', view);
+
+          $swipeFrame.css({
+            width: maxWidth + 16,
+            height: maxHeight + 28
+          });
+          $swipeWrap.css({
+            width: maxWidth + 1,
+            height: maxHeight + 2
+          });
+          // Set swipeBar left position to match image frame
+          $swipeBar.css({
+            left: 1
+          });
+
+          wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);
+
+          _this.initDraggable($swipeBar, wrapPadding, function(e, left) {
+            if (left > 0 && left < $swipeFrame.width() - (wrapPadding * 2)) {
+              $swipeWrap.width((maxWidth + 1) - left);
+              $swipeBar.css('left', left);
+            }
+          });
+        };
+      })(this));
+    },
+    'onion-skin': function() {
+      var dragTrackWidth, maxHeight, maxWidth;
+      maxWidth = 0;
+      maxHeight = 0;
+      dragTrackWidth = $('.drag-track', this.file).width() - $('.dragger', this.file).width();
+      return $('.onion-skin.view', this.file).each((function(_this) {
+        return function(index, view) {
+          var $frame, $track, $dragger, $frameAdded, framePadding, ref, dragging = false;
+          ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
+          $frame = $('.onion-skin-frame', view);
+          $frameAdded = $('.frame.added', view);
+          $track = $('.drag-track', view);
+          $dragger = $('.dragger', $track);
+
+          $frame.css({
+            width: maxWidth + 16,
+            height: maxHeight + 28
+          });
+          $('.swipe-wrap', view).css({
+            width: maxWidth + 1,
+            height: maxHeight + 2
+          });
+          $dragger.css({
+            left: dragTrackWidth
+          });
+
+          $frameAdded.css('opacity', 1);
+          framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
+
+          _this.initDraggable($dragger, framePadding, function(e, left) {
+            var opacity = left / dragTrackWidth;
+
+            if (opacity >= 0 && opacity <= 1) {
+              $dragger.css('left', left);
+              $frameAdded.css('opacity', opacity);
+            }
+          });
+        };
+      })(this));
+    }
   }
 
   requestImageInfo(img, callback) {

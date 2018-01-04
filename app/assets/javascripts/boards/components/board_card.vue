@@ -10,12 +10,30 @@ export default {
     'issue-card-inner': gl.issueBoards.IssueCardInner,
   },
   props: {
-    list: Object,
-    issue: Object,
-    issueLinkBase: String,
-    disabled: Boolean,
-    index: Number,
-    rootPath: String,
+    list: {
+      type: Object,
+      default: () => ({}),
+    },
+    issue: {
+      type: Object,
+      default: () => ({}),
+    },
+    issueLinkBase: {
+      type: String,
+      default: '',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    index: {
+      type: Number,
+      default: 0,
+    },
+    rootPath: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -54,8 +72,13 @@ export default {
 </script>
 
 <template>
-  <li class="card"
-    :class="{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id, 'is-active': issueDetailVisible }"
+  <li
+    class="card"
+    :class="{
+      'user-can-drag': !disabled && issue.id,
+      'is-disabled': disabled || !issue.id,
+      'is-active': issueDetailVisible
+    }"
     :index="index"
     :data-issue-id="issue.id"
     @mousedown="mouseDown"
