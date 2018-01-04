@@ -783,34 +783,30 @@ class Repository
   end
 
   def create_dir(user, path, **options)
-    options[:user] = user
     options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def create_file(user, path, content, **options)
-    options[:user] = user
     options[:actions] = [{ action: :create, file_path: path, content: content }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def update_file(user, path, content, **options)
     previous_path = options.delete(:previous_path)
     action = previous_path && previous_path != path ? :move : :update
 
-    options[:user] = user
     options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def delete_file(user, path, **options)
-    options[:user] = user
     options[:actions] = [{ action: :delete, file_path: path }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def with_cache_hooks
@@ -824,59 +820,14 @@ class Repository
     result.newrev
   end
 
-  def with_branch(user, *args)
-    with_cache_hooks do
-      Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
-        yield start_commit
-      end
+  def multi_action(user, **options)
+    start_project = options.delete(:start_project)
+
+    if start_project
+      options[:start_repository] = start_project.repository.raw_repository
     end
-  end
 
-  # rubocop:disable Metrics/ParameterLists
-  def multi_action(
-    user:, branch_name:, message:, actions:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-
-    with_branch(
-      user,
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_repository: start_project.repository.raw_repository) do |start_commit|
-
-      index = Gitlab::Git::Index.new(raw_repository)
-
-      if start_commit
-        index.read_tree(start_commit.rugged_commit.tree)
-        parents = [start_commit.sha]
-      else
-        parents = []
-      end
-
-      actions.each do |options|
-        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      options = {
-        tree: index.write_tree,
-        message: message,
-        parents: parents
-      }
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      create_commit(options)
-    end
-  end
-  # rubocop:enable Metrics/ParameterLists
-
-  def get_committer_and_author(user, email: nil, name: nil)
-    committer = user_to_committer(user)
-    author = Gitlab::Git.committer_hash(email: email, name: name) || committer
-
-    {
-      author: author,
-      committer: committer
-    }
+    with_cache_hooks { raw.multi_action(user, **options) }
   end
 
   def can_be_merged?(source_sha, target_branch)
