@@ -23,24 +23,25 @@ You can find these nightly pipelines at [GitLab QA pipelines page][gitlab-qa-pip
 It is also possible to trigger build of GitLab packages and then pass these
 package to GitLab QA to run tests in a [pipeline][gitlab-qa-pipelines].
 
-Developers can trigger a `package-qa` manual action, that should be present in
-the merge request widget in your merge request.
+Developers can trigger the `package-qa` manual action, that should be present in
+the merge request widget.
 
-It is possible to trigger Gitlab QA pipeline from merge requests in GitLab CE
-and GitLab EE, but QA triggering manual action is also available in the Omnibus
-GitLab project as well.
+It is also possible to trigger Gitlab QA pipeline from merge requests in
+Omnibus GitLab project. You can find a manual action that is similar to
+`package-qa`, mentioned above, in your Omnibus-related merge requests as well.
 
 Below you can read more about how to use it and how does it work.
 
 #### How does it work?
 
-Currently, we are _multi-project pipeline_-like approach to run QA pipelines.
+Currently, we are using _multi-project pipeline_-like approach to run QA
+pipelines.
 
 1. Developer triggers a manual action, that can be found in CE and EE merge
-requests, what starts a chain of pipelines.
+requests. This starts a chain of pipelines in multiple projects.
 
-1. The script, that is being executed, triggers a pipeline in GitLab Omnibus
-projects, and waits for the resulting status. We call this a _status attribution_.
+1. The script being executed triggers a pipeline in GitLab Omnibus and waits
+for the resulting status. We call this a _status attribution_.
 
 1. GitLab packages are being built in Omnibus pipeline. Packages are going to be
 pushed to Container Registry.
@@ -50,24 +51,25 @@ pipeline, that is now running in Omnibus, triggers a new pipeline in the GitLab
 QA project. It also waits for a resulting status.
 
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
-against a test environment that has been just orchestrated by `gitlab-qa` tool.
+against a test environment that has been just orchestrated by the `gitlab-qa`
+tool.
 
-1. The result of GitLab QA pipeline is being propagated upstream, through
+1. The result of the GitLab QA pipeline is being propagated upstream, through
 Omnibus, back to CE / EE merge request.
 
 #### How do I write tests?
 
 In order to write new tests, you first need to learn more about GitLab QA
-architecture. There is some documentation about it in GitLab QA project
-[here][gitlab-qa-architecture].
+architecture. See the [documentation about it][gitlab-qa-architecture] in
+GitLab QA project.
 
-Once you decided were to put test environment orchestration scenarios and
-instance specs, take a looks at [relevant documentation][instance-qa-readme]
+Once you decided where to put test environment orchestration scenarios and
+instance specs, take a look at the [relevant documentation][instance-qa-readme]
 and examples in [the `qa/` directory][instance-qa-examples].
 
 ## Where can I ask for help?
 
-You can ask question in `#qa` channel on Slack (GitLab internal) or you can
+You can ask question in the `#qa` channel on Slack (GitLab internal) or you can
 find an issue you would like to work on in [the issue tracker][gitlab-qa-issues]
 and start a new discussion there.
 
