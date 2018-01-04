@@ -99,7 +99,7 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :record_metrics, unless: :imported?
+    after_save :ensure_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -345,16 +345,15 @@ module Issuable
     false
   end
 
-  def record_metrics
-    metrics = self.metrics || create_metrics
-    metrics.record!
-  end
-
   ##
   # Override in issuable specialization
   #
   def first_contribution?
     false
+  end
+
+  def ensure_metrics
+    self.metrics || create_metrics
   end
 
   ##

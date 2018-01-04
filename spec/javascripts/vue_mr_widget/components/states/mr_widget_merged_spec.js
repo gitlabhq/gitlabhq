@@ -14,10 +14,13 @@ const createComponent = () => {
     canRevertInCurrentMR: true,
     canRemoveSourceBranch: true,
     sourceBranchRemoved: true,
-    mergedEvent: {
-      author: {},
-      updatedAt: 'mergedUpdatedAt',
-      formattedUpdatedAt: '',
+    metrics: {
+      mergedBy: {},
+      mergedAt: 'mergedUpdatedAt',
+      readableMergedAt: '',
+      closedBy: {},
+      closedAt: 'mergedUpdatedAt',
+      readableClosedAt: '',
     },
     updatedAt: 'mrUpdatedAt',
     targetBranch,
