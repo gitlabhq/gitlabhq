@@ -33,6 +33,7 @@ class KubernetesService < DeploymentService
 
   before_validation :enforce_namespace_to_lower_case
 
+  validate :deprecation_validation, unless: :template?
   validates :namespace,
     allow_blank: true,
     length: 1..63,
@@ -147,6 +148,17 @@ class KubernetesService < DeploymentService
     @kubeclient ||= build_kubeclient!
   end
 
+  def deprecated?
+    !active
+  end
+
+  def deprecation_message
+    content = <<-MESSAGE.strip_heredoc
+    Kubernetes service integration has been deprecated. #{deprecated_message_content} your clusters using the new <a href=\'#{Gitlab::Routing.url_helpers.project_clusters_path(project)}'/>Clusters</a> page
+      MESSAGE
+    content.html_safe
+  end
+
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
@@ -227,5 +239,21 @@ class KubernetesService < DeploymentService
 
   def enforce_namespace_to_lower_case
     self.namespace = self.namespace&.downcase
+  end
+
+  def deprecation_validation
+    return if active_changed?(from: true, to: false)
+
+    if deprecated?
+      errors[:base] << deprecation_message
+    end
+  end
+
+  def deprecated_message_content
+    if active?
+      "Your cluster information on this page is still editable, but you are advised to disable and reconfigure"
+    else
+      "Fields on this page are now uneditable, you can configure"
+    end
   end
 end

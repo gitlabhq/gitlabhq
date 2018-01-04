@@ -40,6 +40,8 @@ module EE
         render_bad_geo_auth('Bad token')
       rescue ::Gitlab::Geo::InvalidDecryptionKeyError
         render_bad_geo_auth("Invalid decryption key")
+      rescue ::Gitlab::Geo::InvalidSignatureTimeError
+        render_bad_geo_auth("Invalid signature time ")
       end
 
       def render_bad_geo_auth(message)

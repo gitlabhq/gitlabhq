@@ -101,8 +101,14 @@
   padding: 6px 12px;
 }
 
-.multi-file-table-name {
+table.table tr td.multi-file-table-name {
   width: 350px;
+  padding: 6px 12px;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 2px;
+  }
 }
 
 .multi-file-table-col-commit-message {
@@ -136,6 +142,10 @@
   border-right: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
   cursor: pointer;
+
+  svg {
+    vertical-align: middle;
+  }
 
   &.active {
     background-color: $white-light;

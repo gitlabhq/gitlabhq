@@ -170,14 +170,14 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.iconClass).toEqual('success');
       });
 
-      it('shows x for failed status', () => {
+      it('shows warning icon for failed status', () => {
         vm.mr.hasCI = true;
-        expect(vm.iconClass).toEqual('failed');
+        expect(vm.iconClass).toEqual('warning');
       });
 
-      it('shows x for merge not allowed', () => {
+      it('shows warning icon for merge not allowed', () => {
         vm.mr.hasCI = true;
-        expect(vm.iconClass).toEqual('failed');
+        expect(vm.iconClass).toEqual('warning');
       });
     });
 
@@ -292,8 +292,8 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleMergeButtonClick', () => {
       const returnPromise = status => new Promise((resolve) => {
         resolve({
-          json() {
-            return { status };
+          data: {
+            status,
           },
         });
       });
@@ -364,8 +364,9 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleMergePolling', () => {
       const returnPromise = state => new Promise((resolve) => {
         resolve({
-          json() {
-            return { state, source_branch_exists: true };
+          data: {
+            state,
+            source_branch_exists: true,
           },
         });
       });
@@ -422,8 +423,8 @@ describe('MRWidgetReadyToMerge', () => {
     describe('handleRemoveBranchPolling', () => {
       const returnPromise = state => new Promise((resolve) => {
         resolve({
-          json() {
-            return { source_branch_exists: state };
+          data: {
+            source_branch_exists: state,
           },
         });
       });

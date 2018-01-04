@@ -1107,6 +1107,7 @@ module API
       expose :url
       expose :primary?, as: :primary
       expose :enabled
+      expose :current?, as: :current
       expose :files_max_capacity
       expose :repos_max_capacity
 
