@@ -8,7 +8,8 @@
     "current",
     "files_max_capacity",
     "repos_max_capacity",
-    "clone_protocol"
+    "clone_protocol",
+    "_links"
   ],
   "properties" : {
     "id": { "type": "integer" },
@@ -18,7 +19,16 @@
     "current": { "type": "boolean" },
     "files_max_capacity": { "type": "integer" },
     "repos_max_capacity": { "type": "integer" },
-    "clone_protocol": { "type": ["string"] }
+    "clone_protocol": { "type": ["string"] },
+    "_links": {
+      "type": "object",
+      "required": ["self", "repair"],
+      "properties" : {
+        "self": { "type": "string" },
+        "repair": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }

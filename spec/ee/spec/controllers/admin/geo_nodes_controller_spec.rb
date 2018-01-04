@@ -267,7 +267,7 @@ describe Admin::GeoNodesController, :postgresql do
       it 'returns the status' do
         get :status, id: geo_node, format: :json
 
-        expect(response).to match_response_schema('geo_node_status')
+        expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
       end
     end
   end

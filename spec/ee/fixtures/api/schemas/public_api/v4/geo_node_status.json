@@ -32,7 +32,8 @@
     "cursor_last_event_timestamp",
     "namespaces",
     "version",
-    "revision"
+    "revision",
+    "_links"
   ],
   "properties" : {
     "geo_node_id": { "type": "integer" },
@@ -74,7 +75,16 @@
     "storage_shards": { "type": "array" },
     "storage_shards_match": { "type": "boolean" },
     "version": { "type": ["string"] },
-    "revision": { "type": ["string"] }
+    "revision": { "type": ["string"] },
+    "_links": {
+      "type": "object",
+      "required": ["self", "node"],
+      "properties" : {
+        "self": { "type": "string" },
+        "node": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }
