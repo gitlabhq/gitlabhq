@@ -26,7 +26,6 @@ function backOffRequest(makeRequestCallback) {
 
 export default class PrometheusMetrics {
   constructor(wrapperSelector) {
-    // Call the common metrics (CE stuff basically)
     const cePrometheusMetrics = new CEPrometheusMetrics(wrapperSelector);
     cePrometheusMetrics.loadActiveMetrics();
 
@@ -36,6 +35,8 @@ export default class PrometheusMetrics {
     this.$monitoredCustomMetricsLoading = this.$monitoredCustomMetricsPanel.find('.js-loading-custom-metrics');
     this.$monitoredCustomMetricsEmpty = this.$monitoredCustomMetricsPanel.find('.js-empty-custom-metrics');
     this.$monitoredCustomMetricsList = this.$monitoredCustomMetricsPanel.find('.js-custom-metrics-list');
+    this.$newCustomMetricButton = this.$monitoredCustomMetricsPanel.find('.js-new-metric-button');
+    this.$flashCustomMetricsContainer = this.$wrapperCustomMetrics.find('.flash-container');
 
     this.activeCustomMetricsEndpoint = this.$monitoredCustomMetricsPanel.data('active-custom-metrics');
   }
@@ -46,43 +47,48 @@ export default class PrometheusMetrics {
         this.$monitoredCustomMetricsLoading.removeClass('hidden');
         this.$monitoredCustomMetricsEmpty.addClass('hidden');
         this.$monitoredCustomMetricsList.addClass('hidden');
+        this.$newCustomMetricButton.addClass('hidden');
         break;
       case PANEL_STATE.LIST:
         this.$monitoredCustomMetricsLoading.addClass('hidden');
         this.$monitoredCustomMetricsEmpty.addClass('hidden');
+        this.$newCustomMetricButton.removeClass('hidden');
         this.$monitoredCustomMetricsList.removeClass('hidden');
         break;
       default:
         this.$monitoredCustomMetricsLoading.addClass('hidden');
         this.$monitoredCustomMetricsEmpty.removeClass('hidden');
         this.$monitoredCustomMetricsList.addClass('hidden');
+        this.$newCustomMetricButton.addClass('hidden');
         break;
     }
   }
 
-  populateActiveMetrics(metrics) {
-    let totalMonitoredMetrics = 0;
-
+  populateCustomMetrics(metrics) {
     metrics.forEach((metric) => {
-      this.$monitoredMetricsList.append(`<li>${metric.group}</li>`);
-      totalMonitoredMetrics += metric.active_metrics;
+      this.$monitoredCustomMetricsList.append(`<li><a href="${metric.edit_path}">${metric.title}</a></li>`);
     });
 
-    this.$monitoredMetricsCount.text(totalMonitoredMetrics);
+    this.$monitoredCustomMetricsCount.text(metrics.length);
     this.showMonitoringCustomMetricsPanelState(PANEL_STATE.LIST);
+  }
+
+  showFlashMessage(message) {
+    this.$flashCustomMetricsContainer.removeClass('hidden');
+    this.$flashCustomMetricsContainer.find('.flash-text').text(message);
   }
 
   loadActiveCustomMetrics() {
     backOffRequest(() => axios.get(this.activeCustomMetricsEndpoint))
     .then(resp => resp.data)
     .then((response) => {
-      if (!response || !response.data) {
-        // add a flash
+      if (!response || !response.metrics) {
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
       } else {
-        this.populateActiveMetrics(response.data);
+        this.populateCustomMetrics(response.metrics);
       }
     }).catch((err) => {
+      this.showFlashMessage(err);
       this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
     });
   }

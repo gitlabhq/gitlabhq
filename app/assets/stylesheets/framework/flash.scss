@@ -12,6 +12,12 @@
     margin: 0;
   }
 
+  .flash-warning {
+    @extend .alert;
+    @extend .alert-warning;
+    margin: 0;
+  }
+
   .flash-alert {
     @extend .alert;
     @extend .alert-danger;

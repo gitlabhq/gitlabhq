@@ -1,21 +1,32 @@
 .row.prepend-top-default.append-bottom-default
-  = form_for [@project.namespace.becomes(Namespace), @project, @metric], html: { class: 'col-lg-9' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @metric], html: { class: 'col-lg-8 col-lg-offset-2' } do |f|
     = form_errors(@metric)
     .form-group
       = f.label :title, 'Title', class: 'label-light'
-      = f.text_field :title, required: true, class: 'form-control'
+      = f.text_field :title, required: true, class: 'form-control', placeholder: 'e.g. Throughput'
+      %span.help-block
+        Used as a title for the chart
     .form-group
       = f.label :query, 'Query', class: 'label-light'
-      = f.text_field :query, required: true, class: 'form-control'
+      = f.text_field :query, required: true, class: 'form-control', placeholder: 'e.g. sum(metric...'
+      %span.help-block
+        Must be a valid PromQL query.
+        = link_to "https://prometheus.io/docs/prometheus/latest/querying/basics/" do
+          = sprite_icon("external-link", size: 12)
+          Prometheus Query Documentation
     .form-group
       = f.label :y_label, 'Y-axis label', class: 'label-light'
-      = f.text_field :y_label, class: 'form-control'
+      = f.text_field :y_label, class: 'form-control', placeholder: 'e.g. Requests/second'
+      %span.help-block
+        Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time
     .form-group
       = f.label :unit, 'Unit label', class: 'label-light'
-      = f.text_field :unit, class: 'form-control'
+      = f.text_field :unit, class: 'form-control', placeholder: 'e.g. req/sec'
     .form-group
       = f.label :legend, 'Legend label', class: 'label-light'
-      = f.text_field :legend, class: 'form-control'
+      = f.text_field :legend, class: 'form-control', placeholder: 'e.g. HTTP requests'
+      %span.help-block
+        Used if the query returns a single series. If it returns multiple series, their legends labels will be picked up from the response
 
     .form-actions
       = f.submit 'Save', class: 'btn btn-save'
