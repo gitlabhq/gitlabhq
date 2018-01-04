@@ -205,7 +205,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       context 'with cluster for all environments without prometheus installed' do
         context 'without environment supplied' do
           it 'raises PrometheusError because cluster was not found' do
-            expect{service.client}.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
+            expect { service.client }.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
           end
         end
 
@@ -224,7 +224,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
           let!(:environment) { create(:environment, project: project, name: 'prod') }
 
           it 'raises PrometheusError because cluster was not found' do
-            expect{service.client}.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
+            expect { service.client }.to raise_error(Gitlab::PrometheusError, /couldn't find cluster with Prometheus installed/)
           end
         end
       end

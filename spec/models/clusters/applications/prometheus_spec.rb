@@ -51,13 +51,16 @@ describe Clusters::Applications::Prometheus do
 
     context 'cluster has kubeclient' do
       let(:kubernetes_url) { 'http://example.com' }
-      let(:k8s_discover_response) { {
-        resources: [
-          {
-            name: 'service',
-            kind: 'Service'
-          }]
-      } }
+      let(:k8s_discover_response) do
+        {
+          resources: [
+            {
+              name: 'service',
+              kind: 'Service'
+            }
+          ]
+        }
+      end
 
       let(:kube_client) { Kubeclient::Client.new(kubernetes_url) }
 

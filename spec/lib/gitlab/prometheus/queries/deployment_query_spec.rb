@@ -32,6 +32,6 @@ describe Gitlab::Prometheus::Queries::DeploymentQuery do
                                            time: stop_time)
 
     expect(subject.query(environment.id, deployment.id)).to eq(memory_values: nil, memory_before: nil, memory_after: nil,
-                                               cpu_values: nil, cpu_before: nil, cpu_after: nil)
+                                                               cpu_values: nil, cpu_before: nil, cpu_after: nil)
   end
 end

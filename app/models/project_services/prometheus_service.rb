@@ -23,7 +23,7 @@ class PrometheusService < MonitoringService
 
   def initialize_properties
     if properties.nil?
-      self.properties = { }
+      self.properties = {}
     end
   end
 
@@ -45,7 +45,8 @@ class PrometheusService < MonitoringService
 
   def fields
     [
-      { type: 'fieldset',
+      {
+        type: 'fieldset',
         legend: 'Manual Configuration',
         fields: [
           {
@@ -100,6 +101,7 @@ class PrometheusService < MonitoringService
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, environment_id, *args)
     return unless active? && project && !project.pending_delete?
+
     client = client(environment_id)
 
     data = Kernel.const_get(query_class_name).new(client).query(environment_id, *args)
@@ -118,9 +120,10 @@ class PrometheusService < MonitoringService
     else
       cluster = cluster_with_prometheus(environment_id)
       raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
-      rest_client = client_from_cluster(cluster)
 
+      rest_client = client_from_cluster(cluster)
       raise Gitlab::PrometheusError, "couldn't create proxy Prometheus client" unless rest_client
+
       Gitlab::PrometheusClient.new(rest_client)
     end
   end
