@@ -1,12 +1,13 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoEditor from '~/repo/components/repo_editor.vue';
+import store from '~/ide/stores';
+import repoEditor from '~/ide/components/repo_editor.vue';
+import monacoLoader from '~/ide/monaco_loader';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {
   let vm;
 
-  beforeEach(() => {
+  beforeEach((done) => {
     const f = file();
     const RepoEditor = Vue.extend(repoEditor);
 
@@ -21,6 +22,10 @@ describe('RepoEditor', () => {
     vm.monaco = true;
 
     vm.$mount();
+
+    monacoLoader(['vs/editor/editor.main'], () => {
+      setTimeout(done, 0);
+    });
   });
 
   afterEach(() => {
@@ -32,7 +37,6 @@ describe('RepoEditor', () => {
   it('renders an ide container', (done) => {
     Vue.nextTick(() => {
       expect(vm.shouldHideEditor).toBeFalsy();
-      expect(vm.$el.textContent.trim()).toBe('');
 
       done();
     });
@@ -50,7 +54,7 @@ describe('RepoEditor', () => {
     });
 
     it('shows activeFile html', () => {
-      expect(vm.$el.textContent.trim()).toBe('testing');
+      expect(vm.$el.textContent).toContain('testing');
     });
   });
 });

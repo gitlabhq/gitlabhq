@@ -10,12 +10,15 @@ Gets a list of all notes for a single issue.
 
 ```
 GET /projects/:id/issues/:issue_iid/notes
+GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
 ```
 
-Parameters:
-
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `issue_iid` (required) - The IID of an issue
+| Attribute           | Type             | Required   | Description                                                                                                                                         |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `issue_iid`         | integer          | yes        | The IID of an issue
+| `sort`              | string           | no         | Return issue notes sorted in `asc` or `desc` order. Default is `desc`
+| `order_by`          | string           | no         | Return issue notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
 
 ```json
 [
@@ -133,12 +136,15 @@ Gets a list of all notes for a single snippet. Snippet notes are comments users 
 
 ```
 GET /projects/:id/snippets/:snippet_id/notes
+GET /projects/:id/snippets/:snippet_id/notes?sort=asc&order_by=updated_at
 ```
 
-Parameters:
-
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `snippet_id` (required) - The ID of a project snippet
+| Attribute           | Type             | Required   | Description                                                                                                                                         |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `snippet_id`        | integer          | yes        | The ID of a project snippet
+| `sort`              | string           | no         | Return snippet notes sorted in `asc` or `desc` order. Default is `desc`
+| `order_by`          | string           | no         | Return snippet notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
 
 ### Get single snippet note
 
@@ -231,12 +237,15 @@ Gets a list of all notes for a single merge request.
 
 ```
 GET /projects/:id/merge_requests/:merge_request_iid/notes
+GET /projects/:id/merge_requests/:merge_request_iid/notes?sort=asc&order_by=updated_at
 ```
 
-Parameters:
-
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `merge_request_iid` (required) - The IID of a project merge request
+| Attribute           | Type             | Required   | Description                                                                                                                                         |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `merge_request_iid` | integer          | yes        | The IID of a project merge request
+| `sort`              | string           | no         | Return merge request notes sorted in `asc` or `desc` order. Default is `desc`
+| `order_by`          | string           | no         | Return merge request notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
 
 ### Get single merge request note
 

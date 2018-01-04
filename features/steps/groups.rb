@@ -138,7 +138,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   private
 
   def assigned_to_me(key)
-    project.send(key).where(assignee_id: current_user.id)
+    project.send(key).assigned_to(current_user)
   end
 
   def project

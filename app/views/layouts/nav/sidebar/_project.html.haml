@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     - can_edit = can?(current_user, :admin_project, @project)
     .context-header
@@ -146,7 +146,7 @@
                   = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines
-        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters]) do
+        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters, :user, :gcp]) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines' do
             .nav-icon-container
               = sprite_icon('pipeline')
@@ -154,7 +154,7 @@
               CI / CD
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters, :user, :gcp], html_options: { class: "fly-out-top-item" } ) do
               = link_to project_pipelines_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('CI / CD') }
@@ -183,17 +183,17 @@
                   %span
                     Environments
 
+            - if project_nav_tab? :clusters
+              = nav_link(controller: [:clusters, :user, :gcp]) do
+                = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
+                  %span
+                    Clusters
+
             - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
               = nav_link(path: 'pipelines#charts') do
                 = link_to charts_project_pipelines_path(@project), title: 'Charts', class: 'shortcuts-pipelines-charts' do
                   %span
                     Charts
-
-            - if project_nav_tab? :clusters
-              = nav_link(controller: :clusters) do
-                = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
-                  %span
-                    Cluster
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
@@ -266,7 +266,7 @@
                       Pages
 
       - else
-        = nav_link(path: %w[members#show]) do
+        = nav_link(controller: :project_members) do
           = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('users')

@@ -36,10 +36,6 @@ module Gitlab
         ldap_config.block_auto_created_users
       end
 
-      def sync_profile_from_provider?
-        true
-      end
-
       def allowed?
         Gitlab::LDAP::Access.allowed?(gl_user)
       end

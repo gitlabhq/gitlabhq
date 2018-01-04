@@ -4,7 +4,7 @@ describe Gitlab::Git::RemoteRepository, seed_helper: true do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   subject { described_class.new(repository) }
 
-  describe '#empty_repo?' do
+  describe '#empty?' do
     using RSpec::Parameterized::TableSyntax
 
     where(:repository, :result) do
@@ -13,7 +13,7 @@ describe Gitlab::Git::RemoteRepository, seed_helper: true do
     end
 
     with_them do
-      it { expect(subject.empty_repo?).to eq(result) }
+      it { expect(subject.empty?).to eq(result) }
     end
   end
 

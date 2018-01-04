@@ -7,6 +7,9 @@ module StubConfiguration
     allow_any_instance_of(ApplicationSetting).to receive_messages(to_settings(messages))
     allow(Gitlab::CurrentSettings.current_application_settings)
       .to receive_messages(to_settings(messages))
+
+    # Ensure that we don't use the Markdown cache when stubbing these values
+    allow_any_instance_of(ApplicationSetting).to receive(:cached_html_up_to_date?).and_return(false)
   end
 
   def stub_not_protect_default_branch
@@ -43,6 +46,8 @@ module StubConfiguration
   end
 
   def stub_storage_settings(messages)
+    messages.deep_stringify_keys!
+
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages.default
     messages.each do |storage_name, storage_settings|

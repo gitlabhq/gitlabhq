@@ -1,6 +1,6 @@
 require_relative '../support/test_env'
 
-FactoryGirl.define do
+FactoryBot.define do
   # Project without repository
   #
   # Project does not have bare repository.

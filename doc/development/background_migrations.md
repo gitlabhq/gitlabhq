@@ -68,10 +68,10 @@ BackgroundMigrationWorker.perform_async('BackgroundMigrationClassName', [arg1, a
 ```
 
 Usually it's better to enqueue jobs in bulk, for this you can use
-`BackgroundMigrationWorker.perform_bulk`:
+`BackgroundMigrationWorker.bulk_perform_async`:
 
 ```ruby
-BackgroundMigrationWorker.perform_bulk(
+BackgroundMigrationWorker.bulk_perform_async(
   [['BackgroundMigrationClassName', [1]],
    ['BackgroundMigrationClassName', [2]]]
 )
@@ -85,13 +85,13 @@ updates. Removals in turn can be handled by simply defining foreign keys with
 cascading deletes.
 
 If you would like to schedule jobs in bulk with a delay, you can use
-`BackgroundMigrationWorker.perform_bulk_in`:
+`BackgroundMigrationWorker.bulk_perform_in`:
 
 ```ruby
 jobs = [['BackgroundMigrationClassName', [1]],
         ['BackgroundMigrationClassName', [2]]]
 
-BackgroundMigrationWorker.perform_bulk_in(5.minutes, jobs)
+BackgroundMigrationWorker.bulk_perform_in(5.minutes, jobs)
 ```
 
 ## Cleaning Up
@@ -201,7 +201,7 @@ class ScheduleExtractServicesUrl < ActiveRecord::Migration
         ['ExtractServicesUrl', [id]]
       end
 
-      BackgroundMigrationWorker.perform_bulk(jobs)
+      BackgroundMigrationWorker.bulk_perform_async(jobs)
     end
   end
 

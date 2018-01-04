@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
+  include AfterCommitQueue
   include Avatarable
   include Referable
   include Sortable
@@ -16,6 +17,8 @@ class User < ActiveRecord::Base
   include FeatureGate
   include CreatedAtFilterable
   include IgnorableColumn
+  include BulkMemberAccessLoad
+  include BlocksJsonSerialization
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -91,8 +94,8 @@ class User < ActiveRecord::Base
   has_one :user_synced_attributes_metadata, autosave: true
 
   # Groups
-  has_many :members, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, source: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members
+  has_many :group_members, -> { where(requested_at: nil) }, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -100,7 +103,7 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -313,8 +316,7 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = arel_table
-      pattern = User.to_pattern(query)
+      query = query.downcase
 
       order = <<~SQL
         CASE
@@ -326,9 +328,9 @@ class User < ActiveRecord::Base
       SQL
 
       where(
-        table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
-          .or(table[:username].matches(pattern))
+        fuzzy_arel_match(:name, query)
+          .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
@@ -337,16 +339,18 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
-      table = arel_table
+      query = query.downcase
+
       email_table = Email.arel_table
-      pattern = "%#{query}%"
-      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
+      matched_by_emails_user_ids = email_table
+        .project(email_table[:user_id])
+        .where(email_table[:email].eq(query))
 
       where(
-        table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
-          .or(table[:username].matches(pattern))
-          .or(table[:id].in(matched_by_emails_user_ids))
+        fuzzy_arel_match(:name, query)
+          .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:email].eq(query))
+          .or(arel_table[:id].in(matched_by_emails_user_ids))
       )
     end
 
@@ -493,7 +497,11 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_u2f_enabled?
-    u2f_registrations.exists?
+    if u2f_registrations.loaded?
+      u2f_registrations.any?
+    else
+      u2f_registrations.exists?
+    end
   end
 
   def namespace_uniq
@@ -731,7 +739,7 @@ class User < ActiveRecord::Base
 
   def ldap_user?
     if identities.loaded?
-      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+      identities.find { |identity| Gitlab::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
     else
       identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
     end
@@ -786,10 +794,7 @@ class User < ActiveRecord::Base
     # `User.select(:id)` raises
     # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
     # without this safeguard!
-    return unless has_attribute?(:projects_limit)
-
-    connection_default_value_defined = new_record? && !projects_limit_changed?
-    return unless projects_limit.nil? || connection_default_value_defined
+    return unless has_attribute?(:projects_limit) && projects_limit.nil?
 
     self.projects_limit = current_application_settings.default_projects_limit
   end
@@ -905,6 +910,7 @@ class User < ActiveRecord::Base
 
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
+
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
@@ -1004,7 +1010,11 @@ class User < ActiveRecord::Base
   end
 
   def notification_settings_for(source)
-    notification_settings.find_or_initialize_by(source: source)
+    if notification_settings.loaded?
+      notification_settings.find { |notification| notification.source == source }
+    else
+      notification_settings.find_or_initialize_by(source: source)
+    end
   end
 
   # Lazy load global notification setting
@@ -1049,13 +1059,13 @@ class User < ActiveRecord::Base
   end
 
   def todos_done_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force, expires_in: 20.minutes) do
       TodosFinder.new(self, state: :done).execute.count
     end
   end
 
   def todos_pending_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force, expires_in: 20.minutes) do
       TodosFinder.new(self, state: :pending).execute.count
     end
   end
@@ -1138,6 +1148,34 @@ class User < ActiveRecord::Base
   def lock_access!
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
     super
+  end
+
+  # Determine the maximum access level for a group of projects in bulk.
+  #
+  # Returns a Hash mapping project ID -> maximum access level.
+  def max_member_access_for_project_ids(project_ids)
+    max_member_access_for_resource_ids(Project, project_ids) do |project_ids|
+      project_authorizations.where(project: project_ids)
+                            .group(:project_id)
+                            .maximum(:access_level)
+    end
+  end
+
+  def max_member_access_for_project(project_id)
+    max_member_access_for_project_ids([project_id])[project_id]
+  end
+
+  # Determine the maximum access level for a group of groups in bulk.
+  #
+  # Returns a Hash mapping project ID -> maximum access level.
+  def max_member_access_for_group_ids(group_ids)
+    max_member_access_for_resource_ids(Group, group_ids) do |group_ids|
+      group_members.where(source: group_ids).group(:source_id).maximum(:access_level)
+    end
+  end
+
+  def max_member_access_for_group(group_id)
+    max_member_access_for_group_ids([group_id])[group_id]
   end
 
   protected

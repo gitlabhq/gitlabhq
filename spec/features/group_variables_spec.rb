@@ -24,7 +24,7 @@ feature 'Group variables', :js do
         expect(find(".variable-value")).to have_content('******')
         expect(find(".variable-protected")).to have_content('Yes')
       end
-      click_on 'Reveal Values'
+      click_on 'Reveal value'
       page.within('.variables-table') do
         expect(find(".variable-value")).to have_content('AAA123')
       end

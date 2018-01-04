@@ -17,7 +17,7 @@ describe Ci::RetryBuildService do
     %i[id status user token coverage trace runner artifacts_expire_at
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
-       erased_at auto_canceled_by].freeze
+       erased_at auto_canceled_by job_artifacts job_artifacts_archive job_artifacts_metadata].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
@@ -34,13 +34,13 @@ describe Ci::RetryBuildService do
     end
 
     let(:build) do
-      create(:ci_build, :failed, :artifacts_expired, :erased,
+      create(:ci_build, :failed, :artifacts, :expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
              :triggered, :trace, :teardown_environment,
              description: 'my-job', stage: 'test',  pipeline: pipeline,
              auto_canceled_by: create(:ci_empty_pipeline, project: project)) do |build|
                ##
-               # TODO, workaround for FactoryGirl limitation when having both
+               # TODO, workaround for FactoryBot limitation when having both
                # stage (text) and stage_id (integer) columns in the table.
                build.stage_id = stage.id
              end

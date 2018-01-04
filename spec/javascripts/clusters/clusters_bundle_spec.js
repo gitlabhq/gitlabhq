@@ -28,11 +28,25 @@ describe('Clusters', () => {
 
       expect(
         cluster.toggleButton.classList,
-      ).not.toContain('checked');
+      ).not.toContain('is-checked');
 
       expect(
         cluster.toggleInput.getAttribute('value'),
       ).toEqual('false');
+    });
+  });
+
+  describe('showToken', () => {
+    it('should update tye field type', () => {
+      cluster.showTokenButton.click();
+      expect(
+        cluster.tokenField.getAttribute('type'),
+      ).toEqual('text');
+
+      cluster.showTokenButton.click();
+      expect(
+        cluster.tokenField.getAttribute('type'),
+      ).toEqual('password');
     });
   });
 
@@ -113,7 +127,7 @@ describe('Clusters', () => {
     });
 
     describe('when cluster is created', () => {
-      it('should show the success container', () => {
+      it('should show the success container and fresh the page', () => {
         cluster.updateContainer(null, 'created');
 
         expect(

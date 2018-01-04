@@ -1,6 +1,5 @@
 class StorageMigratorWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   BATCH_SIZE = 100
 

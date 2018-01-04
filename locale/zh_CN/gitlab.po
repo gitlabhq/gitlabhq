@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-06 01:25-0500\n"
+"PO-Revision-Date: 2017-11-23 02:44-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -497,14 +497,14 @@ msgstr "此项目已启用集群集成。"
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr "此项目已启用集群集成。禁用此集成不会影响您的集群，它只会暂时关闭 GitLab 的连接。"
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
-msgstr "集群正在 Google Container Engine 上创建..."
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
+msgstr "集群正在 Google Kubernetes Engine 上创建..."
 
 msgid "ClusterIntegration|Cluster name"
 msgstr "集群名称"
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
-msgstr "集群已在 Google Container Engine 上成功创建"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
+msgstr "集群已在 Google Kubernetes Engine 上成功创建"
 
 msgid "ClusterIntegration|Copy cluster name"
 msgstr "复制集群名称"
@@ -512,8 +512,8 @@ msgstr "复制集群名称"
 msgid "ClusterIntegration|Create cluster"
 msgstr "创建集群"
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
-msgstr "在 Google Container Engine 上创建新集群"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
+msgstr "在 Google Kubernetes Engine 上创建新集群"
 
 msgid "ClusterIntegration|Enable cluster integration"
 msgstr "启用集群集成"
@@ -521,11 +521,11 @@ msgstr "启用集群集成"
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr "Google 云平台项目ID"
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
+msgstr "Google Kubernetes Engine"
 
-msgid "ClusterIntegration|Google Container Engine project"
-msgstr "Google Container Engine 项目"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
+msgstr "Google Kubernetes Engine 项目"
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr "了解详细%{link_to_documentation}"
@@ -578,8 +578,8 @@ msgstr "查看区域"
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "发生了内部错误"
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "在 Google Container Engine 上创建集群时发生错误"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgstr "在 Google Kubernetes Engine 上创建集群时发生错误"
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "切换集群"
@@ -587,14 +587,14 @@ msgstr "切换集群"
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr "使用与此项目关联的集群，您可以使用审阅应用程序，部署应用程序，运行流水线等等。"
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "您的帐户必须有%{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr "您的帐户必须有%{link_to_kubernetes_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "区域"
 
-msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "访问 Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr "访问 Google Kubernetes Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "集群"
@@ -656,10 +656,10 @@ msgid "ContainerRegistry|Created"
 msgstr "已创建"
 
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
-msgstr "首先使用您的 GitLab 用户名和密码登录 GitLab 的容器注册表。如果您有%{link_2fa}，您需要使用%{link_token}："
+msgstr "首先使用您的 GitLab 用户名和密码登录 GitLab 的容器注册表。如果您已经%{link_2fa}，则需要使用%{link_token}："
 
 msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr "GitLab 最多支持3个级别的镜像名称。以下镜像示例对您的项目有效："
+msgstr "GitLab 最多支持3个级别的镜像命名。以下镜像名称示例对当前项目有效："
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "如何使用容器注册表"
@@ -671,7 +671,7 @@ msgid "ContainerRegistry|No tags in Container Registry for this container image.
 msgstr "容器注册表中没有此容器镜像的标签。"
 
 msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
-msgstr "登录后您可以使用通用的%{build}和%{push}命令自由创建和上传容器映像"
+msgstr "登录后您可以使用通用的%{build}和%{push}命令创建和上传容器镜像"
 
 msgid "ContainerRegistry|Remove repository"
 msgstr "删除存储库"
@@ -692,7 +692,7 @@ msgid "ContainerRegistry|Use different image names"
 msgstr "使用不同的镜像名称"
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
-msgstr "将 Docker 容器注册表集成到 GitLab 中，每个项目都可以有自己的空间来存储 Docker 的图像。"
+msgstr "将 Docker 容器注册表集成到 GitLab 中，每个项目都可以有各自的空间来存储 Docker 的镜像。"
 
 msgid "Contribution guide"
 msgstr "贡献指南"
@@ -1155,7 +1155,7 @@ msgid "Last update"
 msgstr "最后更新"
 
 msgid "Last updated"
-msgstr "最后更新"
+msgstr "最近更新"
 
 msgid "LastPushEvent|You pushed to"
 msgstr "您推送了"
@@ -1274,7 +1274,7 @@ msgid "New tag"
 msgstr "新建标签"
 
 msgid "No container images stored for this project. Add one by following the instructions above."
-msgstr "没有为此项目存储容器镜像。请按照上述说明添加一个。"
+msgstr "此项目当前未存储容器镜像。如需使用，请参照上述说明新建容器镜像。"
 
 msgid "No repository"
 msgstr "没有存储库"
@@ -1361,7 +1361,7 @@ msgid "Only project members can comment."
 msgstr "只有项目成员可以发表评论。"
 
 msgid "OpenedNDaysAgo|Opened"
-msgstr "开始于"
+msgstr "创建于"
 
 msgid "Opens in a new window"
 msgstr "打开一个新窗口"
@@ -1775,10 +1775,10 @@ msgid "Settings"
 msgstr "设置"
 
 msgid "Show parent pages"
-msgstr "查看父页面"
+msgstr "查看上级页面"
 
 msgid "Show parent subgroups"
-msgstr "查看群组中的子群组"
+msgstr "查看上级子群组"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
@@ -1830,13 +1830,13 @@ msgid "SortOptions|Largest repository"
 msgstr "最大存储库"
 
 msgid "SortOptions|Last created"
-msgstr "最新创建"
+msgstr "最近创建"
 
 msgid "SortOptions|Last joined"
 msgstr "最新加入"
 
 msgid "SortOptions|Last updated"
-msgstr "最新更新"
+msgstr "最近更新"
 
 msgid "SortOptions|Least popular"
 msgstr "最不受欢迎"
@@ -1869,7 +1869,7 @@ msgid "SortOptions|Name, descending"
 msgstr "名称，降序排列"
 
 msgid "SortOptions|Oldest created"
-msgstr "最早的创建"
+msgstr "最早创建"
 
 msgid "SortOptions|Oldest joined"
 msgstr "最早的加入"
@@ -1878,7 +1878,7 @@ msgid "SortOptions|Oldest sign in"
 msgstr "最早的登录"
 
 msgid "SortOptions|Oldest updated"
-msgstr "最早的提交"
+msgstr "最早更新"
 
 msgid "SortOptions|Popularity"
 msgstr "人气"
@@ -1945,7 +1945,7 @@ msgid "Team"
 msgstr "团队"
 
 msgid "Thanks! Don't show me this again"
-msgstr "谢谢 ! 请不要再显示"
+msgstr "不再显示该提示"
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr "GitLab 中的高级全局搜索功能是非常强大的搜索服务。您可以搜索其他团队的代码以帮助您完善自己项目中的代码。从而避免创建重复的代码或浪费时间。"
@@ -2465,7 +2465,7 @@ msgstr "通知邮件"
 
 msgid "parent"
 msgid_plural "parents"
-msgstr[0] "父级"
+msgstr[0] "上级"
 
 msgid "password"
 msgstr "密码"

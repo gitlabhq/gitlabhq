@@ -4,8 +4,8 @@ module Gitlab
       class Health
         attr_reader :storage_name, :info
 
-        def self.pattern_for_storage(storage_name)
-          "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage_name}:*"
+        def self.prefix_for_storage(storage_name)
+          "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage_name}:"
         end
 
         def self.for_all_storages
@@ -25,26 +25,15 @@ module Gitlab
 
         private_class_method def self.all_keys_for_storages(storage_names, redis)
           keys_per_storage = {}
+          all_keys = redis.zrange(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, -1)
 
-          redis.pipelined do
-            storage_names.each do |storage_name|
-              pattern = pattern_for_storage(storage_name)
-              matched_keys = redis.scan_each(match: pattern)
+          storage_names.each do |storage_name|
+            prefix = prefix_for_storage(storage_name)
 
-              keys_per_storage[storage_name] = matched_keys
-            end
+            keys_per_storage[storage_name] = all_keys.select { |key| key.starts_with?(prefix) }
           end
 
-          # We need to make sure each lazy-loaded `Enumerator` for matched keys
-          # is loaded into an array.
-          #
-          # Otherwise it would be loaded in the second `Redis#pipelined` block
-          # within `.load_for_keys`. In this pipelined call, the active
-          # Redis-client changes again, so the values would not be available
-          # until the end of that pipelined-block.
-          keys_per_storage.each do |storage_name, key_future|
-            keys_per_storage[storage_name] = key_future.to_a
-          end
+          keys_per_storage
         end
 
         private_class_method def self.load_for_keys(keys_per_storage, redis)

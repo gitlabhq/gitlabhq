@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Utils do
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, to: :described_class
 
   describe '.slugify' do
     {
@@ -57,6 +57,14 @@ describe Gitlab::Utils do
   describe '.random_string' do
     it 'generates a string' do
       expect(random_string).to be_kind_of(String)
+    end
+  end
+
+  describe '.which' do
+    it 'finds the full path to an executable binary' do
+      expect(File).to receive(:executable?).with('/bin/sh').and_return(true)
+
+      expect(which('sh', 'PATH' => '/bin')).to eq('/bin/sh')
     end
   end
 end

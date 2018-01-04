@@ -3,6 +3,8 @@
 - forks = false unless local_assigns[:forks] == true
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
+- user = local_assigns[:user]
+- access = user&.max_member_access_for_project(project.id) unless user.nil?
 - css_class = '' unless local_assigns[:css_class]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
@@ -20,14 +22,19 @@
             = project_icon(project, alt: '', class: 'avatar project-avatar s40')
     .project-details
       %h3.prepend-top-0.append-bottom-0
-        = link_to project_path(project), class: dom_class(project) do
-          %span.project-full-name
+        = link_to project_path(project), class: 'text-plain' do
+          %span.project-full-name><
             %span.namespace-name
               - if project.namespace && !skip_namespace
                 = project.namespace.human_name
                 \/
-            %span.project-name
+            %span.project-name<
               = project.name
+
+        - if access&.nonzero?
+          -# haml-lint:disable UnnecessaryStringOutput
+          = ' ' # prevent haml from eating the space between elements
+          %span.user-access-role= Gitlab::Access.human_access(access)
 
       - if show_last_commit_as_description
         .description.prepend-top-5
@@ -45,7 +52,7 @@
             = render_project_pipeline_status(project.pipeline_status)
         - if forks
           %span.prepend-left-10
-            = icon('code-fork')
+            = sprite_icon('fork')
             = number_with_delimiter(project.forks_count)
         - if stars
           %span.prepend-left-10

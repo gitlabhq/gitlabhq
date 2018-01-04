@@ -7,5 +7,11 @@ module RuboCop
 
       dirname.end_with?('db/migrate', 'db/post_migrate')
     end
+
+    def in_post_deployment_migration?(node)
+      dirname = File.dirname(node.location.expression.source_buffer.name)
+
+      dirname.end_with?('db/post_migrate')
+    end
   end
 end

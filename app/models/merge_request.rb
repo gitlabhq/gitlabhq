@@ -7,6 +7,8 @@ class MergeRequest < ActiveRecord::Base
   include TimeTrackable
   include ManualInverseAssociation
   include EachBatch
+  include ThrottledTouch
+  include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
                 :ref_fetched
@@ -51,6 +53,7 @@ class MergeRequest < ActiveRecord::Base
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
 
   # When this attribute is true some MR validation is ignored
@@ -80,6 +83,14 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :opened
+    end
+
+    before_transition any => :opened do |merge_request|
+      merge_request.merge_jid = nil
+
+      merge_request.run_after_commit do
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
     end
 
     state :opened
@@ -143,6 +154,13 @@ class MergeRequest < ActiveRecord::Base
 
   def self.reference_prefix
     '!'
+  end
+
+  # Use this method whenever you need to make sure the head_pipeline is synced with the
+  # branch head commit, for example checking if a merge request can be merged.
+  # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
+  def actual_head_pipeline
+    head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
   # Pattern used to extract `!123` merge request references from text
@@ -283,9 +301,9 @@ class MergeRequest < ActiveRecord::Base
     if persisted?
       merge_request_diff.commit_shas
     elsif compare_commits
-      compare_commits.reverse.map(&:sha)
+      compare_commits.to_a.reverse.map(&:sha)
     else
-      []
+      Array(diff_head_sha)
     end
   end
 
@@ -364,16 +382,32 @@ class MergeRequest < ActiveRecord::Base
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
-  def source_branch_head
-    return unless source_project
+  def source_branch_ref
+    return @source_branch_sha if @source_branch_sha
+    return unless source_branch
 
-    source_branch_ref = @source_branch_sha || source_branch
-    source_project.repository.commit(source_branch_ref) if source_branch_ref
+    Gitlab::Git::BRANCH_REF_PREFIX + source_branch
+  end
+
+  def target_branch_ref
+    return @target_branch_sha if @target_branch_sha
+    return unless target_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + target_branch
+  end
+
+  def source_branch_head
+    strong_memoize(:source_branch_head) do
+      if source_project && source_branch_ref
+        source_project.repository.commit(source_branch_ref)
+      end
+    end
   end
 
   def target_branch_head
-    target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch_ref) if target_branch_ref
+    strong_memoize(:target_branch_head) do
+      target_project.repository.commit(target_branch_ref)
+    end
   end
 
   def branch_merge_base_commit
@@ -482,7 +516,7 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_request_diff_for(diff_refs_or_sha)
     @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
-      diffs = merge_request_diffs.viewable.select_without_diff
+      diffs = merge_request_diffs.viewable
       h[diff_refs_or_sha] =
         if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
           diffs.find_by_diff_refs(diff_refs_or_sha)
@@ -503,6 +537,13 @@ class MergeRequest < ActiveRecord::Base
         start_sha: diff_refs.start_sha
       }
     end
+  end
+
+  def clear_memoized_shas
+    @target_branch_sha = @source_branch_sha = nil
+
+    clear_memoization(:source_branch_head)
+    clear_memoization(:target_branch_head)
   end
 
   def reload_diff_if_branch_changed
@@ -629,6 +670,7 @@ class MergeRequest < ActiveRecord::Base
       .to_sql
 
     Note.from("(#{union}) #{Note.table_name}")
+      .includes(:noteable)
   end
 
   alias_method :discussion_notes, :related_notes
@@ -810,8 +852,9 @@ class MergeRequest < ActiveRecord::Base
 
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_pipeline_succeeds?
+    return true unless head_pipeline
 
-    !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
+    actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end
 
   def environments_for(current_user)
@@ -844,11 +887,11 @@ class MergeRequest < ActiveRecord::Base
 
   def state_icon_name
     if merged?
-      "check"
+      "git-merge"
     elsif closed?
-      "times"
+      "close"
     else
-      "circle-o"
+      "issue-open-m"
     end
   end
 
@@ -887,7 +930,8 @@ class MergeRequest < ActiveRecord::Base
   def compute_diverged_commits_count
     return 0 unless source_branch_sha && target_branch_sha
 
-    Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_branch_sha, target_branch_sha).size
+    target_project.repository
+      .count_commits_between(source_branch_sha, target_branch_sha)
   end
   private :compute_diverged_commits_count
 
@@ -903,30 +947,26 @@ class MergeRequest < ActiveRecord::Base
       .order(id: :desc)
   end
 
+  def all_commits
+    # MySQL doesn't support LIMIT in a subquery.
+    diffs_relation = if Gitlab::Database.postgresql?
+                       merge_request_diffs.recent
+                     else
+                       merge_request_diffs
+                     end
+
+    MergeRequestDiffCommit
+      .where(merge_request_diff: diffs_relation)
+      .limit(10_000)
+  end
+
   # Note that this could also return SHA from now dangling commits
   #
   def all_commit_shas
-    if persisted?
-      # MySQL doesn't support LIMIT in a subquery.
-      diffs_relation =
-        if Gitlab::Database.postgresql?
-          merge_request_diffs.order(id: :desc).limit(100)
-        else
-          merge_request_diffs
-        end
+    @all_commit_shas ||= begin
+      return commit_shas unless persisted?
 
-      column_shas = MergeRequestDiffCommit
-                      .where(merge_request_diff: diffs_relation)
-                      .limit(10_000)
-                      .pluck('sha')
-
-      serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
-
-      (column_shas + serialised_shas).uniq
-    elsif compare_commits
-      compare_commits.to_a.reverse.map(&:id)
-    else
-      [diff_head_sha]
+      all_commits.pluck(:sha).uniq
     end
   end
 
@@ -994,7 +1034,7 @@ class MergeRequest < ActiveRecord::Base
     return true if autocomplete_precheck
 
     return false unless mergeable?(skip_ci_check: true)
-    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if actual_head_pipeline && !(actual_head_pipeline.success? || actual_head_pipeline.active?)
     return false if last_diff_sha != diff_head_sha
 
     true

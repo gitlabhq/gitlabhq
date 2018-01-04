@@ -1,6 +1,6 @@
 /* eslint-disable quote-props*/
 
-const sidebarMockData = {
+const RESPONSE_MAP = {
   'GET': {
     '/gitlab-org/gitlab-shell/issues/5.json': {
       id: 45,
@@ -66,6 +66,65 @@ const sidebarMockData = {
       },
       labels: [],
     },
+    '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar': {
+      assignees: [
+        {
+          name: 'User 0',
+          username: 'user0',
+          id: 22,
+          state: 'active',
+          avatar_url: 'http: //www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
+          web_url: 'http: //localhost:3001/user0',
+        },
+        {
+          name: 'Marguerite Bartell',
+          username: 'tajuana',
+          id: 18,
+          state: 'active',
+          avatar_url: 'http: //www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
+          web_url: 'http: //localhost:3001/tajuana',
+        },
+        {
+          name: 'Laureen Ritchie',
+          username: 'michaele.will',
+          id: 16,
+          state: 'active',
+          avatar_url: 'http: //www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
+          web_url: 'http: //localhost:3001/michaele.will',
+        },
+      ],
+      human_time_estimate: null,
+      human_total_time_spent: null,
+      participants: [
+        {
+          name: 'User 0',
+          username: 'user0',
+          id: 22,
+          state: 'active',
+          avatar_url: 'http: //www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80\u0026d=identicon',
+          web_url: 'http: //localhost:3001/user0',
+        },
+        {
+          name: 'Marguerite Bartell',
+          username: 'tajuana',
+          id: 18,
+          state: 'active',
+          avatar_url: 'http: //www.gravatar.com/avatar/4852a41fb41616bf8f140d3701673f53?s=80\u0026d=identicon',
+          web_url: 'http: //localhost:3001/tajuana',
+        },
+        {
+          name: 'Laureen Ritchie',
+          username: 'michaele.will',
+          id: 16,
+          state: 'active',
+          avatar_url: 'http: //www.gravatar.com/avatar/e301827eb03be955c9c172cb9a8e4e8a?s=80\u0026d=identicon',
+          web_url: 'http: //localhost:3001/michaele.will',
+        },
+      ],
+      subscribed: true,
+      time_estimate: 0,
+      total_time_spent: 0,
+    },
     '/autocomplete/projects?project_id=15': [
       {
         'id': 0,
@@ -113,9 +172,10 @@ const sidebarMockData = {
   },
 };
 
-export default {
+const mockData = {
+  responseMap: RESPONSE_MAP,
   mediator: {
-    endpoint: '/gitlab-org/gitlab-shell/issues/5.json',
+    endpoint: '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar',
     toggleSubscriptionEndpoint: '/gitlab-org/gitlab-shell/issues/5/toggle_subscription',
     moveIssueEndpoint: '/gitlab-org/gitlab-shell/issues/5/move',
     projectsAutocompleteEndpoint: '/autocomplete/projects?project_id=15',
@@ -141,12 +201,14 @@ export default {
     name: 'Administrator',
     username: 'root',
   },
-
-  sidebarMockInterceptor(request, next) {
-    const body = sidebarMockData[request.method.toUpperCase()][request.url];
-
-    next(request.respondWith(JSON.stringify(body), {
-      status: 200,
-    }));
-  },
 };
+
+mockData.sidebarMockInterceptor = function (request, next) {
+  const body = this.responseMap[request.method.toUpperCase()][request.url];
+
+  next(request.respondWith(JSON.stringify(body), {
+    status: 200,
+  }));
+}.bind(mockData);
+
+export default mockData;

@@ -6,18 +6,47 @@ feature 'Merge Request versions', :js do
   let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
   let!(:merge_request_diff2) { merge_request.merge_request_diffs.create(head_commit_sha: nil) }
   let!(:merge_request_diff3) { merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+  let!(:params) { Hash.new }
 
   before do
     sign_in(create(:admin))
-    visit diffs_project_merge_request_path(project, merge_request)
+    visit diffs_project_merge_request_path(project, merge_request, params)
   end
 
-  it 'show the latest version of the diff' do
-    page.within '.mr-version-dropdown' do
-      expect(page).to have_content 'latest version'
+  shared_examples 'allows commenting' do |file_id:, line_code:, comment:|
+    it do
+      diff_file_selector = ".diff-file[id='#{file_id}']"
+      line_code = "#{file_id}_#{line_code}"
+
+      page.within(diff_file_selector) do
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
+        find(".line_holder[id='#{line_code}'] button").click
+
+        page.within("form[data-line-code='#{line_code}']") do
+          fill_in "note[note]", with: comment
+          find(".js-comment-button").click
+        end
+
+        wait_for_requests
+
+        expect(page).to have_content(comment)
+      end
+    end
+  end
+
+  describe 'compare with the latest version' do
+    it 'show the latest version of the diff' do
+      page.within '.mr-version-dropdown' do
+        expect(page).to have_content 'latest version'
+      end
+
+      expect(page).to have_content '8 changed files'
     end
 
-    expect(page).to have_content '8 changed files'
+    it_behaves_like 'allows commenting',
+                    file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
+                    line_code: '1_1',
+                    comment: 'Typo, please fix.'
   end
 
   describe 'switch between versions' do
@@ -62,24 +91,10 @@ feature 'Merge Request versions', :js do
       expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end
 
-    it 'allows commenting' do
-      diff_file_selector = ".diff-file[id='7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44']"
-      line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_2_2'
-
-      page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
-        find(".line_holder[id='#{line_code}'] button").click
-
-        page.within("form[data-line-code='#{line_code}']") do
-          fill_in "note[note]", with: "Typo, please fix"
-          find(".js-comment-button").click
-        end
-
-        wait_for_requests
-
-        expect(page).to have_content("Typo, please fix")
-      end
-    end
+    it_behaves_like 'allows commenting',
+                    file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
+                    line_code: '2_2',
+                    comment: 'Typo, please fix.'
   end
 
   describe 'compare with older version' do
@@ -132,25 +147,6 @@ feature 'Merge Request versions', :js do
       expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end
 
-    it 'allows commenting' do
-      diff_file_selector = ".diff-file[id='7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44']"
-      line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_4_4'
-
-      page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
-        find(".line_holder[id='#{line_code}'] button").click
-
-        page.within("form[data-line-code='#{line_code}']") do
-          fill_in "note[note]", with: "Typo, please fix"
-          find(".js-comment-button").click
-        end
-
-        wait_for_requests
-
-        expect(page).to have_content("Typo, please fix")
-      end
-    end
-
     it 'show diff between new and old version' do
       expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
     end
@@ -162,6 +158,11 @@ feature 'Merge Request versions', :js do
       end
       expect(page).to have_content '8 changed files'
     end
+
+    it_behaves_like 'allows commenting',
+                    file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
+                    line_code: '4_4',
+                    comment: 'Typo, please fix.'
   end
 
   describe 'compare with same version' do
@@ -209,5 +210,25 @@ feature 'Merge Request versions', :js do
 
       expect(page).to have_content '0 changed files'
     end
+  end
+
+  describe 'scoped in a commit' do
+    let(:params) { { commit_id: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' } }
+
+    before do
+      wait_for_requests
+    end
+
+    it 'should only show diffs from the commit' do
+      diff_commit_ids = find_all('.diff-file [data-commit-id]').map {|diff| diff['data-commit-id']}
+
+      expect(diff_commit_ids).not_to be_empty
+      expect(diff_commit_ids).to all(eq(params[:commit_id]))
+    end
+
+    it_behaves_like 'allows commenting',
+                    file_id: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd',
+                    line_code: '6_6',
+                    comment: 'Typo, please fix.'
   end
 end

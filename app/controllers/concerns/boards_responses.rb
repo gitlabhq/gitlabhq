@@ -24,11 +24,11 @@ module BoardsResponses
   end
 
   def respond_with_boards
-    respond_with(@boards)
+    respond_with(@boards) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def respond_with_board
-    respond_with(@board)
+    respond_with(@board) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def respond_with(resource)

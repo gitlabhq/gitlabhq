@@ -120,6 +120,12 @@ describe('Sidebar store', () => {
     expect(this.store.isFetching.participants).toEqual(false);
   });
 
+  it('sets loading state', () => {
+    this.store.setLoadingState('assignees', true);
+
+    expect(this.store.isLoading.assignees).toEqual(true);
+  });
+
   it('set time tracking data', () => {
     this.store.setTimeTrackingData(Mock.time);
     expect(this.store.timeEstimate).toEqual(Mock.time.time_estimate);

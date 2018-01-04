@@ -37,5 +37,5 @@
         - if @group_links.any?
           = render 'projects/project_members/groups', group_links: @group_links
 
-    = render 'projects/project_members/team', members: @project_members
+    = render 'projects/project_members/team', project: @project, members: @project_members
     = paginate @project_members, theme: "gitlab"

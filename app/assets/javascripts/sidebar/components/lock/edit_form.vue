@@ -18,11 +18,6 @@ export default {
       required: true,
       type: Function,
     },
-
-    issuableType: {
-      required: true,
-      type: String,
-    },
   },
 
   mixins: [
@@ -39,13 +34,13 @@ export default {
   <div class="dropdown open">
     <div class="dropdown-menu sidebar-item-warning-message">
       <p class="text" v-if="isLocked">
-        Unlock this {{ issuableDisplayName(issuableType) }}?
+        Unlock this {{ issuableDisplayName }}?
         <strong>Everyone</strong>
         will be able to comment.
       </p>
 
       <p class="text" v-else>
-        Lock this {{ issuableDisplayName(issuableType) }}?
+        Lock this {{ issuableDisplayName }}?
         Only
         <strong>project members</strong>
         will be able to comment.

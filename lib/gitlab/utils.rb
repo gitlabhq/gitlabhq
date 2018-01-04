@@ -46,5 +46,22 @@ module Gitlab
     def random_string
       Random.rand(Float::MAX.to_i).to_s(36)
     end
+
+    # See: http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+    # Cross-platform way of finding an executable in the $PATH.
+    #
+    #   which('ruby') #=> /usr/bin/ruby
+    def which(cmd, env = ENV)
+      exts = env['PATHEXT'] ? env['PATHEXT'].split(';') : ['']
+
+      env['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each do |ext|
+          exe = File.join(path, "#{cmd}#{ext}")
+          return exe if File.executable?(exe) && !File.directory?(exe)
+        end
+      end
+
+      nil
+    end
   end
 end

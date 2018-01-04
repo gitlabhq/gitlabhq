@@ -96,7 +96,7 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :record_metrics, unless: :imported?
+    after_save :ensure_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -122,9 +122,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      title = to_fuzzy_arel(:title, query)
-
-      where(title)
+      fuzzy_search(query, [:title])
     end
 
     # Searches for records with a matching title or description.
@@ -135,10 +133,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      title = to_fuzzy_arel(:title, query)
-      description = to_fuzzy_arel(:description, query)
-
-      where(title&.or(description))
+      fuzzy_search(query, [:title, :description])
     end
 
     def sort(method, excluded_labels: [])
@@ -340,16 +335,15 @@ module Issuable
     false
   end
 
-  def record_metrics
-    metrics = self.metrics || create_metrics
-    metrics.record!
-  end
-
   ##
   # Override in issuable specialization
   #
   def first_contribution?
     false
+  end
+
+  def ensure_metrics
+    self.metrics || create_metrics
   end
 
   ##

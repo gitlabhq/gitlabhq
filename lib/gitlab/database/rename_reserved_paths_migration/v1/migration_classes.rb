@@ -6,7 +6,7 @@ module Gitlab
           module Routable
             def full_path
               if route && route.path.present?
-                @full_path ||= route.path
+                @full_path ||= route.path # rubocop:disable Gitlab/ModuleWithInstanceVariables
               else
                 update_route if persisted?
 
@@ -30,7 +30,7 @@ module Gitlab
             def prepare_route
               route || build_route(source: self)
               route.path = build_full_path
-              @full_path = nil
+              @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
             end
           end
 

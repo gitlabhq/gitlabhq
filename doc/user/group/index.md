@@ -65,7 +65,7 @@ together in a single list view.
 
 > **Notes:**
 - For a list of words that are not allowed to be used as group names see the
-  [reserved names][reserved].
+  [reserved names](../reserved_names.md).
 
 You can create a group in GitLab from:
 
@@ -97,7 +97,7 @@ Add members to a group by navigating to the group's dashboard, and clicking **Me
 
 ![add members to group](img/add_new_members.png)
 
-Select the [permission level][permissions] and add the new member. You can also set the expiring
+Select the [permission level](../permissions.md#permissions) and add the new member. You can also set the expiring
 date for that user, from which they will no longer have access to your group.
 
 One of the benefits of putting multiple projects in one group is that you can
@@ -152,16 +152,9 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
-## Transfer an existing project into a group
+## Transfer projects into groups
 
-You can transfer an existing project into a group as long as you have at least **Master** [permissions][permissions] to that group
-and if you are an **Owner** of the project.
-
-![Transfer a project to a new namespace](img/transfer_project_to_other_group.png)
-
-Find this option under your project's settings.
-
-GitLab administrators can use the admin interface to move any project to any namespace if needed.
+Learn how to [transfer a project into a group](../project/index.md#transfer-an-existing-project-into-a-group).
 
 ## Sharing a project with a group
 
@@ -190,24 +183,29 @@ access further configurations for your group.
 
 #### Changing a group's path
 
-> **Note:** If you want to retain ownership over the original namespace and
+Changing a group's path can have unintended side effects. Read
+[how redirects will behave](../project/index.md#redirects-when-changing-repository-paths)
+before proceeding.
+
+If you are vacating the path so it can be claimed by another group or user,
+you may need to rename the group name as well since both names and paths must
+be unique.
+
+To change your group path:
+
+1. Navigate to your group's **Settings > General**.
+1. Enter a new name under "Group path".
+1. Hit **Save group**.
+
+CAUTION: **Caution:**
+It is currently not possible to rename a namespace if it contains a
+project with [Container Registry](../project/container_registry.md) tags,
+because the project cannot be moved.
+
+TIP: **TIP:**
+If you want to retain ownership over the original namespace and
 protect the URL redirects, then instead of changing a group's path or renaming a
 username, you can create a new group and transfer projects to it.
-
-Changing a group's path can have unintended side effects.
-
-* Existing web URLs for the group and anything under it (i.e. projects) will
-redirect to the new URLs
-* Existing Git remote URLs for projects under the group will no longer work, but
-Git responses will show an error with the new remote URL
-* The original namespace can be claimed again by any group or user, which will
-destroy web redirects and Git remote warnings
-* If you are vacating the path so it can be claimed by another group or user,
-you may need to rename the group name as well since both names and paths must be
-unique
-
-> It is currently not possible to rename a namespace if it contains a
-project with container registry tags, because the project cannot be moved.
 
 #### Enforce 2FA to group members
 
@@ -260,12 +258,9 @@ See the [custom emoji section](../markdown.md#custom-emoji) in the markdown docs
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
+and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter](https://about.gitlab.com/products/).)
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
 for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee]).
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
-[permissions]: ../permissions.md#permissions
-[ee]: https://about.gitlab.com/products/
-[reserved]:  ../reserved_names.md
 [ce-14609]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14609

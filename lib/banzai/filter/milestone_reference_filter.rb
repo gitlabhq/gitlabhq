@@ -38,7 +38,7 @@ module Banzai
 
       def find_milestone(project_ref, namespace_ref, milestone_id, milestone_name)
         project_path = full_project_path(namespace_ref, project_ref)
-        project = project_from_ref(project_path)
+        project = parent_from_ref(project_path)
 
         return unless project
 

@@ -1,5 +1,5 @@
 class StuckCiJobsWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'.freeze

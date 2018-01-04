@@ -63,7 +63,7 @@ class WebHookService
   end
 
   def async_execute
-    Sidekiq::Client.enqueue(WebHookWorker, hook.id, data, hook_name)
+    WebHookWorker.perform_async(hook.id, data, hook_name)
   end
 
   private

@@ -13,6 +13,14 @@ feature 'Multi-file editor new file', :js do
     visit project_tree_path(project, :master)
 
     wait_for_requests
+
+    click_link('Multi Edit')
+
+    wait_for_requests
+  end
+
+  after do
+    set_cookie('new_repo', 'false')
   end
 
   it 'creates file in current directory' do
@@ -20,16 +28,20 @@ feature 'Multi-file editor new file', :js do
 
     click_link('New file')
 
-    page.within('.popup-dialog') do
-      find('.form-control').set('filename')
+    page.within('.modal') do
+      find('.form-control').set('file name')
 
       click_button('Create file')
     end
 
-    fill_in('commit-message', with: 'commit message')
+    wait_for_requests
 
-    click_button('Commit 1 file')
+    find('.multi-file-commit-panel-collapse-btn').click
 
-    expect(page).to have_selector('td', text: 'commit message')
+    fill_in('commit-message', with: 'commit message ide')
+
+    click_button('Commit')
+
+    expect(page).to have_content('file name')
   end
 end

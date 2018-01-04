@@ -229,16 +229,18 @@ In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings ->
 ## Keep OmniAuth user profiles up to date
 
 You can enable profile syncing from selected OmniAuth providers and for all or for specific user information.
- 
+
+When authenticating using LDAP, the user's email is always synced.
+
  ```ruby
    gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
    gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
  ```
- 
+
  **For installations from source**
- 
+
  ```yaml
    omniauth:
      sync_profile_from_provider: ['twitter', 'google_oauth2']
-     sync_profile_claims_from_provider: ['email', 'location']
+     sync_profile_attributes: ['email', 'location']
  ```

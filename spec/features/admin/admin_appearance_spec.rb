@@ -9,6 +9,7 @@ feature 'Admin Appearance' do
 
     fill_in 'appearance_title', with: 'MyCompany'
     fill_in 'appearance_description', with: 'dev server'
+    fill_in 'appearance_new_project_guidelines', with: 'Custom project guidelines'
     click_button 'Save'
 
     expect(current_path).to eq admin_appearances_path
@@ -16,21 +17,39 @@ feature 'Admin Appearance' do
 
     expect(page).to have_field('appearance_title', with: 'MyCompany')
     expect(page).to have_field('appearance_description', with: 'dev server')
+    expect(page).to have_field('appearance_new_project_guidelines', with: 'Custom project guidelines')
     expect(page).to have_content 'Last edit'
   end
 
-  scenario 'Preview appearance' do
+  scenario 'Preview sign-in page appearance' do
     sign_in(create(:admin))
 
     visit admin_appearances_path
-    click_link "Preview"
+    click_link "Sign-in page"
 
-    expect_page_has_custom_appearance(appearance)
+    expect_custom_sign_in_appearance(appearance)
+  end
+
+  scenario 'Preview new project page appearance' do
+    sign_in(create(:admin))
+
+    visit admin_appearances_path
+    click_link "New project page"
+
+    expect_custom_new_project_appearance(appearance)
   end
 
   scenario 'Custom sign-in page' do
     visit new_user_session_path
-    expect_page_has_custom_appearance(appearance)
+
+    expect_custom_sign_in_appearance(appearance)
+  end
+
+  scenario 'Custom new project page' do
+    sign_in create(:user)
+    visit new_project_path
+
+    expect_custom_new_project_appearance(appearance)
   end
 
   scenario 'Appearance logo' do
@@ -57,9 +76,13 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(header_logo_selector)
   end
 
-  def expect_page_has_custom_appearance(appearance)
+  def expect_custom_sign_in_appearance(appearance)
     expect(page).to have_content appearance.title
     expect(page).to have_content appearance.description
+  end
+
+  def expect_custom_new_project_appearance(appearance)
+    expect(page).to have_content appearance.new_project_guidelines
   end
 
   def logo_selector

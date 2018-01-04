@@ -18,6 +18,10 @@ like `docs.gitlab.com/user/project/merge_requests.html`. With this pattern,
 you can immediately tell that you are navigating a user related documentation
 and is about the project and its merge requests.
 
+Do not create summaries of similar types of content (e.g. an index of all articles, videos, etc.),
+rather organise content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
 The table below shows what kind of documentation goes where.
 
 | Directory | What belongs here |
@@ -168,12 +172,6 @@ You can combine one or more of the following:
 
     ```haml
     = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
-    ```
-
-1. **Underlining a link.**
-
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions'), class: 'underlined-link'
     ```
 
 1. **Using links inline of some text.**

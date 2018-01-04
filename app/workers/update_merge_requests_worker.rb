@@ -1,6 +1,5 @@
 class UpdateMergeRequestsWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   LOG_TIME_THRESHOLD = 90 # seconds
 

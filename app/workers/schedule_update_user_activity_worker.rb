@@ -1,5 +1,5 @@
 class ScheduleUpdateUserActivityWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform(batch_size = 500)

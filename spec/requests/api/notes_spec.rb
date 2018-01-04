@@ -14,7 +14,7 @@ describe API::Notes do
   let(:private_user)    { create(:user) }
   let(:private_project) do
     create(:project, namespace: private_user.namespace)
-    .tap { |p| p.team << [private_user, :master] }
+    .tap { |p| p.add_master(private_user) }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 
@@ -29,11 +29,53 @@ describe API::Notes do
   end
 
   before do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
     context "when noteable is an Issue" do
+      context 'sorting' do
+        before do
+          create_list(:note, 3, noteable: issue, project: project, author: user)
+        end
+
+        it 'sorts by created_at in descending order by default' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by ascending order when requested' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes?sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+
+        it 'sorts by updated_at in descending order when requested' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes?order_by=updated_at", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by updated_at in ascending order when requested' do
+          get api("/projects/#{project.id}/issues/#{issue.iid}/notes??order_by=updated_at&sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+      end
+
       it "returns an array of issue notes" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
 
@@ -85,6 +127,47 @@ describe API::Notes do
     end
 
     context "when noteable is a Snippet" do
+      context 'sorting' do
+        before do
+          create_list(:note, 3, noteable: snippet, project: project, author: user)
+        end
+
+        it 'sorts by created_at in descending order by default' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by ascending order when requested' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes?sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+
+        it 'sorts by updated_at in descending order when requested' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes?order_by=updated_at", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by updated_at in ascending order when requested' do
+          get api("/projects/#{project.id}/snippets/#{snippet.id}/notes??order_by=updated_at&sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+      end
       it "returns an array of snippet notes" do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
@@ -108,6 +191,47 @@ describe API::Notes do
     end
 
     context "when noteable is a Merge Request" do
+      context 'sorting' do
+        before do
+          create_list(:note, 3, noteable: merge_request, project: project, author: user)
+        end
+
+        it 'sorts by created_at in descending order by default' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by ascending order when requested' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes?sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['created_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+
+        it 'sorts by updated_at in descending order when requested' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes?order_by=updated_at", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        it 'sorts by updated_at in ascending order when requested' do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes??order_by=updated_at&sort=asc", user)
+
+          response_dates = json_response.map { |noteable| noteable['updated_at'] }
+
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort)
+        end
+      end
       it "returns an array of merge_requests notes" do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user)
 
@@ -340,7 +464,7 @@ describe API::Notes do
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
     it "creates an activity event when an issue note is created" do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
     end

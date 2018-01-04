@@ -58,8 +58,8 @@ describe API::Issues, :mailer do
   let(:no_milestone_title) { URI.escape(Milestone::None.title) }
 
   before(:all) do
-    project.team << [user, :reporter]
-    project.team << [guest, :guest]
+    project.add_reporter(user)
+    project.add_guest(guest)
   end
 
   describe "GET /issues" do
@@ -344,7 +344,7 @@ describe API::Issues, :mailer do
     let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
 
     before do
-      group_project.team << [user, :reporter]
+      group_project.add_reporter(user)
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
@@ -860,6 +860,20 @@ describe API::Issues, :mailer do
       end
     end
 
+    context 'user does not have permissions to create issue' do
+      let(:not_member)  { create(:user) }
+
+      before do
+        project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'renders 403' do
+        post api("/projects/#{project.id}/issues", not_member), title: 'new issue'
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3,
@@ -953,7 +967,7 @@ describe API::Issues, :mailer do
       let(:project) { merge_request.source_project }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       context 'resolving all discussions in a merge request' do

@@ -5,8 +5,7 @@
 # Consider using an extra worker if you need to add any extra (and potentially
 # slow) processing of commits.
 class ProcessCommitWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.

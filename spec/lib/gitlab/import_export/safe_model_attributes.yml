@@ -173,7 +173,6 @@ MergeRequest:
 MergeRequestDiff:
 - id
 - state
-- st_commits
 - merge_request_id
 - created_at
 - updated_at

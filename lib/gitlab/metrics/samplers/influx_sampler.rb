@@ -27,7 +27,6 @@ module Gitlab
         def sample
           sample_memory_usage
           sample_file_descriptors
-          sample_objects
           sample_gc
 
           flush
@@ -46,29 +45,6 @@ module Gitlab
 
         def sample_file_descriptors
           add_metric('file_descriptors', value: System.file_descriptor_count)
-        end
-
-        if Metrics.mri?
-          def sample_objects
-            sample = Allocations.to_hash
-            counts = sample.each_with_object({}) do |(klass, count), hash|
-              name = klass.name
-
-              next unless name
-
-              hash[name] = count
-            end
-
-            # Symbols aren't allocated so we'll need to add those manually.
-            counts['Symbol'] = Symbol.all_symbols.length
-
-            counts.each do |name, count|
-              add_metric('object_counts', { count: count }, type: name)
-            end
-          end
-        else
-          def sample_objects
-          end
         end
 
         def sample_gc

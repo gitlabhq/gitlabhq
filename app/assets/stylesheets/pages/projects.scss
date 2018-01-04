@@ -126,93 +126,6 @@
   }
 }
 
-.project-feature-toggle {
-  position: relative;
-  border: 0;
-  outline: 0;
-  display: block;
-  width: 100px;
-  height: 24px;
-  cursor: pointer;
-  user-select: none;
-  background: $feature-toggle-color-disabled;
-  border-radius: 12px;
-  padding: 3px;
-  transition: all .4s ease;
-
-  &::selection,
-  &::before::selection,
-  &::after::selection {
-    background: none;
-  }
-
-  &::before {
-    color: $feature-toggle-text-color;
-    font-size: 12px;
-    line-height: 24px;
-    position: absolute;
-    top: 0;
-    left: 25px;
-    right: 5px;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    animation: animate-disabled .2s ease-in;
-    content: attr(data-disabled-text);
-  }
-
-  &::after {
-    position: relative;
-    display: block;
-    content: "";
-    width: 22px;
-    height: 18px;
-    left: 0;
-    border-radius: 9px;
-    background: $feature-toggle-color;
-    transition: all .2s ease;
-  }
-
-  &.checked {
-    background: $feature-toggle-color-enabled;
-
-    &::before {
-      left: 5px;
-      right: 25px;
-      animation: animate-enabled .2s ease-in;
-      content: attr(data-enabled-text);
-    }
-
-    &::after {
-      left: calc(100% - 22px);
-    }
-  }
-
-  &.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: $screen-xs-min) {
-    width: 50px;
-
-    &::before,
-    &.checked::before {
-      display: none;
-    }
-  }
-
-  @keyframes animate-enabled {
-    0%, 35% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-
-  @keyframes animate-disabled {
-    0%, 35% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-}
-
 .project-home-panel,
 .group-home-panel {
   padding-top: 24px;
@@ -291,14 +204,7 @@
     }
 
     svg {
-
-      path {
-        fill: $layout-link-gray;
-      }
-
-      use {
-        stroke: $layout-link-gray;
-      }
+      fill: $layout-link-gray;
     }
 
     .fa-caret-down {
@@ -402,11 +308,21 @@
       }
     }
   }
+
+  .clone-dropdown-btn {
+    background-color: $white-light;
+  }
+
+  .clone-options-dropdown {
+    min-width: 240px;
+
+    .dropdown-menu-inner-content {
+      min-width: 320px;
+    }
+  }
 }
 
 .project-repo-buttons {
-  @include new-style-dropdown;
-
   .project-action-button .dropdown-menu {
     max-height: 250px;
     overflow-y: auto;
@@ -806,6 +722,7 @@ a.deploy-project-label {
         &:hover,
         &:focus {
           color: $gl-text-color;
+          text-decoration: underline;
         }
       }
     }
@@ -884,10 +801,6 @@ pre.light-well {
 
   h3 {
     font-size: $gl-font-size;
-  }
-
-  a {
-    color: $gl-text-color;
   }
 
   .avatar-container,
@@ -983,8 +896,6 @@ pre.light-well {
 
 .new-protected-branch,
 .new-protected-tag {
-  @include new-style-dropdown;
-
   label {
     margin-top: 6px;
     font-weight: $gl-font-weight-normal;
@@ -1004,8 +915,6 @@ pre.light-well {
 
 .protected-branches-list,
 .protected-tags-list {
-  @include new-style-dropdown;
-
   margin-bottom: 30px;
 
   .settings-message {
@@ -1207,4 +1116,9 @@ pre.light-well {
     margin: 32px 0;
     border-color: $border-color;
   }
+}
+
+.issuable-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
 }

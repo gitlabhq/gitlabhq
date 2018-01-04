@@ -9,6 +9,31 @@ module QA
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
+    autoload :Browser, 'qa/runtime/browser'
+  end
+
+  ##
+  # GitLab QA fabrication mechanisms
+  #
+  module Factory
+    autoload :Base, 'qa/factory/base'
+    autoload :Dependency, 'qa/factory/dependency'
+    autoload :Product, 'qa/factory/product'
+
+    module Resource
+      autoload :Sandbox, 'qa/factory/resource/sandbox'
+      autoload :Group, 'qa/factory/resource/group'
+      autoload :Project, 'qa/factory/resource/project'
+      autoload :DeployKey, 'qa/factory/resource/deploy_key'
+    end
+
+    module Repository
+      autoload :Push, 'qa/factory/repository/push'
+    end
+
+    module Settings
+      autoload :HashedStorage, 'qa/factory/settings/hashed_storage'
+    end
   end
 
   ##
@@ -33,27 +58,6 @@ module QA
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
     end
-
-    ##
-    # GitLab instance scenarios.
-    #
-    module Gitlab
-      module Group
-        autoload :Create, 'qa/scenario/gitlab/group/create'
-      end
-
-      module Project
-        autoload :Create, 'qa/scenario/gitlab/project/create'
-      end
-
-      module Sandbox
-        autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
-      end
-
-      module Admin
-        autoload :HashedStorage, 'qa/scenario/gitlab/admin/hashed_storage'
-      end
-    end
   end
 
   ##
@@ -65,10 +69,14 @@ module QA
     autoload :Base, 'qa/page/base'
 
     module Main
-      autoload :Entry, 'qa/page/main/entry'
       autoload :Login, 'qa/page/main/login'
-      autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
+    end
+
+    module Menu
+      autoload :Main, 'qa/page/menu/main'
+      autoload :Side, 'qa/page/menu/side'
+      autoload :Admin, 'qa/page/menu/admin'
     end
 
     module Dashboard
@@ -84,10 +92,15 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+
+      module Settings
+        autoload :Common, 'qa/page/project/settings/common'
+        autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+      end
     end
 
     module Admin
-      autoload :Menu, 'qa/page/admin/menu'
       autoload :Settings, 'qa/page/admin/settings'
     end
 

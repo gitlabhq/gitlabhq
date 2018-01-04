@@ -1,6 +1,5 @@
 class NewIssueWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include NewIssuable
 
   def perform(issue_id, user_id)

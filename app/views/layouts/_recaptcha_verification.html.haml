@@ -1,5 +1,4 @@
 - humanized_resource_name = spammable.class.model_name.human.downcase
-- resource_name = spammable.class.model_name.singular
 
 %h3.page-title
   Anti-spam verification
@@ -8,16 +7,4 @@
 %p
   #{"We detected potential spam in the #{humanized_resource_name}. Please solve the reCAPTCHA to proceed."}
 
-= form_for form do |f|
-  .recaptcha
-    - params[resource_name].each do |field, value|
-      = hidden_field(resource_name, field, value: value)
-    = hidden_field_tag(:spam_log_id, spammable.spam_log.id)
-    = hidden_field_tag(:recaptcha_verification, true)
-    = recaptcha_tags
-
-    -# Yields a block with given extra params.
-    = yield
-
-  .row-content-block.footer-block
-    = f.submit "Submit #{humanized_resource_name}", class: 'btn btn-create'
+= render 'shared/recaptcha_form', spammable: spammable

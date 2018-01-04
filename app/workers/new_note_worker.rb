@@ -1,6 +1,5 @@
 class NewNoteWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   # Keep extra parameter to preserve backwards compatibility with
   # old `NewNoteWorker` jobs (can remove later)

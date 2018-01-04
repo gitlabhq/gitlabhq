@@ -22,6 +22,8 @@ describe Clusters::Applications::ScheduleInstallationService do
     let(:service) { described_class.new(project, nil, cluster: cluster, application_class: application_class) }
 
     it 'creates a new application' do
+      allow(ClusterInstallAppWorker).to receive(:perform_async)
+
       expect { service.execute }.to change { application_class.count }.by(1)
     end
 
@@ -32,7 +34,7 @@ describe Clusters::Applications::ScheduleInstallationService do
     end
 
     context 'when installation is already in progress' do
-      let(:application) { create(:cluster_applications_helm, :installing) }
+      let(:application) { create(:clusters_applications_helm, :installing) }
       let(:cluster) { application.cluster }
 
       it_behaves_like 'a failing service'

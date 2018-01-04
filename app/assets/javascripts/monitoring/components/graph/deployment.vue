@@ -1,5 +1,6 @@
 <script>
-  import { dateFormat, timeFormat } from '../../utils/date_time_formatters';
+  import { dateFormatWithName, timeFormat } from '../../utils/date_time_formatters';
+  import Icon from '../../../vue_shared/components/icon.vue';
 
   export default {
     props: {
@@ -25,6 +26,10 @@
       },
     },
 
+    components: {
+      Icon,
+    },
+
     computed: {
       calculatedHeight() {
         return this.graphHeight - this.graphHeightOffset;
@@ -33,7 +38,7 @@
 
     methods: {
       refText(d) {
-        return d.tag ? d.ref : d.sha.slice(0, 6);
+        return d.tag ? d.ref : d.sha.slice(0, 8);
       },
 
       formatTime(deploymentTime) {
@@ -41,7 +46,7 @@
       },
 
       formatDate(deploymentTime) {
-        return dateFormat(deploymentTime);
+        return dateFormatWithName(deploymentTime);
       },
 
       nameDeploymentClass(deployment) {
@@ -54,10 +59,18 @@
 
       positionFlag(deployment) {
         let xPosition = 3;
-        if (deployment.xPos > (this.graphWidth - 200)) {
-          xPosition = -97;
+        if (deployment.xPos > (this.graphWidth - 225)) {
+          xPosition = -142;
         }
         return xPosition;
+      },
+
+      svgContainerHeight(tag) {
+        let svgHeight = 80;
+        if (!tag) {
+          svgHeight -= 20;
+        }
+        return svgHeight;
       },
     },
   };
@@ -91,35 +104,75 @@
         class="js-deploy-info-box"
         :x="positionFlag(deployment)"
         y="0"
-        width="92"
-        height="60">
+        width="134"
+        :height="svgContainerHeight(deployment.tag)">
         <rect
           class="rect-text-metric deploy-info-rect rect-metric"
           x="1"
           y="1"
           rx="2"
-          width="90"
-          height="58">
+          width="132"
+          :height="svgContainerHeight(deployment.tag) - 2">
         </rect>
-        <g
-          transform="translate(5, 2)">
-          <text
-            class="deploy-info-text text-metric-bold">
-            {{refText(deployment)}}
-          </text>
-        </g>
-        <text
-          class="deploy-info-text"
-          y="18"
-          transform="translate(5, 2)">
-          {{formatDate(deployment.time)}}
-        </text>
         <text
           class="deploy-info-text text-metric-bold"
-          y="38"
           transform="translate(5, 2)">
-          {{formatTime(deployment.time)}}
+          Deployed
         </text>
+        <!--The date info-->
+        <g transform="translate(5, 20)">
+          <text class="deploy-info-text">
+            {{formatDate(deployment.time)}}
+          </text>
+          <text 
+            class="deploy-info-text text-metric-bold"
+            x="62">
+            {{formatTime(deployment.time)}}
+          </text>
+        </g>
+        <line
+          class="divider-line"
+          x1="0"
+          y1="38"
+          x2="132"
+          :y2="38"
+          stroke="#000">
+        </line>
+        <!--Commit information-->
+        <g transform="translate(5, 40)">
+          <icon
+            name="commit"
+            :width="12"
+            :height="12"
+            :y="3">
+          </icon>
+          <a :xlink:href="deployment.commitUrl">
+            <text
+              class="deploy-info-text deploy-info-text-link"
+              transform="translate(20, 2)">
+              {{refText(deployment)}}
+            </text>
+          </a>
+        </g>
+        <!--Tag information-->
+        <g
+          transform="translate(5, 55)" 
+          v-if="deployment.tag">
+          <icon
+            name="label"
+            :width="12"
+            :height="12"
+            :y="5">
+          </icon>
+          <a :xlink:href="deployment.tagUrl">
+            <text
+              class="deploy-info-text deploy-info-text-link"
+              transform="translate(20, 2)"
+              y="2">
+              {{deployment.tag}}
+            </text>
+          </a>
+        </g>
       </svg>
     </g>
     <svg

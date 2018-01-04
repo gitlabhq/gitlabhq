@@ -6,8 +6,8 @@ describe Projects::BranchesController do
   let(:developer) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user, :developer]
+    project.add_master(user)
+    project.add_developer(user)
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
     allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
@@ -113,22 +113,52 @@ describe Projects::BranchesController do
           expect(response).to redirect_to project_tree_path(project, branch)
         end
 
-        it 'redirects to autodeploy setup page' do
-          result = { status: :success, branch: double(name: branch) }
+        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          it 'redirects to autodeploy setup page' do
+            result = { status: :success, branch: double(name: branch) }
 
-          project.services << build(:kubernetes_service)
+            expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+            expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
-          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+            post :create,
+              namespace_id: project.namespace.to_param,
+              project_id: project.to_param,
+              branch_name: branch,
+              issue_iid: issue.iid
+
+            expect(response.location).to include(project_new_blob_path(project, branch))
+            expect(response).to have_gitlab_http_status(302)
+          end
+        end
+
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          before do
+            project.services << build(:kubernetes_service)
+          end
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          before do
+            create(:cluster, :provided_by_gcp, projects: [project])
+          end
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+      end
+
+      context 'when create branch service fails' do
+        let(:branch) { "./invalid-branch-name" }
+
+        it "doesn't post a system note" do
+          expect(SystemNoteService).not_to receive(:new_issue_branch)
 
           post :create,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            namespace_id: project.namespace,
+            project_id: project,
             branch_name: branch,
             issue_iid: issue.iid
-
-          expect(response.location).to include(project_new_blob_path(project, branch))
-          expect(response).to have_gitlab_http_status(302)
         end
       end
 

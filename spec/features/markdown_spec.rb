@@ -207,8 +207,9 @@ describe 'GitLab Markdown' do
   before do
     @feat = MarkdownFeature.new
 
-    # `markdown` helper expects a `@project` variable
+    # `markdown` helper expects a `@project` and `@group` variable
     @project = @feat.project
+    @group = @feat.group
   end
 
   context 'default pipeline' do

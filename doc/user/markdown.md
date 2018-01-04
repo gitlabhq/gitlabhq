@@ -41,7 +41,7 @@ Line-breaks, or softreturns, are rendered if you end a line with two or more spa
 
     Sugar is sweet
 
-Roses are red  
+Roses are red
 Violets are blue
 
 Sugar is sweet
@@ -195,12 +195,23 @@ With inline diffs tags you can display {+ additions +} or [- deletions -].
 
 The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
 
+Examples:
+
+```
+- {+ additions +}
+- [+ additions +]
+- {- deletions -}
+- [- deletions -]
+```
+
 However the wrapping tags cannot be mixed as such:
 
+```
 - {+ additions +]
 - [+ additions +}
 - {- deletions -]
 - [- deletions -}
+```
 
 ### Emoji
 
@@ -376,6 +387,9 @@ This also works for the asciidoctor `:stem: latexmath`. For details see the [asc
 
 ### Mermaid
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
+GitLab 10.3.
+
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
@@ -391,7 +405,7 @@ Example:
       A-->C;
       B-->D;
       C-->D;
-    ```   
+    ```
 
 Becomes:
 
@@ -401,7 +415,7 @@ graph TD;
   A-->C;
   B-->D;
   C-->D;
-```   
+```
 
 For details see the [Mermaid official page][mermaid].
 
@@ -703,7 +717,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.
@@ -716,7 +730,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.

@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Gitlab::GithubImport::ObjectImporter do
   let(:worker) do
     Class.new do
+      def self.name
+        'DummyWorker'
+      end
+
       include(Gitlab::GithubImport::ObjectImporter)
 
       def counter_name

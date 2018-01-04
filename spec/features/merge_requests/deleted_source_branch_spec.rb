@@ -9,7 +9,7 @@ describe 'Deleted source branch', :js do
 
   before do
     sign_in user
-    merge_request.project.team << [user, :master]
+    merge_request.project.add_master(user)
     merge_request.update!(source_branch: 'this-branch-does-not-exist')
     visit project_merge_request_path(merge_request.project, merge_request)
   end

@@ -18,6 +18,8 @@
         A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), #{link_to 'among other things', help_page_path("user/project/index.md", anchor: "projects-features"), target: '_blank'}.
       %p
         All features are enabled when you create a project, but you can disable the ones you don’t need in the project settings.
+      .md
+        = brand_new_project_guidelines
     .col-lg-9.js-toggle-container
       %ul.nav-links.gitlab-tabs{ role: 'tablist' }
         %li.active{ role: 'presentation' }
@@ -84,7 +86,7 @@
                             = icon('bug', text: 'Fogbugz')
                       %div
                         - if gitea_import_enabled?
-                          = link_to new_import_gitea_url, class: 'btn import_gitea' do
+                          = link_to new_import_gitea_path, class: 'btn import_gitea' do
                             = custom_icon('go_logo')
                             Gitea
                       %div

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :issue do
     title { generate(:title) }
     author
@@ -14,6 +14,7 @@ FactoryGirl.define do
 
     trait :closed do
       state :closed
+      closed_at { Time.now }
     end
 
     factory :closed_issue, traits: [:closed]

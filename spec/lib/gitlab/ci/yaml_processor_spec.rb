@@ -178,15 +178,29 @@ module Gitlab
           end
 
           context 'when kubernetes is active' do
-            let(:project) { create(:kubernetes_project) }
-            let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+              it 'returns seeds for kubernetes dependent job' do
+                seeds = subject.stage_seeds(pipeline)
 
-            it 'returns seeds for kubernetes dependent job' do
-              seeds = subject.stage_seeds(pipeline)
+                expect(seeds.size).to eq 2
+                expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+                expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+              end
+            end
 
-              expect(seeds.size).to eq 2
-              expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
-              expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+            context 'when user configured kubernetes from Integration > Kubernetes' do
+              let(:project) { create(:kubernetes_project) }
+              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+            end
+
+            context 'when user configured kubernetes from CI/CD > Clusters' do
+              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+              let(:project) { cluster.project }
+              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
           end
 

@@ -208,7 +208,6 @@ ul.notes {
 
       a {
         color: $gl-link-color;
-        text-decoration: none;
       }
 
       p {
@@ -395,6 +394,10 @@ ul.notes {
     &:focus,
     &:hover {
       text-decoration: none;
+
+      .note-header-author-name {
+        text-decoration: underline;
+      }
     }
   }
 
@@ -461,6 +464,10 @@ ul.notes {
   .system-note-message {
     white-space: normal;
   }
+
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
 /**
@@ -483,8 +490,6 @@ ul.notes {
 }
 
 .note-actions {
-  @include new-style-dropdown;
-
   align-self: flex-start;
   flex-shrink: 0;
   display: inline-flex;
@@ -543,10 +548,7 @@ ul.notes {
   }
 
   svg {
-    height: 16px;
-    width: 16px;
-    top: 0;
-    vertical-align: text-top;
+    @include btn-svg;
   }
 
   .award-control-icon-positive,
@@ -615,25 +617,16 @@ ul.notes {
 }
 
 .note-role {
-  position: relative;
-  display: inline-block;
-  color: $notes-role-color;
-  font-size: 12px;
-  line-height: 20px;
   margin: 0 3px;
-
-  &.note-role-access {
-    padding: 0 7px;
-    border: 1px solid $border-color;
-    border-radius: $label-border-radius;
-  }
-
-  &.note-role-special {
-    text-shadow: 0 0 15px $gl-text-color-inverted;
-  }
 }
 
-
+.note-role-special {
+  position: relative;
+  display: inline-block;
+  color: $gl-text-color-secondary;
+  font-size: 12px;
+  text-shadow: 0 0 15px $gl-text-color-inverted;
+}
 
 /**
  * Line note button on the side of diffs
@@ -778,12 +771,6 @@ ul.notes {
     &:focus {
       color: $gl-text-green-hover;
     }
-  }
-
-  svg {
-    fill: currentColor;
-    height: 16px;
-    width: 16px;
   }
 
   .loading {

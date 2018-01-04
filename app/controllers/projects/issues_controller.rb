@@ -158,7 +158,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
-    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
+    create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
+    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, create_params).execute
 
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])

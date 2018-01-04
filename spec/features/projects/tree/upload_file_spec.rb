@@ -15,6 +15,14 @@ feature 'Multi-file editor upload file', :js do
     visit project_tree_path(project, :master)
 
     wait_for_requests
+
+    click_link('Multi Edit')
+
+    wait_for_requests
+  end
+
+  after do
+    set_cookie('new_repo', 'false')
   end
 
   it 'uploads text file' do
@@ -26,7 +34,7 @@ feature 'Multi-file editor upload file', :js do
 
     find('.add-to-tree').click
 
-    expect(page).to have_selector('.repo-tab', text: 'doc_sample.txt')
+    expect(page).to have_selector('.multi-file-tab', text: 'doc_sample.txt')
     expect(find('.blob-editor-container .lines-content')['innerText']).to have_content(File.open(txt_file, &:readline))
   end
 
@@ -39,8 +47,7 @@ feature 'Multi-file editor upload file', :js do
 
     find('.add-to-tree').click
 
-    expect(page).to have_selector('.repo-tab', text: 'dk.png')
+    expect(page).to have_selector('.multi-file-tab', text: 'dk.png')
     expect(page).not_to have_selector('.monaco-editor')
-    expect(page).to have_content('The source could not be displayed for this temporary file.')
   end
 end

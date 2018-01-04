@@ -59,6 +59,7 @@ Requests to become a proof reader will be considered on the merits of previous t
 - French
 - German
 - Italian
+  - [Paolo Falomo](https://crowdin.com/profile/paolo.falomo)
 - Japanese
 - Korean
   - [Huang Tao](https://crowdin.com/profile/htve)

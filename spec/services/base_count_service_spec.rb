@@ -77,4 +77,10 @@ describe BaseCountService, :use_clean_rails_memory_store_caching do
       expect { service.cache_key }.to raise_error(NotImplementedError)
     end
   end
+
+  describe '#cache_options' do
+    it 'returns the default in options' do
+      expect(service.cache_options).to eq({ raw: false })
+    end
+  end
 end

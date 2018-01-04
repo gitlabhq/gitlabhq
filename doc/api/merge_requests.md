@@ -47,6 +47,7 @@ Parameters:
 | `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
 | `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
 | `my_reaction_emoji` | string   | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
 
 ```json
 [
@@ -161,6 +162,7 @@ Parameters:
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
+| `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
 
 ```json
 [
@@ -524,15 +526,15 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 
 | Attribute              | Type    | Required | Description                                                                     |
 | ---------              | ----    | -------- | -----------                                                                     |
-| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                   | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `merge_request_iid`    | integer | yes      | The ID of a merge request                                                       |
 | `target_branch`        | string  | no       | The target branch                                                               |
 | `title`                | string  | no       | Title of MR                                                                     |
-| `assignee_id`          | integer | no       | Assignee user ID                                                                |
+| `assignee_id`          | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `milestone_id`         | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
+| `labels`               | string  | no       | Comma-separated label names for an merge request. Set to an empty string to unassign all labels.                   |
 | `description`          | string  | no       | Description of MR                                                               |
 | `state_event`          | string  | no       | New state (close/reopen)                                                        |
-| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `discussion_locked`    | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
 

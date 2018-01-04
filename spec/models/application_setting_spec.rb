@@ -115,9 +115,8 @@ describe ApplicationSetting do
     end
 
     context 'circuitbreaker settings' do
-      [:circuitbreaker_backoff_threshold,
-       :circuitbreaker_failure_count_threshold,
-       :circuitbreaker_failure_wait_time,
+      [:circuitbreaker_failure_count_threshold,
+       :circuitbreaker_check_interval,
        :circuitbreaker_failure_reset_time,
        :circuitbreaker_storage_timeout].each do |field|
         it "Validates #{field} as number" do
@@ -125,16 +124,6 @@ describe ApplicationSetting do
                            .only_integer
                            .is_greater_than_or_equal_to(0)
         end
-      end
-
-      it 'requires the `backoff_threshold` to be lower than the `failure_count_threshold`' do
-        setting.circuitbreaker_failure_count_threshold = 10
-        setting.circuitbreaker_backoff_threshold = 15
-        failure_message = "The circuitbreaker backoff threshold should be lower "\
-                          "than the failure count threshold"
-
-        expect(setting).not_to be_valid
-        expect(setting.errors[:circuitbreaker_backoff_threshold]).to include(failure_message)
       end
     end
 
@@ -217,6 +206,65 @@ describe ApplicationSetting do
         subject.housekeeping_gc_period = 100
 
         expect(subject).to be_valid
+      end
+    end
+
+    context 'gitaly timeouts' do
+      [:gitaly_timeout_default, :gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
+        it do
+          is_expected.to validate_presence_of(timeout_name)
+          is_expected.to validate_numericality_of(timeout_name).only_integer
+            .is_greater_than_or_equal_to(0)
+        end
+      end
+
+      [:gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
+        it "validates that #{timeout_name} is lower than timeout_default" do
+          subject[:gitaly_timeout_default] = 50
+          subject[timeout_name] = 100
+
+          expect(subject).to be_invalid
+        end
+      end
+
+      it 'accepts all timeouts equal' do
+        subject.gitaly_timeout_default = 0
+        subject.gitaly_timeout_medium = 0
+        subject.gitaly_timeout_fast = 0
+
+        expect(subject).to be_valid
+      end
+
+      it 'accepts timeouts in descending order' do
+        subject.gitaly_timeout_default = 50
+        subject.gitaly_timeout_medium = 30
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_valid
+      end
+
+      it 'rejects timeouts in ascending order' do
+        subject.gitaly_timeout_default = 20
+        subject.gitaly_timeout_medium = 30
+        subject.gitaly_timeout_fast = 50
+
+        expect(subject).to be_invalid
+      end
+
+      it 'rejects medium timeout larger than default' do
+        subject.gitaly_timeout_default = 30
+        subject.gitaly_timeout_medium = 50
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_invalid
+      end
+
+      it 'rejects medium timeout smaller than fast' do
+        subject.gitaly_timeout_default = 30
+        subject.gitaly_timeout_medium = 15
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_invalid
       end
     end
   end

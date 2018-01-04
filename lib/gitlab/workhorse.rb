@@ -58,7 +58,7 @@ module Gitlab
       end
 
       def artifact_upload_ok
-        { TempPath: ArtifactUploader.artifacts_upload_path }
+        { TempPath: JobArtifactUploader.artifacts_upload_path }
       end
 
       def send_git_blob(repository, blob)

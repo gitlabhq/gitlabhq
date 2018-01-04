@@ -3,7 +3,6 @@ module Gitlab
     class PlanEventFetcher < BaseEventFetcher
       def initialize(*args)
         @projections = [mr_diff_table[:id],
-                        mr_diff_table[:st_commits],
                         issue_metrics_table[:first_mentioned_in_commit_at]]
 
         super(*args)
@@ -18,6 +17,10 @@ module Gitlab
       end
 
       private
+
+      def allowed_ids
+        nil
+      end
 
       def merge_request_diff_commits
         @merge_request_diff_commits ||=
@@ -37,12 +40,7 @@ module Gitlab
       def first_time_reference_commit(event)
         return nil unless event && merge_request_diff_commits
 
-        commits =
-          if event['st_commits'].present?
-            YAML.load(event['st_commits'])
-          else
-            merge_request_diff_commits[event['id'].to_i]
-          end
+        commits = merge_request_diff_commits[event['id'].to_i]
 
         return nil if commits.blank?
 

@@ -1,9 +1,14 @@
 export default {
-  methods: {
-    issuableDisplayName(issuableType) {
-      const displayName = issuableType.replace(/_/, ' ');
+  props: {
+    issuableType: {
+      required: true,
+      type: String,
+    },
+  },
 
-      return this.__ ? this.__(displayName) : displayName;
+  computed: {
+    issuableDisplayName() {
+      return this.issuableType.replace(/_/g, ' ');
     },
   },
 };

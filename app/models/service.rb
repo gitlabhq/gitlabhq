@@ -211,7 +211,7 @@ class Service < ActiveRecord::Base
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
+    ProjectServiceWorker.perform_async(id, data)
   end
 
   def issue_tracker?
@@ -261,6 +261,14 @@ class Service < ActiveRecord::Base
     service.template = false
     service.project_id = project_id
     service
+  end
+
+  def deprecated?
+    false
+  end
+
+  def deprecation_message
+    nil
   end
 
   private

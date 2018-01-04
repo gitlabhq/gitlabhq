@@ -5,9 +5,6 @@ describe Appearance do
 
   it { is_expected.to be_valid }
 
-  it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to validate_presence_of(:description) }
-
   it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
   describe '.current', :use_clean_rails_memory_store_caching do

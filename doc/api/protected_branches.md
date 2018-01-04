@@ -136,7 +136,7 @@ DELETE /projects/:id/protected_branches/:name
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_branches/*-stable'
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_branches/*-stable'
 ```
 
 | Attribute | Type | Required | Description |

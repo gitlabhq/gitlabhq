@@ -63,6 +63,18 @@ describe 'Merge request', :js do
       expect(page).to have_selector('.accept-merge-request')
       expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
+
+    it 'allows me to merge, see cherry-pick modal and load branches list' do
+      wait_for_requests
+      click_button 'Merge'
+
+      wait_for_requests
+      click_link 'Cherry-pick'
+      page.find('.js-project-refs-dropdown').click
+      wait_for_requests
+
+      expect(page.all('.js-cherry-pick-form .dropdown-content li').size).to be > 1
+    end
   end
 
   context 'view merge request with external CI service' do
@@ -261,7 +273,7 @@ describe 'Merge request', :js do
     let(:user2) { create(:user) }
 
     before do
-      project.team << [user2, :master]
+      project.add_master(user2)
       sign_out(:user)
       sign_in(user2)
       merge_request.update(target_project: fork_project)

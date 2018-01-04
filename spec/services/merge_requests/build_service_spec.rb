@@ -28,14 +28,29 @@ describe MergeRequests::BuildService do
   end
 
   before do
-    project.team << [user, :guest]
+    project.add_guest(user)
+  end
 
+  def stub_compare
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
     allow(project).to receive(:commit).and_return(commit_1)
     allow(project).to receive(:commit).and_return(commit_2)
   end
 
-  describe 'execute' do
+  describe '#execute' do
+    it 'calls the compare service with the correct arguments' do
+      allow_any_instance_of(described_class).to receive(:branches_valid?).and_return(true)
+      expect(CompareService).to receive(:new)
+                                  .with(project, Gitlab::Git::BRANCH_REF_PREFIX + source_branch)
+                                  .and_call_original
+
+      expect_any_instance_of(CompareService).to receive(:execute)
+                                                  .with(project, Gitlab::Git::BRANCH_REF_PREFIX + target_branch)
+                                                  .and_call_original
+
+      merge_request
+    end
+
     context 'missing source branch' do
       let(:source_branch) { '' }
 
@@ -51,6 +66,10 @@ describe MergeRequests::BuildService do
     context 'when target branch is missing' do
       let(:target_branch) { nil }
       let(:commits) { Commit.decorate([commit_1], project) }
+
+      before do
+        stub_compare
+      end
 
       it 'creates compare object with target branch as default branch' do
         expect(merge_request.compare).to be_present
@@ -77,6 +96,10 @@ describe MergeRequests::BuildService do
     context 'no commits in the diff' do
       let(:commits) { [] }
 
+      before do
+        stub_compare
+      end
+
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)
       end
@@ -88,6 +111,10 @@ describe MergeRequests::BuildService do
 
     context 'one commit in the diff' do
       let(:commits) { Commit.decorate([commit_1], project) }
+
+      before do
+        stub_compare
+      end
 
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)
@@ -148,6 +175,10 @@ describe MergeRequests::BuildService do
 
     context 'more than one commit in the diff' do
       let(:commits) { Commit.decorate([commit_1, commit_2], project) }
+
+      before do
+        stub_compare
+      end
 
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)

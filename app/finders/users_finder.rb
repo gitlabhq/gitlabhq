@@ -25,7 +25,7 @@ class UsersFinder
   end
 
   def execute
-    users = User.all
+    users = User.all.order_id_desc
     users = by_username(users)
     users = by_search(users)
     users = by_blocked(users)

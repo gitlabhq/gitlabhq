@@ -6,6 +6,7 @@ module Gitlab
 
       attr_accessor :raw_commit, :head
 
+      MIN_SHA_LENGTH = 7
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,
@@ -213,11 +214,30 @@ module Gitlab
         end
 
         def shas_with_signatures(repository, shas)
-          shas.select do |sha|
-            begin
-              Rugged::Commit.extract_signature(repository.rugged, sha)
-            rescue Rugged::OdbError
-              false
+          GitalyClient.migrate(:filter_shas_with_signatures) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient::CommitService.new(repository).filter_shas_with_signatures(shas)
+            else
+              shas.select do |sha|
+                begin
+                  Rugged::Commit.extract_signature(repository.rugged, sha)
+                rescue Rugged::OdbError
+                  false
+                end
+              end
+            end
+          end
+        end
+
+        # Only to be used when the object ids will not necessarily have a
+        # relation to each other. The last 10 commits for a branch for example,
+        # should go through .where
+        def batch_by_oid(repo, oids)
+          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.list_commits_by_oid(oids)
+            else
+              oids.map { |oid| find(repo, oid) }.compact
             end
           end
         end
@@ -418,6 +438,20 @@ module Gitlab
         parent_ids.size > 1
       end
 
+      def to_gitaly_commit
+        return raw_commit if raw_commit.is_a?(Gitaly::GitCommit)
+
+        message_split = raw_commit.message.split("\n", 2)
+        Gitaly::GitCommit.new(
+          id: raw_commit.oid,
+          subject: message_split[0] ? message_split[0].chomp.b : "",
+          body: raw_commit.message.b,
+          parent_ids: raw_commit.parent_ids,
+          author: gitaly_commit_author_from_rugged(raw_commit.author),
+          committer: gitaly_commit_author_from_rugged(raw_commit.committer)
+        )
+      end
+
       private
 
       def init_from_hash(hash)
@@ -462,6 +496,14 @@ module Gitlab
 
       def serialize_keys
         SERIALIZE_KEYS
+      end
+
+      def gitaly_commit_author_from_rugged(author_or_committer)
+        Gitaly::CommitAuthor.new(
+          name: author_or_committer[:name].b,
+          email: author_or_committer[:email].b,
+          date: Google::Protobuf::Timestamp.new(seconds: author_or_committer[:time].to_i)
+        )
       end
     end
   end

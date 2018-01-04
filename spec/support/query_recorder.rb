@@ -41,7 +41,8 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
   supports_block_expectations
 
   match do |block|
-    query_count(&block) > expected_count + threshold
+    @subject_block = block
+    actual_count > expected_count + threshold
   end
 
   failure_message_when_negated do |actual|
@@ -52,6 +53,11 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
 
   def with_threshold(threshold)
     @threshold = threshold
+    self
+  end
+
+  def for_query(query)
+    @query = query
     self
   end
 
@@ -68,12 +74,15 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
   end
 
   def actual_count
-    @recorder.count
+    @actual_count ||= if @query
+                        recorder.log.select { |recorded| recorded =~ @query }.size
+                      else
+                        recorder.count
+                      end
   end
 
-  def query_count(&block)
-    @recorder = ActiveRecord::QueryRecorder.new(&block)
-    @recorder.count
+  def recorder
+    @recorder ||= ActiveRecord::QueryRecorder.new(&@subject_block)
   end
 
   def count_queries(queries)

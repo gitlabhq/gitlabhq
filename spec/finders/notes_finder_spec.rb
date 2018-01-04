@@ -5,7 +5,7 @@ describe NotesFinder do
   let(:project) { create(:project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#execute' do
@@ -147,7 +147,7 @@ describe NotesFinder do
 
         it 'raises an error for project members with guest role' do
           user = create(:user)
-          project.team << [user, :guest]
+          project.add_guest(user)
 
           expect { described_class.new(project, user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
         end
@@ -189,7 +189,7 @@ describe NotesFinder do
 
       it "does not return notes with matching content for project members with guest role" do
         user = create(:user)
-        project.team << [user, :guest]
+        project.add_guest(user)
         expect(described_class.new(confidential_note.project, user, search: confidential_note.note).execute).to be_empty
       end
 

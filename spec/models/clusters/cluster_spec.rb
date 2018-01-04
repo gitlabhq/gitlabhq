@@ -5,11 +5,13 @@ describe Clusters::Cluster do
   it { is_expected.to have_many(:projects) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:platform_kubernetes) }
+  it { is_expected.to have_one(:application_helm) }
+  it { is_expected.to have_one(:application_ingress) }
+  it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
-  it { is_expected.to delegate_method(:update_kubernetes_integration!).to(:platform) }
   it { is_expected.to respond_to :project }
 
   describe '.enabled' do
@@ -191,12 +193,35 @@ describe Clusters::Cluster do
     end
 
     context 'when applications are created' do
-      let!(:helm) { create(:cluster_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:cluster_applications_ingress, cluster: cluster) }
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress)
+        is_expected.to contain_exactly(helm, ingress, prometheus)
       end
+    end
+  end
+
+  describe '#created?' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { cluster.created? }
+
+    context 'when status_name is :created' do
+      before do
+        allow(cluster).to receive_message_chain(:provider, :status_name).and_return(:created)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when status_name is not :created' do
+      before do
+        allow(cluster).to receive_message_chain(:provider, :status_name).and_return(:creating)
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 end

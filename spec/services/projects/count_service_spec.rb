@@ -4,9 +4,17 @@ describe Projects::CountService do
   let(:project) { build(:project, id: 1) }
   let(:service) { described_class.new(project) }
 
-  describe '#relation_for_count' do
+  describe '.query' do
     it 'raises NotImplementedError' do
-      expect { service.relation_for_count }.to raise_error(NotImplementedError)
+      expect { described_class.query(project.id) }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#relation_for_count' do
+    it 'calls the class method query with the project id' do
+      expect(described_class).to receive(:query).with(project.id)
+
+      service.relation_for_count
     end
   end
 

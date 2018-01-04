@@ -32,7 +32,9 @@
       doAction() {
         this.isLoading = true;
 
-        eventHub.$emit(`${this.type}.key`, this.deployKey);
+        eventHub.$emit(`${this.type}.key`, this.deployKey, () => {
+          this.isLoading = false;
+        });
       },
     },
     computed: {
@@ -50,6 +52,9 @@
     :disabled="isLoading"
     @click="doAction">
     {{ text }}
-    <loading-icon v-if="isLoading" />
+    <loading-icon
+      v-if="isLoading"
+      :inline="true"
+    />
   </button>
 </template>

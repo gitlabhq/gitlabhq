@@ -1,4 +1,6 @@
 <script>
+import { visitUrl } from '../../lib/utils/url_utility';
+import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
 
@@ -8,6 +10,9 @@ import itemStats from './item_stats.vue';
 import itemActions from './item_actions.vue';
 
 export default {
+  directives: {
+    tooltip,
+  },
   components: {
     identicon,
     itemCaret,
@@ -56,7 +61,7 @@ export default {
         if (this.hasChildren) {
           eventHub.$emit('toggleChildren', this.group);
         } else {
-          gl.utils.visitUrl(this.group.relativePath);
+          visitUrl(this.group.relativePath);
         }
       }
     },
@@ -72,7 +77,8 @@ export default {
     class="group-row"
     >
     <div
-      class="group-row-contents">
+      class="group-row-contents"
+      :class="{ 'project-row-contents': !isGroup }">
       <item-actions
         v-if="isGroup"
         :group="group"
@@ -92,7 +98,7 @@ export default {
         />
       </div>
       <div
-        class="avatar-container s40 hidden-xs"
+        class="avatar-container prepend-top-8 prepend-left-5 s24 hidden-xs"
         :class="{ 'content-loading': group.isChildrenLoading }"
       >
         <a
@@ -101,30 +107,42 @@ export default {
         >
           <img
             v-if="hasAvatar"
-            class="avatar s40"
+            class="avatar s24"
             :src="group.avatarUrl"
           />
           <identicon
             v-else
+            size-class="s24"
             :entity-id=group.id
             :entity-name="group.name"
           />
         </a>
       </div>
       <div
-        class="title">
+        class="title namespace-title">
         <a
+          v-tooltip
           :href="group.relativePath"
-          class="no-expand">{{group.fullName}}</a>
+          :title="group.fullName"
+          class="no-expand"
+          data-placement="bottom"
+        >{{
+          // ending bracket must be by closing tag to prevent
+          // link hover text-decoration from over-extending
+          group.name
+        }}</a>
         <span
           v-if="group.permission"
-          class="access-type"
+          class="user-access-role"
         >
-          {{s__('GroupsTreeRole|as')}} {{group.permission}}
+          {{group.permission}}
         </span>
       </div>
       <div
-        class="description">{{group.description}}</div>
+        v-if="group.description"
+        class="description">
+        {{group.description}}
+      </div>
     </div>
     <group-folder
       v-if="group.isOpen && hasChildren"

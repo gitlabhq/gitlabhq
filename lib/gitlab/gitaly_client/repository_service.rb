@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class RepositoryService
+      include Gitlab::EncodingHelper
+
       def initialize(repository)
         @repository = repository
         @gitaly_repo = repository.gitaly_repository
@@ -10,7 +12,9 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :repository_exists, request).exists
+        response = GitalyClient.call(@storage, :repository_service, :repository_exists, request, timeout: GitalyClient.fast_timeout)
+
+        response.exists
       end
 
       def garbage_collect(create_bitmap)
@@ -30,7 +34,8 @@ module Gitlab
 
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :repository_size, request).size
+        response = GitalyClient.call(@storage, :repository_service, :repository_size, request)
+        response.size
       end
 
       def apply_gitattributes(revision)
@@ -61,9 +66,35 @@ module Gitlab
 
       def has_local_branches?
         request = Gitaly::HasLocalBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request)
+        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient.fast_timeout)
 
         response.value
+      end
+
+      def find_merge_base(*revisions)
+        request = Gitaly::FindMergeBaseRequest.new(
+          repository: @gitaly_repo,
+          revisions: revisions.map { |r| encode_binary(r) }
+        )
+
+        response = GitalyClient.call(@storage, :repository_service, :find_merge_base, request)
+        response.base.presence
+      end
+
+      def fork_repository(source_repository)
+        request = Gitaly::CreateForkRequest.new(
+          repository: @gitaly_repo,
+          source_repository: source_repository.gitaly_repository
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_fork,
+          request,
+          remote_storage: source_repository.storage,
+          timeout: GitalyClient.default_timeout
+        )
       end
 
       def fetch_source_branch(source_repository, source_branch, local_ref)
@@ -83,6 +114,17 @@ module Gitlab
         )
 
         response.result
+      end
+
+      def fsck
+        request = Gitaly::FsckRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :fsck, request)
+
+        if response.error.empty?
+          return "", 0
+        else
+          return response.error.b, 1
+        end
       end
     end
   end

@@ -26,7 +26,7 @@ describe 'Commits' do
       let!(:status) { create(:generic_commit_status, pipeline: pipeline) }
 
       before do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
       end
 
       describe 'Commit builds' do
@@ -51,7 +51,7 @@ describe 'Commits' do
 
       context 'when logged as developer' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         describe 'Project commits' do
@@ -89,7 +89,7 @@ describe 'Commits' do
 
         context 'Download artifacts' do
           before do
-            build.update_attributes(artifacts_file: artifacts_file)
+            build.update_attributes(legacy_artifacts_file: artifacts_file)
           end
 
           it do
@@ -145,8 +145,8 @@ describe 'Commits' do
 
       context "when logged as reporter" do
         before do
-          project.team << [user, :reporter]
-          build.update_attributes(artifacts_file: artifacts_file)
+          project.add_reporter(user)
+          build.update_attributes(legacy_artifacts_file: artifacts_file)
           visit pipeline_path(pipeline)
         end
 
@@ -168,7 +168,7 @@ describe 'Commits' do
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)
-          build.update_attributes(artifacts_file: artifacts_file)
+          build.update_attributes(legacy_artifacts_file: artifacts_file)
           visit pipeline_path(pipeline)
         end
 
@@ -188,7 +188,7 @@ describe 'Commits' do
     let(:branch_name) { 'master' }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
       visit project_commits_path(project, branch_name)
     end
@@ -197,7 +197,7 @@ describe 'Commits' do
       commits = project.repository.commits(branch_name)
 
       commits.each do |commit|
-        expect(page).to have_content("committed #{commit.committed_date.strftime("%b %d, %Y")}")
+        expect(page).to have_content("authored #{commit.authored_date.strftime("%b %d, %Y")}")
       end
     end
 

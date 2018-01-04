@@ -5,7 +5,7 @@ describe Projects::DeployKeysController do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
@@ -48,7 +48,7 @@ describe Projects::DeployKeysController do
       end
 
       before do
-        project2.team << [user, :developer]
+        project2.add_developer(user)
       end
 
       it 'returns json in a correct format' do

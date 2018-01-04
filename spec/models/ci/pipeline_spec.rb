@@ -116,7 +116,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create(:ci_build, pipeline: pipeline)
+      FactoryBot.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end
@@ -435,7 +435,7 @@ describe Ci::Pipeline, :mailer do
 
     describe 'merge request metrics' do
       let(:project) { create(:project, :repository) }
-      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let(:pipeline) { FactoryBot.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
       before do
@@ -557,10 +557,23 @@ describe Ci::Pipeline, :mailer do
 
   describe '#has_kubernetes_active?' do
     context 'when kubernetes is active' do
-      let(:project) { create(:kubernetes_project) }
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns true' do
+          expect(pipeline).to have_kubernetes_active
+        end
+      end
 
-      it 'returns true' do
-        expect(pipeline).to have_kubernetes_active
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 
@@ -855,62 +868,59 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#set_config_source' do
-    context 'on object initialisation' do
-      context 'when pipelines does not contain needed data' do
-        let(:pipeline) do
-          Ci::Pipeline.new
+    context 'when pipelines does not contain needed data' do
+      it 'defines source to be unknown' do
+        pipeline.set_config_source
+
+        expect(pipeline).to be_unknown_source
+      end
+    end
+
+    context 'when pipeline contains all needed data' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: '1234',
+                             ref: 'master',
+                             source: :push)
+      end
+
+      context 'when the repository has a config file' do
+        before do
+          allow(project.repository).to receive(:gitlab_ci_yml_for)
+            .and_return('config')
         end
 
-        it 'defines source to be unknown' do
-          expect(pipeline).to be_unknown_source
+        it 'defines source to be from repository' do
+          pipeline.set_config_source
+
+          expect(pipeline).to be_repository_source
+        end
+
+        context 'when loading an object' do
+          let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
+
+          it 'does not redefine the source' do
+            # force to overwrite the source
+            pipeline.unknown_source!
+
+            expect(new_pipeline).to be_unknown_source
+          end
         end
       end
 
-      context 'when pipeline contains all needed data' do
-        let(:pipeline) do
-          Ci::Pipeline.new(
-            project: project,
-            sha: '1234',
-            ref: 'master',
-            source: :push)
-        end
+      context 'when the repository does not have a config file' do
+        let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-        context 'when the repository has a config file' do
+        context 'auto devops enabled' do
           before do
-            allow(project.repository).to receive(:gitlab_ci_yml_for)
-              .and_return('config')
+            stub_application_setting(auto_devops_enabled: true)
+            allow(project).to receive(:ci_config_path) { 'custom' }
           end
 
-          it 'defines source to be from repository' do
-            expect(pipeline).to be_repository_source
-          end
+          it 'defines source to be auto devops' do
+            pipeline.set_config_source
 
-          context 'when loading an object' do
-            let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
-
-            it 'does not redefine the source' do
-              # force to overwrite the source
-              pipeline.unknown_source!
-
-              expect(new_pipeline).to be_unknown_source
-            end
-          end
-        end
-
-        context 'when the repository does not have a config file' do
-          let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
-
-          context 'auto devops enabled' do
-            before do
-              stub_application_setting(auto_devops_enabled: true)
-              allow(project).to receive(:ci_config_path) { 'custom' }
-            end
-
-            it 'defines source to be auto devops' do
-              subject
-
-              expect(pipeline).to be_auto_devops_source
-            end
+            expect(pipeline).to be_auto_devops_source
           end
         end
       end
@@ -1234,7 +1244,7 @@ describe Ci::Pipeline, :mailer do
 
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
-    let!(:build_b) { create_build('b', 1) }
+    let!(:build_b) { create_build('b', 0) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -1290,6 +1300,8 @@ describe Ci::Pipeline, :mailer do
         end
 
         context 'when stage one failed' do
+          let!(:build_b) { create_build('b', 1) }
+
           before do
             build_a.drop
           end
@@ -1428,7 +1440,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     before do
-      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+      project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
@@ -1516,6 +1528,18 @@ describe Ci::Pipeline, :mailer do
         .count
 
       expect(query_count).to eq(1)
+    end
+  end
+
+  describe '#total_size' do
+    let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
+    let!(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
+    let!(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
+
+    it 'returns all jobs (including failed and retried)' do
+      expect(pipeline.total_size).to eq(5)
     end
   end
 end

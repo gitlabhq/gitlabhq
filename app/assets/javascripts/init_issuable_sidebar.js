@@ -1,8 +1,9 @@
 /* eslint-disable no-new */
-/* global MilestoneSelect */
+
+import MilestoneSelect from './milestone_select';
 import LabelsSelect from './labels_select';
 import IssuableContext from './issuable_context';
-/* global Sidebar */
+import Sidebar from './right_sidebar';
 
 import DueDateSelectors from './due_date_select';
 
@@ -15,5 +16,5 @@ export default () => {
   new LabelsSelect();
   new IssuableContext(sidebarOptions.currentUser);
   new DueDateSelectors();
-  window.sidebar = new Sidebar();
+  Sidebar.initialize();
 };

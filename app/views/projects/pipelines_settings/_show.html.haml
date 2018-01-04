@@ -6,7 +6,6 @@
           %h5 Auto DevOps (Beta)
           %p
             Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.
-            This will happen starting with the next event (e.g.: push) that occurs to the project.
             = link_to 'Learn more about Auto DevOps', help_page_path('topics/autodevops/index.md')
             - message = auto_devops_warning_message(@project)
             - if message
@@ -20,6 +19,7 @@
                 %br
                 %span.descr
                   The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
+
             .radio
               = form.label :enabled_false do
                 = form.radio_button :enabled, 'false'
@@ -29,22 +29,25 @@
                   An explicit <code>.gitlab-ci.yml</code> needs to be specified before you can begin using Continuous Integration and Delivery.
 
             .radio
-              = form.label :enabled_nil do
+              = form.label :enabled_ do
                 = form.radio_button :enabled, ''
                 %strong Instance default (#{current_application_settings.auto_devops_enabled? ? 'enabled' : 'disabled'})
                 %br
                 %span.descr
                   Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific <code>.gitlab-ci.yml</code>.
-                %br
             %p
               You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.
             = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
 
         %hr
-        .form-group.append-bottom-default
+        .form-group.append-bottom-default.js-secret-runner-token
           = f.label :runners_token, "Runner token", class: 'label-light'
-          = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
+          .form-control.js-secret-value-placeholder
+            = '*' * 20
+          = f.text_field :runners_token, class: "form-control hide js-secret-value", placeholder: 'xEeFCaDAB89'
           %p.help-block The secure token used by the Runner to checkout the project
+          %button.btn.btn-info.prepend-top-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: 'false' } }
+            = _('Reveal value')
 
         %hr
         .form-group

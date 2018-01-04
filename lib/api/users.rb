@@ -76,6 +76,8 @@ module API
         forbidden!("Not authorized to access /api/v4/users") unless authorized
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+
         present paginate(users), with: entity
       end
 

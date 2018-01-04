@@ -4,6 +4,7 @@ module QA
       class New < Page::Base
         def set_path(path)
           fill_in 'group_path', with: path
+          fill_in 'group_name', with: path
         end
 
         def set_description(description)

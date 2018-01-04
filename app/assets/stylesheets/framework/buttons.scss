@@ -4,8 +4,8 @@
   padding: 1px 5px;
   font-size: 12px;
   color: $blue-500;
-  width: 23px;
-  height: 23px;
+  width: 24px;
+  height: 24px;
   border: 1px solid $blue-500;
 
   &:hover,
@@ -88,17 +88,6 @@
     border-color: $border-dark;
     color: $color;
   }
-
-  svg {
-
-    path {
-      fill: $color;
-    }
-
-    use {
-      stroke: $color;
-    }
-  }
 }
 
 @mixin btn-green {
@@ -140,6 +129,13 @@
   &.btn-xs {
     margin-left: $btn-xs-side-margin;
   }
+}
+
+@mixin btn-svg {
+  height: $gl-padding;
+  width: $gl-padding;
+  top: 0;
+  vertical-align: text-top;
 }
 
 .btn {
@@ -241,6 +237,16 @@
     .fa-caret-down {
       margin-left: 3px;
     }
+  }
+
+  &.dot-highlight::after {
+    content: '';
+    background-color: $blue-500;
+    width: $gl-padding * 0.5;
+    height: $gl-padding * 0.5;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left: 3px;
   }
 
   svg {
@@ -439,4 +445,8 @@
     color: $gl-link-color;
     text-decoration: none;
   }
+}
+
+.btn-svg svg {
+  @include btn-svg;
 }

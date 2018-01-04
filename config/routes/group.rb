@@ -50,6 +50,12 @@ constraints(GroupUrlConstrainer.new) do
       post :resend_invite, on: :member
       delete :leave, on: :collection
     end
+
+    resources :uploads, only: [:create] do
+      collection do
+        get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+      end
+    end
   end
 
   scope(path: '*id',

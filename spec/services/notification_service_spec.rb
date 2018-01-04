@@ -12,6 +12,8 @@ describe NotificationService, :mailer do
 
   shared_examples 'notifications for new mentions' do
     def send_notifications(*new_mentions)
+      mentionable.description = new_mentions.map(&:to_reference).join(' ')
+
       notification.send(notification_method, mentionable, new_mentions, @u_disabled)
     end
 
@@ -20,13 +22,13 @@ describe NotificationService, :mailer do
       should_not_email_anyone
     end
 
-    it 'emails new mentions with a watch level higher than participant' do
-      send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
-      should_only_email(@u_watcher, @u_participant_mentioned, @u_custom_global)
+    it 'emails new mentions with a watch level higher than mention' do
+      send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global, @u_mentioned)
+      should_only_email(@u_watcher, @u_participant_mentioned, @u_custom_global, @u_mentioned)
     end
 
-    it 'does not email new mentions with a watch level equal to or less than participant' do
-      send_notifications(@u_participating, @u_mentioned)
+    it 'does not email new mentions with a watch level equal to or less than mention' do
+      send_notifications(@u_disabled)
       should_not_email_anyone
     end
   end
@@ -509,6 +511,14 @@ describe NotificationService, :mailer do
         should_not_email(issue.assignees.first)
       end
 
+      it "emails any mentioned users with the mention level" do
+        issue.description = @u_mentioned.to_reference
+
+        notification.new_issue(issue, @u_disabled)
+
+        should_email(@u_mentioned)
+      end
+
       it "emails the author if they've opted into notifications about their activity" do
         issue.author.notified_of_own_activity = true
 
@@ -898,6 +908,14 @@ describe NotificationService, :mailer do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
+      end
+
+      it "emails any mentioned users with the mention level" do
+        merge_request.description = @u_mentioned.to_reference
+
+        notification.new_merge_request(merge_request, @u_disabled)
+
+        should_email(@u_mentioned)
       end
 
       it "emails the author if they've opted into notifications about their activity" do

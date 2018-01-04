@@ -7,14 +7,15 @@ feature "Pipelines settings" do
 
   background do
     sign_in(user)
-    project.team << [user, role]
-    visit project_pipelines_settings_path(project)
+    project.add_role(user, role)
   end
 
   context 'for developer' do
     given(:role) { :developer }
 
     scenario 'to be disallowed to view' do
+      visit project_settings_ci_cd_path(project)
+
       expect(page.status_code).to eq(404)
     end
   end
@@ -23,6 +24,8 @@ feature "Pipelines settings" do
     given(:role) { :master }
 
     scenario 'be allowed to change' do
+      visit project_settings_ci_cd_path(project)
+
       fill_in('Test coverage parsing', with: 'coverage_regex')
       click_on 'Save changes'
 
@@ -32,6 +35,8 @@ feature "Pipelines settings" do
     end
 
     scenario 'updates auto_cancel_pending_pipelines' do
+      visit project_settings_ci_cd_path(project)
+
       page.check('Auto-cancel redundant, pending pipelines')
       click_on 'Save changes'
 
@@ -42,14 +47,18 @@ feature "Pipelines settings" do
       expect(checkbox).to be_checked
     end
 
-    scenario 'update auto devops settings' do
-      fill_in('project_auto_devops_attributes_domain', with: 'test.com')
-      page.choose('project_auto_devops_attributes_enabled_false')
-      click_on 'Save changes'
+    describe 'Auto DevOps' do
+      it 'update auto devops settings' do
+        visit project_settings_ci_cd_path(project)
 
-      expect(page.status_code).to eq(200)
-      expect(project.auto_devops).to be_present
-      expect(project.auto_devops).not_to be_enabled
+        fill_in('project_auto_devops_attributes_domain', with: 'test.com')
+        page.choose('project_auto_devops_attributes_enabled_false')
+        click_on 'Save changes'
+
+        expect(page.status_code).to eq(200)
+        expect(project.auto_devops).to be_present
+        expect(project.auto_devops).not_to be_enabled
+      end
     end
   end
 end

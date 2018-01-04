@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoTabs from '~/repo/components/repo_tabs.vue';
+import store from '~/ide/stores';
+import repoTabs from '~/ide/components/repo_tabs.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoTabs', () => {
@@ -25,12 +25,11 @@ describe('RepoTabs', () => {
     vm.$store.state.openFiles = openedFiles;
 
     vm.$nextTick(() => {
-      const tabs = [...vm.$el.querySelectorAll(':scope > li')];
+      const tabs = [...vm.$el.querySelectorAll('.multi-file-tab')];
 
-      expect(tabs.length).toEqual(3);
+      expect(tabs.length).toEqual(2);
       expect(tabs[0].classList.contains('active')).toBeTruthy();
       expect(tabs[1].classList.contains('active')).toBeFalsy();
-      expect(tabs[2].classList.contains('tabs-divider')).toBeTruthy();
 
       done();
     });

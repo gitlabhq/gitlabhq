@@ -3,7 +3,7 @@
 
 - page_title _("Commits"), @ref
 = content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
+  = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 .js-project-commits-show{ 'data-commits-limit' => @limit }
   %div{ class: container_class }

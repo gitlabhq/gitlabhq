@@ -70,14 +70,13 @@
 
   .title {
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: $gl-padding;
     border-bottom: 0;
   }
 
   .btn-edit {
     margin-left: auto;
-    // Set height to match title height
-    height: 2em;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -111,6 +110,10 @@
       padding: 6px 10px;
       border-radius: $label-border-radius;
     }
+
+    &:hover .color-label {
+      text-decoration: underline;
+    }
   }
 
   &.has-labels {
@@ -119,11 +122,11 @@
 }
 
 .right-sidebar {
-  position: absolute;
+  position: fixed;
   top: $header-height;
   bottom: 0;
   right: 0;
-  transition: width $right-sidebar-transition-duration;
+  transition: width $sidebar-transition-duration;
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
@@ -173,6 +176,14 @@
 
       &:hover {
         color: $gray-darkest;
+      }
+    }
+
+    &.assignee {
+      .author_link:hover {
+        .author {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -459,7 +470,8 @@
       }
     }
 
-    .milestone-title span {
+    .milestone-title span,
+    .collapse-truncated-title {
       @include str-truncated(100%);
       display: block;
       margin: 0 4px;
@@ -469,17 +481,10 @@
   a:not(.btn-retry) {
     &:hover {
       color: $md-link-color;
-      text-decoration: none;
 
       .avatar {
         border-color: rgba($avatar-border, .2);
       }
-    }
-  }
-
-  .dropdown-content {
-    a:hover {
-      color: inherit;
     }
   }
 
@@ -497,12 +502,8 @@
   top: $header-height + $performance-bar-height;
 
   .issuable-sidebar {
-    height: calc(100% - #{$header-height} - #{$performance-bar-height});
+    height: calc(100% - #{$performance-bar-height});
   }
-}
-
-.sidebar-move-issue-dropdown {
-  @include new-style-dropdown;
 }
 
 .sidebar-move-issue-confirmation-button {
@@ -609,55 +610,29 @@
 }
 
 .issuable-status-box {
-  float: none;
-  display: inline-block;
-  margin-top: 0;
-  height: auto;
-  align-self: center;
-
-  @media (max-width: $screen-xs-max) {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.issuable-header {
-  position: relative;
-  padding-left: 45px;
-  padding-right: 45px;
-  line-height: 35px;
+  align-self: stretch;
   display: flex;
-  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+  padding-left: 9px;
+  padding-right: 9px;
 
   @media (min-width: $screen-sm-min) {
-    float: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.issuable-actions {
-  @include new-style-dropdown;
-
-  align-self: center;
-  flex-shrink: 0;
-  flex: 0 0 auto;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
+    display: inline-block;
+    height: auto;
+    align-self: center;
   }
 }
 
 .issuable-gutter-toggle {
   @media (max-width: $screen-sm-max) {
-    position: absolute;
-    top: 0;
-    right: 0;
+    margin-left: $btn-side-margin;
   }
 }
 
 .issuable-meta {
+  flex: 1;
   display: inline-block;
   font-size: 14px;
   line-height: 24px;

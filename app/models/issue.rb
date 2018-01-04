@@ -9,6 +9,10 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
   include RelativePositioning
   include TimeTrackable
+  include ThrottledTouch
+  include IgnorableColumn
+
+  ignore_column :assignee_id, :branch_name
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -271,6 +275,11 @@ class Issue < ActiveRecord::Base
   end
 
   private
+
+  def ensure_metrics
+    super
+    metrics.record!
+  end
 
   # Returns `true` if the given User can read the current Issue.
   #

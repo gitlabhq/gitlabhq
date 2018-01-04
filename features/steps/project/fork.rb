@@ -10,7 +10,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I am a member of project "Shop"' do
     @project = create(:project, :repository, name: "Shop")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
   end
 
   step 'I should see the forked project page' do
@@ -71,7 +71,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'There is an existent fork of the "Shop" project' do
     user = create(:user, name: 'Mike')
-    @project.team << [user, :reporter]
+    @project.add_reporter(user)
     @forked_project = Projects::ForkService.new(@project, user).execute
   end
 

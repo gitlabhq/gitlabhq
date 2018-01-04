@@ -70,6 +70,15 @@ describe Gitlab::ProjectSearchResults do
 
       subject { described_class.parse_search_result(search_result) }
 
+      it 'can correctly parse filenames including ":"' do
+        special_char_result = "\nmaster:testdata/project::function1.yaml-1----\nmaster:testdata/project::function1.yaml:2:test: data1\n"
+
+        blob = described_class.parse_search_result(special_char_result)
+
+        expect(blob.ref).to eq('master')
+        expect(blob.filename).to eq('testdata/project::function1.yaml')
+      end
+
       it "returns a valid FoundBlob" do
         is_expected.to be_an Gitlab::SearchResults::FoundBlob
         expect(subject.id).to be_nil
@@ -170,7 +179,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'does not list project confidential issues for project members with guest role' do
-      project.team << [member, :guest]
+      project.add_guest(member)
 
       results = described_class.new(member, project, query)
       issues = results.objects('issues')
@@ -202,7 +211,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'lists project confidential issues for project members' do
-      project.team << [member, :developer]
+      project.add_developer(member)
 
       results = described_class.new(member, project, query)
       issues = results.objects('issues')
@@ -281,12 +290,12 @@ describe Gitlab::ProjectSearchResults do
       let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
       let(:team_master) do
         user = create(:user, username: 'private-project-master')
-        private_project.team << [user, :master]
+        private_project.add_master(user)
         user
       end
       let(:team_reporter) do
         user = create(:user, username: 'private-project-reporter')
-        private_project.team << [user, :reporter]
+        private_project.add_reporter(user)
         user
       end
 

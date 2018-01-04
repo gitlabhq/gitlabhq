@@ -30,7 +30,12 @@ class GroupPolicy < BasePolicy
 
   rule { public_group }      .enable :read_group
   rule { logged_in_viewable }.enable :read_group
-  rule { guest }             .enable :read_group
+
+  rule { guest }.policy do
+    enable :read_group
+    enable :upload_file
+  end
+
   rule { admin }             .enable :read_group
   rule { has_projects }      .enable :read_group
 

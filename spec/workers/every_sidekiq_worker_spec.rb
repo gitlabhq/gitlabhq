@@ -1,44 +1,36 @@
 require 'spec_helper'
 
 describe 'Every Sidekiq worker' do
-  let(:workers) do
-    root = Rails.root.join('app', 'workers')
-    concerns = root.join('concerns').to_s
-
-    workers = Dir[root.join('**', '*.rb')]
-      .reject { |path| path.start_with?(concerns) }
-
-    workers.map do |path|
-      ns = Pathname.new(path).relative_path_from(root).to_s.gsub('.rb', '')
-
-      ns.camelize.constantize
-    end
-  end
-
   it 'does not use the default queue' do
-    workers.each do |worker|
-      expect(worker.sidekiq_options['queue'].to_s).not_to eq('default')
-    end
+    expect(Gitlab::SidekiqConfig.workers.map(&:queue)).not_to include('default')
   end
 
   it 'uses the cronjob queue when the worker runs as a cronjob' do
-    cron_workers = Settings.cron_jobs
-      .map { |job_name, options| options['job_class'].constantize }
-      .to_set
-
-    workers.each do |worker|
-      next unless cron_workers.include?(worker)
-
-      expect(worker.sidekiq_options['queue'].to_s).to eq('cronjob')
-    end
+    expect(Gitlab::SidekiqConfig.cron_workers.map(&:queue)).to all(start_with('cronjob:'))
   end
 
-  it 'defines the queue in the Sidekiq configuration file' do
-    config = YAML.load_file(Rails.root.join('config', 'sidekiq_queues.yml').to_s)
-    queue_names = config[:queues].map { |(queue, _)| queue }.to_set
+  it 'has its queue in app/workers/all_queues.yml', :aggregate_failures do
+    file_worker_queues = Gitlab::SidekiqConfig.worker_queues.to_set
 
-    workers.each do |worker|
-      expect(queue_names).to include(worker.sidekiq_options['queue'].to_s)
+    worker_queues = Gitlab::SidekiqConfig.workers.map(&:queue).to_set
+    worker_queues << ActionMailer::DeliveryJob.queue_name
+    worker_queues << 'default'
+
+    missing_from_file = worker_queues - file_worker_queues
+    expect(missing_from_file).to be_empty, "expected #{missing_from_file.to_a.inspect} to be in app/workers/all_queues.yml"
+
+    unncessarily_in_file = file_worker_queues - worker_queues
+    expect(unncessarily_in_file).to be_empty, "expected #{unncessarily_in_file.to_a.inspect} not to be in app/workers/all_queues.yml"
+  end
+
+  it 'has its queue or namespace in config/sidekiq_queues.yml', :aggregate_failures do
+    config_queues = Gitlab::SidekiqConfig.config_queues.to_set
+
+    Gitlab::SidekiqConfig.workers.each do |worker|
+      queue = worker.queue
+      queue_namespace = queue.split(':').first
+
+      expect(config_queues).to include(queue).or(include(queue_namespace))
     end
   end
 end

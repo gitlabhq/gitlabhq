@@ -102,7 +102,7 @@ describe ProjectsController do
         render_views
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
         end
 
@@ -261,6 +261,27 @@ describe ProjectsController do
         expect(response).to redirect_to(namespace_project_path)
       end
     end
+
+    context 'when the project is forked and has a repository', :request_store do
+      let(:public_project) { create(:project, :public, :repository) }
+      let(:other_user) { create(:user) }
+
+      render_views
+
+      before do
+        # View the project as a user that does not have any rights
+        sign_in(other_user)
+
+        fork_project(public_project)
+      end
+
+      it 'does not increase the number of queries when the project is forked' do
+        expected_query = /#{public_project.fork_network.find_forks_in(other_user.namespace).to_sql}/
+
+        expect { get(:show, namespace_id: public_project.namespace, id: public_project) }
+          .not_to exceed_query_limit(1).for_query(expected_query)
+      end
+    end
   end
 
   describe "#update" do
@@ -405,17 +426,18 @@ describe ProjectsController do
     end
   end
 
-  describe 'PUT #new_issue_address' do
+  describe 'PUT #new_issuable_address for issue' do
     subject do
-      put :new_issue_address,
+      put :new_issuable_address,
         namespace_id: project.namespace,
-        id: project
+        id: project,
+        issuable_type: 'issue'
       user.reload
     end
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -428,7 +450,35 @@ describe ProjectsController do
     end
 
     it 'changes projects new issue address' do
-      expect { subject }.to change { project.new_issue_address(user) }
+      expect { subject }.to change { project.new_issuable_address(user, 'issue') }
+    end
+  end
+
+  describe 'PUT #new_issuable_address for merge request' do
+    subject do
+      put :new_issuable_address,
+        namespace_id: project.namespace,
+        id: project,
+        issuable_type: 'merge_request'
+      user.reload
+    end
+
+    before do
+      sign_in(user)
+      project.add_developer(user)
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+    end
+
+    it 'has http status 200' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'changes the user incoming email token' do
+      expect { subject }.to change { user.incoming_email_token }
+    end
+
+    it 'changes projects new merge request address' do
+      expect { subject }.to change { project.new_issuable_address(user, 'merge_request') }
     end
   end
 

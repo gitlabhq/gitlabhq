@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :fork_network_member do
     association :project
     association :fork_network

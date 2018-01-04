@@ -6,7 +6,7 @@ feature 'Repository settings' do
   let(:role) { :developer }
 
   background do
-    project.team << [user, role]
+    project.add_role(user, role)
     sign_in(user)
   end
 
@@ -66,7 +66,7 @@ feature 'Repository settings' do
 
       scenario 'edit a deploy key from projects user has access to' do
         project2 = create(:project_empty_repo)
-        project2.team << [user, role]
+        project2.add_role(user, role)
         project2.deploy_keys << private_deploy_key
 
         visit project_settings_repository_path(project)

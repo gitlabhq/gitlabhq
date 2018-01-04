@@ -6,7 +6,7 @@ describe 'Pipeline', :js do
 
   before do
     sign_in(user)
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   shared_context 'pipeline builds' do
@@ -152,7 +152,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
       end
 
       it 'shows Pipeline tab as active' do
@@ -181,6 +181,36 @@ describe 'Pipeline', :js do
         end
 
         it { expect(page).not_to have_content('Cancel running') }
+      end
+    end
+  end
+
+  context 'when user does not have access to read jobs' do
+    before do
+      project.update(public_builds: false)
+    end
+
+    describe 'GET /:project/pipelines/:id' do
+      include_context 'pipeline builds'
+
+      let(:project) { create(:project, :repository) }
+      let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows the pipeline graph' do
+        expect(page).to have_selector('.pipeline-visualization')
+        expect(page).to have_content('Build')
+        expect(page).to have_content('Test')
+        expect(page).to have_content('Deploy')
+        expect(page).to have_content('Retry')
+        expect(page).to have_content('Cancel running')
+      end
+
+      it 'should not link to job' do
+        expect(page).not_to have_selector('.js-pipeline-graph-job-link')
       end
     end
   end
@@ -218,7 +248,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
       end
 
       it 'shows Jobs tab as active' do

@@ -1,5 +1,5 @@
 <script>
-import projectFeatureToggle from './project_feature_toggle.vue';
+import projectFeatureToggle from '../../../vue_shared/components/toggle_button.vue';
 
 export default {
   props: {

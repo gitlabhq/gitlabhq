@@ -15,7 +15,7 @@ describe RuboCop::Cop::ProjectPathHelper do
     let(:correct_source) { 'edit_project_issue_path(@issue.project, @issue)' }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -25,7 +25,7 @@ describe RuboCop::Cop::ProjectPathHelper do
     end
 
     it 'autocorrects to the right version' do
-      autocorrected = autocorrect_source(cop, source)
+      autocorrected = autocorrect_source(source)
 
       expect(autocorrected).to eq(correct_source)
     end
@@ -33,7 +33,7 @@ describe RuboCop::Cop::ProjectPathHelper do
 
   context 'when using namespace_project with a different namespace' do
     it 'registers no offense' do
-      inspect_source(cop, 'edit_namespace_project_issue_path(namespace, project)')
+      inspect_source('edit_namespace_project_issue_path(namespace, project)')
 
       expect(cop.offenses.size).to eq(0)
     end

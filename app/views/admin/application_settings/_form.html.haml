@@ -546,6 +546,12 @@
   %fieldset
     %legend Git Storage Circuitbreaker settings
     .form-group
+      = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_check_interval, class: 'form-control'
+        .help-block
+          = circuitbreaker_check_interval_help_text
+    .form-group
       = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :circuitbreaker_access_retries, class: 'form-control'
@@ -557,18 +563,6 @@
         = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
         .help-block
           = circuitbreaker_storage_timeout_help_text
-    .form-group
-      = f.label :circuitbreaker_backoff_threshold, _('Number of failures before backing off'), class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :circuitbreaker_backoff_threshold, class: 'form-control'
-        .help-block
-          = circuitbreaker_backoff_threshold_help_text
-    .form-group
-      = f.label :circuitbreaker_failure_wait_time, _('Seconds to wait after a storage failure'), class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :circuitbreaker_failure_wait_time, class: 'form-control'
-        .help-block
-          = circuitbreaker_failure_wait_time_help_text
     .form-group
       = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'control-label col-sm-2'
       .col-sm-10
@@ -730,6 +724,30 @@
         = f.number_field :housekeeping_gc_period, class: 'form-control'
         .help-block
           Number of Git pushes after which 'git gc' is run.
+
+  %fieldset
+    %legend Gitaly Timeouts
+    .form-group
+      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_default, class: 'form-control'
+        .help-block
+          Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
+          for git fetch/push operations or Sidekiq jobs.
+    .form-group
+      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_fast, class: 'form-control'
+        .help-block
+          Fast operation timeout (in seconds). Some Gitaly operations are expected to be fast.
+          If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
+          can help maintain the stability of the GitLab instance.
+    .form-group
+      = f.label :gitaly_timeout_medium, 'Medium Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_medium, class: 'form-control'
+        .help-block
+          Medium operation timeout (in seconds). This should be a value between the Fast and the Default timeout.
 
   %fieldset
     %legend Web terminal

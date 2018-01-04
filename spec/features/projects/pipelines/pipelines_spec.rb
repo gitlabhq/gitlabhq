@@ -8,7 +8,7 @@ describe 'Pipelines', :js do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     describe 'GET /:project/pipelines' do
@@ -304,7 +304,7 @@ describe 'Pipelines', :js do
 
         context 'with artifacts expired' do
           let!(:with_artifacts_expired) do
-            create(:ci_build, :artifacts_expired, :success,
+            create(:ci_build, :expired, :success,
               pipeline: pipeline,
               name: 'rspec',
               stage: 'test')
@@ -500,6 +500,18 @@ describe 'Pipelines', :js do
           end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
+          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
+            click_button project.default_branch
+
+            stub_ci_pipeline_to_return_yaml_file
+
+            page.within '.dropdown-menu' do
+              click_link 'master'
+            end
+
+            expect { click_on 'Create pipeline' }
+              .to change { Ci::Pipeline.count }.by(1)
+          end
         end
       end
     end

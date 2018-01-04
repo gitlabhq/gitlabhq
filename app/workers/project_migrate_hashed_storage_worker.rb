@@ -1,6 +1,5 @@
 class ProjectMigrateHashedStorageWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   LEASE_TIMEOUT = 30.seconds.to_i
 

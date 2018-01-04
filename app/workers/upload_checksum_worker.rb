@@ -1,6 +1,5 @@
 class UploadChecksumWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(upload_id)
     upload = Upload.find(upload_id)

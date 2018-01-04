@@ -35,6 +35,12 @@ module MergeRequests
       super
     end
 
+    # expose issuable create method so it can be called from email
+    # handler CreateMergeRequestHandler
+    def create(merge_request)
+      super
+    end
+
     private
 
     def update_merge_requests_head_pipeline(merge_request)

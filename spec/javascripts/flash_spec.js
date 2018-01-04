@@ -278,7 +278,7 @@ describe('Flash', () => {
 
       removeFlashClickListener(flashEl, false);
 
-      flashEl.parentNode.click();
+      flashEl.click();
 
       setTimeout(() => {
         expect(document.querySelector('.flash')).toBeNull();

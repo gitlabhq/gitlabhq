@@ -38,20 +38,6 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
     end
   end
 
-  describe 'encode' do
-    [
-      [nil, ""],
-      ["", ""],
-      ["  ", "  "],
-      %w(a1 a1),
-      ["编码", "\xE7\xBC\x96\xE7\xA0\x81".b]
-    ].each do |input, result|
-      it "encodes #{input.inspect} to #{result.inspect}" do
-        expect(described_class.encode(input)).to eq result
-      end
-    end
-  end
-
   describe 'allow_n_plus_1_calls' do
     context 'when RequestStore is enabled', :request_store do
       it 'returns the result of the allow_n_plus_1_calls block' do
@@ -275,6 +261,22 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
         it 'returns false' do
           expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
         end
+      end
+    end
+  end
+
+  describe 'timeouts' do
+    context 'with default values' do
+      before do
+        stub_application_setting(gitaly_timeout_default: 55)
+        stub_application_setting(gitaly_timeout_medium: 30)
+        stub_application_setting(gitaly_timeout_fast: 10)
+      end
+
+      it 'returns expected values' do
+        expect(described_class.default_timeout).to be(55)
+        expect(described_class.medium_timeout).to be(30)
+        expect(described_class.fast_timeout).to be(10)
       end
     end
   end

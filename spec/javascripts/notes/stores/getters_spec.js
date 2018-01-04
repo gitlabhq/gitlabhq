@@ -1,5 +1,5 @@
 import * as getters from '~/notes/stores/getters';
-import { notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
+import { notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
 describe('Getters Notes Store', () => {
   let state;
@@ -11,7 +11,7 @@ describe('Getters Notes Store', () => {
 
       notesData: notesDataMock,
       userData: userDataMock,
-      issueData: issueDataMock,
+      noteableData: noteableDataMock,
     };
   });
   describe('notes', () => {
@@ -32,9 +32,9 @@ describe('Getters Notes Store', () => {
     });
   });
 
-  describe('getIssueData', () => {
-    it('should return all data in `issueData`', () => {
-      expect(getters.getIssueData(state)).toEqual(issueDataMock);
+  describe('getNoteableData', () => {
+    it('should return all data in `noteableData`', () => {
+      expect(getters.getNoteableData(state)).toEqual(noteableDataMock);
     });
   });
 

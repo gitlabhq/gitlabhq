@@ -21,7 +21,7 @@ describe Gitlab::SlashCommands::IssueSearch do
 
     context 'the user has access' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'returns all results' do

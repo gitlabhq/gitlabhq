@@ -16,7 +16,7 @@
         %li Prevent <strong>anyone</strong> from updating the tag
         %li Prevent <strong>anyone</strong> from deleting the tag
 
-    %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags"), class: "underlined-link"}.
+    %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags")}.
 
     - if can? current_user, :admin_project, @project
       = yield :create_protected_tag

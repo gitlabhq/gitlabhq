@@ -27,7 +27,7 @@ module Gitlab
     end
 
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
-    MAXIMUM_GITALY_CALLS = 30
+    MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
@@ -117,11 +117,11 @@ module Gitlab
     #   kwargs.merge(deadline: Time.now + 10)
     # end
     #
-    def self.call(storage, service, rpc, request, remote_storage: nil)
+    def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
       enforce_gitaly_request_limits(:call)
 
-      kwargs = request_kwargs(storage, remote_storage: remote_storage)
+      kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
@@ -140,7 +140,7 @@ module Gitlab
     end
     private_class_method :current_transaction_labels
 
-    def self.request_kwargs(storage, remote_storage: nil)
+    def self.request_kwargs(storage, timeout, remote_storage: nil)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
         'authorization' => "Bearer #{encoded_token}",
@@ -152,7 +152,22 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
-      { metadata: metadata }
+      result = { metadata: metadata }
+
+      # nil timeout indicates that we should use the default
+      timeout = default_timeout if timeout.nil?
+
+      return result unless timeout > 0
+
+      # Do not use `Time.now` for deadline calculation, since it
+      # will be affected by Timecop in some tests, but grpc's c-core
+      # uses system time instead of timecop's time, so tests will fail
+      # `Time.at(Process.clock_gettime(Process::CLOCK_REALTIME))` will
+      # circumvent timecop
+      deadline = Time.at(Process.clock_gettime(Process::CLOCK_REALTIME)) + timeout
+      result[:deadline] = deadline
+
+      result
     end
 
     def self.token(storage)
@@ -315,15 +330,25 @@ module Gitlab
       Google::Protobuf::Timestamp.new(seconds: t.to_i)
     end
 
-    def self.encode(s)
-      return "" if s.nil?
+    # The default timeout on all Gitaly calls
+    def self.default_timeout
+      return 0 if Sidekiq.server?
 
-      s.dup.force_encoding(Encoding::ASCII_8BIT)
+      timeout(:gitaly_timeout_default)
     end
 
-    def self.encode_repeated(a)
-      Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
+    def self.fast_timeout
+      timeout(:gitaly_timeout_fast)
     end
+
+    def self.medium_timeout
+      timeout(:gitaly_timeout_medium)
+    end
+
+    def self.timeout(timeout_name)
+      Gitlab::CurrentSettings.current_application_settings[timeout_name]
+    end
+    private_class_method :timeout
 
     # Count a stack. Used for n+1 detection
     def self.count_stack

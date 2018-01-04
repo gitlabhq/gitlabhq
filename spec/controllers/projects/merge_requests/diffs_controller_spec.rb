@@ -100,7 +100,8 @@ describe Projects::MergeRequests::DiffsController do
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'MergeRequest',
-                                                        noteable_id: merge_request.id)
+                                                        noteable_id: merge_request.id,
+                                                        commit_id: nil)
           end
 
           it 'only renders the diffs for the path given' do
@@ -150,7 +151,7 @@ describe Projects::MergeRequests::DiffsController do
       let(:other_project) { create(:project) }
 
       before do
-        other_project.team << [user, :master]
+        other_project.add_master(user)
         diff_for_path(old_path: existing_path, new_path: existing_path, project_id: other_project)
       end
 

@@ -1,3 +1,4 @@
+import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -65,7 +66,7 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
 // automatically adjust scroll position for hash urls taking the height of the navbar into account
 // https://github.com/twitter/bootstrap/issues/1768
 export const handleLocationHash = () => {
-  let hash = window.gl.utils.getLocationHash();
+  let hash = getLocationHash();
   if (!hash) return;
 
   // This is required to handle non-unicode characters in hash
@@ -190,7 +191,7 @@ export const insertText = (target, text) => {
   target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
-  $(target).trigger('input');
+  target.dispatchEvent(new Event('input'));
 
   // Trigger autosize
   const event = document.createEvent('Event');
@@ -231,7 +232,7 @@ export const nodeMatchesSelector = (node, selector) => {
 export const normalizeHeaders = (headers) => {
   const upperCaseHeaders = {};
 
-  Object.keys(headers).forEach((e) => {
+  Object.keys(headers || {}).forEach((e) => {
     upperCaseHeaders[e.toUpperCase()] = headers[e];
   });
 

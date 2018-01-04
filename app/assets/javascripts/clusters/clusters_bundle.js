@@ -30,6 +30,7 @@ export default class Clusters {
       installHelmPath,
       installIngressPath,
       installRunnerPath,
+      installPrometheusPath,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -44,10 +45,12 @@ export default class Clusters {
       installHelmEndpoint: installHelmPath,
       installIngressEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
+      installPrometheusEndpoint: installPrometheusPath,
     });
 
     this.toggle = this.toggle.bind(this);
     this.installApplication = this.installApplication.bind(this);
+    this.showToken = this.showToken.bind(this);
 
     this.toggleButton = document.querySelector('.js-toggle-cluster');
     this.toggleInput = document.querySelector('.js-toggle-input');
@@ -56,6 +59,8 @@ export default class Clusters {
     this.creatingContainer = document.querySelector('.js-cluster-creating');
     this.errorReasonContainer = this.errorContainer.querySelector('.js-error-reason');
     this.successApplicationContainer = document.querySelector('.js-cluster-application-notice');
+    this.showTokenButton = document.querySelector('.js-show-cluster-token');
+    this.tokenField = document.querySelector('.js-cluster-token');
 
     initSettingsPanels();
     this.initApplications();
@@ -97,11 +102,13 @@ export default class Clusters {
 
   addListeners() {
     this.toggleButton.addEventListener('click', this.toggle);
+    if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
   }
 
   removeListeners() {
     this.toggleButton.removeEventListener('click', this.toggle);
+    if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
   }
 
@@ -145,8 +152,18 @@ export default class Clusters {
   }
 
   toggle() {
-    this.toggleButton.classList.toggle('checked');
-    this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('checked').toString());
+    this.toggleButton.classList.toggle('is-checked');
+    this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('is-checked').toString());
+  }
+
+  showToken() {
+    const type = this.tokenField.getAttribute('type');
+
+    if (type === 'password') {
+      this.tokenField.setAttribute('type', 'text');
+    } else {
+      this.tokenField.setAttribute('type', 'password');
+    }
   }
 
   hideAll() {

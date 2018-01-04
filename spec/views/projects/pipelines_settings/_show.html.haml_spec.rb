@@ -35,7 +35,7 @@ describe 'projects/pipelines_settings/_show' do
 
   context 'when kubernetes is active' do
     before do
-      project.build_kubernetes_service(active: true)
+      create(:kubernetes_service, project: project)
     end
 
     context 'when auto devops domain is not defined' do
