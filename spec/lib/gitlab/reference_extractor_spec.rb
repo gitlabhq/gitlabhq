@@ -5,11 +5,7 @@ describe Gitlab::ReferenceExtractor do
   let(:project) { create(:project, group: group) }
 
   before do
-<<<<<<< HEAD
     group.add_developer(project.creator)
-=======
-    project.add_developer(project.creator)
->>>>>>> upstream/master
   end
 
   subject { described_class.new(project, project.creator) }

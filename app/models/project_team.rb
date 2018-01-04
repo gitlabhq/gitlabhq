@@ -24,11 +24,7 @@ class ProjectTeam
   end
 
   def add_role(user, role, current_user: nil)
-<<<<<<< HEAD
     public_send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
-=======
-    send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
->>>>>>> upstream/master
   end
 
   def find_member(user_id)

@@ -5,14 +5,9 @@ feature 'Edit Merge Request' do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
-<<<<<<< HEAD
   context 'editing a MR' do
     before do
       project.add_master(user)
-=======
-  before do
-    project.add_master(user)
->>>>>>> upstream/master
 
       sign_in user
 

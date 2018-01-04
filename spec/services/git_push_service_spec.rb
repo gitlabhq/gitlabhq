@@ -12,7 +12,6 @@ describe GitPushService do
 
   before do
     project.add_master(user)
-<<<<<<< HEAD
   end
 
   describe 'with remote mirrors' do
@@ -79,8 +78,6 @@ describe GitPushService do
         end
       end
     end
-=======
->>>>>>> upstream/master
   end
 
   describe 'Push branches' do

@@ -12,11 +12,8 @@ describe QuickActions::InterpretService do
   let(:service) { described_class.new(project, developer) }
 
   before do
-<<<<<<< HEAD
     stub_licensed_features(multiple_issue_assignees: false)
 
-=======
->>>>>>> upstream/master
     project.add_developer(developer)
   end
 
