@@ -26,7 +26,7 @@ module Projects
     end
 
     def tmp_filename
-      "#{SecureRandom.hex}_#{params[:path]}"
+      SecureRandom.hex
     end
 
     def file
