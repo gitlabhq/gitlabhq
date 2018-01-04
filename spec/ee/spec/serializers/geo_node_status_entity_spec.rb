@@ -1,11 +1,15 @@
 require 'spec_helper'
 
 describe GeoNodeStatusEntity, :postgresql do
+  include ::EE::GeoHelpers
+
   let(:geo_node_status) { build(:geo_node_status) }
   let(:entity) { described_class.new(geo_node_status, request: double) }
   let(:error) { 'Could not connect to Geo database' }
 
   subject { entity.as_json }
+
+  before { stub_primary_node }
 
   it { is_expected.to have_key(:geo_node_id) }
   it { is_expected.to have_key(:healthy) }
@@ -32,6 +36,8 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:replication_slots_max_retained_wal_bytes) }
   it { is_expected.to have_key(:last_successful_status_check_timestamp) }
   it { is_expected.to have_key(:namespaces) }
+  it { is_expected.to have_key(:storage_shards) }
+  it { is_expected.to have_key(:storage_shards_match) }
 
   describe '#healthy' do
     context 'when node is healthy' do
@@ -126,5 +132,22 @@ describe GeoNodeStatusEntity, :postgresql do
       expect(subject[:namespaces].first[:id]).to eq(namespace.id)
       expect(subject[:namespaces].first[:path]).to eq(namespace.path)
     end
+  end
+
+  describe '#storage_shards' do
+    it 'returns the config' do
+      shards = StorageShard.all
+
+      expect(subject[:storage_shards].count).to eq(shards.count)
+      expect(subject[:storage_shards].first[:name]).to eq(shards.first.name)
+      expect(subject[:storage_shards].first[:path]).to eq(shards.first.path)
+    end
+  end
+
+  context 'secondary Geo node' do
+    before { stub_secondary_node }
+
+    it { is_expected.to have_key(:storage_shards) }
+    it { is_expected.not_to have_key(:storage_shards_match) }
   end
 end

@@ -15,6 +15,7 @@
   %strong exact order
   they appear.
 
+- current_primary = Gitlab::Geo.primary?
 - if @nodes.any?
   .panel.panel-default
     .panel-heading
@@ -46,6 +47,13 @@
                       GitLab version:
                   %td
                     .node-info.prepend-top-5.prepend-left-5.js-secondary-version
+                - if current_primary
+                  %tr
+                    %td
+                      .help-block
+                        Storage config:
+                        %td
+                          .node-info.prepend-top-5.prepend-left-5.js-secondary-storage-shards
                 - if node.enabled?
                   %tr
                     %td

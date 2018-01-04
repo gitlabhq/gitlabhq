@@ -396,18 +396,49 @@ describe GeoNodeStatus, :geo do
     it_behaves_like 'timestamp parameters', :cursor_last_event_timestamp, :cursor_last_event_date
   end
 
+  describe '#storage_shards' do
+    it "returns the current node's shard config" do
+      expect(subject[:storage_shards].as_json).to eq(StorageShard.all.as_json)
+    end
+  end
+
   describe '#from_json' do
     it 'returns a new GeoNodeStatus excluding parameters' do
       status = create(:geo_node_status)
 
-      data = status.as_json
-      data[:id] = 10000
+      data = GeoNodeStatusSerializer.new.represent(status).as_json
+      data['id'] = 10000
 
-      result = GeoNodeStatus.from_json(data)
+      result = described_class.from_json(data)
 
       expect(result.id).to be_nil
       expect(result.attachments_count).to eq(status.attachments_count)
-      expect(result.cursor_last_event_date).to eq(status.cursor_last_event_date)
+      expect(result.cursor_last_event_date).to eq(Time.at(status.cursor_last_event_timestamp))
+      expect(result.storage_shards.count).to eq(Settings.repositories.storages.count)
+    end
+  end
+
+  describe '#storage_shards_match?' do
+    before { stub_primary_node }
+
+    it 'returns false if the storage shards do not match' do
+      status = create(:geo_node_status)
+      data = GeoNodeStatusSerializer.new.represent(status).as_json
+      data['storage_shards'].first['name'] = 'broken-shard'
+
+      result = described_class.from_json(data)
+
+      expect(result.storage_shards_match?).to be false
+    end
+
+    it 'returns true if the storage shards match in different order' do
+      status = create(:geo_node_status)
+
+      status.storage_shards.shuffle!
+      data = GeoNodeStatusSerializer.new.represent(status).as_json
+      result = described_class.from_json(data)
+
+      expect(result.storage_shards_match?).to be true
     end
   end
 end
