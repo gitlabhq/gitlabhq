@@ -11,9 +11,9 @@ class CheckGcpProjectBillingWorker
     return unless token
     return unless try_obtain_lease_for(token)
 
-    billing_enabled = CheckGcpProjectBillingService.new.execute(token)
+    billing_enabled_projects = CheckGcpProjectBillingService.new.execute(token)
     Gitlab::Redis::SharedState.with do |redis|
-      redis.set(self.class.redis_shared_state_key_for(token), billing_enabled)
+      redis.set(self.class.redis_shared_state_key_for(token), !billing_enabled_projects.empty?)
     end
   end
 
