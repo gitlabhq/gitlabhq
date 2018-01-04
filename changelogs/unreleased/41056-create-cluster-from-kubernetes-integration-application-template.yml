@@ -1,0 +1,5 @@
+---
+title: Allow automatic creation of Kubernetes Integration from template
+merge_request: 16104
+author:
+type: added

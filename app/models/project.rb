@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
+  include DeploymentPlatform
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -902,12 +903,6 @@ class Project < ActiveRecord::Base
 
   def ci_service
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
-  end
-
-  # TODO: This will be extended for multiple enviroment clusters
-  def deployment_platform
-    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
-    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
