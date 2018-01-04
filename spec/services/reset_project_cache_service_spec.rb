@@ -8,21 +8,21 @@ describe ResetProjectCacheService do
 
   context 'when project cache_index is nil' do
     before do
-      project.cache_index = nil
+      project.jobs_cache_index = nil
     end
 
     it 'sets project cache_index to one' do
-      expect { subject }.to change { project.reload.cache_index }.from(nil).to(1)
+      expect { subject }.to change { project.reload.jobs_cache_index }.from(nil).to(1)
     end
   end
 
   context 'when project cache_index is a numeric value' do
     before do
-      project.update_attributes(cache_index: 1)
+      project.update_attributes(jobs_cache_index: 1)
     end
 
     it 'increments project cache index' do
-      expect { subject }.to change { project.reload.cache_index }.by(1)
+      expect { subject }.to change { project.reload.jobs_cache_index }.by(1)
     end
   end
 end

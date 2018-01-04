@@ -1,5 +1,5 @@
 class ResetProjectCacheService < BaseService
   def execute
-    @project.increment!(:cache_index)
+    @project.increment!(:jobs_cache_index)
   end
 end
