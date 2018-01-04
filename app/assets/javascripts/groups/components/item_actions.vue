@@ -64,6 +64,7 @@ export default {
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
       data-container="body"
+      data-placement="bottom"
       class="edit-group btn no-expand">
       <icon name="settings"/>
     </a>
@@ -75,6 +76,7 @@ export default {
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"
       data-container="body"
+      data-placement="bottom"
       class="leave-group btn no-expand">
       <icon name="leave"/>
     </a>

@@ -125,7 +125,7 @@ export default {
           :href="group.relativePath"
           :title="group.fullName"
           class="no-expand"
-          data-placement="top"
+          data-placement="bottom"
         >{{
           // ending bracket must be by closing tag to prevent
           // link hover text-decoration from over-extending

@@ -21,7 +21,7 @@ export default {
     tooltipPlacement: {
       type: String,
       required: false,
-      default: 'top',
+      default: 'bottom',
     },
     /**
      * value could either be number or string
