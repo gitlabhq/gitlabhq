@@ -545,6 +545,42 @@ describe 'Pipelines', :js do
         end
       end
     end
+
+    describe 'Reset runner caches' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
+        project.team << [user, :master]
+        visit project_pipelines_path(project)
+      end
+
+      it 'has a clear caches button' do
+        expect(page).to have_link 'Clear runner caches'
+      end
+
+      describe 'user clicks the button' do
+        subject { click_link 'Clear runner caches' }
+
+        context 'when project already has jobs_cache_index' do
+          before do
+            project.update_attributes(jobs_cache_index: 1)
+          end
+
+          it 'increments jobs_cache_index' do
+            expect { subject }.to change { project.reload.jobs_cache_index }.by(1)
+            expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
+          end
+        end
+
+        context 'when project does not have jobs_cache_index' do
+          it 'sets jobs_cache_index to 1' do
+            expect { subject }.to change { project.reload.jobs_cache_index }.from(nil).to(1)
+            expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
+          end
+        end
+      end
+    end
   end
 
   context 'when user is not logged in' do
