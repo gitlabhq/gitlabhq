@@ -1,7 +1,7 @@
 class CheckGcpProjectBillingWorker
   include ApplicationWorker
 
-  LEASE_TIMEOUT = 1.minute.to_i
+  LEASE_TIMEOUT = 15.seconds.to_i
 
   def self.redis_shared_state_key_for(token)
     "gitlab:gcp:#{token}:billing_enabled"
