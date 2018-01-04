@@ -13,7 +13,7 @@ describe Members::AuthorizedDestroyService do
   context 'Invited users' do
     # Regression spec for issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/32504
     it 'destroys invited project member' do
-      project.team << [member_user, :developer]
+      project.add_developer(member_user)
 
       member = create :project_member, :invited, project: project
 
@@ -52,7 +52,7 @@ describe Members::AuthorizedDestroyService do
 
   context 'Project member' do
     it "unassigns issues and merge requests" do
-      project.team << [member_user, :developer]
+      project.add_developer(member_user)
 
       create :issue, project: project, assignees: [member_user]
       create :merge_request, target_project: project, source_project: project, assignee: member_user

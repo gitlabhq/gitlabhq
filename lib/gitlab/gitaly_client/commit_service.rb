@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class CommitService
+      include Gitlab::EncodingHelper
+
       # The ID of empty tree.
       # See http://stackoverflow.com/a/40884093/1856239 and https://github.com/git/git/blob/3ad8b5bf26362ac67c9020bf8c30eee54a84f56d/cache.h#L1011-L1012
       EMPTY_TREE_ID = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'.freeze
@@ -13,7 +15,7 @@ module Gitlab
       def ls_files(revision)
         request = Gitaly::ListFilesRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision)
+          revision: encode_binary(revision)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_files, request, timeout: GitalyClient.medium_timeout)
@@ -73,7 +75,7 @@ module Gitlab
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
           revision: ref,
-          path: GitalyClient.encode(path),
+          path: encode_binary(path),
           limit: limit.to_i
         )
 
@@ -98,8 +100,8 @@ module Gitlab
       def tree_entries(repository, revision, path)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision),
-          path: path.present? ? GitalyClient.encode(path) : '.'
+          revision: encode_binary(revision),
+          path: path.present? ? encode_binary(path) : '.'
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
@@ -112,8 +114,8 @@ module Gitlab
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
               name: File.basename(gitaly_tree_entry.path),
-              path: GitalyClient.encode(gitaly_tree_entry.path),
-              flat_path: GitalyClient.encode(gitaly_tree_entry.flat_path),
+              path: encode_binary(gitaly_tree_entry.path),
+              flat_path: encode_binary(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
           end
@@ -128,6 +130,7 @@ module Gitlab
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
         request.path = options[:path] if options[:path].present?
+        request.max_count = options[:max_count] if options[:max_count].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
@@ -135,8 +138,8 @@ module Gitlab
       def last_commit_for_path(revision, path)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision),
-          path: GitalyClient.encode(path.to_s)
+          revision: encode_binary(revision),
+          path: encode_binary(path.to_s)
         )
 
         gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request, timeout: GitalyClient.fast_timeout).commit
@@ -202,8 +205,8 @@ module Gitlab
       def raw_blame(revision, path)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision),
-          path: GitalyClient.encode(path)
+          revision: encode_binary(revision),
+          path: encode_binary(path)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
@@ -213,7 +216,7 @@ module Gitlab
       def find_commit(revision)
         request = Gitaly::FindCommitRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision)
+          revision: encode_binary(revision)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
@@ -224,7 +227,7 @@ module Gitlab
       def patch(revision)
         request = Gitaly::CommitPatchRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision)
+          revision: encode_binary(revision)
         )
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request, timeout: GitalyClient.medium_timeout)
 
@@ -234,7 +237,7 @@ module Gitlab
       def commit_stats(revision)
         request = Gitaly::CommitStatsRequest.new(
           repository: @gitaly_repo,
-          revision: GitalyClient.encode(revision)
+          revision: encode_binary(revision)
         )
         GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request, timeout: GitalyClient.medium_timeout)
       end
@@ -250,9 +253,9 @@ module Gitlab
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
-        request.revision = GitalyClient.encode(options[:ref]) if options[:ref]
+        request.revision = encode_binary(options[:ref]) if options[:ref]
 
-        request.paths = GitalyClient.encode_repeated(Array(options[:path])) if options[:path].present?
+        request.paths = encode_repeated(Array(options[:path])) if options[:path].present?
 
         response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request, timeout: GitalyClient.medium_timeout)
 
@@ -264,7 +267,7 @@ module Gitlab
 
         enum = Enumerator.new do |y|
           shas.each_slice(20) do |revs|
-            request.shas = GitalyClient.encode_repeated(revs)
+            request.shas = encode_repeated(revs)
 
             y.yield request
 
@@ -303,7 +306,7 @@ module Gitlab
           repository: @gitaly_repo,
           left_commit_id: from_id,
           right_commit_id: to_id,
-          paths: options.fetch(:paths, []).compact.map { |path| GitalyClient.encode(path) }
+          paths: options.fetch(:paths, []).compact.map { |path| encode_binary(path) }
         }
       end
 
@@ -313,6 +316,10 @@ module Gitlab
             Gitlab::Git::Commit.new(@repository, gitaly_commit)
           end
         end
+      end
+
+      def encode_repeated(a)
+        Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| encode_binary(s) } )
       end
     end
   end

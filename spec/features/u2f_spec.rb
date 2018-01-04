@@ -264,7 +264,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       end
 
       it "deletes u2f registrations" do
-        visit profile_account_path
+        visit profile_two_factor_auth_path
         expect do
           accept_confirm { click_on "Disable" }
         end.to change { U2fRegistration.count }.by(-1)

@@ -3,6 +3,7 @@ inherit_gem:
     - rubocop-default.yml
 
 inherit_from: .rubocop_todo.yml
+require: ./rubocop/rubocop
 
 AllCops:
   TargetRailsVersion: 4.2
@@ -24,8 +25,10 @@ Gitlab/ModuleWithInstanceVariables:
   Exclude:
     # We ignore Rails helpers right now because it's hard to workaround it
     - app/helpers/**/*_helper.rb
+    - ee/app/helpers/**/*_helper.rb
     # We ignore Rails mailers right now because it's hard to workaround it
     - app/mailers/emails/**/*.rb
+    - ee/**/emails/**/*.rb
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb

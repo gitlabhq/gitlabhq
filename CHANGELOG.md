@@ -2,6 +2,35 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.3 (2018-01-02)
+
+### Fixed (3 changes)
+
+- Fix links to old commits in merge request comments.
+- Fix 404 errors after a user edits an issue description and solves the reCAPTCHA.
+- Gracefully handle orphaned write deploy keys in /internal/post_receive.
+
+
+## 10.3.2 (2017-12-28)
+
+### Fixed (1 change)
+
+- Fix migration for removing orphaned issues.moved_to_id values in MySQL and PostgreSQL.
+
+
+## 10.3.1 (2017-12-27)
+
+### Fixed (3 changes)
+
+- Don't link LFS objects to a project when unlinking forks when they were already linked. !16006
+- Execute project hooks and services after commit when moving an issue.
+- Fix Error 500s with anonymous clones for a project that has moved.
+
+### Changed (1 change)
+
+- Reduce the number of buckets in gitlab_cache_operation_duration_seconds metric. !15881
+
+
 ## 10.3.0 (2017-12-22)
 
 ### Security (1 change, 1 of them is from the community)

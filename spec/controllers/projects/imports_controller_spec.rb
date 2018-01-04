@@ -9,7 +9,7 @@ describe Projects::ImportsController do
 
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'renders template' do
@@ -30,7 +30,7 @@ describe Projects::ImportsController do
 
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       context 'when import is in progress' do

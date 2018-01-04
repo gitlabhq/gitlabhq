@@ -33,8 +33,8 @@ export default {
   "source_project_id": 19,
   "target_branch": "master",
   "target_project_id": 19,
-  "merge_event": {
-    "author": {
+  "metrics": {
+    "merged_by": {
       "name": "Administrator",
       "username": "root",
       "id": 1,
@@ -42,9 +42,10 @@ export default {
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
-    "updated_at": "2017-04-07T15:39:25.696Z"
+    "merged_at": "2017-04-07T15:39:25.696Z",
+    "closed_by": null,
+    "closed_at": null
   },
-  "closed_event": null,
   "author": {
     "name": "Administrator",
     "username": "root",

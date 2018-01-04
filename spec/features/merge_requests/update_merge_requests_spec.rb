@@ -6,7 +6,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
