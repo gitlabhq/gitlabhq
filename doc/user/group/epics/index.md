@@ -36,7 +36,7 @@ issue can be associated with at most one epic.
 
 ## Reordering issues in an epic
 
-The first time an issue is added to an epic it appears on the first position. At that point, that issue will be assigned a relative order value by the system representing its relative order with respect to the other issues in the list. Any time you drag-and-drop reorder that issue, its relative order value will change accordingly.
+Drag and drop to reorder issues in an epic. New issues added to an epic appear at the top of the list.
 
 ## Deleting an epic
 
