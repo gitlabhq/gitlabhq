@@ -1015,7 +1015,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
-          options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+          options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(25)
         end
@@ -1023,7 +1023,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       context 'with before timestamp' do
         it 'returns the number of commits before timestamp' do
-          options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+          options = { ref: 'feature', before: Time.iso8601('2015-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(9)
         end
@@ -1031,9 +1031,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       context 'with path' do
         it 'returns the number of commits with path ' do
-          options = { ref: 'master', limit: nil, path: "encoding" }
+          options = { ref: 'master', path: "encoding" }
 
           expect(repository.count_commits(options)).to eq(2)
+        end
+      end
+
+      context 'with max_count' do
+        it 'returns the number of commits up to the passed limit' do
+          options = { ref: 'master', max_count: 10, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+
+          expect(repository.count_commits(options)).to eq(10)
         end
       end
     end
