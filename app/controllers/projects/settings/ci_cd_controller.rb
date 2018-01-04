@@ -17,6 +17,7 @@ module Projects
         else
           flash[:error] = _("Unable to reset project cache.")
         end
+
         redirect_to project_pipelines_path(@project)
       end
 
