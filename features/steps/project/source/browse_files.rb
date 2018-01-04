@@ -8,7 +8,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
     visit project_tree_path(@project, root_ref)
   end
 

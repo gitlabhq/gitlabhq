@@ -6,7 +6,7 @@ describe Projects::CycleAnalyticsController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'cycle analytics not set up flag' do

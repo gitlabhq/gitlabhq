@@ -45,7 +45,7 @@ describe GroupProjectsFinder do
 
   describe 'without group member current_user' do
     before do
-      shared_project_2.team << [current_user, Gitlab::Access::MASTER]
+      shared_project_2.add_master(current_user)
       current_user.reload
     end
 
@@ -70,7 +70,7 @@ describe GroupProjectsFinder do
 
       context "without external user" do
         before do
-          private_project.team << [current_user, Gitlab::Access::MASTER]
+          private_project.add_master(current_user)
         end
 
         it { is_expected.to match_array([private_project, public_project]) }

@@ -5,7 +5,7 @@ feature 'Create New Merge Request', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in user
   end

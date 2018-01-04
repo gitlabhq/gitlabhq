@@ -30,12 +30,12 @@ module RuboCop
             if only_ivar_or_assignment?(definition)
               # We don't allow if any other ivar is used
               definition.each_descendant(:ivar) do |offense|
-                add_offense(offense, :expression)
+                add_offense(offense, location: :expression)
               end
             # We allow initialize method and single ivar
             elsif !initialize_method?(definition) && !single_ivar?(definition)
               definition.each_descendant(:ivar, :ivasgn) do |offense|
-                add_offense(offense, :expression)
+                add_offense(offense, location: :expression)
               end
             end
           end

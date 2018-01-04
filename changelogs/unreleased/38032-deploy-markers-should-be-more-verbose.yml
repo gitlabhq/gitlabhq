@@ -1,5 +1,0 @@
----
-title: Changed the deploy markers on the prometheus dashboard to be more verbose
-merge_request: 38032
-author:
-type: changed

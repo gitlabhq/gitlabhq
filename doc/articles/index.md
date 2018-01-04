@@ -10,16 +10,6 @@ They are written by members of the GitLab Team and by
 Part of the articles listed below link to the [GitLab Blog](https://about.gitlab.com/blog/),
 where they were originally published.
 
-## Authentication
-
-Explore GitLab's supported [authentications methods](../topics/authentication/index.md):
-
-| Article title | Category | Publishing date |
-| :------------ | :------: | --------------: |
-| **LDAP** |
-| [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md)| Admin guide | 2017-05-03 |
-| [How to configure LDAP with GitLab EE](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/) | Admin guide | 2017-05-03 |
-
 ## Build, test, and deploy with GitLab CI/CD
 
 Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/README.md):
@@ -28,7 +18,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | :------------ | :------: | --------------: |
 | [Autoscaling GitLab Runners on AWS](runner_autoscale_aws/index.md) | Admin guide | 2017-11-24 |
 | [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md) | Tutorial | 2017-08-31 |
-| [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md) | Tutorial | 2017-08-15 |
 | [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017-07-13 |
 | [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/) | Concepts | 2017-07-11 |
 | [Continuous Integration: From Jenkins to GitLab Using Docker](https://about.gitlab.com/2017/07/27/docker-my-precious/) | Concepts | 2017-07-27 |

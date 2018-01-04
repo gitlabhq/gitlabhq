@@ -118,7 +118,10 @@ var config = {
       },
       {
         test: /\_worker\.js$/,
-        loader: 'worker-loader',
+        use: [
+          { loader: 'worker-loader' },
+          { loader: 'babel-loader' },
+        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
@@ -138,6 +141,7 @@ var config = {
     ],
 
     noParse: [/monaco-editor\/\w+\/vs\//],
+    strictExportPresence: true,
   },
 
   plugins: [

@@ -17,7 +17,7 @@ module RuboCop
         return unless method_name(namespace_expr) == :namespace
         return unless receiver(namespace_expr) == project_expr
 
-        add_offense(node, :selector)
+        add_offense(node, location: :selector)
       end
 
       def autocorrect(node)

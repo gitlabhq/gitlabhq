@@ -1,5 +1,0 @@
----
-title: Add total_time_spent to the `changes` hash in issuable Webhook payloads
-merge_request: 15381
-author:
-type: changed

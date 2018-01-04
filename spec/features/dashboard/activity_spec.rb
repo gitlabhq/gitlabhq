@@ -24,6 +24,7 @@ feature 'Dashboard > Activity' do
     end
 
     let(:note) { create(:note, project: project, noteable: merge_request) }
+    let(:milestone) { create(:milestone, :active, project: project, title: '1.0') }
 
     let!(:push_event) do
       event = create(:push_event, project: project, author: user)
@@ -54,6 +55,10 @@ feature 'Dashboard > Activity' do
       create(:event, :commented, project: project, target: note, author: user)
     end
 
+    let!(:milestone_event) do
+      create(:event, :closed, project: project, target: milestone, author: user)
+    end
+
     before do
       project.add_master(user)
 
@@ -68,6 +73,7 @@ feature 'Dashboard > Activity' do
         expect(page).to have_content('accepted')
         expect(page).to have_content('closed')
         expect(page).to have_content('commented on')
+        expect(page).to have_content('closed milestone')
       end
     end
 
@@ -107,6 +113,7 @@ feature 'Dashboard > Activity' do
         expect(page).not_to have_content('accepted')
         expect(page).to have_content('closed')
         expect(page).not_to have_content('commented on')
+        expect(page).to have_content('closed milestone')
       end
     end
 

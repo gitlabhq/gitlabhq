@@ -13,8 +13,8 @@ describe Issues::CreateService do
       let(:labels) { create_pair(:label, project: project) }
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :master]
+        project.add_master(user)
+        project.add_master(assignee)
       end
 
       let(:opts) do
@@ -43,7 +43,7 @@ describe Issues::CreateService do
         let(:guest) { create(:user) }
 
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
@@ -130,7 +130,7 @@ describe Issues::CreateService do
         end
 
         it 'invalidates open issues counter for assignees when issue is assigned' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
 
           described_class.new(project, user, opts).execute
 
@@ -160,7 +160,7 @@ describe Issues::CreateService do
     context 'issue create service' do
       context 'assignees' do
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'removes assignee when user id is invalid' do
@@ -180,7 +180,7 @@ describe Issues::CreateService do
         end
 
         it 'saves assignee when user id is valid' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
           opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
 
           issue = described_class.new(project, user, opts).execute
@@ -224,8 +224,8 @@ describe Issues::CreateService do
         end
 
         before do
-          project.team << [user, :master]
-          project.team << [assignee, :master]
+          project.add_master(user)
+          project.add_master(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -242,7 +242,7 @@ describe Issues::CreateService do
       let(:project) { merge_request.source_project }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       describe 'for a single discussion' do

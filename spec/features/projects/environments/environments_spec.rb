@@ -6,7 +6,7 @@ feature 'Environments page', :js do
   given(:role) { :developer }
 
   background do
-    project.team << [user, role]
+    project.add_role(user, role)
     sign_in(user)
   end
 

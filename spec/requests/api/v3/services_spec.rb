@@ -10,6 +10,10 @@ describe API::V3::Services do
     describe "DELETE /projects/:id/services/#{service.dasherize}" do
       include_context service
 
+      before do
+        initialize_service(service)
+      end
+
       it "deletes #{service}" do
         delete v3_api("/projects/#{project.id}/services/#{dashed_service}", user)
 
