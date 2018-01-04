@@ -216,10 +216,37 @@ module Gitlab
           ::Geo::FileRegistry.lfs_objects.where(file_id: event.lfs_object_id).delete_all
         end
 
+        def handle_job_artifact_deleted_event(event, created_at)
+          file_registry_job_artifacts = ::Geo::FileRegistry.job_artifacts.where(file_id: event.job_artifact_id)
+          return unless file_registry_job_artifacts.any? # avoid race condition
+
+          file_path = File.join(JobArtifactUploader.local_store_path, event.file_path)
+
+          if File.file?(file_path)
+            deleted = delete_file(file_path) # delete synchronously to ensure consistency
+            return unless deleted # do not delete file from registry if deletion failed
+          end
+
+          logger.event_info(
+            created_at,
+            message: 'Deleted job artifact',
+            file_id: event.job_artifact_id,
+            file_path: file_path)
+
+          file_registry_job_artifacts.delete_all
+        end
+
         def find_or_initialize_registry(project_id, attrs)
           registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
           registry.assign_attributes(attrs)
           registry
+        end
+
+        def delete_file(path)
+          File.delete(path)
+        rescue => ex
+          logger.error("Failed to remove file", exception: ex.class.name, details: ex.message, filename: path)
+          false
         end
 
         # Sleeps for the expired TTL that remains on the lease plus some random seconds.

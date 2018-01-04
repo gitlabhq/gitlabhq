@@ -300,5 +300,110 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         expect { daemon.run_once! }.to change(Geo::FileRegistry.lfs_objects, :count).by(-1)
       end
     end
+
+    context 'when replaying a job artifact event' do
+      let(:event_log) { create(:geo_event_log, :job_artifact_deleted_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:job_artifact_deleted_event) { event_log.job_artifact_deleted_event }
+      let(:job_artifact) { job_artifact_deleted_event.job_artifact }
+
+      context 'with a tracking database entry' do
+        before do
+          create(:geo_file_registry, :job_artifact, file_id: job_artifact.id)
+        end
+
+        context 'with a file' do
+          context 'when the delete succeeds' do
+            it 'removes the tracking database entry' do
+              expect { daemon.run_once! }.to change(Geo::FileRegistry.job_artifacts, :count).by(-1)
+            end
+
+            it 'deletes the file' do
+              expect { daemon.run_once! }.to change { File.exist?(job_artifact.file.path) }.from(true).to(false)
+            end
+          end
+
+          context 'when the delete fails' do
+            before do
+              expect(daemon).to receive(:delete_file).and_return(false)
+            end
+
+            it 'does not remove the tracking database entry' do
+              expect { daemon.run_once! }.not_to change(Geo::FileRegistry.job_artifacts, :count)
+            end
+          end
+        end
+
+        context 'without a file' do
+          before do
+            FileUtils.rm(job_artifact.file.path)
+          end
+
+          it 'removes the tracking database entry' do
+            expect { daemon.run_once! }.to change(Geo::FileRegistry.job_artifacts, :count).by(-1)
+          end
+        end
+      end
+
+      context 'without a tracking database entry' do
+        it 'does not create a tracking database entry' do
+          expect { daemon.run_once! }.not_to change(Geo::FileRegistry, :count)
+        end
+
+        it 'does not delete the file (yet, due to possible race condition)' do
+          expect { daemon.run_once! }.not_to change { File.exist?(job_artifact.file.path) }.from(true)
+        end
+      end
+    end
+  end
+
+  describe '#delete_file' do
+    context 'when the file exists' do
+      let!(:file) { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png") }
+
+      context 'when the delete does not raise an exception' do
+        it 'returns true' do
+          expect(daemon.send(:delete_file, file.path)).to be_truthy
+        end
+
+        it 'does not log an error' do
+          expect(daemon).not_to receive(:logger)
+
+          daemon.send(:delete_file, file.path)
+        end
+      end
+
+      context 'when the delete raises an exception' do
+        before do
+          expect(File).to receive(:delete).and_raise('something went wrong')
+        end
+
+        it 'returns false' do
+          expect(daemon.send(:delete_file, file.path)).to be_falsey
+        end
+
+        it 'logs an error' do
+          logger = double(logger)
+          expect(daemon).to receive(:logger).and_return(logger)
+          expect(logger).to receive(:error).with('Failed to remove file', exception: 'RuntimeError', details: 'something went wrong', filename: file.path)
+
+          daemon.send(:delete_file, file.path)
+        end
+      end
+    end
+
+    context 'when the file does not exist' do
+      it 'returns false' do
+        expect(daemon.send(:delete_file, '/does/not/exist')).to be_falsey
+      end
+
+      it 'logs an error' do
+        logger = double(logger)
+        expect(daemon).to receive(:logger).and_return(logger)
+        expect(logger).to receive(:error).with('Failed to remove file', exception: 'Errno::ENOENT', details: 'No such file or directory @ unlink_internal - /does/not/exist', filename: '/does/not/exist')
+
+        daemon.send(:delete_file, '/does/not/exist')
+      end
+    end
   end
 end
