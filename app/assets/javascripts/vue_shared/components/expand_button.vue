@@ -35,7 +35,7 @@
       type="button"
       v-show="isCollapsed"
       class="text-expander btn-blank"
-      aria-label="Click to Expand Text"
+      :aria-label="ariaLabel"
       @click="onClick">
       ...
     </button>
