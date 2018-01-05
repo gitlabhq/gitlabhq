@@ -1,7 +1,7 @@
 module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
-      before_action :authorize_read_project!
+      before_action :authorize_admin_project!
       before_action :require_prometheus_metrics!
 
       def active_common
@@ -73,6 +73,13 @@ module Projects
 
       def edit
         @metric = project.prometheus_metrics.find(params[:id])
+      end
+
+      def destroy
+        @metric = project.prometheus_metrics.find(params[:id])
+        @metric.destroy
+
+        redirect_to project_prometheus_metrics(@project), status: 302
       end
 
       private
