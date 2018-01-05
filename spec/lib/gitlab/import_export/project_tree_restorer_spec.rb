@@ -181,6 +181,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       context 'when restoring hierarchy of pipeline, stages and jobs' do
+        it 'restores pipelines' do
+          expect(Ci::Pipeline.all.count).to be 5
+        end
+
         it 'restores pipeline stages' do
           expect(Ci::Stage.all.count).to be 6
         end
