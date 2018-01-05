@@ -50,10 +50,19 @@ module Gitlab
         # to the caller to limit the number of blobs and blob_size_limit.
         #
         # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/798
-        def batch(repository, blob_references, blob_size_limit: nil)
-          blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
-          blob_references.map do |sha, path|
-            find_by_rugged(repository, sha, path, limit: blob_size_limit)
+        def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
+          Gitlab::GitalyClient.migrate(:list_blobs_by_sha_path) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient.allow_n_plus_1_calls do
+                blob_references.map do |sha, path|
+                  find_by_gitaly(repository, sha, path, limit: blob_size_limit)
+                end
+              end
+            else
+              blob_references.map do |sha, path|
+                find_by_rugged(repository, sha, path, limit: blob_size_limit)
+              end
+            end
           end
         end
 
@@ -122,12 +131,22 @@ module Gitlab
           )
         end
 
-        def find_by_gitaly(repository, sha, path)
+        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
-          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+
+          # Gitaly will think that setting the limit to 0 means unlimited, while
+          # the client might only need the metadata and thus set the limit to 0.
+          # In this method we'll then set the limit to 1, but clear the byte of data
+          # that we got back so for the outside world it looks like the limit was
+          # actually 0.
+          req_limit = limit == 0 ? 1 : limit
+
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
           return unless entry
+
+          entry.data = "" if limit == 0
 
           case entry.type
           when :COMMIT
