@@ -25,15 +25,11 @@ import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
 
-<<<<<<< HEAD
-// EE only
 import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
 import tooltip from '../vue_shared/directives/tooltip';
 
-=======
->>>>>>> upstream/master
 $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
