@@ -43,10 +43,10 @@
           type: this.type,
         });
 
-        this.toggleModalOpen();
+        this.hideModal();
       },
-      toggleModalOpen() {
-        this.$emit('toggle');
+      hideModal() {
+        this.$emit('hide');
       },
     },
     computed: {
@@ -86,7 +86,7 @@
     :title="modalTitle"
     :primary-button-label="buttonLabel"
     kind="success"
-    @toggle="toggleModalOpen"
+    @cancel="hideModal"
     @submit="createEntryInStore"
   >
     <form

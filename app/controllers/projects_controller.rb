@@ -353,7 +353,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def repo_exists?
-    project.repository_exists? && !project.empty_repo? && project.repo
+    project.repository_exists? && !project.empty_repo?
 
   rescue Gitlab::Git::Repository::NoRepository
     project.repository.expire_exists_cache

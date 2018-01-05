@@ -1030,11 +1030,49 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
 
+      context 'with max_count' do
+        it 'returns the number of commits with path ' do
+          options = { ref: 'master', max_count: 5 }
+
+          expect(repository.count_commits(options)).to eq(5)
+        end
+      end
+
       context 'with path' do
         it 'returns the number of commits with path ' do
-          options = { ref: 'master', path: "encoding" }
+          options = { ref: 'master', path: 'encoding' }
 
           expect(repository.count_commits(options)).to eq(2)
+        end
+      end
+
+      context 'with option :from and option :to' do
+        it 'returns the number of commits ahead for fix-mode..fix-blob-path' do
+          options = { from: 'fix-mode', to: 'fix-blob-path' }
+
+          expect(repository.count_commits(options)).to eq(2)
+        end
+
+        it 'returns the number of commits ahead for fix-blob-path..fix-mode' do
+          options = { from: 'fix-blob-path', to: 'fix-mode' }
+
+          expect(repository.count_commits(options)).to eq(1)
+        end
+
+        context 'with option :left_right' do
+          it 'returns the number of commits for fix-mode...fix-blob-path' do
+            options = { from: 'fix-mode', to: 'fix-blob-path', left_right: true }
+
+            expect(repository.count_commits(options)).to eq([1, 2])
+          end
+
+          context 'with max_count' do
+            it 'returns the number of commits with path ' do
+              options = { from: 'fix-mode', to: 'fix-blob-path', left_right: true, max_count: 1 }
+
+              expect(repository.count_commits(options)).to eq([1, 1])
+            end
+          end
         end
       end
 

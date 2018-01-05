@@ -37,6 +37,10 @@ export default class MRWidgetService {
     return axios.get(this.endpoints.mergeActionsContentPath);
   }
 
+  rebase() {
+    return axios.post(this.endpoints.rebasePath);
+  }
+
   static stopEnvironment(url) {
     return axios.post(url);
   }
