@@ -4,7 +4,7 @@ module Projects
       before_action :authorize_read_project!
       before_action :require_prometheus_metrics!
 
-      def active
+      def active_common
         respond_to do |format|
           format.json do
             matched_metrics = prometheus_service.matched_metrics || {}

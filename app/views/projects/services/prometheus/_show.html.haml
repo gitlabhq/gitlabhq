@@ -28,7 +28,7 @@
           = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(@project), class: 'btn btn-success'
         %ul.list-unstyled.metrics-list.hidden.js-custom-metrics-list
 
-    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{active_project_prometheus_metrics_path(@project, :json)}" } }
+    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{active_common_project_prometheus_metrics_path(@project, :json)}" } }
       .panel-heading
         %h3.panel-title
           = s_('PrometheusService|Common metrics')
