@@ -18,8 +18,16 @@ class RelatedIssuesService {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  removeRelatedIssue(endpoint) {
+  static saveOrder({ endpoint, move_before_id, move_after_id }) {
+    return Vue.http.put(endpoint, {
+      epic: {
+        move_before_id,
+        move_after_id,
+      },
+    });
+  }
+
+  static remove(endpoint) {
     return Vue.http.delete(endpoint);
   }
 }

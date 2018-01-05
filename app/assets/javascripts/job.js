@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
-import { bytesToKiB } from './lib/utils/number_utils';
+import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 
@@ -96,14 +96,15 @@ export default class Job {
 
   // eslint-disable-next-line class-methods-use-this
   canScroll() {
-    return this.$document.height() > this.$window.height();
+    return $(document).height() > $(window).height();
   }
 
   toggleScroll() {
-    const currentPosition = this.$document.scrollTop();
-    const scrollHeight = this.$document.height();
+    const $document = $(document);
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
 
-    const windowHeight = this.$window.height();
+    const windowHeight = $(window).height();
     if (this.canScroll()) {
       if (currentPosition > 0 &&
         (scrollHeight - currentPosition !== windowHeight)) {
@@ -127,18 +128,22 @@ export default class Job {
       this.toggleDisableButton(this.$scrollBottomBtn, true);
     }
   }
-
+  // eslint-disable-next-line class-methods-use-this
   isScrolledToBottom() {
-    const currentPosition = this.$document.scrollTop();
-    const scrollHeight = this.$document.height();
+    const $document = $(document);
 
-    const windowHeight = this.$window.height();
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
+
+    const windowHeight = $(window).height();
+
     return scrollHeight - currentPosition === windowHeight;
   }
 
   // eslint-disable-next-line class-methods-use-this
   scrollDown() {
-    this.$document.scrollTop(this.$document.height());
+    const $document = $(document);
+    $document.scrollTop($document.height());
   }
 
   scrollToBottom() {
@@ -148,7 +153,7 @@ export default class Job {
   }
 
   scrollToTop() {
-    this.$document.scrollTop(0);
+    $(document).scrollTop(0);
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }
@@ -193,7 +198,7 @@ export default class Job {
         // we need to show a message warning the user about that.
         if (this.logBytes < log.total) {
           // size is in bytes, we need to calculate KiB
-          const size = bytesToKiB(this.logBytes);
+          const size = numberToHumanSize(this.logBytes);
           $('.js-truncated-info-size').html(`${size}`);
           this.$truncatedInfo.removeClass('hidden');
         } else {

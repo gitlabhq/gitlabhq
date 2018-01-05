@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class OperationService
+      include Gitlab::EncodingHelper
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -9,7 +11,7 @@ module Gitlab
       def rm_tag(tag_name, user)
         request = Gitaly::UserDeleteTagRequest.new(
           repository: @gitaly_repo,
-          tag_name: GitalyClient.encode(tag_name),
+          tag_name: encode_binary(tag_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
@@ -24,9 +26,9 @@ module Gitlab
         request = Gitaly::UserCreateTagRequest.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          tag_name: GitalyClient.encode(tag_name),
-          target_revision: GitalyClient.encode(target),
-          message: GitalyClient.encode(message.to_s)
+          tag_name: encode_binary(tag_name),
+          target_revision: encode_binary(target),
+          message: encode_binary(message.to_s)
         )
 
         response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
@@ -44,9 +46,9 @@ module Gitlab
       def user_create_branch(branch_name, user, start_point)
         request = Gitaly::UserCreateBranchRequest.new(
           repository: @gitaly_repo,
-          branch_name: GitalyClient.encode(branch_name),
+          branch_name: encode_binary(branch_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          start_point: GitalyClient.encode(start_point)
+          start_point: encode_binary(start_point)
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
           :user_create_branch, request)
@@ -64,7 +66,7 @@ module Gitlab
       def user_delete_branch(branch_name, user)
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
-          branch_name: GitalyClient.encode(branch_name),
+          branch_name: encode_binary(branch_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
@@ -89,8 +91,8 @@ module Gitlab
             repository: @gitaly_repo,
             user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
             commit_id: source_sha,
-            branch: GitalyClient.encode(target_branch),
-            message: GitalyClient.encode(message)
+            branch: encode_binary(target_branch),
+            message: encode_binary(message)
           )
         )
 
@@ -99,6 +101,7 @@ module Gitlab
         request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
 
         branch_update = response_enum.next.branch_update
+        return if branch_update.nil?
         raise Gitlab::Git::CommitError.new('failed to apply merge to branch') unless branch_update.commit_id.present?
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
@@ -111,7 +114,7 @@ module Gitlab
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           commit_id: source_sha,
-          branch: GitalyClient.encode(target_branch)
+          branch: encode_binary(target_branch)
         )
 
         branch_update = GitalyClient.call(
@@ -152,9 +155,9 @@ module Gitlab
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           commit: commit.to_gitaly_commit,
-          branch_name: GitalyClient.encode(branch_name),
-          message: GitalyClient.encode(message),
-          start_branch_name: GitalyClient.encode(start_branch_name.to_s),
+          branch_name: encode_binary(branch_name),
+          message: encode_binary(message),
+          start_branch_name: encode_binary(start_branch_name.to_s),
           start_repository: start_repository.gitaly_repository
         )
 

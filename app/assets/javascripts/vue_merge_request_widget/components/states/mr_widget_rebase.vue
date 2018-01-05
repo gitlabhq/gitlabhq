@@ -1,11 +1,12 @@
 <script>
-  import simplePoll from '~/lib/utils/simple_poll';
-  import eventHub from '~/vue_merge_request_widget/event_hub';
-  import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import Flash from '~/flash';
+  import simplePoll from '../../../lib/utils/simple_poll';
+  import eventHub from '../../event_hub';
+  import statusIcon from '../mr_widget_status_icon';
+  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+  import Flash from '../../../flash';
 
   export default {
+    name: 'MRWidgetRebase',
     props: {
       mr: {
         type: Object,

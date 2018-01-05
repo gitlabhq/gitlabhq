@@ -1,0 +1,5 @@
+---
+title: Fix viewing merge request diffs where the underlying blobs are unavailable
+merge_request:
+author:
+type: fixed

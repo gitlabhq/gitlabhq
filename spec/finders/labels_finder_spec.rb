@@ -56,6 +56,16 @@ describe LabelsFinder do
 
         expect(finder.execute).to eq [group_label_2, group_label_1, project_label_5]
       end
+
+      context 'when only_group_labels is true' do
+        it 'returns only group labels' do
+          group_1.add_developer(user)
+
+          finder = described_class.new(user, group_id: group_1.id, only_group_labels: true)
+
+          expect(finder.execute).to eq [group_label_2, group_label_1]
+        end
+      end
     end
 
     context 'filtering by project_id' do

@@ -2,7 +2,6 @@ import { n__, s__, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
-import RebaseState from './components/states/mr_widget_rebase.vue';
 import collapsibleSection from './components/mr_widget_report_collapsible_section.vue';
 
 export default {
@@ -10,7 +9,6 @@ export default {
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
-    'mr-widget-rebase': RebaseState,
     collapsibleSection,
   },
   data() {
@@ -19,10 +17,12 @@ export default {
       isLoadingPerformance: false,
       isLoadingSecurity: false,
       isLoadingDocker: false,
+      isLoadingDast: false,
       loadingCodequalityFailed: false,
       loadingPerformanceFailed: false,
       loadingSecurityFailed: false,
       loadingDockerFailed: false,
+      loadingDastFailed: false,
     };
   },
   computed: {
@@ -42,6 +42,9 @@ export default {
     },
     shouldRenderDockerReport() {
       return this.mr.sastContainer;
+    },
+    shouldRenderDastReport() {
+      return this.mr.dast;
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -153,6 +156,18 @@ export default {
       )}`;
     },
 
+    dastText() {
+      if (this.mr.dastReport.length) {
+        return n__(
+          '%d DAST alert detected by analyzing the review app',
+          '%d DAST alerts detected by analyzing the review app',
+          this.mr.dastReport.length,
+        );
+      }
+
+      return s__('ciReport|No DAST alerts detected by analyzing the review app');
+    },
+
     codequalityStatus() {
       return this.checkReportStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
     },
@@ -167,6 +182,10 @@ export default {
 
     dockerStatus() {
       return this.checkReportStatus(this.isLoadingDocker, this.loadingDockerFailed);
+    },
+
+    dastStatus() {
+      return this.checkReportStatus(this.isLoadingDast, this.loadingDastFailed);
     },
 
     dockerInformationText() {
@@ -259,6 +278,20 @@ export default {
         });
     },
 
+    fetchDastReport() {
+      this.isLoadingDast = true;
+
+      this.service.fetchReport(this.mr.dast.path)
+        .then((data) => {
+          this.mr.setDastReport(data);
+          this.isLoadingDast = false;
+        })
+        .catch(() => {
+          this.isLoadingDast = false;
+          this.loadingDastFailed = true;
+        });
+    },
+
     translateText(type) {
       return {
         error: s__(`ciReport|Failed to load ${type} report`),
@@ -281,6 +314,10 @@ export default {
 
     if (this.shouldRenderDockerReport) {
       this.fetchDockerReport();
+    }
+
+    if (this.shouldRenderDastReport) {
+      this.fetchDastReport();
     }
   },
   template: `
@@ -334,6 +371,7 @@ export default {
         :error-text="translateText('security').error"
         :success-text="securityText"
         :unresolved-issues="mr.securityReport"
+        :has-priority="true"
         />
       <collapsible-section
         class="js-docker-widget"
@@ -346,6 +384,18 @@ export default {
         :unresolved-issues="mr.dockerReport.unapproved"
         :neutral-issues="mr.dockerReport.approved"
         :info-text="dockerInformationText"
+        :has-priority="true"
+        />
+      <collapsible-section
+        class="js-dast-widget"
+        v-if="shouldRenderDastReport"
+        type="dast"
+        :status="dastStatus"
+        :loading-text="translateText('DAST').loading"
+        :error-text="translateText('DAST').error"
+        :success-text="dastText"
+        :unresolved-issues="mr.dastReport"
+        :has-priority="true"
         />
       <div class="mr-widget-section">
         <component

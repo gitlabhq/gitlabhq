@@ -33,6 +33,7 @@ class GroupPolicy < BasePolicy
   rule { public_group }.policy do
     enable :read_group
     enable :read_list
+    enable :read_label
   end
 
   rule { logged_in_viewable }.enable :read_group
@@ -41,6 +42,7 @@ class GroupPolicy < BasePolicy
     enable :read_group
     enable :read_list
     enable :upload_file
+    enable :read_label
   end
 
   rule { admin }             .enable :read_group

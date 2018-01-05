@@ -90,6 +90,7 @@
 - project_service
 - propagate_service_template
 - reactive_caching
+- rebase
 - repository_fork
 - repository_import
 - storage_migrator
