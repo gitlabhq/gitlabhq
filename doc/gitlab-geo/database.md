@@ -273,6 +273,12 @@ primary before the database is replicated.
    secondary node. Leave blank to replicate all. Read more in
    [selective replication](#selective-replication).
 1. Click the **Add node** button.
+1. SSH into your GitLab **primary** server and login as root to verify the
+   secondary is reachable:
+
+    ```
+    gitlab-rake gitlab:geo:check
+    ```
 
 The new secondary geo node will have the status **Unhealthy**. This is expected
 because we have not yet configured the secondary server. This is the next step.
@@ -369,6 +375,13 @@ because we have not yet configured the secondary server. This is the next step.
 
     ```bash
     timedatectl status | grep 'NTP synchronized'
+    ```
+
+1. Verify the secondary if configured correctly and that the primary is
+   reachable:
+
+    ```
+    gitlab-rake gitlab:geo:check
     ```
 
 ### Step 4. Initiate the replication process

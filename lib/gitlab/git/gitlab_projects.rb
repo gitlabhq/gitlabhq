@@ -2,6 +2,9 @@ module Gitlab
   module Git
     class GitlabProjects
       include Gitlab::Git::Popen
+      include Gitlab::Utils::StrongMemoize
+
+      ShardNameNotFoundError = Class.new(StandardError)
 
       # Absolute path to directory where repositories are stored.
       # Example: /home/git/repositories
@@ -97,22 +100,13 @@ module Gitlab
       end
 
       def fork_repository(new_shard_path, new_repository_relative_path)
-        from_path = repository_absolute_path
-        to_path = File.join(new_shard_path, new_repository_relative_path)
-
-        # The repository cannot already exist
-        if File.exist?(to_path)
-          logger.error "fork-repository failed: destination repository <#{to_path}> already exists."
-          return false
+        Gitlab::GitalyClient.migrate(:fork_repository) do |is_enabled|
+          if is_enabled
+            gitaly_fork_repository(new_shard_path, new_repository_relative_path)
+          else
+            git_fork_repository(new_shard_path, new_repository_relative_path)
+          end
         end
-
-        # Ensure the namepsace / hashed storage directory exists
-        FileUtils.mkdir_p(File.dirname(to_path), mode: 0770)
-
-        logger.info "Forking repository from <#{from_path}> to <#{to_path}>."
-        cmd = %W(git clone --bare --no-local -- #{from_path} #{to_path})
-
-        run(cmd, nil) && Gitlab::Git::Repository.create_hooks(to_path, global_hooks_path)
       end
 
       def fetch_remote(name, timeout, force:, tags:, ssh_key: nil, known_hosts: nil)
@@ -252,6 +246,48 @@ module Gitlab
         key_file&.close!
         known_hosts_file&.close!
         script&.close!
+      end
+
+      private
+
+      def shard_name
+        strong_memoize(:shard_name) do
+          shard_name_from_shard_path(shard_path)
+        end
+      end
+
+      def shard_name_from_shard_path(shard_path)
+        Gitlab.config.repositories.storages.find { |_, info| info['path'] == shard_path }&.first ||
+          raise(ShardNameNotFoundError, "no shard found for path '#{shard_path}'")
+      end
+
+      def git_fork_repository(new_shard_path, new_repository_relative_path)
+        from_path = repository_absolute_path
+        to_path = File.join(new_shard_path, new_repository_relative_path)
+
+        # The repository cannot already exist
+        if File.exist?(to_path)
+          logger.error "fork-repository failed: destination repository <#{to_path}> already exists."
+          return false
+        end
+
+        # Ensure the namepsace / hashed storage directory exists
+        FileUtils.mkdir_p(File.dirname(to_path), mode: 0770)
+
+        logger.info "Forking repository from <#{from_path}> to <#{to_path}>."
+        cmd = %W(git clone --bare --no-local -- #{from_path} #{to_path})
+
+        run(cmd, nil) && Gitlab::Git::Repository.create_hooks(to_path, global_hooks_path)
+      end
+
+      def gitaly_fork_repository(new_shard_path, new_repository_relative_path)
+        target_repository = Gitlab::Git::Repository.new(shard_name_from_shard_path(new_shard_path), new_repository_relative_path, nil)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
+
+        Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)
+      rescue GRPC::BadStatus => e
+        logger.error "fork-repository failed: #{e.message}"
+        false
       end
     end
   end

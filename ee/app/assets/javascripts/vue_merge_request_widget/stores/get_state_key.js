@@ -5,10 +5,6 @@ export default function (data) {
     return 'geoSecondaryNode';
   }
 
-  if (this.shouldBeRebased) {
-    return 'rebase';
-  }
-
   return CEGetStateKey.call(this, data);
 }
 

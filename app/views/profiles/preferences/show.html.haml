@@ -3,6 +3,23 @@
 = render 'profiles/head'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
+  .col-lg-4
+    %h4.prepend-top-0
+      GitLab multi file editor
+    %p Unlock an additional editing experience which makes it possible to edit and commit multiple files
+  .col-lg-8.multi-file-editor-options
+    = label_tag do
+      .preview.append-bottom-10= image_tag "multi-editor-off.png"
+      = f.radio_button :multi_file, "off", checked: true
+      Off
+    = label_tag do
+      .preview.append-bottom-10= image_tag "multi-editor-on.png"
+      = f.radio_button :multi_file, "on", checked: false
+      On
+
+  .col-sm-12
+    %hr
+
   .col-lg-4.application-theme
     %h4.prepend-top-0
       GitLab navigation theme

@@ -108,6 +108,7 @@ constraints(ProjectUrlConstrainer.new) do
 
           post :remove_wip
           post :assign_related_issues
+          post :rebase
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -426,8 +427,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :runners, only: [:index, :edit, :update, :destroy, :show] do
         member do
-          get :resume
-          get :pause
+          post :resume
+          post :pause
         end
 
         collection do

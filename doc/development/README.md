@@ -27,6 +27,7 @@ comments: false
 
 ## Backend guides
 
+- [GitLab utilities](utilities.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers

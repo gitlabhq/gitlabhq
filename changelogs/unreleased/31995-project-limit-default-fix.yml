@@ -1,0 +1,5 @@
+---
+title: User#projects_limit remove DB default and added NOT NULL constraint
+merge_request: 16165
+author: Mario de la Ossa
+type: fixed

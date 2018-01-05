@@ -33,8 +33,8 @@ export default {
   "source_project_id": 19,
   "target_branch": "master",
   "target_project_id": 19,
-  "merge_event": {
-    "author": {
+  "metrics": {
+    "merged_by": {
       "name": "Administrator",
       "username": "root",
       "id": 1,
@@ -42,9 +42,10 @@ export default {
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
-    "updated_at": "2017-04-07T15:39:25.696Z"
+    "merged_at": "2017-04-07T15:39:25.696Z",
+    "closed_by": null,
+    "closed_at": null
   },
-  "closed_event": null,
   "author": {
     "name": "Administrator",
     "username": "root",
@@ -515,3 +516,63 @@ export const dockerReportParsed = {
     }
   ]
 };
+
+export const dast = {
+  site: {
+    alerts: [{
+      name: 'Absence of Anti-CSRF Tokens',
+      riskcode: '1',
+      riskdesc: 'Low (Medium)',
+      desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.<\/p>',
+      instances: [{
+        uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+        method: 'GET',
+        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+      }, {
+        uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+        method: 'GET',
+        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+      }]
+    }, {
+      alert: 'X-Content-Type-Options Header Missing',
+      name: 'X-Content-Type-Options Header Missing',
+      riskdesc: 'Low (Medium)',
+      desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".<\/p>',
+      instances: [{
+        uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+        method: 'GET',
+        param: 'X-Content-Type-Options'
+      }]
+    }]
+  }
+};
+
+export const parsedDast = [{
+  name: 'Absence of Anti-CSRF Tokens',
+  riskcode: '1',
+  riskdesc: 'Low (Medium)',
+  priority: 'Low (Medium)',
+  desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.<\/p>',
+  parsedDescription: ' No Anti-CSRF tokens were found in a HTML submission form. ',
+  instances: [{
+    uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+    method: 'GET',
+    evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+  }, {
+    uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+    method: 'GET',
+    evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+  }]
+}, {
+  alert: 'X-Content-Type-Options Header Missing',
+  name: 'X-Content-Type-Options Header Missing',
+  riskdesc: 'Low (Medium)',
+  priority: 'Low (Medium)',
+  desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".<\/p>',
+  parsedDescription: ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
+  instances: [{
+    uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+    method: 'GET',
+    param: 'X-Content-Type-Options'
+  }]
+}];

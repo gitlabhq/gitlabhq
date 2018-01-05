@@ -64,3 +64,12 @@ export const truncate = (string, maxLength) => `${string.substr(0, (maxLength - 
 export function capitalizeFirstCharacter(text) {
   return `${text[0].toUpperCase()}${text.slice(1)}`;
 }
+
+/**
+ * Replaces all html tags from a string with the given replacement.
+ *
+ * @param {String} string
+ * @param {*} replace
+ * @returns {String}
+ */
+export const stripeHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);

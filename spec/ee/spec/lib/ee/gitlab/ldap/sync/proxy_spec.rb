@@ -114,7 +114,7 @@ describe EE::Gitlab::LDAP::Sync::Proxy do
     context 'when secondary_extern_uid is not stored in the database' do
       before do
         ldap_user_entry = ldap_user_entry('jane_doe')
-        stub_ldap_person_find_by_uid('jane_doe', ldap_user_entry, adapter)
+        stub_ldap_person_find_by_uid('jane_doe', ldap_user_entry)
       end
 
       it 'returns the user DN' do
@@ -142,7 +142,7 @@ describe EE::Gitlab::LDAP::Sync::Proxy do
         user = create(:user)
         create(:identity, user: user, extern_uid: user_dn(user.username))
         ldap_user_entry = ldap_user_entry(user.username)
-        stub_ldap_person_find_by_uid(user.username, ldap_user_entry, adapter)
+        stub_ldap_person_find_by_uid(user.username, ldap_user_entry)
 
         expect { sync_proxy.dn_for_uid(user.username) }
           .to change {
@@ -154,7 +154,7 @@ describe EE::Gitlab::LDAP::Sync::Proxy do
         # Create a user with no LDAP identity
         user = create(:user)
         ldap_user_entry = ldap_user_entry(user.username)
-        stub_ldap_person_find_by_uid(user.username, ldap_user_entry, adapter)
+        stub_ldap_person_find_by_uid(user.username, ldap_user_entry)
 
         expect { sync_proxy.dn_for_uid(user.username) }.not_to raise_error
       end

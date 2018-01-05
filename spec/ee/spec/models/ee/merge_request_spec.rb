@@ -13,66 +13,6 @@ describe MergeRequest do
     it { is_expected.to have_many(:approver_groups).dependent(:delete_all) }
   end
 
-  describe '#should_be_rebased?' do
-    subject { merge_request.should_be_rebased? }
-
-    context 'project forbids rebase' do
-      it { is_expected.to be_falsy }
-    end
-
-    context 'project allows rebase' do
-      let(:project) { create(:project, :repository, merge_requests_rebase_enabled: true) }
-
-      it 'returns false when the project feature is unavailable' do
-        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(false)
-
-        is_expected.to be_falsy
-      end
-
-      it 'returns true when the project feature is available' do
-        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(true)
-
-        is_expected.to be_truthy
-      end
-    end
-  end
-
-  describe '#rebase_in_progress?' do
-    # Create merge request and project before we stub file calls
-    before do
-      subject
-    end
-
-    it 'returns true when there is a current rebase directory' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(subject.rebase_in_progress?).to be_truthy
-    end
-
-    it 'returns false when there is no rebase directory' do
-      allow(File).to receive(:exist?).and_return(false)
-
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the rebase directory has expired' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(20.minutes.ago)
-
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(File).not_to have_received(:exist?)
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-  end
-
   describe '#squash_in_progress?' do
     # Create merge request and project before we stub file calls
     before do
@@ -249,5 +189,19 @@ describe MergeRequest do
 
   describe '#sast_container_artifact' do
     it { is_expected.to delegate_method(:sast_container_artifact).to(:head_pipeline) }
+  end
+
+  describe '#has_dast_data?' do
+    let(:artifact) { double(success?: true) }
+
+    before do
+      allow(merge_request).to receive(:dast_artifact).and_return(artifact)
+    end
+
+    it { expect(merge_request.has_dast_data?).to be_truthy }
+  end
+
+  describe '#dast_artifact' do
+    it { is_expected.to delegate_method(:dast_artifact).to(:head_pipeline) }
   end
 end

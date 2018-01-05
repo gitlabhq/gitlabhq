@@ -5,6 +5,7 @@ import {
   securityParsedIssues,
   codequalityParsedIssues,
   dockerReportParsed,
+  parsedDast,
 } from '../mock_data';
 
 describe('merge request report issues', () => {
@@ -66,6 +67,7 @@ describe('merge request report issues', () => {
         issues: securityParsedIssues,
         type: 'security',
         status: 'failed',
+        hasPriority: true,
       });
     });
 
@@ -112,6 +114,7 @@ describe('merge request report issues', () => {
         issues: dockerReportParsed.unapproved,
         type: 'docker',
         status: 'failed',
+        hasPriority: true,
       });
     });
 
@@ -137,6 +140,22 @@ describe('merge request report issues', () => {
       expect(
         vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
       ).toContain('in');
+    });
+  });
+
+  describe('for dast issues', () => {
+    beforeEach(() => {
+      vm = mountComponent(MRWidgetCodeQualityIssues, {
+        issues: parsedDast,
+        type: 'dast',
+        status: 'failed',
+        hasPriority: true,
+      });
+    });
+
+    it('renders priority and name', () => {
+      expect(vm.$el.textContent).toContain(parsedDast[0].name);
+      expect(vm.$el.textContent).toContain(parsedDast[0].priority);
     });
   });
 });

@@ -8,6 +8,7 @@ class GeoNodeStatusEntity < Grape::Entity
     node.healthy? ? 'Healthy' : node.health
   end
   expose :health_status
+  expose :missing_oauth_application, as: :missing_oauth_application
 
   expose :attachments_count
   expose :attachments_synced_count
@@ -58,10 +59,29 @@ class GeoNodeStatusEntity < Grape::Entity
 
   expose :namespaces, using: NamespaceEntity
 
+  # We load GeoNodeStatus data in two ways:
+  #
+  # 1. Directly by asking a Geo node via an API call
+  # 2. Via cached state in the database
+  #
+  # We don't yet cached the state of the shard information in the database, so if
+  # we don't have this information omit from the serialization entirely.
+  expose :storage_shards, using: StorageShardEntity, if: ->(status, options) do
+    status.storage_shards.present?
+  end
+
+  expose :storage_shards_match?, as: :storage_shards_match, if: -> (status, options) do
+    Gitlab::Geo.primary? && status.storage_shards.present?
+  end
+
   private
 
   def namespaces
     object.geo_node.namespaces
+  end
+
+  def missing_oauth_application
+    object.geo_node.missing_oauth_application?
   end
 
   def version

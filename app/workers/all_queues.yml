@@ -89,6 +89,7 @@
 - project_service
 - propagate_service_template
 - reactive_caching
+- rebase
 - repository_fork
 - repository_import
 - storage_migrator
@@ -104,6 +105,7 @@
 - cronjob:geo_metrics_update
 - cronjob:geo_prune_event_log
 - cronjob:geo_repository_sync
+- cronjob:geo_sidekiq_cron_config
 - cronjob:historical_data
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync

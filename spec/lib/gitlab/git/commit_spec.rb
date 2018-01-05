@@ -428,6 +428,11 @@ describe Gitlab::Git::Commit, seed_helper: true do
       subject { super().deletions }
       it { is_expected.to eq(6) }
     end
+
+    describe '#total' do
+      subject { super().total }
+      it { is_expected.to eq(17) }
+    end
   end
 
   describe '#stats with gitaly on' do

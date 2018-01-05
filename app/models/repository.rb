@@ -1059,10 +1059,6 @@ class Repository
     raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
   end
 
-  def remote_exists?(name)
-    raw_repository.remote_exists?(name)
-  end
-
   def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
     raw_repository.compare_source_branch(target_branch_name, source_repository.raw_repository, source_branch_name, straight: straight)
   end
@@ -1156,6 +1152,13 @@ class Repository
 
   def repository_storage_path
     @project.repository_storage_path
+  end
+
+  def rebase(user, merge_request)
+    raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
+                                       branch_sha: merge_request.source_branch_sha,
+                                       remote_repository: merge_request.target_project.repository.raw,
+                                       remote_branch: merge_request.target_branch)
   end
 
   private

@@ -21,6 +21,7 @@ module Gitlab
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
+      GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -83,7 +84,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -93,6 +94,12 @@ module Gitlab
         @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        @gitlab_projects = Gitlab::Git::GitlabProjects.new(
+          storage_path,
+          relative_path,
+          global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+          logger: Rails.logger
+        )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -126,7 +133,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -188,7 +195,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+        gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -919,31 +926,23 @@ module Gitlab
 
       # If `mirror_refmap` is present the remote is set as mirror with that mapping
       def add_remote(remote_name, url, mirror_refmap: nil)
-        rugged.remotes.create(remote_name, url)
-
-        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
-      rescue Rugged::ConfigError
-        remote_update(remote_name, url: url)
+        gitaly_migrate(:remote_add_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
+          else
+            rugged_add_remote(remote_name, url, mirror_refmap)
+          end
+        end
       end
 
       def remove_remote(remote_name)
-        # When a remote is deleted all its remote refs are deleted too, but in
-        # the case of mirrors we map its refs (that would usualy go under
-        # [remote_name]/) to the top level namespace. We clean the mapping so
-        # those don't get deleted.
-        if rugged.config["remote.#{remote_name}.mirror"]
-          rugged.config.delete("remote.#{remote_name}.fetch")
+        gitaly_migrate(:remote_remove_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.remove_remote(remote_name)
+          else
+            rugged_remove_remote(remote_name)
+          end
         end
-
-        rugged.remotes.delete(remote_name)
-        true
-      rescue Rugged::ConfigError
-        false
-      end
-
-      # Returns true if a remote exists.
-      def remote_exists?(name)
-        rugged.remotes[name].present?
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -1220,9 +1219,16 @@ module Gitlab
         rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
         env = git_env_for_user(user)
 
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
         with_worktree(rebase_path, branch, env: env) do
           run_git!(
-            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
             chdir: rebase_path, env: env
           )
 
@@ -1274,6 +1280,18 @@ module Gitlab
         fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
       end
 
+      def push_remote_branches(remote_name, branch_names, forced: true)
+        success = @gitlab_projects.push_branches(remote_name, GITLAB_PROJECTS_TIMEOUT, forced, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1296,6 +1314,14 @@ module Gitlab
 
       def gitaly_operation_client
         @gitaly_operation_client ||= Gitlab::GitalyClient::OperationService.new(self)
+      end
+
+      def gitaly_remote_client
+        @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
+      end
+
+      def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
+        Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
@@ -1665,6 +1691,7 @@ module Gitlab
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd += %W[--count #{options[:ref]}]
         cmd += %W[-- #{options[:path]}] if options[:path].present?
 
@@ -1917,8 +1944,35 @@ module Gitlab
         raise ArgumentError, 'Invalid merge source'
       end
 
+      def rugged_add_remote(remote_name, url, mirror_refmap)
+        rugged.remotes.create(remote_name, url)
+
+        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
+      rescue Rugged::ConfigError
+        remote_update(remote_name, url: url)
+      end
+
+      def rugged_remove_remote(remote_name)
+        # When a remote is deleted all its remote refs are deleted too, but in
+        # the case of mirrors we map its refs (that would usualy go under
+        # [remote_name]/) to the top level namespace. We clean the mapping so
+        # those don't get deleted.
+        if rugged.config["remote.#{remote_name}.mirror"]
+          rugged.config.delete("remote.#{remote_name}.fetch")
+        end
+
+        rugged.remotes.delete(remote_name)
+        true
+      rescue Rugged::ConfigError
+        false
+      end
+
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitlab_projects_error
+        raise CommandError, @gitlab_projects.output
       end
     end
   end

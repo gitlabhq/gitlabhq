@@ -26,6 +26,10 @@ module MergeRequests
 
     private
 
+    def merge_request_metrics_service(merge_request)
+      MergeRequestMetricsService.new(merge_request.metrics)
+    end
+
     def create_assignee_note(merge_request)
       SystemNoteService.change_assignee(
         merge_request, merge_request.project, current_user, merge_request.assignee)

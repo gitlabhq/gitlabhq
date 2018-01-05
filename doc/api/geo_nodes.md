@@ -22,6 +22,7 @@ Example response:
     "url": "https://primary.example.com/",
     "primary": true,
     "enabled": true,
+    "current": true,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
     "clone_protocol": "http"
@@ -31,6 +32,7 @@ Example response:
     "url": "https://secondary.example.com/",
     "primary": false,
     "enabled": true,
+    "current": false,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
     "clone_protocol": "http"
@@ -56,6 +58,7 @@ Example response:
   "url": "https://primary.example.com/",
   "primary": true,
   "enabled": true,
+  "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
   "clone_protocol": "http"
@@ -80,6 +83,8 @@ Example response:
     "geo_node_id": 2,
     "healthy": true,
     "health": "Healthy",
+    "health_status": "Healthy",
+    "missing_oauth_application": false,
     "attachments_count": 1,
     "attachments_synced_count": 1,
     "attachments_failed_count": 0,
@@ -125,6 +130,8 @@ Example response:
   "geo_node_id": 2,
   "healthy": true,
   "health": "Healthy",
+  "health_status": "Healthy",
+  "missing_oauth_application": false,
   "attachments_count": 1,
   "attachments_synced_count": 1,
   "attachments_failed_count": 0,

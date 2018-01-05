@@ -14,7 +14,8 @@ const unhealthyIcon = 'fa-times';
 const unknownIcon = 'fa-times';
 const notAvailable = 'Not Available';
 const versionMismatch = 'Does not match the primary node version';
-const versionMismatchClass = 'geo-node-version-mismatch';
+const nodeMismatchClass = 'geo-node-mismatch';
+const storageMismatch = 'Does not match the primary storage configuration';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -34,6 +35,7 @@ class GeoNodeStatus {
     this.$health = $('.js-health-message', this.$status.parent());
     this.$version = $('.js-gitlab-version', this.$status);
     this.$secondaryVersion = $('.js-secondary-version', this.$status);
+    this.$secondaryStorage = $('.js-secondary-storage-shards', this.$status);
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status.parent());
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
@@ -204,11 +206,21 @@ class GeoNodeStatus {
 
     if (!this.primaryVersion || (this.primaryVersion === status.version
       && this.primaryRevision === status.revision)) {
-      this.$secondaryVersion.removeClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.removeClass(`${nodeMismatchClass}`);
       this.$secondaryVersion.text(`${status.version} (${status.revision})`);
     } else {
-      this.$secondaryVersion.addClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.addClass(`${nodeMismatchClass}`);
       this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
+    }
+
+    if (status.storage_shards_match == null) {
+      this.$secondaryStorage.text('UNKNOWN');
+    } else if (status.storage_shards_match) {
+      this.$secondaryStorage.removeClass(`${nodeMismatchClass}`);
+      this.$secondaryStorage.text('OK');
+    } else {
+      this.$secondaryStorage.addClass(`${nodeMismatchClass}`);
+      this.$secondaryStorage.text(storageMismatch);
     }
 
     if (status.repositories_count > 0) {

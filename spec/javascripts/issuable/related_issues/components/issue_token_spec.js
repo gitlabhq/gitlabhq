@@ -138,7 +138,8 @@ describe('IssueToken', () => {
     });
 
     it('shows reference, title, and state', () => {
-      expect(vm.$refs.stateIcon.getAttribute('aria-label')).toEqual(state);
+      const stateIcon = vm.$refs.reference.querySelector('svg');
+      expect(stateIcon.getAttribute('aria-label')).toEqual(state);
       expect(vm.$refs.reference.textContent.trim()).toEqual(displayReference);
       expect(vm.$refs.title.textContent.trim()).toEqual(title);
     });

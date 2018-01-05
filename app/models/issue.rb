@@ -47,6 +47,8 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
+  alias_attribute :parent_ids, :project_id
+
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
@@ -92,6 +94,10 @@ class Issue < ActiveRecord::Base
   end
 
   acts_as_paranoid
+
+  class << self
+    alias_method :in_parents, :in_projects
+  end
 
   def self.reference_prefix
     '#'
@@ -314,6 +320,11 @@ class Issue < ActiveRecord::Base
   end
 
   private
+
+  def ensure_metrics
+    super
+    metrics.record!
+  end
 
   # Returns `true` if the given User can read the current Issue.
   #

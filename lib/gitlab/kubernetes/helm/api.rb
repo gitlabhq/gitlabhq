@@ -34,7 +34,7 @@ module Gitlab
         private
 
         def pod_resource(command)
-          Pod.new(command, @namespace.name, @kubeclient).generate
+          Gitlab::Kubernetes::Helm::Pod.new(command, @namespace.name, @kubeclient).generate
         end
       end
     end

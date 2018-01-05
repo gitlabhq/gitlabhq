@@ -31,8 +31,12 @@
     "source_project_id": { "type": "integer" },
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
-    "merge_event": { "type": ["object", "null"] },
-    "closed_event": { "type": ["object", "null"] },
+    "metrics": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "merge_request_metrics.json" }
+      ]
+    },
     "author": { "type": ["object", "null"] },
     "merge_user": { "type": ["object", "null"] },
     "diff_head_sha": { "type": ["string", "null"] },
@@ -101,14 +105,14 @@
     "merge_ongoing": { "type": "boolean" },
     "ff_only_enabled": { "type": ["boolean", false] },
     "should_be_rebased": { "type": "boolean" },
-
-    // EE-specific
     "rebase_commit_sha": { "type": ["string", "null"] },
-    "approvals_before_merge": { "type": ["integer", "null"] },
-    "squash": { "type": "boolean" },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
+
+    // EE-specific
+    "approvals_before_merge": { "type": ["integer", "null"] },
+    "squash": { "type": "boolean" },
     "approved": { "type": "boolean" },
     "approvals_path": { "type": ["string", "null"] },
     "codeclimate": {

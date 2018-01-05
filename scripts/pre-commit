@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Check if file exists with -f. Check if in in the gdk rook directory.
+if [ ! -f ../GDK_ROOT ]; then
+  echo "Please run pre-commit from gitlab (e.g. gitlab-development-kit/gitlab) root directory."
+  exit 1
+fi
+
+jsfiles=$(git diff --cached --name-only --diff-filter=ACM "*.js" | tr '\n' ' ')
+[ -z "$jsfiles" ] && exit 0
+
+# Prettify all staged .js files
+echo "$jsfiles" | xargs ./node_modules/.bin/prettier --write
+
+# Add back the modified/prettified files to staging
+echo "$jsfiles" | xargs git add
+
+exit 0
