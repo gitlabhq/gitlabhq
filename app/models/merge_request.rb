@@ -156,6 +156,13 @@ class MergeRequest < ActiveRecord::Base
     '!'
   end
 
+  def rebase_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.rebase_in_progress?(id)
+  end
+
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
@@ -607,7 +614,7 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
   def mergeable_state?(skip_ci_check: false)

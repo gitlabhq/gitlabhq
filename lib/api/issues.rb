@@ -277,6 +277,19 @@ module API
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 
+      desc 'List participants for an issue'  do
+        success Entities::UserBasic
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ':id/issues/:issue_iid/participants' do
+        issue = find_project_issue(params[:issue_iid])
+        participants = ::Kaminari.paginate_array(issue.participants)
+
+        present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
+      end
+
       desc 'Get the user agent details for an issue' do
         success Entities::UserAgentDetail
       end

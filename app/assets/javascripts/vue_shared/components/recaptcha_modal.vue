@@ -2,10 +2,8 @@
 import modal from './modal.vue';
 
 export default {
-  name: 'RecaptchaModal',
-  components: {
-    modal,
-  },
+  name: 'recaptcha-modal',
+
   props: {
     html: {
       type: String,
@@ -20,14 +18,11 @@ export default {
       scriptSrc: 'https://www.google.com/recaptcha/api.js',
     };
   },
-  watch: {
-    html() {
-      this.appendRecaptchaScript();
-    },
+
+  components: {
+    modal,
   },
-  mounted() {
-    window.recaptchaDialogCallback = this.submit.bind(this);
-  },
+
   methods: {
     appendRecaptchaScript() {
       this.removeRecaptchaScript();
@@ -56,26 +51,35 @@ export default {
       this.$el.querySelector('form').submit();
     },
   },
+
+  watch: {
+    html() {
+      this.appendRecaptchaScript();
+    },
+  },
+
+  mounted() {
+    window.recaptchaDialogCallback = this.submit.bind(this);
+  },
 };
 </script>
 
 <template>
-  <modal
-    kind="warning"
-    class="recaptcha-modal js-recaptcha-modal"
-    :hide-footer="true"
-    :title="__('Please solve the reCAPTCHA')"
-    @toggle="close"
-  >
-    <div slot="body">
-      <p>
-        {{ __('We want to be sure it is you, please confirm you are not a robot.') }}
-      </p>
-      <div
-        ref="recaptcha"
-        v-html="html"
-      >
-      </div>
-    </div>
-  </modal>
+<modal
+  kind="warning"
+  class="recaptcha-modal js-recaptcha-modal"
+  :hide-footer="true"
+  :title="__('Please solve the reCAPTCHA')"
+  @cancel="close"
+>
+  <div slot="body">
+    <p>
+      {{__('We want to be sure it is you, please confirm you are not a robot.')}}
+    </p>
+    <div
+      ref="recaptcha"
+      v-html="html"
+    ></div>
+  </div>
+</modal>
 </template>

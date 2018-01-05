@@ -32,10 +32,10 @@
     methods: {
       createNewItem(type) {
         this.modalType = type;
-        this.toggleModalOpen();
+        this.openModal = true;
       },
-      toggleModalOpen() {
-        this.openModal = !this.openModal;
+      hideModal() {
+        this.openModal = false;
       },
     },
   };
@@ -95,7 +95,7 @@
       :branch-id="branch"
       :path="path"
       :parent="parent"
-      @toggle="toggleModalOpen"
+      @hide="hideModal"
     />
   </div>
 </template>

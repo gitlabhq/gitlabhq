@@ -25,6 +25,8 @@ export default function deviseState(data) {
     return this.mergeError ? stateKey.autoMergeFailed : stateKey.mergeWhenPipelineSucceeds;
   } else if (!this.canMerge) {
     return stateKey.notAllowedToMerge;
+  } else if (this.shouldBeRebased) {
+    return stateKey.rebase;
   } else if (this.canBeMerged) {
     return stateKey.readyToMerge;
   }

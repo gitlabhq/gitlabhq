@@ -21,6 +21,7 @@ module Gitlab
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
+      GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -83,7 +84,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -93,6 +94,12 @@ module Gitlab
         @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        @gitlab_projects = Gitlab::Git::GitlabProjects.new(
+          storage_path,
+          relative_path,
+          global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+          logger: Rails.logger
+        )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -491,11 +498,13 @@ module Gitlab
       end
 
       def count_commits(options)
+        count_commits_options = process_count_commits_options(options)
+
         gitaly_migrate(:count_commits) do |is_enabled|
           if is_enabled
-            count_commits_by_gitaly(options)
+            count_commits_by_gitaly(count_commits_options)
           else
-            count_commits_by_shelling_out(options)
+            count_commits_by_shelling_out(count_commits_options)
           end
         end
       end
@@ -533,8 +542,8 @@ module Gitlab
       end
 
       # Counts the amount of commits between `from` and `to`.
-      def count_commits_between(from, to)
-        count_commits(ref: "#{from}..#{to}")
+      def count_commits_between(from, to, options = {})
+        count_commits(from: from, to: to, **options)
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -1212,9 +1221,16 @@ module Gitlab
         rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
         env = git_env_for_user(user)
 
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
         with_worktree(rebase_path, branch, env: env) do
           run_git!(
-            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
             chdir: rebase_path, env: env
           )
 
@@ -1264,6 +1280,24 @@ module Gitlab
 
       def squash_in_progress?(squash_id)
         fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+      end
+
+      def push_remote_branches(remote_name, branch_names, forced: true)
+        success = @gitlab_projects.push_branches(remote_name, GITLAB_PROJECTS_TIMEOUT, forced, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
       end
 
       def gitaly_repository
@@ -1433,6 +1467,26 @@ module Gitlab
           name, sha = line.strip.split(' ', 2)
 
           branches << name if sha != root_sha
+        end
+      end
+
+      def process_count_commits_options(options)
+        if options[:from] || options[:to]
+          ref =
+            if options[:left_right] # Compare with merge-base for left-right
+              "#{options[:from]}...#{options[:to]}"
+            else
+              "#{options[:from]}..#{options[:to]}"
+            end
+
+          options.merge(ref: ref)
+
+        elsif options[:ref] && options[:left_right]
+          from, to = options[:ref].match(/\A([^\.]*)\.{2,3}([^\.]*)\z/)[1..2]
+
+          options.merge(from: from, to: to)
+        else
+          options
         end
       end
 
@@ -1658,20 +1712,59 @@ module Gitlab
       end
 
       def count_commits_by_gitaly(options)
-        gitaly_commit_client.commit_count(options[:ref], options)
+        if options[:left_right]
+          from = options[:from]
+          to = options[:to]
+
+          right_count = gitaly_commit_client
+            .commit_count("#{from}..#{to}", options)
+          left_count = gitaly_commit_client
+            .commit_count("#{to}..#{from}", options)
+
+          [left_count, right_count]
+        else
+          gitaly_commit_client.commit_count(options[:ref], options)
+        end
       end
 
       def count_commits_by_shelling_out(options)
+        cmd = count_commits_shelling_command(options)
+
+        raw_output = IO.popen(cmd) { |io| io.read }
+
+        process_count_commits_raw_output(raw_output, options)
+      end
+
+      def count_commits_shelling_command(options)
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
+        cmd << "--left-right" if options[:left_right]
         cmd += %W[--count #{options[:ref]}]
         cmd += %W[-- #{options[:path]}] if options[:path].present?
+        cmd
+      end
 
-        raw_output = IO.popen(cmd) { |io| io.read }
+      def process_count_commits_raw_output(raw_output, options)
+        if options[:left_right]
+          result = raw_output.scan(/\d+/).map(&:to_i)
 
-        raw_output.to_i
+          if result.sum != options[:max_count]
+            result
+          else # Reaching max count, right is not accurate
+            right_option =
+              process_count_commits_options(options
+                .except(:left_right, :from, :to)
+                .merge(ref: options[:to]))
+
+            right = count_commits_by_shelling_out(right_option)
+
+            [result.first, right] # left should be accurate in the first call
+          end
+        else
+          raw_output.to_i
+        end
       end
 
       def gitaly_ls_files(ref)
@@ -1943,6 +2036,10 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitlab_projects_error
+        raise CommandError, @gitlab_projects.output
       end
     end
   end

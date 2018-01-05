@@ -431,6 +431,7 @@ ee_compat_check:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   retry: 0
@@ -508,7 +509,7 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.db-seed_fu: &db-seed_fu
+.gitlab-setup: &gitlab-setup
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
@@ -529,12 +530,12 @@ db:rollback-mysql:
     paths:
       - log/development.log
 
-db:seed_fu-pg:
-  <<: *db-seed_fu
+gitlab:setup-pg:
+  <<: *gitlab-setup
   <<: *use-pg
 
-db:seed_fu-mysql:
-  <<: *db-seed_fu
+gitlab:setup-mysql:
+  <<: *gitlab-setup
   <<: *use-mysql
 
 # Frontend-related jobs

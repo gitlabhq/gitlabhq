@@ -112,7 +112,7 @@ export default {
     kind="primary"
     :title="__('Branch has changed')"
     :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
-    @toggle="showNewBranchModal = false"
+    @cancel="showNewBranchModal = false"
     @submit="makeCommit(true)"
   />
   <commit-files-list

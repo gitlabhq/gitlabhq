@@ -1,133 +1,143 @@
 <script>
-  export default {
-    name: 'Modal',
-    props: {
-      title: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      text: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      hideFooter: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      kind: {
-        type: String,
-        required: false,
-        default: 'primary',
-      },
-      modalDialogClass: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      closeKind: {
-        type: String,
-        required: false,
-        default: 'default',
-      },
-      closeButtonLabel: {
-        type: String,
-        required: false,
-        default: 'Cancel',
-      },
-      primaryButtonLabel: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      submitDisabled: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-    },
+export default {
+  name: 'modal',
 
-    computed: {
-      btnKindClass() {
-        return {
-          [`btn-${this.kind}`]: true,
-        };
-      },
-      btnCancelKindClass() {
-        return {
-          [`btn-${this.closeKind}`]: true,
-        };
-      },
+  props: {
+    id: {
+      type: String,
+      required: false,
     },
+    title: {
+      type: String,
+      required: false,
+    },
+    text: {
+      type: String,
+      required: false,
+    },
+    hideFooter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    kind: {
+      type: String,
+      required: false,
+      default: 'primary',
+    },
+    modalDialogClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    closeKind: {
+      type: String,
+      required: false,
+      default: 'default',
+    },
+    closeButtonLabel: {
+      type: String,
+      required: false,
+      default: 'Cancel',
+    },
+    primaryButtonLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    submitDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
 
-    methods: {
-      close() {
-        this.$emit('toggle', false);
-      },
-      emitSubmit(status) {
-        this.$emit('submit', status);
-      },
+  computed: {
+    btnKindClass() {
+      return {
+        [`btn-${this.kind}`]: true,
+      };
     },
-  };
+    btnCancelKindClass() {
+      return {
+        [`btn-${this.closeKind}`]: true,
+      };
+    },
+  },
+
+  methods: {
+    emitCancel(event) {
+      this.$emit('cancel', event);
+    },
+    emitSubmit(event) {
+      this.$emit('submit', event);
+    },
+  },
+};
 </script>
+
 <template>
-  <div class="modal-open">
+<div class="modal-open">
+  <div
+    :id="id"
+    class="modal"
+    :class="id ? '' : 'show'"
+    role="dialog"
+    tabindex="-1"
+  >
     <div
-      class="modal show"
-      role="dialog"
-      tabindex="-1"
+      :class="modalDialogClass"
+      class="modal-dialog"
+      role="document"
     >
-      <div
-        :class="modalDialogClass"
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header">
-            <slot name="header">
-              <h4 class="modal-title pull-left">
-                {{ this.title }}
-              </h4>
-              <button
-                type="button"
-                class="close pull-right"
-                @click="close"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </slot>
-          </div>
-          <div class="modal-body">
-            <slot name="body">
-            </slot>
-          </div>
-          <div
-            class="modal-footer"
-            v-if="!hideFooter"
-          >
+      <div class="modal-content">
+        <div class="modal-header">
+          <slot name="header">
+            <h4 class="modal-title pull-left">
+              {{this.title}}
+            </h4>
             <button
               type="button"
-              class="btn pull-left"
-              :class="btnCancelKindClass"
-              @click="close">
-              {{ closeButtonLabel }}
+              class="close pull-right"
+              @click="emitCancel($event)"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
             </button>
-            <button
-              v-if="primaryButtonLabel"
-              type="button"
-              class="btn pull-right js-primary-button"
-              :disabled="submitDisabled"
-              :class="btnKindClass"
-              @click="emitSubmit(true)">
-              {{ primaryButtonLabel }}
-            </button>
-          </div>
+          </slot>
+        </div>
+        <div class="modal-body">
+          <slot name="body" :text="text">
+            <p>{{this.text}}</p>
+          </slot>
+        </div>
+        <div class="modal-footer" v-if="!hideFooter">
+          <button
+            type="button"
+            class="btn pull-left"
+            :class="btnCancelKindClass"
+            @click="emitCancel($event)"
+            data-dismiss="modal">
+            {{ closeButtonLabel }}
+          </button>
+          <button
+            v-if="primaryButtonLabel"
+            type="button"
+            class="btn pull-right js-primary-button"
+            :disabled="submitDisabled"
+            :class="btnKindClass"
+            @click="emitSubmit($event)"
+            data-dismiss="modal">
+            {{ primaryButtonLabel }}
+          </button>
         </div>
       </div>
     </div>
-    <div class="modal-backdrop fade in"></div>
   </div>
+  <div
+    v-if="!id"
+    class="modal-backdrop fade in">
+  </div>
+</div>
 </template>

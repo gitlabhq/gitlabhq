@@ -47,17 +47,11 @@ describe('ItemActionsComponent', () => {
       it('should change `modalStatus` prop to `false` and emit `leaveGroup` event with required params when called with `leaveConfirmed` as `true`', () => {
         spyOn(eventHub, '$emit');
         vm.modalStatus = true;
-        vm.leaveGroup(true);
+
+        vm.leaveGroup();
+
         expect(vm.modalStatus).toBeFalsy();
         expect(eventHub.$emit).toHaveBeenCalledWith('leaveGroup', vm.group, vm.parentGroup);
-      });
-
-      it('should change `modalStatus` prop to `false` and should NOT emit `leaveGroup` event when called with `leaveConfirmed` as `false`', () => {
-        spyOn(eventHub, '$emit');
-        vm.modalStatus = true;
-        vm.leaveGroup(false);
-        expect(vm.modalStatus).toBeFalsy();
-        expect(eventHub.$emit).not.toHaveBeenCalled();
       });
     });
   });

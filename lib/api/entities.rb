@@ -791,6 +791,8 @@ module API
 
     class Board < Grape::Entity
       expose :id
+      expose :project, using: Entities::BasicProjectDetails
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
@@ -862,6 +864,8 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
+      expose :status
     end
 
     class RunnerDetails < Runner
@@ -1133,6 +1137,7 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },
