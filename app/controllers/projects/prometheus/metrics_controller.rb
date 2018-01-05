@@ -89,7 +89,7 @@ module Projects
       end
 
       def metrics_params
-        params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend)
+        params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend, :group)
       end
 
       def prometheus_service
