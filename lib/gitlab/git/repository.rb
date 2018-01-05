@@ -1292,15 +1292,6 @@ module Gitlab
         success || gitlab_projects_error
       end
 
-<<<<<<< HEAD
-=======
-      def delete_remote_branches(remote_name, branch_names)
-        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
-
-        success || gitlab_projects_error
-      end
-
->>>>>>> upstream/master
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
