@@ -14,7 +14,7 @@
     props: {
       items: {
         type: Array,
-        default: []
+        default: () => [],
       },
       stage: {
         type: Object,
@@ -81,8 +81,7 @@
                 name="fork"
                 :size="16"
               />
-              <a
-                :href="mergeRequest.branch.url">
+              <a :href="mergeRequest.branch.url">
                 {{ mergeRequest.branch.name }}
               </a>
             </span>

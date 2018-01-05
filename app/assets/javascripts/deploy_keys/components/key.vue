@@ -3,6 +3,9 @@
   import { getTimeago } from '../../lib/utils/datetime_utility';
 
   export default {
+    components: {
+      actionBtn,
+    },
     props: {
       deployKey: {
         type: Object,
@@ -16,9 +19,6 @@
         type: String,
         required: true,
       },
-    },
-    components: {
-      actionBtn,
     },
     computed: {
       timeagoDate() {
@@ -61,9 +61,10 @@
     </div>
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
-        v-for="project in deployKey.projects"
+        v-for="(project, i) in deployKey.projects"
         class="label deploy-project-label"
         :href="project.full_path"
+        :key="i"
       >
         {{ project.full_name }}
       </a>

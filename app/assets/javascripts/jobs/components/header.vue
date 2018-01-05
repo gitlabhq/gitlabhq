@@ -4,6 +4,10 @@
 
   export default {
     name: 'jobHeaderSection',
+    components: {
+      ciHeader,
+      loadingIcon,
+    },
     props: {
       job: {
         type: Object,
@@ -13,10 +17,6 @@
         type: Boolean,
         required: true,
       },
-    },
-    components: {
-      ciHeader,
-      loadingIcon,
     },
     data() {
       return {
@@ -29,6 +29,11 @@
       },
       shouldRenderContent() {
         return !this.isLoading && Object.keys(this.job).length;
+      },
+    },
+    watch: {
+      job() {
+        this.actions = this.getActions();
       },
     },
     methods: {
@@ -46,11 +51,6 @@
         return actions;
       },
     },
-    watch: {
-      job() {
-        this.actions = this.getActions();
-      },
-    },
   };
 </script>
 <template>
@@ -63,11 +63,11 @@
       :time="job.created_at"
       :user="job.user"
       :actions="actions"
-      :hasSidebarButton="true"
-      />
+      :has-sidebar-button="true"
+    />
     <loading-icon
       v-if="isLoading"
       size="2"
-      />
+    />
   </div>
 </template>

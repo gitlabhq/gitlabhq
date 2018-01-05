@@ -1,8 +1,11 @@
 <script>
   import { dateFormatWithName, timeFormat } from '../../utils/date_time_formatters';
-  import Icon from '../../../vue_shared/components/icon.vue';
+  import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      icon,
+    },
     props: {
       showDeployInfo: {
         type: Boolean,
@@ -24,10 +27,6 @@
         type: Number,
         required: true,
       },
-    },
-
-    components: {
-      Icon,
     },
 
     computed: {
@@ -83,51 +82,55 @@
       v-for="(deployment, index) in deploymentData"
       :key="index"
       :class="nameDeploymentClass(deployment)"
-      :transform="transformDeploymentGroup(deployment)">
+      :transform="transformDeploymentGroup(deployment)"
+    >
       <rect
         x="0"
         y="0"
         :height="calculatedHeight"
         width="3"
-        fill="url(#shadow-gradient)">
-      </rect>
+        fill="url(#shadow-gradient)"
+      />
       <line
         class="deployment-line"
         x1="0"
         y1="0"
         x2="0"
         :y2="calculatedHeight"
-        stroke="#000">
-      </line>
+        stroke="#000"
+      />
       <svg
         v-if="deployment.showDeploymentFlag"
         class="js-deploy-info-box"
         :x="positionFlag(deployment)"
         y="0"
         width="134"
-        :height="svgContainerHeight(deployment.tag)">
+        :height="svgContainerHeight(deployment.tag)"
+      >
         <rect
           class="rect-text-metric deploy-info-rect rect-metric"
           x="1"
           y="1"
           rx="2"
           width="132"
-          :height="svgContainerHeight(deployment.tag) - 2">
-        </rect>
+          :height="svgContainerHeight(deployment.tag) - 2"
+        />
         <text
           class="deploy-info-text text-metric-bold"
-          transform="translate(5, 2)">
+          transform="translate(5, 2)"
+        >
           Deployed
         </text>
         <!--The date info-->
         <g transform="translate(5, 20)">
           <text class="deploy-info-text">
-            {{formatDate(deployment.time)}}
+            {{ formatDate(deployment.time) }}
           </text>
-          <text 
+          <text
             class="deploy-info-text text-metric-bold"
-            x="62">
-            {{formatTime(deployment.time)}}
+            x="62"
+          >
+            {{ formatTime(deployment.time) }}
           </text>
         </g>
         <line
@@ -136,40 +139,41 @@
           y1="38"
           x2="132"
           :y2="38"
-          stroke="#000">
-        </line>
+          stroke="#000"
+        />
         <!--Commit information-->
         <g transform="translate(5, 40)">
           <icon
             name="commit"
             :width="12"
             :height="12"
-            :y="3">
-          </icon>
+            :y="3"
+          />
           <a :xlink:href="deployment.commitUrl">
             <text
               class="deploy-info-text deploy-info-text-link"
               transform="translate(20, 2)">
-              {{refText(deployment)}}
+              {{ refText(deployment) }}
             </text>
           </a>
         </g>
         <!--Tag information-->
         <g
-          transform="translate(5, 55)" 
+          transform="translate(5, 55)"
           v-if="deployment.tag">
           <icon
             name="label"
             :width="12"
             :height="12"
-            :y="5">
-          </icon>
+            :y="5"
+          />
           <a :xlink:href="deployment.tagUrl">
             <text
               class="deploy-info-text deploy-info-text-link"
               transform="translate(20, 2)"
-              y="2">
-              {{deployment.tag}}
+              y="2"
+            >
+              {{ deployment.tag }}
             </text>
           </a>
         </g>
@@ -177,20 +181,20 @@
     </g>
     <svg
       height="0"
-      width="0">
+      width="0"
+    >
       <defs>
-        <linearGradient
-          id="shadow-gradient">
+        <linearGradient id="shadow-gradient">
           <stop
             offset="0%"
             stop-color="#000"
-            stop-opacity="0.4">
-          </stop>
+            stop-opacity="0.4"
+          />
           <stop
             offset="100%"
             stop-color="#000"
-            stop-opacity="0">
-          </stop>
+            stop-opacity="0"
+          />
         </linearGradient>
       </defs>
     </svg>

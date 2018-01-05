@@ -15,7 +15,7 @@
     props: {
       items: {
         type: Array,
-        default: []
+        default: () => [],
       },
       stage: {
         type: Object,
@@ -69,7 +69,7 @@
             <a
               :href="build.commitUrl"
               class="commit-sha"
-              >
+            >
               {{ build.shortSha }}
             </a>
           </h5>
@@ -77,7 +77,7 @@
             <a
               :href="build.url"
               class="build-date"
-              >
+            >
               {{ build.date }}
             </a>
             {{ s__('ByAuthor|by') }}

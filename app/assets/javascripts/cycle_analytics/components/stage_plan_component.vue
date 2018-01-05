@@ -13,7 +13,7 @@
     props: {
       items: {
         type: Array,
-        default: []
+        default: () => [],
       },
       stage: {
         type: Object,

@@ -58,13 +58,14 @@
       :y1="0"
       :x2="currentXCoordinate"
       :y2="calculatedHeight"
-      transform="translate(-5, 20)">
-    </line>
-    <svg 
+      transform="translate(-5, 20)"
+    />
+    <svg
       v-if="showFlagContent"
       class="rect-text-metric"
       :x="currentFlagPosition"
-      y="0">
+      y="0"
+    >
       <rect
         class="rect-metric"
         x="4"
@@ -72,21 +73,23 @@
         rx="2"
         width="90"
         height="40"
-        transform="translate(-3, 20)">
-      </rect>
+        transform="translate(-3, 20)"
+      />
       <text
         class="text-metric text-metric-bold"
         x="16"
         y="35"
-        transform="translate(-5, 20)">
-        {{formatTime}}
+        transform="translate(-5, 20)"
+      >
+        {{ formatTime }}
       </text>
       <text
         class="text-metric"
         x="16"
         y="15"
-        transform="translate(-5, 20)">
-        {{formatDate}}
+        transform="translate(-5, 20)"
+      >
+        {{ formatDate }}
       </text>
     </svg>
   </g>

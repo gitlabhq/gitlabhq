@@ -4,6 +4,9 @@
 
   export default {
     mixins: [updateMixin],
+    components: {
+      markdownField,
+    },
     props: {
       formState: {
         type: Object,
@@ -27,9 +30,6 @@
         required: false,
         default: true,
       },
-    },
-    components: {
-      markdownField,
     },
     mounted() {
       this.$refs.textarea.focus();

@@ -76,20 +76,26 @@ If this takes a long time, ensure that data is available.`,
 <template>
   <div class="prometheus-state">
     <div class="state-svg svg-content">
-      <img :src="currentState.svgUrl"/>
+      <img :src="currentState.svgUrl" />
     </div>
     <h4 class="state-title">
-      {{currentState.title}}
+      {{ currentState.title }}
     </h4>
     <p class="state-description">
-      {{currentState.description}}
-      <a v-if="showButtonDescription" :href="settingsPath">
+      {{ currentState.description }}
+      <a
+        v-if="showButtonDescription"
+        :href="settingsPath"
+      >
         Prometheus server
       </a>
     </p>
     <div class="state-button">
-      <a class="btn btn-success" :href="buttonPath">
-        {{currentState.buttonText}}
+      <a
+        class="btn btn-success"
+        :href="buttonPath"
+      >
+        {{ currentState.buttonText }}
       </a>
     </div>
   </div>

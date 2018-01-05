@@ -89,6 +89,7 @@ export default {
       :issue="issue"
       :issue-link-base="issueLinkBase"
       :root-path="rootPath"
-      :update-filters="true" />
+      :update-filters="true"
+    />
   </li>
 </template>

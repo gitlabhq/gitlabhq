@@ -77,12 +77,12 @@ which incur additional costs. See %{pricingLink}`)),
         return sprintf(
           _.escape(s__(`ClusterIntegration|Prometheus is an open-source monitoring system
   with %{gitlabIntegrationLink} to monitor deployed applications.`)),
-            {
-              gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
-  target="_blank" rel="noopener noreferrer">
-                ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
-              </a>`,
-            },
+          {
+            gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+target="_blank" rel="noopener noreferrer">
+              ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
+            </a>`,
+          },
           false,
         );
       },
