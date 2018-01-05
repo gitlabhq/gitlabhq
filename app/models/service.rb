@@ -278,13 +278,10 @@ class Service < ActiveRecord::Base
     nil
   end
 
-<<<<<<< HEAD
-=======
   def self.find_by_template
     find_by(template: true)
   end
 
->>>>>>> upstream/master
   private
 
   def cache_project_has_external_issue_tracker
