@@ -1137,6 +1137,7 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },
