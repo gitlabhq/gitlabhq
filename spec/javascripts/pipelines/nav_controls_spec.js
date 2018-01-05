@@ -58,7 +58,7 @@ describe('Pipelines Nav Controls', () => {
     }).$mount();
 
     expect(component.$el.querySelectorAll('.btn-default')[0].textContent).toContain('Clear runner caches');
-    expect(component.$el.querySelectorAll('.btn-default')[0].getAttribute('href')).toEqual(mockData.resetCachePath);
+    expect(component.$el.querySelector('form').getAttribute('action')).toEqual(mockData.resetCachePath);
   });
 
   it('should render link for CI lint', () => {
