@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-12 18:31+0000\n"
-"PO-Revision-Date: 2018-01-05 04:41-0500\n"
+"PO-Revision-Date: 2018-01-05 05:18-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -578,7 +578,7 @@ msgid "ClusterIntegration|Cluster integration is enabled for this project."
 msgstr "Інтеграція із кластером увімкнена для цього проекту."
 
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
-msgstr "Для цього проекту увімкнена інтеграція із кластером. Викнення інтеграції не вплине на кластер, але з'єднання GitLab з ним буде тимчасово розірване."
+msgstr ""
 
 msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
 msgstr "Створюється кластер в Google Kubernetes Engine..."
@@ -698,7 +698,7 @@ msgid "ClusterIntegration|Please enter access information for your cluster. If y
 msgstr "Введіть інформацію про доступ до свого кластера. Якщо вам потрібна допомога, ви можете прочитати наші %{link_to_help_page} по кластерам"
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
-msgstr "Будь-ласка впевніться, що ваш Google-аккаунт задовольняє наступним вимогам:"
+msgstr ""
 
 msgid "ClusterIntegration|Problem setting up the cluster"
 msgstr "Проблема налаштування кластера"
@@ -1025,13 +1025,13 @@ msgstr[1] "Розгортання"
 msgstr[2] "Розгортань"
 
 msgid "Deploy Keys"
-msgstr "Ключи для розгортування"
+msgstr ""
 
 msgid "Description"
 msgstr "Опис"
 
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-msgstr "Шаблони опису дозволяють визначити конкретні шаблони обговорень та запитів на зливання для вашого проекту."
+msgstr ""
 
 msgid "Details"
 msgstr "Деталі"
@@ -1385,7 +1385,7 @@ msgid "Import repository"
 msgstr ""
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr "Покращити дошки обговорень за допомогою версії GitLab Enterprise Edition."
+msgstr ""
 
 msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr "Покращити управління проблемами з можливістю визначення ваги проблеми за допомогою GitLab Enterprise Edition."
@@ -1940,7 +1940,7 @@ msgid "ProjectFeature|Disabled"
 msgstr "Вимкнено"
 
 msgid "ProjectFeature|Everyone with access"
-msgstr "Все з доступом"
+msgstr ""
 
 msgid "ProjectFeature|Only team members"
 msgstr "Тільки члени команди"
@@ -2552,7 +2552,7 @@ msgid "This merge request is locked."
 msgstr "Цей запит на злиття заблоковано."
 
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
-msgstr "Ці повідомлення електронної пошти автоматично стануть обговореннями, які відображатимуться тут (причому коментарі будуть частиною переписки)."
+msgstr ""
 
 msgid "Time before an issue gets scheduled"
 msgstr "Час до початку потрапляння проблеми  в планувальник"
@@ -2747,10 +2747,10 @@ msgid "Upgrade your plan to activate Group Webhooks."
 msgstr "Перейдіть на вищий тарифний план щоб активувати Групові Webhook’и."
 
 msgid "Upgrade your plan to activate Issue weight."
-msgstr "Перейдіть на вищий тарифний план щоб активувати вагу обговорень."
+msgstr ""
 
 msgid "Upgrade your plan to improve Issue boards."
-msgstr "Перейдіть на вищий тарифний план щоб покращити дошки обговорень."
+msgstr ""
 
 msgid "Upload New File"
 msgstr "Завантажити новий файл"
