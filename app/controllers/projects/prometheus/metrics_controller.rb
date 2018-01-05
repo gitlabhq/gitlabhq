@@ -21,7 +21,7 @@ module Projects
       def validate_query
         respond_to do |format|
           format.json do
-            result = project.prometheus_metrics.validate_query(query_validation_params[:query])
+            result = prometheus_service.validate_query(query_validation_params[:query])
 
             if result.any?
               render json: metrics
@@ -79,7 +79,7 @@ module Projects
         @metric = project.prometheus_metrics.find(params[:id])
         @metric.destroy
 
-        redirect_to project_prometheus_metrics_path(@project), status: 302
+        redirect_to edit_project_service_path(project, prometheus_service), status: 302
       end
 
       private
