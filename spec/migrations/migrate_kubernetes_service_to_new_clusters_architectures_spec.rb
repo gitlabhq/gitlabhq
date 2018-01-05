@@ -19,7 +19,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
       end
 
       it 'migrates the KubernetesService to Platform::Kubernetes' do
-        expect{ migrate! }.to change { Clusters::Cluster.count }.by(sample_num)
+        expect { migrate! }.to change { Clusters::Cluster.count }.by(sample_num)
 
         projects.each do |project|
           project.clusters.last.tap do |cluster|
@@ -76,7 +76,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     end
 
     it 'migrates the KubernetesService to Platform::Kubernetes without template' do
-      expect{ migrate! }.to change { Clusters::Cluster.count }.by(sample_num)
+      expect { migrate! }.to change { Clusters::Cluster.count }.by(sample_num)
 
       projects.each do |project|
         project.clusters.last.tap do |cluster|
@@ -104,7 +104,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     end
 
     it 'does not migrate the KubernetesService and disables the kubernetes_service' do # Because the corresponding Platform::Kubernetes already exists
-      expect{ migrate! }.not_to change { Clusters::Cluster.count }
+      expect { migrate! }.not_to change { Clusters::Cluster.count }
 
       kubernetes_service.reload
       expect(kubernetes_service).not_to be_active
@@ -117,7 +117,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     let!(:kubernetes_service) { create(:kubernetes_service, api_url: 'https://debug.kube.com', active: true, project: project) }
 
     it 'migrates the KubernetesService to Platform::Kubernetes' do
-      expect{ migrate! }.to change { Clusters::Cluster.count }.by(1)
+      expect { migrate! }.to change { Clusters::Cluster.count }.by(1)
 
       kubernetes_service.reload
       project.clusters.last.tap do |cluster|
@@ -136,7 +136,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     let!(:kubernetes_service) { create(:kubernetes_service, api_url: 'https://debug.kube.com', active: true, project: project) }
 
     it 'migrates the KubernetesService to Platform::Kubernetes with dedicated environment_scope' do # Because environment_scope is duplicated
-      expect{ migrate! }.to change { Clusters::Cluster.count }.by(1)
+      expect { migrate! }.to change { Clusters::Cluster.count }.by(1)
 
       kubernetes_service.reload
       project.clusters.last.tap do |cluster|
@@ -156,7 +156,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     let!(:kubernetes_service) { create(:kubernetes_service, api_url: 'https://debug.kube.com', active: true, project: project) }
 
     it 'migrates the KubernetesService to Platform::Kubernetes with dedicated environment_scope' do # Because environment_scope is duplicated
-      expect{ migrate! }.to change { Clusters::Cluster.count }.by(1)
+      expect { migrate! }.to change { Clusters::Cluster.count }.by(1)
 
       kubernetes_service.reload
       project.clusters.last.tap do |cluster|
@@ -173,7 +173,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     let!(:project) { create(:project) }
 
     it 'does not migrate the KubernetesService' do
-      expect{ migrate! }.not_to change { Clusters::Cluster.count }
+      expect { migrate! }.not_to change { Clusters::Cluster.count }
     end
   end
 end

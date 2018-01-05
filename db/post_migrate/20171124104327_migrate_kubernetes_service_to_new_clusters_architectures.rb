@@ -66,7 +66,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
           .where("services.properties LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')")
           .select('1') )
       .order(project_id: :asc)
-     end
+    end
 
     scope :kubernetes_service_without_template, -> do
       where(category: 'deployment')
@@ -85,9 +85,10 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     unique_iid = 0
 
     # If it's still conflicted, finding an unique environment scope incrementaly
-    while true
+    loop do
       candidate = "migrated#{unique_iid}/*"
       return candidate if environment_scopes.exclude?(candidate)
+
       unique_iid += 1
     end
   end
