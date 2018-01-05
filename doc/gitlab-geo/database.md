@@ -408,7 +408,7 @@ data before running `pg_basebackup`.
        - If you're repurposing an old server into a Geo secondary, you'll need to
        add `--force` to the command line.
 
-1. Verify the secondary if configured correctly and that the primary is
+1. Verify that the secondary is configured correctly and that the primary is
    reachable:
 
     ```
