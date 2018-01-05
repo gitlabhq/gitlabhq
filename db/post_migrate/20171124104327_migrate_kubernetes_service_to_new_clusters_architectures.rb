@@ -55,24 +55,16 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
 
     scope :unmanaged_kubernetes_service, -> do
-      where(category: 'deployment')
+      joins('LEFT JOIN projects ON projects.id = services.project_id')
+      .joins('LEFT JOIN cluster_projects ON cluster_projects.project_id = projects.id')
+      .joins('LEFT JOIN cluster_platforms_kubernetes ON cluster_platforms_kubernetes.cluster_id = cluster_projects.cluster_id')
+      .where(category: 'deployment')
       .where(type: 'KubernetesService')
       .where(template: false)
-      .where("NOT EXISTS (?)",
-        MigrateKubernetesServiceToNewClustersArchitectures::PlatformsKubernetes
-          .joins('INNER JOIN projects ON projects.id = services.project_id')
-          .joins('INNER JOIN cluster_projects ON cluster_projects.project_id = projects.id')
-          .where('cluster_projects.cluster_id = cluster_platforms_kubernetes.cluster_id')
-          .where("services.properties LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')")
-          .select('1') )
-      .order(project_id: :asc)
-    end
-
-    scope :kubernetes_service_without_template, -> do
-      where(category: 'deployment')
-      .where(type: 'KubernetesService')
-      .where(template: false)
-      .order(project_id: :asc)
+      .where("services.properties LIKE '%api_url%'")
+      .where("(services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')) OR cluster_platforms_kubernetes.api_url IS NULL")
+      .group(:id)
+      .order(id: :asc)
     end
   end
 
@@ -148,7 +140,10 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
       Gitlab::Database.bulk_insert('cluster_projects', rows_for_cluster_projects)
     end
 
-    MigrateKubernetesServiceToNewClustersArchitectures::Service.kubernetes_service_without_template.update_all(active: false)
+    connection.execute <<~SQL
+      UPDATE services SET active = false
+      WHERE category = 'deployment' AND type = 'KubernetesService' AND template = false
+    SQL
   end
 
   def down
