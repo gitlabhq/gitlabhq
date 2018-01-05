@@ -46,7 +46,9 @@ feature 'EE Clusters' do
           before do
             click_link 'default-cluster'
             fill_in 'cluster_environment_scope', with: 'production/*'
-            click_button 'Save changes'
+            within '.cluster_integration_form' do
+              click_button 'Save changes'
+            end
           end
 
           it 'user sees a cluster details page' do
@@ -104,7 +106,7 @@ feature 'EE Clusters' do
           end
 
           it 'user sees a cluster details page' do
-            expect(page).to have_content('Enable cluster integration')
+            expect(page).to have_content('Cluster integration is enabled for this project')
             expect(page.find_field('cluster[environment_scope]').value).to eq('staging/*')
           end
         end
@@ -113,7 +115,9 @@ feature 'EE Clusters' do
           before do
             click_link 'default-cluster'
             fill_in 'cluster_environment_scope', with: 'production/*'
-            click_button 'Save changes'
+            within ".cluster_integration_form" do
+              click_button 'Save changes'
+            end
           end
 
           it 'user sees a cluster details page' do
