@@ -80,7 +80,7 @@ module Gitlab
 
       def user_options(fields, value, limit)
         options = {
-          attributes: Gitlab::LDAP::Person.ldap_attributes(config).compact.uniq,
+          attributes: Gitlab::LDAP::Person.ldap_attributes(config),
           base: config.base
         }
 
