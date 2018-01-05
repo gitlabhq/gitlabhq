@@ -28,6 +28,7 @@ following locations:
 - [Group Members](members.md)
 - [Issues](issues.md)
 - [Issue Boards](boards.md)
+- **(EEP)** [Group Issue Boards] (group_boards.md)
 - [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)

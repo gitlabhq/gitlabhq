@@ -1,24 +1,24 @@
-# Issue Boards API
+# Group Issue Boards API
 
-Every API call to boards must be authenticated.
+Every API call to group boards must be authenticated.
 
-If a user is not a member of a project and the project is private, a `GET`
-request on that project will result to a `404` status code.
+If a user is not a member of a group and the group is private, a `GET`
+request will result in `404` status code.
 
-## Project Board
+## Group Board
 
-Lists Issue Boards in the given project.
+Lists Issue Boards in the given group.
 
 ```
-GET /projects/:id/boards
+GET /groups/:id/boards
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards
 ```
 
 Example response:
@@ -26,16 +26,9 @@ Example response:
 ```json
 [
   {
-    "id" : 1,
-    "project": {
-      "id": 5,
-      "name": "Diaspora Project Site",
-      "name_with_namespace": "Diaspora / Diaspora Project Site",
-      "path": "diaspora-project-site",
-      "path_with_namespace": "diaspora/diaspora-project-site",
-      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
-      "web_url": "http://example.com/diaspora/diaspora-project-site"
-    },
+    "id": 1,
+    "name:": "group issue board",
+    "group_id": 5,
     "milestone":   {
       "id": 12
       "title": "10.0"
@@ -75,19 +68,19 @@ Example response:
 
 ## Single board
 
-Get a single board.
+Gets a single board.
 
 ```
-GET /projects/:id/boards/:board_id
+GET /groups/:id/boards/:board_id
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
 Example response:
@@ -95,16 +88,8 @@ Example response:
 ```json
   {
     "id": 1,
-    "name:": "project issue board",
-    "project": {
-      "id": 5,
-      "name": "Diaspora Project Site",
-      "name_with_namespace": "Diaspora / Diaspora Project Site",
-      "path": "diaspora-project-site",
-      "path_with_namespace": "diaspora/diaspora-project-site",
-      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
-      "web_url": "http://example.com/diaspora/diaspora-project-site"
-    },
+    "name:": "group issue board",
+    "group_id": 5,
     "milestone":   {
       "id": 12
       "title": "10.0"
@@ -141,21 +126,21 @@ Example response:
   }
 ```
 
-## Create a board (EES-Only)
+## Create a board
 
 Creates a board.
 
 ```
-POST /projects/:id/boards
+POST /groups/:id/boards
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the new board |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards?name=newboard
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards?name=newboard
 ```
 
 Example response:
@@ -163,16 +148,8 @@ Example response:
 ```json
   {
     "id": 1,
-    "project": {
-      "id": 5,
-      "name": "Diaspora Project Site",
-      "name_with_namespace": "Diaspora / Diaspora Project Site",
-      "path": "diaspora-project-site",
-      "path_with_namespace": "diaspora/diaspora-project-site",
-      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
-      "web_url": "http://example.com/diaspora/diaspora-project-site"
-    },
     "name": "newboard",
+    "group_id": 5,
     "milestone":   {
       "id": 12
       "title": "10.0"
@@ -209,21 +186,21 @@ Example response:
   }
 ```
 
-## Delete a board (EES-Only)
+## Delete a board
 
 Deletes a board.
 
 ```
-DELETE /projects/:id/boards/:board_id
+DELETE /groups/:id/boards/:board_id
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
 ## List board lists
@@ -232,16 +209,16 @@ Get a list of the board's lists.
 Does not include `backlog` and `closed` lists
 
 ```
-GET /projects/:id/boards/:board_id/lists
+GET /groups/:id/boards/:board_id/lists
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists
 ```
 
 Example response:
@@ -283,17 +260,17 @@ Example response:
 Get a single board list.
 
 ```
-GET /projects/:id/boards/:board_id/lists/:list_id
+GET /groups/:id/boards/:board_id/lists/:list_id
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
-| `list_id`| integer | yes | The ID of a board's list |
+| `list_id` | integer | yes | The ID of a board's list |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```
 
 Example response:
@@ -315,17 +292,17 @@ Example response:
 Creates a new Issue Board list.
 
 ```
-POST /projects/:id/boards/:board_id/lists
+POST /groups/:id/boards/:board_id/lists
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `label_id` | integer | yes | The ID of a label |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists?label_id=5
 ```
 
 Example response:
@@ -347,18 +324,18 @@ Example response:
 Updates an existing Issue Board list. This call is used to change list position.
 
 ```
-PUT /projects/:id/boards/:board_id/lists/:list_id
+PUT /groups/:id/boards/:board_id/lists/:list_id
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`            | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `list_id` | integer | yes | The ID of a board's list |
 | `position` | integer | yes | The position of the list |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/group/5/boards/1/lists/1?position=2
 ```
 
 Example response:
@@ -377,18 +354,18 @@ Example response:
 
 ## Delete a board list
 
-Only for admins and project owners. Soft deletes the board list in question.
+Only for admins and group owners. Soft deletes the board list in question.
 
 ```
-DELETE /projects/:id/boards/:board_id/lists/:list_id
+DELETE /groups/:id/boards/:board_id/lists/:list_id
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `list_id` | integer | yes | The ID of a board's list |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```

@@ -869,11 +869,12 @@ module API
 
     class Board < Grape::Entity
       expose :id
-      expose :name
       expose :project, using: Entities::BasicProjectDetails
 
       # EE-specific
       # Default filtering configuration
+      expose :name
+      expose :group
       expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
       expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
       expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
