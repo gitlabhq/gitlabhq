@@ -79,7 +79,7 @@ module Projects
         @metric = project.prometheus_metrics.find(params[:id])
         @metric.destroy
 
-        redirect_to project_prometheus_metrics(@project), status: 302
+        redirect_to project_prometheus_metrics_path(@project), status: 302
       end
 
       private
