@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-12 18:31+0000\n"
-"PO-Revision-Date: 2018-01-05 05:57-0500\n"
+"PO-Revision-Date: 2018-01-05 06:39-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -119,7 +119,7 @@ msgid "Add Contribution guide"
 msgstr ""
 
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
-msgstr "Додайте групові Webhook'и та GitLab Enterprise Edition."
+msgstr ""
 
 msgid "Add License"
 msgstr "Додати ліцензію"
@@ -977,7 +977,7 @@ msgid "Cycle Analytics"
 msgstr "Аналіз циклу"
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr "Аналітика циклу дає огляд того, скільки часу потрібно, щоб перейти від ідеї до виробництва у вашому проекті."
+msgstr ""
 
 msgid "CycleAnalyticsStage|Code"
 msgstr ""
@@ -989,7 +989,7 @@ msgid "CycleAnalyticsStage|Plan"
 msgstr "Планування"
 
 msgid "CycleAnalyticsStage|Production"
-msgstr "ПРОД"
+msgstr ""
 
 msgid "CycleAnalyticsStage|Review"
 msgstr "Затвердження"
@@ -1607,7 +1607,7 @@ msgid "New schedule"
 msgstr "Новий Розклад"
 
 msgid "New snippet"
-msgstr "Новий сніппет"
+msgstr ""
 
 msgid "New subgroup"
 msgstr "Нова підгрупа"
@@ -2213,7 +2213,7 @@ msgid "Sidebar|Weight"
 msgstr "Вага"
 
 msgid "Snippets"
-msgstr "Фрагменти коду"
+msgstr ""
 
 msgid "Something went wrong on our end."
 msgstr "Щось пішло не так з нашого боку"
@@ -2366,7 +2366,7 @@ msgid "Switch branch/tag"
 msgstr ""
 
 msgid "System Hooks"
-msgstr "Системні Hook'и"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -2744,7 +2744,7 @@ msgid "Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Upgrade your plan to activate Group Webhooks."
-msgstr "Перейдіть на вищий тарифний план щоб активувати Групові Webhook’и."
+msgstr ""
 
 msgid "Upgrade your plan to activate Issue weight."
 msgstr ""
@@ -2801,7 +2801,7 @@ msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr "Ми хочемо бути впевнені, що це ви, будь ласка, підтвердіть, що ви не робот."
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
-msgstr "Webhook дозволяє вам викликати URL якщо, наприклад, був відправлений новий код або створено нову проблему. Ви можете налаштувати Webhook так, щоб він реагував на певні події (відправки коду, проблеми або запити на злиття). Групові Webhook’и застосовуються до всіх проектів в групі і дозволяють вам стандартизувати функціональність Webhook’ів для всієї вашої групи."
+msgstr ""
 
 msgid "Weight"
 msgstr "Вага"
@@ -2828,7 +2828,7 @@ msgid "WikiClone|Start Gollum and edit locally"
 msgstr "Запустіть Gollum і редагуйте локально"
 
 msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
-msgstr "Ви не можете створювати вікі-сторінки"
+msgstr ""
 
 msgid "WikiHistoricalPage|This is an old version of this page."
 msgstr "Це — стара версія сторінки."
@@ -2858,7 +2858,7 @@ msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We wi
 msgstr "Порада: можна вказати повний шлях до нового файлу. Ми автоматично створимо всі відсутні каталоги."
 
 msgid "WikiNewPageTitle|New Wiki Page"
-msgstr "Нова Вікі-сторінка"
+msgstr ""
 
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
 msgstr "Ви дійсно бажаєте видалити цю сторінку?"
@@ -2909,7 +2909,7 @@ msgid "Wiki|Pages"
 msgstr "Сторінки"
 
 msgid "Wiki|Wiki Pages"
-msgstr "Вікі-сторінки"
+msgstr ""
 
 msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
