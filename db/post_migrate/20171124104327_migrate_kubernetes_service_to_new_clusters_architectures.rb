@@ -140,10 +140,11 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
       Gitlab::Database.bulk_insert('cluster_projects', rows_for_cluster_projects)
     end
 
-    connection.execute <<~SQL
-      UPDATE services SET active = false
-      WHERE category = 'deployment' AND type = 'KubernetesService' AND template = false
-    SQL
+    MigrateKubernetesServiceToNewClustersArchitectures::Service
+      .where(category: 'deployment', type: 'KubernetesService', template: false)
+      .each_batch(of: 100) do |batch|
+        batch.update_all(active: false)
+      end
   end
 
   def down
