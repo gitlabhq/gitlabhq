@@ -55,15 +55,12 @@ describe('text_utility', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('capitalizeFirstCharacter', () => {
     it('returns string with first letter capitalized', () => {
       expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
     });
   });
 
-=======
->>>>>>> upstream/master
   describe('stripeHtml', () => {
     it('replaces html tag with the default replacement', () => {
       expect(textUtils.stripeHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
