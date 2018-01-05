@@ -1,8 +1,8 @@
-- illustration = locals.fetch(:illustration)
-- illustration_size = locals.fetch(:illustration_size)
-- title = locals.fetch(:title)
-- content = locals.fetch(:content)
-- action = locals.fetch(:action)
+- illustration = local_assigns.fetch(:illustration)
+- illustration_size = local_assigns.fetch(:illustration_size)
+- title = local_assigns.fetch(:title)
+- content = local_assigns.fetch(:content)
+- action = local_assigns.fetch(:action)
 
 .row.empty-state
   .col-xs-12
@@ -12,6 +12,6 @@
     .text-content
       %h4.text-center= title
       %p= content
-      - if action?
+      - if action
         .text-center
           = action
