@@ -50,10 +50,9 @@ export default {
       Get started with Pipelines
     </a>
 
-    <a :href="resetCachePath"
-      class="btn btn-default">
-      Clear runner caches
-    </a>
+    <form :action="resetCachePath" method="post">
+      <input type="submit" class="btn btn-default" value="Clear runner caches" />
+    </form>
 
     <a
       :href="ciLintPath"

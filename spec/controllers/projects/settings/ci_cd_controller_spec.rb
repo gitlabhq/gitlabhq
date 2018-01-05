@@ -27,7 +27,7 @@ describe Projects::Settings::CiCdController do
       allow(ResetProjectCacheService).to receive_message_chain(:new, :execute).and_return(true)
     end
 
-    subject { get :reset_cache, namespace_id: project.namespace, project_id: project }
+    subject { post :reset_cache, namespace_id: project.namespace, project_id: project }
 
     it 'calls reset project cache service' do
       expect(ResetProjectCacheService).to receive_message_chain(:new, :execute)
