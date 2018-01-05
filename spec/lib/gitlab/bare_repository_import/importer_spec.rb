@@ -167,12 +167,9 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it 'creates the Wiki git repo in disk' do
       create_bare_repository("#{project_path}.git")
       create_bare_repository("#{project_path}.wiki.git")
-<<<<<<< HEAD
-=======
 
       expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
                                                                                   import_type: 'bare_repository')).and_call_original
->>>>>>> upstream/master
 
       importer.create_project_if_needed
 
