@@ -68,8 +68,7 @@ The following guide assumes that:
 
     This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
     
-1. Make sure your the `gitlab` database user has a password defined (from
-   GitLab 10.4)
+1. GitLab 10.4 and up only: Make sure your the `gitlab` database user has a password defined
 
     Generate a MD5 hash of the desired password:
    
