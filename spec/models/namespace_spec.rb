@@ -254,7 +254,6 @@ describe Namespace do
       expect(hashed_project_in_subgroup.repo.config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
       expect(legacy_project_in_subgroup.repo.config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
     end
-<<<<<<< HEAD
   end
 
   describe '#actual_size_limit' do
@@ -267,8 +266,6 @@ describe Namespace do
     it 'returns the correct size limit' do
       expect(namespace.actual_size_limit).to eq(50)
     end
-=======
->>>>>>> upstream/master
   end
 
   describe '#rm_dir', 'callback' do
