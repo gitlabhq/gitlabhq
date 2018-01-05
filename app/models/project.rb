@@ -915,14 +915,11 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-<<<<<<< HEAD
   def deployment_platform(environment: nil)
     @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
     @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
-=======
->>>>>>> upstream/master
   def monitoring_services
     services.where(category: :monitoring)
   end
