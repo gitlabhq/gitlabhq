@@ -1,5 +1,6 @@
 module Gitlab
   PrometheusError = Class.new(StandardError)
+  PrometheusQueryError = Class.new(Gitlab::PrometheusError)
 
   # Helper methods to interact with Prometheus network services & resources
   class PrometheusClient
@@ -70,7 +71,7 @@ module Gitlab
       if response.code == 200 && response['status'] == 'success'
         response['data'] || {}
       elsif response.code == 400
-        raise PrometheusError, response['error'] || 'Bad data received'
+        raise PrometheusQueryError, response['error'] || 'Bad data received'
       else
         raise PrometheusError, "#{response.code} - #{response.body}"
       end

@@ -7,7 +7,7 @@ module Projects
       def active
         respond_to do |format|
           format.json do
-            matched_metrics = project.prometheus_service.matched_metrics || {}
+            matched_metrics = prometheus_service.matched_metrics || {}
 
             if matched_metrics.any?
               render json: matched_metrics
@@ -21,10 +21,12 @@ module Projects
       def validate_query
         respond_to do |format|
           format.json do
-            if query_validation_params[:query] =~ /^avg/
-              render json: { query_valid: true }
+            result = project.prometheus_metrics.validate_query(query_validation_params[:query])
+
+            if result.any?
+              render json: metrics
             else
-              render json: { query_valid: false }
+              head :no_content
             end
           end
         end
@@ -50,7 +52,7 @@ module Projects
       def create
         @metric = project.prometheus_metrics.create(metrics_params)
         if @metric.persisted?
-          redirect_to edit_project_service_path(project, project.prometheus_service),
+          redirect_to edit_project_service_path(project, prometheus_service),
                       notice: 'Metric was successfully added.'
         else
           head :unprocessable_entity
@@ -62,7 +64,7 @@ module Projects
         @metric.update(metrics_params)
 
         if @metric.persisted?
-          redirect_to edit_project_service_path(project, project.prometheus_service),
+          redirect_to edit_project_service_path(project, prometheus_service),
                       notice: 'Metric was successfully updated.'
         else
           render "edit"
@@ -83,8 +85,12 @@ module Projects
         params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend)
       end
 
+      def prometheus_service
+        project.prometheus_service
+      end
+
       def require_prometheus_metrics!
-        render_404 unless project.prometheus_service.present?
+        render_404 unless prometheus_service.present?
       end
     end
   end

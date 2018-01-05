@@ -55,11 +55,11 @@ class PrometheusService < MonitoringService
   end
 
   def environment_metrics(environment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, rename_field(:data, :metrics))
   end
 
   def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, rename_field(:data, :metrics))
     metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
   end
 
@@ -73,6 +73,10 @@ class PrometheusService < MonitoringService
 
   def matched_metrics
     with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
+  end
+
+  def validate_query(query)
+    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, query, rename_field(:data, :query))
   end
 
   # Cache metrics for specific environment
@@ -95,8 +99,10 @@ class PrometheusService < MonitoringService
 
   private
 
-  def rename_data_to_metrics(metrics)
-    metrics[:metrics] = metrics.delete :data
-    metrics
+  def rename_field(old_field, new_field)
+    -> (metrics) do
+      metrics[new_field] = metrics.delete(old_field)
+      metrics
+    end
   end
 end
