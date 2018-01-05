@@ -98,9 +98,9 @@ describe('Header CI Component', () => {
     });
   });
 
-  describe('triggered', () => {
-    it('should rendered created keyword when the triggered is false', () => {
-      vm = mountComponent(HeaderCi, { ...props, triggered: false });
+  describe('shouldRenderTriggeredLabel', () => {
+    it('should rendered created keyword when the shouldRenderTriggeredLabel is false', () => {
+      vm = mountComponent(HeaderCi, { ...props, shouldRenderTriggeredLabel: false });
 
       expect(vm.$el.textContent).toContain('created');
       expect(vm.$el.textContent).not.toContain('triggered');
