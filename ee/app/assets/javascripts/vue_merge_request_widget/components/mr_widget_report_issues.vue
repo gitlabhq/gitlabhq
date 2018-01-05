@@ -1,5 +1,15 @@
 <script>
+  import { s__ } from '~/locale';
   import { spriteIcon } from '~/lib/utils/common_utils';
+  import modal from './mr_widget_dast_modal.vue';
+
+  const modalDefaultData = {
+    modalId: 'modal-mrwidget-issue',
+    modalDesc: '',
+    modalTitle: '',
+    modalInstances: [],
+    modalTargetId: '#modal-mrwidget-issue',
+  };
 
   export default {
     name: 'mrWidgetReportIssues',
@@ -8,7 +18,7 @@
         type: Array,
         required: true,
       },
-      // security || codequality || performance || docker
+      // security || codequality || performance || docker || dast
       type: {
         type: String,
         required: true,
@@ -18,10 +28,27 @@
         type: String,
         required: true,
       },
+      hasPriority: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+    },
+    data() {
+      return modalDefaultData;
+    },
+    components: {
+      modal,
     },
     computed: {
       icon() {
-        return this.isStatusSuccess ? spriteIcon('plus') : spriteIcon('cut');
+        return this.isStatusSuccess ? spriteIcon('plus') : this.cutIcon;
+      },
+      cutIcon() {
+        return spriteIcon('cut');
+      },
+      fixedLabel() {
+        return s__('ciReport|Fixed:');
       },
       isStatusFailed() {
         return this.status === 'failed';
@@ -44,10 +71,37 @@
       isTypeDocker() {
         return this.type === 'docker';
       },
+      isTypeDast() {
+        return this.type === 'dast';
+      },
     },
     methods: {
       shouldRenderPriority(issue) {
-        return (this.isTypeSecurity || this.isTypeDocker) && issue.priority;
+        return this.hasPriority && issue.priority;
+      },
+      getmodalId(index) {
+        return `modal-mrwidget-issue-${index}`;
+      },
+      modalIdTarget(index) {
+        return `#${this.getmodalId(index)}`;
+      },
+      openDastModal(issue, index) {
+        this.modalId = this.getmodalId(index);
+        this.modalTitle = `${issue.priority}: ${issue.name}`;
+        this.modalTargetId = `#${this.getmodalId(index)}`;
+        this.modalInstances = issue.instances;
+        this.modalDesc = issue.parsedDescription;
+      },
+      /**
+       * Because of https://vuejs.org/v2/guide/list.html#Caveats
+       * we need to clear the instances to make sure everything is properly reset.
+       */
+      clearModalData() {
+        this.modalId = modalDefaultData.modalId;
+        this.modalDesc = modalDefaultData.modalDesc;
+        this.modalTitle = modalDefaultData.modalTitle;
+        this.modalInstances = modalDefaultData.modalInstances;
+        this.modalTargetId = modalDefaultData.modalTargetId;
       },
     },
   };
@@ -60,14 +114,17 @@
         success: isStatusSuccess,
         neutral: isStatusNeutral
       }
-      "v-for="issue in issues">
+      "v-for="(issue, index) in issues"
+      :key="index"
+      >
 
      <span
         class="mr-widget-code-quality-icon"
-        v-html="icon">
+        v-html="icon"
+        >
       </span>
 
-      <template v-if="isStatusSuccess && isTypeQuality">Fixed:</template>
+      <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
       <template v-if="shouldRenderPriority(issue)">{{issue.priority}}:</template>
 
       <template v-if="isTypeDocker">
@@ -81,6 +138,17 @@
         <template v-else>
           {{issue.name}}
         </template>
+      </template>
+      <template v-else-if="isTypeDast">
+        <button
+          type="button"
+          @click="openDastModal(issue, index)"
+          data-toggle="modal"
+          class="btn-link btn-blank"
+          :data-target="modalTargetId"
+          >
+          {{issue.name}}
+        </button>
       </template>
       <template v-else>
         {{issue.name}}<template v-if="issue.score">: <strong>{{issue.score}}</strong></template>
@@ -104,7 +172,16 @@
           {{issue.path}}<template v-if="issue.line">:{{issue.line}}</template>
         </template>
       </template>
-
     </li>
+
+    <modal
+      :target-id="modalId"
+      :title="modalTitle"
+      :hide-footer="true"
+      :description="modalDesc"
+      :instances="modalInstances"
+      @clearData="clearModalData()"
+      />
+    </modal>
   </ul>
 </template>

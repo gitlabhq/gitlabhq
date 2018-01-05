@@ -799,6 +799,10 @@
       padding-left: 12px;
     }
 
+    .mr-widget-dast-code {
+      margin-left: 26px;
+    }
+
     .mr-widget-code-quality-list {
       list-style: none;
       padding: 0 12px;
@@ -825,6 +829,10 @@
 
       .neutral {
         color: $gl-gray-light;
+      }
+
+      .modal-body {
+        color: $gl-text-color;
       }
     }
   }
