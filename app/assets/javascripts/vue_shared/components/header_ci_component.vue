@@ -45,7 +45,7 @@ export default {
       required: false,
       default: false,
     },
-    triggered: {
+    shouldRenderTriggeredLabel: {
       type: Boolean,
       required: false,
       default: true,
@@ -87,7 +87,7 @@ export default {
         {{itemName}} #{{itemId}}
       </strong>
 
-      <template v-if="triggered">
+      <template v-if="shouldRenderTriggeredLabel">
         triggered
       </template>
       <template v-else>

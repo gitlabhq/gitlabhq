@@ -88,22 +88,19 @@
         %pre.build-trace#build-trace
           %code.bash.js-build-output
           .build-loader-animation.js-build-refresh
+    - elsif @build.playable?
+      = render 'empty_state',
+        illustration: 'illustrations/manual_action.svg',
+        illustration_size: 'svg-394',
+        title: _('This job requires a manual action'),
+        content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.'),
+        action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), class: 'btn btn-primary', title: _('Trigger this manual action') )
     - else
-      - illustration = @build.playable? ? 'illustrations/manual_action.svg' : 'illustrations/job_not_triggered.svg'
-      - illustration_size = @build.playable? ? 'svg-394' : 'svg-306'
-      - title = @build.playable? ? _('This job requires a manual action') : _('This job has not been triggered yet')
-      - content = @build.playable? ? _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.') : _('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
-      .row.empty-state
-        .col-xs-12
-          .svg-content{ class: illustration_size }
-            = image_tag illustration
-        .col-xs-12
-          .text-content
-            %h4.text-center= title
-            %p= content
-            - if @build.playable?
-              .text-center
-                = link_to _('Trigger this manual action'), play_project_job_path(@project, @build), class: 'btn btn-primary', title: _('Trigger this manual action')
+      = render 'empty_state',
+        illustration: 'illustrations/job_not_triggered.svg',
+        illustration_size: 'svg-306',
+        title: _('This job has not been triggered yet'),
+        content: _('This job has not been triggered yet')
 
   = render "sidebar"
 
