@@ -117,7 +117,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     MigrateKubernetesServiceToNewClustersArchitectures::Service
       .kubernetes_service_without_template.each_batch(of: 100) do |kubernetes_service|
-        kubernetes_service.update_all(active: false)
+      kubernetes_service.update_all(active: false)
     end
   end
 
