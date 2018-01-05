@@ -70,7 +70,7 @@ export default {
   class="recaptcha-modal js-recaptcha-modal"
   :hide-footer="true"
   :title="__('Please solve the reCAPTCHA')"
-  @toggle="close"
+  @cancel="close"
 >
   <div slot="body">
     <p>

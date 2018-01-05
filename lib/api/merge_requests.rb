@@ -185,6 +185,16 @@ module API
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
+      desc 'Get the participants of a merge request' do
+        success Entities::UserBasic
+      end
+      get ':id/merge_requests/:merge_request_iid/participants' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        participants = ::Kaminari.paginate_array(merge_request.participants)
+
+        present paginate(participants), with: Entities::UserBasic
+      end
+
       desc 'Get the commits of a merge request' do
         success Entities::Commit
       end

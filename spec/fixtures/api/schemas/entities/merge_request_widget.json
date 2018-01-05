@@ -103,7 +103,11 @@
     "remove_source_branch": { "type": ["boolean", "null"] },
     "merge_ongoing": { "type": "boolean" },
     "ff_only_enabled": { "type": ["boolean", false] },
-    "should_be_rebased": { "type": "boolean" }
+    "should_be_rebased": { "type": "boolean" },
+    "rebase_commit_sha": { "type": ["string", "null"] },
+    "rebase_in_progress": { "type": "boolean" },
+    "can_push_to_source_branch": { "type": "boolean" },
+    "rebase_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

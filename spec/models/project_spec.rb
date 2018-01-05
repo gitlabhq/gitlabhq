@@ -418,14 +418,21 @@ describe Project do
   end
 
   describe '#merge_method' do
-    it 'returns "ff" merge_method when ff is enabled' do
-      project = build(:project, merge_requests_ff_only_enabled: true)
-      expect(project.merge_method).to be :ff
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff, :rebase, :method) do
+      true  | true  | :ff
+      true  | false | :ff
+      false | true  | :rebase_merge
+      false | false | :merge
     end
 
-    it 'returns "merge" merge_method when ff is disabled' do
-      project = build(:project, merge_requests_ff_only_enabled: false)
-      expect(project.merge_method).to be :merge
+    with_them do
+      let(:project) { build(:project, merge_requests_rebase_enabled: rebase, merge_requests_ff_only_enabled: ff) }
+
+      subject { project.merge_method }
+
+      it { is_expected.to eq(method) }
     end
   end
 
@@ -2632,7 +2639,7 @@ describe Project do
 
         project.rename_repo
 
-        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -2793,7 +2800,7 @@ describe Project do
       it 'updates project full path in .git/config' do
         project.rename_repo
 
-        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3137,38 +3144,19 @@ describe Project do
     end
   end
 
-  describe '#deployment_platform' do
-    subject { project.deployment_platform }
-
-    let(:project) { create(:project) }
-
-    context 'when user configured kubernetes from Integration > Kubernetes' do
-      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
-
-      it { is_expected.to eq(kubernetes_service) }
-    end
-
-    context 'when user configured kubernetes from CI/CD > Clusters' do
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-      let(:platform_kubernetes) { cluster.platform_kubernetes }
-
-      it { is_expected.to eq(platform_kubernetes) }
-    end
-  end
-
   describe '#write_repository_config' do
     set(:project) { create(:project, :repository) }
 
     it 'writes full path in .git/config when key is missing' do
       project.write_repository_config
 
-      expect(project.repo.config['gitlab.fullpath']).to eq project.full_path
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.write_repository_config(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { project.repo.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
