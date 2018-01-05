@@ -2,7 +2,7 @@ module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
       before_action :authorize_admin_project!
-      before_action :require_prometheus_metrics!
+      before_action :require_prometheus_metrics!, only: [:active_common, :validate_query]
 
       def active_common
         respond_to do |format|
