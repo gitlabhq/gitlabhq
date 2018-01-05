@@ -3049,7 +3049,7 @@ describe Project do
 
         project.rename_repo
 
-        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3210,7 +3210,7 @@ describe Project do
       it 'updates project full path in .git/config' do
         project.rename_repo
 
-        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3583,13 +3583,13 @@ describe Project do
     it 'writes full path in .git/config when key is missing' do
       project.write_repository_config
 
-      expect(project.repo.config['gitlab.fullpath']).to eq project.full_path
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.write_repository_config(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { project.repo.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do

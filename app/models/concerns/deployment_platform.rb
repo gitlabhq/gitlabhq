@@ -1,5 +1,9 @@
 module DeploymentPlatform
+<<<<<<< HEAD
   def deployment_platform(environment: nil)
+=======
+  def deployment_platform
+>>>>>>> upstream/master
     @deployment_platform ||=
       find_cluster_platform_kubernetes ||
       find_kubernetes_service_integration ||

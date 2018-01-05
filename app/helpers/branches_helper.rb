@@ -24,6 +24,7 @@ module BranchesHelper
     ProtectedBranch.protected?(project, branch.name)
   end
 
+<<<<<<< HEAD
   # Returns a hash were keys are types of access levels (user, role), and
   # values are the number of access levels of the particular type.
   def access_level_frequencies(access_levels)
@@ -48,6 +49,13 @@ module BranchesHelper
       else
         { id: level.id, type: level.type, access_level: level.access_level }
       end
+=======
+  def diverging_count_label(count)
+    if count >= Repository::MAX_DIVERGING_COUNT
+      "#{Repository::MAX_DIVERGING_COUNT - 1}+"
+    else
+      count.to_s
+>>>>>>> upstream/master
     end
   end
 end

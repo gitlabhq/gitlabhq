@@ -108,6 +108,7 @@
     "rebase_commit_sha": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
+<<<<<<< HEAD
     "rebase_path": { "type": ["string", "null"] },
 
     // EE-specific
@@ -121,6 +122,9 @@
       "base_path": { "type": "string" },
       "base_blob_path": { "type": "string" }
     }
+=======
+    "rebase_path": { "type": ["string", "null"] }
+>>>>>>> upstream/master
   },
   "additionalProperties": false
 }

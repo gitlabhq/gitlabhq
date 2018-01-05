@@ -3,6 +3,7 @@
   "properties": {
     "domain": { "type": "string" },
     "url": { "type": "uri" },
+    "project_id": { "type": "integer" },
     "certificate_expiration": {
       "type": "object",
       "properties": {
@@ -13,6 +14,6 @@
       "additionalProperties": false
     }
   },
-  "required": ["domain", "url"],
+  "required": ["domain", "url", "project_id"],
   "additionalProperties": false
 }

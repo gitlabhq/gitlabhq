@@ -141,6 +141,7 @@ Example response:
   }
 ```
 
+<<<<<<< HEAD
 ## Create a board (EES-Only)
 
 Creates a board.
@@ -226,6 +227,8 @@ DELETE /projects/:id/boards/:board_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1
 ```
 
+=======
+>>>>>>> upstream/master
 ## List board lists
 
 Get a list of the board's lists.

@@ -367,19 +367,14 @@ class IssuableFinder
   end
 
   def by_label(items)
-    if labels?
-      if filter_by_no_label?
-        items = items.without_label
-      else
-        items = items.with_label(label_names, params[:sort])
-        items_projects = projects(items)
+    return items unless labels?
 
-        if items_projects
-          label_ids = LabelsFinder.new(current_user, project_ids: items_projects).execute(skip_authorization: true).select(:id)
-          items = items.where(labels: { id: label_ids })
-        end
+    items =
+      if filter_by_no_label?
+        items.without_label
+      else
+        items.with_label(label_names, params[:sort])
       end
-    end
 
     items
   end

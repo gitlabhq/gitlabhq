@@ -312,6 +312,41 @@ Parameters:
 }
 ```
 
+## Get single MR participants
+
+Get a list of merge request participants.
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/participants
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
+
+
+```json
+[
+  {
+    "id": 1,
+    "name": "John Doe1",
+    "username": "user1",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+    "web_url": "http://localhost/user1"
+  },
+  {
+    "id": 2,
+    "name": "John Doe2",
+    "username": "user2",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/10fc7f102be8de7657fb4d80898bbfe3?s=80&d=identicon",
+    "web_url": "http://localhost/user2"
+  },
+]
+```
+
 ## Get single MR commits
 
 Get a list of merge request commits.
