@@ -250,4 +250,18 @@ describe MergeRequest do
   describe '#sast_container_artifact' do
     it { is_expected.to delegate_method(:sast_container_artifact).to(:head_pipeline) }
   end
+
+  describe '#has_dast_data?' do
+    let(:artifact) { double(success?: true) }
+
+    before do
+      allow(merge_request).to receive(:dast_artifact).and_return(artifact)
+    end
+
+    it { expect(merge_request.has_dast_data?).to be_truthy }
+  end
+
+  describe '#dast_artifact' do
+    it { is_expected.to delegate_method(:dast_artifact).to(:head_pipeline) }
+  end
 end

@@ -12,6 +12,8 @@ import mockData, {
   securityIssues,
   dockerReport,
   dockerReportParsed,
+  dast,
+  parsedDast,
 } from './mock_data';
 import mountComponent from '../helpers/vue_mount_component_helper';
 
@@ -446,6 +448,84 @@ describe('ee merge request widget options', () => {
           expect(
             vm.$el.querySelector('.js-docker-widget').textContent.trim(),
           ).toContain('Failed to load sast:container report');
+          done();
+        }, 0);
+      });
+    });
+  });
+
+  describe('dast report', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        dast: {
+          path: 'dast.json',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
+    describe('when it is loading', () => {
+      it('should render loading indicator', () => {
+        vm = mountComponent(Component);
+
+        expect(
+          vm.$el.querySelector('.js-dast-widget').textContent.trim(),
+        ).toContain('Loading DAST report');
+      });
+    });
+
+    describe('with successful request', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('dast.json').reply(200, dast);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.reset();
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-dast-widget .js-code-text').textContent.trim(),
+          ).toEqual('2 DAST alerts detected by analyzing the review app');
+
+          vm.$el.querySelector('.js-dast-widget button').click();
+
+          Vue.nextTick(() => {
+            const firstVulnerability = vm.$el.querySelector('.js-dast-widget .mr-widget-code-quality-list').textContent.trim();
+            expect(firstVulnerability).toContain(parsedDast[0].name);
+            expect(firstVulnerability).toContain(parsedDast[0].priority);
+            done();
+          });
+        }, 0);
+      });
+    });
+
+    describe('with failed request', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('dast.json').reply(500, {});
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.reset();
+      });
+
+      it('should render error indicator', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-dast-widget').textContent.trim(),
+          ).toContain('Failed to load DAST report');
           done();
         }, 0);
       });

@@ -516,3 +516,63 @@ export const dockerReportParsed = {
     }
   ]
 };
+
+export const dast = {
+  site: {
+    alerts: [{
+      name: 'Absence of Anti-CSRF Tokens',
+      riskcode: '1',
+      riskdesc: 'Low (Medium)',
+      desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.<\/p>',
+      instances: [{
+        uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+        method: 'GET',
+        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+      }, {
+        uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+        method: 'GET',
+        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+      }]
+    }, {
+      alert: 'X-Content-Type-Options Header Missing',
+      name: 'X-Content-Type-Options Header Missing',
+      riskdesc: 'Low (Medium)',
+      desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".<\/p>',
+      instances: [{
+        uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+        method: 'GET',
+        param: 'X-Content-Type-Options'
+      }]
+    }]
+  }
+};
+
+export const parsedDast = [{
+  name: 'Absence of Anti-CSRF Tokens',
+  riskcode: '1',
+  riskdesc: 'Low (Medium)',
+  priority: 'Low (Medium)',
+  desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.<\/p>',
+  parsedDescription: ' No Anti-CSRF tokens were found in a HTML submission form. ',
+  instances: [{
+    uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+    method: 'GET',
+    evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+  }, {
+    uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+    method: 'GET',
+    evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+  }]
+}, {
+  alert: 'X-Content-Type-Options Header Missing',
+  name: 'X-Content-Type-Options Header Missing',
+  riskdesc: 'Low (Medium)',
+  priority: 'Low (Medium)',
+  desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".<\/p>',
+  parsedDescription: ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
+  instances: [{
+    uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+    method: 'GET',
+    param: 'X-Content-Type-Options'
+  }]
+}];
