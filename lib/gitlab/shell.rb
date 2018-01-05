@@ -71,7 +71,6 @@ module Gitlab
     # Ex.
     #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def add_repository(storage, name)
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
@@ -100,8 +99,12 @@ module Gitlab
     # Ex.
     #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/874
     def import_repository(storage, name, url)
+      if url.start_with?('.', '/')
+        raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
+      end
+
       # The timeout ensures the subprocess won't hang forever
       cmd = gitlab_projects(storage, "#{name}.git")
       success = cmd.import_project(url, git_timeout)
@@ -122,7 +125,6 @@ module Gitlab
     # Ex.
     #   fetch_remote(my_repo, "upstream")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
@@ -142,7 +144,7 @@ module Gitlab
     # Ex.
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def mv_repository(storage, path, new_path)
       gitlab_projects(storage, "#{path}.git").mv_project("#{new_path}.git")
     end
@@ -156,7 +158,7 @@ module Gitlab
     # Ex.
     #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "new-namespace/gitlab-ci")
     #
-    # Gitaly note: JV: not easy to migrate because this involves two Gitaly servers, not one.
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
       gitlab_projects(forked_from_storage, "#{forked_from_disk_path}.git")
         .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
@@ -170,7 +172,7 @@ module Gitlab
     # Ex.
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def remove_repository(storage, name)
       gitlab_projects(storage, "#{name}.git").rm_project
     end
@@ -279,7 +281,6 @@ module Gitlab
     # Ex.
     #   add_namespace("/path/to/storage", "gitlab")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def add_namespace(storage, name)
       Gitlab::GitalyClient.migrate(:add_namespace) do |enabled|
         if enabled
@@ -301,7 +302,6 @@ module Gitlab
     # Ex.
     #   rm_namespace("/path/to/storage", "gitlab")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def rm_namespace(storage, name)
       Gitlab::GitalyClient.migrate(:remove_namespace) do |enabled|
         if enabled
@@ -319,7 +319,6 @@ module Gitlab
     # Ex.
     #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient.migrate(:rename_namespace) do |enabled|
         if enabled

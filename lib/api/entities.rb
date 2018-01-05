@@ -894,7 +894,15 @@ module API
       expose :id
       expose :project, using: Entities::BasicProjectDetails
 
-      # EE-specific
+      expose :lists, using: Entities::List do |board|
+        board.lists.destroyable
+      end
+
+      # EE-specific START
+      def scoped_issue_available?(board)
+        board.parent.feature_available?(:scoped_issue_board)
+      end
+
       # Default filtering configuration
       expose :name
       expose :group
@@ -902,14 +910,7 @@ module API
       expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
       expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
       expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
-
-      expose :lists, using: Entities::List do |board|
-        board.lists.destroyable
-      end
-
-      def scoped_issue_available?(board)
-        board.parent.feature_available?(:scoped_issue_board)
-      end
+      # EE-specific END
     end
 
     class Compare < Grape::Entity
@@ -997,6 +998,8 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
+      expose :status
     end
 
     class RunnerDetails < Runner
@@ -1290,6 +1293,7 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },

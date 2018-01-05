@@ -2290,6 +2290,15 @@ describe Repository do
     end
   end
 
+  describe '#diverging_commit_counts' do
+    it 'returns the commit counts behind and ahead of default branch' do
+      result = repository.diverging_commit_counts(
+        repository.find_branch('fix'))
+
+      expect(result).to eq(behind: 29, ahead: 2)
+    end
+  end
+
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     let(:fallback) { 10 }
 
