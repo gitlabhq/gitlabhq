@@ -3,6 +3,16 @@ module API
     class DeployKeys < Grape::API
       before { authenticate! }
 
+      helpers do
+        def add_deploy_keys_project(project, attrs = {})
+          project.deploy_keys_projects.create(attrs)
+        end
+
+        def find_by_deploy_key(project, key_id)
+          project.deploy_keys_projects.find_by!(deploy_key: key_id)
+        end
+      end
+
       get "deploy_keys" do
         authenticated_as_admin!
 
@@ -18,25 +28,28 @@ module API
 
         %w(keys deploy_keys).each do |path|
           desc "Get a specific project's deploy keys" do
-            success ::API::Entities::SSHKey
+            success ::API::Entities::DeployKeysProject
           end
           get ":id/#{path}" do
-            present user_project.deploy_keys, with: ::API::Entities::SSHKey
+            keys = user_project.deploy_keys_projects.preload(:deploy_key)
+
+            present keys, with: ::API::Entities::DeployKeysProject
           end
 
           desc 'Get single deploy key' do
-            success ::API::Entities::SSHKey
+            success ::API::Entities::DeployKeysProject
           end
           params do
             requires :key_id, type: Integer, desc: 'The ID of the deploy key'
           end
           get ":id/#{path}/:key_id" do
-            key = user_project.deploy_keys.find params[:key_id]
-            present key, with: ::API::Entities::SSHKey
+            key = find_by_deploy_key(user_project, params[:key_id])
+
+            present key, with: ::API::Entities::DeployKeysProject
           end
 
           desc 'Add new deploy key to currently authenticated user' do
-            success ::API::Entities::SSHKey
+            success ::API::Entities::DeployKeysProject
           end
           params do
             requires :key, type: String, desc: 'The new deploy key'
@@ -47,24 +60,31 @@ module API
             params[:key].strip!
 
             # Check for an existing key joined to this project
-            key = user_project.deploy_keys.find_by(key: params[:key])
+            key = user_project.deploy_keys_projects
+                              .joins(:deploy_key)
+                              .find_by(keys: { key: params[:key] })
+
             if key
-              present key, with: ::API::Entities::SSHKey
+              present key, with: ::API::Entities::DeployKeysProject
               break
             end
 
             # Check for available deploy keys in other projects
             key = current_user.accessible_deploy_keys.find_by(key: params[:key])
             if key
-              user_project.deploy_keys << key
-              present key, with: ::API::Entities::SSHKey
+              added_key = add_deploy_keys_project(user_project, deploy_key: key, can_push: !!params[:can_push])
+
+              present added_key, with: ::API::Entities::DeployKeysProject
               break
             end
 
             # Create a new deploy key
-            key = DeployKey.new(declared_params(include_missing: false))
-            if key.valid? && user_project.deploy_keys << key
-              present key, with: ::API::Entities::SSHKey
+            key_attributes = { can_push: !!params[:can_push],
+                               deploy_key_attributes: declared_params.except(:can_push) }
+            key = add_deploy_keys_project(user_project, key_attributes)
+
+            if key.valid?
+              present key, with: ::API::Entities::DeployKeysProject
             else
               render_validation_error!(key)
             end
