@@ -4,10 +4,18 @@ class PrometheusMetric < ActiveRecord::Base
 
   validates :title, presence: true
   validates :query, presence: true
+  validates :group, presence: true
+
+  GROUP_NAMES = {
+    business_metrics: 'Business metrics',
+    response: 'Response metrics',
+    system: 'System metrics'
+  }.freeze
 
   def self.to_grouped_query_metrics
-    self.all.group_by(&:group).map do |name, metrics|
-      [name, metrics.map(&:to_query_metric)]
+    self.all.group_by(&:group).map do |group, metrics|
+      group ||= :business
+      [GROUP_NAMES[group], metrics.map(&:to_query_metric)]
     end
   end
 
