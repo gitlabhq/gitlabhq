@@ -90,6 +90,11 @@ export default {
     rightPanelCollapsed() {
       this.editor.updateDimensions();
     },
+    panelResizing(isResizing) {
+      if (isResizing === false) {
+        this.editor.updateDimensions();
+      }
+    },
   },
   computed: {
     ...mapGetters([
@@ -99,6 +104,7 @@ export default {
     ...mapState([
       'leftPanelCollapsed',
       'rightPanelCollapsed',
+      'panelResizing',
     ]),
     shouldHideEditor() {
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;

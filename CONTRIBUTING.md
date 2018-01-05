@@ -554,7 +554,7 @@ the feature you contribute through all of these steps.
 
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
-1. [Unit and system tests][testing] that pass on the CI server
+1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary

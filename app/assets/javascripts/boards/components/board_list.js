@@ -120,7 +120,7 @@ export default {
   },
   mounted() {
     const options = gl.issueBoards.getBoardSortableDefaultOptions({
-      scroll: document.querySelectorAll('.boards-list')[0],
+      scroll: true,
       group: 'issues',
       disabled: this.disabled,
       filter: '.board-list-count, .is-disabled',

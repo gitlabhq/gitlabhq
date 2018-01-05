@@ -68,6 +68,12 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect(Project.find_by_full_path(project_path)).not_to be_nil
       end
 
+      it 'does not schedule an import' do
+        expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+        importer.create_project_if_needed
+      end
+
       it 'creates the Git repo in disk' do
         create_bare_repository("#{project_path}.git")
 
@@ -131,6 +137,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
       expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
     end
 
     it 'moves an existing project to the correct path' do
@@ -160,6 +167,9 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it 'creates the Wiki git repo in disk' do
       create_bare_repository("#{project_path}.git")
       create_bare_repository("#{project_path}.wiki.git")
+
+      expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
+                                                                                  import_type: 'bare_repository')).and_call_original
 
       importer.create_project_if_needed
 

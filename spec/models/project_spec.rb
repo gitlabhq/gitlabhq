@@ -3577,25 +3577,6 @@ describe Project do
     end
   end
 
-  describe '#deployment_platform' do
-    subject { project.deployment_platform }
-
-    let(:project) { create(:project) }
-
-    context 'when user configured kubernetes from Integration > Kubernetes' do
-      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
-
-      it { is_expected.to eq(kubernetes_service) }
-    end
-
-    context 'when user configured kubernetes from CI/CD > Clusters' do
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-      let(:platform_kubernetes) { cluster.platform_kubernetes }
-
-      it { is_expected.to eq(platform_kubernetes) }
-    end
-  end
-
   describe '#write_repository_config' do
     set(:project) { create(:project, :repository) }
 

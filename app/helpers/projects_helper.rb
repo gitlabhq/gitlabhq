@@ -410,7 +410,7 @@ module ProjectsHelper
   end
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
-    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
     project_new_blob_path(
       project,
       project.default_branch || 'master',
