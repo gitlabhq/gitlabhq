@@ -28,6 +28,12 @@ exactly which repositories are causing the trouble.
 
 ### Check all GitLab repositories
 
+>**Note:**
+>
+>  - `gitlab:repo:check` has been deprecated in favour of `gitlab:git:fsck`
+>  - [Deprecated][ce-15931] in GitLab 10.4.
+>  - `gitlab:repo:check` will be removed in the future. [Removal issue][ce-41699]
+
 This task loops through all repositories on the GitLab server and runs the
 3 integrity checks described previously.
 
@@ -76,3 +82,6 @@ The LDAP check Rake task will test the bind_dn and password credentials
 (if configured) and will list a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
+
+[ce-15931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15931
+[ce-41699]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41699
