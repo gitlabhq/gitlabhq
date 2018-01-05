@@ -138,8 +138,8 @@ module Gitlab
 
           # Gitaly will think that setting the limit to 0 means unlimited, while
           # the client might only need the metadata and thus set the limit to 0.
-          # In this method we'll than set the limit to 1, but clear the byte of data
-          # that we got back so fot the outside world it looks like the limit was
+          # In this method we'll then set the limit to 1, but clear the byte of data
+          # that we got back so for the outside world it looks like the limit was
           # actually 0.
           req_limit = limit == 0 ? 1 : limit
 
