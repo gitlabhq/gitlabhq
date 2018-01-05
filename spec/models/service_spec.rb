@@ -258,4 +258,22 @@ describe Service do
       end
     end
   end
+
+  describe "#deprecated?" do
+    let(:project) { create(:project, :repository) }
+
+    it 'should return false by default' do
+      service = create(:service, project: project)
+      expect(service.deprecated?).to be_falsy
+    end
+  end
+
+  describe "#deprecation_message" do
+    let(:project) { create(:project, :repository) }
+
+    it 'should be empty by default' do
+      service = create(:service, project: project)
+      expect(service.deprecation_message).to be_nil
+    end
+  end
 end

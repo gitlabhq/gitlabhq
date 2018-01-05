@@ -2,20 +2,13 @@
   "type": "object",
   "required" : [
     "id",
-    "name",
-    "weight",
     "project",
-    "milestone",
-    "assignee",
-    "labels",
     "lists"
   ],
   "properties" : {
     "id": { "type": "integer" },
-    "name": { "type": "string" },
-    "weight": { "type": ["string", "null"] },
     "project": {
-      "type": "object",
+      "type": ["object", "null"],
       "required": [
         "id",
         "avatar_url",
@@ -54,25 +47,6 @@
       },
       "additionalProperties": false
     },
-    "assignee": {
-      "$ref": "user/basic.json"
-    },
-    "labels": {
-      "type": "array",
-      "items": { "$ref": "label/basic.json" }
-    },
-    "milestone": {
-      "type": ["object", "null"],
-      "required": [
-        "id",
-        "title"
-      ],
-      "properties": {
-        "id": { "type": "integer" },
-        "title": { "type": "string" }
-      },
-      "additionalProperties": false
-    },
     "lists": {
       "type": "array",
       "items": {
@@ -108,5 +82,5 @@
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }

@@ -12,7 +12,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.4.5', group: :mysql
+gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
@@ -295,7 +295,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -418,7 +418,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.61.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.62.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

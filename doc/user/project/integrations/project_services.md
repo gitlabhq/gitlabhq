@@ -40,7 +40,7 @@ Click on the service links to see further configuration instructions and details
 | [JIRA](jira.md) | JIRA issue tracker |
 | [Jenkins](../../../integration/jenkins.md) | An extendable open source continuous integration server |
 | JetBrains TeamCity CI | A continuous integration and build server |
-| [Kubernetes](kubernetes.md) | A containerized deployment service |
+| [Kubernetes](kubernetes.md) _(Has been deprecated in GitLab 10.3)_ | A containerized deployment service |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
 | [Microsoft teams](microsoft_teams.md) |  Receive notifications for actions that happen on GitLab into a room on Microsoft Teams using Office 365 Connectors |

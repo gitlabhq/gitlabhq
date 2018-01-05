@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class RepositoryService
+      include Gitlab::EncodingHelper
+
       def initialize(repository)
         @repository = repository
         @gitaly_repo = repository.gitaly_repository
@@ -72,7 +74,7 @@ module Gitlab
       def find_merge_base(*revisions)
         request = Gitaly::FindMergeBaseRequest.new(
           repository: @gitaly_repo,
-          revisions: revisions.map { |r| GitalyClient.encode(r) }
+          revisions: revisions.map { |r| encode_binary(r) }
         )
 
         response = GitalyClient.call(@storage, :repository_service, :find_merge_base, request)

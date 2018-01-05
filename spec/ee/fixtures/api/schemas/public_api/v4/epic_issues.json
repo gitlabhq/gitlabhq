@@ -1,0 +1,11 @@
+{
+  "allOf": [
+    { "$ref": "./issues.json" },
+    {
+      "properties": {
+        "issue_link_id": { "type": ["integer", "null"] },
+        "position": { "type": ["integer", "null"] }
+      }
+    }
+  ]
+}

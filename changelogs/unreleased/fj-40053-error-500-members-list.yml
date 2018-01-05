@@ -1,0 +1,5 @@
+---
+title: Fixing error 500 when member exist but not the user
+merge_request: 15970
+author:
+type: fixed

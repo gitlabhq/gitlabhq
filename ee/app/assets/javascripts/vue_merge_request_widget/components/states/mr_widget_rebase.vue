@@ -57,7 +57,7 @@
       },
       checkRebaseStatus(continuePolling, stopPolling) {
         this.service.poll()
-          .then(res => res.json())
+          .then(res => res.data)
           .then((res) => {
             if (res.rebase_in_progress) {
               continuePolling();

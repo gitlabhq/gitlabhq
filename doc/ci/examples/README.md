@@ -58,6 +58,10 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Scan your code for vulnerabilities](sast.md)
 
+### Dynamic Application Security Testing (DAST)
+
+- [Scan your app for vulnerabilities](dast.md)
+
 ### Browser Performance Testing with Sitespeed.io
 
 - [Analyze browser performance with Sitespeed.io](browser_performance.md)

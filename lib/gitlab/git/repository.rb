@@ -133,7 +133,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -195,7 +195,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+        gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -926,31 +926,23 @@ module Gitlab
 
       # If `mirror_refmap` is present the remote is set as mirror with that mapping
       def add_remote(remote_name, url, mirror_refmap: nil)
-        rugged.remotes.create(remote_name, url)
-
-        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
-      rescue Rugged::ConfigError
-        remote_update(remote_name, url: url)
+        gitaly_migrate(:remote_add_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
+          else
+            rugged_add_remote(remote_name, url, mirror_refmap)
+          end
+        end
       end
 
       def remove_remote(remote_name)
-        # When a remote is deleted all its remote refs are deleted too, but in
-        # the case of mirrors we map its refs (that would usualy go under
-        # [remote_name]/) to the top level namespace. We clean the mapping so
-        # those don't get deleted.
-        if rugged.config["remote.#{remote_name}.mirror"]
-          rugged.config.delete("remote.#{remote_name}.fetch")
+        gitaly_migrate(:remote_remove_remote) do |is_enabled|
+          if is_enabled
+            gitaly_remote_client.remove_remote(remote_name)
+          else
+            rugged_remove_remote(remote_name)
+          end
         end
-
-        rugged.remotes.delete(remote_name)
-        true
-      rescue Rugged::ConfigError
-        false
-      end
-
-      # Returns true if a remote exists.
-      def remote_exists?(name)
-        rugged.remotes[name].present?
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -1322,6 +1314,14 @@ module Gitlab
 
       def gitaly_operation_client
         @gitaly_operation_client ||= Gitlab::GitalyClient::OperationService.new(self)
+      end
+
+      def gitaly_remote_client
+        @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
+      end
+
+      def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
+        Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
@@ -1941,6 +1941,29 @@ module Gitlab
         end
       rescue Rugged::ReferenceError
         raise ArgumentError, 'Invalid merge source'
+      end
+
+      def rugged_add_remote(remote_name, url, mirror_refmap)
+        rugged.remotes.create(remote_name, url)
+
+        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
+      rescue Rugged::ConfigError
+        remote_update(remote_name, url: url)
+      end
+
+      def rugged_remove_remote(remote_name)
+        # When a remote is deleted all its remote refs are deleted too, but in
+        # the case of mirrors we map its refs (that would usualy go under
+        # [remote_name]/) to the top level namespace. We clean the mapping so
+        # those don't get deleted.
+        if rugged.config["remote.#{remote_name}.mirror"]
+          rugged.config.delete("remote.#{remote_name}.fetch")
+        end
+
+        rugged.remotes.delete(remote_name)
+        true
+      rescue Rugged::ConfigError
+        false
       end
 
       def fetch_remote(remote_name = 'origin', env: nil)

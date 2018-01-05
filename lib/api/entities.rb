@@ -491,6 +491,26 @@ module API
       expose :issue_link_id
     end
 
+    class Epic < Grape::Entity
+      expose :id
+      expose :iid
+      expose :title
+      expose :description
+      expose :author, using: Entities::UserBasic
+      expose :start_date
+      expose :end_date
+    end
+
+    class EpicIssue < Issue
+      expose :epic_issue_id
+    end
+
+    class EpicIssueLink < Grape::Entity
+      expose :id
+      expose :epic, using: Entities::Epic
+      expose :issue, using: Entities::IssueBasic
+    end
+
     class IssueLink < Grape::Entity
       expose :source, as: :source_issue, using: Entities::IssueBasic
       expose :target, as: :target_issue, using: Entities::IssueBasic
@@ -786,8 +806,9 @@ module API
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events
-      expose :tag_push_events, :note_events, :pipeline_events
+      expose :push_events, :issues_events, :confidential_issues_events
+      expose :merge_requests_events, :tag_push_events, :note_events
+      expose :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
@@ -868,11 +889,12 @@ module API
 
     class Board < Grape::Entity
       expose :id
-      expose :name
       expose :project, using: Entities::BasicProjectDetails
 
       # EE-specific
       # Default filtering configuration
+      expose :name
+      expose :group
       expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
       expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
       expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
