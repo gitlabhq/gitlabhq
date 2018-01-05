@@ -11,6 +11,7 @@
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 
   export default {
     name: 'notesApp',
@@ -56,6 +57,15 @@
 
         return this.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : NOTEABLE_TYPE;
       },
+      allNotes() {
+        if (this.isLoading) {
+          const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
+          return new Array(totalNotes).fill({
+            isSkeletonNote: true,
+          });
+        }
+        return this.notes;
+      },
     },
     methods: {
       ...mapActions({
@@ -70,6 +80,9 @@
         setTargetNoteHash: 'setTargetNoteHash',
       }),
       getComponentName(note) {
+        if (note.isSkeletonNote) {
+          return skeletonLoadingContainer;
+        }
         if (note.isPlaceholderNote) {
           if (note.placeholderType === constants.SYSTEM_NOTE) {
             return placeholderSystemNote;
@@ -135,19 +148,13 @@
 
 <template>
   <div id="notes">
-    <div
-      v-if="isLoading"
-      class="js-loading loading">
-      <loading-icon />
-    </div>
-
-    <template v-if="!isLoading">
+    <template>
       <ul
         id="notes-list"
         class="notes main-notes-list timeline">
 
         <component
-          v-for="note in notes"
+          v-for="note in allNotes"
           :is="getComponentName(note)"
           :note="getComponentData(note)"
           :key="note.id"

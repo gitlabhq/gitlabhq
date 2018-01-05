@@ -13,5 +13,6 @@
   quick_actions_docs_path: help_page_path('user/project/quick_actions'),
   notes_path: notes_url,
   last_fetched_at: Time.now.to_i,
+  total_notes: @issue.notes.length,
   noteable_data: serialize_issuable(@issue),
   current_user_data: UserSerializer.new.represent(current_user, only_path: true).to_json } }

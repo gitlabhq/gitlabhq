@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
           notesPath: notesDataset.notesPath,
           markdownDocsPath: notesDataset.markdownDocsPath,
           quickActionsDocsPath: notesDataset.quickActionsDocsPath,
+          totalNotes: notesDataset.totalNotes,
         },
       };
     },

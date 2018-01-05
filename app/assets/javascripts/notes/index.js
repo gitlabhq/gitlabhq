@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
         notesPath: notesDataset.notesPath,
         markdownDocsPath: notesDataset.markdownDocsPath,
         quickActionsDocsPath: notesDataset.quickActionsDocsPath,
+        totalNotes: notesDataset.totalNotes,
       },
     };
   },

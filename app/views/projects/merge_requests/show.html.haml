@@ -94,6 +94,7 @@
                 markdown_docs_path: help_page_path('user/markdown'),
                 quick_actions_docs_path: help_page_path('user/project/quick_actions'),
                 notes_path: notes_url,
+                total_notes: @merge_request.notes.length,
                 last_fetched_at: Time.now.to_i,
                 issue_data: serialize_issuable(@merge_request),
                 current_user_data: UserSerializer.new.represent(current_user).to_json} }
