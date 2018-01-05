@@ -13,10 +13,7 @@
     components: {
       skeletonLoadingContainer,
       newDropdown,
-<<<<<<< HEAD
       fileStatusIcon,
-=======
->>>>>>> upstream/master
       fileIcon,
     },
     props: {
@@ -107,9 +104,9 @@
         >
         </file-icon>
         {{ file.name }}
-        <fileStatusIcon
+        <file-status-icon
           :file="file">
-        </fileStatusIcon>
+        </file-status-icon>
       </a>
       <new-dropdown
         v-if="isTree"
