@@ -18,6 +18,7 @@ following locations:
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
 - [Environments](environments.md)
+- [Epic Issues](epic_issues.md)
 - [Events](events.md)
 - [Feature flags](features.md)
 - [Geo Nodes](geo_nodes.md)
