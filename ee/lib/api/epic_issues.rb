@@ -52,7 +52,13 @@ module API
 
         # For now we return empty body
         # The issues list in the correct order in body will be returned as part of #4250
-        render_api_error!({ error: "Issue could not be moved!" }, 400) unless result
+        if result
+          present epic.issues(current_user),
+            with: Entities::EpicIssue,
+            current_user: current_user
+        else
+          render_api_error!({ error: "Issue could not be moved!" }, 400)
+        end
       end
 
       desc 'Get issues assigned to the epic' do

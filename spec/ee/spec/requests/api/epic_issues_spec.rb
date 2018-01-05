@@ -295,8 +295,11 @@ describe API::EpicIssues do
         it 'updates the positions values' do
           expect(epic_issue1.reload.relative_position).to be < epic_issue2.relative_position
         end
+
+        it 'matches the response schema' do
+          expect(response).to match_response_schema('public_api/v4/epic_issues', dir: 'ee')
+        end
       end
     end
   end
-
 end

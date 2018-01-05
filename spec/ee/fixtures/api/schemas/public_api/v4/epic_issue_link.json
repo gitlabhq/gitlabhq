@@ -2,6 +2,7 @@
   "type": "object",
   "properties" : {
     "id": { "type": "integer" },
+    "relative_position": { "type": "integer" },
     "issue": { "type": "object" },
     "epic": {
       "type": "object",
@@ -32,6 +33,6 @@
         ]
      }
   },
-  "required" : [ "id", "epic", "issue" ],
+  "required" : [ "id", "epic", "issue", "relative_position" ],
   "additionalProperties": false
 }

@@ -503,10 +503,12 @@ module API
 
     class EpicIssue < Issue
       expose :epic_issue_id
+      expose :relative_position
     end
 
     class EpicIssueLink < Grape::Entity
       expose :id
+      expose :relative_position
       expose :epic, using: Entities::Epic
       expose :issue, using: Entities::IssueBasic
     end

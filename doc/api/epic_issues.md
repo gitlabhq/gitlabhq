@@ -312,3 +312,100 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+## Update epic - issue association
+
+Updates an epic - issue association.
+
+```
+PUT /groups/:id/-/epics/:epic_iid/issues/:epic_issue_id
+```
+
+| Attribute           | Type             | Required   | Description                                                                                          |
+| ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.                |
+| `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
+| `move_before_id`    | integer/string   | no         | The ID of the issue - epic association that should be placed before the link in the question.     |
+| `move_after_id`     | integer/string   | no         | The ID of the issue - epic association that should be placed after the link in the question.     |
+
+```bash
+curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5/issues/11?move_before_id=20
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 30,
+    "iid": 6,
+    "project_id": 8,
+    "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
+    "description" : "Ratione dolores corrupti mollitia soluta quia.",
+    "state": "opened",
+    "created_at": "2017-11-15T13:39:24.670Z",
+    "updated_at": "2018-01-04T10:49:19.506Z",
+    "closed_at": null,
+    "labels": [],
+    "milestone": {
+      "id": 38,
+      "iid": 3,
+      "project_id": 8,
+      "title": "v2.0",
+      "description": "In tempore culpa inventore quo accusantium.",
+      "state": "closed",
+      "created_at": "2017-11-15T13:39:13.825Z",
+      "updated_at": "2017-11-15T13:39:13.825Z",
+      "due_date": null,
+      "start_date": null
+    },
+    "assignees": [{
+      "id": 7,
+      "name": "Pamella Huel",
+      "username": "arnita",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a2f5c6fcef64c9c69cb8779cb292be1b?s=80&d=identicon",
+      "web_url": "http://localhost:3001/arnita"
+    }],
+    "assignee": {
+      "id": 7,
+      "name": "Pamella Huel",
+      "username": "arnita",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a2f5c6fcef64c9c69cb8779cb292be1b?s=80&d=identicon",
+      "web_url": "http://localhost:3001/arnita"
+    },
+    "author": {
+      "id": 13,
+      "name": "Michell Johns",
+      "username": "chris_hahn",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/30e3b2122ccd6b8e45e8e14a3ffb58fc?s=80&d=identicon",
+      "web_url": "http://localhost:3001/chris_hahn"
+    },
+    "user_notes_count": 8,
+    "upvotes": 0,
+    "downvotes": 0,
+    "due_date": null,
+    "confidential": false,
+    "weight": null,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3001/h5bp/html5-boilerplate/issues/6",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    },
+    "_links":{
+      "self": "http://localhost:3001/api/v4/projects/8/issues/6",
+      "notes": "http://localhost:3001/api/v4/projects/8/issues/6/notes",
+      "award_emoji": "http://localhost:3001/api/v4/projects/8/issues/6/award_emoji",
+      "project": "http://localhost:3001/api/v4/projects/8"
+    },
+    "subscribed": true,
+    "epic_issue_id": 11,
+    "relative_position": 55
+  }
+]
