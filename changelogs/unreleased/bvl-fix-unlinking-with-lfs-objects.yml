@@ -1,6 +1,0 @@
----
-title: Don't link LFS objects to a project when unlinking forks when they were already
-  linked
-merge_request: 16006
-author:
-type: fixed

@@ -625,6 +625,14 @@ codequality:
   artifacts:
     paths: [codeclimate.json]
 
+sast:
+  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  before_script: []
+  script:
+    - /app/bin/run .
+  artifacts:
+    paths: [gl-sast-report.json]
+
 qa:internal:
   <<: *dedicated-runner
   <<: *except-docs

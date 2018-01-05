@@ -33,6 +33,26 @@ feature 'Runners' do
         expect(page).to have_content(specific_runner.platform)
       end
 
+      scenario 'user can pause and resume the specific runner' do
+        visit runners_path(project)
+
+        within '.activated-specific-runners' do
+          expect(page).to have_content('Pause')
+        end
+
+        click_on 'Pause'
+
+        within '.activated-specific-runners' do
+          expect(page).to have_content('Resume')
+        end
+
+        click_on 'Resume'
+
+        within '.activated-specific-runners' do
+          expect(page).to have_content('Pause')
+        end
+      end
+
       scenario 'user removes an activated specific runner if this is last project for that runners' do
         visit runners_path(project)
 

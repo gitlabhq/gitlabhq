@@ -12,6 +12,7 @@
     padding: 10px 15px;
     min-height: 20px;
     border-bottom: 1px solid $list-border;
+    word-wrap: break-word;
 
     &::after {
       content: " ";

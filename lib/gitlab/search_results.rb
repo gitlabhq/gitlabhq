@@ -82,7 +82,10 @@ module Gitlab
     end
 
     def issues
-      issues = IssuesFinder.new(current_user).execute.where(project_id: project_ids_relation)
+      issues = IssuesFinder.new(current_user).execute
+      unless default_project_filter
+        issues = issues.where(project_id: project_ids_relation)
+      end
 
       issues =
         if query =~ /#(\d+)\z/

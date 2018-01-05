@@ -1,5 +1,0 @@
----
-title: Reduce the number of buckets in gitlab_cache_operation_duration_seconds metric
-merge_request: 15881
-author:
-type: changed

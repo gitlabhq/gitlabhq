@@ -423,8 +423,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :runners, only: [:index, :edit, :update, :destroy, :show] do
         member do
-          get :resume
-          get :pause
+          post :resume
+          post :pause
         end
 
         collection do
