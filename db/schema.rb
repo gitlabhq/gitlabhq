@@ -774,6 +774,7 @@ ActiveRecord::Schema.define(version: 20171229225929) do
   create_table "epic_issues", force: :cascade do |t|
     t.integer "epic_id", null: false
     t.integer "issue_id", null: false
+    t.integer "relative_position", default: 1073741823, null: false
   end
 
   add_index "epic_issues", ["epic_id"], name: "index_epic_issues_on_epic_id", using: :btree

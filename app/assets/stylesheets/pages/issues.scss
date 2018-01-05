@@ -374,18 +374,11 @@ ul.related-merge-requests > li {
   }
 }
 
-@mixin issue-token-state-icon {
-  margin-right: 0.35em;
-  font-size: 0.9em;
-}
-
 .issue-token-state-icon-open {
-  @include issue-token-state-icon;
   color: $green-600;
 }
 
 .issue-token-state-icon-closed {
-  @include issue-token-state-icon;
   color: $red-600;
 }
 

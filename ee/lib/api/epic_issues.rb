@@ -32,6 +32,35 @@ module API
     end
 
     resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      desc 'Update epic issue association' do
+      end
+      params do
+        requires :epic_iid, type: Integer, desc: 'The iid of the epic'
+        requires :epic_issue_id, type: Integer, desc: 'The id of the epic issue association to update'
+        optional :move_before_id, type: Integer, desc: 'The id of the epic issue association that should be positioned before the actual issue'
+        optional :move_after_id, type: Integer, desc: 'The id of the epic issue association that should be positioned after the actual issue'
+      end
+      put ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
+        authorize_can_admin!
+
+        update_params = {
+          move_before_id: params[:move_before_id],
+          move_after_id: params[:move_after_id]
+        }
+
+        result = ::EpicIssues::UpdateService.new(link, current_user, update_params).execute
+
+        # For now we return empty body
+        # The issues list in the correct order in body will be returned as part of #4250
+        if result
+          present epic.issues(current_user),
+            with: Entities::EpicIssue,
+            current_user: current_user
+        else
+          render_api_error!({ error: "Issue could not be moved!" }, 400)
+        end
+      end
+
       desc 'Get issues assigned to the epic' do
         success Entities::EpicIssue
       end
