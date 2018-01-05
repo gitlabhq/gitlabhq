@@ -15,10 +15,6 @@ FactoryGirl.define do
       factory :another_deploy_key, class: 'DeployKey'
     end
 
-    factory :write_access_key, class: 'DeployKey' do
-      can_push true
-    end
-
     factory :rsa_key_2048 do
       key do
         'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFf6RYK3qu/RKF/3ndJmL5xgMLp3O9' \
