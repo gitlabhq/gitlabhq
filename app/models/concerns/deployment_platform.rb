@@ -1,8 +1,9 @@
 module DeploymentPlatform
-  def deployment_platform
-    @deployment_platform ||= find_cluster_platform_kubernetes
-    @deployment_platform ||= find_kubernetes_service_integration
-    @deployment_platform ||= build_cluster_and_deployment_platform
+  def deployment_platform(environment: nil)
+    @deployment_platform ||=
+      find_cluster_platform_kubernetes ||
+      find_kubernetes_service_integration ||
+      build_cluster_and_deployment_platform
   end
 
   private
