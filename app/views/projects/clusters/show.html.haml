@@ -18,9 +18,9 @@
   .js-cluster-application-notice
     .flash-container
 
-  %section.settings.no-animate.expanded
+  %section.settings.no-animate.expanded#cluster-integration
     = render 'banner'
-    = render 'enabled'
+    = render 'integration_form'
 
   .cluster-applications-table#js-cluster-applications
 
@@ -41,6 +41,6 @@
       %h4= _('Advanced settings')
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
-      %p= s_('ClusterIntegration|Manage cluster integration on your GitLab project')
+      %p= s_("ClusterIntegration|Advanced options on this cluster's integration")
     .settings-content
       = render 'advanced_settings'

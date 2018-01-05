@@ -1219,9 +1219,16 @@ module Gitlab
         rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
         env = git_env_for_user(user)
 
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
         with_worktree(rebase_path, branch, env: env) do
           run_git!(
-            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
             chdir: rebase_path, env: env
           )
 
