@@ -1,6 +1,10 @@
 class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
   DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME = 'KubernetesService'.freeze
+
+  disable_ddl_transaction!
 
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
@@ -58,13 +62,15 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
       joins('LEFT JOIN projects ON projects.id = services.project_id')
       .joins('LEFT JOIN cluster_projects ON cluster_projects.project_id = projects.id')
       .joins('LEFT JOIN cluster_platforms_kubernetes ON cluster_platforms_kubernetes.cluster_id = cluster_projects.cluster_id')
-      .where(category: 'deployment')
-      .where(type: 'KubernetesService')
-      .where(template: false)
+      .where(category: 'deployment', type: 'KubernetesService', template: false)
       .where("services.properties LIKE '%api_url%'")
       .where("(services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')) OR cluster_platforms_kubernetes.api_url IS NULL")
       .group(:id)
       .order(id: :asc)
+    end
+
+    scope :kubernetes_service_without_template, -> do
+      where(category: 'deployment', type: 'KubernetesService', template: false)
     end
   end
 
@@ -86,65 +92,33 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   end
 
   def up
-    MigrateKubernetesServiceToNewClustersArchitectures::Service
-      .unmanaged_kubernetes_service.each_batch(of: 100) do |kubernetes_services|
-
-      rows_for_clusters = kubernetes_services.map do |kubernetes_service|
-        {
+    ActiveRecord::Base.transaction do
+      MigrateKubernetesServiceToNewClustersArchitectures::Service
+        .unmanaged_kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
+        MigrateKubernetesServiceToNewClustersArchitectures::Cluster.create(
           enabled: kubernetes_service.active,
           user_id: nil, # KubernetesService doesn't have
           name: DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME,
           provider_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.provider_types[:user],
           platform_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.platform_types[:kubernetes],
+          projects: [kubernetes_service.project.becomes(MigrateKubernetesServiceToNewClustersArchitectures::Project)],
           environment_scope: find_dedicated_environement_scope(kubernetes_service.project),
-          created_at: Gitlab::Database.sanitize_timestamp(kubernetes_service.created_at),
-          updated_at: Gitlab::Database.sanitize_timestamp(kubernetes_service.updated_at)
-        }
+          platform_kubernetes_attributes: {
+            api_url: kubernetes_service.api_url,
+            ca_cert: kubernetes_service.ca_pem,
+            namespace: kubernetes_service.namespace,
+            username: nil, # KubernetesService doesn't have
+            encrypted_password: nil, # KubernetesService doesn't have
+            encrypted_password_iv: nil, # KubernetesService doesn't have
+            token: kubernetes_service.token # encrypted_token and encrypted_token_iv
+          } )
       end
-
-      inserted_cluster_ids = Gitlab::Database.bulk_insert('clusters', rows_for_clusters, return_ids: true)
-
-      rows_for_cluster_platforms_kubernetes = kubernetes_services.each_with_index.map do |kubernetes_service, i|
-
-        # Create PlatformsKubernetes instance for generating an encrypted token
-        platforms_kubernetes =
-          MigrateKubernetesServiceToNewClustersArchitectures::PlatformsKubernetes
-          .new(token: kubernetes_service.token)
-
-        {
-          cluster_id: inserted_cluster_ids[i],
-          api_url: kubernetes_service.api_url,
-          ca_cert: kubernetes_service.ca_pem,
-          namespace: kubernetes_service.namespace,
-          username: nil, # KubernetesService doesn't have
-          encrypted_password: nil, # KubernetesService doesn't have
-          encrypted_password_iv: nil, # KubernetesService doesn't have
-          encrypted_token: platforms_kubernetes.encrypted_token, # encrypted_token and encrypted_token_iv
-          encrypted_token_iv: platforms_kubernetes.encrypted_token_iv, # encrypted_token and encrypted_token_iv
-          created_at: Gitlab::Database.sanitize_timestamp(kubernetes_service.created_at),
-          updated_at: Gitlab::Database.sanitize_timestamp(kubernetes_service.updated_at)
-        }
-      end
-
-      Gitlab::Database.bulk_insert('cluster_platforms_kubernetes', rows_for_cluster_platforms_kubernetes)
-
-      rows_for_cluster_projects = kubernetes_services.each_with_index.map do |kubernetes_service, i|
-        {
-          cluster_id: inserted_cluster_ids[i],
-          project_id: kubernetes_service.project_id,
-          created_at: Gitlab::Database.sanitize_timestamp(kubernetes_service.created_at),
-          updated_at: Gitlab::Database.sanitize_timestamp(kubernetes_service.updated_at)
-        }
-      end
-
-      Gitlab::Database.bulk_insert('cluster_projects', rows_for_cluster_projects)
     end
 
     MigrateKubernetesServiceToNewClustersArchitectures::Service
-      .where(category: 'deployment', type: 'KubernetesService', template: false)
-      .each_batch(of: 100) do |batch|
-        batch.update_all(active: false)
-      end
+      .kubernetes_service_without_template.each_batch(of: 100) do |kubernetes_service|
+        kubernetes_service.update_all(active: false)
+    end
   end
 
   def down

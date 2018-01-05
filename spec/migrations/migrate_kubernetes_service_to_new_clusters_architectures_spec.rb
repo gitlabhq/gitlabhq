@@ -38,18 +38,6 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
 
       it_behaves_like 'KubernetesService migration'
     end
-
-    context 'when KubernetesService is not active' do
-      let(:active) { false }
-
-      # Platforms::Kubernetes validates `token` reagdless of the activeness,
-      # whereas KubernetesService validates `token` if only it's activated
-      # However, in this migration file, there are no validations because of the migration specific model class
-      # therefore, Validation Error will not happen in this case and just migrate data
-      let(:token) { '' }
-
-      it_behaves_like 'KubernetesService migration'
-    end
   end
 
   context 'when unique KubernetesService spawned from Service Template' do
@@ -183,6 +171,34 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
       expect { migrate! }.not_to change { Clusters::Cluster.count }
 
       expect(project.kubernetes_service).not_to be_active
+    end
+  end
+
+  # Platforms::Kubernetes validates `token` reagdless of the activeness,
+  # whereas KubernetesService validates `token` if only it's activated
+  # However, in this migration file, there are no validations because of the re-defined model class
+  # therefore, we should safely add this raw to Platform::Kubernetes
+  context 'when KubernetesService has empty token' do
+    let(:project) { create(:project) }
+
+    before do
+      ActiveRecord::Base.connection.execute <<~SQL
+        INSERT INTO services (project_id, active, category, type, properties)
+        VALUES (#{project.id}, false, 'deployment', 'KubernetesService', '{"namespace":"prod","api_url":"http://111.111.111.111","ca_pem":"a","token":""}');
+      SQL
+    end
+
+    it 'does not migrate the KubernetesService and disables the kubernetes_service' do
+      expect { migrate! }.to change { Clusters::Cluster.count }.by(1)
+
+      project.clusters.last.tap do |cluster|
+        expect(cluster.environment_scope).to eq('*')
+        expect(cluster.platform_kubernetes.namespace).to eq('prod')
+        expect(cluster.platform_kubernetes.api_url).to eq('http://111.111.111.111')
+        expect(cluster.platform_kubernetes.ca_pem).to eq('a')
+        expect(cluster.platform_kubernetes.token).to be_empty
+        expect(project.kubernetes_service).not_to be_active
+      end
     end
   end
 
