@@ -10,6 +10,8 @@ module Gitlab
       # Source: http://ctogonewild.com/2009/09/03/bitmask-searches-in-ldap/
       AD_USER_DISABLED = Net::LDAP::Filter.ex("userAccountControl:1.2.840.113556.1.4.803", "2")
 
+      InvalidEntryError = Class.new(StandardError)
+
       attr_accessor :entry, :provider
 
       def self.find_by_uid(uid, adapter)
@@ -33,11 +35,12 @@ module Gitlab
 
       def self.ldap_attributes(config)
         [
-          'dn', # Used in `dn`
-          config.uid, # Used in `uid`
-          *config.attributes['name'], # Used in `name`
-          *config.attributes['email'] # Used in `email`
-        ]
+          'dn',
+          config.uid,
+          *config.attributes['name'],
+          *config.attributes['email'],
+          *config.attributes['username']
+        ].compact.uniq
       end
 
       def self.normalize_dn(dn)
@@ -64,6 +67,8 @@ module Gitlab
         Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
         @provider = provider
+
+        validate_entry
       end
 
       def name
@@ -75,7 +80,13 @@ module Gitlab
       end
 
       def username
-        uid
+        username = attribute_value(:username)
+
+        # Depending on the attribute, multiple values may
+        # be returned. We need only one for username.
+        # Ex. `uid` returns only one value but `mail` may
+        # return an array of multiple email addresses.
+        [username].flatten.first
       end
 
       def email
@@ -107,6 +118,19 @@ module Gitlab
         return nil unless selected_attr
 
         entry.public_send(selected_attr) # rubocop:disable GitlabSecurity/PublicSend
+      end
+
+      def validate_entry
+        allowed_attrs = self.class.ldap_attributes(config).map(&:downcase)
+
+        # Net::LDAP::Entry transforms keys to symbols. Change to strings to compare.
+        entry_attrs = entry.attribute_names.map { |n| n.to_s.downcase }
+        invalid_attrs = entry_attrs - allowed_attrs
+
+        if invalid_attrs.any?
+          raise InvalidEntryError,
+                "#{self.class.name} initialized with Net::LDAP::Entry containing invalid attributes(s): #{invalid_attrs}"
+        end
       end
     end
   end

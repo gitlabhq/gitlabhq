@@ -1,4 +1,5 @@
 import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
+import { stripeHtml } from '~/lib/utils/text_utility';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
@@ -7,12 +8,12 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.initPerformanceReport(data);
     this.initSecurityReport(data);
     this.initDockerReport(data);
+    this.initDastReport(data);
   }
 
   setData(data) {
     this.initGeo(data);
     this.initSquashBeforeMerge(data);
-    this.initRebase(data);
     this.initApprovals(data);
 
     super.setData(data);
@@ -23,13 +24,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
       || data.squash_before_merge_help_path;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge
       || data.enable_squash_before_merge;
-  }
-
-  initRebase(data) {
-    this.canPushToSourceBranch = data.can_push_to_source_branch;
-    this.rebaseInProgress = data.rebase_in_progress;
-    this.approvalsLeft = !data.approved;
-    this.rebasePath = data.rebase_path;
   }
 
   initGeo(data) {
@@ -81,6 +75,11 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     };
   }
 
+  initDastReport(data) {
+    this.dast = data.dast;
+    this.dastReport = [];
+  }
+
   setSecurityReport(issues, path) {
     this.securityReport = MergeRequestStore.parseIssues(issues, path);
   }
@@ -102,6 +101,21 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
     this.dockerReport.unapproved = parsedVulnerabilities
       .filter(item => unapproved.find(el => el === item.vulnerability)) || [];
+  }
+  /**
+   * Dast Report sends some keys in HTML, we need to stripe the `<p>` tags.
+   * This should be moved to the backend.
+   *
+   * @param {Array} data
+   * @returns {Array}
+   */
+  setDastReport(data) {
+    this.dastReport = data.site.alerts.map(alert => ({
+      name: alert.name,
+      parsedDescription: stripeHtml(alert.desc, ' '),
+      priority: alert.riskdesc,
+      ...alert,
+    }));
   }
 
   static parseDockerVulnerabilities(data) {

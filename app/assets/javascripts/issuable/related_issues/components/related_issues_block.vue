@@ -1,13 +1,14 @@
 <script>
+import Sortable from 'vendor/Sortable';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import sortableConfig from '~/sortable/sortable_config';
 import eventHub from '../event_hub';
-import issueToken from './issue_token.vue';
+import issueItem from './issue_item.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
 export default {
   name: 'RelatedIssuesBlock',
-
   props: {
     isFetching: {
       type: Boolean,
@@ -25,6 +26,11 @@ export default {
       default: () => [],
     },
     canAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canReorder: {
       type: Boolean,
       required: false,
       default: false,
@@ -60,17 +66,14 @@ export default {
       default: 'Related issues',
     },
   },
-
   directives: {
     tooltip,
   },
-
   components: {
     loadingIcon,
     addIssuableForm,
-    issueToken,
+    issueItem,
   },
-
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
@@ -88,11 +91,33 @@ export default {
       return this.helpPath.length > 0;
     },
   },
-
   methods: {
     toggleAddRelatedIssuesForm() {
       eventHub.$emit('toggleAddRelatedIssuesForm');
     },
+    reordered(event) {
+      this.removeDraggingCursor();
+
+      this.$emit('saveReorder', {
+        issueId: parseInt(event.item.dataset.key, 10),
+        beforeId: this.relatedIssues[event.newIndex - 1].epic_issue_id,
+        afterId: this.relatedIssues[event.newIndex].epic_issue_id,
+      });
+    },
+    addDraggingCursor() {
+      document.body.classList.add('is-dragging');
+    },
+    removeDraggingCursor() {
+      document.body.classList.remove('is-dragging');
+    },
+  },
+  mounted() {
+    if (this.canReorder) {
+      this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
+        onStart: this.addDraggingCursor,
+        onEnd: this.reordered,
+      }));
+    }
   },
 };
 </script>
@@ -151,7 +176,8 @@ export default {
       <div
         class="related-issues-token-body panel-body"
         :class="{
-            'collapsed': !shouldShowTokenBody
+          'collapsed': !shouldShowTokenBody,
+          'sortable-container': canReorder
         }">
         <div
           v-if="isFetching"
@@ -161,12 +187,22 @@ export default {
             label="Fetching related issues" />
         </div>
         <ul
-          class="flex-list content-list issuable-list">
+          ref="list"
+          class="flex-list issuable-list"
+          :class="{ 'content-list' : !canReorder }"
+        >
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item">
-            <issue-token
+            class="js-related-issues-token-list-item"
+            :class="{
+              'user-can-drag': canReorder,
+              'sortable-row': canReorder,
+              card: canReorder
+            }"
+            :data-key="issue.id"
+          >
+            <issue-item
               event-namespace="relatedIssue"
               :id-key="issue.id"
               :display-reference="issue.reference"
@@ -174,6 +210,7 @@ export default {
               :path="issue.path"
               :state="issue.state"
               :can-remove="canAdmin"
+              :can-reorder="canReorder"
             />
           </li>
         </ul>

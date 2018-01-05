@@ -10,12 +10,10 @@ export default {
       required: true,
     },
   },
-
   components: {
     fileStatusIcon,
     fileIcon,
   },
-
   computed: {
     closeLabel() {
       if (this.tab.changed || this.tab.tempFile) {

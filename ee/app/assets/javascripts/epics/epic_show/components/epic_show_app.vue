@@ -140,6 +140,7 @@
       <related-issues-root
         :endpoint="issueLinksEndpoint"
         :can-admin="canAdmin"
+        :can-reorder="canAdmin"
         :allow-auto-complete="false"
         title="Issues"
       />

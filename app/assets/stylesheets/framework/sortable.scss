@@ -1,0 +1,22 @@
+.sortable-container {
+  background-color: $gray-light;
+
+  .flex-list {
+    padding: 5px;
+    margin-bottom: 0;
+  }
+}
+
+.sortable-row {
+  .flex-row {
+    display: flex;
+
+    &.issue-info-container {
+      padding-right: 0;
+    }
+  }
+
+  .sortable-link {
+    color: $black;
+  }
+}

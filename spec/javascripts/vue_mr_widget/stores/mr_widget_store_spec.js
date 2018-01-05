@@ -9,6 +9,8 @@ import mockData, {
   parsedSecurityIssuesStore,
   dockerReport,
   dockerReportParsed,
+  dast,
+  parsedDast,
 } from '../mock_data';
 
 describe('MergeRequestStore', () => {
@@ -167,6 +169,23 @@ describe('MergeRequestStore', () => {
       ).toEqual(
         dockerReportParsed.vulnerabilities,
       );
+    });
+  });
+
+  describe('initDastReport', () => {
+    it('sets the defaults', () => {
+      store.initDastReport({ dast: { path: 'dast.json' } });
+
+      expect(store.dast).toEqual({ path: 'dast.json' });
+      expect(store.dastReport).toEqual([]);
+    });
+  });
+
+  describe('setDastReport', () => {
+    it('parsed data and sets the report', () => {
+      store.setDastReport(dast);
+
+      expect(store.dastReport).toEqual(parsedDast);
     });
   });
 });

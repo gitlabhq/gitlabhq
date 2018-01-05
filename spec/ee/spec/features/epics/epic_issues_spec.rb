@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Epic Issues', :js do
+  include DragTo
+
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:epic) { create(:epic, group: group) }
@@ -11,8 +13,8 @@ describe 'Epic Issues', :js do
 
   let!(:epic_issues) do
     [
-      create(:epic_issue, epic: epic, issue: public_issue),
-      create(:epic_issue, epic: epic, issue: private_issue)
+      create(:epic_issue, epic: epic, issue: public_issue, relative_position: 1),
+      create(:epic_issue, epic: epic, issue: private_issue, relative_position: 2)
     ]
   end
 
@@ -33,12 +35,16 @@ describe 'Epic Issues', :js do
       within('.related-issues-block ul.issuable-list') do
         expect(page).to have_selector('li', count: 1)
         expect(page).to have_content(public_issue.title)
-        expect(page).not_to have_selector('button.js-issue-token-remove-button')
+        expect(page).not_to have_selector('button.js-issue-item-remove-button')
       end
     end
 
     it 'user cannot add new issues to the epic' do
       expect(page).not_to have_selector('.related-issues-block h3.panel-title button')
+    end
+
+    it 'user cannot reorder issues in epic' do
+      expect(page).not_to have_selector('.js-related-issues-token-list-item.user-can-drag')
     end
   end
 
@@ -65,7 +71,7 @@ describe 'Epic Issues', :js do
         expect(page).to have_content(public_issue.title)
         expect(page).to have_content(private_issue.title)
 
-        first('li button.js-issue-token-remove-button').click
+        first('li button.js-issue-item-remove-button').click
       end
 
       wait_for_requests
@@ -94,6 +100,16 @@ describe 'Epic Issues', :js do
         expect(page).to have_selector('li', count: 3)
         expect(page).to have_content(issue_to_add.title)
       end
+    end
+
+    it 'user can reorder issues in epic' do
+      expect(first('.js-related-issues-token-list-item')).to have_content(public_issue.title)
+      expect(page.all('.js-related-issues-token-list-item').last).to have_content(private_issue.title)
+
+      drag_to(selector: '.issuable-list', to_index: 1)
+
+      expect(first('.js-related-issues-token-list-item')).to have_content(private_issue.title)
+      expect(page.all('.js-related-issues-token-list-item').last).to have_content(public_issue.title)
     end
   end
 end

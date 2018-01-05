@@ -5,7 +5,10 @@ module EpicIssues
     def relate_issues(referenced_issue)
       link = EpicIssue.find_or_initialize_by(issue: referenced_issue)
       link.epic = issuable
+      link.move_to_start
       link.save!
+
+      link
     end
 
     def create_notes(referenced_issue)

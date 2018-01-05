@@ -178,6 +178,10 @@
     font-weight: inherit;
   }
 
+  dd {
+    margin-left: $gl-padding;
+  }
+
   ul,
   ol {
     padding: 0;

@@ -1,39 +1,46 @@
 module API
   class Boards < Grape::API
+    include BoardsResponses
     include PaginationParams
 
     before { authenticate! }
+
+    helpers do
+      def board_parent
+        user_project
+      end
+    end
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
-      desc 'Get all project boards' do
-        detail 'This feature was introduced in 8.13'
-        success Entities::Board
-      end
-      params do
-        use :pagination
-      end
-      get ':id/boards' do
-        authorize!(:read_board, user_project)
-        present paginate(user_project.boards), with: Entities::Board
+      segment ':id/boards' do
+        desc 'Get all project boards' do
+          detail 'This feature was introduced in 8.13'
+          success Entities::Board
+        end
+        params do
+          use :pagination
+        end
+        get '/' do
+          authorize!(:read_board, user_project)
+          present paginate(board_parent.boards), with: Entities::Board
+        end
+
+        desc 'Find a project board' do
+          detail 'This feature was introduced in 10.4'
+          success Entities::Board
+        end
+        get '/:board_id' do
+          present board, with: Entities::Board
+        end
       end
 
       params do
         requires :board_id, type: Integer, desc: 'The ID of a board'
       end
       segment ':id/boards/:board_id' do
-        helpers do
-          def project_board
-            user_project.boards.find(params[:board_id])
-          end
-
-          def board_lists
-            project_board.lists.destroyable
-          end
-        end
-
         desc 'Get the lists of a project board' do
           detail 'Does not include `done` list. This feature was introduced in 8.13'
           success Entities::List
@@ -66,22 +73,13 @@ module API
           requires :label_id, type: Integer, desc: 'The ID of an existing label'
         end
         post '/lists' do
-          unless available_labels.exists?(params[:label_id])
+          unless available_labels_for(user_project).exists?(params[:label_id])
             render_api_error!({ error: 'Label not found!' }, 400)
           end
 
           authorize!(:admin_list, user_project)
 
-          service = ::Boards::Lists::CreateService.new(user_project, current_user,
-            { label_id: params[:label_id] })
-
-          list = service.execute(project_board)
-
-          if list.valid?
-            present list, with: Entities::List
-          else
-            render_validation_error!(list)
-          end
+          create_list
         end
 
         desc 'Moves a board list to a new position' do
@@ -97,14 +95,7 @@ module API
 
           authorize!(:admin_list, user_project)
 
-          service = ::Boards::Lists::MoveService.new(user_project, current_user,
-              { position: params[:position].to_i })
-
-          if service.execute(list)
-            present list, with: Entities::List
-          else
-            render_api_error!({ error: "List could not be moved!" }, 400)
-          end
+          move_list(list)
         end
 
         desc 'Delete a board list' do
@@ -118,12 +109,7 @@ module API
           authorize!(:admin_list, user_project)
           list = board_lists.find(params[:list_id])
 
-          destroy_conditionally!(list) do |list|
-            service = ::Boards::Lists::DestroyService.new(user_project, current_user)
-            unless service.execute(list)
-              render_api_error!({ error: 'List could not be deleted!' }, 400)
-            end
-          end
+          destroy_list(list)
         end
       end
     end

@@ -7,7 +7,6 @@ export default class MRWidgetService extends CEWidgetService {
     super(mr);
 
     this.approvalsPath = mr.approvalsPath;
-    this.rebasePath = mr.rebasePath;
   }
 
   fetchApprovals() {
@@ -23,10 +22,6 @@ export default class MRWidgetService extends CEWidgetService {
   unapproveMergeRequest() {
     return axios.delete(this.approvalsPath)
       .then(res => res.data);
-  }
-
-  rebase() {
-    return axios.post(this.rebasePath);
   }
 
   fetchReport(endpoint) { // eslint-disable-line

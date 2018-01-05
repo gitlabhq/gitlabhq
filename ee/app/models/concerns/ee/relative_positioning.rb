@@ -11,7 +11,7 @@ module EE
       board_group && board_group.boards.any?
     end
 
-    def project_ids
+    def parent_ids
       return super unless has_group_boards?
 
       board_group.projects.select(:id)
