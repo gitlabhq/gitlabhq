@@ -64,18 +64,6 @@ export default class Editor {
   }
 
   attachModel(model) {
-    if (model.getTargetModel()) {
-      this.diffInstance.setModel({
-        modified: model.getModel(),
-        original: model.getTargetModel(),
-      });
-    } else {
-      this.diffInstance.setModel({
-        modified: model.getModel(),
-        original: model.getOriginalModel(),
-      });
-    }
-
     this.instance.setModel(model.getModel());
     if (this.dirtyDiffController) this.dirtyDiffController.attachModel(model);
 
@@ -91,6 +79,17 @@ export default class Editor {
     }, {}));
 
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
+  }
+
+  setDiffModel(model, originalModel) {
+    console.log('Diff INstance ',this.diffInstance);
+    if (this.diffInstance.originalEditor.model !== originalModel) {
+      console.log('Updated Diff Model');
+      this.diffInstance.setModel({
+        modified: model.getModel(),
+        original: originalModel,
+      });
+    }
   }
 
   clearEditor() {
@@ -116,7 +115,6 @@ export default class Editor {
   }
 
   updateDimensions() {
-    console.log('STYLE : ', this.instance.domElement.style.display);
     if (this.instance.domElement.style.display === 'block') {
       this.instance.layout();
     } else {

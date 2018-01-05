@@ -19,6 +19,9 @@ export default {
     shouldHideEditor() {
       return this.activeFile.binary && !this.activeFile.raw;
     },
+    currentViewMode() {
+      return activeFile.viewMode;
+    },
   },
   watch: {
     activeFile(oldVal, newVal) {
@@ -69,9 +72,11 @@ export default {
       this.getRawFileData(this.activeFile)
         .then(() => {
           this.editor.createInstance(this.$refs.editor, this.$refs.diffEditor);
+        })
+        .then(() => {
+          this.setupEditor();
           this.setupViewMode();
         })
-        .then(() => this.setupEditor())
         .catch((err) => {
           flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
           throw err;
@@ -80,11 +85,11 @@ export default {
     setupEditor() {
       if (!this.activeFile) return;
 
-      const model = this.editor.createModel(this.activeFile);
+      this.editorModel = this.editor.createModel(this.activeFile);
 
-      this.editor.attachModel(model);
+      this.editor.attachModel(this.editorModel);
 
-      model.onChange((m) => {
+      this.editorModel.onChange(m => {
         this.changeFileContent({
           file: this.activeFile,
           content: m.getValue(),
@@ -106,19 +111,15 @@ export default {
 
       // Handle File Language
       this.setFileLanguage({
-        fileLanguage: model.language,
+        fileLanguage: this.editorModel.language,
       });
 
       // Get File eol
       this.setFileEOL({
-        eol: model.eol,
+        eol: this.editorModel.eol,
       });
     },
-    selectViewMode(e) {
-      console.log('Selected View Mode : ',e);
-    },
     setupViewMode(selectedMode) {
-      
       if (selectedMode) this.setFileViewMode(selectedMode);
 
       this.$refs.editor.style.display = 'none';
@@ -126,13 +127,53 @@ export default {
 
       const choosenMode = selectedMode || this.activeFile.viewMode;
       console.log('SETUP VIEW MODE : ' + choosenMode);
-      if (choosenMode==='edit') {
+      if (choosenMode === 'edit') {
         this.$refs.editor.style.display = 'block';
       } else {
         this.$refs.diffEditor.style.display = 'block';
+        if (choosenMode === 'changes') {
+          this.editor.setDiffModel(this.editorModel, this.editorModel.getOriginalModel());
+        } else if (choosenMode === 'mrchanges') {
+          this.editor.setDiffModel(this.editorModel, this.editorModel.getTargetModel());
+        }
       }
 
       this.editor.updateDimensions();
+    },
+  },
+  watch: {
+    activeFile(oldVal, newVal) {
+      if (newVal && !newVal.active) {
+        this.initMonaco();
+      }
+    },
+    leftPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    rightPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    panelResizing(isResizing) {
+      if (isResizing === false) {
+        this.editor.updateDimensions();
+      }
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'activeFile',
+      'activeFileExtension',
+    ]),
+    ...mapState([
+      'leftPanelCollapsed',
+      'rightPanelCollapsed',
+      'panelResizing',
+    ]),
+    shouldHideEditor() {
+      return this.activeFile.binary && !this.activeFile.raw;
+    },
+    currentViewMode() {
+      return activeFile.viewMode;
     }
   },
 };
@@ -160,7 +201,7 @@ export default {
           <a
             href="javascript:void(0);"
             @click.prevent="setupViewMode('changes')">
-            Changes
+            Preview Changes
           </a>
         </li>
         <li
