@@ -1963,8 +1963,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
       end
     end
-<<<<<<< HEAD
-=======
 
     describe '#delete_remote_branches' do
       subject do
@@ -2011,7 +2009,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
       end
     end
->>>>>>> upstream/master
   end
 
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
