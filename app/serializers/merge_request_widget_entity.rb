@@ -19,7 +19,6 @@ class MergeRequestWidgetEntity < IssuableEntity
     merge_request.project.merge_requests_ff_only_enabled
   end
 
-<<<<<<< HEAD
   # EE-specific
   expose :approvals_before_merge
   expose :squash
@@ -36,8 +35,6 @@ class MergeRequestWidgetEntity < IssuableEntity
     presenter(merge_request).approvals_path
   end
 
-=======
->>>>>>> upstream/master
   expose :metrics do |merge_request|
     metrics = build_metrics(merge_request)
 
