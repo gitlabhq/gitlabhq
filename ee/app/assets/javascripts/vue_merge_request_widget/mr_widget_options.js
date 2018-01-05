@@ -2,7 +2,6 @@ import { n__, s__, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
-import RebaseState from './components/states/mr_widget_rebase.vue';
 import collapsibleSection from './components/mr_widget_report_collapsible_section.vue';
 
 export default {
@@ -10,7 +9,6 @@ export default {
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
-    'mr-widget-rebase': RebaseState,
     collapsibleSection,
   },
   data() {

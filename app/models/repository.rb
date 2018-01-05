@@ -1154,6 +1154,13 @@ class Repository
     @project.repository_storage_path
   end
 
+  def rebase(user, merge_request)
+    raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
+                                       branch_sha: merge_request.source_branch_sha,
+                                       remote_repository: merge_request.target_project.repository.raw,
+                                       remote_branch: merge_request.target_branch)
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid

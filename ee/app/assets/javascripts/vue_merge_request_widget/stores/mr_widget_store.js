@@ -14,7 +14,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   setData(data) {
     this.initGeo(data);
     this.initSquashBeforeMerge(data);
-    this.initRebase(data);
     this.initApprovals(data);
 
     super.setData(data);
@@ -25,13 +24,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
       || data.squash_before_merge_help_path;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge
       || data.enable_squash_before_merge;
-  }
-
-  initRebase(data) {
-    this.canPushToSourceBranch = data.can_push_to_source_branch;
-    this.rebaseInProgress = data.rebase_in_progress;
-    this.approvalsLeft = !data.approved;
-    this.rebasePath = data.rebase_path;
   }
 
   initGeo(data) {

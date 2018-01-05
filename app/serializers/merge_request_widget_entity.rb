@@ -22,6 +22,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   # EE-specific
   expose :approvals_before_merge
   expose :squash
+
   expose :rebase_commit_sha
   expose :rebase_in_progress?, as: :rebase_in_progress
 
