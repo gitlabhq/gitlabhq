@@ -68,7 +68,8 @@ export default {
 
       this.getRawFileData(this.activeFile)
         .then(() => {
-          this.editor.createInstance(this.$refs.editor);
+          this.editor.createInstance(this.$refs.editor, this.$refs.diffEditor);
+          this.setupViewMode();
         })
         .then(() => this.setupEditor())
         .catch((err) => {
@@ -115,6 +116,23 @@ export default {
     },
     selectViewMode(e) {
       console.log('Selected View Mode : ',e);
+    },
+    setupViewMode(selectedMode) {
+      
+      if (selectedMode) this.setFileViewMode(selectedMode);
+
+      this.$refs.editor.style.display = 'none';
+      this.$refs.diffEditor.style.display = 'none';
+
+      const choosenMode = selectedMode || this.activeFile.viewMode;
+      console.log('SETUP VIEW MODE : ' + choosenMode);
+      if (choosenMode==='edit') {
+        this.$refs.editor.style.display = 'block';
+      } else {
+        this.$refs.diffEditor.style.display = 'block';
+      }
+
+      this.editor.updateDimensions();
     }
   },
 };
@@ -128,12 +146,12 @@ export default {
     <div
       class="ide-mode-tabs"
       v-if="!shouldHideEditor">
-      <ul class="nav nav-pills">
+      <ul class="nav nav-links">
         <li
           :class="activeFile.viewMode==='edit' ? 'active':''">
           <a
             href="javascript:void(0);"
-            @click.prevent="setFileViewMode('edit')">
+            @click.prevent="setupViewMode('edit')">
             Edit
           </a>
         </li>
@@ -141,7 +159,7 @@ export default {
           :class="activeFile.viewMode==='changes' ? 'active':''">
           <a
             href="javascript:void(0);"
-            @click.prevent="setFileViewMode('changes')">
+            @click.prevent="setupViewMode('changes')">
             Changes
           </a>
         </li>
@@ -150,7 +168,7 @@ export default {
           :class="activeFile.viewMode==='mrchanges' ? 'active':''">
           <a
             href="javascript:void(0);"
-            @click.prevent="setFileViewMode('mrchanges')">
+            @click.prevent="setupViewMode('mrchanges')">
             Merge Request Changes
           </a>
         </li>
@@ -159,7 +177,7 @@ export default {
           <a
             v-if="activeFile.previewable"
             href="javascript:void(0);"
-            @click.prevent="setFileViewMode('preview')">
+            @click.prevent="setupViewMode('preview')">
             Preview
           </a>
         </li>
@@ -174,6 +192,14 @@ export default {
       v-show="!shouldHideEditor"
       ref="editor"
       class="multi-file-editor-holder"
+      style="display:none;"
+    >
+    </div>
+    <div
+      v-show="!shouldHideEditor"
+      ref="diffEditor"
+      class="multi-file-editor-holder"
+      style="display:none;"
     >
     </div>
   </div>

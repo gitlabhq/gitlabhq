@@ -131,8 +131,9 @@ export const getRawFileData = ({ commit, dispatch }, file) => {
             commit(types.SET_FILE_TARGET_RAW_DATA, { file, raw: transformedContent });
             resolve(raw);
           });
+        } else {
+          resolve(raw);
         }
-        
       })
       .catch(() => {
         flash('Error loading file content. Please try again.');

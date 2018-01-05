@@ -31,11 +31,10 @@ export default class Editor {
     window.addEventListener('resize', this.debouncedUpdate, false);
   }
 
-  createInstance(domElement) {
+  createInstance(editorDomElement, diffEditorDomElement) {
     if (!this.instance) {
       this.disposable.add(
-        this.instance = this.monaco.editor.create(domElement, {
-          visible: false,
+        this.instance = this.monaco.editor.create(editorDomElement, {
           model: null,
           readOnly: false,
           contextmenu: true,
@@ -44,8 +43,7 @@ export default class Editor {
             enabled: false,
           },
         }),
-        this.diffInstance = this.monaco.editor.createDiffEditor(domElement, {
-          visible: false,
+        this.diffInstance = this.monaco.editor.createDiffEditor(diffEditorDomElement, {
           model: null,
           readOnly: false,
           contextmenu: true,
@@ -71,7 +69,13 @@ export default class Editor {
         modified: model.getModel(),
         original: model.getTargetModel(),
       });
+    } else {
+      this.diffInstance.setModel({
+        modified: model.getModel(),
+        original: model.getOriginalModel(),
+      });
     }
+
     this.instance.setModel(model.getModel());
     if (this.dirtyDiffController) this.dirtyDiffController.attachModel(model);
 
@@ -93,6 +97,9 @@ export default class Editor {
     if (this.instance) {
       this.instance.setModel(null);
     }
+    if (this.diffInstance) {
+      this.diffInstance.setModel(null);
+    }
   }
 
   dispose() {
@@ -103,10 +110,18 @@ export default class Editor {
     if (this.instance) {
       this.instance = null;
     }
+    if (this.diffInstance) {
+      this.diffInstance = null;
+    }
   }
 
   updateDimensions() {
-    this.instance.layout();
+    console.log('STYLE : ', this.instance.domElement.style.display);
+    if (this.instance.domElement.style.display === 'block') {
+      this.instance.layout();
+    } else {
+      this.diffInstance.layout();
+    }
   }
 
   setPosition({ lineNumber, column }) {
