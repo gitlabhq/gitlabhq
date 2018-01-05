@@ -20,15 +20,13 @@ You can find these nightly pipelines at [GitLab QA pipelines page][gitlab-qa-pip
 
 ### Testing code in merge requests
 
-It is also possible to trigger build of GitLab packages and then pass these
-package to GitLab QA to run tests in a [pipeline][gitlab-qa-pipelines].
+It is possible to run end-to-end tests (eventually being run within a
+[GitLab QA pipeline][gitlab-qa-pipelines]) for a merge request by triggering
+the `package-qa` manual action, that should be present in a merge request
+widget.
 
-Developers can trigger the `package-qa` manual action, that should be present in
-the merge request widget.
-
-It is also possible to trigger Gitlab QA pipeline from merge requests in
-Omnibus GitLab project. You can find a manual action that is similar to
-`package-qa`, mentioned above, in your Omnibus-related merge requests as well.
+Mmanual action that starts end-to-end tests is also available in merge requests
+in Omnibus GitLab project.
 
 Below you can read more about how to use it and how does it work.
 
