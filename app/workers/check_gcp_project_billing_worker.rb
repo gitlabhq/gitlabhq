@@ -1,5 +1,6 @@
 class CheckGcpProjectBillingWorker
   include ApplicationWorker
+  include ClusterQueue
 
   LEASE_TIMEOUT = 15.seconds.to_i
 
