@@ -551,7 +551,7 @@ describe 'Pipelines', :js do
 
       before do
         create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
-        project.team << [user, :master]
+        project.add_master(user)
         visit project_pipelines_path(project)
       end
 
@@ -560,22 +560,20 @@ describe 'Pipelines', :js do
       end
 
       describe 'user clicks the button' do
-        subject { click_link 'Clear runner caches' }
-
         context 'when project already has jobs_cache_index' do
           before do
             project.update_attributes(jobs_cache_index: 1)
           end
 
           it 'increments jobs_cache_index' do
-            expect { subject }.to change { project.reload.jobs_cache_index }.by(1)
+            click_link 'Clear runner caches'
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
 
         context 'when project does not have jobs_cache_index' do
           it 'sets jobs_cache_index to 1' do
-            expect { subject }.to change { project.reload.jobs_cache_index }.from(nil).to(1)
+            click_link 'Clear runner caches'
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
