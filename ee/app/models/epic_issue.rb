@@ -7,11 +7,11 @@ class EpicIssue < ActiveRecord::Base
   belongs_to :epic
   belongs_to :issue
 
-  alias_attribute :parent_id, :epic_id
+  alias_attribute :parent_ids, :epic_id
 
   scope :in_epic, ->(epic_id) { where(epic_id: epic_id) }
 
   class << self
-    alias_method :in_parent, :in_epic
+    alias_method :in_parents, :in_epic
   end
 end

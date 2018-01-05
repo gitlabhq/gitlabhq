@@ -10,16 +10,12 @@ module RelativePositioning
     after_save :save_positionable_neighbours
   end
 
-  def project_ids
-    [project.id]
-  end
-
   def min_relative_position
-    self.class.in_parent(parent_id).minimum(:relative_position)
+    self.class.in_parents(parent_ids).minimum(:relative_position)
   end
 
   def max_relative_position
-    self.class.in_parent(parent_id).maximum(:relative_position)
+    self.class.in_parents(parent_ids).maximum(:relative_position)
   end
 
   def prev_relative_position
@@ -27,7 +23,7 @@ module RelativePositioning
 
     if self.relative_position
       prev_pos = self.class
-        .in_parent([parent_id])
+        .in_parents(parent_ids)
         .where('relative_position < ?', self.relative_position)
         .maximum(:relative_position)
     end
@@ -40,7 +36,7 @@ module RelativePositioning
 
     if self.relative_position
       next_pos = self.class
-        .in_parent([parent_id])
+        .in_parents(parent_ids)
         .where('relative_position > ?', self.relative_position)
         .minimum(:relative_position)
     end
@@ -67,7 +63,7 @@ module RelativePositioning
     pos_after = before.next_relative_position
 
     if before.shift_after?
-      issue_to_move = self.class.in_parent([parent_id]).find_by!(relative_position: pos_after)
+      issue_to_move = self.class.in_parents(parent_ids).find_by!(relative_position: pos_after)
       issue_to_move.move_after
       @positionable_neighbours = [issue_to_move] # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -82,7 +78,7 @@ module RelativePositioning
     pos_before = after.prev_relative_position
 
     if after.shift_before?
-      issue_to_move = self.class.in_parent([parent_id]).find_by!(relative_position: pos_before)
+      issue_to_move = self.class.in_parents(parent_ids).find_by!(relative_position: pos_before)
       issue_to_move.move_before
       @positionable_neighbours = [issue_to_move] # rubocop:disable Gitlab/ModuleWithInstanceVariables
 

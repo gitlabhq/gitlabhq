@@ -22,7 +22,7 @@ class RelatedIssuesService {
     return Vue.http.put(endpoint, {
       epic: {
         move_before_id,
-        move_after_id
+        move_after_id,
       },
     });
   }

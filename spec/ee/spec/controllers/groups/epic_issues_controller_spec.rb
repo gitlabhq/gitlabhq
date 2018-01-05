@@ -27,7 +27,7 @@ describe Groups::EpicIssuesController do
   end
 
   describe 'GET #index' do
-    let!(:epic_issues) { create(:epic_issue, epic: epic, issue: issue) }
+    let!(:epic_issue) { create(:epic_issue, epic: epic, issue: issue) }
 
     subject { get :index, group_id: group, epic_id: epic.to_param }
 
@@ -52,7 +52,8 @@ describe Groups::EpicIssuesController do
             'state' => issue.state,
             'reference' => "#{project.full_path}##{issue.iid}",
             'path' => "/#{project.full_path}/issues/#{issue.iid}",
-            'relation_path' => "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issues.id}"
+            'relation_path' => "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issue.id}",
+            'epic_issue_id' => epic_issue.id
            }
         ]
         expect(JSON.parse(response.body)).to eq(expected_result)

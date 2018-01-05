@@ -47,7 +47,7 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  alias_attribute :parent_id, :project_id
+  alias_attribute :parent_ids, :project_id
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
@@ -96,9 +96,8 @@ class Issue < ActiveRecord::Base
   acts_as_paranoid
 
   class << self
-    alias_method :in_parent, :in_projects
+    alias_method :in_parents, :in_projects
   end
-
 
   def self.reference_prefix
     '#'

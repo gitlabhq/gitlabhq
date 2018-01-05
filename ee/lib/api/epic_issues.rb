@@ -41,7 +41,7 @@ module API
 
         update_params = {
           move_before_id: params[:move_before_id],
-          move_after_id: params[:move_after_id],
+          move_after_id: params[:move_after_id]
         }
 
         result = ::EpicIssues::UpdateService.new(link, current_user, update_params).execute
