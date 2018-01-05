@@ -894,8 +894,15 @@ module API
       expose :id
       expose :project, using: Entities::BasicProjectDetails
 
-<<<<<<< HEAD
-      # EE-specific
+      expose :lists, using: Entities::List do |board|
+        board.lists.destroyable
+      end
+
+      # EE-specific START
+      def scoped_issue_available?(board)
+        board.parent.feature_available?(:scoped_issue_board)
+      end
+
       # Default filtering configuration
       expose :name
       expose :group
@@ -903,16 +910,7 @@ module API
       expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
       expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
       expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
-
-=======
->>>>>>> upstream/master
-      expose :lists, using: Entities::List do |board|
-        board.lists.destroyable
-      end
-
-      def scoped_issue_available?(board)
-        board.parent.feature_available?(:scoped_issue_board)
-      end
+      # EE-specific END
     end
 
     class Compare < Grape::Entity
