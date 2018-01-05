@@ -3547,7 +3547,7 @@ describe Project do
     end
   end
 
-<<<<<<< HEAD
+
   describe '#root_namespace' do
     let(:project) { build(:project, namespace: parent) }
 
@@ -3573,27 +3573,20 @@ describe Project do
 
   describe '#deployment_platform' do
     subject { project.deployment_platform }
-=======
-  describe '#write_repository_config' do
-    set(:project) { create(:project, :repository) }
->>>>>>> upstream/master
 
-    it 'writes full path in .git/config when key is missing' do
-      project.write_repository_config
+    let(:project) { create(:project) }
 
-      expect(project.repo.config['gitlab.fullpath']).to eq project.full_path
+    context 'when user configured kubernetes from Integration > Kubernetes' do
+      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
+
+      it { is_expected.to eq(kubernetes_service) }
     end
 
-    it 'updates full path in .git/config when key is present' do
-      project.write_repository_config(gl_full_path: 'old/path')
+    context 'when user configured kubernetes from CI/CD > Clusters' do
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:platform_kubernetes) { cluster.platform_kubernetes }
 
-      expect { project.write_repository_config }.to change { project.repo.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
-    end
-
-    it 'does not raise an error with an empty repository' do
-      project = create(:project_empty_repo)
-
-      expect { project.write_repository_config }.not_to raise_error
+      it { is_expected.to eq(platform_kubernetes) }
     end
   end
 
