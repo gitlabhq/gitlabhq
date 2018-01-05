@@ -275,6 +275,26 @@ describe Gitlab::OAuth::User do
             end
           end
 
+          context 'and a corresponding LDAP person with a non-default username' do
+            before do
+              allow(ldap_user).to receive(:uid) { uid }
+              allow(ldap_user).to receive(:username) { 'johndoe@example.com' }
+              allow(ldap_user).to receive(:email) { %w(johndoe@example.com john2@example.com) }
+              allow(ldap_user).to receive(:dn) { dn }
+            end
+
+            context 'and no account for the LDAP user' do
+              it 'creates a user favoring the LDAP username and strips email domain' do
+                allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
+
+                oauth_user.save
+
+                expect(gl_user).to be_valid
+                expect(gl_user.username).to eql 'johndoe'
+              end
+            end
+          end
+
           context "and no corresponding LDAP person" do
             before do
               allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(nil)
