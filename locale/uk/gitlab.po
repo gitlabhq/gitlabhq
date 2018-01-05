@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-12 18:31+0000\n"
-"PO-Revision-Date: 2018-01-05 05:18-0500\n"
+"PO-Revision-Date: 2018-01-05 05:57-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -116,7 +116,7 @@ msgid "Add Changelog"
 msgstr "Додати список змін (Changelog)"
 
 msgid "Add Contribution guide"
-msgstr "Додати керівництво для контриб’юторів"
+msgstr ""
 
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr "Додайте групові Webhook'и та GitLab Enterprise Edition."
@@ -164,7 +164,7 @@ msgid "Archived project! Repository is read-only"
 msgstr "Заархівований проект! Репозиторій доступний лише для читання"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
-msgstr "Ви впевнені, що хочете видалити цей розклад для Конвеєра?"
+msgstr ""
 
 msgid "Are you sure you want to discard your changes?"
 msgstr "Ви впевнені, що бажаєте скасувати ваші зміни?"
@@ -461,7 +461,7 @@ msgid "Cherry-pick this merge request"
 msgstr ""
 
 msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
-msgstr "Виберіть, які групи ви хочете реплікувати на цю вторинну ноду. Залиште порожнім, щоб реплікувати все."
+msgstr ""
 
 msgid "CiStatusLabel|canceled"
 msgstr "скасовано"
@@ -887,7 +887,7 @@ msgid "ContainerRegistry|With the Docker Container Registry integrated into GitL
 msgstr "За допомогою вбудованого в GitLab реєстру Docker контейнерів кожен проект може мати власне місце для зберігання Docker образів."
 
 msgid "Contribution guide"
-msgstr "Керівництво контриб’юторів"
+msgstr ""
 
 msgid "Contributors"
 msgstr "Контриб’ютори"
@@ -1073,7 +1073,7 @@ msgid "DownloadCommit|Email Patches"
 msgstr "Email-патчи"
 
 msgid "DownloadCommit|Plain Diff"
-msgstr "Plain Diff"
+msgstr ""
 
 msgid "DownloadSource|Download"
 msgstr "Завантажити"
@@ -1190,7 +1190,7 @@ msgid "Failed to change the owner"
 msgstr "Не вдалося змінити власника"
 
 msgid "Failed to remove the pipeline schedule"
-msgstr "Не вдалося видалити розклад Конвеєра"
+msgstr ""
 
 msgid "Feb"
 msgstr "лют."
@@ -1799,7 +1799,7 @@ msgid "PipelineSchedules|Input variable key"
 msgstr "Введіть ім'я змінної"
 
 msgid "PipelineSchedules|Input variable value"
-msgstr "Вхідні значення змінних"
+msgstr ""
 
 msgid "PipelineSchedules|Next Run"
 msgstr "Наступний запуск"
@@ -1808,7 +1808,7 @@ msgid "PipelineSchedules|None"
 msgstr "Немає"
 
 msgid "PipelineSchedules|Provide a short description for this pipeline"
-msgstr "Задайте короткий опис для цього Конвеєру"
+msgstr ""
 
 msgid "PipelineSchedules|Remove variable row"
 msgstr "Видалити змінні"
@@ -1823,7 +1823,7 @@ msgid "PipelineSchedules|Variables"
 msgstr "Змінні"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
-msgstr "Власні"
+msgstr ""
 
 msgid "Pipelines"
 msgstr "Конвеєри"
@@ -2123,7 +2123,7 @@ msgid "Save changes"
 msgstr "Зберегти зміни"
 
 msgid "Save pipeline schedule"
-msgstr "Зберегти Розклад Конвеєра"
+msgstr ""
 
 msgid "Schedule a new pipeline"
 msgstr "Розклад нового конвеєра"
@@ -2468,7 +2468,7 @@ msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
 msgid "The fork relationship has been removed."
-msgstr "Зв'язок форка видалена."
+msgstr ""
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
@@ -2717,7 +2717,7 @@ msgid "Total test time for all commits/merges"
 msgstr "Загальний час, щоб перевірити всі коміти/злиття"
 
 msgid "Track activity with Contribution Analytics."
-msgstr "Відстежувати активність за допомогою Аналітики контриб’юторів."
+msgstr ""
 
 msgid "Track groups of issues that share a theme, across projects and milestones"
 msgstr "Відстежуйте групи проблем зі спільною темою з різних проектів та етапів"
@@ -2741,7 +2741,7 @@ msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr "Перейдіть на вищий тарифний план щоб активувати Покращений Глобальний Пошук."
 
 msgid "Upgrade your plan to activate Contribution Analytics."
-msgstr "Перейдіть на вищий тарифний план для активації Аналітики контриб’юторів."
+msgstr ""
 
 msgid "Upgrade your plan to activate Group Webhooks."
 msgstr "Перейдіть на вищий тарифний план щоб активувати Групові Webhook’и."
@@ -2912,7 +2912,7 @@ msgid "Wiki|Wiki Pages"
 msgstr "Вікі-сторінки"
 
 msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
-msgstr "З аналітикою контриб’юторів ви може вивчати активність в обговореннях, запитах на злиття і змінах у коді для вашої організації та її учасників."
+msgstr ""
 
 msgid "Withdraw Access Request"
 msgstr "Скасувати запит доступу"
@@ -3006,9 +3006,9 @@ msgstr "Повідомлення електронною поштою"
 
 msgid "parent"
 msgid_plural "parents"
-msgstr[0] "джерело"
-msgstr[1] "джерела"
-msgstr[2] "джерел"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "password"
 msgstr "пароль"
@@ -3020,7 +3020,7 @@ msgid "source"
 msgstr "джерело"
 
 msgid "to help your contributors communicate effectively!"
-msgstr "щоб допомогти вашим контриб’юторам ефективно спілкуватися!"
+msgstr ""
 
 msgid "username"
 msgstr "ім'я користувача"
