@@ -12,10 +12,10 @@ describe SchedulePopulateMergeRequestMetricsWithEventsData, :migration, :sidekiq
         migrate!
 
         expect(described_class::MIGRATION)
-          .to be_scheduled_migration(10.minutes, mrs.first.id, mrs.second.id)
+          .to be_scheduled_delayed_migration(10.minutes, mrs.first.id, mrs.second.id)
 
         expect(described_class::MIGRATION)
-          .to be_scheduled_migration(20.minutes, mrs.third.id, mrs.third.id)
+          .to be_scheduled_delayed_migration(20.minutes, mrs.third.id, mrs.third.id)
 
         expect(BackgroundMigrationWorker.jobs.size).to eq(2)
       end
