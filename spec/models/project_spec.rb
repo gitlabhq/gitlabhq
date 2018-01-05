@@ -3547,7 +3547,6 @@ describe Project do
     end
   end
 
-
   describe '#root_namespace' do
     let(:project) { build(:project, namespace: parent) }
 
