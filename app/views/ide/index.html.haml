@@ -6,7 +6,7 @@
 
 .ide-flash-container.flash-container
 
-#ide.ide-loading
+#ide.ide-loading{ data: {"empty-state-svg-path" => image_path('illustrations/multi_file_editor_empty.svg')} }
   .text-center
     = icon('spinner spin 2x')
-    %h2.clgray= _('IDE Loading ...')
+    %h2.clgray= _('Loading the GitLab IDE...')
