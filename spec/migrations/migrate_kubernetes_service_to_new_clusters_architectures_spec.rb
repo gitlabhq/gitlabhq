@@ -42,8 +42,8 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     context 'when KubernetesService is not active' do
       let(:active) { false }
 
-      # Platforms::Kubernetes validates `token` reagdless of the activeness
-      # KubernetesService validates `token` if only it's activated
+      # Platforms::Kubernetes validates `token` reagdless of the activeness,
+      # whereas KubernetesService validates `token` if only it's activated
       # However, in this migration file, there are no validations because of the migration specific model class
       # therefore, Validation Error will not happen in this case and just migrate data
       let(:token) { '' }
@@ -166,6 +166,23 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
         expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
         expect(kubernetes_service).not_to be_active
       end
+    end
+  end
+
+  context 'when KubernetesService has nullified parameters' do
+    let(:project) { create(:project) }
+
+    before do
+      ActiveRecord::Base.connection.execute <<~SQL
+        INSERT INTO services (project_id, active, category, type, properties)
+        VALUES (#{project.id}, false, 'deployment', 'KubernetesService', '{}');
+      SQL
+    end
+
+    it 'does not migrate the KubernetesService and disables the kubernetes_service' do
+      expect { migrate! }.not_to change { Clusters::Cluster.count }
+
+      expect(project.kubernetes_service).not_to be_active
     end
   end
 
