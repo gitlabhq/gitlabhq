@@ -9,7 +9,7 @@ class CreatePrometheusMetrics < ActiveRecord::Migration
       t.string :legend
       t.integer :group, null: false
       t.index :group
-      t.timestamps null: false
+      t.timestamps_with_timezone null: false
     end
   end
 end

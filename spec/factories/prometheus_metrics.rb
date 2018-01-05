@@ -6,6 +6,6 @@ FactoryBot.define do
     unit 'm/s'
     group :business
     legend 'legend'
-    project nil
+    project
   end
 end

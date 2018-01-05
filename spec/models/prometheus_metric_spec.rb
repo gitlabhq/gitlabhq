@@ -11,7 +11,39 @@ describe PrometheusMetric, type: :model do
   describe '#to_query_metric' do
 
     it 'converts to queryable metric object' do
-      expect(subject.to_query_metric).to eq('asf')
+      expect(subject.to_query_metric).to be_instance_of(Gitlab::Prometheus::Metric)
+    end
+
+    it 'queryable metric object has title' do
+      expect(subject.to_query_metric.title).to eq(subject.title)
+    end
+
+    it 'queryable metric object has y_label' do
+      expect(subject.to_query_metric.y_label).to eq(subject.y_label)
+    end
+
+    it 'queryable metric has no required_metric' do
+      expect(subject.to_query_metric.required_metrics).to eq([])
+    end
+
+    it 'queryable metric has weight 0' do
+      expect(subject.to_query_metric.weight).to eq(0)
+    end
+
+    it 'queryable metric has weight 0' do
+      expect(subject.to_query_metric.weight).to eq(0)
+    end
+
+    it 'queryable metrics has query description' do
+      queries = [
+        {
+          query_range: subject.query,
+          unit: subject.unit,
+          label: subject.legend
+        }
+      ]
+
+      expect(subject.to_query_metric.queries).to eq(queries)
     end
   end
 end

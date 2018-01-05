@@ -79,7 +79,7 @@ describe Projects::Prometheus::MetricsController do
         post :create, project_params(valid_metric)
 
         expect(flash[:notice]).to include('Metric was successfully added.')
-        expect(response).to redirect_to(edit_namespace_project_service_path(project.namespace, project, project.prometheus_service))
+        expect(response).to redirect_to(edit_project_service_path(project, project.prometheus_service))
       end
     end
 
