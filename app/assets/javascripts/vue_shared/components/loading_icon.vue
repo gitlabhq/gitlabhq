@@ -38,7 +38,8 @@
       class="fa fa-spin fa-spinner"
       :class="cssClass"
       aria-hidden="true"
-      :aria-label="label">
+      :aria-label="label"
+    >
     </i>
   </component>
 </template>

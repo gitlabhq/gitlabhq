@@ -1,17 +1,17 @@
 <script>
 
-/* This is a re-usable vue component for rendering a svg sprite
-   icon
+  /* This is a re-usable vue component for rendering a svg sprite
+    icon
 
-  Sample configuration:
+    Sample configuration:
 
-  <icon
-    name="retry"
-    :size="32"
-    css-classes="top"
-  />
+    <icon
+      name="retry"
+      :size="32"
+      css-classes="top"
+    />
 
-*/
+  */
   // only allow classes in images.scss e.g. s12
   const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
 
@@ -80,7 +80,6 @@
     :height="height"
     :x="x"
     :y="y">
-    <use
-      v-bind="{'xlink:href':spriteHref}"/>
+    <use v-bind="{ 'xlink:href':spriteHref }" />
   </svg>
 </template>

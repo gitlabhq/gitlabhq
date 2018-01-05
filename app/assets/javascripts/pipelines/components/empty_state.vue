@@ -32,7 +32,7 @@
           <a
             :href="helpPagePath"
             class="btn btn-info"
-            >
+          >
             {{ s__("Pipelines|Get started with Pipelines") }}
           </a>
         </div>

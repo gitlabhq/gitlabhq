@@ -13,6 +13,15 @@
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
+    components: {
+      tablePagination,
+      navigationTabs,
+      navigationControls,
+    },
+    mixins: [
+      pipelinesMixin,
+      CIPaginationMixin,
+    ],
     props: {
       store: {
         type: Object,
@@ -28,15 +37,6 @@
         default: 'root',
       },
     },
-    components: {
-      tablePagination,
-      navigationTabs,
-      navigationControls,
-    },
-    mixins: [
-      pipelinesMixin,
-      CIPaginationMixin,
-    ],
     data() {
       const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
 
@@ -214,7 +214,7 @@
         :tabs="tabs"
         @onChangeTab="onChangeTab"
         scope="pipelines"
-        />
+      />
 
       <navigation-controls
         :new-pipeline-path="newPipelinePath"
@@ -222,7 +222,7 @@
         :help-page-path="helpPagePath"
         :ci-lint-path="ciLintPath"
         :can-create-pipeline="canCreatePipelineParsed "
-        />
+      />
     </div>
 
     <div class="content-list pipelines">
@@ -232,22 +232,23 @@
         size="3"
         v-if="isLoading"
         class="prepend-top-20"
-        />
+      />
 
       <empty-state
         v-if="shouldRenderEmptyState"
         :help-page-path="helpPagePath"
         :empty-state-svg-path="emptyStateSvgPath"
-        />
+      />
 
       <error-state
         v-if="shouldRenderErrorState"
         :error-state-svg-path="errorStateSvgPath"
-        />
+      />
 
       <div
         class="blank-state-row"
-        v-if="shouldRenderNoPipelinesMessage">
+        v-if="shouldRenderNoPipelinesMessage"
+      >
         <div class="blank-state-center">
           <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
         </div>
@@ -255,21 +256,22 @@
 
       <div
         class="table-holder"
-        v-if="shouldRenderTable">
+        v-if="shouldRenderTable"
+      >
 
         <pipelines-table-component
           :pipelines="state.pipelines"
           :update-graph-dropdown="updateGraphDropdown"
           :auto-devops-help-path="autoDevopsPath"
           :view-type="viewType"
-          />
+        />
       </div>
 
       <table-pagination
         v-if="shouldRenderPagination"
         :change="onChangePage"
         :page-info="state.pageInfo"
-        />
+      />
     </div>
   </div>
 </template>

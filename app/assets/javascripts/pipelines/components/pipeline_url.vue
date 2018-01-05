@@ -4,6 +4,13 @@
   import popover from '../../vue_shared/directives/popover';
 
   export default {
+    components: {
+      userAvatarLink,
+    },
+    directives: {
+      tooltip,
+      popover,
+    },
     props: {
       pipeline: {
         type: Object,
@@ -13,13 +20,6 @@
         type: String,
         required: true,
       },
-    },
-    components: {
-      userAvatarLink,
-    },
-    directives: {
-      tooltip,
-      popover,
     },
     computed: {
       user() {
@@ -50,7 +50,7 @@
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
-      <span class="pipeline-id">#{{pipeline.id}}</span>
+      <span class="pipeline-id">#{{ pipeline.id }}</span>
     </a>
     <span>by</span>
     <user-avatar-link

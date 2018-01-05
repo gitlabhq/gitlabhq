@@ -9,7 +9,13 @@
   import tooltip from '~/vue_shared/directives/tooltip';
 
   export default {
-    name: 'noteActions',
+    name: 'NoteActions',
+    directives: {
+      tooltip,
+    },
+    components: {
+      loadingIcon,
+    },
     props: {
       authorId: {
         type: Number,
@@ -40,12 +46,6 @@
         type: Boolean,
         required: true,
       },
-    },
-    directives: {
-      tooltip,
-    },
-    components: {
-      loadingIcon,
     },
     computed: {
       ...mapGetters([
@@ -98,20 +98,21 @@
         data-placement="bottom"
         data-container="body"
         href="#"
-        title="Add reaction">
-          <loading-icon :inline="true" />
-          <span
-            v-html="emojiSmiling"
-            class="link-highlight award-control-icon-neutral">
-          </span>
-          <span
-            v-html="emojiSmiley"
-            class="link-highlight award-control-icon-positive">
-          </span>
-          <span
-            v-html="emojiSmile"
-            class="link-highlight award-control-icon-super-positive">
-          </span>
+        title="Add reaction"
+      >
+        <loading-icon :inline="true" />
+        <span
+          v-html="emojiSmiling"
+          class="link-highlight award-control-icon-neutral">
+        </span>
+        <span
+          v-html="emojiSmiley"
+          class="link-highlight award-control-icon-positive">
+        </span>
+        <span
+          v-html="emojiSmile"
+          class="link-highlight award-control-icon-super-positive">
+        </span>
       </a>
     </div>
     <div
@@ -127,7 +128,8 @@
         data-placement="bottom">
           <span
             v-html="editSvg"
-            class="link-highlight"></span>
+            class="link-highlight">
+          </span>
       </button>
     </div>
     <div
@@ -143,7 +145,8 @@
         data-placement="bottom">
           <span
             class="icon"
-            v-html="ellipsisSvg"></span>
+            v-html="ellipsisSvg">
+          </span>
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">

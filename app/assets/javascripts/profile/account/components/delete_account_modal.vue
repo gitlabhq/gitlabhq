@@ -4,6 +4,9 @@
   import csrf from '../../../lib/utils/csrf';
 
   export default {
+    components: {
+      modal,
+    },
     props: {
       actionUrl: {
         type: String,
@@ -24,9 +27,6 @@
         enteredUsername: '',
         isOpen: false,
       };
-    },
-    components: {
-      modal,
     },
     computed: {
       csrfToken() {
@@ -99,7 +99,9 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
       @toggle="toggleOpen"
       @submit="onSubmit">
 
-      <template slot="body" slot-scope="props">
+      <template
+        slot="body"
+        slot-scope="props">
         <p v-html="props.text"></p>
 
         <form
@@ -110,13 +112,19 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
           <input
             type="hidden"
             name="_method"
-            value="delete" />
+            value="delete"
+          />
           <input
             type="hidden"
             name="authenticity_token"
-            :value="csrfToken" />
+            :value="csrfToken"
+          />
 
-          <p id="input-label" v-html="inputLabel"></p>
+          <p
+            id="input-label"
+            v-html="inputLabel"
+          >
+          </p>
 
           <input
             v-if="confirmWithPassword"
@@ -124,14 +132,16 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
             class="form-control"
             type="password"
             v-model="enteredPassword"
-            aria-labelledby="input-label" />
+            aria-labelledby="input-label"
+          />
           <input
             v-else
             name="username"
             class="form-control"
             type="text"
             v-model="enteredUsername"
-            aria-labelledby="input-label" />
+            aria-labelledby="input-label"
+          />
         </form>
       </template>
 
@@ -140,7 +150,8 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
     <button
       type="button"
       class="btn btn-danger"
-      @click="toggleOpen(true)">
+      @click="toggleOpen(true)"
+    >
       {{ s__('Profiles|Delete account') }}
     </button>
   </div>

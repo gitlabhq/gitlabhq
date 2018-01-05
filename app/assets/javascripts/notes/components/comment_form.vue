@@ -15,7 +15,17 @@
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
-    name: 'commentForm',
+    name: 'CommentForm',
+    components: {
+      issueWarning,
+      noteSignedOutWidget,
+      discussionLockedWidget,
+      markdownField,
+      userAvatarLink,
+    },
+    mixins: [
+      issuableStateMixin,
+    ],
     data() {
       return {
         note: '',
@@ -26,21 +36,6 @@
         isSubmitting: false,
         isSubmitButtonDisabled: true,
       };
-    },
-    components: {
-      issueWarning,
-      noteSignedOutWidget,
-      discussionLockedWidget,
-      markdownField,
-      userAvatarLink,
-    },
-    watch: {
-      note(newNote) {
-        this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
-      },
-      isSubmitting(newValue) {
-        this.setIsSubmitButtonDisabled(this.note, newValue);
-      },
     },
     computed: {
       ...mapGetters([
@@ -98,6 +93,23 @@
       endpoint() {
         return this.getNoteableData.create_note_path;
       },
+    },
+    watch: {
+      note(newNote) {
+        this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
+      },
+      isSubmitting(newValue) {
+        this.setIsSubmitButtonDisabled(this.note, newValue);
+      },
+    },
+    mounted() {
+      // jQuery is needed here because it is a custom event being dispatched with jQuery.
+      $(document).on('issuable:change', (e, isClosed) => {
+        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+      });
+
+      this.initAutoSave();
+      this.initTaskList();
     },
     methods: {
       ...mapActions([
@@ -231,18 +243,6 @@ Please check your network connection and try again.`;
         });
       },
     },
-    mixins: [
-      issuableStateMixin,
-    ],
-    mounted() {
-      // jQuery is needed here because it is a custom event being dispatched with jQuery.
-      $(document).on('issuable:change', (e, isClosed) => {
-        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
-      });
-
-      this.initAutoSave();
-      this.initTaskList();
-    },
   };
 </script>
 
@@ -266,7 +266,7 @@ Please check your network connection and try again.`;
               :img-src="author.avatar_url"
               :img-alt="author.name"
               :img-size="40"
-              />
+            />
           </div>
           <div class="timeline-content timeline-content-form">
             <form
@@ -310,7 +310,7 @@ Please check your network connection and try again.`;
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="submit">
-                    {{commentButtonTitle}}
+                    {{ commentButtonTitle }}
                   </button>
                   <button
                     :disabled="isSubmitButtonDisabled"
@@ -352,7 +352,7 @@ Please check your network connection and try again.`;
                         <i
                           aria-hidden="true"
                           class="fa fa-check icon">
-                          </i>
+                        </i>
                         <div class="description">
                           <strong>Start discussion</strong>
                           <p>
@@ -370,7 +370,7 @@ Please check your network connection and try again.`;
                   :class="actionButtonClassNames"
                   :disabled="isSubmitting"
                   class="btn btn-comment btn-comment-and-close js-action-button">
-                  {{issueActionButtonTitle}}
+                  {{ issueActionButtonTitle }}
                 </button>
                 <button
                   type="button"

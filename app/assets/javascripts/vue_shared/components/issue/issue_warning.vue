@@ -1,7 +1,10 @@
 <script>
-  import Icon from '../../../vue_shared/components/icon.vue';
+  import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      icon,
+    },
     props: {
       isLocked: {
         type: Boolean,
@@ -14,10 +17,6 @@
         default: false,
         required: false,
       },
-    },
-
-    components: {
-      Icon,
     },
 
     computed: {
@@ -37,12 +36,12 @@
 <template>
   <div class="issuable-note-warning">
     <icon
-        :name="warningIcon"
-        :size="16"
-        class="icon inline"
-        aria-hidden="true"
-        v-if="!isLockedAndConfidential">
-    </icon>
+      :name="warningIcon"
+      :size="16"
+      class="icon inline"
+      aria-hidden="true"
+      v-if="!isLockedAndConfidential"
+    />
 
     <span v-if="isLockedAndConfidential">
       {{ __('This issue is confidential and locked.') }}
