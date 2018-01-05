@@ -276,4 +276,15 @@ describe Service do
       expect(service.deprecation_message).to be_nil
     end
   end
+<<<<<<< HEAD
+=======
+
+  describe '.find_by_template' do
+    let!(:kubernetes_service) { create(:kubernetes_service, template: true) }
+
+    it 'returns service template' do
+      expect(KubernetesService.find_by_template).to eq(kubernetes_service)
+    end
+  end
+>>>>>>> upstream/master
 end

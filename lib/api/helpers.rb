@@ -72,7 +72,7 @@ module API
     end
 
     def wiki_page
-      page = user_project.wiki.find_page(params[:slug])
+      page = ProjectWiki.new(user_project, current_user).find_page(params[:slug])
 
       page || not_found!('Wiki Page')
     end

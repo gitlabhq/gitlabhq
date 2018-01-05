@@ -1292,6 +1292,15 @@ module Gitlab
         success || gitlab_projects_error
       end
 
+<<<<<<< HEAD
+=======
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+>>>>>>> upstream/master
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1691,6 +1700,7 @@ module Gitlab
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd += %W[--count #{options[:ref]}]
         cmd += %W[-- #{options[:path]}] if options[:path].present?
 

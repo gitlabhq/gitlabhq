@@ -13,7 +13,10 @@
     components: {
       skeletonLoadingContainer,
       newDropdown,
+<<<<<<< HEAD
       fileStatusIcon,
+=======
+>>>>>>> upstream/master
       fileIcon,
     },
     props: {

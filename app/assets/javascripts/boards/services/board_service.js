@@ -12,6 +12,7 @@ export default class BoardService {
 
   generateBoardsPath(id) {
     return `${this.boardsEndpoint}${id ? `/${id}` : ''}.json`;
+<<<<<<< HEAD
   }
 
   generateIssuesPath(id) {
@@ -50,6 +51,16 @@ export default class BoardService {
 
   deleteBoard({ id }) {
     return axios.delete(this.generateBoardsPath(id));
+=======
+  }
+
+  generateIssuesPath(id) {
+    return `${this.listsEndpoint}${id ? `/${id}` : ''}/issues`;
+  }
+
+  static generateIssuePath(boardId, id) {
+    return `${gon.relative_url_root}/-/boards/${boardId ? `/${boardId}` : ''}/issues${id ? `/${id}` : ''}`;
+>>>>>>> upstream/master
   }
 
   all() {
@@ -118,12 +129,15 @@ export default class BoardService {
 
   static getIssueInfo(endpoint) {
     return axios.get(endpoint);
+<<<<<<< HEAD
   }
 
   static updateWeight(endpoint, weight = null) {
     return axios.put(endpoint, {
       weight,
     });
+=======
+>>>>>>> upstream/master
   }
 
   static toggleIssueSubscription(endpoint) {

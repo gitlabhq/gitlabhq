@@ -1,6 +1,9 @@
 <script>
 import { mapActions } from 'vuex';
+<<<<<<< HEAD
 import fileStatusIcon from './repo_file_status_icon.vue';
+=======
+>>>>>>> upstream/master
 import fileIcon from '../../vue_shared/components/file_icon.vue';
 
 export default {
@@ -10,12 +13,18 @@ export default {
       required: true,
     },
   },
+<<<<<<< HEAD
 
   components: {
     fileStatusIcon,
     fileIcon,
   },
 
+=======
+  components: {
+    fileIcon,
+  },
+>>>>>>> upstream/master
   computed: {
     closeLabel() {
       if (this.tab.changed || this.tab.tempFile) {

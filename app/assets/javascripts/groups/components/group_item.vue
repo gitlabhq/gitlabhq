@@ -77,7 +77,8 @@ export default {
     class="group-row"
     >
     <div
-      class="group-row-contents">
+      class="group-row-contents"
+      :class="{ 'project-row-contents': !isGroup }">
       <item-actions
         v-if="isGroup"
         :group="group"
@@ -97,7 +98,7 @@ export default {
         />
       </div>
       <div
-        class="avatar-container s40 hidden-xs"
+        class="avatar-container prepend-top-8 prepend-left-5 s24 hidden-xs"
         :class="{ 'content-loading': group.isChildrenLoading }"
       >
         <a
@@ -106,11 +107,12 @@ export default {
         >
           <img
             v-if="hasAvatar"
-            class="avatar s40"
+            class="avatar s24"
             :src="group.avatarUrl"
           />
           <identicon
             v-else
+            size-class="s24"
             :entity-id=group.id
             :entity-name="group.name"
           />
@@ -123,7 +125,7 @@ export default {
           :href="group.relativePath"
           :title="group.fullName"
           class="no-expand"
-          data-placement="top"
+          data-placement="bottom"
         >{{
           // ending bracket must be by closing tag to prevent
           // link hover text-decoration from over-extending

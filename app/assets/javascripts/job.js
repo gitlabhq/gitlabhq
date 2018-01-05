@@ -96,14 +96,15 @@ export default class Job {
 
   // eslint-disable-next-line class-methods-use-this
   canScroll() {
-    return this.$document.height() > this.$window.height();
+    return $(document).height() > $(window).height();
   }
 
   toggleScroll() {
-    const currentPosition = this.$document.scrollTop();
-    const scrollHeight = this.$document.height();
+    const $document = $(document);
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
 
-    const windowHeight = this.$window.height();
+    const windowHeight = $(window).height();
     if (this.canScroll()) {
       if (currentPosition > 0 &&
         (scrollHeight - currentPosition !== windowHeight)) {
@@ -127,18 +128,22 @@ export default class Job {
       this.toggleDisableButton(this.$scrollBottomBtn, true);
     }
   }
-
+  // eslint-disable-next-line class-methods-use-this
   isScrolledToBottom() {
-    const currentPosition = this.$document.scrollTop();
-    const scrollHeight = this.$document.height();
+    const $document = $(document);
 
-    const windowHeight = this.$window.height();
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
+
+    const windowHeight = $(window).height();
+
     return scrollHeight - currentPosition === windowHeight;
   }
 
   // eslint-disable-next-line class-methods-use-this
   scrollDown() {
-    this.$document.scrollTop(this.$document.height());
+    const $document = $(document);
+    $document.scrollTop($document.height());
   }
 
   scrollToBottom() {
@@ -148,7 +153,7 @@ export default class Job {
   }
 
   scrollToTop() {
-    this.$document.scrollTop(0);
+    $(document).scrollTop(0);
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }
