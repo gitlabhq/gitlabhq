@@ -115,7 +115,6 @@ describe Projects::ArtifactsController do
 
     context 'when the file exists' do
       let(:path) { 'ci_artifacts.txt' }
-<<<<<<< HEAD
 
       shared_examples 'a valid file' do
         it 'serves the file using workhorse' do
@@ -143,42 +142,12 @@ describe Projects::ArtifactsController do
         end
       end
 
-=======
-
-      shared_examples 'a valid file' do
-        it 'serves the file using workhorse' do
-          subject
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(send_data).to start_with('artifacts-entry:')
-
-          expect(params.keys).to eq(%w(Archive Entry))
-          expect(params['Archive']).to start_with(archive_path)
-          # On object storage, the URL can end with a query string
-          expect(params['Archive']).to match(/build_artifacts.zip(\?[^?]+)?$/)
-          expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
-        end
-
-        def send_data
-          response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]
-        end
-
-        def params
-          @params ||= begin
-            base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
-            JSON.parse(Base64.urlsafe_decode64(base64_params))
-          end
-        end
-      end
-
->>>>>>> upstream/master
       context 'when using local file storage' do
         it_behaves_like 'a valid file' do
           let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
           let(:store) { ObjectStoreUploader::LOCAL_STORE }
           let(:archive_path) { JobArtifactUploader.local_store_path }
         end
-<<<<<<< HEAD
       end
 
       ## EE specific begins
@@ -193,8 +162,6 @@ describe Projects::ArtifactsController do
           let(:store) { ObjectStoreUploader::REMOTE_STORE }
           let(:archive_path) { 'https://' }
         end
-=======
->>>>>>> upstream/master
       end
       ## EE specific ends
     end
