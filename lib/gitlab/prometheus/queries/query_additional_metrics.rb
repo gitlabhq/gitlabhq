@@ -2,10 +2,10 @@ module Gitlab
   module Prometheus
     module Queries
       module QueryAdditionalMetrics
-        def query_metrics(query_context)
+        def query_metrics(project, query_context)
           query_processor = method(:process_query).curry[query_context]
 
-          groups = matched_metrics.map do |group|
+          groups = matched_metrics(project).map do |group|
             metrics = group.metrics.map do |metric|
               {
                 title: metric.title,
@@ -60,8 +60,8 @@ module Gitlab
           @available_metrics ||= client_label_values || []
         end
 
-        def matched_metrics
-          result = Gitlab::Prometheus::MetricGroup.all.map do |group|
+        def matched_metrics(project)
+          result = Gitlab::Prometheus::MetricGroup.for_project(project).map do |group|
             group.metrics.select! do |metric|
               metric.required_metrics.all?(&available_metrics.method(:include?))
             end

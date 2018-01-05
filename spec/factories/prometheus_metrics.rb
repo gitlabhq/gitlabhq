@@ -4,6 +4,7 @@ FactoryBot.define do
     query 'avg(metric)'
     y_label 'y_label'
     unit 'm/s'
+    group :business
     legend 'legend'
     project nil
   end
