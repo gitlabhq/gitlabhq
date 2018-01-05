@@ -4,7 +4,7 @@ class CheckGcpProjectBillingWorker
   LEASE_TIMEOUT = 15.seconds.to_i
 
   def self.redis_shared_state_key_for(token)
-    "gitlab:gcp:#{token}:billing_enabled"
+    "gitlab:gcp:#{token.hash}:billing_enabled"
   end
 
   def perform(token)
@@ -21,7 +21,7 @@ class CheckGcpProjectBillingWorker
 
   def try_obtain_lease_for(token)
     Gitlab::ExclusiveLease
-      .new("check_gcp_project_billing_worker:#{token}", timeout: LEASE_TIMEOUT)
+      .new("check_gcp_project_billing_worker:#{token.hash}", timeout: LEASE_TIMEOUT)
       .try_obtain
   end
 end
