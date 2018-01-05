@@ -354,13 +354,6 @@ because we have not yet configured the secondary server. This is the next step.
     gitlab-ctl reconfigure
     ```
 
-1. Verify the secondary if configured correctly and that the primary is
-   reachable:
-
-    ```
-    gitlab-rake gitlab:geo:check
-    ```
-
 ### Step 4. Initiate the replication process
 
 Below we provide a script that connects the database on the secondary node to
@@ -387,7 +380,7 @@ data before running `pg_basebackup`.
    name as shown in the commands below.
 
 1. Execute the command below to start a backup/restore and begin the replication
-(various options that can be added to these commands are listed below):
+   (various options that can be added to these commands are listed below):
 
     ```bash
     gitlab-ctl replicate-geo-database --slot-name=secondary_example --host=1.2.3.4
@@ -414,6 +407,13 @@ data before running `pg_basebackup`.
        replication slot automatically if it does not exist.
        - If you're repurposing an old server into a Geo secondary, you'll need to
        add `--force` to the command line.
+
+1. Verify that the secondary is configured correctly and that the primary is
+   reachable:
+
+    ```
+    gitlab-rake gitlab:geo:check
+    ```
 
 The replication process is now complete.
 
