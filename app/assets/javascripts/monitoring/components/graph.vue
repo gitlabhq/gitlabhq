@@ -26,7 +26,6 @@
 
     mixins: [MonitoringMixin],
 
-
     props: {
       graphData: {
         type: Object,

@@ -3,10 +3,10 @@
   import markdownField from '../../../vue_shared/components/markdown/field.vue';
 
   export default {
-    mixins: [updateMixin],
     components: {
       markdownField,
     },
+    mixins: [updateMixin],
     props: {
       formState: {
         type: Object,

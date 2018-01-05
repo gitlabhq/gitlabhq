@@ -5,10 +5,10 @@
   import { spriteIcon } from '../../lib/utils/common_utils';
 
   export default {
-    mixins: [animateMixin],
     directives: {
       tooltip,
     },
+    mixins: [animateMixin],
     props: {
       issuableRef: {
         type: String,
