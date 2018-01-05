@@ -30,7 +30,7 @@ exactly which repositories are causing the trouble.
 
 >**Note:**
 >
->  - `gitlab:repo:check` has been deprecated in favour of `gitlab:git:fsck`
+>  - `gitlab:repo:check` has been deprecated in favor of `gitlab:git:fsck`
 >  - [Deprecated][ce-15931] in GitLab 10.4.
 >  - `gitlab:repo:check` will be removed in the future. [Removal issue][ce-41699]
 
