@@ -35,7 +35,7 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  alias_attribute :parent_id, :project_id
+  alias_attribute :parent_ids, :project_id
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
