@@ -1,0 +1,6 @@
+---
+title: Improve the performance for counting diverging commits. Show 999+
+  if it is more than 1000 commits
+merge_request: 15963
+author:
+type: performance
