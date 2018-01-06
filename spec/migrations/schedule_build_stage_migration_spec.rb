@@ -18,10 +18,10 @@ describe ScheduleBuildStageMigration, :migration do
     ##
     # CI/CD jobs
     #
-    jobs.create!(id: 10, commit_id: 1, project_id: 123, stage_id: nil)
-    jobs.create!(id: 20, commit_id: 1, project_id: 123, stage_id: nil)
-    jobs.create!(id: 30, commit_id: 1, project_id: 123, stage_id: nil)
-    jobs.create!(id: 40, commit_id: 1, project_id: 123, stage_id: 1)
+    jobs.create!(id: 11, commit_id: 1, project_id: 123, stage_id: nil)
+    jobs.create!(id: 206, commit_id: 1, project_id: 123, stage_id: nil)
+    jobs.create!(id: 3413, commit_id: 1, project_id: 123, stage_id: nil)
+    jobs.create!(id: 4109, commit_id: 1, project_id: 123, stage_id: 1)
   end
 
   before do
@@ -33,9 +33,9 @@ describe ScheduleBuildStageMigration, :migration do
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(1.minute, 10)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 20)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(3.minutes, 30)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(1.minute, 11)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 206)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(3.minutes, 3413)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end
