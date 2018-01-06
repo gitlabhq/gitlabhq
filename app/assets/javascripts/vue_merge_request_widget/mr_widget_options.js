@@ -10,6 +10,7 @@ import {
   MergedState,
   ClosedState,
   MergingState,
+  RebaseState,
   WipState,
   ArchivedState,
   ConflictsState,
@@ -79,6 +80,7 @@ export default {
         ciEnvironmentsStatusPath: store.ciEnvironmentsStatusPath,
         statusPath: store.statusPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
+        rebasePath: store.rebasePath,
       };
       return new MRWidgetService(endpoints);
     },
@@ -232,6 +234,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-rebase': RebaseState,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">

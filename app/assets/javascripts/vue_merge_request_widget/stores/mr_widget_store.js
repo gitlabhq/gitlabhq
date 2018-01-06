@@ -26,6 +26,7 @@ export default class MergeRequestStore {
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
+    this.initRebase(data);
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -122,6 +123,13 @@ export default class MergeRequestStore {
 
   get isNothingToMergeState() {
     return this.state === stateKey.nothingToMerge;
+  }
+
+  initRebase(data) {
+    this.canPushToSourceBranch = data.can_push_to_source_branch;
+    this.rebaseInProgress = data.rebase_in_progress;
+    this.approvalsLeft = !data.approved;
+    this.rebasePath = data.rebase_path;
   }
 
   static buildMetrics(metrics) {

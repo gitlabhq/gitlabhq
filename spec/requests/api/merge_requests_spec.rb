@@ -500,6 +500,12 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/participants' do
+    it_behaves_like 'issuable participants endpoint' do
+      let(:entity) { merge_request }
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
     it 'returns a 200 when merge request is valid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)

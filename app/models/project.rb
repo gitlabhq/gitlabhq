@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
+  include DeploymentPlatform
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -904,12 +905,6 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  # TODO: This will be extended for multiple enviroment clusters
-  def deployment_platform
-    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
-    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
-  end
-
   def monitoring_services
     services.where(category: :monitoring)
   end
@@ -990,10 +985,6 @@ class Project < ActiveRecord::Base
   rescue
     errors.add(:path, 'Invalid repository path')
     false
-  end
-
-  def repo
-    repository.rugged
   end
 
   def url_to_repo
@@ -1438,7 +1429,7 @@ class Project < ActiveRecord::Base
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
     # the import rake task.
-    repo.config['gitlab.fullpath'] = gl_full_path
+    repository.rugged.config['gitlab.fullpath'] = gl_full_path
   rescue Gitlab::Git::Repository::NoRepository => e
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil

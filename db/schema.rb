@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171220191323) do
+ActiveRecord::Schema.define(version: 20171230123729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1099,6 +1099,7 @@ ActiveRecord::Schema.define(version: 20171220191323) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
+    t.string "rebase_commit_sha"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1808,7 +1809,7 @@ ActiveRecord::Schema.define(version: 20171220191323) do
     t.datetime "updated_at"
     t.string "name"
     t.boolean "admin", default: false, null: false
-    t.integer "projects_limit", default: 10
+    t.integer "projects_limit", null: false
     t.string "skype", default: "", null: false
     t.string "linkedin", default: "", null: false
     t.string "twitter", default: "", null: false
