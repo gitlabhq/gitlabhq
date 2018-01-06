@@ -62,19 +62,20 @@ module EachBatch
           .limit(1)
           .take
 
-        relation = where(arel_table[column].gteq(start_id))
-
-        if stop
-          stop_id = stop[column]
-          start_id = stop_id
-          relation = relation.where(arel_table[column].lt(stop_id))
+        if (of == 1)
+          relation = where(arel_table[column].eq(start_id))
+        else if stop
+          relation = where(arel_table[column].gteq(start_id)).where(arel_table[column].lt(stop[column])
+        else
+          relation = where(arel_table[column].gteq(start_id))
         end
-
+          
         # Any ORDER BYs are useless for this relation and can lead to less
         # efficient UPDATE queries, hence we get rid of it.
         yield relation.except(:order), index
 
         break unless stop
+        start_id = stop[column]
       end
     end
   end
