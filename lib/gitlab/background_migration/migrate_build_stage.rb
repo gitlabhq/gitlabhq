@@ -40,7 +40,7 @@ module Gitlab
         # In that case we just don't migrate such stage.
         #
         def legacy?
-         @build.stage.nil?
+          @build.stage.nil?
         end
 
         def ensure!

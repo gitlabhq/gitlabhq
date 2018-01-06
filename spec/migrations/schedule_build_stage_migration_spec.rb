@@ -8,6 +8,8 @@ describe ScheduleBuildStageMigration, :migration do
   let(:jobs) { table(:ci_builds) }
 
   before do
+    stub_const("#{described_class}::BATCH", 1)
+
     ##
     # Dependencies
     #
@@ -22,10 +24,6 @@ describe ScheduleBuildStageMigration, :migration do
     jobs.create!(id: 206, commit_id: 1, project_id: 123, stage_id: nil)
     jobs.create!(id: 3413, commit_id: 1, project_id: 123, stage_id: nil)
     jobs.create!(id: 4109, commit_id: 1, project_id: 123, stage_id: 1)
-  end
-
-  before do
-    stub_const("#{described_class}::BATCH", 1)
   end
 
   it 'schedules delayed background migrations in batches in bulk' do
