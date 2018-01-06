@@ -65,7 +65,12 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def authorize_google_project_billing
-    CheckGcpProjectBillingWorker.perform_async(token_in_session)
+    redis_token_key = CheckGcpProjectBillingWorker.generate_redis_token_key
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.set(redis_token_key, token_in_session, ex: 5.minutes)
+    end
+
+    CheckGcpProjectBillingWorker.perform_async(redis_token_key)
   end
 
   def google_project_billing_status
