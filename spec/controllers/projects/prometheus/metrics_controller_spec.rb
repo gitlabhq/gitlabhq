@@ -15,24 +15,36 @@ describe Projects::Prometheus::MetricsController do
   end
 
   describe 'POST #validate_query' do
-    context 'query is valid' do
-      it 'confirms query is valid' do
-        post :validate_query, project_params(format: :json, query: 'avg(metric)')
+    before do
+      allow(prometheus_service).to receive(:validate_query)
+    end
 
-        expect(json_response).to eq("query_valid" => true)
+    let(:query) { 'avg(metric)' }
+
+    context 'validation information is ready' do
+      let(:validation_result) { { valid: true } }
+
+      it 'validation data is returned' do
+        expect(prometheus_service).to receive(:validate_query).with(query).and_return(validation_result)
+        post :validate_query, project_params(format: :json, query: query)
+
+        expect(json_response).to eq("valid" => true)
       end
     end
 
-    context 'query is invalid' do
-      it 'confirms query is valid' do
-        post :validate_query, project_params(format: :json, query: 'test(metric)')
+    context 'validation information is not ready' do
+      let(:validation_result) { {} }
 
-        expect(json_response).to eq("query_valid" => false)
+      it 'validation data is returned' do
+        expect(prometheus_service).to receive(:validate_query).with(query).and_return(validation_result)
+        post :validate_query, project_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(204)
       end
     end
   end
 
-  describe 'GET #active' do
+  describe 'GET #active_common' do
     context 'when prometheus metrics are enabled' do
       context 'when data is not present' do
         before do
@@ -40,7 +52,7 @@ describe Projects::Prometheus::MetricsController do
         end
 
         it 'returns no content response' do
-          get :active, project_params(format: :json)
+          get :active_common, project_params(format: :json)
 
           expect(response).to have_gitlab_http_status(204)
         end
@@ -54,7 +66,7 @@ describe Projects::Prometheus::MetricsController do
         end
 
         it 'returns no content response' do
-          get :active, project_params(format: :json)
+          get :active_common, project_params(format: :json)
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response).to eq(sample_response.deep_stringify_keys)
@@ -63,7 +75,7 @@ describe Projects::Prometheus::MetricsController do
 
       context 'when requesting non json response' do
         it 'returns not found response' do
-          get :active, project_params
+          get :active_common, project_params
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -95,13 +107,27 @@ describe Projects::Prometheus::MetricsController do
   end
 
   describe 'DELETE #destroy' do
-    let!(:metric) { create(:prometheus_metric, project: project) }
 
-    it 'destroys the metric' do
-      delete :destroy, project_params(id: metric.id)
+    context 'format html' do
+      let!(:metric) { create(:prometheus_metric, project: project) }
 
-      expect(response).to redirect_to(edit_project_service_path(project, project.prometheus_service))
-      expect(PrometheusMetric.find_by(id: metric.id)).to be_nil
+      it 'destroys the metric' do
+        delete :destroy, project_params(id: metric.id)
+
+        expect(response).to redirect_to(edit_project_service_path(project, project.prometheus_service))
+        expect(PrometheusMetric.find_by(id: metric.id)).to be_nil
+      end
+    end
+
+    context 'format json' do
+      let!(:metric) { create(:prometheus_metric, project: project) }
+
+      it 'remove the metric' do
+        delete :destroy, project_params(id: metric.id, format: :json)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(PrometheusMetric.find_by(id: metric.id)).to be_nil
+      end
     end
   end
 
