@@ -50,6 +50,7 @@
         canCreatePipeline: pipelinesData.canCreatePipeline,
         hasCi: pipelinesData.hasCi,
         ciLintPath: pipelinesData.ciLintPath,
+        resetCachePath: pipelinesData.resetCachePath,
         state: this.store.state,
         scope: getParameterByName('scope') || 'all',
         page: getParameterByName('page') || '1',
@@ -220,6 +221,7 @@
         :new-pipeline-path="newPipelinePath"
         :has-ci-enabled="hasCiEnabled"
         :help-page-path="helpPagePath"
+        :resetCachePath="resetCachePath"
         :ci-lint-path="ciLintPath"
         :can-create-pipeline="canCreatePipelineParsed "
         />
