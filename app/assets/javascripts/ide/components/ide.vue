@@ -9,6 +9,15 @@ import repoPreview from './repo_preview.vue';
 import repoEditor from './repo_editor.vue';
 
 export default {
+  components: {
+    ideSidebar,
+    ideContextbar,
+    repoTabs,
+    repoFileButtons,
+    ideStatusBar,
+    repoEditor,
+    repoPreview,
+  },
   computed: {
     ...mapState([
       'currentBlobView',
@@ -18,15 +27,6 @@ export default {
       'changedFiles',
       'activeFile',
     ]),
-  },
-  components: {
-    ideSidebar,
-    ideContextbar,
-    repoTabs,
-    repoFileButtons,
-    ideStatusBar,
-    repoEditor,
-    repoPreview,
   },
   mounted() {
     const returnValue = 'Are you sure you want to lose unsaved changes?';
@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <div 
+  <div
     class="ide-view"
   >
     <ide-sidebar/>
@@ -51,23 +51,26 @@ export default {
       class="multi-file-edit-pane"
     >
       <template
-        v-if="activeFile">
-        <repo-tabs/>
+        v-if="activeFile"
+      >
+        <repo-tabs />
         <component
           class="multi-file-edit-pane-content"
           :is="currentBlobView"
         />
-        <repo-file-buttons/>
+        <repo-file-buttons />
         <ide-status-bar
-          :file="selectedFile"/>
+          :file="selectedFile"
+        />
       </template>
       <template
-        v-else>
+        v-else
+      >
         <div class="ide-empty-state">
           <h2 class="clgray">Welcome to the GitLab IDE</h2>
         </div>
       </template>
     </div>
-    <ide-contextbar/>
+    <ide-contextbar />
   </div>
 </template>

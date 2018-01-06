@@ -9,6 +9,10 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
+    components: {
+      loadingIcon,
+    },
+
     props: {
       retryUrl: {
         type: String,
@@ -19,10 +23,6 @@
         type: Boolean,
         default: true,
       },
-    },
-
-    components: {
-      loadingIcon,
     },
 
     data() {

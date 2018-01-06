@@ -5,15 +5,15 @@ import icon from '../../vue_shared/components/icon.vue';
 import panelResizer from '../../vue_shared/components/panel_resizer.vue';
 
 export default {
-  data() {
-    return {
-      width: 290,
-    };
-  },
   components: {
     projectTree,
     icon,
     panelResizer,
+  },
+  data() {
+    return {
+      width: 290,
+    };
   },
   computed: {
     ...mapState([
@@ -56,17 +56,18 @@ export default {
 
 <template>
   <div
-      class="multi-file-commit-panel"
-      :class="{
-        'is-collapsed': leftPanelCollapsed,
-      }"
-      :style="panelStyle"
-    >
+    class="multi-file-commit-panel"
+    :class="{
+      'is-collapsed': leftPanelCollapsed,
+    }"
+    :style="panelStyle"
+  >
     <div class="multi-file-commit-panel-inner">
       <project-tree
-        v-for="(project, index) in projects"
+        v-for="project in projects"
         :key="project.id"
-        :project="project"/>
+        :project="project"
+      />
     </div>
     <button
       type="button"
@@ -80,7 +81,9 @@ export default {
       <span
         v-if="!leftPanelCollapsed"
         class="collapse-text"
-      >Collapse sidebar</span>
+      >
+        Collapse sidebar
+      </span>
     </button>
     <panel-resizer
       :size.sync="width"
@@ -90,6 +93,7 @@ export default {
       :max-size="maxSize"
       @resize-start="resizingStarted"
       @resize-end="resizingEnded"
-      side="right"/>
+      side="right"
+    />
   </div>
 </template>

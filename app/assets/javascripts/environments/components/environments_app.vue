@@ -119,7 +119,7 @@
       :can-read-environment="canReadEnvironment"
       @onChangePage="onChangePage"
     >
-     <empty-state
+      <empty-state
         slot="emptyState"
         v-if="!isLoading && state.environments.length === 0"
         :new-path="newEnvironmentPath"

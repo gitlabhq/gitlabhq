@@ -69,7 +69,8 @@
         <i
           class="fa fa-caret-down"
           aria-hidden="true"
-        />
+        >
+        </i>
         <loading-icon v-if="isLoading" />
       </span>
     </button>

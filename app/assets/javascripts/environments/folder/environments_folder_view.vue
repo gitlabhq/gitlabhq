@@ -44,7 +44,7 @@
     >
 
       <h4 class="js-folder-name environments-folder-name">
-        {{ s__("Environments|Environments") }} / <b>{{folderName}}</b>
+        {{ s__("Environments|Environments") }} / <b>{{ folderName }}</b>
       </h4>
 
       <tabs

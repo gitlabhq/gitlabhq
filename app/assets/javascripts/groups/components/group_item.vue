@@ -86,7 +86,8 @@
       />
       <item-stats :item="group" />
       <div
-        class="folder-toggle-wrap">
+        class="folder-toggle-wrap"
+      >
         <item-caret :is-group-open="group.isOpen" />
         <item-type-icon
           :item-type="group.type"
@@ -115,7 +116,8 @@
         </a>
       </div>
       <div
-        class="title namespace-title">
+        class="title namespace-title"
+      >
         <a
           v-tooltip
           :href="group.relativePath"

@@ -6,20 +6,6 @@ import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 
 export default {
-  beforeDestroy() {
-    this.editor.dispose();
-  },
-  mounted() {
-    if (this.editor && monaco) {
-      this.initMonaco();
-    } else {
-      monacoLoader(['vs/editor/editor.main'], () => {
-        this.editor = Editor.create(monaco);
-
-        this.initMonaco();
-      });
-    }
-  },
   computed: {
     ...mapGetters([
       'activeFile',
@@ -51,6 +37,20 @@ export default {
         this.editor.updateDimensions();
       }
     },
+  },
+  beforeDestroy() {
+    this.editor.dispose();
+  },
+  mounted() {
+    if (this.editor && monaco) {
+      this.initMonaco();
+    } else {
+      monacoLoader(['vs/editor/editor.main'], () => {
+        this.editor = Editor.create(monaco);
+
+        this.initMonaco();
+      });
+    }
   },
   methods: {
     ...mapActions([

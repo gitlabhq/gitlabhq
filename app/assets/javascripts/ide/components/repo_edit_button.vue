@@ -40,7 +40,7 @@ export default {
         aria-hidden="true">
       </i>
       <span>
-        {{buttonLabel}}
+        {{ buttonLabel }}
       </span>
     </button>
     <modal

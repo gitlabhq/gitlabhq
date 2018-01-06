@@ -31,6 +31,15 @@ export default {
     },
   },
 
+  computed: {
+    shouldRenderFolderContent() {
+      return this.model.isFolder &&
+        this.model.isOpen &&
+        this.model.children &&
+        this.model.children.length > 0;
+    },
+  },
+
   methods: {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
@@ -80,17 +89,21 @@ export default {
     </div>
     <template
       v-for="(model, i) in environments"
-      :key="i"
       :model="model">
       <div
         is="environment-item"
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
+        :key="i"
       />
 
-      <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
-        <div v-if="model.isLoadingFolderContent">
+      <template
+        v-if="shouldRenderFolderContent"
+      >
+        <div
+          v-if="model.isLoadingFolderContent"
+          :key="i">
           <loading-icon size="2" />
         </div>
 
@@ -101,9 +114,10 @@ export default {
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
+            :key="i"
           />
 
-          <div>
+          <div :key="i">
             <div class="text-center prepend-top-10">
               <a
                 :href="folderUrl(model)"

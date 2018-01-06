@@ -97,7 +97,7 @@
           <div class="modal-header">
             <slot name="header">
               <h4 class="modal-title pull-left">
-                {{ this.title }}
+                {{ title }}
               </h4>
               <button
                 type="button"
@@ -111,7 +111,10 @@
             </slot>
           </div>
           <div class="modal-body">
-            <slot name="body" :text="text">
+            <slot
+              name="body"
+              :text="text"
+            >
               <p>{{ this.text }}</p>
             </slot>
           </div>
@@ -145,7 +148,8 @@
     </div>
     <div
       v-if="id !== ''"
-      class="modal-backdrop fade in">
+      class="modal-backdrop fade in"
+    >
     </div>
   </div>
 </template>
