@@ -6,14 +6,14 @@
   import fileIcon from '../../vue_shared/components/file_icon.vue';
 
   export default {
-    mixins: [
-      timeAgoMixin,
-    ],
     components: {
       skeletonLoadingContainer,
       newDropdown,
       fileIcon,
     },
+    mixins: [
+      timeAgoMixin,
+    ],
     props: {
       file: {
         type: Object,
@@ -99,8 +99,7 @@
           :opened="file.opened"
           :style="levelIndentation"
           :size="16"
-        >
-        </file-icon>
+        />
         {{ file.name }}
       </a>
       <new-dropdown
@@ -108,7 +107,8 @@
         :project-id="file.projectId"
         :branch="file.branchId"
         :path="file.path"
-        :parent="file"/>
+        :parent="file"
+      />
       <i
         class="fa"
         v-if="changedClass"

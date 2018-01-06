@@ -70,7 +70,7 @@
             <a
               :href="build.branch.url"
               class="ref-name"
-              >
+            >
               {{ build.branch.name }}
             </a>
             <span

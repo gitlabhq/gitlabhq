@@ -39,33 +39,55 @@ export default {
 };
 </script>
 <template>
-  <div class="ci-table" role="grid">
-    <div class="gl-responsive-table-row table-row-header" role="row">
-      <div class="table-section section-10 environments-name" role="columnheader">
-        {{s__("Environments|Environment")}}
+  <div
+    class="ci-table"
+    role="grid"
+  >
+    <div
+      class="gl-responsive-table-row table-row-header"
+      role="row"
+    >
+      <div
+        class="table-section section-10 environments-name"
+        role="columnheader"
+      >
+        {{ s__("Environments|Environment") }}
       </div>
-      <div class="table-section section-10 environments-deploy" role="columnheader">
-        {{s__("Environments|Deployment")}}
+      <div
+        class="table-section section-10 environments-deploy"
+        role="columnheader"
+      >
+        {{ s__("Environments|Deployment") }}
       </div>
-      <div class="table-section section-15 environments-build" role="columnheader">
-        {{s__("Environments|Job")}}
+      <div
+        class="table-section section-15 environments-build"
+        role="columnheader"
+      >
+        {{ s__("Environments|Job") }}
       </div>
-      <div class="table-section section-25 environments-commit" role="columnheader">
-        {{s__("Environments|Commit")}}
+      <div
+        class="table-section section-25 environments-commit"
+        role="columnheader"
+      >
+        {{ s__("Environments|Commit") }}
       </div>
-      <div class="table-section section-10 environments-date" role="columnheader">
-        {{s__("Environments|Updated")}}
+      <div
+        class="table-section section-10 environments-date"
+        role="columnheader"
+      >
+        {{ s__("Environments|Updated") }}
       </div>
     </div>
     <template
-      v-for="model in environments"
-      v-bind:model="model">
+      v-for="(model, i) in environments"
+      :key="i"
+      :model="model">
       <div
         is="environment-item"
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        />
+      />
 
       <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
         <div v-if="model.isLoadingFolderContent">
@@ -79,14 +101,15 @@ export default {
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            />
+          />
 
           <div>
             <div class="text-center prepend-top-10">
               <a
                 :href="folderUrl(model)"
-                class="btn btn-default">
-                {{s__("Environments|Show all")}}
+                class="btn btn-default"
+              >
+                {{ s__("Environments|Show all") }}
               </a>
             </div>
           </div>

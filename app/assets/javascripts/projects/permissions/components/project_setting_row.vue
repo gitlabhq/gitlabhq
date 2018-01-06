@@ -46,6 +46,6 @@
     >
       {{ helpText }}
     </span>
-    <slot />
+    <slot></slot>
   </div>
 </template>

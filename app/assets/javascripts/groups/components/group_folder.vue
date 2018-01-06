@@ -23,7 +23,7 @@ export default {
       return n__(
         'One more item',
         '%d more items',
-        this.parentGroup.childrenCount - this.parentGroup.children.length
+        this.parentGroup.childrenCount - this.parentGroup.children.length,
       );
     },
   },
@@ -47,8 +47,9 @@ export default {
         <i
           class="fa fa-external-link"
           aria-hidden="true"
-        />
-        {{moreChildrenStats}}
+        >
+        </i>
+        {{ moreChildrenStats }}
       </a>
     </li>
   </ul>

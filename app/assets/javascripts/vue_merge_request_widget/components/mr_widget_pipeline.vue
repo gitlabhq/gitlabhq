@@ -20,10 +20,12 @@
       hasCi: {
         type: Boolean,
         required: false,
+        default: false,
       },
       ciStatus: {
         type: String,
         required: false,
+        default: '',
       },
     },
     computed: {
@@ -31,7 +33,7 @@
         return this.pipeline && Object.keys(this.pipeline).length > 0;
       },
       hasCIError() {
-        return this.hasCi && !this.ciStatus;
+        return this.hasCi && this.ciStatus !== '';
       },
       status() {
         return this.pipeline.details &&

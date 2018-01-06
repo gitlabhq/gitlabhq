@@ -15,7 +15,7 @@
       <h4>{{ name }}</h4>
     </div>
     <div class="panel-body prometheus-graph-group">
-      <slot />
+      <slot></slot>
     </div>
   </div>
 </template>

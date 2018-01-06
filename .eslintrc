@@ -41,12 +41,11 @@
     "vue/html-self-closing": ["error", {
       "html": {
         "void": "always",
-        "normal": "any",
+        "normal": "never",
         "component": "always"
       },
       "svg": "always",
-      "math": "any"
+      "math": "always"
     }]
-
   }
 }

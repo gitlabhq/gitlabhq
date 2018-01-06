@@ -59,6 +59,7 @@
       v-if="!searchQuery"
       class="search-icon fa fa-fw fa-search"
       aria-hidden="true"
-    />
+    >
+    </i>
   </div>
 </template>

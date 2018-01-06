@@ -474,18 +474,21 @@
         </span>
 
         <span>
-          {{model.folderName}}
+          {{ model.folderName }}
         </span>
 
         <span class="badge">
-          {{model.size}}
+          {{ model.size }}
         </span>
       </span>
     </div>
 
-    <div class="table-section section-10 deployment-column hidden-xs hidden-sm" role="gridcell">
+    <div
+      class="table-section section-10 deployment-column hidden-xs hidden-sm"
+      role="gridcell"
+    >
       <span v-if="shouldRenderDeploymentID">
-        {{deploymentInternalId}}
+        {{ deploymentInternalId }}
       </span>
 
       <span v-if="!model.isFolder && deploymentHasUser">

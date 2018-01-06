@@ -28,19 +28,19 @@
         <span>
           {{ n__('Time|hr', 'Time|hrs', time.hours) }}
         </span>
-        </template>
+      </template>
       <template v-if="time.mins && !time.days">
         {{ time.mins }}
         <span>
           {{ n__('Time|min', 'Time|mins', time.mins) }}
         </span>
-        </template>
+      </template>
       <template v-if="time.seconds && hasData === 1 || time.seconds === 0">
         {{ time.seconds }}
         <span>
           {{ s__('Time|s') }}
         </span>
-        </template>
+      </template>
     </template>
     <template v-else>
       --

@@ -24,7 +24,11 @@
     <i
       aria-label="toggle collapse"
       class="fa"
-      :class="{ 'fa-angle-double-right': !collapsed, 'fa-angle-double-left': collapsed }"
-    />
+      :class="{
+        'fa-angle-double-right': !collapsed,
+        'fa-angle-double-left': collapsed
+      }"
+    >
+    </i>
   </button>
 </template>

@@ -20,6 +20,38 @@ export default {
       });
     }
   },
+  computed: {
+    ...mapGetters([
+      'activeFile',
+      'activeFileExtension',
+    ]),
+    ...mapState([
+      'leftPanelCollapsed',
+      'rightPanelCollapsed',
+      'panelResizing',
+    ]),
+    shouldHideEditor() {
+      return this.activeFile.binary && !this.activeFile.raw;
+    },
+  },
+  watch: {
+    activeFile(oldVal, newVal) {
+      if (newVal && !newVal.active) {
+        this.initMonaco();
+      }
+    },
+    leftPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    rightPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    panelResizing(isResizing) {
+      if (isResizing === false) {
+        this.editor.updateDimensions();
+      }
+    },
+  },
   methods: {
     ...mapActions([
       'getRawFileData',
@@ -76,38 +108,6 @@ export default {
       this.setFileEOL({
         eol: model.eol,
       });
-    },
-  },
-  watch: {
-    activeFile(oldVal, newVal) {
-      if (newVal && !newVal.active) {
-        this.initMonaco();
-      }
-    },
-    leftPanelCollapsed() {
-      this.editor.updateDimensions();
-    },
-    rightPanelCollapsed() {
-      this.editor.updateDimensions();
-    },
-    panelResizing(isResizing) {
-      if (isResizing === false) {
-        this.editor.updateDimensions();
-      }
-    },
-  },
-  computed: {
-    ...mapGetters([
-      'activeFile',
-      'activeFileExtension',
-    ]),
-    ...mapState([
-      'leftPanelCollapsed',
-      'rightPanelCollapsed',
-      'panelResizing',
-    ]),
-    shouldHideEditor() {
-      return this.activeFile.binary && !this.activeFile.raw;
     },
   },
 };
