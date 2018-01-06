@@ -65,6 +65,5 @@
   - [propagate_service_template, 1]
   - [background_migration, 1]
   - [gcp_cluster, 1]
-  - [check_gcp_project_billing, 1]
   - [project_migrate_hashed_storage, 1]
   - [storage_migrator, 1]
