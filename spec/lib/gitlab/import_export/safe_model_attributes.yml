@@ -475,6 +475,7 @@ Project:
 - delete_error
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
+- jobs_cache_index
 Author:
 - name
 ProjectFeature:
