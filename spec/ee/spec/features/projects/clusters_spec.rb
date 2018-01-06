@@ -81,7 +81,7 @@ feature 'EE Clusters' do
             .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
 
           stub_google_project_billing_status
-          allow(CheckGcpProjectBillingWorker).to receive(:perform_async)
+          allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
 
           allow_any_instance_of(GoogleApi::CloudPlatform::Client)
             .to receive(:projects_zones_clusters_create) do
