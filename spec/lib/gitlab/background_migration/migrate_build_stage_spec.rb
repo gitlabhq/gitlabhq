@@ -29,6 +29,8 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
                  stage_idx: 1, stage: 'test', status: :success)
     jobs.create!(id: 5, commit_id: 1, project_id: 123,
                  stage_idx: 3, stage: 'deploy', status: :pending)
+    jobs.create!(id: 6, commit_id: 1, project_id: 123,
+                 stage_idx: 3, stage: nil, status: :pending)
   end
 
   it 'correctly migrates builds stages' do
@@ -40,7 +42,8 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
 
     expect(stages.count).to eq 3
     expect(stages.all.pluck(:name)).to match_array %w[test build deploy]
-    expect(jobs.where(stage_id: nil)).to be_empty
+    expect(jobs.where(stage_id: nil)).to be_one
+    expect(jobs.find_by(stage_id: nil).id).to eq 6
     expect(stages.all.pluck(:status)).to match_array [STATUSES[:success],
                                                       STATUSES[:failed],
                                                       STATUSES[:pending]]

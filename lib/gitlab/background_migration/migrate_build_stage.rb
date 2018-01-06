@@ -6,9 +6,9 @@ module Gitlab
   module BackgroundMigration
     class MigrateBuildStage
       def perform(id)
-        Ci::Build.find_by(id: id).try do |build|
-          Stage.new(build).tap do |stage|
-            break if stage.exists?
+        DatabaseBuild.find_by(id: id).try do |build|
+          MigratableStage.new(build).tap do |stage|
+            break if stage.exists? || stage.legacy?
 
             stage.ensure!
             stage.migrate_reference!
@@ -17,15 +17,15 @@ module Gitlab
         end
       end
 
-      class Ci::Stage < ActiveRecord::Base
+      class DatabaseStage < ActiveRecord::Base
         self.table_name = 'ci_stages'
       end
 
-      class Ci::Build < ActiveRecord::Base
+      class DatabaseBuild < ActiveRecord::Base
         self.table_name = 'ci_builds'
       end
 
-      class Stage
+      class MigratableStage
         def initialize(build)
           @build = build
         end
@@ -34,20 +34,29 @@ module Gitlab
           @build.reload.stage_id.present?
         end
 
+        ##
+        # We can have some very old stages that do not have `ci_builds.stage` set.
+        #
+        # In that case we just don't migrate such stage.
+        #
+        def legacy?
+         @build.stage.nil?
+        end
+
         def ensure!
           find || create!
         end
 
         def find
-          Ci::Stage.find_by(name: @build.stage,
-                            pipeline_id: @build.commit_id,
-                            project_id: @build.project_id)
+          DatabaseStage.find_by(name: @build.stage,
+                                pipeline_id: @build.commit_id,
+                                project_id: @build.project_id)
         end
 
         def create!
-          Ci::Stage.create!(name: @build.stage,
-                            pipeline_id: @build.commit_id,
-                            project_id: @build.project_id)
+          DatabaseStage.create!(name: @build.stage,
+                                pipeline_id: @build.commit_id,
+                                project_id: @build.project_id)
         end
 
         def migrate_reference!
