@@ -28,14 +28,14 @@ describe ScheduleBuildStageMigration, :migration do
     stub_const("#{described_class}::BATCH", 1)
   end
 
-  it 'schedules background migrations in batches in bulk' do
+  it 'schedules delayed background migrations in batches in bulk' do
     Sidekiq::Testing.fake! do
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_migration(1.minute, 10)
-        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 20)
-        expect(described_class::MIGRATION).to be_scheduled_migration(3.minutes, 30)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(1.minute, 10)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 20)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(3.minutes, 30)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end
