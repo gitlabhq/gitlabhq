@@ -272,10 +272,7 @@ module API
         expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
-          field_names = service.fields
-            .select { |field| options[:include_passwords] || field[:type] != 'password' }
-            .map { |field| field[:name] }
-          service.properties.slice(*field_names)
+          service.properties.slice(*service.api_field_names)
         end
       end
 
