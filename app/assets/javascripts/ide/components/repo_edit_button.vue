@@ -50,7 +50,7 @@ export default {
       kind="warning"
       :title="__('Are you sure?')"
       :text="__('Are you sure you want to discard your changes?')"
-      @toggle="closeDiscardPopup"
+      @cancel="closeDiscardPopup"
       @submit="toggleEditMode(true)"
     />
   </div>

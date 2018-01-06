@@ -498,11 +498,13 @@ module Gitlab
       end
 
       def count_commits(options)
+        count_commits_options = process_count_commits_options(options)
+
         gitaly_migrate(:count_commits) do |is_enabled|
           if is_enabled
-            count_commits_by_gitaly(options)
+            count_commits_by_gitaly(count_commits_options)
           else
-            count_commits_by_shelling_out(options)
+            count_commits_by_shelling_out(count_commits_options)
           end
         end
       end
@@ -540,8 +542,8 @@ module Gitlab
       end
 
       # Counts the amount of commits between `from` and `to`.
-      def count_commits_between(from, to)
-        count_commits(ref: "#{from}..#{to}")
+      def count_commits_between(from, to, options = {})
+        count_commits(from: from, to: to, **options)
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -1462,6 +1464,26 @@ module Gitlab
         end
       end
 
+      def process_count_commits_options(options)
+        if options[:from] || options[:to]
+          ref =
+            if options[:left_right] # Compare with merge-base for left-right
+              "#{options[:from]}...#{options[:to]}"
+            else
+              "#{options[:from]}..#{options[:to]}"
+            end
+
+          options.merge(ref: ref)
+
+        elsif options[:ref] && options[:left_right]
+          from, to = options[:ref].match(/\A([^\.]*)\.{2,3}([^\.]*)\z/)[1..2]
+
+          options.merge(from: from, to: to)
+        else
+          options
+        end
+      end
+
       def log_using_shell?(options)
         options[:path].present? ||
           options[:disable_walk] ||
@@ -1684,20 +1706,59 @@ module Gitlab
       end
 
       def count_commits_by_gitaly(options)
-        gitaly_commit_client.commit_count(options[:ref], options)
+        if options[:left_right]
+          from = options[:from]
+          to = options[:to]
+
+          right_count = gitaly_commit_client
+            .commit_count("#{from}..#{to}", options)
+          left_count = gitaly_commit_client
+            .commit_count("#{to}..#{from}", options)
+
+          [left_count, right_count]
+        else
+          gitaly_commit_client.commit_count(options[:ref], options)
+        end
       end
 
       def count_commits_by_shelling_out(options)
+        cmd = count_commits_shelling_command(options)
+
+        raw_output = IO.popen(cmd) { |io| io.read }
+
+        process_count_commits_raw_output(raw_output, options)
+      end
+
+      def count_commits_shelling_command(options)
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
+        cmd << "--left-right" if options[:left_right]
         cmd += %W[--count #{options[:ref]}]
         cmd += %W[-- #{options[:path]}] if options[:path].present?
+        cmd
+      end
 
-        raw_output = IO.popen(cmd) { |io| io.read }
+      def process_count_commits_raw_output(raw_output, options)
+        if options[:left_right]
+          result = raw_output.scan(/\d+/).map(&:to_i)
 
-        raw_output.to_i
+          if result.sum != options[:max_count]
+            result
+          else # Reaching max count, right is not accurate
+            right_option =
+              process_count_commits_options(options
+                .except(:left_right, :from, :to)
+                .merge(ref: options[:to]))
+
+            right = count_commits_by_shelling_out(right_option)
+
+            [result.first, right] # left should be accurate in the first call
+          end
+        else
+          raw_output.to_i
+        end
       end
 
       def gitaly_ls_files(ref)

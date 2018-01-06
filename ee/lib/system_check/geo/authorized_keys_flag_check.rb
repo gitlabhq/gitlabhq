@@ -12,7 +12,7 @@ module SystemCheck
           "You need to disable `Write to authorized_keys file` in GitLab's Admin panel"
         )
 
-        for_more_information(AUTHORIZED_KEYS_DOCS)
+        for_more_information(AuthorizedKeysCheck::AUTHORIZED_KEYS_DOCS)
       end
     end
   end

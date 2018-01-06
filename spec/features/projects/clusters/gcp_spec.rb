@@ -94,7 +94,7 @@ feature 'Gcp Cluster', :js do
         context 'when user disables the cluster' do
           before do
             page.find(:css, '.js-toggle-cluster').click
-            click_button 'Save'
+            page.within('#cluster-integration') { click_button 'Save changes' }
           end
 
           it 'user sees the successful message' do
@@ -105,7 +105,7 @@ feature 'Gcp Cluster', :js do
         context 'when user changes cluster parameters' do
           before do
             fill_in 'cluster_platform_kubernetes_attributes_namespace', with: 'my-namespace'
-            click_button 'Save changes'
+            page.within('#js-cluster-details') { click_button 'Save changes' }
           end
 
           it 'user sees the successful message' do

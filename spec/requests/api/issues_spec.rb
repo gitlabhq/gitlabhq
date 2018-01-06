@@ -1586,4 +1586,16 @@ describe API::Issues, :mailer do
     expect(json_response).to be_an Array
     expect(json_response.length).to eq(size) if size
   end
+
+  describe 'GET projects/:id/issues/:issue_iid/participants' do
+    it_behaves_like 'issuable participants endpoint' do
+      let(:entity) { issue }
+    end
+
+    it 'returns 404 if the issue is confidential' do
+      post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/participants", non_member)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+  end
 end

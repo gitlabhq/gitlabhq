@@ -201,23 +201,6 @@ The following guide assumes that:
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
 
-1. Verify that clock synchronization is enabled.
-
-    >**Important:**
-    For Geo to work correctly, all nodes must have their clocks
-    synchronized. It is not required for all nodes to be set to the same time
-    zone, but when the respective times are converted to UTC time, the clocks
-    must be synchronized to within 60 seconds of each other.
-
-    Verify NTP sync is enabled, using:
-
-    ```bash
-    timedatectl status | grep 'NTP synchronized'
-    ```
-
-    Refer to your Linux distribution documentation to setup clock
-    synchronization. This can easily be done using any NTP-compatible daemon.
-
 ### Step 2. Add the secondary GitLab node
 
 Follow the steps in ["add the secondary GitLab node"](database.md#step-2-add-the-secondary-gitlab-node).
@@ -242,12 +225,6 @@ the primary's database" step, continue here:
     ```
 
 1. Restart PostgreSQL for the changes to take effect.
-
-1. Verify that clock synchronization is enabled, using:
-
-    ```bash
-    timedatectl status | grep 'NTP synchronized'
-    ```
 
 #### Enable tracking database on the secondary server
 

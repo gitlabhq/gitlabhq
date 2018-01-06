@@ -42,28 +42,28 @@ export default {
       v-if="isGroup"
       css-class="number-subgroups"
       icon-name="folder"
-      :title="s__('Subgroups')"
-      :value=item.subgroupCount
+      :title="__('Subgroups')"
+      :value="item.subgroupCount"
     />
     <item-stats-value
       v-if="isGroup"
       css-class="number-projects"
       icon-name="bookmark"
-      :title="s__('Projects')"
-      :value=item.projectCount
+      :title="__('Projects')"
+      :value="item.projectCount"
     />
     <item-stats-value
       v-if="isGroup"
       css-class="number-users"
       icon-name="users"
-      :title="s__('Members')"
-      :value=item.memberCount
+      :title="__('Members')"
+      :value="item.memberCount"
     />
     <item-stats-value
       v-if="isProject"
       css-class="project-stars"
       icon-name="star"
-      :value=item.starCount
+      :value="item.starCount"
     />
     <item-stats-value
       css-class="item-visibility"

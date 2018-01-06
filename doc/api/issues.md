@@ -1134,6 +1134,45 @@ Example response:
 ```
 
 
+## Participants on issues
+
+```
+GET /projects/:id/issues/:issue_iid/participants
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/participants
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "John Doe1",
+    "username": "user1",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+    "web_url": "http://localhost/user1"
+  },
+  {
+    "id": 5,
+    "name": "John Doe5",
+    "username": "user5",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/4aea8cf834ed91844a2da4ff7ae6b491?s=80&d=identicon",
+    "web_url": "http://localhost/user5"
+  }
+]
+```
+
+
 ## Comments on issues
 
 Comments are done via the [notes](notes.md) resource.
