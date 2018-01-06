@@ -3,7 +3,7 @@ class ScheduleBuildStageMigration < ActiveRecord::Migration
 
   DOWNTIME = false
   MIGRATION = 'MigrateBuildStage'.freeze
-  BATCH = 10_000
+  BATCH = 1000
 
   class Build < ActiveRecord::Base
     include EachBatch
