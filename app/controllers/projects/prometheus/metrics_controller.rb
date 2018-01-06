@@ -81,7 +81,7 @@ module Projects
 
         respond_to do |format|
           format.html do
-            redirect_to edit_project_service_path(project, prometheus_service), status: 302
+            redirect_to edit_project_service_path(project, prometheus_service), status: 303
           end
           format.json do
             head :ok
