@@ -90,7 +90,7 @@
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.4.0",
+    "@gitlab-org/gitlab-svgs": "^1.5.0",
     "babel-plugin-istanbul": "^4.1.5",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
@@ -110,6 +110,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
     "nodemon": "^1.11.0",
+    "prettier": "1.9.2",
     "webpack-dev-server": "^2.6.1"
   }
 }

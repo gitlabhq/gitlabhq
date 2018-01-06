@@ -390,14 +390,8 @@ namespace :gitlab do
   namespace :repo do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        namespace_dirs = Dir.glob(File.join(repository_storage['path'], '*'))
-
-        namespace_dirs.each do |namespace_dir|
-          repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
-          repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
-        end
-      end
+      puts "This task is deprecated. Please use gitlab:git:fsck instead".color(:red)
+      Rake::Task["gitlab:git:fsck"].execute
     end
   end
 
@@ -489,37 +483,6 @@ namespace :gitlab do
       puts "OK (#{current_version})".color(:green)
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".color(:red)
-    end
-  end
-
-  def check_repo_integrity(repo_dir)
-    puts "\nChecking repo at #{repo_dir.color(:yellow)}"
-
-    git_fsck(repo_dir)
-    check_config_lock(repo_dir)
-    check_ref_locks(repo_dir)
-  end
-
-  def git_fsck(repo_dir)
-    puts "Running `git fsck`".color(:yellow)
-    system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: repo_dir)
-  end
-
-  def check_config_lock(repo_dir)
-    config_exists = File.exist?(File.join(repo_dir, 'config.lock'))
-    config_output = config_exists ? 'yes'.color(:red) : 'no'.color(:green)
-    puts "'config.lock' file exists?".color(:yellow) + " ... #{config_output}"
-  end
-
-  def check_ref_locks(repo_dir)
-    lock_files = Dir.glob(File.join(repo_dir, 'refs/heads/*.lock'))
-    if lock_files.present?
-      puts "Ref lock files exist:".color(:red)
-      lock_files.each do |lock_file|
-        puts "  #{lock_file}"
-      end
-    else
-      puts "No ref lock files exist".color(:green)
     end
   end
 end

@@ -80,7 +80,7 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
       option in Application Settings as outlined in the Speed up SSH
       documentation,
 
-      https://docs.gitlab.com/ee/administration/operations/speed_up_ssh.html
+      https://docs.gitlab.com/ee/administration/operations/fast_ssh_key_lookup.html
 
       then the authorized_keys file may be out-of-date, affecting SSH
       operations.

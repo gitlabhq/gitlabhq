@@ -422,4 +422,42 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe "#deprecated?" do
+    let(:kubernetes_service) { create(:kubernetes_service) }
+
+    context 'with an active kubernetes service' do
+      it 'should return false' do
+        expect(kubernetes_service.deprecated?).to be_falsy
+      end
+    end
+
+    context 'with a inactive kubernetes service' do
+      it 'should return true' do
+        kubernetes_service.update_attribute(:active, false)
+        expect(kubernetes_service.deprecated?).to be_truthy
+      end
+    end
+  end
+
+  describe "#deprecation_message" do
+    let(:kubernetes_service) { create(:kubernetes_service) }
+
+    it 'should indicate the service is deprecated' do
+      expect(kubernetes_service.deprecation_message).to match(/Kubernetes service integration has been deprecated/)
+    end
+
+    context 'if the services is active' do
+      it 'should return a message' do
+        expect(kubernetes_service.deprecation_message).to match(/Your cluster information on this page is still editable/)
+      end
+    end
+
+    context 'if the service is not active' do
+      it 'should return a message' do
+        kubernetes_service.update_attribute(:active, false)
+        expect(kubernetes_service.deprecation_message).to match(/Fields on this page are now uneditable/)
+      end
+    end
+  end
 end

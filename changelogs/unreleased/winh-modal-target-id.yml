@@ -1,0 +1,5 @@
+---
+title: Add id to modal.vue to support data-toggle="modal"
+merge_request: 16189
+author:
+type: other

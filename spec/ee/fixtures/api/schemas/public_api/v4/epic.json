@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "group_id": { "type": "integer" },
+    "title": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "author": {
+      "type": ["object", "null"],
+      "properties": {
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "id": { "type": "integer" },
+        "state": { "type": "string" },
+        "avatar_url": { "type": "uri" },
+        "web_url": { "type": "uri" }
+      },
+      "additionalProperties": false
+    },
+    "start_date": { "type": ["string", "null"] },
+    "end_date": { "type": ["string", "null"] }
+  },
+  "required": [
+    "id", "iid", "group_id", "title"
+  ],
+  "additionalProperties": false
+}

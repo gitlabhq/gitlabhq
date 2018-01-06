@@ -48,6 +48,11 @@ export default {
       type: String,
       required: false,
     },
+    hasPriority: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   components: {
@@ -145,6 +150,7 @@ export default {
         :type="type"
         status="failed"
         :issues="unresolvedIssues"
+        :has-priority="hasPriority"
         />
 
       <issues-block
@@ -153,6 +159,7 @@ export default {
         :type="type"
         status="neutral"
         :issues="neutralIssues"
+        :has-priority="hasPriority"
         />
 
       <issues-block
@@ -161,6 +168,7 @@ export default {
         :type="type"
         status="success"
         :issues="resolvedIssues"
+        :has-priority="hasPriority"
         />
     </div>
     <div

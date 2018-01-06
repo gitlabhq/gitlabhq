@@ -2,11 +2,18 @@
 import { mapGetters, mapState, mapActions } from 'vuex';
 import repoCommitSection from './repo_commit_section.vue';
 import icon from '../../vue_shared/components/icon.vue';
+import panelResizer from '../../vue_shared/components/panel_resizer.vue';
 
 export default {
+  data() {
+    return {
+      width: 290,
+    };
+  },
   components: {
     repoCommitSection,
     icon,
+    panelResizer,
   },
   computed: {
     ...mapState([
@@ -18,16 +25,32 @@ export default {
     currentIcon() {
       return this.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
     },
+    maxSize() {
+      return window.innerWidth / 2;
+    },
+    panelStyle() {
+      if (!this.rightPanelCollapsed) {
+        return { width: `${this.width}px` };
+      }
+      return {};
+    },
   },
   methods: {
     ...mapActions([
       'setPanelCollapsedStatus',
+      'setResizingStatus',
     ]),
     toggleCollapsed() {
       this.setPanelCollapsedStatus({
         side: 'right',
         collapsed: !this.rightPanelCollapsed,
       });
+    },
+    resizingStarted() {
+      this.setResizingStatus(true);
+    },
+    resizingEnded() {
+      this.setResizingStatus(false);
     },
   },
 };
@@ -39,6 +62,7 @@ export default {
     :class="{
       'is-collapsed': rightPanelCollapsed,
     }"
+    :style="panelStyle"
   >
     <div 
       class="multi-file-commit-panel-section">
@@ -71,5 +95,14 @@ export default {
       <repo-commit-section 
         class=""/>
     </div>
+    <panel-resizer
+      :size.sync="width"
+      :enabled="!rightPanelCollapsed"
+      :start-size="290"
+      :min-size="200"
+      :max-size="maxSize"
+      @resize-start="resizingStarted"
+      @resize-end="resizingEnded"
+      side="left"/>
   </div>
 </template>

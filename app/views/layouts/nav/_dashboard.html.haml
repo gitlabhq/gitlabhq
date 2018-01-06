@@ -49,6 +49,12 @@
     = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
       Projects
 
+  - if current_controller?('ide')
+    %li.line-separator.hidden-xs
+      = nav_link(controller: 'ide') do
+        = link_to '#', class: 'dashboard-shortcuts-web-ide', title: 'Web IDE' do
+          Web IDE
+
   - if current_user.admin? || Gitlab::Sherlock.enabled?
     %li.line-separator.hidden-xs
   - if current_user.admin?
@@ -63,4 +69,4 @@
   - if Gitlab::Geo.secondary? && Gitlab::Geo.primary_node_configured?
     %li
       = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-        = icon('globe fw')
+        = sprite_icon('geo-nodes', size: 18)

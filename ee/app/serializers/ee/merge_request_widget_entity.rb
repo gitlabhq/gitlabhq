@@ -62,6 +62,14 @@ module EE
           project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
         end
       end
+
+      expose :dast, if: -> (mr, _) { expose_dast_data?(mr, current_user) } do
+        expose :path do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.dast_artifact,
+                                          path: Ci::Build::DAST_FILE)
+        end
+      end
     end
 
     private
@@ -81,6 +89,12 @@ module EE
       mr.project.feature_available?(:sast_container) &&
         mr.has_sast_container_data? &&
         can?(current_user, :read_build, mr.sast_container_artifact)
+    end
+
+    def expose_dast_data?(mr, current_user)
+      mr.project.feature_available?(:dast) &&
+        mr.has_dast_data? &&
+        can?(current_user, :read_build, mr.dast_artifact)
     end
   end
 end

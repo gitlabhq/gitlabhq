@@ -22,6 +22,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   # EE-specific
   expose :approvals_before_merge
   expose :squash
+
   expose :rebase_commit_sha
   expose :rebase_in_progress?, as: :rebase_in_progress
 
@@ -39,6 +40,16 @@ class MergeRequestWidgetEntity < IssuableEntity
     metrics = build_metrics(merge_request)
 
     MergeRequestMetricsEntity.new(metrics).as_json
+  end
+
+  expose :rebase_commit_sha
+  expose :rebase_in_progress?, as: :rebase_in_progress
+
+  expose :can_push_to_source_branch do |merge_request|
+    presenter(merge_request).can_push_to_source_branch?
+  end
+  expose :rebase_path do |merge_request|
+    presenter(merge_request).rebase_path
   end
 
   # User entities

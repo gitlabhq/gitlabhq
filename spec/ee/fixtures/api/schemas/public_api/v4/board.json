@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "../../../../../../fixtures/api/schemas/public_api/v4/board.json" },
+    {
+      "required" : [
+        "name",
+        "weight",
+        "group",
+        "milestone",
+        "assignee",
+        "labels"
+      ],
+      "properties": {
+        "group": { "type": ["object", null] },
+        "name": { "type": "string" },
+        "weight": { "type": ["string", "null"] },
+        "assignee": {
+          "type": ["object", "null"]
+        },
+        "labels": {
+          "type": "array"
+        },
+        "milestone": {
+          "type": ["object", "null"],
+          "required": [
+            "id",
+            "title"
+          ],
+          "properties": {
+            "id": { "type": "integer" },
+            "title": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "additional_properties": true
+      }
+    }
+  ]
+}

@@ -85,9 +85,10 @@ module EE
     end
 
     def issues(current_user)
-      related_issues = ::Issue.select('issues.*, epic_issues.id as epic_issue_id')
+      related_issues = ::Issue.select('issues.*, epic_issues.id as epic_issue_id, epic_issues.relative_position')
         .joins(:epic_issue)
         .where("epic_issues.epic_id = #{id}")
+        .order('epic_issues.relative_position, epic_issues.id')
 
       Ability.issues_readable_by_user(related_issues, current_user)
     end

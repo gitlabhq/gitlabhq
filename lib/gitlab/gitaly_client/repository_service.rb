@@ -81,6 +81,22 @@ module Gitlab
         response.base.presence
       end
 
+      def fork_repository(source_repository)
+        request = Gitaly::CreateForkRequest.new(
+          repository: @gitaly_repo,
+          source_repository: source_repository.gitaly_repository
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_fork,
+          request,
+          remote_storage: source_repository.storage,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
       def fetch_source_branch(source_repository, source_branch, local_ref)
         request = Gitaly::FetchSourceBranchRequest.new(
           repository: @gitaly_repo,
