@@ -1,5 +1,5 @@
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20171205101928_schedule_build_stage_migration')
+require Rails.root.join('db', 'post_migrate', '20180105101928_schedule_build_stage_migration')
 
 describe ScheduleBuildStageMigration, :migration do
   let(:projects) { table(:projects) }

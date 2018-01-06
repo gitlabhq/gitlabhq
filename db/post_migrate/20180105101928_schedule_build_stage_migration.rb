@@ -13,7 +13,7 @@ class ScheduleBuildStageMigration < ActiveRecord::Migration
   def change
     Build.where('stage_id IS NULL').each_batch(of: BATCH) do |builds, index|
       builds.pluck(:id).map { |id| [MIGRATION, [id]] }.tap do |migrations|
-        BackgroundMigrationWorker.perform_bulk_in(index.minutes, migrations)
+        BackgroundMigrationWorker.bulk_perform_in(index.minutes, migrations)
       end
     end
   end

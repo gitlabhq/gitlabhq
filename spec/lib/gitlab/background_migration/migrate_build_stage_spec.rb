@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 20171205101928 do
+describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 20180105101928 do
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }
