@@ -16,12 +16,6 @@
   display: inline-block;
 }
 
-@media (min-width: $screen-md-min) {
-  .blob-viewer[data-type="rich"] {
-    margin: 20px;
-  }
-}
-
 .ide-view {
   display: flex;
   height: calc(100vh - #{$header-height});
