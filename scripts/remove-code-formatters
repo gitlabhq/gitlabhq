@@ -9,11 +9,11 @@ fi
 PRECOMMIT=$(git rev-parse --git-dir)/hooks/pre-commit
 
 # Check if symlink exists with -L. Check if script was already installed.
-if [ -L $PRECOMMIT ]; then
-  echo "Pre-commit script already installed."
+if [ ! -L $PRECOMMIT ]; then
+  echo "Pre-commit not installed. Nothing to remove."
   exit 1
 fi
 
-ln -s ./scripts/pre-commit $PRECOMMIT
+rm ./scripts/pre-commit $PRECOMMIT
 chmod +x $PRECOMMIT
 echo "Pre-commit script installed successfully"
