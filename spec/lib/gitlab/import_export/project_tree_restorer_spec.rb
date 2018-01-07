@@ -179,6 +179,32 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
             end
         end
       end
+
+      context 'when restoring hierarchy of pipeline, stages and jobs' do
+        it 'restores pipelines' do
+          expect(Ci::Pipeline.all.count).to be 5
+        end
+
+        it 'restores pipeline stages' do
+          expect(Ci::Stage.all.count).to be 6
+        end
+
+        it 'correctly restores association between stage and a pipeline' do
+          expect(Ci::Stage.all).to all(have_attributes(pipeline_id: a_value > 0))
+        end
+
+        it 'restores statuses' do
+          expect(CommitStatus.all.count).to be 10
+        end
+
+        it 'correctly restores association between a stage and a job' do
+          expect(CommitStatus.all).to all(have_attributes(stage_id: a_value > 0))
+        end
+
+        it 'correctly restores association between a pipeline and a job' do
+          expect(CommitStatus.all).to all(have_attributes(pipeline_id: a_value > 0))
+        end
+      end
     end
   end
 
