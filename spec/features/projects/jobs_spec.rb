@@ -370,6 +370,7 @@ feature 'Jobs' do
       end
     end
 
+<<<<<<< HEAD
     context 'job project is over shared runners limit' do
       let(:group) { create(:group, :with_used_build_minutes_limit) }
       let(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
@@ -381,6 +382,8 @@ feature 'Jobs' do
       end
     end
 
+=======
+>>>>>>> upstream/master
     context 'Playable manual action' do
       let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
