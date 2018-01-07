@@ -10,5 +10,5 @@
       - link_to_requirements = link_to(s_('ClusterIntegration|meets the requirements'), 'https://cloud.google.com/kubernetes-engine/docs/quickstart', target: '_blank', rel: 'noopener noreferrer')
       = s_('ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters').html_safe % { link_to_requirements: link_to_requirements }
     %li
-      - link_to_container_project = link_to(s_('ClusterIntegration|Google Kubernetes Engine project'), target: '_blank', rel: 'noopener noreferrer')
+      - link_to_container_project = link_to(s_('ClusterIntegration|Google Kubernetes Engine project'), 'https://console.cloud.google.com/home/dashboard', target: '_blank', rel: 'noopener noreferrer')
       = s_('ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below').html_safe % { link_to_container_project: link_to_container_project }
