@@ -8,7 +8,7 @@ describe CheckGcpProjectBillingWorker do
 
     context 'when there is a token in redis' do
       before do
-        allow_any_instance_of(described_class).to receive(:get_token).and_return(token)
+        allow_any_instance_of(described_class).to receive(:get_session_token).and_return(token)
       end
 
       context 'when there is no lease' do
@@ -48,7 +48,7 @@ describe CheckGcpProjectBillingWorker do
 
     context 'when there is no token in redis' do
       before do
-        allow_any_instance_of(described_class).to receive(:get_token).and_return(nil)
+        allow_any_instance_of(described_class).to receive(:get_session_token).and_return(nil)
       end
 
       it 'does not call the service' do

@@ -5,9 +5,20 @@ class CheckGcpProjectBillingWorker
   include ClusterQueue
 
   LEASE_TIMEOUT = 15.seconds.to_i
+  SESSION_KEY_TIMEOUT = 5.minutes
 
-  def self.generate_redis_token_key
-    SecureRandom.uuid
+  def self.get_session_token(token_key)
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.get(get_redis_session_key(token_key))
+    end
+  end
+
+  def self.store_session_token(token)
+    generate_token_key.tap do |token_key|
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.set(get_redis_session_key(token_key), token, ex: SESSION_KEY_TIMEOUT)
+      end
+    end
   end
 
   def self.redis_shared_state_key_for(token)
@@ -17,7 +28,7 @@ class CheckGcpProjectBillingWorker
   def perform(token_key)
     return unless token_key
 
-    token = get_token(token_key)
+    token = self.get_session_token(token_key)
     return unless token
     return unless try_obtain_lease_for(token)
 
@@ -29,8 +40,12 @@ class CheckGcpProjectBillingWorker
 
   private
 
-  def get_token(token_key)
-    Gitlab::Redis::SharedState.with { |redis| redis.get(token_key) }
+  def self.generate_token_key
+    SecureRandom.uuid
+  end
+
+  def self.get_redis_session_key(token_key)
+    "gitlab:gcp:session:#{token_key}"
   end
 
   def try_obtain_lease_for(token)
