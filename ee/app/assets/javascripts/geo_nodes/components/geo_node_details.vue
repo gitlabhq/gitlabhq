@@ -57,6 +57,11 @@
             itemValueType: VALUE_TYPE.GRAPH,
           },
           {
+            itemTitle: s__('GeoNodes|Job artifacts:'),
+            itemValue: this.nodeDetails.jobArtifacts,
+            itemValueType: VALUE_TYPE.GRAPH,
+          },
+          {
             itemTitle: s__('GeoNodes|Attachments:'),
             itemValue: this.nodeDetails.attachments,
             itemValueType: VALUE_TYPE.GRAPH,

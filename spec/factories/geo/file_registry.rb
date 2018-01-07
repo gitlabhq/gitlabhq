@@ -21,6 +21,8 @@ FactoryBot.define do
         file =
           if registry.file_type.to_sym == :lfs
             create(:lfs_object)
+          elsif registry.file_type.to_sym == :job_artifact
+            create(:ci_job_artifact)
           else
             create(:upload)
           end

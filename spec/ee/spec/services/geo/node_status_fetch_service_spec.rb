@@ -60,6 +60,9 @@ describe Geo::NodeStatusFetchService, :geo do
                lfs_objects_count: 100,
                lfs_objects_synced_count: 50,
                lfs_objects_failed_count: 12,
+               job_artifacts_count: 100,
+               job_artifacts_synced_count: 50,
+               job_artifacts_failed_count: 12,
                attachments_count: 30,
                attachments_synced_count: 30,
                attachments_failed_count: 25,
@@ -136,6 +139,9 @@ describe Geo::NodeStatusFetchService, :geo do
       expect(status.lfs_objects_count).to eq(db_status.lfs_objects_count)
       expect(status.lfs_objects_failed_count).to eq(db_status.lfs_objects_failed_count)
       expect(status.lfs_objects_synced_count).to eq(db_status.lfs_objects_synced_count)
+      expect(status.job_artifacts_count).to eq(db_status.job_artifacts_count)
+      expect(status.job_artifacts_failed_count).to eq(db_status.job_artifacts_failed_count)
+      expect(status.job_artifacts_synced_count).to eq(db_status.job_artifacts_synced_count)
       expect(status.repositories_count).to eq(db_status.repositories_count)
       expect(status.repositories_synced_count).to eq(db_status.repositories_synced_count)
       expect(status.repositories_failed_count).to eq(db_status.repositories_failed_count)

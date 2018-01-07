@@ -25,6 +25,9 @@ describe Geo::MetricsUpdateService, :geo do
       lfs_objects_count: 100,
       lfs_objects_synced_count: 50,
       lfs_objects_failed_count: 12,
+      job_artifacts_count: 100,
+      job_artifacts_synced_count: 50,
+      job_artifacts_failed_count: 12,
       attachments_count: 30,
       attachments_synced_count: 30,
       attachments_failed_count: 25,
@@ -110,6 +113,9 @@ describe Geo::MetricsUpdateService, :geo do
         expect(metric_value(:geo_lfs_objects)).to eq(100)
         expect(metric_value(:geo_lfs_objects_synced)).to eq(50)
         expect(metric_value(:geo_lfs_objects_failed)).to eq(12)
+        expect(metric_value(:geo_job_artifacts)).to eq(100)
+        expect(metric_value(:geo_job_artifacts_synced)).to eq(50)
+        expect(metric_value(:geo_job_artifacts_failed)).to eq(12)
         expect(metric_value(:geo_attachments)).to eq(30)
         expect(metric_value(:geo_attachments_synced)).to eq(30)
         expect(metric_value(:geo_attachments_failed)).to eq(25)
