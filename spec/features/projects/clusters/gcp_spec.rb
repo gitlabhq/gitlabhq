@@ -87,7 +87,11 @@ feature 'Gcp Cluster', :js do
         end
 
         it 'user sees a cluster details page' do
+<<<<<<< HEAD
           expect(page).to have_button('Save')
+=======
+          expect(page).to have_button('Save changes')
+>>>>>>> upstream/master
           expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
         end
 
