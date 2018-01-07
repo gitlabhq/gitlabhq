@@ -3,6 +3,7 @@ require 'spec_helper'
 describe CheckGcpProjectBillingWorker do
   describe '.perform' do
     let(:token) { 'bogustoken' }
+
     subject { described_class.new.perform('token_key') }
 
     context 'when there is a token in redis' do
