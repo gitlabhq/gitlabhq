@@ -357,8 +357,10 @@ import Activities from './activities';
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new Activities();
-          shortcut_handler = new ShortcutsNavigation();
+          import('./pages/projects/activity')
+          .then(callDefault)
+          .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
