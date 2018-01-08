@@ -26,30 +26,18 @@
         default: () => ({}),
       },
     },
-    data() {
-      return {
-        outputType: '',
-      };
-    },
     computed: {
       componentName() {
         if (this.output.text) {
           return 'code-cell';
         } else if (this.output.data['image/png']) {
-          this.outputType = 'image/png';
-
           return 'image-output';
         } else if (this.output.data['text/html']) {
-          this.outputType = 'text/html';
-
           return 'html-output';
         } else if (this.output.data['image/svg+xml']) {
-          this.outputType = 'image/svg+xml';
-
           return 'html-output';
         }
 
-        this.outputType = 'text/plain';
         return 'code-cell';
       },
       rawCode() {
@@ -58,6 +46,19 @@
         }
 
         return this.dataForType(this.outputType);
+      },
+      outputType() {
+        if (this.output.text) {
+          return '';
+        } else if (this.output.data['image/png']) {
+          return 'image/png';
+        } else if (this.output.data['text/html']) {
+          return 'text/html';
+        } else if (this.output.data['image/svg+xml']) {
+          return 'image/svg+xml';
+        }
+
+        return 'text/plain';
       },
     },
     methods: {

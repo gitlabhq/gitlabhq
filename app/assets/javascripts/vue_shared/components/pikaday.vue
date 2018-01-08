@@ -13,14 +13,17 @@
       selectedDate: {
         type: Date,
         required: false,
+        default: null,
       },
       minDate: {
         type: Date,
         required: false,
+        default: null,
       },
       maxDate: {
         type: Date,
         required: false,
+        default: null,
       },
     },
     mounted() {

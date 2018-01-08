@@ -23,10 +23,12 @@
       minDate: {
         type: Date,
         required: false,
+        default: null,
       },
       maxDate: {
         type: Date,
         required: false,
+        default: null,
       },
       disableClickableIcons: {
         type: Boolean,

@@ -115,7 +115,7 @@
               name="body"
               :text="text"
             >
-              <p>{{ this.text }}</p>
+              <p>{{ text }}</p>
             </slot>
           </div>
           <div
