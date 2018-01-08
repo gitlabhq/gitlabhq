@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      gettext:  __,
+      gettext: __,
     };
   },
   components: {
