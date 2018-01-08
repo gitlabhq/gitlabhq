@@ -78,7 +78,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 # API
 gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
