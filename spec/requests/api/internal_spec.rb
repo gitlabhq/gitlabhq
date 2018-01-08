@@ -193,7 +193,7 @@ describe API::Internal do
   end
 
   describe "GET /internal/authorized_keys" do
-    context "unsing an existing key's fingerprint" do
+    context "using an existing key's fingerprint" do
       it "finds the key" do
         get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
 
