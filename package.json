@@ -60,6 +60,7 @@
     "name-all-modules-plugin": "^1.0.1",
     "pikaday": "^1.6.1",
     "prismjs": "^1.6.0",
+    "quill": "^1.3.4",
     "raphael": "^2.2.7",
     "raven-js": "^3.14.0",
     "raw-loader": "^0.5.1",
