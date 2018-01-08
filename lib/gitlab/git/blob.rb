@@ -173,8 +173,8 @@ module Gitlab
         end
 
         def find_by_rugged(repository, sha, path, limit:)
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
+          rugged_commit = repository.lookup(sha)
+          root_tree = rugged_commit.tree
 
           blob_entry = find_entry_by_path(repository, root_tree.oid, path)
 

@@ -69,8 +69,8 @@
         currentFlagPosition: 0,
         showFlag: false,
         showFlagContent: false,
-        showDeployInfo: true,
         timeSeries: [],
+        realPixelRatio: 1,
       };
     },
 
@@ -87,10 +87,7 @@
       },
 
       innerViewBox() {
-        if ((this.baseGraphWidth - 150) > 0) {
-          return `0 0 ${this.baseGraphWidth - 150} ${this.baseGraphHeight}`;
-        }
-        return '0 0 0 0';
+        return `0 0 ${this.baseGraphWidth - 150} ${this.baseGraphHeight}`;
       },
 
       axisTransform() {
@@ -101,6 +98,10 @@
         return {
           paddingBottom: `${(Math.ceil(this.baseGraphHeight * 100) / this.baseGraphWidth) || 0}%`,
         };
+      },
+
+      deploymentFlagData() {
+        return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
       },
     },
 
@@ -122,6 +123,10 @@
         this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
         this.baseGraphHeight = this.graphHeight;
         this.baseGraphWidth = this.graphWidth;
+
+        // pixel offsets inside the svg and outside are not 1:1
+        this.realPixelRatio = (this.$refs.baseSvg.clientWidth / this.baseGraphWidth);
+
         this.renderAxesPaths();
         this.formatDeployments();
       },
@@ -261,6 +266,11 @@
               :line-color="path.lineColor"
               :area-color="path.areaColor"
             />
+            <graph-deployment
+              :deployment-data="reducedDeploymentData"
+              :graph-height="graphHeight"
+              :graph-height-offset="graphHeightOffset"
+            />
             <rect
               class="prometheus-graph-overlay"
               :width="(graphWidth - 70)"
@@ -269,24 +279,21 @@
               ref="graphOverlay"
               @mousemove="handleMouseOverGraph($event)">
             </rect>
-            <graph-deployment
-              :show-deploy-info="showDeployInfo"
-              :deployment-data="reducedDeploymentData"
-              :graph-width="graphWidth"
-              :graph-height="graphHeight"
-              :graph-height-offset="graphHeightOffset"
-            />
-            <graph-flag
-              v-if="showFlag"
-              :current-x-coordinate="currentXCoordinate"
-              :current-data="currentData"
-              :current-flag-position="currentFlagPosition"
-              :graph-height="graphHeight"
-              :graph-height-offset="graphHeightOffset"
-              :show-flag-content="showFlagContent"
-            />
         </svg>
       </svg>
+      <graph-flag
+        :real-pixel-ratio="realPixelRatio"
+        :current-x-coordinate="currentXCoordinate"
+        :current-data="currentData"
+        :graph-height="graphHeight"
+        :graph-height-offset="graphHeightOffset"
+        :show-flag-content="showFlagContent"
+        :time-series="timeSeries"
+        :unit-of-display="unitOfDisplay"
+        :current-data-index="currentDataIndex"
+        :legend-title="legendTitle"
+        :deployment-flag-data="deploymentFlagData"
+      />
     </div>
   </div>
 </template>

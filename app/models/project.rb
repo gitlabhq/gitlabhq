@@ -1461,6 +1461,7 @@ class Project < ActiveRecord::Base
     import_finish
     remove_import_jid
     update_project_counter_caches
+    after_create_default_branch
   end
 
   def update_project_counter_caches
@@ -1471,6 +1472,27 @@ class Project < ActiveRecord::Base
 
     classes.each do |klass|
       klass.new(self).refresh_cache
+    end
+  end
+
+  def after_create_default_branch
+    return unless default_branch
+
+    # Ensure HEAD points to the default branch in case it is not master
+    change_head(default_branch)
+
+    if current_application_settings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
+      params = {
+        name: default_branch,
+        push_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }],
+        merge_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }]
+      }
+
+      ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
 
