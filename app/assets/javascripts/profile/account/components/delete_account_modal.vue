@@ -23,6 +23,7 @@
         enteredPassword: '',
         enteredUsername: '',
         isOpen: false,
+        s__,
       };
     },
     components: {
