@@ -199,6 +199,8 @@ import Activities from './activities';
           new Sidebar();
           break;
         case 'dashboard:issues':
+          import('./pages/dashboard/issues').then(callDefault).catch(fail);
+          break;
         case 'dashboard:merge_requests':
           projectSelect();
           initLegacyFilters();
