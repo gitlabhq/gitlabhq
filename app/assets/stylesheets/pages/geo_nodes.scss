@@ -11,72 +11,14 @@
   .page-subtitle {
     margin-bottom: 24px;
   }
-}
 
-.geo-node-status {
-  td {
-    vertical-align: top;
-  }
-
-  .help-block {
-    width: 135px;
-    text-align: right;
-  }
-
-  .node-info {
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .event-timestamp {
+  .health-message {
+    padding: 4px 8px 1px;
+    background-color: $red-100;
+    color: $red-500;
+    border-radius: $border-radius-default;
     font-weight: normal;
-    color: $theme-gray-800;
   }
-
-  .sync-status {
-    font-weight: normal;
-
-    svg {
-      vertical-align: middle;
-    }
-
-    .sync-status-icon svg,
-    .sync-status-timestamp {
-      fill: $theme-gray-700;
-      color: $theme-gray-700;
-    }
-
-    &.sync-status-failure {
-      .sync-status-icon svg,
-      .sync-status-timestamp {
-        fill: $red-700;
-        color: $red-700;
-      }
-    }
-  }
-}
-
-.advanced-geo-node-status-toggler {
-  display: block;
-
-  .show-advance-chevron {
-    margin-top: 2px;
-  }
-}
-
-.geo-node-healthy {
-  color: $gl-success;
-}
-
-.geo-node-unhealthy {
-  color: $gl-danger;
-}
-
-.geo-node-disabled {
-  color: $gray-darkest;
-}
-
-.geo-node-unknown {
-  color: $gray-darkest;
 }
 
 .well-list.geo-nodes {
@@ -92,43 +34,6 @@
       background-color: $gray-lightest;
     }
   }
-}
-
-.advanced-geo-node-status-container {
-  .btn-link {
-    padding-left: 0;
-    padding-right: 0;
-    border-left: 0;
-    border-right: 0;
-
-    .fa {
-      margin-left: 3px;
-    }
-  }
-}
-
-.node-info {
-  color: $gl-text-color;
-}
-
-.geo-health {
-  display: inline-block;
-  margin-top: 5px;
-  white-space: pre-wrap;
-}
-
-.geo-nodes {
-  .health-message {
-    padding: 1px 8px;
-    background-color: $red-100;
-    color: $red-500;
-    border-radius: $border-radius-default;
-    font-weight: 500;
-  }
-}
-
-.geo-node-mismatch {
-  color: $gl-danger;
 }
 
 .node-badge {
@@ -147,16 +52,122 @@
   }
 }
 
-.node-actions {
-  margin-top: 10px;
+.geo-node-healthy {
+  color: $gl-success;
+}
 
-  @media (min-width: $screen-md-min) {
-    position: absolute;
-    right: 15px;
-    top: 0;
+.geo-node-unhealthy {
+  color: $gl-danger;
+}
+
+.geo-node-offline {
+  color: $theme-gray-950;
+}
+
+.geo-node-disabled {
+  color: $gray-darkest;
+}
+
+.geo-node-unknown {
+  color: $gray-darkest;
+}
+
+.geo-nodes {
+  .node-url-warning {
+    fill: $gl-warning;
+  }
+}
+
+.node-details-list {
+  .node-detail-item {
+    margin-top: 14px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    .node-detail-title,
+    .node-detail-value {
+      padding-left: $gl-col-padding;
+      padding-right: $gl-col-padding;
+    }
+
+    .node-detail-title {
+      color: $theme-gray-700;
+    }
+
+    .node-detail-value {
+      margin-top: 4px;
+    }
+
+    .node-detail-value-bold {
+      font-weight: $gl-font-weight-bold;
+    }
+
+    .node-detail-value-error {
+      color: $gl-danger;
+    }
+
+    .btn-show-advanced {
+      padding-left: 0;
+      border: 0;
+    }
+
+    .node-health-status {
+      display: inline-flex;
+
+      .status-text {
+        line-height: 18px;
+      }
+    }
+
+    .node-sync-settings {
+      display: inline-flex;
+      cursor: pointer;
+
+      .sync-status-icon {
+        margin-top: 2px;
+        fill: $theme-gray-700;
+      }
+    }
+
+    .sync-status-event-info,
+    .event-status-timestamp {
+      color: $theme-gray-700;
+    }
+
+    .event-status-timestamp {
+      cursor: pointer;
+    }
+  }
+}
+
+.geo-node-actions {
+  display: inline-flex;
+  justify-content: center;
+  float: right;
+
+  .node-action-container {
+    margin: 0 5px;
+
+    &:last-child {
+      margin-right: $gl-padding;
+    }
   }
 
-  .btn:not(:first-of-type) {
-    margin-left: 10px;
+  @media (max-width: $screen-sm-max) {
+    display: block;
+    width: 100%;
+
+    .node-action-container {
+      width: 100%;
+      margin: 0;
+      margin-top: 10px;
+      padding: 0 10px;
+    }
+
+    .btn-node-action {
+      width: 100%;
+    }
   }
 }
