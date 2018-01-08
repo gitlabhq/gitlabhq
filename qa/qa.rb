@@ -10,6 +10,7 @@ module QA
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
+    autoload :Env, 'qa/runtime/env'
   end
 
   ##
