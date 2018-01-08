@@ -91,15 +91,15 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
 
     let(:cluster) do
       MigrateKubernetesServiceToNewClustersArchitectures::Cluster.create!(
-      projects: [project],
-      name: 'sample-cluster',
-      platform_type: :kubernetes,
-      provider_type: :user,
-      platform_kubernetes_attributes: {
-        api_url: 'https://sample.kubernetes.com',
-        ca_cert: 'ca_pem-sample',
-        token: 'token-sample'
-      } )
+        projects: [project],
+        name: 'sample-cluster',
+        platform_type: :kubernetes,
+        provider_type: :user,
+        platform_kubernetes_attributes: {
+          api_url: 'https://sample.kubernetes.com',
+          ca_cert: 'ca_pem-sample',
+          token: 'token-sample'
+        } )
     end
 
     let!(:kubernetes_service) do
