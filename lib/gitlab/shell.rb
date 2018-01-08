@@ -128,7 +128,7 @@ module Gitlab
     def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
-          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout)
         else
           storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
           local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
