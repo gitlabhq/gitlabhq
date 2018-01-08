@@ -4,7 +4,6 @@ module EE
       raise NotImplementedError unless defined?(super)
 
       super + [
-        :authorized_keys_enabled,
         :check_namespace_plan,
         :elasticsearch_aws,
         :elasticsearch_aws_access_key,
