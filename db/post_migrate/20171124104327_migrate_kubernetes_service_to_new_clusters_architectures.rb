@@ -76,19 +76,25 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     end
 
     def api_url
-      JSON.parse(self.properties)['api_url']
+      parsed_properties['api_url']
     end
 
     def ca_pem
-      JSON.parse(self.properties)['ca_pem']
+      parsed_properties['ca_pem']
     end
 
     def namespace
-      JSON.parse(self.properties)['namespace']
+      parsed_properties['namespace']
     end
 
     def token
-      JSON.parse(self.properties)['token']
+      parsed_properties['token']
+    end
+
+    private
+
+    def parsed_properties
+      @parsed_properties ||= JSON.parse(self.properties)
     end
   end
 
