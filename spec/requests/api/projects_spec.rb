@@ -862,7 +862,8 @@ describe API::Projects do
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
-          'parent_id' => nil
+          'parent_id' => nil,
+          'user_id' => user.id
         })
       end
 

@@ -682,7 +682,7 @@ module API
     end
 
     class NamespaceBasic < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path, :parent_id
+      expose :id, :name, :path, :kind, :full_path, :parent_id, :user_id
     end
 
     class Namespace < NamespaceBasic

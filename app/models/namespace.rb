@@ -134,6 +134,10 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def user_id
+    owner.id if kind == 'user' && !owner.nil?
+  end
+
   def kind
     type == 'Group' ? 'group' : 'user'
   end

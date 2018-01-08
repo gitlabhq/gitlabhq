@@ -32,6 +32,7 @@ Example response:
     "path": "user1",
     "kind": "user",
     "full_path": "user1"
+    "user_id": 3,
   },
   {
     "id": 2,
@@ -40,6 +41,7 @@ Example response:
     "kind": "group",
     "full_path": "group1",
     "parent_id": null,
+    "user_id": null,
     "members_count_with_descendants": 2
   },
   {
@@ -49,6 +51,7 @@ Example response:
     "kind": "group",
     "full_path": "foo/bar",
     "parent_id": 9,
+    "user_id": null,
     "members_count_with_descendants": 5
   }
 ]
@@ -85,6 +88,7 @@ Example response:
     "kind": "group",
     "full_path": "twitter",
     "parent_id": null,
+    "user_id": null,
     "members_count_with_descendants": 2
   }
 ]
@@ -118,6 +122,7 @@ Example response:
   "kind": "group",
   "full_path": "group1",
   "parent_id": null,
+  "user_id": null,
   "members_count_with_descendants": 2
 }
 ```
@@ -138,6 +143,7 @@ Example response:
   "kind": "group",
   "full_path": "group1",
   "parent_id": null,
+  "user_id": null,
   "members_count_with_descendants": 2
 }
 ```
