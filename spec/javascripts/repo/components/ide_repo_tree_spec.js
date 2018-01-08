@@ -41,11 +41,11 @@ describe('IdeRepoTree', () => {
     expect(tbody.querySelector('.file')).toBeTruthy();
   });
 
-  it('renders 5 loading files if tree is loading', (done) => {
-    vm.$store.state.loading = true;
+  it('renders 3 loading files if tree is loading', (done) => {
+    vm.treeId = '123';
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
+      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toEqual(3);
 
       done();
     });

@@ -1,72 +1,72 @@
 <script>
-  import { visitUrl } from '../../lib/utils/url_utility';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import identicon from '../../vue_shared/components/identicon.vue';
-  import eventHub from '../event_hub';
+import { visitUrl } from '../../lib/utils/url_utility';
+import tooltip from '../../vue_shared/directives/tooltip';
+import identicon from '../../vue_shared/components/identicon.vue';
+import eventHub from '../event_hub';
 
-  import itemCaret from './item_caret.vue';
-  import itemTypeIcon from './item_type_icon.vue';
-  import itemStats from './item_stats.vue';
-  import itemActions from './item_actions.vue';
+import itemCaret from './item_caret.vue';
+import itemTypeIcon from './item_type_icon.vue';
+import itemStats from './item_stats.vue';
+import itemActions from './item_actions.vue';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  components: {
+    identicon,
+    itemCaret,
+    itemTypeIcon,
+    itemStats,
+    itemActions,
+  },
+  props: {
+    parentGroup: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    components: {
-      identicon,
-      itemCaret,
-      itemTypeIcon,
-      itemStats,
-      itemActions,
+    group: {
+      type: Object,
+      required: true,
     },
-    props: {
-      parentGroup: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      group: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    groupDomId() {
+      return `group-${this.group.id}`;
     },
-    computed: {
-      groupDomId() {
-        return `group-${this.group.id}`;
-      },
-      rowClass() {
-        return {
-          'is-open': this.group.isOpen,
-          'has-children': this.hasChildren,
-          'has-description': this.group.description,
-          'being-removed': this.group.isBeingRemoved,
-        };
-      },
-      hasChildren() {
-        return this.group.childrenCount > 0;
-      },
-      hasAvatar() {
-        return this.group.avatarUrl !== null;
-      },
-      isGroup() {
-        return this.group.type === 'group';
-      },
+    rowClass() {
+      return {
+        'is-open': this.group.isOpen,
+        'has-children': this.hasChildren,
+        'has-description': this.group.description,
+        'being-removed': this.group.isBeingRemoved,
+      };
     },
-    methods: {
-      onClickRowGroup(e) {
-        const NO_EXPAND_CLS = 'no-expand';
-        if (!(e.target.classList.contains(NO_EXPAND_CLS) ||
-              e.target.parentElement.classList.contains(NO_EXPAND_CLS))) {
-          if (this.hasChildren) {
-            eventHub.$emit('toggleChildren', this.group);
-          } else {
-            visitUrl(this.group.relativePath);
-          }
+    hasChildren() {
+      return this.group.childrenCount > 0;
+    },
+    hasAvatar() {
+      return this.group.avatarUrl !== null;
+    },
+    isGroup() {
+      return this.group.type === 'group';
+    },
+  },
+  methods: {
+    onClickRowGroup(e) {
+      const NO_EXPAND_CLS = 'no-expand';
+      if (!(e.target.classList.contains(NO_EXPAND_CLS) ||
+            e.target.parentElement.classList.contains(NO_EXPAND_CLS))) {
+        if (this.hasChildren) {
+          eventHub.$emit('toggleChildren', this.group);
+        } else {
+          visitUrl(this.group.relativePath);
         }
-      },
+      }
     },
-  };
+  },
+};
 </script>
 
 <template>
@@ -75,7 +75,7 @@
     :id="groupDomId"
     :class="rowClass"
     class="group-row"
-  >
+    >
     <div
       class="group-row-contents"
       :class="{ 'project-row-contents': !isGroup }">
@@ -84,11 +84,14 @@
         :group="group"
         :parent-group="parentGroup"
       />
-      <item-stats :item="group" />
+      <item-stats
+        :item="group"
+      />
       <div
-        class="folder-toggle-wrap"
-      >
-        <item-caret :is-group-open="group.isOpen" />
+        class="folder-toggle-wrap">
+        <item-caret
+          :is-group-open="group.isOpen"
+        />
         <item-type-icon
           :item-type="group.type"
           :is-group-open="group.isOpen"
@@ -110,14 +113,13 @@
           <identicon
             v-else
             size-class="s24"
-            :entity-id="group.id"
+            :entity-id=group.id
             :entity-name="group.name"
           />
         </a>
       </div>
       <div
-        class="title namespace-title"
-      >
+        class="title namespace-title">
         <a
           v-tooltip
           :href="group.relativePath"
@@ -133,13 +135,14 @@
           v-if="group.permission"
           class="user-access-role"
         >
-          {{ group.permission }}
+          {{group.permission}}
         </span>
       </div>
       <div
         v-if="group.description"
         class="description">
-        {{ group.description }}
+        <span v-html="group.description">
+        </span>
       </div>
     </div>
     <group-folder

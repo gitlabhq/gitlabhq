@@ -3,12 +3,14 @@ import { mapState, mapActions } from 'vuex';
 import projectTree from './ide_project_tree.vue';
 import icon from '../../vue_shared/components/icon.vue';
 import panelResizer from '../../vue_shared/components/panel_resizer.vue';
+import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
 export default {
   components: {
     projectTree,
     icon,
     panelResizer,
+    skeletonLoadingContainer,
   },
   data() {
     return {
@@ -17,6 +19,7 @@ export default {
   },
   computed: {
     ...mapState([
+      'loading',
       'projects',
       'leftPanelCollapsed',
     ]),
@@ -31,6 +34,9 @@ export default {
         return { width: `${this.width}px` };
       }
       return {};
+    },
+    showLoading() {
+      return this.loading;
     },
   },
   methods: {
@@ -63,6 +69,13 @@ export default {
     :style="panelStyle"
   >
     <div class="multi-file-commit-panel-inner">
+      <div
+        class="multi-file-loading-container"
+        v-if="showLoading"
+        v-for="n in 3"
+        :key="n">
+        <skeleton-loading-container/>
+      </div>
       <project-tree
         v-for="project in projects"
         :key="project.id"

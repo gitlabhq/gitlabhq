@@ -9,14 +9,11 @@ import repoPreview from './repo_preview.vue';
 import repoEditor from './repo_editor.vue';
 
 export default {
-  components: {
-    ideSidebar,
-    ideContextbar,
-    repoTabs,
-    repoFileButtons,
-    ideStatusBar,
-    repoEditor,
-    repoPreview,
+  props: {
+    emptyStateSvgPath: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     ...mapState([
@@ -27,6 +24,15 @@ export default {
       'changedFiles',
       'activeFile',
     ]),
+  },
+  components: {
+    ideSidebar,
+    ideContextbar,
+    repoTabs,
+    repoFileButtons,
+    ideStatusBar,
+    repoEditor,
+    repoPreview,
   },
   mounted() {
     const returnValue = 'Are you sure you want to lose unsaved changes?';
@@ -51,26 +57,39 @@ export default {
       class="multi-file-edit-pane"
     >
       <template
-        v-if="activeFile"
-      >
-        <repo-tabs />
+        v-if="activeFile">
+        <repo-tabs/>
         <component
           class="multi-file-edit-pane-content"
           :is="currentBlobView"
         />
-        <repo-file-buttons />
+        <repo-file-buttons/>
         <ide-status-bar
-          :file="selectedFile"
-        />
+          :file="selectedFile"/>
       </template>
       <template
-        v-else
-      >
+        v-else>
         <div class="ide-empty-state">
-          <h2 class="clgray">Welcome to the GitLab IDE</h2>
+          <div class="row js-empty-state">
+            <div class="col-xs-12">
+              <div class="svg-content svg-250">
+                <img :src="emptyStateSvgPath">
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <div class="text-content text-center">
+                <h4>
+                  Welcome to the GitLab IDE
+                </h4>
+                <p>
+                  You can select a file in the left sidebar to begin editing and use the right sidebar to commit your changes.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
     </div>
-    <ide-contextbar />
+    <ide-contextbar/>
   </div>
 </template>
