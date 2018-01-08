@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import CEPrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
+import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
@@ -43,10 +43,11 @@ function customMetricTemplate(metric) {
     `;
 }
 
-export default class PrometheusMetrics {
+export default class EEPrometheusMetrics extends PrometheusMetrics{
   constructor(wrapperSelector) {
-    const cePrometheusMetrics = new CEPrometheusMetrics(wrapperSelector);
-    cePrometheusMetrics.loadActiveMetrics();
+    super(wrapperSelector);
+    // const cePrometheusMetrics = new CEPrometheusMetrics(wrapperSelector);
+    // cePrometheusMetrics.loadActiveMetrics();
 
     this.$wrapperCustomMetrics = $(wrapperSelector);
     this.$monitoredCustomMetricsPanel = this.$wrapperCustomMetrics.find('.js-panel-custom-monitored-metrics');
@@ -125,17 +126,18 @@ export default class PrometheusMetrics {
   }
 
   loadActiveCustomMetrics() {
+    super.loadActiveMetrics();
     backOffRequest(() => axios.get(this.activeCustomMetricsEndpoint))
-    .then(resp => resp.data)
-    .then((response) => {
-      if (!response || !response.metrics) {
+      .then(resp => resp.data)
+      .then((response) => {
+        if (!response || !response.metrics) {
+          this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
+        } else {
+          this.customMetrics = response.metrics;
+          this.populateCustomMetrics(response.metrics);
+        }
+      }).catch(() => {
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-      } else {
-        this.customMetrics = response.metrics;
-        this.populateCustomMetrics(response.metrics);
-      }
-    }).catch(() => {
-      this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-    });
+      });
   }
 }
