@@ -221,3 +221,22 @@ sudo gitlab-rake gitlab:shell:create_hooks
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:create_hooks RAILS_ENV=production
 ```
+
+## Check TCP connectivity to a remote site
+
+Sometimes you need to know if your GitLab installation can connect to a TCP
+service on another machine - perhaps a PostgreSQL or HTTPS server. A rake task
+is included to help you with this:
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake gitlab:tcp_check[example.com,80]
+```
+
+**Source Installation**
+
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
+```

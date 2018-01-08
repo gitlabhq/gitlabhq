@@ -11,7 +11,7 @@ feature 'Issues > Labels bulk assignment' do
 
   context 'as an allowed user', :js do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in user
     end

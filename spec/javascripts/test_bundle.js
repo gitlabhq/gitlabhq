@@ -17,6 +17,12 @@ Vue.config.warnHandler = (msg, vm, trace) => {
   fail(`${msg}${trace}`);
 };
 
+let hasVueErrors = false;
+Vue.config.errorHandler = function (err) {
+  hasVueErrors = true;
+  fail(err);
+};
+
 Vue.use(VueResource);
 
 // enable test fixtures
@@ -72,7 +78,7 @@ testsContext.keys().forEach(function (path) {
 
 describe('test errors', () => {
   beforeAll((done) => {
-    if (hasUnhandledPromiseRejections || hasVueWarnings) {
+    if (hasUnhandledPromiseRejections || hasVueWarnings || hasVueErrors) {
       setTimeout(done, 1000);
     } else {
       done();
@@ -85,6 +91,10 @@ describe('test errors', () => {
 
   it('has no Vue warnings', () => {
     expect(hasVueWarnings).toBe(false);
+  });
+
+  it('has no Vue error', () => {
+    expect(hasVueErrors).toBe(false);
   });
 });
 

@@ -86,34 +86,34 @@ followed by any global declarations, then a blank newline prior to any imports o
 
 #### Modules, Imports, and Exports
 1. Use ES module syntax to import modules
-  ```javascript
-    // bad
-    const SomeClass = require('some_class');
+    ```javascript
+      // bad
+      const SomeClass = require('some_class');
 
-    // good
-    import SomeClass from 'some_class';
+      // good
+      import SomeClass from 'some_class';
 
-    // bad
-    module.exports = SomeClass;
+      // bad
+      module.exports = SomeClass;
 
-    // good
-    export default SomeClass;
-  ```
-  
-  Import statements are following usual naming guidelines, for example object literals use camel case:
-  
-  ```javascript
-    // some_object file
-    export default {
-      key: 'value',
-    };
+      // good
+      export default SomeClass;
+    ```
+
+    Import statements are following usual naming guidelines, for example object literals use camel case:
     
-    // bad
-    import ObjectLiteral from 'some_object';
-    
-    // good
-    import objectLiteral from 'some_object';
-  ```
+    ```javascript
+      // some_object file
+      export default {
+        key: 'value',
+      };
+      
+      // bad
+      import ObjectLiteral from 'some_object';
+      
+      // good
+      import objectLiteral from 'some_object';
+    ```
 
 1. Relative paths: when importing a module in the same directory, a child
 directory, or an immediate parent directory prefer relative paths.  When
@@ -334,33 +334,33 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 #### Alignment
 1. Follow these alignment styles for the template method:
   1. With more than one attribute, all attributes should be on a new line:
-  ```javascript
-    // bad
-    <component v-if="bar"
-        param="baz" />
+      ```javascript
+        // bad
+        <component v-if="bar"
+            param="baz" />
 
-    <button class="btn">Click me</button>
+        <button class="btn">Click me</button>
 
-    // good
-    <component
-      v-if="bar"
-      param="baz"
-    />
-
-    <button class="btn">
-      Click me
-    </button>
-  ```
-  1. The tag can be inline if there is only one attribute:
-  ```javascript
-    // good
-      <component bar="bar" />
-
-    // good
-      <component
-        bar="bar"
+        // good
+        <component
+          v-if="bar"
+          param="baz"
         />
-  ```
+
+        <button class="btn">
+          Click me
+        </button>
+      ```
+  1. The tag can be inline if there is only one attribute:
+      ```javascript
+        // good
+          <component bar="bar" />
+
+        // good
+          <component
+            bar="bar"
+            />
+      ```
 
 #### Quotes
 1. Always use double quotes `"` inside templates and single quotes `'` for all other JS.
@@ -414,7 +414,6 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 1. Default key should be provided if the prop is not required.
 _Note:_ There are some scenarios where we need to check for the existence of the property.
 On those a default key should not be provided.
-
   ```javascript
     // good
     props: {
@@ -494,21 +493,20 @@ On those a default key should not be provided.
 #### Ordering
 
 1. Tag order in `.vue` file
+    ```
+    <script>
+      // ...
+    </script>
 
-  ```
-  <script>
-    // ...
-  </script>
+    <template>
+      // ...
+    </template>
 
-  <template>
-    // ...
-  </template>
-
-  // We don't use scoped styles but there are few instances of this
-  <style>
-    // ...
-  </style>
-  ```
+    // We don't use scoped styles but there are few instances of this
+    <style>
+      // ...
+    </style>
+    ```
 
 1. Properties in a Vue Component:
   1. `name`

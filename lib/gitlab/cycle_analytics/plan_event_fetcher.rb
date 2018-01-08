@@ -18,6 +18,10 @@ module Gitlab
 
       private
 
+      def allowed_ids
+        nil
+      end
+
       def merge_request_diff_commits
         @merge_request_diff_commits ||=
           MergeRequestDiffCommit

@@ -6,11 +6,11 @@ class UserSyncedAttributesMetadata < ActiveRecord::Base
   SYNCABLE_ATTRIBUTES = %i[name email location].freeze
 
   def read_only?(attribute)
-    Gitlab.config.omniauth.sync_profile_from_provider && synced?(attribute)
+    sync_profile_from_provider? && synced?(attribute)
   end
 
   def read_only_attributes
-    return [] unless Gitlab.config.omniauth.sync_profile_from_provider
+    return [] unless sync_profile_from_provider?
 
     SYNCABLE_ATTRIBUTES.select { |key| synced?(key) }
   end
@@ -21,5 +21,11 @@ class UserSyncedAttributesMetadata < ActiveRecord::Base
 
   def set_attribute_synced(attribute, value)
     write_attribute("#{attribute}_synced", value)
+  end
+
+  private
+
+  def sync_profile_from_provider?
+    Gitlab::OAuth::Provider.sync_profile_from_provider?(provider)
   end
 end

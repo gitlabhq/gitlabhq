@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :personal_access_token do
     user
     token { SecureRandom.hex(50) }

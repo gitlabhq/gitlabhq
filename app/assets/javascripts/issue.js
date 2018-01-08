@@ -48,7 +48,7 @@ export default class Issue {
       })
       .fail(() => new Flash(issueFailMessage))
       .done((data) => {
-        const isClosedBadge = $('div.status-box-closed');
+        const isClosedBadge = $('div.status-box-issue-closed');
         const isOpenBadge = $('div.status-box-open');
         const projectIssuesCounter = $('.issue_counter');
 

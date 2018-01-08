@@ -66,12 +66,11 @@ module Gitlab
     # Init new repository
     #
     # storage - project's storage name
-    # name - project path with namespace
+    # name - project disk path
     #
     # Ex.
     #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def add_repository(storage, name)
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
@@ -94,30 +93,38 @@ module Gitlab
     # Import repository
     #
     # storage - project's storage path
-    # name - project path with namespace
+    # name - project disk path
+    # url - URL to import from
     #
     # Ex.
-    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://github.com/randx/six.git")
+    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/874
     def import_repository(storage, name, url)
+      if url.start_with?('.', '/')
+        raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
+      end
+
       # The timeout ensures the subprocess won't hang forever
-      cmd = [gitlab_shell_projects_path, 'import-project',
-             storage, "#{name}.git", url, "#{Gitlab.config.gitlab_shell.git_timeout}"]
-      gitlab_shell_fast_execute_raise_error(cmd)
+      cmd = gitlab_projects(storage, "#{name}.git")
+      success = cmd.import_project(url, git_timeout)
+
+      raise Error, cmd.output unless success
+
+      success
     end
 
     # Fetch remote for repository
     #
     # repository - an instance of Git::Repository
     # remote - remote name
+    # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
     # forced - should we use --force flag?
     # no_tags - should we use --no-tags flag?
     #
     # Ex.
     #   fetch_remote(my_repo, "upstream")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
@@ -131,16 +138,15 @@ module Gitlab
 
     # Move repository
     # storage - project's storage path
-    # path - project path with namespace
-    # new_path - new project path with namespace
+    # path - project disk path
+    # new_path - new project disk path
     #
     # Ex.
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def mv_repository(storage, path, new_path)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path, 'mv-project',
-                                 storage, "#{path}.git", "#{new_path}.git"])
+      gitlab_projects(storage, "#{path}.git").mv_project("#{new_path}.git")
     end
 
     # Fork repository to new path
@@ -152,32 +158,23 @@ module Gitlab
     # Ex.
     #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "new-namespace/gitlab-ci")
     #
-    # Gitaly note: JV: not easy to migrate because this involves two Gitaly servers, not one.
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
-      gitlab_shell_fast_execute(
-        [
-          gitlab_shell_projects_path,
-          'fork-repository',
-          forked_from_storage,
-          "#{forked_from_disk_path}.git",
-          forked_to_storage,
-          "#{forked_to_disk_path}.git"
-        ]
-      )
+      gitlab_projects(forked_from_storage, "#{forked_from_disk_path}.git")
+        .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
     end
 
     # Remove repository from file system
     #
     # storage - project's storage path
-    # name - project path with namespace
+    # name - project disk path
     #
     # Ex.
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def remove_repository(storage, name)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path,
-                                 'rm-project', storage, "#{name}.git"])
+      gitlab_projects(storage, "#{name}.git").rm_project
     end
 
     # Add new key to gitlab-shell
@@ -226,7 +223,6 @@ module Gitlab
     # Ex.
     #   add_namespace("/path/to/storage", "gitlab")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def add_namespace(storage, name)
       Gitlab::GitalyClient.migrate(:add_namespace) do |enabled|
         if enabled
@@ -248,7 +244,6 @@ module Gitlab
     # Ex.
     #   rm_namespace("/path/to/storage", "gitlab")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def rm_namespace(storage, name)
       Gitlab::GitalyClient.migrate(:remove_namespace) do |enabled|
         if enabled
@@ -266,7 +261,6 @@ module Gitlab
     # Ex.
     #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient.migrate(:rename_namespace) do |enabled|
         if enabled
@@ -341,24 +335,35 @@ module Gitlab
 
     private
 
-    def local_fetch_remote(storage, name, remote, ssh_auth: nil, forced: false, no_tags: false)
-      args = [gitlab_shell_projects_path, 'fetch-remote', storage, name, remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
-      args << '--force' if forced
-      args << '--no-tags' if no_tags
+    def gitlab_projects(shard_path, disk_path)
+      Gitlab::Git::GitlabProjects.new(
+        shard_path,
+        disk_path,
+        global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+        logger: Rails.logger
+      )
+    end
 
-      vars = {}
+    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false)
+      vars = { force: forced, tags: !no_tags }
 
       if ssh_auth&.ssh_import?
         if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
-          vars['GITLAB_SHELL_SSH_KEY'] = ssh_auth.ssh_private_key
+          vars[:ssh_key] = ssh_auth.ssh_private_key
         end
 
         if ssh_auth.ssh_known_hosts.present?
-          vars['GITLAB_SHELL_KNOWN_HOSTS'] = ssh_auth.ssh_known_hosts
+          vars[:known_hosts] = ssh_auth.ssh_known_hosts
         end
       end
 
-      gitlab_shell_fast_execute_raise_error(args, vars)
+      cmd = gitlab_projects(storage_path, repository_relative_path)
+
+      success = cmd.fetch_remote(remote, git_timeout, vars)
+
+      raise Error, cmd.output unless success
+
+      success
     end
 
     def gitlab_shell_fast_execute(cmd)
@@ -392,6 +397,10 @@ module Gitlab
       end
 
       Gitlab::GitalyClient::NamespaceService.new(storage)
+    end
+
+    def git_timeout
+      Gitlab.config.gitlab_shell.git_timeout
     end
 
     def gitaly_migrate(method, &block)

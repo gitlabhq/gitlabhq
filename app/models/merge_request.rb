@@ -8,6 +8,7 @@ class MergeRequest < ActiveRecord::Base
   include ManualInverseAssociation
   include EachBatch
   include ThrottledTouch
+  include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
                 :ref_fetched
@@ -52,6 +53,7 @@ class MergeRequest < ActiveRecord::Base
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
 
   # When this attribute is true some MR validation is ignored
@@ -81,6 +83,14 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :opened
+    end
+
+    before_transition any => :opened do |merge_request|
+      merge_request.merge_jid = nil
+
+      merge_request.run_after_commit do
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
     end
 
     state :opened
@@ -144,6 +154,13 @@ class MergeRequest < ActiveRecord::Base
 
   def self.reference_prefix
     '!'
+  end
+
+  def rebase_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.rebase_in_progress?(id)
   end
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the
@@ -387,13 +404,17 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_branch_head
-    return unless source_project
-
-    source_project.repository.commit(source_branch_ref) if source_branch_ref
+    strong_memoize(:source_branch_head) do
+      if source_project && source_branch_ref
+        source_project.repository.commit(source_branch_ref)
+      end
+    end
   end
 
   def target_branch_head
-    target_project.repository.commit(target_branch_ref)
+    strong_memoize(:target_branch_head) do
+      target_project.repository.commit(target_branch_ref)
+    end
   end
 
   def branch_merge_base_commit
@@ -525,6 +546,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def clear_memoized_shas
+    @target_branch_sha = @source_branch_sha = nil
+
+    clear_memoization(:source_branch_head)
+    clear_memoization(:target_branch_head)
+  end
+
   def reload_diff_if_branch_changed
     if (source_branch_changed? || target_branch_changed?) &&
         (source_branch_head && target_branch_head)
@@ -586,7 +614,7 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
   def mergeable_state?(skip_ci_check: false)
@@ -866,11 +894,11 @@ class MergeRequest < ActiveRecord::Base
 
   def state_icon_name
     if merged?
-      "check"
+      "git-merge"
     elsif closed?
-      "times"
+      "close"
     else
-      "circle-o"
+      "issue-open-m"
     end
   end
 

@@ -19,7 +19,7 @@ feature 'Merge immediately', :js do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   context 'when there is active pipeline for merge request' do

@@ -204,8 +204,6 @@
   .gitlab-ci-yml-selector,
   .dockerfile-selector,
   .template-type-selector {
-    @include new-style-dropdown;
-
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;

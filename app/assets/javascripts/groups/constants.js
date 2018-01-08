@@ -29,7 +29,7 @@ export const PROJECT_VISIBILITY_TYPE = {
 };
 
 export const VISIBILITY_TYPE_ICON = {
-  public: 'fa-globe',
-  internal: 'fa-shield',
-  private: 'fa-lock',
+  public: 'earth',
+  internal: 'shield',
+  private: 'lock',
 };

@@ -2,6 +2,7 @@ module IssuableCollections
   extend ActiveSupport::Concern
   include SortingHelper
   include Gitlab::IssuableMetadata
+  include Gitlab::Utils::StrongMemoize
 
   included do
     helper_method :finder
@@ -9,6 +10,7 @@ module IssuableCollections
 
   private
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def set_issuables_index
     @issuables          = issuables_collection
     @issuables          = @issuables.page(params[:page])
@@ -33,6 +35,7 @@ module IssuableCollections
       @users.push(author) if author
     end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def issuables_collection
     finder.execute.preload(preload_for_collection)
@@ -41,7 +44,7 @@ module IssuableCollections
   def redirect_out_of_range(total_pages)
     return false if total_pages.zero?
 
-    out_of_range = @issuables.current_page > total_pages
+    out_of_range = @issuables.current_page > total_pages # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     if out_of_range
       redirect_to(url_for(params.merge(page: total_pages, only_path: true)))
@@ -51,7 +54,7 @@ module IssuableCollections
   end
 
   def issuable_page_count
-    page_count_for_relation(@issuables, finder.row_count)
+    page_count_for_relation(@issuables, finder.row_count) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def page_count_for_relation(relation, row_count)
@@ -66,6 +69,7 @@ module IssuableCollections
     finder_class.new(current_user, filter_params)
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def filter_params
     set_sort_order_from_cookie
     set_default_state
@@ -90,6 +94,7 @@ module IssuableCollections
 
     @filter_params.permit(IssuableFinder::VALID_PARAMS)
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def set_default_state
     params[:state] = 'opened' if params[:state].blank?
@@ -129,9 +134,9 @@ module IssuableCollections
   end
 
   def finder
-    return @finder if defined?(@finder)
-
-    @finder = issuable_finder_for(@finder_type)
+    strong_memoize(:finder) do
+      issuable_finder_for(@finder_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
   end
 
   def collection_type

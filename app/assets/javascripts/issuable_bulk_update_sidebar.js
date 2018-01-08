@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this, no-new */
-/* global MilestoneSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import './milestone_select';
+import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';
 import subscriptionSelect from './subscription_select';
 import LabelsSelect from './labels_select';
@@ -21,7 +20,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   initDomElements() {
-    this.$page = $('.page-with-sidebar');
+    this.$page = $('.layout-page');
     this.$sidebar = $('.right-sidebar');
     this.$sidebarInnerContainer = this.$sidebar.find('.issuable-sidebar');
     this.$bulkEditCancelBtn = $('.js-bulk-update-menu-hide');

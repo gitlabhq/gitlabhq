@@ -58,8 +58,6 @@
 }
 
 .member-form-control {
-  @include new-style-dropdown;
-
   @media (max-width: $screen-xs-max) {
     padding-bottom: 5px;
     margin-left: 0;
@@ -73,8 +71,6 @@
 }
 
 .member-search-form {
-  @include new-style-dropdown;
-
   position: relative;
 
   @media (min-width: $screen-sm-min) {

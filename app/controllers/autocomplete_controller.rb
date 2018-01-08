@@ -8,12 +8,12 @@ class AutocompleteController < ApplicationController
   def users
     @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, project: @project, group: @group).execute
 
-    render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
+    render json: UserSerializer.new.represent(@users)
   end
 
   def user
     @user = User.find(params[:id])
-    render json: @user, only: [:name, :username, :id], methods: [:avatar_url]
+    render json: UserSerializer.new.represent(@user)
   end
 
   def projects

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :namespace do
     sequence(:name) { |n| "namespace#{n}" }
     path { name.downcase.gsub(/\s/, '_') }

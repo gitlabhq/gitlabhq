@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :protected_tag do
     name
     project

@@ -1,5 +1,0 @@
----
-title: Only load branch names for protected branch checks
-merge_request:
-author:
-type: performance

@@ -45,6 +45,11 @@ export default {
       required: false,
       default: false,
     },
+    shouldRenderTriggeredLabel: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   directives: {
@@ -82,7 +87,12 @@ export default {
         {{itemName}} #{{itemId}}
       </strong>
 
-      triggered
+      <template v-if="shouldRenderTriggeredLabel">
+        triggered
+      </template>
+      <template v-else>
+        created
+      </template>
 
       <timeago-tooltip :time="time" />
 

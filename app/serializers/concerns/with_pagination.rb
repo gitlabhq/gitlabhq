@@ -14,7 +14,7 @@ module WithPagination
   # we shouldn't try to paginate single resources
   def represent(resource, opts = {})
     if paginated? && resource.respond_to?(:page)
-      super(@paginator.paginate(resource), opts)
+      super(paginator.paginate(resource), opts)
     else
       super(resource, opts)
     end

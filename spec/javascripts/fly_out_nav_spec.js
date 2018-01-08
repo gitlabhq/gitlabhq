@@ -253,7 +253,7 @@ describe('Fly out sidebar navigation', () => {
     it('shows collapsed only sub-items if icon only sidebar', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
       const sidebar = document.createElement('div');
-      sidebar.classList.add('sidebar-icons-only');
+      sidebar.classList.add('sidebar-collapsed-desktop');
       subItems.classList.add('is-fly-out-only');
 
       setSidebar(sidebar);
@@ -343,7 +343,7 @@ describe('Fly out sidebar navigation', () => {
 
     it('returns true when active & collapsed sidebar', () => {
       const sidebar = document.createElement('div');
-      sidebar.classList.add('sidebar-icons-only');
+      sidebar.classList.add('sidebar-collapsed-desktop');
       el.classList.add('active');
 
       setSidebar(sidebar);

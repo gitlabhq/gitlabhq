@@ -1,6 +1,8 @@
 /* eslint-disable quote-props, indent, comma-dangle */
 
-const metricsGroupsAPIResponse = {
+export const mockApiEndpoint = `${gl.TEST_HOST}/monitoring/mock`;
+
+export const metricsGroupsAPIResponse = {
   'success': true,
   'data': [
     {

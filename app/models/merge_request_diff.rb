@@ -104,19 +104,19 @@ class MergeRequestDiff < ActiveRecord::Base
   def base_commit
     return unless base_commit_sha
 
-    project.commit(base_commit_sha)
+    project.commit_by(oid: base_commit_sha)
   end
 
   def start_commit
     return unless start_commit_sha
 
-    project.commit(start_commit_sha)
+    project.commit_by(oid: start_commit_sha)
   end
 
   def head_commit
     return unless head_commit_sha
 
-    project.commit(head_commit_sha)
+    project.commit_by(oid: head_commit_sha)
   end
 
   def commit_shas

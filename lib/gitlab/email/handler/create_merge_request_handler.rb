@@ -55,11 +55,13 @@ module Gitlab
         end
 
         def merge_request_params
-          {
+          params = {
             source_project_id: project.id,
             source_branch: mail.subject,
             target_project_id: project.id
           }
+          params[:description] = message if message.present?
+          params
         end
       end
     end

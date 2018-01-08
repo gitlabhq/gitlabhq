@@ -7,7 +7,7 @@ feature 'Pipelines for Merge Requests', :js do
     given(:project) { merge_request.target_project }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
     end
 

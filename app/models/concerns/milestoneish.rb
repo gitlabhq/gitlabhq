@@ -103,9 +103,11 @@ module Milestoneish
   end
 
   def memoize_per_user(user, method_name)
-    @memoized ||= {}
-    @memoized[method_name] ||= {}
-    @memoized[method_name][user&.id] ||= yield
+    memoized_users[method_name][user&.id] ||= yield
+  end
+
+  def memoized_users
+    @memoized_users ||= Hash.new { |h, k| h[k] = {} }
   end
 
   # override in a class that includes this module to get a faster query

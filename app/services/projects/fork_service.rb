@@ -26,7 +26,7 @@ module Projects
         name:                   @project.name,
         path:                   @project.path,
         shared_runners_enabled: @project.shared_runners_enabled,
-        namespace_id:           @params[:namespace].try(:id) || current_user.namespace.id
+        namespace_id:           target_namespace.id
       }
 
       if @project.avatar.present? && @project.avatar.image?
@@ -74,14 +74,14 @@ module Projects
       Projects::ForksCountService.new(@project).refresh_cache
     end
 
-    def allowed_visibility_level
-      project_level = @project.visibility_level
+    def target_namespace
+      @target_namespace ||= @params[:namespace] || current_user.namespace
+    end
 
-      if Gitlab::VisibilityLevel.non_restricted_level?(project_level)
-        project_level
-      else
-        Gitlab::VisibilityLevel.highest_allowed_level
-      end
+    def allowed_visibility_level
+      target_level = [@project.visibility_level, target_namespace.visibility_level].min
+
+      Gitlab::VisibilityLevel.closest_allowed_level(target_level)
     end
   end
 end

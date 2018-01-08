@@ -213,14 +213,15 @@ An example project service that defines deployment variables is
 ## Debug tracing
 
 > Introduced in GitLab Runner 1.7.
->
-> **WARNING:** Enabling debug tracing can have severe security implications. The
-  output **will** contain the content of all your secret variables and any other
-  secrets! The output **will** be uploaded to the GitLab server and made visible
-  in job traces!
+
+CAUTION: **Warning:**
+Enabling debug tracing can have severe security implications. The
+output **will** contain the content of all your secret variables and any other
+secrets! The output **will** be uploaded to the GitLab server and made visible
+in job traces!
 
 By default, GitLab Runner hides most of the details of what it is doing when
-processing a job. This behaviour keeps job traces short, and prevents secrets
+processing a job. This behavior keeps job traces short, and prevents secrets
 from being leaked into the trace unless your script writes them to the screen.
 
 If a job isn't working as expected, this can make the problem difficult to

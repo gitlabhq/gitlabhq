@@ -203,7 +203,7 @@ describe Namespace do
     context 'with subgroups' do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
+      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child, skip_disk_validation: true) }
       let(:uploads_dir) { File.join(CarrierWave.root, FileUploader.base_dir) }
       let(:pages_dir) { File.join(TestEnv.pages_path) }
 
@@ -239,6 +239,24 @@ describe Namespace do
           expect(File.directory?(expected_pages_path)).to be(true)
         end
       end
+    end
+
+    it 'updates project full path in .git/config for each project inside namespace' do
+      parent = create(:group, name: 'mygroup', path: 'mygroup')
+      subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
+      project_in_parent_group = create(:project, :repository, namespace: parent, name: 'foo1')
+      hashed_project_in_subgroup = create(:project, :repository, :hashed, namespace: subgroup, name: 'foo2')
+      legacy_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo3')
+
+      parent.update(path: 'mygroup_new')
+
+      expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
+      expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+      expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+    end
+
+    def project_rugged(project)
+      project.repository.rugged
     end
   end
 

@@ -6,7 +6,7 @@ describe 'Pipeline', :js do
 
   before do
     sign_in(user)
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   shared_context 'pipeline builds' do
@@ -152,7 +152,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
       end
 
       it 'shows Pipeline tab as active' do
@@ -248,7 +248,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.statuses.count.to_s)
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
       end
 
       it 'shows Jobs tab as active' do

@@ -57,7 +57,7 @@ describe Ci::BuildPolicy do
 
       context 'team member is a guest' do
         before do
-          project.team << [user, :guest]
+          project.add_guest(user)
         end
 
         context 'when public builds are enabled' do
@@ -77,7 +77,7 @@ describe Ci::BuildPolicy do
 
       context 'team member is a reporter' do
         before do
-          project.team << [user, :reporter]
+          project.add_reporter(user)
         end
 
         context 'when public builds are enabled' do

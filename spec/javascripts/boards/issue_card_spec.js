@@ -1,6 +1,5 @@
 /* global ListAssignee */
 /* global ListLabel */
-/* global listObj */
 /* global ListIssue */
 
 import Vue from 'vue';
@@ -11,7 +10,7 @@ import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/stores/boards_store';
 import '~/boards/components/issue_card_inner';
-import './mock_data';
+import { listObj } from './mock_data';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({

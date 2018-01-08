@@ -7,7 +7,7 @@
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
-      = icon(@merge_request.state_icon_name, class: "hidden-sm hidden-md hidden-lg")
+      = sprite_icon(@merge_request.state_icon_name, size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
       %span.hidden-xs
         = @merge_request.state_human_name
 
@@ -27,7 +27,7 @@
       .dropdown-menu.dropdown-menu-align-right.hidden-lg
         %ul
           - if can_update_merge_request
-            %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit'
+            %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
           - unless current_user == @merge_request.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
           - if can_update_merge_request
@@ -37,6 +37,6 @@
               = link_to 'Reopen', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
 
       - if can_update_merge_request
-        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "hidden-xs hidden-sm btn btn-grouped issuable-edit"
+        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "hidden-xs hidden-sm btn btn-grouped js-issuable-edit"
 
       = render 'shared/issuable/close_reopen_button', issuable: @merge_request, can_update: can_update_merge_request

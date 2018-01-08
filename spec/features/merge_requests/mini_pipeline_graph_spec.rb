@@ -15,8 +15,8 @@ feature 'Mini Pipeline Graph', :js do
     visit_merge_request
   end
 
-  def visit_merge_request(format = :html)
-    visit project_merge_request_path(project, merge_request, format: format)
+  def visit_merge_request(format: :html, serializer: nil)
+    visit project_merge_request_path(project, merge_request, format: format, serializer: serializer)
   end
 
   it 'should display a mini pipeline graph' do
@@ -33,12 +33,12 @@ feature 'Mini Pipeline Graph', :js do
     end
 
     it 'avoids repeated database queries' do
-      before = ActiveRecord::QueryRecorder.new { visit_merge_request(:json) }
+      before = ActiveRecord::QueryRecorder.new { visit_merge_request(format: :json, serializer: 'widget') }
 
       create(:ci_build, pipeline: pipeline, legacy_artifacts_file: artifacts_file2)
       create(:ci_build, pipeline: pipeline, when: 'manual')
 
-      after = ActiveRecord::QueryRecorder.new { visit_merge_request(:json) }
+      after = ActiveRecord::QueryRecorder.new { visit_merge_request(format: :json, serializer: 'widget') }
 
       expect(before.count).to eq(after.count)
       expect(before.cached_count).to eq(after.cached_count)

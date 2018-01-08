@@ -2,6 +2,7 @@
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
@@ -299,7 +300,7 @@ GitLabDropdown = (function() {
             return function(data) {
               _this.fullData = data;
               _this.parseData(_this.fullData);
-              _this.focusTextInput(true);
+              _this.focusTextInput();
               if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val() && _this.filter.input.val().trim() !== '') {
                 return _this.filter.input.trigger('input');
               }
@@ -789,24 +790,16 @@ GitLabDropdown = (function() {
     return [selectedObject, isMarking];
   };
 
-  GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
+  GitLabDropdown.prototype.focusTextInput = function() {
     if (this.options.filterable) {
-      this.dropdown.one('transitionend', () => {
-        const initialScrollTop = $(window).scrollTop();
+      const initialScrollTop = $(window).scrollTop();
 
-        if (this.dropdown.is('.open')) {
-          this.filterInput.focus();
-        }
+      if (this.dropdown.is('.open')) {
+        this.filterInput.focus();
+      }
 
-        if ($(window).scrollTop() < initialScrollTop) {
-          $(window).scrollTop(initialScrollTop);
-        }
-      });
-
-      if (triggerFocus) {
-        // This triggers after a ajax request
-        // in case of slow requests, the dropdown transition could already be finished
-        this.dropdown.trigger('transitionend');
+      if ($(window).scrollTop() < initialScrollTop) {
+        $(window).scrollTop(initialScrollTop);
       }
     }
   };
@@ -852,7 +845,7 @@ GitLabDropdown = (function() {
     if ($el.length) {
       var href = $el.attr('href');
       if (href && href !== '#') {
-        gl.utils.visitUrl(href);
+        visitUrl(href);
       } else {
         $el.trigger('click');
       }

@@ -68,7 +68,7 @@ in the pipelines settings page.
 
 Access to pipelines and job details (including output of logs and artifacts)
 is checked against your current user access level and the **Public pipelines**
-project setting.
+project setting under your project's **Settings > CI/CD > General pipelines settings**.
 
 If **Public pipelines** is enabled (default):
 

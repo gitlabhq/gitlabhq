@@ -178,6 +178,10 @@
     font-weight: inherit;
   }
 
+  dd {
+    margin-left: $gl-padding;
+  }
+
   ul,
   ol {
     padding: 0;
@@ -342,8 +346,6 @@ a > code {
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
 }
-
-@include new-style-dropdown('.git-revision-dropdown');
 
 /**
  * Apply Markdown typography

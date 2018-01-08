@@ -110,10 +110,12 @@ module API
       end
       params do
         use :pagination
+        optional :order_by, type: String, values: %w[email name commits], default: nil, desc: 'Return contributors ordered by `name` or `email` or `commits`'
+        optional :sort, type: String, values: %w[asc desc], default: nil, desc: 'Sort by asc (ascending) or desc (descending)'
       end
       get ':id/repository/contributors' do
         begin
-          contributors = ::Kaminari.paginate_array(user_project.repository.contributors)
+          contributors = ::Kaminari.paginate_array(user_project.repository.contributors(order_by: params[:order_by], sort: params[:sort]))
           present paginate(contributors), with: Entities::Contributor
         rescue
           not_found!

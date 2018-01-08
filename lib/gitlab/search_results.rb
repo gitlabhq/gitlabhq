@@ -27,10 +27,17 @@ module Gitlab
     # It allows us to search only for projects user has access to
     attr_reader :limit_projects
 
-    def initialize(current_user, limit_projects, query)
+    # Whether a custom filter is used to restrict scope of projects.
+    # If the default filter (which lists all projects user has access to)
+    # is used, we can skip it when filtering merge requests and optimize the
+    # query
+    attr_reader :default_project_filter
+
+    def initialize(current_user, limit_projects, query, default_project_filter: false)
       @current_user = current_user
       @limit_projects = limit_projects || Project.all
       @query = query
+      @default_project_filter = default_project_filter
     end
 
     def objects(scope, page = nil)
@@ -75,7 +82,10 @@ module Gitlab
     end
 
     def issues
-      issues = IssuesFinder.new(current_user).execute.where(project_id: project_ids_relation)
+      issues = IssuesFinder.new(current_user).execute
+      unless default_project_filter
+        issues = issues.where(project_id: project_ids_relation)
+      end
 
       issues =
         if query =~ /#(\d+)\z/
@@ -94,7 +104,11 @@ module Gitlab
     end
 
     def merge_requests
-      merge_requests = MergeRequestsFinder.new(current_user).execute.in_projects(project_ids_relation)
+      merge_requests = MergeRequestsFinder.new(current_user).execute
+      unless default_project_filter
+        merge_requests = merge_requests.in_projects(project_ids_relation)
+      end
+
       merge_requests =
         if query =~ /[#!](\d+)\z/
           merge_requests.where(iid: $1)

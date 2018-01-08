@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :upload do
     model { build(:project) }
     path { "uploads/-/system/project/avatar/avatar.jpg" }

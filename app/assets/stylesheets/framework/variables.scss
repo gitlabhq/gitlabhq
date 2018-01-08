@@ -5,10 +5,9 @@ $grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
-$sidebar-transition-duration: .15s;
+$sidebar-transition-duration: .3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: .15s;
-$right-sidebar-transition-duration: .3s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 
@@ -220,6 +219,7 @@ $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
+$gl-bar-padding: 3px;
 
 /*
  * Misc
@@ -246,9 +246,6 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
-$show-aside-bg: #eee;
-$show-aside-color: #777;
-$show-aside-shadow: #ddd;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
@@ -722,7 +719,7 @@ $issuable-warning-icon-margin: 4px;
 Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
-$image-comment-cursor-top-offset: 30;
+$image-comment-cursor-top-offset: 12;
 
 /*
 Popup
@@ -730,3 +727,8 @@ Popup
 $popup-triangle-size: 15px;
 $popup-triangle-border-size: 1px;
 $popup-box-shadow-color: rgba(90, 90, 90, 0.05);
+
+/*
+Multi file editor
+*/
+$border-color-settings: #e1e1e1;

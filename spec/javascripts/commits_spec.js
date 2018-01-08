@@ -1,5 +1,4 @@
 import 'vendor/jquery.endless-scroll';
-import '~/pager';
 import CommitsList from '~/commits';
 
 describe('Commits List', () => {

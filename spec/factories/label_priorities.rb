@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :label_priority do
     project
     label

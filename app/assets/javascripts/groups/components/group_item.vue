@@ -1,4 +1,5 @@
 <script>
+import { visitUrl } from '../../lib/utils/url_utility';
 import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
@@ -60,7 +61,7 @@ export default {
         if (this.hasChildren) {
           eventHub.$emit('toggleChildren', this.group);
         } else {
-          gl.utils.visitUrl(this.group.relativePath);
+          visitUrl(this.group.relativePath);
         }
       }
     },
@@ -76,7 +77,8 @@ export default {
     class="group-row"
     >
     <div
-      class="group-row-contents">
+      class="group-row-contents"
+      :class="{ 'project-row-contents': !isGroup }">
       <item-actions
         v-if="isGroup"
         :group="group"
@@ -96,7 +98,7 @@ export default {
         />
       </div>
       <div
-        class="avatar-container s40 hidden-xs"
+        class="avatar-container prepend-top-8 prepend-left-5 s24 hidden-xs"
         :class="{ 'content-loading': group.isChildrenLoading }"
       >
         <a
@@ -105,11 +107,12 @@ export default {
         >
           <img
             v-if="hasAvatar"
-            class="avatar s40"
+            class="avatar s24"
             :src="group.avatarUrl"
           />
           <identicon
             v-else
+            size-class="s24"
             :entity-id=group.id
             :entity-name="group.name"
           />
@@ -122,7 +125,7 @@ export default {
           :href="group.relativePath"
           :title="group.fullName"
           class="no-expand"
-          data-placement="top"
+          data-placement="bottom"
         >{{
           // ending bracket must be by closing tag to prevent
           // link hover text-decoration from over-extending
@@ -138,7 +141,8 @@ export default {
       <div
         v-if="group.description"
         class="description">
-        {{group.description}}
+        <span v-html="group.description">
+        </span>
       </div>
     </div>
     <group-folder

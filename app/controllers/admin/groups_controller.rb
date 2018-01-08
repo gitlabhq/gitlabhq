@@ -1,4 +1,6 @@
 class Admin::GroupsController < Admin::ApplicationController
+  include MembersPresentation
+
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
   def index
@@ -10,8 +12,10 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def show
     @group = Group.with_statistics.joins(:route).group('routes.path').find_by_full_path(params[:id])
-    @members = @group.members.order("access_level DESC").page(params[:members_page])
-    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
+    @members = present_members(
+      @group.members.order("access_level DESC").page(params[:members_page]))
+    @requesters = present_members(
+      AccessRequestsFinder.new(@group).execute(current_user))
     @projects = @group.projects.with_statistics.page(params[:projects_page])
   end
 

@@ -15,7 +15,7 @@ feature 'Jobs' do
   end
 
   before do
-    project.team << [user, user_access_level]
+    project.add_role(user, user_access_level)
     sign_in(user)
   end
 
@@ -367,6 +367,34 @@ feature 'Jobs' do
 
           expect(page).to have_link('latest deployment')
         end
+      end
+    end
+
+    context 'Playable manual action' do
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows manual action empty state' do
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.')
+        expect(page).to have_link('Trigger this manual action')
+      end
+    end
+
+    context 'Non triggered job' do
+      let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows manual action empty state' do
+        expect(page).to have_content('This job has not been triggered yet')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
       end
     end
   end

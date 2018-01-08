@@ -3,226 +3,228 @@
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 
-(function() {
-  this.Sidebar = (function() {
-    function Sidebar(currentUser) {
-      this.toggleTodo = this.toggleTodo.bind(this);
-      this.sidebar = $('aside');
+function Sidebar(currentUser) {
+  this.toggleTodo = this.toggleTodo.bind(this);
+  this.sidebar = $('aside');
 
-      this.removeListeners();
-      this.addEventListeners();
+  this.removeListeners();
+  this.addEventListeners();
+}
+
+Sidebar.initialize = function(currentUser) {
+  if (!this.instance) {
+    this.instance = new Sidebar(currentUser);
+  }
+};
+
+Sidebar.prototype.removeListeners = function () {
+  this.sidebar.off('click', '.sidebar-collapsed-icon');
+  this.sidebar.off('hidden.gl.dropdown');
+  $('.dropdown').off('loading.gl.dropdown');
+  $('.dropdown').off('loaded.gl.dropdown');
+  $(document).off('click', '.js-sidebar-toggle');
+};
+
+Sidebar.prototype.addEventListeners = function() {
+  const $document = $(document);
+
+  this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
+  this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
+  $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
+  $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
+
+  $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
+  return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
+};
+
+Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
+  var $allGutterToggleIcons, $this, $thisIcon;
+  e.preventDefault();
+  $this = $(this);
+  $thisIcon = $this.find('i');
+  $allGutterToggleIcons = $('.js-sidebar-toggle i');
+  if ($thisIcon.hasClass('fa-angle-double-right')) {
+    $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
+    $('aside.right-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+    $('.layout-page').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+  } else {
+    $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+    $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+    $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+
+    if (gl.lazyLoader) gl.lazyLoader.loadCheck();
+  }
+  if (!triggered) {
+    Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
+  }
+};
+
+Sidebar.prototype.toggleTodo = function(e) {
+  var $btnText, $this, $todoLoading, ajaxType, url;
+  $this = $(e.currentTarget);
+  ajaxType = $this.attr('data-delete-path') ? 'DELETE' : 'POST';
+  if ($this.attr('data-delete-path')) {
+    url = "" + ($this.attr('data-delete-path'));
+  } else {
+    url = "" + ($this.data('url'));
+  }
+
+  $this.tooltip('hide');
+
+  return $.ajax({
+    url: url,
+    type: ajaxType,
+    dataType: 'json',
+    data: {
+      issuable_id: $this.data('issuable-id'),
+      issuable_type: $this.data('issuable-type')
+    },
+    beforeSend: (function(_this) {
+      return function() {
+        $('.js-issuable-todo').disable()
+          .addClass('is-loading');
+      };
+    })(this)
+  }).done((function(_this) {
+    return function(data) {
+      return _this.todoUpdateDone(data);
+    };
+  })(this));
+};
+
+Sidebar.prototype.todoUpdateDone = function(data) {
+  const deletePath = data.delete_path ? data.delete_path : null;
+  const attrPrefix = deletePath ? 'mark' : 'todo';
+  const $todoBtns = $('.js-issuable-todo');
+
+  $(document).trigger('todo:toggle', data.count);
+
+  $todoBtns.each((i, el) => {
+    const $el = $(el);
+    const $elText = $el.find('.js-issuable-todo-inner');
+
+    $el.removeClass('is-loading')
+      .enable()
+      .attr('aria-label', $el.data(`${attrPrefix}-text`))
+      .attr('data-delete-path', deletePath)
+      .attr('title', $el.data(`${attrPrefix}-text`));
+
+    if ($el.hasClass('has-tooltip')) {
+      $el.tooltip('fixTitle');
     }
 
-    Sidebar.prototype.removeListeners = function () {
-      this.sidebar.off('click', '.sidebar-collapsed-icon');
-      this.sidebar.off('hidden.gl.dropdown');
-      $('.dropdown').off('loading.gl.dropdown');
-      $('.dropdown').off('loaded.gl.dropdown');
-      $(document).off('click', '.js-sidebar-toggle');
-    };
+    if ($el.data(`${attrPrefix}-icon`)) {
+      $elText.html($el.data(`${attrPrefix}-icon`));
+    } else {
+      $elText.text($el.data(`${attrPrefix}-text`));
+    }
+  });
+};
 
-    Sidebar.prototype.addEventListeners = function() {
-      const $document = $(document);
+Sidebar.prototype.sidebarDropdownLoading = function(e) {
+  var $loading, $sidebarCollapsedIcon, i, img;
+  $sidebarCollapsedIcon = $(this).closest('.block').find('.sidebar-collapsed-icon');
+  img = $sidebarCollapsedIcon.find('img');
+  i = $sidebarCollapsedIcon.find('i');
+  $loading = $('<i class="fa fa-spinner fa-spin"></i>');
+  if (img.length) {
+    img.before($loading);
+    return img.hide();
+  } else if (i.length) {
+    i.before($loading);
+    return i.hide();
+  }
+};
 
-      this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
-      this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
-      $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
-      $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
+Sidebar.prototype.sidebarDropdownLoaded = function(e) {
+  var $sidebarCollapsedIcon, i, img;
+  $sidebarCollapsedIcon = $(this).closest('.block').find('.sidebar-collapsed-icon');
+  img = $sidebarCollapsedIcon.find('img');
+  $sidebarCollapsedIcon.find('i.fa-spin').remove();
+  i = $sidebarCollapsedIcon.find('i');
+  if (img.length) {
+    return img.show();
+  } else {
+    return i.show();
+  }
+};
 
-      $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
-      return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
-    };
+Sidebar.prototype.sidebarCollapseClicked = function(e) {
+  var $block, sidebar;
+  if ($(e.currentTarget).hasClass('dont-change-state')) {
+    return;
+  }
+  sidebar = e.data;
+  e.preventDefault();
+  $block = $(this).closest('.block');
+  return sidebar.openDropdown($block);
+};
 
-    Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
-      var $allGutterToggleIcons, $this, $thisIcon;
-      e.preventDefault();
-      $this = $(this);
-      $thisIcon = $this.find('i');
-      $allGutterToggleIcons = $('.js-sidebar-toggle i');
-      if ($thisIcon.hasClass('fa-angle-double-right')) {
-        $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
-        $('aside.right-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-        $('.page-with-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-      } else {
-        $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
-        $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-        $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+Sidebar.prototype.openDropdown = function(blockOrName) {
+  var $block;
+  $block = _.isString(blockOrName) ? this.getBlock(blockOrName) : blockOrName;
+  if (!this.isOpen()) {
+    this.setCollapseAfterUpdate($block);
+    this.toggleSidebar('open');
+  }
 
-        if (gl.lazyLoader) gl.lazyLoader.loadCheck();
-      }
-      if (!triggered) {
-        Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
-      }
-    };
+  // Wait for the sidebar to trigger('click') open
+  // so it doesn't cause our dropdown to close preemptively
+  setTimeout(() => {
+    $block.find('.js-sidebar-dropdown-toggle').trigger('click');
+  });
+};
 
-    Sidebar.prototype.toggleTodo = function(e) {
-      var $btnText, $this, $todoLoading, ajaxType, url;
-      $this = $(e.currentTarget);
-      ajaxType = $this.attr('data-delete-path') ? 'DELETE' : 'POST';
-      if ($this.attr('data-delete-path')) {
-        url = "" + ($this.attr('data-delete-path'));
-      } else {
-        url = "" + ($this.data('url'));
-      }
+Sidebar.prototype.setCollapseAfterUpdate = function($block) {
+  $block.addClass('collapse-after-update');
+  return $('.layout-page').addClass('with-overlay');
+};
 
-      $this.tooltip('hide');
+Sidebar.prototype.onSidebarDropdownHidden = function(e) {
+  var $block, sidebar;
+  sidebar = e.data;
+  e.preventDefault();
+  $block = $(e.target).closest('.block');
+  return sidebar.sidebarDropdownHidden($block);
+};
 
-      return $.ajax({
-        url: url,
-        type: ajaxType,
-        dataType: 'json',
-        data: {
-          issuable_id: $this.data('issuable-id'),
-          issuable_type: $this.data('issuable-type')
-        },
-        beforeSend: (function(_this) {
-          return function() {
-            $('.js-issuable-todo').disable()
-              .addClass('is-loading');
-          };
-        })(this)
-      }).done((function(_this) {
-        return function(data) {
-          return _this.todoUpdateDone(data);
-        };
-      })(this));
-    };
+Sidebar.prototype.sidebarDropdownHidden = function($block) {
+  if ($block.hasClass('collapse-after-update')) {
+    $block.removeClass('collapse-after-update');
+    $('.layout-page').removeClass('with-overlay');
+    return this.toggleSidebar('hide');
+  }
+};
 
-    Sidebar.prototype.todoUpdateDone = function(data) {
-      const deletePath = data.delete_path ? data.delete_path : null;
-      const attrPrefix = deletePath ? 'mark' : 'todo';
-      const $todoBtns = $('.js-issuable-todo');
+Sidebar.prototype.triggerOpenSidebar = function() {
+  return this.sidebar.find('.js-sidebar-toggle').trigger('click');
+};
 
-      $(document).trigger('todo:toggle', data.count);
+Sidebar.prototype.toggleSidebar = function(action) {
+  if (action == null) {
+    action = 'toggle';
+  }
+  if (action === 'toggle') {
+    this.triggerOpenSidebar();
+  }
+  if (action === 'open') {
+    if (!this.isOpen()) {
+      this.triggerOpenSidebar();
+    }
+  }
+  if (action === 'hide') {
+    if (this.isOpen()) {
+      return this.triggerOpenSidebar();
+    }
+  }
+};
 
-      $todoBtns.each((i, el) => {
-        const $el = $(el);
-        const $elText = $el.find('.js-issuable-todo-inner');
+Sidebar.prototype.isOpen = function() {
+  return this.sidebar.is('.right-sidebar-expanded');
+};
 
-        $el.removeClass('is-loading')
-          .enable()
-          .attr('aria-label', $el.data(`${attrPrefix}-text`))
-          .attr('data-delete-path', deletePath)
-          .attr('title', $el.data(`${attrPrefix}-text`));
+Sidebar.prototype.getBlock = function(name) {
+  return this.sidebar.find(".block." + name);
+};
 
-        if ($el.hasClass('has-tooltip')) {
-          $el.tooltip('fixTitle');
-        }
-
-        if ($el.data(`${attrPrefix}-icon`)) {
-          $elText.html($el.data(`${attrPrefix}-icon`));
-        } else {
-          $elText.text($el.data(`${attrPrefix}-text`));
-        }
-      });
-    };
-
-    Sidebar.prototype.sidebarDropdownLoading = function(e) {
-      var $loading, $sidebarCollapsedIcon, i, img;
-      $sidebarCollapsedIcon = $(this).closest('.block').find('.sidebar-collapsed-icon');
-      img = $sidebarCollapsedIcon.find('img');
-      i = $sidebarCollapsedIcon.find('i');
-      $loading = $('<i class="fa fa-spinner fa-spin"></i>');
-      if (img.length) {
-        img.before($loading);
-        return img.hide();
-      } else if (i.length) {
-        i.before($loading);
-        return i.hide();
-      }
-    };
-
-    Sidebar.prototype.sidebarDropdownLoaded = function(e) {
-      var $sidebarCollapsedIcon, i, img;
-      $sidebarCollapsedIcon = $(this).closest('.block').find('.sidebar-collapsed-icon');
-      img = $sidebarCollapsedIcon.find('img');
-      $sidebarCollapsedIcon.find('i.fa-spin').remove();
-      i = $sidebarCollapsedIcon.find('i');
-      if (img.length) {
-        return img.show();
-      } else {
-        return i.show();
-      }
-    };
-
-    Sidebar.prototype.sidebarCollapseClicked = function(e) {
-      var $block, sidebar;
-      if ($(e.currentTarget).hasClass('dont-change-state')) {
-        return;
-      }
-      sidebar = e.data;
-      e.preventDefault();
-      $block = $(this).closest('.block');
-      return sidebar.openDropdown($block);
-    };
-
-    Sidebar.prototype.openDropdown = function(blockOrName) {
-      var $block;
-      $block = _.isString(blockOrName) ? this.getBlock(blockOrName) : blockOrName;
-      if (!this.isOpen()) {
-        this.setCollapseAfterUpdate($block);
-        this.toggleSidebar('open');
-      }
-
-      // Wait for the sidebar to trigger('click') open
-      // so it doesn't cause our dropdown to close preemptively
-      setTimeout(() => {
-        $block.find('.js-sidebar-dropdown-toggle').trigger('click');
-      });
-    };
-
-    Sidebar.prototype.setCollapseAfterUpdate = function($block) {
-      $block.addClass('collapse-after-update');
-      return $('.page-with-sidebar').addClass('with-overlay');
-    };
-
-    Sidebar.prototype.onSidebarDropdownHidden = function(e) {
-      var $block, sidebar;
-      sidebar = e.data;
-      e.preventDefault();
-      $block = $(e.target).closest('.block');
-      return sidebar.sidebarDropdownHidden($block);
-    };
-
-    Sidebar.prototype.sidebarDropdownHidden = function($block) {
-      if ($block.hasClass('collapse-after-update')) {
-        $block.removeClass('collapse-after-update');
-        $('.page-with-sidebar').removeClass('with-overlay');
-        return this.toggleSidebar('hide');
-      }
-    };
-
-    Sidebar.prototype.triggerOpenSidebar = function() {
-      return this.sidebar.find('.js-sidebar-toggle').trigger('click');
-    };
-
-    Sidebar.prototype.toggleSidebar = function(action) {
-      if (action == null) {
-        action = 'toggle';
-      }
-      if (action === 'toggle') {
-        this.triggerOpenSidebar();
-      }
-      if (action === 'open') {
-        if (!this.isOpen()) {
-          this.triggerOpenSidebar();
-        }
-      }
-      if (action === 'hide') {
-        if (this.isOpen()) {
-          return this.triggerOpenSidebar();
-        }
-      }
-    };
-
-    Sidebar.prototype.isOpen = function() {
-      return this.sidebar.is('.right-sidebar-expanded');
-    };
-
-    Sidebar.prototype.getBlock = function(name) {
-      return this.sidebar.find(".block." + name);
-    };
-
-    return Sidebar;
-  })();
-}).call(window);
+export default Sidebar;

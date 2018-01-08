@@ -58,8 +58,8 @@ describe API::Issues, :mailer do
   let(:no_milestone_title) { URI.escape(Milestone::None.title) }
 
   before(:all) do
-    project.team << [user, :reporter]
-    project.team << [guest, :guest]
+    project.add_reporter(user)
+    project.add_guest(guest)
   end
 
   describe "GET /issues" do
@@ -344,7 +344,7 @@ describe API::Issues, :mailer do
     let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
 
     before do
-      group_project.team << [user, :reporter]
+      group_project.add_reporter(user)
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
@@ -967,7 +967,7 @@ describe API::Issues, :mailer do
       let(:project) { merge_request.source_project }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       context 'resolving all discussions in a merge request' do
@@ -1581,5 +1581,17 @@ describe API::Issues, :mailer do
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.length).to eq(size) if size
+  end
+
+  describe 'GET projects/:id/issues/:issue_iid/participants' do
+    it_behaves_like 'issuable participants endpoint' do
+      let(:entity) { issue }
+    end
+
+    it 'returns 404 if the issue is confidential' do
+      post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/participants", non_member)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
   end
 end

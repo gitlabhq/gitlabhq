@@ -17,7 +17,7 @@ module IssuableActions
   end
 
   def update
-    @issuable = update_service.execute(issuable)
+    @issuable = update_service.execute(issuable) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     respond_to do |format|
       format.html do
@@ -55,7 +55,6 @@ module IssuableActions
 
   def destroy
     Issuable::DestroyService.new(issuable.project, current_user).execute(issuable)
-    TodoService.new.destroy_issuable(issuable, current_user)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
@@ -81,7 +80,7 @@ module IssuableActions
   private
 
   def recaptcha_check_if_spammable(should_redirect = true, &block)
-    return yield unless @issuable.is_a? Spammable
+    return yield unless issuable.is_a? Spammable
 
     recaptcha_check_with_fallback(should_redirect, &block)
   end
@@ -89,7 +88,7 @@ module IssuableActions
   def render_conflict_response
     respond_to do |format|
       format.html do
-        @conflict = true
+        @conflict = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
         render :edit
       end
 
@@ -104,7 +103,7 @@ module IssuableActions
   end
 
   def labels
-    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def authorize_destroy_issuable!
@@ -114,7 +113,7 @@ module IssuableActions
   end
 
   def authorize_admin_issuable!
-    unless can?(current_user, :"admin_#{resource_name}", @project)
+    unless can?(current_user, :"admin_#{resource_name}", @project) # rubocop:disable Gitlab/ModuleWithInstanceVariables
       return access_denied!
     end
   end
@@ -148,6 +147,7 @@ module IssuableActions
     @resource_name ||= controller_name.singularize
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def render_entity_json
     if @issuable.valid?
       render json: serializer.represent(@issuable)
@@ -155,6 +155,7 @@ module IssuableActions
       render json: { errors: @issuable.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def serializer
     raise NotImplementedError
@@ -165,6 +166,6 @@ module IssuableActions
   end
 
   def parent
-    @project || @group
+    @project || @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

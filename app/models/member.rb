@@ -4,6 +4,7 @@ class Member < ActiveRecord::Base
   include Importable
   include Expirable
   include Gitlab::Access
+  include Presentable
 
   attr_accessor :raw_invite_token
 

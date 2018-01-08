@@ -108,19 +108,7 @@ input[type="checkbox"]:hover {
 
     // Custom dropdown positioning
     .dropdown-menu {
-      transition-property: opacity, transform;
-      transition-duration: 250ms, 250ms;
-      transition-delay: 0ms, 25ms;
-      transition-timing-function: $dropdown-animation-timing;
-      transform: translateY(0);
-      opacity: 0;
-      display: block;
       left: -5px;
-      padding: 0;
-
-      ul {
-        padding: 10px 0;
-      }
     }
 
     .dropdown-content {
@@ -157,13 +145,6 @@ input[type="checkbox"]:hover {
       background-color: $nav-badge-bg;
       border-color: $border-color;
     }
-
-    .dropdown-menu {
-      transition-duration: 100ms, 75ms;
-      transition-delay: 75ms, 100ms;
-      transform: translateY(7px);
-      opacity: 1;
-    }
   }
 
   &.has-value {
@@ -185,8 +166,6 @@ input[type="checkbox"]:hover {
 }
 
 .search-holder {
-  @include new-style-dropdown;
-
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
     display: flex;

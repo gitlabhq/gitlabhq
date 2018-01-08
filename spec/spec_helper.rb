@@ -183,7 +183,7 @@ RSpec::Matchers.define :match_asset_path do |expected|
   end
 end
 
-FactoryGirl::SyntaxRunner.class_eval do
+FactoryBot::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 

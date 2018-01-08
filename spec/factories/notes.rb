@@ -2,7 +2,7 @@ require_relative '../support/repo_helpers'
 
 include ActionDispatch::TestProcess
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :note do
     project
     note { generate(:title) }

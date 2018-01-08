@@ -1,5 +1,6 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   include MembershipActions
+  include MembersPresentation
   include SortingHelper
 
   # Authorize
@@ -20,13 +21,14 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    @project_members = @project_members.sort(@sort).page(params[:page])
-    @requesters = AccessRequestsFinder.new(@project).execute(current_user)
+    @project_members = present_members(@project_members.sort(@sort).page(params[:page]))
+    @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
     @project_member = @project.project_members.new
   end
 
   def update
     @project_member = @project.members_and_requesters.find(params[:id])
+      .present(current_user: current_user)
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 

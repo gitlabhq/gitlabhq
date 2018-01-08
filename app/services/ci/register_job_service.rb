@@ -38,11 +38,15 @@ module Ci
         begin
           # In case when 2 runners try to assign the same build, second runner will be declined
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          build.runner_id = runner.id
-          build.run!
-          register_success(build)
+          begin
+            build.runner_id = runner.id
+            build.run!
+            register_success(build)
 
-          return Result.new(build, true)
+            return Result.new(build, true)
+          rescue Ci::Build::MissingDependenciesError
+            build.drop!(:missing_dependency_failure)
+          end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
           # It also indicates that this build can be picked and passed to runner.
@@ -53,9 +57,6 @@ module Ci
           # In case we hit the concurrency-access lock,
           # we still have to return 409 in the end,
           # to make sure that this is properly handled by runner.
-          valid = false
-        rescue Ci::Build::MissingDependenciesError
-          build.drop!(:missing_dependency_failure)
           valid = false
         end
       end

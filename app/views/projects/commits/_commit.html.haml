@@ -38,8 +38,8 @@
 
         .commiter
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
-          - commit_timeago = time_ago_with_tooltip(commit.committed_date, placement: 'bottom')
-          - commit_text =  _('%{commit_author_link} committed %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
+          - commit_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
+          - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
           #{ commit_text.html_safe }
 
       .commit-actions.flex-row.hidden-xs

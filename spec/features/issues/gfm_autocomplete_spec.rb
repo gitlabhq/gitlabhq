@@ -7,7 +7,7 @@ feature 'GFM autocomplete', :js do
   let(:issue)   { create(:issue, project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit project_issue_path(project, issue)
 
@@ -15,7 +15,7 @@ feature 'GFM autocomplete', :js do
   end
 
   it 'updates issue descripton with GFM reference' do
-    find('.issuable-edit').click
+    find('.js-issuable-edit').click
 
     simulate_input('#issue-description', "@#{user.name[0...3]}")
 

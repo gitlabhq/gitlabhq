@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'factories' do
-  FactoryGirl.factories.each do |factory|
+  FactoryBot.factories.each do |factory|
     describe "#{factory.name} factory" do
       it 'does not raise error when built' do
         expect { build(factory.name) }.not_to raise_error

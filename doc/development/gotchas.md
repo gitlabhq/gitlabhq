@@ -8,7 +8,7 @@ might encounter or should avoid during development of GitLab CE and EE.
 Consider the following factory:
 
 ```ruby
-FactoryGirl.define do
+FactoryBot.define do
   factory :label do
     sequence(:title) { |n| "label#{n}" }
   end
@@ -53,7 +53,7 @@ When run, this spec doesn't do what we might expect:
      (compared using ==)
 ```
 
-That's because FactoryGirl sequences are not reseted for each example.
+That's because FactoryBot sequences are not reseted for each example.
 
 Please remember that sequence-generated values exist only to avoid having to
 explicitly set attributes that have a uniqueness constraint when using a factory.
