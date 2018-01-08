@@ -94,7 +94,6 @@ module Gitlab
         ttl if ttl.positive?
       end
     end
-<<<<<<< HEAD
 
     # Returns true if the UUID for the key hasn't changed.
     def same_uuid?
@@ -102,7 +101,5 @@ module Gitlab
         redis.get(@redis_shared_state_key) == @uuid
       end
     end
-=======
->>>>>>> upstream/master
   end
 end
