@@ -157,6 +157,11 @@ import Activities from './activities';
         case 'dashboard:todos:index':
           import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
           break;
+        case 'admin:jobs:index':
+          import('./pages/admin/jobs/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
           import('./pages/dashboard/projects')
