@@ -88,16 +88,9 @@
             .issuable-discussion.js-vue-notes-event
               = render "projects/merge_requests/discussion"
               - if has_vue_discussions_cookie
-                #js-vue-mr-discussions{ data: { discussions_path: discussions_project_merge_request_path(@project, @merge_request, format: :json),
-                register_path: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
-                new_session_path: new_session_path(:user, redirect_to_referer: 'yes'),
-                markdown_docs_path: help_page_path('user/markdown'),
-                quick_actions_docs_path: help_page_path('user/project/quick_actions'),
-                notes_path: notes_url,
-                total_notes: @merge_request.notes.length,
-                last_fetched_at: Time.now.to_i,
-                issue_data: serialize_issuable(@merge_request),
-                current_user_data: UserSerializer.new.represent(current_user).to_json} }
+                #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
+                  noteable_data: serialize_issuable(@merge_request),
+                  current_user_data: UserSerializer.new.represent(current_user).to_json} }
 
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX

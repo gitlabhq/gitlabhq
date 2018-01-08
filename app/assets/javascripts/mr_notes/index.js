@@ -12,24 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     data() {
       const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
       return {
-        issueData: JSON.parse(notesDataset.issueData),
+        noteableData: JSON.parse(notesDataset.noteableData),
         currentUserData: JSON.parse(notesDataset.currentUserData),
-        notesData: {
-          lastFetchedAt: notesDataset.lastFetchedAt,
-          discussionsPath: notesDataset.discussionsPath,
-          newSessionPath: notesDataset.newSessionPath,
-          registerPath: notesDataset.registerPath,
-          notesPath: notesDataset.notesPath,
-          markdownDocsPath: notesDataset.markdownDocsPath,
-          quickActionsDocsPath: notesDataset.quickActionsDocsPath,
-          totalNotes: notesDataset.totalNotes,
-        },
+        notesData: JSON.parse(notesDataset.notesData),
       };
     },
     render(createElement) {
       return createElement('notes-app', {
         props: {
-          noteableData: this.issueData,
+          noteableData: this.noteableData,
           notesData: this.notesData,
           userData: this.currentUserData,
         },

@@ -151,6 +151,25 @@ module NotesHelper
     }
   end
 
+  def notes_data(issuable)
+    discussions_path = case issuable
+                       when Issue
+                         discussions_project_issue_path(@project, issuable, format: :json)
+                       when MergeRequest
+                         discussions_project_merge_request_path(@project, issuable, format: :json)
+                       end
+    {
+      discussionsPath: discussions_path,
+      registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
+      newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
+      markdownDocsPath: help_page_path('user/markdown'),
+      quickActionsDocsPath: help_page_path('user/project/quick_actions'),
+      notesPath: notes_url,
+      totalNotes: issuable.notes.length,
+      lastFetchedAt: Time.now
+  }.to_json
+  end
+
   def discussion_resolved_intro(discussion)
     discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
   end
