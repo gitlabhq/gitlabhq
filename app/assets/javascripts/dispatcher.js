@@ -548,10 +548,7 @@ import Activities from './activities';
           new UserCallout();
           break;
         case 'snippets:show':
-          new LineHighlighter();
-          new BlobViewer();
-          initNotes();
-          new ZenMode();
+          import('./pages/snippets/show').then(m => m.default()).catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
