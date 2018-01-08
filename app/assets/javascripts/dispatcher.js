@@ -550,7 +550,7 @@ import Activities from './activities';
           import('./pages/snippets/show').then(m => m.default()).catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          new UsersSelect();
+          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
