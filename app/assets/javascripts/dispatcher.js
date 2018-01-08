@@ -13,7 +13,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
-import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
 import initAdmin from './admin';
@@ -539,7 +538,7 @@ import Activities from './activities';
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          new CILintEditor();
+          import('./pages/ci/lints').then(m => m.default()).catch(fail);
           break;
         case 'users:show':
           import('./pages/users/show').then(callDefault).catch(fail);
