@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'admin Geo Nodes', type: :feature do
+describe 'admin Geo Nodes', :js do
   let!(:geo_node) { create(:geo_node) }
 
   before do
@@ -10,6 +10,7 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
 
   it 'show all public Geo Nodes and create new node link' do
     visit admin_geo_nodes_path
+    wait_for_requests
 
     expect(page).to have_link('New node', href: new_admin_geo_node_path)
     page.within(find('.geo-nodes', match: :first)) do
@@ -30,6 +31,7 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
       click_button 'Add Node'
 
       expect(current_path).to eq admin_geo_nodes_path
+      wait_for_requests
 
       page.within(find('.geo-nodes', match: :first)) do
         expect(page).to have_content(geo_node.url)
@@ -52,7 +54,8 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
   describe 'update an existing Geo Node' do
     before do
       visit admin_geo_nodes_path
-      page.within(find('.node-actions', match: :first)) do
+      wait_for_requests
+      page.within(find('.geo-node-actions', match: :first)) do
         page.click_link('Edit')
       end
     end
@@ -63,6 +66,7 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
       click_button 'Save changes'
 
       expect(current_path).to eq admin_geo_nodes_path
+      wait_for_requests
 
       page.within(find('.geo-nodes', match: :first)) do
         expect(page).to have_content('http://newsite.com')
@@ -74,14 +78,16 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
   describe 'remove an existing Geo Node' do
     before do
       visit admin_geo_nodes_path
+      wait_for_requests
     end
 
     it 'removes an existing Geo Node' do
-      page.within(find('.node-actions', match: :first)) do
+      page.within(find('.geo-node-actions', match: :first)) do
         page.click_link('Remove')
       end
 
       expect(current_path).to eq admin_geo_nodes_path
+      wait_for_requests
       expect(page).not_to have_css('.geo-nodes')
     end
   end

@@ -53,30 +53,6 @@ describe Admin::GeoNodesController, :postgresql do
         expect(response).not_to redirect_to(admin_license_path)
       end
     end
-
-    context 'Secured URL' do
-      let(:alert_message) { 'You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS.' }
-
-      context 'HTTP nodes' do
-        it 'displays a flash message' do
-          create(:geo_node, url: 'http://not.safe')
-
-          go
-
-          expect(flash[:alert]).to include(alert_message)
-        end
-      end
-
-      context 'with HTTPS nodes' do
-        it 'does not display a flash message' do
-          create(:geo_node, url: 'https://much.safer')
-
-          go
-
-          expect(flash[:alert]).not_to include(alert_message)
-        end
-      end
-    end
   end
 
   describe '#destroy' do

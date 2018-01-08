@@ -50,7 +50,6 @@ import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
-import GeoNodes from './geo_nodes';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -710,7 +709,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
               new AbuseReports();
               break;
             case 'geo_nodes':
-              new GeoNodes($('.geo-nodes'));
               import(/* webpackChunkName: 'geo_node_form' */ './geo/geo_node_form')
                 .then(geoNodeForm => geoNodeForm.default($('.js-geo-node-form')))
                 .catch(() => {});
