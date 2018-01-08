@@ -214,7 +214,6 @@ import Activities from './activities';
         case 'dashboard:todos:index':
           new Todos();
           break;
-
         case 'explore:projects:index':
         case 'explore:projects:trending':
         case 'explore:projects:starred':
@@ -231,21 +230,6 @@ import Activities from './activities';
           import('./pages/explore/groups')
             .then(module => module.default())
             .catch(fail);
-          break;
-          
-        case 'admin:projects:index':
-          new ProjectsList();
-          break;
-        case 'explore:groups:index':
-          new GroupsList();
-          const landingElement = document.querySelector('.js-explore-groups-landing');
-          if (!landingElement) break;
-          const exploreGroupsLanding = new Landing(
-            landingElement,
-            landingElement.querySelector('.dismiss-button'),
-            'explore_groups_landing_dismissed',
-          );
-          exploreGroupsLanding.toggle();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
