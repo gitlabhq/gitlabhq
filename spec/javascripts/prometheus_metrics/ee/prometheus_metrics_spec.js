@@ -7,7 +7,6 @@ import { metrics } from './mock_data';
 describe('PrometheusMetrics EE', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html.raw';
   const customMetricsEndpoint = 'http://test.host/frontend-fixtures/services-project/prometheus/metrics.json';
-  const environmentsEndpoint = 'http://test.host/frontend-fixtures/services-project/environments.json';
   let mock;
   preloadFixtures(FIXTURE);
 
@@ -44,8 +43,6 @@ describe('PrometheusMetrics EE', () => {
     it('should contain api endpoints', () => {
       expect(prometheusMetrics.activeCustomMetricsEndpoint).not.toBeNull();
       expect(prometheusMetrics.activeCustomMetricsEndpoint).toEqual(customMetricsEndpoint);
-      expect(prometheusMetrics.environmentsEndpoint).not.toBeNull();
-      expect(prometheusMetrics.environmentsEndpoint).toEqual(environmentsEndpoint);
     });
 
     it('should show loading state when called with `loading`', () => {
@@ -73,7 +70,8 @@ describe('PrometheusMetrics EE', () => {
     });
 
     it('should show monitored metrics list', () => {
-      prometheusMetrics.populateCustomMetrics(metrics);
+      prometheusMetrics.customMetrics = metrics;
+      prometheusMetrics.populateCustomMetrics();
 
       const $metricsListLi = prometheusMetrics.$monitoredCustomMetricsList.find('li');
 

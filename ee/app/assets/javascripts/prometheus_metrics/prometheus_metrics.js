@@ -1,8 +1,9 @@
+import _ from 'underscore';
 import CEPrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
-import { backOff } from '~/lib/utils/common_utils';
+import { backOff, spriteIcon } from '~/lib/utils/common_utils';
 
 const MAX_REQUESTS = 3;
 
@@ -24,6 +25,24 @@ function backOffRequest(makeRequestCallback) {
   });
 }
 
+function customMetricTemplate(metric) {
+  const deleteIcon = spriteIcon('file-deletion');
+  return `
+      <li class="custom-metric">
+        <a
+          href="${metric.edit_path}">
+          ${metric.title}
+        </a>
+        <a
+          href="#"
+          class="delete-custom-metric"
+          data-metric-id="${metric.id}">
+          ${deleteIcon}
+        </a>
+      </li>
+    `;
+}
+
 export default class PrometheusMetrics {
   constructor(wrapperSelector) {
     const cePrometheusMetrics = new CEPrometheusMetrics(wrapperSelector);
@@ -37,8 +56,32 @@ export default class PrometheusMetrics {
     this.$monitoredCustomMetricsList = this.$monitoredCustomMetricsPanel.find('.js-custom-metrics-list');
     this.$newCustomMetricButton = this.$monitoredCustomMetricsPanel.find('.js-new-metric-button');
     this.$flashCustomMetricsContainer = this.$wrapperCustomMetrics.find('.flash-container');
+    this.customMetrics = [];
 
     this.activeCustomMetricsEndpoint = this.$monitoredCustomMetricsPanel.data('active-custom-metrics');
+    this.customMetricsEndpoint = this.activeCustomMetricsEndpoint.replace('.json', '/');
+  }
+
+  deleteMetricEndpoint(id) {
+    return `${this.customMetricsEndpoint}${id}`;
+  }
+
+  deleteMetric(currentTarget) {
+    const targetId = currentTarget.dataset.metricId;
+    axios.delete(this.deleteMetricEndpoint(targetId))
+    .then(() => {
+      currentTarget.parentElement.remove();
+      const elementToFind = { id: parseInt(targetId, 10) };
+      const indexToDelete = _.findLastIndex(this.customMetrics, elementToFind);
+      this.customMetrics.splice(indexToDelete, 1);
+      this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
+      if (this.customMetrics.length === 0) {
+        this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
+      }
+    })
+    .catch((err) => {
+      this.showFlashMessage(err);
+    });
   }
 
   showMonitoringCustomMetricsPanelState(stateName) {
@@ -64,13 +107,16 @@ export default class PrometheusMetrics {
     }
   }
 
-  populateCustomMetrics(metrics) {
-    metrics.forEach((metric) => {
-      this.$monitoredCustomMetricsList.append(`<li><a href="${metric.edit_path}">${metric.title}</a></li>`);
+  populateCustomMetrics() {
+    this.customMetrics.forEach((metric) => {
+      this.$monitoredCustomMetricsList.append(customMetricTemplate(metric));
     });
 
-    this.$monitoredCustomMetricsCount.text(metrics.length);
+    this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
     this.showMonitoringCustomMetricsPanelState(PANEL_STATE.LIST);
+    this.$monitoredCustomMetricsList.find('.delete-custom-metric').on('click', (event) => {
+      this.deleteMetric(event.currentTarget);
+    });
   }
 
   showFlashMessage(message) {
@@ -85,10 +131,10 @@ export default class PrometheusMetrics {
       if (!response || !response.metrics) {
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
       } else {
+        this.customMetrics = response.metrics;
         this.populateCustomMetrics(response.metrics);
       }
-    }).catch((err) => {
-      this.showFlashMessage(err);
+    }).catch(() => {
       this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
     });
   }

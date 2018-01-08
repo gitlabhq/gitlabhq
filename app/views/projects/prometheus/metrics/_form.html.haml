@@ -7,6 +7,17 @@
       %span.help-block
         Used as a title for the chart
     .form-group
+      = label_tag Group, "Group", class: 'append-bottom-10'
+      .form-group
+        = f.radio_button :group, :business
+        = f.label :group_business, "Business", class: 'label-light'
+      .form-group
+        = f.radio_button :group, :response
+        = f.label :group_response, "Response", class: 'label-light'
+      .form-group
+        = f.radio_button :group, :system
+        = f.label :group_system, "System", class: 'label-light'
+    .form-group
       = f.label :query, 'Query', class: 'label-light'
       = f.text_field :query, required: true, class: 'form-control', placeholder: 'e.g. sum(metric...'
       %span.help-block

@@ -250,6 +250,20 @@
         margin-left: auto;
       }
     }
+
+    .custom-metric {
+      display: flex;
+      align-items: center;
+
+      .delete-custom-metric {
+        margin-left: auto;
+
+        > svg {
+          width: 12px;
+          height: 12px;
+        }
+      }
+    }
   }
 
   .empty-metrics,
