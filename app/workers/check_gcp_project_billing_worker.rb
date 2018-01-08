@@ -6,6 +6,7 @@ class CheckGcpProjectBillingWorker
 
   LEASE_TIMEOUT = 15.seconds.to_i
   SESSION_KEY_TIMEOUT = 5.minutes
+  BILLING_TIMEOUT = 1.hour
 
   def self.get_session_token(token_key)
     Gitlab::Redis::SharedState.with do |redis|
@@ -34,7 +35,9 @@ class CheckGcpProjectBillingWorker
 
     billing_enabled_projects = CheckGcpProjectBillingService.new.execute(token)
     Gitlab::Redis::SharedState.with do |redis|
-      redis.set(self.class.redis_shared_state_key_for(token), !billing_enabled_projects.empty?)
+      redis.set(self.class.redis_shared_state_key_for(token),
+        !billing_enabled_projects.empty?,
+        ex: BILLING_TIMEOUT)
     end
   end
 
