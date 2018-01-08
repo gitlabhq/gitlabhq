@@ -1,5 +1,6 @@
 'use strict';
 
+var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
@@ -32,10 +33,10 @@ var config = {
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
-    common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
+    docs:                 './docs/docs_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
@@ -70,7 +71,7 @@ var config = {
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-    repo:                 './repo/index.js',
+    ide:                 './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
@@ -118,7 +119,10 @@ var config = {
       },
       {
         test: /\_worker\.js$/,
-        loader: 'worker-loader',
+        use: [
+          { loader: 'worker-loader' },
+          { loader: 'babel-loader' },
+        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
@@ -138,6 +142,7 @@ var config = {
     ],
 
     noParse: [/monaco-editor\/\w+\/vs\//],
+    strictExportPresence: true,
   },
 
   plugins: [
@@ -175,10 +180,34 @@ var config = {
       if (chunk.name) {
         return chunk.name;
       }
-      return chunk.mapModules((m) => {
-        var chunkPath = m.request.split('!').pop();
-        return path.relative(m.context, chunkPath);
-      }).join('_');
+
+      const moduleNames = [];
+
+      function collectModuleNames(m) {
+        // handle ConcatenatedModule which does not have resource nor context set
+        if (m.modules) {
+          m.modules.forEach(collectModuleNames);
+          return;
+        }
+
+        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
+
+        if (m.resource.indexOf(pagesBase) === 0) {
+          moduleNames.push(path.relative(pagesBase, m.resource)
+            .replace(/\/index\.[a-z]+$/, '')
+            .replace(/\//g, '__'));
+        } else {
+          moduleNames.push(path.relative(m.context, m.resource));
+        }
+      }
+
+      chunk.forEachModule(collectModuleNames);
+
+      const hash = crypto.createHash('sha256')
+        .update(moduleNames.join('_'))
+        .digest('hex');
+
+      return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
     // create cacheable common library bundle for all vue chunks
@@ -204,7 +233,7 @@ var config = {
         'pipelines',
         'pipelines_details',
         'registry_list',
-        'repo',
+        'ide',
         'schedule_form',
         'schedules_index',
         'sidebar',
@@ -224,6 +253,9 @@ var config = {
         'monitoring',
         'users',
       ],
+      minChunks: function (module, count) {
+        return module.resource && /d3-/.test(module.resource);
+      },
     }),
 
     // create cacheable common library bundles

@@ -87,6 +87,7 @@ class Projects::ClustersController < Projects::ApplicationController
     if cluster.managed?
       params.require(:cluster).permit(
         :enabled,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :namespace
         ]
@@ -95,6 +96,7 @@ class Projects::ClustersController < Projects::ApplicationController
       params.require(:cluster).permit(
         :enabled,
         :name,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :api_url,
           :token,

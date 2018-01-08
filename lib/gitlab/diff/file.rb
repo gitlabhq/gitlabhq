@@ -61,7 +61,9 @@ module Gitlab
       end
 
       def line_for_position(pos)
-        diff_lines.find { |line| position(line) == pos }
+        return nil unless pos.position_type == 'text'
+
+        diff_lines.find { |line| line.old_line == pos.old_line && line.new_line == pos.new_line }
       end
 
       def position_for_line_code(code)
@@ -114,8 +116,10 @@ module Gitlab
         new_content_sha || old_content_sha
       end
 
+      # Use #itself to check the value wrapped by a BatchLoader instance, rather
+      # than if the BatchLoader instance itself is falsey.
       def blob
-        new_blob || old_blob
+        new_blob&.itself || old_blob&.itself
       end
 
       attr_writer :highlighted_diff_lines
@@ -171,7 +175,7 @@ module Gitlab
       end
 
       def binary?
-        has_binary_notice? || old_blob&.binary? || new_blob&.binary?
+        has_binary_notice? || try_blobs(:binary?)
       end
 
       def text?
@@ -179,15 +183,15 @@ module Gitlab
       end
 
       def external_storage_error?
-        old_blob&.external_storage_error? || new_blob&.external_storage_error?
+        try_blobs(:external_storage_error?)
       end
 
       def stored_externally?
-        old_blob&.stored_externally? || new_blob&.stored_externally?
+        try_blobs(:stored_externally?)
       end
 
       def external_storage
-        old_blob&.external_storage || new_blob&.external_storage
+        try_blobs(:external_storage)
       end
 
       def content_changed?
@@ -202,15 +206,15 @@ module Gitlab
       end
 
       def size
-        [old_blob&.size, new_blob&.size].compact.sum
+        valid_blobs.map(&:size).sum
       end
 
       def raw_size
-        [old_blob&.raw_size, new_blob&.raw_size].compact.sum
+        valid_blobs.map(&:raw_size).sum
       end
 
       def raw_binary?
-        old_blob&.raw_binary? || new_blob&.raw_binary?
+        try_blobs(:raw_binary?)
       end
 
       def raw_text?
@@ -232,6 +236,19 @@ module Gitlab
       end
 
       private
+
+      # The blob instances are instances of BatchLoader, which means calling
+      # &. directly on them won't work. Object#try also won't work, because Blob
+      # doesn't inherit from Object, but from BasicObject (via SimpleDelegator).
+      def try_blobs(meth)
+        old_blob&.itself&.public_send(meth) || new_blob&.itself&.public_send(meth)
+      end
+
+      # We can't use #compact for the same reason we can't use &., but calling
+      # #nil? explicitly does work because it is proxied to the blob itself.
+      def valid_blobs
+        [old_blob, new_blob].reject(&:nil?)
+      end
 
       def text_position_properties(line)
         { old_line: line.old_line, new_line: line.new_line }

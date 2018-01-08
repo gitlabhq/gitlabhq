@@ -1,0 +1,6 @@
+---
+title: Prevent excessive DB load due to faulty DeleteConflictingRedirectRoutes background
+  migration
+merge_request: 16205
+author:
+type: fixed

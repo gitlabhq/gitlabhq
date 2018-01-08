@@ -42,7 +42,7 @@ import './gl_dropdown';
 import initTodoToggle from './header';
 import conditionallyLoadProjectDropdown from './projects_dropdown_loader';
 import initImporterStatus from './importer_status';
-import './layout_nav';
+import initLayoutNav from './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import initLogoAnimation from './logo';
@@ -89,6 +89,7 @@ $(function () {
   var fitSidebarForSize;
 
   initBreadcrumbs();
+  initLayoutNav();
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
@@ -261,8 +262,6 @@ $(function () {
   loadAwardsHandler();
 
   renderTimeago();
-
-  $(document).trigger('init.scrolling-tabs');
 
   $('form.filter-form').on('submit', function (event) {
     const link = document.createElement('a');

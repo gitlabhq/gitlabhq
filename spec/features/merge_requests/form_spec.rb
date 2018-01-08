@@ -12,8 +12,8 @@ describe 'New/edit merge request', :js do
   let!(:label2)      { create(:label, project: project) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
   end
 
   context 'owned projects' do
@@ -172,7 +172,7 @@ describe 'New/edit merge request', :js do
 
   context 'forked project' do
     before do
-      forked_project.team << [user, :master]
+      forked_project.add_master(user)
       sign_in(user)
     end
 

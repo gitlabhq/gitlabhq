@@ -239,6 +239,54 @@ describe Repository do
     end
   end
 
+  describe '#commits_by' do
+    set(:project) { create(:project, :repository) }
+
+    shared_examples 'batch commits fetching' do
+      let(:oids) { TestEnv::BRANCH_SHA.values }
+
+      subject { project.repository.commits_by(oids: oids) }
+
+      it 'finds each commit' do
+        expect(subject).not_to include(nil)
+        expect(subject.size).to eq(oids.size)
+      end
+
+      it 'returns only Commit instances' do
+        expect(subject).to all( be_a(Commit) )
+      end
+
+      context 'when some commits are not found ' do
+        let(:oids) do
+          ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+        end
+
+        it 'returns only found commits' do
+          expect(subject).not_to include(nil)
+          expect(subject.size).to eq(10)
+        end
+      end
+
+      context 'when no oids are passed' do
+        let(:oids) { [] }
+
+        it 'does not call #batch_by_oid' do
+          expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+          subject
+        end
+      end
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled' do
+      it_behaves_like 'batch commits fetching'
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled', :disable_gitaly do
+      it_behaves_like 'batch commits fetching'
+    end
+  end
+
   describe '#find_commits_by_message' do
     shared_examples 'finding commits by message' do
       it 'returns commits with messages containing a given string' do
@@ -530,38 +578,6 @@ describe Repository do
 
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
-      end
-    end
-  end
-
-  describe '#get_committer_and_author' do
-    it 'returns the committer and author data' do
-      options = repository.get_committer_and_author(user)
-      expect(options[:committer][:email]).to eq(user.email)
-      expect(options[:author][:email]).to eq(user.email)
-    end
-
-    context 'when the email/name are given' do
-      it 'returns an object containing the email/name' do
-        options = repository.get_committer_and_author(user, email: author_email, name: author_name)
-        expect(options[:author][:email]).to eq(author_email)
-        expect(options[:author][:name]).to eq(author_name)
-      end
-    end
-
-    context 'when the email is given but the name is not' do
-      it 'returns the committer as the author' do
-        options = repository.get_committer_and_author(user, email: author_email)
-        expect(options[:author][:email]).to eq(user.email)
-        expect(options[:author][:name]).to eq(user.name)
-      end
-    end
-
-    context 'when the name is given but the email is not' do
-      it 'returns nil' do
-        options = repository.get_committer_and_author(user, name: author_name)
-        expect(options[:author][:email]).to eq(user.email)
-        expect(options[:author][:name]).to eq(user.name)
       end
     end
   end
@@ -1064,15 +1080,15 @@ describe Repository do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
       end
 
-      it 'expires branch cache' do
-        expect(repository).not_to receive(:expire_exists_cache)
-        expect(repository).not_to receive(:expire_root_ref_cache)
-        expect(repository).not_to receive(:expire_emptiness_caches)
-        expect(repository).to     receive(:expire_branches_cache)
-
-        repository.with_branch(user, 'new-feature') do
+      subject do
+        Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('new-feature') do
           new_rev
         end
+      end
+
+      it 'returns branch_created as true' do
+        expect(subject).not_to be_repo_created
+        expect(subject).to     be_branch_created
       end
     end
 
@@ -1931,23 +1947,6 @@ describe Repository do
 
       File.delete(path)
     end
-
-    it "attempting to call keep_around when exists a lock does not fail" do
-      ref = repository.send(:keep_around_ref_name, sample_commit.id)
-      path = File.join(repository.path, ref)
-      lock_path = "#{path}.lock"
-
-      FileUtils.mkdir_p(File.dirname(path))
-      File.open(lock_path, 'w') { |f| f.write('') }
-
-      begin
-        expect { repository.keep_around(sample_commit.id) }.not_to raise_error(Gitlab::Git::Repository::GitError)
-
-        expect(File.exist?(lock_path)).to be_falsey
-      ensure
-        File.delete(path)
-      end
-    end
   end
 
   describe '#update_ref' do
@@ -2181,6 +2180,15 @@ describe Repository do
       it 'returns the same count as #commit_count' do
         expect(repository.commit_count_for_ref(repository.root_ref)).to eq(repository.commit_count)
       end
+    end
+  end
+
+  describe '#diverging_commit_counts' do
+    it 'returns the commit counts behind and ahead of default branch' do
+      result = repository.diverging_commit_counts(
+        repository.find_branch('fix'))
+
+      expect(result).to eq(behind: 29, ahead: 2)
     end
   end
 

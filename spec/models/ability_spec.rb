@@ -34,19 +34,19 @@ describe Ability do
       end
 
       it 'returns false for a guest user' do
-        project.team << [user, :guest]
+        project.add_guest(user)
 
         expect(described_class.can_edit_note?(user, note)).to be_falsy
       end
 
       it 'returns false for a developer' do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         expect(described_class.can_edit_note?(user, note)).to be_falsy
       end
 
       it 'returns true for a master' do
-        project.team << [user, :master]
+        project.add_master(user)
 
         expect(described_class.can_edit_note?(user, note)).to be_truthy
       end

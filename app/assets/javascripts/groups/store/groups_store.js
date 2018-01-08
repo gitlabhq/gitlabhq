@@ -71,7 +71,7 @@ export default class GroupsStore {
       id: rawGroupItem.id,
       name: rawGroupItem.name,
       fullName: rawGroupItem.full_name,
-      description: rawGroupItem.description,
+      description: rawGroupItem.markdown_description,
       visibility: rawGroupItem.visibility,
       avatarUrl: rawGroupItem.avatar_url,
       relativePath: rawGroupItem.relative_path,
@@ -91,6 +91,7 @@ export default class GroupsStore {
       subgroupCount: rawGroupItem.subgroup_count,
       memberCount: rawGroupItem.number_users_with_delimiter,
       starCount: rawGroupItem.star_count,
+      updatedAt: rawGroupItem.updated_at,
     };
   }
 

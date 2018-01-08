@@ -1,6 +1,6 @@
 - show_create = local_assigns.fetch(:show_create, false)
 
-- show_new_branch_form = show_new_repo? && show_create && can?(current_user, :push_code, @project)
+- show_new_branch_form = show_new_ide? && show_create && can?(current_user, :push_code, @project)
 - dropdown_toggle_text = @ref || @project.default_branch
 = form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
   = hidden_field_tag :destination, destination

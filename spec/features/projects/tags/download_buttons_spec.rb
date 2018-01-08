@@ -24,7 +24,7 @@ feature 'Download buttons in tags page' do
 
   background do
     sign_in(user)
-    project.team << [user, role]
+    project.add_role(user, role)
   end
 
   describe 'when checking tags' do

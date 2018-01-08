@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe SystemNoteService do
   include Gitlab::Routing
+  include RepoHelpers
 
   set(:group)    { create(:group) }
   set(:project)  { create(:project, :repository, group: group) }
@@ -927,7 +928,7 @@ describe SystemNoteService do
     # We need a custom noteable in order to the shared examples to be green.
     let(:noteable) do
       mr = create(:merge_request, source_project: project)
-      mr.spend_time(duration: 360000, user: author)
+      mr.spend_time(duration: 360000, user_id: author.id)
       mr.save!
       mr
     end
@@ -965,7 +966,7 @@ describe SystemNoteService do
     end
 
     def spend_time!(seconds)
-      noteable.spend_time(duration: seconds, user: author)
+      noteable.spend_time(duration: seconds, user_id: author.id)
       noteable.save!
     end
   end
@@ -1070,17 +1071,32 @@ describe SystemNoteService do
       let(:action)            { 'outdated' }
     end
 
-    it 'creates a new note in the discussion' do
-      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
-      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    context 'when the change_position is valid for the discussion' do
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'links to the diff in the system note' do
+        expect(subject.note).to include('version 1')
+
+        diff_id = merge_request.merge_request_diff.id
+        line_code = change_position.line_code(project.repository)
+        expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+      end
     end
 
-    it 'links to the diff in the system note' do
-      expect(subject.note).to include('version 1')
+    context 'when the change_position is invalid for the discussion' do
+      let(:change_position) { project.commit(sample_commit.id) }
 
-      diff_id = merge_request.merge_request_diff.id
-      line_code = change_position.line_code(project.repository)
-      expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'does not create a link' do
+        expect(subject.note).to eq('changed this line in version 1 of the diff')
+      end
     end
   end
 

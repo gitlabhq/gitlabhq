@@ -151,3 +151,4 @@ Parameters:
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `commit_message` (required) - Commit message
+- `last_commit_id` (optional) - Last known file commit id

@@ -219,6 +219,7 @@ $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
+$gl-bar-padding: 3px;
 
 /*
  * Misc
@@ -726,3 +727,8 @@ Popup
 $popup-triangle-size: 15px;
 $popup-triangle-border-size: 1px;
 $popup-box-shadow-color: rgba(90, 90, 90, 0.05);
+
+/*
+Multi file editor
+*/
+$border-color-settings: #e1e1e1;

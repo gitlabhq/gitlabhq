@@ -1,5 +1,0 @@
----
-title: Fix error during schema dump.
-merge_request: 15866
-author:
-type: fixed

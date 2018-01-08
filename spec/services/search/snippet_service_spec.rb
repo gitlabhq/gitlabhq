@@ -33,7 +33,7 @@ describe Search::SnippetService do
 
       it 'returns public, internal snippets and project private snippets for project members' do
         member = create(:user)
-        project.team << [member, :developer]
+        project.add_developer(member)
         search = described_class.new(member, search: 'password')
         results = search.execute
 

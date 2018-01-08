@@ -5,7 +5,7 @@ describe Issues::BuildService do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'for a single discussion' do

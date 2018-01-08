@@ -41,7 +41,8 @@ describe Gitlab::Git::GitlabProjects do
     end
 
     it "fails if the source path doesn't exist" do
-      expect(logger).to receive(:error).with("mv-project failed: source path <#{tmp_repos_path}/bad-src.git> does not exist.")
+      expected_source_path = File.join(tmp_repos_path, 'bad-src.git')
+      expect(logger).to receive(:error).with("mv-project failed: source path <#{expected_source_path}> does not exist.")
 
       result = build_gitlab_projects(tmp_repos_path, 'bad-src.git').mv_project('repo.git')
       expect(result).to be_falsy
@@ -50,7 +51,8 @@ describe Gitlab::Git::GitlabProjects do
     it 'fails if the destination path already exists' do
       FileUtils.mkdir_p(File.join(tmp_repos_path, 'already-exists.git'))
 
-      message = "mv-project failed: destination path <#{tmp_repos_path}/already-exists.git> already exists."
+      expected_distination_path = File.join(tmp_repos_path, 'already-exists.git')
+      message = "mv-project failed: destination path <#{expected_distination_path}> already exists."
       expect(logger).to receive(:error).with(message)
 
       expect(gl_projects.mv_project('already-exists.git')).to be_falsy
@@ -241,7 +243,6 @@ describe Gitlab::Git::GitlabProjects do
     let(:dest_repos_path) { tmp_repos_path }
     let(:dest_repo_name) { File.join('@hashed', 'aa', 'bb', 'xyz.git') }
     let(:dest_repo) { File.join(dest_repos_path, dest_repo_name) }
-    let(:dest_namespace) { File.dirname(dest_repo) }
 
     subject { gl_projects.fork_repository(dest_repos_path, dest_repo_name) }
 
@@ -253,37 +254,64 @@ describe Gitlab::Git::GitlabProjects do
       FileUtils.rm_rf(dest_repos_path)
     end
 
-    it 'forks the repository' do
-      message = "Forking repository from <#{tmp_repo_path}> to <#{dest_repo}>."
-      expect(logger).to receive(:info).with(message)
-
-      is_expected.to be_truthy
-
-      expect(File.exist?(dest_repo)).to be_truthy
-      expect(File.exist?(File.join(dest_repo, 'hooks', 'pre-receive'))).to be_truthy
-      expect(File.exist?(File.join(dest_repo, 'hooks', 'post-receive'))).to be_truthy
-    end
-
-    it 'does not fork if a project of the same name already exists' do
-      # create a fake project at the intended destination
-      FileUtils.mkdir_p(dest_repo)
-
-      # trying to fork again should fail as the repo already exists
-      message = "fork-repository failed: destination repository <#{dest_repo}> already exists."
-      expect(logger).to receive(:error).with(message)
-
-      is_expected.to be_falsy
-    end
-
-    context 'different storages' do
-      let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), 'alternative') }
-
-      it 'forks the repo' do
+    shared_examples 'forking a repository' do
+      it 'forks the repository' do
         is_expected.to be_truthy
 
         expect(File.exist?(dest_repo)).to be_truthy
         expect(File.exist?(File.join(dest_repo, 'hooks', 'pre-receive'))).to be_truthy
         expect(File.exist?(File.join(dest_repo, 'hooks', 'post-receive'))).to be_truthy
+      end
+
+      it 'does not fork if a project of the same name already exists' do
+        # create a fake project at the intended destination
+        FileUtils.mkdir_p(dest_repo)
+
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'when Gitaly fork_repository feature is enabled' do
+      it_behaves_like 'forking a repository'
+    end
+
+    context 'when Gitaly fork_repository feature is disabled', :disable_gitaly do
+      it_behaves_like 'forking a repository'
+
+      # We seem to be stuck to having only one working Gitaly storage in tests, changing
+      # that is not very straight-forward so I'm leaving this test here for now till
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/41393 is fixed.
+      context 'different storages' do
+        let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), 'alternative') }
+
+        it 'forks the repo' do
+          is_expected.to be_truthy
+
+          expect(File.exist?(dest_repo)).to be_truthy
+          expect(File.exist?(File.join(dest_repo, 'hooks', 'pre-receive'))).to be_truthy
+          expect(File.exist?(File.join(dest_repo, 'hooks', 'post-receive'))).to be_truthy
+        end
+      end
+
+      describe 'log messages' do
+        describe 'successful fork' do
+          it do
+            message = "Forking repository from <#{tmp_repo_path}> to <#{dest_repo}>."
+            expect(logger).to receive(:info).with(message)
+
+            subject
+          end
+        end
+
+        describe 'failed fork due existing destination' do
+          it do
+            FileUtils.mkdir_p(dest_repo)
+            message = "fork-repository failed: destination repository <#{dest_repo}> already exists."
+            expect(logger).to receive(:error).with(message)
+
+            subject
+          end
+        end
       end
     end
   end
