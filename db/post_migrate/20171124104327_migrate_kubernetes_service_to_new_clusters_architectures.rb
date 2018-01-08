@@ -12,6 +12,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     has_many :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::ClustersProject'
     has_many :clusters, through: :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Cluster'
     has_many :services, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Service'
+    has_one :kubernetes_service, -> { where(category: 'deployment', type: 'KubernetesService') }, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Service', inverse_of: :project, foreign_key: :project_id
   end
 
   class Cluster < ActiveRecord::Base
@@ -55,8 +56,9 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     include EachBatch
 
     self.table_name = 'services'
+    self.inheritance_column = :_type_disabled # Disable STI, otherwise KubernetesModel will be looked up
 
-    belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
+    belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project', foreign_key: :project_id
 
     scope :unmanaged_kubernetes_service, -> do
       joins('LEFT JOIN projects ON projects.id = services.project_id')
@@ -71,6 +73,22 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     scope :kubernetes_service_without_template, -> do
       where(category: 'deployment', type: 'KubernetesService', template: false)
+    end
+
+    def api_url
+      JSON.parse(self.properties)['api_url']
+    end
+
+    def ca_pem
+      JSON.parse(self.properties)['ca_pem']
+    end
+
+    def namespace
+      JSON.parse(self.properties)['namespace']
+    end
+
+    def token
+      JSON.parse(self.properties)['token']
     end
   end
 
@@ -101,7 +119,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
           name: DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME,
           provider_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.provider_types[:user],
           platform_type: MigrateKubernetesServiceToNewClustersArchitectures::Cluster.platform_types[:kubernetes],
-          projects: [kubernetes_service.project.becomes(MigrateKubernetesServiceToNewClustersArchitectures::Project)],
+          projects: [kubernetes_service.project],
           environment_scope: find_dedicated_environement_scope(kubernetes_service.project),
           platform_kubernetes_attributes: {
             api_url: kubernetes_service.api_url,
