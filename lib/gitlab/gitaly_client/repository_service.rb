@@ -43,8 +43,11 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
 
-      def fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false)
-        request = Gitaly::FetchRemoteRequest.new(repository: @gitaly_repo, remote: remote, force: forced, no_tags: no_tags)
+      def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:)
+        request = Gitaly::FetchRemoteRequest.new(
+          repository: @gitaly_repo, remote: remote, force: forced,
+          no_tags: no_tags, timeout: timeout
+        )
 
         if ssh_auth&.ssh_import?
           if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
