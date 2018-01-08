@@ -71,5 +71,16 @@ module Gitlab
         redis.exists(@redis_shared_state_key)
       end
     end
+
+    # Returns the TTL of the Redis key.
+    #
+    # This method will return `nil` if no TTL could be obtained.
+    def ttl
+      Gitlab::Redis::SharedState.with do |redis|
+        ttl = redis.ttl(@redis_shared_state_key)
+
+        ttl if ttl.positive?
+      end
+    end
   end
 end
