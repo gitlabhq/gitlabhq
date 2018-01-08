@@ -9,6 +9,17 @@ module Gitlab
     # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
     MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
+    def self.allow_n_plus_1_calls
+      enabled = Bullet.enable?
+
+      begin
+        Bullet.enable = false
+        yield
+      ensure
+        Bullet.enable = enabled
+      end
+    end
+
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
     end

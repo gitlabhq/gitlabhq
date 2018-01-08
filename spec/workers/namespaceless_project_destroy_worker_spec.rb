@@ -24,9 +24,11 @@ describe NamespacelessProjectDestroyWorker do
 
     context 'project has no namespace' do
       let!(:project) do
-        project = build(:project, namespace_id: nil)
-        project.save(validate: false)
-        project
+        Gitlab::Database.allow_n_plus_1_calls do
+          project = build(:project, namespace_id: nil)
+          project.save(validate: false)
+          project
+        end
       end
 
       context 'project not a fork of another project' do
@@ -82,9 +84,11 @@ describe NamespacelessProjectDestroyWorker do
 
     context 'project has non-existing namespace' do
       let!(:project) do
-        project = build(:project, namespace_id: Namespace.maximum(:id).to_i.succ)
-        project.save(validate: false)
-        project
+        Gitlab::Database.allow_n_plus_1_calls do
+          project = build(:project, namespace_id: Namespace.maximum(:id).to_i.succ)
+          project.save(validate: false)
+          project
+        end
       end
 
       it 'deletes the project' do
