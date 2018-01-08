@@ -1234,7 +1234,13 @@ module Gitlab
       end
 
       def rebase_in_progress?(rebase_id)
-        fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
+        gitaly_migrate(:rebase_in_progress) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.rebase_in_progress?(rebase_id)
+          else
+            fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
+          end
+        end
       end
 
       def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
