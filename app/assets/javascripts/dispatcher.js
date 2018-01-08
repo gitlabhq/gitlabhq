@@ -38,12 +38,10 @@ import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
@@ -218,7 +216,7 @@ import Activities from './activities';
         case 'explore:projects:trending':
         case 'explore:projects:starred':
           import('./pages/explore/projects')
-            .then(module => module.default())
+            .then(callDefault)
             .catch(fail);
           break;
         case 'dashboard:projects:index':
@@ -228,7 +226,7 @@ import Activities from './activities';
           break;
         case 'explore:groups:index':
           import('./pages/explore/groups')
-            .then(module => module.default())
+            .then(callDefault)
             .catch(fail);
           break;
         case 'projects:milestones:new':
@@ -498,8 +496,8 @@ import Activities from './activities';
           break;
         case 'projects:forks:new':
           import(/* webpackChunkName: 'project_fork' */ './project_fork')
-            .then(fork => fork.default())
-            .catch(() => {});
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:artifacts:browse':
           new ShortcutsNavigation();
@@ -635,8 +633,8 @@ import Activities from './activities';
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
               import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
-                .then(permissions => permissions.default())
-                .catch(() => {});
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'new':
               new ProjectNew();
