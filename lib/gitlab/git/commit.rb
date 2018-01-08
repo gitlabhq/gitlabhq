@@ -15,8 +15,6 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :rugged_commit
-
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -450,6 +448,11 @@ module Gitlab
           author: gitaly_commit_author_from_rugged(raw_commit.author),
           committer: gitaly_commit_author_from_rugged(raw_commit.committer)
         )
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
       end
 
       private
