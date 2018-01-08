@@ -45,11 +45,9 @@ export default {
     onLeaveGroup() {
       this.modalStatus = true;
     },
-    leaveGroup(leaveConfirmed) {
+    leaveGroup() {
       this.modalStatus = false;
-      if (leaveConfirmed) {
-        eventHub.$emit('leaveGroup', this.group, this.parentGroup);
-      }
+      eventHub.$emit('leaveGroup', this.group, this.parentGroup);
     },
   },
 };

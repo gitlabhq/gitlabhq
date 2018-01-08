@@ -34,6 +34,10 @@ variables:
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
+  KUBERNETES_VERSION: 1.8.6
+  HELM_VERSION: 2.6.1
+  CODECLIMATE_VERSION: 0.69.0
+
 stages:
   - build
   - test
@@ -108,6 +112,19 @@ sast:
     - sast .
   artifacts:
     paths: [gl-sast-report.json]
+    
+sast:container:
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - sast_container
+  artifacts:
+    paths: [gl-sast-container-report.json]
 
 review:
   stage: review
@@ -243,6 +260,18 @@ production:
   export CI_APPLICATION_TAG=$CI_COMMIT_SHA
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
+  
+  function sast_container() {
+    docker run -d --name db arminc/clair-db:latest
+    docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
+    apk add -U wget ca-certificates
+    docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    wget https://github.com/arminc/clair-scanner/releases/download/v6/clair-scanner_linux_386
+    mv clair-scanner_linux_386 clair-scanner
+    chmod +x clair-scanner
+    touch clair-whitelist.yml
+    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+  }
 
   function codeclimate() {
     cc_opts="--env CODECLIMATE_CODE="$PWD" \
@@ -250,8 +279,8 @@ production:
              --volume /var/run/docker.sock:/var/run/docker.sock \
              --volume /tmp/cc:/tmp/cc"
 
-    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 init
-    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json
+    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" init
+    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" analyze -f json > codeclimate.json
   }
 
   function sast() {
@@ -323,11 +352,11 @@ production:
     apk add glibc-2.23-r3.apk
     rm glibc-2.23-r3.apk
 
-    curl https://kubernetes-helm.storage.googleapis.com/helm-v2.6.1-linux-amd64.tar.gz | tar zx
+    curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
     helm version --client
 
-    curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
     kubectl version --client
   }

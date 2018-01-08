@@ -161,7 +161,7 @@ namespace :gitlab do
       It should be enabled for most GitLab installations. Large installations
       may wish to disable it as part of speeding up SSH operations.
 
-      See https://docs.gitlab.com/ee/administration/operations/speed_up_ssh.html
+      See https://docs.gitlab.com/ee/administration/operations/fast_ssh_key_lookup.html
 
       If you did not intentionally disable this option in Admin Area > Settings,
       then you may have been affected by the 9.3.0 bug in which the new setting

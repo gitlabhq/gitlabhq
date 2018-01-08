@@ -118,4 +118,19 @@ describe Gitlab::ExclusiveLease, :clean_gitlab_redis_shared_state do
       described_class.new(key, timeout: 3600).try_obtain
     end
   end
+
+  describe '#ttl' do
+    it 'returns the TTL of the Redis key' do
+      lease = described_class.new('kittens', timeout: 100)
+      lease.try_obtain
+
+      expect(lease.ttl <= 100).to eq(true)
+    end
+
+    it 'returns nil when the lease does not exist' do
+      lease = described_class.new('kittens', timeout: 10)
+
+      expect(lease.ttl).to be_nil
+    end
+  end
 end

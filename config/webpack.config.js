@@ -44,6 +44,7 @@ var config = {
     epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
+    geo_nodes:            'ee/geo_nodes',
     graphs:               './graphs/graphs_bundle.js',
     graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',

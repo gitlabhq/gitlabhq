@@ -185,6 +185,11 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 
 Read through the [Geo High Availability documentation](ha.md).
 
+## Configuring GitLab Geo with Object storage
+
+When you have object storage enabled, please consult the
+[Geo with Object Storage](object_storage.md) documentation.
+
 ## Current limitations
 
 - You cannot push code to secondary nodes

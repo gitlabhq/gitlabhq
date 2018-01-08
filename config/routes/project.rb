@@ -461,7 +461,9 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
+        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+          post :reset_cache
+        end
         resource :integrations, only: [:show]
 
         resource :slack, only: [:destroy, :edit, :update] do

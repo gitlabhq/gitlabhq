@@ -1,0 +1,9 @@
+.row.empty-state
+  .col-xs-12
+    .svg-content
+      = image_tag 'illustrations/gitlab_geo.svg'
+  .col-xs-12
+    .text-content.text-center
+      %h4= _("Discover GitLab Geo.")
+      %p= _("Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos.")
+      = link_to _('Learn more'), 'https://about.gitlab.com/features/gitlab-geo/', rel: 'nofollow', class: 'btn btn-new'

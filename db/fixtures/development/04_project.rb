@@ -63,7 +63,8 @@ Sidekiq::Testing.inline! do
         namespace_id: group.id,
         name: project_path.titleize,
         description: FFaker::Lorem.sentence,
-        visibility_level: Gitlab::VisibilityLevel.values.sample
+        visibility_level: Gitlab::VisibilityLevel.values.sample,
+        skip_disk_validation: true
       }
 
       project = Projects::CreateService.new(User.first, params).execute

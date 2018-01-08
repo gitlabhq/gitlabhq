@@ -1873,6 +1873,7 @@ ActiveRecord::Schema.define(version: 20180101160629) do
     t.boolean "remote_mirror_available_overridden"
     t.boolean "only_mirror_protected_branches"
     t.boolean "pull_mirror_available_overridden"
+    t.integer "jobs_cache_index"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

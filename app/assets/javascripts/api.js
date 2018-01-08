@@ -20,6 +20,7 @@ const Api = {
   commitPath: '/api/:version/projects/:id/repository/commits',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
+  geoNodesPath: '/api/:version/geo_nodes',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)

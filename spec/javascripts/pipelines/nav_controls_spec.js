@@ -14,6 +14,7 @@ describe('Pipelines Nav Controls', () => {
       hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
+      resetCachePath: 'foo',
       canCreatePipeline: true,
     };
 
@@ -31,6 +32,7 @@ describe('Pipelines Nav Controls', () => {
       hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
+      resetCachePath: 'foo',
       canCreatePipeline: false,
     };
 
@@ -41,12 +43,31 @@ describe('Pipelines Nav Controls', () => {
     expect(component.$el.querySelector('.btn-create')).toEqual(null);
   });
 
+  it('should render link for resetting runner caches', () => {
+    const mockData = {
+      newPipelinePath: 'foo',
+      hasCiEnabled: true,
+      helpPagePath: 'foo',
+      ciLintPath: 'foo',
+      resetCachePath: 'foo',
+      canCreatePipeline: false,
+    };
+
+    const component = new NavControlsComponent({
+      propsData: mockData,
+    }).$mount();
+
+    expect(component.$el.querySelectorAll('.btn-default')[0].textContent).toContain('Clear runner caches');
+    expect(component.$el.querySelectorAll('.btn-default')[0].getAttribute('href')).toEqual(mockData.resetCachePath);
+  });
+
   it('should render link for CI lint', () => {
     const mockData = {
       newPipelinePath: 'foo',
       hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
+      resetCachePath: 'foo',
       canCreatePipeline: true,
     };
 
@@ -54,8 +75,8 @@ describe('Pipelines Nav Controls', () => {
       propsData: mockData,
     }).$mount();
 
-    expect(component.$el.querySelector('.btn-default').textContent).toContain('CI Lint');
-    expect(component.$el.querySelector('.btn-default').getAttribute('href')).toEqual(mockData.ciLintPath);
+    expect(component.$el.querySelectorAll('.btn-default')[1].textContent).toContain('CI Lint');
+    expect(component.$el.querySelectorAll('.btn-default')[1].getAttribute('href')).toEqual(mockData.ciLintPath);
   });
 
   it('should render link to help page when CI is not enabled', () => {
@@ -64,6 +85,7 @@ describe('Pipelines Nav Controls', () => {
       hasCiEnabled: false,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
+      resetCachePath: 'foo',
       canCreatePipeline: true,
     };
 
@@ -81,6 +103,7 @@ describe('Pipelines Nav Controls', () => {
       hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
+      resetCachePath: 'foo',
       canCreatePipeline: true,
     };
 
