@@ -544,7 +544,7 @@ import Activities from './activities';
           import('./pages/users/show').then(callDefault).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          new UserCallout();
+          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
           import('./pages/snippets/show').then(m => m.default()).catch(fail);
