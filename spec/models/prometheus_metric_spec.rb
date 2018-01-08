@@ -9,7 +9,6 @@ describe PrometheusMetric, type: :model do
   it { is_expected.to validate_presence_of(:group) }
 
   describe '#to_query_metric' do
-
     it 'converts to queryable metric object' do
       expect(subject.to_query_metric).to be_instance_of(Gitlab::Prometheus::Metric)
     end

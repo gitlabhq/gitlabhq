@@ -107,7 +107,6 @@ describe Projects::Prometheus::MetricsController do
   end
 
   describe 'DELETE #destroy' do
-
     context 'format html' do
       let!(:metric) { create(:prometheus_metric, project: project) }
 
