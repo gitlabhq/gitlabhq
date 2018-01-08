@@ -842,6 +842,12 @@ into similar problems in the future (e.g. when new tables are created).
       def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
+        # To not overload the worker too much we enforce a minimum interval both
+        # when scheduling and performing jobs.
+        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
+          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        end
+
         model_class.each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
 
