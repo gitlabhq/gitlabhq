@@ -45,5 +45,5 @@
     <template v-else>
       --
     </template>
-    </span>
+  </span>
 </template>

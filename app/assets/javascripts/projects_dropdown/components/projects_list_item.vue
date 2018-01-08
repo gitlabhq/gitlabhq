@@ -9,6 +9,7 @@
       matcher: {
         type: String,
         required: false,
+        default: '',
       },
       projectId: {
         type: Number,
@@ -27,6 +28,7 @@
         required: true,
       },
       avatarUrl: {
+        type: String,
         required: true,
         validator(value) {
           return value === null || typeof value === 'string';
@@ -38,7 +40,7 @@
         return this.avatarUrl !== null;
       },
       highlightedProjectName() {
-        if (this.matcher) {
+        if (this.matcher !== '') {
           const matcherRegEx = new RegExp(this.matcher, 'gi');
           const matches = this.projectName.match(matcherRegEx);
 

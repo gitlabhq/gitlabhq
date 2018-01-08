@@ -43,7 +43,8 @@
         {{ __('Introducing Cycle Analytics') }}
       </h4>
       <p>
-        {{ __('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.') }}
+        {{ __(`Cycle Analytics gives an overview
+of how much time it takes to go from idea to production in your project.`) }}
       </p>
       <p>
         <a

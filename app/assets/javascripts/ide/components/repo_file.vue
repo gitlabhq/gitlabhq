@@ -60,6 +60,11 @@
         };
       },
     },
+    updated() {
+      if (this.file.type === 'blob' && this.file.active) {
+        this.$el.scrollIntoView();
+      }
+    },
     methods: {
       clickFile(row) {
         // Manual Action if a tree is selected/opened
@@ -71,11 +76,6 @@
         }
         this.$router.push(`/project${row.url}`);
       },
-    },
-    updated() {
-      if (this.file.type === 'blob' && this.file.active) {
-        this.$el.scrollIntoView();
-      }
     },
   };
 </script>

@@ -32,7 +32,7 @@
 </script>
 <template>
   <component
-    :is="this.rootElementType"
+    :is="rootElementType"
     class="text-center">
     <i
       class="fa fa-spin fa-spinner"

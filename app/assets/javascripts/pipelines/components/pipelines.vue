@@ -197,7 +197,8 @@
   <div class="pipelines-container">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
-      v-if="!shouldRenderEmptyState">
+      v-if="!shouldRenderEmptyState"
+    >
       <div class="fade-left">
         <i
           class="fa fa-angle-left"
@@ -221,7 +222,7 @@
         :new-pipeline-path="newPipelinePath"
         :has-ci-enabled="hasCiEnabled"
         :help-page-path="helpPagePath"
-        :resetCachePath="resetCachePath"
+        :reset-cache-path="resetCachePath"
         :ci-lint-path="ciLintPath"
         :can-create-pipeline="canCreatePipelineParsed "
       />

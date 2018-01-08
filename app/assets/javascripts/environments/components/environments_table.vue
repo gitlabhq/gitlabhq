@@ -30,19 +30,15 @@ export default {
       default: false,
     },
   },
-
-  computed: {
-    shouldRenderFolderContent() {
-      return this.model.isFolder &&
-        this.model.isOpen &&
-        this.model.children &&
-        this.model.children.length > 0;
-    },
-  },
-
   methods: {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
+    },
+    shouldRenderFolderContent(env) {
+      return env.isFolder &&
+        env.isOpen &&
+        env.children &&
+        env.children.length > 0;
     },
   },
 };
@@ -99,7 +95,7 @@ export default {
       />
 
       <template
-        v-if="shouldRenderFolderContent"
+        v-if="shouldRenderFolderContent(model)"
       >
         <div
           v-if="model.isLoadingFolderContent"
@@ -110,11 +106,11 @@ export default {
         <template v-else>
           <div
             is="environment-item"
-            v-for="children in model.children"
+            v-for="(children, index) in model.children"
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            :key="i"
+            :key="index"
           />
 
           <div :key="i">

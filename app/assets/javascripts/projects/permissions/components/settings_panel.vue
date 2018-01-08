@@ -40,14 +40,17 @@
       visibilityHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
       lfsHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
       registryHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
     },
 

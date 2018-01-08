@@ -24,7 +24,8 @@
         {{ s__("Environments|You don't have any environments right now.") }}
       </h2>
       <p class="blank-state-text">
-        {{ s__("Environments|Environments are places where code gets deployed, such as staging or production.") }}
+        {{ s__(`Environments|Environments are places where
+code gets deployed, such as staging or production.`) }}
         <br />
         <a :href="helpPath">
           {{ s__("Environments|Read more about environments") }}

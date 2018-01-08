@@ -111,7 +111,8 @@ export default {
       :primary-button-label="__('Create new branch')"
       kind="primary"
       :title="__('Branch has changed')"
-      :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
+      :text="__(`This branch has changed since
+you started editing. Would you like to create a new branch?`)"
       @cancel="showNewBranchModal = false"
       @submit="makeCommit(true)"
     />

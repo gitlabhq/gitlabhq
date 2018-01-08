@@ -55,7 +55,8 @@
     />
 
     <p v-else-if="!isLoading && !repos.length">
-      {{ __("No container images stored for this project. Add one by following the instructions above.") }}
+      {{ __(`No container images stored for this project.
+Add one by following the instructions above.`) }}
     </p>
   </div>
 </template>

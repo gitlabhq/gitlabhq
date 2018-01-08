@@ -48,7 +48,9 @@
       <div class="user-callout-copy">
         <h4>{{ __('Scheduling Pipelines') }}</h4>
         <p>
-          {{ __('The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user.') }}
+          {{ __(`The pipelines schedule runs pipelines in the future,
+repeatedly, for specific branches or tags.
+Those scheduled pipelines will inherit limited project access based on their associated user.`) }}
         </p>
         <p> {{ __('Learn more in the') }}
           <a

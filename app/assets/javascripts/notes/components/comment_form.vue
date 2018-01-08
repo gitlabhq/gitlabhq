@@ -291,7 +291,8 @@ Please check your network connection and try again.`;
                 <textarea
                   id="note-body"
                   name="note[note]"
-                  class="note-textarea js-vue-comment-form js-gfm-input js-autosize markdown-area js-vue-textarea"
+                  class="note-textarea js-vue-comment-form
+js-gfm-input js-autosize markdown-area js-vue-textarea"
                   data-supports-quick-actions="true"
                   aria-label="Description"
                   v-model="note"
@@ -304,7 +305,8 @@ Please check your network connection and try again.`;
                 </textarea>
               </markdown-field>
               <div class="note-form-actions">
-                <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
+                <div class="pull-left btn-group
+append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"

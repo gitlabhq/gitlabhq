@@ -26,7 +26,9 @@
           {{ s__("Pipelines|Build with confidence") }}
         </h4>
         <p>
-          {{ s__("Pipelines|Continous Integration can help catch bugs by running your tests automatically, while Continuous Deployment can help you deliver code to your product environment.") }}
+          {{ s__(`Pipelines|Continous Integration can help
+catch bugs by running your tests automatically,
+while Continuous Deployment can help you deliver code to your product environment.`) }}
         </p>
         <div class="text-center">
           <a

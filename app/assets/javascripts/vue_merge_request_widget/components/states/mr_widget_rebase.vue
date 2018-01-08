@@ -105,7 +105,9 @@
         </span>
       </template>
       <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
-        <div class="accept-merge-holder clearfix js-toggle-container accept-action media space-children">
+        <div
+          class="accept-merge-holder clearfix
+js-toggle-container accept-action media space-children">
           <button
             type="button"
             class="btn btn-sm btn-reopen btn-success"

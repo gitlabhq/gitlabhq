@@ -71,7 +71,8 @@
         // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
         // we already made a request to install and are just waiting for the real-time
         // to sync up.
-        return (this.status !== APPLICATION_INSTALLABLE && this.status !== APPLICATION_ERROR) ||
+        return (this.status !== APPLICATION_INSTALLABLE
+          && this.status !== APPLICATION_ERROR) ||
           this.requestStatus === REQUEST_LOADING ||
           this.requestStatus === REQUEST_SUCCESS;
       },
@@ -83,7 +84,8 @@
           this.status === APPLICATION_ERROR
         ) {
           label = s__('ClusterIntegration|Install');
-        } else if (this.status === APPLICATION_SCHEDULED || this.status === APPLICATION_INSTALLING) {
+        } else if (this.status === APPLICATION_SCHEDULED ||
+          this.status === APPLICATION_INSTALLING) {
           label = s__('ClusterIntegration|Installing');
         } else if (this.status === APPLICATION_INSTALLED) {
           label = s__('ClusterIntegration|Installed');
@@ -92,7 +94,8 @@
         return label;
       },
       hasError() {
-        return this.status === APPLICATION_ERROR || this.requestStatus === REQUEST_FAILURE;
+        return this.status === APPLICATION_ERROR ||
+        this.requestStatus === REQUEST_FAILURE;
       },
       generalErrorDescription() {
         return sprintf(
