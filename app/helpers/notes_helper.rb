@@ -165,7 +165,7 @@ module NotesHelper
       markdownDocsPath: help_page_path('user/markdown'),
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),
       notesPath: notes_url,
-      totalNotes: issuable.notes.length,
+      totalNotes: issuable.discussions.length,
       lastFetchedAt: Time.now
   }.to_json
   end
