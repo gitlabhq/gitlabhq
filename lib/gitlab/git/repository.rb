@@ -1185,7 +1185,7 @@ module Gitlab
       end
 
       # Items should be of format [[commit_id, path], [commit_id1, path1]]
-      def batch_blobs(items, blob_size_limit: nil)
+      def batch_blobs(items, blob_size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
         Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
       end
 
