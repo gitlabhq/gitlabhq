@@ -13,7 +13,7 @@ describe 'gitlab:uploads rake tasks' do
     end
 
     it 'errors out about missing files on the file system' do
-      uploaded_file = create(:upload)
+      create(:upload)
 
       expect { run_rake_task('gitlab:uploads:check') }.to output(/File does not exist on the file system/).to_stdout
     end
