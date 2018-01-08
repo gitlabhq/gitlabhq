@@ -15,6 +15,11 @@ export default {
       required: false,
     },
   },
+  data() {
+    return {
+      pgettext: s__,
+    };
+  },
   components: {
     applicationRow,
   },
@@ -75,7 +80,7 @@ export default {
   <section class="settings no-animate expanded">
     <div class="settings-header">
       <h4>
-        {{ s__('ClusterIntegration|Applications') }}
+        {{ pgettext('ClusterIntegration|Applications') }}
       </h4>
       <p
         class="append-bottom-0"

@@ -23,7 +23,7 @@
         enteredPassword: '',
         enteredUsername: '',
         isOpen: false,
-        s__,
+        pgettext: s__,
       };
     },
     components: {
@@ -92,10 +92,10 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
   <div>
     <modal
       v-if="isOpen"
-      :title="s__('Profiles|Delete your account?')"
+      :title="pgettext('Profiles|Delete your account?')"
       :text="text"
       :kind="`danger ${!canSubmit() && 'disabled'}`"
-      :primary-button-label="s__('Profiles|Delete account')"
+      :primary-button-label="pgettext('Profiles|Delete account')"
       @toggle="toggleOpen"
       @submit="onSubmit">
 
@@ -141,7 +141,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
       type="button"
       class="btn btn-danger"
       @click="toggleOpen(true)">
-      {{ s__('Profiles|Delete account') }}
+      {{ pgettext('Profiles|Delete account') }}
     </button>
   </div>
 </template>

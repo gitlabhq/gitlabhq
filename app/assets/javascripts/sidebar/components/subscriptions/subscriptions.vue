@@ -19,6 +19,11 @@ export default {
       required: false,
     },
   },
+  data() {
+    return {
+      gettext:  __,
+    };
+  },
   components: {
     loadingButton,
   },
@@ -51,7 +56,7 @@ export default {
       </i>
     </div>
     <span class="issuable-header-text hide-collapsed pull-left">
-      {{ __('Notifications') }}
+      {{ gettext('Notifications') }}
     </span>
     <loading-button
       ref="loadingButton"
