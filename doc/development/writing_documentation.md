@@ -15,7 +15,7 @@ request introducing these changes must be accompanied by the documentation
 (either updating existing ones or creating new ones). This is also valid when
 changes are introduced to the UI.
 
-The one resposible for writing the first piece of documentation is the developer who
+The one responsible for writing the first piece of documentation is the developer who
 wrote the code. It's the job of the Product Manager to ensure all features are
 shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
 this is the only way to keep the docs up-to-date. If you have any questions about it,
@@ -31,7 +31,7 @@ Every major feature (regardless if present in GitLab Community or Enterprise edi
 should present, at the beginning of the document, two main sections: **overview** and
 **use cases**. Every GitLab EE-only feature should also contain these sections.
 
-**Overview**: at the name suggests, the goal here is to provide an overview of the feature.
+**Overview**: as the name suggests, the goal here is to provide an overview of the feature.
 Describe what is it, what it does, why it is important/cool/nice-to-have,
 what problem it solves, and what you can do with this feature that you couldn't
 do before.
