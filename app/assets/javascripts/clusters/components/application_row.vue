@@ -30,7 +30,7 @@
       titleLink: {
         type: String,
         required: false,
-        default: '',
+        default: null,
       },
       description: {
         type: String,
@@ -44,7 +44,7 @@
       statusReason: {
         type: String,
         required: false,
-        default: '',
+        default: null,
       },
       requestStatus: {
         type: String,
@@ -54,7 +54,7 @@
       requestReason: {
         type: String,
         required: false,
-        default: '',
+        default: null,
       },
     },
     computed: {
@@ -123,7 +123,7 @@
       role="row"
     >
       <a
-        v-if="titleLink !== ''"
+        v-if="titleLink"
         :href="titleLink"
         target="blank"
         rel="noopener noreferrer"
@@ -172,15 +172,15 @@
           <p class="js-cluster-application-general-error-message">
             {{ generalErrorDescription }}
           </p>
-          <ul v-if="statusReason !== '' || requestReason !== ''">
+          <ul v-if="statusReason || requestReason">
             <li
-              v-if="statusReason !== ''"
+              v-if="statusReason"
               class="js-cluster-application-status-error-message"
             >
               {{ statusReason }}
             </li>
             <li
-              v-if="requestReason !== ''"
+              v-if="requestReaso"
               class="js-cluster-application-request-error-message"
             >
               {{ requestReason }}
