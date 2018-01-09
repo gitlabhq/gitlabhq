@@ -75,6 +75,20 @@ describe Route do
           end
         end
       end
+
+      context 'when the group has a subgroup' do
+        let!(:subgroup) { create(:group, parent: group) }
+
+        context 'when path was changed, and then changed back to the original' do
+          # Should this be valid?
+          it 'is valid' do
+            group.update!(path: 'git_lab2')
+            group.path = 'git_lab'
+
+            expect(group.valid?).to be_truthy
+          end
+        end
+      end
     end
   end
 
