@@ -235,6 +235,8 @@ module NotesActions
   end
 
   def use_note_serializer?
+    return false if params['html']
+
     if noteable.is_a?(MergeRequest)
       cookies[:vue_mr_discussions]
     else

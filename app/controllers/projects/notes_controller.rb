@@ -37,7 +37,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    if cookies[:vue_mr_discussions] == 'true'
+    if cookies[:vue_mr_discussions] == 'true' && !params['html']
       Notes::RenderService.new(current_user).execute([note], project)
 
       render json: note_serializer.represent(note)
@@ -56,7 +56,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    if cookies[:vue_mr_discussions] == 'true'
+    if cookies[:vue_mr_discussions] == 'true' && !params['html']
       Notes::RenderService.new(current_user).execute([note], project)
 
       render json: note_serializer.represent(note)

@@ -1,6 +1,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import { getLocationHash } from '../../lib/utils/url_utility';
+  import { isInMRPage } from '../../lib/utils/common_utils';
   import Flash from '../../flash';
   import store from '../stores/';
   import * as constants from '../constants';
@@ -141,6 +142,21 @@
           const { awardName, noteId } = event.detail;
           this.actionToggleAward({ awardName, noteId });
         });
+      }
+
+      document.addEventListener('newNoteAdded', () => {
+        this.poll();
+      })
+    },
+    watch: {
+      notes: {
+        deep: true,
+        handler() {
+          if (isInMRPage()) {
+            const legacyNotesApp = Notes.getInstance();
+            legacyNotesApp && legacyNotesApp.refresh();
+          }
+        }
       }
     },
   };

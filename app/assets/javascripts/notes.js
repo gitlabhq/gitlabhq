@@ -43,6 +43,10 @@ export default class Notes {
     }
   }
 
+  static getInstance() {
+    return this.instance || null;
+  }
+
   constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);
@@ -102,66 +106,72 @@ export default class Notes {
 
   addBinding() {
     // Edit note link
-    $(document).on('click', '.js-note-edit', this.showEditForm.bind(this));
-    $(document).on('click', '.note-edit-cancel', this.cancelEdit);
+    this.$wrapperEl = $(document).find('.diffs');
+    this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
+    this.$wrapperEl.on('click', '.note-edit-cancel', this.cancelEdit);
     // Reopen and close actions for Issue/MR combined with note form submit
-    $(document).on('click', '.js-comment-submit-button', this.postComment);
-    $(document).on('click', '.js-comment-save-button', this.updateComment);
-    $(document).on('keyup input', '.js-note-text', this.updateTargetButtons);
+    this.$wrapperEl.on('click', '.js-comment-submit-button', this.postComment);
+    this.$wrapperEl.on('click', '.js-comment-save-button', this.updateComment);
+    this.$wrapperEl.on('keyup input', '.js-note-text', this.updateTargetButtons);
     // resolve a discussion
-    $(document).on('click', '.js-comment-resolve-button', this.postComment);
+    this.$wrapperEl.on('click', '.js-comment-resolve-button', this.postComment);
     // remove a note (in general)
-    $(document).on('click', '.js-note-delete', this.removeNote);
+    this.$wrapperEl.on('click', '.js-note-delete', this.removeNote);
     // delete note attachment
-    $(document).on('click', '.js-note-attachment-delete', this.removeAttachment);
+    this.$wrapperEl.on('click', '.js-note-attachment-delete', this.removeAttachment);
     // reset main target form when clicking discard
-    $(document).on('click', '.js-note-discard', this.resetMainTargetForm);
+    this.$wrapperEl.on('click', '.js-note-discard', this.resetMainTargetForm);
     // update the file name when an attachment is selected
-    $(document).on('change', '.js-note-attachment-input', this.updateFormAttachment);
+    this.$wrapperEl.on('change', '.js-note-attachment-input', this.updateFormAttachment);
     // reply to diff/discussion notes
-    $(document).on('click', '.js-discussion-reply-button', this.onReplyToDiscussionNote);
+    this.$wrapperEl.on('click', '.js-discussion-reply-button', this.onReplyToDiscussionNote);
     // add diff note
-    $(document).on('click', '.js-add-diff-note-button', this.onAddDiffNote);
+    this.$wrapperEl.on('click', '.js-add-diff-note-button', this.onAddDiffNote);
     // add diff note for images
-    $(document).on('click', '.js-add-image-diff-note-button', this.onAddImageDiffNote);
+    this.$wrapperEl.on('click', '.js-add-image-diff-note-button', this.onAddImageDiffNote);
     // hide diff note form
-    $(document).on('click', '.js-close-discussion-note-form', this.cancelDiscussionForm);
+    this.$wrapperEl.on('click', '.js-close-discussion-note-form', this.cancelDiscussionForm);
     // toggle commit list
-    $(document).on('click', '.system-note-commit-list-toggler', this.toggleCommitList);
+    this.$wrapperEl.on('click', '.system-note-commit-list-toggler', this.toggleCommitList);
     // fetch notes when tab becomes visible
-    $(document).on('visibilitychange', this.visibilityChange);
+    this.$wrapperEl.on('visibilitychange', this.visibilityChange);
     // when issue status changes, we need to refresh data
-    $(document).on('issuable:change', this.refresh);
+    this.$wrapperEl.on('issuable:change', this.refresh);
     // ajax:events that happen on Form when actions like Reopen, Close are performed on Issues and MRs.
-    $(document).on('ajax:success', '.js-main-target-form', this.addNote);
-    $(document).on('ajax:success', '.js-discussion-note-form', this.addDiscussionNote);
-    $(document).on('ajax:success', '.js-main-target-form', this.resetMainTargetForm);
-    $(document).on('ajax:complete', '.js-main-target-form', this.reenableTargetFormSubmitButton);
+    this.$wrapperEl.on('ajax:success', '.js-main-target-form', this.addNote);
+    this.$wrapperEl.on('ajax:success', '.js-discussion-note-form', this.addDiscussionNote);
+    this.$wrapperEl.on('ajax:success', '.js-main-target-form', this.resetMainTargetForm);
+    this.$wrapperEl.on('ajax:complete', '.js-main-target-form', this.reenableTargetFormSubmitButton);
     // when a key is clicked on the notes
-    $(document).on('keydown', '.js-note-text', this.keydownNoteText);
+    this.$wrapperEl.on('keydown', '.js-note-text', this.keydownNoteText);
     // When the URL fragment/hash has changed, `#note_xxx`
-    return $(window).on('hashchange', this.onHashChange);
+    $(window).on('hashchange', this.onHashChange);
+    this.eventsBound = true;
   }
 
   cleanBinding() {
-    $(document).off('click', '.js-note-edit');
-    $(document).off('click', '.note-edit-cancel');
-    $(document).off('click', '.js-note-delete');
-    $(document).off('click', '.js-note-attachment-delete');
-    $(document).off('click', '.js-discussion-reply-button');
-    $(document).off('click', '.js-add-diff-note-button');
-    $(document).off('click', '.js-add-image-diff-note-button');
-    $(document).off('visibilitychange');
-    $(document).off('keyup input', '.js-note-text');
-    $(document).off('click', '.js-note-target-reopen');
-    $(document).off('click', '.js-note-target-close');
-    $(document).off('click', '.js-note-discard');
-    $(document).off('keydown', '.js-note-text');
-    $(document).off('click', '.js-comment-resolve-button');
-    $(document).off('click', '.system-note-commit-list-toggler');
-    $(document).off('ajax:success', '.js-main-target-form');
-    $(document).off('ajax:success', '.js-discussion-note-form');
-    $(document).off('ajax:complete', '.js-main-target-form');
+    if (!this.eventsBound) {
+      return;
+    }
+
+    this.$wrapperEl.off('click', '.js-note-edit');
+    this.$wrapperEl.off('click', '.note-edit-cancel');
+    this.$wrapperEl.off('click', '.js-note-delete');
+    this.$wrapperEl.off('click', '.js-note-attachment-delete');
+    this.$wrapperEl.off('click', '.js-discussion-reply-button');
+    this.$wrapperEl.off('click', '.js-add-diff-note-button');
+    this.$wrapperEl.off('click', '.js-add-image-diff-note-button');
+    this.$wrapperEl.off('visibilitychange');
+    this.$wrapperEl.off('keyup input', '.js-note-text');
+    this.$wrapperEl.off('click', '.js-note-target-reopen');
+    this.$wrapperEl.off('click', '.js-note-target-close');
+    this.$wrapperEl.off('click', '.js-note-discard');
+    this.$wrapperEl.off('keydown', '.js-note-text');
+    this.$wrapperEl.off('click', '.js-comment-resolve-button');
+    this.$wrapperEl.off('click', '.system-note-commit-list-toggler');
+    this.$wrapperEl.off('ajax:success', '.js-main-target-form');
+    this.$wrapperEl.off('ajax:success', '.js-discussion-note-form');
+    this.$wrapperEl.off('ajax:complete', '.js-main-target-form');
     $(window).off('hashchange', this.onHashChange);
   }
 
@@ -251,9 +261,10 @@ export default class Notes {
     if (this.refreshing) {
       return;
     }
+
     this.refreshing = true;
     return $.ajax({
-      url: this.notes_url,
+      url: `${this.notes_url}?html=true`,
       headers: { 'X-Last-Fetched-At': this.last_fetched_at },
       dataType: 'json',
       success: (function(_this) {
@@ -735,7 +746,7 @@ export default class Notes {
     var selector = this.getEditFormSelector($target);
     var $editForm = $(selector);
 
-    $editForm.insertBefore('.notes-form');
+    $editForm.insertBefore('.notes-form:visible');
     $editForm.find('.js-comment-save-button').enable();
     $editForm.find('.js-finish-edit-warning').hide();
   }
@@ -752,6 +763,7 @@ export default class Notes {
 
   removeNoteEditForm($note) {
     var form = $note.find('.current-note-edit-form');
+
     $note.removeClass('is-editing');
     form.removeClass('current-note-edit-form');
     form.find('.js-finish-edit-warning').hide();
@@ -1162,7 +1174,7 @@ export default class Notes {
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm.find('form')
-      .attr('action', postUrl)
+      .attr('action', `${postUrl}?html=true`)
       .attr('data-remote', 'true');
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
@@ -1486,7 +1498,8 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    ajaxPost(formAction, formData)
+    const endpoint = `${formAction}?html=true`;
+    ajaxPost(endpoint, formData)
       .then((note) => {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
@@ -1549,6 +1562,8 @@ export default class Notes {
           if ($notesContainer.length) {
             $notesContainer.append('<div class="flash-container" style="display: none;"></div>');
           }
+
+          document.dispatchEvent(new CustomEvent('newNoteAdded'));
         } else if (isMainForm) { // Check if this was main thread comment
           // Show final note element on UI and perform form and action buttons cleanup
           this.addNote($form, note);
@@ -1630,6 +1645,7 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
+    const endpoint = `${formAction}?html=true`;
     ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element
