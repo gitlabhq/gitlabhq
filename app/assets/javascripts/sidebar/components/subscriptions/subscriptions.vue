@@ -1,4 +1,5 @@
 <script>
+  /* eslint-disable vue/require-default-prop */
   import { __ } from '../../../locale';
   import eventHub from '../../event_hub';
   import loadingButton from '../../../vue_shared/components/loading_button.vue';
@@ -16,12 +17,10 @@
       subscribed: {
         type: Boolean,
         required: false,
-        default: false,
       },
       id: {
         type: Number,
         required: false,
-        default: 0,
       },
     },
     computed: {

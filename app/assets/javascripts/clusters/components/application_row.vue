@@ -1,4 +1,5 @@
 <script>
+  /* eslint-disable vue/require-default-prop */
   import { s__, sprintf } from '../../locale';
   import eventHub from '../event_hub';
   import loadingButton from '../../vue_shared/components/loading_button.vue';
@@ -30,7 +31,6 @@
       titleLink: {
         type: String,
         required: false,
-        default: null,
       },
       description: {
         type: String,
@@ -39,22 +39,18 @@
       status: {
         type: String,
         required: false,
-        default: null,
       },
       statusReason: {
         type: String,
         required: false,
-        default: null,
       },
       requestStatus: {
         type: String,
         required: false,
-        default: '',
       },
       requestReason: {
         type: String,
         required: false,
-        default: null,
       },
     },
     computed: {
@@ -62,7 +58,7 @@
         return `js-cluster-application-row-${this.id}`;
       },
       installButtonLoading() {
-        return this.status ||
+        return !this.status ||
           this.status === APPLICATION_SCHEDULED ||
           this.status === APPLICATION_INSTALLING ||
           this.requestStatus === REQUEST_LOADING;
@@ -180,7 +176,7 @@
               {{ statusReason }}
             </li>
             <li
-              v-if="requestReaso"
+              v-if="requestReason"
               class="js-cluster-application-request-error-message"
             >
               {{ requestReason }}

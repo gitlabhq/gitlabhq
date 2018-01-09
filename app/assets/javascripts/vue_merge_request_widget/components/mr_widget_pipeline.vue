@@ -1,4 +1,5 @@
 <script>
+  /* eslint-disable vue/require-default-prop */
   import pipelineStage from '../../pipelines/components/stage.vue';
   import ciIcon from '../../vue_shared/components/ci_icon.vue';
   import icon from '../../vue_shared/components/icon.vue';
@@ -20,12 +21,10 @@
       hasCi: {
         type: Boolean,
         required: false,
-        default: false,
       },
       ciStatus: {
         type: String,
         required: false,
-        default: '',
       },
     },
     computed: {
@@ -33,7 +32,7 @@
         return this.pipeline && Object.keys(this.pipeline).length > 0;
       },
       hasCIError() {
-        return this.hasCi && this.ciStatus !== '';
+        return this.hasCi && !this.ciStatus;
       },
       status() {
         return this.pipeline.details &&

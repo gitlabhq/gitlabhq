@@ -16,8 +16,7 @@
     "localStorage": false
   },
   "parserOptions": {
-    "parser": "babel-eslint",
-    "ecmaVersion": 2017
+    "parser": "babel-eslint"
   },
   "plugins": [
     "filenames",

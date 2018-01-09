@@ -364,6 +364,10 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
           <component
             bar="bar"
             />
+
+        // bad
+         <component
+            bar="bar" />
       ```
 
 #### Quotes
@@ -513,25 +517,7 @@ On those a default key should not be provided.
     ```
 
 1. Properties in a Vue Component:
-  1. `name`
-  1. `props`
-  1. `mixins`
-  1. `directives`
-  1. `components`
-  1. `data`
-  1. `computedProps`
-  1. `methods`
-  1. `beforeCreate`
-  1. `created`
-  1. `beforeMount`
-  1. `mounted`
-  1. `beforeUpdate`
-  1. `updated`
-  1. `activated`
-  1. `deactivated`
-  1. `beforeDestroy`
-  1. `destroyed`
-
+  Check [order of properties in components rule][vue-order].
 
 #### Vue and Bootstrap
 
@@ -588,3 +574,4 @@ The goal of this accord is to make sure we are all on the same page.
 [eslint-new]: http://eslint.org/docs/rules/no-new
 [eslint-plugin-vue]: https://github.com/vuejs/eslint-plugin-vue
 [eslint-plugin-vue-rules]: https://github.com/vuejs/eslint-plugin-vue#bulb-rules
+[vue-order]: https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/order-in-components.md
