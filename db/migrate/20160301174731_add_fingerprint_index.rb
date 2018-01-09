@@ -2,11 +2,8 @@
 class AddFingerprintIndex < ActiveRecord::Migration
   disable_ddl_transaction!
 
-<<<<<<< HEAD
-=======
   DOWNTIME = false
 
->>>>>>> upstream/master
   # https://gitlab.com/gitlab-org/gitlab-ee/issues/764
   def change
     args = [:keys, :fingerprint]
