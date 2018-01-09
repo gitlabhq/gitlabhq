@@ -5,7 +5,6 @@ module MergeRequestsAction
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def merge_requests
     @finder_type = MergeRequestsFinder
-    @label = finder.labels.first
 
     @merge_requests = issuables_collection.page(params[:page])
 

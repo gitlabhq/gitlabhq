@@ -92,6 +92,19 @@
   padding: 6px 12px;
 }
 
+.multi-file-loading-container {
+  margin-top: 10px;
+  padding: 10px;
+
+  .animation-container {
+    background: $gray-light;
+
+    div {
+      background: $gray-light;
+    }
+  }
+}
+
 table.table tr td.multi-file-table-name {
   width: 350px;
   padding: 6px 12px;
