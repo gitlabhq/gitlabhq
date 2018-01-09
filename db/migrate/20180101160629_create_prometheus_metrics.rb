@@ -1,4 +1,6 @@
 class CreatePrometheusMetrics < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :prometheus_metrics do |t|
       t.references :project, index: true, foreign_key: true
