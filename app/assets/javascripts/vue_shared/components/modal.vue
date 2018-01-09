@@ -1,4 +1,5 @@
 <script>
+  /* eslint-disable vue/require-default-prop */
   export default {
     name: 'Modal',
 
@@ -6,17 +7,14 @@
       id: {
         type: String,
         required: false,
-        default: '',
       },
       title: {
         type: String,
         required: false,
-        default: '',
       },
       text: {
         type: String,
         required: false,
-        default: '',
       },
       hideFooter: {
         type: Boolean,
@@ -84,7 +82,7 @@
     <div
       :id="id"
       class="modal"
-      :class="id === '' ? '' : 'show'"
+      :class="!id ? '' : 'show'"
       role="dialog"
       tabindex="-1"
     >
@@ -147,7 +145,7 @@
       </div>
     </div>
     <div
-      v-if="id === ''"
+      v-if="!id"
       class="modal-backdrop fade in"
     >
     </div>
