@@ -24,12 +24,6 @@ describe QA::Page::View do
   end
 
   describe '#errors' do
-    let(:file) { spy('file') }
-
-    before do
-      allow(File).to receive(:new).and_return(file)
-    end
-
     context 'when view partial is present' do
       before do
         allow(subject.pathname).to receive(:readable?)
@@ -38,7 +32,7 @@ describe QA::Page::View do
 
       context 'when pattern is found' do
         before do
-          allow(file).to receive(:foreach)
+          allow(File).to receive(:foreach)
             .and_yield('some element').once
           allow(element).to receive(:matches?)
             .with('some element').and_return(true)
@@ -51,7 +45,7 @@ describe QA::Page::View do
 
       context 'when pattern has not been found' do
         before do
-          allow(file).to receive(:foreach)
+          allow(File).to receive(:foreach)
             .and_yield('some element').once
           allow(element).to receive(:matches?)
             .with('some element').and_return(false)

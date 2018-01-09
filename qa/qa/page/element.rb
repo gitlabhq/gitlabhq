@@ -19,10 +19,6 @@ module QA
       def matches?(line)
         !!(line =~ expression)
       end
-
-      def to_s
-        @name
-      end
     end
   end
 end
