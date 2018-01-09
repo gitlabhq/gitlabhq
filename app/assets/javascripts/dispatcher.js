@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
@@ -506,12 +505,16 @@ import Activities from './activities';
             .catch(() => {});
           break;
         case 'projects:artifacts:browse':
-          new ShortcutsNavigation();
-          new BuildArtifacts();
+          import('./pages/projects/artifacts/browse')
+          .then(callDefault)
+          .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:artifacts:file':
-          new ShortcutsNavigation();
-          new BlobViewer();
+          import('./pages/projects/artifacts/file')
+          .then(callDefault)
+          .catch(fail);
+          shortcut_handler = true;
           break;
         case 'help:index':
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
