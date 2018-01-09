@@ -33,7 +33,7 @@ module QA
       end
 
       def errors
-        Array.new.tap do |errors|
+        [].tap do |errors|
           descendants.each do |page|
             page.errors.each do |message|
               errors.push(Error.new(page.name, message))
