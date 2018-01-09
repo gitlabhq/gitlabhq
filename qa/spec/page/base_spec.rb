@@ -56,7 +56,7 @@ describe QA::Page::Base do
 
       it 'appends an error about missing views / elements block' do
         expect(described_class.errors)
-          .to include 'QA::Page::Base class does not have views / elements defined!'
+          .to include 'Page class does not have views / elements defined!'
       end
     end
   end
