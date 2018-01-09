@@ -4,6 +4,7 @@ require 'stringio'
 describe Gitlab::Shell do
   set(:project) { create(:project, :repository) }
 
+  let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
   let(:gitlab_projects) { double('gitlab_projects') }
@@ -201,8 +202,6 @@ describe Gitlab::Shell do
     end
 
     shared_examples 'fetch_remote' do |gitaly_on|
-      let(:repository) { project.repository }
-
       def fetch_remote(ssh_auth = nil)
         gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth)
       end
@@ -325,6 +324,23 @@ describe Gitlab::Shell do
 
     describe '#fetch_remote gitaly' do
       it_should_behave_like 'fetch_remote', true
+
+      context 'gitaly call' do
+        let(:remote_name) { 'remote-name' }
+        let(:ssh_auth) { double(:ssh_auth) }
+
+        subject do
+          gitlab_shell.fetch_remote(repository.raw_repository, remote_name,
+            forced: true, no_tags: true, ssh_auth: ssh_auth)
+        end
+
+        it 'passes the correct params to the gitaly service' do
+          expect(repository.gitaly_repository_client).to receive(:fetch_remote)
+            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, timeout: timeout)
+
+          subject
+        end
+      end
     end
 
     describe '#import_repository' do

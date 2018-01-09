@@ -154,6 +154,18 @@ describe('Board list component', () => {
     });
   });
 
+  it('sets data attribute with invalid id', (done) => {
+    component.showCount = true;
+
+    Vue.nextTick(() => {
+      expect(
+        component.$el.querySelector('.board-list-count').getAttribute('data-issue-id'),
+      ).toBe('-1');
+
+      done();
+    });
+  });
+
   it('shows how many more issues to load', (done) => {
     component.showCount = true;
     component.list.issuesSize = 20;

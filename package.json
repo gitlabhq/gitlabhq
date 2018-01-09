@@ -15,7 +15,6 @@
   "dependencies": {
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
-    "axios-mock-adapter": "^1.10.0",
     "blackst0ne-mermaid": "^7.1.0-fixed",
     "bootstrap-sass": "^3.3.6",
     "brace-expansion": "^1.1.8",
@@ -83,6 +82,7 @@
   },
   "devDependencies": {
     "@gitlab-org/gitlab-svgs": "^1.5.0",
+    "axios-mock-adapter": "^1.10.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
