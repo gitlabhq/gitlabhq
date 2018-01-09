@@ -84,7 +84,7 @@
     <div
       :id="id"
       class="modal"
-      :class="id !== '' ? '' : 'show'"
+      :class="id === '' ? '' : 'show'"
       role="dialog"
       tabindex="-1"
     >
@@ -147,7 +147,7 @@
       </div>
     </div>
     <div
-      v-if="id !== ''"
+      v-if="id === ''"
       class="modal-backdrop fade in"
     >
     </div>
