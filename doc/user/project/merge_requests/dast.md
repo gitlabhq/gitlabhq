@@ -1,4 +1,4 @@
-# Dynamic Application Security Testing (SAST)
+# Dynamic Application Security Testing (DAST)
 
 > [Introduced][ee-4348] in [GitLab Enterprise Edition Ultimate][ee] 10.4.
 
