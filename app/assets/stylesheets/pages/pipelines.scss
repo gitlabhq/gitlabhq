@@ -993,3 +993,11 @@ button.mini-pipeline-graph-dropdown-toggle {
   font-weight: $gl-font-weight-normal;
   line-height: 1.5;
 }
+
+.legend-all {
+  color: $gl-text-color-secondary;
+}
+
+.legend-success {
+  color: $green-500;
+}
