@@ -3,9 +3,9 @@ module Gitlab
     module Queries
       class ValidateQuery < BaseQuery
         def query(query)
-          client_query_range(query, start: 1.second.ago.to_f)
+          client_query(query)
           { valid: true }
-        rescue Gitlab::PrometheusQueryError => ex
+        rescue Gitlab::PrometheusClient::QueryError => ex
           { valid: false, error: ex.message }
         end
       end

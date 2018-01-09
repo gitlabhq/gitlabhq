@@ -50,7 +50,7 @@ class PrometheusService < MonitoringService
     client.ping
 
     { success: true, result: 'Checked API endpoint' }
-  rescue Gitlab::PrometheusError => err
+  rescue Gitlab::PrometheusClient::Error => err
     { success: false, result: err }
   end
 
@@ -76,7 +76,7 @@ class PrometheusService < MonitoringService
   end
 
   def validate_query(query)
-    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, query, rename_field(:data, :query))
+    with_reactive_cache(Gitlab::Prometheus::Queries::ValidateQuery.name, query, rename_field(:data, :query))
   end
 
   # Cache metrics for specific environment
@@ -89,7 +89,7 @@ class PrometheusService < MonitoringService
       data: data,
       last_update: Time.now.utc
     }
-  rescue Gitlab::PrometheusError => err
+  rescue Gitlab::PrometheusClient::Error => err
     { success: false, result: err.message }
   end
 
