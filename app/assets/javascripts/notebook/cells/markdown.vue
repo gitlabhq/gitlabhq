@@ -1,6 +1,7 @@
 <script>
   /* global katex */
   import marked from 'marked';
+  import sanitize from 'sanitize-html';
   import Prompt from './prompt.vue';
 
   const renderer = new marked.Renderer();
@@ -82,7 +83,12 @@
     },
     computed: {
       markdown() {
-        return marked(this.cell.source.join('').replace(/\\/g, '\\\\'));
+        return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), {
+          allowedTags: false,
+          allowedAttributes: {
+            '*': ['class'],
+          },
+        });
       },
     },
   };
