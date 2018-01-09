@@ -8,7 +8,7 @@ class Route < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validate :ensure_permanent_paths
+  validate :ensure_permanent_paths, if: :path_changed?
 
   after_create :delete_conflicting_redirects
   after_update :delete_conflicting_redirects, if: :path_changed?
