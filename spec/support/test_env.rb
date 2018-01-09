@@ -1,4 +1,5 @@
 require 'rspec/mocks'
+require 'toml'
 
 module TestEnv
   extend self
@@ -147,6 +148,9 @@ module TestEnv
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{gitaly_dir}]") do
 
+      # Always re-create config, in case it's outdated. This is fast anyway.
+      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
+
       start_gitaly(gitaly_dir)
     end
   end
@@ -215,7 +219,7 @@ module TestEnv
   end
 
   def copy_repo(project, bare_repo:, refs:)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.disk_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -347,6 +351,9 @@ module TestEnv
   end
 
   def component_needs_update?(component_folder, expected_version)
+    # Allow local overrides of the component for tests during development
+    return false if Rails.env.test? && File.symlink?(component_folder)
+
     version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions

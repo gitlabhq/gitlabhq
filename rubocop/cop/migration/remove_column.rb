@@ -20,7 +20,7 @@ module RuboCop
             send_method = send_node.children[1]
 
             if send_method == :remove_column
-              add_offense(send_node, :selector)
+              add_offense(send_node, location: :selector)
             end
           end
         end

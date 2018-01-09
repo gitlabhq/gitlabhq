@@ -11,7 +11,7 @@ module API
           success ::API::Entities::Label
         end
         get ':id/labels' do
-          present available_labels, with: ::API::Entities::Label, current_user: current_user, project: user_project
+          present available_labels_for(user_project), with: ::API::Entities::Label, current_user: current_user, project: user_project
         end
 
         desc 'Delete an existing label' do

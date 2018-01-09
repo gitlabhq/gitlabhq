@@ -54,6 +54,12 @@ describe Projects::TransferService do
       expect(project.disk_path).not_to eq(old_path)
       expect(project.disk_path).to start_with(group.path)
     end
+
+    it 'updates project full path in .git/config' do
+      transfer_project(project, user, group)
+
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
+    end
   end
 
   context 'when transfer fails' do
@@ -84,6 +90,12 @@ describe Projects::TransferService do
 
       expect(Dir.exist?(original_path)).to be_truthy
       expect(original_path).to eq current_path
+    end
+
+    it 'rolls back project full path in .git/config' do
+      attempt_project_transfer
+
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
     it "doesn't send move notifications" do

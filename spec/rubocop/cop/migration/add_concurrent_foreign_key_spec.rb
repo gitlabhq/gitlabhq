@@ -1,6 +1,8 @@
 require 'spec_helper'
+
 require 'rubocop'
 require 'rubocop/rspec/support'
+
 require_relative '../../../../rubocop/cop/migration/add_concurrent_foreign_key'
 
 describe RuboCop::Cop::Migration::AddConcurrentForeignKey do
@@ -10,7 +12,7 @@ describe RuboCop::Cop::Migration::AddConcurrentForeignKey do
 
   context 'outside of a migration' do
     it 'does not register any offenses' do
-      inspect_source(cop, 'def up; add_foreign_key(:projects, :users, column: :user_id); end')
+      inspect_source('def up; add_foreign_key(:projects, :users, column: :user_id); end')
 
       expect(cop.offenses).to be_empty
     end
@@ -22,7 +24,7 @@ describe RuboCop::Cop::Migration::AddConcurrentForeignKey do
     end
 
     it 'registers an offense when using add_foreign_key' do
-      inspect_source(cop, 'def up; add_foreign_key(:projects, :users, column: :user_id); end')
+      inspect_source('def up; add_foreign_key(:projects, :users, column: :user_id); end')
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)

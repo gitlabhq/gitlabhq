@@ -3,6 +3,10 @@ export default {
   name: 'modal',
 
   props: {
+    id: {
+      type: String,
+      required: false,
+    },
     title: {
       type: String,
       required: false,
@@ -62,11 +66,11 @@ export default {
   },
 
   methods: {
-    close() {
-      this.$emit('toggle', false);
+    emitCancel(event) {
+      this.$emit('cancel', event);
     },
-    emitSubmit(status) {
-      this.$emit('submit', status);
+    emitSubmit(event) {
+      this.$emit('submit', event);
     },
   },
 };
@@ -75,7 +79,9 @@ export default {
 <template>
 <div class="modal-open">
   <div
-    class="modal show"
+    :id="id"
+    class="modal"
+    :class="id ? '' : 'show'"
     role="dialog"
     tabindex="-1"
   >
@@ -93,7 +99,8 @@ export default {
             <button
               type="button"
               class="close pull-right"
-              @click="close"
+              @click="emitCancel($event)"
+              data-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
@@ -110,7 +117,8 @@ export default {
             type="button"
             class="btn pull-left"
             :class="btnCancelKindClass"
-            @click="close">
+            @click="emitCancel($event)"
+            data-dismiss="modal">
             {{ closeButtonLabel }}
           </button>
           <button
@@ -119,13 +127,17 @@ export default {
             class="btn pull-right js-primary-button"
             :disabled="submitDisabled"
             :class="btnKindClass"
-            @click="emitSubmit(true)">
+            @click="emitSubmit($event)"
+            data-dismiss="modal">
             {{ primaryButtonLabel }}
           </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal-backdrop fade in" />
+  <div
+    v-if="!id"
+    class="modal-backdrop fade in">
+  </div>
 </div>
 </template>

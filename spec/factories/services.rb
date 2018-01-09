@@ -18,6 +18,7 @@ FactoryBot.define do
 
   factory :kubernetes_service do
     project
+    type 'KubernetesService'
     active true
     properties({
       api_url: 'https://kubernetes.example.com',

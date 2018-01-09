@@ -1,0 +1,5 @@
+---
+title: Use a background migration for issues.closed_at
+merge_request:
+author:
+type: other

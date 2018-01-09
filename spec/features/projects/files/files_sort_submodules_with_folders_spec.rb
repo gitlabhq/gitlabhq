@@ -5,7 +5,7 @@ feature 'User views files page' do
   let(:project) { create(:forked_project_with_submodules) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
     visit project_tree_path(project, project.repository.root_ref)
   end

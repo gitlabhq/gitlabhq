@@ -130,7 +130,7 @@
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
         %ul.sidebar-sub-level-items.is-fly-out-only
           = nav_link(controller: :abuse_reports, html_options: { class: "fly-out-top-item" } ) do
-            = link_to admin_broadcast_messages_path do
+            = link_to admin_abuse_reports_path do
               %strong.fly-out-top-item-name
                 #{ _('Abuse Reports') }
               %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))

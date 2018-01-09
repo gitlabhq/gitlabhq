@@ -14,7 +14,7 @@ describe API::MergeRequests do
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
 
   before do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe "GET /projects/:id/merge_requests" do
@@ -396,7 +396,7 @@ describe API::MergeRequests do
       let(:developer) { create(:user) }
 
       before do
-        project.team << [developer, :developer]
+        project.add_developer(developer)
       end
 
       it "denies the deletion of the merge request" do
@@ -458,7 +458,7 @@ describe API::MergeRequests do
 
     it "returns 401 if user has no permissions to merge" do
       user2 = create(:user)
-      project.team << [user2, :reporter]
+      project.add_reporter(user2)
       put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user2)
       expect(response).to have_gitlab_http_status(401)
       expect(json_response['message']).to eq('401 Unauthorized')
@@ -645,7 +645,7 @@ describe API::MergeRequests do
       project = create(:project, :private, :repository)
       merge_request = create(:merge_request, :simple, source_project: project)
       guest = create(:user)
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", guest)
 
@@ -675,7 +675,7 @@ describe API::MergeRequests do
 
     it 'returns 403 if user has no access to read code' do
       guest = create(:user)
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       post v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
 
@@ -705,7 +705,7 @@ describe API::MergeRequests do
 
     it 'returns 403 if user has no access to read code' do
       guest = create(:user)
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       delete v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
 

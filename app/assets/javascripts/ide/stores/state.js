@@ -19,4 +19,5 @@ export default () => ({
   projects: {},
   leftPanelCollapsed: false,
   rightPanelCollapsed: true,
+  panelResizing: false,
 });

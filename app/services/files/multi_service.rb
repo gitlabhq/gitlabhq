@@ -4,7 +4,7 @@ module Files
 
     def create_commit!
       repository.multi_action(
-        user: current_user,
+        current_user,
         message: @commit_message,
         branch_name: @branch_name,
         actions: params[:actions],
@@ -13,6 +13,8 @@ module Files
         start_project: @start_project,
         start_branch_name: @start_branch
       )
+    rescue ArgumentError => e
+      raise_error(e)
     end
 
     private
@@ -20,16 +22,7 @@ module Files
     def validate!
       super
 
-      params[:actions].each do |action|
-        validate_action!(action)
-        validate_file_status!(action)
-      end
-    end
-
-    def validate_action!(action)
-      unless Gitlab::Git::Index::ACTIONS.include?(action[:action].to_s)
-        raise_error("Unknown action '#{action[:action]}'")
-      end
+      params[:actions].each { |action| validate_file_status!(action) }
     end
 
     def validate_file_status!(action)

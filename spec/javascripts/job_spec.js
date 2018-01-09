@@ -1,4 +1,4 @@
-import { bytesToKiB } from '~/lib/utils/number_utils';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import '~/lib/utils/datetime_utility';
 import Job from '~/job';
@@ -169,7 +169,7 @@ describe('Job', () => {
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(size)}`);
+          ).toEqual(`${numberToHumanSize(size)}`);
         });
 
         it('shows incremented size', () => {
@@ -195,7 +195,7 @@ describe('Job', () => {
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(50)}`);
+          ).toEqual(`${numberToHumanSize(50)}`);
 
           jasmine.clock().tick(4001);
 
@@ -209,7 +209,7 @@ describe('Job', () => {
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(60)}`);
+          ).toEqual(`${numberToHumanSize(60)}`);
         });
 
         it('renders the raw link', () => {

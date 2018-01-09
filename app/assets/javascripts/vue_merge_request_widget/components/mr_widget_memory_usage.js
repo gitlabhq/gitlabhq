@@ -102,11 +102,11 @@ export default {
             return res;
           }
 
-          return res.json();
+          return res.data;
         })
-        .then((res) => {
-          this.computeGraphData(res.metrics, res.deployment_time);
-          return res;
+        .then((data) => {
+          this.computeGraphData(data.metrics, data.deployment_time);
+          return data;
         })
         .catch(() => {
           this.loadFailed = true;

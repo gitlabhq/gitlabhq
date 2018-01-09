@@ -34,10 +34,10 @@ export default {
 
       if (isConfirmed) {
         MRWidgetService.stopEnvironment(deployment.stop_url)
-          .then(res => res.json())
-          .then((res) => {
-            if (res.redirect_url) {
-              visitUrl(res.redirect_url);
+          .then(res => res.data)
+          .then((data) => {
+            if (data.redirect_url) {
+              visitUrl(data.redirect_url);
             }
           })
           .catch(() => {

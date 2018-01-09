@@ -7,7 +7,7 @@ feature 'Projects > Members > Master manages access requests' do
 
   background do
     project.request_access(user)
-    project.team << [master, :master]
+    project.add_master(master)
     sign_in(master)
   end
 

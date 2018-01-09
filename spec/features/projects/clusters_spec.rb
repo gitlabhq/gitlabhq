@@ -77,4 +77,18 @@ feature 'Clusters', :js do
       end
     end
   end
+
+  context 'when user has not signed in Google' do
+    before do
+      visit project_clusters_path(project)
+
+      click_link 'Add cluster'
+      click_link 'Create on GKE'
+    end
+
+    it 'user sees a login page' do
+      expect(page).to have_css('.signin-with-google')
+      expect(page).to have_link('Google account')
+    end
+  end
 end

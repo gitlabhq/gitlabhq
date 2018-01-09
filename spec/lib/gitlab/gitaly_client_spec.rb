@@ -38,20 +38,6 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
     end
   end
 
-  describe 'encode' do
-    [
-      [nil, ""],
-      ["", ""],
-      ["  ", "  "],
-      %w(a1 a1),
-      ["编码", "\xE7\xBC\x96\xE7\xA0\x81".b]
-    ].each do |input, result|
-      it "encodes #{input.inspect} to #{result.inspect}" do
-        expect(described_class.encode(input)).to eq result
-      end
-    end
-  end
-
   describe 'allow_n_plus_1_calls' do
     context 'when RequestStore is enabled', :request_store do
       it 'returns the result of the allow_n_plus_1_calls block' do

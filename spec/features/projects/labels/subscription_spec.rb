@@ -9,7 +9,7 @@ feature 'Labels subscription' do
 
   context 'when signed in' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       sign_in user
     end
 

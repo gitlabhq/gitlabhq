@@ -265,13 +265,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.team << [user, :master]
+              project.add_master(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.team << [user, :master]
+                project.add_master(user)
               end
 
               it "redirects to the sign in page" do
@@ -465,13 +465,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.team << [user, :master]
+              project.add_master(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.team << [user, :master]
+                project.add_master(user)
               end
 
               it "redirects to the sign in page" do

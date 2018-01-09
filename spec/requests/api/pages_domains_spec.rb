@@ -46,6 +46,7 @@ describe API::PagesDomains do
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
           expect(json_response.last).to have_key('domain')
+          expect(json_response.last).to have_key('project_id')
           expect(json_response.last).to have_key('certificate_expiration')
           expect(json_response.last['certificate_expiration']['expired']).to be true
           expect(json_response.first).not_to have_key('certificate_expiration')

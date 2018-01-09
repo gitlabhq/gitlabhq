@@ -62,7 +62,7 @@ describe SystemHook do
     end
 
     it "project_create hook" do
-      project.team << [user, :master]
+      project.add_master(user)
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_add_to_team/,
@@ -71,7 +71,7 @@ describe SystemHook do
     end
 
     it "project_destroy hook" do
-      project.team << [user, :master]
+      project.add_master(user)
       project.project_members.destroy_all
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(

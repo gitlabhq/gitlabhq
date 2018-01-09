@@ -431,6 +431,7 @@ ee_compat_check:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   retry: 0
@@ -508,7 +509,7 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.db-seed_fu: &db-seed_fu
+.gitlab-setup: &gitlab-setup
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
@@ -517,22 +518,24 @@ db:rollback-mysql:
     SIZE: "1"
     SETUP_DB: "false"
     CREATE_DB_USER: "true"
+    FIXTURE_PATH: db/fixtures/development
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
+    - scripts/gitaly-test-spawn
+    - force=yes bundle exec rake gitlab:setup
   artifacts:
     when: on_failure
     expire_in: 1d
     paths:
       - log/development.log
 
-db:seed_fu-pg:
-  <<: *db-seed_fu
+gitlab:setup-pg:
+  <<: *gitlab-setup
   <<: *use-pg
 
-db:seed_fu-mysql:
-  <<: *db-seed_fu
+gitlab:setup-mysql:
+  <<: *gitlab-setup
   <<: *use-mysql
 
 # Frontend-related jobs
@@ -594,11 +597,19 @@ codequality:
   script:
     - cp .rubocop.yml .rubocop.yml.bak
     - grep -v "rubocop-gitlab-security" .rubocop.yml.bak > .rubocop.yml
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > raw_codeclimate.json
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-v2 analyze -f json > raw_codeclimate.json
     - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,fingerprint,location})' > codeclimate.json
     - mv .rubocop.yml.bak .rubocop.yml
   artifacts:
     paths: [codeclimate.json]
+
+sast:
+  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  before_script: []
+  script:
+    - /app/bin/run .
+  artifacts:
+    paths: [gl-sast-report.json]
 
 qa:internal:
   <<: *dedicated-runner

@@ -36,12 +36,12 @@ describe Files::MultiService do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#execute' do
     context 'with a valid action' do
-      it 'returns a hash with the :success status ' do
+      it 'returns a hash with the :success status' do
         results = subject.execute
 
         expect(results[:status]).to eq(:success)
@@ -51,7 +51,7 @@ describe Files::MultiService do
     context 'with an invalid action' do
       let(:action) { 'rename' }
 
-      it 'returns a hash with the :error status ' do
+      it 'returns a hash with the :error status' do
         results = subject.execute
 
         expect(results[:status]).to eq(:error)

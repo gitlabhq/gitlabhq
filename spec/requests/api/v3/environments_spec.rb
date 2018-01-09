@@ -7,7 +7,7 @@ describe API::V3::Environments do
   let!(:environment)  { create(:environment, project: project) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   shared_examples 'a paginated resources' do

@@ -181,7 +181,6 @@ eos
     it { is_expected.to respond_to(:parents) }
     it { is_expected.to respond_to(:date) }
     it { is_expected.to respond_to(:diffs) }
-    it { is_expected.to respond_to(:tree) }
     it { is_expected.to respond_to(:id) }
     it { is_expected.to respond_to(:to_patch) }
   end
@@ -193,8 +192,8 @@ eos
     let(:commiter) { create :user }
 
     before do
-      project.team << [commiter, :developer]
-      other_project.team << [commiter, :developer]
+      project.add_developer(commiter)
+      other_project.add_developer(commiter)
     end
 
     it 'detects issues that this commit is marked as closing' do

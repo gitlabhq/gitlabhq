@@ -541,7 +541,6 @@ function UsersSelect(currentUser, els, options = {}) {
       options.projectId = $(select).data('project-id');
       options.groupId = $(select).data('group-id');
       options.showCurrentUser = $(select).data('current-user');
-      options.pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches');
       options.authorId = $(select).data('author-id');
       options.skipUsers = $(select).data('skip-users');
       showNullUser = $(select).data('null-user');
@@ -688,7 +687,6 @@ UsersSelect.prototype.users = function(query, options, callback) {
       todo_filter: options.todoFilter || null,
       todo_state_filter: options.todoStateFilter || null,
       current_user: options.showCurrentUser || null,
-      push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
       author_id: options.authorId || null,
       skip_users: options.skipUsers || null
     },

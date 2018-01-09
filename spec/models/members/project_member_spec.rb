@@ -88,8 +88,8 @@ describe ProjectMember do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.team << [@user_1, :developer]
-      @project_2.team << [@user_2, :reporter]
+      @project_1.add_developer(@user_1)
+      @project_2.add_reporter(@user_2)
 
       @status = @project_2.team.import(@project_1)
     end
@@ -136,8 +136,8 @@ describe ProjectMember do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.team << [@user_1, :developer]
-      @project_2.team << [@user_2, :reporter]
+      @project_1.add_developer(@user_1)
+      @project_2.add_reporter(@user_2)
 
       described_class.truncate_teams([@project_1.id, @project_2.id])
     end
