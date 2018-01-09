@@ -408,6 +408,73 @@
   }
 }
 
+.prometheus-graph-cursor {
+  position: absolute;
+  background: $theme-gray-600;
+  width: 1px;
+}
+
+.prometheus-graph-flag {
+  display: block;
+  min-width: 160px;
+
+  h5 {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  table {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+  }
+
+  td {
+    vertical-align: middle;
+
+    + td {
+      padding-left: 5px;
+      vertical-align: top;
+    }
+  }
+
+  .deploy-meta-content {
+    border-bottom: 1px solid $white-dark;
+
+    svg {
+      height: 15px;
+      vertical-align: bottom;
+    }
+  }
+
+  &.popover {
+    &.left {
+      left: auto;
+      right: 0;
+      margin-right: 10px;
+    }
+
+    &.right {
+      left: 0;
+      right: auto;
+      margin-left: 10px;
+    }
+
+    > .arrow {
+      top: 40px;
+    }
+
+    > .popover-title,
+    > .popover-content {
+      padding: 5px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  }
+}
+
 .prometheus-svg-container {
   position: relative;
   height: 0;
