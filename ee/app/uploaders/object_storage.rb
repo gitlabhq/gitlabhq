@@ -20,9 +20,15 @@ module ObjectStorage
     module RecordsUploads
       extend ActiveSupport::Concern
 
-      included do |base|
+      prepended do |base|
         raise ObjectStoreUnavailable, "#{base} must include ObjectStorage::Concern to use extensions."  unless base < Concern
         base.include(::RecordsUploads::Concern)
+      end
+
+      def initialize(model = nil, mounted_as = nil)
+        super
+
+        self.upload = model&.try(:"#{mounted_as}_upload", self) if mounted_as
       end
 
       def upload=(upload)
@@ -44,12 +50,6 @@ module ObjectStorage
     end
 
     attr_reader :object_store
-
-    def initialize(model=nil, mounted_as=nil)
-      super
-
-      self.upload = model&.try(:"#{mounted_as}_upload", self)
-    end
 
     class_methods do
       def object_store_options
