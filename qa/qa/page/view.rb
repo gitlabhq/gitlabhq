@@ -35,7 +35,7 @@ module QA
 
       def self.evaluate(&block)
         Page::View::DSL.new.tap do |evaluator|
-          evaluator.instance_exec(&block)
+          evaluator.instance_exec(&block) if block_given?
         end
       end
 
