@@ -611,25 +611,52 @@ describe API::Projects do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it 'returns projects filtered by user' do
-      get api("/users/#{user4.id}/projects/", user)
+    context "when user's ID is used" do
+      it 'returns projects filtered by user' do
+        get api("/users/#{user4.id}/projects/", user)
 
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+      end
+    end
+
+    context "when user's username is used" do
+      it 'returns projects filtered by user' do
+        get api("/users/#{CGI.escape(user4.username)}/projects/", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+      end
     end
   end
 
   describe 'POST /projects/user/:id' do
-    it 'creates new project without path but with name and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change { Project.count }.by(1)
-      expect(response).to have_gitlab_http_status(201)
+    context "when user's ID is used" do
+      it 'creates new project without path but with name and return 201' do
+        expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change { Project.count }.by(1)
+        expect(response).to have_gitlab_http_status(201)
 
-      project = Project.last
+        project = Project.last
 
-      expect(project.name).to eq('Foo Project')
-      expect(project.path).to eq('foo-project')
+        expect(project.name).to eq('Foo Project')
+        expect(project.path).to eq('foo-project')
+      end
+    end
+
+    context "when user's username is used" do
+      it 'creates new project without path but with name and return 201' do
+        expect { post api("/projects/user/#{CGI.escape(user.username)}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
+        expect(response).to have_gitlab_http_status(201)
+
+        project = Project.last
+
+        expect(project.name).to eq('Foo Project')
+        expect(project.path).to eq('foo-project')
+      end
     end
 
     it 'creates new project with name and path and returns 201' do

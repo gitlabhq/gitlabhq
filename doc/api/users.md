@@ -183,7 +183,7 @@ GET /users/:id
 
 Parameters:
 
-- `id` (required) - The ID of a user
+- `id` (required) - The ID or username of a user
 
 ```json
 {
@@ -212,7 +212,7 @@ GET /users/:id
 
 Parameters:
 
-- `id` (required) - The ID of a user
+- `id` (required) - The ID or username of a user
 
 ```json
 {
@@ -298,6 +298,7 @@ PUT /users/:id
 
 Parameters:
 
+- `id` (required)               - The ID or username of the user
 - `email`                       - Email
 - `username`                    - Username
 - `name`                        - Name
@@ -334,7 +335,7 @@ DELETE /users/:id
 
 Parameters:
 
-- `id` (required) - The ID of the user
+- `id` (required) - The ID or username of the user
 - `hard_delete` (optional) - If true, contributions that would usually be
   [moved to the ghost user](../user/profile/account/delete_account.md#associated-records)
   will be deleted instead, as well as groups owned solely by this user.
@@ -475,7 +476,7 @@ GET /users/:id/keys
 
 Parameters:
 
-- `id` (required) - id of specified user
+- `id` (required) - id or username of specified user
 
 ## Single SSH key
 
@@ -546,7 +547,7 @@ POST /users/:id/keys
 
 Parameters:
 
-- `id` (required)    - id of specified user
+- `id` (required)    - id or username of specified user
 - `title` (required) - new SSH Key's title
 - `key` (required)   - new SSH key
 
@@ -573,7 +574,7 @@ DELETE /users/:id/keys/:key_id
 
 Parameters:
 
-- `id` (required) - id of specified user
+- `id` (required) - id or username of specified user
 - `key_id` (required)  - SSH key ID
 
 ## List all GPG keys
@@ -690,7 +691,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of the user |
+| `id`      | integer/string | yes   | The ID or username of the user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/2/gpg_keys
@@ -720,7 +721,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of the user |
+| `id`      | integer/string | yes   | The ID or username of the user |
 | `key_id`  | integer | yes   | The ID of the GPG key |
 
 ```bash
@@ -749,7 +750,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of the user |
+| `id`      | integer/string | yes   | The or username ID of the user |
 | `key_id`  | integer | yes   | The ID of the GPG key |
 
 ```bash
@@ -780,7 +781,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of the user |
+| `id`      | integer/string | yes   | The ID or username of the user |
 | `key_id`  | integer | yes   | The ID of the GPG key |
 
 ```bash
@@ -822,7 +823,7 @@ GET /users/:id/emails
 
 Parameters:
 
-- `id` (required) - id of specified user
+- `id` (required) - id or username of specified user
 
 ## Single email
 
@@ -885,7 +886,7 @@ POST /users/:id/emails
 
 Parameters:
 
-- `id` (required)    - id of specified user
+- `id` (required)    - id or username of specified user
 - `email` (required) - email address
 
 ## Delete email for current user
@@ -911,7 +912,7 @@ DELETE /users/:id/emails/:email_id
 
 Parameters:
 
-- `id` (required) - id of specified user
+- `id` (required) - id or username of specified user
 - `email_id` (required)  - email ID
 
 ## Block user
@@ -924,7 +925,7 @@ POST /users/:id/block
 
 Parameters:
 
-- `id` (required) - id of specified user
+- `id` (required) - id or username of specified user
 
 Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
@@ -939,7 +940,7 @@ POST /users/:id/unblock
 
 Parameters:
 
-- `id` (required) - id of specified user
+- `id` (required) - id or username of specified user
 
 Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
@@ -964,7 +965,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
+| `user_id` | integer/string | yes | The ID or username of the user |
 | `state`   | string  | no | filter tokens based on state (`all`, `active`, `inactive`) |
 
 ```
@@ -1018,7 +1019,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
+| `user_id` | integer/string | yes | The ID or username of the user |
 | `impersonation_token_id` | integer | yes | The ID of the impersonation token |
 
 ```
@@ -1060,7 +1061,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
+| `user_id` | integer/string | yes | The ID or username of the user |
 | `name`    | string  | yes | The name of the impersonation token |
 | `expires_at` | date | no  | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
 | `scopes` | array    | yes | The array of scopes of the impersonation token (`api`, `read_user`) |
@@ -1105,7 +1106,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
+| `user_id` | integer/string | yes | The ID or username of the user |
 | `impersonation_token_id` | integer | yes | The ID of the impersonation token |
 
 ### Get user activities (admin only)

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'uri'
 
 describe API::Users do
   let(:user)  { create(:user) }
@@ -221,11 +222,22 @@ describe API::Users do
   end
 
   describe "GET /users/:id" do
-    it "returns a user by id" do
-      get api("/users/#{user.id}", user)
+    context "when user's id is used" do
+      it 'returns a user' do
+        get api("/users/#{user.id}", user)
 
-      expect(response).to match_response_schema('public_api/v4/user/basic')
-      expect(json_response['username']).to eq(user.username)
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response['username']).to eq(user.username)
+      end
+    end
+
+    context "when user's username is used" do
+      it 'returns a user' do
+        get api("/users/#{CGI.escape(user.username)}", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response['username']).to eq(user.username)
+      end
     end
 
     it "does not return the user's `is_admin` flag" do
@@ -262,17 +274,13 @@ describe API::Users do
       end
     end
 
-    it "returns a 404 error if user id not found" do
-      get api("/users/9999", user)
+    context "when ID not found" do
+      it "returns a 404 error" do
+        get api("/users/9999", user)
 
-      expect(response).to have_gitlab_http_status(404)
-      expect(json_response['message']).to eq('404 User Not Found')
-    end
-
-    it "returns a 404 for invalid ID" do
-      get api("/users/1ASDF", user)
-
-      expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
     end
   end
 
@@ -480,6 +488,26 @@ describe API::Users do
       admin
     end
 
+    context "when user's id is used" do
+      it 'updates user with his own username' do
+        put api("/users/#{user.id}", admin), username: user.username
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(user.reload.username).to eq(user.username)
+      end
+    end
+
+    context "when user's username is used" do
+      it 'updates user with his own username' do
+        put api("/users/#{CGI.escape(user.username)}", admin), username: user.username
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(user.reload.username).to eq(user.username)
+      end
+    end
+
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), { bio: 'new test bio' }
 
@@ -534,14 +562,6 @@ describe API::Users do
       user.reload
 
       expect(user.confirmed_at).to be_present
-    end
-
-    it 'updates user with his own username' do
-      put api("/users/#{user.id}", admin), username: user.username
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['username']).to eq(user.username)
-      expect(user.reload.username).to eq(user.username)
     end
 
     it "updates user's existing identity" do
@@ -606,12 +626,6 @@ describe API::Users do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it "returns a 404 if invalid ID" do
-      put api("/users/ASDF", admin)
-
-      expect(response).to have_gitlab_http_status(404)
-    end
-
     it 'returns 400 error if user does not validate' do
       put api("/users/#{user.id}", admin),
           password: 'pass',
@@ -667,7 +681,7 @@ describe API::Users do
     end
   end
 
-  describe "POST /users/:id/keys" do
+  describe "POST /users/:user_id/keys" do
     before do
       admin
     end
@@ -686,20 +700,43 @@ describe API::Users do
       expect(json_response['error']).to eq('title is missing')
     end
 
-    it "creates ssh key" do
-      key_attrs = attributes_for :key
-      expect do
-        post api("/users/#{user.id}/keys", admin), key_attrs
-      end.to change { user.keys.count }.by(1)
+    context "when user's id is used" do
+      it "creates ssh key" do
+        key_attrs = attributes_for :key
+        expect do
+          post api("/users/#{user.id}/keys", admin), key_attrs
+        end.to change { user.keys.count }.by(1)
+      end
     end
 
-    it "returns 400 for invalid ID" do
-      post api("/users/999999/keys", admin)
-      expect(response).to have_gitlab_http_status(400)
+    context "when user's username is used" do
+      it "creates ssh key" do
+        key_attrs = attributes_for :key
+        expect do
+          post api("/users/#{CGI.escape(user.username)}/keys", admin), key_attrs
+        end.to change { user.keys.count }.by(1)
+      end
+    end
+
+    context 'when user is not found' do
+      it "returns 404" do
+        key_attrs = attributes_for :key
+        post api("/users/999999/keys", admin), key_attrs
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when request is invalid' do
+      it "returns 400" do
+        post api("/users/999999/keys", admin)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
   end
 
-  describe 'GET /user/:id/keys' do
+  describe 'GET /users/:user_id/keys' do
     before do
       admin
     end
@@ -718,21 +755,37 @@ describe API::Users do
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
-      it 'returns array of ssh keys' do
-        user.keys << key
-        user.save
+      context "when user's id is used" do
+        it 'returns array of ssh keys' do
+          user.keys << key
+          user.save
 
-        get api("/users/#{user.id}/keys", admin)
+          get api("/users/#{user.id}/keys", admin)
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['title']).to eq(key.title)
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first['title']).to eq(key.title)
+        end
+      end
+
+      context "when user's username is used" do
+        it 'returns array of ssh keys' do
+          user.keys << key
+          user.save
+
+          get api("/users/#{CGI.escape(user.username)}/keys", admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first['title']).to eq(key.title)
+        end
       end
     end
   end
 
-  describe 'DELETE /user/:id/keys/:key_id' do
+  describe 'DELETE /users/:user_id/keys/:key_id' do
     before do
       admin
     end
@@ -745,15 +798,30 @@ describe API::Users do
     end
 
     context 'when authenticated' do
-      it 'deletes existing key' do
-        user.keys << key
-        user.save
+      context "when user's id is used" do
+        it 'deletes existing key' do
+          user.keys << key
+          user.save
 
-        expect do
-          delete api("/users/#{user.id}/keys/#{key.id}", admin)
+          expect do
+            delete api("/users/#{user.id}/keys/#{key.id}", admin)
 
-          expect(response).to have_gitlab_http_status(204)
-        end.to change { user.keys.count }.by(-1)
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { user.keys.count }.by(-1)
+        end
+      end
+
+      context "when user's username is used" do
+        it 'deletes existing key' do
+          user.keys << key
+          user.save
+
+          expect do
+            delete api("/users/#{CGI.escape(user.username)}/keys/#{key.id}", admin)
+
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { user.keys.count }.by(-1)
+        end
       end
 
       it_behaves_like '412 response' do
@@ -776,7 +844,7 @@ describe API::Users do
     end
   end
 
-  describe 'POST /users/:id/keys' do
+  describe 'POST /users/:user_id/gpg_keys' do
     before do
       admin
     end
@@ -788,23 +856,47 @@ describe API::Users do
       expect(json_response['error']).to eq('key is missing')
     end
 
-    it 'creates GPG key' do
-      key_attrs = attributes_for :gpg_key
-      expect do
-        post api("/users/#{user.id}/gpg_keys", admin), key_attrs
+    context "when user's id is used" do
+      it 'creates GPG key' do
+        key_attrs = attributes_for :gpg_key
+        expect do
+          post api("/users/#{user.id}/gpg_keys", admin), key_attrs
 
-        expect(response).to have_gitlab_http_status(201)
-      end.to change { user.gpg_keys.count }.by(1)
+          expect(response).to have_gitlab_http_status(201)
+        end.to change { user.gpg_keys.count }.by(1)
+      end
     end
 
-    it 'returns 400 for invalid ID' do
-      post api('/users/999999/gpg_keys', admin)
+    context "when user's username is used" do
+      it 'creates GPG key' do
+        key_attrs = attributes_for :gpg_key
+        expect do
+          post api("/users/#{CGI.escape(user.username)}/gpg_keys", admin), key_attrs
 
-      expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(201)
+        end.to change { user.gpg_keys.count }.by(1)
+      end
+    end
+
+    context 'when user not found' do
+      it 'returns 404' do
+        key_attrs = attributes_for :gpg_key
+        post api('/users/999999/gpg_keys', admin), key_attrs
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when request is invalid' do
+      it 'returns 400' do
+        post api('/users/999999/gpg_keys', admin)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
   end
 
-  describe 'GET /user/:id/gpg_keys' do
+  describe 'GET /users/:user_id/gpg_keys' do
     before do
       admin
     end
@@ -832,21 +924,37 @@ describe API::Users do
         expect(json_response['message']).to eq('404 GPG Key Not Found')
       end
 
-      it 'returns array of GPG keys' do
-        user.gpg_keys << gpg_key
-        user.save
+      context "when user's id is used" do
+        it 'returns array of GPG keys' do
+          user.gpg_keys << gpg_key
+          user.save
 
-        get api("/users/#{user.id}/gpg_keys", admin)
+          get api("/users/#{user.id}/gpg_keys", admin)
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['key']).to eq(gpg_key.key)
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first['key']).to eq(gpg_key.key)
+        end
+      end
+
+      context "when user's username is used" do
+        it 'returns array of GPG keys' do
+          user.gpg_keys << gpg_key
+          user.save
+
+          get api("/users/#{CGI.escape(user.username)}/gpg_keys", admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first['key']).to eq(gpg_key.key)
+        end
       end
     end
   end
 
-  describe 'DELETE /user/:id/gpg_keys/:key_id' do
+  describe 'DELETE /users/:user_id/gpg_keys/:key_id' do
     before do
       admin
     end
@@ -860,15 +968,30 @@ describe API::Users do
     end
 
     context 'when authenticated' do
-      it 'deletes existing key' do
-        user.gpg_keys << gpg_key
-        user.save
+      context "when user's id is used" do
+        it 'deletes existing key' do
+          user.gpg_keys << gpg_key
+          user.save
 
-        expect do
-          delete api("/users/#{user.id}/gpg_keys/#{gpg_key.id}", admin)
+          expect do
+            delete api("/users/#{user.id}/gpg_keys/#{gpg_key.id}", admin)
 
-          expect(response).to have_gitlab_http_status(204)
-        end.to change { user.gpg_keys.count }.by(-1)
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { user.gpg_keys.count }.by(-1)
+        end
+      end
+
+      context "when user's username is used" do
+        it 'deletes existing key' do
+          user.gpg_keys << gpg_key
+          user.save
+
+          expect do
+            delete api("/users/#{CGI.escape(user.username)}/gpg_keys/#{gpg_key.id}", admin)
+
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { user.gpg_keys.count }.by(-1)
+        end
       end
 
       it 'returns 404 error if user not found' do
@@ -890,7 +1013,7 @@ describe API::Users do
     end
   end
 
-  describe 'POST /user/:id/gpg_keys/:key_id/revoke' do
+  describe 'POST /users/:user_id/gpg_keys/:key_id/revoke' do
     before do
       admin
     end
@@ -904,15 +1027,30 @@ describe API::Users do
     end
 
     context 'when authenticated' do
-      it 'revokes existing key' do
-        user.gpg_keys << gpg_key
-        user.save
+      context "when user's id is used" do
+        it 'revokes existing key' do
+          user.gpg_keys << gpg_key
+          user.save
 
-        expect do
-          post api("/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke", admin)
+          expect do
+            post api("/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke", admin)
 
-          expect(response).to have_gitlab_http_status(:accepted)
-        end.to change { user.gpg_keys.count }.by(-1)
+            expect(response).to have_gitlab_http_status(:accepted)
+          end.to change { user.gpg_keys.count }.by(-1)
+        end
+      end
+
+      context "when user's username is used" do
+        it 'revokes existing key' do
+          user.gpg_keys << gpg_key
+          user.save
+
+          expect do
+            post api("/users/#{CGI.escape(user.username)}/gpg_keys/#{gpg_key.id}/revoke", admin)
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end.to change { user.gpg_keys.count }.by(-1)
+        end
       end
 
       it 'returns 404 error if user not found' do
@@ -934,7 +1072,7 @@ describe API::Users do
     end
   end
 
-  describe "POST /users/:id/emails" do
+  describe "POST /users/:user_id/emails" do
     before do
       admin
     end
@@ -946,21 +1084,43 @@ describe API::Users do
       expect(json_response['error']).to eq('email is missing')
     end
 
-    it "creates email" do
-      email_attrs = attributes_for :email
-      expect do
-        post api("/users/#{user.id}/emails", admin), email_attrs
-      end.to change { user.emails.count }.by(1)
+    context "when user's id is used" do
+      it "creates email" do
+        email_attrs = attributes_for :email
+        expect do
+          post api("/users/#{user.id}/emails", admin), email_attrs
+        end.to change { user.emails.count }.by(1)
+      end
     end
 
-    it "returns a 400 for invalid ID" do
-      post api("/users/999999/emails", admin)
+    context "when user's username is used" do
+      it "creates email" do
+        email_attrs = attributes_for :email
+        expect do
+          post api("/users/#{CGI.escape(user.username)}/emails", admin), email_attrs
+        end.to change { user.emails.count }.by(1)
+      end
+    end
 
-      expect(response).to have_gitlab_http_status(400)
+    context 'when user not found' do
+      it 'returns 404' do
+        email_attrs = attributes_for :email
+        post api("/users/999999/emails", admin), email_attrs
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when request is invalid' do
+      it 'returns 400' do
+        post api("/users/999999/emails", admin)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
   end
 
-  describe 'GET /user/:id/emails' do
+  describe 'GET /users/:user_id/emails' do
     before do
       admin
     end
@@ -979,27 +1139,37 @@ describe API::Users do
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
-      it 'returns array of emails' do
-        user.emails << email
-        user.save
+      context "when user's id is used" do
+        it 'returns array of emails' do
+          user.emails << email
+          user.save
 
-        get api("/users/#{user.id}/emails", admin)
+          get api("/users/#{user.id}/emails", admin)
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['email']).to eq(email.email)
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first['email']).to eq(email.email)
+        end
       end
 
-      it "returns a 404 for invalid ID" do
-        get api("/users/ASDF/emails", admin)
+      context "when user's username is used" do
+        it 'returns array of emails' do
+          user.emails << email
+          user.save
 
-        expect(response).to have_gitlab_http_status(404)
+          get api("/users/#{CGI.escape(user.username)}/emails", admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first['email']).to eq(email.email)
+        end
       end
     end
   end
 
-  describe 'DELETE /user/:id/emails/:email_id' do
+  describe 'DELETE /users/:user_id/emails/:email_id' do
     before do
       admin
     end
@@ -1012,15 +1182,30 @@ describe API::Users do
     end
 
     context 'when authenticated' do
-      it 'deletes existing email' do
-        user.emails << email
-        user.save
+      context "when user's id is used" do
+        it 'deletes existing email' do
+          user.emails << email
+          user.save
 
-        expect do
-          delete api("/users/#{user.id}/emails/#{email.id}", admin)
+          expect do
+            delete api("/users/#{user.id}/emails/#{email.id}", admin)
 
-          expect(response).to have_gitlab_http_status(204)
-        end.to change { user.emails.count }.by(-1)
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { user.emails.count }.by(-1)
+        end
+      end
+
+      context "when user's username is used" do
+        it 'deletes existing email' do
+          user.emails << email
+          user.save
+
+          expect do
+            delete api("/users/#{CGI.escape(user.username)}/emails/#{email.id}", admin)
+
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { user.emails.count }.by(-1)
+        end
       end
 
       it_behaves_like '412 response' do
@@ -1041,10 +1226,10 @@ describe API::Users do
         expect(json_response['message']).to eq('404 Email Not Found')
       end
 
-      it "returns a 404 for invalid ID" do
-        delete api("/users/ASDF/emails/bar", admin)
+      it "returns a 400 for invalid ID" do
+        delete api("/users/#{user.id}/emails/bar", admin)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -1057,12 +1242,24 @@ describe API::Users do
       admin
     end
 
-    it "deletes user" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
+    context "when user's id is used" do
+      it "deletes user" do
+        Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
 
-      expect(response).to have_gitlab_http_status(204)
-      expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
-      expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
+        expect(response).to have_gitlab_http_status(204)
+        expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+        expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
+      end
+    end
+
+    context "when user's username is used" do
+      it "deletes user" do
+        Sidekiq::Testing.inline! { delete api("/users/#{CGI.escape(user.username)}", admin) }
+
+        expect(response).to have_gitlab_http_status(204)
+        expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+        expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
+      end
     end
 
     it_behaves_like '412 response' do
@@ -1083,12 +1280,6 @@ describe API::Users do
       Sidekiq::Testing.inline! { delete api("/users/999999", admin) }
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
-    end
-
-    it "returns a 404 for invalid ID" do
-      Sidekiq::Testing.inline! { delete api("/users/ASDF", admin) }
-
-      expect(response).to have_gitlab_http_status(404)
     end
 
     context "hard delete disabled" do
@@ -1207,7 +1398,7 @@ describe API::Users do
       expect(json_response["title"]).to eq(key.title)
     end
 
-    it "returns 404 Not Found within invalid ID" do
+    it "returns 404 Not Found within not existing ID" do
       get api("/user/keys/42", user)
 
       expect(response).to have_gitlab_http_status(404)
@@ -1223,10 +1414,10 @@ describe API::Users do
       expect(json_response['message']).to eq('404 Key Not Found')
     end
 
-    it "returns 404 for invalid ID" do
-      get api("/users/keys/ASDF", admin)
+    it "returns 400 for invalid ID" do
+      get api("/user/keys/ASDF", admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context "scopes" do
@@ -1301,10 +1492,10 @@ describe API::Users do
       expect(response).to have_gitlab_http_status(401)
     end
 
-    it "returns a 404 for invalid ID" do
-      delete api("/users/keys/ASDF", admin)
+    it "returns a 400 for invalid ID" do
+      delete api("/user/keys/ASDF", admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(400)
     end
   end
 
@@ -1350,7 +1541,7 @@ describe API::Users do
       expect(json_response['key']).to eq(gpg_key.key)
     end
 
-    it 'returns 404 Not Found within invalid ID' do
+    it 'returns 404 Not Found within not existing ID' do
       get api('/user/gpg_keys/42', user)
 
       expect(response).to have_gitlab_http_status(404)
@@ -1367,10 +1558,10 @@ describe API::Users do
       expect(json_response['message']).to eq('404 GPG Key Not Found')
     end
 
-    it 'returns 404 for invalid ID' do
-      get api('/users/gpg_keys/ASDF', admin)
+    it 'returns 400 for invalid ID' do
+      get api('/user/gpg_keys/ASDF', admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context 'scopes' do
@@ -1433,10 +1624,10 @@ describe API::Users do
       expect(response).to have_gitlab_http_status(401)
     end
 
-    it 'returns a 404 for invalid ID' do
-      post api('/users/gpg_keys/ASDF/revoke', admin)
+    it 'returns a 400 for invalid ID' do
+      post api('/user/gpg_keys/ASDF/revoke', admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(400)
     end
   end
 
@@ -1468,10 +1659,10 @@ describe API::Users do
       expect(response).to have_gitlab_http_status(401)
     end
 
-    it 'returns a 404 for invalid ID' do
-      delete api('/users/gpg_keys/ASDF', admin)
+    it 'returns a 400 for invalid ID' do
+      delete api('/user/gpg_keys/ASDF', admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(400)
     end
   end
 
@@ -1514,7 +1705,7 @@ describe API::Users do
       expect(json_response["email"]).to eq(email.email)
     end
 
-    it "returns 404 Not Found within invalid ID" do
+    it "returns 404 Not Found within not existing ID" do
       get api("/user/emails/42", user)
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Email Not Found')
@@ -1529,10 +1720,10 @@ describe API::Users do
       expect(json_response['message']).to eq('404 Email Not Found')
     end
 
-    it "returns 404 for invalid ID" do
-      get api("/users/emails/ASDF", admin)
+    it "returns 400 for invalid ID" do
+      get api("/user/emails/ASDF", admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context "scopes" do
@@ -1602,15 +1793,25 @@ describe API::Users do
     end
   end
 
-  describe 'POST /users/:id/block' do
+  describe 'POST /users/:user_id/block' do
     before do
       admin
     end
 
-    it 'blocks existing user' do
-      post api("/users/#{user.id}/block", admin)
-      expect(response).to have_gitlab_http_status(201)
-      expect(user.reload.state).to eq('blocked')
+    context "when user's id is used" do
+      it 'blocks existing user' do
+        post api("/users/#{user.id}/block", admin)
+        expect(response).to have_gitlab_http_status(201)
+        expect(user.reload.state).to eq('blocked')
+      end
+    end
+
+    context "when user's username is used" do
+      it 'blocks existing user' do
+        post api("/users/#{CGI.escape(user.username)}/block", admin)
+        expect(response).to have_gitlab_http_status(201)
+        expect(user.reload.state).to eq('blocked')
+      end
     end
 
     it 'does not re-block ldap blocked users' do
@@ -1632,17 +1833,27 @@ describe API::Users do
     end
   end
 
-  describe 'POST /users/:id/unblock' do
+  describe 'POST /users/:user_id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
 
     before do
       admin
     end
 
-    it 'unblocks existing user' do
-      post api("/users/#{user.id}/unblock", admin)
-      expect(response).to have_gitlab_http_status(201)
-      expect(user.reload.state).to eq('active')
+    context "when user's id is used" do
+      it 'unblocks existing user' do
+        post api("/users/#{user.id}/unblock", admin)
+        expect(response).to have_gitlab_http_status(201)
+        expect(user.reload.state).to eq('active')
+      end
+    end
+
+    context "when user's username is used" do
+      it 'unblocks existing user' do
+        post api("/users/#{CGI.escape(user.username)}/unblock", admin)
+        expect(response).to have_gitlab_http_status(201)
+        expect(user.reload.state).to eq('active')
+      end
     end
 
     it 'unblocks a blocked user' do
@@ -1667,12 +1878,6 @@ describe API::Users do
       post api('/users/9999/block', admin)
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
-    end
-
-    it "returns a 404 for invalid ID" do
-      post api("/users/ASDF/block", admin)
-
-      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -1759,13 +1964,26 @@ describe API::Users do
       expect(json_response).to all(include('active' => true))
     end
 
-    it 'returns an array of inactive personal access tokens if active is set to false' do
-      get api("/users/#{user.id}/impersonation_tokens?state=inactive", admin)
+    context "when user's id is used" do
+      it 'returns an array of inactive personal access tokens if active is set to false' do
+        get api("/users/#{user.id}/impersonation_tokens?state=inactive", admin)
 
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to be_an Array
-      expect(json_response.size).to eq(1)
-      expect(json_response).to all(include('active' => false))
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response).to all(include('active' => false))
+      end
+    end
+
+    context "when user's username is used" do
+      it 'returns an array of inactive personal access tokens if active is set to false' do
+        get api("/users/#{CGI.escape(user.username)}/impersonation_tokens?state=inactive", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response).to all(include('active' => false))
+      end
     end
   end
 
@@ -1800,23 +2018,46 @@ describe API::Users do
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    it 'creates a impersonation token' do
-      post api("/users/#{user.id}/impersonation_tokens", admin),
-        name: name,
-        expires_at: expires_at,
-        scopes: scopes,
-        impersonation: impersonation
+    context "when user's id is used" do
+      it 'creates a impersonation token' do
+        post api("/users/#{user.id}/impersonation_tokens", admin),
+             name: name,
+             expires_at: expires_at,
+             scopes: scopes,
+             impersonation: impersonation
 
-      expect(response).to have_gitlab_http_status(201)
-      expect(json_response['name']).to eq(name)
-      expect(json_response['scopes']).to eq(scopes)
-      expect(json_response['expires_at']).to eq(expires_at)
-      expect(json_response['id']).to be_present
-      expect(json_response['created_at']).to be_present
-      expect(json_response['active']).to be_falsey
-      expect(json_response['revoked']).to be_falsey
-      expect(json_response['token']).to be_present
-      expect(json_response['impersonation']).to eq(impersonation)
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(name)
+        expect(json_response['scopes']).to eq(scopes)
+        expect(json_response['expires_at']).to eq(expires_at)
+        expect(json_response['id']).to be_present
+        expect(json_response['created_at']).to be_present
+        expect(json_response['active']).to be_falsey
+        expect(json_response['revoked']).to be_falsey
+        expect(json_response['token']).to be_present
+        expect(json_response['impersonation']).to eq(impersonation)
+      end
+    end
+
+    context "when user's username is used" do
+      it 'creates a impersonation token' do
+        post api("/users/#{CGI.escape(user.username)}/impersonation_tokens", admin),
+             name: name,
+             expires_at: expires_at,
+             scopes: scopes,
+             impersonation: impersonation
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(name)
+        expect(json_response['scopes']).to eq(scopes)
+        expect(json_response['expires_at']).to eq(expires_at)
+        expect(json_response['id']).to be_present
+        expect(json_response['created_at']).to be_present
+        expect(json_response['active']).to be_falsey
+        expect(json_response['revoked']).to be_falsey
+        expect(json_response['token']).to be_present
+        expect(json_response['impersonation']).to eq(impersonation)
+      end
     end
   end
 
@@ -1852,12 +2093,24 @@ describe API::Users do
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    it 'returns a personal access token' do
-      get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
+    context "when user's id is used" do
+      it 'returns a personal access token' do
+        get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
 
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['token']).to be_present
-      expect(json_response['impersonation']).to be_truthy
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['token']).to be_present
+        expect(json_response['impersonation']).to be_truthy
+      end
+    end
+
+    context "when user's username is used" do
+      it 'returns a personal access token' do
+        get api("/users/#{CGI.escape(user.username)}/impersonation_tokens/#{impersonation_token.id}", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['token']).to be_present
+        expect(json_response['impersonation']).to be_truthy
+      end
     end
   end
 
@@ -1897,12 +2150,24 @@ describe API::Users do
       let(:request) { api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin) }
     end
 
-    it 'revokes a impersonation token' do
-      delete api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
+    context "when user's id is used" do
+      it 'revokes a impersonation token' do
+        delete api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
 
-      expect(response).to have_gitlab_http_status(204)
-      expect(impersonation_token.revoked).to be_falsey
-      expect(impersonation_token.reload.revoked).to be_truthy
+        expect(response).to have_gitlab_http_status(204)
+        expect(impersonation_token.revoked).to be_falsey
+        expect(impersonation_token.reload.revoked).to be_truthy
+      end
+    end
+
+    context "when user's username is used" do
+      it 'revokes a impersonation token' do
+        delete api("/users/#{CGI.escape(user.username)}/impersonation_tokens/#{impersonation_token.id}", admin)
+
+        expect(response).to have_gitlab_http_status(204)
+        expect(impersonation_token.revoked).to be_falsey
+        expect(impersonation_token.reload.revoked).to be_truthy
+      end
     end
   end
 

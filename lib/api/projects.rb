@@ -168,7 +168,7 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the project'
-        requires :user_id, type: Integer, desc: 'The ID of a user'
+        requires :user_id, type: String, desc: 'The ID or username of a user'
         optional :path, type: String, desc: 'The path of the repository'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         use :optional_params
@@ -176,7 +176,7 @@ module API
       end
       post "user/:user_id" do
         authenticated_as_admin!
-        user = User.find_by(id: params.delete(:user_id))
+        user = find_user(params.delete(:user_id))
         not_found!('User') unless user
 
         attrs = declared_params(include_missing: false)
