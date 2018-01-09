@@ -3,20 +3,21 @@ module QA
     class Element
       attr_reader :name
 
-      def initialize(name, pattern)
+      def initialize(name, pattern = nil)
         @name = name
-        @pattern = pattern
+        @pattern = pattern || "qa-#{@name.to_s.gsub('_', '-')}"
+      end
+
+      def expression
+        if @pattern.is_a?(String)
+          @_regexp ||= Regexp.new(Regexp.escape(@pattern))
+        else
+          @pattern
+        end
       end
 
       def matches?(line)
-        case @pattern
-        when Regexp
-          !!(line =~ @pattern)
-        when String
-          line.include?(@pattern)
-        else
-          raise ArgumentError, 'Pattern should be either String or Regexp!'
-        end
+        !!(line =~ expression)
       end
     end
   end
