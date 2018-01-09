@@ -178,7 +178,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "mirror_available", default: true, null: false
-    t.boolean "authorized_keys_enabled", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
