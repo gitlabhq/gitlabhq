@@ -216,6 +216,8 @@ import Activities from './activities';
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
+          import('./pages/dashboard/projects').then(callDefault).catch(fail);
+          break;
         case 'explore:projects:index':
         case 'explore:projects:trending':
         case 'explore:projects:starred':
