@@ -17,7 +17,7 @@ module QA
 
               STDERR.puts <<~EOS
                 GitLab QA sanity selectors validation test detected problems
-                your merge request!
+                with your merge request!
 
                 The purpose of this test is to make sure that GitLab QA tests,
                 that are entirely black-box, click-driven scenarios, do match

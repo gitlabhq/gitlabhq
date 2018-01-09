@@ -41,7 +41,7 @@ module QA
       end
 
       def click_element(name)
-        find("qa-#{name.tr('_', '-')}").click
+        find(Page::Element.new(name).selector).click
       end
 
       def self.path
