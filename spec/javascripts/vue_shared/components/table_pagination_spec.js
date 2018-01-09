@@ -32,7 +32,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(component.$el.innerHTML).not.toBeDefined();
+      expect(component.$el.childNodes.length).toEqual(0);
     });
 
     describe('prev button', () => {

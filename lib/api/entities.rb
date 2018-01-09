@@ -307,7 +307,7 @@ module API
     end
 
     class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats
+      expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end

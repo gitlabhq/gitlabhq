@@ -105,9 +105,13 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight] is a great place to start. Issues with a lower weight (1 or 2) are deemed suitable for beginners.
-These issues will be of reasonable size and challenge, for anyone to start
-contributing to GitLab.
+If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
+is a great place to start. Issues with a lower weight (1 or 2) are deemed
+suitable for beginners. These issues will be of reasonable size and challenge,
+for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
+please consider we favor 
+[asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
 
