@@ -20,6 +20,7 @@ class Project < ActiveRecord::Base
   include GroupDescendant
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
+  include ::Gitlab::Utils::StrongMemoize
 
   # EE specific modules
   prepend EE::Project
@@ -1003,9 +1004,13 @@ class Project < ActiveRecord::Base
   end
 
   def repo_exists?
-    @repo_exists ||= repository.exists?
-  rescue
-    @repo_exists = false
+    strong_memoize(:repo_exists) do
+      begin
+        repository.exists?
+      rescue
+        false
+      end
+    end
   end
 
   def root_ref?(branch)
