@@ -31,8 +31,8 @@ module QA
         @errors ||= Array.new.tap do |errors|
           descendants.each do |page|
             page.views.each do |view|
-              view.errors.each do |error|
-                errors.push(Error.new(page, view, error))
+              view.errors.each do |message|
+                errors.push(Error.new(page.name, view.path, message))
               end
             end
           end
@@ -40,11 +40,9 @@ module QA
       end
 
       def validate!
-        message = <<~EOS
-          We found validation errors!
-        EOS
+        return if errors.none?
 
-        raise ValidationError, message if errors.any?
+        raise ValidationError, 'Page views / elements validation error!'
       end
     end
   end

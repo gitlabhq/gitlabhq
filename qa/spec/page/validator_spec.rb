@@ -69,13 +69,9 @@ describe QA::Page::Validator do
       end
 
       describe '#validate!' do
-        it 'does raises an error with descriptive message' do
-          message = <<~EOS
-            We found validation errors!
-          EOS
-
+        it 'raises validation error' do
           expect { subject.validate! }
-            .to raise_error described_class::ValidationError, message
+            .to raise_error described_class::ValidationError
         end
       end
     end
