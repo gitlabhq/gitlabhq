@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe API::Namespaces do
+  let!(:unused_project) { create(:project) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:group1) { create(:group) }
@@ -224,6 +225,130 @@ describe API::Namespaces do
 
       context 'when requested namespace is owned by user' do
         it_behaves_like 'namespace reader'
+      end
+    end
+  end
+
+  describe 'GET /namespaces/:id/projects' do
+    let(:owned_group) { group1 }
+    let(:user2) { create(:user) }
+
+    shared_examples "can access namespace's projects" do
+      it "returns namespace's projects details" do
+        get api("/namespaces/#{namespace_id}/projects", request_actor)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+
+        expect(json_response).to be_a(Array)
+        expect(json_response[0]['id']).to eq(expected_project.id)
+        expect(json_response[0]['path']).to eq(expected_project.path)
+      end
+    end
+
+    shared_examples "namespace's projects reader" do
+      before do
+        owned_group.add_owner(request_actor)
+      end
+
+      context 'when namespace exists' do
+        context 'when requested by ID' do
+          context 'when requesting group' do
+            let(:namespace_id) { owned_group.id }
+            let!(:expected_project) { create(:project, namespace: owned_group) }
+
+            it_behaves_like "can access namespace's projects"
+          end
+
+          context 'when requesting personal namespace' do
+            let(:namespace_id) { request_actor.namespace.id }
+            let!(:expected_project) { create(:project, creator_id: request_actor.id, namespace: request_actor.namespace) }
+
+            it_behaves_like "can access namespace's projects"
+          end
+        end
+
+        context 'when requested by path' do
+          context 'when requesting group' do
+            let(:namespace_id) { owned_group.path }
+            let!(:expected_project) { create(:project, namespace: owned_group) }
+
+            it_behaves_like "can access namespace's projects"
+          end
+
+          context 'when requesting personal namespace' do
+            let(:namespace_id) { request_actor.namespace.path }
+            let!(:expected_project) { create(:project, creator_id: request_actor.id, namespace: request_actor.namespace) }
+
+            it_behaves_like "can access namespace's projects"
+          end
+        end
+      end
+
+      context "when namespace doesn't exist" do
+        it 'returns not-found' do
+          get api('/namespaces/9999/projects', request_actor)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api("/namespaces/#{group1.id}/projects")
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
+
+    context 'when authenticated as regular user' do
+      let(:request_actor) { user }
+
+      context 'when requested namespace is not owned by user' do
+        context 'when requesting group' do
+          it 'returns not-found' do
+            get api("/namespaces/#{group2.id}/projects", request_actor)
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+
+        context 'when requesting personal namespace' do
+          it 'returns not-found' do
+            get api("/namespaces/#{user2.namespace.id}/projects", request_actor)
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+      end
+
+      context 'when requested namespace is owned by user' do
+        it_behaves_like "namespace's projects reader"
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let(:request_actor) { admin }
+
+      context 'when requested namespace is not owned by user' do
+        context 'when requesting group' do
+          let(:namespace_id) { group2.id }
+          let!(:expected_project) { create(:project, namespace: group2) }
+
+          it_behaves_like "can access namespace's projects"
+        end
+
+        context 'when requesting personal namespace' do
+          let(:namespace_id) { user2.namespace.id }
+          let!(:expected_project) { create(:project, creator_id: user2.id, namespace: user2.namespace) }
+
+          it_behaves_like "can access namespace's projects"
+        end
+      end
+
+      context 'when requested namespace is owned by user' do
+        it_behaves_like "namespace's projects reader"
       end
     end
   end
