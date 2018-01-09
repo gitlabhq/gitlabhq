@@ -17,6 +17,8 @@ module EE
         # Intended to be called during #initialize, and #save should be called
         # after initialize.
         def set_external_with_external_groups
+          return if ldap_config.external_groups.empty?
+
           gl_user.external = in_any_external_group?
         end
 
