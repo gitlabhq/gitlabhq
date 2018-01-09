@@ -1163,23 +1163,13 @@ module Gitlab
       end
 
       def fetch_repository_as_mirror(repository)
-        remote_name = "tmp-#{SecureRandom.hex}"
-
-        # Notice that this feature flag is not for `fetch_repository_as_mirror`
-        # as a whole but for the fetching mechanism (file path or gitaly-ssh).
-        url, env = gitaly_migrate(:fetch_internal) do |is_enabled|
+        gitaly_migrate(:remote_fetch_internal_remote) do |is_enabled|
           if is_enabled
-            repository = RemoteRepository.new(repository) unless repository.is_a?(RemoteRepository)
-            [GITALY_INTERNAL_URL, repository.fetch_env]
+            gitaly_remote_client.fetch_internal_remote(repository)
           else
-            [repository.path, nil]
+            rugged_fetch_repository_as_mirror(repository)
           end
         end
-
-        add_remote(remote_name, url, mirror_refmap: :all_refs)
-        fetch_remote(remote_name, env: env)
-      ensure
-        remove_remote(remote_name)
       end
 
       def blob_at(sha, path)
@@ -2062,6 +2052,16 @@ module Gitlab
         true
       rescue Rugged::ConfigError
         false
+      end
+
+      def rugged_fetch_repository_as_mirror(repository)
+        remote_name = "tmp-#{SecureRandom.hex}"
+        repository = RemoteRepository.new(repository) unless repository.is_a?(RemoteRepository)
+
+        add_remote(remote_name, GITALY_INTERNAL_URL, mirror_refmap: :all_refs)
+        fetch_remote(remote_name, env: repository.fetch_env)
+      ensure
+        remove_remote(remote_name)
       end
 
       def fetch_remote(remote_name = 'origin', env: nil)

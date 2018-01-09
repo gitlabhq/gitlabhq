@@ -315,9 +315,10 @@
             Charts
 
       -# Shortcut to Issues > New Issue
-      %li.hidden
-        = link_to new_project_issue_path(@project), class: 'shortcuts-new-issue' do
-          Create a new issue
+      - if project_nav_tab?(:issues)
+        %li.hidden
+          = link_to new_project_issue_path(@project), class: 'shortcuts-new-issue' do
+            Create a new issue
 
       -# Shortcut to Pipelines > Jobs
       - if project_nav_tab? :builds
@@ -332,5 +333,6 @@
             Commits
 
       -# Shortcut to issue boards
-      %li.hidden
-        = link_to 'Issue Boards', project_boards_path(@project), title: 'Issue Boards', class: 'shortcuts-issue-boards'
+      - if project_nav_tab?(:issues)
+        %li.hidden
+          = link_to 'Issue Boards', project_boards_path(@project), title: 'Issue Boards', class: 'shortcuts-issue-boards'

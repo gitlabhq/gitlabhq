@@ -3489,8 +3489,50 @@ describe Project do
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
+      expect(project).to receive(:after_create_default_branch)
 
       project.after_import
+    end
+
+    context 'branch protection' do
+      let(:project) { create(:project, :repository) }
+
+      it 'does not protect when branch protection is disabled' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+
+        project.after_import
+
+        expect(project.protected_branches).to be_empty
+      end
+
+      it "gives developer access to push when branch protection is set to 'developers can push'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it "gives developer access to merge when branch protection is set to 'developers can merge'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it 'protects default branch' do
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+      end
     end
   end
 
