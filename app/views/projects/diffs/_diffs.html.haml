@@ -1,14 +1,14 @@
 - environment = local_assigns.fetch(:environment, nil)
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
-- diff_files = diffs.diff_files
+-# diff_files = diffs.diff_files
 - merge_request = local_assigns.fetch(:merge_request, false)
 
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed{ class: ("diff-files-changed-merge-request" if merge_request) }
   .files-changed-inner
     .inline-parallel-buttons.hidden-xs.hidden-sm
-      - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
-        = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-default'
+      / - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
+      /   = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-default'
       - if show_whitespace_toggle
         - if current_controller?(:commit)
           = commit_diff_whitespace_link(diffs.project, @commit, class: 'hidden-xs')
@@ -19,10 +19,10 @@
       .btn-group
         = inline_diff_btn
         = parallel_diff_btn
-    = render 'projects/diffs/stats', diff_files: diff_files
+    / = render 'projects/diffs/stats', diff_files: diff_files
 
 - if render_overflow_warning?(diff_files)
   = render 'projects/diffs/warning', diff_files: diffs
 
 .files{ data: { can_create_note: can_create_note } }
-  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment }
+  / = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment }
