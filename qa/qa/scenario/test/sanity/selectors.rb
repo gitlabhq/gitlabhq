@@ -5,10 +5,10 @@ module QA
         class Selectors < Scenario::Template
           include Scenario::Bootable
 
-          PAGE_MODULES = [QA::Page]
+          PAGES = [QA::Page].freeze
 
           def perform(*)
-            validators = PAGE_MODULES.map do |pages|
+            validators = PAGES.map do |pages|
               Page::Validator.new(pages)
             end
 
