@@ -40,6 +40,10 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
+      def click_element(name)
+        find("qa-#{name.tr('_', '-')}").click
+      end
+
       def self.path
         raise NotImplementedError
       end
