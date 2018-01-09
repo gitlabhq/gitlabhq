@@ -34,7 +34,6 @@ The table below shows what kind of documentation goes where.
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
 | `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
-| `doc/articles/` | [Technical Articles](writing_documentation.md#technical-articles): user guides, admin guides, technical overviews, tutorials (`doc/articles/article-title/index.md`). |
 
 ---
 
@@ -67,11 +66,10 @@ The table below shows what kind of documentation goes where.
 1. The `doc/topics/` directory holds topic-related technical content. Create
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
-1. For technical articles, place their images under `doc/articles/article-title/img/`.
 
 ---
 
-If you are unsure where a document should live, you can ping `@axil` in your
+If you are unsure where a document should live, you can ping `@axil` or `@marcia` in your
 merge request.
 
 ## Text
@@ -108,8 +106,8 @@ merge request.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`.
+  grammatically and syntactically correct. Mention one or all
+  of the following GitLab members for a review: `@axil` or `@marcia`.
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected
@@ -330,6 +328,10 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
     git grep -n "lfs/lfs_administration"
     ```
 
+NOTE: **Note:**
+If the document being moved has any Disqus comments on it, there are extra steps
+to follow documented just [below](#redirections-for-pages-with-disqus-comments).
+
 Things to note:
 
 - Since we also use inline documentation, except for the documentation itself,
@@ -342,6 +344,32 @@ Things to note:
   documentation, sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
+- Use the checklist on the documentation MR description template.
+
+### Redirections for pages with Disqus comments
+
+If the documentation page being relocated already has any Disqus comments,
+we need to preserve the Disqus thread.
+
+Disqus uses an identifier per page, and for docs.gitlab.com, the page identifier
+is configured to be the page URL. Therefore, when we change the document location,
+we need to preserve the old URL as the same Disqus identifier.
+
+To do that, add to the frontmatter the variable `redirect_from`,
+using the old URL as value. For example, let's say I moved the document
+available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
+`https://docs.gitlab.com/my-new-location/index.html`.
+
+Into the **new document** frontmatter add the following:
+
+```yaml
+---
+redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
+---
+```
+
+Note: it is necessary to include the file name in the `redirect_from` URL,
+even if it's `index.html` or `README.html`.
 
 ## Configuration documentation for source and Omnibus installations
 
