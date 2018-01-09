@@ -13,7 +13,6 @@ module QA
             end
 
             validators.map(&:errors).flatten.tap do |errors|
-
             end
 
             validators.each(&:validate!)
