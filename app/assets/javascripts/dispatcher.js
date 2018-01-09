@@ -59,11 +59,9 @@ import Star from './star';
 import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
-import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
 import initBroadcastMessagesForm from './broadcast_message';
@@ -159,7 +157,9 @@ import Activities from './activities';
 
       switch (page) {
         case 'profiles:preferences:show':
-          initExperimentalFlags();
+          import('./pages/profiles/preferences')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'sessions:new':
           new UsernameValidator();
@@ -512,7 +512,7 @@ import Activities from './activities';
           new BlobViewer();
           break;
         case 'help:index':
-          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          import('./pages/help').then(module => module.default()).catch(fail);
           break;
         case 'search:show':
           new Search();
@@ -557,6 +557,10 @@ import Activities from './activities';
           new UsersSelect();
           break;
         case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:impersonation_tokens:index':
           new DueDateSelectors();
           break;
@@ -623,8 +627,9 @@ import Activities from './activities';
           new UserCallout();
           break;
         case 'profiles':
-          new NotificationsForm();
-          notificationsDropdown();
+          import('./pages/profiles/index/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects':
           new Project();
