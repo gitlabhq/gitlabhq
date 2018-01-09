@@ -241,8 +241,8 @@ describe MergeRequests::BuildService do
           allow(project).to receive(:external_issue_tracker).and_return(true)
         end
 
-        it 'sets the title to: Resolves External Issue $issue-iid' do
-          expect(merge_request.title).to eq('Resolve External Issue 12345')
+        it 'sets the title to the humanized branch title' do
+          expect(merge_request.title).to eq('12345 fix issue')
         end
       end
     end

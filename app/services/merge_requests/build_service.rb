@@ -159,7 +159,7 @@ module MergeRequests
       merge_request.title =
         case issue
         when Issue         then "Resolve \"#{issue.title}\""
-        when ExternalIssue then "Resolve #{issue.title}"
+        when ExternalIssue then merge_request.source_branch.titleize.humanize
         end
     end
 
