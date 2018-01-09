@@ -1,4 +1,11 @@
 describe QA::Page::Element do
+  describe '#selector' do
+    it 'transform element name into QA-specific selector' do
+      expect(described_class.new(:sign_in_button).selector)
+        .to eq 'qa-sign-in-button'
+    end
+  end
+
   context 'when pattern is an expression' do
     subject { described_class.new(:something, /button 'Sign in'/) }
 

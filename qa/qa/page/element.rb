@@ -5,7 +5,11 @@ module QA
 
       def initialize(name, pattern = nil)
         @name = name
-        @pattern = pattern || "qa-#{@name.to_s.tr('_', '-')}"
+        @pattern = pattern || selector
+      end
+
+      def selector
+        "qa-#{@name.to_s.tr('_', '-')}"
       end
 
       def expression
