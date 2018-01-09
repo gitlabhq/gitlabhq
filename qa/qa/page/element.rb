@@ -5,7 +5,7 @@ module QA
 
       def initialize(name, pattern = nil)
         @name = name
-        @pattern = pattern || "qa-#{@name.to_s.gsub('_', '-')}"
+        @pattern = pattern || "qa-#{@name.to_s.tr('_', '-')}"
       end
 
       def expression
