@@ -146,7 +146,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
     context 'when sha references a tree' do
       it 'returns nil' do
-        tree = Gitlab::Git::Commit.find(repository, 'master').tree
+        tree = repository.rugged.rev_parse('master^{tree}')
 
         blob = Gitlab::Git::Blob.raw(repository, tree.oid)
 
@@ -230,7 +230,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   describe '.batch_lfs_pointers' do
-    let(:tree_object) { Gitlab::Git::Commit.find(repository, 'master').tree }
+    let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
 
     let(:non_lfs_blob) do
       Gitlab::Git::Blob.find(

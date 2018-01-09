@@ -32,7 +32,6 @@ module EE
     module ClassMethods
       def defaults
         super.merge(
-          authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
           elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
           elasticsearch_aws: false,
           elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',

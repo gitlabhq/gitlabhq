@@ -371,7 +371,7 @@ class Commit
   #
   # Returns a symbol
   def uri_type(path)
-    entry = @raw.tree.path(path)
+    entry = @raw.rugged_tree_entry(path)
     if entry[:type] == :blob
       blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob

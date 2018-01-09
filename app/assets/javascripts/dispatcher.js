@@ -56,7 +56,6 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
-import Todos from './todos';
 import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
@@ -122,6 +121,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
 
       const fail = () => Flash('Error loading dynamic module');
+      const callDefault = m => m.default();
 
       path = page.split(':');
       shortcut_handler = null;
@@ -239,7 +239,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           projectSelect();
           break;
         case 'dashboard:todos:index':
-          new Todos();
+          import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
@@ -612,7 +612,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new CILintEditor();
           break;
         case 'users:show':
-          import('./pages/users/show').then(m => m.default()).catch(fail);
+          import('./pages/users/show').then(callDefault).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();

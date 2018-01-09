@@ -69,7 +69,7 @@ describe Gitlab::Shell do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
       end
@@ -443,7 +443,7 @@ describe Gitlab::Shell do
         end
       end
 
-      context 'with gitlay' do
+      context 'with gitaly' do
         it_behaves_like '#add_repository'
       end
 

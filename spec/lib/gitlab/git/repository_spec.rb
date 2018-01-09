@@ -649,28 +649,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
       Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
     end
 
-    it 'fetches a repository as a mirror remote' do
-      subject
-
-      expect(refs(new_repository.path)).to eq(refs(repository.path))
-    end
-
-    context 'with keep-around refs' do
-      let(:sha) { SeedRepo::Commit::ID }
-      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
-      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
-
-      before do
-        repository.rugged.references.create(keep_around_ref, sha, force: true)
-        repository.rugged.references.create(tmp_ref, sha, force: true)
-      end
-
-      it 'includes the temporary and keep-around refs' do
+    shared_examples 'repository mirror fecthing' do
+      it 'fetches a repository as a mirror remote' do
         subject
 
-        expect(refs(new_repository.path)).to include(keep_around_ref)
-        expect(refs(new_repository.path)).to include(tmp_ref)
+        expect(refs(new_repository.path)).to eq(refs(repository.path))
       end
+
+      context 'with keep-around refs' do
+        let(:sha) { SeedRepo::Commit::ID }
+        let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+        let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+        before do
+          repository.rugged.references.create(keep_around_ref, sha, force: true)
+          repository.rugged.references.create(tmp_ref, sha, force: true)
+        end
+
+        it 'includes the temporary and keep-around refs' do
+          subject
+
+          expect(refs(new_repository.path)).to include(keep_around_ref)
+          expect(refs(new_repository.path)).to include(tmp_ref)
+        end
+      end
+    end
+
+    context 'with gitaly enabled' do
+      it_behaves_like 'repository mirror fecthing'
+    end
+
+    context 'with gitaly enabled', :skip_gitaly_mock do
+      it_behaves_like 'repository mirror fecthing'
     end
   end
 
