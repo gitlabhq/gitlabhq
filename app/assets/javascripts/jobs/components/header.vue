@@ -31,7 +31,7 @@
         return !this.isLoading && Object.keys(this.job).length;
       },
       jobStarted() {
-        return this.job.started !== undefined;
+        return this.job.started;
       },
     },
     watch: {

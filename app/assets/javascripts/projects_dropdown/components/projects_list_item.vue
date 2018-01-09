@@ -28,7 +28,7 @@
         required: true,
       },
       avatarUrl: {
-        type: String,
+        type: [String, Object],
         required: true,
         validator(value) {
           return value === null || typeof value === 'string';
