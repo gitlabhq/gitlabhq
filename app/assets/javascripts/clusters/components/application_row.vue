@@ -39,7 +39,7 @@
       status: {
         type: String,
         required: false,
-        default: '',
+        default: null,
       },
       statusReason: {
         type: String,
@@ -62,7 +62,7 @@
         return `js-cluster-application-row-${this.id}`;
       },
       installButtonLoading() {
-        return this.status !== '' ||
+        return this.status ||
           this.status === APPLICATION_SCHEDULED ||
           this.status === APPLICATION_INSTALLING ||
           this.requestStatus === REQUEST_LOADING;
