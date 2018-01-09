@@ -26,9 +26,14 @@ describe Gitlab::Workhorse do
         'GitalyRepository' => repository.gitaly_repository.to_h.deep_stringify_keys
       )
     end
+    let(:cache_disabled) { false }
 
     subject do
       described_class.send_git_archive(repository, ref: ref, format: format)
+    end
+
+    before do
+      allow(described_class).to receive(:git_archive_cache_disabled?).and_return(cache_disabled)
     end
 
     context 'when Gitaly workhorse_archive feature is enabled' do
@@ -38,6 +43,15 @@ describe Gitlab::Workhorse do
         expect(key).to eq('Gitlab-Workhorse-Send-Data')
         expect(command).to eq('git-archive')
         expect(params).to include(gitaly_params)
+      end
+
+      context 'when archive caching is disabled' do
+        let(:cache_disabled) { true }
+
+        it 'tells workhorse not to use the cache' do
+          _, _, params = decode_workhorse_header(subject)
+          expect(params).to include({ 'DisableCache' => true })
+        end
       end
     end
 
