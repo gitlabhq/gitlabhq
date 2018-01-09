@@ -241,7 +241,7 @@ class AwardsHandler {
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
 
-    const vueDiscussions = isInIssuePage() || (isInMRPage && Cookies.get('vue_mr_discussions'));
+    const vueDiscussions = isInIssuePage() || this.isVueMRDiscussions();
     if (vueDiscussions && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
@@ -294,8 +294,13 @@ class AwardsHandler {
     }
   }
 
+  isVueMRDiscussions() {
+    return isInMRPage() && Cookies.get('vue_mr_discussions') && !$('#diffs:visible').length;
+  }
+
   getVotesBlock() {
-    const vueDiscussions = isInIssuePage() || (isInMRPage && Cookies.get('vue_mr_discussions'));
+    const vueDiscussions = isInIssuePage() || this.isVueMRDiscussions();
+
     if (vueDiscussions) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
