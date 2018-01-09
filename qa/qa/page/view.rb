@@ -23,13 +23,13 @@ module QA
         # elements' existence.
         #
         @missing ||= @elements.dup.tap do |elements|
-          File.new(pathname.to_s).foreach do |line|
+          File.foreach(pathname.to_s) do |line|
             elements.reject! { |element| element.matches?(line) }
           end
         end
 
         @missing.map do |missing|
-          "Missing element `#{missing}` in `#{pathname}` view partial!"
+          "Missing element `#{missing.name}` in `#{pathname}` view partial!"
         end
       end
 
