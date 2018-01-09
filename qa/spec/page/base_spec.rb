@@ -36,15 +36,28 @@ describe QA::Page::Base do
   describe '.errors' do
     let(:view) { double('view') }
 
-    before do
-      allow(described_class).to receive(:views)
-        .and_return([view])
+    context 'when page has views and elements defined' do
+      before do
+        allow(described_class).to receive(:views)
+          .and_return([view])
 
-      allow(view).to receive(:errors).and_return(['some error'])
+        allow(view).to receive(:errors).and_return(['some error'])
+      end
+
+      it 'iterates views composite and returns errors' do
+        expect(described_class.errors).to eq ['some error']
+      end
     end
 
-    it 'iterates views composite and returns errors' do
-      expect(described_class.errors).to eq ['some error']
+    context 'when page has no views and elements defined' do
+      before do
+        allow(described_class).to receive(:views).and_return([])
+      end
+
+      it 'appends an error about missing views / elements block' do
+        expect(described_class.errors)
+          .to include 'QA::Page::Base class does not have views / elements defined!'
+      end
     end
   end
 end

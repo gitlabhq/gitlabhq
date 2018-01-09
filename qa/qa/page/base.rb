@@ -49,6 +49,10 @@ module QA
       end
 
       def self.errors
+        if views.empty?
+          return ["#{name} class does not have views / elements defined!"]
+        end
+
         @errors ||= views.map(&:errors).flatten
       end
 
