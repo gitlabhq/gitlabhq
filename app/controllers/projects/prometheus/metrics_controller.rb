@@ -41,7 +41,7 @@ module Projects
           format.json do
             metrics = project.prometheus_metrics
             if metrics.any?
-              render json: { metrics: PrometheusMetricSerializer.new(project: project).represent(metrics) }
+              render json: { metrics: PrometheusMetricSerializer.new(project: project).represent(metrics.order(created_at: :asc)) }
             else
               head :no_content
             end

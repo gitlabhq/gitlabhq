@@ -26,28 +26,31 @@ function backOffRequest(makeRequestCallback) {
 }
 
 function customMetricTemplate(metric) {
-  const deleteIcon = spriteIcon('file-deletion');
+  const deleteIcon = spriteIcon('remove');
+  const editIcon = spriteIcon('pencil');
   return `
       <li class="custom-metric">
-        <a
-          href="${metric.edit_path}">
-          ${metric.title}
-        </a>
-        <a
-          href="#"
-          class="delete-custom-metric"
-          data-metric-id="${metric.id}">
-          ${deleteIcon}
-        </a>
+        ${metric.title}
+        <div
+          class="custom-metric-operation">
+          <a
+            href="${metric.edit_path}">
+            ${editIcon}
+          </a>
+          <a
+            href="#"
+            class='delete-custom-metric'
+            data-metric-id="${metric.id}">
+            ${deleteIcon}
+          </a>
+        </div>
       </li>
     `;
 }
 
-export default class EEPrometheusMetrics extends PrometheusMetrics{
+export default class EEPrometheusMetrics extends PrometheusMetrics {
   constructor(wrapperSelector) {
     super(wrapperSelector);
-    // const cePrometheusMetrics = new CEPrometheusMetrics(wrapperSelector);
-    // cePrometheusMetrics.loadActiveMetrics();
 
     this.$wrapperCustomMetrics = $(wrapperSelector);
     this.$monitoredCustomMetricsPanel = this.$wrapperCustomMetrics.find('.js-panel-custom-monitored-metrics');
@@ -70,19 +73,19 @@ export default class EEPrometheusMetrics extends PrometheusMetrics{
   deleteMetric(currentTarget) {
     const targetId = currentTarget.dataset.metricId;
     axios.delete(this.deleteMetricEndpoint(targetId))
-    .then(() => {
-      currentTarget.parentElement.remove();
-      const elementToFind = { id: parseInt(targetId, 10) };
-      const indexToDelete = _.findLastIndex(this.customMetrics, elementToFind);
-      this.customMetrics.splice(indexToDelete, 1);
-      this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
-      if (this.customMetrics.length === 0) {
-        this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-      }
-    })
-    .catch((err) => {
-      this.showFlashMessage(err);
-    });
+      .then(() => {
+        currentTarget.parentElement.parentElement.remove();
+        const elementToFind = { id: parseInt(targetId, 10) };
+        const indexToDelete = _.findLastIndex(this.customMetrics, elementToFind);
+        this.customMetrics.splice(indexToDelete, 1);
+        this.$monitoredCustomMetricsCount.text(this.customMetrics.length);
+        if (this.customMetrics.length === 0) {
+          this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
+        }
+      })
+      .catch((err) => {
+        this.showFlashMessage(err);
+      });
   }
 
   showMonitoringCustomMetricsPanelState(stateName) {
@@ -136,7 +139,8 @@ export default class EEPrometheusMetrics extends PrometheusMetrics{
           this.customMetrics = response.metrics;
           this.populateCustomMetrics(response.metrics);
         }
-      }).catch(() => {
+      }).catch((err) => {
+        this.showFlashMessage(err);
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
       });
   }

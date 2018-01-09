@@ -255,12 +255,16 @@
       display: flex;
       align-items: center;
 
-      .delete-custom-metric {
+      .custom-metric-operation {
         margin-left: auto;
 
-        > svg {
-          width: 12px;
-          height: 12px;
+        a {
+          text-decoration: none;
+
+          > svg {
+            width: 12px;
+            height: 12px;
+          }
         }
       }
     }
