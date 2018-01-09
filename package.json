@@ -15,7 +15,6 @@
   "dependencies": {
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
-    "axios-mock-adapter": "^1.10.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
@@ -89,6 +88,7 @@
   },
   "devDependencies": {
     "@gitlab-org/gitlab-svgs": "^1.5.0",
+    "axios-mock-adapter": "^1.10.0",
     "babel-plugin-istanbul": "^4.1.5",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
