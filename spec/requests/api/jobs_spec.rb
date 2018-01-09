@@ -11,7 +11,7 @@ describe API::Jobs do
                                ref: project.default_branch)
   end
 
-  let!(:job) { create(:ci_build, pipeline: pipeline) }
+  let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -443,7 +443,7 @@ describe API::Jobs do
       context 'user with :update_build persmission' do
         it 'cancels running or pending job' do
           expect(response).to have_gitlab_http_status(201)
-          expect(project.builds.first.status).to eq('canceled')
+          expect(project.builds.first.status).to eq('success')
         end
       end
 
