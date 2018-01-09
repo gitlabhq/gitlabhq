@@ -7,7 +7,7 @@ class PrometheusMetric < ActiveRecord::Base
   validates :group, presence: true
 
   GROUP_NAMES = {
-    business_metrics: 'Business metrics',
+    business: 'Business metrics',
     response: 'Response metrics',
     system: 'System metrics'
   }.freeze
@@ -15,7 +15,7 @@ class PrometheusMetric < ActiveRecord::Base
   def self.to_grouped_query_metrics
     self.all.group_by(&:group).map do |group, metrics|
       group ||= :business
-      [GROUP_NAMES[group], metrics.map(&:to_query_metric)]
+      [GROUP_NAMES[group.to_sym], metrics.map(&:to_query_metric)]
     end
   end
 

@@ -112,12 +112,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(success: true,
-                          query: {
-                            valid: true
-                          },
-                          last_update: Time.now.utc
-                       )
+        is_expected.to eq(success: true, query: { valid: true }, last_update: Time.now.utc)
       end
     end
   end
