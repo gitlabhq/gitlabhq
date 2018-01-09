@@ -93,10 +93,9 @@
       },
     },
     methods: {
-      changePage(e) {
-        if (e.target.parentElement.classList.contains('disabled')) return;
+      changePage(text, isDisabled) {
+        if (isDisabled) return;
 
-        const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;
 
         switch (text) {
@@ -142,7 +141,7 @@
           disabled: item.disabled
         }"
       >
-        <a @click.prevent="changePage($event)">
+        <a @click.prevent="changePage(item.title, item.disabled)">
           {{ item.title }}
         </a>
       </li>
