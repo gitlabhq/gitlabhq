@@ -71,7 +71,7 @@ module Gitlab
       if response.code == 200 && response['status'] == 'success'
         response['data'] || {}
       elsif response.code == 400
-        raise PrometheusQueryError, response['error'] || 'Bad data received'
+        raise PrometheusClient::QueryError, response['error'] || 'Bad data received'
       else
         raise PrometheusClient::Error, "#{response.code} - #{response.body}"
       end
