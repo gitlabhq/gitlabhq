@@ -2,7 +2,12 @@ module QA
   module Page
     class Validator
       ValidationError = Class.new(StandardError)
-      Error = Struct.new(:page, :message)
+
+      Error = Struct.new(:page, :message) do
+        def to_s
+          "Error: #{page} - #{message}"
+        end
+      end
 
       def initialize(constant)
         @module = constant
