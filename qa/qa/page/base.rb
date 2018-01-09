@@ -53,7 +53,7 @@ module QA
           return ["#{name} class does not have views / elements defined!"]
         end
 
-        @errors ||= views.map(&:errors).flatten
+        views.map(&:errors).flatten
       end
 
       class DSL

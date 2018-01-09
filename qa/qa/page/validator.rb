@@ -2,7 +2,7 @@ module QA
   module Page
     class Validator
       ValidationError = Class.new(StandardError)
-      Error = Struct.new(:page, :view, :message)
+      Error = Struct.new(:page, :message)
 
       def initialize(constant)
         @module = constant
@@ -28,12 +28,10 @@ module QA
       end
 
       def errors
-        @errors ||= Array.new.tap do |errors|
+        Array.new.tap do |errors|
           descendants.each do |page|
-            page.views.each do |view|
-              view.errors.each do |message|
-                errors.push(Error.new(page.name, view.path, message))
-              end
+            page.errors.each do |message|
+              errors.push(Error.new(page.name, message))
             end
           end
         end
