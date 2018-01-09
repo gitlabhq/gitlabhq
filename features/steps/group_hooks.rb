@@ -41,8 +41,10 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
   end
 
   step 'I click test hook button' do
+    WebMock.enable!
     stub_request(:post, @hook.url).to_return(status: 200)
     click_link 'Test'
+    WebMock.disable!
   end
 
   step 'I click test hook button with invalid URL' do
