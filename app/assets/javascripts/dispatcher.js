@@ -111,6 +111,9 @@ import Activities from './activities';
 
       const fail = () => Flash('Error loading dynamic module');
       const callDefault = m => m.default();
+      function rethrow(err) {
+        throw err;
+      }
 
       path = page.split(':');
       shortcut_handler = null;
@@ -311,11 +314,16 @@ import Activities from './activities';
           new ZenMode();
           break;
         case 'snippets:new':
+          import('./pages/snippets/new').then(callDefault, fail).catch(rethrow);
+          break;
         case 'snippets:edit':
+          import('./pages/snippets/edit').then(callDefault, fail).catch(rethrow);
+          break;
         case 'snippets:create':
+          import('./pages/snippets/create').then(callDefault, fail).catch(rethrow);
+          break;
         case 'snippets:update':
-          new GLForm($('.snippet-form'), false);
-          new ZenMode();
+          import('./pages/snippets/update').then(callDefault, fail).catch(rethrow);
           break;
         case 'projects:releases:edit':
           new ZenMode();
