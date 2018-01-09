@@ -19,8 +19,6 @@ instructions will break installations using older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package](#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
-<<<<<<< HEAD
-
 ## Fast lookup is required for GitLab Geo
 
 By default, GitLab manages an `authorized_keys` file, which contains all the
@@ -34,51 +32,18 @@ secondary nodes, but note that the `Write to "authorized keys" file` checkbox
 only needs to be unchecked on the primary node since it will be reflected
 automatically on the secondary if database replication is working.
 
-=======
->>>>>>> upstream/master
 ## Setting up fast lookup via GitLab Shell
 
 GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup
 to the GitLab database. GitLab Shell uses the fingerprint of the SSH key to
 check whether the user is authorized to access GitLab.
 
-<<<<<<< HEAD
-Create the directory `/opt/gitlab-shell` first:
-
-```bash
-sudo mkdir -p /opt/gitlab-shell
-```
-
-Create this file at `/opt/gitlab-shell/authorized_keys`:
-
-```
-#!/bin/bash
-
-if [[ "$1" == "git" ]]; then
-  /opt/gitlab/embedded/service/gitlab-shell/bin/authorized_keys $2
-fi
-```
-
-Set appropriate ownership and permissions:
-
-```
-sudo chown root:git /opt/gitlab-shell/authorized_keys
-sudo chmod 0650 /opt/gitlab-shell/authorized_keys
-```
-
-Add the following to `/etc/ssh/sshd_config` or to `/assets/sshd_config` if you
-are using Omnibus Docker:
-
-```
-AuthorizedKeysCommand /opt/gitlab-shell/authorized_keys %u %k
-=======
 Add the following to your `sshd_config` file. This is usuaully located at
 `/etc/ssh/sshd_config`, but it will be `/assets/sshd_config` if you're using
 Omnibus Docker:
 
 ```
 AuthorizedKeysCommand /opt/embedded/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
->>>>>>> upstream/master
 AuthorizedKeysCommandUser git
 ```
 
@@ -96,11 +61,7 @@ Confirm that SSH is working by removing your user's SSH key in the UI, adding a
 new one, and attempting to pull a repo.
 
 > **Warning:** Do not disable writes until SSH is confirmed to be working
-<<<<<<< HEAD
-perfectly because the file will quickly become out-of-date.
-=======
 perfectly, because the file will quickly become out-of-date.
->>>>>>> upstream/master
 
 In the case of lookup failures (which are not uncommon), the `authorized_keys`
 file will still be scanned. So git SSH performance will still be slow for many
