@@ -79,10 +79,10 @@ Example output:
 ## Uploaded Files Integrity
 
 The uploads check Rake task will loop through all uploads in the database
-and runs two checks to determine the integrity of each file:
+and run two checks to determine the integrity of each file:
 
-1. Check if the file exist in the file system.
-1. Check if the checksum of the file in the file system matches the checksum in the database.
+1. Check if the file exist on the file system.
+1. Check if the checksum of the file on the file system matches the checksum in the database.
 
 **Omnibus Installation**
 

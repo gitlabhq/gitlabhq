@@ -2,7 +2,7 @@ namespace :gitlab do
   namespace :uploads do
     desc 'GitLab | Uploads | Check integrity of uploaded files'
     task check: :environment do
-      puts 'Starting checking integrity of uploaded files'
+      puts 'Checking integrity of uploaded files'
 
       uploads_batches do |batch|
         batch.each do |upload|
