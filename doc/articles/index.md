@@ -30,18 +30,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017-05-15 |
 | [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016-03-10 |
 
-## Git
-
-Learn how to use [Git with GitLab](../topics/git/index.md):
-
-| Article title | Category | Publishing date |
-| :------------ | :------: | --------------: |
-| [Numerous _undo_ possibilities in Git](numerous_undo_possibilities_in_git/index.md) | Tutorial | 2017-08-17 |
-| [Why Git is Worth the Learning Curve](https://about.gitlab.com/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/) | Concepts | 2017-05-17 |
-| [How to install Git](how_to_install_git/index.md) | Tutorial | 2017-05-15 |
-| [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/) | Tutorial | 2017-01-30 |
-| [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/) | Technical overview | 2016-12-08 |
-
 ## GitLab Pages
 
 Learn how to deploy a static website with [GitLab Pages](../user/project/pages/index.md#getting-started):
