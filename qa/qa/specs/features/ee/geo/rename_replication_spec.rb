@@ -21,66 +21,67 @@ module QA
         end
 
         # check it exists on the other machine
-        visit(Runtime::Browser.url_for(:geo_secondary, QA::Page::Main::Login))
-        Page::Main::OAuth.act do
-          authorize! if needs_authorization?
-        end
+        Runtime::Browser.visit(:geo_secondary, QA::Page::Main::Login) do
+          Page::Main::OAuth.act do
+            authorize! if needs_authorization?
+          end
 
-        expect(page).to have_content 'You are on a secondary (read-only) Geo node'
+          expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-        Page::Menu::Main.perform do |menu|
-          menu.go_to_projects
+          Page::Menu::Main.perform do |menu|
+            menu.go_to_projects
 
-          expect(page).to have_content(geo_project_name)
-        end
+            expect(page).to have_content(geo_project_name)
+          end
 
-        sleep 10 # wait for repository replication
+          sleep 10 # wait for repository replication
 
-        Page::Dashboard::Projects.perform do |dashboard|
-          dashboard.go_to_project(geo_project_name)
-        end
+          Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.go_to_project(geo_project_name)
+          end
 
-        Page::Project::Show.perform do
-          expect(page).to have_content 'README.md'
-          expect(page).to have_content 'This is Geo project!'
-        end
+          Page::Project::Show.perform do
+            expect(page).to have_content 'README.md'
+            expect(page).to have_content 'This is Geo project!'
+          end
 
-        # rename the project
-        visit(Runtime::Browser.url_for(:geo_primary, QA::Page::Main::Home))
-        Page::Menu::Main.act { go_to_projects }
+          # rename the project
+          Runtime::Browser.visit(:geo_primary)
+          Page::Menu::Main.act { go_to_projects }
 
-        Page::Dashboard::Projects.perform do |dashboard|
-          dashboard.go_to_project(geo_project_name)
-        end
+          Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.go_to_project(geo_project_name)
+          end
 
-        Page::Menu::Side.act { go_to_settings }
+          Page::Menu::Side.act { go_to_settings }
 
-        geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
-        Page::Project::Settings::Main.perform do |page|
-          page.expand_advanced_settings
-          page.rename_to(geo_project_newname)
-        end
+          geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
+          Page::Project::Settings::Main.perform do |page|
+            page.expand_advanced_settings
+            page.rename_to(geo_project_newname)
+          end
 
-        sleep 2 # wait for replication
+          sleep 2 # wait for replication
 
-        # check renamed project exist on secondary node
-        visit(Runtime::Browser.url_for(:geo_secondary, QA::Page::Main::Home))
+          # check renamed project exist on secondary node
+          Runtime::Browser.visit(:geo_secondary)
 
-        expect(page).to have_content 'You are on a secondary (read-only) Geo node'
+          expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-        Page::Menu::Main.perform do |menu|
-          menu.go_to_projects
+          Page::Menu::Main.perform do |menu|
+            menu.go_to_projects
 
-          expect(page).to have_content(geo_project_newname)
-        end
+            expect(page).to have_content(geo_project_newname)
+          end
 
-        Page::Dashboard::Projects.perform do |dashboard|
-          dashboard.go_to_project(geo_project_newname)
-        end
+          Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.go_to_project(geo_project_newname)
+          end
 
-        Page::Project::Show.perform do
-          expect(page).to have_content 'README.md'
-          expect(page).to have_content 'This is Geo project!'
+          Page::Project::Show.perform do
+            expect(page).to have_content 'README.md'
+            expect(page).to have_content 'This is Geo project!'
+          end
         end
       end
     end
