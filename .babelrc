@@ -8,7 +8,8 @@
       "plugins": [
         ["istanbul", {
           "exclude": [
-            "spec/javascripts/**/*"
+            "spec/javascripts/**/*",
+            "app/assets/javascripts/locale/**/app.js"
           ]
         }],
         ["transform-define", {
