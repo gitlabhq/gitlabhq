@@ -190,7 +190,9 @@ import Activities from './activities';
           initIssuableSidebar();
           break;
         case 'dashboard:milestones:index':
-          projectSelect();
+          import('./pages/dashboard/milestones/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
