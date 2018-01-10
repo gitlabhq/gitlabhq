@@ -2,9 +2,10 @@ module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
       before_action :authorize_admin_project!
-      before_action :require_prometheus_metrics!, only: [:active_common, :validate_query]
 
       def active_common
+        render_404 unless prometheus_service.present?
+
         respond_to do |format|
           format.json do
             matched_metrics = prometheus_service.matched_metrics || {}
@@ -19,9 +20,11 @@ module Projects
       end
 
       def validate_query
+        render_404 unless prometheus_service.present?
+
         respond_to do |format|
           format.json do
-            result = prometheus_service.validate_query(query_validation_params[:query])
+            result = prometheus_service.validate_query(params[:query])
 
             if result.any?
               render json: result
@@ -40,11 +43,13 @@ module Projects
         respond_to do |format|
           format.json do
             metrics = project.prometheus_metrics
+            response = {}
             if metrics.any?
-              render json: { metrics: PrometheusMetricSerializer.new(project: project).represent(metrics.order(created_at: :asc)) }
-            else
-              head :no_content
+              response[:metrics] = PrometheusMetricSerializer.new(project: project)
+                                     .represent(metrics.order(created_at: :asc))
             end
+
+            render json: response
           end
         end
       end
@@ -55,7 +60,7 @@ module Projects
           redirect_to edit_project_service_path(project, prometheus_service),
                       notice: 'Metric was successfully added.'
         else
-          head :unprocessable_entity
+          render 'new'
         end
       end
 
@@ -67,7 +72,7 @@ module Projects
           redirect_to edit_project_service_path(project, prometheus_service),
                       notice: 'Metric was successfully updated.'
         else
-          render "edit"
+          render 'edit'
         end
       end
 
@@ -76,8 +81,8 @@ module Projects
       end
 
       def destroy
-        @metric = project.prometheus_metrics.find(params[:id])
-        @metric.destroy
+        metric = project.prometheus_metrics.find(params[:id])
+        metric.destroy
 
         respond_to do |format|
           format.html do
@@ -91,20 +96,12 @@ module Projects
 
       private
 
-      def query_validation_params
-        params.permit(:query)
-      end
-
       def metrics_params
         params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend, :group)
       end
 
       def prometheus_service
-        project.prometheus_service
-      end
-
-      def require_prometheus_metrics!
-        render_404 unless prometheus_service.present?
+        @prometheus_service ||= project.find_or_initialize_service(PrometheusService)
       end
     end
   end
