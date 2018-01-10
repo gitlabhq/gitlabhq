@@ -1,0 +1,5 @@
+---
+title: Fix XSS vulnerability in pipeline job trace
+merge_request:
+author:
+type: security

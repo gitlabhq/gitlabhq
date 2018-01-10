@@ -117,6 +117,11 @@ class Service < ActiveRecord::Base
     nil
   end
 
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key)/ }
+  end
+
   def global_fields
     fields
   end
