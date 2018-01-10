@@ -38,11 +38,12 @@ To learn where to place a new document, check the [documentation style guide](do
 In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
 all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
 
-Old directories such as `/workflow/`, `/gitlab-basics/`, and `/university/` have
-been deprecated and the majority its docs have been moved to their correct location
+The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
+been deprecated and the majority their docs have been moved to their correct location
 in small iterations. Please don't create new docs in these folders.
 
-To move a document from its location to another directory, read the section [changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
+To move a document from its location to another directory, read the section
+[changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
 
 ### Feature overview and use cases
 
