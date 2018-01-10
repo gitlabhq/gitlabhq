@@ -3,6 +3,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_google_api, except: [:login]
   before_action :authorize_google_project_billing, only: [:new]
   before_action :authorize_create_cluster!, only: [:new, :create]
+  before_action :verify_billing, only: [:create]
 
   def login
     begin
@@ -23,23 +24,33 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def create
-    case google_project_billing_status
-    when 'true'
-      @cluster = ::Clusters::CreateService
-        .new(project, current_user, create_params)
-        .execute(token_in_session)
+    @cluster = ::Clusters::CreateService
+      .new(project, current_user, create_params)
+      .execute(token_in_session)
 
-      return redirect_to project_cluster_path(project, @cluster) if @cluster.persisted?
-    when 'false'
-      flash[:error] = _('Please enable billing for one of your projects to be able to create a cluster.')
+    if @cluster.persisted?
+      redirect_to project_cluster_path(project, @cluster)
     else
-      flash[:error] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
+      render :new
     end
-
-    render :new
   end
 
   private
+
+  def verify_billing
+    case google_project_billing_status
+    when 'true'
+      return
+    when 'false'
+      flash[:alert] = _('Please enable billing for one of your projects to be able to create a cluster.')
+    else
+      flash[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
+    end
+
+    @cluster = ::Clusters::Cluster.new(create_params)
+
+    render :new
+  end
 
   def create_params
     params.require(:cluster).permit(
