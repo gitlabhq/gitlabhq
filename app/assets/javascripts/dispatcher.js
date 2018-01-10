@@ -13,7 +13,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
-import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
 import initAdmin from './admin';
@@ -215,16 +214,26 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           initIssuableSidebar();
           break;
         case 'dashboard:milestones:index':
-          projectSelect();
+          import('./pages/dashboard/milestones/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:show':
           new UserCallout();
         case 'groups:milestones:show':
-        case 'dashboard:milestones:show':
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:milestones:show':
+          import('./pages/dashboard/milestones/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:issues':
+          import('./pages/dashboard/issues')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:merge_requests':
           projectSelect();
           initLegacyFilters();
@@ -239,6 +248,12 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'dashboard:todos:index':
           import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
+          break;
+        case 'dashboard:projects:index':
+        case 'dashboard:projects:starred':
+          import('./pages/dashboard/projects')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'explore:projects:index':
         case 'explore:projects:trending':
@@ -600,22 +615,19 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          new CILintEditor();
+          import('./pages/ci/lints').then(m => m.default()).catch(fail);
           break;
         case 'users:show':
           import('./pages/users/show').then(callDefault).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          new UserCallout();
+          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          new LineHighlighter();
-          new BlobViewer();
-          initNotes();
-          new ZenMode();
+          import('./pages/snippets/show').then(m => m.default()).catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          new UsersSelect();
+          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':

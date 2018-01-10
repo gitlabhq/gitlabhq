@@ -13,6 +13,15 @@
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
+    components: {
+      tablePagination,
+      navigationTabs,
+      navigationControls,
+    },
+    mixins: [
+      pipelinesMixin,
+      CIPaginationMixin,
+    ],
     props: {
       store: {
         type: Object,
@@ -28,15 +37,6 @@
         default: 'root',
       },
     },
-    components: {
-      tablePagination,
-      navigationTabs,
-      navigationControls,
-    },
-    mixins: [
-      pipelinesMixin,
-      CIPaginationMixin,
-    ],
     data() {
       const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
 
@@ -197,7 +197,8 @@
   <div class="pipelines-container">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
-      v-if="!shouldRenderEmptyState">
+      v-if="!shouldRenderEmptyState"
+    >
       <div class="fade-left">
         <i
           class="fa fa-angle-left"
@@ -215,16 +216,16 @@
         :tabs="tabs"
         @onChangeTab="onChangeTab"
         scope="pipelines"
-        />
+      />
 
       <navigation-controls
         :new-pipeline-path="newPipelinePath"
         :has-ci-enabled="hasCiEnabled"
         :help-page-path="helpPagePath"
-        :resetCachePath="resetCachePath"
+        :reset-cache-path="resetCachePath"
         :ci-lint-path="ciLintPath"
         :can-create-pipeline="canCreatePipelineParsed "
-        />
+      />
     </div>
 
     <div class="content-list pipelines">
@@ -234,18 +235,18 @@
         size="3"
         v-if="isLoading"
         class="prepend-top-20"
-        />
+      />
 
       <empty-state
         v-if="shouldRenderEmptyState"
         :help-page-path="helpPagePath"
         :empty-state-svg-path="emptyStateSvgPath"
-        />
+      />
 
       <error-state
         v-if="shouldRenderErrorState"
         :error-state-svg-path="errorStateSvgPath"
-        />
+      />
 
       <div
         class="blank-state-row"
@@ -257,21 +258,22 @@
 
       <div
         class="table-holder"
-        v-if="shouldRenderTable">
+        v-if="shouldRenderTable"
+      >
 
         <pipelines-table-component
           :pipelines="state.pipelines"
           :update-graph-dropdown="updateGraphDropdown"
           :auto-devops-help-path="autoDevopsPath"
           :view-type="viewType"
-          />
+        />
       </div>
 
       <table-pagination
         v-if="shouldRenderPagination"
         :change="onChangePage"
         :page-info="state.pageInfo"
-        />
+      />
     </div>
   </div>
 </template>

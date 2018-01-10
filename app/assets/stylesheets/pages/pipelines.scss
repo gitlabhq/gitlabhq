@@ -75,7 +75,7 @@
       }
 
       .dropdown-menu {
-        max-height: 250px;
+        max-height: $dropdown-max-height;
         overflow-y: auto;
       }
 
@@ -1221,4 +1221,12 @@ a.linked-pipeline-mini-item {
 .autodevops-title {
   font-weight: $gl-font-weight-normal;
   line-height: 1.5;
+}
+
+.legend-all {
+  color: $gl-text-color-secondary;
+}
+
+.legend-success {
+  color: $green-500;
 }

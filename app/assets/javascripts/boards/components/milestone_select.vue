@@ -1,72 +1,73 @@
 <script>
-/* global BoardService */
+  /* global BoardService */
 
-import MilestoneSelect from '~/milestone_select';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import MilestoneSelect from '~/milestone_select';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
-const ANY_MILESTONE = 'Any Milestone';
-const NO_MILESTONE = 'No Milestone';
+  const ANY_MILESTONE = 'Any Milestone';
+  const NO_MILESTONE = 'No Milestone';
 
-export default {
-  props: {
-    board: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      loadingIcon,
     },
-    milestonePath: {
-      type: String,
-      required: true,
+    props: {
+      board: {
+        type: Object,
+        required: true,
+      },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
+      canEdit: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
-    canEdit: {
-      type: Boolean,
-      required: false,
-      default: false,
+
+    computed: {
+      milestoneTitle() {
+        if (this.noMilestone) return NO_MILESTONE;
+        return this.board.milestone ? this.board.milestone.title : ANY_MILESTONE;
+      },
+      noMilestone() {
+        return this.milestoneId === 0;
+      },
+      milestoneId() {
+        return this.board.milestone_id;
+      },
+      milestoneTitleClass() {
+        return this.milestoneTitle === ANY_MILESTONE ? 'text-secondary' : 'bold';
+      },
+      selected() {
+        if (this.noMilestone) return NO_MILESTONE;
+        return this.board.milestone ? this.board.milestone.name : '';
+      },
     },
-  },
-  components: {
-    loadingIcon,
-  },
-  computed: {
-    milestoneTitle() {
-      if (this.noMilestone) return NO_MILESTONE;
-      return this.board.milestone ? this.board.milestone.title : ANY_MILESTONE;
+    mounted() {
+      this.milestoneDropdown = new MilestoneSelect(null, this.$refs.dropdownButton, {
+        handleClick: this.selectMilestone,
+      });
     },
-    noMilestone() {
-      return this.milestoneId === 0;
+    methods: {
+      selectMilestone(milestone) {
+        let id = milestone.id;
+        // swap the IDs of 'Any' and 'No' milestone to what backend requires
+        if (milestone.title === ANY_MILESTONE) {
+          id = -1;
+        } else if (milestone.title === NO_MILESTONE) {
+          id = 0;
+        }
+        this.board.milestone_id = id;
+        this.board.milestone = {
+          ...milestone,
+          id,
+        };
+      },
     },
-    milestoneId() {
-      return this.board.milestone_id;
-    },
-    milestoneTitleClass() {
-      return this.milestoneTitle === ANY_MILESTONE ? 'text-secondary' : 'bold';
-    },
-    selected() {
-      if (this.noMilestone) return NO_MILESTONE;
-      return this.board.milestone ? this.board.milestone.name : '';
-    },
-  },
-  methods: {
-    selectMilestone(milestone) {
-      let id = milestone.id;
-      // swap the IDs of 'Any' and 'No' milestone to what backend requires
-      if (milestone.title === ANY_MILESTONE) {
-        id = -1;
-      } else if (milestone.title === NO_MILESTONE) {
-        id = 0;
-      }
-      this.board.milestone_id = id;
-      this.board.milestone = {
-        ...milestone,
-        id,
-      };
-    },
-  },
-  mounted() {
-    this.milestoneDropdown = new MilestoneSelect(null, this.$refs.dropdownButton, {
-      handleClick: this.selectMilestone,
-    });
-  },
-};
+  };
 </script>
 
 <template>
@@ -95,7 +96,7 @@ export default {
         :value="milestoneId"
         name="milestone_id"
         type="hidden"
-      >
+      />
       <div class="dropdown">
         <button
           ref="dropdownButton"
@@ -115,7 +116,8 @@ export default {
             aria-hidden="true"
             data-hidden="true"
             class="fa fa-chevron-down"
-          />
+          >
+          </i>
         </button>
         <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
           <div
@@ -126,20 +128,23 @@ export default {
               class="dropdown-input-field"
               placeholder="Search milestones"
               autocomplete="off"
-            >
+            />
             <i
               aria-hidden="true"
               data-hidden="true"
               class="fa fa-search dropdown-input-search"
-            />
+            >
+            </i>
             <i
               role="button"
               aria-hidden="true"
               data-hidden="true"
               class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
-            />
+            >
+            </i>
           </div>
-          <div class="dropdown-content" />
+          <div class="dropdown-content">
+          </div>
           <div class="dropdown-loading">
             <loading-icon />
           </div>

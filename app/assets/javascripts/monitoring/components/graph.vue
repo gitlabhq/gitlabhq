@@ -17,6 +17,15 @@
   const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select };
 
   export default {
+    components: {
+      GraphLegend,
+      GraphFlag,
+      GraphDeployment,
+      GraphPath,
+    },
+
+    mixins: [MonitoringMixin],
+
     props: {
       graphData: {
         type: Object,
@@ -45,8 +54,6 @@
       },
     },
 
-    mixins: [MonitoringMixin],
-
     data() {
       return {
         baseGraphHeight: 450,
@@ -74,13 +81,6 @@
       };
     },
 
-    components: {
-      GraphLegend,
-      GraphFlag,
-      GraphDeployment,
-      GraphPath,
-    },
-
     computed: {
       outerViewBox() {
         return `0 0 ${this.baseGraphWidth} ${this.baseGraphHeight}`;
@@ -103,6 +103,26 @@
       deploymentFlagData() {
         return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
       },
+    },
+
+    watch: {
+      updateAspectRatio() {
+        if (this.updateAspectRatio) {
+          this.graphHeight = 450;
+          this.graphWidth = 600;
+          this.measurements = measurements.large;
+          this.draw();
+          eventHub.$emit('toggleAspectRatio');
+        }
+      },
+
+      hoverData() {
+        this.positionFlag();
+      },
+    },
+
+    mounted() {
+      this.draw();
     },
 
     methods: {
@@ -197,51 +217,34 @@
           }); // This will select all of the ticks once they're rendered
       },
     },
-
-    watch: {
-      updateAspectRatio() {
-        if (this.updateAspectRatio) {
-          this.graphHeight = 450;
-          this.graphWidth = 600;
-          this.measurements = measurements.large;
-          this.draw();
-          eventHub.$emit('toggleAspectRatio');
-        }
-      },
-
-      hoverData() {
-        this.positionFlag();
-      },
-    },
-
-    mounted() {
-      this.draw();
-    },
   };
 </script>
 
 <template>
-  <div 
+  <div
     class="prometheus-graph"
     @mouseover="showFlagContent = true"
-    @mouseleave="showFlagContent = false">
+    @mouseleave="showFlagContent = false"
+  >
     <h5 class="text-center graph-title">
-      {{graphData.title}}
+      {{ graphData.title }}
     </h5>
     <div
       class="prometheus-svg-container"
-      :style="paddingBottomRootSvg">
+      :style="paddingBottomRootSvg"
+    >
       <svg
         :viewBox="outerViewBox"
-        ref="baseSvg">
+        ref="baseSvg"
+      >
         <g
           class="x-axis"
-          :transform="axisTransform">
-        </g>
+          :transform="axisTransform"
+        />
         <g
           class="y-axis"
-          transform="translate(70, 20)">
-        </g>
+          transform="translate(70, 20)"
+        />
         <graph-legend
           :graph-width="graphWidth"
           :graph-height="graphHeight"
@@ -257,28 +260,28 @@
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-            <graph-path
-              v-for="(path, index) in timeSeries"
-              :key="index"
-              :generated-line-path="path.linePath"
-              :generated-area-path="path.areaPath"
-              :line-style="path.lineStyle"
-              :line-color="path.lineColor"
-              :area-color="path.areaColor"
-            />
-            <graph-deployment
-              :deployment-data="reducedDeploymentData"
-              :graph-height="graphHeight"
-              :graph-height-offset="graphHeightOffset"
-            />
-            <rect
-              class="prometheus-graph-overlay"
-              :width="(graphWidth - 70)"
-              :height="(graphHeight - 100)"
-              transform="translate(-5, 20)"
-              ref="graphOverlay"
-              @mousemove="handleMouseOverGraph($event)">
-            </rect>
+          <graph-path
+            v-for="(path, index) in timeSeries"
+            :key="index"
+            :generated-line-path="path.linePath"
+            :generated-area-path="path.areaPath"
+            :line-style="path.lineStyle"
+            :line-color="path.lineColor"
+            :area-color="path.areaColor"
+          />
+          <graph-deployment
+            :deployment-data="reducedDeploymentData"
+            :graph-height="graphHeight"
+            :graph-height-offset="graphHeightOffset"
+          />
+          <rect
+            class="prometheus-graph-overlay"
+            :width="(graphWidth - 70)"
+            :height="(graphHeight - 100)"
+            transform="translate(-5, 20)"
+            ref="graphOverlay"
+            @mousemove="handleMouseOverGraph($event)"
+          />
         </svg>
       </svg>
       <graph-flag

@@ -28,20 +28,20 @@ export default {
       <div class="branch-header-title">
         <icon
           name="branch"
-          :size="12">
-        </icon>
+          :size="12"
+        />
         {{ branch.name }}
       </div>
       <div class="branch-header-btns">
         <new-dropdown
           :project-id="projectId"
           :branch="branch.name"
-          path=""/>
+          path=""
+        />
       </div>
     </div>
     <div>
-      <repo-tree
-        :treeId="branch.treeId"/>
+      <repo-tree :tree-id="branch.treeId"/>
     </div>
   </div>
 </template>

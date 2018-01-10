@@ -91,18 +91,22 @@
 <template>
   <div class="cell text-cell">
     <prompt />
-    <div class="markdown" v-html="markdown"></div>
+    <div
+      class="markdown"
+      v-html="markdown"
+    >
+    </div>
   </div>
 </template>
 
 <style>
-.markdown .katex {
-  display: block;
-  text-align: center;
-}
+  .markdown .katex {
+    display: block;
+    text-align: center;
+  }
 
-.markdown .inline-katex .katex {
-  display: inline;
-  text-align: initial;
-}
+  .markdown .inline-katex .katex {
+    display: inline;
+    text-align: initial;
+  }
 </style>

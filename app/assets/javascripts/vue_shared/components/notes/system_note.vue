@@ -21,15 +21,15 @@
   import { spriteIcon } from '../../../lib/utils/common_utils';
 
   export default {
-    name: 'systemNote',
+    name: 'SystemNote',
+    components: {
+      noteHeader,
+    },
     props: {
       note: {
         type: Object,
         required: true,
       },
-    },
-    components: {
-      noteHeader,
     },
     computed: {
       ...mapGetters([

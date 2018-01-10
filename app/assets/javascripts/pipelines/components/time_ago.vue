@@ -5,6 +5,12 @@
   import timeagoMixin from '../../vue_shared/mixins/timeago';
 
   export default {
+    directives: {
+      tooltip,
+    },
+    mixins: [
+      timeagoMixin,
+    ],
     props: {
       finishedTime: {
         type: String,
@@ -14,12 +20,6 @@
         type: Number,
         required: true,
       },
-    },
-    mixins: [
-      timeagoMixin,
-    ],
-    directives: {
-      tooltip,
     },
     data() {
       return {
@@ -60,26 +60,29 @@
   <div class="table-section section-15 pipelines-time-ago">
     <div
       class="table-mobile-header"
-      role="rowheader">
+      role="rowheader"
+    >
       Duration
     </div>
     <div class="table-mobile-content">
       <p
         class="duration"
-        v-if="hasDuration">
-        <span
-          v-html="iconTimerSvg">
+        v-if="hasDuration"
+      >
+        <span v-html="iconTimerSvg">
         </span>
-        {{durationFormated}}
+        {{ durationFormated }}
       </p>
 
       <p
         class="finished-at hidden-xs hidden-sm"
-        v-if="hasFinishedTime">
+        v-if="hasFinishedTime"
+      >
 
         <i
           class="fa fa-calendar"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </i>
 
         <time
@@ -87,9 +90,9 @@
           data-placement="top"
           data-container="body"
           :title="tooltipTitle(finishedTime)">
-          {{timeFormated(finishedTime)}}
+          {{ timeFormated(finishedTime) }}
         </time>
       </p>
     </div>
   </div>
-</script>
+</template>

@@ -1,4 +1,5 @@
 <script>
+  /* eslint-disable vue/require-default-prop */
   import issuableApp from '~/issue_show/components/app.vue';
   import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
   import issuableAppEventHub from '~/issue_show/event_hub';
@@ -6,7 +7,13 @@
   import epicSidebar from '../../sidebar/components/sidebar_app.vue';
 
   export default {
-    name: 'epicShowApp',
+    name: 'EpicShowApp',
+    components: {
+      epicHeader,
+      epicSidebar,
+      issuableApp,
+      relatedIssuesRoot,
+    },
     props: {
       endpoint: {
         type: String,
@@ -87,12 +94,6 @@
         projectNamespace: '',
       };
     },
-    components: {
-      epicHeader,
-      epicSidebar,
-      issuableApp,
-      relatedIssuesRoot,
-    },
     methods: {
       deleteEpic() {
         issuableAppEventHub.$emit('delete.issuable');
@@ -106,7 +107,7 @@
     <epic-header
       :author="author"
       :created="created"
-      :canDelete="canDestroy"
+      :can-delete="canDestroy"
       @deleteEpic="deleteEpic"
     />
     <div class="issuable-details content-block">

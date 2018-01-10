@@ -1,48 +1,48 @@
 <script>
-import Flash from '../../../flash';
-import editForm from './edit_form.vue';
-import Icon from '../../../vue_shared/components/icon.vue';
+  import Flash from '../../../flash';
+  import editForm from './edit_form.vue';
+  import Icon from '../../../vue_shared/components/icon.vue';
 
-export default {
-  components: {
-    editForm,
-    Icon,
-  },
-  props: {
-    isConfidential: {
-      required: true,
-      type: Boolean,
+  export default {
+    components: {
+      editForm,
+      Icon,
     },
-    isEditable: {
-      required: true,
-      type: Boolean,
+    props: {
+      isConfidential: {
+        required: true,
+        type: Boolean,
+      },
+      isEditable: {
+        required: true,
+        type: Boolean,
+      },
+      service: {
+        required: true,
+        type: Object,
+      },
     },
-    service: {
-      required: true,
-      type: Object,
+    data() {
+      return {
+        edit: false,
+      };
     },
-  },
-  data() {
-    return {
-      edit: false,
-    };
-  },
-  computed: {
-    confidentialityIcon() {
-      return this.isConfidential ? 'eye-slash' : 'eye';
+    computed: {
+      confidentialityIcon() {
+        return this.isConfidential ? 'eye-slash' : 'eye';
+      },
     },
-  },
-  methods: {
-    toggleForm() {
-      this.edit = !this.edit;
+    methods: {
+      toggleForm() {
+        this.edit = !this.edit;
+      },
+      updateConfidentialAttribute(confidential) {
+        this.service.update('issue', { confidential })
+          .then(() => location.reload())
+          .catch(() => new Flash('Something went wrong trying to change the confidentiality of this issue'));
+      },
     },
-    updateConfidentialAttribute(confidential) {
-      this.service.update('issue', { confidential })
-        .then(() => location.reload())
-        .catch(() => new Flash('Something went wrong trying to change the confidentiality of this issue'));
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -51,8 +51,8 @@ export default {
       <icon
         :name="confidentialityIcon"
         :size="16"
-        aria-hidden="true">
-      </icon>
+        aria-hidden="true"
+      />
     </div>
     <div class="title hide-collapsed">
       Confidentiality
@@ -72,22 +72,26 @@ export default {
         :is-confidential="isConfidential"
         :update-confidential-attribute="updateConfidentialAttribute"
       />
-      <div v-if="!isConfidential" class="no-value sidebar-item-value">
+      <div
+        v-if="!isConfidential"
+        class="no-value sidebar-item-value">
         <icon
           name="eye"
           :size="16"
           aria-hidden="true"
-          class="sidebar-item-icon inline">
-        </icon>
+          class="sidebar-item-icon inline"
+        />
         Not confidential
       </div>
-      <div v-else class="value sidebar-item-value hide-collapsed">
+      <div
+        v-else
+        class="value sidebar-item-value hide-collapsed">
         <icon
           name="eye-slash"
           :size="16"
           aria-hidden="true"
-          class="sidebar-item-icon inline is-active">
-        </icon>
+          class="sidebar-item-icon inline is-active"
+        />
         This issue is confidential
       </div>
     </div>
