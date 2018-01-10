@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
 import initAdmin from './admin';
@@ -371,8 +370,8 @@ import Activities from './activities';
           break;
         case 'projects:activity':
           import('./pages/projects/activity')
-          .then(callDefault)
-          .catch(fail);
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:commits:show':
@@ -520,14 +519,14 @@ import Activities from './activities';
           break;
         case 'projects:artifacts:browse':
           import('./pages/projects/artifacts/browse')
-          .then(callDefault)
-          .catch(fail);
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:artifacts:file':
           import('./pages/projects/artifacts/file')
-          .then(callDefault)
-          .catch(fail);
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'help:index':
