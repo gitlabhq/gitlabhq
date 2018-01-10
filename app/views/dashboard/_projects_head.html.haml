@@ -6,7 +6,7 @@
   .fade-right= icon('angle-right')
   %ul.nav-links.scrolling-tabs
     = nav_link(page: [dashboard_projects_path, root_path]) do
-      = link_to dashboard_projects_path, class: 'shortcuts-activity qa-your-projects-link', data: {placement: 'right'} do
+      = link_to dashboard_projects_path, class: 'shortcuts-activity', data: {placement: 'right'} do
         Your projects
     = nav_link(page: starred_dashboard_projects_path) do
       = link_to starred_dashboard_projects_path, data: {placement: 'right'} do
