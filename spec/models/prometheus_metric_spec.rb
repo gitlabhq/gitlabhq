@@ -8,18 +8,20 @@ describe PrometheusMetric, type: :model do
   it { is_expected.to validate_presence_of(:query) }
   it { is_expected.to validate_presence_of(:group) }
 
-  describe '.to_grouped_query_metrics' do
+  describe '#group_text' do
     let!(:metric) { create(:prometheus_metric) }
 
-    it 'Converts group id to group name' do
-      group_name, = described_class.to_grouped_query_metrics[0]
-      expect(group_name).to eq('Business metrics')
+    shared_examples 'group_text' do |group, text|
+      subject { build(:prometheus_metric, group: group) }
+
+      it "returns text #{text} for group #{group}" do
+        expect(subject.group_text).to eq(text)
+      end
     end
 
-    it 'Pairs group name with queryable metric objects' do
-      _, metrics = described_class.to_grouped_query_metrics[0]
-      expect(metrics.first).to be_instance_of(Gitlab::Prometheus::Metric)
-    end
+    it_behaves_like 'group_text', :business, 'Business metrics'
+    it_behaves_like 'group_text', :response, 'Response metrics'
+    it_behaves_like 'group_text', :system, 'System metrics'
   end
 
   describe '#to_query_metric' do

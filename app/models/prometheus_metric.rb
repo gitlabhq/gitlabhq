@@ -12,11 +12,8 @@ class PrometheusMetric < ActiveRecord::Base
     system: 'System metrics'
   }.freeze
 
-  def self.to_grouped_query_metrics
-    self.all.group_by(&:group).map do |group, metrics|
-      group ||= :business
-      [GROUP_NAMES[group.to_sym], metrics.map(&:to_query_metric)]
-    end
+  def group_text
+    GROUP_NAMES[group.to_sym]
   end
 
   def to_query_metric

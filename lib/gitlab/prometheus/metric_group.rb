@@ -15,8 +15,8 @@ module Gitlab
       end
 
       def self.custom_metrics(project)
-        project.prometheus_metrics.to_grouped_query_metrics.map do |name, metrics|
-          MetricGroup.new(name: name, priority: 0, metrics: metrics)
+        project.prometheus_metrics.all.group_by(&:group_text).map do |name, metrics|
+          MetricGroup.new(name: name, priority: 0, metrics: metrics.map(&:to_query_metric))
         end
       end
     end
