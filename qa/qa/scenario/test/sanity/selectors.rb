@@ -15,7 +15,7 @@ module QA
             validators.map(&:errors).flatten.tap do |errors|
               break if errors.none?
 
-              $stderr.puts <<~EOS
+              warn <<~EOS
                 GitLab QA sanity selectors validation test detected problems
                 with your merge request!
 
@@ -40,7 +40,7 @@ module QA
 
               EOS
 
-              $stderr.puts errors
+              warn errors
             end
 
             validators.each(&:validate!)
