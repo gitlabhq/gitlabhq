@@ -44,6 +44,8 @@ module QA
             end
 
             validators.each(&:validate!)
+
+            puts 'Views / selectors validation passed!'
           end
         end
       end
