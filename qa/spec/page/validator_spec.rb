@@ -4,7 +4,7 @@ describe QA::Page::Validator do
       described_class.new(QA::Page::Project)
     end
 
-    it 'returns all costants that are module children' do
+    it 'returns all constants that are module children' do
       expect(subject.constants)
         .to include QA::Page::Project::New, QA::Page::Project::Settings
     end
