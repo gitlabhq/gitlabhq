@@ -260,15 +260,29 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:snippets:show':
-          initNotes();
-          new ZenMode();
+          import('./pages/projects/snippets/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:snippets:new':
+          import('./pages/projects/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:snippets:edit':
+          import('./pages/projects/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:snippets:create':
+          import('./pages/projects/snippets/create')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:snippets:update':
-          new GLForm($('.snippet-form'), true);
-          new ZenMode();
+          import('./pages/projects/snippets/update')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'snippets:new':
           import('./pages/snippets/new')
