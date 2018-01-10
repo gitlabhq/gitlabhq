@@ -31,6 +31,10 @@ module ObjectStorage
         self.upload = model&.try(:"#{mounted_as}_upload", self) if mounted_as
       end
 
+      def record_upload(_tempfile = nil)
+        self.upload = super
+      end
+
       def upload=(upload)
         return unless upload
 

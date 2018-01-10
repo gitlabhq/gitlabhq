@@ -4,6 +4,10 @@ class LegacyArtifactUploader < GitlabUploader
 
   storage_options Gitlab.config.artifacts
 
+  def store_dir
+    dynamic_segment
+  end
+
   private
 
   def dynamic_segment

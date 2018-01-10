@@ -24,7 +24,6 @@ describe FileMover do
 
     context 'when move and field update successful' do
       it 'updates the description correctly' do
-        binding.pry
         subject
 
         expect(snippet.reload.description)

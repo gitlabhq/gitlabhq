@@ -4,6 +4,10 @@ class LfsObjectUploader < GitlabUploader
 
   storage_options Gitlab.config.lfs
 
+  def store_dir
+    dynamic_segment
+  end
+
   def filename
     model.oid[4..-1]
   end

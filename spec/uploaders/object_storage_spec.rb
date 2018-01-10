@@ -125,7 +125,7 @@ describe ObjectStorage do
 
     describe 'delegates the object_store logic to the `Upload` model' do
       it 'call the <mounted_as>_uploader hook' do
-        expect(object).to receive(:avatar_uploader)
+        expect(object).to receive(:avatar_upload)
 
         expect(uploader).to be
       end

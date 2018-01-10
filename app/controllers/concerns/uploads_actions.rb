@@ -20,7 +20,6 @@ module UploadsActions
 
   # This should either find the @file and redirect to its URL
   def show
-    binding.pry
     return render_404 unless uploader.exists?
 
     # send to the remote URL
@@ -29,6 +28,7 @@ module UploadsActions
     # or send the file
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
     expires_in 0.seconds, must_revalidate: true, private: true
+    binding.pry
     send_file uploader.file.path, disposition: disposition
   end
 

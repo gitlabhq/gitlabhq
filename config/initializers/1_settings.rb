@@ -392,7 +392,6 @@ Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
 Settings.lfs['object_store'] ||= Settingslogic.new({}).tap do |object_store|
-  binding.pry
   object_store['enabled']           ||= false
   object_store['remote_directory']  ||= nil
   object_store['background_upload'] ||= true

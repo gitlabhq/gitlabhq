@@ -65,7 +65,6 @@ describe UploadsController do
 
         it 'creates a corresponding Upload record' do
           upload = Upload.last
-          binding.pry
 
           aggregate_failures do
             expect(upload).to exist
@@ -213,9 +212,7 @@ describe UploadsController do
 
         context "when not signed in" do
           it "responds with status 200" do
-            binding.pry
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
-
             expect(response).to have_gitlab_http_status(200)
           end
 

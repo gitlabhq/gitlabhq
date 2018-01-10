@@ -9,8 +9,8 @@ class Upload < ActiveRecord::Base
   validates :model, presence: true
   validates :uploader, presence: true
 
-  before_save  :calculate_checksum!, if:     :foreground_checksum?
-  after_commit :schedule_checksum,   unless: :foreground_checksum?
+  before_save  :calculate_checksum!, if: :foreground_checksumable?
+  after_commit :schedule_checksum,   if: :checksumable?
 
   def self.remove_path(path)
     where(path: path).destroy_all
@@ -38,9 +38,7 @@ class Upload < ActiveRecord::Base
 
   def calculate_checksum!
     self.checksum = nil
-
-    return unless local?
-    return unless exist?
+    return unless checksumable?
 
     self.checksum = Digest::SHA256.file(absolute_path).hexdigest
   end
@@ -57,14 +55,18 @@ class Upload < ActiveRecord::Base
 
   private
 
+  def checksumable?
+    checksum.nil? && local? && exist?
+  end
+
   def local?
     return true if store.nil?
 
     store == ObjectStorage::Store::LOCAL
   end
 
-  def foreground_checksum?
-    size <= CHECKSUM_THRESHOLD
+  def foreground_checksumable?
+    checksumable? && size <= CHECKSUM_THRESHOLD
   end
 
   def schedule_checksum

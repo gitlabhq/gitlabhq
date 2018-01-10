@@ -72,6 +72,10 @@ class FileUploader < GitlabUploader
     File.join(secret, identifier)
   end
 
+  def self.generate_secret
+    SecureRandom.hex
+  end
+
   def initialize(model, secret = nil)
     @model = model
     @secret = secret
@@ -131,7 +135,7 @@ class FileUploader < GitlabUploader
   end
 
   def secret
-    @secret ||= generate_secret
+    @secret ||= self.class.generate_secret
   end
 
   private
@@ -146,10 +150,6 @@ class FileUploader < GitlabUploader
 
   def dynamic_segment
     secret
-  end
-
-  def generate_secret
-    SecureRandom.hex
   end
 
   def secure_url

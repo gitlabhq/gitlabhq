@@ -11,11 +11,11 @@ describe UploadChecksumWorker do
     end
 
     context 'with a valid record' do
-      let(:upload) { create(:upload) }
+      let(:upload) { create(:user, :with_avatar).avatar.upload }
 
       before do
         expect(Upload).to receive(:find).and_return(upload)
-        expect(upload).to receive(:foreground_checksum?).and_return(false)
+        allow(upload).to receive(:foreground_checksumable?).and_return(false)
       end
 
       it 'calls calculate_checksum!' do

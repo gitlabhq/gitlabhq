@@ -8,7 +8,6 @@ describe JobArtifactUploader do
   subject { uploader }
 
   it_behaves_like "builds correct paths",
-                  base_dir: %r[artifacts],
                   store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z],
                   cache_dir: %r[artifacts/tmp/cache],
                   work_dir: %r[artifacts/tmp/work]
@@ -36,7 +35,7 @@ describe JobArtifactUploader do
 
     subject { uploader.file.path }
 
-    it { is_expected.to start_with("#{uploader.root}/artifacts") }
+    it { is_expected.to start_with("#{uploader.root}") }
     it { is_expected.to include("/#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/") }
     it { is_expected.to include("/#{job_artifact.project_id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }

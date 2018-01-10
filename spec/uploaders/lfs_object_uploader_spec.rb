@@ -20,7 +20,6 @@ describe LfsObjectUploader do
   describe '#store_dir' do
     subject { uploader.store_dir }
 
-    it { is_expected.to start_with(path) }
     it { is_expected.to end_with("#{lfs_object.oid[0, 2]}/#{lfs_object.oid[2, 2]}") }
   end
 

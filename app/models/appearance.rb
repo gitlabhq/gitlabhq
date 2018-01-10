@@ -45,6 +45,6 @@ class Appearance < ActiveRecord::Base
     return unless identifier
 
     paths = uploader.store_dirs.map { |store, path| File.join(path, identifier) }
-    uploads.where(uploader: uploader.class.to_s, paths: paths)&.last
+    uploads.where(uploader: uploader.class.to_s, path: paths)&.last
   end
 end

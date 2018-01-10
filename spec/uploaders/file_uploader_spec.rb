@@ -54,14 +54,14 @@ describe FileUploader do
     let(:uploader) { described_class.new(double, 'secret') }
 
     it 'accepts a secret parameter' do
-      expect(uploader).not_to receive(:generate_secret)
+      expect(described_class).not_to receive(:generate_secret)
       expect(uploader.secret).to eq('secret')
     end
   end
 
   describe '#secret' do
     it 'generates a secret if none is provided' do
-      expect(uploader).to receive(:generate_secret).and_return('secret')
+      expect(described_class).to receive(:generate_secret).and_return('secret')
       expect(uploader.secret).to eq('secret')
     end
   end

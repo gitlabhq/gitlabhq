@@ -12,7 +12,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
     # represent the directory namespacing at the class level
     def base_dir
-      storage_options&.base_dir || ""
+      storage_options.fetch('base_dir', '')
     end
 
     def file_storage?

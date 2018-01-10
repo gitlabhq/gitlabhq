@@ -10,6 +10,10 @@ class JobArtifactUploader < GitlabUploader
     model.size
   end
 
+  def store_dir
+    dynamic_segment
+  end
+
   private
 
   def dynamic_segment
