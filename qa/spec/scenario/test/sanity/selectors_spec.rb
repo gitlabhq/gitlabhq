@@ -34,7 +34,7 @@ describe QA::Scenario::Test::Sanity::Selectors do
     it 'triggers validation' do
       described_class.perform
 
-      expect(validator).to have_received(:validate!)
+      expect(validator).to have_received(:validate!).at_least(:once)
     end
   end
 end
