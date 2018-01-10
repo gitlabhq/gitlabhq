@@ -12,6 +12,10 @@ module QA
         "qa-#{@name.to_s.tr('_', '-')}"
       end
 
+      def selector_css
+        ".#{selector}"
+      end
+
       def expression
         if @pattern.is_a?(String)
           @_regexp ||= Regexp.new(Regexp.escape(@pattern))

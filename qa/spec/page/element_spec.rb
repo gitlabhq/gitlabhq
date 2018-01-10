@@ -1,8 +1,15 @@
 describe QA::Page::Element do
   describe '#selector' do
-    it 'transform element name into QA-specific selector' do
+    it 'transforms element name into QA-specific selector' do
       expect(described_class.new(:sign_in_button).selector)
         .to eq 'qa-sign-in-button'
+    end
+  end
+
+  describe '#selector_css' do
+    it 'transforms element name into QA-specific clickable css selector' do
+      expect(described_class.new(:sign_in_button).selector_css)
+        .to eq '.qa-sign-in-button'
     end
   end
 
