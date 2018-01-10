@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import BuildArtifacts from './build_artifacts';
 import groupsSelect from './groups_select';
 import Search from './search';
 import initAdmin from './admin';
@@ -370,8 +369,10 @@ import Activities from './activities';
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new Activities();
-          shortcut_handler = new ShortcutsNavigation();
+          import('./pages/projects/activity')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
@@ -517,12 +518,16 @@ import Activities from './activities';
             .catch(() => {});
           break;
         case 'projects:artifacts:browse':
-          new ShortcutsNavigation();
-          new BuildArtifacts();
+          import('./pages/projects/artifacts/browse')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:artifacts:file':
-          new ShortcutsNavigation();
-          new BlobViewer();
+          import('./pages/projects/artifacts/file')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'help:index':
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
