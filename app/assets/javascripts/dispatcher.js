@@ -262,8 +262,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           break;
-        case 'dashboard:projects:index':
-        case 'dashboard:projects:starred':
         case 'admin:projects:index':
           new ProjectsList();
           break;
