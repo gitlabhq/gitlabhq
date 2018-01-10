@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.3.4 (2018-01-10)
+
+### Security (2 changes)
+
+- Fix LDAP external user/group bug on first sign in.
+- Deny persisting milestones from outside project/group scope on boards.
+
+
 ## 10.3.3 (2018-01-02)
 
 - No changes.
