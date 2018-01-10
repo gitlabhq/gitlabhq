@@ -1,5 +1,0 @@
----
-title: Fix RCE via project import mechanism
-merge_request:
-author:
-type: security
