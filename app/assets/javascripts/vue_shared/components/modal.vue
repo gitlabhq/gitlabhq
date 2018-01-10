@@ -82,7 +82,7 @@
     <div
       :id="id"
       class="modal"
-      :class="!id ? '' : 'show'"
+      :class="id ? '' : 'show'"
       role="dialog"
       tabindex="-1"
     >
