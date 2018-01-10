@@ -244,7 +244,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
-          import('./pages/dashboard/projects').then(callDefault).catch(fail);
+          import('./pages/dashboard/projects')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'explore:projects:index':
         case 'explore:projects:trending':
