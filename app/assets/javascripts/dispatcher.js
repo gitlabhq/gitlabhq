@@ -217,7 +217,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           initIssuableSidebar();
           break;
         case 'dashboard:milestones:index':
-          projectSelect();
+          import('./pages/dashboard/milestones/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:show':
           new UserCallout();
