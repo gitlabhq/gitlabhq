@@ -14,7 +14,6 @@ import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
 import groupsSelect from './groups_select';
-import Search from './search';
 import initAdmin from './admin';
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
@@ -528,7 +527,9 @@ import Activities from './activities';
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
-          new Search();
+          import('./pages/search/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:settings:repository:show':
           // Initialize expandable settings panels

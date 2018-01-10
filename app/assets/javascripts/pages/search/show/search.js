@@ -1,5 +1,5 @@
-import Flash from './flash';
-import Api from './api';
+import Flash from '~/flash';
+import Api from '~/api';
 
 export default class Search {
   constructor() {
