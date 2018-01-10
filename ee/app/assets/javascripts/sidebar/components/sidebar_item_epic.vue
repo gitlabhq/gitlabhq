@@ -5,17 +5,17 @@
   import Store from '../stores/sidebar_store';
 
   export default {
-    name: 'sidebarItemEpic',
-    data() {
-      return {
-        store: new Store(),
-      };
-    },
+    name: 'SidebarItemEpic',
     components: {
       LoadingIcon,
     },
     directives: {
       tooltip,
+    },
+    data() {
+      return {
+        store: new Store(),
+      };
     },
     computed: {
       isLoading() {
@@ -52,7 +52,7 @@
         data-placement="left"
         v-tooltip
       >
-        {{collapsedTitle}}
+        {{ collapsedTitle }}
       </span>
     </div>
     <div class="title hide-collapsed">
@@ -71,7 +71,7 @@
         class="bold"
         :href="epicUrl"
       >
-        {{epicTitle}}
+        {{ epicTitle }}
       </a>
       <span
         v-else

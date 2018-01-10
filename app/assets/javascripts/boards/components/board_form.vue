@@ -24,6 +24,13 @@ const boardDefaults = {
 };
 
 export default {
+  components: {
+    AssigneeSelect,
+    BoardLabelsSelect,
+    BoardMilestoneSelect,
+    BoardWeightSelect,
+    modal,
+  },
   props: {
     canAdminBoard: {
       type: Boolean,
@@ -55,6 +62,7 @@ export default {
     weights: {
       type: String,
       required: false,
+      default: '',
     },
   },
   data() {
@@ -68,13 +76,6 @@ export default {
       milestoneDropdownOpen: false,
       isLoading: false,
     };
-  },
-  components: {
-    AssigneeSelect,
-    BoardLabelsSelect,
-    BoardMilestoneSelect,
-    BoardWeightSelect,
-    modal,
   },
   computed: {
     isNewForm() {
@@ -132,6 +133,12 @@ export default {
       return this.isLoading || this.board.name.length === 0;
     },
   },
+  mounted() {
+    this.resetFormState();
+    if (this.$refs.name) {
+      this.$refs.name.focus();
+    }
+  },
   methods: {
     submit() {
       if (this.board.name.length === 0) return;
@@ -168,12 +175,6 @@ export default {
         this.board = { ...boardDefaults, ...this.currentBoard };
       }
     },
-  },
-  mounted() {
-    this.resetFormState();
-    if (this.$refs.name) {
-      this.$refs.name.focus();
-    }
   },
 };
 </script>
@@ -217,7 +218,7 @@ export default {
             v-model="board.name"
             @keyup.enter="submit"
             placeholder="Enter board name"
-          >
+          />
         </div>
         <div v-if="scopedIssueBoardFeatureEnabled">
           <div

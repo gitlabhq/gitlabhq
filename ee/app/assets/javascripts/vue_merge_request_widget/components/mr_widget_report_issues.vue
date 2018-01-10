@@ -12,7 +12,10 @@
   };
 
   export default {
-    name: 'mrWidgetReportIssues',
+    name: 'MrWidgetReportIssues',
+    components: {
+      modal,
+    },
     props: {
       issues: {
         type: Array,
@@ -36,9 +39,6 @@
     },
     data() {
       return modalDefaultData;
-    },
-    components: {
-      modal,
     },
     computed: {
       icon() {
@@ -113,30 +113,31 @@
         failed: isStatusFailed,
         success: isStatusSuccess,
         neutral: isStatusNeutral
-      }
-      "v-for="(issue, index) in issues"
+      }"
+      v-for="(issue, index) in issues"
       :key="index"
-      >
+    >
 
-     <span
+      <span
         class="mr-widget-code-quality-icon"
         v-html="icon"
-        >
+      >
       </span>
 
       <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
-      <template v-if="shouldRenderPriority(issue)">{{issue.priority}}:</template>
+      <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
 
       <template v-if="isTypeDocker">
         <a
           v-if="issue.nameLink"
           :href="issue.nameLink"
           target="_blank"
-          rel="noopener noreferrer nofollow">
-          {{issue.name}}
+          rel="noopener noreferrer nofollow"
+        >
+          {{ issue.name }}
         </a>
         <template v-else>
-          {{issue.name}}
+          {{ issue.name }}
         </template>
       </template>
       <template v-else-if="isTypeDast">
@@ -146,16 +147,16 @@
           data-toggle="modal"
           class="btn-link btn-blank"
           :data-target="modalTargetId"
-          >
-          {{issue.name}}
+        >
+          {{ issue.name }}
         </button>
       </template>
       <template v-else>
-        {{issue.name}}<template v-if="issue.score">: <strong>{{issue.score}}</strong></template>
+        {{ issue.name }}<template v-if="issue.score">: <strong>{{ issue.score }}</strong></template>
       </template>
 
       <template v-if="isTypePerformance && issue.delta != null">
-        ({{issue.delta >= 0 ? '+' : ''}}{{issue.delta}})
+        ({{ issue.delta >= 0 ? '+' : '' }}{{ issue.delta }})
       </template>
 
       <template v-if="issue.path">
@@ -165,11 +166,12 @@
           v-if="issue.urlPath"
           :href="issue.urlPath"
           target="_blank"
-          rel="noopener noreferrer nofollow">
-          {{issue.path}}<template v-if="issue.line">:{{issue.line}}</template>
+          rel="noopener noreferrer nofollow"
+        >
+          {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
         </a>
         <template v-else>
-          {{issue.path}}<template v-if="issue.line">:{{issue.line}}</template>
+          {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
         </template>
       </template>
     </li>
@@ -181,7 +183,6 @@
       :description="modalDesc"
       :instances="modalInstances"
       @clearData="clearModalData()"
-      />
-    </modal>
+    />
   </ul>
 </template>

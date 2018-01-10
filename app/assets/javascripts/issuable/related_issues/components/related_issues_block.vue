@@ -9,6 +9,14 @@ import addIssuableForm from './add_issuable_form.vue';
 
 export default {
   name: 'RelatedIssuesBlock',
+  directives: {
+    tooltip,
+  },
+  components: {
+    loadingIcon,
+    addIssuableForm,
+    issueItem,
+  },
   props: {
     isFetching: {
       type: Boolean,
@@ -66,14 +74,6 @@ export default {
       default: 'Related issues',
     },
   },
-  directives: {
-    tooltip,
-  },
-  components: {
-    loadingIcon,
-    addIssuableForm,
-    issueItem,
-  },
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
@@ -90,6 +90,14 @@ export default {
     hasHelpPath() {
       return this.helpPath.length > 0;
     },
+  },
+  mounted() {
+    if (this.canReorder) {
+      this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
+        onStart: this.addDraggingCursor,
+        onEnd: this.reordered,
+      }));
+    }
   },
   methods: {
     toggleAddRelatedIssuesForm() {
@@ -111,48 +119,50 @@ export default {
       document.body.classList.remove('is-dragging');
     },
   },
-  mounted() {
-    if (this.canReorder) {
-      this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
-        onStart: this.addDraggingCursor,
-        onEnd: this.reordered,
-      }));
-    }
-  },
 };
 </script>
 
 <template>
   <div class="related-issues-block">
     <div
-      class="panel-slim panel-default">
+      class="panel-slim panel-default"
+    >
       <div
         class="panel-heading"
-        :class="{ 'panel-empty-heading': !this.hasBody }">
+        :class="{ 'panel-empty-heading': !hasBody }"
+      >
         <h3 class="panel-title">
           {{ title }}
           <a
             v-if="hasHelpPath"
-            :href="helpPath">
+            :href="helpPath"
+          >
             <i
-              class="related-issues-header-help-icon fa fa-question-circle"
+              class="related-issues-header-help-icon
+fa fa-question-circle"
               aria-label="Read more about related issues">
             </i>
           </a>
-          <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
+          <div
+            class="js-related-issues-header-issue-count
+related-issues-header-issue-count issue-count-badge"
+          >
             <span
               class="issue-count-badge-count"
-              :class="{ 'has-btn': this.canAdmin }">
+              :class="{ 'has-btn': canAdmin }"
+            >
               {{ badgeLabel }}
             </span>
             <button
               v-if="canAdmin"
               ref="issueCountBadgeAddButton"
               type="button"
-              class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-sm btn-default"
+              class="js-issue-count-badge-add-button
+issue-count-badge-add-button btn btn-sm btn-default"
               aria-label="Add an issue"
               data-placement="top"
-              @click="toggleAddRelatedIssuesForm">
+              @click="toggleAddRelatedIssuesForm"
+            >
               <i
                 class="fa fa-plus"
                 aria-hidden="true">
@@ -166,25 +176,29 @@ export default {
         class="js-add-related-issues-form-area panel-body"
         :class="{
           'related-issues-add-related-issues-form-with-break': hasRelatedIssues
-        }">
+        }"
+      >
         <add-issuable-form
           :is-submitting="isSubmitting"
           :input-value="inputValue"
           :pending-references="pendingReferences"
-          :auto-complete-sources="autoCompleteSources" />
+          :auto-complete-sources="autoCompleteSources"
+        />
       </div>
       <div
         class="related-issues-token-body panel-body"
         :class="{
           'collapsed': !shouldShowTokenBody,
           'sortable-container': canReorder
-        }">
+        }"
+      >
         <div
           v-if="isFetching"
           class="related-issues-loading-icon">
           <loadingIcon
             ref="loadingIcon"
-            label="Fetching related issues" />
+            label="Fetching related issues"
+          />
         </div>
         <ul
           ref="list"
@@ -214,7 +228,6 @@ export default {
             />
           </li>
         </ul>
-        </div>
       </div>
     </div>
   </div>

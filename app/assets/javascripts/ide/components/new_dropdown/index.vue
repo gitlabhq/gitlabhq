@@ -4,6 +4,11 @@
   import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      icon,
+      newModal,
+      upload,
+    },
     props: {
       branch: {
         type: String,
@@ -17,11 +22,6 @@
         type: Object,
         default: null,
       },
-    },
-    components: {
-      icon,
-      newModal,
-      upload,
     },
     data() {
       return {

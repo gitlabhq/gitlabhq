@@ -1,4 +1,5 @@
 <script>
+  /* eslint-disable vue/require-default-prop */
   import Cookies from 'js-cookie';
   import Flash from '~/flash';
   import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -8,7 +9,11 @@
   import Store from '../stores/sidebar_store';
 
   export default {
-    name: 'epicSidebar',
+    name: 'EpicSidebar',
+    components: {
+      sidebarDatePicker,
+      sidebarCollapsedGroupedDatePicker,
+    },
     props: {
       endpoint: {
         type: String,
@@ -42,10 +47,6 @@
         savingEndDate: false,
         service: new SidebarService(this.endpoint),
       };
-    },
-    components: {
-      sidebarDatePicker,
-      sidebarCollapsedGroupedDatePicker,
     },
     methods: {
       toggleSidebar() {

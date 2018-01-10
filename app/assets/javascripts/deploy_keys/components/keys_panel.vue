@@ -2,6 +2,9 @@
   import key from './key.vue';
 
   export default {
+    components: {
+      key,
+    },
     props: {
       title: {
         type: String,
@@ -25,9 +28,6 @@
         required: true,
       },
     },
-    components: {
-      key,
-    },
   };
 </script>
 
@@ -37,12 +37,14 @@
       {{ title }}
       ({{ keys.length }})
     </h5>
-    <ul class="well-list"
+    <ul
+      class="well-list"
       v-if="keys.length"
     >
       <li
         v-for="deployKey in keys"
-        :key="deployKey.id">
+        :key="deployKey.id"
+      >
         <key
           :deploy-key="deployKey"
           :store="store"

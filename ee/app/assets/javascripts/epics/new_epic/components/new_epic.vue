@@ -6,7 +6,10 @@
   import NewEpicService from '../services/new_epic_service';
 
   export default {
-    name: 'newEpic',
+    name: 'NewEpic',
+    components: {
+      loadingButton,
+    },
     props: {
       endpoint: {
         type: String,
@@ -24,9 +27,6 @@
         creating: false,
         title: '',
       };
-    },
-    components: {
-      loadingButton,
     },
     computed: {
       buttonLabel() {
