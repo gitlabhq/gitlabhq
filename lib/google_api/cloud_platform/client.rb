@@ -51,11 +51,11 @@ module GoogleApi
         end
       end
 
-      def projects_get_billing_info(project_name)
+      def projects_get_billing_info(project_id)
         service = Google::Apis::CloudbillingV1::CloudbillingService.new
         service.authorization = access_token
 
-        service.get_project_billing_info("projects/#{project_name}")
+        service.get_project_billing_info("projects/#{project_id}")
       end
 
       def projects_zones_clusters_get(project_id, zone, cluster_id)

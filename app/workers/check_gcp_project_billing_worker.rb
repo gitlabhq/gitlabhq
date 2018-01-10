@@ -23,13 +23,13 @@ class CheckGcpProjectBillingWorker
   end
 
   def self.redis_shared_state_key_for(token)
-    "gitlab:gcp:#{token.hash}:billing_enabled"
+    "gitlab:gcp:#{Digest::SHA1.hexdigest(token)}:billing_enabled"
   end
 
   def perform(token_key)
     return unless token_key
 
-    token = self.get_session_token(token_key)
+    token = self.class.get_session_token(token_key)
     return unless token
     return unless try_obtain_lease_for(token)
 

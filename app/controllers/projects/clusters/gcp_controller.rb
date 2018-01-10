@@ -1,7 +1,7 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
-  before_action :authorize_google_project_billing, only: [:new]
+  before_action :authorize_google_project_billing, only: [:new, :create]
   before_action :authorize_create_cluster!, only: [:new, :create]
   before_action :verify_billing, only: [:create]
 
