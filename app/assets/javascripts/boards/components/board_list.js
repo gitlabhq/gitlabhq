@@ -197,7 +197,7 @@ export default {
         <li
           class="board-list-count text-center"
           v-if="showCount"
-          data-id="-1">
+          data-issue-id="-1">
 
           <loading-icon
             v-show="list.loadingMore"

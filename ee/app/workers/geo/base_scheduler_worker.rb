@@ -99,12 +99,46 @@ module Geo
       (Time.now.utc - start_time) >= run_time
     end
 
-    def interleave(first, second)
-      if first.length >= second.length
-        first.zip(second)
-      else
-        second.zip(first).map(&:reverse)
-      end.flatten(1).uniq.compact.take(db_retrieve_batch_size)
+    def take_batch(*arrays)
+      interleave(*arrays).uniq.compact.take(db_retrieve_batch_size)
+    end
+
+    # Combines the elements of multiple, arbitrary-length arrays into a single array.
+    #
+    # Each array is spread evenly over the resultant array.
+    # The order of the original arrays is preserved within the resultant array.
+    # In the case of ties between elements, the element from the first array goes first.
+    # From https://stackoverflow.com/questions/15628936/ruby-equally-distribute-elements-and-interleave-merge-multiple-arrays/15639147#15639147
+    #
+    # For examples, see the specs in file_download_dispatch_worker_spec.rb
+    def interleave(*arrays)
+      elements = []
+      coefficients = []
+      arrays.each_with_index do |e, index|
+        elements += e
+        coefficients += interleave_coefficients(e, index)
+      end
+
+      combined = elements.zip(coefficients)
+      combined.sort_by { |zipped| zipped[1] }.map { |zipped| zipped[0] }
+    end
+
+    # Assigns a position to each element in order to spread out arrays evenly.
+    #
+    # `array_index` is used to resolve ties between arrays of equal length.
+    #
+    # Examples:
+    #
+    # irb(main):006:0> interleave_coefficients(['a', 'b'], 0)
+    # => [0.2499998750000625, 0.7499996250001875]
+    # irb(main):027:0> interleave_coefficients(['a', 'b', 'c'], 0)
+    # => [0.16666661111112963, 0.4999998333333889, 0.8333330555556481]
+    # irb(main):007:0> interleave_coefficients(['a', 'b', 'c'], 1)
+    # => [0.16699994433335189, 0.5003331665556111, 0.8336663887778704]
+    def interleave_coefficients(array, array_index)
+      (1..array.size).map do |i|
+        (i - 0.5 + array_index / 1000.0) / (array.size + 1e-6)
+      end
     end
 
     def update_jobs_in_progress

@@ -12,8 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import BuildArtifacts from './build_artifacts';
-import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
 import initAdmin from './admin';
@@ -39,12 +37,10 @@ import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
@@ -57,7 +53,6 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
-import Todos from './todos';
 import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
@@ -123,6 +118,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
 
       const fail = () => Flash('Error loading dynamic module');
+      const callDefault = m => m.default();
 
       path = page.split(':');
       shortcut_handler = null;
@@ -217,16 +213,26 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           initIssuableSidebar();
           break;
         case 'dashboard:milestones:index':
-          projectSelect();
+          import('./pages/dashboard/milestones/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:show':
           new UserCallout();
         case 'groups:milestones:show':
-        case 'dashboard:milestones:show':
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:milestones:show':
+          import('./pages/dashboard/milestones/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:issues':
+          import('./pages/dashboard/issues')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:merge_requests':
           projectSelect();
           initLegacyFilters();
@@ -240,26 +246,28 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           projectSelect();
           break;
         case 'dashboard:todos:index':
-          new Todos();
+          import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
+          import('./pages/dashboard/projects')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'explore:projects:index':
         case 'explore:projects:trending':
         case 'explore:projects:starred':
+          import('./pages/explore/projects')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:projects:index':
           new ProjectsList();
           break;
         case 'explore:groups:index':
-          new GroupsList();
-          const landingElement = document.querySelector('.js-explore-groups-landing');
-          if (!landingElement) break;
-          const exploreGroupsLanding = new Landing(
-            landingElement,
-            landingElement.querySelector('.dismiss-button'),
-            'explore_groups_landing_dismissed',
-          );
-          exploreGroupsLanding.toggle();
+          import('./pages/explore/groups')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -392,8 +400,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new Activities();
-          shortcut_handler = new ShortcutsNavigation();
+          import('./pages/projects/activity')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
@@ -552,16 +562,20 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'projects:forks:new':
           import(/* webpackChunkName: 'project_fork' */ './project_fork')
-            .then(fork => fork.default())
-            .catch(() => {});
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:artifacts:browse':
-          new ShortcutsNavigation();
-          new BuildArtifacts();
+          import('./pages/projects/artifacts/browse')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:artifacts:file':
-          new ShortcutsNavigation();
-          new BlobViewer();
+          import('./pages/projects/artifacts/file')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'help:index':
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
@@ -604,22 +618,19 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          new CILintEditor();
+          import('./pages/ci/lints').then(m => m.default()).catch(fail);
           break;
         case 'users:show':
-          import('./pages/users/show').then(m => m.default()).catch(fail);
+          import('./pages/users/show').then(callDefault).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          new UserCallout();
+          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          new LineHighlighter();
-          new BlobViewer();
-          initNotes();
-          new ZenMode();
+          import('./pages/snippets/show').then(m => m.default()).catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          new UsersSelect();
+          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
@@ -735,8 +746,8 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
               new ProjectNew();
               new ApproversSelect();
               import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
-                .then(permissions => permissions.default())
-                .catch(() => {});
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'new':
               new ProjectNew();

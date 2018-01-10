@@ -1,63 +1,60 @@
 <script>
-/* global Flash */
-import editForm from './edit_form.vue';
-import issuableMixin from '../../../vue_shared/mixins/issuable';
-import Icon from '../../../vue_shared/components/icon.vue';
+  import Flash from '~/flash';
+  import editForm from './edit_form.vue';
+  import issuableMixin from '../../../vue_shared/mixins/issuable';
+  import Icon from '../../../vue_shared/components/icon.vue';
 
-export default {
-  props: {
-    isLocked: {
-      required: true,
-      type: Boolean,
+  export default {
+    components: {
+      editForm,
+      Icon,
     },
+    mixins: [
+      issuableMixin,
+    ],
+    props: {
+      isLocked: {
+        required: true,
+        type: Boolean,
+      },
 
-    isEditable: {
-      required: true,
-      type: Boolean,
-    },
+      isEditable: {
+        required: true,
+        type: Boolean,
+      },
 
-    mediator: {
-      required: true,
-      type: Object,
-      validator(mediatorObject) {
-        return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
+      mediator: {
+        required: true,
+        type: Object,
+        validator(mediatorObject) {
+          return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
+        },
       },
     },
-  },
+    computed: {
+      lockIcon() {
+        return this.isLocked ? 'lock' : 'lock-open';
+      },
 
-  mixins: [
-    issuableMixin,
-  ],
-
-  components: {
-    editForm,
-    Icon,
-  },
-
-  computed: {
-    lockIcon() {
-      return this.isLocked ? 'lock' : 'lock-open';
+      isLockDialogOpen() {
+        return this.mediator.store.isLockDialogOpen;
+      },
     },
 
-    isLockDialogOpen() {
-      return this.mediator.store.isLockDialogOpen;
-    },
-  },
+    methods: {
+      toggleForm() {
+        this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+      },
 
-  methods: {
-    toggleForm() {
-      this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+      updateLockedAttribute(locked) {
+        this.mediator.service.update(this.issuableType, {
+          discussion_locked: locked,
+        })
+        .then(() => location.reload())
+        .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
+      },
     },
-
-    updateLockedAttribute(locked) {
-      this.mediator.service.update(this.issuableType, {
-        discussion_locked: locked,
-      })
-      .then(() => location.reload())
-      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -67,8 +64,8 @@ export default {
         :name="lockIcon"
         :size="16"
         aria-hidden="true"
-        class="sidebar-item-icon is-active">
-      </icon>
+        class="sidebar-item-icon is-active"
+      />
     </div>
 
     <div class="title hide-collapsed">
@@ -100,8 +97,8 @@ export default {
           name="lock"
           :size="16"
           aria-hidden="true"
-          class="sidebar-item-icon inline is-active">
-        </icon>
+          class="sidebar-item-icon inline is-active"
+        />
         {{ __('Locked') }}
       </div>
 
@@ -113,8 +110,8 @@ export default {
           name="lock-open"
           :size="16"
           aria-hidden="true"
-          class="sidebar-item-icon inline">
-        </icon>
+          class="sidebar-item-icon inline"
+        />
         {{ __('Unlocked') }}
       </div>
     </div>

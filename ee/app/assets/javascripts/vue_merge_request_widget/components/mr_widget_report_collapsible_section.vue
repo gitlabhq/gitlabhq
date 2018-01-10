@@ -1,103 +1,102 @@
 <script>
-import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import issuesBlock from './mr_widget_report_issues.vue';
+  /* eslint-disable vue/require-default-prop */
+  import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import issuesBlock from './mr_widget_report_issues.vue';
 
-export default {
-  name: 'MRWidgetCodeQuality',
+  export default {
+    name: 'MRWidgetCodeQuality',
+    components: {
+      issuesBlock,
+      loadingIcon,
+      statusIcon,
+    },
+    props: {
+      // security | codequality | performance | docker
+      type: {
+        type: String,
+        required: true,
+      },
+      // loading | success | error
+      status: {
+        type: String,
+        required: true,
+      },
+      loadingText: {
+        type: String,
+        required: true,
+      },
+      errorText: {
+        type: String,
+        required: true,
+      },
+      successText: {
+        type: String,
+        required: true,
+      },
+      unresolvedIssues: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
+      resolvedIssues: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
+      neutralIssues: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
+      infoText: {
+        type: String,
+        required: false,
+      },
+      hasPriority: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+    },
 
-  props: {
-    // security | codequality | performance | docker
-    type: {
-      type: String,
-      required: true,
+    data() {
+      return {
+        collapseText: 'Expand',
+        isCollapsed: true,
+      };
     },
-    // loading | success | error
-    status: {
-      type: String,
-      required: true,
-    },
-    loadingText: {
-      type: String,
-      required: true,
-    },
-    errorText: {
-      type: String,
-      required: true,
-    },
-    successText: {
-      type: String,
-      required: true,
-    },
-    unresolvedIssues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    resolvedIssues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    neutralIssues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    infoText: {
-      type: String,
-      required: false,
-    },
-    hasPriority: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
 
-  components: {
-    issuesBlock,
-    loadingIcon,
-    statusIcon,
-  },
+    computed: {
+      isLoading() {
+        return this.status === 'loading';
+      },
+      loadingFailed() {
+        return this.status === 'error';
+      },
+      isSuccess() {
+        return this.status === 'success';
+      },
+      statusIconName() {
+        if (this.loadingFailed || this.unresolvedIssues.length) {
+          return 'warning';
+        }
+        return 'success';
+      },
+      hasIssues() {
+        return this.unresolvedIssues.length || this.resolvedIssues.length;
+      },
+    },
 
-  data() {
-    return {
-      collapseText: 'Expand',
-      isCollapsed: true,
-    };
-  },
+    methods: {
+      toggleCollapsed() {
+        this.isCollapsed = !this.isCollapsed;
 
-  computed: {
-    isLoading() {
-      return this.status === 'loading';
+        const text = this.isCollapsed ? 'Expand' : 'Collapse';
+        this.collapseText = text;
+      },
     },
-    loadingFailed() {
-      return this.status === 'error';
-    },
-    isSuccess() {
-      return this.status === 'success';
-    },
-    statusIconName() {
-      if (this.loadingFailed || this.unresolvedIssues.length) {
-        return 'warning';
-      }
-      return 'success';
-    },
-    hasIssues() {
-      return this.unresolvedIssues.length || this.resolvedIssues.length;
-    },
-  },
-
-  methods: {
-    toggleCollapsed() {
-      this.isCollapsed = !this.isCollapsed;
-
-      const text = this.isCollapsed ? 'Expand' : 'Collapse';
-      this.collapseText = text;
-    },
-  },
-};
+  };
 </script>
 <template>
   <section class="mr-widget-code-quality mr-widget-section">
@@ -109,7 +108,7 @@ export default {
         <loading-icon />
       </div>
       <div class="media-body">
-        {{loadingText}}
+        {{ loadingText }}
       </div>
     </div>
 
@@ -120,15 +119,16 @@ export default {
 
       <div class="media-body space-children">
         <span class="js-code-text">
-          {{successText}}
+          {{ successText }}
         </span>
 
         <button
           type="button"
           class="btn-link btn-blank"
           v-if="hasIssues"
-          @click="toggleCollapsed">
-          {{collapseText}}
+          @click="toggleCollapsed"
+        >
+          {{ collapseText }}
         </button>
       </div>
     </div>
@@ -136,12 +136,14 @@ export default {
     <div
       class="code-quality-container"
       v-if="hasIssues"
-      v-show="!isCollapsed">
+      v-show="!isCollapsed"
+    >
 
       <p
         v-if="type === 'docker' && infoText"
         v-html="infoText"
-        class="js-mr-code-quality-info mr-widget-code-quality-info">
+        class="js-mr-code-quality-info mr-widget-code-quality-info"
+      >
       </p>
 
       <issues-block
@@ -151,7 +153,7 @@ export default {
         status="failed"
         :issues="unresolvedIssues"
         :has-priority="hasPriority"
-        />
+      />
 
       <issues-block
         class="js-mr-code-non-issues"
@@ -160,7 +162,7 @@ export default {
         status="neutral"
         :issues="neutralIssues"
         :has-priority="hasPriority"
-        />
+      />
 
       <issues-block
         class="js-mr-code-resolved-issues"
@@ -169,14 +171,15 @@ export default {
         status="success"
         :issues="resolvedIssues"
         :has-priority="hasPriority"
-        />
+      />
     </div>
     <div
       v-else-if="loadingFailed"
-      class="media">
+      class="media"
+    >
       <status-icon status="failed" />
       <div class="media-body">
-        {{errorText}}
+        {{ errorText }}
       </div>
     </div>
   </section>

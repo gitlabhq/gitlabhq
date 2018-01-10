@@ -9,6 +9,16 @@
   const LABEL_OFF = s__('ToggleButton|Toggle Status: OFF');
 
   export default {
+    components: {
+      icon,
+      loadingIcon,
+    },
+
+    model: {
+      prop: 'value',
+      event: 'change',
+    },
+
     props: {
       name: {
         type: String,
@@ -29,16 +39,6 @@
         required: false,
         default: false,
       },
-    },
-
-    components: {
-      icon,
-      loadingIcon,
-    },
-
-    model: {
-      prop: 'value',
-      event: 'change',
     },
 
     computed: {

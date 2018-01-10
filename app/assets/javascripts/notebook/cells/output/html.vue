@@ -1,17 +1,17 @@
 <script>
-import Prompt from '../prompt.vue';
+  import Prompt from '../prompt.vue';
 
-export default {
-  props: {
-    rawCode: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      prompt: Prompt,
     },
-  },
-  components: {
-    prompt: Prompt,
-  },
-};
+    props: {
+      rawCode: {
+        type: String,
+        required: true,
+      },
+    },
+  };
 </script>
 
 <template>

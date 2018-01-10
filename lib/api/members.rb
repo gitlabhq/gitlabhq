@@ -54,12 +54,6 @@ module API
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
-          ## EE specific
-          if source_type == 'project' && source.group && source.group.membership_lock
-            not_allowed!
-          end
-          ## EE specific
-
           member = source.members.find_by(user_id: params[:user_id])
           conflict!('Member already exists') if member
 

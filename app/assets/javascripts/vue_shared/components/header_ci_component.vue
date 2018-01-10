@@ -1,80 +1,78 @@
 <script>
-import ciIconBadge from './ci_badge_link.vue';
-import loadingIcon from './loading_icon.vue';
-import timeagoTooltip from './time_ago_tooltip.vue';
-import tooltip from '../directives/tooltip';
-import userAvatarImage from './user_avatar/user_avatar_image.vue';
+  import ciIconBadge from './ci_badge_link.vue';
+  import loadingIcon from './loading_icon.vue';
+  import timeagoTooltip from './time_ago_tooltip.vue';
+  import tooltip from '../directives/tooltip';
+  import userAvatarImage from './user_avatar/user_avatar_image.vue';
 
-/**
- * Renders header component for job and pipeline page based on UI mockups
- *
- * Used in:
- * - job show page
- * - pipeline show page
- */
-export default {
-  props: {
-    status: {
-      type: Object,
-      required: true,
+  /**
+   * Renders header component for job and pipeline page based on UI mockups
+   *
+   * Used in:
+   * - job show page
+   * - pipeline show page
+   */
+  export default {
+    components: {
+      ciIconBadge,
+      loadingIcon,
+      timeagoTooltip,
+      userAvatarImage,
     },
-    itemName: {
-      type: String,
-      required: true,
+    directives: {
+      tooltip,
     },
-    itemId: {
-      type: Number,
-      required: true,
+    props: {
+      status: {
+        type: Object,
+        required: true,
+      },
+      itemName: {
+        type: String,
+        required: true,
+      },
+      itemId: {
+        type: Number,
+        required: true,
+      },
+      time: {
+        type: String,
+        required: true,
+      },
+      user: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
+      actions: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
+      hasSidebarButton: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      shouldRenderTriggeredLabel: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
-    time: {
-      type: String,
-      required: true,
-    },
-    user: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    actions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    hasSidebarButton: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    shouldRenderTriggeredLabel: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-  },
 
-  directives: {
-    tooltip,
-  },
-
-  components: {
-    ciIconBadge,
-    loadingIcon,
-    timeagoTooltip,
-    userAvatarImage,
-  },
-
-  computed: {
-    userAvatarAltText() {
-      return `${this.user.name}'s avatar`;
+    computed: {
+      userAvatarAltText() {
+        return `${this.user.name}'s avatar`;
+      },
     },
-  },
 
-  methods: {
-    onClickAction(action) {
-      this.$emit('actionClicked', action);
+    methods: {
+      onClickAction(action) {
+        this.$emit('actionClicked', action);
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
@@ -84,7 +82,7 @@ export default {
       <ci-icon-badge :status="status" />
 
       <strong>
-        {{itemName}} #{{itemId}}
+        {{ itemName }} #{{ itemId }}
       </strong>
 
       <template v-if="shouldRenderTriggeredLabel">
@@ -103,30 +101,34 @@ export default {
           v-tooltip
           :href="user.path"
           :title="user.email"
-          class="js-user-link commit-committer-link">
+          class="js-user-link commit-committer-link"
+        >
 
           <user-avatar-image
             :img-src="user.avatar_url"
             :img-alt="userAvatarAltText"
             :tooltip-text="user.name"
             :img-size="24"
-            />
+          />
 
-          {{user.name}}
+          {{ user.name }}
         </a>
       </template>
     </section>
 
     <section
       class="header-action-buttons"
-      v-if="actions.length">
+      v-if="actions.length"
+    >
       <template
-        v-for="action in actions">
+        v-for="(action, i) in actions"
+      >
         <a
           v-if="action.type === 'link'"
           :href="action.path"
-          :class="action.cssClass">
-          {{action.label}}
+          :class="action.cssClass"
+          :key="i">
+          {{ action.label }}
         </a>
 
         <a
@@ -134,8 +136,10 @@ export default {
           :href="action.path"
           data-method="post"
           rel="nofollow"
-          :class="action.cssClass">
-          {{action.label}}
+          :class="action.cssClass"
+          :key="i"
+        >
+          {{ action.label }}
         </a>
 
         <button
@@ -143,25 +147,31 @@ export default {
           @click="onClickAction(action)"
           :disabled="action.isLoading"
           :class="action.cssClass"
-          type="button">
-          {{action.label}}
+          type="button"
+          :key="i"
+        >
+          {{ action.label }}
           <i
             v-show="action.isLoading"
             class="fa fa-spin fa-spinner"
-            aria-hidden="true">
+            aria-hidden="true"
+          >
           </i>
         </button>
       </template>
       <button
         v-if="hasSidebarButton"
         type="button"
-        class="btn btn-default visible-xs-block visible-sm-block sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+        class="btn btn-default visible-xs-block
+visible-sm-block sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
         aria-label="Toggle Sidebar"
-        id="toggleSidebar">
+        id="toggleSidebar"
+      >
         <i
           class="fa fa-angle-double-left"
           aria-hidden="true"
-          aria-labelledby="toggleSidebar">
+          aria-labelledby="toggleSidebar"
+        >
         </i>
       </button>
     </section>

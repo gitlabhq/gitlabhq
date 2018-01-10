@@ -147,6 +147,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :authorized_keys_enabled,
       :auto_devops_enabled,
       :circuitbreaker_access_retries,
       :circuitbreaker_check_interval,

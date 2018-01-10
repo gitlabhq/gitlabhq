@@ -6,7 +6,15 @@
   import { s__ } from '~/locale';
 
   export default {
-    name: 'epicHeader',
+    name: 'EpicHeader',
+    directives: {
+      tooltip,
+    },
+    components: {
+      userAvatarLink,
+      timeagoTooltip,
+      loadingButton,
+    },
     props: {
       author: {
         type: Object,
@@ -27,14 +35,6 @@
       return {
         deleteLoading: false,
       };
-    },
-    directives: {
-      tooltip,
-    },
-    components: {
-      userAvatarLink,
-      timeagoTooltip,
-      loadingButton,
     },
     methods: {
       deleteEpic() {

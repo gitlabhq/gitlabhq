@@ -71,6 +71,16 @@ describe Projects::BoardsController do
       end
     end
 
+    context 'issues are disabled' do
+      let(:project) { create(:project, :issues_disabled) }
+
+      it 'returns a not found 404 response' do
+        list_boards
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
     def list_boards(format: :html)
       get :index, namespace_id: project.namespace,
                   project_id: project,

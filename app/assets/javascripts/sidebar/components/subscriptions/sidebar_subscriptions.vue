@@ -6,10 +6,8 @@ import { __ } from '../../../locale';
 import subscriptions from './subscriptions.vue';
 
 export default {
-  data() {
-    return {
-      store: new Store(),
-    };
+  components: {
+    subscriptions,
   },
   props: {
     mediator: {
@@ -17,8 +15,18 @@ export default {
       required: true,
     },
   },
-  components: {
-    subscriptions,
+  data() {
+    return {
+      store: new Store(),
+    };
+  },
+
+  created() {
+    eventHub.$on('toggleSubscription', this.onToggleSubscription);
+  },
+
+  beforeDestroy() {
+    eventHub.$off('toggleSubscription', this.onToggleSubscription);
   },
 
   methods: {
@@ -29,14 +37,6 @@ export default {
         });
     },
   },
-
-  created() {
-    eventHub.$on('toggleSubscription', this.onToggleSubscription);
-  },
-
-  beforeDestroy() {
-    eventHub.$off('toggleSubscription', this.onToggleSubscription);
-  },
 };
 </script>
 
@@ -44,6 +44,7 @@ export default {
   <div class="block subscriptions">
     <subscriptions
       :loading="store.isFetching.subscriptions"
-      :subscribed="store.subscribed" />
+      :subscribed="store.subscribed"
+    />
   </div>
 </template>

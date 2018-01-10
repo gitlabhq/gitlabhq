@@ -23,6 +23,12 @@
    */
 
   export default {
+    components: {
+      ciIcon,
+    },
+    directives: {
+      tooltip,
+    },
     props: {
       status: {
         type: Object,
@@ -33,12 +39,6 @@
         required: false,
         default: true,
       },
-    },
-    components: {
-      ciIcon,
-    },
-    directives: {
-      tooltip,
     },
     computed: {
       cssClass() {
@@ -53,11 +53,12 @@
     :href="status.details_path"
     :class="cssClass"
     v-tooltip
-    :title="!showText ? status.text : ''">
+    :title="!showText ? status.text : ''"
+  >
     <ci-icon :status="status" />
 
     <template v-if="showText">
-      {{status.text}}
+      {{ status.text }}
     </template>
   </a>
 </template>

@@ -71,13 +71,14 @@ module API
         end
         params do
           requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+          optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
         end
         get ":id/repository/commits/:sha", requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
           commit = user_project.commit(params[:sha])
 
           not_found! "Commit" unless commit
 
-          present commit, with: ::API::Entities::CommitDetail
+          present commit, with: ::API::Entities::CommitDetail, stats: params[:stats]
         end
 
         desc 'Get the diff for a specific commit of a project' do

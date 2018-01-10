@@ -1,5 +1,6 @@
 'use strict';
 
+var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
@@ -193,15 +194,34 @@ var config = {
       if (chunk.name) {
         return chunk.name;
       }
-      return chunk.mapModules((m) => {
-        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
-        if (m.resource.indexOf(pagesBase) === 0) {
-          return path.relative(pagesBase, m.resource)
-            .replace(/\/index\.[a-z]+$/, '')
-            .replace(/\//g, '__');
+
+      const moduleNames = [];
+
+      function collectModuleNames(m) {
+        // handle ConcatenatedModule which does not have resource nor context set
+        if (m.modules) {
+          m.modules.forEach(collectModuleNames);
+          return;
         }
-        return path.relative(m.context, m.resource);
-      }).join('_');
+
+        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
+
+        if (m.resource.indexOf(pagesBase) === 0) {
+          moduleNames.push(path.relative(pagesBase, m.resource)
+            .replace(/\/index\.[a-z]+$/, '')
+            .replace(/\//g, '__'));
+        } else {
+          moduleNames.push(path.relative(m.context, m.resource));
+        }
+      }
+
+      chunk.forEachModule(collectModuleNames);
+
+      const hash = crypto.createHash('sha256')
+        .update(moduleNames.join('_'))
+        .digest('hex');
+
+      return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
     // create cacheable common library bundle for all vue chunks

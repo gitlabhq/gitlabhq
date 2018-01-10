@@ -7,6 +7,13 @@
    * TODO: Remove UJS from here and use an async request instead.
    */
   export default {
+    components: {
+      icon,
+    },
+
+    directives: {
+      tooltip,
+    },
     props: {
       tooltipText: {
         type: String,
@@ -29,14 +36,6 @@
       },
     },
 
-    components: {
-      icon,
-    },
-
-    directives: {
-      tooltip,
-    },
-
     computed: {
       cssClass() {
         const actionIconDash = dasherize(this.actionIcon);
@@ -53,7 +52,8 @@
     :href="link"
     class="ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
-    data-container="body">
-    <icon :name="actionIcon"/>
+    data-container="body"
+  >
+    <icon :name="actionIcon" />
   </a>
 </template>

@@ -73,6 +73,10 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
+
+# Before updating this gem, check if
+# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
+# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
@@ -81,7 +85,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 # API
 gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
@@ -351,7 +355,7 @@ group :development, :test do
   gem 'rubocop', '~> 0.52.0'
   gem 'rubocop-rspec', '~> 1.20.1'
 
-  gem 'scss_lint', '~> 0.54.0', require: false
+  gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false

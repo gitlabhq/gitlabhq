@@ -1,159 +1,165 @@
 <script>
-import { s__, __ } from '~/locale';
-import { parseSeconds, stringifyTime } from '~/lib/utils/pretty_time';
-import { bytesToMiB } from '~/lib/utils/number_utils';
-import icon from '~/vue_shared/components/icon.vue';
+  /* eslint-disable vue/no-side-effects-in-computed-properties */
+  import { s__, __ } from '~/locale';
+  import { parseSeconds, stringifyTime } from '~/lib/utils/pretty_time';
+  import { bytesToMiB } from '~/lib/utils/number_utils';
+  import icon from '~/vue_shared/components/icon.vue';
 
-import { VALUE_TYPE, CUSTOM_TYPE } from '../constants';
+  import { VALUE_TYPE, CUSTOM_TYPE } from '../constants';
 
-import geoNodeDetailItem from './geo_node_detail_item.vue';
+  import geoNodeDetailItem from './geo_node_detail_item.vue';
 
-export default {
-  props: {
-    node: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      icon,
+      geoNodeDetailItem,
     },
-    nodeDetails: {
-      type: Object,
-      required: true,
+    props: {
+      node: {
+        type: Object,
+        required: true,
+      },
+      nodeDetails: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-  data() {
-    return {
-      showAdvanceItems: false,
-      errorMessage: '',
-      nodeDetailItems: [
-        {
-          itemTitle: s__('GeoNodes|Storage config:'),
-          itemValue: this.storageShardsStatus(),
-          itemValueType: VALUE_TYPE.PLAIN,
-          cssClass: this.plainValueCssClass(!this.nodeDetails.storageShardsMatch),
-        },
-        {
-          itemTitle: s__('GeoNodes|Health status:'),
-          itemValue: this.nodeHealthStatus(),
-          itemValueType: VALUE_TYPE.CUSTOM,
-          customType: CUSTOM_TYPE.STATUS,
-        },
-        {
-          itemTitle: s__('GeoNodes|Repositories:'),
-          itemValue: this.nodeDetails.repositories,
-          itemValueType: VALUE_TYPE.GRAPH,
-        },
-        {
-          itemTitle: s__('GeoNodes|Wikis:'),
-          itemValue: this.nodeDetails.wikis,
-          itemValueType: VALUE_TYPE.GRAPH,
-        },
-        {
-          itemTitle: s__('GeoNodes|LFS objects:'),
-          itemValue: this.nodeDetails.lfs,
-          itemValueType: VALUE_TYPE.GRAPH,
-        },
-        {
-          itemTitle: s__('GeoNodes|Attachments:'),
-          itemValue: this.nodeDetails.attachments,
-          itemValueType: VALUE_TYPE.GRAPH,
-        },
-        {
-          itemTitle: s__('GeoNodes|Sync settings:'),
-          itemValue: this.syncSettings(),
-          itemValueType: VALUE_TYPE.CUSTOM,
-          customType: CUSTOM_TYPE.SYNC,
-        },
-      ],
-    };
-  },
-  components: {
-    icon,
-    geoNodeDetailItem,
-  },
-  computed: {
-    hasError() {
-      if (!this.nodeDetails.healthy) {
-        this.errorMessage = this.nodeDetails.health;
-      }
-      return !this.nodeDetails.healthy;
-    },
-    hasVersionMismatch() {
-      if (this.nodeDetails.version !== this.nodeDetails.primaryVersion ||
-          this.nodeDetails.revision !== this.nodeDetails.primaryRevision) {
-        this.errorMessage = s__('GeoNodes|GitLab version does not match the primary node version');
-        return true;
-      }
-      return false;
-    },
-    versionCssClass() {
-      return this.plainValueCssClass(this.hasVersionMismatch);
-    },
-    advanceButtonIcon() {
-      return this.showAdvanceItems ? 'angle-up' : 'angle-down';
-    },
-    nodeVersion() {
-      return `${this.nodeDetails.version} (${this.nodeDetails.revision})`;
-    },
-    replicationSlotWAL() {
-      return `${bytesToMiB(this.nodeDetails.replicationSlotWAL)} MB`;
-    },
-    dbReplicationLag() {
-      // Replication lag can be nil if the secondary isn't actually streaming
-      if (this.nodeDetails.dbReplicationLag !== null &&
-          this.nodeDetails.dbReplicationLag >= 0) {
-        const parsedTime = parseSeconds(this.nodeDetails.dbReplicationLag, {
-          hoursPerDay: 24,
-          daysPerWeek: 7,
-        });
-
-        return stringifyTime(parsedTime);
-      }
-      return 'Unknown';
-    },
-    lastEventStatus() {
+    data() {
       return {
-        eventId: this.nodeDetails.lastEvent.id,
-        eventTimeStamp: this.nodeDetails.lastEvent.timeStamp,
+        showAdvanceItems: false,
+        errorMessage: '',
+        nodeDetailItems: [
+          {
+            itemTitle: s__('GeoNodes|Storage config:'),
+            itemValue: this.storageShardsStatus(),
+            itemValueType: VALUE_TYPE.PLAIN,
+            cssClass: this.plainValueCssClass(!this.nodeDetails.storageShardsMatch),
+          },
+          {
+            itemTitle: s__('GeoNodes|Health status:'),
+            itemValue: this.nodeHealthStatus(),
+            itemValueType: VALUE_TYPE.CUSTOM,
+            customType: CUSTOM_TYPE.STATUS,
+          },
+          {
+            itemTitle: s__('GeoNodes|Repositories:'),
+            itemValue: this.nodeDetails.repositories,
+            itemValueType: VALUE_TYPE.GRAPH,
+          },
+          {
+            itemTitle: s__('GeoNodes|Wikis:'),
+            itemValue: this.nodeDetails.wikis,
+            itemValueType: VALUE_TYPE.GRAPH,
+          },
+          {
+            itemTitle: s__('GeoNodes|Local LFS objects:'),
+            itemValue: this.nodeDetails.lfs,
+            itemValueType: VALUE_TYPE.GRAPH,
+          },
+          {
+            itemTitle: s__('GeoNodes|Local job artifacts:'),
+            itemValue: this.nodeDetails.jobArtifacts,
+            itemValueType: VALUE_TYPE.GRAPH,
+          },
+          {
+            itemTitle: s__('GeoNodes|Local Attachments:'),
+            itemValue: this.nodeDetails.attachments,
+            itemValueType: VALUE_TYPE.GRAPH,
+          },
+          {
+            itemTitle: s__('GeoNodes|Sync settings:'),
+            itemValue: this.syncSettings(),
+            itemValueType: VALUE_TYPE.CUSTOM,
+            customType: CUSTOM_TYPE.SYNC,
+          },
+        ],
       };
     },
-    cursorLastEventStatus() {
-      return {
-        eventId: this.nodeDetails.cursorLastEvent.id,
-        eventTimeStamp: this.nodeDetails.cursorLastEvent.timeStamp,
-      };
+    computed: {
+      hasError() {
+        if (!this.nodeDetails.healthy) {
+          this.errorMessage = this.nodeDetails.health;
+        }
+        return !this.nodeDetails.healthy;
+      },
+      hasVersionMismatch() {
+        if (this.nodeDetails.version !== this.nodeDetails.primaryVersion ||
+            this.nodeDetails.revision !== this.nodeDetails.primaryRevision) {
+          this.errorMessage = s__('GeoNodes|GitLab version does not match the primary node version');
+          return true;
+        }
+        return false;
+      },
+      versionCssClass() {
+        return this.plainValueCssClass(this.hasVersionMismatch);
+      },
+      advanceButtonIcon() {
+        return this.showAdvanceItems ? 'angle-up' : 'angle-down';
+      },
+      nodeVersion() {
+        return `${this.nodeDetails.version} (${this.nodeDetails.revision})`;
+      },
+      replicationSlotWAL() {
+        return `${bytesToMiB(this.nodeDetails.replicationSlotWAL)} MB`;
+      },
+      dbReplicationLag() {
+        // Replication lag can be nil if the secondary isn't actually streaming
+        if (this.nodeDetails.dbReplicationLag !== null &&
+            this.nodeDetails.dbReplicationLag >= 0) {
+          const parsedTime = parseSeconds(this.nodeDetails.dbReplicationLag, {
+            hoursPerDay: 24,
+            daysPerWeek: 7,
+          });
+
+          return stringifyTime(parsedTime);
+        }
+        return 'Unknown';
+      },
+      lastEventStatus() {
+        return {
+          eventId: this.nodeDetails.lastEvent.id,
+          eventTimeStamp: this.nodeDetails.lastEvent.timeStamp,
+        };
+      },
+      cursorLastEventStatus() {
+        return {
+          eventId: this.nodeDetails.cursorLastEvent.id,
+          eventTimeStamp: this.nodeDetails.cursorLastEvent.timeStamp,
+        };
+      },
+      valueType() {
+        return VALUE_TYPE;
+      },
+      customType() {
+        return CUSTOM_TYPE;
+      },
     },
-    valueType() {
-      return VALUE_TYPE;
+    methods: {
+      nodeHealthStatus() {
+        return this.nodeDetails.healthy ? this.nodeDetails.health : this.nodeDetails.healthStatus;
+      },
+      storageShardsStatus() {
+        if (this.nodeDetails.storageShardsMatch === null) {
+          return __('Unknown');
+        }
+        return this.nodeDetails.storageShardsMatch ? __('OK') : s__('GeoNodes|Does not match the primary storage configuration');
+      },
+      plainValueCssClass(value) {
+        const cssClass = 'node-detail-value-bold';
+        return value ? `${cssClass} node-detail-value-error` : cssClass;
+      },
+      syncSettings() {
+        return {
+          namespaces: this.nodeDetails.namespaces,
+          lastEvent: this.nodeDetails.lastEvent,
+          cursorLastEvent: this.nodeDetails.cursorLastEvent,
+        };
+      },
+      onClickShowAdvance() {
+        this.showAdvanceItems = !this.showAdvanceItems;
+      },
     },
-    customType() {
-      return CUSTOM_TYPE;
-    },
-  },
-  methods: {
-    nodeHealthStatus() {
-      return this.nodeDetails.healthy ? this.nodeDetails.health : this.nodeDetails.healthStatus;
-    },
-    storageShardsStatus() {
-      if (this.nodeDetails.storageShardsMatch === null) {
-        return __('Unknown');
-      }
-      return this.nodeDetails.storageShardsMatch ? __('OK') : s__('GeoNodes|Does not match the primary storage configuration');
-    },
-    plainValueCssClass(value) {
-      const cssClass = 'node-detail-value-bold';
-      return value ? `${cssClass} node-detail-value-error` : cssClass;
-    },
-    syncSettings() {
-      return {
-        namespaces: this.nodeDetails.namespaces,
-        lastEvent: this.nodeDetails.lastEvent,
-        cursorLastEvent: this.nodeDetails.cursorLastEvent,
-      };
-    },
-    onClickShowAdvance() {
-      this.showAdvanceItems = !this.showAdvanceItems;
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -182,9 +188,9 @@ export default {
           type="button"
           @click="onClickShowAdvance"
         >
-          <span>{{__('Advanced')}}</span>
+          <span>{{ __('Advanced') }}</span>
           <icon
-            :size=12
+            :size="12"
             :name="advanceButtonIcon"
           />
         </button>
@@ -233,7 +239,7 @@ export default {
       class="col-md-12 prepend-top-10"
     >
       <p class="health-message">
-        {{errorMessage}}
+        {{ errorMessage }}
       </p>
     </div>
   </div>

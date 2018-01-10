@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: serviceDeskRootElement,
+      components: {
+        serviceDeskRoot,
+      },
       data() {
         const dataset = serviceDeskRootElement.dataset;
         return {
@@ -17,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
           endpoint: dataset.endpoint,
           incomingEmail: dataset.incomingEmail,
         };
-      },
-      components: {
-        serviceDeskRoot,
       },
       render(createElement) {
         return createElement('service-desk-root', {

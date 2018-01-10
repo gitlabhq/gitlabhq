@@ -22,6 +22,10 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:lfs_objects_failed_count) }
   it { is_expected.to have_key(:lfs_objects_synced_count) }
   it { is_expected.to have_key(:lfs_objects_synced_in_percentage) }
+  it { is_expected.to have_key(:job_artifacts_count) }
+  it { is_expected.to have_key(:job_artifacts_failed_count) }
+  it { is_expected.to have_key(:job_artifacts_synced_count) }
+  it { is_expected.to have_key(:job_artifacts_synced_in_percentage) }
   it { is_expected.to have_key(:repositories_count) }
   it { is_expected.to have_key(:repositories_failed_count) }
   it { is_expected.to have_key(:repositories_synced_count)}
@@ -96,6 +100,16 @@ describe GeoNodeStatusEntity, :postgresql do
                                         lfs_objects_synced_count: 123)
 
       expect(subject[:lfs_objects_synced_in_percentage]).to eq '48.05%'
+    end
+  end
+
+  describe '#job_artifacts_synced_in_percentage' do
+    it 'formats as percentage' do
+      geo_node_status.assign_attributes(job_artifacts_count: 256,
+                                        job_artifacts_failed_count: 12,
+                                        job_artifacts_synced_count: 123)
+
+      expect(subject[:job_artifacts_synced_in_percentage]).to eq '48.05%'
     end
   end
 

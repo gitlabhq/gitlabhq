@@ -61,28 +61,30 @@
 
       <section class="deploy-board-information">
         <span>
-          <span class="percentage">{{deployBoardData.completion}}%</span>
+          <span class="percentage">{{ deployBoardData.completion }}%</span>
           <span class="text">Complete</span>
         </span>
       </section>
 
       <section class="deploy-board-instances">
-        <p class="text">{{instanceTitle}}</p>
+        <p class="text">{{ instanceTitle }}</p>
 
         <div class="deploy-board-instances-container">
-          <template v-for="instance in deployBoardData.instances">
+          <template v-for="(instance, i) in deployBoardData.instances">
             <instance-component
               :status="instance.status"
               :tooltip-text="instance.tooltip"
               :stable="instance.stable"
-              />
+              :key="i"
+            />
           </template>
         </div>
       </section>
 
       <section
         class="deploy-board-actions"
-        v-if="deployBoardData.rollback_url || deployBoardData.abort_url">
+        v-if="deployBoardData.rollback_url || deployBoardData.abort_url"
+      >
         <a
           class="btn"
           data-method="post"
@@ -112,10 +114,11 @@
       <section class="deploy-board-empty-state-text">
         <span class="title">Kubernetes deployment not found</span>
         <span>
-          To see deployment progress for your environments, make sure your deployments are in Kubernetes namespace
-          <code>{{projectName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
+          To see deployment progress for your environments,
+          make sure your deployments are in Kubernetes namespace
+          <code>{{ projectName }}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
         </span>
       </section>
     </div>
   </div>
-</script>
+</template>

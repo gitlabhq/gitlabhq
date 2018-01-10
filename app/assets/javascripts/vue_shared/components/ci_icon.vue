@@ -24,15 +24,15 @@
    * - Linked pipelines
    */
   export default {
+    components: {
+      icon,
+    },
+
     props: {
       status: {
         type: Object,
         required: true,
       },
-    },
-
-    components: {
-      icon,
     },
 
     computed: {
@@ -44,9 +44,7 @@
   };
 </script>
 <template>
-  <span
-    :class="cssClass">
-    <icon
-      :name="status.icon"/>
+  <span :class="cssClass">
+    <icon :name="status.icon" />
   </span>
 </template>
