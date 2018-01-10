@@ -53,17 +53,14 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
-import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
 import TreeView from './tree';
 import UsagePing from './usage_ping';
-import UsernameValidator from './username_validator';
 import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
-import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
 import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
@@ -161,9 +158,9 @@ import Activities from './activities';
           initExperimentalFlags();
           break;
         case 'sessions:new':
-          new UsernameValidator();
-          new SigninTabsMemoizer();
-          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
+          import('./pages/sessions/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
