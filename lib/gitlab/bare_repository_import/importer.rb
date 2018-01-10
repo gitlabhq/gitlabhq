@@ -61,6 +61,9 @@ module Gitlab
         if project.persisted? && mv_repo(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
 
+          project.write_repository_config
+          project.repository.create_hooks
+
           ProjectCacheWorker.perform_async(project.id)
         else
           log " * Failed trying to create #{project.name} (#{project_full_path})".color(:red)
