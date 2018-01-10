@@ -72,7 +72,7 @@ describe('RepoCommitSection', () => {
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
-      expect(changedFile.textContent.trim()).toEqual(vm.$store.state.changedFiles[i].path);
+      expect(changedFile.textContent.trim()).toContain(vm.$store.state.changedFiles[i].path);
     });
 
     expect(submitCommit.disabled).toBeTruthy();
