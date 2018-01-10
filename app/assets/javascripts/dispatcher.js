@@ -291,8 +291,9 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:releases:edit':
-          new ZenMode();
-          new GLForm($('.release-form'), true);
+          import('./pages/projects/releases')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:merge_requests:show':
           new Diff();
