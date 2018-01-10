@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.4 (2018-01-10)
+
+### Security (7 changes, 1 of them is from the community)
+
+- Prevent a SQL injection in the MilestonesFinder.
+- Fix RCE via project import mechanism.
+- Prevent OAuth login POST requests when a provider has been disabled.
+- Filter out sensitive fields from the project services API. (Robert Schilling)
+- Check user authorization for source and target projects when creating a merge request.
+- Fix path traversal in gitlab-ci.yml cache:key.
+- Fix writable shared deploy keys.
+
+
 ## 10.3.3 (2018-01-02)
 
 ### Fixed (3 changes)

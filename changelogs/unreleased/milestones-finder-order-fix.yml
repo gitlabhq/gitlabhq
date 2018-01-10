@@ -1,5 +1,0 @@
----
-title: Prevent a SQL injection in the MilestonesFinder
-merge_request:
-author:
-type: security
