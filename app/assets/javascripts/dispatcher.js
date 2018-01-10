@@ -234,8 +234,6 @@ import Activities from './activities';
             .then(callDefault)
             .catch(fail);
           break;
-        case 'dashboard:projects:index':
-        case 'dashboard:projects:starred':
         case 'admin:projects:index':
           new ProjectsList();
           break;
