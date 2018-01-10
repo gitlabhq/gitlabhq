@@ -208,18 +208,15 @@ $(() => {
   if (configEl) {
     gl.boardConfigToggle = new Vue({
       el: configEl,
+      directives: {
+        tooltip,
+      },
       data() {
         return {
           canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
           hasScope: this.$options.el.hasAttribute('data-has-scope'),
           state: Store.state,
         };
-      },
-      directives: {
-        tooltip,
-      },
-      methods: {
-        showPage: page => gl.issueBoards.BoardsStore.showPage(page),
       },
       computed: {
         buttonText() {
@@ -228,6 +225,9 @@ $(() => {
         tooltipTitle() {
           return this.hasScope ? __('This board\'s scope is reduced') : '';
         }
+      },
+      methods: {
+        showPage: page => gl.issueBoards.BoardsStore.showPage(page),
       },
       template: `
         <div class="prepend-left-10">
@@ -247,8 +247,8 @@ $(() => {
   }
 
   gl.IssueBoardsModalAddBtn = new Vue({
-    mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return {
         modal: ModalStore.store,
@@ -257,11 +257,6 @@ $(() => {
         focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
         canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
-    },
-    watch: {
-      disabled() {
-        this.updateTooltip();
-      },
     },
     computed: {
       disabled() {
@@ -277,6 +272,14 @@ $(() => {
 
         return '';
       },
+    },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     methods: {
       updateTooltip() {
@@ -295,9 +298,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-    },
-    mounted() {
-      this.updateTooltip();
     },
     template: `
       <div class="board-extra-actions">

@@ -1,75 +1,75 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
+  import icon from '~/vue_shared/components/icon.vue';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import tooltip from '~/vue_shared/directives/tooltip';
 
-import eventHub from '../event_hub';
+  import eventHub from '../event_hub';
 
-import geoNodeActions from './geo_node_actions.vue';
-import geoNodeDetails from './geo_node_details.vue';
+  import geoNodeActions from './geo_node_actions.vue';
+  import geoNodeDetails from './geo_node_details.vue';
 
-export default {
-  props: {
-    node: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      icon,
+      loadingIcon,
+      geoNodeActions,
+      geoNodeDetails,
     },
-    primaryNode: {
-      type: Boolean,
-      required: true,
+    directives: {
+      tooltip,
     },
-    nodeActionsAllowed: {
-      type: Boolean,
-      required: true,
+    props: {
+      node: {
+        type: Object,
+        required: true,
+      },
+      primaryNode: {
+        type: Boolean,
+        required: true,
+      },
+      nodeActionsAllowed: {
+        type: Boolean,
+        required: true,
+      },
+      nodeEditAllowed: {
+        type: Boolean,
+        required: true,
+      },
     },
-    nodeEditAllowed: {
-      type: Boolean,
-      required: true,
+    data() {
+      return {
+        isNodeDetailsLoading: true,
+        nodeHealthStatus: '',
+        nodeDetails: {},
+      };
     },
-  },
-  components: {
-    icon,
-    loadingIcon,
-    geoNodeActions,
-    geoNodeDetails,
-  },
-  directives: {
-    tooltip,
-  },
-  data() {
-    return {
-      isNodeDetailsLoading: true,
-      nodeHealthStatus: '',
-      nodeDetails: {},
-    };
-  },
-  computed: {
-    showInsecureUrlWarning() {
-      return this.node.url.startsWith('http://');
+    computed: {
+      showInsecureUrlWarning() {
+        return this.node.url.startsWith('http://');
+      },
     },
-  },
-  methods: {
-    handleNodeDetails(nodeDetails) {
-      if (this.node.id === nodeDetails.id) {
-        this.isNodeDetailsLoading = false;
-        this.nodeDetails = nodeDetails;
-        this.nodeHealthStatus = nodeDetails.health;
-      }
+    created() {
+      eventHub.$on('nodeDetailsLoaded', this.handleNodeDetails);
     },
-    handleMounted() {
-      eventHub.$emit('pollNodeDetails', this.node.id);
+    mounted() {
+      this.handleMounted();
     },
-  },
-  created() {
-    eventHub.$on('nodeDetailsLoaded', this.handleNodeDetails);
-  },
-  mounted() {
-    this.handleMounted();
-  },
-  beforeDestroy() {
-    eventHub.$off('nodeDetailsLoaded', this.handleNodeDetails);
-  },
-};
+    beforeDestroy() {
+      eventHub.$off('nodeDetailsLoaded', this.handleNodeDetails);
+    },
+    methods: {
+      handleNodeDetails(nodeDetails) {
+        if (this.node.id === nodeDetails.id) {
+          this.isNodeDetailsLoading = false;
+          this.nodeDetails = nodeDetails;
+          this.nodeHealthStatus = nodeDetails.health;
+        }
+      },
+      handleMounted() {
+        eventHub.$emit('pollNodeDetails', this.node.id);
+      },
+    },
+  };
 </script>
 
 <template>
@@ -79,12 +79,12 @@ export default {
         <div class="row">
           <div class="col-md-8 clearfix">
             <strong class="node-url inline pull-left">
-              {{node.url}}
+              {{ node.url }}
             </strong>
             <loading-icon
               v-if="isNodeDetailsLoading"
               class="node-details-loading prepend-left-10 pull-left inline"
-              size=1
+              size="1"
             />
             <icon
               v-tooltip
@@ -93,7 +93,8 @@ export default {
               name="warning"
               data-container="body"
               data-placement="bottom"
-              :title="s__('GeoNodes|You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS.')"
+              :title="s__(`GeoNodes|You have configured Geo nodes using
+an insecure HTTP connection. We recommend the use of HTTPS.`)"
               :size="18"
             />
             <span class="inline pull-left prepend-left-10">
@@ -101,13 +102,13 @@ export default {
                 class="node-badge current-node"
                 v-if="node.current"
               >
-                {{s__('Current node')}}
+                {{ s__('Current node') }}
               </span>
               <span
                 class="node-badge primary-node"
                 v-if="node.primary"
               >
-                {{s__('Primary')}}
+                {{ s__('Primary') }}
               </span>
             </span>
           </div>

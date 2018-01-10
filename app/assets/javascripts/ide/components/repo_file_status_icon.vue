@@ -34,7 +34,6 @@
     <icon
       name="lock"
       css-classes="file-status-icon"
-    >
-    </icon>
+    />
   </span>
 </template>

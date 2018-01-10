@@ -1,56 +1,56 @@
 <script>
-import { s__ } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
-import modal from '~/vue_shared/components/modal.vue';
-import eventHub from '../event_hub';
-import { COMMON_STR } from '../constants';
+  import { s__ } from '~/locale';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import icon from '~/vue_shared/components/icon.vue';
+  import modal from '~/vue_shared/components/modal.vue';
+  import eventHub from '../event_hub';
+  import { COMMON_STR } from '../constants';
 
-export default {
-  components: {
-    icon,
-    modal,
-  },
-  directives: {
-    tooltip,
-  },
-  props: {
-    parentGroup: {
-      type: Object,
-      required: false,
-      default: () => ({}),
+  export default {
+    components: {
+      icon,
+      modal,
     },
-    group: {
-      type: Object,
-      required: true,
+    directives: {
+      tooltip,
     },
-  },
-  data() {
-    return {
-      modalStatus: false,
-    };
-  },
-  computed: {
-    leaveBtnTitle() {
-      return COMMON_STR.LEAVE_BTN_TITLE;
+    props: {
+      parentGroup: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
+      group: {
+        type: Object,
+        required: true,
+      },
     },
-    editBtnTitle() {
-      return COMMON_STR.EDIT_BTN_TITLE;
+    data() {
+      return {
+        modalStatus: false,
+      };
     },
-    leaveConfirmationMessage() {
-      return s__(`GroupsTree|Are you sure you want to leave the "${this.group.fullName}" group?`);
+    computed: {
+      leaveBtnTitle() {
+        return COMMON_STR.LEAVE_BTN_TITLE;
+      },
+      editBtnTitle() {
+        return COMMON_STR.EDIT_BTN_TITLE;
+      },
+      leaveConfirmationMessage() {
+        return s__(`GroupsTree|Are you sure you want to leave the "${this.group.fullName}" group?`);
+      },
     },
-  },
-  methods: {
-    onLeaveGroup() {
-      this.modalStatus = true;
+    methods: {
+      onLeaveGroup() {
+        this.modalStatus = true;
+      },
+      leaveGroup() {
+        this.modalStatus = false;
+        eventHub.$emit('leaveGroup', this.group, this.parentGroup);
+      },
     },
-    leaveGroup() {
-      this.modalStatus = false;
-      eventHub.$emit('leaveGroup', this.group, this.parentGroup);
-    },
-  },
-};
+  };
 </script>
 
 <template>

@@ -1,52 +1,52 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import icon from '~/vue_shared/components/icon.vue';
 
-export default {
-  props: {
-    title: {
-      type: String,
-      required: false,
-      default: '',
+  export default {
+    components: {
+      icon,
     },
-    cssClass: {
-      type: String,
-      required: false,
-      default: '',
+    directives: {
+      tooltip,
     },
-    iconName: {
-      type: String,
-      required: true,
+    props: {
+      title: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      cssClass: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      iconName: {
+        type: String,
+        required: true,
+      },
+      tooltipPlacement: {
+        type: String,
+        required: false,
+        default: 'bottom',
+      },
+      /**
+       * value could either be number or string
+       * as `memberCount` is always passed as string
+       * while `subgroupCount` & `projectCount`
+       * are always number
+       */
+      value: {
+        type: [Number, String],
+        required: false,
+        default: '',
+      },
     },
-    tooltipPlacement: {
-      type: String,
-      required: false,
-      default: 'bottom',
+    computed: {
+      isValuePresent() {
+        return this.value !== '';
+      },
     },
-    /**
-     * value could either be number or string
-     * as `memberCount` is always passed as string
-     * while `subgroupCount` & `projectCount`
-     * are always number
-     */
-    value: {
-      type: [Number, String],
-      required: false,
-      default: '',
-    },
-  },
-  directives: {
-    tooltip,
-  },
-  components: {
-    icon,
-  },
-  computed: {
-    isValuePresent() {
-      return this.value !== '';
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -57,12 +57,12 @@ export default {
     :class="cssClass"
     :title="title"
   >
-    <icon :name="iconName"/>
+    <icon :name="iconName" />
     <span
       v-if="isValuePresent"
       class="stat-value"
     >
-      {{value}}
+      {{ value }}
     </span>
   </span>
 </template>

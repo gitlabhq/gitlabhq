@@ -5,6 +5,13 @@
   import tooltip from '../directives/tooltip';
 
   export default {
+    directives: {
+      tooltip,
+    },
+    components: {
+      ciStatus,
+      icon,
+    },
     props: {
       triggeredBy: {
         type: Array,
@@ -27,13 +34,6 @@
         arrowSvg,
         maxRenderedPipelines: 3,
       };
-    },
-    directives: {
-      tooltip,
-    },
-    components: {
-      ciStatus,
-      icon,
     },
     computed: {
       // Exactly one of these (triggeredBy and triggered) must be truthy. Never both. Never neither.
@@ -85,17 +85,19 @@
     :class="{
       'is-upstream' : isUpstream,
       'is-downstream': isDownstream
-    }">
+    }"
+  >
 
     <span
       class="arrow-icon"
       v-if="isDownstream"
       v-html="arrowSvg"
-      aria-hidden="true">
+      aria-hidden="true"
+    >
     </span>
 
     <a
-      v-for="(pipeline, index) in linkedPipelinesTrimmed"
+      v-for="pipeline in linkedPipelinesTrimmed"
       v-tooltip
       class="linked-pipeline-mini-item"
       :key="pipeline.id"
@@ -103,9 +105,11 @@
       :title="pipelineTooltipText(pipeline)"
       data-placement="top"
       data-container="body"
-      :class="triggerButtonClass(pipeline.details.status.group)">
+      :class="triggerButtonClass(pipeline.details.status.group)"
+    >
       <icon
-        :name="getStatusIcon(pipeline.details.status.icon)"/>
+        :name="getStatusIcon(pipeline.details.status.icon)"
+      />
     </a>
 
     <a
@@ -115,7 +119,8 @@
       :title="counterTooltipText"
       :href="pipelinePath"
       data-placement="top"
-      data-container="body">
+      data-container="body"
+    >
       {{ counterLabel }}
     </a>
 
@@ -123,7 +128,8 @@
       class="arrow-icon"
       v-if="isUpstream"
       v-html="arrowSvg"
-      aria-hidden="true">
+      aria-hidden="true"
+    >
     </span>
   </span>
 </template>

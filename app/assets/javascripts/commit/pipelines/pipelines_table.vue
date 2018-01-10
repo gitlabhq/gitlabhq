@@ -4,6 +4,9 @@
   import pipelinesMixin from '../../pipelines/mixins/pipelines';
 
   export default {
+    mixins: [
+      pipelinesMixin,
+    ],
     props: {
       endpoint: {
         type: String,
@@ -31,9 +34,6 @@
         default: 'child',
       },
     },
-    mixins: [
-      pipelinesMixin,
-    ],
 
     data() {
       const store = new PipelineStore();
@@ -95,28 +95,29 @@
       label="Loading pipelines"
       size="3"
       v-if="isLoading"
-      />
+    />
 
     <empty-state
       v-if="shouldRenderEmptyState"
       :help-page-path="helpPagePath"
       :empty-state-svg-path="emptyStateSvgPath"
-      />
+    />
 
     <error-state
       v-if="shouldRenderErrorState"
       :error-state-svg-path="errorStateSvgPath"
-      />
+    />
 
     <div
       class="table-holder"
-      v-if="shouldRenderTable">
+      v-if="shouldRenderTable"
+    >
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :auto-devops-help-path="autoDevopsHelpPath"
         :view-type="viewType"
-        />
+      />
     </div>
   </div>
 </template>

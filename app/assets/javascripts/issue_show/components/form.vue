@@ -6,6 +6,13 @@
   import descriptionTemplate from './fields/description_template.vue';
 
   export default {
+    components: {
+      lockedWarning,
+      titleField,
+      descriptionField,
+      descriptionTemplate,
+      editActions,
+    },
     props: {
       canDestroy: {
         type: Boolean,
@@ -47,13 +54,6 @@
         default: true,
       },
     },
-    components: {
-      lockedWarning,
-      titleField,
-      descriptionField,
-      descriptionTemplate,
-      editActions,
-    },
     computed: {
       hasIssuableTemplates() {
         return this.issuableTemplates.length;
@@ -73,16 +73,19 @@
           :form-state="formState"
           :issuable-templates="issuableTemplates"
           :project-path="projectPath"
-          :project-namespace="projectNamespace" />
+          :project-namespace="projectNamespace"
+        />
       </div>
       <div
         :class="{
           'col-sm-8 col-lg-9': hasIssuableTemplates,
           'col-xs-12': !hasIssuableTemplates,
-        }">
+        }"
+      >
         <title-field
           :form-state="formState"
-          :issuable-templates="issuableTemplates" />
+          :issuable-templates="issuableTemplates"
+        />
       </div>
     </div>
     <description-field
@@ -94,6 +97,7 @@
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy"
-      :show-delete-button="showDeleteButton" />
+      :show-delete-button="showDeleteButton"
+    />
   </form>
 </template>

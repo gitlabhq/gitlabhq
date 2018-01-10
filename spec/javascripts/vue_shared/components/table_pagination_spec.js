@@ -72,7 +72,6 @@ describe('Pagination component', () => {
         });
 
         component.$el.querySelector('.js-previous-button a').click();
-
         expect(spy).toHaveBeenCalledWith(1);
       });
     });

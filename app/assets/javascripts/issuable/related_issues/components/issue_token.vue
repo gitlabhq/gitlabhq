@@ -32,13 +32,15 @@ export default {
 </script>
 
 <template>
-  <div :class="{
-    'issue-token': isCondensed,
-    'flex-row issue-info-container': !isCondensed,
-  }">
+  <div
+    :class="{
+      'issue-token': isCondensed,
+      'flex-row issue-info-container': !isCondensed,
+    }"
+  >
     <component
       v-tooltip
-      :is="this.computedLinkElementType"
+      :is="computedLinkElementType"
       ref="link"
       :class="{
         'issue-token-link': isCondensed,
@@ -57,7 +59,8 @@ export default {
           'issue-token-title issue-token-end': isCondensed,
           'issue-title block-truncated': !isCondensed,
           'issue-token-title-standalone': !canRemove
-        }">
+        }"
+      >
         <span class="issue-token-title-text">
           {{ title }}
         </span>
@@ -68,7 +71,8 @@ export default {
         :class="{
           'issue-token-reference': isCondensed,
           'issuable-info': !isCondensed,
-        }">
+        }"
+      >
         <icon
           v-if="hasState"
           v-tooltip
@@ -78,7 +82,7 @@ export default {
           :title="stateTitle"
           :aria-label="state"
         />
-        </i>{{ displayReference }}
+        {{ displayReference }}
       </component>
     </component>
     <button
