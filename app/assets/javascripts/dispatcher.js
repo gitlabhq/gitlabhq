@@ -36,12 +36,10 @@ import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
@@ -231,19 +229,17 @@ import Activities from './activities';
         case 'explore:projects:index':
         case 'explore:projects:trending':
         case 'explore:projects:starred':
+          import('./pages/explore/projects')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:projects:index':
           new ProjectsList();
           break;
         case 'explore:groups:index':
-          new GroupsList();
-          const landingElement = document.querySelector('.js-explore-groups-landing');
-          if (!landingElement) break;
-          const exploreGroupsLanding = new Landing(
-            landingElement,
-            landingElement.querySelector('.dismiss-button'),
-            'explore_groups_landing_dismissed',
-          );
-          exploreGroupsLanding.toggle();
+          import('./pages/explore/groups')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -514,8 +510,8 @@ import Activities from './activities';
           break;
         case 'projects:forks:new':
           import(/* webpackChunkName: 'project_fork' */ './project_fork')
-            .then(fork => fork.default())
-            .catch(() => {});
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:artifacts:browse':
           import('./pages/projects/artifacts/browse')
@@ -652,8 +648,8 @@ import Activities from './activities';
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
               import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
-                .then(permissions => permissions.default())
-                .catch(() => {});
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'new':
               new ProjectNew();
