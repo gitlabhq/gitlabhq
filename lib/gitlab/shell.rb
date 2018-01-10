@@ -136,7 +136,10 @@ module Gitlab
       end
     end
 
-    # Move repository
+    # Move repository reroutes to mv_directory which is an alias for
+    # mv_namespace. Given the underlying implementation is a move action,
+    # indescriminate of what the folders might be.
+    #
     # storage - project's storage path
     # path - project disk path
     # new_path - new project disk path
@@ -146,7 +149,9 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def mv_repository(storage, path, new_path)
-      gitlab_projects(storage, "#{path}.git").mv_project("#{new_path}.git")
+      return false if path.empty? || new_path.empty?
+
+      !!mv_directory(storage, "#{path}.git", "#{new_path}.git")
     end
 
     # Fork repository to new path
@@ -164,7 +169,9 @@ module Gitlab
         .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
     end
 
-    # Remove repository from file system
+    # Removes a repository from file system, using rm_diretory which is an alias
+    # for rm_namespace. Given the underlying implementation removes the name
+    # passed as second argument on the passed storage.
     #
     # storage - project's storage path
     # name - project disk path
@@ -174,7 +181,12 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def remove_repository(storage, name)
-      gitlab_projects(storage, "#{name}.git").rm_project
+      return false if name.empty?
+
+      !!rm_directory(storage, "#{name}.git")
+    rescue ArgumentError => e
+      Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git")
+      false
     end
 
     # Add new key to gitlab-shell
@@ -183,6 +195,8 @@ module Gitlab
     #   add_key("key-42", "sha-rsa ...")
     #
     def add_key(key_id, key_content)
+      return unless self.authorized_keys_enabled?
+
       gitlab_shell_fast_execute([gitlab_shell_keys_path,
                                  'add-key', key_id, self.class.strip_key(key_content)])
     end
@@ -192,6 +206,8 @@ module Gitlab
     # Ex.
     #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
     def batch_add_keys(&block)
+      return unless self.authorized_keys_enabled?
+
       IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
         yield(KeyAdder.new(io))
       end
@@ -202,10 +218,11 @@ module Gitlab
     # Ex.
     #   remove_key("key-342", "sha-rsa ...")
     #
-    def remove_key(key_id, key_content)
+    def remove_key(key_id, key_content = nil)
+      return unless self.authorized_keys_enabled?
+
       args = [gitlab_shell_keys_path, 'rm-key', key_id]
       args << key_content if key_content
-
       gitlab_shell_fast_execute(args)
     end
 
@@ -215,7 +232,60 @@ module Gitlab
     #   remove_all_keys
     #
     def remove_all_keys
+      return unless self.authorized_keys_enabled?
+
       gitlab_shell_fast_execute([gitlab_shell_keys_path, 'clear'])
+    end
+
+    # Remove ssh keys from gitlab shell that are not in the DB
+    #
+    # Ex.
+    #   remove_keys_not_found_in_db
+    #
+    def remove_keys_not_found_in_db
+      return unless self.authorized_keys_enabled?
+
+      Rails.logger.info("Removing keys not found in DB")
+
+      batch_read_key_ids do |ids_in_file|
+        ids_in_file.uniq!
+        keys_in_db = Key.where(id: ids_in_file)
+
+        next unless ids_in_file.size > keys_in_db.count # optimization
+
+        ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
+        ids_to_remove.each do |id|
+          Rails.logger.info("Removing key-#{id} not found in DB")
+          remove_key("key-#{id}")
+        end
+      end
+    end
+
+    # Iterate over all ssh key IDs from gitlab shell, in batches
+    #
+    # Ex.
+    #   batch_read_key_ids { |batch| keys = Key.where(id: batch) }
+    #
+    def batch_read_key_ids(batch_size: 100, &block)
+      return unless self.authorized_keys_enabled?
+
+      list_key_ids do |key_id_stream|
+        key_id_stream.lazy.each_slice(batch_size) do |lines|
+          key_ids = lines.map { |l| l.chomp.to_i }
+          yield(key_ids)
+        end
+      end
+    end
+
+    # Stream all ssh key IDs from gitlab shell, separated by newlines
+    #
+    # Ex.
+    #   list_key_ids
+    #
+    def list_key_ids(&block)
+      return unless self.authorized_keys_enabled?
+
+      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys list-key-ids), &block)
     end
 
     # Add empty directory for storing repositories
@@ -255,6 +325,7 @@ module Gitlab
     rescue GRPC::InvalidArgument => e
       raise ArgumentError, e.message
     end
+    alias_method :rm_directory, :rm_namespace
 
     # Move namespace directory inside repositories storage
     #
@@ -274,6 +345,7 @@ module Gitlab
     rescue GRPC::InvalidArgument
       false
     end
+    alias_method :mv_directory, :mv_namespace
 
     def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
@@ -331,6 +403,14 @@ module Gitlab
 
     def gitlab_shell_keys_path
       File.join(gitlab_shell_path, 'bin', 'gitlab-keys')
+    end
+
+    def authorized_keys_enabled?
+      # Return true if nil to ensure the authorized_keys methods work while
+      # fixing the authorized_keys file during migration.
+      return true if Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled.nil?
+
+      Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled
     end
 
     private

@@ -7,17 +7,21 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    data() {
-      return {
-        isLoading: false,
-        store: new DeployKeysStore(),
-      };
+    components: {
+      keysPanel,
+      loadingIcon,
     },
     props: {
       endpoint: {
         type: String,
         required: true,
       },
+    },
+    data() {
+      return {
+        isLoading: false,
+        store: new DeployKeysStore(),
+      };
     },
     computed: {
       hasKeys() {
@@ -27,9 +31,20 @@
         return this.store.keys;
       },
     },
-    components: {
-      keysPanel,
-      loadingIcon,
+    created() {
+      this.service = new DeployKeysService(this.endpoint);
+
+      eventHub.$on('enable.key', this.enableKey);
+      eventHub.$on('remove.key', this.disableKey);
+      eventHub.$on('disable.key', this.disableKey);
+    },
+    mounted() {
+      this.fetchKeys();
+    },
+    beforeDestroy() {
+      eventHub.$off('enable.key', this.enableKey);
+      eventHub.$off('remove.key', this.disableKey);
+      eventHub.$off('disable.key', this.disableKey);
     },
     methods: {
       fetchKeys() {
@@ -58,21 +73,6 @@
           callback();
         }
       },
-    },
-    created() {
-      this.service = new DeployKeysService(this.endpoint);
-
-      eventHub.$on('enable.key', this.enableKey);
-      eventHub.$on('remove.key', this.disableKey);
-      eventHub.$on('disable.key', this.disableKey);
-    },
-    mounted() {
-      this.fetchKeys();
-    },
-    beforeDestroy() {
-      eventHub.$off('enable.key', this.enableKey);
-      eventHub.$off('remove.key', this.disableKey);
-      eventHub.$off('disable.key', this.disableKey);
     },
   };
 </script>

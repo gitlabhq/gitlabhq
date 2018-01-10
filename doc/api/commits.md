@@ -159,6 +159,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
+| `stats` | boolean | no | Include commit stats. Default is true |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master

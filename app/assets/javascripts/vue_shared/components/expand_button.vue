@@ -11,7 +11,7 @@
    * </expand-button>
    */
   export default {
-    name: 'expandButton',
+    name: 'ExpandButton',
     data() {
       return {
         isCollapsed: true,
