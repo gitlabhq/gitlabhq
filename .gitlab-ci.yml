@@ -630,7 +630,6 @@ qa:selectors:
   variables:
     SETUP_DB: "false"
   services: []
-  allow_failure: true
   script:
     - cd qa/
     - bundle install
