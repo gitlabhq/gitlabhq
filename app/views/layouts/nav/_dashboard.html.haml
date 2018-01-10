@@ -6,8 +6,8 @@
     .dropdown-menu.projects-dropdown-menu
       = render "layouts/nav/projects_dropdown/show"
 
-  = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "hidden-xs qa-groups-link" }) do
-    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
+  = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "hidden-xs" }) do
+    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups qa-groups-link', title: 'Groups' do
       Groups
 
   = nav_link(path: 'dashboard#activity', html_options: { class: "visible-lg" }) do

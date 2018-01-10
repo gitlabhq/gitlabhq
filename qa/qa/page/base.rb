@@ -41,7 +41,7 @@ module QA
       end
 
       def click_element(name)
-        find(Page::Element.new(name).selector).click
+        find(Page::Element.new(name).selector_css).click
       end
 
       def self.path
