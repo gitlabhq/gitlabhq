@@ -14,23 +14,31 @@ module Banzai
       end
 
       def highlight_node(node)
-        language = node.attr('lang')
-        code = node.text
+        lang = node.attr('lang')
         css_classes = "code highlight"
-        lexer = lexer_for(language)
-        lang = lexer.tag
+        lexer = lexer_for(lang)
+        language = lexer.tag
+        retried = false
 
         begin
-          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, code), tag: lang)
+          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, node.text), tag: language)
 
-          css_classes << " js-syntax-highlight #{lang}"
+          css_classes << " js-syntax-highlight #{language}"
         rescue
-          lang = nil
-          # Gracefully handle syntax highlighter bugs/errors to ensure
-          # users can still access an issue/comment/etc.
+          # Gracefully handle syntax highlighter bugs/errors to ensure users can
+          # still access an issue/comment/etc. First, retry with the plain text
+          # filter. If that fails, then just skip this entirely, but that would
+          # be a pretty bad upstream bug.
+          return if retried
+
+          language = nil
+          lexer = Rouge::Lexers::PlainText.new
+          retried = true
+
+          retry
         end
 
-        highlighted = %(<pre class="#{css_classes}" lang="#{lang}" v-pre="true"><code>#{code}</code></pre>)
+        highlighted = %(<pre class="#{css_classes}" lang="#{language}" v-pre="true"><code>#{code}</code></pre>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
