@@ -351,19 +351,9 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:show':
-          shortcut_handler = new ShortcutsNavigation();
-          new NotificationsForm();
-          new UserCallout({
-            setCalloutPerProject: true,
-            className: 'js-autodevops-banner',
-          });
-
-          if ($('#tree-slider').length) new TreeView();
-          if ($('.blob-viewer').length) new BlobViewer();
-          if ($('.project-show-activity').length) new Activities();
-          $('#tree-slider').waitForImages(function() {
-            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-          });
+          import('./pages/projects/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:edit':
           import('./pages/projects/edit')
@@ -522,18 +512,15 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:settings:repository:show':
-          // Initialize expandable settings panels
-          initSettingsPanels();
+          import('./pages/projects/settings/repository/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:settings:ci_cd:show':
-          // Initialize expandable settings panels
-          initSettingsPanels();
-
-          const runnerToken = document.querySelector('.js-secret-runner-token');
-          if (runnerToken) {
-            const runnerTokenSecretValue = new SecretValues(runnerToken);
-            runnerTokenSecretValue.init();
-          }
+          import('./pages/projects/settings/ci_cd/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:settings:ci_cd:show':
           const secretVariableTable = document.querySelector('.js-secret-variable-table');
           if (secretVariableTable) {
