@@ -9,7 +9,7 @@ module QA
       end
 
       def pathname
-        @pathname ||= Pathname.new(File.join( __dir__, '../../../', @path))
+        @pathname ||= Pathname.new(File.join(__dir__, '../../../', @path))
           .cleanpath.expand_path
       end
 
