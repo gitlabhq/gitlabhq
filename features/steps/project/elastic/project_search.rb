@@ -6,6 +6,8 @@ class Spinach::Features::ProjectSearch < Spinach::FeatureSteps
   include StubConfiguration
 
   before do
+    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+
     Gitlab::Elastic::Helper.create_empty_index
   end
 
