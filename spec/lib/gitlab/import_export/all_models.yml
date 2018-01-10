@@ -310,6 +310,8 @@ award_emoji:
 - user
 priorities:
 - label
+prometheus_metrics:
+- project
 timelogs:
 - issue
 - merge_request
@@ -322,3 +324,4 @@ issue_assignees:
 epic_issues:
 - issue
 - epic
+

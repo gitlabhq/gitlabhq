@@ -63,6 +63,7 @@ project_tree:
     - :create_access_levels
   - :project_feature
   - :custom_attributes
+  - :prometheus_metrics
 
 # Only include the following attributes for the models specified.
 included_attributes:
