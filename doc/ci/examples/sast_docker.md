@@ -42,6 +42,6 @@ Starting with GitLab Enterprise Edition Ultimate 10.3, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI job must be named `sast:image` and the artifact path must be
 `gl-sast-image-report.json`.
-[Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast-image.md).
+[Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast_docker.md).
 
 [ee]: https://about.gitlab.com/gitlab-ee/
