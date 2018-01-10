@@ -224,9 +224,13 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         case 'projects:milestones:show':
           new UserCallout();
         case 'groups:milestones:show':
-        case 'dashboard:milestones:show':
           new Milestone();
           new Sidebar();
+          break;
+        case 'dashboard:milestones:show':
+          import('./pages/dashboard/milestones/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
