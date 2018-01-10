@@ -12,6 +12,7 @@
       lineStyle: {
         type: String,
         required: false,
+        default: '',
       },
       lineColor: {
         type: String,
@@ -37,8 +38,8 @@
       class="metric-area"
       :d="generatedAreaPath"
       :fill="areaColor"
-      transform="translate(-5, 20)">
-    </path>
+      transform="translate(-5, 20)"
+    />
     <path
       class="metric-line"
       :d="generatedLinePath"
@@ -46,7 +47,7 @@
       fill="none"
       stroke-width="1"
       :stroke-dasharray="strokeDashArray"
-      transform="translate(-5, 20)">
-    </path>
+      transform="translate(-5, 20)"
+    />
   </g>
 </template>

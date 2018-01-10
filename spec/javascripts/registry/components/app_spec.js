@@ -89,7 +89,7 @@ describe('Registry List', () => {
     it('should render empty message', (done) => {
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('p').textContent.trim(),
+          vm.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
         ).toEqual('No container images stored for this project. Add one by following the instructions above.');
         done();
       }, 0);

@@ -13,7 +13,8 @@ engines:
     exclude_paths:
       - "lib/api/v3/*"
   eslint:
-    enabled: true
+    # eslint-plugin-vue is locked to version 2 in codeclimate, we need version 4
+    enabled: false
   rubocop:
     enabled: true
     channel: "gitlab-rubocop-0-52"

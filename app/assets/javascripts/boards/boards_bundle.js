@@ -171,18 +171,13 @@ $(() => {
   });
 
   gl.IssueBoardsModalAddBtn = new Vue({
-    mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return {
         modal: ModalStore.store,
         store: Store.state,
       };
-    },
-    watch: {
-      disabled() {
-        this.updateTooltip();
-      },
     },
     computed: {
       disabled() {
@@ -198,6 +193,14 @@ $(() => {
 
         return '';
       },
+    },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     methods: {
       updateTooltip() {
@@ -216,9 +219,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-    },
-    mounted() {
-      this.updateTooltip();
     },
     template: `
       <div class="board-extra-actions">
