@@ -23,9 +23,10 @@
   <p class="build-detail-row">
     <span
       v-if="hasTitle"
-      class="build-light-text">
-      {{title}}:
+      class="build-light-text"
+    >
+      {{ title }}:
     </span>
-    {{value}}
+    {{ value }}
   </p>
 </template>
