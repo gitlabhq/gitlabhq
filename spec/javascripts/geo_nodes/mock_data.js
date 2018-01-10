@@ -43,6 +43,10 @@ export const rawMockNodeDetails = {
   lfs_objects_synced_count: 0,
   lfs_objects_failed_count: 0,
   lfs_objects_synced_in_percentage: '0.00%',
+  job_artifacts_count: 0,
+  job_artifacts_synced_count: 0,
+  job_artifacts_failed_count: 0,
+  job_artifacts_synced_in_percentage: '0.00%',
   repositories_count: 12,
   repositories_failed_count: 0,
   repositories_synced_count: 12,
@@ -125,6 +129,11 @@ export const mockNodeDetails = {
     failureCount: 0,
   },
   lfs: {
+    totalCount: 0,
+    successCount: 0,
+    failureCount: 0,
+  },
+  job_artifacts: {
     totalCount: 0,
     successCount: 0,
     failureCount: 0,

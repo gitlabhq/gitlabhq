@@ -15,12 +15,15 @@ class GeoNodeStatus < ActiveRecord::Base
     wikis_count: 'Total number of wikis available on primary',
     wikis_synced_count: 'Number of wikis synced on secondary',
     wikis_failed_count: 'Number of wikis failed to sync on secondary',
-    lfs_objects_count: 'Total number of LFS objects available on primary',
-    lfs_objects_synced_count: 'Number of LFS objects synced on secondary',
-    lfs_objects_failed_count: 'Number of LFS objects failed to sync on secondary',
-    attachments_count: 'Total number of file attachments available on primary',
-    attachments_synced_count: 'Number of attachments synced on secondary',
-    attachments_failed_count: 'Number of attachments failed to sync on secondary',
+    lfs_objects_count: 'Total number of local LFS objects available on primary',
+    lfs_objects_synced_count: 'Number of local LFS objects synced on secondary',
+    lfs_objects_failed_count: 'Number of local LFS objects failed to sync on secondary',
+    job_artifacts_count: 'Total number of local job artifacts available on primary',
+    job_artifacts_synced_count: 'Number of local job artifacts synced on secondary',
+    job_artifacts_failed_count: 'Number of local job artifacts failed to sync on secondary',
+    attachments_count: 'Total number of local file attachments available on primary',
+    attachments_synced_count: 'Number of local file attachments synced on secondary',
+    attachments_failed_count: 'Number of local file attachments failed to sync on secondary',
     replication_slots_count: 'Total number of replication slots on the primary',
     replication_slots_used_count: 'Number of replication slots in use on the primary',
     replication_slots_max_retained_wal_bytes: 'Maximum number of bytes retained in the WAL on the primary',
@@ -73,16 +76,26 @@ class GeoNodeStatus < ActiveRecord::Base
     self.repositories_count = projects_finder.count_repositories
     self.wikis_count = projects_finder.count_wikis
     self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
+    self.job_artifacts_count = job_artifacts_finder.count_job_artifacts
     self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
 
+    load_primary_data
+    load_secondary_data
+
+    self
+  end
+
+  def load_primary_data
     if Gitlab::Geo.primary?
       self.replication_slots_count = geo_node.replication_slots_count
       self.replication_slots_used_count = geo_node.replication_slots_used_count
       self.replication_slots_max_retained_wal_bytes = geo_node.replication_slots_max_retained_wal_bytes
     end
+  end
 
+  def load_secondary_data
     if Gitlab::Geo.secondary?
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
       self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
@@ -93,11 +106,11 @@ class GeoNodeStatus < ActiveRecord::Base
       self.wikis_failed_count = projects_finder.count_failed_wikis
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
+      self.job_artifacts_synced_count = job_artifacts_finder.count_synced_job_artifacts
+      self.job_artifacts_failed_count = job_artifacts_finder.count_failed_job_artifacts
       self.attachments_synced_count = attachments_finder.count_synced_attachments
       self.attachments_failed_count = attachments_finder.count_failed_attachments
     end
-
-    self
   end
 
   alias_attribute :health, :status_message
@@ -144,6 +157,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def lfs_objects_synced_in_percentage
     calc_percentage(lfs_objects_count, lfs_objects_synced_count)
+  end
+
+  def job_artifacts_synced_in_percentage
+    calc_percentage(job_artifacts_count, job_artifacts_synced_count)
   end
 
   def attachments_synced_in_percentage
@@ -194,6 +211,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def lfs_objects_finder
     @lfs_objects_finder ||= Geo::LfsObjectRegistryFinder.new(current_node: geo_node)
+  end
+
+  def job_artifacts_finder
+    @job_artifacts_finder ||= Geo::JobArtifactRegistryFinder.new(current_node: geo_node)
   end
 
   def projects_finder

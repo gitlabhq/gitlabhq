@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171230123729) do
+ActiveRecord::Schema.define(version: 20180105233807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -912,6 +912,7 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.integer "hashed_storage_migrated_event_id", limit: 8
     t.integer "lfs_object_deleted_event_id", limit: 8
     t.integer "hashed_storage_attachments_event_id", limit: 8
+    t.integer "job_artifact_deleted_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
@@ -941,6 +942,13 @@ ActiveRecord::Schema.define(version: 20171230123729) do
   end
 
   add_index "geo_hashed_storage_migrated_events", ["project_id"], name: "index_geo_hashed_storage_migrated_events_on_project_id", using: :btree
+
+  create_table "geo_job_artifact_deleted_events", id: :bigserial, force: :cascade do |t|
+    t.integer "job_artifact_id", null: false
+    t.string "file_path", null: false
+  end
+
+  add_index "geo_job_artifact_deleted_events", ["job_artifact_id"], name: "index_geo_job_artifact_deleted_events_on_job_artifact_id", using: :btree
 
   create_table "geo_lfs_object_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "lfs_object_id", null: false
@@ -986,6 +994,9 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.integer "wikis_count"
     t.integer "wikis_synced_count"
     t.integer "wikis_failed_count"
+    t.integer "job_artifacts_count"
+    t.integer "job_artifacts_synced_count"
+    t.integer "job_artifacts_failed_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
@@ -2489,6 +2500,7 @@ ActiveRecord::Schema.define(version: 20171230123729) do
   add_foreign_key "gcp_clusters", "services", on_delete: :nullify
   add_foreign_key "gcp_clusters", "users", on_delete: :nullify
   add_foreign_key "geo_event_log", "geo_hashed_storage_migrated_events", column: "hashed_storage_migrated_event_id", name: "fk_27548c6db3", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_job_artifact_deleted_events", column: "job_artifact_deleted_event_id", name: "fk_176d3fbb5d", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_lfs_object_deleted_events", column: "lfs_object_deleted_event_id", name: "fk_d5af95fcd9", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repositories_changed_events", column: "repositories_changed_event_id", name: "fk_4a99ebfd60", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_created_events", column: "repository_created_event_id", name: "fk_9b9afb1916", on_delete: :cascade

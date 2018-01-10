@@ -187,6 +187,32 @@ describe Geo::FileDownloadService do
       end
     end
 
+    context 'job artifacts' do
+      let(:job_artifact) { create(:ci_job_artifact) }
+
+      subject { described_class.new(:job_artifact, job_artifact.id) }
+
+      it 'downloads a job artifact' do
+        stub_transfer(Gitlab::Geo::JobArtifactTransfer, 100)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::JobArtifactTransfer, -1)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
+      end
+
+      it 'logs a message' do
+        stub_transfer(Gitlab::Geo::JobArtifactTransfer, 100)
+
+        expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, success: true, bytes_downloaded: 100)).and_call_original
+
+        subject.execute
+      end
+    end
+
     context 'bad object type' do
       it 'raises an error' do
         expect { described_class.new(:bad, 1).execute }.to raise_error(NameError)

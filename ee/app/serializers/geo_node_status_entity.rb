@@ -26,6 +26,13 @@ class GeoNodeStatusEntity < Grape::Entity
     number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)
   end
 
+  expose :job_artifacts_count
+  expose :job_artifacts_synced_count
+  expose :job_artifacts_failed_count
+  expose :job_artifacts_synced_in_percentage do |node|
+    number_to_percentage(node.job_artifacts_synced_in_percentage, precision: 2)
+  end
+
   expose :repositories_count
   expose :repositories_failed_count
   expose :repositories_synced_count

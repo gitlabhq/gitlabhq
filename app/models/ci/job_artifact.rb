@@ -1,5 +1,6 @@
 module Ci
   class JobArtifact < ActiveRecord::Base
+    prepend EE::Ci::JobArtifact
     include AfterCommitQueue
     extend Gitlab::Ci::Model
 

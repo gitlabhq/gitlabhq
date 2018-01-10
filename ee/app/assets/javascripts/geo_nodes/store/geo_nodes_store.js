@@ -60,8 +60,13 @@ export default class GeoNodesStore {
       },
       lfs: {
         totalCount: rawNodeDetails.lfs_objects_count,
-        successCount: rawNodeDetails.lfs_objects_failed_count,
-        failureCount: rawNodeDetails.lfs_objects_synced_count,
+        successCount: rawNodeDetails.lfs_objects_synced_count,
+        failureCount: rawNodeDetails.lfs_objects_failed_count,
+      },
+      jobArtifacts: {
+        totalCount: rawNodeDetails.job_artifacts_count,
+        successCount: rawNodeDetails.job_artifacts_synced_count,
+        failureCount: rawNodeDetails.job_artifacts_failed_count,
       },
       attachments: {
         totalCount: rawNodeDetails.attachments_count,
