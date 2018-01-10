@@ -546,6 +546,12 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/pipelines')
       end
+
+      it 'returns 404 if MR does not exist' do
+        get api("/projects/#{project.id}/merge_requests/777/pipelines")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
 
     context 'when unauthorized' do

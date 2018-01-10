@@ -24,8 +24,9 @@ module API
           .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
       end
 
-      def merge_request_pipelines_with_access(access_level = :read_pipeline)
-        authorize! access_level, user_project
+      def merge_request_pipelines_with_access
+        authorize! :read_pipeline, user_project
+
         mr = find_merge_request_with_access(params[:merge_request_iid])
         mr.all_pipelines
       end

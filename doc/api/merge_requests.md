@@ -444,8 +444,6 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 
-Example of response
-
 ```json
 [
   {
