@@ -56,9 +56,10 @@ module QA
           Page::Menu::Side.act { go_to_settings }
 
           geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
-          Page::Project::Settings::Main.perform do |page|
-            page.expand_advanced_settings
-            page.rename_to(geo_project_newname)
+          Page::Project::Settings::Main.perform do |settings|
+            settings.expand_advanced_settings do |page|
+              page.rename_to(geo_project_newname)
+            end
           end
 
           sleep 2 # wait for replication

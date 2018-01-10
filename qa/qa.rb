@@ -110,6 +110,7 @@ module QA
         autoload :Common, 'qa/page/project/settings/common'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :AdvancedSettings, 'qa/page/project/settings/advanced_settings'
         autoload :Main, 'qa/page/project/settings/main'
       end
     end

@@ -5,14 +5,10 @@ module QA
         class Main < Page::Base
           include Common
 
-          def expand_advanced_settings
-            expand_section('section.advanced-settings')
-          end
-
-          def rename_to(path)
-            fill_in :project_name, with: path
-            fill_in :project_path, with: path
-            click_on 'Rename project'
+          def expand_advanced_settings(&block)
+            expand_section('section.advanced-settings') do
+              AdvancedSettings.perform(&block)
+            end
           end
         end
       end
