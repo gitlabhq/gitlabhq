@@ -28,9 +28,9 @@
       ...mapState([
         'currentBlobView',
         'selectedFile',
+        'changedFiles',
       ]),
       ...mapGetters([
-        'changedFiles',
         'activeFile',
       ]),
     },

@@ -9,19 +9,6 @@ describe('Multi-file store getters', () => {
     localState = state();
   });
 
-  describe('changedFiles', () => {
-    it('returns a list of changed opened files', () => {
-      localState.openFiles.push(file());
-      localState.openFiles.push(file('changed'));
-      localState.openFiles[1].changed = true;
-
-      const changedFiles = getters.changedFiles(localState);
-
-      expect(changedFiles.length).toBe(1);
-      expect(changedFiles[0].name).toBe('changed');
-    });
-  });
-
   describe('activeFile', () => {
     it('returns the current active file', () => {
       localState.openFiles.push(file());
@@ -88,8 +75,8 @@ describe('Multi-file store getters', () => {
   describe('modifiedFiles', () => {
     it('returns a list of modified files', () => {
       localState.openFiles.push(file());
-      localState.openFiles.push(file('changed'));
-      localState.openFiles[1].changed = true;
+      localState.changedFiles.push(file('changed'));
+      localState.changedFiles[0].changed = true;
 
       const modifiedFiles = getters.modifiedFiles(localState);
 
@@ -101,9 +88,9 @@ describe('Multi-file store getters', () => {
   describe('addedFiles', () => {
     it('returns a list of added files', () => {
       localState.openFiles.push(file());
-      localState.openFiles.push(file('added'));
-      localState.openFiles[1].changed = true;
-      localState.openFiles[1].tempFile = true;
+      localState.changedFiles.push(file('added'));
+      localState.changedFiles[0].changed = true;
+      localState.changedFiles[0].tempFile = true;
 
       const modifiedFiles = getters.addedFiles(localState);
 

@@ -48,6 +48,10 @@ export default class Model {
     return this.originalModel;
   }
 
+  setValue(value) {
+    this.getModel().setValue(value);
+  }
+
   onChange(cb) {
     this.events.set(
       this.path,

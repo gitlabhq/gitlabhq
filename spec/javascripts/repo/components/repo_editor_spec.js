@@ -57,4 +57,18 @@ describe('RepoEditor', () => {
       expect(vm.$el.textContent).toContain('testing');
     });
   });
+
+  describe('computed', () => {
+    describe('activeFileChanged', () => {
+      it('returns false when file has no changes', () => {
+        expect(vm.activeFileChanged).toBeFalsy();
+      });
+
+      it('returns true when file has changes', () => {
+        vm.$store.getters.activeFile.changed = true;
+
+        expect(vm.activeFileChanged).toBeTruthy();
+      });
+    });
+  });
 });

@@ -28,11 +28,6 @@ export default {
       editMode: !state.editMode,
     });
   },
-  [types.TOGGLE_DISCARD_POPUP](state, discardPopupOpen) {
-    Object.assign(state, {
-      discardPopupOpen,
-    });
-  },
   [types.SET_ROOT](state, isRoot) {
     Object.assign(state, {
       isRoot,

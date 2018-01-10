@@ -3,7 +3,7 @@ export default () => ({
   currentProjectId: '',
   currentBranchId: '',
   currentBlobView: 'repo-editor',
-  discardPopupOpen: false,
+  changedFiles: [],
   editMode: true,
   endpoints: {},
   isRoot: false,

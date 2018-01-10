@@ -10,9 +10,7 @@ import {
   findIndexOfFile,
 } from '../utils';
 
-export const closeFile = ({ commit, state, dispatch }, { file, force = false }) => {
-  if ((file.changed || file.tempFile) && !force) return;
-
+export const closeFile = ({ commit, state, dispatch }, file) => {
   const indexOfClosedFile = findIndexOfFile(state.openFiles, file);
   const fileWasActive = file.active;
 
@@ -79,8 +77,16 @@ export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFile
   })
   .catch(() => flash('Error loading file content. Please try again.', 'alert', document, null, false, true));
 
-export const changeFileContent = ({ commit }, { file, content }) => {
+export const changeFileContent = ({ state, commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
+
+  const indexOfChangedFile = findIndexOfFile(state.changedFiles, file);
+
+  if (file.changed && indexOfChangedFile === -1) {
+    commit(types.ADD_FILE_TO_CHANGED, file);
+  } else if (!file.changed && indexOfChangedFile !== -1) {
+    commit(types.REMOVE_FILE_FROM_CHANGED, file);
+  }
 };
 
 export const setFileLanguage = ({ state, commit }, { fileLanguage }) => {
@@ -125,6 +131,7 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
     file,
   });
   commit(types.TOGGLE_FILE_OPEN, file);
+  commit(types.ADD_FILE_TO_CHANGED, file);
   dispatch('setFileActive', file);
 
   if (!state.editMode && !file.base64) {
@@ -134,4 +141,13 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
   router.push(`/project${file.url}`);
 
   return Promise.resolve(file);
+};
+
+export const discardFileChanges = ({ commit }, file) => {
+  commit(types.DISCARD_FILE_CHANGES, file);
+  commit(types.REMOVE_FILE_FROM_CHANGED, file);
+
+  if (file.tempFile && file.opened) {
+    commit(types.TOGGLE_FILE_OPEN, file);
+  }
 };

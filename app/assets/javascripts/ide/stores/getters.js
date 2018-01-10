@@ -1,4 +1,4 @@
-export const changedFiles = state => state.openFiles.filter(file => file.changed);
+export const changedFiles = state => state.changedFiles;
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 

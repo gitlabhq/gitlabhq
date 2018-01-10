@@ -395,7 +395,24 @@ table.table tr td.multi-file-table-name {
 
 .multi-file-commit-list-item {
   display: flex;
+  margin-bottom: $grid-size;
   align-items: center;
+
+  > svg {
+    min-width: 16px;
+  }
+
+  .multi-file-discard-btn {
+    display: none;
+    margin-left: auto;
+    color: $gl-link-color;
+  }
+
+  &:hover {
+    .multi-file-discard-btn {
+      display: block;
+    }
+  }
 }
 
 .multi-file-addition {

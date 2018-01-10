@@ -52,7 +52,7 @@ describe('RepoTab', () => {
 
     vm.$el.querySelector('.multi-file-tab-close').click();
 
-    expect(vm.closeFile).toHaveBeenCalledWith({ file: vm.tab });
+    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
   });
 
   it('renders an fa-circle icon if tab is changed', () => {
@@ -65,22 +65,50 @@ describe('RepoTab', () => {
     expect(vm.$el.querySelector('.multi-file-tab-close .fa-circle')).not.toBeNull();
   });
 
+  it('changes icon on hover', (done) => {
+    const tab = file();
+    tab.changed = true;
+    vm = createComponent({
+      tab,
+    });
+
+    vm.$el.dispatchEvent(new Event('mouseover'));
+
+    Vue.nextTick()
+      .then(() => {
+        expect(vm.$el.querySelector('.unsaved-icon')).toBeNull();
+        expect(vm.$el.querySelector('.close-icon')).not.toBeNull();
+
+        vm.$el.dispatchEvent(new Event('mouseout'));
+      })
+      .then(Vue.nextTick)
+      .then(() => {
+        expect(vm.$el.querySelector('.close-icon')).toBeNull();
+        expect(vm.$el.querySelector('.unsaved-icon')).not.toBeNull();
+
+        done();
+      })
+      .catch(done.fail);
+  });
+
   describe('methods', () => {
     describe('closeTab', () => {
-      it('does not close tab if is changed', (done) => {
-        const tab = file('closeFile');
+      it('closes tab if file has changed', (done) => {
+        const tab = file();
         tab.changed = true;
         tab.opened = true;
         vm = createComponent({
           tab,
         });
         vm.$store.state.openFiles.push(tab);
+        vm.$store.state.changedFiles.push(tab);
         vm.$store.dispatch('setFileActive', tab);
 
         vm.$el.querySelector('.multi-file-tab-close').click();
 
         vm.$nextTick(() => {
-          expect(tab.opened).toBeTruthy();
+          expect(tab.opened).toBeFalsy();
+          expect(vm.$store.state.changedFiles.length).toBe(1);
 
           done();
         });
