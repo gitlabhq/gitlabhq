@@ -233,6 +233,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'dashboard:issues':
+          import('./pages/dashboard/issues')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:merge_requests':
           projectSelect();
           initLegacyFilters();
