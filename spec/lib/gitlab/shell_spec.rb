@@ -4,6 +4,7 @@ require 'stringio'
 describe Gitlab::Shell do
   set(:project) { create(:project, :repository) }
 
+  let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
   let(:gitlab_projects) { double('gitlab_projects') }
@@ -401,17 +402,6 @@ describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
-    describe '#add_key' do
-      it 'removes trailing garbage' do
-        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-          [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
-        )
-
-        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
-      end
-    end
-
     describe '#add_repository' do
       shared_examples '#add_repository' do
         let(:repository_storage) { 'default' }
@@ -506,8 +496,6 @@ describe Gitlab::Shell do
     end
 
     shared_examples 'fetch_remote' do |gitaly_on|
-      let(:repository) { project.repository }
-
       def fetch_remote(ssh_auth = nil)
         gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth)
       end
@@ -630,6 +618,23 @@ describe Gitlab::Shell do
 
     describe '#fetch_remote gitaly' do
       it_should_behave_like 'fetch_remote', true
+
+      context 'gitaly call' do
+        let(:remote_name) { 'remote-name' }
+        let(:ssh_auth) { double(:ssh_auth) }
+
+        subject do
+          gitlab_shell.fetch_remote(repository.raw_repository, remote_name,
+            forced: true, no_tags: true, ssh_auth: ssh_auth)
+        end
+
+        it 'passes the correct params to the gitaly service' do
+          expect(repository.gitaly_repository_client).to receive(:fetch_remote)
+            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, timeout: timeout)
+
+          subject
+        end
+      end
     end
 
     describe '#import_repository' do

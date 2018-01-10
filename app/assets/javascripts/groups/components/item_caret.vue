@@ -2,15 +2,15 @@
 import icon from '~/vue_shared/components/icon.vue';
 
 export default {
+  components: {
+    icon,
+  },
   props: {
     isGroupOpen: {
       type: Boolean,
       required: true,
       default: false,
     },
-  },
-  components: {
-    icon,
   },
   computed: {
     iconClass() {

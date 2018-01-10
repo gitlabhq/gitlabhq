@@ -4,6 +4,9 @@
   import Icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      Icon,
+    },
     props: {
       currentXCoordinate: {
         type: Number,
@@ -50,10 +53,6 @@
         type: String,
         required: true,
       },
-    },
-
-    components: {
-      Icon,
     },
 
     computed: {
@@ -137,33 +136,34 @@
     >
       <div class="arrow"></div>
       <div class="popover-title">
-        <h5 v-if="this.deploymentFlagData">
+        <h5 v-if="deploymentFlagData">
           Deployed
         </h5>
-        {{formatDate}} at
-        <strong>{{formatTime}}</strong>
+        {{ formatDate }} at
+        <strong>{{ formatTime }}</strong>
       </div>
       <div
-        v-if="this.deploymentFlagData"
+        v-if="deploymentFlagData"
         class="popover-content deploy-meta-content"
       >
         <div>
           <icon
             name="commit"
-            :size="12">
-          </icon>
+            :size="12"
+          />
           <a :href="deploymentFlagData.commitUrl">
-            {{deploymentFlagData.sha.slice(0, 8)}}
+            {{ deploymentFlagData.sha.slice(0, 8) }}
           </a>
         </div>
         <div
-          v-if="deploymentFlagData.tag">
+          v-if="deploymentFlagData.tag"
+        >
           <icon
             name="label"
-            :size="12">
-          </icon>
+            :size="12"
+          />
           <a :href="deploymentFlagData.tagUrl">
-            {{deploymentFlagData.ref}}
+            {{ deploymentFlagData.ref }}
           </a>
         </div>
       </div>
@@ -174,7 +174,10 @@
             :key="index"
           >
             <td>
-              <svg width="15" height="6">
+              <svg
+                width="15"
+                height="6"
+              >
                 <line
                   :stroke="series.lineColor"
                   :stroke-dasharray="strokeDashArray(series.lineStyle)"
@@ -182,13 +185,13 @@
                   x1="0"
                   x2="15"
                   y1="2"
-                  y2="2">
-                </line>
+                  y2="2"
+                />
               </svg>
             </td>
-            <td>{{seriesMetricLabel(index, series)}}</td>
+            <td>{{ seriesMetricLabel(index, series) }}</td>
             <td>
-              <strong>{{seriesMetricValue(series)}}</strong>
+              <strong>{{ seriesMetricValue(series) }}</strong>
             </td>
           </tr>
         </table>

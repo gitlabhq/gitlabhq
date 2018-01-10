@@ -1,37 +1,38 @@
 <script>
-import linkedPipeline from './linked_pipeline.vue';
+  import linkedPipeline from './linked_pipeline.vue';
 
-export default {
-  props: {
-    columnTitle: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      linkedPipeline,
     },
-    linkedPipelines: {
-      type: Array,
-      required: true,
+    props: {
+      columnTitle: {
+        type: String,
+        required: true,
+      },
+      linkedPipelines: {
+        type: Array,
+        required: true,
+      },
+      graphPosition: {
+        type: String,
+        required: true,
+      },
     },
-    graphPosition: {
-      type: String,
-      required: true,
+
+    computed: {
+      columnClass() {
+        return `graph-position-${this.graphPosition}`;
+      },
     },
-  },
-  components: {
-    linkedPipeline,
-  },
-  computed: {
-    columnClass() {
-      return `graph-position-${this.graphPosition}`;
-    },
-  },
-};
+  };
 </script>
 
 <template>
   <div
     class="stage-column linked-pipelines-column"
     :class="columnClass"
-    >
+  >
     <div class="stage-name linked-pipelines-column-title"> {{ columnTitle }} </div>
     <div class="cross-project-triangle"></div>
     <ul>

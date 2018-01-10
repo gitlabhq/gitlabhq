@@ -1,38 +1,38 @@
 <script>
-import ciStatus from '../../../vue_shared/components/ci_icon.vue';
-import tooltip from '../../../vue_shared/directives/tooltip';
+  import ciStatus from '../../../vue_shared/components/ci_icon.vue';
+  import tooltip from '../../../vue_shared/directives/tooltip';
 
-export default {
-  props: {
-    pipelineId: {
-      type: Number,
-      required: true,
+  export default {
+    directives: {
+      tooltip,
     },
-    pipelinePath: {
-      type: String,
-      required: true,
+    components: {
+      ciStatus,
     },
-    pipelineStatus: {
-      type: Object,
-      required: true,
+    props: {
+      pipelineId: {
+        type: Number,
+        required: true,
+      },
+      pipelinePath: {
+        type: String,
+        required: true,
+      },
+      pipelineStatus: {
+        type: Object,
+        required: true,
+      },
+      projectName: {
+        type: String,
+        required: true,
+      },
     },
-    projectName: {
-      type: String,
-      required: true,
+    computed: {
+      tooltipText() {
+        return `${this.projectName} - ${this.pipelineStatus.label}`;
+      },
     },
-  },
-  directives: {
-    tooltip,
-  },
-  components: {
-    ciStatus,
-  },
-  computed: {
-    tooltipText() {
-      return `${this.projectName} - ${this.pipelineStatus.label}`;
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -44,9 +44,10 @@ export default {
         class="linked-pipeline-content"
         :href="pipelinePath"
         :title="tooltipText"
-        data-container="body">
+        data-container="body"
+      >
         <span class="linked-pipeline-status ci-status-text">
-          <ci-status :status="pipelineStatus"/>
+          <ci-status :status="pipelineStatus" />
         </span>
         <span class="linked-pipeline-project-name">{{ projectName }}</span>
         <span class="project-name-pipeline-id-separator">&#8226;</span>

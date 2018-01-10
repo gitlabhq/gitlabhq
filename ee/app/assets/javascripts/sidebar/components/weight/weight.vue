@@ -1,137 +1,139 @@
 <script>
-import $ from 'jquery';
-import { s__ } from '~/locale';
-import eventHub from '~/sidebar/event_hub';
-import icon from '~/vue_shared/components/icon.vue';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  /* eslint-disable vue/require-default-prop */
 
-export default {
-  props: {
-    fetching: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    weight: {
-      type: Number,
-      required: false,
-    },
-    weightOptions: {
-      type: Array,
-      required: true,
-    },
-    weightNoneValue: {
-      type: String,
-      required: true,
-    },
-    editable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    id: {
-      type: Number,
-      required: false,
-    },
-  },
-  data() {
-    return {
-      shouldShowDropdown: false,
-      collapseAfterDropdownCloses: false,
-    };
-  },
-  components: {
-    icon,
-    loadingIcon,
-  },
-  computed: {
-    isNoValue() {
-      return this.checkIfNoValue(this.weight);
-    },
-    collapsedWeightLabel() {
-      let label = this.weight;
-      if (this.checkIfNoValue(this.weight)) {
-        label = s__('Sidebar|No');
-      }
+  import { s__ } from '~/locale';
+  import eventHub from '~/sidebar/event_hub';
+  import icon from '~/vue_shared/components/icon.vue';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
-      return label;
+  export default {
+    components: {
+      icon,
+      loadingIcon,
     },
-    noValueLabel() {
-      return s__('Sidebar|None');
+    props: {
+      fetching: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      loading: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      weight: {
+        type: Number,
+        required: false,
+      },
+      weightOptions: {
+        type: Array,
+        required: true,
+      },
+      weightNoneValue: {
+        type: String,
+        required: true,
+      },
+      editable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      id: {
+        type: Number,
+        required: false,
+      },
     },
-    changeWeightLabel() {
-      return s__('Sidebar|Change weight');
+    data() {
+      return {
+        shouldShowDropdown: false,
+        collapseAfterDropdownCloses: false,
+      };
     },
-    dropdownToggleLabel() {
-      let label = this.weight;
-      if (this.checkIfNoValue(this.weight)) {
-        label = s__('Sidebar|Weight');
-      }
+    computed: {
+      isNoValue() {
+        return this.checkIfNoValue(this.weight);
+      },
+      collapsedWeightLabel() {
+        let label = this.weight;
+        if (this.checkIfNoValue(this.weight)) {
+          label = s__('Sidebar|No');
+        }
 
-      return label;
+        return label;
+      },
+      noValueLabel() {
+        return s__('Sidebar|None');
+      },
+      changeWeightLabel() {
+        return s__('Sidebar|Change weight');
+      },
+      dropdownToggleLabel() {
+        let label = this.weight;
+        if (this.checkIfNoValue(this.weight)) {
+          label = s__('Sidebar|Weight');
+        }
+
+        return label;
+      },
+      shouldShowWeight() {
+        return !this.fetching && !this.shouldShowDropdown;
+      },
     },
-    shouldShowWeight() {
-      return !this.fetching && !this.shouldShowDropdown;
-    },
-  },
-  methods: {
-    checkIfNoValue(weight) {
-      return weight === undefined ||
-        weight === null ||
-        weight === 0 ||
-        weight === this.weightNoneValue;
-    },
-    showDropdown() {
-      this.shouldShowDropdown = true;
-      // Trigger the bootstrap dropdown
-      setTimeout(() => {
-        $(this.$refs.dropdownToggle).dropdown('toggle');
+    mounted() {
+      $(this.$refs.weightDropdown).glDropdown({
+        showMenuAbove: false,
+        selectable: true,
+        filterable: false,
+        multiSelect: false,
+        data: (searchTerm, callback) => {
+          callback(this.weightOptions);
+        },
+        renderRow: (weight) => {
+          const isActive = weight === this.weight ||
+            (this.checkIfNoValue(weight) && this.checkIfNoValue(this.weight));
+
+          return `
+            <li>
+              <a href="#" class="${isActive ? 'is-active' : ''}">
+                ${weight}
+              </a>
+            </li>
+          `;
+        },
+        hidden: () => {
+          this.shouldShowDropdown = false;
+          this.collapseAfterDropdownCloses = false;
+        },
+        clicked: (options) => {
+          const selectedValue = this.checkIfNoValue(options.selectedObj) ?
+            null :
+            options.selectedObj;
+          const resultantValue = options.isMarking ? selectedValue : null;
+          eventHub.$emit('updateWeight', resultantValue, this.id);
+        },
       });
     },
-    onCollapsedClick() {
-      this.collapseAfterDropdownCloses = true;
-      this.showDropdown();
+    methods: {
+      checkIfNoValue(weight) {
+        return weight === undefined ||
+          weight === null ||
+          weight === 0 ||
+          weight === this.weightNoneValue;
+      },
+      showDropdown() {
+        this.shouldShowDropdown = true;
+        // Trigger the bootstrap dropdown
+        setTimeout(() => {
+          $(this.$refs.dropdownToggle).dropdown('toggle');
+        });
+      },
+      onCollapsedClick() {
+        this.collapseAfterDropdownCloses = true;
+        this.showDropdown();
+      },
     },
-  },
-
-  mounted() {
-    $(this.$refs.weightDropdown).glDropdown({
-      showMenuAbove: false,
-      selectable: true,
-      filterable: false,
-      multiSelect: false,
-      data: (searchTerm, callback) => {
-        callback(this.weightOptions);
-      },
-      renderRow: (weight) => {
-        const isActive = weight === this.weight ||
-          (this.checkIfNoValue(weight) && this.checkIfNoValue(this.weight));
-
-        return `
-          <li>
-            <a href="#" class="${isActive ? 'is-active' : ''}">
-              ${weight}
-            </a>
-          </li>
-        `;
-      },
-      hidden: () => {
-        this.shouldShowDropdown = false;
-        this.collapseAfterDropdownCloses = false;
-      },
-      clicked: (options) => {
-        const selectedValue = this.checkIfNoValue(options.selectedObj) ? null : options.selectedObj;
-        const resultantValue = options.isMarking ? selectedValue : null;
-        eventHub.$emit('updateWeight', resultantValue, this.id);
-      },
-    });
-  },
-};
+  };
 </script>
 
 <template>
@@ -212,7 +214,8 @@ export default {
             aria-hidden="true"
             data-hidden="true"
             class="fa fa-chevron-down"
-          ></i>
+          >
+          </i>
         </button>
         <div
           v-once
@@ -231,13 +234,13 @@ export default {
                 aria-hidden="true"
                 data-hidden="true"
                 class="fa fa-times dropdown-menu-close-icon"
-              ></i>
+              >
+              </i>
             </button>
           </div>
           <div class="dropdown-content js-weight-dropdown-content"></div>
         </div>
       </div>
     </div>
-
   </div>
 </template>

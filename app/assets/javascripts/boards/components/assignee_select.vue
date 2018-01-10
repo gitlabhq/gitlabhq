@@ -4,6 +4,10 @@ import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
+  components: {
+    loadingIcon,
+    UserAvatarImage,
+  },
   props: {
     anyUserText: {
       type: String,
@@ -52,10 +56,6 @@ export default {
       default: '',
     },
   },
-  components: {
-    loadingIcon,
-    UserAvatarImage,
-  },
   computed: {
     hasValue() {
       return this.selected.id > 0;
@@ -68,6 +68,9 @@ export default {
     selected() {
       this.initSelect();
     },
+  },
+  mounted() {
+    this.initSelect();
   },
   methods: {
     initSelect() {
@@ -86,9 +89,6 @@ export default {
       this.board.assignee_id = assignee.id;
       this.board.assignee = assignee;
     },
-  },
-  mounted() {
-    this.initSelect();
   },
 };
 </script>
@@ -161,27 +161,33 @@ export default {
             aria-hidden="true"
             class="fa fa-chevron-down"
             data-hidden="true"
-          />
+          >
+          </i>
         </button>
-        <div class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-user dropdown-menu-selectable dropdown-menu-author">
+        <div
+          class="dropdown-menu dropdown-select dropdown-menu-paging
+dropdown-menu-user dropdown-menu-selectable dropdown-menu-author"
+        >
           <div class="dropdown-input">
             <input
               autocomplete="off"
               class="dropdown-input-field"
               placeholder="Search"
               type="search"
-            >
+            />
             <i
               aria-hidden="true"
               class="fa fa-search dropdown-input-search"
               data-hidden="true"
-            />
+            >
+            </i>
             <i
               aria-hidden="true"
               class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
               data-hidden="true"
               role="button"
-            />
+            >
+            </i>
           </div>
           <div class="dropdown-content"></div>
           <div class="dropdown-loading">

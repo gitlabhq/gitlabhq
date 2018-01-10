@@ -6,7 +6,10 @@ import issueToken from './issue_token.vue';
 
 export default {
   name: 'AddIssuableForm',
-
+  components: {
+    issueToken,
+    loadingIcon,
+  },
   props: {
     inputValue: {
       type: String,
@@ -36,11 +39,6 @@ export default {
     };
   },
 
-  components: {
-    issueToken,
-    loadingIcon,
-  },
-
   computed: {
     inputPlaceholder() {
       return `Paste issue link${this.allowAutoComplete ? ' or <#issue id>' : ''}`;
@@ -52,6 +50,28 @@ export default {
     allowAutoComplete() {
       return Object.keys(this.autoCompleteSources).length > 0;
     },
+  },
+
+  mounted() {
+    const $input = $(this.$refs.input);
+
+    if (this.allowAutoComplete) {
+      this.gfmAutoComplete = new GfmAutoComplete(this.autoCompleteSources);
+      this.gfmAutoComplete.setup($input, {
+        issues: true,
+      });
+      $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
+      $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
+    }
+
+    this.$refs.input.focus();
+  },
+
+  beforeDestroy() {
+    const $input = $(this.$refs.input);
+    $input.off('shown-issues.atwho');
+    $input.off('hidden-issues.atwho');
+    $input.off('inserted-issues.atwho', this.onInput);
   },
 
   methods: {
@@ -84,28 +104,6 @@ export default {
     onFormCancel() {
       eventHub.$emit('addIssuableFormCancel');
     },
-  },
-
-  mounted() {
-    const $input = $(this.$refs.input);
-
-    if (this.allowAutoComplete) {
-      this.gfmAutoComplete = new GfmAutoComplete(this.autoCompleteSources);
-      this.gfmAutoComplete.setup($input, {
-        issues: true,
-      });
-      $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
-      $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
-    }
-
-    this.$refs.input.focus();
-  },
-
-  beforeDestroy() {
-    const $input = $(this.$refs.input);
-    $input.off('shown-issues.atwho');
-    $input.off('hidden-issues.atwho');
-    $input.off('inserted-issues.atwho', this.onInput);
   },
 };
 </script>

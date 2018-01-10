@@ -2,9 +2,6 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in GitLab 10.1.
 
-CAUTION: **Warning:**
-The Cluster integration is currently in **Beta**.
-
 NOTE: **Note:**
 The Cluster integration will eventually supersede the
 [Kubernetes integration](../integrations/kubernetes.md).

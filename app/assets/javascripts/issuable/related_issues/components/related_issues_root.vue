@@ -34,6 +34,9 @@ const SPACE_FACTOR = 1;
 
 export default {
   name: 'RelatedIssuesRoot',
+  components: {
+    relatedIssuesBlock: RelatedIssuesBlock,
+  },
   props: {
     endpoint: {
       type: String,
@@ -76,14 +79,32 @@ export default {
       inputValue: '',
     };
   },
-  components: {
-    relatedIssuesBlock: RelatedIssuesBlock,
-  },
   computed: {
     autoCompleteSources() {
       if (!this.allowAutoComplete) return {};
       return gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources;
     },
+  },
+  created() {
+    eventHub.$on('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
+    eventHub.$on('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
+    eventHub.$on('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
+    eventHub.$on('addIssuableFormSubmit', this.onPendingFormSubmit);
+    eventHub.$on('addIssuableFormCancel', this.onPendingFormCancel);
+    eventHub.$on('addIssuableFormInput', this.onInput);
+    eventHub.$on('addIssuableFormBlur', this.onBlur);
+
+    this.service = new RelatedIssuesService(this.endpoint);
+    this.fetchRelatedIssues();
+  },
+  beforeDestroy() {
+    eventHub.$off('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
+    eventHub.$off('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
+    eventHub.$off('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
+    eventHub.$off('addIssuableFormSubmit', this.onPendingFormSubmit);
+    eventHub.$off('addIssuableFormCancel', this.onPendingFormCancel);
+    eventHub.$off('addIssuableFormInput', this.onInput);
+    eventHub.$off('addIssuableFormBlur', this.onBlur);
   },
   methods: {
     onRelatedIssueRemoveRequest(idToRemove) {
@@ -206,27 +227,6 @@ export default {
       );
       this.inputValue = '';
     },
-  },
-  created() {
-    eventHub.$on('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
-    eventHub.$on('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
-    eventHub.$on('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
-    eventHub.$on('addIssuableFormSubmit', this.onPendingFormSubmit);
-    eventHub.$on('addIssuableFormCancel', this.onPendingFormCancel);
-    eventHub.$on('addIssuableFormInput', this.onInput);
-    eventHub.$on('addIssuableFormBlur', this.onBlur);
-
-    this.service = new RelatedIssuesService(this.endpoint);
-    this.fetchRelatedIssues();
-  },
-  beforeDestroy() {
-    eventHub.$off('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
-    eventHub.$off('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
-    eventHub.$off('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
-    eventHub.$off('addIssuableFormSubmit', this.onPendingFormSubmit);
-    eventHub.$off('addIssuableFormCancel', this.onPendingFormCancel);
-    eventHub.$off('addIssuableFormInput', this.onInput);
-    eventHub.$off('addIssuableFormBlur', this.onBlur);
   },
 };
 </script>

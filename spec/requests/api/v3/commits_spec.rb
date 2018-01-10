@@ -403,6 +403,33 @@ describe API::V3::Commits do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq("created")
       end
+
+      context 'when stat param' do
+        let(:project_id) { project.id }
+        let(:commit_id) { project.repository.commit.id }
+        let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}" }
+
+        it 'is not present return stats by default' do
+          get v3_api(route, user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'stats'
+        end
+
+        it "is false it does not include stats" do
+          get v3_api(route, user), stats: false
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).not_to include 'stats'
+        end
+
+        it "is true it includes stats" do
+          get v3_api(route, user), stats: true
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'stats'
+        end
+      end
     end
 
     context "unauthorized user" do

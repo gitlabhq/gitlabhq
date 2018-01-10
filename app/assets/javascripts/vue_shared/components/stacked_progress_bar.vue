@@ -2,6 +2,9 @@
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
+  directives: {
+    tooltip,
+  },
   props: {
     cssClass: {
       type: String,
@@ -32,9 +35,6 @@ export default {
       type: Number,
       required: true,
     },
-  },
-  directives: {
-    tooltip,
   },
   computed: {
     successPercent() {
@@ -89,7 +89,7 @@ export default {
       v-if="!totalCount"
       class="status-unavailable"
     >
-      {{__("Not available")}}
+      {{ __("Not available") }}
     </span>
     <span
       v-tooltip
@@ -99,7 +99,7 @@ export default {
       :title="successTooltip"
       :style="successBarStyle"
     >
-      {{successPercent}}%
+      {{ successPercent }}%
     </span>
     <span
       v-tooltip
@@ -109,7 +109,7 @@ export default {
       :title="neutralTooltip"
       :style="neutralBarStyle"
     >
-      {{neutralPercent}}%
+      {{ neutralPercent }}%
     </span>
     <span
       v-tooltip
@@ -119,7 +119,7 @@ export default {
       :title="failureTooltip"
       :style="failureBarStyle"
     >
-      {{failurePercent}}%
+      {{ failurePercent }}%
     </span>
   </div>
 </template>

@@ -1,45 +1,49 @@
 <script>
-import editFormButtons from './edit_form_buttons.vue';
-import issuableMixin from '../../../vue_shared/mixins/issuable';
+  import editFormButtons from './edit_form_buttons.vue';
+  import issuableMixin from '../../../vue_shared/mixins/issuable';
 
-export default {
-  props: {
-    isLocked: {
-      required: true,
-      type: Boolean,
+  export default {
+    components: {
+      editFormButtons,
     },
+    mixins: [
+      issuableMixin,
+    ],
+    props: {
+      isLocked: {
+        required: true,
+        type: Boolean,
+      },
 
-    toggleForm: {
-      required: true,
-      type: Function,
+      toggleForm: {
+        required: true,
+        type: Function,
+      },
+
+      updateLockedAttribute: {
+        required: true,
+        type: Function,
+      },
     },
-
-    updateLockedAttribute: {
-      required: true,
-      type: Function,
-    },
-  },
-
-  mixins: [
-    issuableMixin,
-  ],
-
-  components: {
-    editFormButtons,
-  },
-};
+  };
 </script>
 
 <template>
   <div class="dropdown open">
     <div class="dropdown-menu sidebar-item-warning-message">
-      <p class="text" v-if="isLocked">
+      <p
+        class="text"
+        v-if="isLocked"
+      >
         Unlock this {{ issuableDisplayName }}?
         <strong>Everyone</strong>
         will be able to comment.
       </p>
 
-      <p class="text" v-else>
+      <p
+        class="text"
+        v-else
+      >
         Lock this {{ issuableDisplayName }}?
         Only
         <strong>project members</strong>

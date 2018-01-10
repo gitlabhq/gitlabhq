@@ -4,7 +4,10 @@
   import expandButton from '~/vue_shared/components/expand_button.vue';
 
   export default {
-    name: 'modal',
+    name: 'ModalDast',
+    components: {
+      expandButton,
+    },
     props: {
       title: {
         type: String,
@@ -24,11 +27,8 @@
       instances: {
         type: Array,
         required: false,
-        default: [],
+        default: () => [],
       },
-    },
-    components: {
-      expandButton,
     },
     computed: {
       cutIcon() {
@@ -52,11 +52,11 @@
     class="modal fade"
     tabindex="-1"
     role="dialog"
-    >
+  >
     <div
       class="modal-dialog"
       role="document"
-      >
+    >
       <div class="modal-content">
         <div class="modal-header">
           <button
@@ -64,7 +64,7 @@
             class="close"
             data-dismiss="modal"
             aria-label="Close"
-            >
+          >
             <span aria-hidden="true">&times;</span>
           </button>
           <h4 class="modal-title">
@@ -73,31 +73,35 @@
         </div>
 
         <div class="modal-body">
-          {{description}}
+          {{ description }}
 
           <h5 class="prepend-top-20">{{ instancesLabel }}</h5>
-          <ul v-if="instances" class="mr-widget-code-quality-list">
+          <ul
+            v-if="instances"
+            class="mr-widget-code-quality-list"
+          >
             <li
               v-for="(instance, i) in instances"
               :key="i"
-              class="failed">
+              class="failed"
+            >
               <span
                 class="mr-widget-code-quality-icon"
                 v-html="cutIcon"
-                >
+              >
               </span>
-              {{instance.method}}
+              {{ instance.method }}
               <a
                 :href="instance.uri"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                >
-                {{instance.uri}}
+              >
+                {{ instance.uri }}
               </a>
               <expand-button v-if="instance.evidence">
                 <pre
                   slot="expanded"
-                  class="block mr-widget-dast-code prepend-top-10">{{instance.evidence}}</pre>
+                  class="block mr-widget-dast-code prepend-top-10">{{ instance.evidence }}</pre>
               </expand-button>
             </li>
           </ul>

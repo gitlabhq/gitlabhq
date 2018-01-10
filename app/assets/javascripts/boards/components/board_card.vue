@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/require-default-prop */
 import './issue_card_inner';
 import eventHub from '../eventhub';
 
@@ -10,13 +11,33 @@ export default {
     'issue-card-inner': gl.issueBoards.IssueCardInner,
   },
   props: {
-    list: Object,
-    issue: Object,
-    issueLinkBase: String,
-    disabled: Boolean,
-    index: Number,
-    rootPath: String,
-    groupId: Number,
+    list: {
+      type: Object,
+      default: () => ({}),
+    },
+    issue: {
+      type: Object,
+      default: () => ({}),
+    },
+    issueLinkBase: {
+      type: String,
+      default: '',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    index: {
+      type: Number,
+      default: 0,
+    },
+    rootPath: {
+      type: String,
+      default: '',
+    },
+    groupId: {
+      type: Number,
+    },
   },
   data() {
     return {
@@ -55,8 +76,13 @@ export default {
 </script>
 
 <template>
-  <li class="card"
-    :class="{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id, 'is-active': issueDetailVisible }"
+  <li
+    class="card"
+    :class="{
+      'user-can-drag': !disabled && issue.id,
+      'is-disabled': disabled || !issue.id,
+      'is-active': issueDetailVisible
+    }"
     :index="index"
     :data-issue-id="issue.id"
     @mousedown="mouseDown"
@@ -68,6 +94,7 @@ export default {
       :issue-link-base="issueLinkBase"
       :group-id="groupId"
       :root-path="rootPath"
-      :update-filters="true" />
+      :update-filters="true"
+    />
   </li>
 </template>

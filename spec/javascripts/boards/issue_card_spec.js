@@ -45,6 +45,9 @@ describe('Issue card component', () => {
 
     component = new Vue({
       el: document.querySelector('.test-container'),
+      components: {
+        'issue-card': gl.issueBoards.IssueCardInner,
+      },
       data() {
         return {
           list,
@@ -53,9 +56,6 @@ describe('Issue card component', () => {
           rootPath: '/',
           groupId: null,
         };
-      },
-      components: {
-        'issue-card': gl.issueBoards.IssueCardInner,
       },
       template: `
         <issue-card

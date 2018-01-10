@@ -1,10 +1,14 @@
 <script>
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import '~/flash';
   import linkedPipelinesColumn from './linked_pipelines_column.vue';
   import stageColumnComponent from './stage_column_component.vue';
 
   export default {
+    components: {
+      linkedPipelinesColumn,
+      stageColumnComponent,
+      loadingIcon,
+    },
     props: {
       isLoading: {
         type: Boolean,
@@ -14,12 +18,6 @@
         type: Object,
         required: true,
       },
-    },
-
-    components: {
-      linkedPipelinesColumn,
-      stageColumnComponent,
-      loadingIcon,
     },
 
     computed: {
@@ -73,7 +71,7 @@
         <loading-icon
           v-if="isLoading"
           size="3"
-          />
+        />
       </div>
 
       <linked-pipelines-column
@@ -89,7 +87,7 @@
         :class="{
           'has-linked-pipelines': hasTriggered || hasTriggeredBy
         }"
-        >
+      >
         <stage-column-component
           v-for="(stage, index) in graph"
           :class="{
@@ -103,7 +101,7 @@
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
           :has-triggered-by="hasTriggeredBy"
-          />
+        />
       </ul>
 
       <linked-pipelines-column

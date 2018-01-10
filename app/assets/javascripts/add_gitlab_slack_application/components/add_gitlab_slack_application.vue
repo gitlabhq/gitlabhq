@@ -89,40 +89,53 @@
       <p>Track your GitLab projects with GitLab for Slack.</p>
     </div>
 
-    <div class="append-bottom-20 center" v-once>
+    <div
+      class="append-bottom-20 center"
+      v-once
+    >
       <img
         class="gitlab-slack-logo"
-        :src="gitlabLogoPath"></img>
+        :src="gitlabLogoPath"
+      />
       <div
         class="gitlab-slack-double-headed-arrow inline prepend-left-20 append-right-20"
-        v-html="doubleHeadedArrowSvg"></div>
+        v-html="doubleHeadedArrowSvg"
+      >
+      </div>
       <img
         class="gitlab-slack-logo"
-        :src="slackLogoPath"></img>
+        :src="slackLogoPath"
+      />
     </div>
 
     <button
       type="button"
       class="btn btn-red center-block js-popup-button"
-      @click="togglePopup">
+      @click="togglePopup"
+    >
       Add GitLab to Slack
     </button>
 
     <div
       class="popup gitlab-slack-popup center-block prepend-top-20 text-center js-popup"
-      v-if="popupOpen">
+      v-if="popupOpen"
+    >
       <div
         class="inline"
-        v-if="isSignedIn && hasProjects">
+        v-if="isSignedIn && hasProjects"
+      >
         <strong>Select GitLab project to link with your Slack team</strong>
 
         <select
-          class="gitlab-slack-project-select js-project-select form-control prepend-top-10 append-bottom-10"
-          v-model="selectedProjectId">
+          class="gitlab-slack-project-select
+js-project-select form-control prepend-top-10 append-bottom-10"
+          v-model="selectedProjectId"
+        >
           <option
             v-for="project in projects"
             :key="project.id"
-            :value="project.id">
+            :value="project.id
+          ">
             {{ project.name }}
           </option>
         </select>
@@ -130,14 +143,16 @@
         <button
           type="button"
           class="btn btn-red pull-right js-add-button"
-          @click="addToSlack">
+          @click="addToSlack"
+        >
           Add to Slack
         </button>
       </div>
 
       <span
         class="js-no-projects"
-        v-else-if="isSignedIn && !hasProjects">
+        v-else-if="isSignedIn && !hasProjects"
+      >
         You don't have any projects available.
       </span>
 
@@ -146,7 +161,8 @@
         <a
           class="js-gitlab-slack-sign-in-link"
           v-once
-          :href="signInPath">
+          :href="signInPath"
+        >
           log in
         </a>
       </span>
@@ -156,20 +172,26 @@
       <img
         v-once
         class="gitlab-slack-gif"
-        :src="gitlabForSlackGifPath">
+        :src="gitlabForSlackGifPath"
+      />
     </div>
 
     <div
       class="gitlab-slack-example"
-      v-once>
+      v-once
+    >
       <h3 class="center">How it works</h3>
 
       <div class="well gitlab-slack-well center-block">
-        <code class="code center-block append-bottom-10">/gitlab &lt;project-alias&gt; issue show &lt;id&gt;</code>
+        <code
+          class="code center-block append-bottom-10"
+        >/gitlab &lt;project-alias&gt; issue show &lt;id&gt;</code>
         <span>
           <div
             class="gitlab-slack-right-arrow inline append-right-5"
-            v-html="arrowRightSvg"></div>
+            v-html="arrowRightSvg"
+          >
+          </div>
           Shows the issue with id
           <strong>&lt;id&gt;</strong>
         </span>
@@ -177,7 +199,7 @@
 
       <div class="center">
         <a :href="docsPath">
-           More Slack commands
+          More Slack commands
         </a>
       </div>
     </div>
