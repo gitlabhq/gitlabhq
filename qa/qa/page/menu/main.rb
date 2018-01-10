@@ -15,7 +15,8 @@ module QA
           element :groups_link
         end
 
-        view 'app/views/dashboard/_projects_head.html.haml' do
+        view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
+          element :projects_dropdown_sidebar
           element :your_projects_link
         end
 
@@ -26,6 +27,9 @@ module QA
         def go_to_projects
           within_top_menu do
             click_element :projects_dropdown
+          end
+
+          page.within('.qa-projects-dropdown-sidebar') do
             click_element :your_projects_link
           end
         end
