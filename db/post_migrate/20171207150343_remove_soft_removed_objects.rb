@@ -156,6 +156,15 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
   end
 
   def remove_group_namespaces
+    admin_id = id_for_admin_user
+
+    unless admin_id
+      say 'Not scheduling soft removed groups for removal as no admin user ' \
+        'could be found. You will need to remove any such groups manually.'
+
+      return
+    end
+
     # Left over groups can't be easily removed because we may also need to
     # remove memberships, repositories, and other associated data. As a result
     # we'll just schedule a Sidekiq job to remove these.
@@ -163,10 +172,6 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
     # As of January 5th, 2018 there are 36 groups that will be removed using
     # this code.
     Namespace.select(:id).soft_removed_group.each_batch(of: 10) do |batch, index|
-      # We need the ID of an admin user as the owners of the group may no longer
-      # exist (or might not even be set in `namespaces.owner_id`).
-      admin_id = id_for_admin_user
-
       batch.each do |ns|
         schedule_group_removal(index * 5.minutes, ns.id, admin_id)
       end
@@ -194,14 +199,7 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
   end
 
   def id_for_admin_user
-    return @id_for_admin_user if @id_for_admin_user
-
-    if (admin_id = User.where(admin: true).limit(1).pluck(:id).first)
-      @id_for_admin_user = admin_id
-    else
-      raise 'Can not remove soft removed groups as no admin user exists. ' \
-        'Please make sure at least one user with `admin` set to TRUE exists before proceeding.'
-    end
+    User.where(admin: true).limit(1).pluck(:id).first
   end
 
   def migrate_inline?
