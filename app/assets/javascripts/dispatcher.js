@@ -68,7 +68,6 @@ import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
 import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
-import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
