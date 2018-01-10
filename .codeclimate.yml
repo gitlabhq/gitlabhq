@@ -13,7 +13,7 @@ engines:
     exclude_paths:
       - "lib/api/v3/*"
   eslint:
-    enabled: true
+    enabled: false
   rubocop:
     enabled: true
     channel: "gitlab-rubocop-0-52"
