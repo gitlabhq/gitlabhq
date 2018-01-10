@@ -13,7 +13,8 @@ module API
         formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
         include: [
           GrapeLogging::Loggers::FilterParameters.new,
-          GrapeLogging::Loggers::ClientEnv.new
+          GrapeLogging::Loggers::ClientEnv.new,
+          Gitlab::GrapeLogging::Loggers::UserLogger.new
         ]
 
     allow_access_with_scope :api

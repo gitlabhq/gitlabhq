@@ -106,10 +106,6 @@ body {
   }
 }
 
-.layout-page > .content-wrapper {
-  min-height: calc(100vh - #{$header-height});
-}
-
 .with-performance-bar .layout-page {
   margin-top: $header-height + $performance-bar-height;
 }
