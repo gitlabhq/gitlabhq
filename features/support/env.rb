@@ -21,7 +21,8 @@ end
 
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
 
-WebMock.allow_net_connect!
+WebMock.enable!
+WebMock.disable_net_connect!(allow_localhost: true)
 
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
