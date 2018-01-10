@@ -13,7 +13,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
-import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
 import initAdmin from './admin';
@@ -553,22 +552,19 @@ import Activities from './activities';
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          new CILintEditor();
+          import('./pages/ci/lints').then(m => m.default()).catch(fail);
           break;
         case 'users:show':
           import('./pages/users/show').then(callDefault).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          new UserCallout();
+          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          new LineHighlighter();
-          new BlobViewer();
-          initNotes();
-          new ZenMode();
+          import('./pages/snippets/show').then(m => m.default()).catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          new UsersSelect();
+          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
