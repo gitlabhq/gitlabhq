@@ -107,7 +107,7 @@ describe API::V3::DeployKeys do
       end
 
       it 'accepts can_push parameter' do
-        key_attrs = attributes_for :write_access_key
+        key_attrs = attributes_for(:another_key).merge(can_push: true)
 
         post v3_api("/projects/#{project.id}/#{path}", admin), key_attrs
 
