@@ -547,11 +547,16 @@ module API
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at, :can_push
+      expose :id, :title, :key, :created_at
     end
 
     class SSHKeyWithUser < SSHKey
       expose :user, using: Entities::UserPublic
+    end
+
+    class DeployKeysProject < Grape::Entity
+      expose :deploy_key, merge: true, using: Entities::SSHKey
+      expose :can_push
     end
 
     class GPGKey < Grape::Entity
@@ -706,10 +711,7 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields
-          .select { |field| options[:include_passwords] || field[:type] != 'password' }
-          .map { |field| field[:name] }
-        service.properties.slice(*field_names)
+        service.properties.slice(*service.api_field_names)
       end
     end
 

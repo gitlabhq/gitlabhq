@@ -1,0 +1,5 @@
+---
+title: Fix path traversal in gitlab-ci.yml cache:key
+merge_request:
+author:
+type: security
