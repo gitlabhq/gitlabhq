@@ -10,7 +10,9 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
-%w(select2_helper test_env repo_helpers wait_for_requests sidekiq project_forks_helper).each do |f|
+WebMock.enable!
+
+%w(select2_helper test_env repo_helpers wait_for_requests sidekiq project_forks_helper webmock).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
@@ -20,9 +22,6 @@ end
 end
 
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
-
-WebMock.enable!
-WebMock.disable_net_connect!(allow_localhost: true)
 
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
