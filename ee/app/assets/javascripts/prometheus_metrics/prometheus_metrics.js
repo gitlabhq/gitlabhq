@@ -2,28 +2,7 @@ import _ from 'underscore';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import axios from '~/lib/utils/axios_utils';
-import statusCodes from '~/lib/utils/http_status';
-import { backOff, spriteIcon } from '~/lib/utils/common_utils';
-
-const MAX_REQUESTS = 3;
-
-function backOffRequest(makeRequestCallback) {
-  let requestCounter = 0;
-  return backOff((next, stop) => {
-    makeRequestCallback().then((resp) => {
-      if (resp.status === statusCodes.NO_CONTENT) {
-        requestCounter += 1;
-        if (requestCounter < MAX_REQUESTS) {
-          next();
-        } else {
-          stop(new Error('Failed to retrieve prometheus custom metrics'));
-        }
-      } else {
-        stop(resp);
-      }
-    }).catch(stop);
-  });
-}
+import { spriteIcon } from '~/lib/utils/common_utils';
 
 function customMetricTemplate(metric) {
   const deleteIcon = spriteIcon('remove');
@@ -130,18 +109,19 @@ export default class EEPrometheusMetrics extends PrometheusMetrics {
 
   loadActiveCustomMetrics() {
     super.loadActiveMetrics();
-    backOffRequest(() => axios.get(this.activeCustomMetricsEndpoint))
-      .then(resp => resp.data)
-      .then((response) => {
-        if (!response || !response.metrics) {
-          this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-        } else {
-          this.customMetrics = response.metrics;
-          this.populateCustomMetrics(response.metrics);
-        }
-      }).catch((err) => {
-        this.showFlashMessage(err);
+    axios.get(this.activeCustomMetricsEndpoint)
+    .then(resp => resp.data)
+    .then((response) => {
+      if (!response || !response.metrics) {
         this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
-      });
+      } else {
+        this.customMetrics = response.metrics;
+        this.populateCustomMetrics(response.metrics);
+      }
+    })
+    .catch((err) => {
+      this.showFlashMessage(err);
+      this.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
+    });
   }
 }
