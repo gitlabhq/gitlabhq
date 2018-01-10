@@ -14,6 +14,12 @@ module QA
           end
         end
 
+        def go_to_settings
+          page.within('.sidebar-top-level-items') do
+            click_on 'Settings'
+          end
+        end
+
         private
 
         def hover_setting

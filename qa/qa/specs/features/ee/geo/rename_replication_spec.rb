@@ -14,10 +14,10 @@ module QA
         expect(geo_project_name).to include 'geo-before-rename'
 
         Factory::Repository::Push.fabricate! do |push|
+          push.project = project
           push.file_name = 'README.md'
           push.file_content = '# This is Geo project!'
           push.commit_message = 'Add README.md'
-          push.project = project
         end
 
         # check it exists on the other machine
@@ -53,9 +53,7 @@ module QA
           dashboard.go_to_project(geo_project_name)
         end
 
-        Page::Project::Show.perform do |page|
-          page.go_to_settings
-        end
+        Page::Menu::Side.act { go_to_settings }
 
         geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
         Page::Project::Settings::Main.perform do |page|

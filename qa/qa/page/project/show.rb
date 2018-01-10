@@ -34,12 +34,6 @@ module QA
         def wait_for_push
           sleep 5
         end
-
-        def go_to_settings
-          page.within('.sidebar-top-level-items') do
-            click_on 'Settings'
-          end
-        end
       end
     end
   end
