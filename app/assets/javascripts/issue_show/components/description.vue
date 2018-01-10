@@ -56,7 +56,10 @@
         this.updateTaskStatusText();
       },
     },
-
+    mounted() {
+      this.renderGFM();
+      this.updateTaskStatusText();
+    },
     methods: {
       renderGFM() {
         $(this.$refs['gfm-content']).renderGFM();
@@ -88,16 +91,16 @@
 
         if (taskRegexMatches) {
           $tasks.text(this.taskStatus);
-          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+          $tasksShort.text(
+            `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ?
+            's' :
+            ''}`,
+          );
         } else {
           $tasks.text('');
           $tasksShort.text('');
         }
       },
-    },
-    mounted() {
-      this.renderGFM();
-      this.updateTaskStatusText();
     },
   };
 </script>
@@ -108,7 +111,8 @@
     class="description"
     :class="{
       'js-task-list-container': canUpdate
-    }">
+    }"
+  >
     <div
       class="wiki"
       :class="{

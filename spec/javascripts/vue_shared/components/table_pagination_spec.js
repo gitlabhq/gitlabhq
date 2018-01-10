@@ -32,7 +32,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(component.$el.innerHTML).not.toBeDefined();
+      expect(component.$el.childNodes.length).toEqual(0);
     });
 
     describe('prev button', () => {
@@ -72,7 +72,6 @@ describe('Pagination component', () => {
         });
 
         component.$el.querySelector('.js-previous-button a').click();
-
         expect(spy).toHaveBeenCalledWith(1);
       });
     });

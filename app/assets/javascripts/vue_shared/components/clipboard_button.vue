@@ -4,7 +4,7 @@
    */
 
   export default {
-    name: 'clipboardButton',
+    name: 'ClipboardButton',
     props: {
       text: {
         type: String,
@@ -23,10 +23,12 @@
     type="button"
     class="btn btn-transparent btn-clipboard"
     :data-title="title"
-    :data-clipboard-text="text">
-      <i
-        aria-hidden="true"
-        class="fa fa-clipboard">
-      </i>
+    :data-clipboard-text="text"
+  >
+    <i
+      aria-hidden="true"
+      class="fa fa-clipboard"
+    >
+    </i>
   </button>
 </template>

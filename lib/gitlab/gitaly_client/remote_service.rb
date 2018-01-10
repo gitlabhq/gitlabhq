@@ -7,10 +7,12 @@ module Gitlab
         @storage = repository.storage
       end
 
-      def add_remote(name, url, mirror_refmap)
+      def add_remote(name, url, mirror_refmaps)
         request = Gitaly::AddRemoteRequest.new(
-          repository: @gitaly_repo, name: name, url: url,
-          mirror_refmap: mirror_refmap.to_s
+          repository: @gitaly_repo,
+          name: name,
+          url: url,
+          mirror_refmaps: Array.wrap(mirror_refmaps).map(&:to_s)
         )
 
         GitalyClient.call(@storage, :remote_service, :add_remote, request)

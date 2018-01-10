@@ -25,7 +25,7 @@
               = sprite_icon(diff_file_changed_icon(diff_file), size: 16, css_class: "#{diff_file_changed_icon_color(diff_file)} diff-file-changed-icon append-right-8")
               %span.diff-changed-file-content.append-right-8
                 %strong.diff-changed-file-name= diff_file.blob.name
-                %span.diff-changed-file-path.prepend-top-5= diff_file.new_path
+                %span.diff-changed-file-path.prepend-top-5= diff_file_path_text(diff_file)
               %span.diff-changed-stats
                 %span.cgreen<
                   +#{diff_file.added_lines}

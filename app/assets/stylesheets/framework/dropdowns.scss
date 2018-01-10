@@ -28,7 +28,9 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;
-    min-height: 40px;
+    min-height: $dropdown-min-height;
+    max-height: $dropdown-max-height;
+    overflow: auto;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;

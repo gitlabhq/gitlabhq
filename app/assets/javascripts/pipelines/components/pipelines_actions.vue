@@ -5,17 +5,17 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
-    props: {
-      actions: {
-        type: Array,
-        required: true,
-      },
-    },
     directives: {
       tooltip,
     },
     components: {
       loadingIcon,
+    },
+    props: {
+      actions: {
+        type: Array,
+        required: true,
+      },
     },
     data() {
       return {
@@ -50,7 +50,8 @@
       data-toggle="dropdown"
       data-placement="top"
       aria-label="Manual job"
-      :disabled="isLoading">
+      :disabled="isLoading"
+    >
       <span v-html="playIconSvg"></span>
       <i
         class="fa fa-caret-down"
@@ -60,14 +61,18 @@
     </button>
 
     <ul class="dropdown-menu dropdown-menu-align-right">
-      <li v-for="action in actions">
+      <li
+        v-for="(action, i) in actions"
+        :key="i"
+      >
         <button
           type="button"
           class="js-pipeline-action-link no-btn btn"
           @click="onClickAction(action.path)"
           :class="{ disabled: isActionDisabled(action) }"
-          :disabled="isActionDisabled(action)">
-          {{action.name}}
+          :disabled="isActionDisabled(action)"
+        >
+          {{ action.name }}
         </button>
       </li>
     </ul>
