@@ -196,9 +196,13 @@ import Activities from './activities';
           break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
-        case 'dashboard:milestones:show':
           new Milestone();
           new Sidebar();
+          break;
+        case 'dashboard:milestones:show':
+          import('./pages/dashboard/milestones/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
