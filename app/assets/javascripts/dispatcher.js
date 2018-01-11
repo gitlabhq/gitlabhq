@@ -52,7 +52,6 @@ import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
-import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
@@ -192,8 +191,9 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'dashboard:merge_requests':
-          projectSelect();
-          initLegacyFilters();
+          import('./pages/dashboard/merge_requests')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:issues':
         case 'groups:merge_requests':
