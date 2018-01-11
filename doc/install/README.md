@@ -27,7 +27,7 @@ the hardware requirements.
 
 - [Installing in Kubernetes](kubernetes/index.md) - Install GitLab into a Kubernetes
   Cluster using our official Helm Chart Repository.
-- [Install GitLab on OpenShift](../articles/openshift_and_gitlab/index.md)
+- [Install GitLab on OpenShift](openshift_and_gitlab/index.md)
 - [Install GitLab on DC/OS](https://mesosphere.com/blog/gitlab-dcos/) via [GitLab-Mesosphere integration](https://about.gitlab.com/2016/09/16/announcing-gitlab-and-mesosphere/)
 - [Install GitLab on Azure](azure/index.md)
 - [Install GitLab on Google Cloud Platform](google_cloud_platform/index.md)
