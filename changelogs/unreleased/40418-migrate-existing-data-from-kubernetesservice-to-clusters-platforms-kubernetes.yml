@@ -1,5 +1,0 @@
----
-title: Migrate existing data from KubernetesService to Clusters::Platforms::Kubernetes
-merge_request: 15589
-author:
-type: changed
