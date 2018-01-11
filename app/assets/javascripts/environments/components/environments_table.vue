@@ -87,12 +87,7 @@ export default {
     </div>
     <template
       v-for="(model, i) in environments"
-<<<<<<< HEAD
-      :model="model"
-    >
-=======
       :model="model">
->>>>>>> upstream/master
       <div
         is="environment-item"
         :model="model"
@@ -100,7 +95,6 @@ export default {
         :can-read-environment="canReadEnvironment"
         :key="i"
       />
-<<<<<<< HEAD
 
       <div
         v-if="model.hasDeployBoard && model.isDeployBoardVisible"
@@ -115,20 +109,13 @@ export default {
           />
         </div>
       </div>
-=======
->>>>>>> upstream/master
 
       <template
         v-if="shouldRenderFolderContent(model)"
       >
         <div
           v-if="model.isLoadingFolderContent"
-<<<<<<< HEAD
-          :key="i"
-        >
-=======
           :key="i">
->>>>>>> upstream/master
           <loading-icon size="2" />
         </div>
 
