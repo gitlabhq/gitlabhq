@@ -1,4 +1,4 @@
-import projectNew from '~/projects/project_new';
+import projectNew from '~/pages/projects/shared/project_new';
 
 describe('New Project', () => {
   let $projectImportUrl;
