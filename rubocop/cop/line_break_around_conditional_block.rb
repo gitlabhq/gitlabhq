@@ -99,7 +99,8 @@ module RuboCop
       end
 
       def begin_line?(line)
-        line =~ /^\s*@?(\w|\|+|=|\[|\]|\s)+begin/
+        # an assignment followed by a begin or ust a begin
+        line =~ /^\s*(@?(\w|\|+|=|\[|\]|\s)+begin|begin)/
       end
 
       def assignment_line?(line)

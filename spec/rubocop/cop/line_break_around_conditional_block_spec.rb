@@ -95,6 +95,19 @@ describe RuboCop::Cop::LineBreakAroundConditionalBlock do
 
     it "doesn't flag violation for #{conditional} preceded by a begin definition" do
       source = <<~RUBY
+          begin
+            #{conditional} condition
+              do_something
+            end
+          end
+      RUBY
+      inspect_source(source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't flag violation for #{conditional} preceded by an assign/begin definition" do
+      source = <<~RUBY
           @project ||= begin
             #{conditional} condition
               do_something
