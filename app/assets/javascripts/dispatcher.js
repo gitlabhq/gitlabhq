@@ -13,8 +13,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import groupsSelect from './groups_select';
-import initAdmin from './admin';
-import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
@@ -51,14 +49,12 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import Star from './star';
 import TreeView from './tree';
-import UsagePing from './usage_ping';
 import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import PerformanceBar from './performance_bar';
-import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
@@ -66,7 +62,6 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
-import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
@@ -228,9 +223,6 @@ import Activities from './activities';
           import('./pages/explore/projects')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'admin:projects:index':
-          new ProjectsList();
           break;
         case 'explore:groups:index':
           import('./pages/explore/groups')
@@ -443,15 +435,23 @@ import Activities from './activities';
           new UsersSelect();
           break;
         case 'groups:new':
-        case 'admin:groups:new':
         case 'groups:create':
-        case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
           groupAvatar();
           break;
-        case 'groups:edit':
+        case 'admin:groups:create':
+        case 'admin:groups:new':
+          import('./pages/admin/groups/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:groups:edit':
+          import('./pages/admin/groups/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:edit':
           groupAvatar();
           break;
         case 'projects:tree:show':
@@ -567,8 +567,12 @@ import Activities from './activities';
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
-        case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
+          import('./pages/admin/impersonation_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'profiles:personal_access_tokens:index':
           new DueDateSelectors();
           break;
         case 'projects:clusters:show':
@@ -603,29 +607,51 @@ import Activities from './activities';
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          initAdmin();
+          import('./pages/admin')
+            .then(callDefault)
+            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
-              initBroadcastMessagesForm();
+              import('./pages/admin/broadcast_messages')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'cohorts':
-              new UsagePing();
+              import('./pages/admin/cohorts')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'groups':
-              new UsersSelect();
+              switch (path[2]) {
+                case 'show':
+                  import('./pages/admin/groups/show')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
+              }
               break;
             case 'projects':
-              document.querySelectorAll('.js-namespace-select')
-                .forEach(dropdown => new NamespaceSelect({ dropdown }));
+              import('./pages/admin/projects')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'labels':
               switch (path[2]) {
                 case 'new':
+                  import('./pages/admin/labels/new')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
                 case 'edit':
-                  new Labels();
+                  import('./pages/admin/labels/edit')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
               }
             case 'abuse_reports':
-              new AbuseReports();
+              import('./pages/admin/abuse_reports')
+                .then(callDefault)
+                .catch(fail);
               break;
           }
           break;
