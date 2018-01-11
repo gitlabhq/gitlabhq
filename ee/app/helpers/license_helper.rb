@@ -30,6 +30,7 @@ module LicenseHelper
       message << block_changes_message
 
       message <<
+
         if is_admin
           'Upload a new license in the admin area'
         else

@@ -1,4 +1,5 @@
 /* eslint-disable no-new */
+import _ from 'underscore';
 import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';

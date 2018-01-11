@@ -21,11 +21,13 @@ class LdapGroupSyncWorker
 
   def sync_group(group, proxy: nil)
     logger.info "Started LDAP group sync for group #{group.name} (#{group.id})"
+
     if proxy
       EE::Gitlab::LDAP::Sync::Group.execute(group, proxy)
     else
       EE::Gitlab::LDAP::Sync::Group.execute_all_providers(group)
     end
+
     logger.info "Finished LDAP group sync for group #{group.name} (#{group.id})"
   end
 end

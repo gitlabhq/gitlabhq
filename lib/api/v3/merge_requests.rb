@@ -128,6 +128,7 @@ module API
             if status == :deprecated
               detail DEPRECATION_MESSAGE
             end
+
             success ::API::V3::Entities::MergeRequest
           end
           get path do

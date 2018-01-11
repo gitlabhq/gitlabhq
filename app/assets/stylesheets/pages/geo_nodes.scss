@@ -73,8 +73,12 @@
 }
 
 .geo-nodes {
-  .node-url-warning {
+  .node-status-icon-warning {
     fill: $gl-warning;
+  }
+
+  .node-status-icon-failure {
+    fill: $gl-danger;
   }
 }
 

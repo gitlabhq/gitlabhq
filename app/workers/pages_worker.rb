@@ -13,6 +13,7 @@ class PagesWorker
     if result[:status] == :success
       result = Projects::UpdatePagesConfigurationService.new(build.project).execute
     end
+
     result
   end
 

@@ -16,6 +16,7 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Testing a PHP application](php.md)
 - [Run PHP Composer & NPM scripts then deploy them to a staging server](deployment/composer-npm-deploy.md)
+- [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md)
 
 ### Ruby
 

@@ -10,6 +10,7 @@ module SystemCheck
 
       def multi_check
         $stdout.puts
+
         if Gitlab::Geo.primary?
           Gitlab::Geo.secondary_nodes.each do |node|
             $stdout.print "* Can connect to secondary node: '#{node.url}' ... "

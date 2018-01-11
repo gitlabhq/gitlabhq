@@ -59,7 +59,7 @@ module Users
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       user_data = user.destroy
-      namespace.really_destroy!
+      namespace.destroy
 
       user_data
     end

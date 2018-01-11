@@ -47,6 +47,7 @@ module Gitlab
             else
               value = decorate_params_value(value, @request.params[key], tmp_path)
             end
+
             @request.update_param(key, value)
           end
 
@@ -60,6 +61,7 @@ module Gitlab
           unless path_hash.is_a?(Hash) && path_hash.count == 1
             raise "invalid path: #{path_hash.inspect}"
           end
+
           path_key, path_value = path_hash.first
 
           unless value_hash.is_a?(Hash) && value_hash[path_key]

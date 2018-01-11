@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import eventHub from '~/deploy_keys/eventhub';
 import deployKeysApp from '~/deploy_keys/components/app.vue';

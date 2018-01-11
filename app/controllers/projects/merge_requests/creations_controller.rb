@@ -50,6 +50,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
              else
                []
              end
+
     @diff_notes_disabled = true
 
     @environment = @merge_request.environments_for(current_user).last
