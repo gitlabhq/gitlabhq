@@ -56,11 +56,7 @@ export default {
 
     eventHub.$on('fetchPage', this.fetchPage);
     eventHub.$on('toggleChildren', this.toggleChildren);
-<<<<<<< HEAD
-    eventHub.$on('leaveGroup', this.leaveGroup);
-=======
     eventHub.$on('showLeaveGroupModal', this.showLeaveGroupModal);
->>>>>>> upstream/master
     eventHub.$on('updatePagination', this.updatePagination);
     eventHub.$on('updateGroups', this.updateGroups);
   },
@@ -70,11 +66,7 @@ export default {
   beforeDestroy() {
     eventHub.$off('fetchPage', this.fetchPage);
     eventHub.$off('toggleChildren', this.toggleChildren);
-<<<<<<< HEAD
-    eventHub.$off('leaveGroup', this.leaveGroup);
-=======
     eventHub.$off('showLeaveGroupModal', this.showLeaveGroupModal);
->>>>>>> upstream/master
     eventHub.$off('updatePagination', this.updatePagination);
     eventHub.$off('updateGroups', this.updateGroups);
   },
