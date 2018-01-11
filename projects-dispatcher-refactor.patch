@@ -1,0 +1,116 @@
+diff --git a/app/assets/javascripts/dispatcher.js b/app/assets/javascripts/dispatcher.js
+index 212b6082e..98d6d79c0 100644
+--- a/app/assets/javascripts/dispatcher.js
++++ b/app/assets/javascripts/dispatcher.js
+@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
+ import groupAvatar from './group_avatar';
+ import GroupLabelSubscription from './group_label_subscription';
+ import LineHighlighter from './line_highlighter';
+-import groupsSelect from './groups_select';
+ import Search from './search';
+ import initAdmin from './admin';
+ import NamespaceSelect from './namespace_select';
+@@ -43,7 +42,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+ import BlobForkSuggestion from './blob/blob_fork_suggestion';
+ import UserCallout from './user_callout';
+ import ShortcutsWiki from './shortcuts_wiki';
+-import Pipelines from './pipelines';
+ import BlobViewer from './blob/viewer/index';
+ import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
+ import UsersSelect from './users_select';
+@@ -400,23 +398,16 @@ import Activities from './activities';
+           break;
+         case 'projects:pipelines:new':
+         case 'projects:pipelines:create':
+-          new NewBranchForm($('.js-new-pipeline-form'));
++          import('./pages/projects/pipelines/new')
++            .then(callDefault)
++            .catch(fail);
+           break;
+         case 'projects:pipelines:builds':
+         case 'projects:pipelines:failures':
+         case 'projects:pipelines:show':
+-          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
+-          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
+-
+-          new Pipelines({
+-            initTabs: true,
+-            pipelineStatusUrl,
+-            tabsOptions: {
+-              action: controllerAction,
+-              defaultAction: 'pipelines',
+-              parentEl: '.pipelines-tabs',
+-            },
+-          });
++          import('./pages/projects/pipelines/builds')
++            .then(callDefault)
++            .catch(fail);
+           break;
+         case 'groups:activity':
+           new Activities();
+@@ -438,11 +429,9 @@ import Activities from './activities';
+           new UsersSelect();
+           break;
+         case 'projects:project_members:index':
+-          memberExpirationDate('.js-access-expiration-date-groups');
+-          groupsSelect();
+-          memberExpirationDate();
+-          new Members();
+-          new UsersSelect();
++          import('./pages/projects/project_members/')
++            .then(callDefault)
++            .catch(fail);
+           break;
+         case 'groups:new':
+         case 'admin:groups:new':
+diff --git a/app/assets/javascripts/pages/projects/pipelines/builds/index.js b/app/assets/javascripts/pages/projects/pipelines/builds/index.js
+new file mode 100644
+index 000000000..060a78b42
+--- /dev/null
++++ b/app/assets/javascripts/pages/projects/pipelines/builds/index.js
+@@ -0,0 +1,16 @@
++import Pipelines from '../../../../pipelines';
++
++export default () => {
++  const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
++  const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
++
++  new Pipelines({ // eslint-disable-line no-new
++    initTabs: true,
++    pipelineStatusUrl,
++    tabsOptions: {
++      action: controllerAction,
++      defaultAction: 'pipelines',
++      parentEl: '.pipelines-tabs',
++    },
++  });
++};
+diff --git a/app/assets/javascripts/pages/projects/pipelines/new/index.js b/app/assets/javascripts/pages/projects/pipelines/new/index.js
+new file mode 100644
+index 000000000..c54cc62bf
+--- /dev/null
++++ b/app/assets/javascripts/pages/projects/pipelines/new/index.js
+@@ -0,0 +1,5 @@
++import NewBranchForm from '../../../../new_branch_form';
++
++export default () => {
++  new NewBranchForm($('.js-new-pipeline-form')); // eslint-disable-line no-new
++};
+diff --git a/app/assets/javascripts/pages/projects/project_members/index.js b/app/assets/javascripts/pages/projects/project_members/index.js
+new file mode 100644
+index 000000000..f4643e7db
+--- /dev/null
++++ b/app/assets/javascripts/pages/projects/project_members/index.js
+@@ -0,0 +1,12 @@
++import memberExpirationDate from '../../../member_expiration_date';
++import UsersSelect from '../../../users_select';
++import groupsSelect from '../../../groups_select';
++import Members from '../../../members';
++
++export default () => {
++  memberExpirationDate('.js-access-expiration-date-groups');
++  groupsSelect();
++  memberExpirationDate();
++  new Members(); // eslint-disable-line no-new
++  new UsersSelect(); // eslint-disable-line no-new
++};
