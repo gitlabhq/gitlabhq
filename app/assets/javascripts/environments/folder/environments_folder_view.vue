@@ -29,10 +29,6 @@
         required: true,
       },
     },
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
     methods: {
       successCallback(resp) {
         this.saveData(resp);

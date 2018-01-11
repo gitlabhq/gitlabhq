@@ -1,35 +1,14 @@
 <script>
   /**
-<<<<<<< HEAD
-   * Renders a terminal button to open a web terminal.
-   * Used in environments table.
-   */
-=======
   * Renders a terminal button to open a web terminal.
   * Used in environments table.
   */
->>>>>>> upstream/master
   import terminalIconSvg from 'icons/_icon_terminal.svg';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     directives: {
       tooltip,
-<<<<<<< HEAD
-    },
-    props: {
-      terminalPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-    },
-    data() {
-      return {
-        terminalIconSvg,
-      };
-    },
-=======
     },
 
     props: {
@@ -45,7 +24,6 @@
         terminalIconSvg,
       };
     },
->>>>>>> upstream/master
 
     computed: {
       title() {

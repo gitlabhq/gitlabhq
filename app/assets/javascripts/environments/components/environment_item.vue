@@ -673,12 +673,7 @@
         <span class="folder-icon">
           <i
             class="fa fa-folder"
-<<<<<<< HEAD
-            aria-hidden="true"
-          >
-=======
             aria-hidden="true">
->>>>>>> upstream/master
           </i>
         </span>
 
