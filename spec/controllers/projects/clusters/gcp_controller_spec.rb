@@ -137,15 +137,17 @@ describe Projects::Clusters::GcpController do
       context 'when access token is valid' do
         before do
           stub_google_api_validate_token
+          allow_any_instance_of(described_class).to receive(:authorize_google_project_billing)
         end
 
         context 'when google project billing is enabled' do
           before do
-            stub_google_project_billing_status
+            redis_double = double
+            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+            allow(redis_double).to receive(:get).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for('token')).and_return('true')
           end
 
           it 'creates a new cluster' do
-            expect(CheckGcpProjectBillingWorker).to receive(:store_session_token)
             expect(ClusterProvisionWorker).to receive(:perform_async)
             expect { go }.to change { Clusters::Cluster.count }
               .and change { Clusters::Providers::Gcp.count }
@@ -157,9 +159,6 @@ describe Projects::Clusters::GcpController do
 
         context 'when google project billing is not enabled' do
           it 'renders the cluster form with an error' do
-            expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
-            expect(CheckGcpProjectBillingWorker).to receive(:store_session_token)
-
             go
 
             expect(response).to set_flash[:alert]
