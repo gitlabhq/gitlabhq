@@ -47,26 +47,14 @@
           <a
             :href="issue.url"
             class="issue-link"
-<<<<<<< HEAD
-          >
-            #{{ issue.iid }}
-          </a>
-=======
           >#{{ issue.iid }}</a>
->>>>>>> upstream/master
           &middot;
           <span>
             {{ s__('OpenedNDaysAgo|Opened') }}
             <a
               :href="issue.url"
               class="issue-date"
-<<<<<<< HEAD
-            >
-              {{ issue.createdAt }}
-            </a>
-=======
             >{{ issue.createdAt }}</a>
->>>>>>> upstream/master
           </span>
           <span>
             {{ s__('ByAuthor|by') }}
