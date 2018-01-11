@@ -482,13 +482,15 @@ import Activities from './activities';
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
+          new Labels();
+          break;
         case 'projects:labels:new':
           import('./pages/projects/labels/new')
             .then(callDefault)
             .catch(fail);
           break;
         case 'projects:labels:edit':
-          import('./pages/projects/labels/new')
+          import('./pages/projects/labels/edit')
             .then(callDefault)
             .catch(fail);
           break;
