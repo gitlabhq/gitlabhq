@@ -7,7 +7,7 @@
 # repository-wide language statistics:
 # <https://github.com/github/linguist/blob/v4.7.0/lib/linguist/lazy_blob.rb#L33-L36>
 #
-# The options passed by Linguist are those assumed by Gitlab::Git::Attributes
+# The options passed by Linguist are those assumed by Gitlab::Git::AttributesInfoParser
 # anyway, and there is no great efficiency gain from just fetching the listed
 # attributes with our implementation, so we ignore the additional arguments.
 #
@@ -19,7 +19,7 @@ module Rugged
       end
 
       def attributes
-        @attributes ||= Gitlab::Git::Attributes.new(path)
+        @attributes ||= Gitlab::Git::AttributesInfoParser.new(path)
       end
     end
 

@@ -102,7 +102,7 @@ module Gitlab
         )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
-        @attributes = Gitlab::Git::Attributes.new(path)
+        @attributes = Gitlab::Git::AttributesInfoParser.new(path)
       end
 
       def ==(other)
@@ -1009,6 +1009,18 @@ module Gitlab
 
       def gitattribute(path, name)
         attributes(path)[name]
+      end
+
+      # Check .gitattributes for a given ref
+      #
+      # This only checks the root .gitattributes file,
+      # it does not traverse subfolders to find additional .gitattributes files
+      #
+      # This method is around 30 times slower than `attributes`,
+      # which uses `$GIT_DIR/info/attributes`
+      def attributes_at(ref, file_path)
+        parser = AttributesAtRefParser.new(self, ref)
+        parser.attributes(file_path)
       end
 
       def languages(ref = nil)
