@@ -41,36 +41,6 @@ module Gitlab
         io.read
       end
 
-      def rm_project
-        logger.info "Removing repository <#{repository_absolute_path}>."
-        FileUtils.rm_rf(repository_absolute_path)
-      end
-
-      # Move repository from one directory to another
-      #
-      # Example:  gitlab/gitlab-ci.git -> randx/six.git
-      #
-      # Won't work if target namespace directory does not exist
-      #
-      def mv_project(new_path)
-        new_absolute_path = File.join(shard_path, new_path)
-
-        # verify that the source repo exists
-        unless File.exist?(repository_absolute_path)
-          logger.error "mv-project failed: source path <#{repository_absolute_path}> does not exist."
-          return false
-        end
-
-        # ...and that the target repo does not exist
-        if File.exist?(new_absolute_path)
-          logger.error "mv-project failed: destination path <#{new_absolute_path}> already exists."
-          return false
-        end
-
-        logger.info "Moving repository from <#{repository_absolute_path}> to <#{new_absolute_path}>."
-        FileUtils.mv(repository_absolute_path, new_absolute_path)
-      end
-
       # Import project via git clone --bare
       # URL must be publicly cloneable
       def import_project(source, timeout)

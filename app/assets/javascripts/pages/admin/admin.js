@@ -1,4 +1,4 @@
-import { refreshCurrentPage } from './lib/utils/url_utility';
+import { refreshCurrentPage } from '../../lib/utils/url_utility';
 
 function showBlacklistType() {
   if ($('input[name="blacklist_type"]:checked').val() === 'file') {

@@ -136,7 +136,10 @@ module Gitlab
       end
     end
 
-    # Move repository
+    # Move repository reroutes to mv_directory which is an alias for
+    # mv_namespace. Given the underlying implementation is a move action,
+    # indescriminate of what the folders might be.
+    #
     # storage - project's storage path
     # path - project disk path
     # new_path - new project disk path
@@ -146,7 +149,9 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def mv_repository(storage, path, new_path)
-      gitlab_projects(storage, "#{path}.git").mv_project("#{new_path}.git")
+      return false if path.empty? || new_path.empty?
+
+      !!mv_directory(storage, "#{path}.git", "#{new_path}.git")
     end
 
     # Fork repository to new path
@@ -164,7 +169,9 @@ module Gitlab
         .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
     end
 
-    # Remove repository from file system
+    # Removes a repository from file system, using rm_diretory which is an alias
+    # for rm_namespace. Given the underlying implementation removes the name
+    # passed as second argument on the passed storage.
     #
     # storage - project's storage path
     # name - project disk path
@@ -174,7 +181,12 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def remove_repository(storage, name)
-      gitlab_projects(storage, "#{name}.git").rm_project
+      return false if name.empty?
+
+      !!rm_directory(storage, "#{name}.git")
+    rescue ArgumentError => e
+      Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git")
+      false
     end
 
     # Add new key to gitlab-shell
@@ -313,6 +325,7 @@ module Gitlab
     rescue GRPC::InvalidArgument => e
       raise ArgumentError, e.message
     end
+    alias_method :rm_directory, :rm_namespace
 
     # Move namespace directory inside repositories storage
     #
@@ -332,6 +345,7 @@ module Gitlab
     rescue GRPC::InvalidArgument
       false
     end
+    alias_method :mv_directory, :mv_namespace
 
     def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
