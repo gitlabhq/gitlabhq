@@ -30,14 +30,6 @@
         type: String,
         required: false,
         default: '',
-<<<<<<< HEAD
-=======
-      },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
->>>>>>> upstream/master
       },
       enableAutocomplete: {
         type: Boolean,
@@ -146,10 +138,6 @@
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
-<<<<<<< HEAD
-=======
-          :can-attach-file="canAttachFile"
->>>>>>> upstream/master
         />
       </div>
     </div>
