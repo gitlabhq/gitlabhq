@@ -113,6 +113,7 @@ shared_examples 'discussion comments' do |resource_name|
         else
           expect(find(submit_selector).value).to eq 'Start discussion'
         end
+
         expect(page).not_to have_selector menu_selector
       end
 
@@ -200,6 +201,7 @@ shared_examples 'discussion comments' do |resource_name|
             else
               expect(find(submit_selector).value).to eq 'Comment'
             end
+
             expect(page).not_to have_selector menu_selector
           end
 

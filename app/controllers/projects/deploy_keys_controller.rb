@@ -27,6 +27,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     unless @key.valid? && @project.deploy_keys << @key
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
+
     redirect_to_repository_settings(@project)
   end
 

@@ -5,9 +5,11 @@ namespace :gitlab do
       require 'toml'
 
       warn_user_is_not_gitlab
+
       unless args.dir.present?
         abort %(Please specify the directory where you want to install gitaly:\n  rake "gitlab:gitaly:install[/home/git/gitaly]")
       end
+
       args.with_defaults(repo: 'https://gitlab.com/gitlab-org/gitaly.git')
 
       version = Gitlab::GitalyClient.expected_server_version

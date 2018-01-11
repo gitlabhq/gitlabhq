@@ -267,6 +267,7 @@ module Gitlab
                             else
                               %w[title group_id]
                             end
+
         finder_hash = parsed_relation_hash.slice(*finder_attributes)
 
         if label?

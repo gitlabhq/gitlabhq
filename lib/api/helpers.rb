@@ -26,6 +26,7 @@ module API
       check_unmodified_since!(last_updated)
 
       status 204
+
       if block_given?
         yield resource
       else

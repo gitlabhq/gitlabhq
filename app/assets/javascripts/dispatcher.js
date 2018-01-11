@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import groupsSelect from './groups_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
@@ -40,7 +39,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
-import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
@@ -49,11 +47,9 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import Star from './star';
 import TreeView from './tree';
-import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import initExperimentalFlags from './experimental_flags';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
@@ -145,9 +141,6 @@ import Activities from './activities';
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
-        case 'profiles:preferences:show':
-          initExperimentalFlags();
-          break;
         case 'sessions:new':
           import('./pages/sessions/new')
             .then(callDefault)
@@ -390,23 +383,16 @@ import Activities from './activities';
           break;
         case 'projects:pipelines:new':
         case 'projects:pipelines:create':
-          new NewBranchForm($('.js-new-pipeline-form'));
+          import('./pages/projects/pipelines/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
-          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
-          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
-
-          new Pipelines({
-            initTabs: true,
-            pipelineStatusUrl,
-            tabsOptions: {
-              action: controllerAction,
-              defaultAction: 'pipelines',
-              parentEl: '.pipelines-tabs',
-            },
-          });
+          import('./pages/projects/pipelines/builds')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:activity':
           new Activities();
@@ -428,11 +414,9 @@ import Activities from './activities';
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          memberExpirationDate('.js-access-expiration-date-groups');
-          groupsSelect();
-          memberExpirationDate();
-          new Members();
-          new UsersSelect();
+          import('./pages/projects/project_members/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:new':
         case 'groups:create':
@@ -536,7 +520,9 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'help:index':
-          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          import('./pages/help')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'search:show':
           import('./pages/search/show')
@@ -579,13 +565,15 @@ import Activities from './activities';
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
+        case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:impersonation_tokens:index':
           import('./pages/admin/impersonation_tokens')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'profiles:personal_access_tokens:index':
-          new DueDateSelectors();
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
@@ -672,8 +660,9 @@ import Activities from './activities';
           new UserCallout();
           break;
         case 'profiles':
-          new NotificationsForm();
-          notificationsDropdown();
+          import('./pages/profiles/index/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects':
           new Project();

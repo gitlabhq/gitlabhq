@@ -12,7 +12,7 @@ class Issue < ActiveRecord::Base
   include ThrottledTouch
   include IgnorableColumn
 
-  ignore_column :assignee_id, :branch_name
+  ignore_column :assignee_id, :branch_name, :deleted_at
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -77,8 +77,6 @@ class Issue < ActiveRecord::Base
       issue.closed_at = Time.zone.now
     end
   end
-
-  acts_as_paranoid
 
   class << self
     alias_method :in_parents, :in_projects
