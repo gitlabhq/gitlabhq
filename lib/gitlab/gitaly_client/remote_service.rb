@@ -23,6 +23,19 @@ module Gitlab
 
         response.result
       end
+
+      def fetch_internal_remote(repository)
+        request = Gitaly::FetchInternalRemoteRequest.new(
+          repository: @gitaly_repo,
+          remote_repository: repository.gitaly_repository
+        )
+
+        response = GitalyClient.call(@storage, :remote_service,
+                                     :fetch_internal_remote, request,
+                                     remote_storage: repository.storage)
+
+        response.result
+      end
     end
   end
 end

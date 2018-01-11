@@ -14,7 +14,7 @@ const d3 = {
   timeYear,
 };
 
-export const dateFormat = d3.time('%b %-d, %Y');
+export const dateFormat = d3.time('%a, %b %-d');
 export const timeFormat = d3.time('%-I:%M%p');
 export const dateFormatWithName = d3.time('%a, %b %-d');
 export const bisectDate = d3.bisector(d => d.time).left;
