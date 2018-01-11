@@ -512,6 +512,31 @@ describe API::Commits do
       end
     end
 
+    context 'when stat param' do
+      let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}" }
+
+      it 'is not present return stats by default' do
+        get api(route, user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to include 'stats'
+      end
+
+      it "is false it does not include stats" do
+        get api(route, user), stats: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).not_to include 'stats'
+      end
+
+      it "is true it includes stats" do
+        get api(route, user), stats: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to include 'stats'
+      end
+    end
+
     context 'when unauthenticated', 'and project is public' do
       let(:project) { create(:project, :public, :repository) }
 

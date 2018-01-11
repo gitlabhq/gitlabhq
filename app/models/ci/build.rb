@@ -79,7 +79,7 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create do |build|
+    after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
@@ -461,7 +461,14 @@ module Ci
     end
 
     def cache
-      [options[:cache]]
+      cache = options[:cache]
+
+      if cache && project.jobs_cache_index
+        cache = cache.merge(
+          key: "#{cache[:key]}:#{project.jobs_cache_index}")
+      end
+
+      [cache]
     end
 
     def credentials
