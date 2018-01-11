@@ -1283,47 +1283,57 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#merged_branch_names' do
-    context 'when branch names are passed' do
-      it 'only returns the names we are asking' do
-        names = repository.merged_branch_names(%w[merge-test])
+    shared_examples 'finding merged branch names' do
+      context 'when branch names are passed' do
+        it 'only returns the names we are asking' do
+          names = repository.merged_branch_names(%w[merge-test])
 
-        expect(names).to contain_exactly('merge-test')
+          expect(names).to contain_exactly('merge-test')
+        end
+
+        it 'does not return unmerged branch names' do
+          names = repository.merged_branch_names(%w[feature])
+
+          expect(names).to be_empty
+        end
       end
 
-      it 'does not return unmerged branch names' do
-        names = repository.merged_branch_names(%w[feature])
+      context 'when no root ref is available' do
+        it 'returns empty list' do
+          project = create(:project, :empty_repo)
 
-        expect(names).to be_empty
+          names = project.repository.merged_branch_names(%w[feature])
+
+          expect(names).to be_empty
+        end
+      end
+
+      context 'when no branch names are specified' do
+        before do
+          repository.create_branch('identical', 'master')
+        end
+
+        after do
+          ensure_seeds
+        end
+
+        it 'returns all merged branch names except for identical one' do
+          names = repository.merged_branch_names
+
+          expect(names).to include('merge-test')
+          expect(names).to include('fix-mode')
+          expect(names).not_to include('feature')
+          expect(names).not_to include('identical')
+        end
       end
     end
 
-    context 'when no root ref is available' do
-      it 'returns empty list' do
-        project = create(:project, :empty_repo)
-
-        names = project.repository.merged_branch_names(%w[feature])
-
-        expect(names).to be_empty
-      end
+    context 'when Gitaly merged_branch_names feature is enabled' do
+      it_behaves_like 'finding merged branch names'
     end
 
-    context 'when no branch names are specified' do
-      before do
-        repository.create_branch('identical', 'master')
-      end
-
-      after do
-        ensure_seeds
-      end
-
-      it 'returns all merged branch names except for identical one' do
-        names = repository.merged_branch_names
-
-        expect(names).to include('merge-test')
-        expect(names).to include('fix-mode')
-        expect(names).not_to include('feature')
-        expect(names).not_to include('identical')
-      end
+    context 'when Gitaly merged_branch_names feature is disabled', :disable_gitaly do
+      it_behaves_like 'finding merged branch names'
     end
   end
 

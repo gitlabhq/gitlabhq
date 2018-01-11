@@ -571,7 +571,21 @@ module Gitlab
       end
 
       def merged_branch_names(branch_names = [])
-        Set.new(git_merged_branch_names(branch_names))
+        return [] unless root_ref
+
+        root_sha = find_branch(root_ref)&.target
+
+        return [] unless root_sha
+
+        branches = gitaly_migrate(:merged_branch_names) do |is_enabled|
+          if is_enabled
+            gitaly_merged_branch_names(branch_names, root_sha)
+          else
+            git_merged_branch_names(branch_names, root_sha)
+          end
+        end
+
+        Set.new(branches)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -1488,14 +1502,7 @@ module Gitlab
         sort_branches(branches, sort_by)
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
-      def git_merged_branch_names(branch_names = [])
-        return [] unless root_ref
-
-        root_sha = find_branch(root_ref)&.target
-
-        return [] unless root_sha
-
+      def git_merged_branch_names(branch_names, root_sha)
         git_arguments =
           %W[branch --merged #{root_sha}
              --format=%(refname:short)\ %(objectname)] + branch_names
@@ -1507,6 +1514,14 @@ module Gitlab
 
           branches << name if sha != root_sha
         end
+      end
+
+      def gitaly_merged_branch_names(branch_names, root_sha)
+        qualified_branch_names = branch_names.map { |b| "refs/heads/#{b}" }
+
+        gitaly_ref_client.merged_branches(qualified_branch_names)
+          .reject { |b| b.target == root_sha }
+          .map(&:name)
       end
 
       def process_count_commits_options(options)
