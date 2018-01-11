@@ -522,10 +522,6 @@ On those a default key should not be provided.
 
 1. Properties in a Vue Component:
   Check [order of properties in components rule][vue-order].
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
 
 #### Vue and Bootstrap
 
