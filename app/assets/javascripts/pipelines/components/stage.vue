@@ -50,13 +50,7 @@
 
     computed: {
       dropdownClass() {
-<<<<<<< HEAD
         return this.dropdownContent.length > 0 ? 'js-builds-dropdown-container' : 'js-builds-dropdown-loading';
-=======
-        return this.dropdownContent.length > 0 ?
-          'js-builds-dropdown-container' :
-          'js-builds-dropdown-loading';
->>>>>>> upstream/master
       },
 
       triggerButtonClass() {
