@@ -13,7 +13,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import groupsSelect from './groups_select';
-import Search from './search';
 import initAdmin from './admin';
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
@@ -581,7 +580,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
-          new Search();
+          import('./pages/search/show')
+            .then(callDefault)
+            .catch(fail);
           new UserCallout();
           break;
         case 'projects:mirrors:show':
