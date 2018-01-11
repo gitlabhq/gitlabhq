@@ -267,10 +267,6 @@
         :project-path="projectPath"
         :project-namespace="projectNamespace"
         :show-delete-button="showDeleteButton"
-<<<<<<< HEAD
-=======
-        :can-attach-file="canAttachFile"
->>>>>>> upstream/master
         :enable-autocomplete="enableAutocomplete"
       />
 
