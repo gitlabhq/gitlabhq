@@ -49,11 +49,9 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import Star from './star';
 import TreeView from './tree';
-import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import initExperimentalFlags from './experimental_flags';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
@@ -169,9 +167,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
-        case 'profiles:preferences:show':
-          initExperimentalFlags();
-          break;
         case 'sessions:new':
           import('./pages/sessions/new')
             .then(callDefault)
@@ -564,7 +559,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'help:index':
-          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          import('./pages/help')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'search:show':
           import('./pages/search/show')
@@ -626,7 +623,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
-          new DueDateSelectors();
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
@@ -731,8 +730,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new UserCallout();
           break;
         case 'profiles':
-          new NotificationsForm();
-          notificationsDropdown();
+          import('./pages/profiles/index/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects':
           new Project();
