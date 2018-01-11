@@ -10,6 +10,14 @@ module Geo
 
     protected
 
+    # When this feature isn't present, FDW queries pull every row from the
+    # remote database and perform aggregates locally, leading to surprisingly
+    # slow COUNT queries on large tables. For more details, see this link:
+    # https://www.enterprisedb.com/blog/postgresql-aggregate-push-down-postgresfdw
+    def aggregate_pushdown_supported?
+      Gitlab::Geo.fdw? && Gitlab::Database.version.to_f >= 10.0
+    end
+
     def use_legacy_queries?
       # Selective project replication adds a wrinkle to FDW
       # queries, so we fallback to the legacy version for now.
