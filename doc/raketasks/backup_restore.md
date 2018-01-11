@@ -5,14 +5,27 @@
 An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** 
-of GitLab on which it was created. The best way to migrate your repositories 
+You can only restore a backup to **exactly the same version and type (CE/EE)**
+of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
 ## Backup
 
 GitLab provides a simple command line interface to backup your whole installation,
 and is flexible enough to fit your needs.
+
+### Requirements
+
+If you're using GitLab with the Omnibus package, you're all set. If you
+installed GitLab from source, make sure the following packages are installed:
+
+* rsync
+
+If you're using Ubuntu, you could run:
+
+```
+sudo apt-get install -y rsync
+```
 
 ### Backup timestamp
 
@@ -431,7 +444,7 @@ The [restore prerequisites section](#restore-prerequisites) includes crucial
 information. Make sure to read and test the whole restore process at least once
 before attempting to perform it in a production environment.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** of 
+You can only restore a backup to **exactly the same version and type (CE/EE)** of
 GitLab that you created it on, for example CE 9.1.0.
 
 ### Restore prerequisites
@@ -511,7 +524,7 @@ sudo service gitlab restart
 
 This procedure assumes that:
 
-- You have installed the **exact same version and type (CE/EE)** of GitLab 
+- You have installed the **exact same version and type (CE/EE)** of GitLab
   Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
