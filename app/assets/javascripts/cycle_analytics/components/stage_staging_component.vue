@@ -63,12 +63,8 @@
             </a>
             <span
               class="icon-branch"
-<<<<<<< HEAD
-              v-html="iconBranch">
-=======
               v-html="iconBranch"
             >
->>>>>>> upstream/master
             </span>
             <a
               :href="build.commitUrl"
