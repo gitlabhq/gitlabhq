@@ -12,7 +12,7 @@
     .form-group
       = label_tag :group, "Group", class: 'append-bottom-10'
       .form-group
-        = f.radio_button :group, :business
+        = f.radio_button :group, :business, checked: true
         = f.label :group_business, "Business", class: 'label-light'
       .form-group
         = f.radio_button :group, :response
