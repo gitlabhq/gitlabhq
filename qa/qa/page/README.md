@@ -19,18 +19,18 @@ We need page objects, because we need to reduce duplication and avoid problems
 whenever someone changes some selectors in GitLab's source code.
 
 Imagine that we have a hundred specs in GitLab QA, and we need to sign into
-GitLab each time, before we make assertions. Without page object one would need
-to rely on volatile helpers or invoke Capybara methods directly. Imagine
+GitLab each time, before we make assertions. Without a page object one would
+need to rely on volatile helpers or invoke Capybara methods directly. Imagine
 invoking `fill_in :user_login` in every `*_spec.rb` file / test example.
 
 When someone later changes `t.text_field :login` in the view associated with
-this page to `t.text_field :username` it will generate different field ID,
-what would effectively break all 100 tests.
+this page to `t.text_field :username` it will generate a different field
+identifier, what would effectively break all tests.
 
-Because we are now using `Page::Main::Login.act { sign_in_using_credentials }`
-everywhere, where we want to sign into GitLab, page object is the single source
-of truth, and we will need to update `fill_in :user_login`
-to `fill_in :user_username` only in a one place as well.
+Because we are using `Page::Main::Login.act { sign_in_using_credentials }`
+everywhere, when we want to sign into GitLab, the page object is the single
+source of truth, and we will need to update `fill_in :user_login`
+to `fill_in :user_username` only in a one place.
 
 ## What problems did we have in the past?
 
@@ -38,9 +38,9 @@ We do not run QA tests for every commit, because of performance reasons, and
 the time it would take to build packages and test everything.
 
 That is why when someone changes `t.text_field :login` to
-`t.text_field :username` in new session view we won't know about this change
-until our GitLab QA nightly pipeline runs, or someone triggers `package-qa`
-action in their merge request.
+`t.text_field :username` in the _new session_ view we won't know about this
+change until our GitLab QA nightly pipeline fails, or until someone triggers
+`package-qa` action in their merge request.
 
 Obviously such a change would break all tests. We call this problem a _fragile
 tests problem_.
@@ -53,11 +53,11 @@ problem by introducing coupling between GitLab CE / EE views and GitLab QA.
 Currently, when you add a new `Page::Base` derived class, you will also need to
 define all selectors that your page objects depends on.
 
-Whenever your push your code to CE / EE repository, `qa:selectors` sanity test
+Whenever you push your code to CE / EE repository, `qa:selectors` sanity test
 job is going to be run as a part of a CI pipeline.
 
 This test is going to validate all page objects that we have implemented in
-`qa/page` directory. When if fails, you will be notified about missing
+`qa/page` directory. When it fails, you will be notified about missing
 or invalid views / selectors definition.
 
 ## How to properly implement a page object?
