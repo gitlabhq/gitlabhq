@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171230123729) do
+ActiveRecord::Schema.define(version: 20180105212544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1044,6 +1044,7 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.string "real_size"
     t.string "head_commit_sha"
     t.string "start_commit_sha"
+    t.integer "commits_count"
   end
 
   add_index "merge_request_diffs", ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
