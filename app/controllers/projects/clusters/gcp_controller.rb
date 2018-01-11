@@ -42,7 +42,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     when 'true'
       return
     when 'false'
-      flash[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a cluster</a>. Please try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
+      flash[:alert] = _('Please <a href=%{link_to_billing} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a cluster</a>, then try again.').html_safe % { link_to_billing: "https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral" }
     else
       flash[:alert] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
     end

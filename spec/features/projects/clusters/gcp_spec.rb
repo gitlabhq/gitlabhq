@@ -147,7 +147,7 @@ feature 'Gcp Cluster', :js do
       end
 
       it 'user sees form with error' do
-        expect(page).to have_content('Please enable billing for one of your projects to be able to create a cluster. Please try again.')
+        expect(page).to have_content('Please enable billing for one of your projects to be able to create a cluster, then try again.')
       end
     end
 
