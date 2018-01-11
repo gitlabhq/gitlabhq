@@ -27,10 +27,7 @@
     components: {
       icon,
     },
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master
     props: {
       status: {
         type: Object,
