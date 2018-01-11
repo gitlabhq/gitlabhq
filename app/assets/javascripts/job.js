@@ -3,7 +3,6 @@ import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
-import { timeFor } from './lib/utils/datetime_utility';
 
 export default class Job {
   constructor(options) {
