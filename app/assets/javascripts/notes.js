@@ -105,8 +105,9 @@ export default class Notes {
   }
 
   addBinding() {
+    this.$wrapperEl = Cookies.get('vue_mr_discussions') ? $(document).find('.diffs') : $(document);
+
     // Edit note link
-    this.$wrapperEl = $(document).find('.diffs');
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
     this.$wrapperEl.on('click', '.note-edit-cancel', this.cancelEdit);
     // Reopen and close actions for Issue/MR combined with note form submit
