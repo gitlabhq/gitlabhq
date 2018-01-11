@@ -1,4 +1,4 @@
-/* global Sortable */
+import Sortable from 'vendor/Sortable';
 import boardNewIssue from './board_new_issue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
