@@ -18,11 +18,6 @@ describe Issue do
 
   subject { create(:issue) }
 
-  describe "act_as_paranoid" do
-    it { is_expected.to have_db_column(:deleted_at) }
-    it { is_expected.to have_db_index(:deleted_at) }
-  end
-
   describe 'callbacks' do
     describe '#ensure_metrics' do
       it 'creates metrics after saving' do

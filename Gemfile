@@ -385,9 +385,6 @@ gem 'ruby-prof', '~> 0.16.2'
 # OAuth
 gem 'oauth2', '~> 1.4'
 
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
-
 # Health check
 gem 'health_check', '~> 2.6.0'
 
