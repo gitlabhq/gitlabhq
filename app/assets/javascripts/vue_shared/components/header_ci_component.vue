@@ -127,12 +127,8 @@
           v-if="action.type === 'link'"
           :href="action.path"
           :class="action.cssClass"
-<<<<<<< HEAD
-          :key="i">
-=======
           :key="i"
         >
->>>>>>> upstream/master
           {{ action.label }}
         </a>
 
