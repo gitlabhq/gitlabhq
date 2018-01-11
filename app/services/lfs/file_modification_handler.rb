@@ -9,24 +9,47 @@ module Lfs
       @branch_name = branch_name
     end
 
+    def on_success
+      on_success_actions.map(&:call)
+    end
+
+    # In the block form this yields content to commit and links LfsObjectsProject on success
+    # In the non-block form this returns content to commit and requires handler.on_success to be called to link LfsObjectsProjects
     def new_file(file_path, file_content)
-      if project.lfs_enabled? && lfs_file?(file_path)
-        lfs_pointer_file = Gitlab::Git::LfsPointerFile.new(file_content)
-        lfs_object = create_lfs_object!(lfs_pointer_file, file_content)
-        content = lfs_pointer_file.pointer
+      content = transform_content(file_path, file_content)
 
-        success = yield(content)
+      if block_given?
+        result = yield(content)
 
-        link_lfs_object!(lfs_object) if success
+        on_success if result
+
+        result
       else
-        yield(file_content)
+        content
       end
     end
 
     private
 
+    def transform_content(file_path, file_content)
+      if project.lfs_enabled? && lfs_file?(file_path)
+        lfs_pointer_file = Gitlab::Git::LfsPointerFile.new(file_content)
+        lfs_object = create_lfs_object!(lfs_pointer_file, file_content)
+
+        on_success_actions << -> { link_lfs_object!(lfs_object) }
+
+        lfs_pointer_file.pointer
+      else
+        file_content
+      end
+    end
+
     def lfs_file?(file_path)
       repository.attributes_at(branch_name, file_path)['filter'] == 'lfs'
+    end
+
+    def on_success_actions
+      @on_success_actions ||= []
     end
 
     def create_lfs_object!(lfs_pointer_file, file_content)
