@@ -1,6 +1,6 @@
-
 <script>
   /* global ListIssue */
+  import _ from 'underscore';
   import eventHub from '../eventhub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import Api from '../../api';

@@ -1,5 +1,5 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
-/* global Sortable */
+import Sortable from 'vendor/Sortable';
 import Vue from 'vue';
 import boardPromotionState from 'ee/boards/components/board_promotion_state';
 import AccessorUtilities from '../../lib/utils/accessor';

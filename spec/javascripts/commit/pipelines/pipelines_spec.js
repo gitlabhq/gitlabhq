@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 
