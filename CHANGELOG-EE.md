@@ -88,6 +88,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add border for epic edit button.
 
 
+## 10.2.6 (2018-01-11)
+
+### Security (2 changes)
+
+- Fix LDAP external user/group bug on first sign in.
+- Deny persisting milestones from outside project/group scope on boards.
+
+
 ## 10.2.5 (2017-12-15)
 
 ### Fixed (1 change)
