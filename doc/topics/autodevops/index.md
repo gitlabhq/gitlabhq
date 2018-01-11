@@ -212,15 +212,16 @@ Any security warnings are also [shown in the merge request widget](../../user/pr
 
 ### Auto SAST for Docker images
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> Introduced in GitLab 10.4.
 
-Vulnerability Static Analysis for Containers. It uses the
-[clair](https://github.com/coreos/clair) to run static
-analysis on the current Docker image and checks for potential security issues. Once the
-report is created, it's uploaded as an artifact which you can later download and
+Vulnerability Static Analysis for containers uses
+[Clair](https://github.com/coreos/clair) to run static analysis on a
+Docker image and checks for potential security issues. Once the report is
+created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also [shown in the merge request widget](../../user/project/merge_requests/sast.md).
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
 
 ### Auto Browser Performance Testing
 

@@ -210,6 +210,17 @@ merge request widget area.
 
 [Read more about Static Application Security Testing reports.](sast.md)
 
+## Static Application Security Testing for Docker containers
+
+> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.4.
+
+If you are using [GitLab CI/CD][ci], you can analyze your Docker images for known
+vulnerabilities.
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about SAST Docker images reports.](sast_docker.md)
+
 ## Browser Performance Testing
 
 > Introduced in [GitLab Enterprise Edition Premium][products] 10.3.
@@ -219,17 +230,6 @@ If your application offers a web interface and you are using [GitLab CI/CD][ci],
 GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
-
-## Static Application Security Testing for Docker images
-
-> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.4.
-
-If you are using [GitLab CI/CD][ci], you can analyze your Docker images for known
-vulnerabilities.
-Going a step further, GitLab can show the vulnerability report right in the
-merge request widget area.
-
-[Read more about SAST Docker image reports.](sast_docker.md)
 
 ## Live preview with Review Apps
 
