@@ -35,12 +35,9 @@ export default {
       type: String,
       default: '',
     },
-<<<<<<< HEAD
     groupId: {
       type: Number,
     },
-=======
->>>>>>> upstream/master
   },
   data() {
     return {
