@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       class New < Page::Base
-        view 'projects/_new_project_fields.html.haml' do
+        view 'app/views/projects/_new_project_fields.html.haml' do
           element :project_namespace_select
           element :project_namespace_field, 'select :namespace_id'
           element :project_path, 'text_field :path'
