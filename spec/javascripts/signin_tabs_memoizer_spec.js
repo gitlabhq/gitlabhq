@@ -1,5 +1,5 @@
 import AccessorUtilities from '~/lib/utils/accessor';
-import SigninTabsMemoizer from '~/signin_tabs_memoizer';
+import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 
 (() => {
   describe('SigninTabsMemoizer', () => {
