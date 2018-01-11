@@ -13,7 +13,7 @@ module QA
         def choose_test_namespace
           click_element :project_namespace_select
 
-          first('li', text: Runtime::Namespace.name).click
+          first('li', text: Runtime::Namespace.path).click
         end
 
         def choose_name(name)
