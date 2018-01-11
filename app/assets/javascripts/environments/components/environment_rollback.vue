@@ -1,18 +1,10 @@
 <script>
   /**
-<<<<<<< HEAD
-   * Renders Rollback or Re deploy button in environments table depending
-   * of the provided property `isLastDeployment`.
-   *
-   * Makes a post request when the button is clicked.
-   */
-=======
   * Renders Rollback or Re deploy button in environments table depending
   * of the provided property `isLastDeployment`.
   *
   * Makes a post request when the button is clicked.
   */
->>>>>>> upstream/master
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
@@ -20,16 +12,12 @@
     components: {
       loadingIcon,
     },
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     props: {
       retryUrl: {
         type: String,
         default: '',
       },
-<<<<<<< HEAD
 
       isLastDeployment: {
         type: Boolean,
@@ -37,15 +25,6 @@
       },
     },
 
-=======
-
-      isLastDeployment: {
-        type: Boolean,
-        default: true,
-      },
-    },
-
->>>>>>> upstream/master
     data() {
       return {
         isLoading: false,
