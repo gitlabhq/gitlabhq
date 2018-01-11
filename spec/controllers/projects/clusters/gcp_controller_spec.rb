@@ -145,6 +145,7 @@ describe Projects::Clusters::GcpController do
           end
 
           it 'creates a new cluster' do
+            expect(CheckGcpProjectBillingWorker).to receive(:store_session_token)
             expect(ClusterProvisionWorker).to receive(:perform_async)
             expect { go }.to change { Clusters::Cluster.count }
               .and change { Clusters::Providers::Gcp.count }
@@ -156,9 +157,12 @@ describe Projects::Clusters::GcpController do
 
         context 'when google project billing is not enabled' do
           it 'renders the cluster form with an error' do
+            expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
+            expect(CheckGcpProjectBillingWorker).to receive(:store_session_token)
+
             go
 
-            expect(response).to set_flash[:error]
+            expect(response).to set_flash[:alert]
             expect(response).to render_template('new')
           end
         end
