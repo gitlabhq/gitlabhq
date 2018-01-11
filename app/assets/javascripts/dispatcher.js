@@ -47,11 +47,9 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import Star from './star';
 import TreeView from './tree';
-import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import initExperimentalFlags from './experimental_flags';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
@@ -143,9 +141,6 @@ import Activities from './activities';
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
-        case 'profiles:preferences:show':
-          initExperimentalFlags();
-          break;
         case 'sessions:new':
           import('./pages/sessions/new')
             .then(callDefault)
@@ -513,7 +508,9 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'help:index':
-          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          import('./pages/help')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'search:show':
           import('./pages/search/show')
@@ -556,13 +553,15 @@ import Activities from './activities';
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
+        case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:impersonation_tokens:index':
           import('./pages/admin/impersonation_tokens')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'profiles:personal_access_tokens:index':
-          new DueDateSelectors();
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
@@ -649,8 +648,9 @@ import Activities from './activities';
           new UserCallout();
           break;
         case 'profiles':
-          new NotificationsForm();
-          notificationsDropdown();
+          import('./pages/profiles/index/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects':
           new Project();
