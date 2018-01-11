@@ -30,19 +30,11 @@
         default: 'bottom',
       },
       /**
-<<<<<<< HEAD
        * value could either be number or string
        * as `memberCount` is always passed as string
        * while `subgroupCount` & `projectCount`
        * are always number
        */
-=======
-      * value could either be number or string
-      * as `memberCount` is always passed as string
-      * while `subgroupCount` & `projectCount`
-      * are always number
-      */
->>>>>>> upstream/master
       value: {
         type: [Number, String],
         required: false,

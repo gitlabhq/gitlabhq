@@ -80,24 +80,14 @@
             </span>
             <a
               :href="build.commitUrl"
-<<<<<<< HEAD
-              class="commit-sha"
-            >
-=======
               class="commit-sha">
->>>>>>> upstream/master
               {{ build.shortSha }}
             </a>
           </h5>
           <span>
             <a
               :href="build.url"
-<<<<<<< HEAD
-              class="issue-date"
-            >
-=======
               class="issue-date">
->>>>>>> upstream/master
               {{ build.date }}
             </a>
           </span>

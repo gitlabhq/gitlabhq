@@ -3,21 +3,6 @@
   import { s__ } from '../../locale';
 
   /**
-<<<<<<< HEAD
-   * Renders the external url link in environments table.
-   */
-  export default {
-    directives: {
-      tooltip,
-    },
-
-    props: {
-      externalUrl: {
-        type: String,
-        required: true,
-      },
-    },
-=======
   * Renders the external url link in environments table.
   */
   export default {
@@ -30,7 +15,6 @@
         required: true,
       },
     },
->>>>>>> upstream/master
 
     computed: {
       title() {
