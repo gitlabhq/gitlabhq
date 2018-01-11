@@ -1,5 +1,8 @@
 <script>
+<<<<<<< HEAD
   /* eslint-disable vue/require-default-prop */
+=======
+>>>>>>> upstream/master
   import projectFeatureSetting from './project_feature_setting.vue';
   import projectFeatureToggle from '../../../vue_shared/components/toggle_button.vue';
   import projectSettingRow from './project_setting_row.vue';
@@ -12,6 +15,7 @@
       projectFeatureToggle,
       projectSettingRow,
     },
+<<<<<<< HEAD
     props: {
       currentSettings: {
         type: Object,
@@ -51,6 +55,51 @@
       },
     },
 
+=======
+
+    props: {
+      currentSettings: {
+        type: Object,
+        required: true,
+      },
+      canChangeVisibilityLevel: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      allowedVisibilityOptions: {
+        type: Array,
+        required: false,
+        default: () => [0, 10, 20],
+      },
+      lfsAvailable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      registryAvailable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      visibilityHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      lfsHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      registryHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
+    },
+
+>>>>>>> upstream/master
     data() {
       const defaults = {
         visibilityOptions,
@@ -118,6 +167,32 @@
         }
       },
 
+<<<<<<< HEAD
+=======
+    watch: {
+      visibilityLevel(value, oldValue) {
+        if (value === visibilityOptions.PRIVATE) {
+          // when private, features are restricted to "only team members"
+          this.issuesAccessLevel = Math.min(10, this.issuesAccessLevel);
+          this.repositoryAccessLevel = Math.min(10, this.repositoryAccessLevel);
+          this.mergeRequestsAccessLevel = Math.min(10, this.mergeRequestsAccessLevel);
+          this.buildsAccessLevel = Math.min(10, this.buildsAccessLevel);
+          this.wikiAccessLevel = Math.min(10, this.wikiAccessLevel);
+          this.snippetsAccessLevel = Math.min(10, this.snippetsAccessLevel);
+          this.highlightChanges();
+        } else if (oldValue === visibilityOptions.PRIVATE) {
+          // if changing away from private, make enabled features more permissive
+          if (this.issuesAccessLevel > 0) this.issuesAccessLevel = 20;
+          if (this.repositoryAccessLevel > 0) this.repositoryAccessLevel = 20;
+          if (this.mergeRequestsAccessLevel > 0) this.mergeRequestsAccessLevel = 20;
+          if (this.buildsAccessLevel > 0) this.buildsAccessLevel = 20;
+          if (this.wikiAccessLevel > 0) this.wikiAccessLevel = 20;
+          if (this.snippetsAccessLevel > 0) this.snippetsAccessLevel = 20;
+          this.highlightChanges();
+        }
+      },
+
+>>>>>>> upstream/master
       repositoryAccessLevel(value, oldValue) {
         if (value < oldValue) {
           // sub-features cannot have more premissive access level
@@ -140,6 +215,7 @@
         if (value === 0) toggleHiddenClassBySelector('.issues-feature', true);
         else if (oldValue === 0) toggleHiddenClassBySelector('.issues-feature', false);
       },
+<<<<<<< HEAD
 
       mergeRequestsAccessLevel(value, oldValue) {
         if (value === 0) toggleHiddenClassBySelector('.merge-requests-feature', true);
@@ -164,7 +240,33 @@
       },
     },
   };
+=======
 
+      mergeRequestsAccessLevel(value, oldValue) {
+        if (value === 0) toggleHiddenClassBySelector('.merge-requests-feature', true);
+        else if (oldValue === 0) toggleHiddenClassBySelector('.merge-requests-feature', false);
+      },
+
+      buildsAccessLevel(value, oldValue) {
+        if (value === 0) toggleHiddenClassBySelector('.builds-feature', true);
+        else if (oldValue === 0) toggleHiddenClassBySelector('.builds-feature', false);
+      },
+    },
+>>>>>>> upstream/master
+
+    methods: {
+      highlightChanges() {
+        this.highlightChangesClass = true;
+        this.$nextTick(() => {
+          this.highlightChangesClass = false;
+        });
+      },
+
+      visibilityAllowed(option) {
+        return this.allowedVisibilityOptions.includes(option);
+      },
+    },
+  };
 </script>
 
 <template>

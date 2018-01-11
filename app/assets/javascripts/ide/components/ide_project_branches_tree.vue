@@ -41,7 +41,11 @@ export default {
       </div>
     </div>
     <div>
+<<<<<<< HEAD
       <repo-tree :tree-id="branch.treeId"/>
+=======
+      <repo-tree :tree-id="branch.treeId" />
+>>>>>>> upstream/master
     </div>
   </div>
 </template>

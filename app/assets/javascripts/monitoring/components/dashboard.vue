@@ -55,6 +55,19 @@
       eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
       eventHub.$off('hoverChanged', this.hoverChanged);
       window.removeEventListener('resize', this.resizeThrottled, false);
+<<<<<<< HEAD
+    },
+
+    mounted() {
+      this.resizeThrottled = _.throttle(this.resize, 600);
+      if (!this.hasMetrics) {
+        this.state = 'gettingStarted';
+      } else {
+        this.getGraphsData();
+        window.addEventListener('resize', this.resizeThrottled, false);
+      }
+=======
+>>>>>>> upstream/master
     },
 
     mounted() {
@@ -66,7 +79,6 @@
         window.addEventListener('resize', this.resizeThrottled, false);
       }
     },
-
     methods: {
       getGraphsData() {
         this.state = 'loading';

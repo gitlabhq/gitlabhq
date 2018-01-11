@@ -116,8 +116,12 @@
 <template>
   <div
     ref="editNoteForm"
+<<<<<<< HEAD
     class="note-edit-form current-note-edit-form"
   >
+=======
+    class="note-edit-form current-note-edit-form">
+>>>>>>> upstream/master
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger">

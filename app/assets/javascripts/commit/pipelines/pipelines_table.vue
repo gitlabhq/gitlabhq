@@ -7,6 +7,10 @@
     mixins: [
       pipelinesMixin,
     ],
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
     props: {
       endpoint: {
         type: String,

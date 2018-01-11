@@ -13,11 +13,25 @@
         required: true,
       },
 
+<<<<<<< HEAD
       jobs: {
         type: Array,
         required: true,
       },
 
+=======
+    props: {
+      title: {
+        type: String,
+        required: true,
+      },
+
+      jobs: {
+        type: Array,
+        required: true,
+      },
+
+>>>>>>> upstream/master
       isFirstColumn: {
         type: Boolean,
         required: false,
@@ -29,19 +43,32 @@
         required: false,
         default: '',
       },
+<<<<<<< HEAD
       hasTriggeredBy: {
         type: Boolean,
         required: true,
       },
+=======
+>>>>>>> upstream/master
     },
 
     methods: {
       firstJob(list) {
         return list[0];
       },
+<<<<<<< HEAD
 
       jobId(job) {
         return `ci-badge-${job.name}`;
+=======
+
+      jobId(job) {
+        return `ci-badge-${job.name}`;
+      },
+
+      buildConnnectorClass(index) {
+        return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
+>>>>>>> upstream/master
       },
     },
   };
@@ -59,10 +86,16 @@
           v-for="(job, index) in jobs"
           :key="job.id"
           class="build"
+<<<<<<< HEAD
           :class="{
             'left-connector': index === 0 && (!isFirstColumn || hasTriggeredBy)
           }"
           :id="jobId(job)">
+=======
+          :class="buildConnnectorClass(index)"
+          :id="jobId(job)"
+        >
+>>>>>>> upstream/master
 
           <div class="curve"></div>
 

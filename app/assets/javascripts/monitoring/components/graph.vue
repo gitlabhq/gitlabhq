@@ -259,7 +259,12 @@
         <svg
           class="graph-data"
           :viewBox="innerViewBox"
+<<<<<<< HEAD
           ref="graphData">
+=======
+          ref="graphData"
+        >
+>>>>>>> upstream/master
           <graph-path
             v-for="(path, index) in timeSeries"
             :key="index"

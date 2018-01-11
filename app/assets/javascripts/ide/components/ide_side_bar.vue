@@ -73,7 +73,12 @@
         <div
           class="multi-file-loading-container"
           v-for="n in 3"
+<<<<<<< HEAD
           :key="n">
+=======
+          :key="n"
+        >
+>>>>>>> upstream/master
           <skeleton-loading-container />
         </div>
       </template>

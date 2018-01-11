@@ -1,4 +1,5 @@
 <script>
+<<<<<<< HEAD
   import { s__ } from '~/locale';
   import tooltip from '~/vue_shared/directives/tooltip';
   import icon from '~/vue_shared/components/icon.vue';
@@ -10,10 +11,30 @@
     components: {
       icon,
       modal,
+=======
+import tooltip from '~/vue_shared/directives/tooltip';
+import icon from '~/vue_shared/components/icon.vue';
+import eventHub from '../event_hub';
+import { COMMON_STR } from '../constants';
+
+export default {
+  components: {
+    icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    parentGroup: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+>>>>>>> upstream/master
     },
     directives: {
       tooltip,
     },
+<<<<<<< HEAD
     props: {
       parentGroup: {
         type: Object,
@@ -24,12 +45,19 @@
         type: Object,
         required: true,
       },
+=======
+  },
+  computed: {
+    leaveBtnTitle() {
+      return COMMON_STR.LEAVE_BTN_TITLE;
+>>>>>>> upstream/master
     },
     data() {
       return {
         modalStatus: false,
       };
     },
+<<<<<<< HEAD
     computed: {
       leaveBtnTitle() {
         return COMMON_STR.LEAVE_BTN_TITLE;
@@ -51,6 +79,15 @@
       },
     },
   };
+=======
+  },
+  methods: {
+    onLeaveGroup() {
+      eventHub.$emit('showLeaveGroupModal', this.group, this.parentGroup);
+    },
+  },
+};
+>>>>>>> upstream/master
 </script>
 
 <template>
@@ -78,14 +115,5 @@
       class="leave-group btn no-expand">
       <icon name="leave"/>
     </a>
-    <modal
-      v-show="modalStatus"
-      :primary-button-label="__('Leave')"
-      kind="warning"
-      :title="__('Are you sure?')"
-      :text="__('Are you sure you want to leave this group?')"
-      :body="leaveConfirmationMessage"
-      @submit="leaveGroup"
-    />
   </div>
 </template>

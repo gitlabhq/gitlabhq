@@ -57,9 +57,13 @@
             <a
               :href="commit.commitUrl"
               class="commit-hash-link commit-sha"
+<<<<<<< HEAD
             >
               {{ commit.shortSha }}
             </a>
+=======
+            >{{ commit.shortSha }}</a>
+>>>>>>> upstream/master
             {{ s__('FirstPushedBy|pushed by') }}
             <a
               :href="commit.author.webUrl"

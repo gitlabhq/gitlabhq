@@ -1,14 +1,24 @@
 <script>
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+<<<<<<< HEAD
   import linkedPipelinesColumn from './linked_pipelines_column.vue';
+=======
+>>>>>>> upstream/master
   import stageColumnComponent from './stage_column_component.vue';
 
   export default {
     components: {
+<<<<<<< HEAD
       linkedPipelinesColumn,
       stageColumnComponent,
       loadingIcon,
     },
+=======
+      stageColumnComponent,
+      loadingIcon,
+    },
+
+>>>>>>> upstream/master
     props: {
       isLoading: {
         type: Boolean,
@@ -100,7 +110,10 @@
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
+<<<<<<< HEAD
           :has-triggered-by="hasTriggeredBy"
+=======
+>>>>>>> upstream/master
         />
       </ul>
 

@@ -250,7 +250,8 @@
 
       <div
         class="blank-state-row"
-        v-if="shouldRenderNoPipelinesMessage">
+        v-if="shouldRenderNoPipelinesMessage"
+      >
         <div class="blank-state-center">
           <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
         </div>

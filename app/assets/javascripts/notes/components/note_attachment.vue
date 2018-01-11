@@ -30,8 +30,12 @@
         rel="noopener noreferrer">
         <i
           class="fa fa-paperclip"
+<<<<<<< HEAD
           aria-hidden="true"
         >
+=======
+          aria-hidden="true">
+>>>>>>> upstream/master
         </i>
         {{ attachment.filename }}
       </a>

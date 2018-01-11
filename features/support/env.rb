@@ -21,8 +21,11 @@ end
   require Rails.root.join('spec', 'support', f)
 end
 
+<<<<<<< HEAD
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
 
+=======
+>>>>>>> upstream/master
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
   include ActiveJob::TestHelper

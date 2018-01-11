@@ -20,15 +20,20 @@ export default {
       store: new Store(),
     };
   },
+<<<<<<< HEAD
 
   created() {
     eventHub.$on('toggleSubscription', this.onToggleSubscription);
   },
 
+=======
+  created() {
+    eventHub.$on('toggleSubscription', this.onToggleSubscription);
+  },
+>>>>>>> upstream/master
   beforeDestroy() {
     eventHub.$off('toggleSubscription', this.onToggleSubscription);
   },
-
   methods: {
     onToggleSubscription() {
       this.mediator.toggleSubscription()

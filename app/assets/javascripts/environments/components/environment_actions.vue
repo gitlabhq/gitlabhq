@@ -12,7 +12,10 @@
     components: {
       loadingIcon,
     },
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
     props: {
       actions: {
         type: Array,
@@ -69,7 +72,12 @@
         <span v-html="playIconSvg"></span>
         <i
           class="fa fa-caret-down"
+<<<<<<< HEAD
           aria-hidden="true">
+=======
+          aria-hidden="true"
+        >
+>>>>>>> upstream/master
         </i>
         <loading-icon v-if="isLoading" />
       </span>
@@ -78,8 +86,12 @@
     <ul class="dropdown-menu dropdown-menu-align-right">
       <li
         v-for="(action, i) in actions"
+<<<<<<< HEAD
         :key="i"
       >
+=======
+        :key="i">
+>>>>>>> upstream/master
         <button
           type="button"
           class="js-manual-action-link no-btn btn"

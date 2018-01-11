@@ -30,6 +30,14 @@
         type: String,
         required: false,
         default: '',
+<<<<<<< HEAD
+=======
+      },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+>>>>>>> upstream/master
       },
       enableAutocomplete: {
         type: Boolean,
@@ -121,7 +129,8 @@
     />
     <div
       class="md-write-holder"
-      v-show="!previewMarkdown">
+      v-show="!previewMarkdown"
+    >
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
         <a
@@ -137,6 +146,10 @@
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
+<<<<<<< HEAD
+=======
+          :can-attach-file="canAttachFile"
+>>>>>>> upstream/master
         />
       </div>
     </div>

@@ -61,11 +61,18 @@
       v-else
       class="vertical-center render-error">
       <p class="text-center">
+<<<<<<< HEAD
         The source could not be displayed because a rendering error occurred. You can
         <a
           :href="activeFile.rawPath"
           download
         >download</a> it instead.
+=======
+        The source could not be displayed because a rendering error occurred.
+        You can <a
+          :href="activeFile.rawPath"
+          download>download</a> it instead.
+>>>>>>> upstream/master
       </p>
     </div>
   </div>

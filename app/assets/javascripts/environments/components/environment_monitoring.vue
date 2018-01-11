@@ -1,12 +1,18 @@
 <script>
   /**
+<<<<<<< HEAD
    * Renders the Monitoring (Metrics) link in environments table.
    */
+=======
+  * Renders the Monitoring (Metrics) link in environments table.
+  */
+>>>>>>> upstream/master
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     directives: {
       tooltip,
+<<<<<<< HEAD
     },
     props: {
       monitoringUrl: {
@@ -14,6 +20,16 @@
         required: true,
       },
     },
+=======
+    },
+
+    props: {
+      monitoringUrl: {
+        type: String,
+        required: true,
+      },
+    },
+>>>>>>> upstream/master
 
     computed: {
       title() {

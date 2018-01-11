@@ -46,9 +46,13 @@
           <a
             :href="mergeRequest.url"
             class="issue-link"
+<<<<<<< HEAD
           >
             !{{ mergeRequest.iid }}
           </a>
+=======
+          >!{{ mergeRequest.iid }}</a>
+>>>>>>> upstream/master
           &middot;
           <span>
             {{ s__('OpenedNDaysAgo|Opened') }}

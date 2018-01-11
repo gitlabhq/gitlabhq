@@ -93,8 +93,12 @@
     <prompt />
     <div
       class="markdown"
+<<<<<<< HEAD
       v-html="markdown"
     >
+=======
+      v-html="markdown">
+>>>>>>> upstream/master
     </div>
   </div>
 </template>

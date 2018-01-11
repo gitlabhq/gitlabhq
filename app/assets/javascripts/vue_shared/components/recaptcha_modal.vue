@@ -1,28 +1,31 @@
 <script>
-import modal from './modal.vue';
+  import modal from './modal.vue';
 
+<<<<<<< HEAD
 export default {
   name: 'RecaptchaModal',
 
   components: {
     modal,
   },
+=======
+  export default {
+    name: 'RecaptchaModal',
+>>>>>>> upstream/master
 
-  props: {
-    html: {
-      type: String,
-      required: false,
-      default: '',
+    components: {
+      modal,
     },
-  },
 
-  data() {
-    return {
-      script: {},
-      scriptSrc: 'https://www.google.com/recaptcha/api.js',
-    };
-  },
+    props: {
+      html: {
+        type: String,
+        required: false,
+        default: '',
+      },
+    },
 
+<<<<<<< HEAD
   watch: {
     html() {
       this.appendRecaptchaScript();
@@ -32,36 +35,62 @@ export default {
   mounted() {
     window.recaptchaDialogCallback = this.submit.bind(this);
   },
+=======
+    data() {
+      return {
+        script: {},
+        scriptSrc: 'https://www.google.com/recaptcha/api.js',
+      };
+    },
+>>>>>>> upstream/master
 
-  methods: {
-    appendRecaptchaScript() {
-      this.removeRecaptchaScript();
-
-      const script = document.createElement('script');
-      script.src = this.scriptSrc;
-      script.classList.add('js-recaptcha-script');
-      script.async = true;
-      script.defer = true;
-
-      this.script = script;
-
-      document.body.appendChild(script);
+    watch: {
+      html() {
+        this.appendRecaptchaScript();
+      },
     },
 
-    removeRecaptchaScript() {
-      if (this.script instanceof Element) this.script.remove();
+    mounted() {
+      window.recaptchaDialogCallback = this.submit.bind(this);
     },
 
-    close() {
-      this.removeRecaptchaScript();
-      this.$emit('close');
-    },
+    methods: {
+      appendRecaptchaScript() {
+        this.removeRecaptchaScript();
 
+        const script = document.createElement('script');
+        script.src = this.scriptSrc;
+        script.classList.add('js-recaptcha-script');
+        script.async = true;
+        script.defer = true;
+
+        this.script = script;
+
+        document.body.appendChild(script);
+      },
+
+<<<<<<< HEAD
     submit() {
       this.$el.querySelector('form').submit();
     },
   },
 };
+=======
+      removeRecaptchaScript() {
+        if (this.script instanceof Element) this.script.remove();
+      },
+
+      close() {
+        this.removeRecaptchaScript();
+        this.$emit('close');
+      },
+
+      submit() {
+        this.$el.querySelector('form').submit();
+      },
+    },
+  };
+>>>>>>> upstream/master
 </script>
 
 <template>

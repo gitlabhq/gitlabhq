@@ -16,7 +16,15 @@
         return this.quickActionsDocsPath !== '';
       },
     },
+<<<<<<< HEAD
 
+=======
+    computed: {
+      hasQuickActionsDocsPath() {
+        return this.quickActionsDocsPath !== '';
+      },
+    },
+>>>>>>> upstream/master
   };
 </script>
 
@@ -27,7 +35,8 @@
         <a
           :href="markdownDocsPath"
           target="_blank"
-          tabindex="-1">
+          tabindex="-1"
+        >
           Markdown is supported
         </a>
       </template>

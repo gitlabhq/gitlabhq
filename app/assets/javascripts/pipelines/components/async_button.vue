@@ -1,5 +1,9 @@
 <script>
+<<<<<<< HEAD
   /* eslint-disable no-alert, vue/require-default-prop */
+=======
+  /* eslint-disable no-alert */
+>>>>>>> upstream/master
 
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
@@ -9,6 +13,7 @@
     directives: {
       tooltip,
     },
+<<<<<<< HEAD
 
     components: {
       loadingIcon,
@@ -54,6 +59,52 @@
         if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
           this.makeRequest();
         } else if (!this.confirmActionMessage) {
+=======
+    components: {
+      loadingIcon,
+    },
+    props: {
+      endpoint: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
+      icon: {
+        type: String,
+        required: true,
+      },
+      cssClass: {
+        type: String,
+        required: true,
+      },
+      confirmActionMessage: {
+        type: String,
+        required: false,
+        default: '',
+      },
+    },
+    data() {
+      return {
+        isLoading: false,
+      };
+    },
+    computed: {
+      iconClass() {
+        return `fa fa-${this.icon}`;
+      },
+      buttonClass() {
+        return `btn ${this.cssClass}`;
+      },
+    },
+    methods: {
+      onClick() {
+        if (this.confirmActionMessage !== '' && confirm(this.confirmActionMessage)) {
+          this.makeRequest();
+        } else if (this.confirmActionMessage === '') {
+>>>>>>> upstream/master
           this.makeRequest();
         }
       },

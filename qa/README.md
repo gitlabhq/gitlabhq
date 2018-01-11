@@ -27,13 +27,17 @@ following call would login to a local [GDK] instance and run all specs in
 bin/qa Test::Instance http://localhost:3000
 ```
 
+### Writing tests
+
+1. [Using page objects](qa/page/README.md)
+
 ### Running specific tests
 
 You can also supply specific tests to run as another parameter. For example, to
-test the EE license specs, you can run:
+run the repository-related specs, you can execute:
 
 ```
-EE_LICENSE="<YOUR LICENSE KEY>" bin/qa Test::Instance http://localhost qa/specs/features/ee
+bin/qa Test::Instance http://localhost qa/specs/features/repository/
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`

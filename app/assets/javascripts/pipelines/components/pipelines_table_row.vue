@@ -223,8 +223,12 @@
     <div class="table-section section-10 commit-link">
       <div
         class="table-mobile-header"
+<<<<<<< HEAD
         role="rowheader"
       >
+=======
+        role="rowheader">
+>>>>>>> upstream/master
         Status
       </div>
       <div class="table-mobile-content">
