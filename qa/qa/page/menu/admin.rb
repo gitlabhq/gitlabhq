@@ -9,13 +9,10 @@ module QA
         #
         view 'app/views/admin/dashboard/index.html.haml'
 
-<<<<<<< HEAD
         def go_to_geo_nodes
           click_link 'Geo Nodes'
         end
 
-=======
->>>>>>> upstream/master
         def go_to_license
           click_link 'License'
         end
