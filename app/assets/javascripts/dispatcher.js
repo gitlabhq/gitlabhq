@@ -292,8 +292,14 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
           break;
         case 'projects:branches:new':
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:branches:create':
-          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:index':
           AjaxLoadingSpinner.init();
