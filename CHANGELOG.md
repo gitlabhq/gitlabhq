@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.6 (2018-01-11)
+
+### Security (8 changes, 1 of them is from the community)
+
+- Fix writable shared deploy keys.
+- Filter out sensitive fields from the project services API. (Robert Schilling)
+- Fix RCE via project import mechanism.
+- Prevent OAuth login POST requests when a provider has been disabled.
+- Prevent a SQL injection in the MilestonesFinder.
+- Check user authorization for source and target projects when creating a merge request.
+- Fix path traversal in gitlab-ci.yml cache:key.
+- Fix XSS vulnerability in pipeline job trace.
+
+
 ## 10.1.5 (2017-12-07)
 
 ### Security (5 changes)
