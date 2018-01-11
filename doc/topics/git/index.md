@@ -68,24 +68,7 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 
 ## Git LFS
 
-<<<<<<< HEAD
-- [Git LFS](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
-- [Git-Annex to Git-LFS migration guide](../../workflow/lfs/migrate_from_git_annex_to_git_lfs.md)
-- **Articles:**
-  - [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
-  - [Towards a production quality open source Git LFS server](https://about.gitlab.com/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
-
-## Troubleshooting
-
-- Learn a few [Git troubleshooting](troubleshooting_git.md) techniques to help you out.
-
-## General information
-
-- **Articles:**
-  - [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/2016/05/11/git-repository-pricing/)
-=======
 - [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [GitLab Git LFS documentation](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
 - [Git-Annex to Git-LFS migration guide](https://docs.gitlab.com/ee/workflow/lfs/migrate_from_git_annex_to_git_lfs.html)
 - Article (2015-08-13): [Towards a production quality open source Git LFS server](https://about.gitlab.com/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
->>>>>>> upstream/master
