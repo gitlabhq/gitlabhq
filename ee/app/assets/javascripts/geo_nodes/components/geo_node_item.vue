@@ -1,75 +1,121 @@
 <script>
-  import icon from '~/vue_shared/components/icon.vue';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import tooltip from '~/vue_shared/directives/tooltip';
+import { s__ } from '~/locale';
+import icon from '~/vue_shared/components/icon.vue';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 
-  import eventHub from '../event_hub';
+import eventHub from '../event_hub';
 
-  import geoNodeActions from './geo_node_actions.vue';
-  import geoNodeDetails from './geo_node_details.vue';
+import geoNodeActions from './geo_node_actions.vue';
+import geoNodeDetails from './geo_node_details.vue';
 
-  export default {
-    components: {
-      icon,
-      loadingIcon,
-      geoNodeActions,
-      geoNodeDetails,
+export default {
+  components: {
+    icon,
+    loadingIcon,
+    geoNodeActions,
+    geoNodeDetails,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    node: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
+    primaryNode: {
+      type: Boolean,
+      required: true,
     },
-    props: {
-      node: {
-        type: Object,
-        required: true,
-      },
-      primaryNode: {
-        type: Boolean,
-        required: true,
-      },
-      nodeActionsAllowed: {
-        type: Boolean,
-        required: true,
-      },
-      nodeEditAllowed: {
-        type: Boolean,
-        required: true,
-      },
+    nodeActionsAllowed: {
+      type: Boolean,
+      required: true,
     },
-    data() {
-      return {
-        isNodeDetailsLoading: true,
-        nodeHealthStatus: '',
-        nodeDetails: {},
-      };
+    nodeEditAllowed: {
+      type: Boolean,
+      required: true,
     },
-    computed: {
-      showInsecureUrlWarning() {
-        return this.node.url.startsWith('http://');
-      },
+  },
+  data() {
+    return {
+      isNodeDetailsLoading: true,
+      isNodeDetailsFailed: false,
+      nodeHealthStatus: '',
+      errorMessage: '',
+      nodeDetails: {},
+    };
+  },
+  computed: {
+    isNodeNonHTTPS() {
+      return this.node.url.startsWith('http://');
     },
-    created() {
-      eventHub.$on('nodeDetailsLoaded', this.handleNodeDetails);
+    showNodeStatusIcon() {
+      if (this.isNodeDetailsLoading) {
+        return false;
+      }
+
+      return this.isNodeNonHTTPS || this.isNodeDetailsFailed;
     },
-    mounted() {
-      this.handleMounted();
+    showNodeDetails() {
+      if (!this.isNodeDetailsLoading) {
+        return !this.isNodeDetailsFailed;
+      }
+      return false;
     },
-    beforeDestroy() {
-      eventHub.$off('nodeDetailsLoaded', this.handleNodeDetails);
+    nodeStatusIconClass() {
+      const iconClasses = 'prepend-left-10 pull-left';
+      if (this.isNodeDetailsFailed) {
+        return `${iconClasses} node-status-icon-failure`;
+      }
+      return `${iconClasses} node-status-icon-warning`;
     },
-    methods: {
-      handleNodeDetails(nodeDetails) {
-        if (this.node.id === nodeDetails.id) {
-          this.isNodeDetailsLoading = false;
-          this.nodeDetails = nodeDetails;
-          this.nodeHealthStatus = nodeDetails.health;
-        }
-      },
-      handleMounted() {
-        eventHub.$emit('pollNodeDetails', this.node.id);
-      },
+    nodeStatusIconName() {
+      if (this.isNodeDetailsFailed) {
+        return 'status_failed_borderless';
+      }
+      return 'warning';
     },
-  };
+    nodeStatusIconTooltip() {
+      if (this.isNodeDetailsFailed) {
+        return '';
+      }
+      return s__('GeoNodes|You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS.');
+    },
+  },
+  created() {
+    eventHub.$on('nodeDetailsLoaded', this.handleNodeDetails);
+    eventHub.$on('nodeDetailsLoadFailed', this.handleNodeDetailsFailure);
+  },
+  mounted() {
+    this.handleMounted();
+  },
+  beforeDestroy() {
+    eventHub.$off('nodeDetailsLoaded', this.handleNodeDetails);
+    eventHub.$off('nodeDetailsLoadFailed', this.handleNodeDetailsFailure);
+  },
+  methods: {
+    handleNodeDetails(nodeDetails) {
+      if (this.node.id === nodeDetails.id) {
+        this.isNodeDetailsLoading = false;
+        this.isNodeDetailsFailed = false;
+        this.errorMessage = '';
+        this.nodeDetails = nodeDetails;
+        this.nodeHealthStatus = nodeDetails.health;
+      }
+    },
+    handleNodeDetailsFailure(nodeId, err) {
+      if (this.node.id === nodeId) {
+        this.isNodeDetailsLoading = false;
+        this.isNodeDetailsFailed = true;
+        this.errorMessage = err.message;
+      }
+    },
+    handleMounted() {
+      eventHub.$emit('pollNodeDetails', this.node.id);
+    },
+  },
+};
 </script>
 
 <template>
@@ -88,14 +134,13 @@
             />
             <icon
               v-tooltip
-              v-if="!isNodeDetailsLoading && showInsecureUrlWarning"
-              css-classes="prepend-left-10 pull-left node-url-warning"
-              name="warning"
+              v-if="showNodeStatusIcon"
               data-container="body"
               data-placement="bottom"
-              :title="s__(`GeoNodes|You have configured Geo nodes using
-an insecure HTTP connection. We recommend the use of HTTPS.`)"
+              :name="nodeStatusIconName"
               :size="18"
+              :css-classes="nodeStatusIconClass"
+              :title="nodeStatusIconTooltip"
             />
             <span class="inline pull-left prepend-left-10">
               <span
@@ -115,16 +160,24 @@ an insecure HTTP connection. We recommend the use of HTTPS.`)"
         </div>
       </div>
       <geo-node-actions
-        v-if="!isNodeDetailsLoading && nodeActionsAllowed"
+        v-if="showNodeDetails && nodeActionsAllowed"
         :node="node"
         :node-edit-allowed="nodeEditAllowed"
         :node-missing-oauth="nodeDetails.missingOAuthApplication"
       />
     </div>
     <geo-node-details
-      v-if="!isNodeDetailsLoading"
+      v-if="showNodeDetails"
       :node="node"
       :node-details="nodeDetails"
     />
+    <div
+      v-if="isNodeDetailsFailed"
+      class="prepend-top-10"
+    >
+      <p class="health-message">
+        {{ errorMessage }}
+      </p>
+    </div>
   </li>
 </template>

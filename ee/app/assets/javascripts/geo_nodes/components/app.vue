@@ -80,8 +80,7 @@
             eventHub.$emit('nodeDetailsLoaded', this.store.getNodeDetails(nodeId));
           })
           .catch((err) => {
-            this.hasError = true;
-            this.errorMessage = err;
+            eventHub.$emit('nodeDetailsLoadFailed', nodeId, err);
           });
       },
       initNodeDetailsPolling(nodeId) {
