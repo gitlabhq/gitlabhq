@@ -203,6 +203,7 @@ class ProjectsController < Projects::ApplicationController
     else
       flash[:alert] = _("Project export could not be deleted.")
     end
+
     redirect_to(edit_project_path(@project))
   end
 

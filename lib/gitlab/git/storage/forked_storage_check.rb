@@ -27,6 +27,7 @@ module Gitlab
           status = nil
 
           while status.nil?
+
             if deadline > Time.now.utc
               sleep(wait_time)
               _pid, status = Process.wait2(filesystem_check_pid, Process::WNOHANG)

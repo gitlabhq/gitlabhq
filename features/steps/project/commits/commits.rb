@@ -180,11 +180,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     dropdown.find(".compare-dropdown-toggle").click
     dropdown.find('.dropdown-menu', visible: true)
     dropdown.fill_in("Filter by Git revision", with: selection)
+
     if is_commit
       dropdown.find('input[type="search"]').send_keys(:return)
     else
       find_link(selection, visible: true).click
     end
+
     dropdown.find('.dropdown-menu', visible: false)
   end
 end

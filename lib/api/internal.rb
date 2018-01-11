@@ -103,6 +103,7 @@ module API
         elsif params[:user_id]
           user = User.find_by(id: params[:user_id])
         end
+
         present user, with: Entities::UserSafe
       end
 

@@ -4,6 +4,7 @@ task migrate_iids: :environment do
   Issue.where(iid: nil).find_each(batch_size: 100) do |issue|
     begin
       issue.set_iid
+
       if issue.update_attribute(:iid, issue.iid)
         print '.'
       else
@@ -19,6 +20,7 @@ task migrate_iids: :environment do
   MergeRequest.where(iid: nil).find_each(batch_size: 100) do |mr|
     begin
       mr.set_iid
+
       if mr.update_attribute(:iid, mr.iid)
         print '.'
       else
@@ -34,6 +36,7 @@ task migrate_iids: :environment do
   Milestone.where(iid: nil).find_each(batch_size: 100) do |m|
     begin
       m.set_iid
+
       if m.update_attribute(:iid, m.iid)
         print '.'
       else
