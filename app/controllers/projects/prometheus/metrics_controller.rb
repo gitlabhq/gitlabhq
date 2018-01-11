@@ -57,7 +57,7 @@ module Projects
       def create
         @metric = project.prometheus_metrics.create(metrics_params)
         if @metric.persisted?
-          redirect_to edit_project_service_path(project, prometheus_service),
+          redirect_to edit_project_service_path(project, PrometheusService),
                       notice: 'Metric was successfully added.'
         else
           render 'new'
@@ -69,7 +69,7 @@ module Projects
         @metric.update(metrics_params)
 
         if @metric.persisted?
-          redirect_to edit_project_service_path(project, prometheus_service),
+          redirect_to edit_project_service_path(project, PrometheusService),
                       notice: 'Metric was successfully updated.'
         else
           render 'edit'
