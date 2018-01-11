@@ -2,7 +2,7 @@
 
 > [Introduced][ce-6373] in GitLab 8.15.
 
-### Snippet visibility level
+## Snippet visibility level
 
 Snippets in GitLab can be either private, internal, or public.
 You can set it with the `visibility` field in the snippet.
@@ -273,4 +273,5 @@ Example response:
 }
 ```
 
-[ce-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508
+[ce-6373]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6373
+[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12655
