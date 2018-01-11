@@ -6,6 +6,7 @@ module QA
       extend SingleForwardable
 
       def_delegators :evaluator, :dependency, :dependencies
+      def_delegators :evaluator, :product, :attributes
 
       def fabricate!(*_args)
         raise NotImplementedError
@@ -28,11 +29,12 @@ module QA
       end
 
       class DSL
-        attr_reader :dependencies
+        attr_reader :dependencies, :attributes
 
         def initialize(base)
           @base = base
           @dependencies = {}
+          @attributes = {}
         end
 
         def dependency(factory, as:, &block)
@@ -40,8 +42,14 @@ module QA
             @base.class_eval { attr_accessor name }
 
             Dependency::Signature.new(factory, block).tap do |signature|
-              dependencies.store(name, signature)
+              @dependencies.store(name, signature)
             end
+          end
+        end
+
+        def product(attribute, &block)
+          Product::Attribute.new(attribute, block).tap do |signature|
+            @attributes.store(attribute, signature)
           end
         end
       end

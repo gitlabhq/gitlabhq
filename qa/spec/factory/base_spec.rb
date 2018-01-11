@@ -59,30 +59,44 @@ describe QA::Factory::Base do
     it 'defines dependency accessors' do
       expect(subject.new).to respond_to :mydep, :mydep=
     end
+
+    describe 'dependencies fabrication' do
+      let(:dependency) { double('dependency') }
+      let(:instance) { spy('instance') }
+
+      subject do
+        Class.new(described_class) do
+          dependency Some::MyDependency, as: :mydep
+        end
+      end
+
+      before do
+        stub_const('Some::MyDependency', dependency)
+
+        allow(subject).to receive(:new).and_return(instance)
+        allow(instance).to receive(:mydep).and_return(nil)
+        allow(QA::Factory::Product).to receive(:new)
+      end
+
+      it 'builds all dependencies first' do
+        expect(dependency).to receive(:fabricate!).once
+
+        subject.fabricate!
+      end
+    end
   end
 
-  describe 'building dependencies' do
-    let(:dependency) { double('dependency') }
-    let(:instance) { spy('instance') }
-
+  describe '.product' do
     subject do
       Class.new(described_class) do
-        dependency Some::MyDependency, as: :mydep
+        product :token do |factory, page|
+          page.do_something!
+        end
       end
     end
 
-    before do
-      stub_const('Some::MyDependency', dependency)
-
-      allow(subject).to receive(:new).and_return(instance)
-      allow(instance).to receive(:mydep).and_return(nil)
-      allow(QA::Factory::Product).to receive(:new)
-    end
-
-    it 'builds all dependencies first' do
-      expect(dependency).to receive(:fabricate!).once
-
-      subject.fabricate!
+    it 'appends new product attribute' do
+      expect(subject.attributes).to be_one
     end
   end
 end

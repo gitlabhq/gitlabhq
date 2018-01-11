@@ -5,6 +5,8 @@ module QA
     class Product
       include Capybara::DSL
 
+      Attribute = Struct.new(:name, :block)
+
       def initialize(factory)
         @factory = factory
         @location = current_url
