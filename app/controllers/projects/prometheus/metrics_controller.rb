@@ -2,6 +2,7 @@ module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
       before_action :authorize_admin_project!
+      before_action :require_prometheus_metrics!
 
       def active_common
         render_404 unless prometheus_service.present?
@@ -102,6 +103,10 @@ module Projects
 
       def prometheus_service
         @prometheus_service ||= project.find_or_initialize_service(PrometheusService)
+      end
+
+      def require_prometheus_metrics!
+        render_404 unless prometheus_service.present?
       end
     end
   end
