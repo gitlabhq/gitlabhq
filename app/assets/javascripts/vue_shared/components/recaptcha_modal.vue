@@ -1,17 +1,8 @@
 <script>
   import modal from './modal.vue';
 
-<<<<<<< HEAD
-export default {
-  name: 'RecaptchaModal',
-
-  components: {
-    modal,
-  },
-=======
   export default {
     name: 'RecaptchaModal',
->>>>>>> upstream/master
 
     components: {
       modal,
@@ -25,24 +16,12 @@ export default {
       },
     },
 
-<<<<<<< HEAD
-  watch: {
-    html() {
-      this.appendRecaptchaScript();
-    },
-  },
-
-  mounted() {
-    window.recaptchaDialogCallback = this.submit.bind(this);
-  },
-=======
     data() {
       return {
         script: {},
         scriptSrc: 'https://www.google.com/recaptcha/api.js',
       };
     },
->>>>>>> upstream/master
 
     watch: {
       html() {
@@ -69,13 +48,6 @@ export default {
         document.body.appendChild(script);
       },
 
-<<<<<<< HEAD
-    submit() {
-      this.$el.querySelector('form').submit();
-    },
-  },
-};
-=======
       removeRecaptchaScript() {
         if (this.script instanceof Element) this.script.remove();
       },
@@ -90,7 +62,6 @@ export default {
       },
     },
   };
->>>>>>> upstream/master
 </script>
 
 <template>
