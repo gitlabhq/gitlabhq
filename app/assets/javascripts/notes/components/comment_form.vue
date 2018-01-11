@@ -307,12 +307,8 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
               <div class="note-form-actions">
                 <div
                   class="pull-left btn-group
-<<<<<<< HEAD
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                 >
-=======
-append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
->>>>>>> upstream/master
                   <button
                     @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
