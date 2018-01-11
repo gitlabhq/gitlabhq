@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';

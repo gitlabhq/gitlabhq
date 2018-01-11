@@ -183,6 +183,7 @@ namespace :gitlab do
         puts "can't check, you have no projects".color(:magenta)
         return
       end
+
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
@@ -213,6 +214,7 @@ namespace :gitlab do
       gitlab_shell_repo_base = gitlab_shell_path
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
+
       if system(check_cmd, chdir: gitlab_shell_repo_base)
         puts 'gitlab-shell self-check successful'.color(:green)
       else
@@ -288,6 +290,7 @@ namespace :gitlab do
       return if process_count.zero?
 
       print 'Number of Sidekiq processes ... '
+
       if process_count == 1
         puts '1'.color(:green)
       else

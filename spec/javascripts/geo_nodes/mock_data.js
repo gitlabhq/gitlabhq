@@ -133,7 +133,7 @@ export const mockNodeDetails = {
     successCount: 0,
     failureCount: 0,
   },
-  job_artifacts: {
+  jobArtifacts: {
     totalCount: 0,
     successCount: 0,
     failureCount: 0,

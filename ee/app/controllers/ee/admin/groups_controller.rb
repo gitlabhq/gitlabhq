@@ -4,6 +4,7 @@ module EE
     module GroupsController
       def reset_runners_minutes
         group
+
         if ClearNamespaceSharedRunnersMinutesService.new(@group).execute
           redirect_to [:admin, @group], notice: 'Group pipeline minutes were successfully reset.'
         else

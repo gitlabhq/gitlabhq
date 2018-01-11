@@ -443,32 +443,44 @@ describe Gitlab::Shell do
     end
 
     describe '#remove_repository' do
-      subject { gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path) }
+      let!(:project) { create(:project, :repository) }
+      let(:disk_path) { "#{project.disk_path}.git" }
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:rm_project) { true }
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(true)
 
-        is_expected.to be_truthy
+        expect(gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)).to be(true)
+
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
       end
 
-      it 'returns false when the command fails' do
-        expect(gitlab_projects).to receive(:rm_project) { false }
+      it 'keeps the namespace directory' do
+        gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)
 
-        is_expected.to be_falsy
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
+        expect(gitlab_shell.exists?(project.repository_storage_path, project.disk_path.gsub(project.name, ''))).to be(true)
       end
     end
 
     describe '#mv_repository' do
-      it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:mv_project).with('project/newpath.git') { true }
+      let!(:project2) { create(:project, :repository) }
 
-        expect(gitlab_shell.mv_repository(project.repository_storage_path, project.disk_path, 'project/newpath')).to be_truthy
+      it 'returns true when the command succeeds' do
+        old_path = project2.disk_path
+        new_path = "project/new_path"
+
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(true)
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(false)
+
+        expect(gitlab_shell.mv_repository(project2.repository_storage_path, old_path, new_path)).to be_truthy
+
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(false)
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(true)
       end
 
       it 'returns false when the command fails' do
-        expect(gitlab_projects).to receive(:mv_project).with('project/newpath.git') { false }
-
-        expect(gitlab_shell.mv_repository(project.repository_storage_path, project.disk_path, 'project/newpath')).to be_falsy
+        expect(gitlab_shell.mv_repository(project2.repository_storage_path, project2.disk_path, '')).to be_falsy
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{project2.disk_path}.git")).to be(true)
       end
     end
 

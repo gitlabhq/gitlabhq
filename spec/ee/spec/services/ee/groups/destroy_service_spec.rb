@@ -11,7 +11,7 @@ describe Groups::DestroyService do
       let(:operation) { subject.execute }
       let(:fail_condition!) do
         expect_any_instance_of(Group)
-          .to receive(:really_destroy!).and_return(group)
+          .to receive(:destroy).and_return(group)
       end
       let(:attributes) do
         {

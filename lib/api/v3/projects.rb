@@ -45,6 +45,7 @@ module API
             # private or internal, use the more conservative option, private.
             attrs[:visibility_level] = (publik == true) ? Gitlab::VisibilityLevel::PUBLIC : Gitlab::VisibilityLevel::PRIVATE
           end
+
           attrs
         end
 
@@ -205,6 +206,7 @@ module API
             if project.errors[:limit_reached].present?
               error!(project.errors[:limit_reached], 403)
             end
+
             render_validation_error!(project)
           end
         end

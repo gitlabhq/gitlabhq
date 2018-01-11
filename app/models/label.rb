@@ -135,6 +135,7 @@ class Label < ActiveRecord::Base
                else
                  priorities.find_by(project: project)
                end
+
     priority.try(:priority)
   end
 

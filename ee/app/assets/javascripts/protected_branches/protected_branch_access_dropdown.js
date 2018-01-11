@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
-
+import _ from 'underscore';
 import Flash from '~/flash';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 

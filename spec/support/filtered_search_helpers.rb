@@ -61,9 +61,11 @@ module FilteredSearchHelpers
         token_emoji = tokens[index][:emoji_name]
 
         expect(el.find('.name')).to have_content(token_name)
+
         if token_value
           expect(el.find('.value')).to have_content(token_value)
         end
+
         # gl-emoji content is blank when the emoji unicode is not supported
         if token_emoji
           selector = %(gl-emoji[data-name="#{token_emoji}"])

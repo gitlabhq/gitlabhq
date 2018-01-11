@@ -42,6 +42,7 @@ module Gitlab
                           else
                             raise "Unsupported action: #{action}"
                           end
+
         if feature_enabled
           params[:GitalyServer] = server
         end

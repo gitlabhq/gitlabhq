@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.3.4 (2018-01-10)
+
+### Security (2 changes)
+
+- Fix LDAP external user/group bug on first sign in.
+- Deny persisting milestones from outside project/group scope on boards.
+
+
 ## 10.3.3 (2018-01-02)
 
 - No changes.
@@ -78,6 +86,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add fade mask to the bottom of the boards selector dropdown list if it can be scrolled down. !3384
 - Document how to set up GitLab Geo for HA. !3468
 - Add border for epic edit button.
+
+
+## 10.2.6 (2018-01-11)
+
+### Security (2 changes)
+
+- Fix LDAP external user/group bug on first sign in.
+- Deny persisting milestones from outside project/group scope on boards.
 
 
 ## 10.2.5 (2017-12-15)
@@ -182,6 +198,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Suppress MergeableSelector warning candidates in EE-only files. !3225 (Takuya Noguchi)
 - Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
+
+
+## 10.1.6 (2018-01-11)
+
+### Security (2 changes)
+
+- Fix LDAP external user/group bug on first sign in.
+- Deny persisting milestones from outside project/group scope on boards.
 
 
 ## 10.1.5 (2017-12-07)
