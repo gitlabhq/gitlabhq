@@ -86,6 +86,7 @@ module MergeRequestsHelper
       approvers_names = merge_request.approvers_left.map(&:name)
 
       str <<
+
         if more_approvals > 0
           " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
         elsif more_approvals < 0

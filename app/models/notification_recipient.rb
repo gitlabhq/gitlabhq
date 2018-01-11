@@ -9,6 +9,7 @@ class NotificationRecipient
     group: nil,
     skip_read_ability: false
   )
+
     unless NotificationSetting.levels.key?(type) || type == :subscription
       raise ArgumentError, "invalid type: #{type.inspect}"
     end

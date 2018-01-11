@@ -4,6 +4,7 @@ module EE
     module UsersController
       def reset_runners_minutes
         user
+
         if ClearNamespaceSharedRunnersMinutesService.new(@user.namespace).execute
           redirect_to [:admin, @user], notice: 'User pipeline minutes were successfully reset.'
         else

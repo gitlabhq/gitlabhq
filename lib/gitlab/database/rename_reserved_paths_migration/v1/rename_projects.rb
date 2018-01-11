@@ -26,6 +26,7 @@ module Gitlab
               move_repository(project, old_full_path, new_full_path)
               move_repository(project, "#{old_full_path}.wiki", "#{new_full_path}.wiki")
             end
+
             move_uploads(old_full_path, new_full_path) unless project.hashed_storage?(:attachments)
             move_pages(old_full_path, new_full_path)
           end

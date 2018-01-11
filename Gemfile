@@ -397,9 +397,6 @@ gem 'ruby-prof', '~> 0.16.2'
 # OAuth
 gem 'oauth2', '~> 1.4'
 
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
-
 # Health check
 gem 'health_check', '~> 2.6.0'
 
@@ -422,7 +419,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.64.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.69.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

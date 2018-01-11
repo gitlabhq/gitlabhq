@@ -166,6 +166,7 @@ module Gitlab
       caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
       caching_config_hash[:pool_timeout] = 1
     end
+
     config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
