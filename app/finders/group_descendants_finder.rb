@@ -63,6 +63,7 @@ class GroupDescendantsFinder
     groups_table = Group.arel_table
     visible_to_user = groups_table[:visibility_level]
                       .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
+
     if current_user
       authorized_groups = GroupsFinder.new(current_user,
                                            all_available: false)
@@ -115,6 +116,7 @@ class GroupDescendantsFinder
              else
                direct_child_groups
              end
+
     groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
 
@@ -140,6 +142,7 @@ class GroupDescendantsFinder
                else
                  direct_child_projects
                end
+
     projects.with_route.order_by(sort)
   end
 

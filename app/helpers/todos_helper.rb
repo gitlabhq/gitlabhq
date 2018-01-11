@@ -30,6 +30,7 @@ module TodosHelper
       else
         todo.target_reference
       end
+
     link_to text, todo_target_path(todo), class: 'has-tooltip', title: todo.target.title
   end
 

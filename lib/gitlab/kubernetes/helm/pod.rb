@@ -14,6 +14,7 @@ module Gitlab
             generate_config_map
             spec['volumes'] = volumes_specification
           end
+
           ::Kubeclient::Resource.new(metadata: metadata, spec: spec)
         end
 

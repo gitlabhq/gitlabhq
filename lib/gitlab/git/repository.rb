@@ -668,6 +668,7 @@ module Gitlab
             end
           end
         end
+
         @refs_hash
       end
 
