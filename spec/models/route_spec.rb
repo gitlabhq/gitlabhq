@@ -23,7 +23,7 @@ describe Route do
 
         context 'when permanent conflicting redirects exist' do
           it 'is invalid' do
-            redirect = RedirectRoute.new(path: 'foo/bar/baz', source: create(:group), permanent: true)
+            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
             redirect.save!(validate: false)
 
             expect(new_route.valid?).to be_falsey
@@ -45,7 +45,7 @@ describe Route do
 
         context 'when permanent conflicting redirects exist' do
           it 'is invalid' do
-            redirect = RedirectRoute.new(path: 'foo/bar/baz', source: create(:group), permanent: true)
+            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
             redirect.save!(validate: false)
 
             expect(route.valid?).to be_falsey
@@ -63,7 +63,7 @@ describe Route do
       context 'when path has not changed' do
         context 'when permanent conflicting redirects exist' do
           it 'is valid' do
-            redirect = RedirectRoute.new(path: 'git_lab/foo/bar', source: create(:group), permanent: true)
+            redirect = build(:redirect_route, :permanent, path: 'git_lab/foo/bar')
             redirect.save!(validate: false)
 
             expect(route.valid?).to be_truthy
