@@ -30,12 +30,13 @@
         %li
           = link_to project_new_blob_path(@project, @project.default_branch || 'master') do
             #{ _('New file') }
-        %li
-          = link_to new_project_branch_path(@project) do
-            #{ _('New branch') }
-        %li
-          = link_to new_project_tag_path(@project) do
-            #{ _('New tag') }
+        - unless @project.empty_repo?
+          %li
+            = link_to new_project_branch_path(@project) do
+              #{ _('New branch') }
+          %li
+            = link_to new_project_tag_path(@project) do
+              #{ _('New tag') }
       - elsif current_user && current_user.already_forked?(@project)
         %li
           = link_to project_new_blob_path(@project, @project.default_branch || 'master') do

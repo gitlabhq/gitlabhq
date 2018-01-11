@@ -1103,12 +1103,25 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, ref)
+      def write_ref(ref_path, ref, old_ref: nil, shell: true)
+        if shell
+          shell_write_ref(ref_path, ref, old_ref)
+        else
+          rugged_write_ref(ref_path, ref)
+        end
+      end
+
+      def shell_write_ref(ref_path, ref, old_ref)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
+        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
 
-        input = "update #{ref_path}\x00#{ref}\x00\x00"
+        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
         run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
+      end
+
+      def rugged_write_ref(ref_path, ref)
+        rugged.references.create(ref_path, ref, force: true)
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)

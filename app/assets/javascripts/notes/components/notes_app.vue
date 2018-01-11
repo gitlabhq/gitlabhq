@@ -13,7 +13,16 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'notesApp',
+    name: 'NotesApp',
+    components: {
+      noteableNote,
+      noteableDiscussion,
+      systemNote,
+      commentForm,
+      loadingIcon,
+      placeholderNote,
+      placeholderSystemNote,
+    },
     props: {
       noteableData: {
         type: Object,
@@ -26,7 +35,7 @@
       userData: {
         type: Object,
         required: false,
-        default: {},
+        default: () => ({}),
       },
     },
     store,
@@ -35,20 +44,29 @@
         isLoading: true,
       };
     },
-    components: {
-      noteableNote,
-      noteableDiscussion,
-      systemNote,
-      commentForm,
-      loadingIcon,
-      placeholderNote,
-      placeholderSystemNote,
-    },
     computed: {
       ...mapGetters([
         'notes',
         'getNotesDataByProp',
       ]),
+    },
+    created() {
+      this.setNotesData(this.notesData);
+      this.setNoteableData(this.noteableData);
+      this.setUserData(this.userData);
+    },
+    mounted() {
+      this.fetchNotes();
+
+      const parentElement = this.$el.parentElement;
+
+      if (parentElement &&
+        parentElement.classList.contains('js-vue-notes-event')) {
+        parentElement.addEventListener('toggleAward', (event) => {
+          const { awardName, noteId } = event.detail;
+          this.actionToggleAward({ awardName, noteId });
+        });
+      }
     },
     methods: {
       ...mapActions({
@@ -105,24 +123,6 @@
         }
       },
     },
-    created() {
-      this.setNotesData(this.notesData);
-      this.setNoteableData(this.noteableData);
-      this.setUserData(this.userData);
-    },
-    mounted() {
-      this.fetchNotes();
-
-      const parentElement = this.$el.parentElement;
-
-      if (parentElement &&
-        parentElement.classList.contains('js-vue-notes-event')) {
-        parentElement.addEventListener('toggleAward', (event) => {
-          const { awardName, noteId } = event.detail;
-          this.actionToggleAward({ awardName, noteId });
-        });
-      }
-    },
   };
 </script>
 
@@ -144,7 +144,7 @@
         :is="getComponentName(note)"
         :note="getComponentData(note)"
         :key="note.id"
-        />
+      />
     </ul>
 
     <comment-form />

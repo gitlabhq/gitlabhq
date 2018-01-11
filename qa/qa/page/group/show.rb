@@ -2,6 +2,13 @@ module QA
   module Page
     module Group
       class Show < Page::Base
+        ##
+        # TODO, define all selectors required by this page object
+        #
+        # See gitlab-org/gitlab-qa#154
+        #
+        view 'app/views/groups/show.html.haml'
+
         def go_to_subgroup(name)
           click_link name
         end

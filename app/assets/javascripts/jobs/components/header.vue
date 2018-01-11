@@ -3,7 +3,11 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'jobHeaderSection',
+    name: 'JobHeaderSection',
+    components: {
+      ciHeader,
+      loadingIcon,
+    },
     props: {
       job: {
         type: Object,
@@ -13,10 +17,6 @@
         type: Boolean,
         required: true,
       },
-    },
-    components: {
-      ciHeader,
-      loadingIcon,
     },
     data() {
       return {
@@ -34,6 +34,11 @@
         return this.job.started;
       },
     },
+    watch: {
+      job() {
+        this.actions = this.getActions();
+      },
+    },
     methods: {
       getActions() {
         const actions = [];
@@ -47,11 +52,6 @@
           });
         }
         return actions;
-      },
-    },
-    watch: {
-      job() {
-        this.actions = this.getActions();
       },
     },
   };
@@ -72,6 +72,6 @@
     <loading-icon
       v-if="isLoading"
       size="2"
-      />
+    />
   </div>
 </template>

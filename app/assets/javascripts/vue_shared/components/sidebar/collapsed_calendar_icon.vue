@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'collapsedCalendarIcon',
+    name: 'CollapsedCalendarIcon',
     props: {
       containerClass: {
         type: String,

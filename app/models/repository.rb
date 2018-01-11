@@ -103,6 +103,10 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
+  def create_hooks
+    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
+  end
+
   def commit(ref = 'HEAD')
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
@@ -256,7 +260,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      write_ref(keep_around_ref_name(sha), sha)
+      raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -268,10 +272,6 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
-  end
-
-  def write_ref(ref_path, sha)
-    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
