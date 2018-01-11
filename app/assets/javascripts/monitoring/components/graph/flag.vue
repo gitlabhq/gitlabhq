@@ -5,11 +5,7 @@
 
   export default {
     components: {
-<<<<<<< HEAD
-      Icon,
-=======
       icon,
->>>>>>> upstream/master
     },
     props: {
       currentXCoordinate: {
