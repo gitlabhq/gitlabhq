@@ -440,10 +440,14 @@ import Activities from './activities';
           break;
         case 'admin:groups:create':
         case 'admin:groups:new':
-          import('./pages/admin/groups/new').then(m => m.default()).catch(fail);
+          import('./pages/admin/groups/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:groups:edit':
-          import('./pages/admin/groups/edit').then(m => m.default()).catch(fail);
+          import('./pages/admin/groups/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:edit':
           groupAvatar();
@@ -562,7 +566,9 @@ import Activities from './activities';
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'admin:impersonation_tokens:index':
-          import('./pages/admin/impersonation_tokens').then(m => m.default()).catch(fail);
+          import('./pages/admin/impersonation_tokens')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
           new DueDateSelectors();
@@ -599,35 +605,51 @@ import Activities from './activities';
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          import('./pages/admin').then(m => m.default()).catch(fail);
+          import('./pages/admin')
+            .then(callDefault)
+            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
-              import('./pages/admin/broadcast_messages').then(m => m.default()).catch(fail);
+              import('./pages/admin/broadcast_messages')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'cohorts':
-              import('./pages/admin/cohorts').then(m => m.default()).catch(fail);
+              import('./pages/admin/cohorts')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'groups':
               switch (path[2]) {
                 case 'show':
-                  import('./pages/admin/groups/show').then(m => m.default()).catch(fail);
+                  import('./pages/admin/groups/show')
+                    .then(callDefault)
+                    .catch(fail);
                   break;
               }
               break;
             case 'projects':
-              import('./pages/admin/projects').then(m => m.default()).catch(fail);
+              import('./pages/admin/projects')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'labels':
               switch (path[2]) {
                 case 'new':
-                  import('./pages/admin/labels/new').then(m => m.default()).catch(fail);
+                  import('./pages/admin/labels/new')
+                    .then(callDefault)
+                    .catch(fail);
                   break;
                 case 'edit':
-                  import('./pages/admin/labels/edit').then(m => m.default()).catch(fail);
+                  import('./pages/admin/labels/edit')
+                    .then(callDefault)
+                    .catch(fail);
                   break;
               }
             case 'abuse_reports':
-              import('./pages/admin/abuse_reports').then(m => m.default()).catch(fail);
+              import('./pages/admin/abuse_reports')
+                .then(callDefault)
+                .catch(fail);
               break;
           }
           break;
