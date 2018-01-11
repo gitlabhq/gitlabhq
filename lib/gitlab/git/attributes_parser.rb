@@ -1,42 +1,26 @@
-# Gitaly note: JV: not sure what to make of this class. Why does it use
-# the full disk path of the repository to look up attributes This is
-# problematic in Gitaly, because Gitaly hides the full disk path to the
-# repository from gitlab-ce.
-
 module Gitlab
   module Git
     # Class for parsing Git attribute files and extracting the attributes for
     # file patterns.
-    #
-    # Unlike Rugged this parser only needs a single IO call (a call to `open`),
-    # vastly reducing the time spent in extracting attributes.
-    #
-    # This class _only_ supports parsing the attributes file located at
-    # `$GIT_DIR/info/attributes` as GitLab doesn't use any other files
-    # (`.gitattributes` is copied to this particular path).
-    #
-    # Basic usage:
-    #
-    #     attributes = Gitlab::Git::Attributes.new(some_repo.path)
-    #
-    #     attributes.attributes('README.md') # => { "eol" => "lf }
-    class Attributes
-      # path - The path to the Git repository.
-      def initialize(path)
-        @path = File.expand_path(path)
-        @patterns = nil
+    class AttributesParser
+      def initialize(attributes_data)
+        @data = attributes_data || ""
+
+        if @data.is_a?(File)
+          @patterns = parse_file
+        end
       end
 
       # Returns all the Git attributes for the given path.
       #
-      # path - A path to a file for which to get the attributes.
+      # file_path - A path to a file for which to get the attributes.
       #
       # Returns a Hash.
-      def attributes(path)
-        full_path = File.join(@path, path)
+      def attributes(file_path)
+        absolute_path = File.join('/', file_path)
 
         patterns.each do |pattern, attrs|
-          return attrs if File.fnmatch?(pattern, full_path)
+          return attrs if File.fnmatch?(pattern, absolute_path)
         end
 
         {}
@@ -98,16 +82,10 @@ module Gitlab
 
       # Iterates over every line in the attributes file.
       def each_line
-        full_path = File.join(@path, 'info/attributes')
+        @data.each_line do |line|
+          break unless line.valid_encoding?
 
-        return unless File.exist?(full_path)
-
-        File.open(full_path, 'r') do |handle|
-          handle.each_line do |line|
-            break unless line.valid_encoding?
-
-            yield line.strip
-          end
+          yield line.strip
         end
       end
 
@@ -125,7 +103,8 @@ module Gitlab
 
           parsed = attrs ? parse_attributes(attrs) : {}
 
-          pairs << [File.join(@path, pattern), parsed]
+          absolute_pattern = File.join('/', pattern)
+          pairs << [absolute_pattern, parsed]
         end
 
         # Newer entries take precedence over older entries.

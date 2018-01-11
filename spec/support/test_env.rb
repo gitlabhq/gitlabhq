@@ -20,7 +20,7 @@ module TestEnv
     'improve/awesome'                    => '5937ac0',
     'merged-target'                      => '21751bf',
     'markdown'                           => '0ed8c6c',
-    'lfs'                                => 'be93687',
+    'lfs'                                => '55bc176',
     'master'                             => 'b83d6e3',
     'merge-test'                         => '5937ac0',
     "'test'"                             => 'e56497b',
