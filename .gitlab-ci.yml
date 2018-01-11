@@ -648,6 +648,18 @@ qa:internal:
     - bundle install
     - bundle exec rspec
 
+qa:selectors:
+  <<: *dedicated-runner
+  <<: *except-docs
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec bin/qa Test::Sanity::Selectors
+
 coverage:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
