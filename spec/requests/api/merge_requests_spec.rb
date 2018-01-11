@@ -585,7 +585,7 @@ describe API::MergeRequests do
         project = create(:project, public_builds: false)
         merge_request = create(:merge_request, :simple, source_project: project)
         guest = create(:user)
-        project.team << [guest, :guest]
+        project.add_guest(guest)
 
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", guest)
 

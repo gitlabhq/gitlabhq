@@ -11,7 +11,8 @@ class MergeRequest < ActiveRecord::Base
   include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
-                :ref_fetched
+                :ref_fetched,
+                :deleted_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -149,8 +150,6 @@ class MergeRequest < ActiveRecord::Base
   participant :assignee
 
   after_save :keep_around_commit
-
-  acts_as_paranoid
 
   def self.reference_prefix
     '!'
@@ -794,6 +793,7 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
+
     message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference(full: true)}"
 

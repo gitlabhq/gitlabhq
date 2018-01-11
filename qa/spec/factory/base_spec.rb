@@ -1,8 +1,9 @@
 describe QA::Factory::Base do
+  let(:factory) { spy('factory') }
+  let(:product) { spy('product') }
+
   describe '.fabricate!' do
     subject { Class.new(described_class) }
-    let(:factory) { spy('factory') }
-    let(:product) { spy('product') }
 
     before do
       allow(QA::Factory::Product).to receive(:new).and_return(product)
@@ -59,30 +60,63 @@ describe QA::Factory::Base do
     it 'defines dependency accessors' do
       expect(subject.new).to respond_to :mydep, :mydep=
     end
+
+    describe 'dependencies fabrication' do
+      let(:dependency) { double('dependency') }
+      let(:instance) { spy('instance') }
+
+      subject do
+        Class.new(described_class) do
+          dependency Some::MyDependency, as: :mydep
+        end
+      end
+
+      before do
+        stub_const('Some::MyDependency', dependency)
+
+        allow(subject).to receive(:new).and_return(instance)
+        allow(instance).to receive(:mydep).and_return(nil)
+        allow(QA::Factory::Product).to receive(:new)
+      end
+
+      it 'builds all dependencies first' do
+        expect(dependency).to receive(:fabricate!).once
+
+        subject.fabricate!
+      end
+    end
   end
 
-  describe 'building dependencies' do
-    let(:dependency) { double('dependency') }
-    let(:instance) { spy('instance') }
-
+  describe '.product' do
     subject do
       Class.new(described_class) do
-        dependency Some::MyDependency, as: :mydep
+        product :token do
+          page.do_something_on_page!
+          'resulting value'
+        end
       end
     end
 
-    before do
-      stub_const('Some::MyDependency', dependency)
-
-      allow(subject).to receive(:new).and_return(instance)
-      allow(instance).to receive(:mydep).and_return(nil)
-      allow(QA::Factory::Product).to receive(:new)
+    it 'appends new product attribute' do
+      expect(subject.attributes).to be_one
+      expect(subject.attributes).to have_key(:token)
     end
 
-    it 'builds all dependencies first' do
-      expect(dependency).to receive(:fabricate!).once
+    describe 'populating fabrication product with data' do
+      let(:page) { spy('page') }
 
-      subject.fabricate!
+      before do
+        allow(subject).to receive(:new).and_return(factory)
+        allow(QA::Factory::Product).to receive(:new).and_return(product)
+        allow(product).to receive(:page).and_return(page)
+      end
+
+      it 'populates product after fabrication' do
+        subject.fabricate!
+
+        expect(page).to have_received(:do_something_on_page!)
+        expect(product.token).to eq 'resulting value'
+      end
     end
   end
 end
