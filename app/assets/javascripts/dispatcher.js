@@ -9,11 +9,8 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import Project from './project';
-import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
-import ProjectNew from './project_new';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
@@ -24,20 +21,17 @@ import SecretValues from './behaviors/secret_values';
 import Group from './group';
 import ProjectsList from './projects_list';
 import UserCallout from './user_callout';
-import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
 import TreeView from './tree';
-import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
-import initProjectVisibilitySelector from './project_visibility';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
@@ -70,7 +64,7 @@ import Activities from './activities';
         return false;
       }
 
-      const fail = () => Flash('Error loading dynamic module');
+      const fail = (e) => { throw e; Flash('Error loading dynamic module'); }
       const callDefault = m => m.default();
 
       path = page.split(':');
@@ -642,57 +636,39 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects':
-          new Project();
-          projectAvatar();
+          import('./pages/projects')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           switch (path[1]) {
             case 'compare':
               import('./pages/projects/compare')
                 .then(callDefault)
                 .catch(fail);
               break;
-            case 'edit':
-              shortcut_handler = new ShortcutsNavigation();
-              new ProjectNew();
-              import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
+            case 'create':
+            case 'new':
+              import('./pages/projects/new')
                 .then(callDefault)
                 .catch(fail);
               break;
-            case 'new':
-              new ProjectNew();
-              initProjectVisibilitySelector();
-              break;
             case 'show':
               new Star();
-              new ProjectNew();
               notificationsDropdown();
               break;
             case 'wikis':
-              new Wikis();
-              shortcut_handler = new ShortcutsWiki();
-              new ZenMode();
-              new GLForm($('.wiki-form'), true);
+              import('./pages/projects/wikis')
+                .then(callDefault)
+                .catch(fail);
+              shortcut_handler = true;
               break;
             case 'snippets':
-              shortcut_handler = new ShortcutsNavigation();
               if (path[2] === 'show') {
                 new ZenMode();
                 new LineHighlighter();
                 new BlobViewer();
               }
               break;
-            case 'labels':
-            case 'graphs':
-            case 'compare':
-            case 'pipelines':
-            case 'forks':
-            case 'milestones':
-            case 'project_members':
-            case 'deploy_keys':
-            case 'builds':
-            case 'hooks':
-            case 'services':
-            case 'protected_branches':
-              shortcut_handler = new ShortcutsNavigation();
           }
           break;
       }

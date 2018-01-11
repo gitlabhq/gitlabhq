@@ -1,6 +1,6 @@
 /* eslint-disable func-names, no-var, no-underscore-dangle, prefer-template, prefer-arrow-callback*/
 
-import VisibilitySelect from './visibility_select';
+import VisibilitySelect from '../../../visibility_select';
 
 function highlightChanges($elm) {
   $elm.addClass('highlight-changes');
