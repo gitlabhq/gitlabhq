@@ -368,10 +368,6 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
         // bad
          <component
             bar="bar" />
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
       ```
 
 #### Quotes
