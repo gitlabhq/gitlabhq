@@ -107,12 +107,8 @@
       <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
         <div
           class="accept-merge-holder clearfix
-<<<<<<< HEAD
 js-toggle-container accept-action media space-children"
         >
-=======
-js-toggle-container accept-action media space-children">
->>>>>>> upstream/master
           <button
             type="button"
             class="btn btn-sm btn-reopen btn-success"
