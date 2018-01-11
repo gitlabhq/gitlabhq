@@ -6,21 +6,12 @@
   import userAvatarImage from './user_avatar/user_avatar_image.vue';
 
   /**
-<<<<<<< HEAD
    * Renders header component for job and pipeline page based on UI mockups
    *
    * Used in:
    * - job show page
    * - pipeline show page
    */
-=======
-  * Renders header component for job and pipeline page based on UI mockups
-  *
-  * Used in:
-  * - job show page
-  * - pipeline show page
-  */
->>>>>>> upstream/master
   export default {
     components: {
       ciIconBadge,
