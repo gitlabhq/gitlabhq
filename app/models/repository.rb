@@ -260,7 +260,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      write_ref(keep_around_ref_name(sha), sha)
+      raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -272,10 +272,6 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
-  end
-
-  def write_ref(ref_path, sha)
-    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -1018,6 +1014,7 @@ class Repository
           else
             cache.fetch(key, &block)
           end
+
         instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
         # Even if the above `#exists?` check passes these errors might still

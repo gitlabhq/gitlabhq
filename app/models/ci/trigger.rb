@@ -1,8 +1,9 @@
 module Ci
   class Trigger < ActiveRecord::Base
     extend Gitlab::Ci::Model
+    include IgnorableColumn
 
-    acts_as_paranoid
+    ignore_column :deleted_at
 
     belongs_to :project
     belongs_to :owner, class_name: "User"

@@ -1,67 +1,68 @@
 <script>
-/* eslint-disable no-new, no-alert */
+  /* eslint-disable no-alert */
 
-import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+  import eventHub from '../event_hub';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
-export default {
-  props: {
-    endpoint: {
-      type: String,
-      required: true,
+  export default {
+    directives: {
+      tooltip,
     },
-    title: {
-      type: String,
-      required: true,
+    components: {
+      loadingIcon,
     },
-    icon: {
-      type: String,
-      required: true,
+    props: {
+      endpoint: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
+      icon: {
+        type: String,
+        required: true,
+      },
+      cssClass: {
+        type: String,
+        required: true,
+      },
+      confirmActionMessage: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
-    cssClass: {
-      type: String,
-      required: true,
+    data() {
+      return {
+        isLoading: false,
+      };
     },
-    confirmActionMessage: {
-      type: String,
-      required: false,
+    computed: {
+      iconClass() {
+        return `fa fa-${this.icon}`;
+      },
+      buttonClass() {
+        return `btn ${this.cssClass}`;
+      },
     },
-  },
-  directives: {
-    tooltip,
-  },
-  components: {
-    loadingIcon,
-  },
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
-  computed: {
-    iconClass() {
-      return `fa fa-${this.icon}`;
-    },
-    buttonClass() {
-      return `btn ${this.cssClass}`;
-    },
-  },
-  methods: {
-    onClick() {
-      if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
-        this.makeRequest();
-      } else if (!this.confirmActionMessage) {
-        this.makeRequest();
-      }
-    },
-    makeRequest() {
-      this.isLoading = true;
+    methods: {
+      onClick() {
+        if (this.confirmActionMessage !== '' && confirm(this.confirmActionMessage)) {
+          this.makeRequest();
+        } else if (this.confirmActionMessage === '') {
+          this.makeRequest();
+        }
+      },
+      makeRequest() {
+        this.isLoading = true;
 
-      eventHub.$emit('postAction', this.endpoint);
+        eventHub.$emit('postAction', this.endpoint);
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>

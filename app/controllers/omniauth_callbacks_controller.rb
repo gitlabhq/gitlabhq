@@ -83,6 +83,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if ticket
       handle_service_ticket oauth['provider'], ticket
     end
+
     handle_omniauth
   end
 
@@ -90,6 +91,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if params['sid']
       handle_service_ticket oauth['provider'], params['sid']
     end
+
     handle_omniauth
   end
 
@@ -124,6 +126,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Only allow properly saved users to login.
     if @user.persisted? && @user.valid?
       log_audit_event(@user, with: oauth['provider'])
+
       if @user.two_factor_enabled?
         params[:remember_me] = '1' if remember_me?
         prompt_for_two_factor(@user)

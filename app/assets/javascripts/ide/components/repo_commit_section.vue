@@ -49,7 +49,9 @@ export default {
       const createNewBranch = newBranch || this.startNewMR;
 
       const payload = {
-        branch: createNewBranch ? `${this.currentBranchId}-${new Date().getTime().toString()}` : this.currentBranchId,
+        branch: createNewBranch ?
+          `${this.currentBranchId}-${new Date().getTime().toString()}` :
+          this.currentBranchId,
         commit_message: this.commitMessage,
         actions: this.changedFiles.map(f => ({
           action: f.tempFile ? 'create' : 'update',
@@ -103,69 +105,70 @@ export default {
 </script>
 
 <template>
-<div class="multi-file-commit-panel-section">
-  <modal
-    v-if="showNewBranchModal"
-    :primary-button-label="__('Create new branch')"
-    kind="primary"
-    :title="__('Branch has changed')"
-    :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
-    @cancel="showNewBranchModal = false"
-    @submit="makeCommit(true)"
-  />
-  <commit-files-list
-    title="Staged"
-    :file-list="changedFiles"
-    :collapsed="rightPanelCollapsed"
-    @toggleCollapsed="toggleCollapsed"
-  />
-  <form
-    class="form-horizontal multi-file-commit-form"
-    @submit.prevent="tryCommit"
-    v-if="!rightPanelCollapsed"
-  >
-    <div class="multi-file-commit-fieldset">
-      <textarea
-        class="form-control multi-file-commit-message"
-        name="commit-message"
-        v-model="commitMessage"
-        placeholder="Commit message"
-      >
-      </textarea>
-    </div>
-    <div class="multi-file-commit-fieldset">
-      <label
-        v-tooltip
-        title="Create a new merge request with these changes"
-        data-container="body"
-        data-placement="top"
-      >
-        <input
-          type="checkbox"
-          v-model="startNewMR"
-        />
-        Merge Request
-      </label>
-      <button
-        type="submit"
-        :disabled="commitButtonDisabled"
-        class="btn btn-default btn-sm append-right-10 prepend-left-10"
-      >
-        <i
-          v-if="submitCommitsLoading"
-          class="js-commit-loading-icon fa fa-spinner fa-spin"
-          aria-hidden="true"
-          aria-label="loading"
+  <div class="multi-file-commit-panel-section">
+    <modal
+      v-if="showNewBranchModal"
+      :primary-button-label="__('Create new branch')"
+      kind="primary"
+      :title="__('Branch has changed')"
+      :text="__(`This branch has changed since
+you started editing. Would you like to create a new branch?`)"
+      @cancel="showNewBranchModal = false"
+      @submit="makeCommit(true)"
+    />
+    <commit-files-list
+      title="Staged"
+      :file-list="changedFiles"
+      :collapsed="rightPanelCollapsed"
+      @toggleCollapsed="toggleCollapsed"
+    />
+    <form
+      class="form-horizontal multi-file-commit-form"
+      @submit.prevent="tryCommit"
+      v-if="!rightPanelCollapsed"
+    >
+      <div class="multi-file-commit-fieldset">
+        <textarea
+          class="form-control multi-file-commit-message"
+          name="commit-message"
+          v-model="commitMessage"
+          placeholder="Commit message"
         >
-        </i>
-        Commit
-      </button>
-      <div
-        class="multi-file-commit-message-count"
-      >
-        {{ commitMessageCount }}
+        </textarea>
       </div>
-    </div>
-  </form>
-</div>
+      <div class="multi-file-commit-fieldset">
+        <label
+          v-tooltip
+          title="Create a new merge request with these changes"
+          data-container="body"
+          data-placement="top"
+        >
+          <input
+            type="checkbox"
+            v-model="startNewMR"
+          />
+          Merge Request
+        </label>
+        <button
+          type="submit"
+          :disabled="commitButtonDisabled"
+          class="btn btn-default btn-sm append-right-10 prepend-left-10"
+        >
+          <i
+            v-if="submitCommitsLoading"
+            class="js-commit-loading-icon fa fa-spinner fa-spin"
+            aria-hidden="true"
+            aria-label="loading"
+          >
+          </i>
+          Commit
+        </button>
+        <div
+          class="multi-file-commit-message-count"
+        >
+          {{ commitMessageCount }}
+        </div>
+      </div>
+    </form>
+  </div>
 </template>

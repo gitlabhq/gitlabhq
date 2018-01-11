@@ -8,11 +8,17 @@
       quickActionsDocsPath: {
         type: String,
         required: false,
+        default: '',
       },
       canAttachFile: {
         type: Boolean,
         required: false,
         default: true,
+      },
+    },
+    computed: {
+      hasQuickActionsDocsPath() {
+        return this.quickActionsDocsPath !== '';
       },
     },
   };
@@ -21,26 +27,29 @@
 <template>
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
-      <template v-if="!quickActionsDocsPath && markdownDocsPath">
+      <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
         <a
           :href="markdownDocsPath"
           target="_blank"
-          tabindex="-1">
+          tabindex="-1"
+        >
           Markdown is supported
         </a>
       </template>
-      <template v-if="quickActionsDocsPath && markdownDocsPath">
-         <a
+      <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
+        <a
           :href="markdownDocsPath"
           target="_blank"
-          tabindex="-1">
+          tabindex="-1"
+        >
           Markdown
         </a>
         and
-         <a
+        <a
           :href="quickActionsDocsPath"
           target="_blank"
-          tabindex="-1">
+          tabindex="-1"
+        >
           quick actions
         </a>
         are supported
@@ -53,46 +62,58 @@
       <span class="uploading-progress-container hide">
         <i
           class="fa fa-file-image-o toolbar-button-icon"
-          aria-hidden="true"></i>
+          aria-hidden="true"
+        >
+        </i>
         <span class="attaching-file-message"></span>
         <span class="uploading-progress">0%</span>
         <span class="uploading-spinner">
           <i
             class="fa fa-spinner fa-spin toolbar-button-icon"
-            aria-hidden="true"></i>
+            aria-hidden="true"
+          >
+          </i>
         </span>
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
           <i
             class="fa fa-file-image-o toolbar-button-icon"
-            aria-hidden="true"></i>
+            aria-hidden="true"
+          >
+          </i>
         </span>
         <span class="uploading-error-message"></span>
         <button
           class="retry-uploading-link"
-          type="button">
-            Try again
+          type="button"
+        >
+          Try again
         </button>
         or
         <button
           class="attach-new-file markdown-selector"
-          type="button">
+          type="button"
+        >
           attach a new file
         </button>
       </span>
       <button
         class="markdown-selector button-attach-file"
         tabindex="-1"
-        type="button">
+        type="button"
+      >
         <i
           class="fa fa-file-image-o toolbar-button-icon"
-          aria-hidden="true"></i>
+          aria-hidden="true"
+        >
+        </i>
         Attach a file
       </button>
       <button
         class="btn btn-default btn-xs hide button-cancel-uploading-files"
-        type="button">
+        type="button"
+      >
         Cancel
       </button>
     </span>

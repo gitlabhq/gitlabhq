@@ -26,6 +26,10 @@ Login to your AWS account through the `My Account` dropdown on
 Amazon Web Services console from where we can choose all of the services
 we'll be using to configure our cloud infrastructure.
 
+### Reference Architecture
+
+![Reference Architecture](img/reference-arch.png)
+
 ***
 
 ## Network

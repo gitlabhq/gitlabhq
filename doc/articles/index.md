@@ -17,7 +17,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
 | [Autoscaling GitLab Runners on AWS](runner_autoscale_aws/index.md) | Admin guide | 2017-11-24 |
-| [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md) | Tutorial | 2017-08-31 |
 | [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017-07-13 |
 | [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/) | Concepts | 2017-07-11 |
 | [Continuous Integration: From Jenkins to GitLab Using Docker](https://about.gitlab.com/2017/07/27/docker-my-precious/) | Concepts | 2017-07-27 |
@@ -29,18 +28,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/) | Technical overview | 2016-05-23 |
 | [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017-05-15 |
 | [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016-03-10 |
-
-## Git
-
-Learn how to use [Git with GitLab](../topics/git/index.md):
-
-| Article title | Category | Publishing date |
-| :------------ | :------: | --------------: |
-| [Numerous _undo_ possibilities in Git](numerous_undo_possibilities_in_git/index.md) | Tutorial | 2017-08-17 |
-| [Why Git is Worth the Learning Curve](https://about.gitlab.com/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/) | Concepts | 2017-05-17 |
-| [How to install Git](how_to_install_git/index.md) | Tutorial | 2017-05-15 |
-| [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/) | Tutorial | 2017-01-30 |
-| [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/) | Technical overview | 2016-12-08 |
 
 ## GitLab Pages
 
@@ -74,7 +61,6 @@ upgrade, integrate, migrate to GitLab:
 | :------------ | :------: | --------------: |
 | [Video Tutorial: Idea to Production on Google Container Engine (GKE)](https://about.gitlab.com/2017/01/23/video-tutorial-idea-to-production-on-google-container-engine-gke/) | Tutorial | 2017-01-23 |
 | [How to Setup a GitLab Instance on Microsoft Azure](https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/) | Tutorial | 2016-07-13 |
-| [Get started with OpenShift Origin 3 and GitLab](openshift_and_gitlab/index.md) | Tutorial | 2016-06-28 |
 | [Getting started with GitLab and DigitalOcean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/) | Tutorial | 2016-04-27 |
 
 ## Software development

@@ -1,5 +1,5 @@
 import '~/lib/utils/text_utility';
-import AbuseReports from '~/abuse_reports';
+import AbuseReports from '~/pages/admin/abuse_reports/abuse_reports';
 
 describe('Abuse Reports', () => {
   const FIXTURE = 'abuse_reports/abuse_reports_list.html.raw';

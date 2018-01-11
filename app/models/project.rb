@@ -633,6 +633,7 @@ class Project < ActiveRecord::Base
       project_import_data.data ||= {}
       project_import_data.data = project_import_data.data.merge(data)
     end
+
     if credentials
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
@@ -1149,7 +1150,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch

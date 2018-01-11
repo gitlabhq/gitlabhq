@@ -2,9 +2,6 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in 10.1.
 
-CAUTION: **Warning:**
-The Cluster integration is currently in **Beta**.
-
 With a cluster associated to your project, you can use Review Apps, deploy your
 applications, run your pipelines, and much more, in an easy way.
 
@@ -25,11 +22,14 @@ prerequisites must be met:
   be enabled in GitLab at the instance level. If that's not the case, ask your
   administrator to enable it.
 - Your associated Google account must have the right privileges to manage
-  clusters on GKE. That would mean that a
-  [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
-  must be set up.
-- You must have Master [permissions] in order to be able to access the **Cluster**
-  page.
+  clusters on GKE. That would mean that a [billing
+  account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
+  must be set up and that you have to have permissions to access it.
+- You must have Master [permissions] in order to be able to access the
+  **Cluster** page.
+- You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
+- You must have [Resource Manager
+  API](https://cloud.google.com/resource-manager/)
 
 If all of the above requirements are met, you can proceed to add a new GKE
 cluster.
