@@ -156,11 +156,6 @@ import Activities from './activities';
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
-        case 'profiles:preferences:show':
-          import('./pages/profiles/preferences')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'sessions:new':
           new UsernameValidator();
           new SigninTabsMemoizer();
@@ -512,7 +507,9 @@ import Activities from './activities';
           new BlobViewer();
           break;
         case 'help:index':
-          import('./pages/help').then(module => module.default()).catch(fail);
+          import('./pages/help')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'search:show':
           new Search();
