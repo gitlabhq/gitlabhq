@@ -71,7 +71,6 @@ export default class Job {
       .off('resize.build')
       .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
 
-    this.updateArtifactRemoveDate();
     this.initAffixTopArea();
 
     this.getBuildTrace();
@@ -261,16 +260,7 @@ export default class Job {
   sidebarOnClick() {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
-  // eslint-disable-next-line class-methods-use-this, consistent-return
-  updateArtifactRemoveDate() {
-    const $date = $('.js-artifacts-remove');
-    if ($date.length) {
-      const date = $date.text();
-      return $date.text(
-        timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3'))),
-      );
-    }
-  }
+
   // eslint-disable-next-line class-methods-use-this
   populateJobs(stage) {
     $('.build-job').hide();
