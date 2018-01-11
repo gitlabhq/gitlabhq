@@ -1,6 +1,4 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid without_default_scope: true
-
   prepend EE::Namespace
   include CacheMarkdownField
   include Sortable
@@ -11,6 +9,9 @@ class Namespace < ActiveRecord::Base
   include AfterCommitQueue
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
+  include IgnorableColumn
+
+  ignore_column :deleted_at
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -228,12 +229,6 @@ class Namespace < ActiveRecord::Base
 
   def subgroup?
     has_parent?
-  end
-
-  def soft_delete_without_removing_associations
-    # We can't use paranoia's `#destroy` since this will hard-delete projects.
-    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
-    self.deleted_at = Time.now
   end
 
   def multiple_issue_boards_available?(user = nil)
