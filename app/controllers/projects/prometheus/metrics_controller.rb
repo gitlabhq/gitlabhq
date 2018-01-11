@@ -102,7 +102,7 @@ module Projects
       end
 
       def prometheus_service
-        @prometheus_service ||= project.find_or_initialize_service(PrometheusService)
+        @prometheus_service ||= project.find_or_initialize_service('prometheus')
       end
 
       def require_prometheus_metrics!
