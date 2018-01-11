@@ -198,18 +198,28 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
             .catch(fail);
           break;
         case 'projects:milestones:new':
+        case 'projects:milestones:create':
+          import('./pages/projects/milestones/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
-          new ZenMode();
-          new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          import('./pages/projects/milestones/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:milestones:new':
+        case 'groups:milestones:create':
+          import('./pages/groups/milestones/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
-          new ZenMode();
-          new DueDateSelectors();
-          new GLForm($('.milestone-form'), false);
+          import('./pages/groups/milestones/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:compare:show':
           new Diff();
