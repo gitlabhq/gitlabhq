@@ -575,7 +575,9 @@ import Activities from './activities';
           import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          import('./pages/snippets/show').then(callDefault).catch(fail);
+          import('./pages/snippets/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
