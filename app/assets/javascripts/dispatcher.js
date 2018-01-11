@@ -375,7 +375,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
-          new Activities();
+          import('./pages/dashboard/activity')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:commit:show':
           new Diff();
