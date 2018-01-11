@@ -3,11 +3,32 @@ module Files
     UPDATE_FILE_ACTIONS = %w(update move delete).freeze
 
     def create_commit!
+      Lfs::FileTransformer.link_lfs_objects(project, @branch_name) do |transformer|
+        actions = actions_after_lfs_transformation(transformer, params[:actions])
+
+        commit_actions!(actions)
+      end
+    end
+
+    private
+
+    def actions_after_lfs_transformation(transformer, actions)
+      actions.map do |action|
+        if action[:action] == 'create'
+          content = transformer.new_file(action[:file_path], action[:content])
+          action[:content] = content
+        end
+
+        action
+      end
+    end
+
+    def commit_actions!(actions)
       repository.multi_action(
         current_user,
         message: @commit_message,
         branch_name: @branch_name,
-        actions: params[:actions],
+        actions: actions,
         author_email: @author_email,
         author_name: @author_name,
         start_project: @start_project,
@@ -16,8 +37,6 @@ module Files
     rescue ArgumentError => e
       raise_error(e)
     end
-
-    private
 
     def validate!
       super
