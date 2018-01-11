@@ -1,10 +1,14 @@
 # Epics API
 
-Every API call to epic_issues must be authenticated.
+Every API call to epic must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
 
 Epics are available only in EEU. If epics feature is not available a `403` status code will be returned.
+
+## Epic issues API
+
+The [epic issues API](epic_issues.md) allows you to interact with issues associated with an epic.
 
 ## List epics for a group
 
@@ -186,3 +190,4 @@ DELETE /groups/:id/-/epics/:epic_iid
 ```bash
 curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics/5?title=New%20Title
 ```
+
