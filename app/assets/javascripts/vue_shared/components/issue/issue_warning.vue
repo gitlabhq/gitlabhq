@@ -5,10 +5,7 @@
     components: {
       icon,
     },
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master
     props: {
       isLocked: {
         type: Boolean,
