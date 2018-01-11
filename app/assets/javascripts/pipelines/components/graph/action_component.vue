@@ -14,10 +14,7 @@
     directives: {
       tooltip,
     },
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     props: {
       tooltipText: {
         type: String,
