@@ -483,11 +483,21 @@ import Activities from './activities';
         case 'groups:labels:new':
         case 'groups:labels:edit':
         case 'projects:labels:new':
+          import('./pages/projects/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:labels:edit':
-          new Labels();
+          import('./pages/projects/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:labels:index':
+          import('./pages/projects/labels/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:labels:index':
-        case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
             new LabelManager();
           }
