@@ -19,15 +19,11 @@
         required: true,
       },
     },
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master
     data() {
       return {
         actions: this.getActions(),
       };
-<<<<<<< HEAD
     },
 
     computed: {
@@ -67,47 +63,6 @@
           });
         }
 
-=======
-    },
-
-    computed: {
-      status() {
-        return this.pipeline.details && this.pipeline.details.status;
-      },
-      shouldRenderContent() {
-        return !this.isLoading && Object.keys(this.pipeline).length;
-      },
-    },
-
-    watch: {
-      pipeline() {
-        this.actions = this.getActions();
-      },
-    },
-
-    methods: {
-      postAction(action) {
-        const index = this.actions.indexOf(action);
-
-        this.$set(this.actions[index], 'isLoading', true);
-
-        eventHub.$emit('headerPostAction', action);
-      },
-
-      getActions() {
-        const actions = [];
-
-        if (this.pipeline.retry_path) {
-          actions.push({
-            label: 'Retry',
-            path: this.pipeline.retry_path,
-            cssClass: 'js-retry-button btn btn-inverted-secondary',
-            type: 'button',
-            isLoading: false,
-          });
-        }
-
->>>>>>> upstream/master
         if (this.pipeline.cancel_path) {
           actions.push({
             label: 'Cancel running',
