@@ -57,6 +57,7 @@ namespace :gitlab do
         IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *+moved*.git)) do |find|
           find.each_line do |path|
             path.chomp!
+
             if remove_flag
               if FileUtils.rm_rf(path)
                 puts "Removed...#{path}".color(:green)
@@ -113,6 +114,7 @@ namespace :gitlab do
         next unless user.ldap_user?
 
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
+
         if Gitlab::LDAP::Access.allowed?(user)
           puts " [OK]".color(:green)
         else

@@ -62,6 +62,7 @@ module KerberosSpnegoHelper
       else
         nil # accept any valid service principal name from keytab
       end
+
     gss.acquire_credentials(gss_service_name) # grab credentials from keytab
 
     # Decode token

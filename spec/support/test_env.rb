@@ -326,6 +326,7 @@ module TestEnv
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)
+
       unless system('rake', task)
         raise ComponentFailedToInstallError
       end

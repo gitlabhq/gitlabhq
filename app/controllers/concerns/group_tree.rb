@@ -8,6 +8,7 @@ module GroupTree
                 # Only show root groups if no parent-id is given
                 groups.where(parent_id: params[:parent_id])
               end
+
     @groups = @groups.with_selects_for_list(archived: params[:archived])
                 .sort(@sort = params[:sort])
                 .page(params[:page])

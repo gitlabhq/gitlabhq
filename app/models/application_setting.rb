@@ -465,6 +465,7 @@ class ApplicationSetting < ActiveRecord::Base
         super(group_full_path)
         Gitlab::PerformanceBar.expire_allowed_user_ids_cache
       end
+
       return
     end
 

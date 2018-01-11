@@ -46,6 +46,7 @@ FactoryBot.define do
       if evaluator.authorize_user_to_create
         protected_tag.create_access_levels.new(user: evaluator.authorize_user_to_create)
       end
+
       if evaluator.authorize_group_to_create
         protected_tag.create_access_levels.new(group: evaluator.authorize_group_to_create)
       end

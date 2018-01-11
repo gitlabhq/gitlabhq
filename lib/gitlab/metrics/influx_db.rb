@@ -171,6 +171,7 @@ module Gitlab
               end
             end
           end
+
           @pool
         end
       end
