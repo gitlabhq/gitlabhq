@@ -13,7 +13,7 @@ module QA
       end
 
       def self.fabricate!(*args)
-        Factory::Product.populate!(new) do |factory|
+        new.tap do |factory|
           yield factory if block_given?
 
           dependencies.each do |name, signature|
@@ -21,6 +21,8 @@ module QA
           end
 
           factory.fabricate!(*args)
+
+          return Factory::Product.populate!(self)
         end
       end
 

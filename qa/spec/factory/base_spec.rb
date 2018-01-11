@@ -1,8 +1,9 @@
 describe QA::Factory::Base do
+  let(:factory) { spy('factory') }
+  let(:product) { spy('product') }
+
   describe '.fabricate!' do
     subject { Class.new(described_class) }
-    let(:factory) { spy('factory') }
-    let(:product) { spy('product') }
 
     before do
       allow(QA::Factory::Product).to receive(:new).and_return(product)
@@ -89,14 +90,33 @@ describe QA::Factory::Base do
   describe '.product' do
     subject do
       Class.new(described_class) do
-        product :token do |factory, page|
-          page.do_something!
+        product :token do
+          page.do_something_on_page!
+          'resulting value'
         end
       end
     end
 
     it 'appends new product attribute' do
       expect(subject.attributes).to be_one
+      expect(subject.attributes).to have_key(:token)
+    end
+
+    describe 'populating fabrication product with data' do
+      let(:page) { spy('page') }
+
+      before do
+        allow(subject).to receive(:new).and_return(factory)
+        allow(QA::Factory::Product).to receive(:new).and_return(product)
+        allow(product).to receive(:page).and_return(page)
+      end
+
+      it 'populates product after fabrication' do
+        subject.fabricate!
+
+        expect(page).to have_received(:do_something_on_page!)
+        expect(product.token).to eq 'resulting value'
+      end
     end
   end
 end
