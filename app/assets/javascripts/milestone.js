@@ -1,5 +1,3 @@
-/* global Sortable */
-
 import Flash from './flash';
 
 export default class Milestone {
