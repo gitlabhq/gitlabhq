@@ -17,11 +17,7 @@ export default {
       'panelResizing',
     ]),
     shouldHideEditor() {
-<<<<<<< HEAD
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
-=======
-      return this.activeFile.binary && !this.activeFile.raw;
->>>>>>> upstream/master
     },
   },
   watch: {
