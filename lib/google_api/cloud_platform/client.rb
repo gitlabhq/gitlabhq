@@ -47,7 +47,7 @@ module GoogleApi
         service.authorization = access_token
 
         service.fetch_all(items: :projects) do |token|
-          service.list_projects(page_token: token)
+          service.list_projects(page_token: token, options: user_agent_header)
         end
       end
 
@@ -55,7 +55,7 @@ module GoogleApi
         service = Google::Apis::CloudbillingV1::CloudbillingService.new
         service.authorization = access_token
 
-        service.get_project_billing_info("projects/#{project_id}")
+        service.get_project_billing_info("projects/#{project_id}", options: user_agent_header)
       end
 
       def projects_zones_clusters_get(project_id, zone, cluster_id)
