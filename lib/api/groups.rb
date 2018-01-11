@@ -256,6 +256,7 @@ module API
         if group.pending_ldap_sync
           LdapGroupSyncWorker.perform_async(group.id)
         end
+
         status 202
       end
     end
