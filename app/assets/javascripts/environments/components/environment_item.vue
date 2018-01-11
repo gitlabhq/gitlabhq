@@ -53,21 +53,12 @@
 
     computed: {
       /**
-<<<<<<< HEAD
-       * Verifies if `last_deployment` key exists in the current Environment.
-       * This key is required to render most of the html - this method works has
-       * an helper.
-       *
-       * @returns {Boolean}
-       */
-=======
       * Verifies if `last_deployment` key exists in the current Envrionment.
       * This key is required to render most of the html - this method works has
       * an helper.
       *
       * @returns {Boolean}
       */
->>>>>>> upstream/master
       hasLastDeploymentKey() {
         if (this.model &&
           this.model.last_deployment &&
@@ -78,19 +69,11 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies is the given environment has manual actions.
-       * Used to verify if we should render them or nor.
-       *
-       * @returns {Boolean|Undefined}
-       */
-=======
       * Verifies is the given environment has manual actions.
       * Used to verify if we should render them or nor.
       *
       * @returns {Boolean|Undefined}
       */
->>>>>>> upstream/master
       hasManualActions() {
         return this.model &&
           this.model.last_deployment &&
@@ -99,35 +82,20 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Returns the value of the `stop_action?` key provided in the response.
-       *
-       * @returns {Boolean}
-       */
-=======
       * Returns the value of the `stop_action?` key provided in the response.
       *
       * @returns {Boolean}
       */
->>>>>>> upstream/master
       hasStopAction() {
         return this.model && this.model['stop_action?'];
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if the `deployable` key is present in `last_deployment` key.
-       * Used to verify whether we should or not render the rollback partial.
-       *
-       * @returns {Boolean|Undefined}
-       */
-=======
       * Verifies if the `deployable` key is present in `last_deployment` key.
       * Used to verify whether we should or not render the rollback partial.
       *
       * @returns {Boolean|Undefined}
       */
->>>>>>> upstream/master
       canRetry() {
         return this.model &&
           this.hasLastDeploymentKey &&
@@ -136,17 +104,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if the date to be shown is present.
-       *
-       * @returns {Boolean|Undefined}
-       */
-=======
       * Verifies if the date to be shown is present.
       *
       * @returns {Boolean|Undefined}
       */
->>>>>>> upstream/master
       canShowDate() {
         return this.model &&
           this.model.last_deployment &&
@@ -155,17 +116,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Human readable date.
-       *
-       * @returns {String}
-       */
-=======
       * Human readable date.
       *
       * @returns {String}
       */
->>>>>>> upstream/master
       createdDate() {
         if (this.model &&
           this.model.last_deployment &&
@@ -177,17 +131,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Returns the manual actions with the name parsed.
-       *
-       * @returns {Array.<Object>|Undefined}
-       */
-=======
       * Returns the manual actions with the name parsed.
       *
       * @returns {Array.<Object>|Undefined}
       */
->>>>>>> upstream/master
       manualActions() {
         if (this.hasManualActions) {
           return this.model.last_deployment.manual_actions.map((action) => {
@@ -203,17 +150,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Builds the string used in the user image alt attribute.
-       *
-       * @returns {String}
-       */
-=======
       * Builds the string used in the user image alt attribute.
       *
       * @returns {String}
       */
->>>>>>> upstream/master
       userImageAltDescription() {
         if (this.model &&
           this.model.last_deployment &&
@@ -225,17 +165,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * If provided, returns the commit tag.
-       *
-       * @returns {String|Undefined}
-       */
-=======
       * If provided, returns the commit tag.
       *
       * @returns {String|Undefined}
       */
->>>>>>> upstream/master
       commitTag() {
         if (this.model &&
           this.model.last_deployment &&
@@ -246,17 +179,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * If provided, returns the commit ref.
-       *
-       * @returns {Object|Undefined}
-       */
-=======
       * If provided, returns the commit ref.
       *
       * @returns {Object|Undefined}
       */
->>>>>>> upstream/master
       commitRef() {
         if (this.model &&
           this.model.last_deployment &&
@@ -267,17 +193,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * If provided, returns the commit url.
-       *
-       * @returns {String|Undefined}
-       */
-=======
       * If provided, returns the commit url.
       *
       * @returns {String|Undefined}
       */
->>>>>>> upstream/master
       commitUrl() {
         if (this.model &&
           this.model.last_deployment &&
@@ -289,17 +208,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * If provided, returns the commit short sha.
-       *
-       * @returns {String|Undefined}
-       */
-=======
       * If provided, returns the commit short sha.
       *
       * @returns {String|Undefined}
       */
->>>>>>> upstream/master
       commitShortSha() {
         if (this.model &&
           this.model.last_deployment &&
@@ -311,17 +223,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * If provided, returns the commit title.
-       *
-       * @returns {String|Undefined}
-       */
-=======
       * If provided, returns the commit title.
       *
       * @returns {String|Undefined}
       */
->>>>>>> upstream/master
       commitTitle() {
         if (this.model &&
           this.model.last_deployment &&
@@ -333,17 +238,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * If provided, returns the commit tag.
-       *
-       * @returns {Object|Undefined}
-       */
-=======
       * If provided, returns the commit tag.
       *
       * @returns {Object|Undefined}
       */
->>>>>>> upstream/master
       commitAuthor() {
         if (this.model &&
           this.model.last_deployment &&
@@ -356,17 +254,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if the `retry_path` key is present and returns its value.
-       *
-       * @returns {String|Undefined}
-       */
-=======
       * Verifies if the `retry_path` key is present and returns its value.
       *
       * @returns {String|Undefined}
       */
->>>>>>> upstream/master
       retryUrl() {
         if (this.model &&
           this.model.last_deployment &&
@@ -378,60 +269,35 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if the `last?` key is present and returns its value.
-       *
-       * @returns {Boolean|Undefined}
-       */
-=======
       * Verifies if the `last?` key is present and returns its value.
       *
       * @returns {Boolean|Undefined}
       */
->>>>>>> upstream/master
       isLastDeployment() {
         return this.model && this.model.last_deployment &&
           this.model.last_deployment['last?'];
       },
 
       /**
-<<<<<<< HEAD
-       * Builds the name of the builds needed to display both the name and the id.
-       *
-       * @returns {String}
-       */
-=======
       * Builds the name of the builds needed to display both the name and the id.
       *
       * @returns {String}
       */
->>>>>>> upstream/master
       buildName() {
         if (this.model &&
           this.model.last_deployment &&
           this.model.last_deployment.deployable) {
-<<<<<<< HEAD
-          return `${this.model.last_deployment.deployable.name} #${this.model.last_deployment.deployable.id}`;
-=======
           const deployable = this.model.last_deployment.deployable;
           return `${deployable.name} #${deployable.id}`;
->>>>>>> upstream/master
         }
         return '';
       },
 
       /**
-<<<<<<< HEAD
-       * Builds the needed string to show the internal id.
-       *
-       * @returns {String}
-       */
-=======
       * Builds the needed string to show the internal id.
       *
       * @returns {String}
       */
->>>>>>> upstream/master
       deploymentInternalId() {
         if (this.model &&
           this.model.last_deployment &&
@@ -442,17 +308,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if the user object is present under last_deployment object.
-       *
-       * @returns {Boolean}
-       */
-=======
       * Verifies if the user object is present under last_deployment object.
       *
       * @returns {Boolean}
       */
->>>>>>> upstream/master
       deploymentHasUser() {
         return this.model &&
           !_.isEmpty(this.model.last_deployment) &&
@@ -460,19 +319,11 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Returns the user object nested with the last_deployment object.
-       * Used to render the template.
-       *
-       * @returns {Object}
-       */
-=======
       * Returns the user object nested with the last_deployment object.
       * Used to render the template.
       *
       * @returns {Object}
       */
->>>>>>> upstream/master
       deploymentUser() {
         if (this.model &&
           !_.isEmpty(this.model.last_deployment) &&
@@ -483,21 +334,12 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if the build name column should be rendered by verifing
-       * if all the information needed is present
-       * and if the environment is not a folder.
-       *
-       * @returns {Boolean}
-       */
-=======
       * Verifies if the build name column should be rendered by verifing
       * if all the information needed is present
       * and if the environment is not a folder.
       *
       * @returns {Boolean}
       */
->>>>>>> upstream/master
       shouldRenderBuildName() {
         return !this.model.isFolder &&
           !_.isEmpty(this.model.last_deployment) &&
@@ -505,17 +347,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies the presence of all the keys needed to render the buil_path.
-       *
-       * @return {String}
-       */
-=======
       * Verifies the presence of all the keys needed to render the buil_path.
       *
       * @return {String}
       */
->>>>>>> upstream/master
       buildPath() {
         if (this.model &&
           this.model.last_deployment &&
@@ -528,17 +363,10 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies the presence of all the keys needed to render the external_url.
-       *
-       * @return {String}
-       */
-=======
       * Verifies the presence of all the keys needed to render the external_url.
       *
       * @return {String}
       */
->>>>>>> upstream/master
       externalURL() {
         if (this.model && this.model.external_url) {
           return this.model.external_url;
@@ -548,21 +376,12 @@
       },
 
       /**
-<<<<<<< HEAD
-       * Verifies if deplyment internal ID should be rendered by verifing
-       * if all the information needed is present
-       * and if the environment is not a folder.
-       *
-       * @returns {Boolean}
-       */
-=======
       * Verifies if deplyment internal ID should be rendered by verifing
       * if all the information needed is present
       * and if the environment is not a folder.
       *
       * @returns {Boolean}
       */
->>>>>>> upstream/master
       shouldRenderDeploymentID() {
         return !this.model.isFolder &&
           !_.isEmpty(this.model.last_deployment) &&
@@ -598,12 +417,9 @@
       onClickFolder() {
         eventHub.$emit('toggleFolder', this.model);
       },
-<<<<<<< HEAD
       toggleDeployBoard() {
         eventHub.$emit('toggleDeployBoard', this.model);
       },
-=======
->>>>>>> upstream/master
     },
   };
 </script>

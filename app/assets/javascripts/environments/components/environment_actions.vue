@@ -12,10 +12,6 @@
     components: {
       loadingIcon,
     },
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
     props: {
       actions: {
         type: Array,
