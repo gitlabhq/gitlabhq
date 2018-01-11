@@ -304,10 +304,10 @@ because we have not yet configured the secondary server. This is the next step.
     connections. The certificate can only be replicated by someone with access
     to the private key, which is **only** present on the primary node.
 
-1. Configure PostgreSQL to listen on network interfaces on secondary
+1. Optional: Configure PostreSQL to enable FDW support
 
     This step is similar to how we configured the primary instance.
-    We need to enable this, even if using a single node, to enable FDW support.
+    We need to enable this, to enable FDW support, even if using a single node.
 
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
     addresses with addresses appropriate to your network configuration:
@@ -320,6 +320,9 @@ because we have not yet configured the secondary server. This is the next step.
 
     # gitlab database user's password (defined previously)
     gitlab_rails['db_password'] = 'mypassword'
+
+    # enable fdw for the geo tracking database
+    geo_secondary['db_fdw'] = true
     ```
 
 1. Test that the `gitlab-psql` user can connect to the primary's database:
