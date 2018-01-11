@@ -580,7 +580,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/search/show')
             .then(callDefault)
             .catch(fail);
-<<<<<<< HEAD
           new UserCallout();
           break;
         case 'projects:mirrors:show':
@@ -592,8 +591,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'admin:audit_logs:index':
           import(/* webpackChunkName: "ee_audit_logs" */ 'ee/pages/admin/audit_logs').then(m => m.default()).catch(fail);
-=======
->>>>>>> upstream/master
           break;
         case 'projects:settings:repository:show':
           new UsersSelect();
@@ -703,15 +700,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
                     .then(callDefault)
                     .catch(fail);
                   break;
-<<<<<<< HEAD
                 case 'edit':
                   import(/* webpackChunkName: "ee_admin_groups_edit" */ 'ee/pages/admin/groups/edit').then(m => m.default()).catch(fail);
                   break;
               }
 
-=======
-              }
->>>>>>> upstream/master
               break;
             case 'projects':
               import('./pages/admin/projects')
@@ -735,14 +728,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
               import('./pages/admin/abuse_reports')
                 .then(callDefault)
                 .catch(fail);
-<<<<<<< HEAD
               break;
             case 'geo_nodes':
               import(/* webpackChunkName: 'geo_node_form' */ './geo/geo_node_form')
                 .then(geoNodeForm => geoNodeForm.default($('.js-geo-node-form')))
                 .catch(() => {});
-=======
->>>>>>> upstream/master
               break;
           }
           break;
