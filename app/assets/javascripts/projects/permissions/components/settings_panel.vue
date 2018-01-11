@@ -164,20 +164,6 @@
       },
     },
   };
-
-    methods: {
-      highlightChanges() {
-        this.highlightChangesClass = true;
-        this.$nextTick(() => {
-          this.highlightChangesClass = false;
-        });
-      },
-
-      visibilityAllowed(option) {
-        return this.allowedVisibilityOptions.includes(option);
-      },
-    },
-  };
 </script>
 
 <template>
