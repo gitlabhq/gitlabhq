@@ -9,6 +9,7 @@ describe('note_app', () => {
   let vm;
 
   beforeEach(() => {
+    $('body').attr('data-page', 'projects:merge_requests:show');
     const IssueNotesApp = Vue.extend(notesApp);
 
     mountComponent = (data) => {

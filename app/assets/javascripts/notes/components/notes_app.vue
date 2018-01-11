@@ -146,18 +146,21 @@
 
       document.addEventListener('newNoteAdded', () => {
         this.poll();
-      })
+      });
     },
     watch: {
       notes: {
         deep: true,
         handler() {
           if (isInMRPage()) {
-            const legacyNotesApp = Notes.getInstance();
-            legacyNotesApp && legacyNotesApp.refresh();
+            const legacyNotesApp = window.Notes.getInstance();
+
+            if (legacyNotesApp) {
+              legacyNotesApp.refresh();
+            }
           }
-        }
-      }
+        },
+      },
     },
   };
 </script>

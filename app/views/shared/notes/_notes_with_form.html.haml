@@ -2,7 +2,7 @@
 - discussion_locked = issuable&.discussion_locked?
 - has_vue_discussions_cookie = cookies[:vue_mr_discussions] == 'true'
 
-- if !has_vue_discussions_cookie
+- unless has_vue_discussions_cookie
   %ul#notes-list.notes.main-notes-list.timeline
     = render "shared/notes/notes"
 
