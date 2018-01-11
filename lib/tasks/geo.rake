@@ -72,6 +72,7 @@ namespace :geo do
       if Gitlab::Geo::DatabaseTasks.dump_schema_after_migration?
         ns["schema:dump"].invoke
       end
+
       # Allow this task to be called as many times as required. An example is the
       # migrate:redo task, which calls other two internally that depend on this one.
       ns['_dump'].reenable

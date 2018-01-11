@@ -34,6 +34,7 @@ class GroupProjectsFinder < ProjectsFinder
                else
                  collection_without_user
                end
+
     union(projects)
   end
 

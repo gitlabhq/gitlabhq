@@ -94,15 +94,15 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('sets error flag and message on failure', (done) => {
+      it('emits `nodeDetailsLoadFailed` event on failure', (done) => {
         const err = 'Something went wrong';
         const mock = new MockAdapter(axios);
+        spyOn(eventHub, '$emit');
         mock.onGet(`${vm.service.geoNodeDetailsBasePath}/2/status.json`).reply(500, err);
 
         vm.fetchNodeDetails(2);
         setTimeout(() => {
-          expect(vm.hasError).toBeTruthy();
-          expect(vm.errorMessage.response.data).toBe(err);
+          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoadFailed', 2, jasmine.any(Object));
           done();
         }, 0);
       });

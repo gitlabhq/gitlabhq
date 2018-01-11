@@ -3,6 +3,13 @@ module QA
     module Project
       module Settings
         class DeployKeys < Page::Base
+          ##
+          # TODO, define all selectors required by this page object
+          #
+          # See gitlab-org/gitlab-qa#154
+          #
+          view 'app/views/projects/deploy_keys/edit.html.haml'
+
           def fill_key_title(title)
             fill_in 'deploy_key_title', with: title
           end

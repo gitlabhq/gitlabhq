@@ -115,6 +115,7 @@ module Gitlab
         else
           merge_requests.full_search(query)
         end
+
       merge_requests.order('updated_at DESC')
     end
 

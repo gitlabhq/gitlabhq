@@ -1,5 +1,5 @@
 import Vue from 'vue';
-
+import _ from 'underscore';
 import pendingAvatarSvg from 'icons/_icon_dotted_circle.svg';
 import ApprovalsFooter from 'ee/vue_merge_request_widget/components/approvals/approvals_footer';
 

@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import _ from 'underscore';
 import Cookies from 'js-cookie';
 
 class BoardsStoreEE {

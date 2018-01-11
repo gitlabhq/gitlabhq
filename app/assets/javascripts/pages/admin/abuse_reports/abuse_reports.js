@@ -1,4 +1,4 @@
-import { truncate } from './lib/utils/text_utility';
+import { truncate } from '../../../lib/utils/text_utility';
 
 const MAX_MESSAGE_LENGTH = 500;
 const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';

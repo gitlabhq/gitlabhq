@@ -1,7 +1,5 @@
-/* global Mousetrap */
-
+import Mousetrap from 'mousetrap';
 import _ from 'underscore';
-import 'mousetrap';
 import Sidebar from './right_sidebar';
 import ShortcutsNavigation from './shortcuts_navigation';
 import { CopyAsGFM } from './behaviors/copy_as_gfm';

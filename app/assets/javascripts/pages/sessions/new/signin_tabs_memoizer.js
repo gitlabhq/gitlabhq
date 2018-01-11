@@ -1,6 +1,6 @@
 /* eslint no-param-reassign: ["error", { "props": false }]*/
 /* eslint no-new: "off" */
-import AccessorUtilities from './lib/utils/accessor';
+import AccessorUtilities from '~/lib/utils/accessor';
 
 /**
  * Memorize the last selected tab after reloading a page.

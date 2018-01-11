@@ -512,6 +512,7 @@ module Gitlab
         batch_size: 10_000,
         interval: 10.minutes
       )
+
         unless relation.model < EachBatch
           raise TypeError, 'The relation must include the EachBatch module'
         end

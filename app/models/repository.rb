@@ -110,6 +110,10 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
+  def create_hooks
+    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
+  end
+
   def commit(ref = 'HEAD')
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
@@ -1069,6 +1073,7 @@ class Repository
           else
             cache.fetch(key, &block)
           end
+
         instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
         # Even if the above `#exists?` check passes these errors might still
