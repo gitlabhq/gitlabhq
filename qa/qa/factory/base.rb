@@ -1,6 +1,12 @@
+require 'forwardable'
+
 module QA
   module Factory
     class Base
+      extend SingleForwardable
+
+      def_delegators :evaluator, :dependency, :dependencies
+
       def fabricate!(*_args)
         raise NotImplementedError
       end
@@ -17,16 +23,25 @@ module QA
         end
       end
 
-      def self.dependencies
-        @dependencies ||= {}
+      def self.evaluator
+        @evaluator ||= Factory::Base::DSL.new(self)
       end
 
-      def self.dependency(factory, as:, &block)
-        as.tap do |name|
-          class_eval { attr_accessor name }
+      class DSL
+        attr_reader :dependencies
 
-          Dependency::Signature.new(factory, block).tap do |signature|
-            dependencies.store(name, signature)
+        def initialize(base)
+          @base = base
+          @dependencies = {}
+        end
+
+        def dependency(factory, as:, &block)
+          as.tap do |name|
+            @base.class_eval { attr_accessor name }
+
+            Dependency::Signature.new(factory, block).tap do |signature|
+              dependencies.store(name, signature)
+            end
           end
         end
       end
