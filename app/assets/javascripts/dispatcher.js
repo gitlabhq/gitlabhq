@@ -266,8 +266,14 @@ import Activities from './activities';
           initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
           break;
         case 'projects:branches:new':
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:branches:create':
-          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:index':
           AjaxLoadingSpinner.init();
