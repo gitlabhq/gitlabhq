@@ -1,9 +1,5 @@
 <script>
-<<<<<<< HEAD
   import Flash from '~/flash';
-=======
-  import Flash from '../../../flash';
->>>>>>> upstream/master
   import editForm from './edit_form.vue';
   import issuableMixin from '../../../vue_shared/mixins/issuable';
   import Icon from '../../../vue_shared/components/icon.vue';
@@ -16,10 +12,6 @@
     mixins: [
       issuableMixin,
     ],
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
     props: {
       isLocked: {
         required: true,
@@ -44,7 +36,6 @@
         return this.isLocked ? 'lock' : 'lock-open';
       },
 
-<<<<<<< HEAD
       isLockDialogOpen() {
         return this.mediator.store.isLockDialogOpen;
       },
@@ -55,34 +46,12 @@
         this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
       },
 
-=======
-    computed: {
-      lockIcon() {
-        return this.isLocked ? 'lock' : 'lock-open';
-      },
-
-      isLockDialogOpen() {
-        return this.mediator.store.isLockDialogOpen;
-      },
-    },
-
-    methods: {
-      toggleForm() {
-        this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
-      },
-
->>>>>>> upstream/master
       updateLockedAttribute(locked) {
         this.mediator.service.update(this.issuableType, {
           discussion_locked: locked,
         })
         .then(() => location.reload())
-<<<<<<< HEAD
         .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
-=======
-        .catch(() => Flash(this.__(`Something went wrong trying to
-  change the locked state of this ${this.issuableDisplayName}`)));
->>>>>>> upstream/master
       },
     },
   };
