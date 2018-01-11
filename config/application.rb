@@ -61,6 +61,7 @@ module Gitlab
     # - Any parameter containing `secret`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
+    # - Build traces (:trace)
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
@@ -75,6 +76,7 @@ module Gitlab
       key
       otp_attempt
       sentry_dsn
+      trace
       variables
     )
 
