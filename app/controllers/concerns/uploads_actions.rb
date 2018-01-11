@@ -28,14 +28,13 @@ module UploadsActions
     # or send the file
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
     expires_in 0.seconds, must_revalidate: true, private: true
-    binding.pry
     send_file uploader.file.path, disposition: disposition
   end
 
   private
 
   def uploader_class
-    uploader.class
+    raise NotImplementedError
   end
 
   def upload_mount
@@ -44,24 +43,32 @@ module UploadsActions
     mounted_as if upload_mounts.include? mounted_as
   end
 
+  def uploader_mounted?
+    upload_model_class < CarrierWave::Mount::Extension && !upload_mount.nil?
+  end
+
   # TODO: this method is too complex
   #
   def uploader
-    @uploader ||= if upload_model_class < CarrierWave::Mount::Extension && upload_mount
-                    model.public_send(upload_mount)
-                  elsif upload_model_class == PersonalSnippet
-                    find_upload(PersonalFileUploader)&.build_uploader || PersonalFileUploader.new(model)
+    @uploader ||= if uploader_mounted?
+                    model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
                   else
-                    find_upload(FileUploader)&.build_uploader || FileUploader.new(model)
+                    build_uploader_from_upload || build_uploader_from_params
                   end
-
   end
 
-  def find_upload(uploader_class)
+  def build_uploader_from_upload
     return nil unless params[:secret] && params[:filename]
 
     upload_path = uploader_class.upload_path(params[:secret], params[:filename])
-    Upload.where(uploader: uploader_class.to_s, path: upload_path)&.last
+    upload = Upload.where(uploader: uploader_class.to_s, path: upload_path)&.last
+    upload&.build_uploader
+  end
+
+  def build_uploader_from_params
+    uploader = uploader_class.new(model, params[:secret])
+    uploader.retrieve_from_store!(params[:filename])
+    uploader
   end
 
   def image_or_video?

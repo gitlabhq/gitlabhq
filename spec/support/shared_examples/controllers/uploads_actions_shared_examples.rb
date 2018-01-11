@@ -3,6 +3,7 @@ shared_examples 'handle uploads' do
   let(:jpg)   { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)   { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
   let(:secret) { FileUploader.generate_secret }
+  let(:uploader_class) { FileUploader }
 
   describe "POST #create" do
     context 'when a user is not authorized to upload a file' do
@@ -71,7 +72,7 @@ shared_examples 'handle uploads' do
 
     before do
       expect(FileUploader).to receive(:generate_secret).and_return(secret)
-      UploadService.new(model, jpg).execute
+      UploadService.new(model, jpg, uploader_class).execute
     end
 
     context "when the model is public" do

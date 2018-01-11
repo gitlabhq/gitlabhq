@@ -10,9 +10,12 @@ module Gitlab
 
       FIND_BATCH_SIZE = 500
       RELATIVE_UPLOAD_DIR = "uploads".freeze
-      ABSOLUTE_UPLOAD_DIR = "#{CarrierWave.root}/#{RELATIVE_UPLOAD_DIR}".freeze
+      ABSOLUTE_UPLOAD_DIR = File.join(
+        Gitlab.config.uploads.storage_path,
+        RELATIVE_UPLOAD_DIR
+      )
       FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
-      START_WITH_CARRIERWAVE_ROOT_REGEX = %r{\A#{CarrierWave.root}/}
+      START_WITH_ROOT_REGEX = %r{\A#{Gitlab.config.uploads.storage_path}/}
       EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
       EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
 
@@ -80,7 +83,7 @@ module Gitlab
         paths = []
 
         stdout.each_line("\0") do |line|
-          paths << line.chomp("\0").sub(START_WITH_CARRIERWAVE_ROOT_REGEX, '')
+          paths << line.chomp("\0").sub(START_WITH_ROOT_REGEX, '')
 
           if paths.size >= batch_size
             yield(paths)

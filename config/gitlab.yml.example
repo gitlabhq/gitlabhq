@@ -797,7 +797,7 @@ test:
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: eu-central-1
   uploads:
-    storage_path: tmp/tests/public/
+    storage_path: tmp/tests/public
     enabled: true
     object_store:
       enabled: false

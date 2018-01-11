@@ -20,7 +20,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
     end
 
     def absolute_path(upload_record)
-      File.join(CarrierWave.root, upload_record.path)
+      File.join(root, upload_record.path)
     end
   end
 

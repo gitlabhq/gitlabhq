@@ -22,6 +22,7 @@ module ObjectStorage
 
       prepended do |base|
         raise ObjectStoreUnavailable, "#{base} must include ObjectStorage::Concern to use extensions."  unless base < Concern
+
         base.include(::RecordsUploads::Concern)
       end
 
@@ -33,6 +34,11 @@ module ObjectStorage
 
       def record_upload(_tempfile = nil)
         self.upload = super
+      end
+
+      def destroy_upload(_tempfile = nil)
+        super
+        self.upload = nil
       end
 
       def upload=(upload)

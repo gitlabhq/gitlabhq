@@ -146,7 +146,7 @@ describe Projects::ArtifactsController do
         it_behaves_like 'a valid file' do
           let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
           let(:store) { ObjectStorage::Store::LOCAL }
-          let(:archive_path) { JobArtifactUploader.workhorse_upload_path }
+          let(:archive_path) { JobArtifactUploader.root }
         end
       end
 

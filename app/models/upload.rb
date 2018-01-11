@@ -29,6 +29,10 @@ class Upload < ActiveRecord::Base
     upload
   end
 
+  def self.hexdigest(path)
+    Digest::SHA256.file(path).hexdigest
+  end
+
   def absolute_path
     raise ObjectStorage::RemoteStoreError, "Remote object has no absolute path." unless local?
     return path unless relative_path?
@@ -40,7 +44,7 @@ class Upload < ActiveRecord::Base
     self.checksum = nil
     return unless checksumable?
 
-    self.checksum = Digest::SHA256.file(absolute_path).hexdigest
+    self.checksum = self.class.hexdigest(absolute_path)
   end
 
   def build_uploader(from = nil)

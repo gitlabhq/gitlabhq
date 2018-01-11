@@ -9,11 +9,11 @@ describe LegacyArtifactUploader do
   subject { uploader }
 
   # TODO: move to Workhorse::UploadPath
-  describe '.artifacts_upload_path' do
+  describe '.workhorse_upload_path' do
     subject { described_class.workhorse_upload_path }
 
     it { is_expected.to start_with(local_path) }
-    it { is_expected.to end_with('tmp/uploads/') }
+    it { is_expected.to end_with('tmp/uploads') }
   end
 
   it_behaves_like "builds correct paths",

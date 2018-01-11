@@ -21,7 +21,7 @@ describe Upload do
           path: __FILE__,
           size: described_class::CHECKSUM_THRESHOLD + 1.kilobyte,
           model: build_stubbed(:user),
-          uploader: double('ExampleUploader'),
+          uploader: double('ExampleUploader')
         )
 
         expect(UploadChecksumWorker)
@@ -35,7 +35,7 @@ describe Upload do
           path: __FILE__,
           size: described_class::CHECKSUM_THRESHOLD,
           model: build_stubbed(:user),
-          uploader: double('ExampleUploader'),
+          uploader: double('ExampleUploader')
         )
 
         expect { upload.save }
@@ -51,7 +51,7 @@ describe Upload do
         size: File.size(__FILE__),
         path: __FILE__,
         model: build_stubbed(:user),
-        uploader: 'AvatarUploader',
+        uploader: 'AvatarUploader'
       )
 
       expect { described_class.remove_path(__FILE__) }

@@ -11,7 +11,7 @@ describe FileUploader do
   shared_examples 'builds correct legacy storage paths' do
     include_examples 'builds correct paths',
                      store_dir: %r{awesome/project/\h+},
-                     absolute_path: %r{#{CarrierWave.root}/awesome/project/secret/foo.jpg}
+                     absolute_path: %r{#{described_class.root}/awesome/project/secret/foo.jpg}
   end
 
   shared_examples 'uses hashed storage' do
@@ -24,7 +24,7 @@ describe FileUploader do
 
       it_behaves_like 'builds correct paths',
                       store_dir: %r{ca/fe/fe/ed/\h+},
-                      absolute_path: %r{#{CarrierWave.root}/ca/fe/fe/ed/secret/foo.jpg}
+                      absolute_path: %r{#{described_class.root}/ca/fe/fe/ed/secret/foo.jpg}
     end
 
     context 'when only repositories are rolled out' do

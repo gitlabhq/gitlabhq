@@ -285,8 +285,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       end
 
       it 'schedules a Geo::FileRemovalWorker' do
-        file_path = File.join(LfsObjectUploader.workhorse_upload_path,
-          lfs_object_deleted_event.file_path)
+        file_path = File.join(LfsObjectUploader.root, lfs_object_deleted_event.file_path)
 
         expect(::Geo::FileRemovalWorker).to receive(:perform_async)
           .with(file_path)

@@ -4,7 +4,6 @@ describe Gitlab::ImportExport::UploadsRestorer do
   describe 'bundle a project Git repo' do
     let(:export_path) { "#{Dir.tmpdir}/uploads_saver_spec" }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
-    let(:uploads_path) { FileUploader.model_path_segment(project) }
 
     before do
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
@@ -26,9 +25,9 @@ describe Gitlab::ImportExport::UploadsRestorer do
       end
 
       it 'copies the uploads to the project path' do
-        restorer.restore
+        subject.restore
 
-        uploads = Dir.glob(File.join(uploads_path, '**/*')).map { |file| File.basename(file) }
+        uploads = Dir.glob(File.join(subject.uploads_path, '**/*')).map { |file| File.basename(file) }
 
         expect(uploads).to include('dummy.txt')
       end
@@ -44,9 +43,9 @@ describe Gitlab::ImportExport::UploadsRestorer do
       end
 
       it 'copies the uploads to the project path' do
-        restorer.restore
+        subject.restore
 
-        uploads = Dir.glob(File.join(uploads_path, '**/*')).map { |file| File.basename(file) }
+        uploads = Dir.glob(File.join(subject.uploads_path, '**/*')).map { |file| File.basename(file) }
 
         expect(uploads).to include('dummy.txt')
       end

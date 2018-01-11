@@ -27,6 +27,6 @@ class Projects::UploadsController < Projects::ApplicationController
   end
 
   def model
-    @model ||= @project || find_model
+    @model || find_model
   end
 end

@@ -1,6 +1,11 @@
 class NamespaceFileUploader < FileUploader
   storage_options Gitlab.config.uploads
 
+  # Re-Override
+  def self.root
+    storage_options&.storage_path
+  end
+
   def self.base_dir(model)
     File.join(storage_options&.base_dir, 'namespace', model_path_segment(model))
   end

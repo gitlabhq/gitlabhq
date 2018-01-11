@@ -6,6 +6,16 @@ class UploadsController < ApplicationController
 
   UnknownUploadModelError = Class.new(StandardError)
 
+  MODEL_CLASSES = {
+    "user"    => User,
+    "project" => Project,
+    "note"    => Note,
+    "group"   => Group,
+    "appearance" => Appearance,
+    "personal_snippet" => PersonalSnippet,
+    nil => PersonalSnippet
+  }.freeze
+
   rescue_from UnknownUploadModelError, with: :render_404
 
   skip_before_action :authenticate_user!
@@ -14,8 +24,13 @@ class UploadsController < ApplicationController
   before_action :authorize_access!, only: [:show]
   before_action :authorize_create_access!, only: [:create]
 
+  def uploader_class
+    PersonalFileUploader
+  end
+
   def find_model
     return nil unless params[:id]
+
     @model = upload_model_class.find(params[:id])
   end
 
@@ -57,16 +72,8 @@ class UploadsController < ApplicationController
   end
 
   def upload_model_class
-    model_classes = {
-      "user"    => User,
-      "project" => Project,
-      "note"    => Note,
-      "group"   => Group,
-      "appearance" => Appearance,
-      "personal_snippet" => PersonalSnippet
-    }
+    raise UnknownUploadModelError unless cls = MODEL_CLASSES[params[:model]]
 
-    raise UnknownUploadModelError unless cls = model_classes[params[:model]]
     cls
   end
 
@@ -76,6 +83,7 @@ class UploadsController < ApplicationController
 
   def upload_mount_satisfied?
     return true unless upload_model_class_has_mounts?
+
     upload_model_class.uploader_options.has_key?(upload_mount)
   end
 

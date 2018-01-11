@@ -26,19 +26,23 @@ class FileUploader < GitlabUploader
   storage_options Gitlab.config.uploads
 
   def self.root
-    storage_options&.storage_path
+    File.join(storage_options&.storage_path, 'uploads')
   end
 
   def self.absolute_path(upload)
     File.join(
-      root,
-      base_dir(upload.model),
+      absolute_base_dir(upload.model),
       upload.path # this already contain the dynamic_segment, see #upload_path
     )
   end
 
   def self.base_dir(model)
     model_path_segment(model)
+  end
+
+  # this is used in migrations and import/exports
+  def self.absolute_base_dir(model)
+    File.join(root, base_dir(model))
   end
 
   # Returns the part of `store_dir` that can change based on the model's current
@@ -121,8 +125,8 @@ class FileUploader < GitlabUploader
     self.file.filename
   end
 
-  # This is weird: the upload do not hold the secret, but holds the path
-  # so we need to extract the secret from the path
+  # the upload does not hold the secret, but holds the path
+  # which contains the secret: extract it
   def upload=(value)
     if matches = DYNAMIC_PATH_PATTERN.match(value.path)
       @secret = matches[:secret]

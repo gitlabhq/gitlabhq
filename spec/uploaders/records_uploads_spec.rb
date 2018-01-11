@@ -5,6 +5,7 @@ describe RecordsUploads do
     class RecordsUploadsExampleUploader < GitlabUploader
       include RecordsUploads::Concern
 
+      storage_options Gitlab.config.uploads
       storage :file
 
       def model
@@ -20,6 +21,12 @@ describe RecordsUploads do
   end
 
   describe 'callbacks' do
+    let(:upload) { create(:upload) }
+
+    before do
+      uploader.upload = upload
+    end
+
     it '#record_upload after `store`' do
       expect(uploader).to receive(:record_upload).once
 

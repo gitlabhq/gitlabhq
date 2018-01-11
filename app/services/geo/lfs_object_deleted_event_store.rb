@@ -25,7 +25,7 @@ module Geo
     end
 
     def local_store_path
-      Pathname.new(LfsObjectUploader.workhorse_upload_path)
+      Pathname.new(LfsObjectUploader.root)
     end
 
     def relative_file_path

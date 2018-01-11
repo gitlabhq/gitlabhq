@@ -334,6 +334,21 @@ Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 
+#
+# Build Artifacts
+#
+Settings['artifacts'] ||= Settingslogic.new({})
+Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
+# DEPRECATED use `storage_path`
+Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values_at('path', 'storage_path').compact.first || File.join(Settings.shared['path'], "artifacts"))
+Settings.artifacts['max_size']   ||= 100 # in megabytes
+
+Settings.artifacts['object_store'] ||= Settingslogic.new({})
+Settings.artifacts['object_store']['enabled']           ||= false
+Settings.artifacts['object_store']['remote_directory']  ||= nil
+Settings.artifacts['object_store']['background_upload'] ||= true
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Registry
@@ -367,22 +382,6 @@ Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pa
 # Geo
 #
 Settings.gitlab['geo_status_timeout'] ||= 10
-
-#
-# Build Artifacts
-#
-Settings['artifacts'] ||= Settingslogic.new({})
-Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
-# DEPRECATED use `storage_path`
-Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values_at('path', 'storage_path').compact.first || File.join(Settings.shared['path'], "artifacts"))
-Settings.artifacts['max_size']   ||= 100 # in megabytes
-
-Settings.artifacts['object_store'] ||= Settingslogic.new({})
-Settings.artifacts['object_store']['enabled']           ||= false
-Settings.artifacts['object_store']['remote_directory']  ||= nil
-Settings.artifacts['object_store']['background_upload'] ||= true
-# Convert upload connection settings to use string keys, to make Fog happy
-Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Git LFS

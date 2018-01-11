@@ -1,5 +1,9 @@
 require 'spec_helper'
 
+def base_path(storage)
+  File.join(FileUploader.root, storage.disk_path)
+end
+
 describe Geo::HashedStorageAttachmentsMigrationService do
   let!(:project) { create(:project) }
 
@@ -11,7 +15,11 @@ describe Geo::HashedStorageAttachmentsMigrationService do
   let(:old_path) { File.join(base_path(legacy_storage), upload.path) }
   let(:new_path) { File.join(base_path(hashed_storage), upload.path) }
 
-  subject(:service) { described_class.new(project.id, old_attachments_path: legacy_storage.disk_path, new_attachments_path: hashed_storage.disk_path) }
+  subject(:service) do
+    described_class.new(project.id,
+                        old_attachments_path: legacy_storage.disk_path,
+                        new_attachments_path: hashed_storage.disk_path)
+  end
 
   describe '#execute' do
     context 'when succeeds' do
@@ -71,9 +79,5 @@ describe Geo::HashedStorageAttachmentsMigrationService do
 
       expect(service.async_execute).to eq('foo')
     end
-  end
-
-  def base_path(storage)
-    File.join(CarrierWave.root, FileUploader.base_dir, storage.disk_path)
   end
 end

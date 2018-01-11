@@ -173,11 +173,11 @@ ActiveRecord::Schema.define(version: 20171214144320) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
+    t.boolean "password_authentication_enabled_for_web"
+    t.boolean "password_authentication_enabled_for_git", default: true
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
-    t.boolean "password_authentication_enabled_for_web"
-    t.boolean "password_authentication_enabled_for_git", default: true, null: false
     t.boolean "mirror_available", default: true, null: false
   end
 
@@ -403,9 +403,9 @@ ActiveRecord::Schema.define(version: 20171214144320) do
     t.integer "job_id", null: false
     t.integer "file_type", null: false
     t.integer "size", limit: 8
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "expire_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "expire_at"
     t.string "file"
     t.integer "file_store"
   end
