@@ -13,15 +13,12 @@
     props: {
       /**
         This function will take the information given by the pagination component
-<<<<<<< HEAD
 
         Here is an example `change` method:
 
         change(pagenum) {
           gl.utils.visitUrl(`?page=${pagenum}`);
         },
-=======
->>>>>>> upstream/master
       */
       change: {
         type: Function,
