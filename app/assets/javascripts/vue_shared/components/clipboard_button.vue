@@ -18,6 +18,16 @@
         type: String,
         required: true,
       },
+      tooltipPlacement: {
+        type: String,
+        required: false,
+        default: 'top',
+      },
+      tooltipContainer: {
+        type: [String, Boolean],
+        required: false,
+        default: false,
+      },
     },
   };
 </script>
@@ -29,6 +39,8 @@
     :title="title"
     :data-clipboard-text="text"
     v-tooltip
+    :data-container="tooltipContainer"
+    :data-placement="tooltipPlacement"
   >
     <i
       aria-hidden="true"

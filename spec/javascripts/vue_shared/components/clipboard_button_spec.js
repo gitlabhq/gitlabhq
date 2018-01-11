@@ -17,9 +17,15 @@ describe('clipboard button', () => {
     vm.$destroy();
   });
 
-  it('renders a button for clipboard with a tooltip', () => {
+  it('renders a button for clipboard', () => {
     expect(vm.$el.tagName).toEqual('BUTTON');
     expect(vm.$el.getAttribute('data-clipboard-text')).toEqual('copy me');
+    expect(vm.$el.querySelector('i').className).toEqual('fa fa-clipboard');
+  });
+
+  it('should have a tooltip with default values', () => {
     expect(vm.$el.getAttribute('data-original-title')).toEqual('Copy this value into Clipboard!');
+    expect(vm.$el.getAttribute('data-placement')).toEqual('top');
+    expect(vm.$el.getAttribute('data-container')).toEqual(null);
   });
 });
