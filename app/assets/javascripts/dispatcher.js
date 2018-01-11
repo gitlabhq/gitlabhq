@@ -20,7 +20,6 @@ import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
-import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
 import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
@@ -310,20 +309,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
-          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
-          if (mrNewCompareNode) {
-            new Compare({
-              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
-              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
-              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
-            });
-          } else {
-            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
-            new MergeRequest({
-              action: mrNewSubmitNode.dataset.mrSubmitAction,
-            });
-          }
-          new UserCallout();
+          import('./pages/projects/merge_requests/creations/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new Diff();
