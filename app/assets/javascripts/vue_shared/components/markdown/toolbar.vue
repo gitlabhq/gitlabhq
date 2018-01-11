@@ -16,15 +16,6 @@
         return this.quickActionsDocsPath !== '';
       },
     },
-<<<<<<< HEAD
-
-=======
-    computed: {
-      hasQuickActionsDocsPath() {
-        return this.quickActionsDocsPath !== '';
-      },
-    },
->>>>>>> upstream/master
   };
 </script>
 
