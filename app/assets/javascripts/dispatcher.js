@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import groupsSelect from './groups_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
@@ -40,7 +39,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
-import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
@@ -390,23 +388,16 @@ import Activities from './activities';
           break;
         case 'projects:pipelines:new':
         case 'projects:pipelines:create':
-          new NewBranchForm($('.js-new-pipeline-form'));
+          import('./pages/projects/pipelines/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
-          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
-          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
-
-          new Pipelines({
-            initTabs: true,
-            pipelineStatusUrl,
-            tabsOptions: {
-              action: controllerAction,
-              defaultAction: 'pipelines',
-              parentEl: '.pipelines-tabs',
-            },
-          });
+          import('./pages/projects/pipelines/builds')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:activity':
           new Activities();
@@ -428,11 +419,9 @@ import Activities from './activities';
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          memberExpirationDate('.js-access-expiration-date-groups');
-          groupsSelect();
-          memberExpirationDate();
-          new Members();
-          new UsersSelect();
+          import('./pages/projects/project_members/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:new':
         case 'groups:create':
