@@ -19,7 +19,7 @@ describe Route do
 
     describe '#ensure_permanent_paths' do
       context 'when the route is not yet persisted' do
-        let(:new_route) { Route.new(path: 'foo', source: build(:group)) }
+        let(:new_route) { described_class.new(path: 'foo', source: build(:group)) }
 
         context 'when permanent conflicting redirects exist' do
           it 'is invalid' do
