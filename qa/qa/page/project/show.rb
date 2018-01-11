@@ -2,6 +2,13 @@ module QA
   module Page
     module Project
       class Show < Page::Base
+        ##
+        # TODO, define all selectors required by this page object
+        #
+        # See gitlab-org/gitlab-qa#154
+        #
+        view 'app/views/projects/show.html.haml'
+
         def choose_repository_clone_http
           find('#clone-dropdown').click
 

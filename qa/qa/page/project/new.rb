@@ -2,6 +2,13 @@ module QA
   module Page
     module Project
       class New < Page::Base
+        ##
+        # TODO, define all selectors required by this page object
+        #
+        # See gitlab-org/gitlab-qa#154
+        #
+        view 'app/views/projects/new.html.haml'
+
         def choose_test_namespace
           find('#s2id_project_namespace_id').click
           find('.select2-result-label', text: Runtime::Namespace.name).click
