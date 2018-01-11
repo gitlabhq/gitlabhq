@@ -1,5 +1,4 @@
-/* global Mousetrap */
-
+import Mousetrap from 'mousetrap';
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 import Shortcuts from './shortcuts';
 

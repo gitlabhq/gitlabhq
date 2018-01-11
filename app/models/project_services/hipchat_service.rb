@@ -110,6 +110,7 @@ class HipchatService < Service
 
     message = ""
     message << "#{push[:user_name]} "
+
     if Gitlab::Git.blank_ref?(before)
       message << "pushed new #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"\

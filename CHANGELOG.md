@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.4 (2018-01-10)
+
+### Security (7 changes, 1 of them is from the community)
+
+- Prevent a SQL injection in the MilestonesFinder.
+- Fix RCE via project import mechanism.
+- Prevent OAuth login POST requests when a provider has been disabled.
+- Filter out sensitive fields from the project services API. (Robert Schilling)
+- Check user authorization for source and target projects when creating a merge request.
+- Fix path traversal in gitlab-ci.yml cache:key.
+- Fix writable shared deploy keys.
+
+
 ## 10.3.3 (2018-01-02)
 
 ### Fixed (3 changes)
@@ -178,6 +191,21 @@ entry.
 - Clarify wording of protected branch settings for the default branch.
 - Update svg external depencency.
 - Clean up schema of the "merge_requests" table.
+
+
+## 10.2.6 (2018-01-11)
+
+### Security (9 changes, 1 of them is from the community)
+
+- Fix writable shared deploy keys.
+- Filter out sensitive fields from the project services API. (Robert Schilling)
+- Fix RCE via project import mechanism.
+- Fixed IPython notebook output not being sanitized.
+- Prevent OAuth login POST requests when a provider has been disabled.
+- Prevent a SQL injection in the MilestonesFinder.
+- Check user authorization for source and target projects when creating a merge request.
+- Fix path traversal in gitlab-ci.yml cache:key.
+- Fix XSS vulnerability in pipeline job trace.
 
 
 ## 10.2.5 (2017-12-15)
@@ -444,6 +472,20 @@ entry.
 - Remove filter icon from search bar.
 - Use title as placeholder instead of issue title for reusability.
 - Add Gitaly metrics to the performance bar.
+
+
+## 10.1.6 (2018-01-11)
+
+### Security (8 changes, 1 of them is from the community)
+
+- Fix writable shared deploy keys.
+- Filter out sensitive fields from the project services API. (Robert Schilling)
+- Fix RCE via project import mechanism.
+- Prevent OAuth login POST requests when a provider has been disabled.
+- Prevent a SQL injection in the MilestonesFinder.
+- Check user authorization for source and target projects when creating a merge request.
+- Fix path traversal in gitlab-ci.yml cache:key.
+- Fix XSS vulnerability in pipeline job trace.
 
 
 ## 10.1.5 (2017-12-07)

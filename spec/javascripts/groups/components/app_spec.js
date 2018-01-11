@@ -256,6 +256,36 @@ describe('AppComponent', () => {
       });
     });
 
+    describe('showLeaveGroupModal', () => {
+      it('caches candidate group (as props) which is to be left', () => {
+        const group = Object.assign({}, mockParentGroupItem);
+        expect(vm.targetGroup).toBe(null);
+        expect(vm.targetParentGroup).toBe(null);
+        vm.showLeaveGroupModal(group, mockParentGroupItem);
+        expect(vm.targetGroup).not.toBe(null);
+        expect(vm.targetParentGroup).not.toBe(null);
+      });
+
+      it('updates props which show modal confirmation dialog', () => {
+        const group = Object.assign({}, mockParentGroupItem);
+        expect(vm.showModal).toBeFalsy();
+        expect(vm.groupLeaveConfirmationMessage).toBe('');
+        vm.showLeaveGroupModal(group, mockParentGroupItem);
+        expect(vm.showModal).toBeTruthy();
+        expect(vm.groupLeaveConfirmationMessage).toBe(`Are you sure you want to leave the "${group.fullName}" group?`);
+      });
+    });
+
+    describe('hideLeaveGroupModal', () => {
+      it('hides modal confirmation which is shown before leaving the group', () => {
+        const group = Object.assign({}, mockParentGroupItem);
+        vm.showLeaveGroupModal(group, mockParentGroupItem);
+        expect(vm.showModal).toBeTruthy();
+        vm.hideLeaveGroupModal();
+        expect(vm.showModal).toBeFalsy();
+      });
+    });
+
     describe('leaveGroup', () => {
       let groupItem;
       let childGroupItem;
@@ -265,21 +295,24 @@ describe('AppComponent', () => {
         groupItem.children = mockChildren;
         childGroupItem = groupItem.children[0];
         groupItem.isChildrenLoading = false;
+        vm.targetGroup = childGroupItem;
+        vm.targetParentGroup = groupItem;
       });
 
-      it('should leave group and remove group item from tree', (done) => {
+      it('hides modal confirmation leave group and remove group item from tree', (done) => {
         const notice = `You left the "${childGroupItem.fullName}" group.`;
         spyOn(vm.service, 'leaveGroup').and.returnValue(returnServicePromise({ notice }));
         spyOn(vm.store, 'removeGroup').and.callThrough();
         spyOn(window, 'Flash');
         spyOn($, 'scrollTo');
 
-        vm.leaveGroup(childGroupItem, groupItem);
-        expect(childGroupItem.isBeingRemoved).toBeTruthy();
-        expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
+        vm.leaveGroup();
+        expect(vm.showModal).toBeFalsy();
+        expect(vm.targetGroup.isBeingRemoved).toBeTruthy();
+        expect(vm.service.leaveGroup).toHaveBeenCalledWith(vm.targetGroup.leavePath);
         setTimeout(() => {
           expect($.scrollTo).toHaveBeenCalledWith(0);
-          expect(vm.store.removeGroup).toHaveBeenCalledWith(childGroupItem, groupItem);
+          expect(vm.store.removeGroup).toHaveBeenCalledWith(vm.targetGroup, vm.targetParentGroup);
           expect(window.Flash).toHaveBeenCalledWith(notice, 'notice');
           done();
         }, 0);
@@ -291,13 +324,13 @@ describe('AppComponent', () => {
         spyOn(vm.store, 'removeGroup').and.callThrough();
         spyOn(window, 'Flash');
 
-        vm.leaveGroup(childGroupItem, groupItem);
-        expect(childGroupItem.isBeingRemoved).toBeTruthy();
+        vm.leaveGroup();
+        expect(vm.targetGroup.isBeingRemoved).toBeTruthy();
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         setTimeout(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
           expect(window.Flash).toHaveBeenCalledWith(message);
-          expect(childGroupItem.isBeingRemoved).toBeFalsy();
+          expect(vm.targetGroup.isBeingRemoved).toBeFalsy();
           done();
         }, 0);
       });
@@ -309,12 +342,12 @@ describe('AppComponent', () => {
         spyOn(window, 'Flash');
 
         vm.leaveGroup(childGroupItem, groupItem);
-        expect(childGroupItem.isBeingRemoved).toBeTruthy();
+        expect(vm.targetGroup.isBeingRemoved).toBeTruthy();
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         setTimeout(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
           expect(window.Flash).toHaveBeenCalledWith(message);
-          expect(childGroupItem.isBeingRemoved).toBeFalsy();
+          expect(vm.targetGroup.isBeingRemoved).toBeFalsy();
           done();
         }, 0);
       });
@@ -364,7 +397,7 @@ describe('AppComponent', () => {
       Vue.nextTick(() => {
         expect(eventHub.$on).toHaveBeenCalledWith('fetchPage', jasmine.any(Function));
         expect(eventHub.$on).toHaveBeenCalledWith('toggleChildren', jasmine.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('leaveGroup', jasmine.any(Function));
+        expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', jasmine.any(Function));
         expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', jasmine.any(Function));
         expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', jasmine.any(Function));
         newVm.$destroy();
@@ -404,7 +437,7 @@ describe('AppComponent', () => {
       Vue.nextTick(() => {
         expect(eventHub.$off).toHaveBeenCalledWith('fetchPage', jasmine.any(Function));
         expect(eventHub.$off).toHaveBeenCalledWith('toggleChildren', jasmine.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('leaveGroup', jasmine.any(Function));
+        expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', jasmine.any(Function));
         expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', jasmine.any(Function));
         expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', jasmine.any(Function));
         done();
@@ -438,6 +471,15 @@ describe('AppComponent', () => {
         expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
         done();
       });
+    });
+
+    it('renders modal confirmation dialog', () => {
+      vm.groupLeaveConfirmationMessage = 'Are you sure you want to leave the "foo" group?';
+      vm.showModal = true;
+      const modalDialogEl = vm.$el.querySelector('.modal');
+      expect(modalDialogEl).not.toBe(null);
+      expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
+      expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');
     });
   });
 });

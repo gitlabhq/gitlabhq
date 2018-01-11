@@ -13,7 +13,6 @@
     "updated_by_id": { "type": ["string", "null"] },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "deleted_at": { "type": ["string", "null"] },
     "time_estimate": { "type": "integer" },
     "total_time_spent": { "type": "integer" },
     "human_time_estimate": { "type": ["integer", "null"] },

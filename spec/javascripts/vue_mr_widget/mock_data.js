@@ -14,7 +14,6 @@ export default {
   "updated_by_id": null,
   "created_at": "2017-04-07T12:27:26.718Z",
   "updated_at": "2017-04-07T15:39:25.852Z",
-  "deleted_at": null,
   "time_estimate": 0,
   "total_time_spent": 0,
   "human_time_estimate": null,

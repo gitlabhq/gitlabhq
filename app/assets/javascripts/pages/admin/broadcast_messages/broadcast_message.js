@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export default function initBroadcastMessagesForm() {
   $('input#broadcast_message_color').on('input', function onMessageColorInput() {
     const previewColor = $(this).val();

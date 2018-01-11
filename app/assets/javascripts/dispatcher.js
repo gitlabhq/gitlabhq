@@ -12,11 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import BuildArtifacts from './build_artifacts';
-import groupsSelect from './groups_select';
-import Search from './search';
-import initAdmin from './admin';
-import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
@@ -37,43 +32,31 @@ import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
-import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
-import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
 import TreeView from './tree';
-import UsagePing from './usage_ping';
-import UsernameValidator from './username_validator';
-import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import initExperimentalFlags from './experimental_flags';
-import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
-import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
-import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
-import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
@@ -157,18 +140,17 @@ import Activities from './activities';
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
-        case 'profiles:preferences:show':
-          initExperimentalFlags();
-          break;
         case 'sessions:new':
-          new UsernameValidator();
-          new SigninTabsMemoizer();
-          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
+          import('./pages/sessions/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
-          shortcut_handler = new ShortcutsNavigation();
-          new UsersSelect();
+          import('./pages/projects/boards/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
@@ -209,8 +191,9 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'dashboard:merge_requests':
-          projectSelect();
-          initLegacyFilters();
+          import('./pages/dashboard/merge_requests')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:issues':
         case 'groups:merge_requests':
@@ -232,19 +215,14 @@ import Activities from './activities';
         case 'explore:projects:index':
         case 'explore:projects:trending':
         case 'explore:projects:starred':
-        case 'admin:projects:index':
-          new ProjectsList();
+          import('./pages/explore/projects')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'explore:groups:index':
-          new GroupsList();
-          const landingElement = document.querySelector('.js-explore-groups-landing');
-          if (!landingElement) break;
-          const exploreGroupsLanding = new Landing(
-            landingElement,
-            landingElement.querySelector('.dismiss-button'),
-            'explore_groups_landing_dismissed',
-          );
-          exploreGroupsLanding.toggle();
+          import('./pages/explore/groups')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -355,7 +333,9 @@ import Activities from './activities';
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
-          new Activities();
+          import('./pages/dashboard/activity')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:commit:show':
           new Diff();
@@ -376,8 +356,10 @@ import Activities from './activities';
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new Activities();
-          shortcut_handler = new ShortcutsNavigation();
+          import('./pages/projects/activity')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
@@ -409,23 +391,16 @@ import Activities from './activities';
           break;
         case 'projects:pipelines:new':
         case 'projects:pipelines:create':
-          new NewBranchForm($('.js-new-pipeline-form'));
+          import('./pages/projects/pipelines/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
-          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
-          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
-
-          new Pipelines({
-            initTabs: true,
-            pipelineStatusUrl,
-            tabsOptions: {
-              action: controllerAction,
-              defaultAction: 'pipelines',
-              parentEl: '.pipelines-tabs',
-            },
-          });
+          import('./pages/projects/pipelines/builds')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:activity':
           new Activities();
@@ -447,22 +422,28 @@ import Activities from './activities';
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          memberExpirationDate('.js-access-expiration-date-groups');
-          groupsSelect();
-          memberExpirationDate();
-          new Members();
-          new UsersSelect();
+          import('./pages/projects/project_members/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:new':
-        case 'admin:groups:new':
         case 'groups:create':
-        case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
           groupAvatar();
           break;
-        case 'groups:edit':
+        case 'admin:groups:create':
+        case 'admin:groups:new':
+          import('./pages/admin/groups/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:groups:edit':
+          import('./pages/admin/groups/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:edit':
           groupAvatar();
           break;
         case 'projects:tree:show':
@@ -519,22 +500,30 @@ import Activities from './activities';
           break;
         case 'projects:forks:new':
           import(/* webpackChunkName: 'project_fork' */ './project_fork')
-            .then(fork => fork.default())
-            .catch(() => {});
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:artifacts:browse':
-          new ShortcutsNavigation();
-          new BuildArtifacts();
+          import('./pages/projects/artifacts/browse')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:artifacts:file':
-          new ShortcutsNavigation();
-          new BlobViewer();
+          import('./pages/projects/artifacts/file')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'help:index':
-          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          import('./pages/help')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'search:show':
-          new Search();
+          import('./pages/search/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:settings:repository:show':
           // Initialize expandable settings panels
@@ -573,8 +562,14 @@ import Activities from './activities';
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:impersonation_tokens:index':
-          new DueDateSelectors();
+          import('./pages/admin/impersonation_tokens')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
@@ -608,29 +603,51 @@ import Activities from './activities';
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          initAdmin();
+          import('./pages/admin')
+            .then(callDefault)
+            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
-              initBroadcastMessagesForm();
+              import('./pages/admin/broadcast_messages')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'cohorts':
-              new UsagePing();
+              import('./pages/admin/cohorts')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'groups':
-              new UsersSelect();
+              switch (path[2]) {
+                case 'show':
+                  import('./pages/admin/groups/show')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
+              }
               break;
             case 'projects':
-              document.querySelectorAll('.js-namespace-select')
-                .forEach(dropdown => new NamespaceSelect({ dropdown }));
+              import('./pages/admin/projects')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'labels':
               switch (path[2]) {
                 case 'new':
+                  import('./pages/admin/labels/new')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
                 case 'edit':
-                  new Labels();
+                  import('./pages/admin/labels/edit')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
               }
             case 'abuse_reports':
-              new AbuseReports();
+              import('./pages/admin/abuse_reports')
+                .then(callDefault)
+                .catch(fail);
               break;
           }
           break;
@@ -639,8 +656,9 @@ import Activities from './activities';
           new UserCallout();
           break;
         case 'profiles':
-          new NotificationsForm();
-          notificationsDropdown();
+          import('./pages/profiles/index/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects':
           new Project();
@@ -653,8 +671,8 @@ import Activities from './activities';
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
               import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
-                .then(permissions => permissions.default())
-                .catch(() => {});
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'new':
               new ProjectNew();

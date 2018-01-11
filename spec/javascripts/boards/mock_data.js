@@ -1,5 +1,6 @@
 /* global BoardService */
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
+import _ from 'underscore';
 
 export const listObj = {
   id: 300,
