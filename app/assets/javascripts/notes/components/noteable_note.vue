@@ -51,10 +51,7 @@
         return `note_${this.note.id}`;
       },
     },
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     created() {
       eventHub.$on('enterEditMode', ({ noteId }) => {
         if (noteId === this.note.id) {
@@ -63,10 +60,7 @@
         }
       });
     },
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     methods: {
       ...mapActions([
         'deleteNote',
