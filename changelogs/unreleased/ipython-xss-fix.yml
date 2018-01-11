@@ -1,5 +1,0 @@
----
-title: Fixed IPython notebook output not being sanitized
-merge_request:
-author:
-type: security
