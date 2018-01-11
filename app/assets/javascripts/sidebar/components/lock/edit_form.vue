@@ -33,12 +33,8 @@
     <div class="dropdown-menu sidebar-item-warning-message">
       <p
         class="text"
-<<<<<<< HEAD
         v-if="isLocked"
       >
-=======
-        v-if="isLocked">
->>>>>>> upstream/master
         Unlock this {{ issuableDisplayName }}?
         <strong>Everyone</strong>
         will be able to comment.
@@ -46,12 +42,8 @@
 
       <p
         class="text"
-<<<<<<< HEAD
         v-else
       >
-=======
-        v-else>
->>>>>>> upstream/master
         Lock this {{ issuableDisplayName }}?
         Only
         <strong>project members</strong>
