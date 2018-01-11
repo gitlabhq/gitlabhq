@@ -240,6 +240,10 @@ export default class MergeRequestTabs {
     return newState;
   }
 
+  getCurrentAction() {
+    return this.currentAction;
+  }
+
   loadCommits(source) {
     if (this.commitsLoaded) {
       return;

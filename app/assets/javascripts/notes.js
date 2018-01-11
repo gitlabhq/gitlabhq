@@ -362,6 +362,11 @@ export default class Notes {
    * Note: for rendering inline notes use renderDiscussionNote
    */
   renderNote(noteEntity, $form, $notesList = $('.main-notes-list')) {
+    // Let realtime Vue polling handle Changes tab
+    if (window.mrTabs.getCurrentAction() !== 'diffs') {
+      return;
+    }
+
     if (noteEntity.discussion_html) {
       return this.renderDiscussionNote(noteEntity, $form);
     }
