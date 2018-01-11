@@ -11,10 +11,7 @@
       pipelineStage,
       ciIcon,
       icon,
-<<<<<<< HEAD
       linkedPipelinesMiniList,
-=======
->>>>>>> upstream/master
     },
     props: {
       pipeline: {
@@ -101,7 +98,6 @@
           {{ pipeline.commit.short_id }}</a>.
 
           <span class="mr-widget-pipeline-graph">
-<<<<<<< HEAD
             <span class="stage-cell">
               <linked-pipelines-mini-list
                 v-if="triggeredBy.length"
@@ -124,19 +120,6 @@
                 v-if="triggered.length"
                 :triggered="triggered"
               />
-=======
-            <span
-              class="stage-cell"
-              v-if="hasStages"
-            >
-              <div
-                v-for="(stage, i) in pipeline.details.stages"
-                :key="i"
-                class="stage-container dropdown js-mini-pipeline-graph"
-              >
-                <pipeline-stage :stage="stage" />
-              </div>
->>>>>>> upstream/master
             </span>
           </span>
 
