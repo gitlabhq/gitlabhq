@@ -30,7 +30,6 @@ import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
-import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
@@ -55,7 +54,6 @@ import GpgBadges from './gpg_badges';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
-import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
@@ -218,8 +216,9 @@ import Activities from './activities';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          AjaxLoadingSpinner.init();
-          new DeleteModal();
+          import('./pages/projects/branches/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
