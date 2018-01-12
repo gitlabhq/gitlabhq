@@ -175,6 +175,7 @@ class GeoNodeStatus < ActiveRecord::Base
   # from a remote node via JSON.
   def storage_shards_match?
     return unless Gitlab::Geo.primary?
+    return unless current_shards && primary_shards
 
     shards_match?(current_shards, primary_shards)
   end
