@@ -10,25 +10,6 @@ They are written by members of the GitLab Team and by
 Part of the articles listed below link to the [GitLab Blog](https://about.gitlab.com/blog/),
 where they were originally published.
 
-## Build, test, and deploy with GitLab CI/CD
-
-Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/README.md):
-
-| Article title | Category | Publishing date |
-| :------------ | :------: | --------------: |
-| [Autoscaling GitLab Runners on AWS](runner_autoscale_aws/index.md) | Admin guide | 2017-11-24 |
-| [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017-07-13 |
-| [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/) | Concepts | 2017-07-11 |
-| [Continuous Integration: From Jenkins to GitLab Using Docker](https://about.gitlab.com/2017/07/27/docker-my-precious/) | Concepts | 2017-07-27 |
-| [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/) | Tutorial | 2016-12-14 |
-| [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/) | Tutorial | 2016-11-30 |
-| [Automated Debian Package Build with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/) | Tutorial | 2016-10-12 |
-| [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/) | Tutorial | 2016-08-11 |
-| [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/) | Technical overview | 2016-06-09 |
-| [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/) | Technical overview | 2016-05-23 |
-| [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017-05-15 |
-| [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016-03-10 |
-
 ## GitLab Pages
 
 Learn how to deploy a static website with [GitLab Pages](../user/project/pages/index.md#getting-started):
