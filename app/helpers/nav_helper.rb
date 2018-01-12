@@ -11,12 +11,8 @@ module NavHelper
     if current_path?('merge_requests#show') ||
         current_path?('projects/merge_requests/conflicts#show') ||
         current_path?('issues#show') ||
-<<<<<<< HEAD
         current_path?('milestones#show') ||
         current_path?('epics#show')
-=======
-        current_path?('milestones#show')
->>>>>>> upstream/master
 
       if cookies[:collapsed_gutter] == 'true'
         %w[page-gutter right-sidebar-collapsed]
