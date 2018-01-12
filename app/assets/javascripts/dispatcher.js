@@ -312,7 +312,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/projects/merge_requests/creations/new')
             .then(callDefault)
             .catch(fail);
-          break;
+          new UserCallout();
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new Diff();
