@@ -1,3 +1,5 @@
-import projectFork from '~/project_fork';
+import ProjectFork from '~/project_fork';
 
-export default projectFork;
+export default () => {
+  new ProjectFork(); // eslint-disable-line no-new
+};
