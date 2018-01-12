@@ -9,7 +9,7 @@ module Gitlab
           @@_metrics_provider_mutex ||= Mutex.new
 
           if instance_methods(false).include?(name)
-            raise ArgumentError, "metrics class method #{name} already exists"
+            raise ArgumentError, "metrics method #{name} already exists"
           end
           options[:base_labels] ||= {}
 
@@ -24,55 +24,58 @@ module Gitlab
               args << options[:buckets].inspect
           end
 
-          metric_fetching_code = %{Gitlab::Metrics::Prometheus.#{type}(#{args.join(', ')})}
+          metric_fetching_code = %{Gitlab::Metrics.#{type}(#{args.join(', ')})}
 
           # optionally wrap in feature
-          metric_fetching_code = if options[:with_feature].is_a?(Symbol)
-                                   <<-FETCH.strip_heredoc
-                                  if Feature.get(#{options[:with_feature].inspect}).enabled? 
-                                    #{metric_fetching_code}
-                                  else
-                                    Gitlab::Metrics::NullMetric.new
-                                  end
-                                   FETCH
-                                 end
+          if options[:with_feature].is_a?(Symbol)
+            metric_fetching_code = <<-FETCH.strip_heredoc
+              if Feature.get(#{options[:with_feature].inspect}).enabled? 
+                #{metric_fetching_code}
+              else
+                Gitlab::Metrics::NullMetric.new
+              end
+            FETCH
+          end
 
           method_code, line = <<-METRIC, __LINE__ + 1
+            @@_metric_provider_cached_#{name} = nil
             def #{name}
-              @@_metric_provider_cached_#{name} if @@_metric_provider_cached_#{name}
+              return @@_metric_provider_cached_#{name} if @@_metric_provider_cached_#{name}
 
               @@_metrics_provider_mutex.synchronize do
-                @_metric_provider_cached_#{name} ||= #{metric_fetching_code}
+                puts "Initiaalized"
+                @@_metric_provider_cached_#{name} ||= #{metric_fetching_code}
               end
             end
           METRIC
+          puts method_code
 
-          class_eval(method_code, __FILE__, line)
+          instance_eval(method_code, __FILE__, line)
           module_eval(method_code, __FILE__, line)
         end
 
         # Declare a Counter
         # @param [Symbol] name
         # @param [String] docstring
-        # @param [Hash] opts
-        def counter(name, docstring, opts = {})
+        # @param [Hash] options
+        def counter(name, docstring, options = {})
           metrics_provider(:counter, name, docstring, options)
         end
 
         # Declare a Gauge
         # @param [Symbol] name
         # @param [String] docstring
-        # @param [Hash] opts
-        def gauge(name, docstring, opts = {})
-          metrics_provider(:counter, name, docstring, opts)
+        # @param [Hash] options
+        def gauge(name, docstring, options = {})
+          metrics_provider(:counter, name, docstring, options)
         end
 
         # Declare a Histograam
         # @param [Symbol] name
         # @param [String] docstring
-        # @param [Hash] opts
-        def histogram(name, docstring, opts = {})
-          metrics_provider(:histogram, name, docstring, opts)
+        # @param [Hash] options
+        def histogram(name, docstring, options = {})
+          metrics_provider(:histogram, name, docstring, options)
         end
 
         def summary(*args)
