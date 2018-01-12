@@ -46,6 +46,12 @@ export default class IssuableForm {
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
     }
+
+    this.$targetBranchSelect = $('.js-target-branch-select', this.form);
+
+    if (this.$targetBranchSelect.length) {
+      this.initTargetBranchDropdown();
+    }
   }
 
   initAutosave() {
@@ -103,5 +109,53 @@ export default class IssuableForm {
 
   addWip() {
     this.titleField.val(`WIP: ${(this.titleField.val())}`);
+  }
+
+  initTargetBranchDropdown() {
+    this.$targetBranchSelect.select2({
+      ajax: {
+        url: this.$targetBranchSelect.data('endpoint'),
+        dataType: 'JSON',
+        quietMillis: 250,
+        data(search) {
+          return {
+            search,
+          };
+        },
+        results(data) {
+          return {
+            results: data[Object.keys(data)[0]].map(name => ({
+              id: name,
+              text: name,
+            })),
+          };
+        }
+      },
+      initSelection(el, callback) {
+        const val = el.val();
+
+        callback({
+          id: val,
+          text: val,
+        });
+      },
+      dropdownCss: () => {
+        let resultantWidth = 'auto';
+
+        // We have to look at the parent because
+        // `offsetParent` on a `display: none;` is `null`
+        const offsetParentWidth = this.$targetBranchSelect.parent().offsetParent().width();
+        // Reset any width to let it naturally flow
+        this.$targetBranchSelect.css('width', 'auto');
+        if (this.$targetBranchSelect.outerWidth(false) > offsetParentWidth) {
+          resultantWidth = offsetParentWidth;
+        }
+
+        return {
+          width: resultantWidth,
+          maxWidth: offsetParentWidth,
+        };
+      },
+    });
   }
 }
