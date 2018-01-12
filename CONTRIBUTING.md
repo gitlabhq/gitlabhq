@@ -169,23 +169,23 @@ An issue should be placed on the issue board of the team that will likely handle
 Priority labels help us clearly communicate expectations of the work for the
 release.
 
-| Label | Meaning                           | Product _e.g._       | Security _e.g._                               |
-|-------|-----------------------------------|----------------------|-----------------------------------------------|
-| ~P1   | Handle immediately                | Critical feature     | SQL Injection, Authentication Bypass          |
-| ~P2   | Handle in the current release     | Important feature    | Cross-site Scripting, Resource exhaustion DoS |
-| ~P3   | Schedule for a subsequent release | Nice-to-have feature | Tab nabbing, Path disclosure                  |
-| ~P4   | Trivial, may not do               | Suggestion           | New feature, Remove dangerous protocol        |
+| Label | Meaning                           | Product _e.g._       | Security _e.g._                               | UX _e.g._                                  |
+|-------|-----------------------------------|----------------------|-----------------------------------------------|--------------------------------------------|
+| ~P1   | Handle immediately                | Critical feature     | SQL Injection, Authentication Bypass          | Major feature implemented incorrectly      |
+| ~P2   | Handle in the current release     | Important feature    | Cross-site Scripting, Resource exhaustion DoS | Minor feature implemented incorrectly      |
+| ~P3   | Schedule for a subsequent release | Nice-to-have feature | Tab nabbing, Path disclosure                  | Needs improvement, cosmetic problem        |
+| ~P4   | Trivial, may not do               | Suggestion           | New feature, Remove dangerous protocol        | Suggestions, Investigate improvements      |
 
 ### Severity labels (~S1, ~S2, etc.)
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning                                  | Support _e.g._       |
-|-------|------------------------------------------|----------------------|
-| ~S1   | Major feature broken (no workaround)     |                      |
-| ~S2   | Major feature broken (workaround exists) |                      |
-| ~S3   | Minor feature broken                     |                      |
-| ~S4   | Cosmetic problem                         |                      |
+| Label | Meaning                                  | Support _e.g._       | UX _e.g._                                  |
+|-------|------------------------------------------|----------------------|--------------------------------------------|
+| ~S1   | Major feature broken (no workaround)     |                      | Users unable to complete a task in Merge requests, Issues, CI/CD        |
+| ~S2   | Major feature broken (workaround exists) |                      | Users unable to easily complete a task in Merge requests, Issues, CI/CD |
+| ~S3   | Minor feature broken                     |                      | Users unable to complete a task in Wiki                                 |
+| ~S4   | Cosmetic problem                         |                      | UI styling does not match standards (text color, typography, etc.)      |
 
 
 ### Label for community contributors (~"Accepting Merge Requests")
