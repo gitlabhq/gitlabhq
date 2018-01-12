@@ -4,9 +4,11 @@ import mockData, {
   headIssues,
   baseIssues,
   securityIssues,
+  securityIssuesBase,
   parsedBaseIssues,
   parsedHeadIssues,
   parsedSecurityIssuesStore,
+  parsedSecurityIssuesBaseStore,
   dockerReport,
   dockerReportParsed,
   dast,
@@ -93,10 +95,22 @@ describe('MergeRequestStore', () => {
   });
 
   describe('setSecurityReport', () => {
-    it('should set security issues', () => {
-      store.setSecurityReport(securityIssues, 'path');
+    it('should set security issues with head', () => {
+      store.setSecurityReport({ head: securityIssues, headBlobPath: 'path' });
 
-      expect(store.securityReport).toEqual(parsedSecurityIssuesStore);
+      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);
+    });
+
+    it('should set security issues with head and base', () => {
+      store.setSecurityReport({
+        head: securityIssues,
+        headBlobPath: 'path',
+        base: securityIssuesBase,
+        baseHeadPath: 'path',
+      });
+
+      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);
+      expect(store.securityReport.resolvedIssues).toEqual(parsedSecurityIssuesBaseStore);
     });
   });
 

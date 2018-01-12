@@ -38,7 +38,7 @@ export default {
       return performance && performance.head_path && performance.base_path;
     },
     shouldRenderSecurityReport() {
-      return this.mr.sast;
+      return this.mr.sast && this.mr.sast.head_path;
     },
     shouldRenderDockerReport() {
       return this.mr.sastContainer;
@@ -113,15 +113,36 @@ export default {
     },
 
     securityText() {
-      if (this.mr.securityReport.length) {
-        return n__(
-          '%d security vulnerability detected',
-          '%d security vulnerabilities detected',
-          this.mr.securityReport.length,
-        );
+      const { newIssues, resolvedIssues } = this.mr.securityReport;
+      const text = [];
+
+      if (!newIssues.length && !resolvedIssues.length) {
+        text.push('SAST detected no security vulnerabilities');
+      } else if (newIssues.length || resolvedIssues.length) {
+        text.push('SAST');
       }
 
-      return 'No security vulnerabilities detected';
+      if (resolvedIssues.length) {
+        text.push(n__(
+          ' improved on %d security vulnerability',
+          ' improved on %d security vulnerabilities',
+          resolvedIssues.length,
+        ));
+      }
+
+      if (newIssues.length > 0 && resolvedIssues.length > 0) {
+        text.push(' and');
+      }
+
+      if (newIssues.length) {
+        text.push(n__(
+          ' degraded on %d security vulnerability',
+          ' degraded on %d security vulnerabilities',
+          newIssues.length,
+        ));
+      }
+
+      return text.join('');
     },
 
     dockerText() {
@@ -247,20 +268,50 @@ export default {
           this.loadingPerformanceFailed = true;
         });
     },
-
+    /**
+     * Sast report can either have 2 reports or just 1
+     * When it has 2 we need to compare them
+     * When it has 1 we render the output given
+     */
     fetchSecurity() {
-      const { path, blob_path } = this.mr.sast;
+      const { sast } = this.mr;
+
       this.isLoadingSecurity = true;
 
-      this.service.fetchReport(path)
-        .then((data) => {
-          this.mr.setSecurityReport(data, blob_path);
-          this.isLoadingSecurity = false;
-        })
-        .catch(() => {
-          this.isLoadingSecurity = false;
-          this.loadingSecurityFailed = true;
-        });
+      if (sast.base_path && sast.head_path) {
+        Promise.all([
+          this.service.fetchReport(sast.head_path),
+          this.service.fetchReport(sast.base_path),
+        ])
+          .then((values) => {
+            this.handleSecuritySuccess({
+              head: values[0],
+              headBlobPath: sast.head_blob_path,
+              base: values[1],
+              baseBlobPath: sast.base_blob_path,
+            });
+          })
+          .catch(() => this.handleSecurityError());
+      } else if (sast.head_path) {
+        this.service.fetchReport(sast.head_path)
+          .then((data) => {
+            this.handleSecuritySuccess({
+              head: data,
+              headBlobPath: sast.head_blob_path,
+            });
+          })
+          .catch(() => this.handleSecurityError());
+      }
+    },
+
+    handleSecuritySuccess(data) {
+      this.mr.setSecurityReport(data);
+      this.isLoadingSecurity = false;
+    },
+
+    handleSecurityError() {
+      this.isLoadingSecurity = false;
+      this.loadingSecurityFailed = true;
     },
 
     fetchDockerReport() {
@@ -370,7 +421,8 @@ export default {
         :loading-text="translateText('security').loading"
         :error-text="translateText('security').error"
         :success-text="securityText"
-        :unresolved-issues="mr.securityReport"
+        :unresolved-issues="mr.securityReport.newIssues"
+        :resolved-issues="mr.securityReport.resolvedIssues"
         :has-priority="true"
         />
       <collapsible-section

@@ -63,7 +63,10 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   initSecurityReport(data) {
     this.sast = data.sast;
-    this.securityReport = [];
+    this.securityReport = {
+      newIssues: [],
+      resolvedIssues: [],
+    };
   }
 
   initDockerReport(data) {
@@ -80,8 +83,24 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.dastReport = [];
   }
 
-  setSecurityReport(issues, path) {
-    this.securityReport = MergeRequestStore.parseIssues(issues, path);
+  setSecurityReport(data) {
+    if (data.base) {
+      const parsedHead = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
+      const parsedBase = MergeRequestStore.parseIssues(data.base, data.baseBlobPath);
+
+      this.securityReport.newIssues = MergeRequestStore.filterByKey(
+        parsedHead,
+        parsedBase,
+        'cve',
+      );
+      this.securityReport.resolvedIssues = MergeRequestStore.filterByKey(
+        parsedBase,
+        parsedHead,
+        'cve',
+      );
+    } else {
+      this.securityReport.newIssues = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
+    }
   }
 
   setDockerReport(data = {}) {
@@ -133,13 +152,15 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     const parsedHeadIssues = MergeRequestStore.parseIssues(headIssues, headBlobPath);
     const parsedBaseIssues = MergeRequestStore.parseIssues(baseIssues, baseBlobPath);
 
-    this.codeclimateMetrics.newIssues = MergeRequestStore.filterByFingerprint(
+    this.codeclimateMetrics.newIssues = MergeRequestStore.filterByKey(
       parsedHeadIssues,
       parsedBaseIssues,
+      'fingerprint',
     );
-    this.codeclimateMetrics.resolvedIssues = MergeRequestStore.filterByFingerprint(
+    this.codeclimateMetrics.resolvedIssues = MergeRequestStore.filterByKey(
       parsedBaseIssues,
       parsedHeadIssues,
+      'fingerprint',
     );
   }
 
@@ -239,8 +260,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     });
   }
 
-  static filterByFingerprint(firstArray, secondArray) {
-    return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
+  static filterByKey(firstArray, secondArray, key) {
+    return firstArray.filter(item => !secondArray.find(el => el[key] === item[key]));
   }
 
   // normalize performance metrics by indexing on performance subject and metric name

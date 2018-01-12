@@ -401,6 +401,19 @@ export const securityIssues = [
   },
 ];
 
+export const securityIssuesBase = [
+  {
+    tool: 'bundler_audit',
+    message: 'Arbitrary file existence disclosure in Action Pack',
+    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    cve: 'CVE-2014-7855',
+    file: 'Gemfile.lock',
+    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+    priority:'High',
+    line: 12,
+  },
+];
+
 export const parsedSecurityIssuesStore = [
   {
     tool: 'bundler_audit',
@@ -426,6 +439,23 @@ export const parsedSecurityIssuesStore = [
     name: 'Possible Information Leak Vulnerability in Action View',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
+  },
+];
+
+
+export const parsedSecurityIssuesBaseStore = [
+  {
+    tool: 'bundler_audit',
+    message: 'Arbitrary file existence disclosure in Action Pack',
+    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    cve: 'CVE-2014-7855',
+    file: 'Gemfile.lock',
+    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+    priority:'High',
+    line: 12,
+    name: 'Arbitrary file existence disclosure in Action Pack',
+    path: 'Gemfile.lock',
+    urlPath: 'path/Gemfile.lock#L12'
   },
 ];
 
