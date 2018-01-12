@@ -30,7 +30,6 @@ describe Geo::RepositoriesCleanUpWorker do
       end
 
       context 'hashed storage' do
-
         before do
           stub_application_setting(hashed_storage_enabled: true)
         end
