@@ -90,10 +90,6 @@ module TestEnv
     setup_forked_repo
   end
 
-  def cleanup
-    stop_gitaly
-  end
-
   def disable_mailer
     allow_any_instance_of(NotificationService).to receive(:mailer)
       .and_return(double.as_null_object)
@@ -163,6 +159,8 @@ module TestEnv
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
+    Kernel.at_exit { stop_gitaly }
+
     wait_gitaly
   end
 
@@ -309,7 +307,7 @@ module TestEnv
 
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
-      cleanup && clean_gitlab_test_path && init unless reset.call
+      clean_gitlab_test_path && init unless reset.call
     end
   end
 
