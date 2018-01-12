@@ -70,6 +70,7 @@ import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
+import { fetchCommitMergeRequests } from './commit_merge_requests';
 
 // EE-only
 import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
@@ -343,6 +344,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           const stickyBarPaddingTop = 16;
           initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          fetchCommitMergeRequests();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
