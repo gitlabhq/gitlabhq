@@ -1,0 +1,5 @@
+---
+title: Prevent RevList failing on non utf8 paths
+merge_request: 16440
+author:
+type: fixed
