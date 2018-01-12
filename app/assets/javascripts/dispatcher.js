@@ -310,12 +310,12 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'snippets:create':
-          import('./pages/snippets/create')
+          import('./pages/snippets/new')
             .then(callDefault)
             .catch(fail);
           break;
         case 'snippets:update':
-          import('./pages/snippets/update')
+          import('./pages/snippets/edit')
             .then(callDefault)
             .catch(fail);
           break;

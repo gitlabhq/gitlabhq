@@ -1,7 +1,3 @@
-import GLForm from '~/gl_form';
-import ZenMode from '~/zen_mode';
+import form from '../form';
 
-export default () => {
-  new GLForm($('.snippet-form'), false); // eslint-disable-line no-new
-  new ZenMode(); // eslint-disable-line no-new
-};
+export default form;
