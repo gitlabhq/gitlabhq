@@ -311,20 +311,20 @@ because we have not yet configured the secondary server. This is the next step.
     We need to enable this, even if using a single node, to enable FDW support.
     
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
-        addresses with addresses appropriate to your network configuration:
+    addresses with addresses appropriate to your network configuration:
     
-        ```ruby
-        geo_primary_role['enable'] = true
+    ```ruby
+    geo_primary_role['enable'] = true
     
-        # Secondary addresses
-        # - replace '5.6.7.8' with the secondary public address
-        postgresql['listen_address'] = '5.6.7.8'
-        postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32']
-        postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-        
-        # gitlab database user's password (defined previously)
-        gitlab_rails['db_password'] = 'mypassword'
-        ```
+    # Secondary addresses
+    # - replace '5.6.7.8' with the secondary public address
+    postgresql['listen_address'] = '5.6.7.8'
+    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32']
+    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+    
+    # gitlab database user's password (defined previously)
+    gitlab_rails['db_password'] = 'mypassword'
+    ```
 
 1. Test that the `gitlab-psql` user can connect to the primary's database:
 
