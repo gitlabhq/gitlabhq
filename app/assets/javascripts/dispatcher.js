@@ -346,12 +346,12 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'snippets:create':
-          import('./pages/snippets/create')
+          import('./pages/snippets/new')
             .then(callDefault)
             .catch(fail);
           break;
         case 'snippets:update':
-          import('./pages/snippets/update')
+          import('./pages/snippets/edit')
             .then(callDefault)
             .catch(fail);
           break;
