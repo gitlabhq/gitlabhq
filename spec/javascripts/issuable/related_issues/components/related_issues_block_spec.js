@@ -4,6 +4,7 @@ import relatedIssuesBlock from '~/issuable/related_issues/components/related_iss
 
 const issuable1 = {
   id: 200,
+  epic_issue_id: 1,
   reference: 'foo/bar#123',
   displayReference: '#123',
   title: 'some title',
@@ -13,10 +14,31 @@ const issuable1 = {
 
 const issuable2 = {
   id: 201,
+  epic_issue_id: 2,
   reference: 'foo/bar#124',
   displayReference: '#124',
   title: 'some other thing',
   path: '/foo/bar/issues/124',
+  state: 'opened',
+};
+
+const issuable3 = {
+  id: 202,
+  epic_issue_id: 3,
+  reference: 'foo/bar#125',
+  displayReference: '#125',
+  title: 'some other other thing',
+  path: '/foo/bar/issues/125',
+  state: 'opened',
+};
+
+const issuable4 = {
+  id: 203,
+  epic_issue_id: 4,
+  reference: 'foo/bar#126',
+  displayReference: '#126',
+  title: 'some other other other thing',
+  path: '/foo/bar/issues/126',
   state: 'opened',
 };
 
@@ -123,6 +145,9 @@ describe('RelatedIssuesBlock', () => {
         propsData: {
           relatedIssues: [
             issuable1,
+            issuable2,
+            issuable3,
+            issuable4,
           ],
         },
       }).$mount();
@@ -132,6 +157,24 @@ describe('RelatedIssuesBlock', () => {
 
     afterEach(() => {
       eventHub.$off('toggleAddRelatedIssuesForm', toggleAddRelatedIssuesFormSpy);
+    });
+
+    it('reorder item correctly when an item is moved to the top', () => {
+      const beforeAfterIds = vm.getBeforeAfterId(0, 3);
+      expect(beforeAfterIds.beforeId).toBeNull();
+      expect(beforeAfterIds.afterId).toBe(1);
+    });
+
+    it('reorder item correctly when an item is moved to the bottom', () => {
+      const beforeAfterIds = vm.getBeforeAfterId(3, 3);
+      expect(beforeAfterIds.beforeId).toBe(4);
+      expect(beforeAfterIds.afterId).toBeNull();
+    });
+
+    it('reorder item correctly when an item is moved somewhere in the middle', () => {
+      const beforeAfterIds = vm.getBeforeAfterId(2, 3);
+      expect(beforeAfterIds.beforeId).toBe(2);
+      expect(beforeAfterIds.afterId).toBe(3);
     });
 
     it('when expanding add related issue form', () => {
