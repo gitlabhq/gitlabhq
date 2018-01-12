@@ -21,9 +21,12 @@ class Project < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
+<<<<<<< HEAD
 
   # EE specific modules
   prepend EE::Project
+=======
+>>>>>>> upstream/master
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
