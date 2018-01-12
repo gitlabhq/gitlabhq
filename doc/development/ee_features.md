@@ -87,7 +87,7 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always `extend ::Gitlab::Utils::Override` and use `override` to
+- you should always [`extend ::Gitlab::Utils::Override`] and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
   CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
@@ -192,6 +192,8 @@ module EE
 end
 ```
 
+[`extend ::Gitlab::Utils::Override`]: utilities.md#override
+
 #### Use self-descriptive wrapper methods
 
 When it's not possible/logical to modify the implementation of a
@@ -212,6 +214,7 @@ end
 In EE, the implementation `ee/app/models/ee/users.rb` would be:
 
 ```ruby
+override :full_private_access?
 def full_private_access?
   super || auditor?
 end
