@@ -7,6 +7,7 @@ module Gitlab
     class PrepareUntrackedUploads # rubocop:disable Metrics/ClassLength
       # For bulk_queue_background_migration_jobs_by_range
       include Database::MigrationHelpers
+      include ::Gitlab::Utils::StrongMemoize
 
       FIND_BATCH_SIZE = 500
       RELATIVE_UPLOAD_DIR = "uploads".freeze
@@ -142,7 +143,9 @@ module Gitlab
       end
 
       def postgresql?
-        @postgresql ||= Gitlab::Database.postgresql?
+        strong_memoize(:postgresql) do
+          Gitlab::Database.postgresql?
+        end
       end
 
       def can_bulk_insert_and_ignore_duplicates?
@@ -150,8 +153,9 @@ module Gitlab
       end
 
       def postgresql_pre_9_5?
-        @postgresql_pre_9_5 ||= postgresql? &&
-          Gitlab::Database.version.to_f < 9.5
+        strong_memoize(:postgresql_pre_9_5) do
+          postgresql? && Gitlab::Database.version.to_f < 9.5
+        end
       end
 
       def schedule_populate_untracked_uploads_jobs

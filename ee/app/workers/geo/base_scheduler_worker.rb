@@ -2,6 +2,7 @@ module Geo
   class BaseSchedulerWorker
     include ApplicationWorker
     include ExclusiveLeaseGuard
+    include ::Gitlab::Utils::StrongMemoize
 
     DB_RETRIEVE_BATCH_SIZE = 1000
     LEASE_TIMEOUT = 60.minutes
@@ -183,10 +184,12 @@ module Geo
       # Only check every minute to avoid polling the DB excessively
       unless @last_enabled_check.present? && @last_enabled_check > 1.minute.ago
         @last_enabled_check = Time.now
-        @current_node_enabled = nil
+        clear_memoization(:current_node_enabled)
       end
 
-      @current_node_enabled ||= Gitlab::Geo.current_node_enabled?
+      strong_memoize(:current_node_enabled) do
+        Gitlab::Geo.current_node_enabled?
+      end
     end
 
     def log_info(message, extra_args = {})
