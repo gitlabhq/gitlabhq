@@ -1,16 +1,16 @@
 module QA
   module Page
     module Project
-      class Activity < Page::Base
+      class Sidebar < Page::Base
         ##
         # TODO, define all selectors required by this page object
         #
         # See gitlab-org/gitlab-qa#155
         #
-        view 'app/views/shared/_event_filter.html.haml'
+        view 'app/views/layouts/nav/sidebar/_project.html.haml'
 
-        def go_to_push_events
-          click_on 'Push events'
+        def go_to_activity
+          click_on class: 'shortcuts-project-activity'
         end
       end
     end

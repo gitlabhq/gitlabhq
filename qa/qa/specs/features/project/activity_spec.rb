@@ -10,6 +10,8 @@ module QA
         push.commit_message = 'Add README.md'
       end
 
+      Page::Project::Sidebar.act { go_to_activity }
+
       Page::Project::Activity.act { go_to_push_events }
 
       expect(page).to have_content('Add README.md')
