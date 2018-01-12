@@ -1,13 +1,17 @@
 module QA
   module Page
-    module Activity
+    module Project
       class Activity < Page::Base
-        view 'app/views/projects/activity.html.haml' do
+        view 'app/views/shared/_event_filter.html.haml' do
           element :push_events_button, 'Push events'
         end
 
         def go_to_push_events
-          click_button :push_events_button
+          click_link :push_events_button
+        end
+
+        def self.path
+          '/activity'
         end
       end
     end
