@@ -380,7 +380,7 @@ feature 'Jobs' do
 
       it 'shows manual action empty state' do
         expect(page).to have_content('This job requires a manual action')
-        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
         expect(page).to have_link('Trigger this manual action')
       end
 
