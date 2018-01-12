@@ -26,7 +26,6 @@ import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
-import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
@@ -34,7 +33,6 @@ import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
-import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
@@ -54,8 +52,6 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
-import GpgBadges from './gpg_badges';
-import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
@@ -239,9 +235,9 @@ import Activities from './activities';
           new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
-          new Diff();
-          const paddingTop = 16;
-          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
+          import('./pages/projects/compare/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -332,22 +328,15 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:commit:show':
-          new Diff();
-          new ZenMode();
-          shortcut_handler = new ShortcutsNavigation();
-          new MiniPipelineGraph({
-            container: '.js-commit-pipeline-graph',
-          }).bindEvents();
-          initNotes();
-          const stickyBarPaddingTop = 16;
-          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
-          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          import('./pages/projects/commit/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commit:pipelines':
-          new MiniPipelineGraph({
-            container: '.js-commit-pipeline-graph',
-          }).bindEvents();
-          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          import('./pages/projects/commit/pipelines')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:activity':
           import('./pages/projects/activity')
@@ -356,9 +345,10 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:commits:show':
-          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-          shortcut_handler = new ShortcutsNavigation();
-          GpgBadges.fetch();
+          import('./pages/projects/commits/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
