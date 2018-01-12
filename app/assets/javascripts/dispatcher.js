@@ -442,12 +442,24 @@ import Activities from './activities';
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
-        case 'projects:labels:new':
-        case 'projects:labels:edit':
           new Labels();
           break;
-        case 'groups:labels:index':
+        case 'projects:labels:new':
+          import('./pages/projects/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:labels:edit':
+          import('./pages/projects/labels/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:labels:index':
+          import('./pages/projects/labels/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:labels:index':
           if ($('.prioritized-labels').length) {
             new LabelManager();
           }
