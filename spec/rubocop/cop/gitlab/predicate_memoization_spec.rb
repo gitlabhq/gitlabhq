@@ -70,6 +70,20 @@ describe RuboCop::Cop::Gitlab::PredicateMemoization do
     end
   end
 
+  context 'when source is a predicate method using local with ||=' do
+    it_behaves_like 'not registering offense' do
+      let(:source) do
+        <<~RUBY
+          class C
+            def really?
+              really ||= true
+            end
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'when source is a regular method memoizing via ivar' do
     it_behaves_like 'not registering offense' do
       let(:source) do
