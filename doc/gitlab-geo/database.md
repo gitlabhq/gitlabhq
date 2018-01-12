@@ -225,8 +225,8 @@ The following guide assumes that:
     ```
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
-   `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
-   the primary server's private address.
+   `netstat -plnt | grep 5432` to make sure that PostgreSQL is listening on port
+   `5432` to the primary server's private address.
 
 1. A certificate was automatically generated when GitLab was reconfigured. This
    will be used automatically to protect your PostgreSQL traffic from
