@@ -1,9 +1,11 @@
 <script>
   import eventHub from '../../event_hub';
+  import icon from '../../../vue_shared/components/icon.vue';
   import toggleButton from '../../../vue_shared/components/toggle_button.vue';
 
   export default {
     components: {
+      icon,
       toggleButton,
     },
     props: {
@@ -27,6 +29,9 @@
       showLoadingState() {
         return this.subscribed === null || this.loading;
       },
+      notificationIcon() {
+        return this.subscribed ? 'notifications' : 'notifications-off';
+      },
     },
     methods: {
       toggleSubscription() {
@@ -39,15 +44,12 @@
 <template>
   <div>
     <div class="sidebar-collapsed-icon">
-      <i
-        class="fa"
-        :class="{
-          'fa-bell': subscribed,
-          'fa-bell-slash': !subscribed,
-        }"
+      <icon
+        :name="notificationIcon"
+        :size="16"
         aria-hidden="true"
-      >
-      </i>
+        class="sidebar-item-icon is-active"
+      />
     </div>
     <span class="issuable-header-text hide-collapsed pull-left">
       {{ __('Notifications') }}
