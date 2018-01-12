@@ -1,3 +1,3 @@
 import ClustersBundle from '~/clusters/clusters_bundle';
 
-export default ClustersBundle;
+export default new ClustersBundle();

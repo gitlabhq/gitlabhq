@@ -1,3 +1,3 @@
 import ClustersIndex from '~/clusters/clusters_index';
 
-export default ClustersIndex;
+export default new ClustersIndex();
