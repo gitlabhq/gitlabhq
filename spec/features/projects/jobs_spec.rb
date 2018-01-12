@@ -383,6 +383,11 @@ feature 'Jobs' do
         expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.')
         expect(page).to have_link('Trigger this manual action')
       end
+
+      it 'plays manual action' do
+        click_link 'Trigger this manual action'
+        expect(page).not_to have_link('Trigger this manual action')
+      end
     end
 
     context 'Non triggered job' do
@@ -392,9 +397,8 @@ feature 'Jobs' do
         visit project_job_path(project, job)
       end
 
-      it 'shows manual action empty state' do
+      it 'shows empty state' do
         expect(page).to have_content('This job has not been triggered yet')
-        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
       end
     end
   end
