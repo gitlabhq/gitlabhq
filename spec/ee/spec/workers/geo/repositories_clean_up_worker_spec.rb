@@ -17,11 +17,11 @@ describe Geo::RepositoriesCleanUpWorker do
         unsynced_project = create(:project, :repository)
 
         expect(GeoRepositoryDestroyWorker).to receive(:perform_async)
-          .with(unsynced_project.id, unsynced_project.name, unsynced_project.full_path)
+          .with(unsynced_project.id, unsynced_project.name, unsynced_project.disk_path, unsynced_project.repository.storage)
           .once.and_return(1)
 
         expect(GeoRepositoryDestroyWorker).not_to receive(:perform_async)
-          .with(project_in_synced_group.id, project_in_synced_group.name, project_in_synced_group.full_path)
+          .with(project_in_synced_group.id, project_in_synced_group.name, project_in_synced_group.disk_path, project_in_synced_group.repository.storage)
 
         subject.perform(geo_node.id)
       end
