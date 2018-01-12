@@ -40,7 +40,7 @@ export default {
 <template>
   <div class="block subscriptions">
     <subscriptions
-      :loading="store.isFetching.subscriptions"
+      :loading="store.subscribed === null"
       :subscribed="store.subscribed"
     />
   </div>
