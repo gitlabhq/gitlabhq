@@ -1,7 +1,7 @@
 import Flash from '~/flash';
+import CreateItemDropdown from '~/create_item_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
-import ProtectedTagDropdown from './protected_tag_dropdown';
 
 export default class ProtectedTagCreate {
   constructor() {
@@ -30,9 +30,12 @@ export default class ProtectedTagCreate {
     });
 
     // Protected tag dropdown
-    this.protectedTagDropdown = new ProtectedTagDropdown({
+    this.createItemDropdown = new CreateItemDropdown({
       $dropdown: this.$form.find('.js-protected-tag-select'),
+      defaultToggleLabel: 'Protected Tag',
+      fieldName: 'protected_tag[name]',
       onSelect: this.onSelectCallback,
+      getData: ProtectedTagCreate.getProtectedTags,
     });
   }
 
@@ -42,6 +45,10 @@ export default class ProtectedTagCreate {
     const toggle = !(this.$form.find('input[name="protected_tag[name]"]').val() && $allowedToCreate.length);
 
     this.$form.find('input[type="submit"]').attr('disabled', toggle);
+  }
+
+  static getProtectedTags(term, callback) {
+    callback(gon.open_tags);
   }
 
   getFormData() {
