@@ -18,7 +18,7 @@
       = form.hidden_field(:target_branch,
         { class: 'target_branch js-target-branch-select ref-name',
           disabled: issuable.new_record?,
-          data: { placeholder: "Select branch", endpoint: refs_project_path(@project, sort: 'updated_desc') }})
+          data: { placeholder: "Select branch", endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
     - if issuable.new_record?
       &nbsp;
       = link_to 'Change branches', mr_change_branches_path(issuable)

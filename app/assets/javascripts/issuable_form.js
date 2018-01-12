@@ -6,6 +6,7 @@ import Autosave from './autosave';
 import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
+import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 
 export default class IssuableForm {
@@ -113,6 +114,7 @@ export default class IssuableForm {
 
   initTargetBranchDropdown() {
     this.$targetBranchSelect.select2({
+      ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
       ajax: {
         url: this.$targetBranchSelect.data('endpoint'),
         dataType: 'JSON',
@@ -124,6 +126,7 @@ export default class IssuableForm {
         },
         results(data) {
           return {
+            // `data` keys are translated so we can't just access them with a string based key
             results: data[Object.keys(data)[0]].map(name => ({
               id: name,
               text: name,
@@ -138,23 +141,6 @@ export default class IssuableForm {
           id: val,
           text: val,
         });
-      },
-      dropdownCss: () => {
-        let resultantWidth = 'auto';
-
-        // We have to look at the parent because
-        // `offsetParent` on a `display: none;` is `null`
-        const offsetParentWidth = this.$targetBranchSelect.parent().offsetParent().width();
-        // Reset any width to let it naturally flow
-        this.$targetBranchSelect.css('width', 'auto');
-        if (this.$targetBranchSelect.outerWidth(false) > offsetParentWidth) {
-          resultantWidth = offsetParentWidth;
-        }
-
-        return {
-          width: resultantWidth,
-          maxWidth: offsetParentWidth,
-        };
       },
     });
   }
