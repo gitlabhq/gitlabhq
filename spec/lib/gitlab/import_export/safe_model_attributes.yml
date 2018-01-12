@@ -182,6 +182,7 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+- commits_count
 MergeRequestDiffCommit:
 - merge_request_diff_id
 - relative_order

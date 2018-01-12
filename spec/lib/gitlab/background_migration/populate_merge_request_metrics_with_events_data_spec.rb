@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 describe Gitlab::BackgroundMigration::PopulateMergeRequestMetricsWithEventsData, :migration, schema: 20171128214150 do
+  # commits_count attribute is added in a next migration
+  before do
+    allow_any_instance_of(MergeRequestDiff)
+      .to receive(:commits_count=).and_return(nil)
+  end
+
   describe '#perform' do
     let(:mr_with_event) { create(:merge_request) }
     let!(:merged_event) { create(:event, :merged, target: mr_with_event) }

@@ -1,9 +1,0 @@
-diff a/app/assets/javascripts/dispatcher.js b/app/assets/javascripts/dispatcher.js	(rejected hunks)
-@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
- import groupAvatar from './group_avatar';
- import GroupLabelSubscription from './group_label_subscription';
- import LineHighlighter from './line_highlighter';
--import groupsSelect from './groups_select';
- import Search from './search';
- import initAdmin from './admin';
- import NamespaceSelect from './namespace_select';

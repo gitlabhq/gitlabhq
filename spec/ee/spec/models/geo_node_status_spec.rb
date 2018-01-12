@@ -476,22 +476,24 @@ describe GeoNodeStatus, :geo do
   describe '#storage_shards_match?' do
     before { stub_primary_node }
 
-    it 'returns false if the storage shards do not match' do
-      status = create(:geo_node_status)
-      data = GeoNodeStatusSerializer.new.represent(status).as_json
-      data['storage_shards'].first['name'] = 'broken-shard'
+    set(:status) { create(:geo_node_status) }
+    let(:data) { GeoNodeStatusSerializer.new.represent(status).as_json }
+    let(:result) { described_class.from_json(data) }
 
-      result = described_class.from_json(data)
+    it 'returns nil if no shard data is available' do
+      data.delete('storage_shards')
+
+      expect(result.storage_shards_match?).to be nil
+    end
+
+    it 'returns false if the storage shards do not match' do
+      data['storage_shards'].first['name'] = 'broken-shard'
 
       expect(result.storage_shards_match?).to be false
     end
 
     it 'returns true if the storage shards match in different order' do
-      status = create(:geo_node_status)
-
       status.storage_shards.shuffle!
-      data = GeoNodeStatusSerializer.new.represent(status).as_json
-      result = described_class.from_json(data)
 
       expect(result.storage_shards_match?).to be true
     end

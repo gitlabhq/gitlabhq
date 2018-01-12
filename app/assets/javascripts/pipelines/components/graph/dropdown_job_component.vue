@@ -63,7 +63,8 @@
      * target the click event of this component.
      */
       stopDropdownClickPropagation() {
-        $(this.$el.querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
+        $(this.$el
+          .querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
           .on('click', (e) => {
             e.stopPropagation();
           });

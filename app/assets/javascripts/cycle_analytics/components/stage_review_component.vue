@@ -46,9 +46,7 @@
           <a
             :href="mergeRequest.url"
             class="issue-link"
-          >
-            !{{ mergeRequest.iid }}
-          </a>
+          >!{{ mergeRequest.iid }}</a>
           &middot;
           <span>
             {{ s__('OpenedNDaysAgo|Opened') }}

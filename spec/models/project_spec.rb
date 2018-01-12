@@ -2193,9 +2193,8 @@ describe Project do
     end
 
     it 'creates the new reference with rugged' do
-      expect(project.repository.rugged.references).to receive(:create).with('HEAD',
-                                                                            "refs/heads/#{project.default_branch}",
-                                                                            force: true)
+      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
+
       project.change_head(project.default_branch)
     end
 

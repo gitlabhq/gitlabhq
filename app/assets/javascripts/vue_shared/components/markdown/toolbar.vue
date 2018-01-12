@@ -16,7 +16,6 @@
         return this.quickActionsDocsPath !== '';
       },
     },
-
   };
 </script>
 
@@ -27,7 +26,8 @@
         <a
           :href="markdownDocsPath"
           target="_blank"
-          tabindex="-1">
+          tabindex="-1"
+        >
           Markdown is supported
         </a>
       </template>

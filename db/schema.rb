@@ -1397,6 +1397,7 @@ ActiveRecord::Schema.define(version: 20180105233807) do
     t.string "real_size"
     t.string "head_commit_sha"
     t.string "start_commit_sha"
+    t.integer "commits_count"
   end
 
   add_index "merge_request_diffs", ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
