@@ -109,7 +109,7 @@ The following guide assumes that:
     each node. Note: For external PostgreSQL instances, see [additional instructions][external postgresql].
 
     If you are using a cloud provider, you can lookup the addresses for each
-    geo node through your cloud provider's management console.
+    Geo node through your cloud provider's management console.
 
     To lookup the address of a Geo node, SSH in to the Geo node and execute:
 
