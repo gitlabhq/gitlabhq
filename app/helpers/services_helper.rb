@@ -29,5 +29,16 @@ module ServicesHelper
     "#{event}_events"
   end
 
+  def service_save_button(service)
+    button_tag(class: 'btn btn-save', type: 'submit', disabled: service.deprecated?) do
+      icon('spinner spin', class: 'hidden js-btn-spinner') +
+        content_tag(:span, 'Save changes', class: 'js-btn-label')
+    end
+  end
+
+  def disable_fields_service?(service)
+    !current_controller?("admin/services") && service.deprecated?
+  end
+
   extend self
 end

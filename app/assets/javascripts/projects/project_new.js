@@ -1,6 +1,7 @@
 let hasUserDefinedProjectPath = false;
 
-const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
+const deriveProjectPathFromUrl = ($projectImportUrl) => {
+  const $currentProjectPath = $projectImportUrl.parents('.toggle-import-form').find('#project_path');
   if (hasUserDefinedProjectPath) {
     return;
   }
@@ -21,7 +22,7 @@ const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
   // extract everything after the last slash
   const pathMatch = /\/([^/]+)$/.exec(importUrl);
   if (pathMatch) {
-    $projectPath.val(pathMatch[1]);
+    $currentProjectPath.val(pathMatch[1]);
   }
 };
 
@@ -96,7 +97,7 @@ const bindEvents = () => {
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
   });
 
-  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, $projectPath));
+  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 
   $('.import_git').on('click', () => {
     const $projectMirror = $('#project_mirror');

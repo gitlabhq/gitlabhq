@@ -84,7 +84,11 @@ Parameters:
 
 
 ``` bash
-curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
+curl --request POST \
+     --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
+     --header 'Content-Type: application/json' \
+     --header "PRIVATE-TOKEN: valid_api_token" \
+     https://gitlab.example.com/api/v4/snippets
 ```
 
 Example response:
@@ -131,7 +135,11 @@ Parameters:
 
 
 ``` bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"title": "foo", "content": "bar"}' https://gitlab.example.com/api/v4/snippets/1
+curl --request PUT \
+     --data '{"title": "foo", "content": "bar"}' \
+     --header 'Content-Type: application/json' \
+     --header "PRIVATE-TOKEN: valid_api_token" \
+     https://gitlab.example.com/api/v4/snippets/1
 ```
 
 Example response:

@@ -1,33 +1,30 @@
 <script>
-import eventHub from '../event_hub';
-import tooltip from '../../../vue_shared/directives/tooltip';
+  import eventHub from '../event_hub';
+  import tooltip from '../../../vue_shared/directives/tooltip';
 
-export default {
-  name: 'ServiceDeskSetting',
-
-  props: {
-    isEnabled: {
-      type: Boolean,
-      required: true,
+  export default {
+    name: 'ServiceDeskSetting',
+    directives: {
+      tooltip,
     },
-    incomingEmail: {
-      type: String,
-      required: false,
-      default: '',
+    props: {
+      isEnabled: {
+        type: Boolean,
+        required: true,
+      },
+      incomingEmail: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
-  },
-
-  directives: {
-    tooltip,
-  },
-
-  methods: {
-    onCheckboxToggle(e) {
-      const isChecked = e.target.checked;
-      eventHub.$emit('serviceDeskEnabledCheckboxToggled', isChecked);
+    methods: {
+      onCheckboxToggle(e) {
+        const isChecked = e.target.checked;
+        eventHub.$emit('serviceDeskEnabledCheckboxToggled', isChecked);
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
@@ -39,7 +36,8 @@ export default {
           type="checkbox"
           id="service-desk-enabled-checkbox"
           :checked="isEnabled"
-          @change="onCheckboxToggle($event)">
+          @change="onCheckboxToggle($event)"
+        />
         <span class="descr">
           Activate Service Desk
         </span>
@@ -47,7 +45,8 @@ export default {
     </div>
     <div
       v-if="isEnabled"
-      class="panel-slim panel-default">
+      class="panel-slim panel-default"
+    >
       <div class="panel-heading">
         <h3 class="panel-title">
           Forward external support email address to:
@@ -56,7 +55,8 @@ export default {
       <div class="panel-body">
         <template v-if="incomingEmail">
           <span
-            ref="service-desk-incoming-email">
+            ref="service-desk-incoming-email"
+          >
             {{ incomingEmail }}
           </span>
           <button
@@ -64,10 +64,12 @@ export default {
             type="button"
             class="btn btn-clipboard btn-transparent"
             title="Copy incoming email address to clipboard"
-            :data-clipboard-text="incomingEmail">
+            :data-clipboard-text="incomingEmail"
+          >
             <i
               class="fa fa-clipboard"
-              aria-hidden="true" />
+              aria-hidden="true">
+            </i>
           </button>
         </template>
         <template v-else>

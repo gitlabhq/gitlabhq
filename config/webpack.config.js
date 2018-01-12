@@ -1,5 +1,6 @@
 'use strict';
 
+var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
@@ -44,6 +45,7 @@ var config = {
     epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
+    geo_nodes:            'ee/geo_nodes',
     graphs:               './graphs/graphs_bundle.js',
     graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',
@@ -131,7 +133,10 @@ var config = {
       },
       {
         test: /\_worker\.js$/,
-        loader: 'worker-loader',
+        use: [
+          { loader: 'worker-loader' },
+          { loader: 'babel-loader' },
+        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
@@ -151,6 +156,7 @@ var config = {
     ],
 
     noParse: [/monaco-editor\/\w+\/vs\//],
+    strictExportPresence: true,
   },
 
   plugins: [
@@ -188,10 +194,34 @@ var config = {
       if (chunk.name) {
         return chunk.name;
       }
-      return chunk.mapModules((m) => {
-        var chunkPath = m.request.split('!').pop();
-        return path.relative(m.context, chunkPath);
-      }).join('_');
+
+      const moduleNames = [];
+
+      function collectModuleNames(m) {
+        // handle ConcatenatedModule which does not have resource nor context set
+        if (m.modules) {
+          m.modules.forEach(collectModuleNames);
+          return;
+        }
+
+        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
+
+        if (m.resource.indexOf(pagesBase) === 0) {
+          moduleNames.push(path.relative(pagesBase, m.resource)
+            .replace(/\/index\.[a-z]+$/, '')
+            .replace(/\//g, '__'));
+        } else {
+          moduleNames.push(path.relative(m.context, m.resource));
+        }
+      }
+
+      chunk.forEachModule(collectModuleNames);
+
+      const hash = crypto.createHash('sha256')
+        .update(moduleNames.join('_'))
+        .digest('hex');
+
+      return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
     // create cacheable common library bundle for all vue chunks

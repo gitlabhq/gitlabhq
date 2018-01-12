@@ -7,6 +7,15 @@
   import autosave from '../mixins/autosave';
 
   export default {
+    components: {
+      noteEditedText,
+      noteAwardsList,
+      noteAttachment,
+      noteForm,
+    },
+    mixins: [
+      autosave,
+    ],
     props: {
       note: {
         type: Object,
@@ -22,38 +31,9 @@
         default: false,
       },
     },
-    mixins: [
-      autosave,
-    ],
-    components: {
-      noteEditedText,
-      noteAwardsList,
-      noteAttachment,
-      noteForm,
-    },
     computed: {
       noteBody() {
         return this.note.note;
-      },
-    },
-    methods: {
-      renderGFM() {
-        $(this.$refs['note-body']).renderGFM();
-      },
-      initTaskList() {
-        if (this.canEdit) {
-          this.taskList = new TaskList({
-            dataType: 'note',
-            fieldName: 'note',
-            selector: '.notes',
-          });
-        }
-      },
-      handleFormUpdate(note, parentElement, callback) {
-        this.$emit('handleFormUpdate', note, parentElement, callback);
-      },
-      formCancelHandler(shouldConfirm, isDirty) {
-        this.$emit('cancelFormEdition', shouldConfirm, isDirty);
       },
     },
     mounted() {
@@ -76,6 +56,26 @@
         }
       }
     },
+    methods: {
+      renderGFM() {
+        $(this.$refs['note-body']).renderGFM();
+      },
+      initTaskList() {
+        if (this.canEdit) {
+          this.taskList = new TaskList({
+            dataType: 'note',
+            fieldName: 'note',
+            selector: '.notes',
+          });
+        }
+      },
+      handleFormUpdate(note, parentElement, callback) {
+        this.$emit('handleFormUpdate', note, parentElement, callback);
+      },
+      formCancelHandler(shouldConfirm, isDirty) {
+        this.$emit('cancelFormEdition', shouldConfirm, isDirty);
+      },
+    },
   };
 </script>
 
@@ -95,7 +95,7 @@
       :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
-      />
+    />
     <textarea
       v-if="canEdit"
       v-model="note.note"
@@ -106,17 +106,17 @@
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       action-text="Edited"
-      />
+    />
     <note-awards-list
       v-if="note.award_emoji.length"
       :note-id="note.id"
       :note-author-id="note.author.id"
       :awards="note.award_emoji"
       :toggle-award-path="note.toggle_award_path"
-      />
+    />
     <note-attachment
       v-if="note.attachment"
       :attachment="note.attachment"
-      />
+    />
   </div>
 </template>

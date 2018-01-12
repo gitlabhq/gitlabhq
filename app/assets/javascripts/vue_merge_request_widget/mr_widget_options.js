@@ -10,6 +10,7 @@ import {
   MergedState,
   ClosedState,
   MergingState,
+  RebaseState,
   WipState,
   ArchivedState,
   ConflictsState,
@@ -86,14 +87,14 @@ export default {
     },
     checkStatus(cb) {
       return this.service.checkStatus()
-        .then(res => res.json())
-        .then((res) => {
-          this.handleNotification(res);
-          this.mr.setData(res);
+        .then(res => res.data)
+        .then((data) => {
+          this.handleNotification(data);
+          this.mr.setData(data);
           this.setFaviconHelper();
 
           if (cb) {
-            cb.call(null, res);
+            cb.call(null, data);
           }
         })
         .catch(() => new Flash('Something went wrong. Please try again.'));
@@ -124,10 +125,10 @@ export default {
     },
     fetchDeployments() {
       return this.service.fetchDeployments()
-        .then(res => res.json())
-        .then((res) => {
-          if (res.length) {
-            this.mr.deployments = res;
+        .then(res => res.data)
+        .then((data) => {
+          if (data.length) {
+            this.mr.deployments = data;
           }
         })
         .catch(() => {
@@ -137,9 +138,9 @@ export default {
     fetchActionsContent() {
       this.service.fetchMergeActionsContent()
         .then((res) => {
-          if (res.body) {
+          if (res.data) {
             const el = document.createElement('div');
-            el.innerHTML = res.body;
+            el.innerHTML = res.data;
             document.body.appendChild(el);
             Project.initRefSwitcher();
           }
@@ -230,6 +231,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-rebase': RebaseState,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">

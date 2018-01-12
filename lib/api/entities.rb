@@ -307,7 +307,7 @@ module API
     end
 
     class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats
+      expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
@@ -489,6 +489,29 @@ module API
 
     class RelatedIssue < Issue
       expose :issue_link_id
+    end
+
+    class Epic < Grape::Entity
+      expose :id
+      expose :iid
+      expose :group_id
+      expose :title
+      expose :description
+      expose :author, using: Entities::UserBasic
+      expose :start_date
+      expose :end_date
+    end
+
+    class EpicIssue < Issue
+      expose :epic_issue_id
+      expose :relative_position
+    end
+
+    class EpicIssueLink < Grape::Entity
+      expose :id
+      expose :relative_position
+      expose :epic, using: Entities::Epic
+      expose :issue, using: Entities::IssueBasic
     end
 
     class IssueLink < Grape::Entity
@@ -786,8 +809,9 @@ module API
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events
-      expose :tag_push_events, :note_events, :pipeline_events
+      expose :push_events, :issues_events, :confidential_issues_events
+      expose :merge_requests_events, :tag_push_events, :note_events
+      expose :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
@@ -868,23 +892,25 @@ module API
 
     class Board < Grape::Entity
       expose :id
-      expose :name
       expose :project, using: Entities::BasicProjectDetails
-
-      # EE-specific
-      # Default filtering configuration
-      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
-      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
-      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
-      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
 
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
 
+      # EE-specific START
       def scoped_issue_available?(board)
         board.parent.feature_available?(:scoped_issue_board)
       end
+
+      # Default filtering configuration
+      expose :name
+      expose :group
+      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
+      # EE-specific END
     end
 
     class Compare < Grape::Entity
@@ -972,6 +998,8 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
+      expose :status
     end
 
     class RunnerDetails < Runner
@@ -1024,7 +1052,7 @@ module API
     class Trigger < Grape::Entity
       expose :id
       expose :token, :description
-      expose :created_at, :updated_at, :deleted_at, :last_used
+      expose :created_at, :updated_at, :last_used
       expose :owner, using: Entities::UserBasic
     end
 
@@ -1106,6 +1134,7 @@ module API
       expose :url
       expose :primary?, as: :primary
       expose :enabled
+      expose :current?, as: :current
       expose :files_max_capacity
       expose :repos_max_capacity
 
@@ -1264,6 +1293,7 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },

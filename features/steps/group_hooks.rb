@@ -46,7 +46,7 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
   end
 
   step 'I click test hook button with invalid URL' do
-    stub_request(:post, @hook.url).to_raise(SocketError)
+    stub_request(:post, @hook.url).to_raise(SocketError.new('Failed to open'))
     click_link 'Test'
   end
 

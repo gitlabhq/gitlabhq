@@ -10,7 +10,9 @@ describe('ide component', () => {
   beforeEach(() => {
     const Component = Vue.extend(ide);
 
-    vm = createComponentWithStore(Component, store).$mount();
+    vm = createComponentWithStore(Component, store, {
+      emptyStateSvgPath: 'svg',
+    }).$mount();
   });
 
   afterEach(() => {

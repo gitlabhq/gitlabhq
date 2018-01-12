@@ -1,0 +1,5 @@
+---
+title: Fix dashboard projects nav links height
+merge_request: 16204
+author: George Tsiolis
+type: fixed

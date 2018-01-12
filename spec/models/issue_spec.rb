@@ -18,9 +18,30 @@ describe Issue do
 
   subject { create(:issue) }
 
-  describe "act_as_paranoid" do
-    it { is_expected.to have_db_column(:deleted_at) }
-    it { is_expected.to have_db_index(:deleted_at) }
+  describe 'callbacks' do
+    describe '#ensure_metrics' do
+      it 'creates metrics after saving' do
+        issue = create(:issue)
+
+        expect(issue.metrics).to be_persisted
+        expect(Issue::Metrics.count).to eq(1)
+      end
+
+      it 'does not create duplicate metrics for an issue' do
+        issue = create(:issue)
+
+        issue.close!
+
+        expect(issue.metrics).to be_persisted
+        expect(Issue::Metrics.count).to eq(1)
+      end
+
+      it 'records current metrics' do
+        expect_any_instance_of(Issue::Metrics).to receive(:record!)
+
+        create(:issue)
+      end
+    end
   end
 
   describe '#order_by_position_and_priority' do

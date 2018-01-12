@@ -1,66 +1,66 @@
 <script>
-/* global ListLabel */
+  /* global ListLabel */
 
-import LabelsSelect from '~/labels_select';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import LabelsSelect from '~/labels_select';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
-export default {
-  props: {
-    board: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      loadingIcon,
     },
-    labelsPath: {
-      type: String,
-      required: true,
+    props: {
+      board: {
+        type: Object,
+        required: true,
+      },
+      labelsPath: {
+        type: String,
+        required: true,
+      },
+      canEdit: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
-    canEdit: {
-      type: Boolean,
-      required: false,
-      default: false,
+    computed: {
+      labelIds() {
+        return this.board.labels.map(label => label.id);
+      },
+      isEmpty() {
+        return this.board.labels.length === 0;
+      },
     },
-  },
-  components: {
-    loadingIcon,
-  },
-  computed: {
-    labelIds() {
-      return this.board.labels.map(label => label.id);
+    mounted() {
+      this.labelsDropdown = new LabelsSelect(this.$refs.dropdownButton, {
+        handleClick: this.handleClick,
+      });
     },
-    isEmpty() {
-      return this.board.labels.length === 0;
+    methods: {
+      labelStyle(label) {
+        return {
+          color: label.textColor,
+          backgroundColor: label.color,
+        };
+      },
+      handleClick(label) {
+        if (label.isAny) {
+          this.board.labels = [];
+        } else if (!this.board.labels.find(l => l.id === label.id)) {
+          this.board.labels.push(new ListLabel({
+            id: label.id,
+            title: label.title,
+            color: label.color[0],
+            textColor: label.text_color,
+          }));
+        } else {
+          let labels = this.board.labels;
+          labels = labels.filter(selected => selected.id !== label.id);
+          this.board.labels = labels;
+        }
+      },
     },
-  },
-  mounted() {
-    this.labelsDropdown = new LabelsSelect(this.$refs.dropdownButton, {
-      handleClick: this.handleClick,
-    });
-  },
-  methods: {
-    labelStyle(label) {
-      return {
-        color: label.textColor,
-        backgroundColor: label.color,
-      };
-    },
-    handleClick(label) {
-      if (label.isAny) {
-        this.board.labels = [];
-      } else if (!this.board.labels.find(l => l.id === label.id)) {
-        this.board.labels.push(new ListLabel({
-          id: label.id,
-          title: label.title,
-          color: label.color[0],
-          textColor: label.text_color,
-        }));
-      } else {
-        let labels = this.board.labels;
-        labels = labels.filter(selected => selected.id !== label.id);
-        this.board.labels = labels;
-      }
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -106,12 +106,13 @@ export default {
         v-for="labelId in labelIds"
         :key="labelId"
         :value="labelId"
-      >
+      />
       <div class="dropdown">
         <button
           ref="dropdownButton"
           :data-labels="labelsPath"
-          class="dropdown-menu-toggle wide js-label-select js-multiselect js-extra-options js-board-config-modal"
+          class="dropdown-menu-toggle wide js-label-select
+js-multiselect js-extra-options js-board-config-modal"
           data-field-name="label_id[]"
           :data-show-any="true"
           data-toggle="dropdown"
@@ -124,27 +125,33 @@ export default {
             aria-hidden="true"
             class="fa fa-chevron-down"
             data-hidden="true"
-          />
+          >
+          </i>
         </button>
-        <div class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-labels dropdown-menu-selectable">
+        <div
+          class="dropdown-menu dropdown-select
+dropdown-menu-paging dropdown-menu-labels dropdown-menu-selectable"
+        >
           <div class="dropdown-input">
             <input
               autocomplete="off"
               class="dropdown-input-field"
               placeholder="Search"
               type="search"
-            >
+            />
             <i
               aria-hidden="true"
               class="fa fa-search dropdown-input-search"
               data-hidden="true"
-            />
+            >
+            </i>
             <i
               aria-hidden="true"
               class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
               data-hidden="true"
               role="button"
-            />
+            >
+            </i>
           </div>
           <div class="dropdown-content"></div>
           <div class="dropdown-loading">

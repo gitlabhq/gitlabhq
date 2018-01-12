@@ -11,6 +11,7 @@ module EE
     prepended do
       include Elastic::ProjectsSearch
       prepend ImportStatusStateMachine
+      include EE::DeploymentPlatform
 
       before_validation :mark_remote_mirrors_for_removal
 
@@ -256,16 +257,6 @@ module EE
       end
     end
 
-    def deployment_platform(environment: nil)
-      return super unless environment && feature_available?(:multiple_clusters)
-
-      @deployment_platform ||= # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        clusters.enabled.on_environment(environment.name)
-          .last&.platform_kubernetes
-
-      super # Wildcard or KubernetesService
-    end
-
     def secret_variables_for(ref:, environment: nil)
       return super.where(environment_scope: '*') unless
         environment && feature_available?(:variable_environment_scope)
@@ -419,11 +410,6 @@ module EE
     def remove_import_data
       super unless mirror?
     end
-
-    def merge_requests_rebase_enabled
-      super && feature_available?(:merge_request_rebase)
-    end
-    alias_method :merge_requests_rebase_enabled?, :merge_requests_rebase_enabled
 
     def merge_requests_ff_only_enabled
       super

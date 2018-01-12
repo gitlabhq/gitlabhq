@@ -23,7 +23,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
    and hide the `AddIssuableForm` area.
 
 */
-
+import _ from 'underscore';
 import Flash from '../../../flash';
 import eventHub from '../event_hub';
 import RelatedIssuesBlock from './related_issues_block.vue';
@@ -34,13 +34,20 @@ const SPACE_FACTOR = 1;
 
 export default {
   name: 'RelatedIssuesRoot',
-
+  components: {
+    relatedIssuesBlock: RelatedIssuesBlock,
+  },
   props: {
     endpoint: {
       type: String,
       required: true,
     },
     canAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canReorder: {
       type: Boolean,
       required: false,
       default: false,
@@ -61,7 +68,6 @@ export default {
       default: true,
     },
   },
-
   data() {
     this.store = new RelatedIssuesStore();
 
@@ -73,24 +79,39 @@ export default {
       inputValue: '',
     };
   },
-
-  components: {
-    relatedIssuesBlock: RelatedIssuesBlock,
-  },
-
   computed: {
     autoCompleteSources() {
       if (!this.allowAutoComplete) return {};
       return gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources;
     },
   },
+  created() {
+    eventHub.$on('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
+    eventHub.$on('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
+    eventHub.$on('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
+    eventHub.$on('addIssuableFormSubmit', this.onPendingFormSubmit);
+    eventHub.$on('addIssuableFormCancel', this.onPendingFormCancel);
+    eventHub.$on('addIssuableFormInput', this.onInput);
+    eventHub.$on('addIssuableFormBlur', this.onBlur);
 
+    this.service = new RelatedIssuesService(this.endpoint);
+    this.fetchRelatedIssues();
+  },
+  beforeDestroy() {
+    eventHub.$off('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
+    eventHub.$off('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
+    eventHub.$off('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
+    eventHub.$off('addIssuableFormSubmit', this.onPendingFormSubmit);
+    eventHub.$off('addIssuableFormCancel', this.onPendingFormCancel);
+    eventHub.$off('addIssuableFormInput', this.onInput);
+    eventHub.$off('addIssuableFormBlur', this.onBlur);
+  },
   methods: {
     onRelatedIssueRemoveRequest(idToRemove) {
       const issueToRemove = _.find(this.state.relatedIssues, issue => issue.id === idToRemove);
 
       if (issueToRemove) {
-        this.service.removeRelatedIssue(issueToRemove.destroy_relation_path)
+        RelatedIssuesService.remove(issueToRemove.relation_path)
           .then(res => res.json())
           .then((data) => {
             this.store.setRelatedIssues(data.issues);
@@ -155,7 +176,19 @@ export default {
           Flash('An error occurred while fetching issues.');
         });
     },
+    saveIssueOrder({ issueId, beforeId, afterId }) {
+      const issueToReorder = _.find(this.state.relatedIssues, issue => issue.id === issueId);
 
+      if (issueToReorder) {
+        RelatedIssuesService.saveOrder({
+          endpoint: issueToReorder.relation_path,
+          move_before_id: beforeId,
+          move_after_id: afterId,
+        }).catch(() => {
+          Flash('An error occurred while reordering issues.');
+        });
+      }
+    },
     onInput(newValue, caretPos) {
       const rawReferences = newValue
         .split(/\s/);
@@ -195,29 +228,6 @@ export default {
       this.inputValue = '';
     },
   },
-
-  created() {
-    eventHub.$on('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
-    eventHub.$on('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
-    eventHub.$on('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
-    eventHub.$on('addIssuableFormSubmit', this.onPendingFormSubmit);
-    eventHub.$on('addIssuableFormCancel', this.onPendingFormCancel);
-    eventHub.$on('addIssuableFormInput', this.onInput);
-    eventHub.$on('addIssuableFormBlur', this.onBlur);
-
-    this.service = new RelatedIssuesService(this.endpoint);
-    this.fetchRelatedIssues();
-  },
-
-  beforeDestroy() {
-    eventHub.$off('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
-    eventHub.$off('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
-    eventHub.$off('pendingIssuable-removeRequest', this.onPendingIssueRemoveRequest);
-    eventHub.$off('addIssuableFormSubmit', this.onPendingFormSubmit);
-    eventHub.$off('addIssuableFormCancel', this.onPendingFormCancel);
-    eventHub.$off('addIssuableFormInput', this.onInput);
-    eventHub.$off('addIssuableFormBlur', this.onBlur);
-  },
 };
 </script>
 
@@ -228,10 +238,12 @@ export default {
     :is-submitting="isSubmitting"
     :related-issues="state.relatedIssues"
     :can-admin="canAdmin"
+    :can-reorder="canReorder"
     :pending-references="state.pendingReferences"
     :is-form-visible="isFormVisible"
     :input-value="inputValue"
     :auto-complete-sources="autoCompleteSources"
     :title="title"
+    @saveReorder="saveIssueOrder"
   />
 </template>

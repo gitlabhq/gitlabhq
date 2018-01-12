@@ -9,6 +9,10 @@ describe Geo::HashedStorageAttachmentsEventStore do
 
   subject(:event_store) { described_class.new(project, old_storage_version: 1, new_storage_version: 2, old_attachments_path: old_attachments_path, new_attachments_path: new_attachments_path) }
 
+  before do
+    TestEnv.clean_test_path
+  end
+
   describe '#create' do
     it 'does not create an event when not running on a primary node' do
       allow(Gitlab::Geo).to receive(:primary?) { false }

@@ -84,6 +84,7 @@ POST /projects/:id/repository/commits
 | `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb` |
 | `content` | string | no | File content, required for all except `delete`. Optional for `move` |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
+| `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
 
 ```bash
 PAYLOAD=$(cat << 'JSON'
@@ -158,6 +159,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
+| `stats` | boolean | no | Include commit stats. Default is true |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master

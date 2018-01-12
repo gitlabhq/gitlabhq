@@ -16,7 +16,7 @@ class Issue < ActiveRecord::Base
   include ThrottledTouch
   include IgnorableColumn
 
-  ignore_column :assignee_id, :branch_name
+  ignore_column :assignee_id, :branch_name, :deleted_at
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
@@ -46,6 +46,8 @@ class Issue < ActiveRecord::Base
   has_one :epic, through: :epic_issue
 
   validates :project, presence: true
+
+  alias_attribute :parent_ids, :project_id
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
@@ -91,7 +93,9 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  acts_as_paranoid
+  class << self
+    alias_method :in_parents, :in_projects
+  end
 
   def self.reference_prefix
     '#'
@@ -314,6 +318,11 @@ class Issue < ActiveRecord::Base
   end
 
   private
+
+  def ensure_metrics
+    super
+    metrics.record!
+  end
 
   # Returns `true` if the given User can read the current Issue.
   #

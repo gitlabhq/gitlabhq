@@ -10,25 +10,29 @@ module IssuableLinks
 
     def execute
       issues.map do |referenced_issue|
-        {
-          id: referenced_issue.id,
-          title: referenced_issue.title,
-          state: referenced_issue.state,
-          reference: reference(referenced_issue),
-          path: project_issue_path(referenced_issue.project, referenced_issue.iid),
-          destroy_relation_path: destroy_relation_path(referenced_issue)
-        }
+        to_hash(referenced_issue)
       end
     end
 
     private
 
-    def destroy_relation_path(issue)
+    def relation_path(issue)
       raise NotImplementedError
     end
 
     def reference(issue)
       issue.to_reference(issuable.project)
+    end
+
+    def to_hash(issue)
+      {
+        id: issue.id,
+        title: issue.title,
+        state: issue.state,
+        reference: reference(issue),
+        path: project_issue_path(issue.project, issue.iid),
+        relation_path: relation_path(issue)
+      }
     end
   end
 end

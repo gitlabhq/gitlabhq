@@ -507,6 +507,7 @@ describe 'Scoped issue boards', :js do
 
     page.within(".#{filter}") do
       click_button 'Edit'
+
       if value.is_a?(Array)
         value.each { |value| click_link value }
       else
@@ -517,7 +518,9 @@ describe 'Scoped issue boards', :js do
     click_on_board_modal
 
     click_button 'Create'
-    expect(page).to have_selector('.board-list-loading')
+
+    wait_for_requests
+
     expect(page).not_to have_selector('.board-list-loading')
   end
 
@@ -532,7 +535,9 @@ describe 'Scoped issue boards', :js do
     click_on_board_modal
 
     click_button 'Save'
-    expect(page).to have_selector('.board-list-loading')
+
+    wait_for_requests
+
     expect(page).not_to have_selector('.board-list-loading')
   end
 

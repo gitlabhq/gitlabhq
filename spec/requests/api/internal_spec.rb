@@ -193,7 +193,7 @@ describe API::Internal do
   end
 
   describe "GET /internal/authorized_keys" do
-    context "unsing an existing key's fingerprint" do
+    context "using an existing key's fingerprint" do
       it "finds the key" do
         get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
 
@@ -830,6 +830,16 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
         expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
+      end
+    end
+
+    context 'with an orphaned write deploy key' do
+      it 'does not try to notify that project moved' do
+        allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

@@ -42,6 +42,26 @@ export default {
       return this.store.getPaginationInfo();
     },
   },
+  created() {
+    this.searchEmptyMessage = this.hideProjects ?
+      COMMON_STR.GROUP_SEARCH_EMPTY : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
+
+    eventHub.$on('fetchPage', this.fetchPage);
+    eventHub.$on('toggleChildren', this.toggleChildren);
+    eventHub.$on('leaveGroup', this.leaveGroup);
+    eventHub.$on('updatePagination', this.updatePagination);
+    eventHub.$on('updateGroups', this.updateGroups);
+  },
+  mounted() {
+    this.fetchAllGroups();
+  },
+  beforeDestroy() {
+    eventHub.$off('fetchPage', this.fetchPage);
+    eventHub.$off('toggleChildren', this.toggleChildren);
+    eventHub.$off('leaveGroup', this.leaveGroup);
+    eventHub.$off('updatePagination', this.updatePagination);
+    eventHub.$off('updateGroups', this.updateGroups);
+  },
   methods: {
     fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
       return this.service.getGroups(parentId, page, filterGroupsBy, sortBy, archived)
@@ -151,26 +171,6 @@ export default {
         this.store.setGroups(groups);
       }
     },
-  },
-  created() {
-    this.searchEmptyMessage = this.hideProjects ?
-      COMMON_STR.GROUP_SEARCH_EMPTY : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
-
-    eventHub.$on('fetchPage', this.fetchPage);
-    eventHub.$on('toggleChildren', this.toggleChildren);
-    eventHub.$on('leaveGroup', this.leaveGroup);
-    eventHub.$on('updatePagination', this.updatePagination);
-    eventHub.$on('updateGroups', this.updateGroups);
-  },
-  mounted() {
-    this.fetchAllGroups();
-  },
-  beforeDestroy() {
-    eventHub.$off('fetchPage', this.fetchPage);
-    eventHub.$off('toggleChildren', this.toggleChildren);
-    eventHub.$off('leaveGroup', this.leaveGroup);
-    eventHub.$off('updatePagination', this.updatePagination);
-    eventHub.$off('updateGroups', this.updateGroups);
   },
 };
 </script>

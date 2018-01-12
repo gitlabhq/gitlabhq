@@ -1,0 +1,5 @@
+---
+title: Fix 500 error when visiting a commit where the blobs do not exist
+merge_request:
+author:
+type: fixed

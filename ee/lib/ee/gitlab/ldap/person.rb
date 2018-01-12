@@ -44,10 +44,11 @@ module EE
           end
 
           def ldap_attributes(config)
-            super + [
-              'memberof', # Used in `memberof`
-              config.sync_ssh_keys # Used in `ssh_keys`
+            attributes = super + [
+              'memberof',
+              config.sync_ssh_keys
             ]
+            attributes.compact.uniq
           end
         end
 

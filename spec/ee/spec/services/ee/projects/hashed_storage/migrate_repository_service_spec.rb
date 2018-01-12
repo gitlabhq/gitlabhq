@@ -10,6 +10,10 @@ describe Projects::HashedStorage::MigrateRepositoryService do
     set(:primary) { create(:geo_node, :primary) }
     set(:secondary) { create(:geo_node) }
 
+    before do
+      TestEnv.clean_test_path
+    end
+
     it 'creates a Geo::HashedStorageMigratedEvent on success' do
       expect { service.execute }.to change(Geo::EventLog, :count).by(1)
 

@@ -48,7 +48,18 @@ class Event < ActiveRecord::Base
 
   belongs_to :author, class_name: "User"
   belongs_to :project
-  belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+
+  belongs_to :target, -> {
+    # If the association for "target" defines an "author" association we want to
+    # eager-load this so Banzai & friends don't end up performing N+1 queries to
+    # get the authors of notes, issues, etc.
+    if reflections['events'].active_record.reflect_on_association(:author)
+      includes(:author)
+    else
+      self
+    end
+  }, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+
   has_one :push_event_payload
 
   # Callbacks
@@ -72,7 +83,7 @@ class Event < ActiveRecord::Base
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
     includes(:author, :project, project: :namespace)
-      .preload(:push_event_payload, target: :author)
+      .preload(:target, :push_event_payload)
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }

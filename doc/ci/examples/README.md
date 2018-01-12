@@ -16,6 +16,7 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Testing a PHP application](php.md)
 - [Run PHP Composer & NPM scripts then deploy them to a staging server](deployment/composer-npm-deploy.md)
+- [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md)
 
 ### Ruby
 
@@ -57,6 +58,10 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 ### Static Application Security Testing (SAST)
 
 - [Scan your code for vulnerabilities](sast.md)
+
+### Dynamic Application Security Testing (DAST)
+
+- [Scan your app for vulnerabilities](dast.md)
 
 ### Browser Performance Testing with Sitespeed.io
 

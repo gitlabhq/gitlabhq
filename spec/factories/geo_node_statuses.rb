@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :geo_node_status do
     sequence(:id)
     geo_node
+    storage_shards { StorageShard.all }
 
     trait :healthy do
       health nil
@@ -11,6 +12,9 @@ FactoryBot.define do
       lfs_objects_count 256
       lfs_objects_failed_count 12
       lfs_objects_synced_count 123
+      job_artifacts_count 580
+      job_artifacts_failed_count 3
+      job_artifacts_synced_count 577
       repositories_count 10
       repositories_synced_count 5
       repositories_failed_count 0

@@ -22,6 +22,7 @@
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
+- gcp_cluster:check_gcp_project_billing
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -89,6 +90,7 @@
 - project_service
 - propagate_service_template
 - reactive_caching
+- rebase
 - repository_fork
 - repository_import
 - storage_migrator
@@ -104,6 +106,7 @@
 - cronjob:geo_metrics_update
 - cronjob:geo_prune_event_log
 - cronjob:geo_repository_sync
+- cronjob:geo_sidekiq_cron_config
 - cronjob:historical_data
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync

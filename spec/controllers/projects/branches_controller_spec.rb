@@ -166,6 +166,20 @@ describe Projects::BranchesController do
         end
       end
 
+      context 'when create branch service fails' do
+        let(:branch) { "./invalid-branch-name" }
+
+        it "doesn't post a system note" do
+          expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+          post :create,
+            namespace_id: project.namespace,
+            project_id: project,
+            branch_name: branch,
+            issue_iid: issue.iid
+        end
+      end
+
       context 'without issue feature access' do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)

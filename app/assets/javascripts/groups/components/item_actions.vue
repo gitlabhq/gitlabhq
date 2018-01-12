@@ -1,58 +1,56 @@
 <script>
-import { s__ } from '../../locale';
-import tooltip from '../../vue_shared/directives/tooltip';
-import modal from '../../vue_shared/components/modal.vue';
-import eventHub from '../event_hub';
-import { COMMON_STR } from '../constants';
-import Icon from '../../vue_shared/components/icon.vue';
+  import { s__ } from '~/locale';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import icon from '~/vue_shared/components/icon.vue';
+  import modal from '~/vue_shared/components/modal.vue';
+  import eventHub from '../event_hub';
+  import { COMMON_STR } from '../constants';
 
-export default {
-  components: {
-    Icon,
-    modal,
-  },
-  directives: {
-    tooltip,
-  },
-  props: {
-    parentGroup: {
-      type: Object,
-      required: false,
-      default: () => ({}),
+  export default {
+    components: {
+      icon,
+      modal,
     },
-    group: {
-      type: Object,
-      required: true,
+    directives: {
+      tooltip,
     },
-  },
-  data() {
-    return {
-      modalStatus: false,
-    };
-  },
-  computed: {
-    leaveBtnTitle() {
-      return COMMON_STR.LEAVE_BTN_TITLE;
+    props: {
+      parentGroup: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
+      group: {
+        type: Object,
+        required: true,
+      },
     },
-    editBtnTitle() {
-      return COMMON_STR.EDIT_BTN_TITLE;
+    data() {
+      return {
+        modalStatus: false,
+      };
     },
-    leaveConfirmationMessage() {
-      return s__(`GroupsTree|Are you sure you want to leave the "${this.group.fullName}" group?`);
+    computed: {
+      leaveBtnTitle() {
+        return COMMON_STR.LEAVE_BTN_TITLE;
+      },
+      editBtnTitle() {
+        return COMMON_STR.EDIT_BTN_TITLE;
+      },
+      leaveConfirmationMessage() {
+        return s__(`GroupsTree|Are you sure you want to leave the "${this.group.fullName}" group?`);
+      },
     },
-  },
-  methods: {
-    onLeaveGroup() {
-      this.modalStatus = true;
-    },
-    leaveGroup(leaveConfirmed) {
-      this.modalStatus = false;
-      if (leaveConfirmed) {
+    methods: {
+      onLeaveGroup() {
+        this.modalStatus = true;
+      },
+      leaveGroup() {
+        this.modalStatus = false;
         eventHub.$emit('leaveGroup', this.group, this.parentGroup);
-      }
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
@@ -64,10 +62,9 @@ export default {
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
       data-container="body"
+      data-placement="bottom"
       class="edit-group btn no-expand">
-      <icon
-        name="settings">
-      </icon>
+      <icon name="settings"/>
     </a>
     <a
       v-tooltip
@@ -77,10 +74,9 @@ export default {
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"
       data-container="body"
+      data-placement="bottom"
       class="leave-group btn no-expand">
-      <i
-        class="fa fa-sign-out"
-        aria-hidden="true"/>
+      <icon name="leave"/>
     </a>
     <modal
       v-show="modalStatus"

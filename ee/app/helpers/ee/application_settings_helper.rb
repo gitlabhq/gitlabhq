@@ -5,7 +5,6 @@ module EE
     override :visible_attributes
     def visible_attributes
       super + [
-        :authorized_keys_enabled,
         :check_namespace_plan,
         :elasticsearch_aws,
         :elasticsearch_aws_access_key,

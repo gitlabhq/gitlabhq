@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'EE Clusters' do
+  include GoogleApi::CloudPlatformHelpers
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -46,7 +48,9 @@ feature 'EE Clusters' do
           before do
             click_link 'default-cluster'
             fill_in 'cluster_environment_scope', with: 'production/*'
-            click_button 'Save changes'
+            within '.cluster_integration_form' do
+              click_button 'Save changes'
+            end
           end
 
           it 'user sees a cluster details page' do
@@ -75,6 +79,10 @@ feature 'EE Clusters' do
             .to receive(:token_in_session).and_return('token')
           allow_any_instance_of(Projects::Clusters::GcpController)
             .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+
+          stub_google_project_billing_status
+          allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
+
           allow_any_instance_of(GoogleApi::CloudPlatform::Client)
             .to receive(:projects_zones_clusters_create) do
             OpenStruct.new(
@@ -82,6 +90,7 @@ feature 'EE Clusters' do
               status: 'RUNNING'
             )
           end
+
           allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
 
           create(:cluster, :provided_by_gcp, name: 'default-cluster', environment_scope: '*', projects: [project])
@@ -104,7 +113,7 @@ feature 'EE Clusters' do
           end
 
           it 'user sees a cluster details page' do
-            expect(page).to have_content('Enable cluster integration')
+            expect(page).to have_content('Cluster integration is enabled for this project')
             expect(page.find_field('cluster[environment_scope]').value).to eq('staging/*')
           end
         end
@@ -113,7 +122,9 @@ feature 'EE Clusters' do
           before do
             click_link 'default-cluster'
             fill_in 'cluster_environment_scope', with: 'production/*'
-            click_button 'Save changes'
+            within ".cluster_integration_form" do
+              click_button 'Save changes'
+            end
           end
 
           it 'user sees a cluster details page' do

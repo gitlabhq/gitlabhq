@@ -244,7 +244,6 @@ class ProjectPolicy < BasePolicy
 
   rule { repository_disabled }.policy do
     prevent :push_code
-    prevent :push_code_to_protected_branches
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status

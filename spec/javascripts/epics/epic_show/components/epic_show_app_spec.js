@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import epicShowApp from 'ee/epics/epic_show/components/epic_show_app.vue';
 import epicHeader from 'ee/epics/epic_show/components/epic_header.vue';
 import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
@@ -10,25 +12,16 @@ import { props } from '../mock_data';
 import issueShowData from '../../../issue_show/mock_data';
 
 describe('EpicShowApp', () => {
+  let mock;
   let vm;
   let headerVm;
   let issuableAppVm;
   let sidebarVm;
 
-  const interceptor = (request, next) => {
-    if (request.url === '/realtime_changes') {
-      next(request.respondWith(JSON.stringify(issueShowData.initialRequest), {
-        status: 200,
-      }));
-    } else {
-      next(request.respondWith(null, {
-        status: 404,
-      }));
-    }
-  };
-
-  beforeEach(() => {
-    Vue.http.interceptors.push(interceptor);
+  beforeEach((done) => {
+    mock = new MockAdapter(axios);
+    mock.onGet('/realtime_changes').reply(200, issueShowData.initialRequest);
+    mock.onAny().reply(404, null);
 
     const {
       canUpdate,
@@ -80,10 +73,12 @@ describe('EpicShowApp', () => {
       initialStartDate: startDate,
       initialEndDate: endDate,
     });
+
+    setTimeout(done);
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    mock.reset();
   });
 
   it('should render epic-header', () => {

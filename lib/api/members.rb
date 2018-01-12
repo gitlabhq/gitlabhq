@@ -54,18 +54,14 @@ module API
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
-          ## EE specific
-          if source_type == 'project' && source.group && source.group.membership_lock
-            not_allowed!
-          end
-          ## EE specific
-
           member = source.members.find_by(user_id: params[:user_id])
           conflict!('Member already exists') if member
 
           member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
-          if member.persisted? && member.valid?
+          if !member
+            not_allowed! # This currently can only be reached in EE
+          elsif member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
             render_validation_error!(member)

@@ -4,6 +4,7 @@ require 'stringio'
 describe Gitlab::Shell do
   set(:project) { create(:project, :repository) }
 
+  let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
   let(:gitlab_projects) { double('gitlab_projects') }
@@ -69,7 +70,7 @@ describe Gitlab::Shell do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
       end
@@ -401,17 +402,6 @@ describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
-    describe '#add_key' do
-      it 'removes trailing garbage' do
-        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-          [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
-        )
-
-        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
-      end
-    end
-
     describe '#add_repository' do
       shared_examples '#add_repository' do
         let(:repository_storage) { 'default' }
@@ -443,7 +433,7 @@ describe Gitlab::Shell do
         end
       end
 
-      context 'with gitlay' do
+      context 'with gitaly' do
         it_behaves_like '#add_repository'
       end
 
@@ -453,32 +443,44 @@ describe Gitlab::Shell do
     end
 
     describe '#remove_repository' do
-      subject { gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path) }
+      let!(:project) { create(:project, :repository) }
+      let(:disk_path) { "#{project.disk_path}.git" }
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:rm_project) { true }
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(true)
 
-        is_expected.to be_truthy
+        expect(gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)).to be(true)
+
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
       end
 
-      it 'returns false when the command fails' do
-        expect(gitlab_projects).to receive(:rm_project) { false }
+      it 'keeps the namespace directory' do
+        gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)
 
-        is_expected.to be_falsy
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
+        expect(gitlab_shell.exists?(project.repository_storage_path, project.disk_path.gsub(project.name, ''))).to be(true)
       end
     end
 
     describe '#mv_repository' do
-      it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:mv_project).with('project/newpath.git') { true }
+      let!(:project2) { create(:project, :repository) }
 
-        expect(gitlab_shell.mv_repository(project.repository_storage_path, project.disk_path, 'project/newpath')).to be_truthy
+      it 'returns true when the command succeeds' do
+        old_path = project2.disk_path
+        new_path = "project/new_path"
+
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(true)
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(false)
+
+        expect(gitlab_shell.mv_repository(project2.repository_storage_path, old_path, new_path)).to be_truthy
+
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(false)
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(true)
       end
 
       it 'returns false when the command fails' do
-        expect(gitlab_projects).to receive(:mv_project).with('project/newpath.git') { false }
-
-        expect(gitlab_shell.mv_repository(project.repository_storage_path, project.disk_path, 'project/newpath')).to be_falsy
+        expect(gitlab_shell.mv_repository(project2.repository_storage_path, project2.disk_path, '')).to be_falsy
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{project2.disk_path}.git")).to be(true)
       end
     end
 
@@ -506,8 +508,6 @@ describe Gitlab::Shell do
     end
 
     shared_examples 'fetch_remote' do |gitaly_on|
-      let(:repository) { project.repository }
-
       def fetch_remote(ssh_auth = nil)
         gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth)
       end
@@ -630,6 +630,23 @@ describe Gitlab::Shell do
 
     describe '#fetch_remote gitaly' do
       it_should_behave_like 'fetch_remote', true
+
+      context 'gitaly call' do
+        let(:remote_name) { 'remote-name' }
+        let(:ssh_auth) { double(:ssh_auth) }
+
+        subject do
+          gitlab_shell.fetch_remote(repository.raw_repository, remote_name,
+            forced: true, no_tags: true, ssh_auth: ssh_auth)
+        end
+
+        it 'passes the correct params to the gitaly service' do
+          expect(repository.gitaly_repository_client).to receive(:fetch_remote)
+            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, timeout: timeout)
+
+          subject
+        end
+      end
     end
 
     describe '#import_repository' do
@@ -650,62 +667,6 @@ describe Gitlab::Shell do
         expect do
           gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
         end.to raise_error(Gitlab::Shell::Error, "error")
-      end
-    end
-
-    describe '#push_remote_branches' do
-      subject(:result) do
-        gitlab_shell.push_remote_branches(
-          project.repository_storage_path,
-          project.disk_path,
-          'downstream-remote',
-          ['master']
-        )
-      end
-
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:push_branches)
-          .with('downstream-remote', timeout, true, ['master'])
-          .and_return(true)
-
-        is_expected.to be_truthy
-      end
-
-      it 'fails to execute the command' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:push_branches)
-          .with('downstream-remote', timeout, true, ['master'])
-          .and_return(false)
-
-        expect { result }.to raise_error(Gitlab::Shell::Error, 'error')
-      end
-    end
-
-    describe '#delete_remote_branches' do
-      subject(:result) do
-        gitlab_shell.delete_remote_branches(
-          project.repository_storage_path,
-          project.disk_path,
-          'downstream-remote',
-          ['master']
-        )
-      end
-
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(true)
-
-        is_expected.to be_truthy
-      end
-
-      it 'fails to execute the command' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(false)
-
-        expect { result }.to raise_error(Gitlab::Shell::Error, 'error')
       end
     end
   end

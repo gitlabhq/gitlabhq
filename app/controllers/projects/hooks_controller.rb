@@ -21,6 +21,7 @@ class Projects::HooksController < Projects::ApplicationController
       @hooks = @project.hooks.select(&:persisted?)
       flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
+
     redirect_to project_settings_integrations_path(@project)
   end
 

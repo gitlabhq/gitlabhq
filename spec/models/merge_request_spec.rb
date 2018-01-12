@@ -24,11 +24,6 @@ describe MergeRequest do
     it { is_expected.to include_module(Taskable) }
   end
 
-  describe "act_as_paranoid" do
-    it { is_expected.to have_db_column(:deleted_at) }
-    it { is_expected.to have_db_index(:deleted_at) }
-  end
-
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
@@ -61,6 +56,25 @@ describe MergeRequest do
         subject.target_project = fork2
 
         expect(subject).to be_valid
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    describe '#ensure_merge_request_metrics' do
+      it 'creates metrics after saving' do
+        merge_request = create(:merge_request)
+
+        expect(merge_request.metrics).to be_persisted
+        expect(MergeRequest::Metrics.count).to eq(1)
+      end
+
+      it 'does not duplicate metrics for a merge request' do
+        merge_request = create(:merge_request)
+
+        merge_request.mark_as_merged!
+
+        expect(MergeRequest::Metrics.count).to eq(1)
       end
     end
   end
@@ -2325,6 +2339,52 @@ describe MergeRequest do
         expect(subject.head_pipeline).to eq(pipeline)
         expect(subject.merge_jid).to be_nil
       end
+    end
+  end
+
+  describe '#should_be_rebased?' do
+    let(:project) { create(:project, :repository) }
+
+    it 'returns false for the same source and target branches' do
+      merge_request = create(:merge_request, source_project: project, target_project: project)
+
+      expect(merge_request.should_be_rebased?).to be_falsey
+    end
+  end
+
+  describe '#rebase_in_progress?' do
+    # Create merge request and project before we stub file calls
+    before do
+      subject
+    end
+
+    it 'returns true when there is a current rebase directory' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(Time.now)
+
+      expect(subject.rebase_in_progress?).to be_truthy
+    end
+
+    it 'returns false when there is no rebase directory' do
+      allow(File).to receive(:exist?).and_return(false)
+
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the rebase directory has expired' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(20.minutes.ago)
+
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the source project has been removed' do
+      allow(subject).to receive(:source_project).and_return(nil)
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(Time.now)
+
+      expect(File).not_to have_received(:exist?)
+      expect(subject.rebase_in_progress?).to be_falsey
     end
   end
 end

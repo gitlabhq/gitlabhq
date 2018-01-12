@@ -1,50 +1,48 @@
 <script>
-import { mapActions } from 'vuex';
-import fileStatusIcon from './repo_file_status_icon.vue';
+  import { mapActions } from 'vuex';
+  import fileStatusIcon from './repo_file_status_icon.vue';
+  import fileIcon from '../../vue_shared/components/file_icon.vue';
 
-export default {
-  props: {
-    tab: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      fileStatusIcon,
+      fileIcon,
     },
-  },
+    props: {
+      tab: {
+        type: Object,
+        required: true,
+      },
+    },
+    computed: {
+      closeLabel() {
+        if (this.tab.changed || this.tab.tempFile) {
+          return `${this.tab.name} changed`;
+        }
+        return `Close ${this.tab.name}`;
+      },
+      changedClass() {
+        const tabChangedObj = {
+          'fa-times close-icon': !this.tab.changed && !this.tab.tempFile,
+          'fa-circle unsaved-icon': this.tab.changed || this.tab.tempFile,
+        };
+        return tabChangedObj;
+      },
+    },
 
-  components: {
-    fileStatusIcon,
-  },
-
-  computed: {
-    closeLabel() {
-      if (this.tab.changed || this.tab.tempFile) {
-        return `${this.tab.name} changed`;
-      }
-      return `Close ${this.tab.name}`;
+    methods: {
+      ...mapActions([
+        'closeFile',
+      ]),
+      clickFile(tab) {
+        this.$router.push(`/project${tab.url}`);
+      },
     },
-    changedClass() {
-      const tabChangedObj = {
-        'fa-times close-icon': !this.tab.changed && !this.tab.tempFile,
-        'fa-circle unsaved-icon': this.tab.changed || this.tab.tempFile,
-      };
-      return tabChangedObj;
-    },
-  },
-
-  methods: {
-    ...mapActions([
-      'closeFile',
-    ]),
-    clickFile(tab) {
-      this.$router.push(`/project${tab.url}`);
-    },
-  },
-};
+  };
 </script>
 
 <template>
-  <li
-    @click="clickFile(tab)"
-  >
+  <li @click="clickFile(tab)">
     <button
       type="button"
       class="multi-file-tab-close"
@@ -68,6 +66,10 @@ export default {
       :class="{active : tab.active }"
       :title="tab.url"
     >
+      <file-icon
+        :file-name="tab.name"
+        :size="16"
+      />
       {{ tab.name }}
       <file-status-icon
         :file="tab"

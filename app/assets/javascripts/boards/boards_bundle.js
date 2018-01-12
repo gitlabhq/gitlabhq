@@ -2,7 +2,6 @@
 
 import _ from 'underscore';
 import Vue from 'vue';
-import VueResource from 'vue-resource';
 import Flash from '../flash';
 import { __ } from '../locale';
 import FilteredSearchBoards from './filtered_search_boards';
@@ -30,8 +29,6 @@ import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
 import tooltip from '../vue_shared/directives/tooltip';
-
-Vue.use(VueResource);
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -104,14 +101,13 @@ $(() => {
 
       Store.disabled = this.disabled;
       gl.boardService.all()
-        .then(response => response.json())
-        .then((resp) => {
-          resp.forEach((board) => {
+        .then(res => res.data)
+        .then((data) => {
+          data.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
               list.position = Infinity;
-              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
             } else if (list.type === 'backlog') {
               list.position = -1;
             }
@@ -123,7 +119,9 @@ $(() => {
           Store.addPromotionState();
           this.loading = false;
         })
-        .catch(() => new Flash('An error occurred. Please try again.'));
+        .catch(() => {
+          Flash('An error occurred while fetching the board lists. Please try again.');
+        });
     },
     methods: {
       updateTokens() {
@@ -135,7 +133,7 @@ $(() => {
           newIssue.setFetchingState('subscriptions', true);
           newIssue.setFetchingState('weight', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
-            .then(res => res.json())
+            .then(res => res.data)
             .then((data) => {
               newIssue.setFetchingState('subscriptions', false);
               newIssue.setFetchingState('weight', false);
@@ -178,7 +176,7 @@ $(() => {
         if (issue.id === id && issue.sidebarInfoEndpoint) {
           issue.setLoadingState('weight', true);
           BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)
-            .then(res => res.json())
+            .then(res => res.data)
             .then((data) => {
               issue.setLoadingState('weight', false);
               issue.updateData({
@@ -210,18 +208,15 @@ $(() => {
   if (configEl) {
     gl.boardConfigToggle = new Vue({
       el: configEl,
+      directives: {
+        tooltip,
+      },
       data() {
         return {
           canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
           hasScope: this.$options.el.hasAttribute('data-has-scope'),
           state: Store.state,
         };
-      },
-      directives: {
-        tooltip,
-      },
-      methods: {
-        showPage: page => gl.issueBoards.BoardsStore.showPage(page),
       },
       computed: {
         buttonText() {
@@ -230,6 +225,9 @@ $(() => {
         tooltipTitle() {
           return this.hasScope ? __('This board\'s scope is reduced') : '';
         }
+      },
+      methods: {
+        showPage: page => gl.issueBoards.BoardsStore.showPage(page),
       },
       template: `
         <div class="prepend-left-10">
@@ -249,8 +247,8 @@ $(() => {
   }
 
   gl.IssueBoardsModalAddBtn = new Vue({
-    mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return {
         modal: ModalStore.store,
@@ -259,11 +257,6 @@ $(() => {
         focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
         canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
-    },
-    watch: {
-      disabled() {
-        this.updateTooltip();
-      },
     },
     computed: {
       disabled() {
@@ -279,6 +272,14 @@ $(() => {
 
         return '';
       },
+    },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     methods: {
       updateTooltip() {
@@ -297,9 +298,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-    },
-    mounted() {
-      this.updateTooltip();
     },
     template: `
       <div class="board-extra-actions">

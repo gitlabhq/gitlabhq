@@ -14,6 +14,7 @@ module Gitlab
         else
           @diff_lines = diff_lines
         end
+
         @raw_lines = @diff_lines.map(&:text)
       end
 

@@ -6,7 +6,14 @@
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
-    name: 'issueNoteForm',
+    name: 'IssueNoteForm',
+    components: {
+      issueWarning,
+      markdownField,
+    },
+    mixins: [
+      issuableStateMixin,
+    ],
     props: {
       noteBody: {
         type: String,
@@ -16,6 +23,7 @@
       noteId: {
         type: Number,
         required: false,
+        default: 0,
       },
       saveButtonTitle: {
         type: String,
@@ -38,10 +46,6 @@
         conflictWhileEditing: false,
         isSubmitting: false,
       };
-    },
-    components: {
-      issueWarning,
-      markdownField,
     },
     computed: {
       ...mapGetters([
@@ -70,6 +74,18 @@
         return !this.note.length || this.isSubmitting;
       },
     },
+    watch: {
+      noteBody() {
+        if (this.note === this.noteBody) {
+          this.note = this.noteBody;
+        } else {
+          this.conflictWhileEditing = true;
+        }
+      },
+    },
+    mounted() {
+      this.$refs.textarea.focus();
+    },
     methods: {
       handleUpdate() {
         this.isSubmitting = true;
@@ -94,26 +110,14 @@
         this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.note);
       },
     },
-    mixins: [
-      issuableStateMixin,
-    ],
-    mounted() {
-      this.$refs.textarea.focus();
-    },
-    watch: {
-      noteBody() {
-        if (this.note === this.noteBody) {
-          this.note = this.noteBody;
-        } else {
-          this.conflictWhileEditing = true;
-        }
-      },
-    },
   };
 </script>
 
 <template>
-  <div ref="editNoteForm" class="note-edit-form current-note-edit-form">
+  <div
+    ref="editNoteForm"
+    class="note-edit-form current-note-edit-form"
+  >
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger">
@@ -121,12 +125,13 @@
       <a
         :href="noteHash"
         target="_blank"
-        rel="noopener noreferrer">updated comment</a>
-        to ensure information is not lost.
+        rel="noopener noreferrer">
+        updated comment
+      </a>
+      to ensure information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
-    <form
-      class="edit-note common-note-form js-quick-submit gfm-form">
+    <form class="edit-note common-note-form js-quick-submit gfm-form">
 
       <issue-warning
         v-if="hasWarning(getNoteableData)"
@@ -142,7 +147,8 @@
         <textarea
           id="note_note"
           name="note[note]"
-          class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
+          class="note-textarea js-gfm-input
+js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           :data-supports-quick-actions="!isEditing"
           aria-label="Description"
           v-model="note"
@@ -160,7 +166,7 @@
           @click="handleUpdate()"
           :disabled="isDisabled"
           class="js-vue-issue-save btn btn-save">
-          {{saveButtonTitle}}
+          {{ saveButtonTitle }}
         </button>
         <button
           @click="cancelHandler()"

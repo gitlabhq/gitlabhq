@@ -27,6 +27,7 @@ describe Gitlab::UsageData do
         license_expires_at
         license_starts_at
         license_user_count
+        license_trial
         licensee
         license_md5
         recorded_at
@@ -167,6 +168,7 @@ describe Gitlab::UsageData do
       expect(subject[:license_starts_at]).to eq(license.starts_at)
       expect(subject[:license_expires_at]).to eq(license.expires_at)
       expect(subject[:license_add_ons]).to eq(license.add_ons)
+      expect(subject[:license_trial]).to eq(license.trial?)
       expect(subject[:recorded_at]).to be_a(Time)
     end
   end

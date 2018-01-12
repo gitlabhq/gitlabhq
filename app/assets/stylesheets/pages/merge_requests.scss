@@ -774,6 +774,11 @@
   }
 }
 
+.fork-sprite {
+  margin-right: -5px;
+}
+
+
 .mr-widget-icon {
   font-size: 22px;
   margin: 0 10px 0 0;
@@ -792,6 +797,10 @@
 
     .mr-widget-code-quality-info {
       padding-left: 12px;
+    }
+
+    .mr-widget-dast-code {
+      margin-left: 26px;
     }
 
     .mr-widget-code-quality-list {
@@ -820,6 +829,10 @@
 
       .neutral {
         color: $gl-gray-light;
+      }
+
+      .modal-body {
+        color: $gl-text-color;
       }
     }
   }

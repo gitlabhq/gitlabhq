@@ -32,6 +32,7 @@ describe RepositoryImportWorker do
         expect_any_instance_of(Projects::ImportService).to receive(:execute)
           .and_return({ status: :ok })
 
+        expect_any_instance_of(Project).to receive(:after_import).and_call_original
         expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
         expect_any_instance_of(Project).to receive(:import_finish)
 

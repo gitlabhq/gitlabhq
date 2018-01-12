@@ -30,6 +30,10 @@ module Geo
       class_name: 'Geo::LfsObjectDeletedEvent',
       foreign_key: :lfs_object_deleted_event_id
 
+    belongs_to :job_artifact_deleted_event,
+      class_name: 'Geo::JobArtifactDeletedEvent',
+      foreign_key: :job_artifact_deleted_event_id
+
     belongs_to :hashed_storage_attachments_event,
       class_name: 'Geo::HashedStorageAttachmentsEvent',
       foreign_key: :hashed_storage_attachments_event_id
@@ -46,6 +50,7 @@ module Geo
         repositories_changed_event ||
         hashed_storage_migrated_event ||
         lfs_object_deleted_event ||
+        job_artifact_deleted_event ||
         hashed_storage_attachments_event
     end
 

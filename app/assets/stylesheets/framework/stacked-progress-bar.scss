@@ -1,7 +1,6 @@
 .stacked-progress-bar {
   display: flex;
-  height: 20px;
-  width: 350px;
+  height: 16px;
   border-radius: 10px;
   overflow: hidden;
   background-color: $theme-gray-100;
@@ -11,15 +10,12 @@
   .status-neutral,
   .status-red, {
     height: 100%;
+    min-width: 25px;
+    padding: 0 5px;
     font-size: $tooltip-font-size;
     font-weight: normal;
     color: $white-light;
-    line-height: 20px;
-
-    &.has-value {
-      min-width: 25px;
-      padding: 0 5px;
-    }
+    line-height: 16px;
 
     &:hover {
       cursor: pointer;

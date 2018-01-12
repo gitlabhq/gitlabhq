@@ -2,12 +2,16 @@ require 'spec_helper'
 
 describe EpicIssues::CreateService do
   describe '#execute' do
-    let(:group) { create :group }
-    let(:epic) { create :epic, group: group }
+    let(:group) { create(:group) }
+    let(:epic) { create(:epic, group: group) }
     let(:project) { create(:project, group: group) }
-    let(:issue) { create :issue, project: project }
-    let(:user) { create :user }
+    let(:issue) { create(:issue, project: project) }
+    let(:issue2) { create(:issue, project: project) }
+    let(:issue3) { create(:issue, project: project) }
+    let(:user) { create(:user) }
     let(:valid_reference) { issue.to_reference(full: true) }
+
+    let!(:existing_link) { create(:epic_issue, epic: epic, issue: issue3) }
 
     def assign_issue(references)
       params = { issue_references: references }
@@ -16,10 +20,18 @@ describe EpicIssues::CreateService do
     end
 
     shared_examples 'returns success' do
-      it 'creates relationships' do
-        expect { subject }.to change(EpicIssue, :count).from(0).to(1)
+      let(:created_link) { EpicIssue.find_by!(issue_id: issue.id) }
 
-        expect(EpicIssue.find_by!(issue_id: issue.id)).to have_attributes(epic: epic)
+      it 'creates a new relationship' do
+        expect { subject }.to change(EpicIssue, :count).from(1).to(2)
+
+        expect(created_link).to have_attributes(epic: epic)
+      end
+
+      it 'orders the epic issue to the first place and moves the existing ones down' do
+        subject
+
+        expect(created_link.relative_position).to be < existing_link.reload.relative_position
       end
 
       it 'returns success status' do
@@ -105,6 +117,12 @@ describe EpicIssues::CreateService do
               allow(SystemNoteService).to receive(:epic_issue)
               allow(SystemNoteService).to receive(:issue_on_epic)
 
+              # Extractor makes a permission check for each issue which messes up the query count check
+              extractor = double
+              allow(Gitlab::ReferenceExtractor).to receive(:new).and_return(extractor)
+              allow(extractor).to receive(:analyze)
+              allow(extractor).to receive(:issues).and_return([issue])
+
               params = { issue_references: [valid_reference] }
               control_count = ActiveRecord::QueryRecorder.new { described_class.new(epic, user, params).execute }.count
 
@@ -115,9 +133,15 @@ describe EpicIssues::CreateService do
               epic = create(:epic, group: group)
               group.add_developer(user)
 
+              allow(extractor).to receive(:issues).and_return(issues)
               params = { issue_references: issues.map { |i| i.to_reference(full: true) } }
 
-              expect { described_class.new(epic, user, params).execute }.not_to exceed_query_limit(control_count)
+              # threshold 24 because 6 queries are generated for each insert
+              # (savepoint, find, exists, relative_position get, insert, release savepoint)
+              # and we insert 5 issues instead of 1 which we do for control count
+              expect { described_class.new(epic, user, params).execute }
+                .not_to exceed_query_limit(control_count)
+                .with_threshold(24)
             end
           end
 
@@ -135,6 +159,35 @@ describe EpicIssues::CreateService do
             subject { assign_issue([IssuesHelper.url_for_issue(issue.iid, issue.project)]) }
 
             include_examples 'returns success'
+          end
+
+          context 'when multiple valid issues are given' do
+            subject { assign_issue([issue.to_reference(full: true), issue2.to_reference(full: true)]) }
+
+            let(:created_link1) { EpicIssue.find_by!(issue_id: issue.id) }
+            let(:created_link2) { EpicIssue.find_by!(issue_id: issue2.id) }
+
+            it 'creates new relationships' do
+              expect { subject }.to change(EpicIssue, :count).from(1).to(3)
+
+              expect(created_link1).to have_attributes(epic: epic)
+              expect(created_link2).to have_attributes(epic: epic)
+            end
+
+            it 'orders the epic issues to the first place and moves the existing ones down' do
+              subject
+
+              expect(created_link2.relative_position).to be < created_link1.relative_position
+              expect(created_link1.relative_position).to be < existing_link.reload.relative_position
+            end
+
+            it 'returns success status' do
+              expect(subject).to eq(status: :success)
+            end
+
+            it 'creates 2 system notes for each issue' do
+              expect { subject }.to change { Note.count }.from(0).to(4)
+            end
           end
         end
       end
@@ -160,7 +213,7 @@ describe EpicIssues::CreateService do
         end
 
         it 'does not create a new association' do
-          expect { subject }.not_to change(EpicIssue, :count).from(1)
+          expect { subject }.not_to change(EpicIssue, :count).from(2)
         end
 
         it 'updates the existing association' do

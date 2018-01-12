@@ -1,4 +1,5 @@
 /* eslint-disable no-new */
+import _ from 'underscore';
 import Flash from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
@@ -276,13 +277,13 @@ export default class CreateMergeRequestDropdown {
     let target;
     let value;
 
-    if (event.srcElement === this.branchInput) {
+    if (event.target === this.branchInput) {
       target = 'branch';
       value = this.branchInput.value;
-    } else if (event.srcElement === this.refInput) {
+    } else if (event.target === this.refInput) {
       target = 'ref';
-      value = event.srcElement.value.slice(0, event.srcElement.selectionStart) +
-        event.srcElement.value.slice(event.srcElement.selectionEnd);
+      value = event.target.value.slice(0, event.target.selectionStart) +
+        event.target.value.slice(event.target.selectionEnd);
     } else {
       return false;
     }

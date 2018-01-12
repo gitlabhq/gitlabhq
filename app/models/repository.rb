@@ -6,6 +6,7 @@ class Repository
   REF_MERGE_REQUEST = 'merge-requests'.freeze
   REF_KEEP_AROUND = 'keep-around'.freeze
   REF_ENVIRONMENTS = 'environments'.freeze
+  MAX_DIVERGING_COUNT = 1000
 
   RESERVED_REFS_NAMES = %W[
     heads
@@ -24,7 +25,6 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
-  delegate :write_ref, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -108,6 +108,10 @@ class Repository
 
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
+  end
+
+  def create_hooks
+    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
   end
 
   def commit(ref = 'HEAD')
@@ -263,10 +267,11 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      write_ref(keep_around_ref_name(sha), sha, force: true)
-    rescue Gitlab::Git::Repository::GitError => ex
-      # Necessary because https://gitlab.com/gitlab-org/gitlab-ce/issues/20156
-      return true if ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+      write_ref(keep_around_ref_name(sha), sha)
+    rescue Rugged::ReferenceError => ex
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
+    rescue Rugged::OSError => ex
+      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
 
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
@@ -276,16 +281,21 @@ class Repository
     ref_exists?(keep_around_ref_name(sha))
   end
 
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
+  end
+
   def diverging_commit_counts(branch)
     root_ref_hash = raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
-      number_commits_behind = raw_repository
-        .count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
-
-      number_commits_ahead = raw_repository
-        .count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
+      number_commits_behind, number_commits_ahead =
+        raw_repository.count_commits_between(
+          root_ref_hash,
+          branch.dereferenced_target.sha,
+          left_right: true,
+          max_count: MAX_DIVERGING_COUNT)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -784,34 +794,30 @@ class Repository
   end
 
   def create_dir(user, path, **options)
-    options[:user] = user
     options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def create_file(user, path, content, **options)
-    options[:user] = user
     options[:actions] = [{ action: :create, file_path: path, content: content }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def update_file(user, path, content, **options)
     previous_path = options.delete(:previous_path)
     action = previous_path && previous_path != path ? :move : :update
 
-    options[:user] = user
     options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def delete_file(user, path, **options)
-    options[:user] = user
     options[:actions] = [{ action: :delete, file_path: path }]
 
-    multi_action(**options)
+    multi_action(user, **options)
   end
 
   def with_cache_hooks
@@ -825,59 +831,14 @@ class Repository
     result.newrev
   end
 
-  def with_branch(user, *args)
-    with_cache_hooks do
-      Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
-        yield start_commit
-      end
+  def multi_action(user, **options)
+    start_project = options.delete(:start_project)
+
+    if start_project
+      options[:start_repository] = start_project.repository.raw_repository
     end
-  end
 
-  # rubocop:disable Metrics/ParameterLists
-  def multi_action(
-    user:, branch_name:, message:, actions:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-
-    with_branch(
-      user,
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_repository: start_project.repository.raw_repository) do |start_commit|
-
-      index = Gitlab::Git::Index.new(raw_repository)
-
-      if start_commit
-        index.read_tree(start_commit.rugged_commit.tree)
-        parents = [start_commit.sha]
-      else
-        parents = []
-      end
-
-      actions.each do |options|
-        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      options = {
-        tree: index.write_tree,
-        message: message,
-        parents: parents
-      }
-      options.merge!(get_committer_and_author(user, email: author_email, name: author_name))
-
-      create_commit(options)
-    end
-  end
-  # rubocop:enable Metrics/ParameterLists
-
-  def get_committer_and_author(user, email: nil, name: nil)
-    committer = user_to_committer(user)
-    author = Gitlab::Git.committer_hash(email: email, name: name) || committer
-
-    {
-      author: author,
-      committer: committer
-    }
+    with_cache_hooks { raw.multi_action(user, **options) }
   end
 
   def can_be_merged?(source_sha, target_branch)
@@ -1055,16 +1016,12 @@ class Repository
     raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
   end
 
-  def remote_exists?(name)
-    raw_repository.remote_exists?(name)
-  end
-
   def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
     raw_repository.compare_source_branch(target_branch_name, source_repository.raw_repository, source_branch_name, straight: straight)
   end
 
   def create_ref(ref, ref_path)
-    write_ref(ref_path, ref)
+    raw_repository.write_ref(ref_path, ref)
   end
 
   def ls_files(ref)
@@ -1116,6 +1073,7 @@ class Repository
           else
             cache.fetch(key, &block)
           end
+
         instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
         # Even if the above `#exists?` check passes these errors might still
@@ -1152,6 +1110,13 @@ class Repository
 
   def repository_storage_path
     @project.repository_storage_path
+  end
+
+  def rebase(user, merge_request)
+    raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
+                                       branch_sha: merge_request.source_branch_sha,
+                                       remote_repository: merge_request.target_project.repository.raw,
+                                       remote_branch: merge_request.target_branch)
   end
 
   private

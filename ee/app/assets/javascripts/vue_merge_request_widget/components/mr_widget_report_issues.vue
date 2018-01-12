@@ -1,14 +1,27 @@
 <script>
+  import { s__ } from '~/locale';
   import { spriteIcon } from '~/lib/utils/common_utils';
+  import modal from './mr_widget_dast_modal.vue';
+
+  const modalDefaultData = {
+    modalId: 'modal-mrwidget-issue',
+    modalDesc: '',
+    modalTitle: '',
+    modalInstances: [],
+    modalTargetId: '#modal-mrwidget-issue',
+  };
 
   export default {
-    name: 'mrWidgetReportIssues',
+    name: 'MrWidgetReportIssues',
+    components: {
+      modal,
+    },
     props: {
       issues: {
         type: Array,
         required: true,
       },
-      // security || codequality || performance || docker
+      // security || codequality || performance || docker || dast
       type: {
         type: String,
         required: true,
@@ -18,10 +31,24 @@
         type: String,
         required: true,
       },
+      hasPriority: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+    },
+    data() {
+      return modalDefaultData;
     },
     computed: {
       icon() {
-        return this.isStatusSuccess ? spriteIcon('plus') : spriteIcon('cut');
+        return this.isStatusSuccess ? spriteIcon('plus') : this.cutIcon;
+      },
+      cutIcon() {
+        return spriteIcon('cut');
+      },
+      fixedLabel() {
+        return s__('ciReport|Fixed:');
       },
       isStatusFailed() {
         return this.status === 'failed';
@@ -44,10 +71,37 @@
       isTypeDocker() {
         return this.type === 'docker';
       },
+      isTypeDast() {
+        return this.type === 'dast';
+      },
     },
     methods: {
       shouldRenderPriority(issue) {
-        return (this.isTypeSecurity || this.isTypeDocker) && issue.priority;
+        return this.hasPriority && issue.priority;
+      },
+      getmodalId(index) {
+        return `modal-mrwidget-issue-${index}`;
+      },
+      modalIdTarget(index) {
+        return `#${this.getmodalId(index)}`;
+      },
+      openDastModal(issue, index) {
+        this.modalId = this.getmodalId(index);
+        this.modalTitle = `${issue.priority}: ${issue.name}`;
+        this.modalTargetId = `#${this.getmodalId(index)}`;
+        this.modalInstances = issue.instances;
+        this.modalDesc = issue.parsedDescription;
+      },
+      /**
+       * Because of https://vuejs.org/v2/guide/list.html#Caveats
+       * we need to clear the instances to make sure everything is properly reset.
+       */
+      clearModalData() {
+        this.modalId = modalDefaultData.modalId;
+        this.modalDesc = modalDefaultData.modalDesc;
+        this.modalTitle = modalDefaultData.modalTitle;
+        this.modalInstances = modalDefaultData.modalInstances;
+        this.modalTargetId = modalDefaultData.modalTargetId;
       },
     },
   };
@@ -59,35 +113,50 @@
         failed: isStatusFailed,
         success: isStatusSuccess,
         neutral: isStatusNeutral
-      }
-      "v-for="issue in issues">
+      }"
+      v-for="(issue, index) in issues"
+      :key="index"
+    >
 
-     <span
+      <span
         class="mr-widget-code-quality-icon"
-        v-html="icon">
+        v-html="icon"
+      >
       </span>
 
-      <template v-if="isStatusSuccess && isTypeQuality">Fixed:</template>
-      <template v-if="shouldRenderPriority(issue)">{{issue.priority}}:</template>
+      <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
+      <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
 
       <template v-if="isTypeDocker">
         <a
           v-if="issue.nameLink"
           :href="issue.nameLink"
           target="_blank"
-          rel="noopener noreferrer nofollow">
-          {{issue.name}}
+          rel="noopener noreferrer nofollow"
+        >
+          {{ issue.name }}
         </a>
         <template v-else>
-          {{issue.name}}
+          {{ issue.name }}
         </template>
       </template>
+      <template v-else-if="isTypeDast">
+        <button
+          type="button"
+          @click="openDastModal(issue, index)"
+          data-toggle="modal"
+          class="btn-link btn-blank"
+          :data-target="modalTargetId"
+        >
+          {{ issue.name }}
+        </button>
+      </template>
       <template v-else>
-        {{issue.name}}<template v-if="issue.score">: <strong>{{issue.score}}</strong></template>
+        {{ issue.name }}<template v-if="issue.score">: <strong>{{ issue.score }}</strong></template>
       </template>
 
       <template v-if="isTypePerformance && issue.delta != null">
-        ({{issue.delta >= 0 ? '+' : ''}}{{issue.delta}})
+        ({{ issue.delta >= 0 ? '+' : '' }}{{ issue.delta }})
       </template>
 
       <template v-if="issue.path">
@@ -97,14 +166,23 @@
           v-if="issue.urlPath"
           :href="issue.urlPath"
           target="_blank"
-          rel="noopener noreferrer nofollow">
-          {{issue.path}}<template v-if="issue.line">:{{issue.line}}</template>
+          rel="noopener noreferrer nofollow"
+        >
+          {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
         </a>
         <template v-else>
-          {{issue.path}}<template v-if="issue.line">:{{issue.line}}</template>
+          {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
         </template>
       </template>
-
     </li>
+
+    <modal
+      :target-id="modalId"
+      :title="modalTitle"
+      :hide-footer="true"
+      :description="modalDesc"
+      :instances="modalInstances"
+      @clearData="clearModalData()"
+    />
   </ul>
 </template>

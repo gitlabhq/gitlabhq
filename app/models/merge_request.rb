@@ -12,7 +12,8 @@ class MergeRequest < ActiveRecord::Base
   include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
-                :ref_fetched
+                :ref_fetched,
+                :deleted_at
 
   include ::EE::MergeRequest
   include Elastic::MergeRequestsSearch
@@ -155,10 +156,15 @@ class MergeRequest < ActiveRecord::Base
 
   after_save :keep_around_commit
 
-  acts_as_paranoid
-
   def self.reference_prefix
     '!'
+  end
+
+  def rebase_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.rebase_in_progress?(id)
   end
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the
@@ -813,6 +819,7 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
+
     message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference(full: true)}"
 

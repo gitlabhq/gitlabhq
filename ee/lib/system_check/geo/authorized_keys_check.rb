@@ -3,7 +3,7 @@ module SystemCheck
     class AuthorizedKeysCheck < ::SystemCheck::BaseCheck
       set_name 'OpenSSH configured to use AuthorizedKeysCommand'
 
-      AUTHORIZED_KEYS_DOCS = 'doc/administration/operations/speed_up_ssh.md'.freeze
+      AUTHORIZED_KEYS_DOCS = 'doc/administration/operations/fast_ssh_key_lookup.md'.freeze
       OPENSSH_AUTHORIZED_KEYS_CMD_REGEXP = %r{
         ^AuthorizedKeysCommand # line starts with
         \s+                    # one space or more

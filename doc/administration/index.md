@@ -20,10 +20,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
   - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
-- **(EEP)** [GitLab GEO](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
+- **(EEP)** [GitLab Geo](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
 - **(EEP)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
-- [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
-  - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
 
 ### Configuring GitLab
 

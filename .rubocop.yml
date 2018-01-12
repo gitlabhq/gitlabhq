@@ -3,6 +3,7 @@ inherit_gem:
     - rubocop-default.yml
 
 inherit_from: .rubocop_todo.yml
+require: ./rubocop/rubocop
 
 AllCops:
   TargetRailsVersion: 4.2

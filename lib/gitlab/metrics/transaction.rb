@@ -35,6 +35,10 @@ module Gitlab
         @finished_at ? (@finished_at - @started_at) : 0.0
       end
 
+      def duration_milliseconds
+        duration.in_milliseconds.to_i
+      end
+
       def allocated_memory
         @memory_after - @memory_before
       end
@@ -50,7 +54,7 @@ module Gitlab
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
-        self.class.metric_transaction_duration_seconds.observe(labels, duration * 1000)
+        self.class.metric_transaction_duration_seconds.observe(labels, duration)
         self.class.metric_transaction_allocated_memory_bytes.observe(labels, allocated_memory * 1024.0)
 
         Thread.current[THREAD_KEY] = nil
@@ -106,7 +110,7 @@ module Gitlab
       end
 
       def track_self
-        values = { duration: duration, allocated_memory: allocated_memory }
+        values = { duration: duration_milliseconds, allocated_memory: allocated_memory }
 
         @values.each do |name, value|
           values[name] = value

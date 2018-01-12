@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import _ from 'underscore';
 import SidebarMediator from 'ee/sidebar/sidebar_mediator';
 import CESidebarMediator from '~/sidebar/sidebar_mediator';
 import CESidebarStore from '~/sidebar/stores/sidebar_store';

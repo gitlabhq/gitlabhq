@@ -19,7 +19,11 @@ module IssuableLinks
 
     def create_issue_links
       referenced_issues.each do |referenced_issue|
-        create_notes(referenced_issue) if relate_issues(referenced_issue)
+        link = relate_issues(referenced_issue)
+
+        next unless link.persisted?
+
+        create_notes(referenced_issue)
       end
     end
 

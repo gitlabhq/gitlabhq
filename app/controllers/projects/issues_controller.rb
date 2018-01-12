@@ -197,10 +197,6 @@ class Projects::IssuesController < Projects::ApplicationController
     render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
-  def check_issues_available!
-    return render_404 unless @project.feature_available?(:issues, current_user)
-  end
-
   def render_issue_json
     if @issue.valid?
       render json: serializer.represent(@issue)

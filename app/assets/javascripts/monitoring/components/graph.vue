@@ -17,6 +17,15 @@
   const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select };
 
   export default {
+    components: {
+      GraphLegend,
+      GraphFlag,
+      GraphDeployment,
+      GraphPath,
+    },
+
+    mixins: [MonitoringMixin],
+
     props: {
       graphData: {
         type: Object,
@@ -45,8 +54,6 @@
       },
     },
 
-    mixins: [MonitoringMixin],
-
     data() {
       return {
         baseGraphHeight: 450,
@@ -69,16 +76,9 @@
         currentFlagPosition: 0,
         showFlag: false,
         showFlagContent: false,
-        showDeployInfo: true,
         timeSeries: [],
+        realPixelRatio: 1,
       };
-    },
-
-    components: {
-      GraphLegend,
-      GraphFlag,
-      GraphDeployment,
-      GraphPath,
     },
 
     computed: {
@@ -87,10 +87,7 @@
       },
 
       innerViewBox() {
-        if ((this.baseGraphWidth - 150) > 0) {
-          return `0 0 ${this.baseGraphWidth - 150} ${this.baseGraphHeight}`;
-        }
-        return '0 0 0 0';
+        return `0 0 ${this.baseGraphWidth - 150} ${this.baseGraphHeight}`;
       },
 
       axisTransform() {
@@ -102,6 +99,30 @@
           paddingBottom: `${(Math.ceil(this.baseGraphHeight * 100) / this.baseGraphWidth) || 0}%`,
         };
       },
+
+      deploymentFlagData() {
+        return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
+      },
+    },
+
+    watch: {
+      updateAspectRatio() {
+        if (this.updateAspectRatio) {
+          this.graphHeight = 450;
+          this.graphWidth = 600;
+          this.measurements = measurements.large;
+          this.draw();
+          eventHub.$emit('toggleAspectRatio');
+        }
+      },
+
+      hoverData() {
+        this.positionFlag();
+      },
+    },
+
+    mounted() {
+      this.draw();
     },
 
     methods: {
@@ -122,6 +143,10 @@
         this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
         this.baseGraphHeight = this.graphHeight;
         this.baseGraphWidth = this.graphWidth;
+
+        // pixel offsets inside the svg and outside are not 1:1
+        this.realPixelRatio = (this.$refs.baseSvg.clientWidth / this.baseGraphWidth);
+
         this.renderAxesPaths();
         this.formatDeployments();
       },
@@ -192,51 +217,34 @@
           }); // This will select all of the ticks once they're rendered
       },
     },
-
-    watch: {
-      updateAspectRatio() {
-        if (this.updateAspectRatio) {
-          this.graphHeight = 450;
-          this.graphWidth = 600;
-          this.measurements = measurements.large;
-          this.draw();
-          eventHub.$emit('toggleAspectRatio');
-        }
-      },
-
-      hoverData() {
-        this.positionFlag();
-      },
-    },
-
-    mounted() {
-      this.draw();
-    },
   };
 </script>
 
 <template>
-  <div 
+  <div
     class="prometheus-graph"
     @mouseover="showFlagContent = true"
-    @mouseleave="showFlagContent = false">
+    @mouseleave="showFlagContent = false"
+  >
     <h5 class="text-center graph-title">
-      {{graphData.title}}
+      {{ graphData.title }}
     </h5>
     <div
       class="prometheus-svg-container"
-      :style="paddingBottomRootSvg">
+      :style="paddingBottomRootSvg"
+    >
       <svg
         :viewBox="outerViewBox"
-        ref="baseSvg">
+        ref="baseSvg"
+      >
         <g
           class="x-axis"
-          :transform="axisTransform">
-        </g>
+          :transform="axisTransform"
+        />
         <g
           class="y-axis"
-          transform="translate(70, 20)">
-        </g>
+          transform="translate(70, 20)"
+        />
         <graph-legend
           :graph-width="graphWidth"
           :graph-height="graphHeight"
@@ -252,41 +260,43 @@
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-            <graph-path
-              v-for="(path, index) in timeSeries"
-              :key="index"
-              :generated-line-path="path.linePath"
-              :generated-area-path="path.areaPath"
-              :line-style="path.lineStyle"
-              :line-color="path.lineColor"
-              :area-color="path.areaColor"
-            />
-            <rect
-              class="prometheus-graph-overlay"
-              :width="(graphWidth - 70)"
-              :height="(graphHeight - 100)"
-              transform="translate(-5, 20)"
-              ref="graphOverlay"
-              @mousemove="handleMouseOverGraph($event)">
-            </rect>
-            <graph-deployment
-              :show-deploy-info="showDeployInfo"
-              :deployment-data="reducedDeploymentData"
-              :graph-width="graphWidth"
-              :graph-height="graphHeight"
-              :graph-height-offset="graphHeightOffset"
-            />
-            <graph-flag
-              v-if="showFlag"
-              :current-x-coordinate="currentXCoordinate"
-              :current-data="currentData"
-              :current-flag-position="currentFlagPosition"
-              :graph-height="graphHeight"
-              :graph-height-offset="graphHeightOffset"
-              :show-flag-content="showFlagContent"
-            />
+          <graph-path
+            v-for="(path, index) in timeSeries"
+            :key="index"
+            :generated-line-path="path.linePath"
+            :generated-area-path="path.areaPath"
+            :line-style="path.lineStyle"
+            :line-color="path.lineColor"
+            :area-color="path.areaColor"
+          />
+          <graph-deployment
+            :deployment-data="reducedDeploymentData"
+            :graph-height="graphHeight"
+            :graph-height-offset="graphHeightOffset"
+          />
+          <rect
+            class="prometheus-graph-overlay"
+            :width="(graphWidth - 70)"
+            :height="(graphHeight - 100)"
+            transform="translate(-5, 20)"
+            ref="graphOverlay"
+            @mousemove="handleMouseOverGraph($event)"
+          />
         </svg>
       </svg>
+      <graph-flag
+        :real-pixel-ratio="realPixelRatio"
+        :current-x-coordinate="currentXCoordinate"
+        :current-data="currentData"
+        :graph-height="graphHeight"
+        :graph-height-offset="graphHeightOffset"
+        :show-flag-content="showFlagContent"
+        :time-series="timeSeries"
+        :unit-of-display="unitOfDisplay"
+        :current-data-index="currentDataIndex"
+        :legend-title="legendTitle"
+        :deployment-flag-data="deploymentFlagData"
+      />
     </div>
   </div>
 </template>

@@ -12,6 +12,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
+  before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   def index
     @merge_requests = @issuables
@@ -226,6 +227,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     render json: environments
   end
 
+  def rebase
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+
+    render nothing: true, status: 200
+  end
+
   protected
 
   alias_method :subscribable_resource, :merge_request
@@ -330,5 +337,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def set_issuables_index
     @finder_type = MergeRequestsFinder
     super
+  end
+
+  def check_user_can_push_to_source_branch!
+    return access_denied! unless @merge_request.source_branch_exists?
+
+    access_check = ::Gitlab::UserAccess
+      .new(current_user, project: @merge_request.source_project)
+      .can_push_to_branch?(@merge_request.source_branch)
+
+    access_denied! unless access_check
   end
 end

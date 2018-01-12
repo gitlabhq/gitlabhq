@@ -1,58 +1,57 @@
 <script>
-import jobComponent from './job_component.vue';
-import dropdownJobComponent from './dropdown_job_component.vue';
+  import jobComponent from './job_component.vue';
+  import dropdownJobComponent from './dropdown_job_component.vue';
 
-export default {
-  props: {
-    title: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      jobComponent,
+      dropdownJobComponent,
+    },
+    props: {
+      title: {
+        type: String,
+        required: true,
+      },
+
+      jobs: {
+        type: Array,
+        required: true,
+      },
+
+      isFirstColumn: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+
+      stageConnectorClass: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      hasTriggeredBy: {
+        type: Boolean,
+        required: true,
+      },
     },
 
-    jobs: {
-      type: Array,
-      required: true,
-    },
+    methods: {
+      firstJob(list) {
+        return list[0];
+      },
 
-    isFirstColumn: {
-      type: Boolean,
-      required: false,
-      default: false,
+      jobId(job) {
+        return `ci-badge-${job.name}`;
+      },
     },
-
-    stageConnectorClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    hasTriggeredBy: {
-      type: Boolean,
-      required: true,
-    },
-  },
-
-  components: {
-    jobComponent,
-    dropdownJobComponent,
-  },
-
-  methods: {
-    firstJob(list) {
-      return list[0];
-    },
-
-    jobId(job) {
-      return `ci-badge-${job.name}`;
-    },
-  },
-};
+  };
 </script>
 <template>
   <li
     class="stage-column"
     :class="stageConnectorClass">
     <div class="stage-name">
-      {{title}}
+      {{ title }}
     </div>
     <div class="builds-container">
       <ul>
@@ -71,12 +70,12 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
-            />
+          />
 
           <dropdown-job-component
             v-if="job.size > 1"
             :job="job"
-            />
+          />
 
         </li>
       </ul>

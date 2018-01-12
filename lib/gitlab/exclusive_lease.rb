@@ -84,6 +84,17 @@ module Gitlab
       end
     end
 
+    # Returns the TTL of the Redis key.
+    #
+    # This method will return `nil` if no TTL could be obtained.
+    def ttl
+      Gitlab::Redis::SharedState.with do |redis|
+        ttl = redis.ttl(@redis_shared_state_key)
+
+        ttl if ttl.positive?
+      end
+    end
+
     # Returns true if the UUID for the key hasn't changed.
     def same_uuid?
       Gitlab::Redis::SharedState.with do |redis|

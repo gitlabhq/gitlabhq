@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
