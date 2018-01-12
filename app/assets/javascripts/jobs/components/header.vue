@@ -30,8 +30,12 @@
       shouldRenderContent() {
         return !this.isLoading && Object.keys(this.job).length;
       },
+      /**
+       * When job has not started the key will be `false`
+       * When job started the key will be a string with a date.
+       */
       jobStarted() {
-        return this.job.started;
+        return !this.job.started === false;
       },
     },
     watch: {
