@@ -32,7 +32,6 @@ export default {
       default: false,
     },
   },
-
   methods: {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
@@ -88,8 +87,7 @@ export default {
     </div>
     <template
       v-for="(model, i) in environments"
-      :model="model"
-    >
+      :model="model">
       <div
         is="environment-item"
         :model="model"
@@ -117,8 +115,7 @@ export default {
       >
         <div
           v-if="model.isLoadingFolderContent"
-          :key="i"
-        >
+          :key="i">
           <loading-icon size="2" />
         </div>
 

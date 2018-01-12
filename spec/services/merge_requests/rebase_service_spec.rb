@@ -32,7 +32,7 @@ describe MergeRequests::RebaseService do
 
       it 'returns an error' do
         expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: 'Failed to rebase. Should be done manually')
+                                                        message: described_class::REBASE_ERROR)
       end
     end
 
@@ -41,15 +41,15 @@ describe MergeRequests::RebaseService do
         allow(repository).to receive(:run_git!).and_raise('Something went wrong')
       end
 
-      it 'saves the error message' do
+      it 'saves a generic error message' do
         subject.execute(merge_request)
 
-        expect(merge_request.reload.merge_error).to eq 'Something went wrong'
+        expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
       end
 
       it 'returns an error' do
         expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: 'Failed to rebase. Should be done manually')
+                                                        message: described_class::REBASE_ERROR)
       end
     end
 
@@ -58,15 +58,15 @@ describe MergeRequests::RebaseService do
         allow(repository).to receive(:run_git!).and_raise(Gitlab::Git::Repository::GitError, 'Something went wrong')
       end
 
-      it 'saves the error message' do
+      it 'saves a generic error message' do
         subject.execute(merge_request)
 
-        expect(merge_request.reload.merge_error).to eq 'Something went wrong'
+        expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
       end
 
       it 'returns an error' do
         expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: 'Failed to rebase. Should be done manually')
+                                                        message: described_class::REBASE_ERROR)
       end
     end
 

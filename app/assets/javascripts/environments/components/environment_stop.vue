@@ -1,8 +1,8 @@
 <script>
   /**
-   * Renders the stop "button" that allows stop an environment.
-   * Used in environments table.
-   */
+  * Renders the stop "button" that allows stop an environment.
+  * Used in environments table.
+  */
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
@@ -11,6 +11,7 @@
     components: {
       loadingIcon,
     },
+
     directives: {
       tooltip,
     },

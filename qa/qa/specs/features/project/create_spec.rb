@@ -4,10 +4,12 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      Factory::Resource::Project.fabricate! do |project|
+      created_project = Factory::Resource::Project.fabricate! do |project|
         project.name = 'awesome-project'
         project.description = 'create awesome project test'
       end
+
+      expect(created_project.name).to match /^awesome-project-\h{16}$/
 
       expect(page).to have_content(
         /Project \S?awesome-project\S+ was successfully created/

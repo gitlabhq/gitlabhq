@@ -267,6 +267,7 @@
         :project-path="projectPath"
         :project-namespace="projectNamespace"
         :show-delete-button="showDeleteButton"
+        :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
       />
 

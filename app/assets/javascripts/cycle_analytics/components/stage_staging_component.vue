@@ -63,7 +63,8 @@
             </a>
             <span
               class="icon-branch"
-              v-html="iconBranch">
+              v-html="iconBranch"
+            >
             </span>
             <a
               :href="build.commitUrl"

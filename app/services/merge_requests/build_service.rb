@@ -156,13 +156,9 @@ module MergeRequests
     end
 
     def assign_title_from_issue
-      return unless issue
+      return unless issue && issue.is_a?(Issue)
 
-      merge_request.title =
-        case issue
-        when Issue         then "Resolve \"#{issue.title}\""
-        when ExternalIssue then "Resolve #{issue.title}"
-        end
+      merge_request.title = "Resolve \"#{issue.title}\""
     end
 
     def issue_iid

@@ -13,6 +13,8 @@ feature 'Gcp Cluster', :js do
   end
 
   context 'when user has signed with Google' do
+    let(:project_id) { 'test-project-1234' }
+
     before do
       allow_any_instance_of(Projects::Clusters::GcpController)
         .to receive(:token_in_session).and_return('token')
@@ -23,7 +25,7 @@ feature 'Gcp Cluster', :js do
     context 'when user has a GCP project with billing enabled' do
       before do
         allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
-        stub_google_project_billing_status
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return('true')
       end
 
       context 'when user does not have a cluster and visits cluster index page' do
@@ -131,15 +133,41 @@ feature 'Gcp Cluster', :js do
 
     context 'when user does not have a GCP project with billing enabled' do
       before do
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return('false')
+
         visit project_clusters_path(project)
 
         click_link 'Add cluster'
         click_link 'Create on GKE'
+
+        fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+        fill_in 'cluster_name', with: 'dev-cluster'
+        click_button 'Create cluster'
       end
 
-      it 'user sees a check page' do
-        pending 'the frontend still has not been implemented'
-        expect(page).to have_link('Continue')
+      it 'user sees form with error' do
+        expect(page).to have_content('Please enable billing for one of your projects to be able to create a cluster, then try again.')
+      end
+    end
+
+    context 'when gcp billing status is not in redis' do
+      before do
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return(nil)
+
+        visit project_clusters_path(project)
+
+        click_link 'Add cluster'
+        click_link 'Create on GKE'
+
+        fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+        fill_in 'cluster_name', with: 'dev-cluster'
+        click_button 'Create cluster'
+      end
+
+      it 'user sees form with error' do
+        expect(page).to have_content('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
       end
     end
   end

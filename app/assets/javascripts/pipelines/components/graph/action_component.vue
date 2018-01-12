@@ -14,6 +14,7 @@
     directives: {
       tooltip,
     },
+
     props: {
       tooltipText: {
         type: String,

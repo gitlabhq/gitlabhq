@@ -80,16 +80,14 @@
             </span>
             <a
               :href="build.commitUrl"
-              class="commit-sha"
-            >
+              class="commit-sha">
               {{ build.shortSha }}
             </a>
           </h5>
           <span>
             <a
               :href="build.url"
-              class="issue-date"
-            >
+              class="issue-date">
               {{ build.date }}
             </a>
           </span>

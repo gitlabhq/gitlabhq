@@ -629,6 +629,7 @@ codequality:
     paths: [codeclimate.json]
 
 sast:
+  <<: *except-docs
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
   before_script: []
   script:

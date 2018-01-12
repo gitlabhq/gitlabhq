@@ -12,7 +12,6 @@
     components: {
       loadingIcon,
     },
-
     props: {
       actions: {
         type: Array,
@@ -69,7 +68,8 @@
         <span v-html="playIconSvg"></span>
         <i
           class="fa fa-caret-down"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </i>
         <loading-icon v-if="isLoading" />
       </span>
@@ -78,8 +78,7 @@
     <ul class="dropdown-menu dropdown-menu-align-right">
       <li
         v-for="(action, i) in actions"
-        :key="i"
-      >
+        :key="i">
         <button
           type="button"
           class="js-manual-action-link no-btn btn"

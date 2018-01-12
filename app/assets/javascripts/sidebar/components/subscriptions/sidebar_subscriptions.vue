@@ -28,7 +28,6 @@ export default {
   beforeDestroy() {
     eventHub.$off('toggleSubscription', this.onToggleSubscription);
   },
-
   methods: {
     onToggleSubscription() {
       this.mediator.toggleSubscription()
