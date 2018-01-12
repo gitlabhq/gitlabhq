@@ -40,7 +40,11 @@
   <div>
     <div class="sidebar-collapsed-icon">
       <i
-        class="fa fa-rss"
+        class="fa"
+        :class="{
+          'fa-bell': subscribed,
+          'fa-bell-slash': !subscribed,
+        }"
         aria-hidden="true"
       >
       </i>
