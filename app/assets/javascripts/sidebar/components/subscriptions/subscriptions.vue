@@ -44,7 +44,7 @@
       },
       notificationTooltip() {
         return this.subscribed ? LABEL_ON : LABEL_OFF;
-      }
+      },
     },
     methods: {
       toggleSubscription() {
