@@ -34,6 +34,10 @@ class Projects::VariablesController < Projects::ApplicationController
     end
   end
 
+  def save_multiple
+    head :ok
+  end
+
   def destroy
     if variable.destroy
       redirect_to project_settings_ci_cd_path(project),

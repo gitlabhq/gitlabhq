@@ -181,7 +181,12 @@ constraints(ProjectUrlConstrainer.new) do
       get '/service_desk' => 'service_desk#show', as: :service_desk
       put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
 
-      resources :variables, only: [:index, :show, :update, :create, :destroy]
+      resources :variables, only: [:index, :show, :update, :create, :destroy] do
+        collection do
+          post :save_multiple
+        end
+      end
+
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
         member do
           post :take_ownership

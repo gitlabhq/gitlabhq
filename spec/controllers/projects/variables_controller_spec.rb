@@ -55,4 +55,11 @@ describe Projects::VariablesController do
       end
     end
   end
+
+  describe 'POST #save_multiple' do
+    it 'returns a successful response' do
+      post :save_multiple, namespace_id: project.namespace.to_param, project_id: project
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
 end
