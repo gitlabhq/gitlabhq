@@ -73,9 +73,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    redirect_to project_labels_path(@project),
-                status: 302,
-                notice: 'Label was removed'
+    redirect_to project_labels_path(@project), status: 303
   end
 
   def remove_priority
