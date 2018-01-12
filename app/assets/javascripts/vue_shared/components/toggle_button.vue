@@ -23,10 +23,12 @@
       name: {
         type: String,
         required: false,
+        default: null,
       },
       value: {
         type: Boolean,
         required: false,
+        default: null,
       },
       disabledInput: {
         type: Boolean,

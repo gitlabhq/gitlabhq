@@ -1,6 +1,4 @@
 <script>
-  /* eslint-disable vue/require-default-prop */
-  import { __ } from '../../../locale';
   import eventHub from '../../event_hub';
   import toggleButton from '../../../vue_shared/components/toggle_button.vue';
 
@@ -17,10 +15,12 @@
       subscribed: {
         type: Boolean,
         required: false,
+        default: null,
       },
       id: {
         type: Number,
         required: false,
+        default: null,
       },
     },
     computed: {
