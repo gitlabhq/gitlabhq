@@ -365,6 +365,8 @@ GEM
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
     google-protobuf (3.4.1.1)
+    googleapis-common-protos-types (1.0.1)
+      google-protobuf (~> 3.0)
     googleauth (0.5.3)
       faraday (~> 0.12)
       jwt (~> 1.4)
@@ -391,9 +393,10 @@ GEM
       rake
     grape_logging (1.7.0)
       grape
-    grpc (1.4.5)
+    grpc (1.8.3)
       google-protobuf (~> 3.1)
-      googleauth (~> 0.5.1)
+      googleapis-common-protos-types (~> 1.0.0)
+      googleauth (>= 0.5.1, < 0.7)
     gssapi (1.2.0)
       ffi (>= 1.0.1)
     haml (4.0.7)
