@@ -13,7 +13,6 @@ module QA
         def filter_by_name(name)
           page.within('form#project-filter-form') do
             fill_in :name, with: name
-            page.find_field('name').native.send_key(:enter)
           end
         end
       end
