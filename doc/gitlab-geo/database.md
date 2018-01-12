@@ -134,8 +134,9 @@ The following guide assumes that:
     | `postgresql['trust_auth_cidr_addresses']` | Primary's private address |
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
 
-    If you are using Google Cloud Platform or SoftLayer, you can use the
-    secondary's private address (corresponds to "internal address" for GCP) for
+    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
+    provides a virtual private cloud you can use the secondary's private
+    address (corresponds to "internal address" for Google Cloud Platform) for
     `postgresql['md5_auth_cidr_addresses']`.
 
     The `listen_address` option opens PostgreSQL up to network connections
