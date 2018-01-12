@@ -1,4 +1,4 @@
-# Static application security testing with GitLab CI/CD
+# Static Application Security Testing with GitLab CI/CD
 
 NOTE: **Note:**
 In order to use this tool, a [GitLab Enterprise Edition Ultimate][ee] license

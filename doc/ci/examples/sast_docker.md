@@ -35,7 +35,7 @@ sast:container:
     paths: [gl-sast-container-report.json]
 ```
 
-The above example will create a `sast:container` job in your CI pipeline, pull
+The above example will create a `sast:container` job in your CI/CD pipeline, pull
 the image from the [Container Registry](../../user/project/container_registry.md)
 (whose name is defined from the two `CI_APPLICATION_` variables) and scan it
 for possible vulnerabilities. The report will be saved as an artifact that you
@@ -48,7 +48,7 @@ in our case its named `clair-whitelist.yml`.
 TIP: **Tip:**
 Starting with [GitLab Enterprise Edition Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
-so, the CI job must be named `sast:container` and the artifact path must be
+so, the CI/CD job must be named `sast:container` and the artifact path must be
 `gl-sast-container-report.json`.
 [Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast_docker.md).
 
