@@ -115,7 +115,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         });
       });
 
-<<<<<<< HEAD
       function initBlobEE() {
         const dataEl = document.getElementById('js-file-lock');
 
@@ -129,8 +128,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         }
       }
 
-=======
->>>>>>> upstream/master
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
@@ -484,20 +481,14 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
-<<<<<<< HEAD
           initBlobEE();
-=======
->>>>>>> upstream/master
           break;
         case 'projects:blame:show':
           import('./pages/projects/blame/show')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
-<<<<<<< HEAD
           initBlobEE();
-=======
->>>>>>> upstream/master
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
@@ -611,14 +602,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           break;
-<<<<<<< HEAD
         case 'profiles:personal_access_tokens:index':
           import('./pages/profiles/personal_access_tokens')
             .then(callDefault)
             .catch(fail);
           break;
-=======
->>>>>>> upstream/master
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
