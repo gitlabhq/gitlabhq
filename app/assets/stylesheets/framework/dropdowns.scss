@@ -666,6 +666,16 @@
   }
 }
 
+.dropdown-create-new-item-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
 .dropdown-loading {
   position: absolute;
   top: 0;
