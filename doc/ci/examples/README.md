@@ -41,6 +41,19 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 [Analyze code quality with the Code Climate CLI](code_climate.md).
 
+### Static Application Security Testing (SAST)
+
+- **(EEU)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
+- [Scan your Docker images for vulnerabilities](sast_docker.md)
+
+### Dynamic Application Security Testing (DAST)
+
+Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md).
+
+### Browser Performance Testing with Sitespeed.io
+
+Analyze your [browser performance with Sitespeed.io](browser_performance.md).
+
 ### GitLab CI/CD for Review Apps
 
 - [Example project](https://gitlab.com/gitlab-examples/review-apps-nginx/) that shows how to use GitLab CI/CD for [Review Apps](../review_apps/index.html).
