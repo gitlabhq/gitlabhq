@@ -53,7 +53,7 @@
       {{ __('Notifications') }}
     </span>
     <toggle-button
-      ref="loadingButton"
+      ref="toggleButton"
       class="pull-right hide-collapsed js-issuable-subscribe-button"
       :is-loading="showLoadingState"
       :value="subscribed"
