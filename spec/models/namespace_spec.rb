@@ -422,17 +422,6 @@ describe Namespace do
     end
   end
 
-  describe '#soft_delete_without_removing_associations' do
-    let(:project1) { create(:project_empty_repo, namespace: namespace) }
-
-    it 'updates the deleted_at timestamp but preserves projects' do
-      namespace.soft_delete_without_removing_associations
-
-      expect(Project.all).to include(project1)
-      expect(namespace.deleted_at).not_to be_nil
-    end
-  end
-
   describe '#user_ids_for_project_authorizations' do
     it 'returns the user IDs for which to refresh authorizations' do
       expect(namespace.user_ids_for_project_authorizations)

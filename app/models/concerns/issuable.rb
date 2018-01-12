@@ -324,6 +324,7 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
+
     if includes.any?
       notes.includes(includes)
     else

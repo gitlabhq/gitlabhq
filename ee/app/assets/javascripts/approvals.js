@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export default () => {
   $('.approver-list').on('click', '.unsaved-approvers.approver .btn-remove', function approverListClickCallback(ev) {
     const removeElement = $(this).closest('li');

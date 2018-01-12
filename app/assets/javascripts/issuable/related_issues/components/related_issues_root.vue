@@ -23,7 +23,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
    and hide the `AddIssuableForm` area.
 
 */
-
+import _ from 'underscore';
 import Flash from '../../../flash';
 import eventHub from '../event_hub';
 import RelatedIssuesBlock from './related_issues_block.vue';

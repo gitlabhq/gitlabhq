@@ -17,7 +17,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
 | [Autoscaling GitLab Runners on AWS](runner_autoscale_aws/index.md) | Admin guide | 2017-11-24 |
-| [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md) | Tutorial | 2017-08-31 |
 | [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017-07-13 |
 | [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/) | Concepts | 2017-07-11 |
 | [Continuous Integration: From Jenkins to GitLab Using Docker](https://about.gitlab.com/2017/07/27/docker-my-precious/) | Concepts | 2017-07-27 |
@@ -62,7 +61,6 @@ upgrade, integrate, migrate to GitLab:
 | :------------ | :------: | --------------: |
 | [Video Tutorial: Idea to Production on Google Container Engine (GKE)](https://about.gitlab.com/2017/01/23/video-tutorial-idea-to-production-on-google-container-engine-gke/) | Tutorial | 2017-01-23 |
 | [How to Setup a GitLab Instance on Microsoft Azure](https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/) | Tutorial | 2016-07-13 |
-| [Get started with OpenShift Origin 3 and GitLab](openshift_and_gitlab/index.md) | Tutorial | 2016-06-28 |
 | [Getting started with GitLab and DigitalOcean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/) | Tutorial | 2016-04-27 |
 
 ## Software development

@@ -1,4 +1,4 @@
-/* global Mousetrap */
+import Mousetrap from 'mousetrap';
 import Dropzone from 'dropzone';
 import ZenMode from '~/zen_mode';
 
