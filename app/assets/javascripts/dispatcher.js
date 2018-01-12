@@ -18,7 +18,6 @@ import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
@@ -33,7 +32,6 @@ import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import ProjectsList from './projects_list';
-import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
@@ -63,7 +61,6 @@ import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
 import ShortcutsNavigation from './shortcuts_navigation';
-import ShortcutsFindFile from './shortcuts_find_file';
 import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
@@ -153,22 +150,26 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:index':
-        case 'projects:issues:index':
           if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            const filteredSearchManager = new gl.FilteredSearchManager('merge_requests');
             filteredSearchManager.setup();
           }
-          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          new IssuableIndex(pagePrefix);
+          new IssuableIndex('merge_request_');
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
+        case 'projects:issues:index':
+          import('./pages/projects/issues/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:show':
-          new Issue();
-          shortcut_handler = new ShortcutsIssuable();
-          new ZenMode();
-          initIssuableSidebar();
+          import('./pages/projects/issues/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'dashboard:milestones:index':
           import('./pages/dashboard/milestones/index')
@@ -252,13 +253,16 @@ import Activities from './activities';
           new DeleteModal();
           break;
         case 'projects:issues:new':
+          import('./pages/projects/issues/new')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:edit':
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'), true);
-          new IssuableForm($('.issue-form'));
-          new LabelsSelect();
-          new MilestoneSelect();
-          new IssuableTemplateSelectors();
+          import('./pages/projects/issues/edit')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
           const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
@@ -376,12 +380,14 @@ import Activities from './activities';
           });
           break;
         case 'projects:edit':
-          setupProjectEdit();
-          // Initialize expandable settings panels
-          initSettingsPanels();
+          import('./pages/projects/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:imports:show':
-          projectImport();
+          import('./pages/projects/imports/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:new':
         case 'projects:pipelines:create':
@@ -450,13 +456,9 @@ import Activities from './activities';
           });
           break;
         case 'projects:find_file:show':
-          const findElement = document.querySelector('.js-file-finder');
-          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
-            url: findElement.dataset.fileFindUrl,
-            treeUrl: findElement.dataset.findTreeUrl,
-            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
-          });
-          new ShortcutsFindFile(projectFindFile);
+          import('./pages/projects/find_file/show')
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
@@ -493,7 +495,7 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+          import('./pages/projects/forks/new')
             .then(callDefault)
             .catch(fail);
           break;
