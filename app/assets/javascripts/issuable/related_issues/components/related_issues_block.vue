@@ -103,13 +103,38 @@ export default {
     toggleAddRelatedIssuesForm() {
       eventHub.$emit('toggleAddRelatedIssuesForm');
     },
+    getBeforeAfterId(newIndex, lastIndex) {
+      let beforeId = null;
+      let afterId = null;
+
+      if (newIndex === 0) {
+        // newIndex is 0, item was moved to top => send only afterId
+        afterId = this.relatedIssues[newIndex].epic_issue_id;
+      } else if (newIndex === lastIndex) {
+        // newIndex is lastIndex, item was moved to bottom => send only beforeId
+        beforeId = this.relatedIssues[newIndex].epic_issue_id;
+      } else {
+        // leave default
+        beforeId = this.relatedIssues[newIndex - 1].epic_issue_id;
+        afterId = this.relatedIssues[newIndex].epic_issue_id;
+      }
+
+      return {
+        beforeId,
+        afterId,
+      };
+    },
     reordered(event) {
       this.removeDraggingCursor();
+      const {
+        beforeId,
+        afterId,
+      } = this.getBeforeAfterId(event.newIndex, this.relatedIssues.length - 1);
 
       this.$emit('saveReorder', {
         issueId: parseInt(event.item.dataset.key, 10),
-        beforeId: this.relatedIssues[event.newIndex - 1].epic_issue_id,
-        afterId: this.relatedIssues[event.newIndex].epic_issue_id,
+        afterId,
+        beforeId,
       });
     },
     addDraggingCursor() {
