@@ -36,7 +36,6 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-<<<<<<< HEAD
 
 ### Code quality analysis
 
@@ -48,20 +47,13 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [Scan your Docker images for vulnerabilities](sast_docker.md)
 
 ### Dynamic Application Security Testing (DAST)
-=======
->>>>>>> upstream/master
 
 Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md).
 
-<<<<<<< HEAD
 ### Browser Performance Testing with Sitespeed.io
 
 Analyze your [browser performance with Sitespeed.io](browser_performance.md).
 
-=======
-[Analyze code quality with the Code Climate CLI](code_climate.md).
-
->>>>>>> upstream/master
 ### GitLab CI/CD for Review Apps
 
 - [Example project](https://gitlab.com/gitlab-examples/review-apps-nginx/) that shows how to use GitLab CI/CD for [Review Apps](../review_apps/index.html).
