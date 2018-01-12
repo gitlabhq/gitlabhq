@@ -895,13 +895,16 @@ class Repository
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
-      @root_ref_sha ||= commit(root_ref).sha
-      same_head = branch.target == @root_ref_sha
-      merged = ancestor?(branch.target, @root_ref_sha)
+      same_head = branch.target == root_ref_sha
+      merged = ancestor?(branch.target, root_ref_sha)
       !same_head && merged
     else
       nil
     end
+  end
+
+  def root_ref_sha
+    @root_ref_sha ||= commit(root_ref).sha
   end
 
   delegate :merged_branch_names, to: :raw_repository
