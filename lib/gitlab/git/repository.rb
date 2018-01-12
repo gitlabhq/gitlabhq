@@ -1013,13 +1013,21 @@ module Gitlab
 
       # Check .gitattributes for a given ref
       #
-      # This only checks the root .gitattributes file,
-      # it does not traverse subfolders to find additional .gitattributes files
+      # By default this only checks the root .gitattributes file,
+      # but can operate recursively
       #
       # This method is around 30 times slower than `attributes`,
       # which uses `$GIT_DIR/info/attributes`
-      def attributes_at(ref, file_path)
-        parser = AttributesAtRefParser.new(self, ref)
+      #
+      # In recursive mode it is 7500 times slower,
+      # and shells out to `check-attr` with a temporary index
+      def attributes_at(ref, file_path, recursive: false)
+        parser = if recursive
+          CheckAttr.new(self, ref)
+        else
+          AttributesAtRefParser.new(self, ref)
+        end
+
         parser.attributes(file_path)
       end
 
