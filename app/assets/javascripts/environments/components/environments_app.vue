@@ -7,6 +7,15 @@
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
+    components: {
+      emptyState,
+    },
+
+    mixins: [
+      CIPaginationMixin,
+      environmentsMixin,
+    ],
+
     props: {
       endpoint: {
         type: String,
@@ -37,14 +46,6 @@
         required: true,
       },
     },
-    components: {
-      emptyState,
-    },
-
-    mixins: [
-      CIPaginationMixin,
-      environmentsMixin,
-    ],
 
     created() {
       eventHub.$on('toggleFolder', this.toggleFolder);
@@ -95,15 +96,17 @@
         :tabs="tabs"
         @onChangeTab="onChangeTab"
         scope="environments"
-        />
+      />
 
       <div
         v-if="canCreateEnvironment && !isLoading"
-        class="nav-controls">
+        class="nav-controls"
+      >
         <a
           :href="newEnvironmentPath"
-          class="btn btn-create">
-          {{s__("Environments|New environment")}}
+          class="btn btn-create"
+        >
+          {{ s__("Environments|New environment") }}
         </a>
       </div>
     </div>
@@ -116,13 +119,13 @@
       :can-read-environment="canReadEnvironment"
       @onChangePage="onChangePage"
     >
-     <empty-state
+      <empty-state
         slot="emptyState"
         v-if="!isLoading && state.environments.length === 0"
         :new-path="newEnvironmentPath"
         :help-path="helpPagePath"
         :can-create-environment="canCreateEnvironment"
-        />
+      />
     </container>
   </div>
 </template>

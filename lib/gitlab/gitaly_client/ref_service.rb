@@ -14,12 +14,18 @@ module Gitlab
         request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
 
-        response.flat_map do |message|
-          message.branches.map do |branch|
-            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
-            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
-          end
-        end
+        consume_find_all_branches_response(response)
+      end
+
+      def merged_branches(branch_names = [])
+        request = Gitaly::FindAllBranchesRequest.new(
+          repository: @gitaly_repo,
+          merged_only: true,
+          merged_branches: branch_names.map { |s| encode_binary(s) }
+        )
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+
+        consume_find_all_branches_response(response)
       end
 
       def default_branch_name
@@ -62,7 +68,7 @@ module Gitlab
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request)
-        consume_branches_response(response)
+        consume_find_local_branches_response(response)
       end
 
       def tags
@@ -72,7 +78,7 @@ module Gitlab
       end
 
       def ref_exists?(ref_name)
-        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: GitalyClient.encode(ref_name))
+        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: encode_binary(ref_name))
         response = GitalyClient.call(@storage, :ref_service, :ref_exists, request)
         response.value
       rescue GRPC::InvalidArgument => e
@@ -82,7 +88,7 @@ module Gitlab
       def find_branch(branch_name)
         request = Gitaly::FindBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(branch_name)
+          name: encode_binary(branch_name)
         )
 
         response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request)
@@ -96,8 +102,8 @@ module Gitlab
       def create_branch(ref, start_point)
         request = Gitaly::CreateBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(ref),
-          start_point: GitalyClient.encode(start_point)
+          name: encode_binary(ref),
+          start_point: encode_binary(start_point)
         )
 
         response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request)
@@ -121,7 +127,7 @@ module Gitlab
       def delete_branch(branch_name)
         request = Gitaly::DeleteBranchRequest.new(
           repository: @gitaly_repo,
-          name: GitalyClient.encode(branch_name)
+          name: encode_binary(branch_name)
         )
 
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
@@ -151,7 +157,7 @@ module Gitlab
         enum_value
       end
 
-      def consume_branches_response(response)
+      def consume_find_local_branches_response(response)
         response.flat_map do |message|
           message.branches.map do |gitaly_branch|
             Gitlab::Git::Branch.new(
@@ -160,6 +166,15 @@ module Gitlab
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
             )
+          end
+        end
+      end
+
+      def consume_find_all_branches_response(response)
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
+            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
           end
         end
       end

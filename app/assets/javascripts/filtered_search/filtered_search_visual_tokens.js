@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import AjaxCache from '../lib/utils/ajax_cache';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';

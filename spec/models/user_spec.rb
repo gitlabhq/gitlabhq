@@ -22,7 +22,9 @@ describe User do
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
-    it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:members) }
+    it { is_expected.to have_many(:project_members) }
+    it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
@@ -132,6 +134,16 @@ describe User do
           expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
         end
       end
+    end
+
+    it 'has a DB-level NOT NULL constraint on projects_limit' do
+      user = create(:user)
+
+      expect(user.persisted?).to eq(true)
+
+      expect do
+        user.update_columns(projects_limit: nil)
+      end.to raise_error(ActiveRecord::StatementInvalid)
     end
 
     it { is_expected.to validate_presence_of(:projects_limit) }
@@ -804,6 +816,13 @@ describe User do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
+      end
+
+      it 'does not undo projects_limit setting if it matches old DB default of 10' do
+        # If the real default project limit is 10 then this test is worthless
+        expect(Gitlab.config.gitlab.default_projects_limit).not_to eq(10)
+        user = described_class.new(projects_limit: 10)
+        expect(user.projects_limit).to eq(10)
       end
     end
 

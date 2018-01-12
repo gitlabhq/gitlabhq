@@ -180,6 +180,7 @@ namespace :gitlab do
         puts "can't check, you have no projects".color(:magenta)
         return
       end
+
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
@@ -210,6 +211,7 @@ namespace :gitlab do
       gitlab_shell_repo_base = gitlab_shell_path
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
+
       if system(check_cmd, chdir: gitlab_shell_repo_base)
         puts 'gitlab-shell self-check successful'.color(:green)
       else
@@ -285,6 +287,7 @@ namespace :gitlab do
       return if process_count.zero?
 
       print 'Number of Sidekiq processes ... '
+
       if process_count == 1
         puts '1'.color(:green)
       else
@@ -387,14 +390,8 @@ namespace :gitlab do
   namespace :repo do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        namespace_dirs = Dir.glob(File.join(repository_storage['path'], '*'))
-
-        namespace_dirs.each do |namespace_dir|
-          repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
-          repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
-        end
-      end
+      puts "This task is deprecated. Please use gitlab:git:fsck instead".color(:red)
+      Rake::Task["gitlab:git:fsck"].execute
     end
   end
 
@@ -459,37 +456,6 @@ namespace :gitlab do
       puts "OK (#{current_version})".color(:green)
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".color(:red)
-    end
-  end
-
-  def check_repo_integrity(repo_dir)
-    puts "\nChecking repo at #{repo_dir.color(:yellow)}"
-
-    git_fsck(repo_dir)
-    check_config_lock(repo_dir)
-    check_ref_locks(repo_dir)
-  end
-
-  def git_fsck(repo_dir)
-    puts "Running `git fsck`".color(:yellow)
-    system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: repo_dir)
-  end
-
-  def check_config_lock(repo_dir)
-    config_exists = File.exist?(File.join(repo_dir, 'config.lock'))
-    config_output = config_exists ? 'yes'.color(:red) : 'no'.color(:green)
-    puts "'config.lock' file exists?".color(:yellow) + " ... #{config_output}"
-  end
-
-  def check_ref_locks(repo_dir)
-    lock_files = Dir.glob(File.join(repo_dir, 'refs/heads/*.lock'))
-    if lock_files.present?
-      puts "Ref lock files exist:".color(:red)
-      lock_files.each do |lock_file|
-        puts "  #{lock_file}"
-      end
-    else
-      puts "No ref lock files exist".color(:green)
     end
   end
 end

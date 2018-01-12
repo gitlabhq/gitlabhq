@@ -1,6 +1,5 @@
 /* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
-import _ from 'underscore';
 import 'jasmine-jquery';
 import '~/commons';
 
@@ -31,7 +30,6 @@ jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
 
 // globalize common libraries
 window.$ = window.jQuery = $;
-window._ = _;
 
 // stub expected globals
 window.gl = window.gl || {};

@@ -47,6 +47,22 @@ export default {
       return this.store.getSearchedProjects();
     },
   },
+  created() {
+    if (this.currentProject.id) {
+      this.logCurrentProjectAccess();
+    }
+
+    eventHub.$on('dropdownOpen', this.fetchFrequentProjects);
+    eventHub.$on('searchProjects', this.fetchSearchedProjects);
+    eventHub.$on('searchCleared', this.handleSearchClear);
+    eventHub.$on('searchFailed', this.handleSearchFailure);
+  },
+  beforeDestroy() {
+    eventHub.$off('dropdownOpen', this.fetchFrequentProjects);
+    eventHub.$off('searchProjects', this.fetchSearchedProjects);
+    eventHub.$off('searchCleared', this.handleSearchClear);
+    eventHub.$off('searchFailed', this.handleSearchFailure);
+  },
   methods: {
     toggleFrequentProjectsList(state) {
       this.isLoadingProjects = !state;
@@ -107,22 +123,6 @@ export default {
       this.isSearchFailed = true;
       this.toggleSearchProjectsList(true);
     },
-  },
-  created() {
-    if (this.currentProject.id) {
-      this.logCurrentProjectAccess();
-    }
-
-    eventHub.$on('dropdownOpen', this.fetchFrequentProjects);
-    eventHub.$on('searchProjects', this.fetchSearchedProjects);
-    eventHub.$on('searchCleared', this.handleSearchClear);
-    eventHub.$on('searchFailed', this.handleSearchFailure);
-  },
-  beforeDestroy() {
-    eventHub.$off('dropdownOpen', this.fetchFrequentProjects);
-    eventHub.$off('searchProjects', this.fetchSearchedProjects);
-    eventHub.$off('searchCleared', this.handleSearchClear);
-    eventHub.$off('searchFailed', this.handleSearchFailure);
   },
 };
 </script>

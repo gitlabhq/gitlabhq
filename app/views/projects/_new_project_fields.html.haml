@@ -9,7 +9,7 @@
       - if current_user.can_select_namespace?
         .input-group-addon
           = root_url
-        = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace', tabindex: 1}
+        = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1}
 
       - else
         .input-group-addon.static-namespace

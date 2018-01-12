@@ -1,29 +1,20 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '../../lib/utils/axios_utils';
 
 export default class Service {
   constructor(endpoint) {
-    this.endpoint = endpoint;
-
-    this.resource = Vue.resource(`${this.endpoint}.json`, {}, {
-      realtimeChanges: {
-        method: 'GET',
-        url: `${this.endpoint}/realtime_changes`,
-      },
-    });
+    this.endpoint = `${endpoint}.json`;
+    this.realtimeEndpoint = `${endpoint}/realtime_changes`;
   }
 
   getData() {
-    return this.resource.realtimeChanges();
+    return axios.get(this.realtimeEndpoint);
   }
 
   deleteIssuable() {
-    return this.resource.delete();
+    return axios.delete(this.endpoint);
   }
 
   updateIssuable(data) {
-    return this.resource.update(data);
+    return axios.put(this.endpoint, data);
   }
 }

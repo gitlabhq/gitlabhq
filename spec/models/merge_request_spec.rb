@@ -24,11 +24,6 @@ describe MergeRequest do
     it { is_expected.to include_module(Taskable) }
   end
 
-  describe "act_as_paranoid" do
-    it { is_expected.to have_db_column(:deleted_at) }
-    it { is_expected.to have_db_index(:deleted_at) }
-  end
-
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
@@ -61,6 +56,25 @@ describe MergeRequest do
         subject.target_project = fork2
 
         expect(subject).to be_valid
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    describe '#ensure_merge_request_metrics' do
+      it 'creates metrics after saving' do
+        merge_request = create(:merge_request)
+
+        expect(merge_request.metrics).to be_persisted
+        expect(MergeRequest::Metrics.count).to eq(1)
+      end
+
+      it 'does not duplicate metrics for a merge request' do
+        merge_request = create(:merge_request)
+
+        merge_request.mark_as_merged!
+
+        expect(MergeRequest::Metrics.count).to eq(1)
       end
     end
   end
@@ -1882,6 +1896,58 @@ describe MergeRequest do
         expect(subject.head_pipeline).to eq(pipeline)
         expect(subject.merge_jid).to be_nil
       end
+    end
+  end
+
+  describe '#should_be_rebased?' do
+    let(:project) { create(:project, :repository) }
+
+    it 'returns false for the same source and target branches' do
+      merge_request = create(:merge_request, source_project: project, target_project: project)
+
+      expect(merge_request.should_be_rebased?).to be_falsey
+    end
+  end
+
+  describe '#rebase_in_progress?' do
+    shared_examples 'checking whether a rebase is in progress' do
+      let(:repo_path) { subject.source_project.repository.path }
+      let(:rebase_path) { File.join(repo_path, "gitlab-worktree", "rebase-#{subject.id}") }
+
+      before do
+        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{rebase_path} master))
+      end
+
+      it 'returns true when there is a current rebase directory' do
+        expect(subject.rebase_in_progress?).to be_truthy
+      end
+
+      it 'returns false when there is no rebase directory' do
+        FileUtils.rm_rf(rebase_path)
+
+        expect(subject.rebase_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the rebase directory has expired' do
+        time = 20.minutes.ago.to_time
+        File.utime(time, time, rebase_path)
+
+        expect(subject.rebase_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the source project has been removed' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.rebase_in_progress?).to be_falsey
+      end
+    end
+
+    context 'when Gitaly rebase_in_progress is enabled' do
+      it_behaves_like 'checking whether a rebase is in progress'
+    end
+
+    context 'when Gitaly rebase_in_progress is enabled', :disable_gitaly do
+      it_behaves_like 'checking whether a rebase is in progress'
     end
   end
 end

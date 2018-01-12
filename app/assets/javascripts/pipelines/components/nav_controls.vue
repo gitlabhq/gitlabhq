@@ -17,6 +17,11 @@ export default {
       required: true,
     },
 
+    resetCachePath: {
+      type: String,
+      required: true,
+    },
+
     ciLintPath: {
       type: String,
       required: true,
@@ -43,6 +48,14 @@ export default {
       :href="helpPagePath"
       class="btn btn-info">
       Get started with Pipelines
+    </a>
+
+    <a
+      data-method="post"
+      rel="nofollow"
+      :href="resetCachePath"
+      class="btn btn-default">
+      Clear runner caches
     </a>
 
     <a

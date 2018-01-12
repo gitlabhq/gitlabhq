@@ -1,6 +1,4 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid without_default_scope: true
-
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
@@ -10,6 +8,9 @@ class Namespace < ActiveRecord::Base
   include AfterCommitQueue
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
+  include IgnorableColumn
+
+  ignore_column :deleted_at
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -221,12 +222,6 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
-  def soft_delete_without_removing_associations
-    # We can't use paranoia's `#destroy` since this will hard-delete projects.
-    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
-    self.deleted_at = Time.now
-  end
-
   private
 
   def refresh_access_of_projects_invited_groups
@@ -267,5 +262,12 @@ class Namespace < ActiveRecord::Base
 
   def namespace_previously_created_with_same_path?
     RedirectRoute.permanent.exists?(path: path)
+  end
+
+  def write_projects_repository_config
+    all_projects.find_each do |project|
+      project.expires_full_path_cache # we need to clear cache to validate renames correctly
+      project.write_repository_config
+    end
   end
 end

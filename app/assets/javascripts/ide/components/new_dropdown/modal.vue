@@ -4,6 +4,9 @@
   import modal from '../../../vue_shared/components/modal.vue';
 
   export default {
+    components: {
+      modal,
+    },
     props: {
       branchId: {
         type: String,
@@ -26,28 +29,6 @@
       return {
         entryName: this.path !== '' ? `${this.path}/` : '',
       };
-    },
-    components: {
-      modal,
-    },
-    methods: {
-      ...mapActions([
-        'createTempEntry',
-      ]),
-      createEntryInStore() {
-        this.createTempEntry({
-          projectId: this.currentProjectId,
-          branchId: this.branchId,
-          parent: this.parent,
-          name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
-          type: this.type,
-        });
-
-        this.toggleModalOpen();
-      },
-      toggleModalOpen() {
-        this.$emit('toggle');
-      },
     },
     computed: {
       ...mapState([
@@ -78,6 +59,25 @@
     mounted() {
       this.$refs.fieldName.focus();
     },
+    methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
+      createEntryInStore() {
+        this.createTempEntry({
+          projectId: this.currentProjectId,
+          branchId: this.branchId,
+          parent: this.parent,
+          name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
+          type: this.type,
+        });
+
+        this.hideModal();
+      },
+      hideModal() {
+        this.$emit('hide');
+      },
+    },
   };
 </script>
 
@@ -86,7 +86,7 @@
     :title="modalTitle"
     :primary-button-label="buttonLabel"
     kind="success"
-    @toggle="toggleModalOpen"
+    @cancel="hideModal"
     @submit="createEntryInStore"
   >
     <form

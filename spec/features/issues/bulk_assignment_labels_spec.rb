@@ -377,6 +377,7 @@ feature 'Issues > Labels bulk assignment' do
       items.map do |item|
         click_link item
       end
+
       if unmark
         items.map do |item|
           # Make sure we are unmarking the item no matter the state it has currently

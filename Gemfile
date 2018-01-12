@@ -12,7 +12,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.4.5', group: :mysql
+gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
@@ -70,6 +70,10 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
+
+# Before updating this gem, check if
+# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
+# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
@@ -78,7 +82,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 # API
 gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
@@ -283,7 +287,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -339,7 +343,7 @@ group :development, :test do
   gem 'rubocop', '~> 0.52.0'
   gem 'rubocop-rspec', '~> 1.20.1'
 
-  gem 'scss_lint', '~> 0.54.0', require: false
+  gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
@@ -381,9 +385,6 @@ gem 'ruby-prof', '~> 0.16.2'
 # OAuth
 gem 'oauth2', '~> 1.4'
 
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
-
 # Health check
 gem 'health_check', '~> 2.6.0'
 
@@ -402,7 +403,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.62.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.69.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

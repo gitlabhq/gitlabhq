@@ -500,6 +500,12 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/participants' do
+    it_behaves_like 'issuable participants endpoint' do
+      let(:entity) { merge_request }
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
     it 'returns a 200 when merge request is valid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
@@ -542,6 +548,49 @@ describe API::MergeRequests do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
+    context 'when authorized' do
+      let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
+      let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+
+      it 'returns a paginated array of corresponding pipelines' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['id']).to eq(pipeline.id)
+      end
+
+      it 'exposes basic attributes' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pipelines')
+      end
+
+      it 'returns 404 if MR does not exist' do
+        get api("/projects/#{project.id}/merge_requests/777/pipelines")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when unauthorized' do
+      it 'returns 403' do
+        project = create(:project, public_builds: false)
+        merge_request = create(:merge_request, :simple, source_project: project)
+        guest = create(:user)
+        project.add_guest(guest)
+
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", guest)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
     end
   end
 

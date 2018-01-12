@@ -18,9 +18,9 @@ export const PROJECT_VISIBILITY_TYPE = {
 };
 
 export const VISIBILITY_TYPE_ICON = {
-  public: 'fa-globe',
-  internal: 'fa-shield',
-  private: 'fa-lock',
+  public: 'earth',
+  internal: 'shield',
+  private: 'lock',
 };
 
 export const mockParentGroupItem = {
@@ -46,6 +46,7 @@ export const mockParentGroupItem = {
   isOpen: true,
   isChildrenLoading: false,
   isBeingRemoved: false,
+  updatedAt: '2017-04-09T18:40:39.101Z',
 };
 
 export const mockRawChildren = [
@@ -69,6 +70,7 @@ export const mockRawChildren = [
     subgroup_count: 2,
     can_leave: false,
     children: [],
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
 ];
 
@@ -96,6 +98,7 @@ export const mockChildren = [
     isOpen: true,
     isChildrenLoading: false,
     isBeingRemoved: false,
+    updatedAt: '2017-04-09T18:40:39.101Z',
   },
 ];
 
@@ -119,6 +122,7 @@ export const mockGroups = [
     project_count: 2,
     subgroup_count: 0,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
   {
     id: 67,
@@ -139,6 +143,7 @@ export const mockGroups = [
     project_count: 0,
     subgroup_count: 0,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
   {
     id: 54,
@@ -159,6 +164,7 @@ export const mockGroups = [
     project_count: 0,
     subgroup_count: 1,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
   {
     id: 5,
@@ -179,6 +185,7 @@ export const mockGroups = [
     project_count: 1,
     subgroup_count: 0,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
   {
     id: 4,
@@ -199,6 +206,7 @@ export const mockGroups = [
     project_count: 2,
     subgroup_count: 0,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
   {
     id: 3,
@@ -219,6 +227,7 @@ export const mockGroups = [
     project_count: 1,
     subgroup_count: 0,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
   {
     id: 2,
@@ -239,6 +248,7 @@ export const mockGroups = [
     project_count: 4,
     subgroup_count: 0,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
   },
 ];
 
@@ -262,6 +272,7 @@ export const mockSearchedGroups = [
     project_count: 1,
     subgroup_count: 2,
     can_leave: false,
+    updated_at: '2017-04-09T18:40:39.101Z',
     children: [
       {
         id: 57,
@@ -282,6 +293,7 @@ export const mockSearchedGroups = [
         project_count: 4,
         subgroup_count: 2,
         can_leave: false,
+        updated_at: '2017-04-09T18:40:39.101Z',
         children: [
           {
             id: 60,
@@ -302,6 +314,7 @@ export const mockSearchedGroups = [
             project_count: 0,
             subgroup_count: 1,
             can_leave: false,
+            updated_at: '2017-04-09T18:40:39.101Z',
             children: [
               {
                 id: 61,
@@ -322,6 +335,7 @@ export const mockSearchedGroups = [
                 project_count: 2,
                 subgroup_count: 0,
                 can_leave: false,
+                updated_at: '2017-04-09T18:40:39.101Z',
                 children: [
                   {
                     id: 17,
@@ -336,6 +350,7 @@ export const mockSearchedGroups = [
                     permission: null,
                     edit_path: '/platform/hardware/bsp/kernel/common/v4.4/edit',
                     star_count: 0,
+                    updated_at: '2017-09-12T06:37:04.925Z',
                   },
                   {
                     id: 16,
@@ -350,6 +365,7 @@ export const mockSearchedGroups = [
                     permission: null,
                     edit_path: '/platform/hardware/bsp/kernel/common/v4.1/edit',
                     star_count: 0,
+                    updated_at: '2017-04-09T18:41:03.112Z',
                   },
                 ],
               },

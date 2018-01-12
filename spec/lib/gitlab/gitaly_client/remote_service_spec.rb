@@ -31,4 +31,17 @@ describe Gitlab::GitalyClient::RemoteService do
       expect(client.remove_remote(remote_name)).to be(true)
     end
   end
+
+  describe '#fetch_internal_remote' do
+    let(:remote_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+    it 'sends an fetch_internal_remote message and returns the result value' do
+      expect_any_instance_of(Gitaly::RemoteService::Stub)
+        .to receive(:fetch_internal_remote)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(result: true))
+
+      expect(client.fetch_internal_remote(remote_repository)).to be(true)
+    end
+  end
 end

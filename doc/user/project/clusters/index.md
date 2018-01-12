@@ -2,9 +2,6 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in 10.1.
 
-CAUTION: **Warning:**
-The Cluster integration is currently in **Beta**.
-
 With a cluster associated to your project, you can use Review Apps, deploy your
 applications, run your pipelines, and much more, in an easy way.
 
@@ -25,11 +22,14 @@ prerequisites must be met:
   be enabled in GitLab at the instance level. If that's not the case, ask your
   administrator to enable it.
 - Your associated Google account must have the right privileges to manage
-  clusters on GKE. That would mean that a
-  [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
-  must be set up.
-- You must have Master [permissions] in order to be able to access the **Cluster**
-  page.
+  clusters on GKE. That would mean that a [billing
+  account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
+  must be set up and that you have to have permissions to access it.
+- You must have Master [permissions] in order to be able to access the
+  **Cluster** page.
+- You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
+- You must have [Resource Manager
+  API](https://cloud.google.com/resource-manager/)
 
 If all of the above requirements are met, you can proceed to add a new GKE
 cluster.
@@ -83,6 +83,7 @@ added directly to your configured cluster. Those applications are needed for
 | ----------- | :------------: | ----------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. |
+| [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications |
 
 ## Enabling or disabling the Cluster integration
 

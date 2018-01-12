@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
+  include DeploymentPlatform
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -632,6 +633,7 @@ class Project < ActiveRecord::Base
       project_import_data.data ||= {}
       project_import_data.data = project_import_data.data.merge(data)
     end
+
     if credentials
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
@@ -639,7 +641,7 @@ class Project < ActiveRecord::Base
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import?
+    external_import? || forked? || gitlab_project_import? || bare_repository_import?
   end
 
   def no_import?
@@ -677,6 +679,10 @@ class Project < ActiveRecord::Base
 
   def safe_import_url
     Gitlab::UrlSanitizer.new(import_url).masked_url
+  end
+
+  def bare_repository_import?
+    import_type == 'bare_repository'
   end
 
   def gitlab_project_import?
@@ -900,12 +906,6 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  # TODO: This will be extended for multiple enviroment clusters
-  def deployment_platform
-    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
-    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
-  end
-
   def monitoring_services
     services.where(category: :monitoring)
   end
@@ -986,10 +986,6 @@ class Project < ActiveRecord::Base
   rescue
     errors.add(:path, 'Invalid repository path')
     false
-  end
-
-  def repo
-    repository.rugged
   end
 
   def url_to_repo
@@ -1154,7 +1150,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
@@ -1416,6 +1412,8 @@ class Project < ActiveRecord::Base
   end
 
   def after_rename_repo
+    write_repository_config
+
     path_before_change = previous_changes['path'].first
 
     # We need to check if project had been rolled out to move resource to hashed storage or not and decide
@@ -1426,6 +1424,16 @@ class Project < ActiveRecord::Base
     end
 
     Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+  end
+
+  def write_repository_config(gl_full_path: full_path)
+    # We'd need to keep track of project full path otherwise directory tree
+    # created with hashed storage enabled cannot be usefully imported using
+    # the import rake task.
+    repository.rugged.config['gitlab.fullpath'] = gl_full_path
+  rescue Gitlab::Git::Repository::NoRepository => e
+    Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
+    nil
   end
 
   def rename_repo_notify!
@@ -1443,6 +1451,7 @@ class Project < ActiveRecord::Base
     import_finish
     remove_import_jid
     update_project_counter_caches
+    after_create_default_branch
   end
 
   def update_project_counter_caches
@@ -1453,6 +1462,27 @@ class Project < ActiveRecord::Base
 
     classes.each do |klass|
       klass.new(self).refresh_cache
+    end
+  end
+
+  def after_create_default_branch
+    return unless default_branch
+
+    # Ensure HEAD points to the default branch in case it is not master
+    change_head(default_branch)
+
+    if current_application_settings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
+      params = {
+        name: default_branch,
+        push_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }],
+        merge_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }]
+      }
+
+      ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
 

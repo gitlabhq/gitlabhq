@@ -1,0 +1,5 @@
+---
+title: Added option to disable commits stats in the commit endpoint
+merge_request: 16309
+author:
+type: added

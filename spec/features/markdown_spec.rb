@@ -71,7 +71,7 @@ describe 'GitLab Markdown' do
 
       it 'parses mermaid code block' do
         aggregate_failures do
-          expect(doc).to have_selector('pre.code.js-render-mermaid')
+          expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
         end
       end
 

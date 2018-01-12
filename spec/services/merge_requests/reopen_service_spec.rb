@@ -47,6 +47,19 @@ describe MergeRequests::ReopenService do
       end
     end
 
+    it 'updates metrics' do
+      metrics = merge_request.metrics
+      service = double(MergeRequestMetricsService)
+      allow(MergeRequestMetricsService)
+        .to receive(:new)
+        .with(metrics)
+        .and_return(service)
+
+      expect(service).to receive(:reopen)
+
+      described_class.new(project, user, {}).execute(merge_request)
+    end
+
     it 'refreshes the number of open merge requests for a valid MR' do
       service = described_class.new(project, user, {})
 

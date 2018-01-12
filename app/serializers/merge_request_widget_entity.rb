@@ -17,9 +17,21 @@ class MergeRequestWidgetEntity < IssuableEntity
     merge_request.project.merge_requests_ff_only_enabled
   end
 
-  # Events
-  expose :merge_event, using: EventEntity
-  expose :closed_event, using: EventEntity
+  expose :metrics do |merge_request|
+    metrics = build_metrics(merge_request)
+
+    MergeRequestMetricsEntity.new(metrics).as_json
+  end
+
+  expose :rebase_commit_sha
+  expose :rebase_in_progress?, as: :rebase_in_progress
+
+  expose :can_push_to_source_branch do |merge_request|
+    presenter(merge_request).can_push_to_source_branch?
+  end
+  expose :rebase_path do |merge_request|
+    presenter(merge_request).rebase_path
+  end
 
   # User entities
   expose :merge_user, using: UserEntity
@@ -177,5 +189,28 @@ class MergeRequestWidgetEntity < IssuableEntity
   def presenter(merge_request)
     @presenters ||= {}
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+  end
+
+  # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,
+  # we can remove this method and just serialize MergeRequest#metrics
+  # instead. See https://gitlab.com/gitlab-org/gitlab-ce/issues/41587
+  def build_metrics(merge_request)
+    # There's no need to query and serialize metrics data for merge requests that are not
+    # merged or closed.
+    return unless merge_request.merged? || merge_request.closed?
+    return merge_request.metrics if merge_request.merged? && merge_request.metrics&.merged_by_id
+    return merge_request.metrics if merge_request.closed? && merge_request.metrics&.latest_closed_by_id
+
+    build_metrics_from_events(merge_request)
+  end
+
+  def build_metrics_from_events(merge_request)
+    closed_event = merge_request.closed_event
+    merge_event = merge_request.merge_event
+
+    MergeRequest::Metrics.new(latest_closed_at: closed_event&.updated_at,
+                              latest_closed_by: closed_event&.author,
+                              merged_at: merge_event&.updated_at,
+                              merged_by: merge_event&.author)
   end
 end

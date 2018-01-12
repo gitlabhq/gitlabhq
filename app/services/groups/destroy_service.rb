@@ -1,7 +1,6 @@
 module Groups
   class DestroyService < Groups::BaseService
     def async_execute
-      group.soft_delete_without_removing_associations
       job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
       Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
     end
@@ -23,7 +22,7 @@ module Groups
 
       group.chat_team&.remove_mattermost_team(current_user)
 
-      group.really_destroy!
+      group.destroy
     end
   end
 end

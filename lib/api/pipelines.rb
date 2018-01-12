@@ -48,6 +48,7 @@ module API
                                                      current_user,
                                                      declared_params(include_missing: false))
                            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+
         if new_pipeline.persisted?
           present new_pipeline, with: Entities::Pipeline
         else
