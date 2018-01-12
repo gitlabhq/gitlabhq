@@ -238,6 +238,10 @@ class Commit
     notes.includes(:author)
   end
 
+  def merge_requests
+    @merge_requests ||= project.merge_requests.by_commit_sha(sha)
+  end
+
   def method_missing(method, *args, &block)
     @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end

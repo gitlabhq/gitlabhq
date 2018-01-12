@@ -68,6 +68,7 @@ import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
+import { fetchCommitMergeRequests } from './commit_merge_requests';
 
 (function() {
   var Dispatcher;
@@ -311,6 +312,7 @@ import Activities from './activities';
           const stickyBarPaddingTop = 16;
           initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          fetchCommitMergeRequests();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
