@@ -109,13 +109,7 @@ The following guide assumes that:
     each node. Note: For external PostgreSQL instances, see [additional instructions][external postgresql].
 
     If you are using a cloud provider, you can lookup the addresses for each
-    Geo node through your cloud provider's management console. A table of common
-    terminology is provided below as it varies between vendors.
-
-    | GitLab Terminology | Amazon Web Services | Google Cloud Platform |
-    |-----|-----|-----|-----|
-    | Private address | Private address | Internal address |
-    | Public address | Public address | External address |
+    Geo node through your cloud provider's management console.
 
     To lookup the address of a Geo node, SSH in to the Geo node and execute:
 
@@ -139,6 +133,11 @@ The following guide assumes that:
     | `postgresql['listen_address']` | Primary's private address |
     | `postgresql['trust_auth_cidr_addresses']` | Primary's private address |
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
+
+    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
+    provides a virtual private cloud you can use the secondary's private
+    address (corresponds to "internal address" for Google Cloud Platform) for
+    `postgresql['md5_auth_cidr_addresses']`.
 
     The `listen_address` option opens PostgreSQL up to network connections
     with the interface corresponding to the given address. See [the PostgreSQL
