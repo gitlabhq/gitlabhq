@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class AdvancedSettings < Page::Base
+        class Advanced < Page::Base
           def rename_to(path)
             fill_in :project_name, with: path
             fill_in :project_path, with: path

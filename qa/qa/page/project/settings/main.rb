@@ -7,7 +7,7 @@ module QA
 
           def expand_advanced_settings(&block)
             expand_section('section.advanced-settings') do
-              AdvancedSettings.perform(&block)
+              Advanced.perform(&block)
             end
           end
         end
