@@ -94,7 +94,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
-          ).toEqual('SAST no security vulnerabilities detected');
+          ).toEqual('SAST detected no security vulnerabilities');
           done();
         }, 0);
       });

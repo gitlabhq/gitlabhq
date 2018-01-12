@@ -121,7 +121,7 @@ export default {
         );
       }
 
-      return 'SAST no security vulnerabilities detected';
+      return 'SAST detected no security vulnerabilities';
     },
 
     dockerText() {
@@ -159,13 +159,13 @@ export default {
     dastText() {
       if (this.mr.dastReport.length) {
         return n__(
-          'DAST detected%d alert by analyzing the review app',
+          'DAST detected %d alert by analyzing the review app',
           'DAST detected %d alerts by analyzing the review app',
           this.mr.dastReport.length,
         );
       }
 
-      return s__('ciReport|DAST no alerts detected by analyzing the review app');
+      return s__('ciReport|DAST detected no alerts by analyzing the review app');
     },
 
     codequalityStatus() {
