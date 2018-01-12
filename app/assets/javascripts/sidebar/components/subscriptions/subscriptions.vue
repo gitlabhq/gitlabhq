@@ -2,11 +2,11 @@
   /* eslint-disable vue/require-default-prop */
   import { __ } from '../../../locale';
   import eventHub from '../../event_hub';
-  import loadingButton from '../../../vue_shared/components/loading_button.vue';
+  import toggleButton from '../../../vue_shared/components/toggle_button.vue';
 
   export default {
     components: {
-      loadingButton,
+      toggleButton,
     },
     props: {
       loading: {
@@ -24,15 +24,8 @@
       },
     },
     computed: {
-      buttonLabel() {
-        let label;
-        if (this.subscribed === false) {
-          label = __('Subscribe');
-        } else if (this.subscribed === true) {
-          label = __('Unsubscribe');
-        }
-
-        return label;
+      showLoadingState() {
+        return this.subscribed === null || this.loading;
       },
     },
     methods: {
@@ -55,12 +48,12 @@
     <span class="issuable-header-text hide-collapsed pull-left">
       {{ __('Notifications') }}
     </span>
-    <loading-button
+    <toggle-button
       ref="loadingButton"
-      class="btn btn-default pull-right hide-collapsed js-issuable-subscribe-button"
-      :loading="loading"
-      :label="buttonLabel"
-      @click="toggleSubscription"
+      class="pull-right hide-collapsed js-issuable-subscribe-button"
+      :is-loading="showLoadingState"
+      :value="subscribed"
+      @change="toggleSubscription"
     />
   </div>
 </template>

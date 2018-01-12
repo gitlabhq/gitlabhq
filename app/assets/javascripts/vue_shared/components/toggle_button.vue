@@ -23,11 +23,10 @@
       name: {
         type: String,
         required: false,
-        default: '',
       },
       value: {
         type: Boolean,
-        required: true,
+        required: false,
       },
       disabledInput: {
         type: Boolean,
@@ -61,6 +60,7 @@
 <template>
   <label class="toggle-wrapper">
     <input
+      v-if="name"
       type="hidden"
       :name="name"
       :value="value"
