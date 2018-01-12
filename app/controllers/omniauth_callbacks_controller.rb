@@ -87,6 +87,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       handle_service_ticket oauth['provider'], ticket
     end
 
+<<<<<<< HEAD
     handle_omniauth
   end
 
@@ -97,6 +98,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # omniauth-kerberos gem and rename the internal 'kerberos_spnego'
     # provider to plain 'kerberos' and remove this special method.
     oauth['provider'] = 'kerberos'
+=======
+>>>>>>> upstream/master
     handle_omniauth
   end
 

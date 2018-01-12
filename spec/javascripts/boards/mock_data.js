@@ -1,12 +1,15 @@
 /* global BoardService */
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
 import _ from 'underscore';
+<<<<<<< HEAD
 
 export const boardObj = {
   id: 1,
   name: 'test',
   milestone_id: null,
 };
+=======
+>>>>>>> upstream/master
 
 export const listObj = {
   id: 300,

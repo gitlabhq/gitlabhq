@@ -1441,8 +1441,11 @@ ActiveRecord::Schema.define(version: 20180105233807) do
     t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
+<<<<<<< HEAD
     t.integer "approvals_before_merge"
     t.string "rebase_commit_sha"
+=======
+>>>>>>> upstream/master
     t.string "in_progress_merge_commit_sha"
     t.integer "lock_version"
     t.text "title_html"
@@ -1529,11 +1532,14 @@ ActiveRecord::Schema.define(version: 20180105233807) do
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
+<<<<<<< HEAD
     t.string "ldap_sync_status", default: "ready", null: false
     t.string "ldap_sync_error"
     t.datetime "ldap_sync_last_update_at"
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
+=======
+>>>>>>> upstream/master
     t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "parent_id"
@@ -1546,8 +1552,11 @@ ActiveRecord::Schema.define(version: 20180105233807) do
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
+<<<<<<< HEAD
   add_index "namespaces", ["ldap_sync_last_successful_update_at"], name: "index_namespaces_on_ldap_sync_last_successful_update_at", using: :btree
   add_index "namespaces", ["ldap_sync_last_update_at"], name: "index_namespaces_on_ldap_sync_last_update_at", using: :btree
+=======
+>>>>>>> upstream/master
   add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree

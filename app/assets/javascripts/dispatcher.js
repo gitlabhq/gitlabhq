@@ -12,7 +12,6 @@ import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import groupsSelect from './groups_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
@@ -116,6 +115,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         });
       });
 
+<<<<<<< HEAD
       function initBlobEE() {
         const dataEl = document.getElementById('js-file-lock');
 
@@ -129,6 +129,8 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         }
       }
 
+=======
+>>>>>>> upstream/master
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
@@ -482,14 +484,20 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
+<<<<<<< HEAD
           initBlobEE();
+=======
+>>>>>>> upstream/master
           break;
         case 'projects:blame:show':
           import('./pages/projects/blame/show')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
+<<<<<<< HEAD
           initBlobEE();
+=======
+>>>>>>> upstream/master
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
@@ -593,16 +601,24 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
-        case 'admin:impersonation_tokens:index':
-          import('./pages/admin/impersonation_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'profiles:personal_access_tokens:index':
           import('./pages/profiles/personal_access_tokens')
             .then(callDefault)
             .catch(fail);
           break;
+        case 'admin:impersonation_tokens:index':
+          import('./pages/admin/impersonation_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
+<<<<<<< HEAD
+        case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
+=======
+>>>>>>> upstream/master
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap

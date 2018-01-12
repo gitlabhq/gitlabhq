@@ -14,9 +14,12 @@ class MergeRequest < ActiveRecord::Base
   ignore_column :locked_at,
                 :ref_fetched,
                 :deleted_at
+<<<<<<< HEAD
 
   include ::EE::MergeRequest
   include Elastic::MergeRequestsSearch
+=======
+>>>>>>> upstream/master
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"

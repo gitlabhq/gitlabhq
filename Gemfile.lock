@@ -397,8 +397,11 @@ GEM
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
       googleauth (>= 0.5.1, < 0.7)
+<<<<<<< HEAD
     gssapi (1.2.0)
       ffi (>= 1.0.1)
+=======
+>>>>>>> upstream/master
     haml (4.0.7)
       tilt
     haml_lint (0.26.0)
