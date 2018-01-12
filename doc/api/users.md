@@ -420,6 +420,10 @@ GET /user
 }
 ```
 
+## List user projects
+
+Please refer to the [List of user projects ](projects.md#list-user-projects).
+
 ## List SSH keys
 
 Get a list of currently authenticated user's SSH keys.

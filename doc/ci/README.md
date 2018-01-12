@@ -83,6 +83,15 @@ Leverage the power of Docker to run your CI pipelines.
 - [CI services (linked Docker containers)](services/README.md)
 - Article (2016-03-01): [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
 
+## GitLab CI/CD for Docker
+
+Leverage the power of Docker to run your CI pipelines.
+
+- [Use Docker images with GitLab Runner](docker/using_docker_images.md)
+- [Use CI to build Docker images](docker/using_docker_build.md)
+- [CI services (linked Docker containers)](services/README.md)
+- Article (2016-03-01): [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
+
 ## Review Apps
 
 - [Review Apps documentation](review_apps/index.md)

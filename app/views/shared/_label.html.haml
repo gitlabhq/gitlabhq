@@ -77,7 +77,7 @@
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
     - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
-      = link_to promote_project_label_path(label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "Promoting this label will make this label available to all projects inside this group. Existing project labels with the same name will be merged. Are you sure?", toggle: "tooltip"}, method: :post do
+      = link_to promote_project_label_path(label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "You are about to promote #{label.title} to a group level. This will make this milestone available to all projects inside #{label.project.group.name}. The existing project label will be merged into the group level. This action cannot be reversed.", toggle: "tooltip"}, method: :post do
         %span.sr-only Promote to Group
         = icon('level-up')
     - if can?(current_user, :admin_label, label)

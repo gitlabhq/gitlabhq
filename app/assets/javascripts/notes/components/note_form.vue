@@ -156,6 +156,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           slot="textarea"
           placeholder="Write a comment or drag your files here..."
           @keydown.meta.enter="handleUpdate()"
+          @keydown.ctrl.enter="handleUpdate()"
           @keydown.up="editMyLastNote()"
           @keydown.esc="cancelHandler(true)">
         </textarea>

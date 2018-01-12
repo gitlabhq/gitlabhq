@@ -65,6 +65,9 @@ stages:
 
 .use-pg: &use-pg
   services:
+    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
+    # so using the least common denominator ensures backwards compatibility
+    # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
