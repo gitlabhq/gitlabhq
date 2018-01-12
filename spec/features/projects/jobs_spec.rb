@@ -384,9 +384,13 @@ feature 'Jobs' do
         expect(page).to have_link('Trigger this manual action')
       end
 
-      it 'plays manual action' do
+      it 'plays manual action', :js do
         click_link 'Trigger this manual action'
-        expect(page).not_to have_link('Trigger this manual action')
+
+        wait_for_requests
+        expect(page).to have_content('This job has not been triggered')
+        expect(page).to have_content('This job is stuck, because the project doesn\'t have any runners online assigned to it.')
+        expect(page).to have_content('pending')
       end
     end
 
