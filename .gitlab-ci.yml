@@ -117,7 +117,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --tag ~geo"
   artifacts:
     expire_in: 31d
     when: always
