@@ -37,17 +37,12 @@ class Projects::VariablesController < Projects::ApplicationController
   def save_multiple
     respond_to do |format|
       format.json do
-        variables = []
-        variables_params[:variables].each do |variable_hash|
-          variable = project.variables.where(key: variable_hash[:key]).first_or_initialize(variable_hash)
-          variable.assign_attributes(variable_hash) unless variable.new_record?
-          return head :bad_request unless variable.valid?
+        variables = variables_from_params(variables_params)
+        return head :bad_request unless variables.all?(&:valid?)
 
-          variables << variable
-        end
-        variables.each { |variable| variable.save }
+        variables.each(&:save)
+        head :ok
       end
-      head :ok
     end
   end
 
@@ -71,6 +66,15 @@ class Projects::VariablesController < Projects::ApplicationController
 
   def variables_params
     params.permit(variables: [*variable_params_attributes])
+  end
+
+  def variables_from_params(params)
+    params[:variables].map do |variable_hash|
+      variable = project.variables.where(key: variable_hash[:key])
+        .first_or_initialize(variable_hash)
+      variable.assign_attributes(variable_hash) unless variable.new_record?
+      variable
+    end
   end
 
   def variable_params_attributes
