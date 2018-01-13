@@ -13,10 +13,12 @@ describe API::V3::Builds do
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 
-    before do
+    before do |example|
       create(:ci_build, :skipped, pipeline: pipeline)
 
-      get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
+      unless example.metadata[:skip_before_request]
+        get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
+      end
     end
 
     context 'authorized user' do
@@ -38,6 +40,12 @@ describe API::V3::Builds do
         expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
         expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
         expect(json_build['pipeline']['status']).to eq build.pipeline.status
+      end
+
+      it 'avoids N+1 queries', skip_before_request: true do
+        control_count = ActiveRecord::QueryRecorder.new { go }.count
+        create_list(:ci_build, 5, pipeline: pipeline)
+        expect { go }.not_to exceed_query_limit(control_count)
       end
 
       context 'filter project with one scope element' do
@@ -83,6 +91,10 @@ describe API::V3::Builds do
       it 'does not return project builds' do
         expect(response).to have_gitlab_http_status(401)
       end
+    end
+
+    def go
+      get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
     end
   end
 
