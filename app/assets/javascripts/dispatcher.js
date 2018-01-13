@@ -71,7 +71,6 @@ import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 import { fetchCommitMergeRequests } from './commit_merge_requests';
-<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
@@ -81,8 +80,6 @@ import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
-=======
->>>>>>> upstream/master
 
 (function() {
   var Dispatcher;
