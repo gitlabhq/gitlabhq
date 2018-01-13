@@ -71,6 +71,7 @@ import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 import { fetchCommitMergeRequests } from './commit_merge_requests';
+<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
@@ -80,6 +81,8 @@ import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
+=======
+>>>>>>> upstream/master
 
 (function() {
   var Dispatcher;
@@ -495,12 +498,24 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
-        case 'projects:labels:new':
-        case 'projects:labels:edit':
           new Labels();
           break;
-        case 'groups:labels:index':
+        case 'projects:labels:new':
+          import('./pages/projects/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:labels:edit':
+          import('./pages/projects/labels/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:labels:index':
+          import('./pages/projects/labels/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:labels:index':
           if ($('.prioritized-labels').length) {
             new LabelManager();
           }

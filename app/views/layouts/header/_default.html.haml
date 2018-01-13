@@ -6,8 +6,10 @@
         %h1.title
           = link_to root_path, title: 'Dashboard', id: 'logo' do
             = brand_header_logo
-            %span.logo-text.hidden-xs
-              = brand_header_logo_type
+            - logo_text = brand_header_logo_type
+            - if logo_text.present?
+              %span.logo-text.hidden-xs
+                = logo_text
 
         - if current_user
           = render "layouts/nav/dashboard"
