@@ -2,6 +2,7 @@ class Projects::VariablesController < Projects::ApplicationController
   prepend ::EE::Projects::VariablesController
 
   before_action :variable, only: [:show, :update, :destroy]
+  before_action :variables, only: [:save_multiple]
   before_action :authorize_admin_build!
 
   layout 'project_settings'
@@ -37,10 +38,9 @@ class Projects::VariablesController < Projects::ApplicationController
   def save_multiple
     respond_to do |format|
       format.json do
-        variables = variables_from_params(variables_params)
-        return head :bad_request unless variables.all?(&:valid?)
+        return head :bad_request unless @variables.all?(&:valid?)
 
-        variables.each(&:save)
+        @variables.each(&:save)
         head :ok
       end
     end
@@ -68,20 +68,20 @@ class Projects::VariablesController < Projects::ApplicationController
     params.permit(variables: [*variable_params_attributes])
   end
 
-  def variables_from_params(params)
-    params[:variables].map do |variable_hash|
-      variable = project.variables.where(key: variable_hash[:key])
-        .first_or_initialize(variable_hash)
-      variable.assign_attributes(variable_hash) unless variable.new_record?
-      variable
-    end
-  end
-
   def variable_params_attributes
     %i[id key value protected _destroy]
   end
 
   def variable
     @variable ||= project.variables.find(params[:id]).present(current_user: current_user)
+  end
+
+  def variables
+    @variables = variables_params[:variables].map do |variable_hash|
+      variable = project.variables.where(key: variable_hash[:key])
+        .first_or_initialize(variable_hash).present(current_user: current_user)
+      variable.assign_attributes(variable_hash) unless variable.new_record?
+      variable
+    end
   end
 end
