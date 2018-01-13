@@ -1011,7 +1011,16 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_reverted?(current_user)
-    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+    return false unless merge_commit
+
+    merged_at = metrics&.merged_at
+    notes_association = notes_with_associations
+
+    if merged_at
+      notes_association = notes_association.where('created_at > ?', merged_at)
+    end
+
+    !merge_commit.has_been_reverted?(current_user, notes_association)
   end
 
   def can_be_cherry_picked?

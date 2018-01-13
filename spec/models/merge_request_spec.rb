@@ -1272,6 +1272,83 @@ describe MergeRequest do
     end
   end
 
+  describe '#can_be_reverted?' do
+    context 'when there is no merged_at for the MR' do
+      before do
+        subject.metrics.update!(merged_at: nil)
+      end
+
+      it 'returns false' do
+        expect(subject.can_be_reverted?(nil)).to be_falsey
+      end
+    end
+
+    context 'when there is no merge_commit for the MR' do
+      before do
+        subject.metrics.update!(merged_at: Time.now.utc)
+      end
+
+      it 'returns false' do
+        expect(subject.can_be_reverted?(nil)).to be_falsey
+      end
+    end
+
+    context 'when the MR has been merged' do
+      before do
+        MergeRequests::MergeService
+          .new(subject.target_project, subject.author)
+          .execute(subject)
+      end
+
+      context 'when there is no revert commit' do
+        it 'returns true' do
+          expect(subject.can_be_reverted?(nil)).to be_truthy
+        end
+      end
+
+      context 'when there is a revert commit' do
+        let(:current_user) { subject.author }
+        let(:branch) { subject.target_branch }
+        let(:project) { subject.target_project }
+
+        let(:revert_commit_id) do
+          params = {
+            commit: subject.merge_commit,
+            branch_name: branch,
+            start_branch: branch
+          }
+
+          Commits::RevertService.new(project, current_user, params).execute[:result]
+        end
+
+        before do
+          project.add_master(current_user)
+
+          ProcessCommitWorker.new.perform(project.id,
+                                          current_user.id,
+                                          project.commit(revert_commit_id).to_hash,
+                                          project.default_branch == branch)
+        end
+
+        context 'when the revert commit is mentioned in a note after the MR was merged' do
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when the revert commit is mentioned in a note before the MR was merged' do
+          before do
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 1.second)
+          end
+
+          it 'returns true' do
+            expect(subject.can_be_reverted?(current_user)).to be_truthy
+          end
+        end
+      end
+    end
+  end
+
   describe '#participants' do
     let(:project) { create(:project, :public) }
 
