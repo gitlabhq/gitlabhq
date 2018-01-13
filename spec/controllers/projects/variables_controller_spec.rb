@@ -110,5 +110,25 @@ describe Projects::VariablesController do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context 'with a deleted variable' do
+      subject do
+        post :save_multiple,
+          namespace_id: project.namespace.to_param, project_id: project,
+          variables: [{ key: variable.key, value: variable.value, _destroy: 'true' }],
+          format: :json
+      end
+
+      it 'destroys the variable' do
+        expect { subject }.to change { project.variables.count }.by(-1)
+        expect { variable.reload }.to raise_error ActiveRecord::RecordNotFound
+      end
+
+      it 'returns a successful response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 end
