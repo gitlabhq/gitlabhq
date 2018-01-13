@@ -35,8 +35,7 @@ module API
         get ':id/builds' do
           builds = user_project.builds.order('id DESC')
           builds = filter_builds(builds, params[:scope])
-
-          present paginate(builds), with: ::API::V3::Entities::Build
+          present paginate(builds.includes(:job_artifacts_archive)), with: ::API::V3::Entities::Build
         end
 
         desc 'Get builds for a specific commit of a project' do
