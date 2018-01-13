@@ -57,9 +57,58 @@ describe Projects::VariablesController do
   end
 
   describe 'POST #save_multiple' do
-    it 'returns a successful response' do
-      post :save_multiple, namespace_id: project.namespace.to_param, project_id: project
-      expect(response).to have_gitlab_http_status(:ok)
+    let(:variable) { create(:ci_variable) }
+
+    before do
+      project.variables << variable
+    end
+
+    context 'with invalid new variable parameters' do
+      subject do
+        post :save_multiple,
+          namespace_id: project.namespace.to_param, project_id: project,
+          variables: [{ key: variable.key, value: 'other_value' },
+                      { key: '..?', value: 'dummy_value' }],
+          format: :json
+      end
+
+      it 'does not update the existing variable' do
+        expect { subject }.not_to change { variable.reload.value }
+      end
+
+      it 'does not create the new variable' do
+        expect { subject }.not_to change { project.variables.count }
+      end
+
+      it 'returns a bad request response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'with valid new variable parameters' do
+      subject do
+        post :save_multiple,
+          namespace_id: project.namespace.to_param, project_id: project,
+          variables: [{ key: variable.key, value: 'other_value' },
+                      { key: 'new_key', value: 'dummy_value' }],
+          format: :json
+      end
+
+      it 'updates the existing variable' do
+        expect { subject }.to change { variable.reload.value }.to('other_value')
+      end
+
+      it 'creates the new variable' do
+        expect { subject }.to change { project.variables.count }.by(1)
+      end
+
+      it 'returns a successful response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
   end
 end
