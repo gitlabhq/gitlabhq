@@ -547,7 +547,7 @@ class MergeRequest < ActiveRecord::Base
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
       if similar_mrs.any?
         errors.add :validate_branches,
-                   "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
+                   "Cannot open this Merge Request because another open Merge Request already exists for this source branch: #{similar_mrs.first.title}"
       end
     end
   end

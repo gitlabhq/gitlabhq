@@ -122,6 +122,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
+        if merge_request_params[:state_event] && @merge_request.errors.any?
+          flash[:alert] = @merge_request.errors.values.flatten.to_sentence
+        end
+
         if @merge_request.valid?
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
         else
