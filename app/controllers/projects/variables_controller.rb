@@ -35,7 +35,20 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def save_multiple
-    head :ok
+    respond_to do |format|
+      format.json do
+        variables = []
+        variables_params[:variables].each do |variable_hash|
+          variable = project.variables.where(key: variable_hash[:key]).first_or_initialize(variable_hash)
+          variable.assign_attributes(variable_hash) unless variable.new_record?
+          return head :bad_request unless variable.valid?
+
+          variables << variable
+        end
+        variables.each { |variable| variable.save }
+      end
+      head :ok
+    end
   end
 
   def destroy
@@ -54,6 +67,10 @@ class Projects::VariablesController < Projects::ApplicationController
 
   def variable_params
     params.require(:variable).permit(*variable_params_attributes)
+  end
+
+  def variables_params
+    params.permit(variables: [*variable_params_attributes])
   end
 
   def variable_params_attributes
