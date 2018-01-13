@@ -910,7 +910,6 @@ class Repository
     end
   end
 
-<<<<<<< HEAD
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
     fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
@@ -953,8 +952,6 @@ class Repository
     end
   end
 
-=======
->>>>>>> upstream/master
   def root_ref_sha
     @root_ref_sha ||= commit(root_ref).sha
   end
