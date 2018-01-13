@@ -41,6 +41,7 @@ class Projects::VariablesController < Projects::ApplicationController
         return head :bad_request unless @variables.all?(&:valid?)
 
         @variables.each(&:save)
+        @variables_destroy.each(&:destroy)
         head :ok
       end
     end
@@ -77,10 +78,16 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def variables
-    @variables = variables_params[:variables].map do |variable_hash|
+    destroy, edit = variables_params[:variables].partition { |hash| hash[:_destroy] == 'true' }
+    @variables = initialize_or_update_variables_from_hash(edit)
+    @variables_destroy = initialize_or_update_variables_from_hash(destroy)
+  end
+
+  def initialize_or_update_variables_from_hash(hash)
+    hash.map do |variable_hash|
       variable = project.variables.where(key: variable_hash[:key])
         .first_or_initialize(variable_hash).present(current_user: current_user)
-      variable.assign_attributes(variable_hash) unless variable.new_record?
+      variable.assign_attributes(variable_hash.except(:_destroy)) unless variable.new_record?
       variable
     end
   end
