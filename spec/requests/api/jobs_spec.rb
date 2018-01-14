@@ -25,8 +25,10 @@ describe API::Jobs do
   describe 'GET /projects/:id/jobs' do
     let(:query) { Hash.new }
 
-    before do
-      get api("/projects/#{project.id}/jobs", api_user), query
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs", api_user), query
+      end
     end
 
     context 'authorized user' do
@@ -49,6 +51,12 @@ describe API::Jobs do
         expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
         expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
         expect(json_job['pipeline']['status']).to eq job.pipeline.status
+      end
+
+      it 'avoids N+1 queries', skip_before_request: true do
+        control_count = ActiveRecord::QueryRecorder.new { go }.count
+        create_list(:ci_build, 5, pipeline: pipeline)
+        expect { go }.not_to exceed_query_limit(control_count)
       end
 
       context 'filter project with one scope element' do
@@ -82,6 +90,9 @@ describe API::Jobs do
       it 'does not return project jobs' do
         expect(response).to have_gitlab_http_status(401)
       end
+    end
+    def go
+      get api("/projects/#{project.id}/jobs", api_user), query
     end
   end
 
