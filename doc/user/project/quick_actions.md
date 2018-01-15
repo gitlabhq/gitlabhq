@@ -41,3 +41,4 @@ do.
 | `/move path/to/project`	     | Moves issue to another project |
 | `/tableflip`	             | Append the comment with `(╯°□°)╯︵ ┻━┻` |
 | `/shrug`	                 | Append the comment with `¯\＿(ツ)＿/¯` |
+| `/inherit #issue`          | Inherit (copy) labels and milestone from other issue |

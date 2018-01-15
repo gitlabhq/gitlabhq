@@ -306,6 +306,23 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'inherit command' do
+      it 'fetches issue and copies labels and milestone if content contains /inherit issue_reference' do
+        issue_father # populate the issue
+        todo_label # populate this label
+        inreview_label # populate this label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
+
+        if issue_father.milestone
+          expect(updates[:milestone_id]).to eq(issue_father.milestone.id)
+        else
+          expect(updates).not_to have_key(:milestone_id)
+        end
+      end
+    end
+
     shared_examples 'shrug command' do
       it 'appends ¯\_(ツ)_/¯ to the comment' do
         new_content, _ = service.execute(content, issuable)
@@ -739,6 +756,54 @@ describe QuickActions::InterpretService do
     it_behaves_like 'remove_time_spent command' do
       let(:content) { '/remove_time_spent' }
       let(:issuable) { issue }
+    end
+
+    context '/inherit command' do
+      let!(:todo_label) { create(:label, project: project, title: 'To Do') }
+      let!(:inreview_label) { create(:label, project: project, title: 'In Review') }
+
+      it_behaves_like 'inherit command' do
+        # Without milestone assignment
+        let(:issue_father) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+
+        let(:content) { "/inherit #{issue_father.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'inherit command' do
+        # With milestone assignment
+        let(:issue_father) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
+
+        let(:content) { "/inherit #{issue_father.to_reference(project)}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/inherit' }
+        let(:issuable) { issue }
+      end
+
+      context 'cross project references' do
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:project, :public) }
+          let(:issue_father) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
+          let(:content) { "/inherit #{issue_father.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/inherit imaginary#1234" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:project, :private) }
+          let(:issue_father) { create(:issue, project: other_project) }
+
+          let(:content) { "/inherit #{issue_father.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
     end
 
     context '/duplicate command' do

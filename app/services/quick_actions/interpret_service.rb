@@ -256,6 +256,24 @@ module QuickActions
       end
     end
 
+    desc 'Inherit (copy) labels and milestone from other issue'
+    explanation do |issue_id|
+      "Inherit (copy) labels and milestone from issue \"#{issue_id}\"."
+    end
+    params '#issue'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :inherit do |issue_id|
+      issue = extract_references(issue_id, :issue).first
+      if issue.present? && issue.project_id == issuable.project_id
+        @updates[:add_label_ids] = issue.labels.map(&:id)
+
+        @updates[:milestone_id] = issue.milestone.id if issue.milestone
+      end
+    end
+
     desc 'Add a todo'
     explanation 'Adds a todo.'
     condition do
