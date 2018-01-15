@@ -938,9 +938,9 @@ class Repository
   end
 
   def search_files_by_name(query, ref)
-    return [] if empty? || query.blank?
-
     safe_query = query.sub(/^\/*/, "")
+
+    return [] if empty? || safe_query.blank?
 
     args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(safe_query)})
 
