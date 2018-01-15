@@ -70,8 +70,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
           this.el = document.querySelector('.js-issuable-actions');
-          const merge = new MergeRequest();
-          merge.hideCloseButton();
+          MergeRequest.hideCloseButton();
         });
 
         it('hides the dropdown close item and selects the next item', () => {
