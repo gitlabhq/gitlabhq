@@ -214,11 +214,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Enterprise Edition Ultimate, any security warnings are also
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
->>>>>>> upstream/master
 
 ### Auto SAST for Docker images
 
