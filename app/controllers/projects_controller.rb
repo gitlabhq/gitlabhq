@@ -3,6 +3,7 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
   include PreviewMarkdown
 
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
@@ -404,5 +405,9 @@ class ProjectsController < Projects::ApplicationController
     #   localhost/group/project
     #
     redirect_to request.original_url.sub(%r{\.git/?\Z}, '') if params[:format] == 'git'
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
   end
 end
