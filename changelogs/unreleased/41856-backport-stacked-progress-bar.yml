@@ -1,0 +1,5 @@
+---
+title: Backport StackedProgressBar component from GitLab EE
+merge_request: 16457
+author:
+type: other
