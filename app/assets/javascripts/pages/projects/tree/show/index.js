@@ -6,13 +6,12 @@ import NewCommitForm from '../../../../new_commit_form';
 import { ajaxGet } from '../../../../lib/utils/common_utils';
 
 export default () => {
+  new ShortcutsNavigation(); // eslint-disable-line no-new
   new TreeView(); // eslint-disable-line no-new
   new BlobViewer(); // eslint-disable-line no-new
   new NewCommitForm($('.js-create-dir-form')); // eslint-disable-line no-new
   $('#tree-slider').waitForImages(() =>
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
-
-  return new ShortcutsNavigation(); // eslint-disable-line no-new
 
   if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
     initPathLocks(
