@@ -201,11 +201,7 @@ out.
 
 In GitLab Enterprise Edition Starter, differences between the source and
 target branches are also
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
->>>>>>> upstream/master
 
 ### Auto SAST
 
