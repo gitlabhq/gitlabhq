@@ -12,7 +12,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import groupsSelect from './groups_select';
-import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
@@ -40,7 +39,6 @@ import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
-import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
 import TreeView from './tree';
@@ -298,9 +296,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           initApprovals();
           break;
         case 'projects:tags:new':
-          new ZenMode();
-          new GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'));
+          import('./pages/projects/tags/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -476,22 +474,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           groupAvatar();
           break;
         case 'projects:tree:show':
-          shortcut_handler = new ShortcutsNavigation();
-          new TreeView();
-          new BlobViewer();
-          new NewCommitForm($('.js-create-dir-form'));
-
-          if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
-            initPathLocks(
-              document.querySelector('.js-tree-content').dataset.pathLocksToggle,
-              document.querySelector('.js-tree-content').dataset.pathLocksPath,
-            );
-          }
-
-          $('#tree-slider').waitForImages(function() {
-            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-          });
-          break;
+          import('./pages/projects/tree/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
         case 'projects:find_file:show':
           const findElement = document.querySelector('.js-file-finder');
           const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
