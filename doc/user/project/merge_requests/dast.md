@@ -11,25 +11,26 @@ by implicitly using [Auto DAST](../../../topics/autodevops/index.md#auto-dast)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 Going a step further, GitLab can show the vulnerability list right in the merge
-request widget area:
+request widget area.
 
 ![DAST Widget](img/dast-all.png)
 
-By clicking on vlunerability you will be able to see details and url affected:
+By clicking on vulnerability you will be able to see the details and the URL(s)
+affected.
 
 ![DAST Widget Clicked](img/dast-single.png)
 
 ## Use cases
 
 It helps you automatically find security vulnerabilities in your web applications
-while you are developing and testing your applications
+while you are developing and testing your applications.
 
 ## How it works
 
 In order for the report to show in the merge request, you need to specify a
-`dast` job (exact name) that will analyze the running application and upload the resulting
-`gl-dast-report.json` file as an artifact. GitLab will then check this file and
-show the information inside the merge request.
+`dast` job (exact name) that will analyze the running application and upload the
+resulting `gl-dast-report.json` file (exact filename) as an artifact. GitLab
+will then check this file and show the information inside the merge request.
 
 This JSON file needs to be the only artifact file for the job. If you try
 to also include other files, it will break the vulnerability display in the
