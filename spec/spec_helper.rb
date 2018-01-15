@@ -104,11 +104,14 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+<<<<<<< HEAD
   config.before(:all) do
     License.destroy_all
     TestLicense.init
   end
 
+=======
+>>>>>>> upstream/master
   config.before(:example) do
     # Skip pre-receive hook check so we can use the web editor and merge.
     allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])

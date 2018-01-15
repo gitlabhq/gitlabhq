@@ -95,14 +95,13 @@
         illustration: 'illustrations/manual_action.svg',
         illustration_size: 'svg-394',
         title: _('This job requires a manual action'),
-        content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.'),
-        action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), class: 'btn btn-primary', title: _('Trigger this manual action') )
+        content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments'),
+        action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), method: :post, class: 'btn btn-primary', title: _('Trigger this manual action') )
     - else
       = render 'empty_state',
         illustration: 'illustrations/job_not_triggered.svg',
         illustration_size: 'svg-306',
-        title: _('This job has not been triggered yet'),
-        content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
+        title: _('This job has not been triggered yet')
 
   = render "sidebar"
 
