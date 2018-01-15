@@ -1,6 +1,7 @@
 <script>
   import actionBtn from './action_btn.vue';
   import { getTimeago } from '../../lib/utils/datetime_utility';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     props: {
@@ -17,6 +18,9 @@
         required: true,
       },
     },
+    directives: {
+      tooltip,
+    },
     components: {
       actionBtn,
     },
@@ -31,6 +35,9 @@
     methods: {
       isEnabled(id) {
         return this.store.findEnabledKey(id) !== undefined;
+      },
+      tooltipTitle(project) {
+        return project.can_push ? 'Write access allowed' : 'Read access only';
       },
     },
   };
@@ -52,20 +59,22 @@
       <div class="description">
         {{ deployKey.fingerprint }}
       </div>
-      <div
-        v-if="deployKey.can_push"
-        class="write-access-allowed"
-      >
-        Write access allowed
-      </div>
     </div>
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
-        v-for="project in deployKey.projects"
+        v-for="deployKeysProject in deployKey.deploy_keys_projects"
         class="label deploy-project-label"
-        :href="project.full_path"
+        :href="deployKeysProject.project.full_path"
+        :title="tooltipTitle(deployKeysProject)"
+        v-tooltip
       >
-        {{ project.full_name }}
+        {{ deployKeysProject.project.full_name }}
+        <i
+          v-if="!deployKeysProject.can_push"
+          aria-hidden="true"
+          class="fa fa-lock"
+        >
+        </i>
       </a>
     </div>
     <div class="deploy-key-content">

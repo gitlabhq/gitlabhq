@@ -66,6 +66,7 @@
     "raven-js": "^3.14.0",
     "raw-loader": "^0.5.1",
     "react-dev-utils": "^0.5.2",
+    "sanitize-html": "^1.16.1",
     "select2": "3.5.2-browserify",
     "sql.js": "^0.4.0",
     "svg4everybody": "2.1.9",
