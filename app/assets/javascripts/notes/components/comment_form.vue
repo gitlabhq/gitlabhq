@@ -271,7 +271,7 @@ Please check your network connection and try again.`;
           <div class="timeline-content timeline-content-form">
             <form
               ref="commentForm"
-              class="new-note js-quick-submit common-note-form gfm-form js-main-target-form"
+              class="new-note common-note-form gfm-form js-main-target-form"
             >
 
               <div class="error-alert"></div>
@@ -301,7 +301,8 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
                   :disabled="isSubmitting"
                   placeholder="Write a comment or drag your files here..."
                   @keydown.up="editCurrentUserLastNote()"
-                  @keydown.meta.enter="handleSave()">
+                  @keydown.meta.enter="handleSave()"
+                  @keydown.ctrl.enter="handleSave()">
                 </textarea>
               </markdown-field>
               <div class="note-form-actions">
