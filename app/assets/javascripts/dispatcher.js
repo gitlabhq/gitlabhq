@@ -411,10 +411,9 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
           break;
         case 'projects:tree:show':
           import('./pages/projects/tree/show')
-            .then((module) => {
-              shortcut_handler = module.default();
-            })
+            .then(callDefault)
             .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:find_file:show':
           const findElement = document.querySelector('.js-file-finder');
