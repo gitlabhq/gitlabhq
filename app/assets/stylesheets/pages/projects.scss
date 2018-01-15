@@ -895,17 +895,6 @@ pre.light-well {
   }
 }
 
-.create-new-protected-branch-button,
-.create-new-protected-tag-button {
-  @include dropdown-link;
-
-  width: 100%;
-  background-color: transparent;
-  border: 0;
-  text-align: left;
-  text-overflow: ellipsis;
-}
-
 .protected-branches-list,
 .protected-tags-list {
   margin-bottom: 30px;

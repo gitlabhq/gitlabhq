@@ -8,7 +8,8 @@ describe Banzai::Filter::RelativeLinkFilter do
       group:          group,
       project_wiki:   project_wiki,
       ref:            ref,
-      requested_path: requested_path
+      requested_path: requested_path,
+      only_path:      only_path
     })
 
     described_class.call(doc, contexts)
@@ -37,6 +38,7 @@ describe Banzai::Filter::RelativeLinkFilter do
   let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }
   let(:requested_path) { '/' }
+  let(:only_path)      { true }
 
   shared_examples :preserve_unchanged do
     it 'does not modify any relative URL in anchor' do
@@ -240,26 +242,35 @@ describe Banzai::Filter::RelativeLinkFilter do
     let(:commit) { nil }
     let(:ref) { nil }
     let(:requested_path) { nil }
+    let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
+    let(:relative_path) { "/#{project.full_path}#{upload_path}" }
 
     context 'to a project upload' do
-      it 'rebuilds relative URL for a link' do
-        doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-        expect(doc.at_css('a')['href'])
-          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+      context 'with an absolute URL' do
+        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+        let(:only_path) { false }
 
-        doc = filter(nested(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')))
-        expect(doc.at_css('a')['href'])
-          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        it 'rewrites the link correctly' do
+          doc = filter(link(upload_path))
+
+          expect(doc.at_css('a')['href']).to eq(absolute_path)
+        end
+      end
+
+      it 'rebuilds relative URL for a link' do
+        doc = filter(link(upload_path))
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+
+        doc = filter(nested(link(upload_path)))
+        expect(doc.at_css('a')['href']).to eq(relative_path)
       end
 
       it 'rebuilds relative URL for an image' do
-        doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-        expect(doc.at_css('img')['src'])
-          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        doc = filter(image(upload_path))
+        expect(doc.at_css('img')['src']).to eq(relative_path)
 
-        doc = filter(nested(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')))
-        expect(doc.at_css('img')['src'])
-          .to eq "/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        doc = filter(nested(image(upload_path)))
+        expect(doc.at_css('img')['src']).to eq(relative_path)
       end
 
       it 'does not modify absolute URL' do
@@ -287,6 +298,17 @@ describe Banzai::Filter::RelativeLinkFilter do
       let(:group) { create(:group) }
       let(:project) { nil }
       let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+      context 'with an absolute URL' do
+        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+        let(:only_path) { false }
+
+        it 'rewrites the link correctly' do
+          doc = filter(upload_link)
+
+          expect(doc.at_css('a')['href']).to eq(absolute_path)
+        end
+      end
 
       it 'rewrites the link correctly' do
         doc = filter(upload_link)

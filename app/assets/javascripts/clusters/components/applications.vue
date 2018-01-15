@@ -81,8 +81,7 @@
           {
             gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
 target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
-            </a>`,
+              ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
           },
           false,
         );

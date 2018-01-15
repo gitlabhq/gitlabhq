@@ -28,12 +28,9 @@ import Flash from './flash';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
-import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
-import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
@@ -41,7 +38,6 @@ import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
-import ShortcutsBlob from './shortcuts_blob';
 import Star from './star';
 import TreeView from './tree';
 import Wikis from './wikis';
@@ -53,7 +49,6 @@ import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
-import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
@@ -80,7 +75,7 @@ import Activities from './activities';
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
+      var path, shortcut_handler;
       const page = $('body').attr('data-page');
       if (!page) {
         return false;
@@ -104,33 +99,6 @@ import Activities from './activities';
           labels: enableGFM,
         });
       });
-
-      function initBlob() {
-        new LineHighlighter();
-
-        new BlobLinePermalinkUpdater(
-          document.querySelector('#blob-content-holder'),
-          '.diff-line-num[data-line-number]',
-          document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
-        );
-
-        shortcut_handler = new ShortcutsNavigation();
-        fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-        fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
-        new ShortcutsBlob({
-          skipResetBindings: true,
-          fileBlobPermalinkUrl,
-        });
-
-        new BlobForkSuggestion({
-          openButtons: document.querySelectorAll('.js-edit-blob-link-fork-toggler'),
-          forkButtons: document.querySelectorAll('.js-fork-suggestion-button'),
-          cancelButtons: document.querySelectorAll('.js-cancel-fork-suggestion-button'),
-          suggestionSections: document.querySelectorAll('.js-file-fork-suggestion-section'),
-          actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
-        })
-          .init();
-      }
 
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
@@ -243,8 +211,9 @@ import Activities from './activities';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          AjaxLoadingSpinner.init();
-          new DeleteModal();
+          import('./pages/projects/branches/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
@@ -449,20 +418,37 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          new BlobViewer();
-          initBlob();
+          import('./pages/projects/blob/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:blame:show':
-          initBlob();
+          import('./pages/projects/blame/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
-        case 'projects:labels:new':
-        case 'projects:labels:edit':
           new Labels();
           break;
-        case 'groups:labels:index':
+        case 'projects:labels:new':
+          import('./pages/projects/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:labels:edit':
+          import('./pages/projects/labels/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:labels:index':
+          import('./pages/projects/labels/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:labels:index':
           if ($('.prioritized-labels').length) {
             new LabelManager();
           }

@@ -2,6 +2,7 @@
 *.swp
 *.mo
 *.edit.po
+*.rej
 .DS_Store
 .bundle
 .chef

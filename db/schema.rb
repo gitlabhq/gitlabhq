@@ -1013,6 +1013,7 @@ ActiveRecord::Schema.define(version: 20180105212544) do
   end
 
   add_index "merge_request_diff_commits", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_commits_on_mr_diff_id_and_order", unique: true, using: :btree
+  add_index "merge_request_diff_commits", ["sha"], name: "index_merge_request_diff_commits_on_sha", using: :btree
 
   create_table "merge_request_diff_files", id: false, force: :cascade do |t|
     t.integer "merge_request_diff_id", null: false

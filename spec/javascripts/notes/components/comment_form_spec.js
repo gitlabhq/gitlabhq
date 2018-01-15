@@ -139,10 +139,18 @@ describe('issue_comment_form component', () => {
       });
 
       describe('event enter', () => {
-        it('should save note when cmd/ctrl+enter is pressed', () => {
+        it('should save note when cmd+enter is pressed', () => {
           spyOn(vm, 'handleSave').and.callThrough();
           vm.$el.querySelector('.js-main-target-form textarea').value = 'Foo';
           vm.$el.querySelector('.js-main-target-form textarea').dispatchEvent(keyboardDownEvent(13, true));
+
+          expect(vm.handleSave).toHaveBeenCalled();
+        });
+
+        it('should save note when ctrl+enter is pressed', () => {
+          spyOn(vm, 'handleSave').and.callThrough();
+          vm.$el.querySelector('.js-main-target-form textarea').value = 'Foo';
+          vm.$el.querySelector('.js-main-target-form textarea').dispatchEvent(keyboardDownEvent(13, false, true));
 
           expect(vm.handleSave).toHaveBeenCalled();
         });
