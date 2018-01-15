@@ -93,7 +93,7 @@ be an array or a multi-line string.
 > Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
-jobs. This has to be an array or a multi-line string.
+jobs, including failed ones. This has to be an array or a multi-line string.
 
 > **Note:**
 The `before_script` and the main `script` are concatenated and run in a single context/container.

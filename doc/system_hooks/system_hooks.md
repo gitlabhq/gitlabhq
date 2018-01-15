@@ -11,6 +11,7 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `user_remove_from_team`
 - `user_create`
 - `user_destroy`
+- `user_failed_login`
 - `user_rename`
 - `key_create`
 - `key_destroy`
@@ -21,6 +22,8 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `user_remove_from_group`
 
 The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repo URL, you can just listen for `project_rename`).
+
+`user_failed_login` is sent whenever a **blocked** user attempts to login and denied access.
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -195,6 +198,23 @@ Please refer to `group_rename` and `user_rename` for that case.
       "user_id": 41
 }
 ```
+
+**User failed login:**
+
+```json
+{
+  "event_name": "user_failed_login",
+  "created_at": "2017-10-03T06:08:48Z",
+  "updated_at": "2018-01-15T04:52:06Z",
+        "name": "John Smith",
+       "email": "user4@example.com",
+     "user_id": 26,
+    "username": "user4",
+       "state": "blocked"
+}
+```
+
+If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 
 **User renamed:**
 
