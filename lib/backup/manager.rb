@@ -108,7 +108,12 @@ module Backup
           $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
           exit 1
         elsif backup_file_list.many? && ENV["BACKUP"].nil?
-          $progress.puts 'Found more than one backup, please specify which one you want to restore:'
+          $progress.puts 'Found more than one backup:'
+          # print list of available backups
+          backup_file_list.each do |item|
+            $progress.puts " " + item.gsub("#{FILE_NAME_SUFFIX}", "")
+          end
+          $progress.puts 'Please specify which one you want to restore:'
           $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
           exit 1
         end
