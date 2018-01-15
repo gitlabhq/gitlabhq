@@ -54,8 +54,19 @@ describe API::Jobs do
       end
 
       it 'avoids N+1 queries', skip_before_request: true do
+        first_build = create(:ci_build, :artifacts, pipeline: pipeline)
+        first_build.runner = create(:ci_runner)
+        first_build.user = create(:user)
+        first_build.save
+
         control_count = ActiveRecord::QueryRecorder.new { go }.count
-        create_list(:ci_build, 5, pipeline: pipeline)
+
+        second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+        second_build = create(:ci_build, :artifacts, pipeline: second_pipeline)
+        second_build.runner = create(:ci_runner)
+        second_build.user = create(:user)
+        second_build.save
+
         expect { go }.not_to exceed_query_limit(control_count)
       end
 
