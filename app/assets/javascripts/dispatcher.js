@@ -478,6 +478,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
+          break;
         case 'projects:find_file:show':
           const findElement = document.querySelector('.js-file-finder');
           const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
