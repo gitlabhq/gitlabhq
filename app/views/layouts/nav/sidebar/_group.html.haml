@@ -1,5 +1,5 @@
-- issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-- merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
+- issues_count = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute.count
+- merge_requests_count = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute.count
 
 - issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
 - if @group.feature_available?(:group_issue_boards)
@@ -52,14 +52,14 @@
             = sprite_icon('issues')
           %span.nav-item-name
             Issues
-          %span.badge.count= number_with_delimiter(issues.count)
+          %span.badge.count= number_with_delimiter(issues_count)
 
         %ul.sidebar-sub-level-items
           = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index'], html_options: { class: "fly-out-top-item" } ) do
             = link_to issues_group_path(@group) do
               %strong.fly-out-top-item-name
                 #{ _('Issues') }
-              %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues.count)
+              %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
           %li.divider.fly-out-top-item
           = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
             = link_to issues_group_path(@group), title: 'List' do
@@ -88,13 +88,13 @@
             = sprite_icon('git-merge')
           %span.nav-item-name
             Merge Requests
-          %span.badge.count= number_with_delimiter(merge_requests.count)
+          %span.badge.count= number_with_delimiter(merge_requests_count)
         %ul.sidebar-sub-level-items.is-fly-out-only
           = nav_link(path: 'groups#merge_requests', html_options: { class: "fly-out-top-item" } ) do
             = link_to merge_requests_group_path(@group) do
               %strong.fly-out-top-item-name
                 #{ _('Merge Requests') }
-              %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests.count)
+              %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
       = nav_link(path: 'group_members#index') do
         = link_to group_group_members_path(@group) do
           .nav-icon-container
