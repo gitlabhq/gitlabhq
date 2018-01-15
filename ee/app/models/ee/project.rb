@@ -5,6 +5,7 @@ module EE
   # and be prepended in the `Project` model
   module Project
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
 
     prepended do
@@ -415,9 +416,8 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    override :rename_repo
     def rename_repo
-      raise NotImplementedError unless defined?(super)
-
       super
 
       path_was = previous_changes['path'].first
