@@ -458,28 +458,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           groupAvatar();
           break;
         case 'projects:tree:show':
-<<<<<<< HEAD
-          shortcut_handler = new ShortcutsNavigation();
-          new TreeView();
-          new BlobViewer();
-          new NewCommitForm($('.js-create-dir-form'));
-
-          if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
-            initPathLocks(
-              document.querySelector('.js-tree-content').dataset.pathLocksToggle,
-              document.querySelector('.js-tree-content').dataset.pathLocksPath,
-            );
-          }
-
-          $('#tree-slider').waitForImages(function() {
-            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-          });
-=======
           import('./pages/projects/tree/show')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
->>>>>>> upstream/master
           break;
         case 'projects:find_file:show':
           import('./pages/projects/find_file/show')
