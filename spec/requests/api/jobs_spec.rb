@@ -108,6 +108,7 @@ describe API::Jobs do
         expect(response).to have_gitlab_http_status(401)
       end
     end
+
     def go
       get api("/projects/#{project.id}/jobs", api_user), query
     end
