@@ -5,10 +5,7 @@ import LabelsSelect from '~/labels_select';
 import MilestoneSelect from '~/milestone_select';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
-<<<<<<< HEAD
 import WeightSelect from 'ee/weight_select';
-=======
->>>>>>> upstream/master
 
 export default () => {
   new ShortcutsNavigation();
@@ -17,8 +14,5 @@ export default () => {
   new LabelsSelect();
   new MilestoneSelect();
   new IssuableTemplateSelectors();
-<<<<<<< HEAD
   new WeightSelect();
-=======
->>>>>>> upstream/master
 };
