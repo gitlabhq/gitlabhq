@@ -297,6 +297,12 @@
   }
 }
 
+.saml-settings.info-well {
+  .form-control[readonly] {
+    background: $white-light;
+  }
+}
+
 .modal-doorkeepr-auth,
 .doorkeeper-app-form {
   .scope-description {

@@ -638,6 +638,8 @@ production: &base
       #             name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
       #           } }
       #
+      # - { name: 'group_saml' }
+      #
       # - { name: 'crowd',
       #     args: {
       #       crowd_server_url: 'CROWD SERVER URL',

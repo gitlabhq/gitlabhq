@@ -50,6 +50,7 @@ class License < ActiveRecord::Base
     multiple_group_issue_boards
     merge_request_performance_metrics
     object_storage
+    group_saml
     service_desk
     variable_environment_scope
     reject_unsigned_commits

@@ -1,0 +1,28 @@
+%section.saml_provider
+  = form_for [group, saml_provider], url: group_saml_providers_path, html: { class: 'form-horizontal' } do |f|
+    .form-group.row
+      = form_errors(saml_provider)
+      = f.label :enabled, _("Enabled"), class: 'control-label col-sm-2'
+      .col-sm-10
+        .checkbox
+          = f.label :enabled do
+            = f.check_box :enabled
+            = _("Enable SAML authentication for this group")
+    .form-group.row
+      = f.label :sso_url, class: 'control-label col-sm-2' do
+        = _("Identity provider single sign on URL")
+      .col-sm-10
+        = f.text_field :sso_url, placeholder: 'e.g. https://example.com/adfs/ls', class: 'form-control'
+        .help-block
+          = _('Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called "SSO Service Location", "SAML Token Issuance Endpoint", or "SAML 2.0/W-Federation URL".')
+
+    .form-group.row
+      = f.label :certificate_fingerprint, class: 'control-label col-sm-2' do
+        = _("Certificate fingerprint")
+      .col-sm-10
+        = f.text_field :certificate_fingerprint, placeholder: 'e.g. 0a:1b:2c:3d:00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff', class: 'form-control'
+        .help-block
+          = _('SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called "Thumbprint".')
+
+    .form-actions
+      = f.submit _("Save changes"), class: 'btn btn-success'

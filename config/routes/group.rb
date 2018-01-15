@@ -67,6 +67,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :ldap_group_links, only: [:index, :create, :destroy]
 
+    resource :saml_providers, path: 'saml', only: [:show, :create, :update] do
+      get :sso, to: 'sso#saml'
+    end
+
     resource :notification_setting, only: [:update]
     resources :audit_events, only: [:index]
     resources :pipeline_quota, only: [:index]
