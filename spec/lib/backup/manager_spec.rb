@@ -195,6 +195,7 @@ describe Backup::Manager do
       end
 
       it 'prints the list of available backups' do
+        subject.unpack
         expect(progress).to have_received(:puts)
           .with(a_string_matching('1451606400_2016_01_01_1.2.3'))
         expect(progress).to have_received(:puts)
