@@ -668,6 +668,11 @@ describe Repository do
       expect(results.first).to eq('files/html/500.html')
     end
 
+    it 'ignores root slash' do
+      result = repository.search_files_by_name('/files', 'master')
+      expect(results.first).to eq('files/html/500.html')
+    end
+
     it 'properly handles when query is not present' do
       results = repository.search_files_by_name('', 'master')
 
