@@ -282,11 +282,24 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
           new ZenMode();
           break;
         case 'snippets:new':
+          import('./pages/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:edit':
+          import('./pages/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:create':
+          import('./pages/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:update':
-          new GLForm($('.snippet-form'), false);
-          new ZenMode();
+          import('./pages/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -548,7 +561,9 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
           import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          import('./pages/snippets/show').then(m => m.default()).catch(fail);
+          import('./pages/snippets/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
