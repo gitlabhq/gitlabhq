@@ -838,13 +838,12 @@ class Repository
   end
 
   def can_be_merged?(source_sha, target_branch)
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    if our_commit && their_commit
-      !rugged.merge_commits(our_commit, their_commit).conflicts?
-    else
-      false
+    raw_repository.gitaly_migrate(:can_be_merged) do |is_enabled|
+      if is_enabled
+        gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
+      else
+        rugged_can_be_merged?(source_sha, target_branch)
+      end
     end
   end
 
@@ -1185,6 +1184,14 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
+  end
+
+  def gitaly_can_be_merged?(their_commit, our_commit)
+    !raw_repository.gitaly_conflicts_client(our_commit, their_commit).conflicts?
+  end
+
+  def rugged_can_be_merged?(their_commit, our_commit)
+    !rugged.merge_commits(our_commit, their_commit).conflicts?
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
