@@ -1,5 +1,5 @@
 ---
-title: Ignore root slash when searching for files within context of respository.
+title: Ignore leading slashes when searching for files within context of repository.
 merge_request:
 author: Andrew McCallum
 type: fixed
