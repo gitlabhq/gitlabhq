@@ -121,6 +121,11 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:index':
+          import('./pages/projects/merge_requests/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:index':
           if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
