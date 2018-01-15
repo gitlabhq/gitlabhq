@@ -940,7 +940,7 @@ class Repository
   def search_files_by_name(query, ref)
     return [] if empty? || query.blank?
 
-    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query.sub(/^\/*/,""))})
+    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query.sub(/^\/*/, ""))})
 
     run_git(args).first.lines.map(&:strip)
   end
