@@ -177,7 +177,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
-      rescue GRPC::Unknown # If no repository is found, happens mainly during testing
+      rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
 
