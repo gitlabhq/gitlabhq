@@ -302,7 +302,6 @@ import Activities from './activities';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
-          console.log('asd');
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
