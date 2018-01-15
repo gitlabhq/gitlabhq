@@ -110,9 +110,7 @@ module Backup
         elsif backup_file_list.many? && ENV["BACKUP"].nil?
           $progress.puts 'Found more than one backup:'
           # print list of available backups
-          backup_file_list.each do |item|
-            $progress.puts " " + item.gsub("#{FILE_NAME_SUFFIX}", "")
-          end
+          $progress.puts " " + available_timestamps.join("\n ")
           $progress.puts 'Please specify which one you want to restore:'
           $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
           exit 1
@@ -172,6 +170,10 @@ module Backup
 
     def backup_file_list
       @backup_file_list ||= Dir.glob("*#{FILE_NAME_SUFFIX}")
+    end
+
+    def available_timestamps
+      @backup_file_list.map {|item| item.gsub("#{FILE_NAME_SUFFIX}", "")}
     end
 
     def connect_to_remote_directory(connection_settings)
