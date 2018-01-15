@@ -93,17 +93,6 @@ Leverage the power of Docker to run your CI pipelines.
 
 See the documentation on [GitLab Pages](../user/project/pages/index.md).
 
-## Special configuration (GitLab admin)
-
-As a GitLab administrator, you can change the default behavior of GitLab CI/CD in
-your whole GitLab instance as well as in each project.
-
-- **Project specific:**
-  - [Pipelines settings](../user/project/pipelines/settings.md)
-  - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
-- **Affecting the whole GitLab instance:**
-  - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
-
 ## Examples
 
 Check the [GitLab CI/CD examples](examples/README.md) for a collection of tutorials and guides on setting up your CI/CD pipeline for various programming languages, frameworks,
@@ -114,6 +103,18 @@ and operating systems.
 - Article (2016-06-09): [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
 - Article (2016-05-05): [Getting Started with GitLab and Shippable Continuous Integration](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)
 - Article (2016-04-19): [GitLab Partners with DigitalOcean to make Continuous Integration faster, safer, and more affordable](https://about.gitlab.com/2016/04/19/gitlab-partners-with-digitalocean-to-make-continuous-integration-faster-safer-and-more-affordable/)
+
+## Special configuration (GitLab admin)
+
+As a GitLab administrator, you can change the default behavior of GitLab CI/CD in
+your whole GitLab instance as well as in each project.
+
+- [Continuous Integration admin settings](../administration/index.md#continuous-integration-settings)
+- **Project specific:**
+  - [Pipelines settings](../user/project/pipelines/settings.md)
+  - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
+- **Affecting the whole GitLab instance:**
+  - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
 
 ## Breaking changes
 
