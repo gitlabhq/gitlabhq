@@ -98,6 +98,7 @@ See the documentation on [GitLab Pages](../user/project/pages/index.md).
 As a GitLab administrator, you can change the default behavior of GitLab CI/CD in
 your whole GitLab instance as well as in each project.
 
+- [Continuous Integration admin settings](../administration/index.md#continuous-integration-settings)
 - **Project specific:**
   - [Pipelines settings](../user/project/pipelines/settings.md)
   - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
