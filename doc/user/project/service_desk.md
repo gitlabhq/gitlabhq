@@ -18,6 +18,8 @@ As Service Desk is built right into GitLab itself, the complexity and inefficien
 of multiple tools and external integrations are eliminated, significantly shortening
 the cycle time from feedback to software update.
 
+For an overview, check the video demonstration on [GitLab Service Desk](https://about.gitlab.com/2017/05/09/demo-service-desk/).
+
 ## Use cases
 
 For instance, let's assume you develop a game for iOS or Android.
