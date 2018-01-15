@@ -41,7 +41,7 @@ module Gitlab
         @call_count += 1
 
         if above_threshold?
-          gitlab_method_call_duration_seconds.observe(@transaction.labels.merge(labels), real_time)
+          self.class.gitlab_method_call_duration_seconds.observe(@transaction.labels.merge(labels), real_time)
         end
 
         retval

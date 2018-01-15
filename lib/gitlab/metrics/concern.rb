@@ -43,12 +43,14 @@ module Gitlab
               return @@_metric_provider_cached_#{name} if @@_metric_provider_cached_#{name}
 
               @@_metrics_provider_mutex.synchronize do
-                puts "Initiaalized"
                 @@_metric_provider_cached_#{name} ||= #{metric_fetching_code}
               end
             end
+
+            def reload_#{name}!
+              @@_metric_provider_cached_#{name} = nil
+            end
           METRIC
-          puts method_code
 
           instance_eval(method_code, __FILE__, line)
           module_eval(method_code, __FILE__, line)
