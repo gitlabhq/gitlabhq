@@ -924,6 +924,8 @@ GEM
       parslet (~> 1.5.0)
     toml-rb (0.3.15)
       citrus (~> 3.0, > 3.0)
+    transactional_capybara (0.2.0)
+      capybara
     truncato (0.7.10)
       htmlentities (~> 4.3.1)
       nokogiri (~> 1.8.0, >= 1.7.0)
@@ -1197,6 +1199,7 @@ DEPENDENCIES
   thin (~> 1.7.0)
   timecop (~> 0.8.0)
   toml-rb (~> 0.3.15)
+  transactional_capybara
   truncato (~> 0.7.9)
   u2f (~> 0.2.1)
   uglifier (~> 2.7.2)

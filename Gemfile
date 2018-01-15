@@ -371,6 +371,7 @@ group :test do
   gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
+  gem 'transactional_capybara'
 end
 
 gem 'octokit', '~> 4.6.2'
