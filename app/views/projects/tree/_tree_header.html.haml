@@ -68,7 +68,7 @@
                   #{ _('New tag') }
 
 .tree-controls
-  - if show_new_ide?
+  - if show_new_ide?(@project)
     = succeed " " do
       = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
         = ide_edit_text

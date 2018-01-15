@@ -57,6 +57,7 @@ class License < ActiveRecord::Base
     sast_container
     dast
     epics
+    ide
   ].freeze
 
   # List all features available for early adopters,
