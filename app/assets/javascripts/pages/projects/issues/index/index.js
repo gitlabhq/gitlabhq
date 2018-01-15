@@ -11,8 +11,8 @@ export default () => {
     const filteredSearchManager = new gl.FilteredSearchManager('issues');
     filteredSearchManager.setup();
   }
-  new IssuableIndex('issue_'); // eslint-disable no-new
+  new IssuableIndex('issue_');
 
   new ShortcutsNavigation();
-  new UsersSelect(); // eslint-disable no-new
+  new UsersSelect();
 };
