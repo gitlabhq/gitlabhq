@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* eslint-disable no-new */
 import initSettingsPanels from '~/settings_panels';
 import setupProjectEdit from '~/project_edit';
@@ -16,13 +15,4 @@ export default () => {
 
   new UserCallout({ className: 'js-service-desk-callout' });
   new UserCallout({ className: 'js-mr-approval-callout' });
-=======
-import initSettingsPanels from '~/settings_panels';
-import setupProjectEdit from '~/project_edit';
-
-export default () => {
-  setupProjectEdit();
-  // Initialize expandable settings panels
-  initSettingsPanels();
->>>>>>> upstream/master
 };
