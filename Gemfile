@@ -115,7 +115,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
+gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
