@@ -70,6 +70,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
           this.el = document.querySelector('.js-issuable-actions');
+          new MergeRequest(); // eslint-disable-line no-new
           MergeRequest.hideCloseButton();
         });
 
@@ -89,8 +90,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
           this.el = document.querySelector('.js-issuable-actions');
-          const merge = new MergeRequest();
-          merge.hideCloseButton();
+          MergeRequest.hideCloseButton();
         });
 
         it('hides the close button', () => {
