@@ -104,7 +104,10 @@
 
       img {
         height: 28px;
-        margin-right: 8px;
+
+        + .logo-text {
+          margin-left: 8px;
+        }
       }
 
       &.wrap {

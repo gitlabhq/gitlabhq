@@ -38,6 +38,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
+        builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
         present paginate(builds), with: Entities::Job
       end
 

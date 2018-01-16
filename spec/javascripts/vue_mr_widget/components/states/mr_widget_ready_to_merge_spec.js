@@ -371,6 +371,10 @@ describe('MRWidgetReadyToMerge', () => {
         });
       });
 
+      beforeEach(() => {
+        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+      });
+
       it('should call start and stop polling when MR merged', (done) => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
@@ -390,6 +394,47 @@ describe('MRWidgetReadyToMerge', () => {
 
           done();
         }, 333);
+      });
+
+      it('updates status box', (done) => {
+        spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
+        spyOn(vm, 'initiateRemoveSourceBranchPolling');
+
+        vm.handleMergePolling(() => {}, () => {});
+
+        setTimeout(() => {
+          const statusBox = document.querySelector('.status-box');
+          expect(statusBox.classList.contains('status-box-merged')).toBeTruthy();
+          expect(statusBox.textContent).toContain('Merged');
+
+          done();
+        });
+      });
+
+      it('hides close button', (done) => {
+        spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
+        spyOn(vm, 'initiateRemoveSourceBranchPolling');
+
+        vm.handleMergePolling(() => {}, () => {});
+
+        setTimeout(() => {
+          expect(document.querySelector('.btn-close').classList.contains('hidden')).toBeTruthy();
+
+          done();
+        });
+      });
+
+      it('updates merge request count badge', (done) => {
+        spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
+        spyOn(vm, 'initiateRemoveSourceBranchPolling');
+
+        vm.handleMergePolling(() => {}, () => {});
+
+        setTimeout(() => {
+          expect(document.querySelector('.js-merge-counter').textContent).toBe('0');
+
+          done();
+        });
       });
 
       it('should continue polling until MR is merged', (done) => {

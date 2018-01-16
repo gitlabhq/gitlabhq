@@ -7,7 +7,7 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
 
-    belongs_to :project
+    belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'

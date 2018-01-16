@@ -1,0 +1,5 @@
+---
+title: "[API] Fix creating issue when assignee_id is empty"
+merge_request:
+author:
+type: fixed
