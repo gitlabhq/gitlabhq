@@ -93,15 +93,15 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def page_versions(page_path, options = {})
-        puts '-' * 80
-        puts options
-        puts '-' * 80
-        puts
-
-        byebug
         @repository.gitaly_migrate(:wiki_page_versions) do |is_enabled|
           if is_enabled
-            gitaly_wiki_client.page_versions(page_path, pagination_params(options))
+            versions = gitaly_wiki_client.page_versions(page_path, options)
+
+            # Gitaly uses gollum-lib to get the versions. Gollum defaults to 20
+            # per page, but also fetches 20 if `limit` or `per_page` < 20.
+            # Slicing returns an array with the expected number of items.
+            slice_bound = options[:limit] || options[:per_page] || Gollum::Page.per_page
+            versions[0..slice_bound]
           else
             current_page = gollum_page_by_path(page_path)
 
@@ -136,21 +136,15 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def commits_from_page(gollum_page, options = {})
-        pagination_options = pagination_params(options)
+        unless options[:limit]
+          options[:offset] = ([1, options.delete(:page).to_i].max - 1) * Gollum::Page.per_page
+          options[:limit] = (options.delete(:per_page) || Gollum::Page.per_page).to_i
+        end
 
         @repository.log(ref: gollum_page.last_version.id,
                         path: gollum_page.path,
-                        limit: pagination_options[:limit],
-                        offset: pagination_options[:offset])
-      end
-
-      def pagination_params(options)
-        return options if options[:limit]
-
-        options = options.dup
-        options[:offset] = ([1, options.delete(:page).to_i].max - 1) * Gollum::Page.per_page
-        options[:limit] = (options.delete(:per_page) || Gollum::Page.per_page).to_i
-        options
+                        limit: options[:limit],
+                        offset: options[:offset])
       end
 
       def gollum_wiki

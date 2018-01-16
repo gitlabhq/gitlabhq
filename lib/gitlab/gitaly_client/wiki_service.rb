@@ -108,38 +108,20 @@ module Gitlab
       def page_versions(page_path, options)
         request = Gitaly::WikiGetPageVersionsRequest.new(
           repository: @gitaly_repo,
-          page_path: encode_binary(page_path)
+          page_path: encode_binary(page_path),
+          page: options[:page] || 1,
+          per_page: options[:per_page] || Gollum::Page.per_page
         )
-
-        min_index = options[:offset].to_i
-        max_index = min_index + options[:limit].to_i
-        byebug
 
         stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request)
 
-        version_index = 0
         versions = []
-
-        # Allow limit and offset to be send to Gitaly: TODO
         stream.each do |message|
-          puts '§' * 80
-          puts version_index
-
           message.versions.each do |version|
-            case version_index
-            when min_index...max_index
-              versions << new_wiki_page_version(version)
-            when max_index..Float::INFINITY
-              return versions
-            end
-
-            version_index += 1
-            puts version_index
+            versions << new_wiki_page_version(version)
           end
         end
 
-        # when we're requesting page 99 but the stream doesn't go that far, whatever
-        # is fetched thus far
         versions
       end
 
