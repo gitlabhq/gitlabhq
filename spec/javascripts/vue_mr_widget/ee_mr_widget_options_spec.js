@@ -9,6 +9,7 @@ import mockData, {
   headIssues,
   basePerformance,
   headPerformance,
+  securityIssuesBase,
   securityIssues,
   dockerReport,
   dockerReportParsed,
@@ -36,8 +37,10 @@ describe('ee merge request widget options', () => {
       gl.mrWidgetData = {
         ...mockData,
         sast: {
-          path: 'path.json',
-          blob_path: 'blob_path',
+          base_path: 'path.json',
+          base_blob_path: 'blob_path',
+          head_path: 'head_path.json',
+          head_blob_path: 'blob_path',
         },
       };
 
@@ -59,7 +62,8 @@ describe('ee merge request widget options', () => {
 
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
-        mock.onGet('path.json').reply(200, securityIssues);
+        mock.onGet('path.json').reply(200, securityIssuesBase);
+        mock.onGet('head_path.json').reply(200, securityIssues);
         vm = mountComponent(Component);
       });
 
@@ -71,7 +75,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
-          ).toEqual('SAST detected 2 security vulnerabilities');
+          ).toEqual('SAST improved on 1 security vulnerability and degraded on 2 security vulnerabilities');
           done();
         }, 0);
       });
@@ -83,6 +87,8 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
         mock.onGet('path.json').reply(200, []);
+        mock.onGet('head_path.json').reply(200, []);
+
         vm = mountComponent(Component);
       });
 
@@ -106,6 +112,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
         mock.onGet('path.json').reply(500, []);
+        mock.onGet('head_path.json').reply(500, []);
         vm = mountComponent(Component);
       });
 

@@ -97,7 +97,6 @@ describe('MergeRequestStore', () => {
   describe('setSecurityReport', () => {
     it('should set security issues with head', () => {
       store.setSecurityReport({ head: securityIssues, headBlobPath: 'path' });
-
       expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);
     });
 
@@ -106,7 +105,7 @@ describe('MergeRequestStore', () => {
         head: securityIssues,
         headBlobPath: 'path',
         base: securityIssuesBase,
-        baseHeadPath: 'path',
+        baseBlobPath: 'path',
       });
 
       expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);

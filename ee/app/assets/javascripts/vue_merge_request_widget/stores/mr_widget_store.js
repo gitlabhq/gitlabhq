@@ -222,7 +222,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
    * @param {array} issues
    * @return {array}
    */
-  static parseIssues(issues, path) {
+  static parseIssues(issues, path = '') {
     return issues.map((issue) => {
       const parsedIssue = {
         name: issue.check_name || issue.message,
