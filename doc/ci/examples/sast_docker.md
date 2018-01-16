@@ -50,10 +50,6 @@ Starting with [GitLab Enterprise Edition Ultimate][ee] 10.4, this information wi
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI/CD job must be named `sast:container` and the artifact path must be
 `gl-sast-container-report.json`.
-<<<<<<< HEAD
 [Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast_docker.md).
-=======
-[Learn more on application security testing results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/sast_docker.html).
->>>>>>> upstream/master
 
 [ee]: https://about.gitlab.com/gitlab-ee/
