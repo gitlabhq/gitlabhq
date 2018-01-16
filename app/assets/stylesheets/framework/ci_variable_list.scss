@@ -8,7 +8,11 @@
 
 .ci-variable-row {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
+
+  @media (max-width: $screen-xs-max) {
+    align-items: flex-end;
+  }
 
   &:not(:last-child) {
     margin-bottom: $gl-btn-padding;
@@ -41,6 +45,7 @@
 
 .ci-variable-row-body {
   display: flex;
+  align-items: flex-start;
   width: 100%;
 
   @media (max-width: $screen-xs-max) {
@@ -84,5 +89,9 @@
   &:focus {
     outline: none;
     color: $gl-text-color;
+  }
+
+  &[disabled] {
+    color: $gl-text-color-disabled;
   }
 }

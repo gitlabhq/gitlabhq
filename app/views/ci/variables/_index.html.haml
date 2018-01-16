@@ -1,16 +1,20 @@
-.row.prepend-top-default.append-bottom-default
-  .col-lg-12
-    %h5.prepend-top-0
-      Add a variable
-    = render "ci/variables/form", btn_text: "Add new variable"
-    %hr
-    %h5.prepend-top-0
-      Your variables (#{@variables.size})
-    - if @variables.empty?
-      %p.settings-message.text-center.append-bottom-0
-        No variables found, add one with the form above.
-    - else
-      .js-secret-variable-table
-        = render "ci/variables/table"
-        %button.btn.btn-info.js-secret-value-reveal-button{ data: { secret_reveal_status: 'false' } }
+- save_endpoint = local_assigns.fetch(:save_endpoint, nil)
+
+.row
+  .col-lg-12.js-ci-variable-list-section{ data: { save_endpoint: save_endpoint } }
+    .hide.alert.alert-danger.js-ci-variable-error-box
+
+    %ul.ci-variable-list
+      - @variables.each.each do |variable|
+        = render 'ci/variables/variable_row', form_field: 'variables', variable: variable
+      = render 'ci/variables/variable_row', form_field: 'variables'
+    .prepend-top-20
+      %button.btn.btn-success.js-secret-variables-save-button{ type: 'button' }
+        %span.hide.js-secret-variables-save-loading-icon
+          = icon('spinner spin')
+        = _('Save variables')
+      %button.btn.btn-info.btn-inverted.prepend-left-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@variables.size == 0}" } }
+        - if @variables.size == 0
+          = n_('Hide value', 'Hide values', @variables.size)
+        - else
           = n_('Reveal value', 'Reveal values', @variables.size)

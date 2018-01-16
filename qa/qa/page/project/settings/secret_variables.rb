@@ -5,49 +5,40 @@ module QA
         class SecretVariables < Page::Base
           include Common
 
-          view 'app/views/ci/variables/_table.html.haml' do
-            element :variable_key, '.variable-key'
-            element :variable_value, '.variable-value'
+          view 'app/views/ci/variables/_variable_row.html.haml' do
+            element :variable_key, '.js-ci-variable-input-key'
+            element :variable_value, '.js-ci-variable-input-value'
           end
 
           view 'app/views/ci/variables/_index.html.haml' do
-            element :add_new_variable, 'btn_text: "Add new variable"'
-          end
-
-          view 'app/assets/javascripts/behaviors/secret_values.js' do
-            element :reveal_value, 'Reveal value'
-            element :hide_value, 'Hide value'
+            element :save_variables, '.js-secret-variables-save-button'
           end
 
           def fill_variable_key(key)
-            fill_in 'variable_key', with: key
-          end
-
-          def fill_variable_value(value)
-            fill_in 'variable_value', with: value
-          end
-
-          def add_variable
-            click_on 'Add new variable'
-          end
-
-          def variable_key
-            page.find('.variable-key').text
-          end
-
-          def variable_value
-            reveal_value do
-              page.find('.variable-value').text
+            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+              page.find('.js-ci-variable-input-key').set(key)
             end
           end
 
-          private
+          def fill_variable_value(value)
+            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+              page.find('.js-ci-variable-input-value').set(value)
+            end
+          end
 
-          def reveal_value
-            click_button('Reveal value')
+          def save_variables
+            click_button('Save variables')
+          end
 
-            yield.tap do
-              click_button('Hide value')
+          def variable_key
+            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+              page.find('.js-ci-variable-input-key').value
+            end
+          end
+
+          def variable_value
+            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+              page.find('.js-ci-variable-input-value').value
             end
           end
         end

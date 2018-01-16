@@ -31,7 +31,7 @@ module QA
               page.fill_variable_key(key)
               page.fill_variable_value(value)
 
-              page.add_variable
+              page.save_variables
             end
           end
         end

@@ -4,6 +4,7 @@ import getSetTimeoutPromise from '../helpers/set_timeout_promise_helper';
 describe('VariableList', () => {
   preloadFixtures('pipeline_schedules/edit.html.raw');
   preloadFixtures('pipeline_schedules/edit_with_variables.html.raw');
+  preloadFixtures('projects/ci_cd_settings.html.raw');
 
   let $wrapper;
   let variableList;
@@ -105,37 +106,8 @@ describe('VariableList', () => {
 
   describe('with all inputs(key, value, protected)', () => {
     beforeEach(() => {
-      // This markup will be replaced with a fixture when we can render the
-      // CI/CD settings page with the new dynamic variable list in https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4110
-      $wrapper = $(`<form class="js-variable-list">
-        <ul>
-          <li class="js-row">
-            <div class="ci-variable-body-item">
-              <input class="js-ci-variable-input-key" name="variables[variables_attributes][][key]">
-            </div>
-
-            <div class="ci-variable-body-item">
-              <textarea class="js-ci-variable-input-value" name="variables[variables_attributes][][value]"></textarea>
-            </div>
-
-            <div class="ci-variable-body-item ci-variable-protected-item">
-              <button type="button" class="js-project-feature-toggle project-feature-toggle">
-                <input
-                  type="hidden"
-                  class="js-ci-variable-input-protected js-project-feature-toggle-input"
-                  name="variables[variables_attributes][][protected]"
-                  value="true"
-                />
-              </button>
-            </div>
-
-            <button type="button" class="js-row-remove-button"></button>
-          </li>
-        </ul>
-        <button type="button" class="js-secret-value-reveal-button">
-          Reveal values
-        </button>
-      </form>`);
+      loadFixtures('projects/ci_cd_settings.html.raw');
+      $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({
         container: $wrapper,
@@ -158,6 +130,53 @@ describe('VariableList', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('toggleEnableRow method', () => {
+    beforeEach(() => {
+      loadFixtures('pipeline_schedules/edit_with_variables.html.raw');
+      $wrapper = $('.js-ci-variable-list-section');
+
+      variableList = new VariableList({
+        container: $wrapper,
+        formField: 'variables',
+      });
+      variableList.init();
+    });
+
+    it('should disable all key inputs', () => {
+      expect($wrapper.find('.js-ci-variable-input-key:not([disabled])').length).toBe(3);
+
+      variableList.toggleEnableRow(false);
+
+      expect($wrapper.find('.js-ci-variable-input-key[disabled]').length).toBe(3);
+    });
+
+    it('should disable all remove buttons', () => {
+      expect($wrapper.find('.js-row-remove-button:not([disabled])').length).toBe(3);
+
+      variableList.toggleEnableRow(false);
+
+      expect($wrapper.find('.js-row-remove-button[disabled]').length).toBe(3);
+    });
+
+    it('should enable all remove buttons', () => {
+      variableList.toggleEnableRow(false);
+      expect($wrapper.find('.js-row-remove-button[disabled]').length).toBe(3);
+
+      variableList.toggleEnableRow(true);
+
+      expect($wrapper.find('.js-row-remove-button:not([disabled])').length).toBe(3);
+    });
+
+    it('should enable all key inputs', () => {
+      variableList.toggleEnableRow(false);
+      expect($wrapper.find('.js-ci-variable-input-key[disabled]').length).toBe(3);
+
+      variableList.toggleEnableRow(true);
+
+      expect($wrapper.find('.js-ci-variable-input-key:not([disabled])').length).toBe(3);
     });
   });
 });
