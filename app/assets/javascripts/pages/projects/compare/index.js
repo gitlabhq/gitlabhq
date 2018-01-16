@@ -1,4 +1,4 @@
-import initCompareAutocomplete from './compare_autocomplete';
+import initCompareAutocomplete from '~/compare_autocomplete';
 
 export default () => {
   initCompareAutocomplete();
