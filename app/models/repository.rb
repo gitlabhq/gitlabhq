@@ -981,7 +981,7 @@ class Repository
     return [] if empty? || query.blank?
 
     offset = 2
-    args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+    args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
     run_git(args).first.scrub.split(/^--$/)
   end

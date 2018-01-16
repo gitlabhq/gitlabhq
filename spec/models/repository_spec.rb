@@ -657,7 +657,7 @@ describe Repository do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG\x00190\x00  - Feature: Replace teams with group membership\n") }
     end
   end
 
