@@ -10,12 +10,11 @@ module QA
         push.commit_message = 'Add README.md'
       end
 
-      Page::Project::Sidebar.act { go_to_activity }
+      Page::Menu::Side.act { go_to_activity }
 
       Page::Project::Activity.act { go_to_push_events }
 
-      expect(page).to have_content('Add README.md')
-      expect(page).to have_content('pushed to branch master')
+      expect(page).to have_content('pushed new branch master')
     end
   end
 end

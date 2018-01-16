@@ -6,6 +6,7 @@ module QA
           element :settings_item
           element :repository_link, "title: 'Repository'"
           element :top_level_items, '.sidebar-top-level-items'
+          element :activity_link, "title: 'Activity'"
         end
 
         def click_repository_setting
@@ -28,6 +29,10 @@ module QA
           page.within('.sidebar-top-level-items') do
             yield
           end
+        end
+
+        def go_to_activity
+          click_on class: 'shortcuts-project-activity'
         end
       end
     end
