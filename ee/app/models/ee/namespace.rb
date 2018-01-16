@@ -5,6 +5,7 @@ module EE
   # and be prepended in the `Namespace` model
   module Namespace
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
 
     FREE_PLAN = 'free'.freeze
@@ -44,9 +45,8 @@ module EE
       end
     end
 
+    override :move_dir
     def move_dir
-      raise NotImplementedError unless defined?(super)
-
       succeeded = super
 
       if succeeded

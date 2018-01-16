@@ -474,6 +474,30 @@ Parameters:
 }
 ```
 
+## List MR pipelines
+
+Get a list of merge request pipelines.
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/pipelines
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
+
+```json
+[
+  {
+    "id": 77,
+    "sha": "959e04d7c7a30600c894bd3c0cd0e1ce7f42c11d",
+    "ref": "master",
+    "status": "success"
+  }
+]
+```
+
 ## Create MR
 
 Creates a new merge request.

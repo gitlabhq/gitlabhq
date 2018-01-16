@@ -41,7 +41,7 @@ export default {
       </div>
     </div>
     <div>
-      <repo-tree :tree-id="branch.treeId"/>
+      <repo-tree :tree-id="branch.treeId" />
     </div>
   </div>
 </template>

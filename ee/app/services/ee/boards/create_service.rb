@@ -1,9 +1,10 @@
 module EE
   module Boards
     module CreateService
-      def can_create_board?
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :can_create_board?
+      def can_create_board?
         parent.feature_available?(:multiple_issue_boards) || super
       end
     end

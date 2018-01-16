@@ -71,13 +71,15 @@
           class="js-preview-link"
           href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="previewMarkdownTab($event)">
+          @click.prevent="previewMarkdownTab($event)"
+        >
           Preview
         </a>
       </li>
       <li
         class="md-header-toolbar"
-        :class="{ active: !previewMarkdown }">
+        :class="{ active: !previewMarkdown }"
+      >
         <toolbar-button
           tag="**"
           button-title="Add bold text"
@@ -125,7 +127,8 @@
           data-container="body"
           tabindex="-1"
           title="Go full screen"
-          type="button">
+          type="button"
+        >
           <icon
             name="screen-full"
           />

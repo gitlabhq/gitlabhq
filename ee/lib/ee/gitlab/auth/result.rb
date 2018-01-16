@@ -2,9 +2,10 @@ module EE
   module Gitlab
     module Auth
       module Result
-        def success?
-          raise NotImplementedError.new unless defined?(super)
+        extend ::Gitlab::Utils::Override
 
+        override :success?
+        def success?
           type == :geo || super
         end
 

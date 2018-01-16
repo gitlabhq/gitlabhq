@@ -139,7 +139,7 @@
         return this.nodeDetails.healthy ? this.nodeDetails.health : this.nodeDetails.healthStatus;
       },
       storageShardsStatus() {
-        if (this.nodeDetails.storageShardsMatch === null) {
+        if (this.nodeDetails.storageShardsMatch == null) {
           return __('Unknown');
         }
         return this.nodeDetails.storageShardsMatch ? __('OK') : s__('GeoNodes|Does not match the primary storage configuration');

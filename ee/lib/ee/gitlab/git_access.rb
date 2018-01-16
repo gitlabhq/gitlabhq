@@ -2,18 +2,17 @@ module EE
   module Gitlab
     module GitAccess
       prepend GeoGitAccess
+      extend ::Gitlab::Utils::Override
 
+      override :check
       def check(cmd, changes)
-        raise NotImplementedError.new unless defined?(super)
-
         check_geo_license!
 
         super
       end
 
+      override :can_read_project?
       def can_read_project?
-        raise NotImplementedError.new unless defined?(super)
-
         return true if geo?
 
         super
@@ -21,9 +20,8 @@ module EE
 
       protected
 
+      override :user
       def user
-        raise NotImplementedError.new unless defined?(super)
-
         return nil if geo?
 
         super
@@ -31,17 +29,15 @@ module EE
 
       private
 
+      override :check_download_access!
       def check_download_access!
-        raise NotImplementedError.new unless defined?(super)
-
         return if geo?
 
         super
       end
 
+      override :check_active_user!
       def check_active_user!
-        raise NotImplementedError.new unless defined?(super)
-
         return if geo?
 
         super

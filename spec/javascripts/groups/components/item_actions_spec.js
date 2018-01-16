@@ -26,32 +26,12 @@ describe('ItemActionsComponent', () => {
     vm.$destroy();
   });
 
-  describe('computed', () => {
-    describe('leaveConfirmationMessage', () => {
-      it('should return appropriate string for leave group confirmation', () => {
-        expect(vm.leaveConfirmationMessage).toBe('Are you sure you want to leave the "platform / hardware" group?');
-      });
-    });
-  });
-
   describe('methods', () => {
     describe('onLeaveGroup', () => {
-      it('should change `modalStatus` prop to `true` which shows confirmation dialog', () => {
-        expect(vm.modalStatus).toBeFalsy();
-        vm.onLeaveGroup();
-        expect(vm.modalStatus).toBeTruthy();
-      });
-    });
-
-    describe('leaveGroup', () => {
-      it('should change `modalStatus` prop to `false` and emit `leaveGroup` event with required params when called with `leaveConfirmed` as `true`', () => {
+      it('emits `showLeaveGroupModal` event with `group` and `parentGroup` props', () => {
         spyOn(eventHub, '$emit');
-        vm.modalStatus = true;
-
-        vm.leaveGroup();
-
-        expect(vm.modalStatus).toBeFalsy();
-        expect(eventHub.$emit).toHaveBeenCalledWith('leaveGroup', vm.group, vm.parentGroup);
+        vm.onLeaveGroup();
+        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', vm.group, vm.parentGroup);
       });
     });
   });
@@ -72,7 +52,8 @@ describe('ItemActionsComponent', () => {
       expect(editBtn.getAttribute('href')).toBe(group.editPath);
       expect(editBtn.getAttribute('aria-label')).toBe('Edit group');
       expect(editBtn.dataset.originalTitle).toBe('Edit group');
-      expect(editBtn.querySelector('i.fa.fa-cogs')).toBeDefined();
+      expect(editBtn.querySelectorAll('svg use').length).not.toBe(0);
+      expect(editBtn.querySelector('svg use').getAttribute('xlink:href')).toContain('#settings');
 
       newVm.$destroy();
     });
@@ -88,17 +69,10 @@ describe('ItemActionsComponent', () => {
       expect(leaveBtn.getAttribute('href')).toBe(group.leavePath);
       expect(leaveBtn.getAttribute('aria-label')).toBe('Leave this group');
       expect(leaveBtn.dataset.originalTitle).toBe('Leave this group');
-      expect(leaveBtn.querySelector('i.fa.fa-sign-out')).toBeDefined();
+      expect(leaveBtn.querySelectorAll('svg use').length).not.toBe(0);
+      expect(leaveBtn.querySelector('svg use').getAttribute('xlink:href')).toContain('#leave');
 
       newVm.$destroy();
-    });
-
-    it('should show modal dialog when `modalStatus` is set to `true`', () => {
-      vm.modalStatus = true;
-      const modalDialogEl = vm.$el.querySelector('.modal');
-      expect(modalDialogEl).toBeDefined();
-      expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
-      expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');
     });
   });
 });

@@ -1370,6 +1370,7 @@ ActiveRecord::Schema.define(version: 20180105233807) do
   end
 
   add_index "merge_request_diff_commits", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_commits_on_mr_diff_id_and_order", unique: true, using: :btree
+  add_index "merge_request_diff_commits", ["sha"], name: "index_merge_request_diff_commits_on_sha", using: :btree
 
   create_table "merge_request_diff_files", id: false, force: :cascade do |t|
     t.integer "merge_request_diff_id", null: false
@@ -1397,6 +1398,7 @@ ActiveRecord::Schema.define(version: 20180105233807) do
     t.string "real_size"
     t.string "head_commit_sha"
     t.string "start_commit_sha"
+    t.integer "commits_count"
   end
 
   add_index "merge_request_diffs", ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree

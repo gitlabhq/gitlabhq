@@ -1,6 +1,5 @@
 <script>
-    /* eslint-disable vue/require-default-prop */
-
+  /* eslint-disable vue/require-default-prop */
   export default {
     name: 'Modal',
 

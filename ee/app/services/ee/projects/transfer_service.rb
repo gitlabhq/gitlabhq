@@ -1,11 +1,12 @@
 module EE
   module Projects
     module TransferService
+      extend ::Gitlab::Utils::Override
+
       private
 
+      override :execute_system_hooks
       def execute_system_hooks
-        raise NotImplementedError unless defined?(super)
-
         super
 
         EE::Audit::ProjectChangesAuditor.new(current_user, project).execute

@@ -7,6 +7,34 @@
 
   .admin-dashboard.prepend-top-default
     .row
+      .col-sm-4
+        .info-well.dark-well
+          .well-segment.well-centered
+            = link_to admin_projects_path do
+              %h3.text-center
+                Projects:
+                = number_with_delimiter(Project.cached_count)
+            %hr
+            = link_to('New project', new_project_path, class: "btn btn-new")
+      .col-sm-4
+        .info-well.dark-well
+          .well-segment.well-centered
+            = link_to admin_users_path do
+              %h3.text-center
+                Users:
+                = number_with_delimiter(User.count)
+            %hr
+            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
+      .col-sm-4
+        .info-well.dark-well
+          .well-segment.well-centered
+            = link_to admin_groups_path do
+              %h3.text-center
+                Groups:
+                = number_with_delimiter(Group.count)
+            %hr
+            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
+    .row
       .col-md-4
         .info-well
           .well-segment.admin-well.admin-well-statistics
@@ -160,34 +188,6 @@
               = Gitlab::Database.adapter_name
               %span.pull-right
                 = Gitlab::Database.version
-    .row
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_projects_path do
-              %h3.text-center
-                Projects:
-                = number_with_delimiter(Project.cached_count)
-            %hr
-            = link_to('New project', new_project_path, class: "btn btn-new")
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_users_path do
-              %h3.text-center
-                Users:
-                = number_with_delimiter(User.count)
-            %hr
-            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_groups_path do
-              %h3.text-center
-                Groups:
-                = number_with_delimiter(Group.count)
-            %hr
-            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
     .row
       .col-md-4
         .info-well

@@ -2402,8 +2402,8 @@ eslint-plugin-promise@^3.5.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-3.5.0.tgz#78fbb6ffe047201627569e85a6c5373af2a68fca"
 
 eslint-plugin-vue@^4.0.1:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-4.1.0.tgz#b5f65c04e1741fa93c97b9fe605ad9c55967dbbc"
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-4.0.1.tgz#afda92cfd7e7363b1fbdb1a772dd63359a9ce96a"
   dependencies:
     require-all "^2.2.0"
     vue-eslint-parser "^2.0.1"

@@ -238,6 +238,10 @@ class Commit
     notes.includes(:author)
   end
 
+  def merge_requests
+    @merge_requests ||= project.merge_requests.by_commit_sha(sha)
+  end
+
   def method_missing(method, *args, &block)
     @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
@@ -342,10 +346,11 @@ class Commit
     @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user, noteable = self)
+  def has_been_reverted?(current_user, notes_association = nil)
     ext = all_references(current_user)
+    notes_association ||= notes_with_associations
 
-    noteable.notes_with_associations.system.each do |note|
+    notes_association.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 

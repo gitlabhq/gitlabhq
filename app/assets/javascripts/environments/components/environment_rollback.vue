@@ -1,10 +1,10 @@
 <script>
   /**
-   * Renders Rollback or Re deploy button in environments table depending
-   * of the provided property `isLastDeployment`.
-   *
-   * Makes a post request when the button is clicked.
-   */
+  * Renders Rollback or Re deploy button in environments table depending
+  * of the provided property `isLastDeployment`.
+  *
+  * Makes a post request when the button is clicked.
+  */
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
@@ -12,6 +12,7 @@
     components: {
       loadingIcon,
     },
+
     props: {
       retryUrl: {
         type: String,

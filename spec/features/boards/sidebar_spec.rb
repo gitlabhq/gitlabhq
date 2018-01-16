@@ -335,14 +335,14 @@ describe 'Issue Boards', :js do
       wait_for_requests
 
       page.within('.subscriptions') do
-        click_button 'Subscribe'
+        find('.js-issuable-subscribe-button button:not(.is-checked)').click
         wait_for_requests
 
-        expect(page).to have_content('Unsubscribe')
+        expect(page).to have_css('.js-issuable-subscribe-button button.is-checked')
       end
     end
 
-    it 'has "Unsubscribe" button when already subscribed' do
+    it 'has checked subscription toggle when already subscribed' do
       create(:subscription, user: user, project: project, subscribable: issue2, subscribed: true)
       visit project_board_path(project, board)
       wait_for_requests
@@ -351,10 +351,10 @@ describe 'Issue Boards', :js do
       wait_for_requests
 
       page.within('.subscriptions') do
-        click_button 'Unsubscribe'
+        find('.js-issuable-subscribe-button button.is-checked').click
         wait_for_requests
 
-        expect(page).to have_content('Subscribe')
+        expect(page).to have_css('.js-issuable-subscribe-button button:not(.is-checked)')
       end
     end
   end

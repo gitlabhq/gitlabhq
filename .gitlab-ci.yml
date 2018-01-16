@@ -65,6 +65,9 @@ stages:
 
 .use-pg: &use-pg
   services:
+    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
+    # so using the least common denominator ensures backwards compatibility
+    # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
@@ -117,7 +120,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --tag ~geo"
   artifacts:
     expire_in: 31d
     when: always
@@ -629,6 +632,7 @@ codequality:
     paths: [codeclimate.json]
 
 sast:
+  <<: *except-docs
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
   before_script: []
   script:

@@ -267,7 +267,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      write_ref(keep_around_ref_name(sha), sha)
+      raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -279,10 +279,6 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
-  end
-
-  def write_ref(ref_path, sha)
-    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -842,13 +838,12 @@ class Repository
   end
 
   def can_be_merged?(source_sha, target_branch)
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    if our_commit && their_commit
-      !rugged.merge_commits(our_commit, their_commit).conflicts?
-    else
-      false
+    raw_repository.gitaly_migrate(:can_be_merged) do |is_enabled|
+      if is_enabled
+        gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
+      else
+        rugged_can_be_merged?(source_sha, target_branch)
+      end
     end
   end
 
@@ -906,9 +901,8 @@ class Repository
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
-      @root_ref_sha ||= commit(root_ref).sha
-      same_head = branch.target == @root_ref_sha
-      merged = ancestor?(branch.target, @root_ref_sha)
+      same_head = branch.target == root_ref_sha
+      merged = ancestor?(branch.target, root_ref_sha)
       !same_head && merged
     else
       nil
@@ -955,6 +949,10 @@ class Repository
     else
       false
     end
+  end
+
+  def root_ref_sha
+    @root_ref_sha ||= commit(root_ref).sha
   end
 
   delegate :merged_branch_names, to: :raw_repository
@@ -1186,6 +1184,14 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
+  end
+
+  def gitaly_can_be_merged?(their_commit, our_commit)
+    !raw_repository.gitaly_conflicts_client(our_commit, their_commit).conflicts?
+  end
+
+  def rugged_can_be_merged?(their_commit, our_commit)
+    !rugged.merge_commits(our_commit, their_commit).conflicts?
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

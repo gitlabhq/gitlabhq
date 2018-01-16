@@ -1,9 +1,10 @@
 module EE
   module Projects
     module GitHttpController
-      def render_ok
-        raise NotImplementedError.new unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :render_ok
+      def render_ok
         set_workhorse_internal_api_content_type
         render json: ::Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name, show_all_refs: geo_request?)
       end
@@ -18,17 +19,15 @@ module EE
         authentication_result.geo?(project)
       end
 
+      override :access_actor
       def access_actor
-        raise NotImplementedError.new unless defined?(super)
-
         return :geo if geo?
 
         super
       end
 
+      override :authenticate_user
       def authenticate_user
-        raise NotImplementedError.new unless defined?(super)
-
         return super unless geo_request?
 
         payload = ::Gitlab::Geo::JwtRequestDecoder.new(request.headers['Authorization']).decode

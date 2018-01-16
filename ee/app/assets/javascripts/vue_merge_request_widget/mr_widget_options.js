@@ -149,26 +149,26 @@ export default {
       const { vulnerabilities, approved, unapproved } = this.mr.dockerReport;
 
       if (!vulnerabilities.length) {
-        return s__('ciReport|No vulnerabilities were found');
+        return s__('ciReport|SAST:container no vulnerabilities were found');
       }
 
       if (!unapproved.length && approved.length) {
         return n__(
-          'Found %d approved vulnerability',
-          'Found %d approved vulnerabilities',
+          'SAST:container found %d approved vulnerability',
+          'SAST:container found %d approved vulnerabilities',
           approved.length,
         );
       } else if (unapproved.length && !approved.length) {
         return n__(
-          'Found %d vulnerability',
-          'Found %d vulnerabilities',
+          'SAST:container found %d vulnerability',
+          'SAST:container found %d vulnerabilities',
           unapproved.length,
         );
       }
 
       return `${n__(
-        'Found %d vulnerability,',
-        'Found %d vulnerabilities,',
+        'SAST:container found %d vulnerability,',
+        'SAST:container found %d vulnerabilities,',
         vulnerabilities.length,
       )} ${n__(
         'of which %d is approved',
@@ -180,13 +180,13 @@ export default {
     dastText() {
       if (this.mr.dastReport.length) {
         return n__(
-          '%d DAST alert detected by analyzing the review app',
-          '%d DAST alerts detected by analyzing the review app',
+          'DAST detected %d alert by analyzing the review app',
+          'DAST detected %d alerts by analyzing the review app',
           this.mr.dastReport.length,
         );
       }
 
-      return s__('ciReport|No DAST alerts detected by analyzing the review app');
+      return s__('ciReport|DAST detected no alerts by analyzing the review app');
     },
 
     codequalityStatus() {

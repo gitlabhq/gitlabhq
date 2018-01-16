@@ -513,4 +513,17 @@ eos
       expect(described_class.valid_hash?('a' * 41)).to be false
     end
   end
+
+  describe '#merge_requests' do
+    let!(:project) { create(:project, :repository) }
+    let!(:merge_request1) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let!(:merge_request2) { create(:merge_request, source_project: project, source_branch: 'merged-target', target_branch: 'feature') }
+    let(:commit1) { merge_request1.merge_request_diff.commits.last }
+    let(:commit2) { merge_request1.merge_request_diff.commits.first }
+
+    it 'returns merge_requests that introduced that commit' do
+      expect(commit1.merge_requests).to eq([merge_request1, merge_request2])
+      expect(commit2.merge_requests).to eq([merge_request1])
+    end
+  end
 end

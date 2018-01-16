@@ -46,14 +46,15 @@
         ));
 
         const extraCostParagraph = sprintf(
-          _.escape(s__(`ClusterIntegration|%{boldNotice} This will add some
-extra resources like a load balancer,
-which incur additional costs. See %{pricingLink}`)),
-          {
+          _.escape(s__(
+            `ClusterIntegration|%{boldNotice} This will add some extra resources
+            like a load balancer, which may incur additional costs depending on
+            the hosting provider Kubernetes is installed on. If you are using GKE,
+            you can %{pricingLink}.`,
+          )), {
             boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
             pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|GKE pricing'))}
-            </a>`,
+              ${_.escape(s__('ClusterIntegration|check the pricing here'))}</a>`,
           },
           false,
         );
@@ -80,8 +81,7 @@ which incur additional costs. See %{pricingLink}`)),
           {
             gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
 target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
-            </a>`,
+              ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
           },
           false,
         );

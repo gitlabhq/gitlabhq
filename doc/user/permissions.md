@@ -228,7 +228,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
-| Erase job artifacts and trace         |                 | ✓ [^7]      | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^5]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -251,13 +251,13 @@ users:
 | Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^5]      | ✓ [^5]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
+| Clone source and LFS from internal projects |                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
 | Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^5]      | ✓ [^5]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
+| Pull container images from internal projects|                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
 
@@ -287,13 +287,14 @@ with the permissions described on the documentation on [auditor users permission
 Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
 only.
 
-[^1]: On public and internal projects,  all users are able to perform this action.
+[^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
 [^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
-[^5]: Only if user is not external one.
-[^6]: Only if user is a member of the project.
-[^7]: Only if the build was triggered by the user
+[^5]: Only if the job was triggered by the user
+[^6]: Only if user is not external one
+[^7]: Only if user is a member of the project
+
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998

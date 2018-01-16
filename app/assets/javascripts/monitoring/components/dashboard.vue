@@ -66,7 +66,6 @@
         window.addEventListener('resize', this.resizeThrottled, false);
       }
     },
-
     methods: {
       getGraphsData() {
         this.state = 'loading';

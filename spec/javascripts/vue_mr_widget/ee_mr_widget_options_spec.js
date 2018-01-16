@@ -71,7 +71,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
-          ).toEqual('2 security vulnerabilities detected');
+          ).toEqual('SAST detected 2 security vulnerabilities');
           done();
         }, 0);
       });
@@ -94,7 +94,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
-          ).toEqual('No security vulnerabilities detected');
+          ).toEqual('SAST detected no security vulnerabilities');
           done();
         }, 0);
       });
@@ -408,7 +408,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-docker-widget .js-code-text').textContent.trim(),
-          ).toEqual('Found 3 vulnerabilities, of which 1 is approved');
+          ).toEqual('SAST:container found 3 vulnerabilities, of which 1 is approved');
 
           vm.$el.querySelector('.js-docker-widget button').click();
 
@@ -494,7 +494,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-dast-widget .js-code-text').textContent.trim(),
-          ).toEqual('2 DAST alerts detected by analyzing the review app');
+          ).toEqual('DAST detected 2 alerts by analyzing the review app');
 
           vm.$el.querySelector('.js-dast-widget button').click();
 
@@ -585,7 +585,7 @@ describe('ee merge request widget options', () => {
 
       describe('with no vulnerabilities', () => {
         it('returns No vulnerabilities found', () => {
-          expect(vm.dockerText).toEqual('No vulnerabilities were found');
+          expect(vm.dockerText).toEqual('SAST:container no vulnerabilities were found');
         });
       });
 
@@ -604,7 +604,7 @@ describe('ee merge request widget options', () => {
             }],
             unapproved: [],
           };
-          expect(vm.dockerText).toEqual('Found 1 approved vulnerability');
+          expect(vm.dockerText).toEqual('SAST:container found 1 approved vulnerability');
         });
 
         it('returns approved information - plural', () => {
@@ -628,7 +628,7 @@ describe('ee merge request widget options', () => {
             ],
             unapproved: [],
           };
-          expect(vm.dockerText).toEqual('Found 2 approved vulnerabilities');
+          expect(vm.dockerText).toEqual('SAST:container found 2 approved vulnerabilities');
         });
       });
 
@@ -649,7 +649,7 @@ describe('ee merge request widget options', () => {
             ],
             approved: [],
           };
-          expect(vm.dockerText).toEqual('Found 1 vulnerability');
+          expect(vm.dockerText).toEqual('SAST:container found 1 vulnerability');
         });
 
         it('returns number of vulnerabilities - plural', () => {
@@ -673,7 +673,7 @@ describe('ee merge request widget options', () => {
             ],
             approved: [],
           };
-          expect(vm.dockerText).toEqual('Found 2 vulnerabilities');
+          expect(vm.dockerText).toEqual('SAST:container found 2 vulnerabilities');
         });
       });
 
@@ -701,7 +701,7 @@ describe('ee merge request widget options', () => {
             ],
           };
 
-          expect(vm.dockerText).toEqual('Found 1 vulnerability, of which 1 is approved');
+          expect(vm.dockerText).toEqual('SAST:container found 1 vulnerability, of which 1 is approved');
         });
 
         it('returns message with information about both - plural', () => {
@@ -743,7 +743,7 @@ describe('ee merge request widget options', () => {
               },
             ],
           };
-          expect(vm.dockerText).toEqual('Found 2 vulnerabilities, of which 2 are approved');
+          expect(vm.dockerText).toEqual('SAST:container found 2 vulnerabilities, of which 2 are approved');
         });
       });
     });

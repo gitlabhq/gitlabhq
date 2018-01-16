@@ -1,9 +1,10 @@
 module EE
   module Projects
     module DestroyService
-      def execute
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :execute
+      def execute
         succeeded = super
 
         if succeeded

@@ -1,12 +1,13 @@
 module EE
   module ProtectedBranches
     module ApiService
+      extend ::Gitlab::Utils::Override
+
       GroupsNotAccessibleError = Class.new(StandardError)
       UsersNotAccessibleError = Class.new(StandardError)
 
+      override :create
       def create
-        raise NotImplementedError unless defined?(super)
-
         super
       rescue ::EE::ProtectedBranches::ApiService::GroupsNotAccessibleError,
              ::EE::ProtectedBranches::ApiService::UsersNotAccessibleError
@@ -18,9 +19,8 @@ module EE
 
       private
 
+      override :verify_params!
       def verify_params!
-        raise NotImplementedError unless defined?(super)
-
         raise GroupsNotAccessibleError.new unless groups_accessible?
         raise UsersNotAccessibleError.new unless users_accessible?
       end

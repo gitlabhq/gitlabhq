@@ -9,6 +9,7 @@ module Ci
 
     MissingDependenciesError = Class.new(StandardError)
 
+    belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'

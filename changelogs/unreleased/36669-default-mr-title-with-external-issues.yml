@@ -1,0 +1,5 @@
+---
+title: Default merge request title is set correctly again when external issue tracker is activated
+merge_request: 16356
+author: Ben305
+type: fixed

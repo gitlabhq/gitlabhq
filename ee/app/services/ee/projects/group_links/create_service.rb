@@ -2,9 +2,10 @@ module EE
   module Projects
     module GroupLinks
       module CreateService
-        def execute(group)
-          raise NotImplementedError unless defined?(super)
+        extend ::Gitlab::Utils::Override
 
+        override :execute
+        def execute(group)
           super.tap { |link| log_audit_event(link) if link && link&.persisted? }
         end
 

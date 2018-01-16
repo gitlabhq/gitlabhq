@@ -1,9 +1,10 @@
 module EE
   module MergeRequests
     module MergeService
-      def error_check!
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :error_check!
+      def error_check!
         check_size_limit
 
         super

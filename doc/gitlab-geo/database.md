@@ -109,13 +109,7 @@ The following guide assumes that:
     each node. Note: For external PostgreSQL instances, see [additional instructions][external postgresql].
 
     If you are using a cloud provider, you can lookup the addresses for each
-    Geo node through your cloud provider's management console. A table of common
-    terminology is provided below as it varies between vendors.
-
-    | GitLab Terminology | Amazon Web Services | Google Cloud Platform |
-    |-----|-----|-----|-----|
-    | Private address | Private address | Internal address |
-    | Public address | Public address | External address |
+    Geo node through your cloud provider's management console.
 
     To lookup the address of a Geo node, SSH in to the Geo node and execute:
 
@@ -139,6 +133,11 @@ The following guide assumes that:
     | `postgresql['listen_address']` | Primary's private address |
     | `postgresql['trust_auth_cidr_addresses']` | Primary's private address |
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
+
+    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
+    provides a virtual private cloud you can use the secondary's private
+    address (corresponds to "internal address" for Google Cloud Platform) for
+    `postgresql['md5_auth_cidr_addresses']`.
 
     The `listen_address` option opens PostgreSQL up to network connections
     with the interface corresponding to the given address. See [the PostgreSQL
@@ -225,8 +224,8 @@ The following guide assumes that:
     ```
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
-   `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
-   the primary server's private address.
+   `netstat -plnt | grep 5432` to make sure that PostgreSQL is listening on port
+   `5432` to the primary server's private address.
 
 1. A certificate was automatically generated when GitLab was reconfigured. This
    will be used automatically to protect your PostgreSQL traffic from
@@ -311,20 +310,20 @@ because we have not yet configured the secondary server. This is the next step.
     We need to enable this, even if using a single node, to enable FDW support.
     
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
-        addresses with addresses appropriate to your network configuration:
+    addresses with addresses appropriate to your network configuration:
     
-        ```ruby
-        geo_primary_role['enable'] = true
+    ```ruby
+    geo_primary_role['enable'] = true
     
-        # Secondary addresses
-        # - replace '5.6.7.8' with the secondary public address
-        postgresql['listen_address'] = '5.6.7.8'
-        postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32']
-        postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-        
-        # gitlab database user's password (defined previously)
-        gitlab_rails['db_password'] = 'mypassword'
-        ```
+    # Secondary addresses
+    # - replace '5.6.7.8' with the secondary public address
+    postgresql['listen_address'] = '5.6.7.8'
+    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32']
+    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+    
+    # gitlab database user's password (defined previously)
+    gitlab_rails['db_password'] = 'mypassword'
+    ```
 
 1. Test that the `gitlab-psql` user can connect to the primary's database:
 

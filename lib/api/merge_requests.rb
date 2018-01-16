@@ -24,6 +24,13 @@ module API
           .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
       end
 
+      def merge_request_pipelines_with_access
+        authorize! :read_pipeline, user_project
+
+        mr = find_merge_request_with_access(params[:merge_request_iid])
+        mr.all_pipelines
+      end
+
       params :merge_requests_params do
         optional :state, type: String, values: %w[opened closed merged all], default: 'all',
                          desc: 'Return opened, closed, merged, or all merge requests'
@@ -224,6 +231,15 @@ module API
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+      end
+
+      desc 'Get the merge request pipelines' do
+        success Entities::PipelineBasic
+      end
+      get ':id/merge_requests/:merge_request_iid/pipelines' do
+        pipelines = merge_request_pipelines_with_access
+
+        present paginate(pipelines), with: Entities::PipelineBasic
       end
 
       desc 'Update a merge request' do

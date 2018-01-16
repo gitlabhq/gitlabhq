@@ -20,6 +20,7 @@ class Project < ActiveRecord::Base
   include GroupDescendant
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
+  include ::Gitlab::Utils::StrongMemoize
 
   # EE specific modules
   prepend EE::Project
@@ -203,13 +204,13 @@ class Project < ActiveRecord::Base
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
-  has_many :pipelines, class_name: 'Ci::Pipeline'
+  has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
-  has_many :builds, class_name: 'Ci::Build', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -1003,9 +1004,13 @@ class Project < ActiveRecord::Base
   end
 
   def repo_exists?
-    @repo_exists ||= repository.exists?
-  rescue
-    @repo_exists = false
+    strong_memoize(:repo_exists) do
+      begin
+        repository.exists?
+      rescue
+        false
+      end
+    end
   end
 
   def root_ref?(branch)
@@ -1161,7 +1166,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
