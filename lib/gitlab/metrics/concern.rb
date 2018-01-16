@@ -65,28 +65,28 @@ module Gitlab
         # @param [Symbol] name
         # @param [Hash] opts
         def fetch_counter(name, opts = {}, &block)
-          define_metric(:counter, name, opts, &block)
+          fetch_metric(:counter, name, opts, &block)
         end
 
         # DFetch and/or initialize gauge metric
         # @param [Symbol] name
         # @param [Hash] opts
         def fetch_gauge(name, opts = {}, &block)
-          define_metric(:counter, name, opts, &block)
+          fetch_metric(:counter, name, opts, &block)
         end
 
         # Fetch and/or initialize histogram metric
         # @param [Symbol] name
         # @param [Hash] opts
         def fetch_histogram(name, opts = {}, &block)
-          define_metric(:histogram, name, opts, &block)
+          fetch_metric(:histogram, name, opts, &block)
         end
 
         # Fetch and/or initialize summary metric
         # @param [Symbol] name
         # @param [Hash] opts
         def fetch_summary(name, opts = {}, &block)
-          define_metric(:summary, name, opts, &block)
+          fetch_metric(:summary, name, opts, &block)
         end
 
         # Define metric accessor method for a Counter
