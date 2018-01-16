@@ -10,8 +10,8 @@ module QA
           project.description = 'Geo project to be renamed'
         end
 
-        geo_project_name = Page::Project::Show.act { project_name }
-        expect(geo_project_name).to include 'geo-before-rename'
+        geo_project_name = project.name
+        expect(project.name).to include 'geo-before-rename'
 
         Factory::Repository::Push.fabricate! do |push|
           push.project = project
@@ -20,52 +20,30 @@ module QA
           push.commit_message = 'Add README.md'
         end
 
-        # check it exists on the other machine
+        # rename the project
+        Runtime::Browser.visit(:geo_primary)
+        Page::Menu::Main.act { go_to_projects }
+
+        Page::Dashboard::Projects.perform do |dashboard|
+          dashboard.go_to_project(geo_project_name)
+        end
+
+        Page::Menu::Side.act { go_to_settings }
+
+        geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
+        Page::Project::Settings::Main.perform do |settings|
+          settings.expand_advanced_settings do |page|
+            page.rename_to(geo_project_newname)
+          end
+        end
+
+        sleep 2 # wait for replication
+
+        # check renamed project exist on secondary node
         Runtime::Browser.visit(:geo_secondary, QA::Page::Main::Login) do
           Page::Main::OAuth.act do
             authorize! if needs_authorization?
           end
-
-          expect(page).to have_content 'You are on a secondary (read-only) Geo node'
-
-          Page::Menu::Main.perform do |menu|
-            menu.go_to_projects
-
-            expect(page).to have_content(geo_project_name)
-          end
-
-          sleep 10 # wait for repository replication
-
-          Page::Dashboard::Projects.perform do |dashboard|
-            dashboard.go_to_project(geo_project_name)
-          end
-
-          Page::Project::Show.perform do
-            expect(page).to have_content 'README.md'
-            expect(page).to have_content 'This is Geo project!'
-          end
-
-          # rename the project
-          Runtime::Browser.visit(:geo_primary)
-          Page::Menu::Main.act { go_to_projects }
-
-          Page::Dashboard::Projects.perform do |dashboard|
-            dashboard.go_to_project(geo_project_name)
-          end
-
-          Page::Menu::Side.act { go_to_settings }
-
-          geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
-          Page::Project::Settings::Main.perform do |settings|
-            settings.expand_advanced_settings do |page|
-              page.rename_to(geo_project_newname)
-            end
-          end
-
-          sleep 2 # wait for replication
-
-          # check renamed project exist on secondary node
-          Runtime::Browser.visit(:geo_secondary)
 
           expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
