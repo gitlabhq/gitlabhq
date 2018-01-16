@@ -72,7 +72,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         return false;
       }
 
-      const fail = (e) => { throw e; Flash('Error loading dynamic module'); }
+      const fail = () => Flash('Error loading dynamic module');
       const callDefault = m => m.default();
 
       path = page.split(':');

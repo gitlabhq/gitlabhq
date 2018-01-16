@@ -98,12 +98,15 @@ const bindEvents = () => {
   });
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
+<<<<<<< HEAD
 
   $('.import_git').on('click', () => {
     const $projectMirror = $('#project_mirror');
 
     $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
   });
+=======
+>>>>>>> 8e629a4545... fixed specs
 };
 
 document.addEventListener('DOMContentLoaded', bindEvents);
