@@ -1,10 +1,11 @@
 require 'action_view/helpers'
-include ActionView::Helpers::DateHelper
-include ActionView::Helpers::NumberHelper
 
 task spec: ['geo:db:test:prepare']
 
 namespace :geo do
+  include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::NumberHelper
+
   GEO_LICENSE_ERROR_TEXT = 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.'.freeze
 
   namespace :db do |ns|
@@ -208,10 +209,7 @@ namespace :geo do
 
   desc 'Print Geo node status'
   task status: :environment do
-    unless Gitlab::Geo.license_allows?
-      puts 'You need a different license to enable Geo replication'.color(:red)
-      exit
-    end
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
 
     COLUMN_WIDTH = 35
     current_node_status = GeoNodeStatus.current_node_status
