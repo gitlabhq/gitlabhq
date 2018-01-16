@@ -223,6 +223,37 @@ describe EpicIssues::CreateService do
         it 'returns success status' do
           is_expected.to eq(status: :success)
         end
+
+        it 'creates 3 system notes' do
+          expect { subject }.to change { Note.count }.from(0).to(3)
+        end
+
+        it 'creates a note correctly for the original epic' do
+          subject
+
+          note = Note.find_by(system: true, noteable_type: 'Epic', noteable_id: epic.id)
+
+          expect(note.note).to eq("moved issue #{issue.to_reference(epic.group)} to epic #{another_epic.to_reference(epic.group)}")
+          expect(note.system_note_metadata.action).to eq('epic_issue_moved')
+        end
+
+        it 'creates a note correctly for the new epic' do
+          subject
+
+          note = Note.find_by(system: true, noteable_type: 'Epic', noteable_id: another_epic.id)
+
+          expect(note.note).to eq("added issue #{issue.to_reference(epic.group)} from epic #{epic.to_reference(epic.group)}")
+          expect(note.system_note_metadata.action).to eq('epic_issue_moved')
+        end
+
+        it 'creates a note correctly for the issue' do
+          subject
+
+          note = Note.find_by(system: true, noteable_type: 'Issue', noteable_id: issue.id)
+
+          expect(note.note).to eq("changed epic to #{another_epic.to_reference(issue.project)}")
+          expect(note.system_note_metadata.action).to eq('issue_changed_epic')
+        end
       end
 
       context 'when issue from non group project is given' do

@@ -26,6 +26,13 @@ describe Ci::Build do
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
+      expect(Project.reflect_on_association(:builds).has_inverse?).to eq(:project)
+    end
+  end
+
   describe 'callbacks' do
     context 'when running after_create callback' do
       it 'triggers asynchronous build hooks worker' do

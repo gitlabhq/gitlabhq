@@ -576,6 +576,20 @@ module SystemNoteService
     create_note(NoteSummary.new(epic, nil, user, body, action: action))
   end
 
+  def epic_issue_moved(from_epic, issue, to_epic, user)
+    epic_issue_moved_act(from_epic, issue, to_epic, user, verb: 'added', direction: 'from')
+    epic_issue_moved_act(to_epic, issue, from_epic, user, verb: 'moved', direction: 'to')
+  end
+
+  def epic_issue_moved_act(subject_epic, issue, object_epic, user, verb:, direction:)
+    action = 'epic_issue_moved'
+
+    body = "#{verb} issue #{issue.to_reference(subject_epic.group)} #{direction}" \
+      " epic #{subject_epic.to_reference(object_epic.group)}"
+
+    create_note(NoteSummary.new(object_epic, nil, user, body, action: action))
+  end
+
   def issue_on_epic(issue, epic, user, type)
     return unless validate_epic_issue_action_type(type)
 
@@ -588,6 +602,13 @@ module SystemNoteService
     end
 
     body = "#{type} #{direction} epic #{epic.to_reference(issue.project)}"
+
+    create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
+  end
+
+  def issue_epic_change(issue, epic, user)
+    body = "changed epic to #{epic.to_reference(issue.project)}"
+    action = 'issue_changed_epic'
 
     create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
   end
