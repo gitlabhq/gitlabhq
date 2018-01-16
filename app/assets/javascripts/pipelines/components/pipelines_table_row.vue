@@ -312,7 +312,7 @@
           :endpoint="pipeline.cancel_path"
           css-class="js-pipelines-cancel-button btn-remove"
           title="Cancel"
-          icon="remove"
+          icon="close"
           confirm-action-message="Are you sure you want to cancel this pipeline?"
         />
       </div>
