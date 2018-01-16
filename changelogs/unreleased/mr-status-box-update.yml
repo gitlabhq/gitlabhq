@@ -1,0 +1,5 @@
+---
+title: Fixed merge request status badge not updating after merging
+merge_request:
+author:
+type: fixed

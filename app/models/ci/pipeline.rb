@@ -7,8 +7,11 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
 
+<<<<<<< HEAD
     prepend ::EE::Ci::Pipeline
 
+=======
+>>>>>>> upstream/master
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'

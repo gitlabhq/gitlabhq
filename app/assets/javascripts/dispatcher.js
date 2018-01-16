@@ -229,9 +229,12 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/groups/milestones/edit')
             .then(callDefault)
             .catch(fail);
+<<<<<<< HEAD
           break;
         case 'groups:epics:show':
           new ZenMode();
+=======
+>>>>>>> upstream/master
           break;
         case 'projects:compare:show':
           new Diff();
