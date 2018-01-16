@@ -117,9 +117,9 @@ export default {
       const text = [];
 
       if (!newIssues.length && !resolvedIssues.length) {
-        text.push('SAST detected no security vulnerabilities');
+        text.push(s__('ciReport|SAST detected no security vulnerabilities'));
       } else if (newIssues.length || resolvedIssues.length) {
-        text.push('SAST');
+        text.push(s__('ciReport|SAST'));
       }
 
       if (resolvedIssues.length) {
