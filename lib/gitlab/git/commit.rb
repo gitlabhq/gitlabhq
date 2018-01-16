@@ -436,6 +436,16 @@ module Gitlab
         parent_ids.size > 1
       end
 
+      def tree_entry(path)
+        @repository.gitaly_migrate(:commit_tree_entry) do |is_migrated|
+          if is_migrated
+            gitaly_tree_entry(path)
+          else
+            rugged_tree_entry(path)
+          end
+        end
+      end
+
       def to_gitaly_commit
         return raw_commit if raw_commit.is_a?(Gitaly::GitCommit)
 
@@ -448,11 +458,6 @@ module Gitlab
           author: gitaly_commit_author_from_rugged(raw_commit.author),
           committer: gitaly_commit_author_from_rugged(raw_commit.committer)
         )
-      end
-
-      # Is this the same as Blob.find_entry_by_path ?
-      def rugged_tree_entry(path)
-        rugged_commit.tree.path(path)
       end
 
       private
@@ -499,6 +504,28 @@ module Gitlab
 
       def serialize_keys
         SERIALIZE_KEYS
+      end
+
+      def gitaly_tree_entry(path)
+        # We're only interested in metadata, so limit actual data to 1 byte
+        # since Gitaly doesn't support "send no data" option.
+        entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
+        return unless entry
+
+        # To be compatible with the rugged format
+        entry = entry.to_h
+        entry.delete(:data)
+        entry[:name] = File.basename(path)
+        entry[:type] = entry[:type].downcase
+
+        entry
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
+      rescue Rugged::TreeError
+        nil
       end
 
       def gitaly_commit_author_from_rugged(author_or_committer)

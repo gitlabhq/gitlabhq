@@ -1,18 +1,21 @@
 import _ from 'underscore';
 
-export default class ProtectedBranchDropdown {
+export default class CreateItemDropdown {
   /**
    * @param {Object} options containing
    *                         `$dropdown` target element
    *                          `onSelect` event callback
-   * $dropdown must be an element created using `dropdown_branch()` rails helper
+   * $dropdown must be an element created using `dropdown_tag()` rails helper
    */
   constructor(options) {
-    this.onSelect = options.onSelect;
+    this.defaultToggleLabel = options.defaultToggleLabel;
+    this.fieldName = options.fieldName;
+    this.onSelect = options.onSelect || (() => {});
+    this.getDataOption = options.getData;
     this.$dropdown = options.$dropdown;
     this.$dropdownContainer = this.$dropdown.parent();
     this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
-    this.$protectedBranch = this.$dropdownContainer.find('.js-create-new-protected-branch');
+    this.$createButton = this.$dropdownContainer.find('.js-dropdown-create-new-item');
 
     this.buildDropdown();
     this.bindEvents();
@@ -23,7 +26,7 @@ export default class ProtectedBranchDropdown {
 
   buildDropdown() {
     this.$dropdown.glDropdown({
-      data: this.getProtectedBranches.bind(this),
+      data: this.getData.bind(this),
       filterable: true,
       remote: false,
       search: {
@@ -31,14 +34,14 @@ export default class ProtectedBranchDropdown {
       },
       selectable: true,
       toggleLabel(selected) {
-        return (selected && 'id' in selected) ? selected.title : 'Protected Branch';
+        return (selected && 'id' in selected) ? selected.title : this.defaultToggleLabel;
       },
-      fieldName: 'protected_branch[name]',
-      text(protectedBranch) {
-        return _.escape(protectedBranch.title);
+      fieldName: this.fieldName,
+      text(item) {
+        return _.escape(item.title);
       },
-      id(protectedBranch) {
-        return _.escape(protectedBranch.id);
+      id(item) {
+        return _.escape(item.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
       clicked: (options) => {
@@ -49,39 +52,37 @@ export default class ProtectedBranchDropdown {
   }
 
   bindEvents() {
-    this.$protectedBranch.on('click', this.onClickCreateWildcard.bind(this));
+    this.$createButton.on('click', this.onClickCreateWildcard.bind(this));
   }
 
   onClickCreateWildcard(e) {
     e.preventDefault();
 
-    // Refresh the dropdown's data, which ends up calling `getProtectedBranches`
+    // Refresh the dropdown's data, which ends up calling `getData`
     this.$dropdown.data('glDropdown').remote.execute();
     this.$dropdown.data('glDropdown').selectRowAtIndex();
   }
 
-  getProtectedBranches(term, callback) {
-    if (this.selectedBranch) {
-      callback(gon.open_branches.concat(this.selectedBranch));
-    } else {
-      callback(gon.open_branches);
-    }
+  getData(term, callback) {
+    this.getDataOption(term, (data = []) => {
+      callback(data.concat(this.selectedItem || []));
+    });
   }
 
-  toggleCreateNewButton(branchName) {
-    if (branchName) {
-      this.selectedBranch = {
-        title: branchName,
-        id: branchName,
-        text: branchName,
+  toggleCreateNewButton(item) {
+    if (item) {
+      this.selectedItem = {
+        title: item,
+        id: item,
+        text: item,
       };
 
       this.$dropdownContainer
-        .find('.js-create-new-protected-branch code')
-        .text(branchName);
+        .find('.js-dropdown-create-new-item code')
+        .text(item);
     }
 
-    this.toggleFooter(!branchName);
+    this.toggleFooter(!item);
   }
 
   toggleFooter(toggleState) {

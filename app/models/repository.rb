@@ -831,13 +831,12 @@ class Repository
   end
 
   def can_be_merged?(source_sha, target_branch)
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
-
-    if our_commit && their_commit
-      !rugged.merge_commits(our_commit, their_commit).conflicts?
-    else
-      false
+    raw_repository.gitaly_migrate(:can_be_merged) do |is_enabled|
+      if is_enabled
+        gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
+      else
+        rugged_can_be_merged?(source_sha, target_branch)
+      end
     end
   end
 
@@ -895,13 +894,16 @@ class Repository
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
-      @root_ref_sha ||= commit(root_ref).sha
-      same_head = branch.target == @root_ref_sha
-      merged = ancestor?(branch.target, @root_ref_sha)
+      same_head = branch.target == root_ref_sha
+      merged = ancestor?(branch.target, root_ref_sha)
       !same_head && merged
     else
       nil
     end
+  end
+
+  def root_ref_sha
+    @root_ref_sha ||= commit(root_ref).sha
   end
 
   delegate :merged_branch_names, to: :raw_repository
@@ -930,15 +932,17 @@ class Repository
     return [] if empty? || query.blank?
 
     offset = 2
-    args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+    args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
     run_git(args).first.scrub.split(/^--$/)
   end
 
   def search_files_by_name(query, ref)
-    return [] if empty? || query.blank?
+    safe_query = Regexp.escape(query.sub(/^\/*/, ""))
 
-    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+    return [] if empty? || safe_query.blank?
+
+    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{safe_query})
 
     run_git(args).first.lines.map(&:strip)
   end
@@ -1127,6 +1131,14 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
+  end
+
+  def gitaly_can_be_merged?(their_commit, our_commit)
+    !raw_repository.gitaly_conflicts_client(our_commit, their_commit).conflicts?
+  end
+
+  def rugged_can_be_merged?(their_commit, our_commit)
+    !rugged.merge_commits(our_commit, their_commit).conflicts?
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

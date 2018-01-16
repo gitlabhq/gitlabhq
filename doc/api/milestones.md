@@ -93,6 +93,19 @@ Parameters:
 - `start_date` (optional) - The start date of the milestone
 - `state_event` (optional) - The state event of the milestone (close|activate)
 
+## Delete project milestone
+
+Only for user with developer access to the project.
+
+```
+DELETE /projects/:id/milestones/:milestone_id
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of the project's milestone
+
 ## Get all issues assigned to a single milestone
 
 Gets all issues assigned to a single project milestone.
