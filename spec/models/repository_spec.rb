@@ -668,6 +668,18 @@ describe Repository do
       expect(results.first).to eq('files/html/500.html')
     end
 
+    it 'ignores leading slashes' do
+      results = repository.search_files_by_name('/files', 'master')
+
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is only slashes' do
+      results = repository.search_files_by_name('//', 'master')
+
+      expect(results).to match_array([])
+    end
+
     it 'properly handles when query is not present' do
       results = repository.search_files_by_name('', 'master')
 
