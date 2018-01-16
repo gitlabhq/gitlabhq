@@ -140,13 +140,13 @@ module Gitlab
       define_histogram :gitlab_transaction_duration_seconds,
                        docstring: 'Transaction duration',
                        base_labels: BASE_LABELS,
-                       buckets: [0.001, 0.01, 0.1, 0.5, 10.0],
-                       with_feature: :prometheus_metrics_method_instrumentation
+                       buckets: [0.001, 0.01, 0.1, 0.5, 10.0]
 
       define_histogram :gitlab_transaction_allocated_memory_bytes,
                        docstring: 'Transaction allocated memory bytes',
                        base_labels: BASE_LABELS,
-                       buckets: [100, 1000, 10000, 100000, 1000000, 10000000]
+                       buckets: [100, 1000, 10000, 100000, 1000000, 10000000],
+                       with_feature: :prometheus_metrics_transaction_allocated_memory
 
       def self.transaction_metric(name, type, prefix: nil, tags: {})
         metric_name = "gitlab_transaction_#{prefix}#{name}_total".to_sym
