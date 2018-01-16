@@ -76,9 +76,9 @@ module Gitlab
     def self.fdw?
       return false unless self.fdw_capable?
 
-      # FDW is disabled by default: https://gitlab.com/gitlab-org/gitlab-ee/issues/4558
-      # Enable it by setting `fdw: true` in config/database_geo.yml
-      Rails.configuration.geo_database.fetch('fdw', false)
+      # FDW is enabled by default, disable it by setting `fdw: false` in config/database_geo.yml
+      value = Rails.configuration.geo_database['fdw']
+      value.nil? ? true : value
     end
 
     def self.fdw_table(table_name)

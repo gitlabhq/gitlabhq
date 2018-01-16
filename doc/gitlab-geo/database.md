@@ -304,7 +304,7 @@ because we have not yet configured the secondary server. This is the next step.
     connections. The certificate can only be replicated by someone with access
     to the private key, which is **only** present on the primary node.
 
-1. Optional: Configure PostreSQL to enable FDW support
+1. Configure PostreSQL to enable FDW support
 
     This step is similar to how we configured the primary instance.
     We need to enable this, to enable FDW support, even if using a single node.

@@ -263,7 +263,7 @@ node.
     bundle exec rake geo:db:migrate
     ```
 
-1. Optional: Configure the [PostgreSQL FDW][FDW] connection and credentials:
+1. Configure the [PostgreSQL FDW][FDW] connection and credentials:
 
     Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
     params to match your environment.

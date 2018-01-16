@@ -46,15 +46,15 @@ describe Gitlab::Geo, :geo do
       expect(described_class.fdw?).to be_falsey
     end
 
-    context 'fdw capable' do
+    context 'with fdw capable' do
       before do
         allow(described_class).to receive(:fdw_capable?).and_return(true)
       end
 
-      it 'returns false by default' do
+      it 'returns true by default' do
         allow(Rails.configuration).to receive(:geo_database).and_return('fdw' => nil)
 
-        expect(described_class.fdw?).to be_falsey
+        expect(described_class.fdw?).to be_truthy
       end
 
       it 'returns false if configured in `config/database_geo.yml`' do
