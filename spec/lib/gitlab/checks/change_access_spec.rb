@@ -252,17 +252,23 @@ describe Gitlab::Checks::ChangeAccess do
       end
 
       context 'commit message rules' do
-        let(:push_rule) { create(:push_rule, :commit_message) }
+        let!(:push_rule) { create(:push_rule, :commit_message) }
 
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if the rule fails' do
           expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
         end
+
+        it 'returns an error if the regex is invalid' do
+          push_rule.commit_message_regex = '+'
+
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /\ARegular expression '\+' is invalid/)
+        end
       end
 
       context 'author email rules' do
-        let(:push_rule) { create(:push_rule, author_email_regex: '.*@valid.com') }
+        let!(:push_rule) { create(:push_rule, author_email_regex: '.*@valid.com') }
 
         before do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('mike@valid.com')
@@ -282,16 +288,28 @@ describe Gitlab::Checks::ChangeAccess do
 
           expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author's email 'joan@invalid.com' does not follow the pattern '.*@valid.com'")
         end
+
+        it 'returns an error if the regex is invalid' do
+          push_rule.author_email_regex = '+'
+
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /\ARegular expression '\+' is invalid/)
+        end
       end
 
       context 'branch name rules' do
-        let(:push_rule) { create(:push_rule, branch_name_regex: '^(w*)$') }
+        let!(:push_rule) { create(:push_rule, branch_name_regex: '^(w*)$') }
         let(:ref) { 'refs/heads/a-branch-that-is-not-allowed' }
 
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'rejects the branch that is not allowed' do
           expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+        end
+
+        it 'returns an error if the regex is invalid' do
+          push_rule.branch_name_regex = '+'
+
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /\ARegular expression '\+' is invalid/)
         end
 
         context 'when the ref is not a branch ref' do
@@ -346,12 +364,18 @@ describe Gitlab::Checks::ChangeAccess do
       context 'file name rules' do
         # Notice that the commit used creates a file named 'README'
         context 'file name regex check' do
-          let(:push_rule) { create(:push_rule, file_name_regex: 'READ*') }
+          let!(:push_rule) { create(:push_rule, file_name_regex: 'READ*') }
 
           it_behaves_like 'check ignored when push rule unlicensed'
 
           it "returns an error if a new or renamed filed doesn't match the file name regex" do
             expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File name README was blacklisted by the pattern READ*.")
+          end
+
+          it 'returns an error if the regex is invalid' do
+            push_rule.file_name_regex = '+'
+
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /\ARegular expression '\+' is invalid/)
           end
         end
 

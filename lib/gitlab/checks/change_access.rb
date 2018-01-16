@@ -193,6 +193,8 @@ module Gitlab
             end
           end
         end
+      rescue PushRule::MatchError => e
+        raise GitAccess::UnauthorizedError, e.message
       end
 
       def branch_name_allowed_by_push_rule?(push_rule)
