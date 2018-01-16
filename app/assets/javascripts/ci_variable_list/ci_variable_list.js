@@ -11,7 +11,7 @@ function createEnvironmentItem(value) {
   return {
     title: value === '*' ? ALL_ENVIRONMENTS_STRING : value,
     id: value,
-    text: value,
+    text: value === '*' ? s__('CiVariable|* (All environments)') : value,
   };
 }
 
@@ -41,11 +41,11 @@ export default class VariableList {
         selector: '.js-ci-variable-input-protected',
         default: 'true',
       },
-      environment: {
+      environment_scope: {
         // We can't use a `.js-` class here because
         // gl_dropdown replaces the <input> and doesn't copy over the class
         // See https://gitlab.com/gitlab-org/gitlab-ce/issues/42458
-        selector: `input[name="${this.formField}[variables_attributes][][environment]"]`,
+        selector: `input[name="${this.formField}[variables_attributes][][environment_scope]"]`,
         default: '*',
       },
       _destroy: {
@@ -104,12 +104,15 @@ export default class VariableList {
 
     setupToggleButtons($row[0]);
 
+    // Reset the resizable textarea
+    $row.find(this.inputMap.value.selector).css('height', '');
+
     const $environmentSelect = $row.find('.js-variable-environment-toggle');
     if ($environmentSelect.length) {
       const createItemDropdown = new CreateItemDropdown({
         $dropdown: $environmentSelect,
         defaultToggleLabel: ALL_ENVIRONMENTS_STRING,
-        fieldName: `${this.formField}[variables_attributes][][environment]`,
+        fieldName: `${this.formField}[variables_attributes][][environment_scope]`,
         getData: (term, callback) => callback(this.getEnvironmentValues()),
         createNewItemFromValue: createEnvironmentItem,
         onSelect: () => {
@@ -117,7 +120,7 @@ export default class VariableList {
           // so they have the new value we just picked
           this.refreshDropdownData();
 
-          $row.find(this.inputMap.environment.selector).trigger('trigger-change');
+          $row.find(this.inputMap.environment_scope.selector).trigger('trigger-change');
         },
       });
 
@@ -143,7 +146,8 @@ export default class VariableList {
     $row.after($rowClone);
   }
 
-  removeRow($row) {
+  removeRow(row) {
+    const $row = $(row);
     const isPersisted = convertPermissionToBoolean($row.attr('data-is-persisted'));
 
     if (isPersisted) {
@@ -155,6 +159,10 @@ export default class VariableList {
     } else {
       $row.remove();
     }
+
+    // Refresh the other dropdowns in the variable list
+    // so any value with the variable deleted is gone
+    this.refreshDropdownData();
   }
 
   checkIfRowTouched($row) {
@@ -163,6 +171,11 @@ export default class VariableList {
       const $el = $row.find(entry.selector);
       return $el.length && $el.val() !== entry.default;
     });
+  }
+
+  toggleEnableRow(isEnabled = true) {
+    this.$container.find(this.inputMap.key.selector).attr('disabled', !isEnabled);
+    this.$container.find('.js-row-remove-button').attr('disabled', !isEnabled);
   }
 
   getAllData() {
@@ -185,7 +198,7 @@ export default class VariableList {
   }
 
   getEnvironmentValues() {
-    const valueMap = this.$container.find(this.inputMap.environment.selector).toArray()
+    const valueMap = this.$container.find(this.inputMap.environment_scope.selector).toArray()
       .reduce((prevValueMap, envInput) => ({
         ...prevValueMap,
         [envInput.value]: envInput.value,

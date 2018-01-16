@@ -1,11 +1,12 @@
-import SecretValues from '~/behaviors/secret_values';
+import AjaxVariableList from '~/ci_variable_list/ajax_variable_list';
 
 export default () => {
-  const secretVariableTable = document.querySelector('.js-secret-variable-table');
-  if (secretVariableTable) {
-    const secretVariableTableValues = new SecretValues({
-      container: secretVariableTable,
-    });
-    secretVariableTableValues.init();
-  }
+  const variableListEl = document.querySelector('.js-ci-variable-list-section');
+  // eslint-disable-next-line no-new
+  new AjaxVariableList({
+    container: variableListEl,
+    saveButton: variableListEl.querySelector('.js-secret-variables-save-button'),
+    errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
+    saveEndpoint: variableListEl.dataset.saveEndpoint,
+  });
 };

@@ -18,3 +18,22 @@ Element.prototype.matches = Element.prototype.matches ||
     while (i >= 0 && elms.item(i) !== this) { i -= 1; }
     return i > -1;
   };
+
+// From the polyfill on MDN, https://developer.mozilla.org/en-US/docs/Web/API/ChildNode/remove#Polyfill
+((arr) => {
+  arr.forEach((item) => {
+    if (Object.prototype.hasOwnProperty.call(item, 'remove')) {
+      return;
+    }
+    Object.defineProperty(item, 'remove', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function remove() {
+        if (this.parentNode !== null) {
+          this.parentNode.removeChild(this);
+        }
+      },
+    });
+  });
+})([Element.prototype, CharacterData.prototype, DocumentType.prototype]);

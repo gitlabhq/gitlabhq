@@ -1,0 +1,6 @@
+---
+title: Update CI/CD secret variables list to be dynamic and save without reloading
+  the page
+merge_request: 4110
+author:
+type: added
