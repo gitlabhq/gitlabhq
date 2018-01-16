@@ -2619,7 +2619,7 @@ describe User do
 
       it 'should raise an ActiveRecord::RecordInvalid exception' do
         user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Path foo has been taken before/)
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /path foo has been taken before/)
       end
     end
 
