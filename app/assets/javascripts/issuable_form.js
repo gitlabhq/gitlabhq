@@ -132,7 +132,7 @@ export default class IssuableForm {
               text: name,
             })),
           };
-        }
+        },
       },
       initSelection(el, callback) {
         const val = el.val();
