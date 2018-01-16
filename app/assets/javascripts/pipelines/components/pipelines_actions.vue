@@ -54,6 +54,7 @@
     >
       <icon
         name="play"
+        class="icon-play"
       />
       <i
         class="fa fa-caret-down"
