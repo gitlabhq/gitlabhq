@@ -1,5 +1,6 @@
 raise "Vendored ActiveRecord 5 code! Delete #{__FILE__}!" if ActiveRecord::VERSION::MAJOR >= 5
 
+require 'active_record/connection_adapters/postgresql_adapter'
 require 'active_record/connection_adapters/postgresql/schema_statements'
 
 #
@@ -10,6 +11,14 @@ require 'active_record/connection_adapters/postgresql/schema_statements'
 # rubocop:disable all
 module ActiveRecord
   module ConnectionAdapters
+
+    # We need #postgresql_version to be public as in ActiveRecord 5 for seed_fu
+    # to work. In ActiveRecord 4, it is protected.
+    # https://github.com/mbleigh/seed-fu/issues/123
+    class PostgreSQLAdapter
+      public :postgresql_version
+    end
+
     module PostgreSQL
       module SchemaStatements
         # Resets the sequence of a table's primary key to the maximum value.
