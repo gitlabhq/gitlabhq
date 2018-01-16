@@ -64,7 +64,7 @@ import Activities from './activities';
         return false;
       }
 
-      const fail = (e) => { throw e; Flash('Error loading dynamic module'); }
+      const fail = () => Flash('Error loading dynamic module');
       const callDefault = m => m.default();
 
       path = page.split(':');
