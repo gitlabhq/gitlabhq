@@ -1,6 +1,7 @@
 module Gitlab
   module Metrics
     module InfluxDb
+      include Gitlab::Metrics::Concern
       include Gitlab::CurrentSettings
       extend self
 
@@ -12,7 +13,7 @@ module Gitlab
       end
 
       # Prometheus histogram buckets used for arbitrary code measurements
-      EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.002, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1].freeze
+      EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
       RAILS_ROOT = Rails.root.to_s
       METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
       PATH_REGEX = /^#{RAILS_ROOT}\/?/
@@ -105,21 +106,25 @@ module Gitlab
         real_time = (real_stop - real_start)
         cpu_time = cpu_stop - cpu_start
 
-        Gitlab::Metrics.histogram("gitlab_#{name}_real_duration_seconds".to_sym,
-                                  "Measure #{name}",
-                                  Transaction::BASE_LABELS,
-                                  EXECUTION_MEASUREMENT_BUCKETS)
-          .observe(trans.labels, real_time)
+        real_duration_seconds = self.class.fetch_histogram("gitlab_#{name}_real_duration_seconds".to_sym) do
+          docstring "Measure #{name}"
+          base_labels Transaction::BASE_LABELS
+          buckets EXECUTION_MEASUREMENT_BUCKETS
+        end
 
-        Gitlab::Metrics.histogram("gitlab_#{name}_cpu_duration_seconds".to_sym,
-                                  "Measure #{name}",
-                                  Transaction::BASE_LABELS,
-                                  EXECUTION_MEASUREMENT_BUCKETS)
-          .observe(trans.labels, cpu_time / 1000.0)
+        real_duration_seconds.observe(trans.labels, real_time)
 
-        # InfluxDB stores the _real_time time values as milliseconds
-        trans.increment("#{name}_real_time", real_time * 1000, false)
-        trans.increment("#{name}_cpu_time", cpu_time, false)
+        cpu_duration_seconds = self.class.fetch_histogram("gitlab_#{name}_cpu_duration_seconds".to_sym) do
+          docstring "Measure #{name}"
+          base_labels Transaction::BASE_LABELS
+          buckets EXECUTION_MEASUREMENT_BUCKETS
+          # with_feature "prometheus_metrics_measure_#{name}_cpu_duration"
+        end
+        cpu_duration_seconds.observe(trans.labels, cpu_time)
+
+        # InfluxDB stores the _real_time and _cpu_time time values as milliseconds
+        trans.increment("#{name}_real_time", real_time.in_milliseconds, false)
+        trans.increment("#{name}_cpu_time", cpu_time.in_milliseconds, false)
         trans.increment("#{name}_call_count", 1, false)
 
         retval
