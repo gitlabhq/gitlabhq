@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Technical articles list (deprecated)
 
 [Technical articles](../development/writing_documentation.md#technical-articles) are
@@ -10,4 +14,5 @@ The list of technical articles was [deprecated](https://gitlab.com/gitlab-org/gi
 - [GitLab administrator](../administration/index.md)
 - [GitLab CI/CD](../ci/README.md)
 - [GitLab Pages](../user/project/pages/index.md)
+- [GitLab user](../user/index.md)
 - [Install GitLab](../install/README.md)
