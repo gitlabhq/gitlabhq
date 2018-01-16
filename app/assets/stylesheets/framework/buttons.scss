@@ -450,3 +450,20 @@
 .btn-svg svg {
   @include btn-svg;
 }
+
+// All disabled buttons, regardless of color
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn,
+.dropdown-toggle[disabled],
+[disabled].dropdown-menu-toggle {
+  background-color: $gray-light;
+  border-color: $theme-gray-200;
+  color: $gl-text-color-disabled;
+  opacity: 1;
+  cursor: not-allowed;
+
+  i {
+    color: $gl-text-color-disabled;
+  }
+}
