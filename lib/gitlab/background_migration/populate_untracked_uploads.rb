@@ -143,7 +143,7 @@ module Gitlab
         end
 
         def absolute_path
-          File.join(CarrierWave.root, path)
+          File.join(Gitlab.config.uploads.storage_path, path)
         end
       end
 

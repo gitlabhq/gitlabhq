@@ -17,7 +17,7 @@ class Upload < ActiveRecord::Base
   end
 
   def self.record(uploader)
-    upload = uploader.upload || new
+    upload = uploader.upload&.dup || new
 
     upload.update_attributes(
       size: uploader.file.size,
