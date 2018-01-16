@@ -439,15 +439,25 @@ eos
   end
 
   describe '#uri_type' do
-    it 'returns the URI type at the given path' do
-      expect(commit.uri_type('files/html')).to be(:tree)
-      expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
-      expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
-      expect(commit.uri_type('files/js/application.js')).to be(:blob)
+    shared_examples 'URI type' do
+      it 'returns the URI type at the given path' do
+        expect(commit.uri_type('files/html')).to be(:tree)
+        expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
+        expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
+        expect(commit.uri_type('files/js/application.js')).to be(:blob)
+      end
+
+      it "returns nil if the path doesn't exists" do
+        expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+      end
     end
 
-    it "returns nil if the path doesn't exists" do
-      expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+    context 'when Gitaly commit_tree_entry feature is enabled' do
+      it_behaves_like 'URI type'
+    end
+
+    context 'when Gitaly commit_tree_entry feature is disabled', :disable_gitaly do
+      it_behaves_like 'URI type'
     end
   end
 
