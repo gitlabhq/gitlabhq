@@ -10,9 +10,10 @@ tasks = [
   %w[bundle exec license_finder],
   %w[yarn run eslint],
   %w[bundle exec rubocop --parallel],
-  %w[scripts/lint-conflicts.sh],
   %w[bundle exec rake gettext:lint],
-  %w[scripts/lint-changelog-yaml]
+  %w[bundle exec rake lint:static_verification],
+  %w[scripts/lint-changelog-yaml],
+  %w[scripts/lint-conflicts.sh]
 ]
 
 failed_tasks = tasks.reduce({}) do |failures, task|

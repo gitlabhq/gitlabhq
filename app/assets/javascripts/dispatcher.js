@@ -1,42 +1,34 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 import projectSelect from './project_select';
-import IssuableIndex from './issuable_index';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 import MilestoneSelect from './milestone_select';
-import NewBranchForm from './new_branch_form';
 import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
-import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
-import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
 import Group from './group';
 import ProjectsList from './projects_list';
-import setupProjectEdit from './project_edit';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
-import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
 import TreeView from './tree';
@@ -53,7 +45,6 @@ import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
 import ShortcutsNavigation from './shortcuts_navigation';
-import ShortcutsFindFile from './shortcuts_find_file';
 import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
@@ -116,22 +107,22 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:index':
+          import('./pages/projects/merge_requests/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:index':
-          if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
-            filteredSearchManager.setup();
-          }
-          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          new IssuableIndex(pagePrefix);
-
-          shortcut_handler = new ShortcutsNavigation();
-          new UsersSelect();
+          import('./pages/projects/issues/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:issues:show':
-          new Issue();
-          shortcut_handler = new ShortcutsIssuable();
-          new ZenMode();
-          initIssuableSidebar();
+          import('./pages/projects/issues/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'dashboard:milestones:index':
           import('./pages/dashboard/milestones/index')
@@ -207,8 +198,14 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:branches:new':
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:branches:create':
-          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:index':
           import('./pages/projects/branches/index')
@@ -216,13 +213,16 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:issues:new':
+          import('./pages/projects/issues/new')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:edit':
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'), true);
-          new IssuableForm($('.issue-form'));
-          new LabelsSelect();
-          new MilestoneSelect();
-          new IssuableTemplateSelectors();
+          import('./pages/projects/issues/edit')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
           const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
@@ -250,9 +250,9 @@ import Activities from './activities';
           new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
           break;
         case 'projects:tags:new':
-          new ZenMode();
-          new GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'));
+          import('./pages/projects/tags/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -266,11 +266,24 @@ import Activities from './activities';
           new ZenMode();
           break;
         case 'snippets:new':
+          import('./pages/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:edit':
+          import('./pages/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:create':
+          import('./pages/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:update':
-          new GLForm($('.snippet-form'), false);
-          new ZenMode();
+          import('./pages/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -334,12 +347,14 @@ import Activities from './activities';
           });
           break;
         case 'projects:edit':
-          setupProjectEdit();
-          // Initialize expandable settings panels
-          initSettingsPanels();
+          import('./pages/projects/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:imports:show':
-          projectImport();
+          import('./pages/projects/imports/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:new':
         case 'projects:pipelines:create':
@@ -399,22 +414,15 @@ import Activities from './activities';
           groupAvatar();
           break;
         case 'projects:tree:show':
-          shortcut_handler = new ShortcutsNavigation();
-          new TreeView();
-          new BlobViewer();
-          new NewCommitForm($('.js-create-dir-form'));
-          $('#tree-slider').waitForImages(function() {
-            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-          });
+          import('./pages/projects/tree/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:find_file:show':
-          const findElement = document.querySelector('.js-file-finder');
-          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
-            url: findElement.dataset.fileFindUrl,
-            treeUrl: findElement.dataset.findTreeUrl,
-            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
-          });
-          new ShortcutsFindFile(projectFindFile);
+          import('./pages/projects/find_file/show')
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
@@ -468,7 +476,7 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+          import('./pages/projects/forks/new')
             .then(callDefault)
             .catch(fail);
           break;
@@ -525,7 +533,9 @@ import Activities from './activities';
           import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          import('./pages/snippets/show').then(m => m.default()).catch(fail);
+          import('./pages/snippets/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);

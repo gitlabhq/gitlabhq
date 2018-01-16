@@ -28,6 +28,7 @@ you don't need to set up anything to start to use them with GitLab CI/CD.
 - Article (2016-08-05): [Continuous Integration, Delivery, and Deployment with GitLab - Intro to CI/CD](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/)
 - Article (2015-12-14): [Getting started with GitLab and GitLab CI - Intro to CI](https://about.gitlab.com/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 - Article (2017-07-13): [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/)
+- Article (2017-05-22): [Fast and Natural Continuous Integration with GitLab CI](https://about.gitlab.com/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/)
 - **Videos:**
   - Demo (Streamed live on Jul 17, 2017): [GitLab CI/CD Deep Dive](https://youtu.be/pBe4t1CD8Fc?t=195)
   - Demo (March, 2017): [How to get started using CI/CD with GitLab](https://about.gitlab.com/2017/03/13/ci-cd-demo/)
@@ -93,17 +94,6 @@ Leverage the power of Docker to run your CI pipelines.
 
 See the documentation on [GitLab Pages](../user/project/pages/index.md).
 
-## Special configuration (GitLab admin)
-
-As a GitLab administrator, you can change the default behavior of GitLab CI/CD in
-your whole GitLab instance as well as in each project.
-
-- **Project specific:**
-  - [Pipelines settings](../user/project/pipelines/settings.md)
-  - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
-- **Affecting the whole GitLab instance:**
-  - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
-
 ## Examples
 
 Check the [GitLab CI/CD examples](examples/README.md) for a collection of tutorials and guides on setting up your CI/CD pipeline for various programming languages, frameworks,
@@ -114,6 +104,18 @@ and operating systems.
 - Article (2016-06-09): [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)
 - Article (2016-05-05): [Getting Started with GitLab and Shippable Continuous Integration](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)
 - Article (2016-04-19): [GitLab Partners with DigitalOcean to make Continuous Integration faster, safer, and more affordable](https://about.gitlab.com/2016/04/19/gitlab-partners-with-digitalocean-to-make-continuous-integration-faster-safer-and-more-affordable/)
+
+## Special configuration (GitLab admin)
+
+As a GitLab administrator, you can change the default behavior of GitLab CI/CD in
+your whole GitLab instance as well as in each project.
+
+- [Continuous Integration admin settings](../administration/index.md#continuous-integration-settings)
+- **Project specific:**
+  - [Pipelines settings](../user/project/pipelines/settings.md)
+  - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
+- **Affecting the whole GitLab instance:**
+  - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
 
 ## Breaking changes
 
