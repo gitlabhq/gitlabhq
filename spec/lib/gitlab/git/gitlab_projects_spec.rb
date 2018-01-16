@@ -158,39 +158,55 @@ describe Gitlab::Git::GitlabProjects do
 
     subject { gl_projects.import_project(import_url, timeout) }
 
-    context 'success import' do
-      it 'imports a repo' do
-        expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_falsy
+    shared_examples 'importing repository' do
+      context 'success import' do
+        it 'imports a repo' do
+          expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_falsy
 
-        message = "Importing project from <#{import_url}> to <#{tmp_repo_path}>."
-        expect(logger).to receive(:info).with(message)
+          is_expected.to be_truthy
 
-        is_expected.to be_truthy
+          expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_truthy
+        end
+      end
 
-        expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_truthy
+      context 'already exists' do
+        it "doesn't import" do
+          FileUtils.mkdir_p(tmp_repo_path)
+
+          is_expected.to be_falsy
+        end
       end
     end
 
-    context 'already exists' do
-      it "doesn't import" do
-        FileUtils.mkdir_p(tmp_repo_path)
-
-        is_expected.to be_falsy
-      end
+    context 'when Gitaly import_repository feature is enabled' do
+      it_behaves_like 'importing repository'
     end
 
-    context 'timeout' do
-      it 'does not import a repo' do
-        stub_spawn_timeout(cmd, timeout, nil)
+    context 'when Gitaly import_repository feature is disabled', :disable_gitaly do
+      describe 'logging' do
+        it 'imports a repo' do
+          message = "Importing project from <#{import_url}> to <#{tmp_repo_path}>."
+          expect(logger).to receive(:info).with(message)
 
-        message = "Importing project from <#{import_url}> to <#{tmp_repo_path}> failed."
-        expect(logger).to receive(:error).with(message)
-
-        is_expected.to be_falsy
-
-        expect(gl_projects.output).to eq("Timed out\n")
-        expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_falsy
+          subject
+        end
       end
+
+      context 'timeout' do
+        it 'does not import a repo' do
+          stub_spawn_timeout(cmd, timeout, nil)
+
+          message = "Importing project from <#{import_url}> to <#{tmp_repo_path}> failed."
+          expect(logger).to receive(:error).with(message)
+
+          is_expected.to be_falsy
+
+          expect(gl_projects.output).to eq("Timed out\n")
+          expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_falsy
+        end
+      end
+
+      it_behaves_like 'importing repository'
     end
   end
 

@@ -54,16 +54,6 @@ namespace :gitlab do
       # (Re)create hooks
       Rake::Task['gitlab:shell:create_hooks'].invoke
 
-      # Required for debian packaging with PKGR: Setup .ssh/environment with
-      # the current PATH, so that the correct ruby version gets loaded
-      # Requires to set "PermitUserEnvironment yes" in sshd config (should not
-      # be an issue since it is more than likely that there are no "normal"
-      # user accounts on a gitlab server). The alternative is for the admin to
-      # install a ruby (1.9.3+) in the global path.
-      File.open(File.join(user_home, ".ssh", "environment"), "w+") do |f|
-        f.puts "PATH=#{ENV['PATH']}"
-      end
-
       Gitlab::Shell.ensure_secret_token!
     end
 

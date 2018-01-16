@@ -10,9 +10,10 @@ module Gitlab
 
         def generate
           spec = { containers: [container_specification], restartPolicy: 'Never' }
+
           if command.chart_values_file
-            generate_config_map
-            spec['volumes'] = volumes_specification
+            create_config_map
+            spec[:volumes] = volumes_specification
           end
 
           ::Kubeclient::Resource.new(metadata: metadata, spec: spec)
@@ -35,19 +36,39 @@ module Gitlab
         end
 
         def labels
-          { 'gitlab.org/action': 'install', 'gitlab.org/application': command.name }
+          {
+            'gitlab.org/action': 'install',
+            'gitlab.org/application': command.name
+          }
         end
 
         def metadata
-          { name: command.pod_name, namespace: namespace_name, labels: labels }
+          {
+            name: command.pod_name,
+            namespace: namespace_name,
+            labels: labels
+          }
         end
 
         def volume_mounts_specification
-          [{ name: 'config-volume', mountPath: '/etc/config' }]
+          [
+            {
+              name: 'configuration-volume',
+              mountPath: "/data/helm/#{command.name}/config"
+            }
+          ]
         end
 
         def volumes_specification
-          [{ name: 'config-volume', configMap: { name: 'values-config' } }]
+          [
+            {
+              name: 'configuration-volume',
+              configMap: {
+                name: 'values-content-configuration',
+                items: [{ key: 'values', path: 'values.yaml' }]
+              }
+            }
+          ]
         end
 
         def generate_pod_env(command)
@@ -58,10 +79,10 @@ module Gitlab
           }.map { |key, value| { name: key, value: value } }
         end
 
-        def generate_config_map
+        def create_config_map
           resource = ::Kubeclient::Resource.new
-          resource.metadata = { name: 'values-config', namespace: namespace_name }
-          resource.data = YAML.load_file(command.chart_values_file)
+          resource.metadata = { name: 'values-content-configuration', namespace: namespace_name, labels: { name: 'values-content-configuration' } }
+          resource.data = { values: File.read(command.chart_values_file) }
           kubeclient.create_config_map(resource)
         end
       end
