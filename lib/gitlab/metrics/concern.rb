@@ -2,86 +2,122 @@ module Gitlab
   module Metrics
     module Concern
       extend ActiveSupport::Concern
+
+      included do
+        @@_metrics_provider_mutex ||= Mutex.new
+        @@_metrics_provider_cache ||= {}
+      end
+
       class_methods do
         private
 
-        def metrics_provider(type, name, docstring, options = {})
-          @@_metrics_provider_mutex ||= Mutex.new
-
+        def define_metric(type, name, opts = {}, &block)
           if instance_methods(false).include?(name)
             raise ArgumentError, "metrics method #{name} already exists"
           end
-          options[:base_labels] ||= {}
 
-          args = [name.inspect, %{"#{docstring}"}, options[:base_labels].inspect]
+          define_method(name) do
+            # avoid unnecessary method call to speed up metric access
+            return @@_metrics_provider_cache[name] if @@_metrics_provider_cache.has_key?(name)
+
+            fetch_metric(type, name, opts, &block)
+          end
+        end
+
+        def fetch_metric(type, name, opts = {}, &block)
+          # avoid synchronization to speed up metrics access
+          return @@_metrics_provider_cache[name] if @@_metrics_provider_cache.has_key?(name)
+
+          options = MetricOptions.new(opts)
+          options.evaluate(&block)
+
+          @@_metrics_provider_mutex.synchronize do
+            @@_metrics_provider_cache[name] ||= build_metric!(type, name, options)
+          end
+
+          @@_metrics_provider_cache[name]
+        end
+
+        def build_metric!(type, name, options)
+          unless options.with_feature.nil? || Feature.get(options.with_feature).enabled?
+            return NullMetric.new
+          end
 
           case type
             when :gauge
-              options[:multiprocess_mode] ||= :all
-              args << options[:multiprocess_mode].inspect
+              Gitlab::Metrics.gauge(name, options.docs, options.base_labels, options.multiprocess_mode)
+            when :counter
+              Gitlab::Metrics.counter(name, options.docs, options.base_labels)
             when :histogram
               options[:buckets] ||= ::Prometheus::Client::Histogram::DEFAULT_BUCKETS
-              args << options[:buckets].inspect
+              Gitlab::Metrics.histogram(name, options.docs, options.base_labels, options.buckets)
+            when :summary
+              raise NotImplementedError, "summary metrics are not currently supported"
+            else
+              raise ArgumentError, "uknown metric type #{type}"
           end
-
-          metric_fetching_code = %{Gitlab::Metrics.#{type}(#{args.join(', ')})}
-
-          # optionally wrap in feature
-          if options[:with_feature].is_a?(Symbol)
-            metric_fetching_code = <<-FETCH.strip_heredoc
-              if Feature.get(#{options[:with_feature].inspect}).enabled? 
-                #{metric_fetching_code}
-              else
-                Gitlab::Metrics::NullMetric.new
-              end
-            FETCH
-          end
-
-          method_code, line = <<-METRIC, __LINE__ + 1
-            @@_metric_provider_cached_#{name} = nil
-            def #{name}
-              return @@_metric_provider_cached_#{name} if @@_metric_provider_cached_#{name}
-
-              @@_metrics_provider_mutex.synchronize do
-                @@_metric_provider_cached_#{name} ||= #{metric_fetching_code}
-              end
-            end
-
-            def reload_#{name}!
-              @@_metric_provider_cached_#{name} = nil
-            end
-          METRIC
-
-          instance_eval(method_code, __FILE__, line)
-          module_eval(method_code, __FILE__, line)
         end
 
-        # Declare a Counter
+        counter :global do
+          docstring "Global counter"
+          multiprocess_mode :all
+          buckets [0, 1]
+        end
+
+        # Fetch and/or initialize counter metric
         # @param [Symbol] name
-        # @param [String] docstring
-        # @param [Hash] options
-        def counter(name, docstring, options = {})
-          metrics_provider(:counter, name, docstring, options)
+        # @param [Hash] opts
+        def fetch_counter(name, opts = {}, &block)
+          define_metric(:counter, name, opts, &block)
         end
 
-        # Declare a Gauge
+        # DFetch and/or initialize gauge metric
         # @param [Symbol] name
-        # @param [String] docstring
-        # @param [Hash] options
-        def gauge(name, docstring, options = {})
-          metrics_provider(:counter, name, docstring, options)
+        # @param [Hash] opts
+        def fetch_gauge(name, opts = {}, &block)
+          define_metric(:counter, name, opts, &block)
         end
 
-        # Declare a Histograam
+        # Fetch and/or initialize histogram metric
         # @param [Symbol] name
-        # @param [String] docstring
-        # @param [Hash] options
-        def histogram(name, docstring, options = {})
-          metrics_provider(:histogram, name, docstring, options)
+        # @param [Hash] opts
+        def fetch_histogram(name, opts = {}, &block)
+          define_metric(:histogram, name, opts, &block)
         end
 
-        def summary(*args)
-          raise NotImplementedError, "summary metrics are not currently supported"
+        # Fetch and/or initialize summary metric
+        # @param [Symbol] name
+        # @param [Hash] opts
+        def fetch_summary(name, opts = {}, &block)
+          define_metric(:summary, name, opts, &block)
+        end
+
+        # Define metric accessor method for a Counter
+        # @param [Symbol] name
+        # @param [Hash] opts
+        def define_counter(name, opts = {}, &block)
+          define_metric(:counter, name, opts, &block)
+        end
+
+        # Define metric accessor method for a Gauge
+        # @param [Symbol] name
+        # @param [Hash] opts
+        def define_gauge(name, opts = {}, &block)
+          define_metric(:counter, name, opts, &block)
+        end
+
+        # Define metric accessor method for a Histogram
+        # @param [Symbol] name
+        # @param [Hash] opts
+        def define_histogram(name, opts = {}, &block)
+          define_metric(:histogram, name, opts, &block)
+        end
+
+        # Define metric accessor method for a Summary
+        # @param [Symbol] name
+        # @param [Hash] opts
+        def define_summary(name, opts = {}, &block)
+          define_metric(:summary, name, opts, &block)
         end
       end
     end
