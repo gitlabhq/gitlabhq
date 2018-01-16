@@ -198,8 +198,6 @@ describe Backup::Manager do
         subject.unpack
         expect(progress).to have_received(:puts)
           .with(a_string_matching('1451606400_2016_01_01_1.2.3'))
-        expect(progress).to have_received(:puts)
-          .with(a_string_matching('1451520000_2015_12_31'))
       end
 
       it 'fails the operation and prints an error' do
