@@ -371,6 +371,10 @@ describe('MRWidgetReadyToMerge', () => {
         });
       });
 
+      beforeEach(() => {
+        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+      });
+
       it('should call start and stop polling when MR merged', (done) => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
@@ -400,7 +404,7 @@ describe('MRWidgetReadyToMerge', () => {
 
         setTimeout(() => {
           const statusBox = document.querySelector('.status-box');
-          expect(statusBox.classList.contains('status-box-mr-merged')).toBeTruthy();
+          expect(statusBox.classList.contains('status-box-merged')).toBeTruthy();
           expect(statusBox.textContent).toContain('Merged');
 
           done();
