@@ -201,7 +201,7 @@ You can combine one or more of the following:
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
-- Compress gifs with <https://ezgif.com/optimize> or similar toll.
+- Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
 of a process, not to _replace_ it.
 
