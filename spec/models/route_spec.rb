@@ -75,6 +75,30 @@ describe Route do
           end
         end
       end
+
+      context 'when reclaiming an old path' do
+        let(:group_foo) { create(:group, path: 'foo') }
+
+        before do
+          group_foo.path = 'baz'
+          group_foo.save
+
+          group_foo.path = 'foo'
+        end
+
+        it 'should be valid' do
+          expect(group_foo.valid?).to be_truthy
+        end
+
+        it 'should be saved' do
+          expect(group_foo.save).to be_truthy
+        end
+
+        it 'should delete old redirect routes' do
+          group_foo.save
+          expect(group_foo.redirect_routes.permanent.where(path: 'foo')).to be_empty
+        end
+      end
     end
   end
 
@@ -228,13 +252,22 @@ describe Route do
   end
 
   describe '#delete_conflicting_redirects' do
-    context 'with permanent redirect' do
+    context 'with different permanent redirect' do
       it 'does not delete the redirect' do
         route.create_redirect("#{route.path}/foo", permanent: true)
-
         expect do
           route.delete_conflicting_redirects
         end.not_to change { RedirectRoute.count }
+      end
+    end
+
+    context 'with an equal permanent redirect' do
+      it 'does delete the redirect' do
+        route.create_redirect(route.path, permanent: true)
+
+        expect do
+          route.delete_conflicting_redirects
+        end.to change { RedirectRoute.count }.by(-1)
       end
     end
 

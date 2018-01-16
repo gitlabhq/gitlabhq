@@ -18,11 +18,13 @@ class RedirectRoute < ActiveRecord::Base
     where(wheres, path, "#{sanitize_sql_like(path)}/%")
   end
 
+  scope :namespace_type, -> { where(source_type: 'Namespace') }
+
   scope :permanent, -> do
     if column_permanent_exists?
-      where(permanent: true)
+      namespace_type.where(permanent: true)
     else
-      none
+      namespace_type
     end
   end
 

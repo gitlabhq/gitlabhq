@@ -15,7 +15,7 @@ class Route < ActiveRecord::Base
   before_validation :delete_conflicting_orphaned_routes
   after_create :delete_conflicting_redirects
   after_update :delete_conflicting_redirects, if: :path_changed?
-  after_update :create_redirect_for_old_path
+  after_update :create_redirect_for_old_path, if: :path_changed?
   after_update :rename_descendants
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
@@ -55,7 +55,11 @@ class Route < ActiveRecord::Base
   end
 
   def conflicting_redirects
-    RedirectRoute.temporary.matching_path_and_descendants(path)
+    if permanent_redirect_routes.where(path: path).exists?
+      source.redirect_routes.permanent.matching_path_and_descendants(path)
+    else
+      RedirectRoute.temporary.matching_path_and_descendants(path)
+    end
   end
 
   def create_redirect(path, permanent: false)
@@ -65,7 +69,7 @@ class Route < ActiveRecord::Base
   private
 
   def create_redirect_for_old_path
-    create_redirect(path_was, permanent: permanent_redirect?) if path_changed?
+    create_redirect(path_was, permanent: permanent_redirect?)
   end
 
   def permanent_redirect?
@@ -79,7 +83,25 @@ class Route < ActiveRecord::Base
   end
 
   def conflicting_redirect_exists?
-    RedirectRoute.permanent.matching_path_and_descendants(path).exists?
+    if source_id.present?
+      permanent_redirect_routes.where.not(source_id: self_and_descendant_ids).exists?
+    else
+      permanent_redirect_routes.exists?
+    end
+  end
+
+  def self_and_descendant_ids
+    if permanent_redirect?
+      source.self_and_descendants.map(&:id)
+    else
+      [source.id]
+    end
+  end
+
+  def permanent_redirect_routes
+    RedirectRoute
+      .permanent
+      .matching_path_and_descendants(path)
   end
 
   def delete_conflicting_orphaned_routes
