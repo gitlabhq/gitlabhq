@@ -54,8 +54,8 @@ module Gitlab
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
-        self.class.metric_transaction_duration_seconds.observe(labels, duration)
-        self.class.metric_transaction_allocated_memory_bytes.observe(labels, allocated_memory * 1024.0)
+        self.class.gitlab_transaction_duration_seconds.observe(labels, duration)
+        self.class.gitlab_transaction_allocated_memory_bytes.observe(labels, allocated_memory * 1024.0)
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -72,7 +72,7 @@ module Gitlab
       # event_name - The name of the event (e.g. "git_push").
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
-        self.class.metric_event_counter(event_name, tags).increment(tags.merge(labels))
+        self.class.transaction_metric(event_name, :counter, prefix: 'event_', tags: tags).increment(tags.merge(labels))
         @metrics << Metric.new(EVENT_SERIES, { count: 1 }, tags.merge(event: event_name), :event)
       end
 
@@ -86,12 +86,12 @@ module Gitlab
       end
 
       def increment(name, value, use_prometheus = true)
-        self.class.metric_transaction_counter(name).increment(labels, value) if use_prometheus
+        self.class.transaction_metric(name, :counter).increment(labels, value) if use_prometheus
         @values[name] += value
       end
 
       def set(name, value, use_prometheus = true)
-        self.class.metric_transaction_gauge(name).set(labels, value) if use_prometheus
+        self.class.transaction_metric(name, :gauge).set(labels, value) if use_prometheus
         @values[name] = value
       end
 
@@ -136,64 +136,27 @@ module Gitlab
         "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
       end
 
-      def self.metric_transaction_duration_seconds
-        return @metric_transaction_duration_seconds if @metric_transaction_duration_seconds
+      histogram :gitlab_transaction_duration_seconds, 'Transaction duration',
+                base_labels: BASE_LABELS,
+                buckets: [0.001, 0.01, 0.1, 0.5, 10.0],
+                with_feature: :prometheus_metrics_method_instrumentation
+
+      histogram :gitlab_transaction_allocated_memory_bytes, 'Transaction allocated memory bytes',
+                base_labels: BASE_LABELS,
+                buckets: [100, 1000, 10000, 100000, 1000000, 10000000]
+
+      def self.transaction_metric(name, type, prefix: nil, tags: {})
+        return @transaction_metric[name] if @transaction_metric[name]&.has_key?(name)
 
         METRICS_MUTEX.synchronize do
-          @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
-            :gitlab_transaction_duration_seconds,
-            'Transaction duration',
-            BASE_LABELS,
-            [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
-          )
-        end
-      end
-
-      def self.metric_transaction_allocated_memory_bytes
-        return @metric_transaction_allocated_memory_bytes if @metric_transaction_allocated_memory_bytes
-
-        METRICS_MUTEX.synchronize do
-          @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
-            :gitlab_transaction_allocated_memory_bytes,
-            'Transaction allocated memory bytes',
-            BASE_LABELS,
-            [1000, 10000, 20000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
-          )
-        end
-      end
-
-      def self.metric_event_counter(event_name, tags)
-        return @metric_event_counters[event_name] if @metric_event_counters&.has_key?(event_name)
-
-        METRICS_MUTEX.synchronize do
-          @metric_event_counters ||= {}
-          @metric_event_counters[event_name] ||= Gitlab::Metrics.counter(
-            "gitlab_transaction_event_#{event_name}_total".to_sym,
-            "Transaction event #{event_name} counter",
-            tags.merge(BASE_LABELS)
-          )
-        end
-      end
-
-      def self.metric_transaction_counter(name)
-        return @metric_transaction_counters[name] if @metric_transaction_counters&.has_key?(name)
-
-        METRICS_MUTEX.synchronize do
-          @metric_transaction_counters ||= {}
-          @metric_transaction_counters[name] ||= Gitlab::Metrics.counter(
-            "gitlab_transaction_#{name}_total".to_sym, "Transaction #{name} counter", BASE_LABELS
-          )
-        end
-      end
-
-      def self.metric_transaction_gauge(name)
-        return @metric_transaction_gauges[name] if @metric_transaction_gauges&.has_key?(name)
-
-        METRICS_MUTEX.synchronize do
-          @metric_transaction_gauges ||= {}
-          @metric_transaction_gauges[name] ||= Gitlab::Metrics.gauge(
-            "gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", BASE_LABELS, :livesum
-          )
+          @transaction_metric ||= {}
+          @transaction_metric[name] ||= if type == :counter
+                                          Gitlab::Metrics.counter("gitlab_transaction_#{prefix}#{name}_total".to_sym,
+                                                                  "Transaction #{prefix}#{name} counter", tags.merge(BASE_LABELS))
+                                        else
+                                          Gitlab::Metrics.gauge("gitlab_transaction_#{name}".to_sym,
+                                                                  "Transaction gauge #{name} ", tags.merge(BASE_LABELS), :livesum)
+                                        end
         end
       end
     end
