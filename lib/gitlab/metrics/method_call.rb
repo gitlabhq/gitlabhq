@@ -8,10 +8,11 @@ module Gitlab
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
 
-      histogram :gitlab_method_call_duration_seconds, 'Method calls real duration',
-                base_labels: Transaction::BASE_LABELS.merge(BASE_LABELS),
-                buckets: [0.01, 0.05, 0.1, 0.5, 1],
-                with_feature: :prometheus_metrics_method_instrumentation
+      define_histogram :gitlab_method_call_duration_seconds,
+                       docstring: 'Method calls real duration',
+                       base_labels: Transaction::BASE_LABELS.merge(BASE_LABELS),
+                       buckets: [0.01, 0.05, 0.1, 0.5, 1],
+                       with_feature: :prometheus_metrics_method_instrumentation
 
       # name - The full name of the method (including namespace) such as
       #        `User#sign_in`.

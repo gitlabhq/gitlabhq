@@ -6,7 +6,7 @@ describe Gitlab::Metrics::MethodCall do
 
   describe '#measure' do
     before do
-      described_class.reload_gitlab_method_call_duration_seconds!
+      described_class.reload_metric!(:gitlab_method_call_duration_seconds)
     end
 
     it 'measures the performance of the supplied block' do

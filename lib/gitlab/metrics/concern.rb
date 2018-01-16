@@ -9,6 +9,10 @@ module Gitlab
       end
 
       class_methods do
+        def reload_metric!(name)
+          @@_metrics_provider_cache.delete(name)
+        end
+
         private
 
         def define_metric(type, name, opts = {}, &block)
@@ -16,7 +20,7 @@ module Gitlab
             raise ArgumentError, "metrics method #{name} already exists"
           end
 
-          define_method(name) do
+          define_singleton_method(name) do
             # avoid unnecessary method call to speed up metric access
             return @@_metrics_provider_cache[name] if @@_metrics_provider_cache.has_key?(name)
 
@@ -45,23 +49,16 @@ module Gitlab
 
           case type
             when :gauge
-              Gitlab::Metrics.gauge(name, options.docs, options.base_labels, options.multiprocess_mode)
+              Gitlab::Metrics.gauge(name, options.docstring, options.base_labels, options.multiprocess_mode)
             when :counter
-              Gitlab::Metrics.counter(name, options.docs, options.base_labels)
+              Gitlab::Metrics.counter(name, options.docstring, options.base_labels)
             when :histogram
-              options[:buckets] ||= ::Prometheus::Client::Histogram::DEFAULT_BUCKETS
-              Gitlab::Metrics.histogram(name, options.docs, options.base_labels, options.buckets)
+              Gitlab::Metrics.histogram(name, options.docstring, options.base_labels, options.buckets)
             when :summary
               raise NotImplementedError, "summary metrics are not currently supported"
             else
               raise ArgumentError, "uknown metric type #{type}"
           end
-        end
-
-        counter :global do
-          docstring "Global counter"
-          multiprocess_mode :all
-          buckets [0, 1]
         end
 
         # Fetch and/or initialize counter metric

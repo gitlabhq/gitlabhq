@@ -6,34 +6,36 @@ module Gitlab
           @multiprocess_mode = options[:multiprocess_mode] || :all
           @buckets = options[:buckets] || ::Prometheus::Client::Histogram::DEFAULT_BUCKETS
           @base_labels = options[:base_labels] || {}
+          @docstring = options[:docstring]
+          @with_feature = options[:with_feature]
         end
 
-        def docs(docs = nil)
-          @docs = docs unless docs.nil?
+        def docstring(docstring = nil)
+          @docstring = docstring unless docstring.nil?
 
-          @docs
+          @docstring
         end
 
-        def multiprocess_mode(mode)
-          @multiprocess_mode = mode unless @multiprocess_mode.nil?
+        def multiprocess_mode(mode = nil)
+          @multiprocess_mode = mode unless mode.nil?
 
           @multiprocess_mode
         end
 
-        def buckets(buckets)
-          @buckets = buckets unless @buckets.nil?
+        def buckets(buckets = nil)
+          @buckets = buckets unless buckets.nil?
 
           @buckets
         end
 
-        def base_labels(base_labels)
-          @base_labels = base_labels unless @base_labels.nil?
+        def base_labels(base_labels = nil)
+          @base_labels = base_labels unless base_labels.nil?
 
           @base_labels
         end
 
-        def with_feature(name)
-          @feature_name = name unless @feature_name.nil?
+        def with_feature(name = nil)
+          @feature_name = name unless name.nil?
 
           @feature_name
         end

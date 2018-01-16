@@ -2,11 +2,12 @@ module Gitlab
   module Metrics
     # Class for storing metrics information of a single transaction.
     class Transaction
+      include Gitlab::Metrics::Concern
+
       # base labels shared among all transactions
       BASE_LABELS = { controller: nil, action: nil }.freeze
 
       THREAD_KEY = :_gitlab_metrics_transaction
-      METRICS_MUTEX = Mutex.new
 
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'.freeze
@@ -136,27 +137,25 @@ module Gitlab
         "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
       end
 
-      histogram :gitlab_transaction_duration_seconds, 'Transaction duration',
-                base_labels: BASE_LABELS,
-                buckets: [0.001, 0.01, 0.1, 0.5, 10.0],
-                with_feature: :prometheus_metrics_method_instrumentation
+      define_histogram :gitlab_transaction_duration_seconds,
+                       docstring: 'Transaction duration',
+                       base_labels: BASE_LABELS,
+                       buckets: [0.001, 0.01, 0.1, 0.5, 10.0],
+                       with_feature: :prometheus_metrics_method_instrumentation
 
-      histogram :gitlab_transaction_allocated_memory_bytes, 'Transaction allocated memory bytes',
-                base_labels: BASE_LABELS,
-                buckets: [100, 1000, 10000, 100000, 1000000, 10000000]
+      define_histogram :gitlab_transaction_allocated_memory_bytes,
+                       docstring: 'Transaction allocated memory bytes',
+                       base_labels: BASE_LABELS,
+                       buckets: [100, 1000, 10000, 100000, 1000000, 10000000]
 
       def self.transaction_metric(name, type, prefix: nil, tags: {})
-        return @transaction_metric[name] if @transaction_metric[name]&.has_key?(name)
-
-        METRICS_MUTEX.synchronize do
-          @transaction_metric ||= {}
-          @transaction_metric[name] ||= if type == :counter
-                                          Gitlab::Metrics.counter("gitlab_transaction_#{prefix}#{name}_total".to_sym,
-                                                                  "Transaction #{prefix}#{name} counter", tags.merge(BASE_LABELS))
-                                        else
-                                          Gitlab::Metrics.gauge("gitlab_transaction_#{name}".to_sym,
-                                                                  "Transaction gauge #{name} ", tags.merge(BASE_LABELS), :livesum)
-                                        end
+        metric_name = "gitlab_transaction_#{prefix}#{name}_total".to_sym
+        fetch_metric(type, metric_name) do
+          docstring "Transaction #{prefix}#{name} #{type}"
+          base_labels tags.merge(BASE_LABELS)
+          if type == :gauge
+            multiprocess_mode :livesum
+          end
         end
       end
     end
