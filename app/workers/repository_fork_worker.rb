@@ -17,10 +17,7 @@ class RepositoryForkWorker
                                           project.repository_storage_path, project.disk_path)
     raise "Unable to fork project #{project_id} for repository #{source_disk_path} -> #{project.disk_path}" unless result
 
-    project.repository.after_import
-    raise "Project #{project_id} had an invalid repository after fork" unless project.valid_repo?
-
-    project.import_finish
+    project.after_import
   end
 
   private

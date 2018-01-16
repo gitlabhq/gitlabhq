@@ -100,6 +100,21 @@ module Gitlab
         )
       end
 
+      def import_repository(source)
+        request = Gitaly::CreateRepositoryFromURLRequest.new(
+          repository: @gitaly_repo,
+          url: source
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_url,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
       def rebase_in_progress?(rebase_id)
         request = Gitaly::IsRebaseInProgressRequest.new(
           repository: @gitaly_repo,

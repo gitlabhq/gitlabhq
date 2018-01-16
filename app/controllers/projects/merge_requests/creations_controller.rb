@@ -45,11 +45,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def diffs
-    @diffs = if @merge_request.can_be_created
-               @merge_request.diffs(diff_options)
-             else
-               []
-             end
+    @diffs = @merge_request.diffs(diff_options) if @merge_request.can_be_created
 
     @diff_notes_disabled = true
 

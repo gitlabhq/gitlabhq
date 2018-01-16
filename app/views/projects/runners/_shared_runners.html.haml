@@ -23,6 +23,3 @@
   %h4.underlined-title Available shared Runners : #{@shared_runners_count}
   %ul.bordered-list.available-shared-runners
     = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner
-  - if @shared_runners_count > 10
-    .light
-      and #{@shared_runners_count - 10} more...
