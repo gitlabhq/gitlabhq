@@ -15,6 +15,10 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
         .to receive(:commits_count=).and_return(nil)
     end
 
+    after do
+      [Project, MergeRequest, MergeRequestDiff].each(&:reset_column_information)
+    end
+
     def diffs_to_hashes(diffs)
       diffs.as_json(only: Gitlab::Git::Diff::SERIALIZE_KEYS).map(&:with_indifferent_access)
     end
