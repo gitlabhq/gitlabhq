@@ -9,11 +9,12 @@ module QA
           end
 
           view 'app/assets/javascripts/deploy_keys/components/app.vue' do
-            element :deploy_keys_section, 'deploy-keys'
+            element :deploy_keys_section, /class=".*deploy\-keys.*"/
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do
-            element :key_title, 'class="title"'
+            element :key_title, /class=".*title.*"/
+            element :key_title_field, '{{ deployKey.title }}'
           end
 
           def fill_key_title(title)
