@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import { s__ } from './locale';
 import projectSelect from './project_select';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
@@ -14,19 +13,16 @@ import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
-import initCompareAutocomplete from './compare_autocomplete';
 import ProjectNew from './project_new';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
-import CommitsList from './commits';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
 import Group from './group';
 import ProjectsList from './projects_list';
-import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
@@ -42,8 +38,6 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
-import GpgBadges from './gpg_badges';
-import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
@@ -58,7 +52,6 @@ import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
-import { fetchCommitMergeRequests } from './commit_merge_requests';
 
 (function() {
   var Dispatcher;
@@ -208,9 +201,9 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
             .catch(fail);
           break;
         case 'projects:compare:show':
-          new Diff();
-          const paddingTop = 16;
-          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
+          import('./pages/projects/compare/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:new':
           import('./pages/projects/branches/new')
@@ -324,23 +317,15 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
             .catch(fail);
           break;
         case 'projects:commit:show':
-          new Diff();
-          new ZenMode();
-          shortcut_handler = new ShortcutsNavigation();
-          new MiniPipelineGraph({
-            container: '.js-commit-pipeline-graph',
-          }).bindEvents();
-          initNotes();
-          const stickyBarPaddingTop = 16;
-          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
-          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
-          fetchCommitMergeRequests();
+          import('./pages/projects/commit/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commit:pipelines':
-          new MiniPipelineGraph({
-            container: '.js-commit-pipeline-graph',
-          }).bindEvents();
-          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          import('./pages/projects/commit/pipelines')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:activity':
           import('./pages/projects/activity')
@@ -349,9 +334,10 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
           shortcut_handler = true;
           break;
         case 'projects:commits:show':
-          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-          shortcut_handler = new ShortcutsNavigation();
-          GpgBadges.fetch();
+          import('./pages/projects/commits/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -573,20 +559,14 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
             .catch(fail);
           break;
         case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
-            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
-              throw err;
-            });
+          import('./pages/projects/clusters/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:clusters:index':
-          import(/* webpackChunkName: "clusters_index" */ './clusters/clusters_index')
-            .then(clusterIndex => clusterIndex.default())
-            .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the clusters list'));
-              throw err;
-            });
+          import('./pages/projects/clusters/index')
+            .then(callDefault)
+            .catch(fail);
           break;
       }
       switch (path[0]) {
@@ -666,7 +646,9 @@ import { fetchCommitMergeRequests } from './commit_merge_requests';
           projectAvatar();
           switch (path[1]) {
             case 'compare':
-              initCompareAutocomplete();
+              import('./pages/projects/compare')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
