@@ -675,9 +675,9 @@ describe Repository do
     end
 
     it 'properly handles when query is only slashes' do
-       results = repository.search_files_by_name('//', 'master')
+      results = repository.search_files_by_name('//', 'master')
 
-       expect(results).to match_array([])
+      expect(results).to match_array([])
     end
 
     it 'properly handles when query is not present' do
