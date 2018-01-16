@@ -13,7 +13,6 @@ import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
-import initCompareAutocomplete from './compare_autocomplete';
 import ProjectNew from './project_new';
 import Labels from './labels';
 import LabelManager from './label_manager';
@@ -638,7 +637,9 @@ import Activities from './activities';
           projectAvatar();
           switch (path[1]) {
             case 'compare':
-              initCompareAutocomplete();
+              import('./pages/projects/compare')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
