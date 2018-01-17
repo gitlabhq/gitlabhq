@@ -44,9 +44,9 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def repair
-    if @node.primary? || !@node.missing_oauth_application?
+    if !@node.missing_oauth_application?
       flash[:notice] = "This node doesn't need to be repaired."
-    elsif @node.save
+    elsif @node.repair
       flash[:notice] = 'Node Authentication was successfully repaired.'
     else
       flash[:alert] = 'There was a problem repairing Node Authentication.'

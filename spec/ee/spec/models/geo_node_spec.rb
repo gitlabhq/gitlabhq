@@ -78,6 +78,17 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#repair' do
+    it 'creates an oauth application for a Geo secondary node' do
+      stub_current_geo_node(node)
+      node.update_attribute(:oauth_application, nil)
+
+      node.repair
+
+      expect(node.oauth_application).to be_present
+    end
+  end
+
   describe '#current?' do
     it 'returns true when node is the current node' do
       node = described_class.new(url: described_class.current_node_url)
