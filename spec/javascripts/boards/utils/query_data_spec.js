@@ -2,9 +2,8 @@ import queryData from '~/boards/utils/query_data';
 
 describe('queryData', () => {
   it('parses path for label with trailing +', () => {
-    const path = 'label_name[]=label%2B';
     expect(
-      queryData(path, {}),
+      queryData('label_name[]=label%2B', {}),
     ).toEqual({
       label_name: ['label+'],
     });
