@@ -111,7 +111,7 @@ MergeRequest.prototype.initCommitMessageListeners = function() {
   });
 };
 
-MergeRequest.updateStatusText = function() {
+MergeRequest.setStatusBoxToMerged = function() {
   $('.detail-page-header .status-box')
     .removeClass('status-box-open')
     .addClass('status-box-mr-merged')
@@ -129,6 +129,7 @@ MergeRequest.decreaseCounter = function(by = 1) {
 MergeRequest.hideCloseButton = function() {
   const el = document.querySelector('.merge-request .js-issuable-actions');
   const closeDropdownItem = el.querySelector('li.close-item');
+
   if (closeDropdownItem) {
     closeDropdownItem.classList.add('hidden');
     // Selects the next dropdown item

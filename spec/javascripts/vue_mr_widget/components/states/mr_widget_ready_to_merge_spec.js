@@ -404,7 +404,7 @@ describe('MRWidgetReadyToMerge', () => {
 
         setTimeout(() => {
           const statusBox = document.querySelector('.status-box');
-          expect(statusBox.classList.contains('status-box-merged')).toBeTruthy();
+          expect(statusBox.classList.contains('status-box-mr-merged')).toBeTruthy();
           expect(statusBox.textContent).toContain('Merged');
 
           done();
