@@ -557,6 +557,8 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:clusters:show':
+        case 'projects:clusters:update':
+        case 'projects:clusters:destroy':
           import('./pages/projects/clusters/show')
             .then(callDefault)
             .catch(fail);
