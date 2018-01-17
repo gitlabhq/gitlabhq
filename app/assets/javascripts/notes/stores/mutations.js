@@ -6,15 +6,23 @@ export default {
   [types.ADD_NEW_NOTE](state, note) {
     const { discussion_id, type } = note;
     const [exists] = state.notes.filter(n => n.id === note.discussion_id);
+    const isDiscussion = (type === constants.DISCUSSION_NOTE);
 
     if (!exists) {
       const noteData = {
         expanded: true,
         id: discussion_id,
-        individual_note: !(type === constants.DISCUSSION_NOTE),
+        individual_note: !isDiscussion,
         notes: [note],
         reply_id: discussion_id,
       };
+
+      if (isDiscussion) {
+        noteData.resolvable = note.resolvable;
+        noteData.resolved = false;
+        noteData.resolve_path = `${document.location.pathname}/discussions/${note.discussion_id}/resolve`;
+        noteData.resolve_with_issue_path = `${window.gl.mrWidgetData.create_issue_to_resolve_discussions_path}&discussion_to_resolve=${note.discussion_id}`;
+      }
 
       state.notes.push(noteData);
     }
