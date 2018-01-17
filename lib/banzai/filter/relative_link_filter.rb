@@ -50,15 +50,22 @@ module Banzai
       end
 
       def process_link_to_upload_attr(html_attr)
-        uri_parts = [html_attr.value]
+        path_parts = [html_attr.value]
 
         if group
-          uri_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
+          path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
         elsif project
-          uri_parts.unshift(relative_url_root, project.full_path)
+          path_parts.unshift(relative_url_root, project.full_path)
         end
 
-        html_attr.value = File.join(*uri_parts)
+        path = File.join(*path_parts)
+
+        html_attr.value =
+          if context[:only_path]
+            path
+          else
+            URI.join(Gitlab.config.gitlab.base_url, path).to_s
+          end
       end
 
       def process_link_to_repository_attr(html_attr)

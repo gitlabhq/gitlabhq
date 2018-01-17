@@ -46,7 +46,7 @@ module BlobHelper
   end
 
   def ide_edit_text
-    "#{_('Multi Edit')} <span class='label label-primary'>#{_('Beta')}</span>".html_safe
+    "#{_('Web IDE')}"
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
