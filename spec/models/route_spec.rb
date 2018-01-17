@@ -96,7 +96,10 @@ describe Route do
 
         it 'should delete old redirect routes' do
           group_foo.save
+
           expect(group_foo.redirect_routes.permanent.where(path: 'foo')).to be_empty
+          expect(group_foo.redirect_routes.permanent.count).to eq(1)
+          expect(group_foo.redirect_routes.permanent.first.path).to eq('baz')
         end
       end
     end
@@ -252,7 +255,7 @@ describe Route do
   end
 
   describe '#delete_conflicting_redirects' do
-    context 'with different permanent redirect' do
+    context 'with a RedirectRoute with a different path' do
       it 'does not delete the redirect' do
         route.create_redirect("#{route.path}/foo", permanent: true)
         expect do
@@ -321,9 +324,9 @@ describe Route do
     end
   end
 
-  describe '#conflicting_redirects' do
+  describe '#deletable_conflicting_redirects' do
     it 'returns an ActiveRecord::Relation' do
-      expect(route.conflicting_redirects).to be_an(ActiveRecord::Relation)
+      expect(route.deletable_conflicting_redirects).to be_an(ActiveRecord::Relation)
     end
 
     context 'with permanent redirects' do
@@ -332,7 +335,7 @@ describe Route do
         route.create_redirect("#{route.path}/foo/bar", permanent: true)
         route.create_redirect("#{route.path}/baz/quz", permanent: true)
 
-        expect(route.conflicting_redirects).to be_empty
+        expect(route.deletable_conflicting_redirects).to be_empty
       end
     end
 
@@ -345,7 +348,7 @@ describe Route do
         redirect2 = route.create_redirect("#{route.path}/foo/bar")
         redirect3 = route.create_redirect("#{route.path}/baz/quz")
 
-        expect(route.conflicting_redirects).to match_array([redirect1, redirect2, redirect3])
+        expect(route.deletable_conflicting_redirects).to match_array([redirect1, redirect2, redirect3])
       end
     end
 
@@ -356,7 +359,7 @@ describe Route do
         let!(:redirect1) { route.create_redirect(route.path) }
 
         it 'returns the redirect route' do
-          expect(route.conflicting_redirects).to match_array([redirect1])
+          expect(route.deletable_conflicting_redirects).to match_array([redirect1])
         end
 
         context 'when redirect routes with paths descending from the route path exists' do
@@ -366,7 +369,7 @@ describe Route do
           let!(:other_redirect) { route.create_redirect("other") }
 
           it 'returns the redirect routes' do
-            expect(route.conflicting_redirects).to match_array([redirect1, redirect2, redirect3, redirect4])
+            expect(route.deletable_conflicting_redirects).to match_array([redirect1, redirect2, redirect3, redirect4])
           end
         end
       end
@@ -375,7 +378,7 @@ describe Route do
         let!(:redirect1) { route.create_redirect(route.path.upcase) }
 
         it 'returns the redirect route' do
-          expect(route.conflicting_redirects).to match_array([redirect1])
+          expect(route.deletable_conflicting_redirects).to match_array([redirect1])
         end
       end
     end

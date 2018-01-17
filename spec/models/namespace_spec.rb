@@ -584,7 +584,7 @@ describe Namespace do
       it 'should return an error on path' do
         namespace2 = build(:group, path: 'foo')
         namespace2.valid?
-        expect(namespace2.errors.messages[:path].first).to eq('foo has been taken before. Please use another one')
+        expect(namespace2.errors.full_messages.first).to match(/foo has been taken before. Please use another one/)
       end
     end
 

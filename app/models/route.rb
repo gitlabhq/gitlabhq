@@ -51,12 +51,12 @@ class Route < ActiveRecord::Base
   end
 
   def delete_conflicting_redirects
-    conflicting_redirects.delete_all
+    deletable_conflicting_redirects.delete_all
   end
 
-  def conflicting_redirects
+  def deletable_conflicting_redirects
     if permanent_redirect_routes.where(path: path).exists?
-      source.redirect_routes.permanent.matching_path_and_descendants(path)
+      source.redirect_routes.matching_path_and_descendants(path)
     else
       RedirectRoute.temporary.matching_path_and_descendants(path)
     end
@@ -72,6 +72,7 @@ class Route < ActiveRecord::Base
     create_redirect(path_was, permanent: permanent_redirect?)
   end
 
+  # Groups redirects are considered permanent to avoid any other Group/User reclaim an old path
   def permanent_redirect?
     source_type != "Project"
   end
@@ -91,16 +92,17 @@ class Route < ActiveRecord::Base
   end
 
   def self_and_descendant_ids
-    if permanent_redirect?
-      source.self_and_descendants.map(&:id)
-    else
+    if source.is_a? Project
       [source.id]
+    else
+      source.self_and_descendants.map(&:id)
     end
   end
 
   def permanent_redirect_routes
     RedirectRoute
       .permanent
+      .namespace_type
       .matching_path_and_descendants(path)
   end
 

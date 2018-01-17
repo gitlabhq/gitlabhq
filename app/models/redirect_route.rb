@@ -22,9 +22,9 @@ class RedirectRoute < ActiveRecord::Base
 
   scope :permanent, -> do
     if column_permanent_exists?
-      namespace_type.where(permanent: true)
+      where(permanent: true)
     else
-      namespace_type
+      none
     end
   end
 
