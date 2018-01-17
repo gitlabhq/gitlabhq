@@ -14,10 +14,8 @@ describe API::V3::Builds do
     let(:query) { '' }
 
     before do |example|
-<<<<<<< HEAD
       build
-=======
->>>>>>> upstream/master
+
       create(:ci_build, :skipped, pipeline: pipeline)
 
       unless example.metadata[:skip_before_request]
