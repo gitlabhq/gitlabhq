@@ -211,7 +211,7 @@ The following GitLab features are used among others:
 - [Artifacts](../ci/yaml/README.md#artifacts)
 - [Specific Runner](../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
 
-## General Documentation vs Technical Articles
+## General documentation vs technical articles
 
 ### General documentation
 
@@ -219,7 +219,7 @@ General documentation is categorized by _User_, _Admin_, and _Contributor_, and 
 
 ### Technical articles
 
-Technical articles replace some technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they became out of date and weren't easily found.
+Technical articles replace some technical content that once lived on the [GitLab blog](https://about.gitlab.com/blog/), where they became out of date and weren't easily found.
 
 They are topic-related documentation, written with an user-friendly approach and language, aiming to provide the community with guidance on specific processes to achieve certain objectives.
 
@@ -231,7 +231,7 @@ They should be placed in a new directory named `/article-title/index.md` under a
 
 - **User guides**: technical content to guide regular users from point A to point B
 - **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
-- **Technical Overviews**: technical content describing features, solutions, and third-party integrations
+- **Technical overviews**: technical content describing features, solutions, and third-party integrations
 - **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
 
 #### Understanding guides, tutorials, and technical overviews
