@@ -24,9 +24,13 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def create
     @key = DeployKeys::CreateService.new(current_user, create_params).execute
 
+<<<<<<< HEAD
     if @key.valid?
       log_audit_event(@key.title, action: :create)
     else
+=======
+    unless @key.valid?
+>>>>>>> upstream/master
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
 
