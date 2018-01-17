@@ -4,13 +4,13 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        @@_metrics_provider_mutex ||= Mutex.new
-        @@_metrics_provider_cache ||= {}
+        @_metrics_provider_mutex ||= Mutex.new
+        @_metrics_provider_cache ||= {}
       end
 
       class_methods do
         def reload_metric!(name)
-          @@_metrics_provider_cache.delete(name)
+          @_metrics_provider_cache.delete(name)
         end
 
         private
@@ -22,7 +22,7 @@ module Gitlab
 
           define_singleton_method(name) do
             # avoid unnecessary method call to speed up metric access
-            return @@_metrics_provider_cache[name] if @@_metrics_provider_cache.has_key?(name)
+            return @_metrics_provider_cache[name] if @_metrics_provider_cache.has_key?(name)
 
             fetch_metric(type, name, opts, &block)
           end
@@ -30,16 +30,16 @@ module Gitlab
 
         def fetch_metric(type, name, opts = {}, &block)
           # avoid synchronization to speed up metrics access
-          return @@_metrics_provider_cache[name] if @@_metrics_provider_cache.has_key?(name)
+          return @_metrics_provider_cache[name] if @_metrics_provider_cache.has_key?(name)
 
           options = MetricOptions.new(opts)
           options.evaluate(&block)
 
-          @@_metrics_provider_mutex.synchronize do
-            @@_metrics_provider_cache[name] ||= build_metric!(type, name, options)
+          @_metrics_provider_mutex.synchronize do
+            @_metrics_provider_cache[name] ||= build_metric!(type, name, options)
           end
 
-          @@_metrics_provider_cache[name]
+          @_metrics_provider_cache[name]
         end
 
         def build_metric!(type, name, options)
@@ -48,16 +48,16 @@ module Gitlab
           end
 
           case type
-            when :gauge
-              Gitlab::Metrics.gauge(name, options.docstring, options.base_labels, options.multiprocess_mode)
-            when :counter
-              Gitlab::Metrics.counter(name, options.docstring, options.base_labels)
-            when :histogram
-              Gitlab::Metrics.histogram(name, options.docstring, options.base_labels, options.buckets)
-            when :summary
-              raise NotImplementedError, "summary metrics are not currently supported"
-            else
-              raise ArgumentError, "uknown metric type #{type}"
+          when :gauge
+            Gitlab::Metrics.gauge(name, options.docstring, options.base_labels, options.multiprocess_mode)
+          when :counter
+            Gitlab::Metrics.counter(name, options.docstring, options.base_labels)
+          when :histogram
+            Gitlab::Metrics.histogram(name, options.docstring, options.base_labels, options.buckets)
+          when :summary
+            raise NotImplementedError, "summary metrics are not currently supported"
+          else
+            raise ArgumentError, "uknown metric type #{type}"
           end
         end
 

@@ -153,6 +153,7 @@ module Gitlab
         fetch_metric(type, metric_name) do
           docstring "Transaction #{prefix}#{name} #{type}"
           base_labels tags.merge(BASE_LABELS)
+
           if type == :gauge
             multiprocess_mode :livesum
           end
