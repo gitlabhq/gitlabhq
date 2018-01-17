@@ -1,5 +1,9 @@
 ---
 title: Fix JavaScript bundle running on Cluster update/destroy pages
+<<<<<<< HEAD
 merge_request: 4112
+=======
+merge_request:
+>>>>>>> upstream/master
 author:
 type: fixed

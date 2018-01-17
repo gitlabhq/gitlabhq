@@ -1104,14 +1104,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "branch_names_contains" do
-    subject { repository.branch_names_contains(SeedRepo::LastCommit::ID) }
-
-    it { is_expected.to include('master') }
-    it { is_expected.not_to include('feature') }
-    it { is_expected.not_to include('fix') }
-  end
-
   describe '#autocrlf' do
     before(:all) do
       @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')

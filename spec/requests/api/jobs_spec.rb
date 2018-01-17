@@ -30,8 +30,11 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do |example|
+<<<<<<< HEAD
       job
 
+=======
+>>>>>>> upstream/master
       unless example.metadata[:skip_before_request]
         get api("/projects/#{project.id}/jobs", api_user), query
       end
