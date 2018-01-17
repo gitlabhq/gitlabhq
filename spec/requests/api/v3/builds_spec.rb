@@ -15,6 +15,7 @@ describe API::V3::Builds do
 
     before do |example|
       build
+
       create(:ci_build, :skipped, pipeline: pipeline)
 
       unless example.metadata[:skip_before_request]

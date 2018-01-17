@@ -3,6 +3,7 @@
 
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import icon from '../../vue_shared/components/icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
@@ -12,6 +13,7 @@
 
     components: {
       loadingIcon,
+      icon,
     },
     props: {
       endpoint: {
@@ -42,9 +44,6 @@
       };
     },
     computed: {
-      iconClass() {
-        return `fa fa-${this.icon}`;
-      },
       buttonClass() {
         return `btn ${this.cssClass}`;
       },
@@ -77,10 +76,9 @@
     data-container="body"
     data-placement="top"
     :disabled="isLoading">
-    <i
-      :class="iconClass"
-      aria-hidden="true">
-    </i>
+    <icon
+      :name="icon"
+    />
     <loading-icon v-if="isLoading" />
   </button>
 </template>

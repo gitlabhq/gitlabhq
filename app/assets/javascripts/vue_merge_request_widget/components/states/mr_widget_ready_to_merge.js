@@ -170,7 +170,7 @@ export default {
             // If state is merged we should update the widget and stop the polling
             eventHub.$emit('MRWidgetUpdateRequested');
             eventHub.$emit('FetchActionsContent');
-            MergeRequest.updateStatusText('status-box-open', 'status-box-merged', 'Merged');
+            MergeRequest.setStatusBoxToMerged();
             MergeRequest.hideCloseButton();
             MergeRequest.decreaseCounter();
             stopPolling();

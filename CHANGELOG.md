@@ -992,6 +992,11 @@ entry.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
 
+## 9.5.10 (2017-11-08)
+
+- [SECURITY] Add SSRF protections for hostnames that will never resolve but will still connect to localhost
+- [SECURITY] Include X-Content-Type-Options (XCTO) header into API responses
+
 ## 9.5.9 (2017-10-16)
 
 - [SECURITY] Move project repositories between namespaces when renaming users.
