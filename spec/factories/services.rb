@@ -30,6 +30,7 @@ FactoryBot.define do
     project
     active true
     properties({
+      manual_configuration: true,
       api_url: 'https://prometheus.example.com/'
     })
   end
