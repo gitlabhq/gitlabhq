@@ -152,6 +152,12 @@
       hasUpdated() {
         return !!this.state.updatedAt;
       },
+      issueChanged() {
+        return this.initialDescriptionText
+        !== this.store.formState.description
+        || this.initialTitleText
+        !== this.store.formState.title;
+      },
     },
     created() {
       this.service = new Service(this.endpoint);
@@ -176,6 +182,8 @@
         }
       });
 
+      window.addEventListener('beforeunload', this.handleBeforeUnloadEvent);
+
       eventHub.$on('delete.issuable', this.deleteIssuable);
       eventHub.$on('update.issuable', this.updateIssuable);
       eventHub.$on('close.form', this.closeForm);
@@ -188,6 +196,14 @@
       eventHub.$off('open.form', this.openForm);
     },
     methods: {
+      handleBeforeUnloadEvent(e) {
+        const event = e;
+        if (this.showForm && this.issueChanged) {
+          event.returnValue = 'Are you sure you want to lose your issue information?';
+        }
+        return undefined;
+      },
+
       openForm() {
         if (!this.showForm) {
           this.showForm = true;
