@@ -1,15 +1,13 @@
 ---
 redirect_from: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
+author: Mehran Rasulian
+author_gitlab: mehranrasulian
+level: intermediary
+article_type: tutorial
+date: 2017-08-31
 ---
 
 # Test and deploy Laravel applications with GitLab CI/CD and Envoy
-
-> **[Article Type](../../../development/writing_documentation.md#types-of-technical-articles):** tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Mehran Rasulian](https://gitlab.com/mehranrasulian) ||
-> **Publication date:** 2017-08-31
-
-## Introduction
 
 GitLab features our applications with Continuous Integration, and it is possible to easily deploy the new code changes to the production server whenever we want.
 
@@ -17,6 +15,8 @@ In this tutorial, we'll show you how to initialize a [Laravel](http://laravel.co
 
 We assume you have a basic experience with Laravel, Linux servers,
 and you know how to use GitLab.
+
+## Introduction
 
 Laravel is a high quality web framework written in PHP.
 It has a great community with a [fantastic documentation](https://laravel.com/docs).
