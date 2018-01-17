@@ -298,7 +298,7 @@ describe Projects::MergeRequestsController do
 
         update_merge_request(state_event: 'reopen')
 
-        expect(controller).to set_flash[:alert].to(/another open Merge Request already exists for this source branch/)
+        expect(controller).to set_flash[:alert].to(/Another open Merge Request already exists for this source branch/)
         expect(merge_request.reload).to be_closed
       end
     end

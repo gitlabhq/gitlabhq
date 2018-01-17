@@ -7,6 +7,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
+  include MarkupHelper
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
@@ -122,9 +123,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
-        if merge_request_params[:state_event] && @merge_request.errors.any?
-          flash[:alert] = @merge_request.errors.values.flatten.to_sentence
-        end
+        check_branch_conflict
 
         if @merge_request.valid?
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
@@ -257,6 +256,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def mark_merge_request_mergeable
     @merge_request.check_if_can_be_merged
+  end
+
+  def check_branch_conflict
+    if @merge_request.errors[:validate_branches]
+      flash[:alert] = markdown(@merge_request.errors[:validate_branches].to_sentence, pipeline: :single_line)
+    end
   end
 
   def merge!
