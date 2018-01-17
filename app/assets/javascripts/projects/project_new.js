@@ -109,8 +109,6 @@ const bindEvents = () => {
 >>>>>>> 8e629a4545... fixed specs
 };
 
-document.addEventListener('DOMContentLoaded', bindEvents);
-
 export default {
   bindEvents,
   deriveProjectPathFromUrl,
