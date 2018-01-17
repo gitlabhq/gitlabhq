@@ -1,5 +1,5 @@
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20170626202753_update_authorized_keys_file.rb')
+require Rails.root.join('ee', 'db', 'migrate', '20170626202753_update_authorized_keys_file.rb')
 
 describe UpdateAuthorizedKeysFile, :migration do
   let(:migration) { described_class.new }
