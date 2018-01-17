@@ -82,7 +82,6 @@ module QA
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :OAuth, 'qa/page/main/oauth'
-      autoload :Home, 'qa/page/main/home'
     end
 
     module Menu
