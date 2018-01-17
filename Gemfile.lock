@@ -1069,10 +1069,7 @@ DEPENDENCIES
   email_spec (~> 1.6.0)
   factory_bot_rails (~> 4.8.2)
   faraday (~> 0.12)
-<<<<<<< HEAD
   faraday_middleware-aws-signers-v4
-=======
->>>>>>> upstream/master
   fast_blank
   ffaker (~> 2.4)
   flay (~> 2.8.0)
