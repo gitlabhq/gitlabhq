@@ -11,11 +11,18 @@ describe('queryData', () => {
   });
 
   it('parses path for milestone with trailing +', () => {
-    const path = 'milestone_title=A%2B';
     expect(
-      queryData(path, {}),
+      queryData('milestone_title=A%2B', {}),
     ).toEqual({
       milestone_title: 'A+',
+    });
+  });
+
+  it('parses path for search terms with spaces', () => {
+    expect(
+      queryData('search=two+words', {}),
+    ).toEqual({
+      search: 'two words',
     });
   });
 });
