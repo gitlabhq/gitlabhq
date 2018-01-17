@@ -3,8 +3,6 @@ require 'spec_helper'
 describe Gitlab::Metrics::Concern do
   subject { Class.new { include Gitlab::Metrics::Concern } }
 
-  let(:null_metric) { Gitlab::Metrics::NullMetric.new }
-
   shared_context 'metric' do |metric_type, *args|
     let(:docstring) { 'description' }
     let(:metric) { :sample_metric }
@@ -55,6 +53,7 @@ describe Gitlab::Metrics::Concern do
 
     describe "#fetch_#{metric_type}" do
       let(:fetch_method) { "fetch_#{metric_type}".to_sym }
+      let(:null_metric) { Gitlab::Metrics::NullMetric.new }
 
       context "when #{metric_type} fetched first time" do
         it 'initializes counter metric' do
@@ -92,7 +91,6 @@ describe Gitlab::Metrics::Concern do
         end
       end
     end
-
   end
 
   include_examples 'metric', :counter, {}
