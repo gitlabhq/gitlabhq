@@ -130,6 +130,7 @@
     >
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
+        <slot name="wysiwyg"></slot>
         <a
           class="zen-control zen-control-leave js-zen-leave"
           href="#"

@@ -60,7 +60,7 @@
           tabindex="-1"
           @click.prevent="writeMarkdownTab($event)"
         >
-          Write
+          Markdown
         </a>
       </li>
       <li
@@ -72,7 +72,7 @@
           tabindex="-1"
           @click.prevent="previewMarkdownTab($event)"
         >
-          Preview
+          Plain
         </a>
       </li>
       <li

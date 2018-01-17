@@ -11,6 +11,7 @@
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
+  import quill from '../../vue_shared/components/markdown/quill.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
@@ -242,6 +243,10 @@ Please check your network connection and try again.`;
           Autosize.update(this.$refs.textarea);
         });
       },
+
+      textChanged() {
+
+      }
     },
   };
 </script>
@@ -288,6 +293,13 @@ Please check your network connection and try again.`;
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
                 ref="markdownField">
+                <quill placeholder="this is good" :toolbar="[['bold', 'underline']]" @change="textChanged" slow="wysiwyg">
+                   <div slot="content">
+                    <p>Hello World!</p>
+                    <p>Some initial <strong>bold</strong> text</p>
+                    <p><br></p>
+                  </div>
+                </quill>
                 <textarea
                   id="note-body"
                   name="note[note]"
