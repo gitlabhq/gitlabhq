@@ -12,8 +12,6 @@ import LineHighlighter from './line_highlighter';
 import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
-import initCompareAutocomplete from './compare_autocomplete';
-import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import Labels from './labels';
 import LabelManager from './label_manager';
