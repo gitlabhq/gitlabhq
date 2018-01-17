@@ -118,6 +118,12 @@ module Gitlab
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
     config.assets.paths << "vendor/assets/fonts"
+
+    # EE specific paths.
+    config.assets.paths << "ee/app/assets/images"
+    config.assets.paths << "ee/app/assets/javascripts"
+    config.assets.paths << "ee/app/assets/stylesheets"
+
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
