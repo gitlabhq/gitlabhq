@@ -1,4 +1,4 @@
-import { n__, s__, sprintf } from '~/locale';
+import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
@@ -51,9 +51,9 @@ export default {
       const text = [];
 
       if (!newIssues.length && !resolvedIssues.length) {
-        text.push('No changes to code quality');
+        text.push(s__('ciReport|No changes to code quality'));
       } else if (newIssues.length || resolvedIssues.length) {
-        text.push('Code quality');
+        text.push(s__('ciReport|Code quality'));
 
         if (resolvedIssues.length) {
           text.push(n__(
@@ -64,7 +64,7 @@ export default {
         }
 
         if (newIssues.length > 0 && resolvedIssues.length > 0) {
-          text.push(' and');
+          text.push(__(' and'));
         }
 
         if (newIssues.length) {
@@ -84,9 +84,9 @@ export default {
       const text = [];
 
       if (!improved.length && !degraded.length) {
-        text.push('No changes to performance metrics');
+        text.push(s__('ciReport|No changes to performance metrics'));
       } else if (improved.length || degraded.length) {
-        text.push('Performance metrics');
+        text.push(s__('ciReport|Performance metrics'));
 
         if (improved.length) {
           text.push(n__(
@@ -97,7 +97,7 @@ export default {
         }
 
         if (improved.length > 0 && degraded.length > 0) {
-          text.push(' and');
+          text.push(__(' and'));
         }
 
         if (degraded.length) {
@@ -131,7 +131,7 @@ export default {
       }
 
       if (newIssues.length > 0 && resolvedIssues.length > 0) {
-        text.push(' and');
+        text.push(__(' and'));
       }
 
       if (newIssues.length) {
