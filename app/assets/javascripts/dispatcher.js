@@ -281,11 +281,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new LabelsSelect();
           new MilestoneSelect();
           new IssuableTemplateSelectors();
-<<<<<<< HEAD
 
+          // ee-start
           initApprovals();
-=======
->>>>>>> upstream/master
+          // ee-end
           break;
         case 'projects:tags:new':
           import('./pages/projects/tags/new')
@@ -613,18 +612,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         case 'projects:clusters:show':
         case 'projects:clusters:update':
         case 'projects:clusters:destroy':
-<<<<<<< HEAD
-          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
-            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
-              throw err;
-            });
-=======
           import('./pages/projects/clusters/show')
             .then(callDefault)
             .catch(fail);
->>>>>>> upstream/master
           break;
         case 'projects:clusters:index':
           import('./pages/projects/clusters/index')
