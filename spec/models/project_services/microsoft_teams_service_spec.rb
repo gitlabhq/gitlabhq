@@ -92,6 +92,10 @@ describe MicrosoftTeamsService do
         service.hook_data(merge_request, 'open')
       end
 
+      before do
+        project.add_developer(user)
+      end
+
       it "calls Microsoft Teams API" do
         chat_service.execute(merge_sample_data)
 

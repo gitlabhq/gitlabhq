@@ -75,8 +75,6 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestones
-    search_params = params.merge(group_ids: group.id)
-
     milestones = MilestonesFinder.new(search_params).execute
     legacy_milestones = GroupMilestone.build_collection(group, group_projects, params)
 
@@ -93,5 +91,9 @@ class Groups::MilestonesController < Groups::ApplicationController
       end
 
     render_404 unless @milestone
+  end
+
+  def search_params
+    params.permit(:state).merge(group_ids: group.id)
   end
 end

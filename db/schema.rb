@@ -626,6 +626,7 @@ ActiveRecord::Schema.define(version: 20180105212544) do
     t.integer "project_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean "can_push", default: false, null: false
   end
 
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
@@ -896,7 +897,6 @@ ActiveRecord::Schema.define(version: 20180105212544) do
     t.string "type"
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
-    t.boolean "can_push", default: false, null: false
     t.datetime "last_used_at"
   end
 
