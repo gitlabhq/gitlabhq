@@ -5,8 +5,8 @@
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-4
     %h4.prepend-top-0
-      GitLab multi file editor
-    %p Unlock an additional editing experience which makes it possible to edit and commit multiple files
+      Web IDE (Beta)
+    %p Enable the new web IDE on this device to make it possible to open and edit multiple files with a single commit
   .col-lg-8.multi-file-editor-options
     = label_tag do
       .preview.append-bottom-10= image_tag "multi-editor-off.png"

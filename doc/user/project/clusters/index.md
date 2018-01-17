@@ -2,9 +2,6 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in 10.1.
 
-CAUTION: **Warning:**
-The Cluster integration is currently in **Beta**.
-
 With a cluster associated to your project, you can use Review Apps, deploy your
 applications, run your pipelines, and much more, in an easy way.
 

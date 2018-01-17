@@ -1,0 +1,6 @@
+---
+title: Use simple Next/Prev paging for jobs to avoid large count queries on arbitrarily
+  large sets of historical jobs
+merge_request:
+author:
+type: performance

@@ -651,10 +651,16 @@
     min-width: 0;
   }
 
-  .diff-changed-file-name {
+  .diff-changed-file-name,
+  .diff-changed-blank-file-name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .diff-changed-blank-file-name {
+    color: $gl-text-color-tertiary;
+    font-style: italic;
   }
 
   .diff-changed-file-path {
