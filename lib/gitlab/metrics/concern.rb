@@ -12,7 +12,7 @@ module Gitlab
         private
 
         def define_metric(type, name, opts = {}, &block)
-          if instance_methods(false).include?(name)
+          if respond_to?(name)
             raise ArgumentError, "metrics method #{name} already exists"
           end
 
@@ -71,7 +71,7 @@ module Gitlab
         # @param [Symbol] name
         # @param [Hash] opts
         def fetch_gauge(name, opts = {}, &block)
-          fetch_metric(:counter, name, opts, &block)
+          fetch_metric(:gauge, name, opts, &block)
         end
 
         # Fetch and/or initialize histogram metric
@@ -99,7 +99,7 @@ module Gitlab
         # @param [Symbol] name
         # @param [Hash] opts
         def define_gauge(name, opts = {}, &block)
-          define_metric(:counter, name, opts, &block)
+          define_metric(:gauge, name, opts, &block)
         end
 
         # Define metric accessor method for a Histogram
