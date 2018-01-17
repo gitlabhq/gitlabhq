@@ -1,6 +1,8 @@
 module BlobHelper
   def highlight(blob_name, blob_content, repository: nil, plain: false)
+    plain ||= blob_content.length > Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE
     highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
+
     raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
   end
 
@@ -46,7 +48,7 @@ module BlobHelper
   end
 
   def ide_edit_text
-    "#{_('Multi Edit')} <span class='label label-primary'>#{_('Beta')}</span>".html_safe
+    "#{_('Web IDE')}"
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})

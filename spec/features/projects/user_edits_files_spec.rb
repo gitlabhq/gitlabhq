@@ -33,7 +33,9 @@ describe 'User edits files' do
       binary_file = File.join(project.repository.root_ref, 'files/images/logo-black.png')
       visit(project_blob_path(project, binary_file))
 
-      expect(page).not_to have_link('edit')
+      page.within '.content' do
+        expect(page).not_to have_link('edit')
+      end
     end
 
     it 'commits an edited file', :js do

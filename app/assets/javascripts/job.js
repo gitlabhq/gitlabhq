@@ -3,7 +3,6 @@ import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
-import { timeFor } from './lib/utils/datetime_utility';
 
 export default class Job {
   constructor(options) {
@@ -71,7 +70,6 @@ export default class Job {
       .off('resize.build')
       .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
 
-    this.updateArtifactRemoveDate();
     this.initAffixTopArea();
 
     this.getBuildTrace();
@@ -96,14 +94,15 @@ export default class Job {
 
   // eslint-disable-next-line class-methods-use-this
   canScroll() {
-    return this.$document.height() > this.$window.height();
+    return $(document).height() > $(window).height();
   }
 
   toggleScroll() {
-    const currentPosition = this.$document.scrollTop();
-    const scrollHeight = this.$document.height();
+    const $document = $(document);
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
 
-    const windowHeight = this.$window.height();
+    const windowHeight = $(window).height();
     if (this.canScroll()) {
       if (currentPosition > 0 &&
         (scrollHeight - currentPosition !== windowHeight)) {
@@ -127,18 +126,22 @@ export default class Job {
       this.toggleDisableButton(this.$scrollBottomBtn, true);
     }
   }
-
+  // eslint-disable-next-line class-methods-use-this
   isScrolledToBottom() {
-    const currentPosition = this.$document.scrollTop();
-    const scrollHeight = this.$document.height();
+    const $document = $(document);
 
-    const windowHeight = this.$window.height();
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
+
+    const windowHeight = $(window).height();
+
     return scrollHeight - currentPosition === windowHeight;
   }
 
   // eslint-disable-next-line class-methods-use-this
   scrollDown() {
-    this.$document.scrollTop(this.$document.height());
+    const $document = $(document);
+    $document.scrollTop($document.height());
   }
 
   scrollToBottom() {
@@ -148,7 +151,7 @@ export default class Job {
   }
 
   scrollToTop() {
-    this.$document.scrollTop(0);
+    $(document).scrollTop(0);
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }
@@ -256,16 +259,7 @@ export default class Job {
   sidebarOnClick() {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
-  // eslint-disable-next-line class-methods-use-this, consistent-return
-  updateArtifactRemoveDate() {
-    const $date = $('.js-artifacts-remove');
-    if ($date.length) {
-      const date = $date.text();
-      return $date.text(
-        timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3'))),
-      );
-    }
-  }
+
   // eslint-disable-next-line class-methods-use-this
   populateJobs(stage) {
     $('.build-job').hide();

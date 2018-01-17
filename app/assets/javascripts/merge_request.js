@@ -110,7 +110,7 @@ MergeRequest.prototype.initCommitMessageListeners = function() {
   });
 };
 
-MergeRequest.prototype.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
+MergeRequest.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
   $('.detail-page-header .status-box')
     .removeClass(classToRemove)
     .addClass(classToAdd)
@@ -118,14 +118,14 @@ MergeRequest.prototype.updateStatusText = function(classToRemove, classToAdd, ne
     .text(newStatusText);
 };
 
-MergeRequest.prototype.decreaseCounter = function(by = 1) {
-  const $el = $('.nav-links .js-merge-counter');
+MergeRequest.decreaseCounter = function(by = 1) {
+  const $el = $('.js-merge-counter');
   const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
 
   $el.text(addDelimiter(count));
 };
 
-MergeRequest.prototype.hideCloseButton = function() {
+MergeRequest.hideCloseButton = function() {
   const el = document.querySelector('.merge-request .js-issuable-actions');
   const closeDropdownItem = el.querySelector('li.close-item');
   if (closeDropdownItem) {

@@ -16,6 +16,66 @@ describe Route do
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_uniqueness_of(:path).case_insensitive }
+
+    describe '#ensure_permanent_paths' do
+      context 'when the route is not yet persisted' do
+        let(:new_route) { described_class.new(path: 'foo', source: build(:group)) }
+
+        context 'when permanent conflicting redirects exist' do
+          it 'is invalid' do
+            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
+            redirect.save!(validate: false)
+
+            expect(new_route.valid?).to be_falsey
+            expect(new_route.errors.first[1]).to eq('foo has been taken before. Please use another one')
+          end
+        end
+
+        context 'when no permanent conflicting redirects exist' do
+          it 'is valid' do
+            expect(new_route.valid?).to be_truthy
+          end
+        end
+      end
+
+      context 'when path has changed' do
+        before do
+          route.path = 'foo'
+        end
+
+        context 'when permanent conflicting redirects exist' do
+          it 'is invalid' do
+            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
+            redirect.save!(validate: false)
+
+            expect(route.valid?).to be_falsey
+            expect(route.errors.first[1]).to eq('foo has been taken before. Please use another one')
+          end
+        end
+
+        context 'when no permanent conflicting redirects exist' do
+          it 'is valid' do
+            expect(route.valid?).to be_truthy
+          end
+        end
+      end
+
+      context 'when path has not changed' do
+        context 'when permanent conflicting redirects exist' do
+          it 'is valid' do
+            redirect = build(:redirect_route, :permanent, path: 'git_lab/foo/bar')
+            redirect.save!(validate: false)
+
+            expect(route.valid?).to be_truthy
+          end
+        end
+        context 'when no permanent conflicting redirects exist' do
+          it 'is valid' do
+            expect(route.valid?).to be_truthy
+          end
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

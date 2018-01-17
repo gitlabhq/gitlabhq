@@ -1,77 +1,80 @@
 <script>
-import projectFeatureToggle from '../../../vue_shared/components/toggle_button.vue';
+  import projectFeatureToggle from '../../../vue_shared/components/toggle_button.vue';
 
-export default {
-  props: {
-    name: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    options: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    value: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    disabledInput: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-
-  components: {
-    projectFeatureToggle,
-  },
-
-  computed: {
-    featureEnabled() {
-      return this.value !== 0;
+  export default {
+    components: {
+      projectFeatureToggle,
     },
 
-    displayOptions() {
-      if (this.featureEnabled) {
-        return this.options;
-      }
-      return [
-        [0, 'Enable feature to choose access level'],
-      ];
+    model: {
+      prop: 'value',
+      event: 'change',
     },
 
-    displaySelectInput() {
-      return this.disabledInput || !this.featureEnabled || this.displayOptions.length < 2;
+    props: {
+      name: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      options: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
+      value: {
+        type: Number,
+        required: false,
+        default: 0,
+      },
+      disabledInput: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
-  },
 
-  model: {
-    prop: 'value',
-    event: 'change',
-  },
+    computed: {
+      featureEnabled() {
+        return this.value !== 0;
+      },
 
-  methods: {
-    toggleFeature(featureEnabled) {
-      if (featureEnabled === false || this.options.length < 1) {
-        this.$emit('change', 0);
-      } else {
-        const [firstOptionValue] = this.options[this.options.length - 1];
-        this.$emit('change', firstOptionValue);
-      }
+      displayOptions() {
+        if (this.featureEnabled) {
+          return this.options;
+        }
+        return [
+          [0, 'Enable feature to choose access level'],
+        ];
+      },
+
+      displaySelectInput() {
+        return this.disabledInput || !this.featureEnabled || this.displayOptions.length < 2;
+      },
     },
 
-    selectOption(e) {
-      this.$emit('change', Number(e.target.value));
+    methods: {
+      toggleFeature(featureEnabled) {
+        if (featureEnabled === false || this.options.length < 1) {
+          this.$emit('change', 0);
+        } else {
+          const [firstOptionValue] = this.options[this.options.length - 1];
+          this.$emit('change', firstOptionValue);
+        }
+      },
+
+      selectOption(e) {
+        this.$emit('change', Number(e.target.value));
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
-  <div class="project-feature-controls" :data-for="name">
+  <div
+    class="project-feature-controls"
+    :data-for="name"
+  >
     <input
       v-if="name"
       type="hidden"
@@ -81,7 +84,7 @@ export default {
     <project-feature-toggle
       :value="featureEnabled"
       @change="toggleFeature"
-      :disabledInput="disabledInput"
+      :disabled-input="disabledInput"
     />
     <div class="select-wrapper">
       <select
@@ -95,10 +98,14 @@ export default {
           :value="optionValue"
           :selected="optionValue === value"
         >
-          {{optionName}}
+          {{ optionName }}
         </option>
       </select>
-      <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      <i
+        aria-hidden="true"
+        class="fa fa-chevron-down"
+      >
+      </i>
     </div>
   </div>
 </template>

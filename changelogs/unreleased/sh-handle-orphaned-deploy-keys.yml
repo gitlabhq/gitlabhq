@@ -1,5 +1,0 @@
----
-title: Gracefully handle orphaned write deploy keys in /internal/post_receive
-merge_request:
-author:
-type: fixed

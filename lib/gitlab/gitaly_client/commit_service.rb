@@ -130,6 +130,7 @@ module Gitlab
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
         request.path = options[:path] if options[:path].present?
+        request.max_count = options[:max_count] if options[:max_count].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
@@ -176,7 +177,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
-      rescue GRPC::Unknown # If no repository is found, happens mainly during testing
+      rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
 

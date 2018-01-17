@@ -40,7 +40,7 @@ export default {
         aria-hidden="true">
       </i>
       <span>
-        {{buttonLabel}}
+        {{ buttonLabel }}
       </span>
     </button>
     <modal
@@ -50,7 +50,7 @@ export default {
       kind="warning"
       :title="__('Are you sure?')"
       :text="__('Are you sure you want to discard your changes?')"
-      @toggle="closeDiscardPopup"
+      @cancel="closeDiscardPopup"
       @submit="toggleEditMode(true)"
     />
   </div>

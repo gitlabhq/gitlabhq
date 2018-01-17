@@ -10,6 +10,7 @@ module QA
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
+    autoload :Env, 'qa/runtime/env'
   end
 
   ##
@@ -24,6 +25,7 @@ module QA
       autoload :Sandbox, 'qa/factory/resource/sandbox'
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :DeployKey, 'qa/factory/resource/deploy_key'
     end
 
     module Repository
@@ -56,6 +58,10 @@ module QA
       module Integration
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
+
+      module Sanity
+        autoload :Selectors, 'qa/scenario/test/sanity/selectors'
+      end
     end
   end
 
@@ -66,11 +72,19 @@ module QA
   #
   module Page
     autoload :Base, 'qa/page/base'
+    autoload :View, 'qa/page/view'
+    autoload :Element, 'qa/page/element'
+    autoload :Validator, 'qa/page/validator'
 
     module Main
       autoload :Login, 'qa/page/main/login'
-      autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
+    end
+
+    module Menu
+      autoload :Main, 'qa/page/menu/main'
+      autoload :Side, 'qa/page/menu/side'
+      autoload :Admin, 'qa/page/menu/admin'
     end
 
     module Dashboard
@@ -86,10 +100,15 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+
+      module Settings
+        autoload :Common, 'qa/page/project/settings/common'
+        autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+      end
     end
 
     module Admin
-      autoload :Menu, 'qa/page/admin/menu'
       autoload :Settings, 'qa/page/admin/settings'
     end
 

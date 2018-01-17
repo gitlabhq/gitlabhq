@@ -2,7 +2,6 @@
 
 import _ from 'underscore';
 import Vue from 'vue';
-import VueResource from 'vue-resource';
 import Flash from '../flash';
 import { __ } from '../locale';
 import FilteredSearchBoards from './filtered_search_boards';
@@ -24,8 +23,6 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
-
-Vue.use(VueResource);
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -95,9 +92,9 @@ $(() => {
 
       Store.disabled = this.disabled;
       gl.boardService.all()
-        .then(response => response.json())
-        .then((resp) => {
-          resp.forEach((board) => {
+        .then(res => res.data)
+        .then((data) => {
+          data.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
@@ -112,7 +109,9 @@ $(() => {
           Store.addBlankState();
           this.loading = false;
         })
-        .catch(() => new Flash('An error occurred. Please try again.'));
+        .catch(() => {
+          Flash('An error occurred while fetching the board lists. Please try again.');
+        });
     },
     methods: {
       updateTokens() {
@@ -123,7 +122,7 @@ $(() => {
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
-            .then(res => res.json())
+            .then(res => res.data)
             .then((data) => {
               newIssue.setFetchingState('subscriptions', false);
               newIssue.updateData({
@@ -172,18 +171,13 @@ $(() => {
   });
 
   gl.IssueBoardsModalAddBtn = new Vue({
-    mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return {
         modal: ModalStore.store,
         store: Store.state,
       };
-    },
-    watch: {
-      disabled() {
-        this.updateTooltip();
-      },
     },
     computed: {
       disabled() {
@@ -199,6 +193,14 @@ $(() => {
 
         return '';
       },
+    },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     methods: {
       updateTooltip() {
@@ -217,9 +219,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-    },
-    mounted() {
-      this.updateTooltip();
     },
     template: `
       <div class="board-extra-actions">

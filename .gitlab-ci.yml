@@ -61,6 +61,9 @@ stages:
 
 .use-pg: &use-pg
   services:
+    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
+    # so using the least common denominator ensures backwards compatibility
+    # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
 
@@ -431,6 +434,7 @@ ee_compat_check:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   retry: 0
@@ -508,7 +512,7 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.db-seed_fu: &db-seed_fu
+.gitlab-setup: &gitlab-setup
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
@@ -517,22 +521,24 @@ db:rollback-mysql:
     SIZE: "1"
     SETUP_DB: "false"
     CREATE_DB_USER: "true"
+    FIXTURE_PATH: db/fixtures/development
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
+    - scripts/gitaly-test-spawn
+    - force=yes bundle exec rake gitlab:setup
   artifacts:
     when: on_failure
     expire_in: 1d
     paths:
       - log/development.log
 
-db:seed_fu-pg:
-  <<: *db-seed_fu
+gitlab:setup-pg:
+  <<: *gitlab-setup
   <<: *use-pg
 
-db:seed_fu-mysql:
-  <<: *db-seed_fu
+gitlab:setup-mysql:
+  <<: *gitlab-setup
   <<: *use-mysql
 
 # Frontend-related jobs
@@ -601,6 +607,7 @@ codequality:
     paths: [codeclimate.json]
 
 sast:
+  <<: *except-docs
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
   before_script: []
   script:
@@ -619,6 +626,18 @@ qa:internal:
     - cd qa/
     - bundle install
     - bundle exec rspec
+
+qa:selectors:
+  <<: *dedicated-runner
+  <<: *except-docs
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec bin/qa Test::Sanity::Selectors
 
 coverage:
   <<: *dedicated-runner

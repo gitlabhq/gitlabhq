@@ -104,7 +104,10 @@
 
       img {
         height: 28px;
-        margin-right: 8px;
+
+        + .logo-text {
+          margin-left: 8px;
+        }
       }
 
       &.wrap {
@@ -516,7 +519,7 @@
 .header-user {
   .dropdown-menu-nav {
     width: auto;
-    min-width: 140px;
+    min-width: 160px;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;

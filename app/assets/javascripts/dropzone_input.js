@@ -3,6 +3,8 @@ import _ from 'underscore';
 import './preview_markdown';
 import csrf from './lib/utils/csrf';
 
+Dropzone.autoDiscover = false;
+
 export default function dropzoneInput(form) {
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';

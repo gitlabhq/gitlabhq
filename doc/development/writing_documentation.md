@@ -15,7 +15,7 @@ request introducing these changes must be accompanied by the documentation
 (either updating existing ones or creating new ones). This is also valid when
 changes are introduced to the UI.
 
-The one resposible for writing the first piece of documentation is the developer who
+The one responsible for writing the first piece of documentation is the developer who
 wrote the code. It's the job of the Product Manager to ensure all features are
 shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
 this is the only way to keep the docs up-to-date. If you have any questions about it,
@@ -25,13 +25,33 @@ them to review it for you.
 We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
 is documented.
 
+Whenever you submit a merge request for the documentation, use the documentation MR description template.
+
+### Documentation directory structure
+
+The documentation is structured based on the GitLab UI structure itself,
+separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
+[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
+
+To learn where to place a new document, check the [documentation style guide](doc_styleguide.md#location-and-naming-of-documents).
+
+In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
+all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+
+The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
+been deprecated and the majority their docs have been moved to their correct location
+in small iterations. Please don't create new docs in these folders.
+
+To move a document from its location to another directory, read the section
+[changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
+
 ### Feature overview and use cases
 
 Every major feature (regardless if present in GitLab Community or Enterprise editions)
 should present, at the beginning of the document, two main sections: **overview** and
 **use cases**. Every GitLab EE-only feature should also contain these sections.
 
-**Overview**: at the name suggests, the goal here is to provide an overview of the feature.
+**Overview**: as the name suggests, the goal here is to provide an overview of the feature.
 Describe what is it, what it does, why it is important/cool/nice-to-have,
 what problem it solves, and what you can do with this feature that you couldn't
 do before.

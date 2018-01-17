@@ -1,11 +1,9 @@
 /* global BoardService */
-/* global boardsMockInterceptor */
 /* global List */
-/* global listObj */
 /* global ListIssue */
-/* global mockBoardService */
 import Vue from 'vue';
-import _ from 'underscore';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Sortable from 'vendor/Sortable';
 import BoardList from '~/boards/components/board_list';
 import eventHub from '~/boards/eventhub';
@@ -13,18 +11,20 @@ import '~/boards/mixins/sortable_default_options';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 window.Sortable = Sortable;
 
 describe('Board list component', () => {
+  let mock;
   let component;
 
   beforeEach((done) => {
     const el = document.createElement('div');
 
     document.body.appendChild(el);
-    Vue.http.interceptors.push(boardsMockInterceptor);
+    mock = new MockAdapter(axios);
+    mock.onAny().reply(boardsMockInterceptor);
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
@@ -60,7 +60,7 @@ describe('Board list component', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+    mock.reset();
   });
 
   it('renders component', () => {
@@ -149,6 +149,18 @@ describe('Board list component', () => {
       expect(
         component.$el.querySelector('.board-list-count').textContent.trim(),
       ).toBe('Showing all issues');
+
+      done();
+    });
+  });
+
+  it('sets data attribute with invalid id', (done) => {
+    component.showCount = true;
+
+    Vue.nextTick(() => {
+      expect(
+        component.$el.querySelector('.board-list-count').getAttribute('data-issue-id'),
+      ).toBe('-1');
 
       done();
     });

@@ -36,7 +36,11 @@ module Gitlab
         def complete_command(namespace_name)
           return unless chart
 
-          "helm install #{chart} --name #{name} --namespace #{namespace_name} >/dev/null"
+          if chart_values_file
+            "helm install #{chart} --name #{name} --namespace #{namespace_name} -f /data/helm/#{name}/config/values.yaml >/dev/null"
+          else
+            "helm install #{chart} --name #{name} --namespace #{namespace_name} >/dev/null"
+          end
         end
 
         def install_dps_command

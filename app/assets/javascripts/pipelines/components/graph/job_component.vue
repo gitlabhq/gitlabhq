@@ -29,6 +29,15 @@
    */
 
   export default {
+    components: {
+      actionComponent,
+      dropdownActionComponent,
+      jobNameComponent,
+    },
+
+    directives: {
+      tooltip,
+    },
     props: {
       job: {
         type: Object,
@@ -46,16 +55,6 @@
         required: false,
         default: false,
       },
-    },
-
-    components: {
-      actionComponent,
-      dropdownActionComponent,
-      jobNameComponent,
-    },
-
-    directives: {
-      tooltip,
     },
 
     computed: {
@@ -102,12 +101,12 @@
       :class="cssClassJobName"
       data-container="body"
       class="js-pipeline-graph-job-link"
-      >
+    >
 
       <job-name-component
         :name="job.name"
         :status="job.status"
-        />
+      />
     </a>
 
     <div
@@ -117,12 +116,12 @@
       :title="tooltipText"
       :class="cssClassJobName"
       data-container="body"
-      >
+    >
 
       <job-name-component
         :name="job.name"
         :status="job.status"
-        />
+      />
     </div>
 
     <action-component
@@ -131,7 +130,7 @@
       :link="status.action.path"
       :action-icon="status.action.icon"
       :action-method="status.action.method"
-      />
+    />
 
     <dropdown-action-component
       v-if="hasAction && isDropdown"
@@ -139,6 +138,6 @@
       :link="status.action.path"
       :action-icon="status.action.icon"
       :action-method="status.action.method"
-      />
+    />
   </div>
 </template>

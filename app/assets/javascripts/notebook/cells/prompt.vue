@@ -4,10 +4,17 @@
       type: {
         type: String,
         required: false,
+        default: '',
       },
       count: {
         type: Number,
         required: false,
+        default: 0,
+      },
+    },
+    computed: {
+      hasKeys() {
+        return this.type !== '' && this.count;
       },
     },
   };
@@ -15,16 +22,16 @@
 
 <template>
   <div class="prompt">
-    <span v-if="type && count">
+    <span v-if="hasKeys">
       {{ type }} [{{ count }}]:
     </span>
   </div>
 </template>
 
 <style scoped>
-.prompt {
-  padding: 0 10px;
-  min-width: 7em;
-  font-family: monospace;
-}
+  .prompt {
+    padding: 0 10px;
+    min-width: 7em;
+    font-family: monospace;
+  }
 </style>

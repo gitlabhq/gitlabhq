@@ -1142,6 +1142,7 @@ describe API::Runner do
                    else
                      { 'file' => file }
                    end
+
           post api("/jobs/#{job.id}/artifacts"), params, headers
         end
       end

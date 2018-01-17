@@ -52,11 +52,6 @@ describe('Job', () => {
         expect($('.build-job[data-stage="test"]').is(':visible')).toBe(false);
         expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
       });
-
-      it('displays the remove date correctly', () => {
-        const removeDateElement = document.querySelector('.js-artifacts-remove');
-        expect(removeDateElement.innerText.trim()).toBe('1 year remaining');
-      });
     });
 
     describe('running build', () => {

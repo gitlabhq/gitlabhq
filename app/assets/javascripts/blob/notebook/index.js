@@ -1,15 +1,16 @@
 /* eslint-disable no-new */
 import Vue from 'vue';
-import VueResource from 'vue-resource';
+import axios from '../../lib/utils/axios_utils';
 import notebookLab from '../../notebook/index.vue';
-
-Vue.use(VueResource);
 
 export default () => {
   const el = document.getElementById('js-notebook-viewer');
 
   new Vue({
     el,
+    components: {
+      notebookLab,
+    },
     data() {
       return {
         error: false,
@@ -18,8 +19,41 @@ export default () => {
         json: {},
       };
     },
-    components: {
-      notebookLab,
+    mounted() {
+      if (gon.katex_css_url) {
+        const katexStyles = document.createElement('link');
+        katexStyles.setAttribute('rel', 'stylesheet');
+        katexStyles.setAttribute('href', gon.katex_css_url);
+        document.head.appendChild(katexStyles);
+      }
+
+      if (gon.katex_js_url) {
+        const katexScript = document.createElement('script');
+        katexScript.addEventListener('load', () => {
+          this.loadFile();
+        });
+        katexScript.setAttribute('src', gon.katex_js_url);
+        document.head.appendChild(katexScript);
+      } else {
+        this.loadFile();
+      }
+    },
+    methods: {
+      loadFile() {
+        axios.get(el.dataset.endpoint)
+          .then(res => res.data)
+          .then((data) => {
+            this.json = data;
+            this.loading = false;
+          })
+          .catch((e) => {
+            if (e.status !== 200) {
+              this.loadError = true;
+            }
+
+            this.error = true;
+          });
+      },
     },
     template: `
       <div class="container-fluid md prepend-top-default append-bottom-default">
@@ -48,41 +82,5 @@ export default () => {
         </p>
       </div>
     `,
-    methods: {
-      loadFile() {
-        this.$http.get(el.dataset.endpoint)
-          .then(response => response.json())
-          .then((res) => {
-            this.json = res;
-            this.loading = false;
-          })
-          .catch((e) => {
-            if (e.status) {
-              this.loadError = true;
-            }
-
-            this.error = true;
-          });
-      },
-    },
-    mounted() {
-      if (gon.katex_css_url) {
-        const katexStyles = document.createElement('link');
-        katexStyles.setAttribute('rel', 'stylesheet');
-        katexStyles.setAttribute('href', gon.katex_css_url);
-        document.head.appendChild(katexStyles);
-      }
-
-      if (gon.katex_js_url) {
-        const katexScript = document.createElement('script');
-        katexScript.addEventListener('load', () => {
-          this.loadFile();
-        });
-        katexScript.setAttribute('src', gon.katex_js_url);
-        document.head.appendChild(katexScript);
-      } else {
-        this.loadFile();
-      }
-    },
   });
 };

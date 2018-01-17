@@ -62,4 +62,14 @@ describe('text_utility', () => {
       expect(textUtils.slugify('João')).toEqual('joão');
     });
   });
+
+  describe('stripeHtml', () => {
+    it('replaces html tag with the default replacement', () => {
+      expect(textUtils.stripeHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
+    });
+
+    it('replaces html tags with the provided replacement', () => {
+      expect(textUtils.stripeHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
+    });
+  });
 });

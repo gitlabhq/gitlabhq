@@ -1,0 +1,18 @@
+
+/* eslint-disable no-new */
+
+import IssuableIndex from '~/issuable_index';
+import ShortcutsNavigation from '~/shortcuts_navigation';
+import UsersSelect from '~/users_select';
+
+export default () => {
+  const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
+  if (filteredSearchEnabled) {
+    const filteredSearchManager = new gl.FilteredSearchManager('issues');
+    filteredSearchManager.setup();
+  }
+  new IssuableIndex('issue_');
+
+  new ShortcutsNavigation();
+  new UsersSelect();
+};

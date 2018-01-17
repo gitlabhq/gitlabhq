@@ -68,7 +68,7 @@ describe PagesDomain do
     subject { domain.url }
 
     context 'without the certificate' do
-      let(:domain) { build(:pages_domain) }
+      let(:domain) { build(:pages_domain, certificate: '') }
 
       it { is_expected.to eq('http://my.domain.com') }
     end

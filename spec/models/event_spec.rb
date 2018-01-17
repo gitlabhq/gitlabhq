@@ -347,6 +347,22 @@ describe Event do
     end
   end
 
+  describe '#target' do
+    it 'eager loads the author of an event target' do
+      create(:closed_issue_event)
+
+      events = described_class.preload(:target).all.to_a
+      count = ActiveRecord::QueryRecorder
+        .new { events.first.target.author }.count
+
+      # This expectation exists to make sure the test doesn't pass when the
+      # author is for some reason not loaded at all.
+      expect(events.first.target.author).to be_an_instance_of(User)
+
+      expect(count).to be_zero
+    end
+  end
+
   def create_push_event(project, user)
     event = create(:push_event, project: project, author: user)
 

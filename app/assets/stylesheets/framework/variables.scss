@@ -334,7 +334,8 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 * Dropdowns
 */
 $dropdown-width: 300px;
-$dropdown-max-height: 215px;
+$dropdown-min-height: 40px;
+$dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
@@ -727,3 +728,13 @@ Popup
 $popup-triangle-size: 15px;
 $popup-triangle-border-size: 1px;
 $popup-box-shadow-color: rgba(90, 90, 90, 0.05);
+
+/*
+Multi file editor
+*/
+$border-color-settings: #e1e1e1;
+
+/*
+Modals
+*/
+$modal-body-height: 134px;

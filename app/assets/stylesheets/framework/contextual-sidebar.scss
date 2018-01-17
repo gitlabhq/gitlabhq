@@ -23,6 +23,7 @@
 .context-header {
   position: relative;
   margin-right: 2px;
+  width: $contextual-sidebar-width;
 
   a {
     transition: padding $sidebar-transition-duration;
@@ -358,10 +359,6 @@
   }
 
   .sidebar-top-level-items > li {
-    &.active a {
-      padding-left: 12px;
-    }
-
     .sidebar-sub-level-items {
       &:not(.flyout-list) {
         display: none;
