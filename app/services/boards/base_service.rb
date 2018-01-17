@@ -16,6 +16,7 @@ module Boards
       milestone_id = params[:milestone_id]
 
       return unless milestone_id
+
       return if [::Milestone::None.id,
                  ::Milestone::Upcoming.id,
                  ::Milestone::Started.id].include?(milestone_id)
