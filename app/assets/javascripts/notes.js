@@ -1288,6 +1288,10 @@ export default class Notes {
   }
 
   static animateAppendNote(noteHtml, $notesList) {
+    if (Cookies.get('vue_mr_discussions')) {
+      return;
+    }
+
     const $note = $(noteHtml);
 
     $note.addClass('fade-in-full').renderGFM();
