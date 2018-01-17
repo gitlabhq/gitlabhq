@@ -220,14 +220,6 @@
     @include btn-with-margin;
   }
 
-  &.disabled {
-    pointer-events: auto !important;
-  }
-
-  &[disabled] {
-    pointer-events: none !important;
-  }
-
   .fa-caret-down,
   .fa-chevron-down {
     margin-left: 5px;
@@ -451,19 +443,27 @@
   @include btn-svg;
 }
 
-// All disabled buttons, regardless of color
+// All disabled buttons, regardless of color, type, etc
+%disabled {
+  background-color: $gray-light !important;
+  border-color: $theme-gray-200 !important;
+  color: $gl-text-color-disabled !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+
+  i {
+    color: $gl-text-color-disabled !important;
+  }
+}
+
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn,
 .dropdown-toggle[disabled],
 [disabled].dropdown-menu-toggle {
-  background-color: $gray-light;
-  border-color: $theme-gray-200;
-  color: $gl-text-color-disabled;
-  opacity: 1;
-  cursor: not-allowed;
+  @extend %disabled;
 
-  i {
-    color: $gl-text-color-disabled;
+  &:hover {
+    @extend %disabled;
   }
 }
