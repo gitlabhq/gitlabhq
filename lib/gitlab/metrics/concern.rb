@@ -2,15 +2,11 @@ module Gitlab
   module Metrics
     module Concern
       extend ActiveSupport::Concern
-
-      included do
-        @_metrics_provider_mutex ||= Mutex.new
-        @_metrics_provider_cache ||= {}
-      end
+      MUTEX = Mutex.new
 
       class_methods do
         def reload_metric!(name)
-          @_metrics_provider_cache.delete(name)
+          @_metrics_provider_cache&.delete(name)
         end
 
         private
@@ -22,7 +18,8 @@ module Gitlab
 
           define_singleton_method(name) do
             # avoid unnecessary method call to speed up metric access
-            return @_metrics_provider_cache[name] if @_metrics_provider_cache.has_key?(name)
+            metric = @_metrics_provider_cache&.[](name)
+            return metric if metric
 
             fetch_metric(type, name, opts, &block)
           end
@@ -30,12 +27,14 @@ module Gitlab
 
         def fetch_metric(type, name, opts = {}, &block)
           # avoid synchronization to speed up metrics access
-          return @_metrics_provider_cache[name] if @_metrics_provider_cache.has_key?(name)
+          metric = @_metrics_provider_cache&.[](name)
+          return metric if metric
 
           options = MetricOptions.new(opts)
           options.evaluate(&block)
 
-          @_metrics_provider_mutex.synchronize do
+          MUTEX.synchronize do
+            @_metrics_provider_cache ||= {}
             @_metrics_provider_cache[name] ||= build_metric!(type, name, options)
           end
 
