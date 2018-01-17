@@ -111,7 +111,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
     "nodemon": "^1.11.0",
-    "prettier": "1.9.2",
     "webpack-dev-server": "^2.6.1"
   }
 }
