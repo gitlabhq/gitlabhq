@@ -32,6 +32,8 @@ import initSettingsPanels from './settings_panels';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
+import GpgBadges from './gpg_badges';
+import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
@@ -48,7 +50,6 @@ import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
 // EE-only
-import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
