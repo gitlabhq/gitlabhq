@@ -197,11 +197,11 @@ export const poll = ({ commit, state, getters }) => {
 };
 
 export const stopPolling = () => {
-  // eTagPoll.stop();
+  eTagPoll.stop();
 };
 
 export const restartPolling = () => {
-  // eTagPoll.restart();
+  eTagPoll.restart();
 };
 
 export const fetchData = ({ commit, state, getters }) => {
