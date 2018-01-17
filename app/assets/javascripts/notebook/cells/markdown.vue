@@ -99,8 +99,7 @@
     <prompt />
     <div
       class="markdown"
-      v-html="markdown"
-    >
+      v-html="markdown">
     </div>
   </div>
 </template>

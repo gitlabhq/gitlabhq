@@ -4,11 +4,11 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
-    directives: {
-      tooltip,
-    },
     components: {
       actionBtn,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       deployKey: {
@@ -63,6 +63,7 @@
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
         v-for="(deployKeysProject, i) in deployKey.deploy_keys_projects"
+        :key="i"
         class="label deploy-project-label"
         :href="deployKeysProject.project.full_path"
         :title="tooltipTitle(deployKeysProject)"
