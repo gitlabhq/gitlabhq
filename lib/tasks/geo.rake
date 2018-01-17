@@ -194,4 +194,11 @@ namespace :geo do
       current_node.update!(primary: true)
     end
   end
+
+  desc 'Update Geo primary node URL'
+  task update_primary_node_url: :environment do
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
+
+    Gitlab::Geo::GeoTasks.update_primary_geo_node_url
+  end
 end
