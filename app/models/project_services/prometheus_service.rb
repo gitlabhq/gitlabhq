@@ -129,6 +129,7 @@ class PrometheusService < MonitoringService
   end
 
   def prometheus_installed?
+    return false if template?
     project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
   end
 
