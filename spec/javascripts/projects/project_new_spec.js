@@ -1,6 +1,6 @@
 import projectNew from '~/projects/project_new';
 
-fdescribe('New Project', () => {
+describe('New Project', () => {
   let $projectImportUrl;
   let $projectPath;
 
