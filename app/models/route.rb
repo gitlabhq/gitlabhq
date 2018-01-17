@@ -45,7 +45,7 @@ class Route < ActiveRecord::Base
         # We are not calling route.delete_conflicting_redirects here, in hopes
         # of avoiding deadlocks. The parent (self, in this method) already
         # called it, which deletes conflicts for all descendants.
-        route.create_redirect(old_path, permanent: permanent_redirect?) if attributes[:path]
+        route.create_redirect(old_path, permanent: route.permanent_redirect?) if attributes[:path]
       end
     end
   end
@@ -66,15 +66,16 @@ class Route < ActiveRecord::Base
     RedirectRoute.create(source: source, path: path, permanent: permanent)
   end
 
+  # Groups redirects are considered permanent to avoid 
+  # any other Group/User reclaim an old path
+  def permanent_redirect?
+    source_type != "Project"
+  end
+
   private
 
   def create_redirect_for_old_path
     create_redirect(path_was, permanent: permanent_redirect?)
-  end
-
-  # Groups redirects are considered permanent to avoid any other Group/User reclaim an old path
-  def permanent_redirect?
-    source_type != "Project"
   end
 
   def ensure_permanent_paths
@@ -84,11 +85,7 @@ class Route < ActiveRecord::Base
   end
 
   def conflicting_redirect_exists?
-    if source_id.present?
-      permanent_redirect_routes.where.not(source_id: self_and_descendant_ids).exists?
-    else
-      permanent_redirect_routes.exists?
-    end
+    permanent_redirect_routes.where.not(source_id: self_and_descendant_ids).exists?
   end
 
   def self_and_descendant_ids
