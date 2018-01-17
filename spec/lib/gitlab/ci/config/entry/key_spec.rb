@@ -10,7 +10,7 @@ describe Gitlab::Ci::Config::Entry::Key do
       end
 
       it 'reports errors with config value' do
-        expect(entry.errors).to  include 'key config cannot contain the "/" character'
+        expect(entry.errors).to include 'key config cannot contain the "/" character'
       end
     end
 
@@ -20,7 +20,7 @@ describe Gitlab::Ci::Config::Entry::Key do
       end
 
       it 'reports errors with config value' do
-        expect(entry.errors).to  include 'key config cannot be "." or ".."'
+        expect(entry.errors).to include 'key config cannot be "." or ".."'
       end
     end
 
