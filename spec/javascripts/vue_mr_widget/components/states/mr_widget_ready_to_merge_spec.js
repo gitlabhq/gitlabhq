@@ -371,6 +371,10 @@ describe('MRWidgetReadyToMerge', () => {
         });
       });
 
+      beforeEach(() => {
+        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+      });
+
       it('should call start and stop polling when MR merged', (done) => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
