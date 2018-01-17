@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180105212544) do
-=======
-ActiveRecord::Schema.define(version: 20171215121259) do
->>>>>>> Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"

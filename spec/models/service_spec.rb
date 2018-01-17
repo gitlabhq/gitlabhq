@@ -255,7 +255,6 @@ describe Service do
     end
   end
 
-<<<<<<< HEAD
   describe "#deprecated?" do
     let(:project) { create(:project, :repository) }
 
@@ -279,7 +278,9 @@ describe Service do
 
     it 'returns service template' do
       expect(KubernetesService.find_by_template).to eq(kubernetes_service)
-=======
+    end
+  end
+
   describe '#api_field_names' do
     let(:fake_service) do
       Class.new(Service) do
@@ -311,7 +312,6 @@ describe Service do
 
     it 'filters out sensitive fields' do
       expect(service.api_field_names).to eq(['safe_field'])
->>>>>>> Merge branch 'security-10-3-do-not-expose-passwords-or-tokens-in-service-integrations-api' into 'security-10-3'
     end
   end
 end
