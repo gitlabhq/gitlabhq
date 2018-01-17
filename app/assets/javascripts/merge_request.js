@@ -111,7 +111,7 @@ MergeRequest.prototype.initCommitMessageListeners = function() {
   });
 };
 
-MergeRequest.setStatusBoxToMerged = function() {
+MergeRequest.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
   $('.detail-page-header .status-box')
     .removeClass('status-box-open')
     .addClass('status-box-mr-merged')
