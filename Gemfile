@@ -243,6 +243,9 @@ gem 'charlock_holmes', '~> 0.7.5'
 # Faster JSON
 gem 'oj', '~> 2.17.4'
 
+# Faster blank
+gem 'fast_blank'
+
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
