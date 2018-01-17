@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GeoNodeStatusEntity, :postgresql do
+describe API::Entities::GeoNodeStatus, :postgresql do
   include ::EE::GeoHelpers
 
   let(:geo_node_status) { build(:geo_node_status) }
@@ -10,38 +10,6 @@ describe GeoNodeStatusEntity, :postgresql do
   subject { entity.as_json }
 
   before { stub_primary_node }
-
-  it { is_expected.to have_key(:geo_node_id) }
-  it { is_expected.to have_key(:healthy) }
-  it { is_expected.to have_key(:health) }
-  it { is_expected.to have_key(:attachments_count) }
-  it { is_expected.to have_key(:attachments_failed_count) }
-  it { is_expected.to have_key(:attachments_synced_count) }
-  it { is_expected.to have_key(:attachments_synced_in_percentage) }
-  it { is_expected.to have_key(:lfs_objects_count) }
-  it { is_expected.to have_key(:lfs_objects_failed_count) }
-  it { is_expected.to have_key(:lfs_objects_synced_count) }
-  it { is_expected.to have_key(:lfs_objects_synced_in_percentage) }
-  it { is_expected.to have_key(:job_artifacts_count) }
-  it { is_expected.to have_key(:job_artifacts_failed_count) }
-  it { is_expected.to have_key(:job_artifacts_synced_count) }
-  it { is_expected.to have_key(:job_artifacts_synced_in_percentage) }
-  it { is_expected.to have_key(:repositories_count) }
-  it { is_expected.to have_key(:repositories_failed_count) }
-  it { is_expected.to have_key(:repositories_synced_count)}
-  it { is_expected.to have_key(:repositories_synced_in_percentage) }
-  it { is_expected.to have_key(:wikis_count) }
-  it { is_expected.to have_key(:wikis_failed_count) }
-  it { is_expected.to have_key(:wikis_synced_count)}
-  it { is_expected.to have_key(:wikis_synced_in_percentage) }
-  it { is_expected.to have_key(:replication_slots_count) }
-  it { is_expected.to have_key(:replication_slots_used_count)}
-  it { is_expected.to have_key(:replication_slots_used_in_percentage) }
-  it { is_expected.to have_key(:replication_slots_max_retained_wal_bytes) }
-  it { is_expected.to have_key(:last_successful_status_check_timestamp) }
-  it { is_expected.to have_key(:namespaces) }
-  it { is_expected.to have_key(:storage_shards) }
-  it { is_expected.to have_key(:storage_shards_match) }
 
   describe '#healthy' do
     context 'when node is healthy' do

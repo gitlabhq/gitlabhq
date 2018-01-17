@@ -231,6 +231,7 @@ GEM
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
+    fast_blank (1.0.0)
     fast_gettext (1.4.0)
     ffaker (2.4.0)
     ffi (1.9.18)
@@ -1069,6 +1070,7 @@ DEPENDENCIES
   factory_bot_rails (~> 4.8.2)
   faraday (~> 0.12)
   faraday_middleware-aws-signers-v4
+  fast_blank
   ffaker (~> 2.4)
   flay (~> 2.8.0)
   flipper (~> 0.11.0)

@@ -9,7 +9,7 @@ fail-over with minimal effort, in a disaster situation.
 
 See [current limitations](README.md#current-limitations) for more information.
 
-## Promoting a secondary geo replica
+### Step 1. Promoting a secondary geo replica
 
 > **Warning:** Disaster Recovery does not yet support systems with multiple
 > secondary geo replicas (e.g. one primary and two or more secondaries).
@@ -42,20 +42,6 @@ It does not enable GitLab Geo on the newly promoted primary.
     sudo -i
     ```
 
-1. Optional: Update the primary domain's DNS record.
-    
-    Updating the DNS records for the primary domain to point to the secondary
-    will prevent the need to update all references to the primary domain to the
-    secondary domain, like changing Git remotes and API URLs.
-
-    After updating the primary domain's DNS records to point to the secondary,
-    edit `/etc/gitlab/gitlab.rb` on the the secondary to reflect the new URL:
-
-    ```
-    # Change the existing external_url configuration
-    external_url 'https://gitlab.example.com'
-    ```
-
 1. Edit `/etc/gitlab/gitlab.rb` to reflect its new status as primary.
 
     Remove the following line:
@@ -79,10 +65,49 @@ It does not enable GitLab Geo on the newly promoted primary.
    previously for the secondary.
 1. Success! The secondary has now been promoted to primary.
 
+### Step 2. (Optional) Updating the primary domain's DNS record
+
+Updating the DNS records for the primary domain to point to the secondary
+will prevent the need to update all references to the primary domain to the
+secondary domain, like changing Git remotes and API URLs.
+
+1. SSH in to your **secondary** and login as root:
+
+    ```
+    sudo -i
+    ```
+
+1. Update the primary domain's DNS record.
+
+    After updating the primary domain's DNS records to point to the secondary,
+    edit `/etc/gitlab/gitlab.rb` on the the secondary to reflect the new URL:
+
+    ```
+    # Change the existing external_url configuration
+    external_url 'https://gitlab.example.com'
+    ```
+
+1. Reconfigure the secondary node for the change to take effect:
+
+    ```
+    gitlab-ctl reconfigure
+    ```
+
+1. Execute the command below to update the newly promoted primary node URL:
+
+    ```
+    gitlab-rake geo:update_primary_node_url
+    ```
+
+    This command will use the changed `external_url` configuration defined
+    in `/etc/gitlab/gitlab.rb`.
+
+1. Verify you can connect to the newly promoted primary using the primary URL.
+
     If you updated the DNS records for the primary domain, these changes may
     not have yet propagated depending on the previous DNS records TTL.
 
-## Add secondary geo replicas to a promoted primary
+### Step 3. (Optional) Add secondary geo replicas to a promoted primary
 
 Promoting a secondary to primary using the process above does not enable
 GitLab Geo on the new primary.

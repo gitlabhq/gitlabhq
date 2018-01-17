@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :geo_node_status do
-    sequence(:id)
     geo_node
     storage_shards { StorageShard.all }
 
