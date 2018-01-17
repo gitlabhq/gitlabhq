@@ -48,7 +48,7 @@ describe('Markdown component', () => {
     });
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('a').getAttribute('href')).toBeNull();
+      expect(vm.$el.querySelector('a')).toBeNull();
 
       done();
     });
