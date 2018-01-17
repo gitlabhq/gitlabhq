@@ -26,7 +26,6 @@ import ProjectsList from './projects_list';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import BlobViewer from './blob/viewer/index';
-import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
@@ -255,7 +254,6 @@ import Activities from './activities';
           new LabelsSelect();
           new MilestoneSelect();
           new IssuableTemplateSelectors();
-          new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
           break;
         case 'projects:tags:new':
           import('./pages/projects/tags/new')
