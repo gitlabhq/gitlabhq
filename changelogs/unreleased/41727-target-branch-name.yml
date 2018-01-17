@@ -1,0 +1,5 @@
+---
+title: Set target_branch to the ref branch when creating MR from issue
+merge_request:
+author:
+type: fixed
