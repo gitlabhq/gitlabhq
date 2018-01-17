@@ -100,5 +100,36 @@ describe MergeRequests::CreateFromIssueService do
 
       expect(result[:merge_request].target_branch).to eq(project.default_branch)
     end
+
+    it 'executes quick actions if the build service sets them in the description' do
+      allow(service).to receive(:merge_request).and_wrap_original do |m, *args|
+        m.call(*args).tap do |merge_request|
+          merge_request.description = "/assign #{user.to_reference}"
+        end
+      end
+
+      result = service.execute
+
+      expect(result[:merge_request].assignee).to eq(user)
+    end
+
+    context 'when ref branch is set' do
+      subject { described_class.new(project, user, issue_iid: issue.iid, ref: 'feature').execute }
+
+      it 'sets the merge request source branch to the new issue branch' do
+        expect(subject[:merge_request].source_branch).to eq(issue.to_branch_name)
+      end
+
+      it 'sets the merge request target branch to the ref branch' do
+        expect(subject[:merge_request].target_branch).to eq('feature')
+      end
+
+      context 'when ref branch does not exist' do
+        it 'does not create a merge request' do
+          expect { described_class.new(project, user, issue_iid: issue.iid, ref: 'nobr').execute }
+            .not_to change { project.merge_requests.count }
+        end
+      end
+    end
   end
 end
