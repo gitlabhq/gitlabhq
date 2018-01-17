@@ -23,6 +23,7 @@
       discussionLockedWidget,
       markdownField,
       userAvatarLink,
+      quill,
     },
     mixins: [
       issuableStateMixin,
@@ -293,13 +294,6 @@ Please check your network connection and try again.`;
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
                 ref="markdownField">
-                <quill placeholder="this is good" :toolbar="[['bold', 'underline']]" @change="textChanged" slow="wysiwyg">
-                   <div slot="content">
-                    <p>Hello World!</p>
-                    <p>Some initial <strong>bold</strong> text</p>
-                    <p><br></p>
-                  </div>
-                </quill>
                 <textarea
                   id="note-body"
                   name="note[note]"
@@ -316,6 +310,14 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
                   @keydown.meta.enter="handleSave()"
                   @keydown.ctrl.enter="handleSave()">
                 </textarea>
+
+                <quill placeholder="this is good" :toolbar="[['bold', 'underline']]" @change="textChanged" slot="wysiwyg">
+                   <div slot="content">
+                    <p>Hello World!</p>
+                    <p>Some initial <strong>bold</strong> text</p>
+                    <p><br></p>
+                  </div>
+                </quill>
               </markdown-field>
               <div class="note-form-actions">
                 <div
