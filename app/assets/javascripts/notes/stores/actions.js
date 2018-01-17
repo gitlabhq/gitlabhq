@@ -150,7 +150,7 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     resp.notes.forEach((note) => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
-      } else if (note.type === constants.DISCUSSION_NOTE) {
+      } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
         const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
         if (discussion) {
