@@ -1,14 +1,14 @@
 <script>
   import actionBtn from './action_btn.vue';
-<<<<<<< HEAD
   import { getTimeago } from '../../lib/utils/datetime_utility';
-=======
   import tooltip from '../../vue_shared/directives/tooltip';
->>>>>>> Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
 
   export default {
     components: {
       actionBtn,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       deployKey: {
@@ -24,15 +24,6 @@
         required: true,
       },
     },
-<<<<<<< HEAD
-=======
-    directives: {
-      tooltip,
-    },
-    components: {
-      actionBtn,
-    },
->>>>>>> Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
     computed: {
       timeagoDate() {
         return getTimeago().format(this.deployKey.created_at);
@@ -71,18 +62,12 @@
     </div>
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
-<<<<<<< HEAD
-        v-for="(project, i) in deployKey.projects"
-        class="label deploy-project-label"
-        :href="project.full_path"
+        v-for="(deployKeysProject, i) in deployKey.deploy_keys_projects"
         :key="i"
-=======
-        v-for="deployKeysProject in deployKey.deploy_keys_projects"
         class="label deploy-project-label"
         :href="deployKeysProject.project.full_path"
         :title="tooltipTitle(deployKeysProject)"
         v-tooltip
->>>>>>> Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
       >
         {{ deployKeysProject.project.full_name }}
         <i
