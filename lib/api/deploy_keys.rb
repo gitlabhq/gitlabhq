@@ -116,6 +116,7 @@ module API
         result = deploy_keys_project.update_attributes(can_push: can_push,
                                                        deploy_key_attributes: { id: params[:key_id],
                                                                                 title: title })
+
         if result
           present deploy_keys_project, with: Entities::DeployKeysProject
         else
