@@ -52,33 +52,29 @@ export default {
         false,
       );
 
-        return `
-          <p>
-            ${descriptionParagraph}
-          </p>
-          <p class="append-bottom-0">
-            ${extraCostParagraph}
-          </p>
-        `;
-      },
-      gitlabRunnerDescription() {
-        return _.escape(s__(
-          `ClusterIntegration|GitLab Runner is the open source project that is used to run your jobs
-          and send the results back to GitLab.`,
-        ));
-      },
-      prometheusDescription() {
-        return sprintf(
-          _.escape(s__(`ClusterIntegration|Prometheus is an open-source monitoring system
-  with %{gitlabIntegrationLink} to monitor deployed applications.`)),
-          {
-            gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
-target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
-          },
-          false,
-        );
-      },
+      return `
+        <p>
+          ${descriptionParagraph}
+        </p>
+        <p class="append-bottom-0">
+          ${extraCostParagraph}
+        </p>
+      `;
+    },
+    gitlabRunnerDescription() {
+      return _.escape(s__(
+        `ClusterIntegration|GitLab Runner is the open source project that is used to run your jobs
+        and send the results back to GitLab.`,
+      ));
+    },
+    prometheusDescription() {
+      return sprintf(
+        _.escape(s__('ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications.')), {
+          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html", target="_blank" rel="noopener noreferrer">
+            ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
+        },
+        false,
+      );
     },
   },
 };
