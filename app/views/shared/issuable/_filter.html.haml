@@ -22,7 +22,7 @@
           = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true, show_started: true
 
         .filter-item.inline.labels-filter
-          = render "shared/issuable/label_dropdown", selected: finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
+          = render "shared/issuable/label_dropdown", selected: selected_labels, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
         - if issuable_filter_present?
           .filter-item.inline.reset-filters
