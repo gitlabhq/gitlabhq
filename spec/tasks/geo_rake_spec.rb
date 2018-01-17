@@ -57,4 +57,23 @@ describe 'geo rake tasks' do
       expect(primary_node.reload.url).to eq 'https://primary.geo.example.com/'
     end
   end
+
+  describe 'status task' do
+    include ::EE::GeoHelpers
+
+    let!(:current_node) { create(:geo_node) }
+    let!(:primary_node) { create(:geo_node, :primary) }
+    let!(:geo_event_log) { create(:geo_event_log) }
+
+    before do
+      expect(Gitlab::Geo).to receive(:license_allows?).and_return(true).at_least(:once)
+      expect(GeoNodeStatus).to receive(:current_node_status).and_call_original
+
+      stub_current_geo_node(current_node)
+    end
+
+    it 'runs with no error' do
+      expect { run_rake_task('geo:status') }.to output(/Sync settings: Full/).to_stdout
+    end
+  end
 end
