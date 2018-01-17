@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170518231126_fix_wrongly_renamed_routes.rb')
 
-describe FixWronglyRenamedRoutes, :truncate, :migration do
+describe FixWronglyRenamedRoutes, :migration do
   let(:subject) { described_class.new }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
