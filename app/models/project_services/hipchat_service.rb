@@ -110,6 +110,7 @@ class HipchatService < Service
 
     message = ""
     message << "#{push[:user_name]} "
+
     if Gitlab::Git.blank_ref?(before)
       message << "pushed new #{ref_type} <a href=\""\
                  "#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"\
@@ -181,7 +182,7 @@ class HipchatService < Service
     description = obj_attr[:description]
     title = render_line(obj_attr[:title])
     action = obj_attr[:action]
-    state_or_action_text = (action == 'approved') ? action : state
+    state_or_action_text = action == 'approved' ? action : state
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_iid}"
     merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_iid}</a>"
     message = "#{user_name} #{state_or_action_text} #{merge_request_link} in " \

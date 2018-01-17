@@ -1,0 +1,5 @@
+---
+title: Fix timeout when filtering issues by label
+merge_request:
+author:
+type: performance

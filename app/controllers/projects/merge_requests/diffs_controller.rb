@@ -4,6 +4,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include RendersNotes
 
   before_action :apply_diff_view_cookie!
+  before_action :commit
   before_action :define_diff_vars
   before_action :define_diff_comment_vars
 
@@ -20,18 +21,33 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   private
 
   def define_diff_vars
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.order_id_desc
+    @compare = commit || find_merge_request_diff_compare
+    return render_404 unless @compare
+
+    @diffs = @compare.diffs(diff_options)
+  end
+
+  def commit
+    return nil unless commit_id = params[:commit_id].presence
+    return nil unless @merge_request.all_commits.exists?(sha: commit_id)
+
+    @commit ||= @project.commit(commit_id)
+  end
+
+  def find_merge_request_diff_compare
     @merge_request_diff =
-      if params[:diff_id]
-        @merge_request.merge_request_diffs.viewable.find(params[:diff_id])
+      if diff_id = params[:diff_id].presence
+        @merge_request.merge_request_diffs.viewable.find_by(id: diff_id)
       else
         @merge_request.merge_request_diff
       end
 
-    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.order_id_desc
+    return unless @merge_request_diff
+
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
-    if params[:start_sha].present?
-      @start_sha = params[:start_sha]
+    if @start_sha = params[:start_sha].presence
       @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
       unless @start_version
@@ -40,20 +56,18 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       end
     end
 
-    @compare =
-      if @start_sha
-        @merge_request_diff.compare_with(@start_sha)
-      else
-        @merge_request_diff
-      end
-
-    @diffs = @compare.diffs(diff_options)
+    if @start_sha
+      @merge_request_diff.compare_with(@start_sha)
+    else
+      @merge_request_diff
+    end
   end
 
   def define_diff_comment_vars
     @new_diff_note_attrs = {
       noteable_type: 'MergeRequest',
-      noteable_id: @merge_request.id
+      noteable_id: @merge_request.id,
+      commit_id: @commit&.id
     }
 
     @diff_notes_disabled = false

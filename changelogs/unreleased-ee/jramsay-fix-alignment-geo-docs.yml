@@ -1,0 +1,5 @@
+---
+title: Fix broken alignment of database password in geo docs
+merge_request: 3939
+author:
+type: other

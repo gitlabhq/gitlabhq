@@ -66,7 +66,7 @@ For source installations the following settings are nested under `lfs:` and then
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
 | `connection` | Various connection options described below | |
 
-#### S3 compatible connection settigns
+#### S3 compatible connection settings
 
 The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
 
@@ -114,7 +114,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 	will be forwarded to object storage unless
 	`gitlab_rails['lfs_object_store_background_upload']` is set to false.
 
-### In ombnibus
+### In Omnibus
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:

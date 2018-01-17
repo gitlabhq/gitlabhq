@@ -179,7 +179,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def pipeline
-    @pipeline ||= head_pipeline
+    @pipeline ||= actual_head_pipeline
   end
 
   def issues_sentence(project, issues)

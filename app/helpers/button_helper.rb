@@ -86,7 +86,7 @@ module ButtonHelper
     button_content << content_tag(:span, description, class: 'dropdown-menu-inner-content') if description
 
     content_tag (href ? :a : :span),
-      button_content,
+      (href ? button_content : title),
       class: "#{title.downcase}-selector",
       href: (href if href),
       data: {
@@ -112,7 +112,7 @@ module ButtonHelper
   def geo_button(modal_target: nil)
     data = { placement: 'bottom', container: 'body', toggle: 'modal', target: modal_target }
     content_tag :button,
-                icon('globe'),
+                sprite_icon('geo-nodes', size: 15),
                 class: 'btn btn-geo has-tooltip',
                 data: data,
                 type: :button,

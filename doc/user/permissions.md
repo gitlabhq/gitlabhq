@@ -26,7 +26,6 @@ The following table depicts the various user permission levels in a project.
 | View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
@@ -42,8 +41,8 @@ The following table depicts the various user permission levels in a project.
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
-| Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Manage related issues                 |         | ✓          | ✓           | ✓        | ✓      |
+| Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests          |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
@@ -58,6 +57,7 @@ The following table depicts the various user permission levels in a project.
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
+| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
 | Use environment terminals             |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -68,11 +68,12 @@ The following table depicts the various user permission levels in a project.
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
 | Configure project hooks               |         |            |             | ✓        | ✓      |
-| Manage runners                        |         |            |             | ✓        | ✓      |
+| Manage Runners                        |         |            |             | ✓        | ✓      |
 | Manage job triggers                   |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
-| Manage pages                          |         |            |             | ✓        | ✓      |
-| Manage pages domains and certificates |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
+| Remove GitLab Pages                   |         |            |             |          | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
@@ -82,6 +83,7 @@ The following table depicts the various user permission levels in a project.
 | Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
+| View project Audit Events             |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -155,6 +157,7 @@ group.
 | View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
 | Delete group epic        |         |          |           |        | ✓     |
+| View group Audit Events  |         |          |           |        | ✓     |
 
 ### Subgroup permissions
 
@@ -225,7 +228,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
-| Erase job artifacts and trace         |                 | ✓ [^7]      | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^5]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -248,13 +251,13 @@ users:
 | Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^5]      | ✓ [^5]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
+| Clone source and LFS from internal projects |                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
 | Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^5]      | ✓ [^5]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
+| Pull container images from internal projects|                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^7]      | ✓ [^7]   | ✓ [^7] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
 
@@ -274,7 +277,7 @@ for details about the pipelines security model.
 ## LDAP users permissions
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
-Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/index.html#updating-user-permissions-new-feature) to learn more.
+Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) to learn more.
 
 ## Auditor users permissions (EEP)
 
@@ -284,13 +287,14 @@ with the permissions described on the documentation on [auditor users permission
 Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
 only.
 
-[^1]: On public and internal projects,  all users are able to perform this action.
+[^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
 [^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
-[^5]: Only if user is not external one.
-[^6]: Only if user is a member of the project.
-[^7]: Only if the build was triggered by the user
+[^5]: Only if the job was triggered by the user
+[^6]: Only if user is not external one
+[^7]: Only if user is a member of the project
+
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998

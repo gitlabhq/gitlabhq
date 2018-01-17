@@ -2,6 +2,7 @@ module API
   class GeoNodes < Grape::API
     include PaginationParams
     include APIGuard
+    include ::Gitlab::Utils::StrongMemoize
 
     before { authenticated_as_admin! }
 
@@ -25,12 +26,12 @@ module API
       # Example request:
       #   GET /geo_nodes/status
       desc 'Get status for all Geo nodes' do
-        success GeoNodeStatusEntity
+        success Entities::GeoNodeStatus
       end
       get '/status' do
         status = GeoNodeStatus.all
 
-        present paginate(status), with: GeoNodeStatusEntity
+        present paginate(status), with: Entities::GeoNodeStatus
       end
 
       # Get project registry failures for the current Geo node
@@ -55,49 +56,95 @@ module API
         present project_registries, with: ::GeoProjectRegistryEntity
       end
 
-      # Get all Geo node information
-      #
-      # Example request:
-      #   GET /geo_nodes/:id
-      desc 'Get a single GeoNode' do
-        success Entities::GeoNode
-      end
-      params do
-        requires :id, type: Integer, desc: 'The ID of the node'
-      end
-      get ':id' do
-        node = GeoNode.find_by(id: params[:id])
-
-        not_found!('GeoNode') unless node
-
-        present node, with: Entities::GeoNode
-      end
-
-      # Get Geo metrics for a single node
-      #
-      # Example request:
-      #   GET /geo_nodes/:id/status
-      desc 'Get metrics for a single Geo node' do
-        success Entities::GeoNode
-      end
-      params do
-        requires :id, type: Integer, desc: 'The ID of the node'
-      end
-      get ':id/status' do
-        geo_node = GeoNode.find(params[:id])
-
-        not_found('Geo node not found') unless geo_node
-
-        status =
-          if geo_node.current?
-            GeoNodeStatus.current_node_status
-          else
-            geo_node.status
+      route_param :id, type: Integer, desc: 'The ID of the node' do
+        helpers do
+          def geo_node
+            strong_memoize(:geo_node) { GeoNode.find(params[:id]) }
           end
 
-        not_found!('Status for Geo node not found') unless status
+          def geo_node_status
+            strong_memoize(:geo_node_status) do
+              if geo_node.current?
+                GeoNodeStatus.current_node_status
+              else
+                geo_node.status
+              end
+            end
+          end
+        end
 
-        present status, with: ::GeoNodeStatusEntity
+        # Get all Geo node information
+        #
+        # Example request:
+        #   GET /geo_nodes/:id
+        desc 'Get a single GeoNode' do
+          success Entities::GeoNode
+        end
+        get do
+          not_found!('GeoNode') unless geo_node
+
+          present geo_node, with: Entities::GeoNode
+        end
+
+        # Get Geo metrics for a single node
+        #
+        # Example request:
+        #   GET /geo_nodes/:id/status
+        desc 'Get metrics for a single Geo node' do
+          success Entities::GeoNodeStatus
+        end
+        get 'status' do
+          not_found!('GeoNode') unless geo_node
+
+          not_found!('Status for Geo node not found') unless geo_node_status
+
+          present geo_node_status, with: Entities::GeoNodeStatus
+        end
+
+        # Repair authentication of the Geo node
+        #
+        # Example request:
+        #   POST /geo_nodes/:id/repair
+        desc 'Repair authentication of the Geo node' do
+          success Entities::GeoNodeStatus
+        end
+        post 'repair' do
+          not_found!('GeoNode') unless geo_node
+
+          if !geo_node.missing_oauth_application? || geo_node.repair
+            status 200
+            present geo_node_status, with: Entities::GeoNodeStatus
+          else
+            render_validation_error!(geo_node)
+          end
+        end
+
+        # Edit an existing Geo node
+        #
+        # Example request:
+        #   PUT /geo_nodes/:id
+        desc 'Edit an existing Geo secondary node' do
+          success Entities::GeoNode
+        end
+        params do
+          optional :enabled, type: Boolean, desc: 'Flag indicating if the Geo node is enabled'
+          optional :url, type: String, desc: 'The URL to connect to the Geo node'
+          optional :files_max_capacity, type: Integer, desc: 'Control the maximum concurrency of LFS/attachment backfill for this secondary node'
+          optional :repos_max_capacity, type: Integer, desc: 'Control the maximum concurrency of repository backfill for this secondary node'
+        end
+        put do
+          not_found!('GeoNode') unless geo_node
+
+          update_params = declared_params(include_missing: false)
+
+          if geo_node.primary?
+            forbidden!('Primary node cannot be edited')
+          elsif geo_node.update_attributes(update_params)
+            present geo_node, with: Entities::GeoNode
+          else
+            render_validation_error!(geo_node)
+          end
+        end
       end
     end
   end

@@ -13,7 +13,7 @@ feature 'Widget Deployments Header', :js do
 
     background do
       sign_in(user)
-      project.team << [user, role]
+      project.add_role(user, role)
       visit project_merge_request_path(project, merge_request)
     end
 

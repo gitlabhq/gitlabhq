@@ -4,6 +4,16 @@ module API
 
     before { authenticate! }
 
+    helpers do
+      def add_deploy_keys_project(project, attrs = {})
+        project.deploy_keys_projects.create(attrs)
+      end
+
+      def find_by_deploy_key(project, key_id)
+        project.deploy_keys_projects.find_by!(deploy_key: key_id)
+      end
+    end
+
     desc 'Return all deploy keys'
     params do
       use :pagination
@@ -21,28 +31,31 @@ module API
       before { authorize_admin_project }
 
       desc "Get a specific project's deploy keys" do
-        success Entities::SSHKey
+        success Entities::DeployKeysProject
       end
       params do
         use :pagination
       end
       get ":id/deploy_keys" do
-        present paginate(user_project.deploy_keys), with: Entities::SSHKey
+        keys = user_project.deploy_keys_projects.preload(:deploy_key)
+
+        present paginate(keys), with: Entities::DeployKeysProject
       end
 
       desc 'Get single deploy key' do
-        success Entities::SSHKey
+        success Entities::DeployKeysProject
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end
       get ":id/deploy_keys/:key_id" do
-        key = user_project.deploy_keys.find params[:key_id]
-        present key, with: Entities::SSHKey
+        key = find_by_deploy_key(user_project, params[:key_id])
+
+        present key, with: Entities::DeployKeysProject
       end
 
       desc 'Add new deploy key to currently authenticated user' do
-        success Entities::SSHKey
+        success Entities::DeployKeysProject
       end
       params do
         requires :key, type: String, desc: 'The new deploy key'
@@ -53,24 +66,31 @@ module API
         params[:key].strip!
 
         # Check for an existing key joined to this project
-        key = user_project.deploy_keys.find_by(key: params[:key])
+        key = user_project.deploy_keys_projects
+                          .joins(:deploy_key)
+                          .find_by(keys: { key: params[:key] })
+
         if key
-          present key, with: Entities::SSHKey
+          present key, with: Entities::DeployKeysProject
           break
         end
 
         # Check for available deploy keys in other projects
         key = current_user.accessible_deploy_keys.find_by(key: params[:key])
         if key
-          user_project.deploy_keys << key
-          present key, with: Entities::SSHKey
+          added_key = add_deploy_keys_project(user_project, deploy_key: key, can_push: !!params[:can_push])
+
+          present added_key, with: Entities::DeployKeysProject
           break
         end
 
         # Create a new deploy key
-        key = DeployKey.new(declared_params(include_missing: false))
-        if key.valid? && user_project.deploy_keys << key
-          present key, with: Entities::SSHKey
+        key_attributes = { can_push: !!params[:can_push],
+                           deploy_key_attributes: declared_params.except(:can_push) }
+        key = add_deploy_keys_project(user_project, key_attributes)
+
+        if key.valid?
+          present key, with: Entities::DeployKeysProject
         else
           render_validation_error!(key)
         end
@@ -86,14 +106,21 @@ module API
         at_least_one_of :title, :can_push
       end
       put ":id/deploy_keys/:key_id" do
-        key = DeployKey.find(params.delete(:key_id))
+        deploy_keys_project = find_by_deploy_key(user_project, params[:key_id])
 
-        authorize!(:update_deploy_key, key)
+        authorize!(:update_deploy_key, deploy_keys_project.deploy_key)
 
-        if key.update_attributes(declared_params(include_missing: false))
-          present key, with: Entities::SSHKey
+        can_push = params[:can_push].nil? ? deploy_keys_project.can_push : params[:can_push]
+        title = params[:title] || deploy_keys_project.deploy_key.title
+
+        result = deploy_keys_project.update_attributes(can_push: can_push,
+                                                       deploy_key_attributes: { id: params[:key_id],
+                                                                                title: title })
+
+        if result
+          present deploy_keys_project, with: Entities::DeployKeysProject
         else
-          render_validation_error!(key)
+          render_validation_error!(deploy_keys_project)
         end
       end
 
@@ -122,7 +149,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end
       delete ":id/deploy_keys/:key_id" do
-        key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+        key = user_project.deploy_keys.find(params[:key_id])
         not_found!('Deploy Key') unless key
 
         destroy_conditionally!(key)

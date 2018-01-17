@@ -169,7 +169,7 @@ describe PushRule do
       end
 
       context 'with GL.com plans' do
-        let(:group) { create(:group, plan: Plan.find_by!(name: gl_plan)) }
+        let(:group) { create(:group, plan: plan) }
         let(:project) { create(:project, namespace: group) }
         let(:push_rule) { create(:push_rule, project: project) }
 
@@ -179,19 +179,19 @@ describe PushRule do
         end
 
         context 'with a Bronze plan' do
-          let(:gl_plan) { ::EE::Namespace::BRONZE_PLAN }
+          let(:plan) { :bronze_plan }
 
           it_behaves_like 'an unavailable push_rule'
         end
 
         context 'with a Silver plan' do
-          let(:gl_plan) { ::EE::Namespace::SILVER_PLAN }
+          let(:plan) { :silver_plan }
 
           it_behaves_like 'an available push_rule'
         end
 
         context 'with a Gold plan' do
-          let(:gl_plan) { ::EE::Namespace::GOLD_PLAN }
+          let(:plan) { :gold_plan }
 
           it_behaves_like 'an available push_rule'
         end

@@ -5,14 +5,10 @@
   import { spriteIcon } from '../../lib/utils/common_utils';
 
   export default {
-    mixins: [animateMixin],
-    data() {
-      return {
-        preAnimation: false,
-        pulseAnimation: false,
-        titleEl: document.querySelector('title'),
-      };
+    directives: {
+      tooltip,
     },
+    mixins: [animateMixin],
     props: {
       issuableRef: {
         type: String,
@@ -37,18 +33,22 @@
         default: false,
       },
     },
-    directives: {
-      tooltip,
+    data() {
+      return {
+        preAnimation: false,
+        pulseAnimation: false,
+        titleEl: document.querySelector('title'),
+      };
+    },
+    computed: {
+      pencilIcon() {
+        return spriteIcon('pencil', 'link-highlight');
+      },
     },
     watch: {
       titleHtml() {
         this.setPageTitle();
         this.animateChange();
-      },
-    },
-    computed: {
-      pencilIcon() {
-        return spriteIcon('pencil', 'link-highlight');
       },
     },
     methods: {
@@ -79,13 +79,13 @@
       v-tooltip
       v-if="showInlineEditButton && canUpdate"
       type="button"
-      class="btn btn-default btn-edit btn-svg"
+      class="btn btn-default btn-edit btn-svg js-issuable-edit"
       v-html="pencilIcon"
       title="Edit title and description"
       data-placement="bottom"
       data-container="body"
       @click="edit"
-      >
+    >
     </button>
   </div>
 </template>

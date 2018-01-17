@@ -63,7 +63,7 @@ module CommitsHelper
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
     link_to(url, class: 'label label-gray ref-name branch-link') do
-      icon('code-fork', class: 'append-right-5') + "#{text}"
+      sprite_icon('fork', size: 16, css_class: 'fork-svg') + "#{text}"
     end
   end
 
@@ -226,6 +226,14 @@ module CommitsHelper
       ]
     else
       [commits, 0]
+    end
+  end
+
+  def commit_path(project, commit, merge_request: nil)
+    if merge_request&.persisted?
+      diffs_project_merge_request_path(project, merge_request, commit_id: commit.id)
+    else
+      project_commit_path(project, commit)
     end
   end
 end

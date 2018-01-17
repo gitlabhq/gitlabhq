@@ -46,6 +46,7 @@ namespace :gitlab do
             puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
             sleep(5)
           end
+
           # Drop all tables Load the schema to ensure we don't have any newer tables
           # hanging out from a failed upgrade
           $progress.puts 'Cleaning the database ... '.color(:blue)
@@ -222,6 +223,7 @@ namespace :gitlab do
 
       task restore: :environment do
         $progress.puts "Restoring container registry images ... ".color(:blue)
+
         if Gitlab.config.registry.enabled
           Backup::Registry.new.restore
           $progress.puts "done".color(:green)

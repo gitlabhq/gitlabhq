@@ -31,6 +31,10 @@ describe Gitlab::Diff::InlineDiff do
       expect(subject[7]).to eq([17..17])
       expect(subject[8]).to be_nil
     end
+
+    it 'can handle unchanged empty lines' do
+      expect { described_class.for_lines(['- bar', '+ baz', '']) }.not_to raise_error
+    end
   end
 
   describe "#inline_diffs" do

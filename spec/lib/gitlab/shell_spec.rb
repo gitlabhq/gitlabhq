@@ -2,12 +2,20 @@ require 'spec_helper'
 require 'stringio'
 
 describe Gitlab::Shell do
-  let(:project) { double('Project', id: 7, path: 'diaspora') }
+  set(:project) { create(:project, :repository) }
+
+  let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
+  let(:gitlab_projects) { double('gitlab_projects') }
+  let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
 
   before do
     allow(Project).to receive(:find).and_return(project)
+
+    allow(gitlab_shell).to receive(:gitlab_projects)
+      .with(project.repository_storage_path, project.disk_path + '.git')
+      .and_return(gitlab_projects)
   end
 
   it { is_expected.to respond_to :add_key }
@@ -44,51 +52,6 @@ describe Gitlab::Shell do
     end
   end
 
-  describe 'projects commands' do
-    let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
-    let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
-    let(:gitlab_shell_hooks_path) { File.join(gitlab_shell_path, 'hooks') }
-
-    before do
-      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
-      allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
-      allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
-    end
-
-    describe '#mv_repository' do
-      it 'executes the command' do
-        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-          [projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git']
-        )
-        gitlab_shell.mv_repository('storage/path', 'project/path', 'new/path')
-      end
-    end
-
-    describe '#mv_storage' do
-      it 'executes the command' do
-        expect(Gitlab::Utils).to receive(:system_silent)
-          .with([projects_path, 'mv-storage', 'current/storage', 'project/path.git', 'new/storage'])
-        gitlab_shell.mv_storage('current/storage', 'project/path', 'new/storage')
-      end
-    end
-
-    describe '#push_remote_branches' do
-      let!(:args) { [projects_path, 'push-branches', 'current/storage', 'project/path.git', 'new/storage', '600', '--force', 'master'] }
-
-      it 'executes the command' do
-        expect(Gitlab::Popen).to receive(:popen).with(args).and_return([nil, 0])
-
-        expect(gitlab_shell.push_remote_branches('current/storage', 'project/path', 'new/storage', ['master'])).to be true
-      end
-
-      it 'fails to execute the command' do
-        expect(Gitlab::Popen).to receive(:popen).with(args).and_return(["error", 1])
-
-        expect { gitlab_shell.push_remote_branches('current/storage', 'project/path', 'new/storage', ['master']) }.to raise_error(Gitlab::Shell::Error, "error")
-      end
-    end
-  end
-
   describe '#add_key' do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
@@ -107,7 +70,7 @@ describe Gitlab::Shell do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
       end
@@ -470,7 +433,7 @@ describe Gitlab::Shell do
         end
       end
 
-      context 'with gitlay' do
+      context 'with gitaly' do
         it_behaves_like '#add_repository'
       end
 
@@ -480,83 +443,86 @@ describe Gitlab::Shell do
     end
 
     describe '#remove_repository' do
-      it 'returns true when the command succeeds' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-            nil, popen_vars).and_return([nil, 0])
+      let!(:project) { create(:project, :repository) }
+      let(:disk_path) { "#{project.disk_path}.git" }
 
-        expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be true
+      it 'returns true when the command succeeds' do
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(true)
+
+        expect(gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)).to be(true)
+
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
       end
 
-      it 'returns false when the command fails' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-            nil, popen_vars).and_return(["error", 1])
+      it 'keeps the namespace directory' do
+        gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)
 
-        expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be false
+        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
+        expect(gitlab_shell.exists?(project.repository_storage_path, project.disk_path.gsub(project.name, ''))).to be(true)
       end
     end
 
     describe '#mv_repository' do
-      it 'returns true when the command succeeds' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'mv-project', 'current/storage', 'project/path.git', 'project/newpath.git'],
-                nil, popen_vars).and_return([nil, 0])
+      let!(:project2) { create(:project, :repository) }
 
-        expect(gitlab_shell.mv_repository('current/storage', 'project/path', 'project/newpath')).to be true
+      it 'returns true when the command succeeds' do
+        old_path = project2.disk_path
+        new_path = "project/new_path"
+
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(true)
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(false)
+
+        expect(gitlab_shell.mv_repository(project2.repository_storage_path, old_path, new_path)).to be_truthy
+
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(false)
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(true)
       end
 
       it 'returns false when the command fails' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'mv-project', 'current/storage', 'project/path.git', 'project/newpath.git'],
-                nil, popen_vars).and_return(["error", 1])
-
-        expect(gitlab_shell.mv_repository('current/storage', 'project/path', 'project/newpath')).to be false
+        expect(gitlab_shell.mv_repository(project2.repository_storage_path, project2.disk_path, '')).to be_falsy
+        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{project2.disk_path}.git")).to be(true)
       end
     end
 
     describe '#fork_repository' do
-      it 'returns true when the command succeeds' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fork-repository', 'current/storage', 'project/path.git', 'new/storage', 'fork/path.git'],
-                nil, popen_vars).and_return([nil, 0])
+      subject do
+        gitlab_shell.fork_repository(
+          project.repository_storage_path,
+          project.disk_path,
+          'new/storage',
+          'fork/path'
+        )
+      end
 
-        expect(gitlab_shell.fork_repository('current/storage', 'project/path', 'new/storage', 'fork/path')).to be true
+      it 'returns true when the command succeeds' do
+        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { true }
+
+        is_expected.to be_truthy
       end
 
       it 'return false when the command fails' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fork-repository', 'current/storage', 'project/path.git', 'new/storage', 'fork/path.git'],
-                nil, popen_vars).and_return(["error", 1])
+        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { false }
 
-        expect(gitlab_shell.fork_repository('current/storage', 'project/path', 'new/storage', 'fork/path')).to be false
+        is_expected.to be_falsy
       end
     end
 
     shared_examples 'fetch_remote' do |gitaly_on|
-      let(:project2) { create(:project, :repository) }
-      let(:repository) { project2.repository }
-
       def fetch_remote(ssh_auth = nil)
-        gitlab_shell.fetch_remote(repository.raw_repository, 'new/storage', ssh_auth: ssh_auth)
+        gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth)
       end
 
-      def expect_popen(fail = false, vars = {})
-        popen_args = [
-          projects_path,
-          'fetch-remote',
-          TestEnv.repos_path,
-          repository.relative_path,
-          'new/storage',
-          Gitlab.config.gitlab_shell.git_timeout.to_s
-        ]
+      def expect_gitlab_projects(fail = false, options = {})
+        expect(gitlab_projects).to receive(:fetch_remote).with(
+          'remote-name',
+          timeout,
+          options
+        ).and_return(!fail)
 
-        return_value = fail ? ["error", 1] : [nil, 0]
-
-        expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars)).and_return(return_value)
+        allow(gitlab_projects).to receive(:output).and_return('error') if fail
       end
 
-      def expect_gitaly_call(fail, vars = {})
+      def expect_gitaly_call(fail, options = {})
         receive_fetch_remote =
           if fail
             receive(:fetch_remote).and_raise(GRPC::NotFound)
@@ -568,12 +534,12 @@ describe Gitlab::Shell do
       end
 
       if gitaly_on
-        def expect_call(fail, vars = {})
-          expect_gitaly_call(fail, vars)
+        def expect_call(fail, options = {})
+          expect_gitaly_call(fail, options)
         end
       else
-        def expect_call(fail, vars = {})
-          expect_popen(fail, vars)
+        def expect_call(fail, options = {})
+          expect_gitlab_projects(fail, options)
         end
       end
 
@@ -589,20 +555,27 @@ describe Gitlab::Shell do
       end
 
       it 'returns true when the command succeeds' do
-        expect_call(false)
+        expect_call(false, force: false, tags: true)
 
         expect(fetch_remote).to be_truthy
       end
 
       it 'raises an exception when the command fails' do
-        expect_call(true)
+        expect_call(true, force: false, tags: true)
 
         expect { fetch_remote }.to raise_error(Gitlab::Shell::Error)
       end
 
+      it 'allows forced and no_tags to be changed' do
+        expect_call(false, force: true, tags: false)
+
+        result = gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', forced: true, no_tags: true)
+        expect(result).to be_truthy
+      end
+
       context 'SSH auth' do
         it 'passes the SSH key if specified' do
-          expect_call(false, 'GITLAB_SHELL_SSH_KEY' => 'foo')
+          expect_call(false, force: false, tags: true, ssh_key: 'foo')
 
           ssh_auth = build_ssh_auth(ssh_key_auth?: true, ssh_private_key: 'foo')
 
@@ -610,7 +583,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass an empty SSH key' do
-          expect_call(false)
+          expect_call(false, force: false, tags: true)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: true, ssh_private_key: '')
 
@@ -618,7 +591,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass the key unless SSH key auth is to be used' do
-          expect_call(false)
+          expect_call(false, force: false, tags: true)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: false, ssh_private_key: 'foo')
 
@@ -626,7 +599,7 @@ describe Gitlab::Shell do
         end
 
         it 'passes the known_hosts data if specified' do
-          expect_call(false, 'GITLAB_SHELL_KNOWN_HOSTS' => 'foo')
+          expect_call(false, force: false, tags: true, known_hosts: 'foo')
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: 'foo')
 
@@ -634,7 +607,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass empty known_hosts data' do
-          expect_call(false)
+          expect_call(false, force: false, tags: true)
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: '')
 
@@ -642,7 +615,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass known_hosts data unless SSH is to be used' do
-          expect_call(false, popen_vars)
+          expect_call(false, force: false, tags: true)
 
           ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
 
@@ -657,23 +630,43 @@ describe Gitlab::Shell do
 
     describe '#fetch_remote gitaly' do
       it_should_behave_like 'fetch_remote', true
+
+      context 'gitaly call' do
+        let(:remote_name) { 'remote-name' }
+        let(:ssh_auth) { double(:ssh_auth) }
+
+        subject do
+          gitlab_shell.fetch_remote(repository.raw_repository, remote_name,
+            forced: true, no_tags: true, ssh_auth: ssh_auth)
+        end
+
+        it 'passes the correct params to the gitaly service' do
+          expect(repository.gitaly_repository_client).to receive(:fetch_remote)
+            .with(remote_name, ssh_auth: ssh_auth, forced: true, no_tags: true, timeout: timeout)
+
+          subject
+        end
+      end
     end
 
     describe '#import_repository' do
-      it 'returns true when the command succeeds' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'import-project', 'current/storage', 'project/path.git', 'https://gitlab.com/gitlab-org/gitlab-ce.git', "800"],
-                nil, popen_vars).and_return([nil, 0])
+      let(:import_url) { 'https://gitlab.com/gitlab-org/gitlab-ce.git' }
 
-        expect(gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git')).to be true
+      it 'returns true when the command succeeds' do
+        expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
+
+        result = gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+
+        expect(result).to be_truthy
       end
 
       it 'raises an exception when the command fails' do
-        expect(Gitlab::Popen).to receive(:popen)
-        .with([projects_path, 'import-project', 'current/storage', 'project/path.git', 'https://gitlab.com/gitlab-org/gitlab-ce.git', "800"],
-              nil, popen_vars).and_return(["error", 1])
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:import_project) { false }
 
-        expect { gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git') }.to raise_error(Gitlab::Shell::Error, "error")
+        expect do
+          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+        end.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
   end

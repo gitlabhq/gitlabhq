@@ -64,6 +64,7 @@ Shortcuts to GitLab's most visited docs:
 - [Groups](user/group/index.md): Organize your projects in groups.
   - [Subgroups](user/group/subgroups/index.md)
   - **(EEU)** [Epics](user/group/epics/index.md)
+  - **(EES/EEP)** [Contribution Analytics](user/group/contribution_analytics/index.md): See detailed statistics of group contributors.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
   - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
@@ -71,7 +72,6 @@ Shortcuts to GitLab's most visited docs:
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
-- **(EES/EEP)** [Contribution Analytics](analytics/contribution_analytics.md): See detailed statistics of projects' contributors.
 
 ### Repository
 
@@ -107,6 +107,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Work In Progress Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
   - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
   - **(EES/EEP)** [Merge Request approval](user/project/merge_requests/merge_request_approvals.md): Make sure every merge request is approved by one or more people before getting merged.
+  - **(EEU)** [Static Application Security Testing](user/project/merge_requests/sast.md): Scan your code for vulnerabilities and display the results in merge requests.
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.

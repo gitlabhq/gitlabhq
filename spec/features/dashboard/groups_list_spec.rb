@@ -94,22 +94,14 @@ feature 'Dashboard Groups page', :js do
     end
 
     it 'can toggle parent group' do
-      # Collapsed by default
-      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
-      expect(page).to have_selector("#group-#{group.id} .fa-caret-right")
-
       # expand
       click_group_caret(group)
 
-      expect(page).to have_selector("#group-#{group.id} .fa-caret-down")
-      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right", count: 1)
       expect(page).to have_selector("#group-#{group.id} #group-#{subgroup.id}")
 
       # collapse
       click_group_caret(group)
 
-      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
-      expect(page).to have_selector("#group-#{group.id} .fa-caret-right")
       expect(page).not_to have_selector("#group-#{group.id} #group-#{subgroup.id}")
     end
   end

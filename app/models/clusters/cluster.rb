@@ -7,7 +7,8 @@ module Clusters
 
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
-      Applications::Ingress.application_name => Applications::Ingress
+      Applications::Ingress.application_name => Applications::Ingress,
+      Applications::Prometheus.application_name => Applications::Prometheus
     }.freeze
 
     belongs_to :user
@@ -22,12 +23,13 @@ module Clusters
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
+    has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
-    validate :unique_environment_scope, if: :has_project?
+    validate :unique_environment_scope
     validate :restrict_modification, on: :update
 
     delegate :status, to: :provider, allow_nil: true
@@ -64,7 +66,8 @@ module Clusters
     def applications
       [
         application_helm || build_application_helm,
-        application_ingress || build_application_ingress
+        application_ingress || build_application_ingress,
+        application_prometheus || build_application_prometheus
       ]
     end
 
@@ -94,7 +97,7 @@ module Clusters
     private
 
     def unique_environment_scope
-      if project.clusters.where(environment_scope: environment_scope).where.not(id: self.id).exists?
+      if project && project.clusters.where(environment_scope: environment_scope).where.not(id: self.id).exists?
         errors.add(:base, "cannot add duplicated environment scope")
         return false
       end
@@ -109,10 +112,6 @@ module Clusters
       end
 
       true
-    end
-
-    def has_project?
-      projects.exists?
     end
   end
 end

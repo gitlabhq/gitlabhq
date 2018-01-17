@@ -27,6 +27,7 @@ comments: false
 
 ## Backend guides
 
+- [GitLab utilities](utilities.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
@@ -37,6 +38,7 @@ comments: false
 - [`Gemfile` guidelines](gemfile.md)
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Gotchas](gotchas.md) to avoid
+- [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [Issue and merge requests state models](object_state_models.md)
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
@@ -81,10 +83,9 @@ comments: false
 
 ## Documentation guides
 
-- [Documentation styleguide](doc_styleguide.md): Use this styleguide if you are
-  contributing to the documentation.
 - [Writing documentation](writing_documentation.md)
-  - [Distinction between general documentation and technical articles](writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
+- [Documentation styleguide](doc_styleguide.md)
+- [Markdown](../user/markdown.md)
 
 ## Internationalization (i18n) guides
 

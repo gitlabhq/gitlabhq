@@ -7,18 +7,12 @@ module QA
         require 'qa/ee'
       end
 
-      ##
-      # TODO generic solution for screenshot in factories
-      #
-      # gitlab-org/gitlab-qa#86
-      #
       def perform_before_hooks
         return unless ENV['EE_LICENSE']
 
-        EE::Scenario::License::Add.perform(ENV['EE_LICENSE'])
-      rescue
-        Capybara::Screenshot.screenshot_and_save_page
-        raise
+        QA::Runtime::Browser.visit(:gitlab, QA::Page::Main::Login) do
+          EE::Factory::License.fabricate!(ENV['EE_LICENSE'])
+        end
       end
     end
   end

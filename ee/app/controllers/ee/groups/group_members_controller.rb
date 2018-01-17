@@ -1,6 +1,7 @@
 module EE
   module Groups
     module GroupMembersController
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def override
         @group_member = @group.group_members.find(params[:id])
 
@@ -14,6 +15,7 @@ module EE
           end
         end
       end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       protected
 

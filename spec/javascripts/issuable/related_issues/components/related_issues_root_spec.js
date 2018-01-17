@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import _ from 'underscore';
 import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
 import relatedIssuesService from '~/issuable/related_issues/services/related_issues_service';
 
@@ -14,7 +15,7 @@ const issuable1 = {
   title: 'issue1',
   path: '/foo/bar/issues/123',
   state: 'opened',
-  destroy_relation_path: '/foo/bar/issues/123/related_issues/1',
+  relation_path: '/foo/bar/issues/123/related_issues/1',
 };
 
 const issuable2 = {
@@ -23,7 +24,7 @@ const issuable2 = {
   title: 'issue1',
   path: '/foo/bar/issues/124',
   state: 'opened',
-  destroy_relation_path: '/foo/bar/issues/124/related_issues/1',
+  relation_path: '/foo/bar/issues/124/related_issues/1',
 };
 
 describe('RelatedIssuesRoot', () => {

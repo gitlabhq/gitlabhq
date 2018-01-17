@@ -14,7 +14,7 @@ describe API::Notes do
   let(:private_user)    { create(:user) }
   let(:private_project) do
     create(:project, namespace: private_user.namespace)
-    .tap { |p| p.team << [private_user, :master] }
+    .tap { |p| p.add_master(private_user) }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 
@@ -29,7 +29,7 @@ describe API::Notes do
   end
 
   before do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
@@ -464,7 +464,7 @@ describe API::Notes do
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
     it "creates an activity event when an issue note is created" do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
     end

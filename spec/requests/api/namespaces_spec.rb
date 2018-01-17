@@ -95,6 +95,10 @@ describe API::Namespaces do
   end
 
   describe 'PUT /namespaces/:id' do
+    before do
+      create(:silver_plan)
+    end
+
     context 'when authenticated as admin' do
       it 'updates namespace using full_path' do
         put api("/namespaces/#{group1.full_path}", admin), plan: 'silver', shared_runners_minutes_limit: 9001

@@ -125,17 +125,6 @@ module ApplicationSettingsHelper
     _('The number of attempts GitLab will make to access a storage.')
   end
 
-  def circuitbreaker_backoff_threshold_help_text
-    _("The number of failures after which GitLab will start temporarily "\
-      "disabling access to a storage shard on a host")
-  end
-
-  def circuitbreaker_failure_wait_time_help_text
-    _("When access to a storage fails. GitLab will prevent access to the "\
-      "storage for the time specified here. This allows the filesystem to "\
-      "recover. Repositories on failing shards are temporarly unavailable")
-  end
-
   def circuitbreaker_failure_reset_time_help_text
     _("The time in seconds GitLab will keep failure information. When no "\
       "failures occur during this time, information about the mount is reset.")
@@ -146,6 +135,11 @@ module ApplicationSettingsHelper
       "timeout error will be raised.")
   end
 
+  def circuitbreaker_check_interval_help_text
+    _("The time in seconds between storage checks. When a previous check did "\
+      "complete yet, GitLab will skip a check.")
+  end
+
   def visible_attributes
     [
       :admin_notification_email,
@@ -153,12 +147,12 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :authorized_keys_enabled,
       :auto_devops_enabled,
       :circuitbreaker_access_retries,
-      :circuitbreaker_backoff_threshold,
+      :circuitbreaker_check_interval,
       :circuitbreaker_failure_count_threshold,
       :circuitbreaker_failure_reset_time,
-      :circuitbreaker_failure_wait_time,
       :circuitbreaker_storage_timeout,
       :clientside_sentry_dsn,
       :clientside_sentry_enabled,

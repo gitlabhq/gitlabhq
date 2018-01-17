@@ -7,17 +7,21 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    data() {
-      return {
-        isLoading: false,
-        store: new DeployKeysStore(),
-      };
+    components: {
+      keysPanel,
+      loadingIcon,
     },
     props: {
       endpoint: {
         type: String,
         required: true,
       },
+    },
+    data() {
+      return {
+        isLoading: false,
+        store: new DeployKeysStore(),
+      };
     },
     computed: {
       hasKeys() {
@@ -27,9 +31,20 @@
         return this.store.keys;
       },
     },
-    components: {
-      keysPanel,
-      loadingIcon,
+    created() {
+      this.service = new DeployKeysService(this.endpoint);
+
+      eventHub.$on('enable.key', this.enableKey);
+      eventHub.$on('remove.key', this.disableKey);
+      eventHub.$on('disable.key', this.disableKey);
+    },
+    mounted() {
+      this.fetchKeys();
+    },
+    beforeDestroy() {
+      eventHub.$off('enable.key', this.enableKey);
+      eventHub.$off('remove.key', this.disableKey);
+      eventHub.$off('disable.key', this.disableKey);
     },
     methods: {
       fetchKeys() {
@@ -47,29 +62,17 @@
           .then(() => this.fetchKeys())
           .catch(() => new Flash('Error enabling deploy key'));
       },
-      disableKey(deployKey) {
+      disableKey(deployKey, callback) {
         // eslint-disable-next-line no-alert
         if (confirm('You are going to remove this deploy key. Are you sure?')) {
           this.service.disableKey(deployKey.id)
             .then(() => this.fetchKeys())
+            .then(callback)
             .catch(() => new Flash('Error removing deploy key'));
+        } else {
+          callback();
         }
       },
-    },
-    created() {
-      this.service = new DeployKeysService(this.endpoint);
-
-      eventHub.$on('enable.key', this.enableKey);
-      eventHub.$on('remove.key', this.disableKey);
-      eventHub.$on('disable.key', this.disableKey);
-    },
-    mounted() {
-      this.fetchKeys();
-    },
-    beforeDestroy() {
-      eventHub.$off('enable.key', this.enableKey);
-      eventHub.$off('remove.key', this.disableKey);
-      eventHub.$off('disable.key', this.disableKey);
     },
   };
 </script>

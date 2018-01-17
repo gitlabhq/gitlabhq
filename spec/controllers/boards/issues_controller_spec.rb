@@ -13,8 +13,8 @@ describe Boards::IssuesController do
   let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
   before do
-    project.team << [user, :master]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_guest(guest)
   end
 
   describe 'GET index', :request_store do
@@ -221,7 +221,7 @@ describe Boards::IssuesController do
       let(:guest) { create(:user) }
 
       before do
-        project.team << [guest, :guest]
+        project.add_guest(guest)
       end
 
       it 'returns a forbidden 403 response' do

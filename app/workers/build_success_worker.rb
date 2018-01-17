@@ -2,7 +2,7 @@ class BuildSuccessWorker
   include ApplicationWorker
   include PipelineQueue
 
-  enqueue_in group: :processing
+  queue_namespace :pipeline_processing
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|

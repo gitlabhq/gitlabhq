@@ -6,7 +6,7 @@ describe HasEnvironmentScope do
   it { is_expected.to allow_value('*').for(:environment_scope) }
   it { is_expected.to allow_value('review/*').for(:environment_scope) }
   it { is_expected.not_to allow_value('').for(:environment_scope) }
-  it { is_expected.not_to allow_value('<>').for(:environment_scope) }
+  it { is_expected.not_to allow_value('!!()()').for(:environment_scope) }
 
   it do
     is_expected.to validate_uniqueness_of(:key)

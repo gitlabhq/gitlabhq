@@ -12,13 +12,7 @@ module QA
           attribute :geo_skip_setup?, '--without-setup'
 
           def perform(**args)
-            QA::Specs::Config.act { configure_capybara! }
-
             unless args[:geo_skip_setup?]
-              # TODO, Factory::License -> gitlab-org/gitlab-qa#86
-              #
-              QA::Runtime::Scenario.define(:gitlab_address, args[:geo_primary_address])
-
               Geo::Primary.act do
                 add_license
                 enable_hashed_storage
@@ -45,28 +39,28 @@ module QA
             end
 
             def add_license
-              # TODO EE license to Runtime.license, gitlab-org/gitlab-qa#86
-              #
               puts 'Adding GitLab EE license ...'
 
-              Scenario::License::Add.perform(ENV['EE_LICENSE'])
+              QA::Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
+                Factory::License.fabricate!(ENV['EE_LICENSE'])
+              end
             end
 
             def enable_hashed_storage
-              # TODO, Factory::HashedStorage - gitlab-org/gitlab-qa#86
-              #
               puts 'Enabling hashed repository storage setting ...'
 
-              QA::Scenario::Gitlab::Admin::HashedStorage.perform(:enabled)
+              QA::Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
+                QA::Factory::Settings::HashedStorage.fabricate!(:enabled)
+              end
             end
 
             def add_secondary_node
-              # TODO, Factory::Geo::Node - gitlab-org/gitlab-qa#86
-              #
               puts 'Adding new Geo secondary node ...'
 
-              Scenario::Geo::Node.perform do |node|
-                node.address = QA::Runtime::Scenario.geo_secondary_address
+              QA::Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
+                Factory::Geo::Node.fabricate! do |node|
+                  node.address = QA::Runtime::Scenario.geo_secondary_address
+                end
               end
             end
 

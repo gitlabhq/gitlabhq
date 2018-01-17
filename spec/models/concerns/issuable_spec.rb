@@ -171,7 +171,7 @@ describe Issuable do
 
     it "returns false when record has been updated" do
       allow(issue).to receive(:today?).and_return(true)
-      issue.touch
+      issue.update_attribute(:updated_at, 1.hour.ago)
       expect(issue.new?).to be_falsey
     end
   end
@@ -308,7 +308,7 @@ describe Issuable do
 
     context 'total_time_spent is updated' do
       before do
-        issue.spend_time(duration: 2, user: user, spent_at: Time.now)
+        issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.now)
         issue.save
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(issue).and_return(builder)
@@ -519,7 +519,7 @@ describe Issuable do
     let(:issue) { create(:issue) }
 
     def spend_time(seconds)
-      issue.spend_time(duration: seconds, user: user)
+      issue.spend_time(duration: seconds, user_id: user.id)
       issue.save!
     end
 

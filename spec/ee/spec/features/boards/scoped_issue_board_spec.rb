@@ -184,7 +184,7 @@ describe 'Scoped issue boards', :js do
       it 'edits board name' do
         edit_board.click
 
-        page.within('.popup-dialog') do
+        page.within('.modal') do
           fill_in 'board-new-name', with: 'Testing'
 
           click_button 'Save'
@@ -396,7 +396,7 @@ describe 'Scoped issue boards', :js do
     it 'can view board scope' do
       view_scope.click
 
-      page.within('.popup-dialog') do
+      page.within('.modal') do
         expect(find('.modal-header')).to have_content('Board scope')
         expect(page).not_to have_content('Board name')
         expect(page).not_to have_link('Edit')
@@ -415,7 +415,7 @@ describe 'Scoped issue boards', :js do
     before do
       stub_licensed_features(scoped_issue_boards: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       login_as(user)
 
       visit project_boards_path(project)
@@ -507,6 +507,7 @@ describe 'Scoped issue boards', :js do
 
     page.within(".#{filter}") do
       click_button 'Edit'
+
       if value.is_a?(Array)
         value.each { |value| click_link value }
       else
@@ -517,7 +518,9 @@ describe 'Scoped issue boards', :js do
     click_on_board_modal
 
     click_button 'Create'
-    expect(page).to have_selector('.board-list-loading')
+
+    wait_for_requests
+
     expect(page).not_to have_selector('.board-list-loading')
   end
 
@@ -532,7 +535,9 @@ describe 'Scoped issue boards', :js do
     click_on_board_modal
 
     click_button 'Save'
-    expect(page).to have_selector('.board-list-loading')
+
+    wait_for_requests
+
     expect(page).not_to have_selector('.board-list-loading')
   end
 

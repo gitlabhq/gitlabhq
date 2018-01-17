@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 class RemoveOldElasticsearchSettings < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

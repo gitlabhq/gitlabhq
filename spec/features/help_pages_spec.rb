@@ -32,12 +32,30 @@ describe 'Help Pages' do
 
       it_behaves_like 'help page', prefix: '/gitlab'
     end
+
+    context 'quick link shortcuts', :js do
+      before do
+        visit help_path
+      end
+
+      it 'focuses search bar' do
+        find('.js-trigger-search-bar').click
+
+        expect(page).to have_selector('#search:focus')
+      end
+
+      it 'opens shortcuts help dialog' do
+        find('.js-trigger-shortcut').click
+
+        expect(page).to have_selector('#modal-shortcuts')
+      end
+    end
   end
 
   context 'in a production environment with version check enabled', :js do
     before do
       allow(Rails.env).to receive(:production?) { true }
-      allow_any_instance_of(ApplicationSetting).to receive(:version_check_enabled) { true }
+      stub_application_setting(version_check_enabled: true)
       allow_any_instance_of(VersionCheck).to receive(:url) { '/version-check-url' }
 
       sign_in(create(:user))
@@ -56,9 +74,9 @@ describe 'Help Pages' do
 
   describe 'when help page is customized' do
     before do
-      allow_any_instance_of(ApplicationSetting).to receive(:help_page_hide_commercial_content?) { true }
-      allow_any_instance_of(ApplicationSetting).to receive(:help_text) { "My Custom Text" }
-      allow_any_instance_of(ApplicationSetting).to receive(:help_page_support_url) { "http://example.com/help" }
+      stub_application_setting(help_page_hide_commercial_content: true,
+                               help_page_text: 'My Custom Text',
+                               help_page_support_url: 'http://example.com/help')
 
       sign_in(create(:user))
       visit help_path

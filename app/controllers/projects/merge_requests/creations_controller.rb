@@ -11,7 +11,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :build_merge_request, except: [:create]
 
   def new
-    define_new_vars
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/40934
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      define_new_vars
+    end
   end
 
   def create
@@ -42,11 +45,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def diffs
-    @diffs = if @merge_request.can_be_created
-               @merge_request.diffs(diff_options)
-             else
-               []
-             end
+    @diffs = @merge_request.diffs(diff_options) if @merge_request.can_be_created
+
     @diff_notes_disabled = true
 
     @environment = @merge_request.environments_for(current_user).last

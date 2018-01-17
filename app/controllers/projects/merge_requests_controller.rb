@@ -9,12 +9,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   prepend ::EE::Projects::MergeRequestsController
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
-
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-
   before_action :set_issuables_index, only: [:index]
-
   before_action :authenticate_user!, only: [:assign_related_issues]
+  before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   def index
     @merge_requests = @issuables
@@ -136,7 +134,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(project, current_user, wip_event: 'unwip')
       .execute(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def commit_change_content
@@ -152,7 +150,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(@project, current_user)
       .cancel(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def merge
@@ -229,6 +227,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     render json: environments
   end
 
+  def rebase
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+
+    render nothing: true, status: 200
+  end
+
   protected
 
   alias_method :subscribable_resource, :merge_request
@@ -292,15 +296,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_request.update(merge_error: nil, squash: merge_params.fetch(:squash, false))
 
     if params[:merge_when_pipeline_succeeds].present?
-      return :failed unless @merge_request.head_pipeline
+      return :failed unless @merge_request.actual_head_pipeline
 
-      if @merge_request.head_pipeline.active?
+      if @merge_request.actual_head_pipeline.active?
         ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(@project, current_user, merge_params)
           .execute(@merge_request)
 
         :merge_when_pipeline_succeeds
-      elsif @merge_request.head_pipeline.success?
+      elsif @merge_request.actual_head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
         @merge_request.merge_async(current_user.id, params)
@@ -316,6 +320,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  def serialize_widget(merge_request)
+    serializer.represent(merge_request, serializer: 'widget')
+  end
+
   def serializer
     MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
@@ -329,5 +337,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def set_issuables_index
     @finder_type = MergeRequestsFinder
     super
+  end
+
+  def check_user_can_push_to_source_branch!
+    return access_denied! unless @merge_request.source_branch_exists?
+
+    access_check = ::Gitlab::UserAccess
+      .new(current_user, project: @merge_request.source_project)
+      .can_push_to_branch?(@merge_request.source_branch)
+
+    access_denied! unless access_check
   end
 end

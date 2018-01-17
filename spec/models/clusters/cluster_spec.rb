@@ -5,6 +5,9 @@ describe Clusters::Cluster do
   it { is_expected.to have_many(:projects) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:platform_kubernetes) }
+  it { is_expected.to have_one(:application_helm) }
+  it { is_expected.to have_one(:application_ingress) }
+  it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
@@ -137,20 +140,20 @@ describe Clusters::Cluster do
       end
 
       context 'when identical environment scope exists in project' do
-        let(:cluster) { create(:cluster, projects: [project], environment_scope: 'product/*') }
+        let(:cluster) { build(:cluster, projects: [project], environment_scope: 'product/*') }
 
         it { is_expected.to be_falsey }
       end
 
       context 'when identical environment scope does not exist in project' do
-        let(:cluster) { create(:cluster, projects: [project], environment_scope: '*') }
+        let(:cluster) { build(:cluster, projects: [project], environment_scope: '*') }
 
         it { is_expected.to be_truthy }
       end
 
       context 'when identical environment scope exists in different project' do
         let(:project2) { create(:project) }
-        let(:cluster) { create(:cluster, projects: [project2], environment_scope: 'product/*') }
+        let(:cluster) { build(:cluster, projects: [project2], environment_scope: 'product/*') }
 
         it { is_expected.to be_truthy }
       end
@@ -218,11 +221,12 @@ describe Clusters::Cluster do
     end
 
     context 'when applications are created' do
-      let!(:helm) { create(:cluster_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:cluster_applications_ingress, cluster: cluster) }
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress)
+        is_expected.to contain_exactly(helm, ingress, prometheus)
       end
     end
   end

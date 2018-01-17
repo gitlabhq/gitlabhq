@@ -102,7 +102,7 @@ describe ProjectsController do
         render_views
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
         end
 
@@ -236,7 +236,7 @@ describe ProjectsController do
           allow_any_instance_of(EE::Project)
             .to receive(:above_size_limit?).and_return(true)
 
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'shows the over size limit warning message for project members' do
@@ -449,17 +449,18 @@ describe ProjectsController do
     end
   end
 
-  describe 'PUT #new_issue_address' do
+  describe 'PUT #new_issuable_address for issue' do
     subject do
-      put :new_issue_address,
+      put :new_issuable_address,
         namespace_id: project.namespace,
-        id: project
+        id: project,
+        issuable_type: 'issue'
       user.reload
     end
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -472,7 +473,35 @@ describe ProjectsController do
     end
 
     it 'changes projects new issue address' do
-      expect { subject }.to change { project.new_issue_address(user) }
+      expect { subject }.to change { project.new_issuable_address(user, 'issue') }
+    end
+  end
+
+  describe 'PUT #new_issuable_address for merge request' do
+    subject do
+      put :new_issuable_address,
+        namespace_id: project.namespace,
+        id: project,
+        issuable_type: 'merge_request'
+      user.reload
+    end
+
+    before do
+      sign_in(user)
+      project.add_developer(user)
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+    end
+
+    it 'has http status 200' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'changes the user incoming email token' do
+      expect { subject }.to change { user.incoming_email_token }
+    end
+
+    it 'changes projects new merge request address' do
+      expect { subject }.to change { project.new_issuable_address(user, 'merge_request') }
     end
   end
 

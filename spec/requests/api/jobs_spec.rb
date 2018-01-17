@@ -11,7 +11,7 @@ describe API::Jobs do
                                ref: project.default_branch)
   end
 
-  let(:job) { create(:ci_build, pipeline: pipeline) }
+  let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -29,9 +29,12 @@ describe API::Jobs do
   describe 'GET /projects/:id/jobs' do
     let(:query) { Hash.new }
 
-    before do
+    before do |example|
       job
-      get api("/projects/#{project.id}/jobs", api_user), query
+
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs", api_user), query
+      end
     end
 
     context 'authorized user' do
@@ -54,6 +57,23 @@ describe API::Jobs do
         expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
         expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
         expect(json_job['pipeline']['status']).to eq job.pipeline.status
+      end
+
+      it 'avoids N+1 queries', skip_before_request: true do
+        first_build = create(:ci_build, :artifacts, pipeline: pipeline)
+        first_build.runner = create(:ci_runner)
+        first_build.user = create(:user)
+        first_build.save
+
+        control_count = ActiveRecord::QueryRecorder.new { go }.count
+
+        second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+        second_build = create(:ci_build, :artifacts, pipeline: second_pipeline)
+        second_build.runner = create(:ci_runner)
+        second_build.user = create(:user)
+        second_build.save
+
+        expect { go }.not_to exceed_query_limit(control_count)
       end
 
       context 'filter project with one scope element' do
@@ -87,6 +107,10 @@ describe API::Jobs do
       it 'does not return project jobs' do
         expect(response).to have_gitlab_http_status(401)
       end
+    end
+
+    def go
+      get api("/projects/#{project.id}/jobs", api_user), query
     end
   end
 
@@ -550,7 +574,7 @@ describe API::Jobs do
       context 'user with :update_build persmission' do
         it 'cancels running or pending job' do
           expect(response).to have_gitlab_http_status(201)
-          expect(project.builds.first.status).to eq('canceled')
+          expect(project.builds.first.status).to eq('success')
         end
       end
 
@@ -610,7 +634,7 @@ describe API::Jobs do
     let(:role) { :master }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
 
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end

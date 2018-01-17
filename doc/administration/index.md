@@ -19,29 +19,35 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
   - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
-- **(EEP)** [GitLab GEO](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
+  - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
+- **(EEP)** [GitLab Geo](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
 - **(EEP)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
 
 ### Configuring GitLab
 
 - [Adjust your instance's timezone](../workflow/timezone.md): Customize the default time zone of GitLab.
-- [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
-- [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
 - [Security](../security/README.md): Learn what you can do to further secure your GitLab instance.
 - [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
-- [GitLab Pages configuration for installations from the source](pages/source.md): Enable and configure GitLab Pages on
+- [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - **(EES/EEP)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
+
+#### Customizing GitLab's appearance
+
+- [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
+- [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
+- [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
+- ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
 
 ### Maintaining GitLab
 
 - [Raketasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, etc.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
-- [Operations](operations.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq Job throttling, Sidekiq MemoryKiller, Unicorn).
+- [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq Job throttling, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
 
 #### Updating GitLab
@@ -78,6 +84,10 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - **(EES/EEP)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
 - **(EEP)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
+- [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
+  - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
+server with IMAP authentication on Ubuntu, to be used with Reply by email.
+- [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 ## Project settings
 
@@ -85,13 +95,14 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
-- **(EES/EEP)** [Limit project size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
+- [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 
 ### Repository settings
 
 - [Repository checks](repository_checks.md): Periodic Git repository checks.
 - [Repository storage paths](repository_storage_paths.md): Manage the paths used to store repositories.
 - [Repository storage rake tasks](raketasks/storage.md): A collection of rake tasks to list and migrate existing projects and attachments associated with it from Legacy storage to Hashed storage.
+- **(EES/EEP)** [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 
 ## Continuous Integration settings
 
@@ -111,20 +122,22 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 
 ## Monitoring GitLab
 
-- [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-  - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
-- [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
+- [Monitoring GitLab](monitoring/index.md):
+  - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
+    - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+    - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 - [Conversational Development (ConvDev) Index](../user/admin_area/monitoring/convdev.md): Provides an overview of your entire instance's feature usage.
 
 ### Performance Monitoring
 
-- [GitLab Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
-- [GitLab performance monitoring with InfluxDB](monitoring/performance/introduction.md): Configure GitLab and InfluxDB for measuring performance metrics.
-  - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
-- [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
-- [GitLab performance monitoring with Grafana](monitoring/prometheus/index.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
-- [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
-- [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
+- [GitLab Performance Monitoring](monitoring/performance/index.md):
+  - [Enable Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
+  - [GitLab performance monitoring with InfluxDB](monitoring/performance/influxdb_configuration.md): Configure GitLab and InfluxDB for measuring performance metrics.
+    - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
+  - [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
+  - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
+  - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+  - [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ## Troubleshooting
 

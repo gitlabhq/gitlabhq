@@ -28,7 +28,7 @@ describe Gitlab::Elastic::Client do
       .to_return(status: 200, body: creds_response, headers: {})
   end
 
-  describe 'build' do
+  describe '.build' do
     let(:client) { described_class.build(params) }
 
     context 'without credentials' do
@@ -73,10 +73,10 @@ describe Gitlab::Elastic::Client do
     end
   end
 
-  describe 'resolve_aws_credentials' do
+  describe '.resolve_aws_credentials' do
     let(:creds) { described_class.resolve_aws_credentials(params) }
 
-    context 'with AWS IAM static credentials' do
+    context 'when the AWS IAM static credentials are valid' do
       let(:params) do
         {
           url: 'http://example-elastic:9200',
@@ -87,44 +87,44 @@ describe Gitlab::Elastic::Client do
         }
       end
 
-      it 'returns credentials from static credentials' do
-        stub_instance_credentials(creds_fail_response)
-
+      it 'returns credentials from static credentials without making an HTTP request' do
         expect(creds.credentials.access_key_id).to eq '0'
         expect(creds.credentials.secret_access_key).to eq '0'
       end
     end
 
-    context 'with AWS ec2 instance profile' do
-      let(:params) do
-        {
-          url: 'http://example-elastic:9200',
-          aws: true,
-          aws_region: 'us-east-1'
-        }
+    context 'when the AWS IAM static credentials are invalid' do
+      context 'with AWS ec2 instance profile' do
+        let(:params) do
+          {
+            url: 'http://example-elastic:9200',
+            aws: true,
+            aws_region: 'us-east-1'
+          }
+        end
+
+        it 'returns credentials from ec2 instance profile' do
+          stub_instance_credentials(creds_valid_response)
+
+          expect(creds.credentials.access_key_id).to eq '0'
+          expect(creds.credentials.secret_access_key).to eq '0'
+        end
       end
 
-      it 'returns credentials from ec2 instance profile' do
-        stub_instance_credentials(creds_valid_response)
+      context 'with AWS no credentials' do
+        let(:params) do
+          {
+            url: 'http://example-elastic:9200',
+            aws: true,
+            aws_region: 'us-east-1'
+          }
+        end
 
-        expect(creds.credentials.access_key_id).to eq '0'
-        expect(creds.credentials.secret_access_key).to eq '0'
-      end
-    end
+        it 'returns nil' do
+          stub_instance_credentials(creds_fail_response)
 
-    context 'with AWS no credentials' do
-      let(:params) do
-        {
-          url: 'http://example-elastic:9200',
-          aws: true,
-          aws_region: 'us-east-1'
-        }
-      end
-
-      it 'returns nil' do
-        stub_instance_credentials(creds_fail_response)
-
-        expect(creds).to be_nil
+          expect(creds).to be_nil
+        end
       end
     end
   end

@@ -17,7 +17,11 @@
         - if variable.id?
           %tr
             %td.variable-key= variable.key
-            %td.variable-value{ "data-value" => variable.value }******
+            %td.variable-value
+              %span.js-secret-value-placeholder
+                = '*' * 6
+              %span.hide.js-secret-value
+                = variable.value
             %td.variable-protected= Gitlab::Utils.boolean_to_yes_no(variable.protected)
             - if @variable.respond_to?(:environment_scope) && @project.feature_available?(:variable_environment_scope)
               %td.variable-environment-scope= variable.environment_scope

@@ -93,6 +93,7 @@ class Settings < Settingslogic
         end
         values.delete_if { |value| value.nil? }
       end
+
       values
     end
 
@@ -103,6 +104,7 @@ class Settings < Settingslogic
       if current.is_a? String
         value = modul.const_get(current.upcase) rescue default
       end
+
       value
     end
 

@@ -6,10 +6,8 @@ import { __ } from '../../../locale';
 import subscriptions from './subscriptions.vue';
 
 export default {
-  data() {
-    return {
-      store: new Store(),
-    };
+  components: {
+    subscriptions,
   },
   props: {
     mediator: {
@@ -17,17 +15,10 @@ export default {
       required: true,
     },
   },
-  components: {
-    subscriptions,
-  },
-
-  methods: {
-    onToggleSubscription() {
-      this.mediator.toggleSubscription()
-        .catch(() => {
-          Flash(__('Error occurred when toggling the notification subscription'));
-        });
-    },
+  data() {
+    return {
+      store: new Store(),
+    };
   },
 
   created() {
@@ -37,6 +28,14 @@ export default {
   beforeDestroy() {
     eventHub.$off('toggleSubscription', this.onToggleSubscription);
   },
+  methods: {
+    onToggleSubscription() {
+      this.mediator.toggleSubscription()
+        .catch(() => {
+          Flash(__('Error occurred when toggling the notification subscription'));
+        });
+    },
+  },
 };
 </script>
 
@@ -44,6 +43,7 @@ export default {
   <div class="block subscriptions">
     <subscriptions
       :loading="store.isFetching.subscriptions"
-      :subscribed="store.subscribed" />
+      :subscribed="store.subscribed"
+    />
   </div>
 </template>

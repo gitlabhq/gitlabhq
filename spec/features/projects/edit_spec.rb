@@ -7,7 +7,7 @@ feature 'Project edit', :js do
 
   context 'feature visibility' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
 
       visit edit_project_path(project)

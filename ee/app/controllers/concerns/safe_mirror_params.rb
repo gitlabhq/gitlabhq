@@ -14,6 +14,6 @@ module SafeMirrorParams
   end
 
   def default_mirror_users
-    [current_user, @project.mirror_user].compact.uniq
+    [current_user, project.mirror_user].compact.uniq
   end
 end

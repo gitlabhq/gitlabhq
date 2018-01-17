@@ -96,7 +96,8 @@ describe Projects::CreateService, '#execute' do
 
         context 'when licensed on a namespace' do
           it 'allows enabling mirrors' do
-            user.namespace.update!(plan: Plan.find_by(name: 'gold'))
+            plan = create(:gold_plan)
+            user.namespace.update!(plan: plan)
 
             project = create_project(user, opts)
 

@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary NTP checks now included in gitlab:geo:check
+merge_request: 3940
+author:
+type: other

@@ -174,7 +174,7 @@ describe Project do
 
               context 'allowed by Plan License AND Global License' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Plan.find_by(name: 'gold') }
+                let(:plan_license) { create(:gold_plan) }
 
                 it 'returns true' do
                   is_expected.to eq(true)
@@ -183,7 +183,7 @@ describe Project do
 
               context 'not allowed by Plan License but project and namespace are public' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Plan.find_by(name: 'bronze') }
+                let(:plan_license) { create(:bronze_plan) }
 
                 it 'returns true' do
                   allow(namespace).to receive(:public?) { true }
@@ -196,7 +196,7 @@ describe Project do
               unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
                 context 'not allowed by Plan License' do
                   let(:allowed_on_global_license) { true }
-                  let(:plan_license) { Plan.find_by(name: 'bronze') }
+                  let(:plan_license) { create(:bronze_plan) }
 
                   it 'returns false' do
                     is_expected.to eq(false)
@@ -206,7 +206,7 @@ describe Project do
 
               context 'not allowed by Global License' do
                 let(:allowed_on_global_license) { false }
-                let(:plan_license) { Plan.find_by(name: 'gold') }
+                let(:plan_license) { create(:gold_plan) }
 
                 it 'returns false' do
                   is_expected.to eq(false)
@@ -679,7 +679,7 @@ describe Project do
       end
 
       context 'Service Desk available in namespace plan' do
-        let(:namespace) { create(:namespace, plan: Namespace::SILVER_PLAN) }
+        let(:namespace) { create(:namespace, plan: :silver_plan) }
 
         it 'is enabled' do
           expect(project.service_desk_enabled?).to be_truthy
@@ -700,145 +700,6 @@ describe Project do
 
     it 'uses project full path as service desk address key' do
       expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
-    end
-  end
-
-  describe '#deployment_platform' do
-    let(:project) { create(:project) }
-
-    context 'when environment is specified' do
-      let(:environment) { create(:environment, project: project, name: 'review/name') }
-      let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
-      let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
-      subject { project.deployment_platform(environment: environment) }
-
-      shared_examples 'matching environment scope' do
-        context 'when multiple clusters is available' do
-          before do
-            stub_licensed_features(multiple_clusters: true)
-          end
-
-          it 'returns environment specific cluster' do
-            is_expected.to eq(cluster.platform_kubernetes)
-          end
-        end
-
-        context 'when multiple clusters is unavailable' do
-          before do
-            stub_licensed_features(multiple_clusters: false)
-          end
-
-          it 'returns a kubernetes platform' do
-            is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
-          end
-        end
-      end
-
-      shared_examples 'not matching environment scope' do
-        context 'when multiple clusters is available' do
-          before do
-            stub_licensed_features(multiple_clusters: true)
-          end
-
-          it 'returns default cluster' do
-            is_expected.to eq(default_cluster.platform_kubernetes)
-          end
-        end
-
-        context 'when multiple clusters is unavailable' do
-          before do
-            stub_licensed_features(multiple_clusters: false)
-          end
-
-          it 'returns a kubernetes platform' do
-            is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
-          end
-        end
-      end
-
-      context 'when environment scope is exactly matched' do
-        before do
-          cluster.update(environment_scope: 'review/name')
-        end
-
-        it_behaves_like 'matching environment scope'
-      end
-
-      context 'when environment scope is matched by wildcard' do
-        before do
-          cluster.update(environment_scope: 'review/*')
-        end
-
-        it_behaves_like 'matching environment scope'
-      end
-
-      context 'when environment scope does not match' do
-        before do
-          cluster.update(environment_scope: 'review/*/special')
-        end
-
-        it_behaves_like 'not matching environment scope'
-      end
-
-      context 'when environment scope has _' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
-        before do
-          stub_licensed_features(multiple_clusters: true)
-        end
-
-        it 'does not treat it as wildcard' do
-          cluster.update(environment_scope: 'foo_bar/*')
-
-          is_expected.to eq(default_cluster.platform_kubernetes)
-        end
-
-        it 'matches literally for _' do
-          cluster.update(environment_scope: 'foo_bar/*')
-          environment.update(name: 'foo_bar/test')
-
-          is_expected.to eq(cluster.platform_kubernetes)
-        end
-      end
-
-      # The environment name and scope cannot have % at the moment,
-      # but we're considering relaxing it and we should also make sure
-      # it doesn't break in case some data sneaked in somehow as we're
-      # not checking this integrity in database level.
-      context 'when environment scope has %' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
-        before do
-          stub_licensed_features(multiple_clusters: true)
-        end
-
-        it 'does not treat it as wildcard' do
-          cluster.update_attribute(:environment_scope, '*%*')
-
-          is_expected.to eq(default_cluster.platform_kubernetes)
-        end
-
-        it 'matches literally for _' do
-          cluster.update(environment_scope: 'foo%bar/*')
-          environment.update_attribute(:name, 'foo%bar/test')
-
-          is_expected.to eq(cluster.platform_kubernetes)
-        end
-      end
-
-      context 'when variables with the same name have different environment scopes' do
-        let!(:partially_matched_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'review/*') }
-        let!(:perfectly_matched_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'review/name') }
-
-        before do
-          stub_licensed_features(multiple_clusters: true)
-        end
-
-        it 'puts variables matching environment scope more in the end' do
-          is_expected.to eq(perfectly_matched_cluster.platform_kubernetes)
-        end
-      end
     end
   end
 
@@ -1071,31 +932,6 @@ describe Project do
     end
   end
 
-  describe '#merge_method' do
-    where(:ff, :rebase, :rebase_licensed, :method) do
-      true  | true  | true  | :ff
-      true  | true  | false | :ff
-      true  | false | true  | :ff
-      true  | false | false | :ff
-      false | true  | true  | :rebase_merge
-      false | true  | false | :merge
-      false | false | true  | :merge
-      false | false | false | :merge
-    end
-
-    with_them do
-      let(:project) { build(:project, merge_requests_rebase_enabled: rebase, merge_requests_ff_only_enabled: ff) }
-
-      subject { project.merge_method }
-
-      before do
-        stub_licensed_features(merge_request_rebase: rebase_licensed)
-      end
-
-      it { is_expected.to eq(method) }
-    end
-  end
-
   describe '#rename_repo' do
     context 'when running on a primary node' do
       set(:primary) { create(:geo_node, :primary) }
@@ -1163,7 +999,7 @@ describe Project do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it_behaves_like 'project without disabled services'
         end

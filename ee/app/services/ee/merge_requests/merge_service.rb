@@ -1,9 +1,10 @@
 module EE
   module MergeRequests
     module MergeService
-      def error_check!
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :error_check!
+      def error_check!
         check_size_limit
 
         super
@@ -25,8 +26,8 @@ module EE
       private
 
       def check_size_limit
-        if @merge_request.target_project.above_size_limit?
-          message = ::Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
+        if merge_request.target_project.above_size_limit?
+          message = ::Gitlab::RepositorySizeError.new(merge_request.target_project).merge_error
 
           raise ::MergeRequests::MergeService::MergeError, message
         end

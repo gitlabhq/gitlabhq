@@ -9,7 +9,7 @@ module Gitlab
     class AdvanceStageWorker
       include ApplicationWorker
 
-      sidekiq_options queue: 'github_importer_advance_stage', dead: false
+      sidekiq_options dead: false
 
       INTERVAL = 30.seconds.to_i
 

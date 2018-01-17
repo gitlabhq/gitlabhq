@@ -18,6 +18,7 @@ class Projects::PushRulesController < Projects::ApplicationController
     else
       flash[:alert] = @push_rule.errors.full_messages.join(', ').html_safe
     end
+
     redirect_to_repository_settings(@project)
   end
 

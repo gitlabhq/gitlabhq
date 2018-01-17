@@ -1,7 +1,7 @@
 # GitLab-Omnibus Helm Chart
 > **Note:**
 * This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
-* These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
+* These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
 
@@ -72,7 +72,7 @@ Other common configuration options:
 - `baseIP`: the desired [external IP address](#external-ip-recommended)
 - `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
 - `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
-- `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Container Engine](https://cloud.google.com/container-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
+- `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
 
 For additional configuration options, consult the [values.yaml](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-omnibus/values.yaml).
 

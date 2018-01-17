@@ -51,6 +51,10 @@ module Gitlab
       #{config.root}/ee/app/helpers
     ])
 
+    # Rake tasks ignore the eager loading settings, so we need to set the
+    # autoload paths explicitly
+    config.autoload_paths = config.eager_load_paths.dup
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -74,6 +78,7 @@ module Gitlab
     # - Any parameter containing `secret`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
+    # - Build traces (:trace)
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
@@ -88,6 +93,7 @@ module Gitlab
       key
       otp_attempt
       sentry_dsn
+      trace
       variables
     )
 
@@ -162,6 +168,7 @@ module Gitlab
       caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
       caching_config_hash[:pool_timeout] = 1
     end
+
     config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
@@ -176,7 +183,7 @@ module Gitlab
     config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
-      g.factory_girl false
+      g.factory_bot false
     end
 
     config.after_initialize do

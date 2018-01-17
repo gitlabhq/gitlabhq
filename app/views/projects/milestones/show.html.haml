@@ -27,7 +27,7 @@
           Edit
 
         - if @project.group
-          = link_to promote_project_milestone_path(@milestone.project, @milestone), title: "Promote to Group Milestone", class: 'btn btn-grouped', data: { confirm: "Promoting this milestone will make it available for all projects inside the group. Existing project milestones with the same name will be merged. Are you sure?", toggle: "tooltip" }, method: :post do
+          = link_to promote_project_milestone_path(@milestone.project, @milestone), title: "Promote to Group Milestone", class: 'btn btn-grouped', data: { confirm: "You are about to promote #{@milestone.title} to a group level. This will make this milestone available to all projects inside #{@project.group.name}. The existing project milestone will be merged into the group level. This action cannot be reversed.", toggle: "tooltip" }, method: :post do
             Promote
 
         - if @milestone.active?

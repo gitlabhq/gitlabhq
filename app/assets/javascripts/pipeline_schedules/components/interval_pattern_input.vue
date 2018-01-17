@@ -32,6 +32,20 @@
         return !!(this.customInputEnabled || !this.intervalIsPreset);
       },
     },
+    watch: {
+      cronInterval() {
+        // updates field validation state when model changes, as
+        // glFieldError only updates on input.
+        this.$nextTick(() => {
+          gl.pipelineScheduleFieldErrors.updateFormValidityState();
+        });
+      },
+    },
+    created() {
+      if (this.intervalIsPreset) {
+        this.enableCustomInput = false;
+      }
+    },
     methods: {
       toggleCustomInput(shouldEnable) {
         this.customInputEnabled = shouldEnable;
@@ -41,20 +55,6 @@
           // because the model (cronInterval) hasn't changed. The server trims it.
           this.cronInterval = `${this.cronInterval} `;
         }
-      },
-    },
-    created() {
-      if (this.intervalIsPreset) {
-        this.enableCustomInput = false;
-      }
-    },
-    watch: {
-      cronInterval() {
-        // updates field validation state when model changes, as
-        // glFieldError only updates on input.
-        this.$nextTick(() => {
-          gl.pipelineScheduleFieldErrors.updateFormValidityState();
-        });
       },
     },
   };
@@ -78,7 +78,12 @@
       </label>
 
       <span class="cron-syntax-link-wrap">
-        (<a :href="cronSyntaxUrl" target="_blank">{{ __('Cron syntax') }}</a>)
+        (<a
+          :href="cronSyntaxUrl"
+          target="_blank"
+        >
+          {{ __('Cron syntax') }}
+        </a>)
       </span>
     </div>
 
@@ -93,7 +98,10 @@
         @click="toggleCustomInput(false)"
       />
 
-      <label class="label-light" for="every-day">
+      <label
+        class="label-light"
+        for="every-day"
+      >
         {{ __('Every day (at 4:00am)') }}
       </label>
     </div>
@@ -109,7 +117,10 @@
         @click="toggleCustomInput(false)"
       />
 
-      <label class="label-light" for="every-week">
+      <label
+        class="label-light"
+        for="every-week"
+      >
         {{ __('Every week (Sundays at 4:00am)') }}
       </label>
     </div>
@@ -125,7 +136,10 @@
         @click="toggleCustomInput(false)"
       />
 
-      <label class="label-light" for="every-month">
+      <label
+        class="label-light"
+        for="every-month"
+      >
         {{ __('Every month (on the 1st at 4:00am)') }}
       </label>
     </div>

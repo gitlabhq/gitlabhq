@@ -14,7 +14,6 @@ export default {
   "updated_by_id": null,
   "created_at": "2017-04-07T12:27:26.718Z",
   "updated_at": "2017-04-07T15:39:25.852Z",
-  "deleted_at": null,
   "time_estimate": 0,
   "total_time_spent": 0,
   "human_time_estimate": null,
@@ -33,8 +32,8 @@ export default {
   "source_project_id": 19,
   "target_branch": "master",
   "target_project_id": 19,
-  "merge_event": {
-    "author": {
+  "metrics": {
+    "merged_by": {
       "name": "Administrator",
       "username": "root",
       "id": 1,
@@ -42,9 +41,10 @@ export default {
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
-    "updated_at": "2017-04-07T15:39:25.696Z"
+    "merged_at": "2017-04-07T15:39:25.696Z",
+    "closed_by": null,
+    "closed_at": null
   },
-  "closed_event": null,
   "author": {
     "name": "Administrator",
     "username": "root",
@@ -215,7 +215,7 @@ export default {
     "head_blob_path": "/root/acets-app/blob/abcdef",
     "base_path": "base.json",
     "base_blob_path": "/root/acets-app/blob/abcdef"
-  }
+  },
 };
 
 export const headIssues = [
@@ -428,3 +428,150 @@ export const parsedSecurityIssuesStore = [
     urlPath: 'path/Gemfile.lock',
   },
 ];
+
+export const dockerReport = {
+  unapproved: [
+    'CVE-2017-12944',
+    'CVE-2017-16232'
+  ],
+  vulnerabilities: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium'
+    },
+    {
+        vulnerability: 'CVE-2017-16232',
+        namespace: 'debian:8',
+        severity: 'Negligible'
+    },
+    {
+        vulnerability: 'CVE-2014-8130',
+        namespace: 'debian:8',
+        severity: 'Negligible'
+    }
+  ]
+};
+
+export const dockerReportParsed = {
+  unapproved: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium',
+      name: 'CVE-2017-12944',
+      priority: 'Medium',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944'
+    },
+    {
+      vulnerability: 'CVE-2017-16232',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2017-16232',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232'
+    },
+  ],
+  approved: [
+    {
+      vulnerability: 'CVE-2014-8130',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2014-8130',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8130'
+    },
+  ],
+  vulnerabilities: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium',
+      name: 'CVE-2017-12944',
+      priority: 'Medium',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944'
+    },
+    {
+      vulnerability: 'CVE-2017-16232',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2017-16232',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232'
+    },
+    {
+      vulnerability: 'CVE-2014-8130',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2014-8130',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8130'
+    }
+  ]
+};
+
+export const dast = {
+  site: {
+    alerts: [{
+      name: 'Absence of Anti-CSRF Tokens',
+      riskcode: '1',
+      riskdesc: 'Low (Medium)',
+      desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.<\/p>',
+      instances: [{
+        uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+        method: 'GET',
+        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+      }, {
+        uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+        method: 'GET',
+        evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+      }]
+    }, {
+      alert: 'X-Content-Type-Options Header Missing',
+      name: 'X-Content-Type-Options Header Missing',
+      riskdesc: 'Low (Medium)',
+      desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".<\/p>',
+      instances: [{
+        uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+        method: 'GET',
+        param: 'X-Content-Type-Options'
+      }]
+    }]
+  }
+};
+
+export const parsedDast = [{
+  name: 'Absence of Anti-CSRF Tokens',
+  riskcode: '1',
+  riskdesc: 'Low (Medium)',
+  priority: 'Low (Medium)',
+  desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.<\/p>',
+  parsedDescription: ' No Anti-CSRF tokens were found in a HTML submission form. ',
+  instances: [{
+    uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+    method: 'GET',
+    evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+  }, {
+    uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+    method: 'GET',
+    evidence: '<form class=\'navbar-form\' action=\'/search\' accept-charset=\'UTF-8\' method=\'get\'>'
+  }]
+}, {
+  alert: 'X-Content-Type-Options Header Missing',
+  name: 'X-Content-Type-Options Header Missing',
+  riskdesc: 'Low (Medium)',
+  priority: 'Low (Medium)',
+  desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".<\/p>',
+  parsedDescription: ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
+  instances: [{
+    uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
+    method: 'GET',
+    param: 'X-Content-Type-Options'
+  }]
+}];

@@ -6,8 +6,8 @@ describe Projects::BranchesController do
   let(:developer) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user, :developer]
+    project.add_master(user)
+    project.add_developer(user)
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
     allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
@@ -163,6 +163,20 @@ describe Projects::BranchesController do
 
           expect(response.location).to include(project_new_blob_path(project, branch))
           expect(response).to have_gitlab_http_status(302)
+        end
+      end
+
+      context 'when create branch service fails' do
+        let(:branch) { "./invalid-branch-name" }
+
+        it "doesn't post a system note" do
+          expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+          post :create,
+            namespace_id: project.namespace,
+            project_id: project,
+            branch_name: branch,
+            issue_iid: issue.iid
         end
       end
 

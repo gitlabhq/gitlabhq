@@ -90,11 +90,6 @@
 .right-sidebar {
   border-left: 1px solid $border-color;
   height: calc(100% - #{$header-height});
-
-  &.affix {
-    position: fixed;
-    top: $header-height;
-  }
 }
 
 .with-performance-bar .right-sidebar.affix {
@@ -142,10 +137,6 @@
     padding: 0 3px;
     width: calc(100% + 35px);
   }
-}
-
-.issuable-sidebar {
-  @include new-style-dropdown;
 }
 
 .pikaday-container {

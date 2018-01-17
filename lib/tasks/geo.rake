@@ -1,7 +1,3 @@
-require 'gitlab/geo'
-require 'gitlab/geo/database_tasks'
-require 'gitlab/geo/geo_tasks'
-
 task spec: ['geo:db:test:prepare']
 
 namespace :geo do
@@ -9,12 +5,12 @@ namespace :geo do
 
   namespace :db do |ns|
     desc 'Drops the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
-    task :drop do
+    task drop: [:environment] do
       Gitlab::Geo::DatabaseTasks.drop_current
     end
 
     desc 'Creates the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
-    task :create do
+    task create: [:environment] do
       Gitlab::Geo::DatabaseTasks.create_current
     end
 
@@ -60,7 +56,7 @@ namespace :geo do
     end
 
     desc 'Refresh Foreign Tables definition in Geo Secondary node'
-    task :refresh_foreign_tables do
+    task refresh_foreign_tables: [:environment] do
       if Gitlab::Geo::GeoTasks.foreign_server_configured?
         print "\nRefreshing foreign tables for FDW: #{Gitlab::Geo::FDW_SCHEMA} ... "
         Gitlab::Geo::GeoTasks.refresh_foreign_tables!
@@ -72,10 +68,11 @@ namespace :geo do
     end
 
     # IMPORTANT: This task won't dump the schema if ActiveRecord::Base.dump_schema_after_migration is set to false
-    task :_dump do
+    task _dump: [:environment] do
       if Gitlab::Geo::DatabaseTasks.dump_schema_after_migration?
         ns["schema:dump"].invoke
       end
+
       # Allow this task to be called as many times as required. An example is the
       # migrate:redo task, which calls other two internally that depend on this one.
       ns['_dump'].reenable
@@ -156,7 +153,7 @@ namespace :geo do
         Gitlab::Geo::DatabaseTasks::Test.purge
       end
 
-      task :refresh_foreign_tables do
+      task refresh_foreign_tables: [:environment] do
         old_env = ActiveRecord::Tasks::DatabaseTasks.env
         ActiveRecord::Tasks::DatabaseTasks.env = 'test'
 
@@ -196,5 +193,12 @@ namespace :geo do
 
       current_node.update!(primary: true)
     end
+  end
+
+  desc 'Update Geo primary node URL'
+  task update_primary_node_url: :environment do
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
+
+    Gitlab::Geo::GeoTasks.update_primary_geo_node_url
   end
 end

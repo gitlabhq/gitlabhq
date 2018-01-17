@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Billing plan pages', :feature do
   let(:user) { create(:user) }
-  let(:bronze_plan) { Plan.find_by(name: 'bronze') }
+  let(:bronze_plan) { create(:bronze_plan) }
   let(:plans_data) do
     [
       {
@@ -141,9 +141,9 @@ describe 'Billing plan pages', :feature do
   end
 
   context 'on sub-group', :nested_groups do
-    let(:group) { create(:group, plan: Namespace::BRONZE_PLAN) }
+    let(:group) { create(:group, plan: :bronze_plan) }
     let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
-    let(:subgroup1) { create(:group, parent: group, plan: Namespace::SILVER_PLAN) }
+    let(:subgroup1) { create(:group, parent: group, plan: :silver_plan) }
     let!(:subgroup1_member) { create(:group_member, :owner, group: subgroup1, user: user) }
     let(:subgroup2) { create(:group, parent: subgroup1) }
     let!(:subgroup2_member) { create(:group_member, :owner, group: subgroup2, user: user) }

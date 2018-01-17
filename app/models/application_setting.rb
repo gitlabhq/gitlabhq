@@ -166,24 +166,16 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
-  validates :circuitbreaker_backoff_threshold,
-            :circuitbreaker_failure_count_threshold,
-            :circuitbreaker_failure_wait_time,
+  validates :circuitbreaker_failure_count_threshold,
             :circuitbreaker_failure_reset_time,
             :circuitbreaker_storage_timeout,
+            :circuitbreaker_check_interval,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :circuitbreaker_access_retries,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 1 }
-
-  validates_each :circuitbreaker_backoff_threshold do |record, attr, value|
-    if value.to_i >= record.circuitbreaker_failure_count_threshold
-      record.errors.add(attr, _("The circuitbreaker backoff threshold should be "\
-                                "lower than the failure count threshold"))
-    end
-  end
 
   validates :gitaly_timeout_default,
             presence: true,
@@ -282,6 +274,7 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -472,6 +465,7 @@ class ApplicationSetting < ActiveRecord::Base
         super(group_full_path)
         Gitlab::PerformanceBar.expire_allowed_user_ids_cache
       end
+
       return
     end
 

@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
+import _ from 'underscore';
 import Flash from '~/flash';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 
@@ -140,8 +141,8 @@ export default class ProtectedTagAccessDropdown {
   addSelectedItem(selectedItem) {
     let itemToAdd = {};
 
-    // If the item already exists, just use it
     let index = -1;
+    let alreadyAdded = false;
     const selectedItems = this.getAllSelectedItems();
 
     // Compare IDs based on selectedItem.type
@@ -150,6 +151,10 @@ export default class ProtectedTagAccessDropdown {
       switch (selectedItem.type) {
         case LEVEL_TYPES.ROLE:
           comparator = LEVEL_ID_PROP.ROLE;
+          // If the item already exists, just use it
+          if (item[comparator] === selectedItem.id) {
+            alreadyAdded = true;
+          }
           break;
         case LEVEL_TYPES.GROUP:
           comparator = LEVEL_ID_PROP.GROUP;
@@ -165,6 +170,10 @@ export default class ProtectedTagAccessDropdown {
         index = i;
       }
     });
+
+    if (alreadyAdded) {
+      return;
+    }
 
     if (index !== -1 && selectedItems[index]._destroy) {
       delete selectedItems[index]._destroy;

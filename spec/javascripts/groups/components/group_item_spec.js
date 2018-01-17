@@ -1,5 +1,5 @@
 import Vue from 'vue';
-
+import * as urlUtils from '~/lib/utils/url_utility';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import eventHub from '~/groups/event_hub';
@@ -136,13 +136,13 @@ describe('GroupItemComponent', () => {
         const group = Object.assign({}, mockParentGroupItem);
         group.childrenCount = 0;
         const newVm = createComponent(group);
-        spyOn(gl.utils, 'visitUrl').and.stub();
+        spyOn(urlUtils, 'visitUrl').and.stub();
         spyOn(eventHub, '$emit');
 
         newVm.onClickRowGroup(event);
         setTimeout(() => {
           expect(eventHub.$emit).not.toHaveBeenCalled();
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
+          expect(urlUtils.visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
           done();
         }, 0);
       });

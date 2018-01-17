@@ -43,8 +43,11 @@ class SystemHooksService
     when User
       data.merge!(user_data(model))
 
-      if event == :rename
+      case event
+      when :rename
         data[:old_username] = model.username_was
+      when :failed_login
+        data[:state] = model.state
       end
     when ProjectMember
       data.merge!(project_member_data(model))

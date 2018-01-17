@@ -18,7 +18,7 @@ feature 'Group elastic search', :js do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
 
-    project.team << [user, :master]
+    project.add_master(user)
     group.add_owner(user)
 
     sign_in(user)

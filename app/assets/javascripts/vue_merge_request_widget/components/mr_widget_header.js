@@ -1,5 +1,6 @@
 import tooltip from '../../vue_shared/directives/tooltip';
 import { pluralize } from '../../lib/utils/text_utility';
+import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -8,6 +9,9 @@ export default {
   },
   directives: {
     tooltip,
+  },
+  components: {
+    icon,
   },
   computed: {
     shouldShowCommitsBehindText() {
@@ -81,10 +85,9 @@ export default {
             data-toggle="dropdown"
             aria-label="Download as"
             role="button">
-            <i
-              class="fa fa-download"
-              aria-hidden="true">
-            </i>
+            <icon
+              name="download">
+            </icon>
             <i
               class="fa fa-caret-down"
               aria-hidden="true">

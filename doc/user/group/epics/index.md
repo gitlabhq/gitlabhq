@@ -34,6 +34,10 @@ When you add an issue to an epic that's already associated with another epic,
 the issue is automatically removed from the previous epic. In other words, an
 issue can be associated with at most one epic.
 
+## Reordering issues in an epic
+
+Drag and drop to reorder issues in an epic. New issues added to an epic appear at the top of the list.
+
 ## Deleting an epic
 
 NOTE: **Note:**
@@ -44,6 +48,13 @@ A modal will pop-up to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the
 system.
+
+## Navigating to an epic from an issue
+
+If an issue belongs to an epic, you can navigate to the containing epic with the
+link in the issue sidebar.
+
+![containing epic](img/containing_epic.png)
 
 ## Permissions
 

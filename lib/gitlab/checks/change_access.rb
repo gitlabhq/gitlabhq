@@ -2,6 +2,7 @@ module Gitlab
   module Checks
     class ChangeAccess
       include PathLocksHelper
+      include Gitlab::Utils::StrongMemoize
 
       ERROR_MESSAGES = {
         push_code: 'You are not allowed to push code to this project.',
@@ -195,11 +196,16 @@ module Gitlab
       end
 
       def branch_name_allowed_by_push_rule?(push_rule)
-        return true unless push_rule
-        return true if @branch_name.blank?
-        return true if @branch_name == @project.default_branch
+        return true if skip_branch_name_push_rule?(push_rule)
 
         push_rule.branch_name_allowed?(@branch_name)
+      end
+
+      def skip_branch_name_push_rule?(push_rule)
+        push_rule.nil? ||
+          deletion? ||
+          @branch_name.blank? ||
+          @branch_name == @project.default_branch
       end
 
       def tag_deletion_denied_by_push_rule?(push_rule)
@@ -295,9 +301,11 @@ module Gitlab
       end
 
       def validate_path_locks?
-        @validate_path_locks ||= @project.feature_available?(:file_locks) &&
-          project.path_locks.any? && @newrev && @oldrev &&
-          project.default_branch == @branch_name # locks protect default branch only
+        strong_memoize(:validate_path_locks) do
+          @project.feature_available?(:file_locks) &&
+            project.path_locks.any? && @newrev && @oldrev &&
+            project.default_branch == @branch_name # locks protect default branch only
+        end
       end
 
       def path_locks_validation

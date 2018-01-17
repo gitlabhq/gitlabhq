@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class OperationService
+      include Gitlab::EncodingHelper
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -9,7 +11,7 @@ module Gitlab
       def rm_tag(tag_name, user)
         request = Gitaly::UserDeleteTagRequest.new(
           repository: @gitaly_repo,
-          tag_name: GitalyClient.encode(tag_name),
+          tag_name: encode_binary(tag_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
@@ -24,9 +26,9 @@ module Gitlab
         request = Gitaly::UserCreateTagRequest.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          tag_name: GitalyClient.encode(tag_name),
-          target_revision: GitalyClient.encode(target),
-          message: GitalyClient.encode(message.to_s)
+          tag_name: encode_binary(tag_name),
+          target_revision: encode_binary(target),
+          message: encode_binary(message.to_s)
         )
 
         response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
@@ -44,12 +46,13 @@ module Gitlab
       def user_create_branch(branch_name, user, start_point)
         request = Gitaly::UserCreateBranchRequest.new(
           repository: @gitaly_repo,
-          branch_name: GitalyClient.encode(branch_name),
+          branch_name: encode_binary(branch_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          start_point: GitalyClient.encode(start_point)
+          start_point: encode_binary(start_point)
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
           :user_create_branch, request)
+
         if response.pre_receive_error.present?
           raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
         end
@@ -64,7 +67,7 @@ module Gitlab
       def user_delete_branch(branch_name, user)
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
-          branch_name: GitalyClient.encode(branch_name),
+          branch_name: encode_binary(branch_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
@@ -89,8 +92,8 @@ module Gitlab
             repository: @gitaly_repo,
             user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
             commit_id: source_sha,
-            branch: GitalyClient.encode(target_branch),
-            message: GitalyClient.encode(message)
+            branch: encode_binary(target_branch),
+            message: encode_binary(message)
           )
         )
 
@@ -99,6 +102,7 @@ module Gitlab
         request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
 
         branch_update = response_enum.next.branch_update
+        return if branch_update.nil?
         raise Gitlab::Git::CommitError.new('failed to apply merge to branch') unless branch_update.commit_id.present?
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
@@ -111,7 +115,7 @@ module Gitlab
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           commit_id: source_sha,
-          branch: GitalyClient.encode(target_branch)
+          branch: encode_binary(target_branch)
         )
 
         branch_update = GitalyClient.call(
@@ -124,24 +128,80 @@ module Gitlab
       end
 
       def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        request = Gitaly::UserCherryPickRequest.new(
+        call_cherry_pick_or_revert(:cherry_pick,
+                                   user: user,
+                                   commit: commit,
+                                   branch_name: branch_name,
+                                   message: message,
+                                   start_branch_name: start_branch_name,
+                                   start_repository: start_repository)
+      end
+
+      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        call_cherry_pick_or_revert(:revert,
+                                   user: user,
+                                   commit: commit,
+                                   branch_name: branch_name,
+                                   message: message,
+                                   start_branch_name: start_branch_name,
+                                   start_repository: start_repository)
+      end
+
+      def user_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        request = Gitaly::UserRebaseRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          rebase_id: rebase_id.to_s,
+          branch: encode_binary(branch),
+          branch_sha: branch_sha,
+          remote_repository: remote_repository.gitaly_repository,
+          remote_branch: encode_binary(remote_branch)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_rebase,
+          request,
+          remote_storage: remote_repository.storage
+        )
+
+        if response.pre_receive_error.presence
+          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+        elsif response.git_error.presence
+          raise Gitlab::Git::Repository::GitError, response.git_error
+        else
+          response.rebase_sha
+        end
+      end
+
+      private
+
+      def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        request_class = "Gitaly::User#{rpc.to_s.camelcase}Request".constantize
+
+        request = request_class.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           commit: commit.to_gitaly_commit,
-          branch_name: GitalyClient.encode(branch_name),
-          message: GitalyClient.encode(message),
-          start_branch_name: GitalyClient.encode(start_branch_name.to_s),
+          branch_name: encode_binary(branch_name),
+          message: encode_binary(message),
+          start_branch_name: encode_binary(start_branch_name.to_s),
           start_repository: start_repository.gitaly_repository
         )
 
         response = GitalyClient.call(
           @repository.storage,
           :operation_service,
-          :user_cherry_pick,
+          :"user_#{rpc}",
           request,
           remote_storage: start_repository.storage
         )
 
+        handle_cherry_pick_or_revert_response(response)
+      end
+
+      def handle_cherry_pick_or_revert_response(response)
         if response.pre_receive_error.presence
           raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
         elsif response.commit_error.presence

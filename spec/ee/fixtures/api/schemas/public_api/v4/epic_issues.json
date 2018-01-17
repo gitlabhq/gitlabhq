@@ -1,0 +1,12 @@
+{
+  "allOf": [
+    { "$ref": "./issues.json" },
+    {
+      "properties": {
+        "epic_issue_id": { "type": ["integer"] },
+        "relative_position": { "type": ["integer"] }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

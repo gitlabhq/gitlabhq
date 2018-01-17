@@ -319,6 +319,12 @@ describe Gitlab::Checks::ChangeAccess do
           it 'allows the default branch even if it does not match push rule' do
             expect { subject.exec }.not_to raise_error
           end
+
+          it 'memoizes the validate_path_locks? call' do
+            expect(project.path_locks).to receive(:any?).once.and_call_original
+
+            2.times { subject.exec }
+          end
         end
       end
 

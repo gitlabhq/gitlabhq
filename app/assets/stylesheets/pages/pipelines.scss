@@ -75,7 +75,7 @@
       }
 
       .dropdown-menu {
-        max-height: 250px;
+        max-height: $dropdown-max-height;
         overflow-y: auto;
       }
 
@@ -168,6 +168,12 @@
       width: 14px;
       vertical-align: middle;
       fill: $gl-text-color-secondary;
+    }
+
+    .sprite {
+      width: 12px;
+      height: 12px;
+      fill: $gl-text-color;
     }
 
     .fa {
@@ -321,8 +327,6 @@
 
 // Pipeline visualization
 .pipeline-actions {
-  @include new-style-dropdown;
-
   border-bottom: 0;
 }
 
@@ -730,9 +734,6 @@ a.linked-pipeline-mini-item {
   }
 }
 
-@include new-style-dropdown('.big-pipeline-graph-dropdown-menu');
-@include new-style-dropdown('.mini-pipeline-graph-dropdown-menu');
-
 // dropdown content for big and mini pipeline
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
@@ -824,14 +825,12 @@ a.linked-pipeline-mini-item {
 
     // link to the build
     .mini-pipeline-graph-dropdown-item {
-      padding: 3px 7px 4px;
       align-items: center;
       clear: both;
       display: flex;
       font-weight: normal;
       line-height: $line-height-base;
       white-space: nowrap;
-      border-radius: 3px;
 
       .ci-job-name-component {
         align-items: center;
@@ -1221,4 +1220,12 @@ a.linked-pipeline-mini-item {
 .autodevops-title {
   font-weight: $gl-font-weight-normal;
   line-height: 1.5;
+}
+
+.legend-all {
+  color: $gl-text-color-secondary;
+}
+
+.legend-success {
+  color: $green-500;
 }

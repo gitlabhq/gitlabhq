@@ -26,38 +26,12 @@ describe('ItemActionsComponent', () => {
     vm.$destroy();
   });
 
-  describe('computed', () => {
-    describe('leaveConfirmationMessage', () => {
-      it('should return appropriate string for leave group confirmation', () => {
-        expect(vm.leaveConfirmationMessage).toBe('Are you sure you want to leave the "platform / hardware" group?');
-      });
-    });
-  });
-
   describe('methods', () => {
     describe('onLeaveGroup', () => {
-      it('should change `dialogStatus` prop to `true` which shows confirmation dialog', () => {
-        expect(vm.dialogStatus).toBeFalsy();
+      it('emits `showLeaveGroupModal` event with `group` and `parentGroup` props', () => {
+        spyOn(eventHub, '$emit');
         vm.onLeaveGroup();
-        expect(vm.dialogStatus).toBeTruthy();
-      });
-    });
-
-    describe('leaveGroup', () => {
-      it('should change `dialogStatus` prop to `false` and emit `leaveGroup` event with required params when called with `leaveConfirmed` as `true`', () => {
-        spyOn(eventHub, '$emit');
-        vm.dialogStatus = true;
-        vm.leaveGroup(true);
-        expect(vm.dialogStatus).toBeFalsy();
-        expect(eventHub.$emit).toHaveBeenCalledWith('leaveGroup', vm.group, vm.parentGroup);
-      });
-
-      it('should change `dialogStatus` prop to `false` and should NOT emit `leaveGroup` event when called with `leaveConfirmed` as `false`', () => {
-        spyOn(eventHub, '$emit');
-        vm.dialogStatus = true;
-        vm.leaveGroup(false);
-        expect(vm.dialogStatus).toBeFalsy();
-        expect(eventHub.$emit).not.toHaveBeenCalled();
+        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', vm.group, vm.parentGroup);
       });
     });
   });
@@ -78,7 +52,8 @@ describe('ItemActionsComponent', () => {
       expect(editBtn.getAttribute('href')).toBe(group.editPath);
       expect(editBtn.getAttribute('aria-label')).toBe('Edit group');
       expect(editBtn.dataset.originalTitle).toBe('Edit group');
-      expect(editBtn.querySelector('i.fa.fa-cogs')).toBeDefined();
+      expect(editBtn.querySelectorAll('svg use').length).not.toBe(0);
+      expect(editBtn.querySelector('svg use').getAttribute('xlink:href')).toContain('#settings');
 
       newVm.$destroy();
     });
@@ -94,17 +69,10 @@ describe('ItemActionsComponent', () => {
       expect(leaveBtn.getAttribute('href')).toBe(group.leavePath);
       expect(leaveBtn.getAttribute('aria-label')).toBe('Leave this group');
       expect(leaveBtn.dataset.originalTitle).toBe('Leave this group');
-      expect(leaveBtn.querySelector('i.fa.fa-sign-out')).toBeDefined();
+      expect(leaveBtn.querySelectorAll('svg use').length).not.toBe(0);
+      expect(leaveBtn.querySelector('svg use').getAttribute('xlink:href')).toContain('#leave');
 
       newVm.$destroy();
-    });
-
-    it('should show modal dialog when `dialogStatus` is set to `true`', () => {
-      vm.dialogStatus = true;
-      const modalDialogEl = vm.$el.querySelector('.modal.popup-dialog');
-      expect(modalDialogEl).toBeDefined();
-      expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
-      expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');
     });
   });
 });

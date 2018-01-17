@@ -8,7 +8,7 @@ module API
 
     helpers do
       def find_issues(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
@@ -166,6 +166,8 @@ module API
         use :issue_params
       end
       post ':id/issues' do
+        authorize! :create_issue, user_project
+
         # Setting created_at time only allowed for admins and project owners
         unless current_user.admin? || user_project.owner == current_user
           params.delete(:created_at)
@@ -178,6 +180,7 @@ module API
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,
                                             issue_params.merge(request: request, api: true)).execute
+
         if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
@@ -279,6 +282,19 @@ module API
         merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+      end
+
+      desc 'List participants for an issue'  do
+        success Entities::UserBasic
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ':id/issues/:issue_iid/participants' do
+        issue = find_project_issue(params[:issue_iid])
+        participants = ::Kaminari.paginate_array(issue.participants)
+
+        present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
       end
 
       desc 'Get the user agent details for an issue' do

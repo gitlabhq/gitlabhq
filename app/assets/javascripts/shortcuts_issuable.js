@@ -1,8 +1,6 @@
-/* global Mousetrap */
-/* global sidebar */
-
+import Mousetrap from 'mousetrap';
 import _ from 'underscore';
-import 'mousetrap';
+import Sidebar from './right_sidebar';
 import ShortcutsNavigation from './shortcuts_navigation';
 import { CopyAsGFM } from './behaviors/copy_as_gfm';
 
@@ -11,7 +9,7 @@ export default class ShortcutsIssuable extends ShortcutsNavigation {
     super();
 
     this.$replyField = isMergeRequest ? $('.js-main-target-form #note_note') : $('.js-main-target-form .js-vue-comment-form');
-    this.editBtn = document.querySelector('.issuable-edit');
+    this.editBtn = document.querySelector('.js-issuable-edit');
 
     Mousetrap.bind('a', () => ShortcutsIssuable.openSidebarDropdown('assignee'));
     Mousetrap.bind('m', () => ShortcutsIssuable.openSidebarDropdown('milestone'));
@@ -69,7 +67,7 @@ export default class ShortcutsIssuable extends ShortcutsNavigation {
   }
 
   static openSidebarDropdown(name) {
-    sidebar.openDropdown(name);
+    Sidebar.instance.openDropdown(name);
     return false;
   }
 }

@@ -2,7 +2,8 @@
 /* global BoardService */
 
 import Flash from '~/flash';
-import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
+import modal from '../../vue_shared/components/modal.vue';
+import { visitUrl } from '../../lib/utils/url_utility';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
 import BoardLabelsSelect from './labels_select.vue';
@@ -23,6 +24,13 @@ const boardDefaults = {
 };
 
 export default {
+  components: {
+    AssigneeSelect,
+    BoardLabelsSelect,
+    BoardMilestoneSelect,
+    BoardWeightSelect,
+    modal,
+  },
   props: {
     canAdminBoard: {
       type: Boolean,
@@ -54,6 +62,7 @@ export default {
     weights: {
       type: String,
       required: false,
+      default: '',
     },
   },
   data() {
@@ -67,13 +76,6 @@ export default {
       milestoneDropdownOpen: false,
       isLoading: false,
     };
-  },
-  components: {
-    AssigneeSelect,
-    BoardLabelsSelect,
-    BoardMilestoneSelect,
-    BoardWeightSelect,
-    PopupDialog,
   },
   computed: {
     isNewForm() {
@@ -131,6 +133,12 @@ export default {
       return this.isLoading || this.board.name.length === 0;
     },
   },
+  mounted() {
+    this.resetFormState();
+    if (this.$refs.name) {
+      this.$refs.name.focus();
+    }
+  },
   methods: {
     submit() {
       if (this.board.name.length === 0) return;
@@ -138,7 +146,7 @@ export default {
       if (this.isDeleteForm) {
         gl.boardService.deleteBoard(this.currentBoard)
           .then(() => {
-            gl.utils.visitUrl(Store.rootPath);
+            visitUrl(Store.rootPath);
           })
           .catch(() => {
             Flash('Failed to delete board. Please try again.');
@@ -146,9 +154,9 @@ export default {
           });
       } else {
         gl.boardService.createBoard(this.board)
-          .then(resp => resp.json())
+          .then(resp => resp.data)
           .then((data) => {
-            gl.utils.visitUrl(data.board_path);
+            visitUrl(data.board_path);
           })
           .catch(() => {
             Flash('Unable to save your changes. Please try again.');
@@ -168,17 +176,11 @@ export default {
       }
     },
   },
-  mounted() {
-    this.resetFormState();
-    if (this.$refs.name) {
-      this.$refs.name.focus();
-    }
-  },
 };
 </script>
 
 <template>
-  <popup-dialog
+  <modal
     v-show="currentPage"
     modal-dialog-class="board-config-modal"
     :hide-footer="readonly"
@@ -216,7 +218,7 @@ export default {
             v-model="board.name"
             @keyup.enter="submit"
             placeholder="Enter board name"
-          >
+          />
         </div>
         <div v-if="scopedIssueBoardFeatureEnabled">
           <div
@@ -274,5 +276,5 @@ export default {
         </div>
       </form>
     </template>
-  </popup-dialog>
+  </modal>
 </template>

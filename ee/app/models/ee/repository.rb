@@ -31,21 +31,6 @@ module EE
       refs.map { |sha| commit(sha.strip) }
     end
 
-    def push_remote_branches(remote, branches)
-      gitlab_shell.push_remote_branches(repository_storage_path, disk_path, remote, branches)
-    end
-
-    def delete_remote_branches(remote, branches)
-      gitlab_shell.delete_remote_branches(repository_storage_path, disk_path, remote, branches)
-    end
-
-    def rebase(user, merge_request)
-      raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
-                                         branch_sha: merge_request.source_branch_sha,
-                                         remote_repository: merge_request.target_project.repository.raw,
-                                         remote_branch: merge_request.target_branch)
-    end
-
     def squash(user, merge_request)
       raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                          start_sha: merge_request.diff_start_sha,

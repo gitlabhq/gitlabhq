@@ -29,7 +29,9 @@ describe Repository do
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
       storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
-      expect(exception.class).to be_in(storage_exceptions)
+      known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
+
+      expect(known_exception).not_to be_nil
     end
   end
 
@@ -57,10 +59,16 @@ describe Repository do
   end
 
   describe 'tags_sorted_by' do
-    context 'name' do
-      subject { repository.tags_sorted_by('name').map(&:name) }
+    context 'name_desc' do
+      subject { repository.tags_sorted_by('name_desc').map(&:name) }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+    end
+
+    context 'name_asc' do
+      subject { repository.tags_sorted_by('name_asc').map(&:name) }
+
+      it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
     end
 
     context 'updated' do
@@ -231,6 +239,54 @@ describe Repository do
     end
   end
 
+  describe '#commits_by' do
+    set(:project) { create(:project, :repository) }
+
+    shared_examples 'batch commits fetching' do
+      let(:oids) { TestEnv::BRANCH_SHA.values }
+
+      subject { project.repository.commits_by(oids: oids) }
+
+      it 'finds each commit' do
+        expect(subject).not_to include(nil)
+        expect(subject.size).to eq(oids.size)
+      end
+
+      it 'returns only Commit instances' do
+        expect(subject).to all( be_a(Commit) )
+      end
+
+      context 'when some commits are not found ' do
+        let(:oids) do
+          ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+        end
+
+        it 'returns only found commits' do
+          expect(subject).not_to include(nil)
+          expect(subject.size).to eq(10)
+        end
+      end
+
+      context 'when no oids are passed' do
+        let(:oids) { [] }
+
+        it 'does not call #batch_by_oid' do
+          expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+          subject
+        end
+      end
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled' do
+      it_behaves_like 'batch commits fetching'
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled', :disable_gitaly do
+      it_behaves_like 'batch commits fetching'
+    end
+  end
+
   describe '#find_commits_by_message' do
     shared_examples 'finding commits by message' do
       it 'returns commits with messages containing a given string' do
@@ -302,28 +358,38 @@ describe Repository do
   end
 
   describe '#can_be_merged?' do
-    context 'mergeable branches' do
-      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+    shared_examples 'can be merged' do
+      context 'mergeable branches' do
+        subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
 
-      it { is_expected.to be_truthy }
+        it { is_expected.to be_truthy }
+      end
+
+      context 'non-mergeable branches' do
+        subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non merged branch' do
+        subject { repository.merged_to_root_ref?('fix') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non existent branch' do
+        subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+        it { is_expected.to be_nil }
+      end
     end
 
-    context 'non-mergeable branches' do
-      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
-
-      it { is_expected.to be_falsey }
+    context 'when Gitaly can_be_merged feature is enabled' do
+      it_behaves_like 'can be merged'
     end
 
-    context 'non merged branch' do
-      subject { repository.merged_to_root_ref?('fix') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'non existent branch' do
-      subject { repository.merged_to_root_ref?('non_existent_branch') }
-
-      it { is_expected.to be_nil }
+    context 'when Gitaly can_be_merged feature is disabled', :disable_gitaly do
+      it_behaves_like 'can be merged'
     end
   end
 
@@ -353,6 +419,28 @@ describe Repository do
           expect(repository.commit('non-existent:ref')).to be_nil
         end
       end
+    end
+  end
+
+  describe '#create_hooks' do
+    let(:hook_path) { File.join(repository.path_to_repo, 'hooks') }
+
+    it 'symlinks the global hooks directory' do
+      repository.create_hooks
+
+      expect(File.symlink?(hook_path)).to be true
+      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+    end
+
+    it 'replaces existing symlink with the right directory' do
+      FileUtils.mkdir_p(hook_path)
+
+      expect(File.symlink?(hook_path)).to be false
+
+      repository.create_hooks
+
+      expect(File.symlink?(hook_path)).to be true
+      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
     end
   end
 
@@ -526,38 +614,6 @@ describe Repository do
     end
   end
 
-  describe '#get_committer_and_author' do
-    it 'returns the committer and author data' do
-      options = repository.get_committer_and_author(user)
-      expect(options[:committer][:email]).to eq(user.email)
-      expect(options[:author][:email]).to eq(user.email)
-    end
-
-    context 'when the email/name are given' do
-      it 'returns an object containing the email/name' do
-        options = repository.get_committer_and_author(user, email: author_email, name: author_name)
-        expect(options[:author][:email]).to eq(author_email)
-        expect(options[:author][:name]).to eq(author_name)
-      end
-    end
-
-    context 'when the email is given but the name is not' do
-      it 'returns the committer as the author' do
-        options = repository.get_committer_and_author(user, email: author_email)
-        expect(options[:author][:email]).to eq(user.email)
-        expect(options[:author][:name]).to eq(user.name)
-      end
-    end
-
-    context 'when the name is given but the email is not' do
-      it 'returns nil' do
-        options = repository.get_committer_and_author(user, name: author_name)
-        expect(options[:author][:email]).to eq(user.email)
-        expect(options[:author][:name]).to eq(user.name)
-      end
-    end
-  end
-
   describe "search_files_by_content" do
     let(:results) { repository.search_files_by_content('feature', 'master') }
     subject { results }
@@ -601,7 +657,7 @@ describe Repository do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG\x00190\x00  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -610,6 +666,18 @@ describe Repository do
 
     it 'returns result' do
       expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'ignores leading slashes' do
+      results = repository.search_files_by_name('/files', 'master')
+
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is only slashes' do
+      results = repository.search_files_by_name('//', 'master')
+
+      expect(results).to match_array([])
     end
 
     it 'properly handles when query is not present' do
@@ -634,9 +702,7 @@ describe Repository do
   end
 
   describe '#fetch_ref' do
-    # Setting the var here, sidesteps the stub that makes gitaly raise an error
-    # before the actual test call
-    set(:broken_repository) { create(:project, :broken_storage).repository }
+    let(:broken_repository) { create(:project, :broken_storage).repository }
 
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
@@ -1007,7 +1073,7 @@ describe Repository do
 
       it 'runs without errors' do
         # old_rev is an ancestor of new_rev
-        expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).to eq(old_rev)
 
         # old_rev is not a direct ancestor (parent) of new_rev
         expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
@@ -1029,7 +1095,7 @@ describe Repository do
 
       it 'raises an exception' do
         # The 'master' branch is NOT an ancestor of new_rev.
-        expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).not_to eq(old_rev)
 
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
@@ -1058,15 +1124,15 @@ describe Repository do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
       end
 
-      it 'expires branch cache' do
-        expect(repository).not_to receive(:expire_exists_cache)
-        expect(repository).not_to receive(:expire_root_ref_cache)
-        expect(repository).not_to receive(:expire_emptiness_caches)
-        expect(repository).to     receive(:expire_branches_cache)
-
-        repository.with_branch(user, 'new-feature') do
+      subject do
+        Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('new-feature') do
           new_rev
         end
+      end
+
+      it 'returns branch_created as true' do
+        expect(subject).not_to be_repo_created
+        expect(subject).to     be_branch_created
       end
     end
 
@@ -1154,6 +1220,15 @@ describe Repository do
 
       expect(repository.branch_exists?('foobar')).to eq(true)
       expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#tag_exists?' do
+    it 'uses tag_names' do
+      allow(repository).to receive(:tag_names).and_return(['foobar'])
+
+      expect(repository.tag_exists?('foobar')).to eq(true)
+      expect(repository.tag_exists?('master')).to eq(false)
     end
   end
 
@@ -1370,38 +1445,48 @@ describe Repository do
   end
 
   describe '#revert' do
-    let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
-    let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
-    let(:message) { 'revert message' }
+    shared_examples 'reverting a commit' do
+      let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
+      let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+      let(:message) { 'revert message' }
 
-    context 'when there is a conflict' do
-      it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      context 'when there is a conflict' do
+        it 'raises an error' do
+          expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit was already reverted' do
+        it 'raises an error' do
+          repository.revert(user, update_image_commit, 'master', message)
+
+          expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit can be reverted' do
+        it 'reverts the changes' do
+          expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
+        end
+      end
+
+      context 'reverting a merge commit' do
+        it 'reverts the changes' do
+          merge_commit
+          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+
+          repository.revert(user, merge_commit, 'master', message)
+          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+        end
       end
     end
 
-    context 'when commit was already reverted' do
-      it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master', message)
-
-        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-      end
+    context 'when Gitaly revert feature is enabled' do
+      it_behaves_like 'reverting a commit'
     end
 
-    context 'when commit can be reverted' do
-      it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
-      end
-    end
-
-    context 'reverting a merge commit' do
-      it 'reverts the changes' do
-        merge_commit
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
-
-        repository.revert(user, merge_commit, 'master', message)
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
-      end
+    context 'when Gitaly revert feature is disabled', :disable_gitaly do
+      it_behaves_like 'reverting a commit'
     end
   end
 
@@ -2145,24 +2230,6 @@ describe Repository do
     end
   end
 
-  describe '#push_remote_branches' do
-    it 'push branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches)
-        .with(repository.repository_storage_path, repository.disk_path, 'remote_name', ['branch'])
-
-      repository.push_remote_branches('remote_name', ['branch'])
-    end
-  end
-
-  describe '#delete_remote_branches' do
-    it 'delete branches to the remote repo' do
-      expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches)
-        .with(repository.repository_storage_path, repository.disk_path, 'remote_name', ['branch'])
-
-      repository.delete_remote_branches('remote_name', ['branch'])
-    end
-  end
-
   describe '#local_branches' do
     it 'returns the local branches' do
       masterrev = repository.find_branch('master').dereferenced_target
@@ -2232,6 +2299,15 @@ describe Repository do
       it 'returns the same count as #commit_count' do
         expect(repository.commit_count_for_ref(repository.root_ref)).to eq(repository.commit_count)
       end
+    end
+  end
+
+  describe '#diverging_commit_counts' do
+    it 'returns the commit counts behind and ahead of default branch' do
+      result = repository.diverging_commit_counts(
+        repository.find_branch('fix'))
+
+      expect(result).to eq(behind: 29, ahead: 2)
     end
   end
 
@@ -2438,6 +2514,113 @@ describe Repository do
         expect(subject).to be_a(Gitlab::Git::Repository)
         expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
         expect(subject.gl_repository).to eq("wiki-#{project.id}")
+      end
+    end
+  end
+
+  describe '#contributors' do
+    let(:author_a) { build(:author, email: 'tiagonbotelho@hotmail.com', name: 'tiagonbotelho') }
+    let(:author_b) { build(:author, email: 'gitlab@winniehell.de', name: 'Winnie') }
+    let(:author_c) { build(:author, email: 'douwe@gitlab.com', name: 'Douwe Maan') }
+    let(:stubbed_commits) do
+      [build(:commit, author: author_a),
+       build(:commit, author: author_a),
+       build(:commit, author: author_b),
+       build(:commit, author: author_c),
+       build(:commit, author: author_c),
+       build(:commit, author: author_c)]
+    end
+    let(:order_by) { nil }
+    let(:sort) { nil }
+
+    before do
+      allow(repository).to receive(:commits).with(nil, limit: 2000, offset: 0, skip_merges: true).and_return(stubbed_commits)
+    end
+
+    subject { repository.contributors(order_by: order_by, sort: sort) }
+
+    def expect_contributors(*contributors)
+      expect(subject.map(&:email)).to eq(contributors.map(&:email))
+    end
+
+    it 'returns the array of Gitlab::Contributor for the repository' do
+      expect_contributors(author_a, author_b, author_c)
+    end
+
+    context 'order_by email' do
+      let(:order_by) { 'email' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by email asc case insensitive' do
+          expect_contributors(author_c, author_b, author_a)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by email desc case insensitive' do
+          expect_contributors(author_a, author_b, author_c)
+        end
+      end
+    end
+
+    context 'order_by name' do
+      let(:order_by) { 'name' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by name asc case insensitive' do
+          expect_contributors(author_c, author_a, author_b)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by name desc case insensitive' do
+          expect_contributors(author_b, author_a, author_c)
+        end
+      end
+    end
+
+    context 'order_by commits' do
+      let(:order_by) { 'commits' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by commits asc' do
+          expect_contributors(author_b, author_a, author_c)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by commits desc' do
+          expect_contributors(author_c, author_a, author_b)
+        end
+      end
+    end
+
+    context 'invalid ordering' do
+      let(:order_by) { 'unknown' }
+
+      it 'returns the contributors unsorted' do
+        expect_contributors(author_a, author_b, author_c)
+      end
+    end
+
+    context 'invalid sorting' do
+      let(:order_by) { 'name' }
+      let(:sort) { 'unknown' }
+
+      it 'returns the contributors unsorted' do
+        expect_contributors(author_a, author_b, author_c)
       end
     end
   end

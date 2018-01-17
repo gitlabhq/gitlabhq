@@ -274,8 +274,21 @@ module API
     end
 
     class GroupDetail < Group
-      expose :projects, using: Entities::Project
-      expose :shared_projects, using: Entities::Project
+      expose :projects, using: Entities::Project do |group, options|
+        GroupProjectsFinder.new(
+          group: group,
+          current_user: options[:current_user],
+          options: { only_owned: true }
+        ).execute
+      end
+
+      expose :shared_projects, using: Entities::Project do |group, options|
+        GroupProjectsFinder.new(
+          group: group,
+          current_user: options[:current_user],
+          options: { only_shared: true }
+        ).execute
+      end
 
       # EE-only
       expose :shared_runners_minutes_limit
@@ -294,7 +307,7 @@ module API
     end
 
     class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats
+      expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
@@ -478,6 +491,29 @@ module API
       expose :issue_link_id
     end
 
+    class Epic < Grape::Entity
+      expose :id
+      expose :iid
+      expose :group_id
+      expose :title
+      expose :description
+      expose :author, using: Entities::UserBasic
+      expose :start_date
+      expose :end_date
+    end
+
+    class EpicIssue < Issue
+      expose :epic_issue_id
+      expose :relative_position
+    end
+
+    class EpicIssueLink < Grape::Entity
+      expose :id
+      expose :relative_position
+      expose :epic, using: Entities::Epic
+      expose :issue, using: Entities::IssueBasic
+    end
+
     class IssueLink < Grape::Entity
       expose :source, as: :source_issue, using: Entities::IssueBasic
       expose :target, as: :target_issue, using: Entities::IssueBasic
@@ -609,11 +645,16 @@ module API
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at, :can_push
+      expose :id, :title, :key, :created_at
     end
 
     class SSHKeyWithUser < SSHKey
       expose :user, using: Entities::UserPublic
+    end
+
+    class DeployKeysProject < Grape::Entity
+      expose :deploy_key, merge: true, using: Entities::SSHKey
+      expose :can_push
     end
 
     class GPGKey < Grape::Entity
@@ -773,15 +814,13 @@ module API
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events
-      expose :tag_push_events, :note_events, :pipeline_events
+      expose :push_events, :issues_events, :confidential_issues_events
+      expose :merge_requests_events, :tag_push_events, :note_events
+      expose :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields
-          .select { |field| options[:include_passwords] || field[:type] != 'password' }
-          .map { |field| field[:name] }
-        service.properties.slice(*field_names)
+        service.properties.slice(*service.api_field_names)
       end
     end
 
@@ -855,23 +894,25 @@ module API
 
     class Board < Grape::Entity
       expose :id
-      expose :name
       expose :project, using: Entities::BasicProjectDetails
-
-      # EE-specific
-      # Default filtering configuration
-      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
-      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
-      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
-      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
 
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
 
+      # EE-specific START
       def scoped_issue_available?(board)
         board.parent.feature_available?(:scoped_issue_board)
       end
+
+      # Default filtering configuration
+      expose :name
+      expose :group
+      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
+      # EE-specific END
     end
 
     class Compare < Grape::Entity
@@ -959,6 +1000,8 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
+      expose :status
     end
 
     class RunnerDetails < Runner
@@ -1011,7 +1054,7 @@ module API
     class Trigger < Grape::Entity
       expose :id
       expose :token, :description
-      expose :created_at, :updated_at, :deleted_at, :last_used
+      expose :created_at, :updated_at, :last_used
       expose :owner, using: Entities::UserBasic
     end
 
@@ -1089,16 +1132,142 @@ module API
     end
 
     class GeoNode < Grape::Entity
+      include ::API::Helpers::RelatedResourcesHelpers
+
       expose :id
       expose :url
       expose :primary?, as: :primary
       expose :enabled
+      expose :current?, as: :current
       expose :files_max_capacity
       expose :repos_max_capacity
 
       # Retained for backwards compatibility. Remove in API v5
       expose :clone_protocol do |_record, _options|
         'http'
+      end
+
+      expose :_links do
+        expose :self do |geo_node|
+          expose_url api_v4_geo_nodes_path(id: geo_node.id)
+        end
+
+        expose :repair do |geo_node|
+          expose_url api_v4_geo_nodes_repair_path(id: geo_node.id)
+        end
+      end
+    end
+
+    class GeoNodeStatus < Grape::Entity
+      include ::API::Helpers::RelatedResourcesHelpers
+      include ActionView::Helpers::NumberHelper
+
+      expose :geo_node_id
+
+      expose :healthy?, as: :healthy
+      expose :health do |node|
+        node.healthy? ? 'Healthy' : node.health
+      end
+      expose :health_status
+      expose :missing_oauth_application
+
+      expose :attachments_count
+      expose :attachments_synced_count
+      expose :attachments_failed_count
+      expose :attachments_synced_in_percentage do |node|
+        number_to_percentage(node.attachments_synced_in_percentage, precision: 2)
+      end
+
+      expose :db_replication_lag_seconds
+
+      expose :lfs_objects_count
+      expose :lfs_objects_synced_count
+      expose :lfs_objects_failed_count
+      expose :lfs_objects_synced_in_percentage do |node|
+        number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)
+      end
+
+      expose :job_artifacts_count
+      expose :job_artifacts_synced_count
+      expose :job_artifacts_failed_count
+      expose :job_artifacts_synced_in_percentage do |node|
+        number_to_percentage(node.job_artifacts_synced_in_percentage, precision: 2)
+      end
+
+      expose :repositories_count
+      expose :repositories_failed_count
+      expose :repositories_synced_count
+      expose :repositories_synced_in_percentage do |node|
+        number_to_percentage(node.repositories_synced_in_percentage, precision: 2)
+      end
+
+      expose :wikis_count
+      expose :wikis_failed_count
+      expose :wikis_synced_count
+      expose :wikis_synced_in_percentage do |node|
+        number_to_percentage(node.wikis_synced_in_percentage, precision: 2)
+      end
+
+      expose :replication_slots_count
+      expose :replication_slots_used_count
+      expose :replication_slots_used_in_percentage do |node|
+        number_to_percentage(node.replication_slots_used_in_percentage, precision: 2)
+      end
+      expose :replication_slots_max_retained_wal_bytes
+
+      expose :last_event_id
+      expose :last_event_timestamp
+      expose :cursor_last_event_id
+      expose :cursor_last_event_timestamp
+
+      expose :last_successful_status_check_timestamp
+
+      expose :version
+      expose :revision
+
+      expose :namespaces, using: NamespaceBasic
+
+      # We load GeoNodeStatus data in two ways:
+      #
+      # 1. Directly by asking a Geo node via an API call
+      # 2. Via cached state in the database
+      #
+      # We don't yet cached the state of the shard information in the database, so if
+      # we don't have this information omit from the serialization entirely.
+      expose :storage_shards, using: StorageShardEntity, if: ->(status, options) do
+        status.storage_shards.present?
+      end
+
+      expose :storage_shards_match?, as: :storage_shards_match, if: -> (status, options) do
+        Gitlab::Geo.primary? && status.storage_shards.present?
+      end
+
+      expose :_links do
+        expose :self do |geo_node_status|
+          expose_url api_v4_geo_nodes_status_path(id: geo_node_status.geo_node_id)
+        end
+
+        expose :node do |geo_node_status|
+          expose_url api_v4_geo_nodes_path(id: geo_node_status.geo_node_id)
+        end
+      end
+
+      private
+
+      def namespaces
+        object.geo_node.namespaces
+      end
+
+      def missing_oauth_application
+        object.geo_node.missing_oauth_application?
+      end
+
+      def version
+        Gitlab::VERSION
+      end
+
+      def revision
+        Gitlab::REVISION
       end
     end
 
@@ -1251,6 +1420,7 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },

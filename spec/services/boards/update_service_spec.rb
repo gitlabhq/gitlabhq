@@ -24,34 +24,5 @@ describe Boards::UpdateService do
 
       expect(service.execute(board)).to eq false
     end
-
-    it 'updates the configuration params when scoped issue board is enabled' do
-      stub_licensed_features(scoped_issue_board: true)
-      assignee = create(:user)
-      milestone = create(:milestone, project: project)
-      label = create(:label, project: project)
-
-      service = described_class.new(project, double,
-                                    milestone_id: milestone.id,
-                                    assignee_id: assignee.id,
-                                    label_ids: [label.id])
-      service.execute(board)
-
-      expect(board.reload).to have_attributes(milestone: milestone,
-                                              assignee: assignee,
-                                              labels: [label])
-    end
-
-    it 'filters unpermitted params when scoped issue board is not enabled' do
-      stub_licensed_features(scoped_issue_board: false)
-      params = { milestone_id: double, assignee_id: double, label_ids: double, weight: double }
-
-      service = described_class.new(project, double, params)
-      service.execute(board)
-
-      expect(board.reload).to have_attributes(milestone: nil,
-                                              assignee: nil,
-                                              labels: [])
-    end
   end
 end

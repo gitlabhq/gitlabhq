@@ -5,7 +5,7 @@ describe 'Project settings > [EE] repository' do
   let(:project) { create(:project_empty_repo) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

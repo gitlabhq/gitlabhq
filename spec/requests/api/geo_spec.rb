@@ -185,7 +185,7 @@ describe API::Geo do
         get api('/geo/status'), nil, request.headers
 
         expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('geo_node_status')
+        expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
       end
     end
 
@@ -195,10 +195,11 @@ describe API::Geo do
         allow(request).to receive(:requesting_node) { secondary_node }
       end
 
-      it 'responds with 403' do
+      it 'responds with 200' do
         get api('/geo/status'), nil, request.headers
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
       end
     end
   end

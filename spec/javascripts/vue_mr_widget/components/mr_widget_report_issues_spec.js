@@ -1,7 +1,12 @@
 import Vue from 'vue';
 import mrWidgetCodeQualityIssues from 'ee/vue_merge_request_widget/components/mr_widget_report_issues.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
-import { securityParsedIssues, codequalityParsedIssues } from '../mock_data';
+import {
+  securityParsedIssues,
+  codequalityParsedIssues,
+  dockerReportParsed,
+  parsedDast,
+} from '../mock_data';
 
 describe('merge request report issues', () => {
   let vm;
@@ -62,6 +67,7 @@ describe('merge request report issues', () => {
         issues: securityParsedIssues,
         type: 'security',
         status: 'failed',
+        hasPriority: true,
       });
     });
 
@@ -99,6 +105,57 @@ describe('merge request report issues', () => {
 
       expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).not.toContain('in');
       expect(vm.$el.querySelector('.mr-widget-code-quality-list li a')).toEqual(null);
+    });
+  });
+
+  describe('for docker issues', () => {
+    beforeEach(() => {
+      vm = mountComponent(MRWidgetCodeQualityIssues, {
+        issues: dockerReportParsed.unapproved,
+        type: 'docker',
+        status: 'failed',
+        hasPriority: true,
+      });
+    });
+
+    it('renders priority', () => {
+      expect(
+        vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
+      ).toContain(dockerReportParsed.unapproved[0].priority);
+    });
+
+    it('renders CVE link', () => {
+      expect(
+        vm.$el.querySelector('.mr-widget-code-quality-list a').getAttribute('href'),
+      ).toEqual(dockerReportParsed.unapproved[0].nameLink);
+      expect(
+        vm.$el.querySelector('.mr-widget-code-quality-list a').textContent.trim(),
+      ).toEqual(dockerReportParsed.unapproved[0].name);
+    });
+
+    it('renders namespace', () => {
+      expect(
+        vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
+      ).toContain(dockerReportParsed.unapproved[0].path);
+      expect(
+        vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
+      ).toContain('in');
+    });
+  });
+
+  describe('for dast issues', () => {
+    beforeEach(() => {
+      vm = mountComponent(MRWidgetCodeQualityIssues, {
+        issues: parsedDast,
+        type: 'dast',
+        status: 'failed',
+        hasPriority: true,
+      });
+    });
+
+    it('renders priority and name', () => {
+      expect(vm.$el.textContent).toContain(parsedDast[0].name);
+      expect(vm.$el.textContent).toContain(parsedDast[0].priority);
     });
   });
 });

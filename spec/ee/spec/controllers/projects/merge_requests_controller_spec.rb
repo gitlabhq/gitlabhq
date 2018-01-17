@@ -10,7 +10,7 @@ shared_examples 'approvals' do
 
   before do
     merge_request.update_attribute :approvals_before_merge, 2
-    project.team << [approver.user, :developer]
+    project.add_developer(approver.user)
   end
 
   describe 'approve' do
@@ -367,16 +367,6 @@ describe Projects::MergeRequestsController do
       expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id)
     end
 
-    context 'successfully' do
-      it 'enqeues a RebaseWorker' do
-        expect_rebase_worker_for(viewer)
-
-        post_rebase
-
-        expect(response.status).to eq(200)
-      end
-    end
-
     context 'approvals pending' do
       let(:project) { create(:project, :repository, approvals_before_merge: 1) }
 
@@ -399,43 +389,6 @@ describe Projects::MergeRequestsController do
       end
 
       it_behaves_like 'approvals'
-
-      context 'user cannot push to source branch' do
-        it 'returns 404' do
-          expect_rebase_worker_for(viewer).never
-
-          post_rebase
-
-          expect(response.status).to eq(404)
-        end
-      end
-
-      context 'user can push to source branch' do
-        before do
-          project.add_reporter(fork_owner)
-
-          sign_in(fork_owner)
-        end
-
-        it 'returns 200' do
-          expect_rebase_worker_for(fork_owner)
-
-          post_rebase
-
-          expect(response.status).to eq(200)
-        end
-      end
-    end
-
-    context 'rebase unavailable in license' do
-      it 'returns 404' do
-        stub_licensed_features(merge_request_rebase: false)
-        expect_rebase_worker_for(viewer).never
-
-        post_rebase
-
-        expect(response.status).to eq(404)
-      end
     end
   end
 end

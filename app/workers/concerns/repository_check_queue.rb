@@ -3,6 +3,8 @@ module RepositoryCheckQueue
   extend ActiveSupport::Concern
 
   included do
-    sidekiq_options queue: :repository_check, retry: false
+    queue_namespace :repository_check
+
+    sidekiq_options retry: false
   end
 end

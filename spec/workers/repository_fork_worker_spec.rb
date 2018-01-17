@@ -1,17 +1,21 @@
 require 'spec_helper'
 
 describe RepositoryForkWorker do
-  let(:project) { create(:project, :repository) }
-  let(:fork_project) { create(:project, :repository, :import_scheduled, forked_from_project: project) }
-  let(:shell) { Gitlab::Shell.new }
-
-  subject { described_class.new }
-
-  before do
-    allow(subject).to receive(:gitlab_shell).and_return(shell)
+  describe 'modules' do
+    it 'includes ProjectImportOptions' do
+      expect(described_class).to include_module(ProjectImportOptions)
+    end
   end
 
   describe "#perform" do
+    let(:project) { create(:project, :repository) }
+    let(:fork_project) { create(:project, :repository, :import_scheduled, forked_from_project: project) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(subject).to receive(:gitlab_shell).and_return(shell)
+    end
+
     def perform!
       subject.perform(fork_project.id, '/test/path', project.disk_path)
     end
@@ -43,6 +47,14 @@ describe RepositoryForkWorker do
       perform!
     end
 
+    it 'protects the default branch' do
+      expect_fork_repository.and_return(true)
+
+      perform!
+
+      expect(fork_project.protected_branches.first.name).to eq(fork_project.default_branch)
+    end
+
     it 'flushes various caches' do
       expect_fork_repository.and_return(true)
 
@@ -60,14 +72,7 @@ describe RepositoryForkWorker do
 
       expect_fork_repository.and_return(false)
 
-      expect { perform! }.to raise_error(RepositoryForkWorker::ForkError, error_message)
-    end
-
-    it 'handles unexpected error' do
-      expect_fork_repository.and_raise(RuntimeError)
-
-      expect { perform! }.to raise_error(RepositoryForkWorker::ForkError)
-      expect(fork_project.reload.import_status).to eq('failed')
+      expect { perform! }.to raise_error(StandardError, error_message)
     end
   end
 end

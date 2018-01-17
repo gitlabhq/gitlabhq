@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :merge_request do
     title { generate(:title) }
     author

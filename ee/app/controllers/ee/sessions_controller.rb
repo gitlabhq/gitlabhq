@@ -1,6 +1,7 @@
 module EE
   module SessionsController
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
     prepended do
       before_action :gitlab_geo_login, only: [:new]
@@ -26,7 +27,7 @@ module EE
       return unless ::Gitlab::Geo.secondary?
 
       oauth = ::Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
-      @geo_logout_state = oauth.generate_logout_state
+      @geo_logout_state = oauth.generate_logout_state # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def log_failed_login
@@ -36,9 +37,8 @@ module EE
       super
     end
 
+    override :redirect_allowed_to?
     def redirect_allowed_to?(uri)
-      raise NotImplementedError unless defined?(super)
-
       # Redirect is not only allowed to current host, but also to other Geo
       # nodes. relative_url_root *must* be ignored here as we don't know what
       # is root and what is path

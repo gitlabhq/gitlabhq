@@ -5,11 +5,13 @@ module EE
   # and be prepended in the `Project` model
   module Project
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
+    include ::Gitlab::Utils::StrongMemoize
 
     prepended do
       include Elastic::ProjectsSearch
-      prepend GeoAwareAvatar
       prepend ImportStatusStateMachine
+      include EE::DeploymentPlatform
 
       before_validation :mark_remote_mirrors_for_removal
 
@@ -66,9 +68,9 @@ module EE
         allow_destroy: true,
         reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
-      with_options if: :mirror? do |project|
-        project.validates :import_url, presence: true
-        project.validates :mirror_user, presence: true
+      with_options if: :mirror? do
+        validates :import_url, presence: true
+        validates :mirror_user, presence: true
       end
     end
 
@@ -255,15 +257,6 @@ module EE
       end
     end
 
-    def deployment_platform(environment: nil)
-      return super unless environment && feature_available?(:multiple_clusters)
-
-      @deployment_platform ||= clusters.enabled.on_environment(environment.name)
-                                               .last&.platform_kubernetes
-
-      super # Wildcard or KubernetesService
-    end
-
     def secret_variables_for(ref:, environment: nil)
       return super.where(environment_scope: '*') unless
         environment && feature_available?(:variable_environment_scope)
@@ -323,8 +316,11 @@ module EE
     end
 
     def find_path_lock(path, exact_match: false, downstream: false)
-      @path_lock_finder ||= ::Gitlab::PathLocksFinder.new(self)
-      @path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
+      path_lock_finder = strong_memoize(:path_lock_finder) do
+        ::Gitlab::PathLocksFinder.new(self)
+      end
+
+      path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
     end
 
     def import_url_updated?
@@ -353,7 +349,7 @@ module EE
       unless ::Gitlab::UrlSanitizer.valid?(value)
         self.import_url = value
         self.import_data&.user = nil
-        return value
+        value
       end
 
       url = ::Gitlab::UrlSanitizer.new(value)
@@ -415,19 +411,13 @@ module EE
       super unless mirror?
     end
 
-    def merge_requests_rebase_enabled
-      super && feature_available?(:merge_request_rebase)
-    end
-    alias_method :merge_requests_rebase_enabled?, :merge_requests_rebase_enabled
-
     def merge_requests_ff_only_enabled
       super
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    override :rename_repo
     def rename_repo
-      raise NotImplementedError unless defined?(super)
-
       super
 
       path_was = previous_changes['path'].first
@@ -450,15 +440,15 @@ module EE
     end
 
     def disabled_services
-      return @disabled_services if defined?(@disabled_services)
+      strong_memoize(:disabled_services) do
+        disabled_services = []
 
-      @disabled_services = []
+        unless feature_available?(:jenkins_integration)
+          disabled_services.push('jenkins', 'jenkins_deprecated')
+        end
 
-      unless feature_available?(:jenkins_integration)
-        @disabled_services.push('jenkins', 'jenkins_deprecated')
+        disabled_services
       end
-
-      @disabled_services
     end
 
     def remote_mirror_available?
@@ -479,11 +469,13 @@ module EE
     end
 
     def licensed_feature_available?(feature)
-      @licensed_feature_available ||= Hash.new do |h, feature|
-        h[feature] = load_licensed_feature_available(feature)
+      available_features = strong_memoize(:licensed_feature_available) do
+        Hash.new do |h, feature|
+          h[feature] = load_licensed_feature_available(feature)
+        end
       end
 
-      @licensed_feature_available[feature]
+      available_features[feature]
     end
 
     def load_licensed_feature_available(feature)

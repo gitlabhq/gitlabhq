@@ -1,13 +1,15 @@
 require 'rake_helper'
 
 describe 'geo rake tasks' do
+  include ::EE::GeoHelpers
+
   before do
     Rake.application.rake_require 'tasks/geo'
+    stub_licensed_features(geo: true)
   end
 
   describe 'set_primary_node task' do
     before do
-      expect(Gitlab::Geo).to receive(:license_allows?).and_return(true)
       stub_config_setting(protocol: 'https')
     end
 
@@ -26,14 +28,10 @@ describe 'geo rake tasks' do
   end
 
   describe 'set_secondary_as_primary task' do
-    include ::EE::GeoHelpers
-
     let!(:current_node) { create(:geo_node) }
     let!(:primary_node) { create(:geo_node, :primary) }
 
     before do
-      expect(Gitlab::Geo).to receive(:license_allows?).and_return(true)
-
       stub_current_geo_node(current_node)
     end
 
@@ -42,6 +40,21 @@ describe 'geo rake tasks' do
 
       expect(current_node.primary?).to be_truthy
       expect(GeoNode.count).to eq(1)
+    end
+  end
+
+  describe 'update_primary_node_url task' do
+    let(:primary_node) { create(:geo_node, :primary, url: 'https://secondary.geo.example.com') }
+
+    before do
+      allow(GeoNode).to receive(:current_node_url).and_return('https://primary.geo.example.com')
+      stub_current_geo_node(primary_node)
+    end
+
+    it 'updates Geo primary node URL' do
+      run_rake_task('geo:update_primary_node_url')
+
+      expect(primary_node.reload.url).to eq 'https://primary.geo.example.com/'
     end
   end
 end

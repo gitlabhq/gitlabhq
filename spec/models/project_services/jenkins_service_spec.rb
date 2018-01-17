@@ -1,13 +1,7 @@
 require 'spec_helper'
 
 describe JenkinsService do
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   let(:project) { create(:project) }
-
   let(:jenkins_url) { 'http://jenkins.example.com/' }
   let(:jenkins_hook_url) { jenkins_url + 'project/my_project' }
   let(:jenkins_username) { 'u$er name%2520' }
@@ -27,6 +21,11 @@ describe JenkinsService do
   end
 
   let(:jenkins_authorization) { "Basic " + ::Base64.strict_encode64(jenkins_username + ':' + jenkins_password) }
+
+  describe 'Associations' do
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
+  end
 
   describe 'username validation' do
     before do
@@ -192,7 +191,7 @@ describe JenkinsService do
         end
 
         context 'when namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it 'adds default web hook headers to the request' do
             jenkins_service.execute(push_sample_data)

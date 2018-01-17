@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user, aliases: [:author, :assignee, :recipient, :owner, :resource_owner] do
     email { generate(:email) }
     name { generate(:name) }
@@ -60,6 +60,10 @@ FactoryGirl.define do
       after(:create) do |user, evaluator|
         create_list(:u2f_registration, evaluator.registrations_count, user: user)
       end
+    end
+
+    trait :readme do
+      project_view :readme
     end
 
     factory :omniauth_user do

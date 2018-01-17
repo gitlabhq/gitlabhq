@@ -1,0 +1,24 @@
+- page_title 'Geo nodes'
+- @content_class = "geo-admin-container"
+
+= webpack_bundle_tag 'common_vue'
+= webpack_bundle_tag 'geo_nodes'
+
+%h2.page-title.clearfix
+  %span.title-text.pull-left= _("Geo Nodes")
+  = link_to s_("GeoNodes|New node"), new_admin_geo_node_path, class: 'btn btn-create pull-right'
+%hr.page-title-separator
+
+%p.page-subtitle.light
+  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo/README'), class: 'vlink'} you can install a special
+  read-only and replicated instance anywhere.
+  Before you add nodes, follow the
+  #{link_to 'Setup instructions', help_page_path('gitlab-geo/README', anchor: 'setup-instructions'), class: 'vlink' }
+  in the
+  %strong exact order
+  they appear.
+
+- if @nodes.any?
+  #js-geo-nodes{ data: { primary_version: "#{Gitlab::VERSION}", primary_revision: "#{Gitlab::REVISION}", node_details_path: "#{admin_geo_nodes_path}", node_actions_allowed: "#{Gitlab::Database.read_write?}", node_edit_allowed: "#{Gitlab::Geo.license_allows?}" } }
+- else
+  = render 'shared/empty_states/geo'

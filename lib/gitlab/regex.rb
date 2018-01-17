@@ -38,7 +38,7 @@ module Gitlab
     end
 
     def environment_name_regex_chars
-      'a-zA-Z0-9_/\\$\\{\\}\\. -'
+      'a-zA-Z0-9_/\\$\\{\\}\\. \\-'
     end
 
     def environment_name_regex
@@ -68,7 +68,7 @@ module Gitlab
     end
 
     def build_trace_section_regex
-      @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([^\r]+)\r\033\[0K/.freeze
+      @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)\r\033\[0K/.freeze
     end
   end
 end

@@ -15,8 +15,20 @@ class IssuesMovedToIdForeignKey < ActiveRecord::Migration
     self.table_name = 'issues'
 
     def self.with_orphaned_moved_to_issues
-      where('NOT EXISTS (SELECT true FROM issues WHERE issues.id = issues.moved_to_id)')
-        .where('moved_to_id IS NOT NULL')
+      if Gitlab::Database.postgresql?
+        # Be careful to use a second table here for comparison otherwise we'll null
+        # out all rows that don't have id == moved.to_id!
+        where('NOT EXISTS (SELECT true FROM issues B WHERE issues.moved_to_id = B.id)')
+          .where('moved_to_id IS NOT NULL')
+      else
+        # MySQL doesn't allow modification of the same table in a subquery,
+        # and using a temporary table isn't automatically guaranteed to work
+        # due to the MySQL query optimizer. See
+        # https://dev.mysql.com/doc/refman/5.7/en/update.html for more
+        # details.
+        joins('LEFT JOIN issues AS b ON issues.moved_to_id = b.id')
+          .where('issues.moved_to_id IS NOT NULL AND b.id IS NULL')
+      end
     end
   end
 

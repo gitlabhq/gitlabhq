@@ -1,4 +1,5 @@
 import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
+import { stripeHtml } from '~/lib/utils/text_utility';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
@@ -6,12 +7,13 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
     this.initSecurityReport(data);
+    this.initDockerReport(data);
+    this.initDastReport(data);
   }
 
   setData(data) {
     this.initGeo(data);
     this.initSquashBeforeMerge(data);
-    this.initRebase(data);
     this.initApprovals(data);
 
     super.setData(data);
@@ -22,13 +24,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
       || data.squash_before_merge_help_path;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge
       || data.enable_squash_before_merge;
-  }
-
-  initRebase(data) {
-    this.canPushToSourceBranch = data.can_push_to_source_branch;
-    this.rebaseInProgress = data.rebase_in_progress;
-    this.approvalsLeft = !data.approved;
-    this.rebasePath = data.rebase_path;
   }
 
   initGeo(data) {
@@ -71,8 +66,67 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.securityReport = [];
   }
 
+  initDockerReport(data) {
+    this.sastContainer = data.sast_container;
+    this.dockerReport = {
+      approved: [],
+      unapproved: [],
+      vulnerabilities: [],
+    };
+  }
+
+  initDastReport(data) {
+    this.dast = data.dast;
+    this.dastReport = [];
+  }
+
   setSecurityReport(issues, path) {
     this.securityReport = MergeRequestStore.parseIssues(issues, path);
+  }
+
+  setDockerReport(data = {}) {
+    const parsedVulnerabilities = MergeRequestStore
+      .parseDockerVulnerabilities(data.vulnerabilities);
+
+    this.dockerReport.vulnerabilities = parsedVulnerabilities || [];
+
+    // There is a typo in the original repo:
+    // https://github.com/arminc/clair-scanner/pull/39/files
+    // Fix this when the above PR is accepted
+    const unapproved = data.unapproved || data.unaproved || [];
+
+    // Approved can be calculated by subtracting unapproved from vulnerabilities.
+    this.dockerReport.approved = parsedVulnerabilities
+      .filter(item => !unapproved.find(el => el === item.vulnerability)) || [];
+
+    this.dockerReport.unapproved = parsedVulnerabilities
+      .filter(item => unapproved.find(el => el === item.vulnerability)) || [];
+  }
+  /**
+   * Dast Report sends some keys in HTML, we need to stripe the `<p>` tags.
+   * This should be moved to the backend.
+   *
+   * @param {Array} data
+   * @returns {Array}
+   */
+  setDastReport(data) {
+    this.dastReport = data.site.alerts.map(alert => ({
+      name: alert.name,
+      parsedDescription: stripeHtml(alert.desc, ' '),
+      priority: alert.riskdesc,
+      ...alert,
+    }));
+  }
+
+  static parseDockerVulnerabilities(data) {
+    return data.map(el => ({
+      name: el.vulnerability,
+      priority: el.severity,
+      path: el.namespace,
+      // external link to provide better description
+      nameLink: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${el.vulnerability}`,
+      ...el,
+    }));
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {

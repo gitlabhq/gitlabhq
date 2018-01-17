@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :audit_event, aliases: [:user_audit_event] do
     user
     type 'SecurityEvent'

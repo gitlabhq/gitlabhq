@@ -29,7 +29,7 @@ class Projects::JobsController < Projects::ApplicationController
       :project,
       :tags
     ])
-    @builds = @builds.page(params[:page]).per(30)
+    @builds = @builds.page(params[:page]).per(30).without_count
   end
 
   def cancel_all
@@ -110,7 +110,7 @@ class Projects::JobsController < Projects::ApplicationController
   def erase
     if @build.erase(erased_by: current_user)
       redirect_to project_job_path(project, @build),
-                notice: "Build has been successfully erased!"
+                notice: "Job has been successfully erased!"
     else
       respond_422
     end

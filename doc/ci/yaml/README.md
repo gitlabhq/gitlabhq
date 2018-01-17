@@ -93,7 +93,7 @@ be an array or a multi-line string.
 > Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
-jobs. This has to be an array or a multi-line string.
+jobs, including failed ones. This has to be an array or a multi-line string.
 
 > **Note:**
 The `before_script` and the main `script` are concatenated and run in a single context/container.
@@ -258,7 +258,7 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
->**Note:** The `cache:key` variable cannot contain the `/` character.
+>**Note:** The `cache:key` variable cannot contain the `/` character, or the equivalent URI encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
 
 ---
 
@@ -1152,6 +1152,20 @@ deploy:
   stage: deploy
   script: make deploy
 ```
+
+#### When a dependent job will fail
+
+> Introduced in GitLab 10.3.
+
+If the artifacts of the job that is set as a dependency have been
+[expired](#artifacts-expire_in) or
+[erased](../../user/project/pipelines/job_artifacts.md#erasing-artifacts), then
+the dependent job will fail.
+
+NOTE: **Note:**
+You can ask your administrator to
+[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
+and bring back the old behavior.
 
 ### before_script and after_script
 

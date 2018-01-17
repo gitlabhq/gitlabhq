@@ -24,6 +24,7 @@ module EE
         end
       end
 
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def update
         service = ::Boards::UpdateService.new(parent, current_user, board_params)
 
@@ -40,10 +41,11 @@ module EE
           end
         end
       end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def destroy
         service = ::Boards::DestroyService.new(parent, current_user)
-        service.execute(@board)
+        service.execute(@board) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         respond_to do |format|
           format.json { head :ok }
@@ -62,15 +64,15 @@ module EE
       end
 
       def find_board
-        @board = parent.boards.find(params[:id])
+        @board = parent.boards.find(params[:id]) # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def parent
-        @parent ||= @project || @group
+        @parent ||= @project || @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def boards_path
-        if @group
+        if @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
           group_boards_path(parent)
         else
           project_boards_path(parent)
@@ -78,7 +80,7 @@ module EE
       end
 
       def board_path(board)
-        if @group
+        if @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
           group_board_path(parent, board)
         else
           project_board_path(parent, board)

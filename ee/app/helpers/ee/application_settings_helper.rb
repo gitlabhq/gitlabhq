@@ -1,10 +1,10 @@
 module EE
   module ApplicationSettingsHelper
-    def visible_attributes
-      raise NotImplementedError unless defined?(super)
+    extend ::Gitlab::Utils::Override
 
+    override :visible_attributes
+    def visible_attributes
       super + [
-        :authorized_keys_enabled,
         :check_namespace_plan,
         :elasticsearch_aws,
         :elasticsearch_aws_access_key,

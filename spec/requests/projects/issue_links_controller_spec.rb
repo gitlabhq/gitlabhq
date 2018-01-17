@@ -14,7 +14,7 @@ describe Projects::IssueLinksController do
     let!(:issue_link) { create :issue_link, source: issue, target: issue_b }
 
     before do
-      project.team << [user, :guest]
+      project.add_guest(user)
       login_as user
     end
 
@@ -32,7 +32,7 @@ describe Projects::IssueLinksController do
     let(:issue_b) { create :issue, project: project }
 
     before do
-      project.team << [user, user_role]
+      project.add_role(user, user_role)
       login_as user
     end
 
@@ -83,7 +83,7 @@ describe Projects::IssueLinksController do
     let(:issue_link) { create :issue_link, source: issue, target: referenced_issue }
 
     before do
-      project.team << [user, user_role]
+      project.add_role(user, user_role)
       login_as user
     end
 

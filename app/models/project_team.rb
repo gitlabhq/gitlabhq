@@ -1,42 +1,32 @@
 class ProjectTeam
   include BulkMemberAccessLoad
 
+  prepend EE::ProjectTeam
+
   attr_accessor :project
 
   def initialize(project)
     @project = project
   end
 
-  # Shortcut to add users
-  #
-  # Use:
-  #   @team << [@user, :master]
-  #   @team << [@users, :master]
-  #
-  def <<(args)
-    users, access, current_user = *args
-
-    if users.respond_to?(:each)
-      add_users(users, access, current_user: current_user)
-    else
-      add_user(users, access, current_user: current_user)
-    end
-  end
-
   def add_guest(user, current_user: nil)
-    self << [user, :guest, current_user]
+    add_user(user, :guest, current_user: current_user)
   end
 
   def add_reporter(user, current_user: nil)
-    self << [user, :reporter, current_user]
+    add_user(user, :reporter, current_user: current_user)
   end
 
   def add_developer(user, current_user: nil)
-    self << [user, :developer, current_user]
+    add_user(user, :developer, current_user: current_user)
   end
 
   def add_master(user, current_user: nil)
-    self << [user, :master, current_user]
+    add_user(user, :master, current_user: current_user)
+  end
+
+  def add_role(user, role, current_user: nil)
+    public_send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def find_member(user_id)
@@ -52,8 +42,6 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    return false if group_member_lock
-
     ProjectMember.add_users(
       project,
       users,
@@ -184,13 +172,5 @@ class ProjectTeam
 
   def group
     project.group
-  end
-
-  def group_member_lock
-    group && group.membership_lock
-  end
-
-  def merge_max!(first_hash, second_hash)
-    first_hash.merge!(second_hash) { |_key, old, new| old > new ? old : new }
   end
 end

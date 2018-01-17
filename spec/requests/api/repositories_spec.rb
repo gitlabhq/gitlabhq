@@ -378,6 +378,28 @@ describe API::Repositories do
         expect(first_contributor['additions']).to eq(0)
         expect(first_contributor['deletions']).to eq(0)
       end
+
+      context 'using sorting' do
+        context 'by commits desc' do
+          it 'returns the repository contribuors sorted by commits desc' do
+            get api(route, current_user), { order_by: 'commits', sort: 'desc' }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('contributors')
+            expect(json_response.first['commits']).to be > json_response.last['commits']
+          end
+        end
+
+        context 'by name desc' do
+          it 'returns the repository contribuors sorted by name asc case insensitive' do
+            get api(route, current_user), { order_by: 'name', sort: 'asc' }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('contributors')
+            expect(json_response.first['name'].downcase).to be < json_response.last['name'].downcase
+          end
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do

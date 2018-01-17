@@ -13,7 +13,7 @@ describe EnvironmentEntity do
   subject { entity.as_json }
 
   before do
-    environment.project.team << [user, :master]
+    environment.project.add_master(user)
   end
 
   it 'exposes latest deployment' do

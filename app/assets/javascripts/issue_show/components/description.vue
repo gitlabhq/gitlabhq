@@ -1,12 +1,12 @@
 <script>
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
-  import RecaptchaDialogImplementor from '../../vue_shared/mixins/recaptcha_dialog_implementor';
+  import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
   export default {
     mixins: [
       animateMixin,
-      RecaptchaDialogImplementor,
+      recaptchaModalImplementor,
     ],
 
     props: {
@@ -56,7 +56,10 @@
         this.updateTaskStatusText();
       },
     },
-
+    mounted() {
+      this.renderGFM();
+      this.updateTaskStatusText();
+    },
     methods: {
       renderGFM() {
         $(this.$refs['gfm-content']).renderGFM();
@@ -88,16 +91,16 @@
 
         if (taskRegexMatches) {
           $tasks.text(this.taskStatus);
-          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+          $tasksShort.text(
+            `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ?
+            's' :
+            ''}`,
+          );
         } else {
           $tasks.text('');
           $tasksShort.text('');
         }
       },
-    },
-    mounted() {
-      this.renderGFM();
-      this.updateTaskStatusText();
     },
   };
 </script>
@@ -108,7 +111,8 @@
     class="description"
     :class="{
       'js-task-list-container': canUpdate
-    }">
+    }"
+  >
     <div
       class="wiki"
       :class="{
@@ -126,7 +130,7 @@
     >
     </textarea>
 
-    <recaptcha-dialog
+    <recaptcha-modal
       v-show="showRecaptcha"
       :html="recaptchaHTML"
       @close="closeRecaptcha"

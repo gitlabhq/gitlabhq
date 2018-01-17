@@ -12,7 +12,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.4.5', group: :mysql
+gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
@@ -73,6 +73,10 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
+
+# Before updating this gem, check if
+# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
+# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
@@ -81,7 +85,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 # API
 gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
@@ -239,6 +243,9 @@ gem 'charlock_holmes', '~> 0.7.5'
 # Faster JSON
 gem 'oj', '~> 2.17.4'
 
+# Faster blank
+gem 'fast_blank'
+
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
@@ -275,7 +282,7 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
-gem 'batch-loader'
+gem 'batch-loader', '~> 1.2.1'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
@@ -295,7 +302,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta39'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -323,7 +330,7 @@ group :development, :test do
   gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'
-  gem 'factory_girl_rails', '~> 4.7.0'
+  gem 'factory_bot_rails', '~> 4.8.2'
   gem 'rspec-rails', '~> 3.6.0'
   gem 'rspec-retry', '~> 0.4.5'
   gem 'spinach-rails', '~> 0.2.1'
@@ -346,10 +353,12 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.49.1', require: false
-  gem 'rubocop-rspec', '~> 1.15.1', require: false
-  gem 'rubocop-gitlab-security', '~> 0.1.0', require: false
-  gem 'scss_lint', '~> 0.54.0', require: false
+  gem 'gitlab-styles', '~> 2.2.0', require: false
+  # Pin these dependencies, otherwise a new rule could break the CI pipelines
+  gem 'rubocop', '~> 0.52.0'
+  gem 'rubocop-rspec', '~> 1.20.1'
+
+  gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
@@ -391,9 +400,6 @@ gem 'ruby-prof', '~> 0.16.2'
 # OAuth
 gem 'oauth2', '~> 1.4'
 
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
-
 # Health check
 gem 'health_check', '~> 2.6.0'
 
@@ -416,14 +422,18 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.58.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.73.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
 # Feature toggles
-gem 'flipper', '~> 0.10.2'
-gem 'flipper-active_record', '~> 0.10.2'
+gem 'flipper', '~> 0.11.0'
+gem 'flipper-active_record', '~> 0.11.0'
+gem 'flipper-active_support_cache_store', '~> 0.11.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
+# Asset synchronization
+gem 'asset_sync', '~> 2.2.0'

@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     let!(:project) { setup_project }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
       allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
@@ -113,12 +113,20 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['merge_requests'].first['notes'].first['author']).not_to be_empty
       end
 
+      it 'has pipeline stages' do
+        expect(saved_project_json.dig('pipelines', 0, 'stages')).not_to be_empty
+      end
+
       it 'has pipeline statuses' do
-        expect(saved_project_json['pipelines'].first['statuses']).not_to be_empty
+        expect(saved_project_json.dig('pipelines', 0, 'stages', 0, 'statuses')).not_to be_empty
       end
 
       it 'has pipeline builds' do
-        expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build' }).to eq(1)
+        builds_count = saved_project_json
+          .dig('pipelines', 0, 'stages', 0, 'statuses')
+          .count { |hash| hash['type'] == 'Ci::Build' }
+
+        expect(builds_count).to eq(1)
       end
 
       it 'has no when YML attributes but only the DB column' do

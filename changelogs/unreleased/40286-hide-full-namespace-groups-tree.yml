@@ -1,6 +1,0 @@
----
-title: Show only group name by default and put full namespace in tooltip in Groups
-  tree
-merge_request: 15650
-author:
-type: changed

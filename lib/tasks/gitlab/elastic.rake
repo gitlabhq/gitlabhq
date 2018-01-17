@@ -126,6 +126,7 @@ namespace :gitlab do
         puts 'Index mapping is already up to date'.color(:yellow)
         exit
       end
+
       ####
 
       project_fields = {

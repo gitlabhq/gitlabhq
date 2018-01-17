@@ -50,6 +50,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :revert
           post :cherry_pick
           get :diff_for_path
+          get :merge_requests
         end
       end
 
@@ -105,6 +106,7 @@ constraints(ProjectUrlConstrainer.new) do
 
           post :remove_wip
           post :assign_related_issues
+          post :rebase
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -214,6 +216,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :pipeline_schedules, except: [:show] do
         member do
+          post :play
           post :take_ownership
         end
       end
@@ -422,8 +425,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :runners, only: [:index, :edit, :update, :destroy, :show] do
         member do
-          get :resume
-          get :pause
+          post :resume
+          post :pause
         end
 
         collection do
@@ -456,7 +459,9 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
+        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+          post :reset_cache
+        end
         resource :integrations, only: [:show]
 
         resource :slack, only: [:destroy, :edit, :update] do
@@ -490,7 +495,7 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        put :new_issue_address
+        put :new_issuable_address
       end
     end
   end

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :geo_project_registry, class: Geo::ProjectRegistry do
     project
     last_repository_synced_at nil

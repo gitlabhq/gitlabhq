@@ -1,13 +1,22 @@
 <script>
+import Sortable from 'vendor/Sortable';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import sortableConfig from '~/sortable/sortable_config';
 import eventHub from '../event_hub';
-import issueToken from './issue_token.vue';
+import issueItem from './issue_item.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
 export default {
   name: 'RelatedIssuesBlock',
-
+  directives: {
+    tooltip,
+  },
+  components: {
+    loadingIcon,
+    addIssuableForm,
+    issueItem,
+  },
   props: {
     isFetching: {
       type: Boolean,
@@ -25,6 +34,11 @@ export default {
       default: () => [],
     },
     canAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canReorder: {
       type: Boolean,
       required: false,
       default: false,
@@ -60,17 +74,6 @@ export default {
       default: 'Related issues',
     },
   },
-
-  directives: {
-    tooltip,
-  },
-
-  components: {
-    loadingIcon,
-    addIssuableForm,
-    issueToken,
-  },
-
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
@@ -88,10 +91,57 @@ export default {
       return this.helpPath.length > 0;
     },
   },
-
+  mounted() {
+    if (this.canReorder) {
+      this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
+        onStart: this.addDraggingCursor,
+        onEnd: this.reordered,
+      }));
+    }
+  },
   methods: {
     toggleAddRelatedIssuesForm() {
       eventHub.$emit('toggleAddRelatedIssuesForm');
+    },
+    getBeforeAfterId(newIndex, lastIndex) {
+      let beforeId = null;
+      let afterId = null;
+
+      if (newIndex === 0) {
+        // newIndex is 0, item was moved to top => send only afterId
+        afterId = this.relatedIssues[newIndex].epic_issue_id;
+      } else if (newIndex === lastIndex) {
+        // newIndex is lastIndex, item was moved to bottom => send only beforeId
+        beforeId = this.relatedIssues[newIndex].epic_issue_id;
+      } else {
+        // leave default
+        beforeId = this.relatedIssues[newIndex - 1].epic_issue_id;
+        afterId = this.relatedIssues[newIndex].epic_issue_id;
+      }
+
+      return {
+        beforeId,
+        afterId,
+      };
+    },
+    reordered(event) {
+      this.removeDraggingCursor();
+      const {
+        beforeId,
+        afterId,
+      } = this.getBeforeAfterId(event.newIndex, this.relatedIssues.length - 1);
+
+      this.$emit('saveReorder', {
+        issueId: parseInt(event.item.dataset.key, 10),
+        afterId,
+        beforeId,
+      });
+    },
+    addDraggingCursor() {
+      document.body.classList.add('is-dragging');
+    },
+    removeDraggingCursor() {
+      document.body.classList.remove('is-dragging');
     },
   },
 };
@@ -100,34 +150,44 @@ export default {
 <template>
   <div class="related-issues-block">
     <div
-      class="panel-slim panel-default">
+      class="panel-slim panel-default"
+    >
       <div
         class="panel-heading"
-        :class="{ 'panel-empty-heading': !this.hasBody }">
+        :class="{ 'panel-empty-heading': !hasBody }"
+      >
         <h3 class="panel-title">
           {{ title }}
           <a
             v-if="hasHelpPath"
-            :href="helpPath">
+            :href="helpPath"
+          >
             <i
-              class="related-issues-header-help-icon fa fa-question-circle"
+              class="related-issues-header-help-icon
+fa fa-question-circle"
               aria-label="Read more about related issues">
             </i>
           </a>
-          <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
+          <div
+            class="js-related-issues-header-issue-count
+related-issues-header-issue-count issue-count-badge"
+          >
             <span
               class="issue-count-badge-count"
-              :class="{ 'has-btn': this.canAdmin }">
+              :class="{ 'has-btn': canAdmin }"
+            >
               {{ badgeLabel }}
             </span>
             <button
               v-if="canAdmin"
               ref="issueCountBadgeAddButton"
               type="button"
-              class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-sm btn-default"
+              class="js-issue-count-badge-add-button
+issue-count-badge-add-button btn btn-sm btn-default"
               aria-label="Add an issue"
               data-placement="top"
-              @click="toggleAddRelatedIssuesForm">
+              @click="toggleAddRelatedIssuesForm"
+            >
               <i
                 class="fa fa-plus"
                 aria-hidden="true">
@@ -141,32 +201,47 @@ export default {
         class="js-add-related-issues-form-area panel-body"
         :class="{
           'related-issues-add-related-issues-form-with-break': hasRelatedIssues
-        }">
+        }"
+      >
         <add-issuable-form
           :is-submitting="isSubmitting"
           :input-value="inputValue"
           :pending-references="pendingReferences"
-          :auto-complete-sources="autoCompleteSources" />
+          :auto-complete-sources="autoCompleteSources"
+        />
       </div>
       <div
         class="related-issues-token-body panel-body"
         :class="{
-            'collapsed': !shouldShowTokenBody
-        }">
+          'collapsed': !shouldShowTokenBody,
+          'sortable-container': canReorder
+        }"
+      >
         <div
           v-if="isFetching"
           class="related-issues-loading-icon">
           <loadingIcon
             ref="loadingIcon"
-            label="Fetching related issues" />
+            label="Fetching related issues"
+          />
         </div>
         <ul
-          class="flex-list content-list issuable-list">
+          ref="list"
+          class="flex-list issuable-list"
+          :class="{ 'content-list' : !canReorder }"
+        >
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item">
-            <issue-token
+            class="js-related-issues-token-list-item"
+            :class="{
+              'user-can-drag': canReorder,
+              'sortable-row': canReorder,
+              card: canReorder
+            }"
+            :data-key="issue.id"
+          >
+            <issue-item
               event-namespace="relatedIssue"
               :id-key="issue.id"
               :display-reference="issue.reference"
@@ -174,10 +249,10 @@ export default {
               :path="issue.path"
               :state="issue.state"
               :can-remove="canAdmin"
+              :can-reorder="canReorder"
             />
           </li>
         </ul>
-        </div>
       </div>
     </div>
   </div>

@@ -2,7 +2,7 @@
 - @can_bulk_update = can?(current_user, :admin_issue, @project)
 
 - page_title "Issues"
-- new_issue_email = @project.new_issue_address(current_user)
+- new_issue_email = @project.new_issuable_address(current_user, 'issue')
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
@@ -29,6 +29,6 @@
     .issues-holder
       = render 'issues'
       - if new_issue_email
-        = render 'issue_by_email', email: new_issue_email
+        = render 'projects/issuable_by_email', email: new_issue_email, issuable_type: 'issue'
 - else
   = render 'shared/empty_states/issues', button_path: new_project_issue_path(@project)

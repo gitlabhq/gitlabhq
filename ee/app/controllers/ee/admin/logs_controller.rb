@@ -1,9 +1,13 @@
 module EE::Admin::LogsController
-  def loggers
-    raise NotImplementedError unless defined?(super)
+  include ::Gitlab::Utils::StrongMemoize
+  extend ::Gitlab::Utils::Override
 
-    @loggers ||= super + [
-      Gitlab::GeoLogger
-    ]
+  override :loggers
+  def loggers
+    strong_memoize(:loggers) do
+      super + [
+        Gitlab::GeoLogger
+      ]
+    end
   end
 end

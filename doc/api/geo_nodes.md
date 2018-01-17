@@ -22,6 +22,7 @@ Example response:
     "url": "https://primary.example.com/",
     "primary": true,
     "enabled": true,
+    "current": true,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
     "clone_protocol": "http"
@@ -31,6 +32,7 @@ Example response:
     "url": "https://secondary.example.com/",
     "primary": false,
     "enabled": true,
+    "current": false,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
     "clone_protocol": "http"
@@ -56,6 +58,61 @@ Example response:
   "url": "https://primary.example.com/",
   "primary": true,
   "enabled": true,
+  "current": true,
+  "files_max_capacity": 10,
+  "repos_max_capacity": 25,
+  "clone_protocol": "http"
+}
+```
+
+## Edit a Geo node
+
+Updates an existing Geo secondary node. The primary node cannot be edited.
+
+```
+PUT /geo_nodes/:id
+```
+
+| Attribute            | Type    | Required | Description                                                               |
+|----------------------|---------|----------|---------------------------------------------------------------------------|
+| `id`                 | integer | yes      | The ID of the Geo node.                                                   |
+| `enabled`            | boolean | no       | Flag indicating if the Geo node is enabled.                               |
+| `url`                | string  | no       | The URL to connect to the Geo node.                                       |
+| `files_max_capacity` | integer | no       | Control the maximum concurrency of LFS/attachment backfill for this node. |
+| `repos_max_capacity` | integer | no       | Control the maximum concurrency of repository backfill for this node.     |
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "url": "https://primary.example.com/",
+  "primary": true,
+  "enabled": true,
+  "current": true,
+  "files_max_capacity": 10,
+  "repos_max_capacity": 25,
+  "clone_protocol": "http"
+}
+```
+
+## Repair a Geo node
+
+To repair the OAuth authentication of a Geo node.
+
+```
+PUT /geo_nodes/:id/repair
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "url": "https://primary.example.com/",
+  "primary": true,
+  "enabled": true,
+  "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
   "clone_protocol": "http"
@@ -80,6 +137,8 @@ Example response:
     "geo_node_id": 2,
     "healthy": true,
     "health": "Healthy",
+    "health_status": "Healthy",
+    "missing_oauth_application": false,
     "attachments_count": 1,
     "attachments_synced_count": 1,
     "attachments_failed_count": 0,
@@ -89,10 +148,18 @@ Example response:
     "lfs_objects_synced_count": 0,
     "lfs_objects_failed_count": 0,
     "lfs_objects_synced_in_percentage": "0.00%",
+    "job_artifacts_count": 2,
+    "job_artifacts_synced_count": 1,
+    "job_artifacts_failed_count": 1,
+    "job_artifacts_synced_in_percentage": "50.00%",
     "repositories_count": 41,
     "repositories_failed_count": 1,
     "repositories_synced_count": 40,
     "repositories_synced_in_percentage": "97.56%",
+    "wikis_count": 41,
+    "wikis_failed_count": 0,
+    "wikis_synced_count": 41,
+    "wikis_synced_in_percentage": "100.00%",
     "last_event_id": 23,
     "last_event_timestamp": 1509681166,
     "cursor_last_event_id": 23,
@@ -121,6 +188,8 @@ Example response:
   "geo_node_id": 2,
   "healthy": true,
   "health": "Healthy",
+  "health_status": "Healthy",
+  "missing_oauth_application": false,
   "attachments_count": 1,
   "attachments_synced_count": 1,
   "attachments_failed_count": 0,
@@ -130,6 +199,10 @@ Example response:
   "lfs_objects_synced_count": 0,
   "lfs_objects_failed_count": 0,
   "lfs_objects_synced_in_percentage": "0.00%",
+  "job_artifacts_count": 2,
+  "job_artifacts_synced_count": 1,
+  "job_artifacts_failed_count": 1,
+  "job_artifacts_synced_in_percentage": "50.00%",
   "repositories_count": 41,
   "repositories_failed_count": 1,
   "repositories_synced_count": 40,

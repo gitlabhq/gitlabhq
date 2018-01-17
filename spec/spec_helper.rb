@@ -104,16 +104,12 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+  # EE-specific start
   config.before(:all) do
     License.destroy_all
     TestLicense.init
-
-    SeedFu.seed
   end
-
-  config.after(:suite) do
-    TestEnv.cleanup
-  end
+  # EE-specific stop
 
   config.before(:example) do
     # Skip pre-receive hook check so we can use the web editor and merge.
@@ -133,18 +129,6 @@ RSpec.configure do |config|
 
   config.before(:example, :mailer) do
     reset_delivered_emails!
-  end
-
-  # Stub the `ForkedStorageCheck.storage_available?` method unless
-  # `:broken_storage` metadata is defined
-  #
-  # This check can be slow and is unnecessary in a test environment where we
-  # know the storage is available, because we create it at runtime
-  config.before(:example) do |example|
-    unless example.metadata[:broken_storage]
-      allow(Gitlab::Git::Storage::ForkedStorageCheck)
-        .to receive(:storage_available?).and_return(true)
-    end
   end
 
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
@@ -213,7 +197,7 @@ RSpec::Matchers.define :match_asset_path do |expected|
   end
 end
 
-FactoryGirl::SyntaxRunner.class_eval do
+FactoryBot::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 

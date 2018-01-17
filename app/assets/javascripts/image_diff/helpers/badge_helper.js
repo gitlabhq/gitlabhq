@@ -19,12 +19,9 @@ export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
 }
 
 export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
-  const buttonEl = createImageBadge(noteId, coordinate, ['image-comment-badge', 'inverted']);
-  const iconEl = document.createElement('i');
-  iconEl.className = 'fa fa-comment-o';
-  iconEl.setAttribute('aria-label', 'comment');
+  const buttonEl = createImageBadge(noteId, coordinate, ['image-comment-badge']);
+  buttonEl.innerHTML = gl.utils.spriteIcon('image-comment-dark');
 
-  buttonEl.appendChild(iconEl);
   containerEl.appendChild(buttonEl);
 }
 

@@ -105,9 +105,13 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight] is a great place to start. Issues with a lower weight (1 or 2) are deemed suitable for beginners.
-These issues will be of reasonable size and challenge, for anyone to start
-contributing to GitLab.
+If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
+is a great place to start. Issues with a lower weight (1 or 2) are deemed
+suitable for beginners. These issues will be of reasonable size and challenge,
+for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
+please consider we favor 
+[asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
 
@@ -168,7 +172,7 @@ Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
-~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+~Geo, ~Gitaly, ~Platform, ~Monitoring, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -554,7 +558,7 @@ the feature you contribute through all of these steps.
 
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
-1. [Unit and system tests][testing] that pass on the CI server
+1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
@@ -599,6 +603,7 @@ merge request:
     present time and never use past tense (has been/was). For example instead
     of _prohibited this user from being saved due to the following errors:_ the
     text should be _sorry, we could not create your account because:_
+1.  Code should be written in [US English][us-english]
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop),
@@ -682,6 +687,7 @@ When your code contains more than 500 changes, any major breaking changes, or an
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 [testing]: doc/development/testing_guide/index.md
+[us-english]: https://en.wikipedia.org/wiki/American_English
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.

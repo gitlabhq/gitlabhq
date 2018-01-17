@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 class RemoveColumnsForServices < ActiveRecord::Migration
   def change
     remove_column :services, :username, :string

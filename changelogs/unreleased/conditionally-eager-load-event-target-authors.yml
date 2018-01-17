@@ -1,0 +1,5 @@
+---
+title: Eager load event target authors whenever possible
+merge_request:
+author:
+type: performance

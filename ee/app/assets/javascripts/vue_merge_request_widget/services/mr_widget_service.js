@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 
 import CEWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
@@ -6,36 +6,26 @@ export default class MRWidgetService extends CEWidgetService {
   constructor(mr) {
     super(mr);
 
-    // Set as a text/plain request so BE doesn't try to parse
-    // See https://gitlab.com/gitlab-org/gitlab-ce/issues/34534
-    this.approvalsResource = Vue.resource(mr.approvalsPath, {}, {}, {
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    });
-    this.rebaseResource = Vue.resource(mr.rebasePath);
+    this.approvalsPath = mr.approvalsPath;
   }
 
   fetchApprovals() {
-    return this.approvalsResource.get()
-      .then(res => res.json());
+    return axios.get(this.approvalsPath)
+      .then(res => res.data);
   }
 
   approveMergeRequest() {
-    return this.approvalsResource.save()
-      .then(res => res.json());
+    return axios.post(this.approvalsPath)
+      .then(res => res.data);
   }
 
   unapproveMergeRequest() {
-    return this.approvalsResource.delete()
-      .then(res => res.json());
-  }
-
-  rebase() {
-    return this.rebaseResource.save();
+    return axios.delete(this.approvalsPath)
+      .then(res => res.data);
   }
 
   fetchReport(endpoint) { // eslint-disable-line
-    return Vue.http.get(endpoint).then(res => res.json());
+    return axios.get(endpoint)
+      .then(res => res.data);
   }
 }

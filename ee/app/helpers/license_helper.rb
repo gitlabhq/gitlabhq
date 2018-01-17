@@ -30,6 +30,7 @@ module LicenseHelper
       message << block_changes_message
 
       message <<
+
         if is_admin
           'Upload a new license in the admin area'
         else
@@ -67,7 +68,7 @@ module LicenseHelper
   end
 
   def new_trial_url
-    return_to_url = URI.encode(Gitlab.config.gitlab.url)
+    return_to_url = CGI.escape(Gitlab.config.gitlab.url)
     uri = URI.parse(Gitlab::SUBSCRIPTIONS_URL)
     uri.path = '/trials/new'
     uri.query = "return_to=#{return_to_url}"

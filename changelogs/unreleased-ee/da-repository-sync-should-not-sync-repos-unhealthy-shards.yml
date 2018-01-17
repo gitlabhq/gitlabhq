@@ -1,5 +1,0 @@
----
-title: Geo - Does not sync repositories on unhealthy shards in non-backfill conditions
-merge_request:
-author:
-type: fixed

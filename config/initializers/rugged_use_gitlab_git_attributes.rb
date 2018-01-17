@@ -15,8 +15,11 @@ module Rugged
   class Repository
     module UseGitlabGitAttributes
       def fetch_attributes(name, *)
+        attributes.attributes(name)
+      end
+
+      def attributes
         @attributes ||= Gitlab::Git::Attributes.new(path)
-        @attributes.attributes(name)
       end
     end
 

@@ -5,7 +5,7 @@ describe Note do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:noteable).touch(true) }
+    it { is_expected.to belong_to(:noteable).touch(false) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos).dependent(:destroy) }
@@ -195,7 +195,7 @@ describe Note do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_master(private_user) } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
     let(:ext_proj)  { create(:project, :public) }
@@ -752,6 +752,28 @@ describe Note do
         it 'returns false' do
           expect(subject.in_reply_to?(note.noteable)).to be_falsey
         end
+      end
+    end
+  end
+
+  describe '#references' do
+    context 'when part of a discussion' do
+      it 'references all earlier notes in the discussion' do
+        first_note = create(:discussion_note_on_issue)
+        second_note = create(:discussion_note_on_issue, in_reply_to: first_note)
+        third_note = create(:discussion_note_on_issue, in_reply_to: second_note)
+        create(:discussion_note_on_issue, in_reply_to: third_note)
+
+        expect(third_note.references).to eq([first_note.noteable, first_note, second_note])
+      end
+    end
+
+    context 'when not part of a discussion' do
+      subject { create(:note) }
+      let(:note) { create(:note, in_reply_to: subject) }
+
+      it 'returns the noteable' do
+        expect(note.references).to eq([note.noteable])
       end
     end
   end

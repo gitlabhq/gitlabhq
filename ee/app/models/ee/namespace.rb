@@ -5,6 +5,8 @@ module EE
   # and be prepended in the `Namespace` model
   module Namespace
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
+    include ::Gitlab::Utils::StrongMemoize
 
     FREE_PLAN = 'free'.freeze
 
@@ -43,9 +45,8 @@ module EE
       end
     end
 
+    override :move_dir
     def move_dir
-      raise NotImplementedError unless defined?(super)
-
       succeeded = super
 
       if succeeded
@@ -67,19 +68,23 @@ module EE
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
-      @feature_available ||= Hash.new do |h, feature|
-        h[feature] = load_feature_available(feature)
+      available_features = strong_memoize(:feature_available) do
+        Hash.new do |h, feature|
+          h[feature] = load_feature_available(feature)
+        end
       end
 
-      @feature_available[feature]
+      available_features[feature]
     end
 
     def feature_available_in_plan?(feature)
-      @features_available_in_plan ||= Hash.new do |h, feature|
-        h[feature] = (plans.map(&:name) & self.class.plans_with_feature(feature)).any?
+      available_features = strong_memoize(:features_available_in_plan) do
+        Hash.new do |h, feature|
+          h[feature] = (plans.map(&:name) & self.class.plans_with_feature(feature)).any?
+        end
       end
 
-      @features_available_in_plan[feature]
+      available_features[feature]
     end
 
     # The main difference between the "plan" column and this method is that "plan"
@@ -128,9 +133,9 @@ module EE
     # These helper methods are required to not break the Namespace API.
     def plan=(plan_name)
       if plan_name.is_a?(String)
-        @plan_name = plan_name
+        @plan_name = plan_name # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-        super(Plan.find_by(name: @plan_name))
+        super(Plan.find_by(name: @plan_name)) # rubocop:disable Gitlab/ModuleWithInstanceVariables
       else
         super
       end
@@ -149,7 +154,7 @@ module EE
     private
 
     def validate_plan_name
-      if @plan_name.present? && PLANS.exclude?(@plan_name)
+      if @plan_name.present? && PLANS.exclude?(@plan_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
         errors.add(:plan, 'is not included in the list')
       end
     end

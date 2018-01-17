@@ -113,7 +113,7 @@ module Ci
     def can_pick?(build)
       return false if self.ref_protected? && !build.protected?
 
-      assignable_for?(build.project) && accepting_tags?(build)
+      assignable_for?(build.project_id) && accepting_tags?(build)
     end
 
     def only_for?(project)
@@ -172,8 +172,8 @@ module Ci
       end
     end
 
-    def assignable_for?(project)
-      is_shared? || projects.exists?(id: project.id)
+    def assignable_for?(project_id)
+      is_shared? || projects.exists?(id: project_id)
     end
 
     def accepting_tags?(build)

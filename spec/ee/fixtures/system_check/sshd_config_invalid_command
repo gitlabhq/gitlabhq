@@ -1,0 +1,9 @@
+# Package generated configuration file
+# See the sshd_config(5) manpage for details
+
+RSAAuthentication yes
+PubkeyAuthentication yes
+#AuthorizedKeysFile	%h/.ssh/authorized_keys
+AuthorizedKeysCommand "/opt/gitlab-shell/invalid_authorized_keys   %u      %k"         # comment
+#AuthorizedKeysCommand /opt/gitlab-shell/authorized_keys %u %k
+AuthorizedKeysCommandUser anotheruser  #comment with more stuff#

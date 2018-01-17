@@ -178,6 +178,30 @@ describe ProjectTeam do
     end
   end
 
+  describe '#add_users' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:project) { create(:project) }
+
+    it 'add the given users to the team' do
+      project.team.add_users([user1, user2], :reporter)
+
+      expect(project.team.reporter?(user1)).to be(true)
+      expect(project.team.reporter?(user2)).to be(true)
+    end
+  end
+
+  describe '#add_user' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+
+    it 'add the given user to the team' do
+      project.team.add_user(user, :reporter)
+
+      expect(project.team.reporter?(user)).to be(true)
+    end
+  end
+
   describe "#human_max_access" do
     it 'returns Master role' do
       user = create(:user)
@@ -291,8 +315,8 @@ describe ProjectTeam do
       group.add_master(master)
       group.add_developer(developer)
 
-      members_project.team << [developer, :developer]
-      members_project.team << [master, :master]
+      members_project.add_developer(developer)
+      members_project.add_master(master)
 
       create(:project_group_link, project: shared_project, group: group)
     end

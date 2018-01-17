@@ -81,6 +81,10 @@ class RemoteMirror < ActiveRecord::Base
     update_status == 'started'
   end
 
+  def update_repository(options)
+    raw.update(options)
+  end
+
   def sync
     return unless enabled?
     return if Gitlab::Geo.secondary?
@@ -117,7 +121,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def url=(value)
-    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
+    super(value) && return unless Gitlab::UrlSanitizer.valid?(value)
 
     mirror_url = Gitlab::UrlSanitizer.new(value)
     self.credentials = mirror_url.credentials
@@ -143,6 +147,10 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   private
+
+  def raw
+    @raw ||= Gitlab::Git::RemoteMirror.new(project.repository.raw, ref_name)
+  end
 
   def recently_scheduled?
     return false unless self.last_update_started_at

@@ -1,7 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
   before_action :load_node, only: [:edit, :update, :destroy, :repair, :toggle, :status]
-  before_action :check_insecure_nodes
 
   helper EE::GeoHelper
 
@@ -45,9 +44,9 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def repair
-    if @node.primary? || !@node.missing_oauth_application?
+    if !@node.missing_oauth_application?
       flash[:notice] = "This node doesn't need to be repaired."
-    elsif @node.save
+    elsif @node.repair
       flash[:notice] = 'Node Authentication was successfully repaired.'
     else
       flash[:alert] = 'There was a problem repairing Node Authentication.'
@@ -103,16 +102,6 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   def load_node
     @node = GeoNode.find(params[:id])
-  end
-
-  def check_insecure_nodes
-    if has_insecure_nodes?
-      flash_now(:alert, 'You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS.')
-    end
-  end
-
-  def has_insecure_nodes?
-    GeoNode.with_url_prefix('http://').exists?
   end
 
   def flash_now(type, message)

@@ -86,34 +86,34 @@ followed by any global declarations, then a blank newline prior to any imports o
 
 #### Modules, Imports, and Exports
 1. Use ES module syntax to import modules
-  ```javascript
-    // bad
-    const SomeClass = require('some_class');
+    ```javascript
+      // bad
+      const SomeClass = require('some_class');
 
-    // good
-    import SomeClass from 'some_class';
+      // good
+      import SomeClass from 'some_class';
 
-    // bad
-    module.exports = SomeClass;
+      // bad
+      module.exports = SomeClass;
 
-    // good
-    export default SomeClass;
-  ```
-  
-  Import statements are following usual naming guidelines, for example object literals use camel case:
-  
-  ```javascript
-    // some_object file
-    export default {
-      key: 'value',
-    };
-    
-    // bad
-    import ObjectLiteral from 'some_object';
-    
-    // good
-    import objectLiteral from 'some_object';
-  ```
+      // good
+      export default SomeClass;
+    ```
+
+    Import statements are following usual naming guidelines, for example object literals use camel case:
+
+    ```javascript
+      // some_object file
+      export default {
+        key: 'value',
+      };
+
+      // bad
+      import ObjectLiteral from 'some_object';
+
+      // good
+      import objectLiteral from 'some_object';
+    ```
 
 1. Relative paths: when importing a module in the same directory, a child
 directory, or an immediate parent directory prefer relative paths.  When
@@ -255,6 +255,10 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 ### Vue.js
 
+#### `eslint-vue-plugin`
+We default to [eslint-vue-plugin][eslint-plugin-vue], with the `plugin:vue/recommended`.
+Please check this [rules][eslint-plugin-vue-rules] for more documentation.
+
 #### Basic Rules
 1. The service has it's own file
 1. The store has it's own file
@@ -334,33 +338,37 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 #### Alignment
 1. Follow these alignment styles for the template method:
   1. With more than one attribute, all attributes should be on a new line:
-  ```javascript
-    // bad
-    <component v-if="bar"
-        param="baz" />
+      ```javascript
+        // bad
+        <component v-if="bar"
+            param="baz" />
 
-    <button class="btn">Click me</button>
+        <button class="btn">Click me</button>
 
-    // good
-    <component
-      v-if="bar"
-      param="baz"
-    />
-
-    <button class="btn">
-      Click me
-    </button>
-  ```
-  1. The tag can be inline if there is only one attribute:
-  ```javascript
-    // good
-      <component bar="bar" />
-
-    // good
-      <component
-        bar="bar"
+        // good
+        <component
+          v-if="bar"
+          param="baz"
         />
-  ```
+
+        <button class="btn">
+          Click me
+        </button>
+      ```
+  1. The tag can be inline if there is only one attribute:
+      ```javascript
+        // good
+          <component bar="bar" />
+
+        // good
+          <component
+            bar="bar"
+            />
+
+        // bad
+         <component
+            bar="bar" />
+      ```
 
 #### Quotes
 1. Always use double quotes `"` inside templates and single quotes `'` for all other JS.
@@ -414,7 +422,6 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 1. Default key should be provided if the prop is not required.
 _Note:_ There are some scenarios where we need to check for the existence of the property.
 On those a default key should not be provided.
-
   ```javascript
     // good
     props: {
@@ -494,42 +501,23 @@ On those a default key should not be provided.
 #### Ordering
 
 1. Tag order in `.vue` file
+    ```
+    <script>
+      // ...
+    </script>
 
-  ```
-  <script>
-    // ...
-  </script>
+    <template>
+      // ...
+    </template>
 
-  <template>
-    // ...
-  </template>
-
-  // We don't use scoped styles but there are few instances of this
-  <style>
-    // ...
-  </style>
-  ```
+    // We don't use scoped styles but there are few instances of this
+    <style>
+      // ...
+    </style>
+    ```
 
 1. Properties in a Vue Component:
-  1. `name`
-  1. `props`
-  1. `mixins`
-  1. `directives`
-  1. `data`
-  1. `components`
-  1. `computedProps`
-  1. `methods`
-  1. `beforeCreate`
-  1. `created`
-  1. `beforeMount`
-  1. `mounted`
-  1. `beforeUpdate`
-  1. `updated`
-  1. `activated`
-  1. `deactivated`
-  1. `beforeDestroy`
-  1. `destroyed`
-
+  Check [order of properties in components rule][vue-order].
 
 #### Vue and Bootstrap
 
@@ -584,3 +572,6 @@ The goal of this accord is to make sure we are all on the same page.
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
 [eslint-this]: http://eslint.org/docs/rules/class-methods-use-this
 [eslint-new]: http://eslint.org/docs/rules/no-new
+[eslint-plugin-vue]: https://github.com/vuejs/eslint-plugin-vue
+[eslint-plugin-vue-rules]: https://github.com/vuejs/eslint-plugin-vue#bulb-rules
+[vue-order]: https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/order-in-components.md

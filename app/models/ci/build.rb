@@ -7,6 +7,9 @@ module Ci
     include Importable
     prepend EE::Ci::Build
 
+    MissingDependenciesError = Class.new(StandardError)
+
+    belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
@@ -51,6 +54,25 @@ module Ci
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
 
+    scope :matches_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id')
+        .where.not(tag_id: tag_ids).select('1')
+
+      where("NOT EXISTS (?)", matcher)
+    end
+
+    scope :with_any_tags, -> do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id').select('1')
+
+      where("EXISTS (?)", matcher)
+    end
+
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
     mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
@@ -62,7 +84,7 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create do |build|
+    after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
@@ -123,6 +145,10 @@ module Ci
         if build.retries_count < build.retries_max
           Ci::Build.retry(build, build.user)
         end
+      end
+
+      before_transition any => [:running] do |build|
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
     end
 
@@ -446,7 +472,14 @@ module Ci
     end
 
     def cache
-      [options[:cache]]
+      cache = options[:cache]
+
+      if cache && project.jobs_cache_index
+        cache = cache.merge(
+          key: "#{cache[:key]}:#{project.jobs_cache_index}")
+      end
+
+      [cache]
     end
 
     def credentials
@@ -467,6 +500,19 @@ module Ci
 
     def empty_dependencies?
       options[:dependencies]&.empty?
+    end
+
+    def validates_dependencies!
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
+      end
+    end
+
+    def valid_dependency?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
     end
 
     def hide_secrets(trace)

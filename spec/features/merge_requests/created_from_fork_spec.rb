@@ -14,7 +14,7 @@ feature 'Merge request created from fork' do
   end
 
   background do
-    forked_project.team << [user, :master]
+    forked_project.add_master(user)
     sign_in user
   end
 

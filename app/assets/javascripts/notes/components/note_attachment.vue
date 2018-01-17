@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'noteAttachment',
+    name: 'NoteAttachment',
     props: {
       attachment: {
         type: Object,
@@ -19,7 +19,8 @@
       rel="noopener noreferrer">
       <img
         :src="attachment.url"
-        class="note-image-attach" />
+        class="note-image-attach"
+      />
     </a>
     <div class="attachment">
       <a
@@ -29,8 +30,10 @@
         rel="noopener noreferrer">
         <i
           class="fa fa-paperclip"
-          aria-hidden="true"></i>
-        {{attachment.filename}}
+          aria-hidden="true"
+        >
+        </i>
+        {{ attachment.filename }}
       </a>
     </div>
   </div>

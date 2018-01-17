@@ -47,8 +47,7 @@ In `config/gitlab.yml`:
 
 * Git LFS v1 original API is not supported since it was deprecated early in LFS development, starting with Git LFS version 0.6.0
 * When SSH is set as a remote, Git LFS objects still go through HTTPS
-* Any Git LFS request will ask for HTTPS credentials to be provided so good Git credentials store is recommended
-* Currently, storing GitLab Git LFS objects on a non-local storage (like S3 buckets) is not supported
+* Any Git LFS request will [ask for HTTPS credentials](#credentials-are-always-required-when-pushing-an-object)
 * Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have to add the URL to Git config manually (see #troubleshooting-tips)
 
 ## Using Git LFS

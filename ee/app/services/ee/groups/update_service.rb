@@ -1,9 +1,10 @@
 module EE
   module Groups
     module UpdateService
-      def execute
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :execute
+      def execute
         super.tap { |success| log_audit_event if success }
       end
 

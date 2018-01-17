@@ -8,7 +8,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your service desk settings.
-        = link_to "Learn more about service desk.", help_page_path('user/project/service_desk')
+        = link_to "Learn more about service desk.", help_page_path('user/project/service_desk'), target: '_blank'
     .settings-content
       - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
         .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),

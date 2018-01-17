@@ -9,7 +9,7 @@ describe IssueLinks::ListService do
   before do
     stub_licensed_features(related_issues: true)
 
-    project.team << [user, user_role]
+    project.add_role(user, user_role)
   end
 
   describe '#execute' do
@@ -57,21 +57,21 @@ describe IssueLinks::ListService do
                                            state: issue_b.state,
                                            reference: issue_b.to_reference(project),
                                            path: "/#{project.full_path}/issues/#{issue_b.iid}",
-                                           destroy_relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_a.id}"))
+                                           relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_a.id}"))
 
         expect(subject).to include(include(id: issue_c.id,
                                            title: issue_c.title,
                                            state: issue_c.state,
                                            reference: issue_c.to_reference(project),
                                            path: "/#{project.full_path}/issues/#{issue_c.iid}",
-                                           destroy_relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_b.id}"))
+                                           relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_b.id}"))
 
         expect(subject).to include(include(id: issue_d.id,
                                            title: issue_d.title,
                                            state: issue_d.state,
                                            reference: issue_d.to_reference(project),
                                            path: "/#{project.full_path}/issues/#{issue_d.iid}",
-                                           destroy_relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_c.id}"))
+                                           relation_path: "/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link_c.id}"))
       end
     end
 
@@ -164,7 +164,7 @@ describe IssueLinks::ListService do
         it 'returns no destroy relation path' do
           target_project.add_developer(user)
 
-          expect(subject.first[:destroy_relation_path]).to be_nil
+          expect(subject.first[:relation_path]).to be_nil
         end
       end
 
@@ -176,7 +176,7 @@ describe IssueLinks::ListService do
         it 'returns no destroy relation path' do
           target_project.add_guest(user)
 
-          expect(subject.first[:destroy_relation_path]).to be_nil
+          expect(subject.first[:relation_path]).to be_nil
         end
       end
 
@@ -184,7 +184,7 @@ describe IssueLinks::ListService do
         let(:referenced_issue) { create :issue, project: project }
 
         it 'returns related issue destroy relation path' do
-          expect(subject.first[:destroy_relation_path])
+          expect(subject.first[:relation_path])
             .to eq("/#{project.full_path}/issues/#{issue.iid}/links/#{issue_link.id}")
         end
       end

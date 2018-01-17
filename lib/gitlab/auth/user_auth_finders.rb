@@ -57,7 +57,7 @@ module Gitlab
         job = ::Ci::Build.find_by(token: token)
         raise UnauthorizedError unless job
 
-        @job_token_authentication = true
+        @job_token_authentication = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         job.user
       end
@@ -118,9 +118,7 @@ module Gitlab
       end
 
       def ensure_action_dispatch_request(request)
-        return request if request.is_a?(ActionDispatch::Request)
-
-        ActionDispatch::Request.new(request.env)
+        ActionDispatch::Request.new(request.env.dup)
       end
 
       def current_request

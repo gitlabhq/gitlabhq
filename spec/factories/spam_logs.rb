@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :spam_log do
     user
     sequence(:source_ip) { |n| "42.42.42.#{n % 255}" }

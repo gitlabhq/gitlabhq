@@ -32,6 +32,13 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:pipelines)
+      expect(Project.reflect_on_association(:pipelines).has_inverse?).to eq(:project)
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
@@ -120,7 +127,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create(:ci_build, pipeline: pipeline)
+      FactoryBot.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end
@@ -439,7 +446,7 @@ describe Ci::Pipeline, :mailer do
 
     describe 'merge request metrics' do
       let(:project) { create(:project, :repository) }
-      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let(:pipeline) { FactoryBot.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
       before do
@@ -1248,7 +1255,7 @@ describe Ci::Pipeline, :mailer do
 
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
-    let!(:build_b) { create_build('b', 1) }
+    let!(:build_b) { create_build('b', 0) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -1304,6 +1311,8 @@ describe Ci::Pipeline, :mailer do
         end
 
         context 'when stage one failed' do
+          let!(:build_b) { create_build('b', 1) }
+
           before do
             build_a.drop
           end
@@ -1442,7 +1451,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     before do
-      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+      project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
@@ -1530,6 +1539,18 @@ describe Ci::Pipeline, :mailer do
         .count
 
       expect(query_count).to eq(1)
+    end
+  end
+
+  describe '#total_size' do
+    let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
+    let!(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
+    let!(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
+
+    it 'returns all jobs (including failed and retried)' do
+      expect(pipeline.total_size).to eq(5)
     end
   end
 end

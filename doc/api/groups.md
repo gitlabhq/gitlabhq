@@ -366,16 +366,16 @@ POST /groups
 
 Parameters:
 
-- `name` (required) - The name of the group
-- `path` (required) - The path of the group
-- `description` (optional) - The group's description
-- `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
-- `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
-- `visibility` (optional) - The group's visibility. Can be `private`, `internal`, or `public`.
-- `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
-- `request_access_enabled` (optional) - Allow users to request member access.
-- `parent_id` (optional) - The parent group id for creating nested group.
-- `shared_runners_minutes_limit` (optional) - (admin-only) Pipeline minutes quota for this group
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | yes | The name of the group |
+| `path` | string | yes | The path of the group |
+| `description` | string | no | The group's description |
+| `visibility` | string | no | The group's visibility. Can be `private`, `internal`, or `public`. |
+| `lfs_enabled` | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
+| `request_access_enabled` | boolean | no | Allow users to request member access. |
+| `parent_id` | integer | no | The parent group id for creating nested group. |
+| `shared_runners_minutes_limit` | integer | no | (admin-only) Pipeline minutes quota for this group. |
 
 ## Transfer project to group
 
@@ -387,8 +387,10 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
-- `project_id` (required) - The ID or path of a project
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `project_id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Update group
 
@@ -534,7 +536,7 @@ Parameters:
 - `id` (required) - The ID of a group
 - `cn` (required) - The CN of a LDAP group
 - `group_access` (required) - Minimum access level for members of the LDAP group
-- `provider` (required) - LDAP provider for the LDAP group (when using several providers)
+- `provider` (required) - LDAP provider for the LDAP group
 
 ### Delete LDAP group link
 

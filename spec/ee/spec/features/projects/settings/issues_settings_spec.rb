@@ -8,7 +8,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
 
   before do
     gitlab_sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   context 'issuable default templates feature not available' do

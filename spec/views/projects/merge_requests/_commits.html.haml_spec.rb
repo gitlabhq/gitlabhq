@@ -25,8 +25,8 @@ describe 'projects/merge_requests/_commits.html.haml' do
   it 'shows commits from source project' do
     render
 
-    commit = source_project.commit(merge_request.source_branch)
-    href = project_commit_path(source_project, commit)
+    commit = merge_request.commits.first # HEAD
+    href = diffs_project_merge_request_path(target_project, merge_request, commit_id: commit)
 
     expect(rendered).to have_link(Commit.truncate_sha(commit.sha), href: href)
   end

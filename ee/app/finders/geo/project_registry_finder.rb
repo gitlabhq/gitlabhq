@@ -1,28 +1,47 @@
 module Geo
   class ProjectRegistryFinder < RegistryFinder
-    def count_projects
+    def count_repositories
       current_node.projects.count
     end
 
-    def count_synced_project_registries
+    def count_wikis
+      current_node.projects.with_wiki_enabled.count
+    end
+
+    def count_synced_repositories
       relation =
         if selective_sync?
-          legacy_find_synced_project_registries
+          legacy_find_synced_repositories
         else
-          find_synced_project_registries
+          find_synced_repositories
         end
 
       relation.count
     end
 
-    def count_failed_project_registries
-      find_failed_project_registries.count
+    def count_synced_wikis
+      relation =
+        if use_legacy_queries?
+          legacy_find_synced_wikis
+        else
+          fdw_find_enabled_wikis
+        end
+
+      relation.count
+    end
+
+    def count_failed_repositories
+      find_failed_project_registries('repository').count
+    end
+
+    def count_failed_wikis
+      find_failed_project_registries('wiki').count
     end
 
     def find_failed_project_registries(type = nil)
       relation =
         if selective_sync?
-          legacy_find_filtered_failed_project_registries(type)
+          legacy_find_filtered_failed_projects(type)
         else
           find_filtered_failed_project_registries(type)
         end
@@ -54,8 +73,8 @@ module Geo
 
     protected
 
-    def find_synced_project_registries
-      Geo::ProjectRegistry.synced
+    def find_synced_repositories
+      Geo::ProjectRegistry.synced_repos
     end
 
     def find_filtered_failed_project_registries(type = nil)
@@ -80,14 +99,31 @@ module Geo
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_unsynced_projects
       Geo::Fdw::Project.joins("LEFT OUTER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
-        .where('project_registry.project_id IS NULL')
+        .where(project_registry: { project_id: nil })
+    end
+
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
+    def fdw_find_enabled_wikis
+      project_id_matcher =
+        Geo::Fdw::ProjectFeature.arel_table[:project_id]
+          .eq(Geo::ProjectRegistry.arel_table[:project_id])
+
+      # Only read the IDs of projects with disabled wikis from the remote database
+      not_exist = Geo::Fdw::ProjectFeature
+        .where(wiki_access_level: [::ProjectFeature::DISABLED, nil])
+        .where(project_id_matcher)
+        .select('1')
+        .exists
+        .not
+
+      Geo::ProjectRegistry.synced_wikis.where(not_exist)
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_projects_updated_recently
       Geo::Fdw::Project.joins("INNER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
-        .merge(Geo::ProjectRegistry.dirty)
-        .merge(Geo::ProjectRegistry.retry_due)
+          .merge(Geo::ProjectRegistry.dirty)
+          .merge(Geo::ProjectRegistry.retry_due)
     end
 
     #
@@ -96,61 +132,53 @@ module Geo
 
     # @return [ActiveRecord::Relation<Project>] list of unsynced projects
     def legacy_find_unsynced_projects
-      registry_project_ids = Geo::ProjectRegistry.pluck(:project_id)
-      return current_node.projects if registry_project_ids.empty?
-
-      joined_relation = current_node.projects.joins(<<~SQL)
-        LEFT OUTER JOIN
-        (VALUES #{registry_project_ids.map { |id| "(#{id}, 't')" }.join(',')})
-        project_registry(project_id, registry_present)
-        ON projects.id = project_registry.project_id
-      SQL
-
-      joined_relation.where(project_registry: { registry_present: [nil, false] })
+      legacy_left_outer_join_registry_ids(
+        current_node.projects,
+        Geo::ProjectRegistry.pluck(:project_id),
+        Project
+      )
     end
 
     # @return [ActiveRecord::Relation<Project>] list of projects updated recently
     def legacy_find_projects_updated_recently
-      legacy_find_projects(Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id))
+      legacy_inner_join_registry_ids(
+        current_node.projects,
+        Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id),
+        Project
+      )
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects
-    def legacy_find_synced_project_registries
-      legacy_find_project_registries(Geo::ProjectRegistry.synced)
+    def legacy_find_synced_repositories
+      legacy_find_project_registries(Geo::ProjectRegistry.synced_repos)
     end
 
-    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of projects that sync has failed
-    def legacy_find_filtered_failed_project_registries(type = nil)
-      project_registries = find_filtered_failed_project_registries(type)
-      legacy_find_project_registries(project_registries)
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects
+    def legacy_find_synced_wikis
+      legacy_inner_join_registry_ids(
+        current_node.projects.with_wiki_enabled,
+          Geo::ProjectRegistry.synced_wikis.pluck(:project_id),
+          Project
+      )
     end
 
-    # @return [ActiveRecord::Relation<Project>]
-    def legacy_find_projects(registry_project_ids)
-      return Project.none if registry_project_ids.empty?
-
-      joined_relation = current_node.projects.joins(<<~SQL)
-        INNER JOIN
-        (VALUES #{registry_project_ids.map { |id| "(#{id})" }.join(',')})
-        project_registry(project_id)
-        ON #{Project.table_name}.id = project_registry.project_id
-      SQL
-
-      joined_relation
-    end
-
-    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
+    # @return [ActiveRecord::Relation<Project>] list of synced projects
     def legacy_find_project_registries(project_registries)
-      return Geo::ProjectRegistry.none if project_registries.empty?
+      legacy_inner_join_registry_ids(
+        current_node.projects,
+        project_registries.pluck(:project_id),
+        Project
+      )
+    end
 
-      joined_relation = project_registries.joins(<<~SQL)
-        INNER JOIN
-        (VALUES #{current_node.projects.pluck(:id).map { |id| "(#{id})" }.join(',')})
-        projects(id)
-        ON #{Geo::ProjectRegistry.table_name}.project_id = projects.id
-      SQL
-
-      joined_relation
+    # @return [ActiveRecord::Relation<Project>] list of projects that sync has failed
+    def legacy_find_filtered_failed_projects(type = nil)
+      legacy_inner_join_registry_ids(
+        find_filtered_failed_project_registries(type),
+        current_node.projects.pluck(:id),
+        Geo::ProjectRegistry,
+        foreign_key: :project_id
+      )
     end
   end
 end

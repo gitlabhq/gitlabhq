@@ -2,14 +2,16 @@ module EE
   module API
     module Helpers
       def current_user
-        return @current_user if defined?(@current_user)
+        strong_memoize(:current_user) do
+          user = super
 
-        user = super
+          if user
+            ::Gitlab::Database::LoadBalancing::RackMiddleware
+              .stick_or_unstick(env, :user, user.id)
+          end
 
-        ::Gitlab::Database::LoadBalancing::RackMiddleware
-          .stick_or_unstick(env, :user, user.id) if user
-
-        user
+          user
+        end
       end
 
       def check_project_feature_available!(feature)

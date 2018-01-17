@@ -44,6 +44,11 @@ describe 'GitLab Markdown' do
 
   before do
     stub_licensed_features(epics: true)
+    @feat = MarkdownFeature.new
+
+    # `markdown` helper expects a `@project` and `@group` variable
+    @project = @feat.project
+    @group = @feat.group
   end
 
   # Shared behavior that all pipelines should exhibit
@@ -75,7 +80,7 @@ describe 'GitLab Markdown' do
 
       it 'parses mermaid code block' do
         aggregate_failures do
-          expect(doc).to have_selector('pre.code.js-render-mermaid')
+          expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
         end
       end
 
@@ -206,14 +211,6 @@ describe 'GitLab Markdown' do
         expect(link.attr('target')).not_to match '_blank'
       end
     end
-  end
-
-  before do
-    @feat = MarkdownFeature.new
-
-    # `markdown` helper expects a `@project` and `@group` variable
-    @project = @feat.project
-    @group = @feat.group
   end
 
   context 'default pipeline' do

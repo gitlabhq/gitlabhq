@@ -84,9 +84,19 @@ this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
 
+### Trigger update using API
+
+>[Introduced][ee-3453] in GitLab Enterprise Edition 10.3.
+
+Pull mirroring uses polling to detect new branches and commits added upstream,
+often many minutes afterwards. If you notify GitLab by [API][pull-api], updates
+will be pulled immediately.
+
+Read the [Pull Mirror Trigger API docs][pull-api].
+
 ### Pull only protected branches
 
->[Introduced][ee-3326] in Gitlab Enterprise Edition 10.3.
+>[Introduced][ee-3326] in GitLab Enterprise Edition 10.3.
 
 You can choose to only pull the protected branches from your remote repository to GitLab.
 
@@ -199,45 +209,50 @@ If you need to change the key at any time, you can press the `Regenerate key`
 button to do so. You'll have to update the source repository with the new key
 to keep the mirror running.
 
-## How it works
+### How it works
 
-Once you activate the pull mirroring feature, the mirror will be inserted into a queue.
-A scheduler will start every minute and schedule a fixed amount of mirrors for update, based
-on the configured maximum capacity.
+Once you activate the pull mirroring feature, the mirror will be inserted into
+a queue. A scheduler will start every minute and schedule a fixed amount of
+mirrors for update, based on the configured maximum capacity.
 
-If the mirror successfully updates it will be enqueued once again with a small backoff
-period.
+If the mirror successfully updates it will be enqueued once again with a small
+backoff period.
 
-If the mirror fails (eg: branch diverged from upstream), the project's
-backoff period will be penalized each time it fails up to a maximum amount of time.
+If the mirror fails (eg: branch diverged from upstream), the project's backoff
+period will be penalized each time it fails up to a maximum amount of time.
 
 ## Pushing to a remote repository
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise Edition 8.7.
+>[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
+GitLab Enterprise Edition 8.7.
 
-For an existing project, you can set up mirror pushing by visiting your project's
+For an existing project, you can set up push mirror from your project's
 **Settings ➔ Repository** and searching for the "Push to a remote repository"
-section. Check the "Remote mirror repository" box and fill in the Git URL of the
-repository to push to. Hit **Save changes** for the changes to take effect.
+section. Check the "Remote mirror repository" box and fill in the Git URL of
+the repository to push to. Click **Save changes** for the changes to take
+effect.
 
 ![Push settings](repository_mirroring/repository_mirroring_push_settings.png)
 
-Similarly to the pull mirroring, since the upstream repository functions as a
-mirror to the repository in GitLab, you are advised not to push commits directly
-to the mirrored repository. Instead, all changes will end up in the mirrored repository
-whenever commits are pushed to GitLab, or when a [forced update](#forcing-an-update) is initiated.
+Similarly to pull mirroring, when push mirroring is enabled, you are advised
+not to push commits directly to the mirrored repository to prevent the mirror
+diverging. All changes will end up in the mirrored repository whenever commits
+are pushed to GitLab, or when a [forced update](#forcing-an-update) is
+initiated.
 
-Pushes into GitLab are automatically pushed to the remote mirror at least once every 5 minutes 
-after they come in or 1 minute if **push only protected branches** is enabled.
+Pushes into GitLab are automatically pushed to the remote mirror at least once
+every 5 minutes after they are received or once every minute if **push only
+protected branches** is enabled.
 
-In case of a diverged branch, you will see an error indicated at the
-**Mirror repository** settings.
+In case of a diverged branch, you will see an error indicated at the **Mirror
+repository** settings.
 
-![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch_push.png)
+![Diverged branch](
+repository_mirroring/repository_mirroring_diverged_branch_push.png)
 
 ### Push only protected branches
 
->[Introduced][ee-3350] in Gitlab Enterprise Edition 10.3.
+>[Introduced][ee-3350] in GitLab Enterprise Edition 10.3.
 
 You can choose to only push your protected branches from GitLab to your remote repository.
 
@@ -259,7 +274,7 @@ To set up a mirror from GitLab to GitHub, you need to follow these steps:
 1. And either wait or trigger the "Update Now" button:
 
     ![update now](repository_mirroring/repository_mirroring_gitlab_push_to_a_remote_repository_update_now.png)
-
+    
 ## Forcing an update
 
 While mirrors are scheduled to update automatically, you can always force an update (either **push** or
@@ -270,19 +285,56 @@ While mirrors are scheduled to update automatically, you can always force an upd
 - in the tags page
 - in the **Mirror repository** settings page
 
-## Using both mirroring methods at the same time
+## Bidirectional mirroring
 
-Currently there is no bidirectional support without conflicts. That means that
-if you configure a repository to both pull and push to a second one, there is
-no guarantee that it will update correctly on both remotes.
-You can try [configuring custom Git hooks][hooks] on the GitLab server in order
-to resolve this issue.
+> **Warning:** There is no bidirectional support without conflicts. If you
+> configure a repository to pull and push to a second remote, there is no
+> guarantee that it will update correctly on both remotes. If you configure
+> a repository for bidirectional mirroring, you should consider when conflicts
+> occur who and how they will be resolved.
 
+Rewriting any mirrored commit on either remote will cause conflicts and
+mirroring to fail. This can be prevented by [only pulling protected branches](
+#pull-only-protected-branches) and [only pushing protected branches](
+#push-only-protected-branches). You should protect the branches you wish to
+mirror on both remotes to prevent conflicts caused by rewriting history.
+
+Bidirectional mirroring also creates a race condition where commits to the same
+branch in close proximity will cause conflicts. The race condition can be
+mitigated by reducing the mirroring delay by using a Push event webhook to
+trigger an immediate pull to GitLab. Push mirroring from GitLab is rate limited
+to once per minute when only push mirroring protected branches.
+
+It may be possible to implement a locking mechanism using the server-side
+`pre-receive` hook to prevent the race condition. Read about [configuring
+custom Git hooks][hooks] on the GitLab server.
+
+### Mirroring with Perforce via GitFusion
+
+> **Warning:** Bidirectional mirroring should not be used as a permanent
+> configuration. There is no bidirectional mirroring without conflicts.
+> Refer to [Migrating from Perforce Helix][perforce] for alternative migration
+> approaches.
+
+GitFusion provides a Git interface to Perforce which can be used by GitLab to
+bidirectionally mirror projects with GitLab. This may be useful in some
+situations when migrating from Perforce to GitLab where overlapping Perforce
+workspaces cannot be migrated simultaneously to GitLab.
+
+If using mirroring with Perforce you should only mirror protected branches.
+Perforce will reject any pushes that rewrite history. It is recommended that
+only the fewest number of branches are mirrored due to the performance
+limitations of GitFusion.
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
+[ee-3326]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326
 [ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
+[ee-3453]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453
 [perms]: ../user/permissions.md
-[hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html
+[hooks]: ../administration/custom_hooks.html
 [deploy-key]: ../ssh/README.md#deploy-keys
+[webhook]: ../user/project/integrations/webhooks.html#push-events
+[pull-api]: ../api/projects.html#start-the-pull-mirroring-process-for-a-project
+[perforce]: ../user/project/import/perforce.html

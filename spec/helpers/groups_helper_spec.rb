@@ -32,27 +32,6 @@ describe GroupsHelper do
       group.save!
       expect(group_icon_url(group.path)).to match_asset_path('group_avatar.png')
     end
-
-    context 'in a geo secondary node' do
-      let(:group) { create(:group) }
-      let(:geo_url) { 'http://geo.example.com' }
-
-      before do
-        allow(Gitlab::Geo).to receive(:secondary?) { true }
-        allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
-      end
-
-      it 'returns an url for the avatar pointing to the primary node base url' do
-        group.avatar = fixture_file_upload(avatar_file_path)
-        group.save!
-        expect(group_icon_url(group.path)).to match("#{geo_url}/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
-      end
-
-      it 'gives default avatar_icon when no avatar is present' do
-        group.save!
-        expect(group_icon_url(group.path)).to match_asset_path('no_group_avatar.png')
-      end
-    end
   end
 
   describe 'group_lfs_status' do

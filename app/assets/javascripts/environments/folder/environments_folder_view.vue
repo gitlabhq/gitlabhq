@@ -3,6 +3,10 @@
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
+    mixins: [
+      environmentsMixin,
+      CIPaginationMixin,
+    ],
     props: {
       endpoint: {
         type: String,
@@ -25,12 +29,6 @@
         required: true,
       },
     },
-
-    mixins: [
-      environmentsMixin,
-      CIPaginationMixin,
-    ],
-
     methods: {
       successCallback(resp) {
         this.saveData(resp);
@@ -42,17 +40,18 @@
   <div :class="cssContainerClass">
     <div
       class="top-area"
-      v-if="!isLoading">
+      v-if="!isLoading"
+    >
 
       <h4 class="js-folder-name environments-folder-name">
-        {{s__("Environments|Environments")}} / <b>{{folderName}}</b>
+        {{ s__("Environments|Environments") }} / <b>{{ folderName }}</b>
       </h4>
 
       <tabs
         :tabs="tabs"
         @onChangeTab="onChangeTab"
         scope="environments"
-        />
+      />
     </div>
 
     <container
@@ -62,6 +61,6 @@
       :can-create-deployment="canCreateDeployment"
       :can-read-environment="canReadEnvironment"
       @onChangePage="onChangePage"
-      />
+    />
   </div>
 </template>

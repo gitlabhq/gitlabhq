@@ -11,7 +11,7 @@
     .form-group
       = form.label :active, "Active", class: "control-label"
       .col-sm-10
-        = form.check_box :active
+        = form.check_box :active, disabled: disable_fields_service?(@service)
 
   - if @service.supported_events.present?
     .form-group
