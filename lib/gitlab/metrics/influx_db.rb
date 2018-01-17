@@ -1,7 +1,7 @@
 module Gitlab
   module Metrics
     module InfluxDb
-      include Gitlab::Metrics::Concern
+      include Gitlab::Metrics::Concern::ClassMethods
       include Gitlab::CurrentSettings
       extend self
 
@@ -106,7 +106,7 @@ module Gitlab
         real_time = (real_stop - real_start)
         cpu_time = cpu_stop - cpu_start
 
-        real_duration_seconds = self.class.fetch_histogram("gitlab_#{name}_real_duration_seconds".to_sym) do
+        real_duration_seconds = fetch_histogram("gitlab_#{name}_real_duration_seconds".to_sym) do
           docstring "Measure #{name}"
           base_labels Transaction::BASE_LABELS
           buckets EXECUTION_MEASUREMENT_BUCKETS
@@ -114,7 +114,7 @@ module Gitlab
 
         real_duration_seconds.observe(trans.labels, real_time)
 
-        cpu_duration_seconds = self.class.fetch_histogram("gitlab_#{name}_cpu_duration_seconds".to_sym) do
+        cpu_duration_seconds = fetch_histogram("gitlab_#{name}_cpu_duration_seconds".to_sym) do
           docstring "Measure #{name}"
           base_labels Transaction::BASE_LABELS
           buckets EXECUTION_MEASUREMENT_BUCKETS
