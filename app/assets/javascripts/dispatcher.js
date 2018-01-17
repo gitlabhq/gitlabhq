@@ -11,6 +11,7 @@ import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
 import Compare from './compare';
+import initCompareAutocomplete from './compare_autocomplete';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
@@ -712,6 +713,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           shortcut_handler = true;
           switch (path[1]) {
+            case 'compare':
+              initCompareAutocomplete();
+              break;
             case 'create':
             case 'new':
               import('./pages/projects/new')
