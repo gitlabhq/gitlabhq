@@ -552,12 +552,11 @@ import ProjectVariables from './project_variables';
           new DueDateSelectors();
           break;
         case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
-            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
-              throw err;
-            });
+        case 'projects:clusters:update':
+        case 'projects:clusters:destroy':
+          import('./pages/projects/clusters/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:clusters:index':
           import(/* webpackChunkName: "clusters_index" */ './clusters/clusters_index')
