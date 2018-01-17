@@ -504,7 +504,7 @@ X-Gitlab-Event: System Hook
       "force_remove_source_branch": "0"
     },
     "merge_when_pipeline_succeeds": false,
-    "merge_user_i\nd": null,
+    "merge_user_id": null,
     "merge_commit_sha": null,
     "deleted_at": null,
     "in_progress_merge_commit_sha": null,
