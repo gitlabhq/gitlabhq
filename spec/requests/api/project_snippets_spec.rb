@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe API::ProjectSnippets do
-  let(:project) { create(:project, :public) }
-  let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:project) { create(:project, :public) }
+  set(:user) { create(:user) }
+  set(:admin) { create(:admin) }
 
   describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do
     let(:snippet) { create(:project_snippet, :public, project: project) }
@@ -16,6 +16,13 @@ describe API::ProjectSnippets do
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it 'respects project scoping' do
+      other_project = create(:project)
+
+      get api("/projects/#{other_project.id}/snippets/#{snippet.id}/user_agent_detail", admin)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns unautorized for non-admin users" do
