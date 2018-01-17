@@ -4,6 +4,9 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    directives: {
+      tooltip,
+    },
     components: {
       actionBtn,
     },
@@ -21,19 +24,6 @@
         required: true,
       },
     },
-<<<<<<< HEAD
-||||||| parent of f6ca52d31b... Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
-    components: {
-      actionBtn,
-    },
-=======
-    directives: {
-      tooltip,
-    },
-    components: {
-      actionBtn,
-    },
->>>>>>> f6ca52d31b... Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
     computed: {
       timeagoDate() {
         return getTimeago().format(this.deployKey.created_at);
@@ -72,24 +62,11 @@
     </div>
     <div class="deploy-key-content prepend-left-default deploy-key-projects">
       <a
-<<<<<<< HEAD
-        v-for="(project, i) in deployKey.projects"
-||||||| parent of f6ca52d31b... Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
-        v-for="project in deployKey.projects"
-=======
-        v-for="deployKeysProject in deployKey.deploy_keys_projects"
->>>>>>> f6ca52d31b... Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
+        v-for="(deployKeysProject, i) in deployKey.deploy_keys_projects"
         class="label deploy-project-label"
-<<<<<<< HEAD
-        :href="project.full_path"
-        :key="i"
-||||||| parent of f6ca52d31b... Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
-        :href="project.full_path"
-=======
         :href="deployKeysProject.project.full_path"
         :title="tooltipTitle(deployKeysProject)"
         v-tooltip
->>>>>>> f6ca52d31b... Merge branch 'sh-migrate-can-push-to-deploy-keys-projects-10-3' into 'security-10-3'
       >
         {{ deployKeysProject.project.full_name }}
         <i
