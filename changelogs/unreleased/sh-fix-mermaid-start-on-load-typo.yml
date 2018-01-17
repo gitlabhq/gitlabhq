@@ -1,0 +1,5 @@
+---
+title: Fix Mermaid drawings not loading on some browsers
+merge_request:
+author:
+type: fixed
