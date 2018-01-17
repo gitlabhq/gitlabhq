@@ -26,6 +26,8 @@ class GeoNode < ActiveRecord::Base
 
   before_validation :ensure_access_keys!
 
+  alias_method :repair, :save # the `update_dependents_attributes` hook will take care of it
+
   scope :with_url_prefix, ->(prefix) { where('url LIKE ?', "#{prefix}%") }
 
   attr_encrypted :secret_access_key,

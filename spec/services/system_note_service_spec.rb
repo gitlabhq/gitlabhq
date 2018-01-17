@@ -160,7 +160,7 @@ describe SystemNoteService do
     end
 
     it 'builds a correct phrase when assignee removed' do
-      expect(build_note([assignee1], [])).to eq 'removed assignee'
+      expect(build_note([assignee1], [])).to eq "unassigned @#{assignee1.username}"
     end
 
     it 'builds a correct phrase when assignees changed' do
@@ -729,6 +729,7 @@ describe SystemNoteService do
               else
                 "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
               end
+
         link = double(object: { 'url' => url })
         links << link
         expect(link).to receive(:save!)

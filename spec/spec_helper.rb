@@ -104,14 +104,12 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+  # EE-specific start
   config.before(:all) do
     License.destroy_all
     TestLicense.init
   end
-
-  config.after(:suite) do
-    TestEnv.cleanup
-  end
+  # EE-specific stop
 
   config.before(:example) do
     # Skip pre-receive hook check so we can use the web editor and merge.

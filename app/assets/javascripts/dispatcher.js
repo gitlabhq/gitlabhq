@@ -1,88 +1,54 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import { s__ } from './locale';
 import projectSelect from './project_select';
-import IssuableIndex from './issuable_index';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 import MilestoneSelect from './milestone_select';
-import NewBranchForm from './new_branch_form';
 import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
-import groupsSelect from './groups_select';
-import Search from './search';
-import initAdmin from './admin';
-import NamespaceSelect from './namespace_select';
-import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import initCompareAutocomplete from './compare_autocomplete';
 import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
-import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
 
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
-import CommitsList from './commits';
-import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
-import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import ProjectsList from './projects_list';
-import setupProjectEdit from './project_edit';
-import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
-import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
-import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
-import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
-import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
-import ShortcutsBlob from './shortcuts_blob';
-import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
 import TreeView from './tree';
-import UsagePing from './usage_ping';
-import UsernameValidator from './username_validator';
-import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import initExperimentalFlags from './experimental_flags';
-import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
-import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
-import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
-import GpgBadges from './gpg_badges';
-import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
-import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
-import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
 import ShortcutsNavigation from './shortcuts_navigation';
-import ShortcutsFindFile from './shortcuts_find_file';
 import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
-import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
@@ -90,12 +56,9 @@ import Activities from './activities';
 
 // EE-only
 import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
-import AuditLogs from 'ee/audit_logs'; // eslint-disable-line import/first
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
-import AdminEmailSelect from 'ee/admin_email_select'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
-import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
@@ -110,7 +73,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
+      var path, shortcut_handler;
       const page = $('body').attr('data-page');
       if (!page) {
         return false;
@@ -148,68 +111,38 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         }
       }
 
-      function initBlob() {
-        new LineHighlighter();
-
-        new BlobLinePermalinkUpdater(
-          document.querySelector('#blob-content-holder'),
-          '.diff-line-num[data-line-number]',
-          document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
-        );
-
-        shortcut_handler = new ShortcutsNavigation();
-        fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-        fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
-        new ShortcutsBlob({
-          skipResetBindings: true,
-          fileBlobPermalinkUrl,
-        });
-
-        new BlobForkSuggestion({
-          openButtons: document.querySelectorAll('.js-edit-blob-link-fork-toggler'),
-          forkButtons: document.querySelectorAll('.js-fork-suggestion-button'),
-          cancelButtons: document.querySelectorAll('.js-cancel-fork-suggestion-button'),
-          suggestionSections: document.querySelectorAll('.js-file-fork-suggestion-section'),
-          actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
-        })
-          .init();
-
-        initBlobEE();
-      }
-
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
-        case 'profiles:preferences:show':
-          initExperimentalFlags();
-          break;
         case 'sessions:new':
-          new UsernameValidator();
-          new SigninTabsMemoizer();
-          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
+          import('./pages/sessions/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
-          shortcut_handler = new ShortcutsNavigation();
-          new UsersSelect();
+          import('./pages/projects/boards/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:merge_requests:index':
+          import('./pages/projects/merge_requests/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:index':
-          if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
-            filteredSearchManager.setup();
-          }
-          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          new IssuableIndex(pagePrefix);
-
-          shortcut_handler = new ShortcutsNavigation();
-          new UsersSelect();
+          import('./pages/projects/issues/index')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:issues:show':
-          new Issue();
-          shortcut_handler = new ShortcutsIssuable();
-          new ZenMode();
-          initIssuableSidebar();
+          import('./pages/projects/issues/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'dashboard:milestones:index':
           import('./pages/dashboard/milestones/index')
@@ -233,8 +166,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'dashboard:merge_requests':
-          projectSelect();
-          initLegacyFilters();
+          import('./pages/dashboard/merge_requests')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:issues':
         case 'groups:merge_requests':
@@ -260,53 +194,69 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           break;
-        case 'admin:projects:index':
-          new ProjectsList();
-          break;
         case 'explore:groups:index':
           import('./pages/explore/groups')
             .then(callDefault)
             .catch(fail);
           break;
         case 'projects:milestones:new':
+        case 'projects:milestones:create':
+          import('./pages/projects/milestones/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
-          new ZenMode();
-          new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          import('./pages/projects/milestones/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:milestones:new':
+        case 'groups:milestones:create':
+          import('./pages/groups/milestones/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
-          new ZenMode();
-          new DueDateSelectors();
-          new GLForm($('.milestone-form'), false);
+          import('./pages/groups/milestones/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:epics:show':
           new ZenMode();
           break;
         case 'projects:compare:show':
-          new Diff();
-          const paddingTop = 16;
-          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
+          import('./pages/projects/compare/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:new':
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:branches:create':
-          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          import('./pages/projects/branches/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:branches:index':
-          AjaxLoadingSpinner.init();
-          new DeleteModal();
+          import('./pages/projects/branches/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:issues:new':
+          import('./pages/projects/issues/new')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:issues:edit':
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'), true);
-          new IssuableForm($('.issue-form'));
-          new LabelsSelect();
-          new MilestoneSelect();
-          new WeightSelect();
-          new IssuableTemplateSelectors();
+          import('./pages/projects/issues/edit')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
           import('./pages/projects/merge_requests/creations/new')
@@ -322,14 +272,15 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new LabelsSelect();
           new MilestoneSelect();
           new IssuableTemplateSelectors();
-          new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
 
+          // ee-start
           initApprovals();
+          // ee-end
           break;
         case 'projects:tags:new':
-          new ZenMode();
-          new GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'));
+          import('./pages/projects/tags/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -343,11 +294,24 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new ZenMode();
           break;
         case 'snippets:new':
+          import('./pages/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:edit':
+          import('./pages/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:create':
+          import('./pages/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'snippets:update':
-          new GLForm($('.snippet-form'), false);
-          new ZenMode();
+          import('./pages/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -368,25 +332,20 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
-          new Activities();
+          import('./pages/dashboard/activity')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:commit:show':
-          new Diff();
-          new ZenMode();
-          shortcut_handler = new ShortcutsNavigation();
-          new MiniPipelineGraph({
-            container: '.js-commit-pipeline-graph',
-          }).bindEvents();
-          initNotes();
-          const stickyBarPaddingTop = 16;
-          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
-          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          import('./pages/projects/commit/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:commit:pipelines':
-          new MiniPipelineGraph({
-            container: '.js-commit-pipeline-graph',
-          }).bindEvents();
-          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          import('./pages/projects/commit/pipelines')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:activity':
           import('./pages/projects/activity')
@@ -395,12 +354,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'projects:commits:show':
-          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-          shortcut_handler = new ShortcutsNavigation();
-          GpgBadges.fetch();
-          break;
-        case 'projects:imports:show':
-          projectImport();
+          import('./pages/projects/commits/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -420,36 +377,27 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           initGeoInfoModal();
           break;
         case 'projects:edit':
-          new UsersSelect();
-          groupsSelect();
-          setupProjectEdit();
-          // Initialize expandable settings panels
-          initSettingsPanels();
-          new UserCallout({ className: 'js-service-desk-callout' });
-          new UserCallout({ className: 'js-mr-approval-callout' });
+          import('./pages/projects/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:imports:show':
-          projectImport();
+          import('./pages/projects/imports/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:new':
         case 'projects:pipelines:create':
-          new NewBranchForm($('.js-new-pipeline-form'));
+          import('./pages/projects/pipelines/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
-          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
-          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
-
-          new Pipelines({
-            initTabs: true,
-            pipelineStatusUrl,
-            tabsOptions: {
-              action: controllerAction,
-              defaultAction: 'pipelines',
-              parentEl: '.pipelines-tabs',
-            },
-          });
+          import('./pages/projects/pipelines/builds')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:activity':
           new Activities();
@@ -471,66 +419,76 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          memberExpirationDate('.js-access-expiration-date-groups');
-          groupsSelect();
-          memberExpirationDate();
-          new Members();
-          new UsersSelect();
+          import('./pages/projects/project_members/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:new':
-        case 'admin:groups:new':
         case 'groups:create':
-        case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
           groupAvatar();
           break;
-        case 'groups:edit':
+        case 'admin:groups:create':
+        case 'admin:groups:new':
+          import('./pages/admin/groups/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:groups:edit':
+          import('./pages/admin/groups/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:edit':
           groupAvatar();
           break;
         case 'projects:tree:show':
-          shortcut_handler = new ShortcutsNavigation();
-          new TreeView();
-          new BlobViewer();
-          new NewCommitForm($('.js-create-dir-form'));
-
-          if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
-            initPathLocks(
-              document.querySelector('.js-tree-content').dataset.pathLocksToggle,
-              document.querySelector('.js-tree-content').dataset.pathLocksPath,
-            );
-          }
-
-          $('#tree-slider').waitForImages(function() {
-            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-          });
+          import('./pages/projects/tree/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:find_file:show':
-          const findElement = document.querySelector('.js-file-finder');
-          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
-            url: findElement.dataset.fileFindUrl,
-            treeUrl: findElement.dataset.findTreeUrl,
-            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
-          });
-          new ShortcutsFindFile(projectFindFile);
+          import('./pages/projects/find_file/show')
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          new BlobViewer();
-          initBlob();
+          import('./pages/projects/blob/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          initBlobEE();
           break;
         case 'projects:blame:show':
-          initBlob();
+          import('./pages/projects/blame/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          initBlobEE();
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
-        case 'projects:labels:new':
-        case 'projects:labels:edit':
           new Labels();
           break;
-        case 'groups:labels:index':
+        case 'projects:labels:new':
+          import('./pages/projects/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:labels:edit':
+          import('./pages/projects/labels/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:labels:index':
+          import('./pages/projects/labels/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:labels:index':
           if ($('.prioritized-labels').length) {
             new LabelManager();
           }
@@ -550,7 +508,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+          import('./pages/projects/forks/new')
             .then(callDefault)
             .catch(fail);
           break;
@@ -567,10 +525,14 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'help:index':
-          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          import('./pages/help')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'search:show':
-          new Search();
+          import('./pages/search/show')
+            .then(callDefault)
+            .catch(fail);
           new UserCallout();
           break;
         case 'projects:mirrors:show':
@@ -578,10 +540,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new UsersSelect();
           break;
         case 'admin:emails:show':
-          new AdminEmailSelect();
+          import(/* webpackChunkName: "ee_admin_emails_show" */ 'ee/pages/admin/emails/show').then(m => m.default()).catch(fail);
           break;
         case 'admin:audit_logs:index':
-          new AuditLogs();
+          import(/* webpackChunkName: "ee_audit_logs" */ 'ee/pages/admin/audit_logs').then(m => m.default()).catch(fail);
           break;
         case 'projects:settings:repository:show':
           new UsersSelect();
@@ -616,44 +578,42 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
           break;
         case 'snippets:show':
-          import('./pages/snippets/show').then(m => m.default()).catch(fail);
+          import('./pages/snippets/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin:impersonation_tokens:index':
-          new DueDateSelectors();
+          import('./pages/admin/impersonation_tokens')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'profiles:personal_access_tokens:index':
+          import('./pages/profiles/personal_access_tokens')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
-            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
-              throw err;
-            });
+        case 'projects:clusters:update':
+        case 'projects:clusters:destroy':
+          import('./pages/projects/clusters/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:clusters:index':
-          import(/* webpackChunkName: "clusters_index" */ './clusters/clusters_index')
-            .then(clusterIndex => clusterIndex.default())
-            .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the clusters list'));
-              throw err;
-            });
+          import('./pages/projects/clusters/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:licenses:new':
-          const $licenseFile = $('.license-file');
-          const $licenseKey = $('.license-key');
-
-          const showLicenseType = () => {
-            const $checkedFile = $('input[name="license_type"]:checked').val() === 'file';
-
-            $licenseFile.toggle($checkedFile);
-            $licenseKey.toggle(!$checkedFile);
-          };
-
-          $('input[name="license_type"]').on('change', showLicenseType);
-          showLicenseType();
+          import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
           break;
         case 'groups:analytics:show':
           initGroupAnalytics();
@@ -677,36 +637,55 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          initAdmin();
+          import('./pages/admin')
+            .then(callDefault)
+            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
-              initBroadcastMessagesForm();
+              import('./pages/admin/broadcast_messages')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'cohorts':
-              new UsagePing();
+              import('./pages/admin/cohorts')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'groups':
-              new UsersSelect();
-
               switch (path[2]) {
+                case 'show':
+                  import('./pages/admin/groups/show')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
                 case 'edit':
-                  initLDAPGroupsSelect();
+                  import(/* webpackChunkName: "ee_admin_groups_edit" */ 'ee/pages/admin/groups/edit').then(m => m.default()).catch(fail);
                   break;
               }
 
               break;
             case 'projects':
-              document.querySelectorAll('.js-namespace-select')
-                .forEach(dropdown => new NamespaceSelect({ dropdown }));
+              import('./pages/admin/projects')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'labels':
               switch (path[2]) {
                 case 'new':
+                  import('./pages/admin/labels/new')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
                 case 'edit':
-                  new Labels();
+                  import('./pages/admin/labels/edit')
+                    .then(callDefault)
+                    .catch(fail);
+                  break;
               }
             case 'abuse_reports':
-              new AbuseReports();
+              import('./pages/admin/abuse_reports')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'geo_nodes':
               import(/* webpackChunkName: 'geo_node_form' */ './geo/geo_node_form')
@@ -720,15 +699,18 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           new UserCallout();
           break;
         case 'profiles':
-          new NotificationsForm();
-          notificationsDropdown();
+          import('./pages/profiles/index/')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects':
           new Project();
           projectAvatar();
           switch (path[1]) {
             case 'compare':
-              initCompareAutocomplete();
+              import('./pages/projects/compare')
+                .then(callDefault)
+                .catch(fail);
               break;
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();

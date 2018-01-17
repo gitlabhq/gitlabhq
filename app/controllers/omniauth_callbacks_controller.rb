@@ -86,6 +86,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if ticket
       handle_service_ticket oauth['provider'], ticket
     end
+
     handle_omniauth
   end
 
@@ -124,6 +125,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       continue_login_process
     end
+  rescue Gitlab::OAuth::SigninDisabledForProviderError
+    handle_disabled_provider
   rescue Gitlab::OAuth::SignupDisabledError
     handle_signup_error
   end
@@ -138,6 +141,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Only allow properly saved users to login.
     if @user.persisted? && @user.valid?
       log_audit_event(@user, with: oauth['provider'])
+
       if @user.two_factor_enabled?
         params[:remember_me] = '1' if remember_me?
         prompt_for_two_factor(@user)
@@ -175,6 +179,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_ldap_login
     flash[:alert] = 'Access denied for your LDAP account.'
+
+    redirect_to new_user_session_path
+  end
+
+  def handle_disabled_provider
+    label = Gitlab::OAuth::Provider.label_for(oauth['provider'])
+    flash[:alert] = "Signing in using #{label} has been disabled"
 
     redirect_to new_user_session_path
   end

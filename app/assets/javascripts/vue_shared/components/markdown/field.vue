@@ -121,7 +121,8 @@
     />
     <div
       class="md-write-holder"
-      v-show="!previewMarkdown">
+      v-show="!previewMarkdown"
+    >
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
         <a

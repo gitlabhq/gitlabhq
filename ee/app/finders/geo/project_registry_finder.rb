@@ -102,13 +102,21 @@ module Geo
         .where(project_registry: { project_id: nil })
     end
 
-    # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
     def fdw_find_enabled_wikis
-      feature_fdw_table = Geo::Fdw::ProjectFeature.table_name
+      project_id_matcher =
+        Geo::Fdw::ProjectFeature.arel_table[:project_id]
+          .eq(Geo::ProjectRegistry.arel_table[:project_id])
 
-      Geo::ProjectRegistry.synced_wikis
-          .joins("INNER JOIN #{feature_fdw_table} ON #{feature_fdw_table}.project_id = project_registry.project_id")
-          .where("#{feature_fdw_table}.wiki_access_level > ?", ::ProjectFeature::DISABLED)
+      # Only read the IDs of projects with disabled wikis from the remote database
+      not_exist = Geo::Fdw::ProjectFeature
+        .where(wiki_access_level: [::ProjectFeature::DISABLED, nil])
+        .where(project_id_matcher)
+        .select('1')
+        .exists
+        .not
+
+      Geo::ProjectRegistry.synced_wikis.where(not_exist)
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]

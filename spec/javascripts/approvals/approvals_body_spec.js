@@ -1,5 +1,5 @@
 import Vue from 'vue';
-
+import _ from 'underscore';
 import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/approvals_body';
 
 (() => {

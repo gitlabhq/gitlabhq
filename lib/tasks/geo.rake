@@ -72,6 +72,7 @@ namespace :geo do
       if Gitlab::Geo::DatabaseTasks.dump_schema_after_migration?
         ns["schema:dump"].invoke
       end
+
       # Allow this task to be called as many times as required. An example is the
       # migrate:redo task, which calls other two internally that depend on this one.
       ns['_dump'].reenable
@@ -192,5 +193,12 @@ namespace :geo do
 
       current_node.update!(primary: true)
     end
+  end
+
+  desc 'Update Geo primary node URL'
+  task update_primary_node_url: :environment do
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
+
+    Gitlab::Geo::GeoTasks.update_primary_geo_node_url
   end
 end

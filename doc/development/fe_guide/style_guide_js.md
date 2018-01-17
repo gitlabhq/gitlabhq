@@ -368,7 +368,6 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
         // bad
          <component
             bar="bar" />
-
       ```
 
 #### Quotes
@@ -519,7 +518,6 @@ On those a default key should not be provided.
 
 1. Properties in a Vue Component:
   Check [order of properties in components rule][vue-order].
-
 
 #### Vue and Bootstrap
 

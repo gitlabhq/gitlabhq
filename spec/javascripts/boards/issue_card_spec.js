@@ -3,7 +3,7 @@
 /* global ListIssue */
 
 import Vue from 'vue';
-
+import _ from 'underscore';
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';

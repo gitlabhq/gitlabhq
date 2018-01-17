@@ -127,7 +127,8 @@
           v-if="action.type === 'link'"
           :href="action.path"
           :class="action.cssClass"
-          :key="i">
+          :key="i"
+        >
           {{ action.label }}
         </a>
 

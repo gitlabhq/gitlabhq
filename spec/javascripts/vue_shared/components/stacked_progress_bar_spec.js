@@ -29,6 +29,14 @@ describe('StackedProgressBarComponent', () => {
     vm.$destroy();
   });
 
+  describe('computed', () => {
+    describe('neutralCount', () => {
+      it('returns neutralCount based on totalCount, successCount and failureCount', () => {
+        expect(vm.neutralCount).toBe(5); // 20 - 10 - 5
+      });
+    });
+  });
+
   describe('methods', () => {
     describe('getPercent', () => {
       it('returns percentage from provided count based on `totalCount`', () => {

@@ -163,6 +163,7 @@ module MilestonesHelper
 
   def show_burndown_placeholder?(warning)
     return false if cookies['hide_burndown_message'].present?
+
     return false unless @project.feature_available?(:burndown_charts, current_user) &&
         @project.feature_available?(:issue_weights, current_user)
 

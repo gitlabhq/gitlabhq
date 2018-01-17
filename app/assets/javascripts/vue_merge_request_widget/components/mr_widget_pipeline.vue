@@ -126,7 +126,6 @@
           <template v-if="pipeline.coverage">
             Coverage {{ pipeline.coverage }}%
           </template>
-
         </div>
       </template>
     </div>

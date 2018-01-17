@@ -57,9 +57,7 @@
             <a
               :href="commit.commitUrl"
               class="commit-hash-link commit-sha"
-            >
-              {{ commit.shortSha }}
-            </a>
+            >{{ commit.shortSha }}</a>
             {{ s__('FirstPushedBy|pushed by') }}
             <a
               :href="commit.author.webUrl"

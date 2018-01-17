@@ -1,6 +1,5 @@
 <script>
-    /* eslint-disable vue/require-default-prop */
-
+  /* eslint-disable vue/require-default-prop */
   export default {
     name: 'Modal',
 
@@ -123,7 +122,7 @@
           >
             <button
               type="button"
-              class="btn pull-left"
+              class="btn"
               :class="btnCancelKindClass"
               @click="emitCancel($event)"
               data-dismiss="modal"
@@ -133,7 +132,7 @@
             <button
               v-if="primaryButtonLabel"
               type="button"
-              class="btn pull-right js-primary-button"
+              class="btn js-primary-button"
               :disabled="submitDisabled"
               :class="btnKindClass"
               @click="emitSubmit($event)"

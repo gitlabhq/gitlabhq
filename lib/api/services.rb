@@ -833,7 +833,7 @@ module API
           service_params = declared_params(include_missing: false).merge(active: true)
 
           if service.update_attributes(service_params)
-            present service, with: Entities::ProjectService, include_passwords: current_user.admin?
+            present service, with: Entities::ProjectService
           else
             render_api_error!('400 Bad Request', 400)
           end

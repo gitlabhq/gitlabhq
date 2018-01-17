@@ -439,15 +439,25 @@ eos
   end
 
   describe '#uri_type' do
-    it 'returns the URI type at the given path' do
-      expect(commit.uri_type('files/html')).to be(:tree)
-      expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
-      expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
-      expect(commit.uri_type('files/js/application.js')).to be(:blob)
+    shared_examples 'URI type' do
+      it 'returns the URI type at the given path' do
+        expect(commit.uri_type('files/html')).to be(:tree)
+        expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
+        expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
+        expect(commit.uri_type('files/js/application.js')).to be(:blob)
+      end
+
+      it "returns nil if the path doesn't exists" do
+        expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+      end
     end
 
-    it "returns nil if the path doesn't exists" do
-      expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+    context 'when Gitaly commit_tree_entry feature is enabled' do
+      it_behaves_like 'URI type'
+    end
+
+    context 'when Gitaly commit_tree_entry feature is disabled', :disable_gitaly do
+      it_behaves_like 'URI type'
     end
   end
 
@@ -511,6 +521,19 @@ eos
       expect(described_class.valid_hash?('a' * 7)).to be true
       expect(described_class.valid_hash?('a' * 40)).to be true
       expect(described_class.valid_hash?('a' * 41)).to be false
+    end
+  end
+
+  describe '#merge_requests' do
+    let!(:project) { create(:project, :repository) }
+    let!(:merge_request1) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let!(:merge_request2) { create(:merge_request, source_project: project, source_branch: 'merged-target', target_branch: 'feature') }
+    let(:commit1) { merge_request1.merge_request_diff.commits.last }
+    let(:commit2) { merge_request1.merge_request_diff.commits.first }
+
+    it 'returns merge_requests that introduced that commit' do
+      expect(commit1.merge_requests).to eq([merge_request1, merge_request2])
+      expect(commit2.merge_requests).to eq([merge_request1])
     end
   end
 end

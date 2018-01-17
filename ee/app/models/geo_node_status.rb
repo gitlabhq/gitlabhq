@@ -175,6 +175,7 @@ class GeoNodeStatus < ActiveRecord::Base
   # from a remote node via JSON.
   def storage_shards_match?
     return unless Gitlab::Geo.primary?
+    return unless current_shards && primary_shards
 
     shards_match?(current_shards, primary_shards)
   end
@@ -198,11 +199,22 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def shards_match?(first, second)
+    # Developers may want to run Geo locally using different paths
+    return names_match?(first, second) if Rails.env.development?
+
     sort_by_name(first) == sort_by_name(second)
   end
 
   def sort_by_name(shards)
     shards.sort_by { |shard| shard['name'] }
+  end
+
+  def names_match?(first, second)
+    extract_names(first) == extract_names(second)
+  end
+
+  def extract_names(shards)
+    shards.map { |shard| shard['name'] }.sort
   end
 
   def attachments_finder

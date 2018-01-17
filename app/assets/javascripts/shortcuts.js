@@ -62,7 +62,7 @@ export default class Shortcuts {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
     if (Cookies.get(performanceBarCookieName) === 'true') {
-      Cookies.remove(performanceBarCookieName, { path: '/' });
+      Cookies.set(performanceBarCookieName, 'false', { path: '/' });
     } else {
       Cookies.set(performanceBarCookieName, 'true', { path: '/' });
     }

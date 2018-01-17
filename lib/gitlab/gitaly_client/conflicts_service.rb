@@ -20,7 +20,11 @@ module Gitlab
         )
         response = GitalyClient.call(@repository.storage, :conflicts_service, :list_conflict_files, request)
 
-        files_from_response(response).to_a
+        GitalyClient::ConflictFilesStitcher.new(response)
+      end
+
+      def conflicts?
+        list_conflict_files.any?
       end
 
       def resolve_conflicts(target_repository, resolution, source_branch, target_branch)
@@ -57,38 +61,6 @@ module Gitlab
           commit_message: resolution.commit_message,
           user: Gitlab::Git::User.from_gitlab(resolution.user).to_gitaly
         )
-      end
-
-      def files_from_response(response)
-        files = []
-
-        response.each do |msg|
-          msg.files.each do |gitaly_file|
-            if gitaly_file.header
-              files << file_from_gitaly_header(gitaly_file.header)
-            else
-              files.last.content << gitaly_file.content
-            end
-          end
-        end
-
-        files
-      end
-
-      def file_from_gitaly_header(header)
-        Gitlab::Git::Conflict::File.new(
-          Gitlab::GitalyClient::Util.git_repository(header.repository),
-          header.commit_oid,
-          conflict_from_gitaly_file_header(header),
-          ''
-        )
-      end
-
-      def conflict_from_gitaly_file_header(header)
-        {
-          ours: { path: header.our_path, mode: header.our_mode },
-          theirs: { path: header.their_path }
-        }
       end
     end
   end

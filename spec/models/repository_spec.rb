@@ -358,28 +358,38 @@ describe Repository do
   end
 
   describe '#can_be_merged?' do
-    context 'mergeable branches' do
-      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+    shared_examples 'can be merged' do
+      context 'mergeable branches' do
+        subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
 
-      it { is_expected.to be_truthy }
+        it { is_expected.to be_truthy }
+      end
+
+      context 'non-mergeable branches' do
+        subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non merged branch' do
+        subject { repository.merged_to_root_ref?('fix') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non existent branch' do
+        subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+        it { is_expected.to be_nil }
+      end
     end
 
-    context 'non-mergeable branches' do
-      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
-
-      it { is_expected.to be_falsey }
+    context 'when Gitaly can_be_merged feature is enabled' do
+      it_behaves_like 'can be merged'
     end
 
-    context 'non merged branch' do
-      subject { repository.merged_to_root_ref?('fix') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'non existent branch' do
-      subject { repository.merged_to_root_ref?('non_existent_branch') }
-
-      it { is_expected.to be_nil }
+    context 'when Gitaly can_be_merged feature is disabled', :disable_gitaly do
+      it_behaves_like 'can be merged'
     end
   end
 
@@ -409,6 +419,28 @@ describe Repository do
           expect(repository.commit('non-existent:ref')).to be_nil
         end
       end
+    end
+  end
+
+  describe '#create_hooks' do
+    let(:hook_path) { File.join(repository.path_to_repo, 'hooks') }
+
+    it 'symlinks the global hooks directory' do
+      repository.create_hooks
+
+      expect(File.symlink?(hook_path)).to be true
+      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+    end
+
+    it 'replaces existing symlink with the right directory' do
+      FileUtils.mkdir_p(hook_path)
+
+      expect(File.symlink?(hook_path)).to be false
+
+      repository.create_hooks
+
+      expect(File.symlink?(hook_path)).to be true
+      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
     end
   end
 
@@ -625,7 +657,7 @@ describe Repository do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG\x00190\x00  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -634,6 +666,18 @@ describe Repository do
 
     it 'returns result' do
       expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'ignores leading slashes' do
+      results = repository.search_files_by_name('/files', 'master')
+
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is only slashes' do
+      results = repository.search_files_by_name('//', 'master')
+
+      expect(results).to match_array([])
     end
 
     it 'properly handles when query is not present' do

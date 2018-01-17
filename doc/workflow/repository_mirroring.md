@@ -309,6 +309,23 @@ It may be possible to implement a locking mechanism using the server-side
 `pre-receive` hook to prevent the race condition. Read about [configuring
 custom Git hooks][hooks] on the GitLab server.
 
+### Mirroring with Perforce via GitFusion
+
+> **Warning:** Bidirectional mirroring should not be used as a permanent
+> configuration. There is no bidirectional mirroring without conflicts.
+> Refer to [Migrating from Perforce Helix][perforce] for alternative migration
+> approaches.
+
+GitFusion provides a Git interface to Perforce which can be used by GitLab to
+bidirectionally mirror projects with GitLab. This may be useful in some
+situations when migrating from Perforce to GitLab where overlapping Perforce
+workspaces cannot be migrated simultaneously to GitLab.
+
+If using mirroring with Perforce you should only mirror protected branches.
+Perforce will reject any pushes that rewrite history. It is recommended that
+only the fewest number of branches are mirrored due to the performance
+limitations of GitFusion.
+
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
@@ -320,3 +337,4 @@ custom Git hooks][hooks] on the GitLab server.
 [deploy-key]: ../ssh/README.md#deploy-keys
 [webhook]: ../user/project/integrations/webhooks.html#push-events
 [pull-api]: ../api/projects.html#start-the-pull-mirroring-process-for-a-project
+[perforce]: ../user/project/import/perforce.html

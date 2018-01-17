@@ -1,13 +1,14 @@
 <script>
   /**
-   * Renders the Monitoring (Metrics) link in environments table.
-   */
+  * Renders the Monitoring (Metrics) link in environments table.
+  */
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     directives: {
       tooltip,
     },
+
     props: {
       monitoringUrl: {
         type: String,

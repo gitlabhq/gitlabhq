@@ -1,4 +1,4 @@
-import OAuthRememberMe from '~/oauth_remember_me';
+import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
   preloadFixtures('static/oauth_remember_me.html.raw');

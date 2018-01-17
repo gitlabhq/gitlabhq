@@ -1,3 +1,10 @@
+.protected-branch-push-access-list,
+.protected-branch-merge-access-list {
+  a {
+    color: $white-light;
+  }
+}
+
 .project-mirror-settings {
   .fingerprint-verified {
     color: $green-500;

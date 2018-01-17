@@ -1,0 +1,5 @@
+---
+title: Deny persisting milestones from outside project/group scope on boards
+merge_request:
+author:
+type: security

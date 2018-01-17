@@ -118,7 +118,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
+gem 'seed-fu', '~> 2.3.7'
 
 # Search
 gem 'elasticsearch-model', '~> 0.1.9'
@@ -242,6 +242,9 @@ gem 'charlock_holmes', '~> 0.7.5'
 
 # Faster JSON
 gem 'oj', '~> 2.17.4'
+
+# Faster blank
+gem 'fast_blank'
 
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
@@ -397,9 +400,6 @@ gem 'ruby-prof', '~> 0.16.2'
 # OAuth
 gem 'oauth2', '~> 1.4'
 
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
-
 # Health check
 gem 'health_check', '~> 2.6.0'
 
@@ -422,7 +422,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.64.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.73.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

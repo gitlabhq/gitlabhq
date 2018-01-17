@@ -73,7 +73,8 @@
         <div
           class="multi-file-loading-container"
           v-for="n in 3"
-          :key="n">
+          :key="n"
+        >
           <skeleton-loading-container />
         </div>
       </template>

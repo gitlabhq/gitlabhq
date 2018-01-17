@@ -118,6 +118,11 @@ class Service < ActiveRecord::Base
     nil
   end
 
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key)/ }
+  end
+
   def global_fields
     fields
   end
@@ -252,6 +257,7 @@ class Service < ActiveRecord::Base
       teamcity
       microsoft_teams
     ]
+
     if Rails.env.development?
       service_names += %w[mock_ci mock_deployment mock_monitoring]
     end

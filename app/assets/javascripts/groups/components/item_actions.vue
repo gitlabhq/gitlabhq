@@ -1,56 +1,41 @@
 <script>
-  import { s__ } from '~/locale';
-  import tooltip from '~/vue_shared/directives/tooltip';
-  import icon from '~/vue_shared/components/icon.vue';
-  import modal from '~/vue_shared/components/modal.vue';
-  import eventHub from '../event_hub';
-  import { COMMON_STR } from '../constants';
+import tooltip from '~/vue_shared/directives/tooltip';
+import icon from '~/vue_shared/components/icon.vue';
+import eventHub from '../event_hub';
+import { COMMON_STR } from '../constants';
 
-  export default {
-    components: {
-      icon,
-      modal,
+export default {
+  components: {
+    icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    parentGroup: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    directives: {
-      tooltip,
+    group: {
+      type: Object,
+      required: true,
     },
-    props: {
-      parentGroup: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      group: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    leaveBtnTitle() {
+      return COMMON_STR.LEAVE_BTN_TITLE;
     },
-    data() {
-      return {
-        modalStatus: false,
-      };
+    editBtnTitle() {
+      return COMMON_STR.EDIT_BTN_TITLE;
     },
-    computed: {
-      leaveBtnTitle() {
-        return COMMON_STR.LEAVE_BTN_TITLE;
-      },
-      editBtnTitle() {
-        return COMMON_STR.EDIT_BTN_TITLE;
-      },
-      leaveConfirmationMessage() {
-        return s__(`GroupsTree|Are you sure you want to leave the "${this.group.fullName}" group?`);
-      },
+  },
+  methods: {
+    onLeaveGroup() {
+      eventHub.$emit('showLeaveGroupModal', this.group, this.parentGroup);
     },
-    methods: {
-      onLeaveGroup() {
-        this.modalStatus = true;
-      },
-      leaveGroup() {
-        this.modalStatus = false;
-        eventHub.$emit('leaveGroup', this.group, this.parentGroup);
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>
@@ -78,14 +63,5 @@
       class="leave-group btn no-expand">
       <icon name="leave"/>
     </a>
-    <modal
-      v-show="modalStatus"
-      :primary-button-label="__('Leave')"
-      kind="warning"
-      :title="__('Are you sure?')"
-      :text="__('Are you sure you want to leave this group?')"
-      :body="leaveConfirmationMessage"
-      @submit="leaveGroup"
-    />
   </div>
 </template>

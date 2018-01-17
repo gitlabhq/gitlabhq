@@ -29,7 +29,6 @@
         required: true,
       },
     },
-
     methods: {
       successCallback(resp) {
         this.saveData(resp);

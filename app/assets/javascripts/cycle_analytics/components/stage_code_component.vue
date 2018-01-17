@@ -43,8 +43,7 @@
           </h5>
           <a
             :href="mergeRequest.url"
-            class="issue-link"
-          >
+            class="issue-link">
             !{{ mergeRequest.iid }}
           </a>
           &middot;
@@ -52,8 +51,7 @@
             {{ s__('OpenedNDaysAgo|Opened') }}
             <a
               :href="mergeRequest.url"
-              class="issue-date"
-            >
+              class="issue-date">
               {{ mergeRequest.createdAt }}
             </a>
           </span>
@@ -61,8 +59,7 @@
             {{ s__('ByAuthor|by') }}
             <a
               :href="mergeRequest.author.webUrl"
-              class="issue-author-link"
-            >
+              class="issue-author-link">
               {{ mergeRequest.author.name }}
             </a>
           </span>

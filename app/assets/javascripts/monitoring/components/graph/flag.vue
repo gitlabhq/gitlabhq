@@ -1,11 +1,11 @@
 <script>
   import { dateFormat, timeFormat } from '../../utils/date_time_formatters';
   import { formatRelevantDigits } from '../../../lib/utils/number_utils';
-  import Icon from '../../../vue_shared/components/icon.vue';
+  import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
     components: {
-      Icon,
+      icon,
     },
     props: {
       currentXCoordinate: {

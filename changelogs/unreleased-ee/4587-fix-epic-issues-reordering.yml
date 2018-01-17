@@ -1,0 +1,5 @@
+---
+title: Fix reordering of items when moved to top or bottom
+merge_request: 4050
+author:
+type: fixed

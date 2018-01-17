@@ -101,7 +101,8 @@
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"
-        class="participants-author js-participants-author">
+        class="participants-author js-participants-author"
+      >
         <a
           class="author_link"
           :href="participant.web_url"

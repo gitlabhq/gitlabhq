@@ -58,6 +58,10 @@ module QA
       module Integration
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
+
+      module Sanity
+        autoload :Selectors, 'qa/scenario/test/sanity/selectors'
+      end
     end
   end
 
@@ -68,6 +72,9 @@ module QA
   #
   module Page
     autoload :Base, 'qa/page/base'
+    autoload :View, 'qa/page/view'
+    autoload :Element, 'qa/page/element'
+    autoload :Validator, 'qa/page/validator'
 
     module Main
       autoload :Login, 'qa/page/main/login'

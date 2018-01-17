@@ -1,9 +1,10 @@
 module EE
   module ProtectedBranches
     module AccessLevelParams
-      def access_levels
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :access_levels
+      def access_levels
         ce_style_access_level + ee_style_access_levels
       end
 
@@ -17,9 +18,8 @@ module EE
 
       private
 
+      override :use_default_access_level?
       def use_default_access_level?(params)
-        raise NotImplementedError unless defined?(super)
-
         params[:"allowed_to_#{type}"].blank?
       end
 

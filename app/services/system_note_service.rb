@@ -68,21 +68,14 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_issue_assignees(issue, project, author, old_assignees)
-    body =
-      if issue.assignees.any? && old_assignees.any?
-        unassigned_users = old_assignees - issue.assignees
-        added_users = issue.assignees.to_a - old_assignees
+    unassigned_users = old_assignees - issue.assignees
+    added_users = issue.assignees.to_a - old_assignees
 
-        text_parts = []
-        text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-        text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+    text_parts = []
+    text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
+    text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
 
-        text_parts.join(' and ')
-      elsif old_assignees.any?
-        "removed assignee"
-      elsif issue.assignees.any?
-        "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
-      end
+    body = text_parts.join(' and ')
 
     create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
   end
@@ -576,6 +569,20 @@ module SystemNoteService
     create_note(NoteSummary.new(epic, nil, user, body, action: action))
   end
 
+  def epic_issue_moved(from_epic, issue, to_epic, user)
+    epic_issue_moved_act(from_epic, issue, to_epic, user, verb: 'added', direction: 'from')
+    epic_issue_moved_act(to_epic, issue, from_epic, user, verb: 'moved', direction: 'to')
+  end
+
+  def epic_issue_moved_act(subject_epic, issue, object_epic, user, verb:, direction:)
+    action = 'epic_issue_moved'
+
+    body = "#{verb} issue #{issue.to_reference(subject_epic.group)} #{direction}" \
+      " epic #{subject_epic.to_reference(object_epic.group)}"
+
+    create_note(NoteSummary.new(object_epic, nil, user, body, action: action))
+  end
+
   def issue_on_epic(issue, epic, user, type)
     return unless validate_epic_issue_action_type(type)
 
@@ -588,6 +595,13 @@ module SystemNoteService
     end
 
     body = "#{type} #{direction} epic #{epic.to_reference(issue.project)}"
+
+    create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
+  end
+
+  def issue_epic_change(issue, epic, user)
+    body = "changed epic to #{epic.to_reference(issue.project)}"
+    action = 'issue_changed_epic'
 
     create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
   end

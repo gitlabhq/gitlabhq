@@ -52,6 +52,7 @@ module Gitlab
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
           :user_create_branch, request)
+
         if response.pre_receive_error.present?
           raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
         end
@@ -144,6 +145,34 @@ module Gitlab
                                    message: message,
                                    start_branch_name: start_branch_name,
                                    start_repository: start_repository)
+      end
+
+      def user_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        request = Gitaly::UserRebaseRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          rebase_id: rebase_id.to_s,
+          branch: encode_binary(branch),
+          branch_sha: branch_sha,
+          remote_repository: remote_repository.gitaly_repository,
+          remote_branch: encode_binary(remote_branch)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_rebase,
+          request,
+          remote_storage: remote_repository.storage
+        )
+
+        if response.pre_receive_error.presence
+          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+        elsif response.git_error.presence
+          raise Gitlab::Git::Repository::GitError, response.git_error
+        else
+          response.rebase_sha
+        end
       end
 
       private

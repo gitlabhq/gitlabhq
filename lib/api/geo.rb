@@ -34,10 +34,9 @@ module API
       #   GET /geo/status
       get 'status' do
         authenticate_by_gitlab_geo_node_token!
-        require_node_to_be_secondary!
 
         status = ::GeoNodeStatus.current_node_status
-        present status, with: GeoNodeStatusEntity
+        present status, with: Entities::GeoNodeStatus
       end
     end
 
@@ -56,10 +55,6 @@ module API
 
       def require_node_to_be_enabled!
         forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node&.enabled?
-      end
-
-      def require_node_to_be_secondary!
-        forbidden! 'Geo node is not secondary node.' unless Gitlab::Geo.current_node&.secondary?
       end
     end
   end

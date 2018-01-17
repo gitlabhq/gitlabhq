@@ -37,7 +37,7 @@ describe Projects::BoardsController do
 
       context 'with valid params' do
         let(:user) { create(:user) }
-        let(:milestone) { create(:milestone) }
+        let(:milestone) { create(:milestone, project: project) }
         let(:label) { create(:label) }
 
         let(:create_params) do
@@ -113,7 +113,7 @@ describe Projects::BoardsController do
   describe 'PATCH update' do
     let(:board) { create(:board, project: project, name: 'Backend') }
     let(:user) { create(:user) }
-    let(:milestone) { create(:milestone) }
+    let(:milestone) { create(:milestone, project: project) }
     let(:label) { create(:label) }
 
     let(:update_params) do

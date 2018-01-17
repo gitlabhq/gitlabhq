@@ -47,18 +47,14 @@
           <a
             :href="issue.url"
             class="issue-link"
-          >
-            #{{ issue.iid }}
-          </a>
+          >#{{ issue.iid }}</a>
           &middot;
           <span>
             {{ s__('OpenedNDaysAgo|Opened') }}
             <a
               :href="issue.url"
               class="issue-date"
-            >
-              {{ issue.createdAt }}
-            </a>
+            >{{ issue.createdAt }}</a>
           </span>
           <span>
             {{ s__('ByAuthor|by') }}

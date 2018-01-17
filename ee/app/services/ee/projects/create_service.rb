@@ -1,9 +1,10 @@
 module EE
   module Projects
     module CreateService
-      def execute
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :execute
+      def execute
         limit = params.delete(:repository_size_limit)
         mirror = params.delete(:mirror)
         mirror_user_id = params.delete(:mirror_user_id)
@@ -34,9 +35,8 @@ module EE
         ::Geo::RepositoryCreatedEventStore.new(project).create
       end
 
+      override :after_create_actions
       def after_create_actions
-        raise NotImplementedError unless defined?(super)
-
         super
 
         create_predefined_push_rule

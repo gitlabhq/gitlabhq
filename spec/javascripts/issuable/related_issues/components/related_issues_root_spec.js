@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import _ from 'underscore';
 import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
 import relatedIssuesService from '~/issuable/related_issues/services/related_issues_service';
 
