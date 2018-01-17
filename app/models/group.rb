@@ -40,20 +40,14 @@ class Group < Namespace
   # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
   has_many :audit_events, -> { where(entity_type: Group) }, foreign_key: 'entity_id'
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
-
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
-
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -135,9 +129,7 @@ class Group < Namespace
   end
 
   def avatar_url(**args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args)
+    avatar_path(**args)
   end
 
   def lfs_enabled?
@@ -210,12 +202,6 @@ class Group < Namespace
   # Parent owners are ignored for nested groups.
   def last_owner?(user)
     owners.include?(user) && owners.size == 1
-  end
-
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, "only images allowed"
-    end
   end
 
   def human_ldap_access

@@ -30,4 +30,21 @@ class Appearance < ActiveRecord::Base
       errors.add(:single_appearance_row, 'Only 1 appearances row can exist')
     end
   end
+
+  def logo_upload(uploader)
+    find_upload(uploader, logo_identifier)
+  end
+
+  def header_logo_upload(uploader)
+    find_upload(uploader, header_logo_identifier)
+  end
+
+  private
+
+  def find_upload(uploader, identifier)
+    return unless identifier
+
+    paths = uploader.store_dirs.map { |store, path| File.join(path, identifier) }
+    uploads.where(uploader: uploader.class.to_s, paths: paths)&.last
+  end
 end

@@ -92,7 +92,6 @@ class Note < ActiveRecord::Base
 
   # @deprecated attachments are handler by the MarkdownUploader
   mount_uploader :attachment, AttachmentUploader
-  deprecate :attachment => 'Use the Markdown uploader instead'
 
   # Scopes
   scope :searchable, -> { where(system: false) }
@@ -204,6 +203,13 @@ class Note < ActiveRecord::Base
 
   def max_attachment_size
     current_application_settings.max_attachment_size.megabytes.to_i
+  end
+
+  def attachment_upload(uploader)
+    return unless attachment_identifier
+
+    paths = uploader.store_dirs.map { |store, path| File.join(path, attachment_identifier) }
+    Upload.where(model: self, uploader: uploader.class.to_s, path: paths)&.last
   end
 
   def hook_attrs
