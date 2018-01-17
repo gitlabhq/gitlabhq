@@ -621,37 +621,6 @@ module Gitlab
         end
       end
 
-      # Returns branch names collection that contains the special commit(SHA1
-      # or name)
-      #
-      # Ex.
-      #   repo.branch_names_contains('master')
-      #
-      def branch_names_contains(commit)
-        branches_contains(commit).map { |c| c.name }
-      end
-
-      # Returns branch collection that contains the special commit(SHA1 or name)
-      #
-      # Ex.
-      #   repo.branch_names_contains('master')
-      #
-      def branches_contains(commit)
-        commit_obj = rugged.rev_parse(commit)
-        parent = commit_obj.parents.first unless commit_obj.parents.empty?
-
-        walker = Rugged::Walker.new(rugged)
-
-        rugged.branches.select do |branch|
-          walker.push(branch.target_id)
-          walker.hide(parent) if parent
-          result = walker.any? { |c| c.oid == commit_obj.oid }
-          walker.reset
-
-          result
-        end
-      end
-
       # Get refs hash which key is SHA1
       # and value is a Rugged::Reference
       def refs_hash
