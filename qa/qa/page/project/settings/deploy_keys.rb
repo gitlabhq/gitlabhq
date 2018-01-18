@@ -29,9 +29,11 @@ module QA
             click_on 'Add key'
           end
 
-          def has_key_title?(title)
+          def key_title
             page.within('.deploy-keys') do
-              page.find('.title', text: title)
+              # The instance might have public keys available, here we want
+              # the one from the project
+              page.first('.title').text
             end
           end
         end
