@@ -1,27 +1,18 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import projectSelect from './project_select';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 import MilestoneSelect from './milestone_select';
 import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
-import groupAvatar from './group_avatar';
-import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-import Labels from './labels';
-import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
-import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
-import Group from './group';
-import ProjectsList from './projects_list';
 import UserCallout from './user_callout';
 import BlobViewer from './blob/viewer/index';
-import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
 import TreeView from './tree';
@@ -30,7 +21,6 @@ import initSettingsPanels from './settings_panels';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
-import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
@@ -38,10 +28,7 @@ import Shortcuts from './shortcuts';
 import ShortcutsNavigation from './shortcuts_navigation';
 import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
-import Members from './members';
-import memberExpirationDate from './member_expiration_date';
 import Diff from './diff';
-import ProjectLabelSubscription from './project_label_subscription';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
@@ -80,8 +67,6 @@ import Activities from './activities';
           labels: enableGFM,
         });
       });
-
-      const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
 
       switch (page) {
         case 'sessions:new':
@@ -140,12 +125,14 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'groups:issues':
+          import('./pages/groups/issues')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:merge_requests':
-          if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
-            filteredSearchManager.setup();
-          }
-          projectSelect();
+          import('./pages/groups/merge_requests')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'dashboard:todos:index':
           import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
@@ -363,34 +350,36 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'groups:activity':
-          new Activities();
+          import('./pages/groups/activity')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:show':
-          const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
-          shortcut_handler = new ShortcutsNavigation();
-          new NotificationsForm();
-          notificationsDropdown();
-          new ProjectsList();
-
-          if (newGroupChildWrapper) {
-            new NewGroupChild(newGroupChildWrapper);
-          }
+          import('./pages/groups/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'groups:group_members:index':
-          memberExpirationDate();
-          new Members();
-          new UsersSelect();
+          import('./pages/groups/group_members/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:project_members:index':
           import('./pages/projects/project_members/')
             .then(callDefault)
             .catch(fail);
           break;
-        case 'groups:new':
         case 'groups:create':
-          BindInOut.initAll();
-          new Group();
-          groupAvatar();
+        case 'groups:new':
+          import('./pages/groups/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'groups:edit':
+          import('./pages/groups/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:groups:create':
         case 'admin:groups:new':
@@ -402,9 +391,6 @@ import Activities from './activities';
           import('./pages/admin/groups/edit')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'groups:edit':
-          groupAvatar();
           break;
         case 'projects:tree:show':
           import('./pages/projects/tree/show')
@@ -431,8 +417,14 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'groups:labels:new':
+          import('./pages/groups/labels/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:labels:edit':
-          new Labels();
+          import('./pages/groups/labels/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:labels:new':
           import('./pages/projects/labels/new')
@@ -444,24 +436,15 @@ import Activities from './activities';
             .then(callDefault)
             .catch(fail);
           break;
+        case 'groups:labels:index':
+          import('./pages/groups/labels/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:labels:index':
           import('./pages/projects/labels/index')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'groups:labels:index':
-          if ($('.prioritized-labels').length) {
-            new LabelManager();
-          }
-          $('.label-subscription').each((i, el) => {
-            const $el = $(el);
-
-            if ($el.find('.dropdown-group-label').length) {
-              new GroupLabelSubscription($el);
-            } else {
-              new ProjectLabelSubscription($el);
-            }
-          });
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
@@ -509,11 +492,9 @@ import Activities from './activities';
             runnerTokenSecretValue.init();
           }
         case 'groups:settings:ci_cd:show':
-          const secretVariableTable = document.querySelector('.js-secret-variable-table');
-          if (secretVariableTable) {
-            const secretVariableTableValues = new SecretValues(secretVariableTable);
-            secretVariableTableValues.init();
-          }
+          import('./pages/groups/settings/ci_cd/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
