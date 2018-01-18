@@ -38,6 +38,12 @@ describe API::V3::Todos do
 
         delete v3_api("/todos/#{pending_1.id}", john_doe)
       end
+
+      it 'returns 404 if the todo does not belong to the current user' do
+        delete v3_api("/todos/#{pending_1.id}", author_1)
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 
