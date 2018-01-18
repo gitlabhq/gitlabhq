@@ -449,7 +449,7 @@
   border-color: $theme-gray-200 !important;
   color: $gl-text-color-disabled !important;
   opacity: 1 !important;
-  cursor: not-allowed !important;
+  cursor: default !important;
 
   i {
     color: $gl-text-color-disabled !important;

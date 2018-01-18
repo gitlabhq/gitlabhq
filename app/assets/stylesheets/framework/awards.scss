@@ -173,7 +173,7 @@
   }
 
   &.user-authored {
-    cursor: not-allowed;
+    cursor: default;
     background-color: $gray-light;
     border-color: $theme-gray-200;
     color: $gl-text-color-disabled;
