@@ -18,21 +18,23 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
+      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
+      create: "Creating a repository to that namespace is not allowed."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :redirected_path
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :redirected_path, :target_namespace
 
-    def initialize(actor, project, protocol, authentication_abilities:, redirected_path: nil)
+    def initialize(actor, project, protocol, authentication_abilities:, redirected_path: nil, target_namespace: nil)
       @actor    = actor
       @project  = project
       @protocol = protocol
       @redirected_path = redirected_path
       @authentication_abilities = authentication_abilities
+      @target_namespace = target_namespace
     end
 
     def check(cmd, changes)
@@ -44,6 +46,7 @@ module Gitlab
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
       check_repository_existence!
+      check_repository_creation!
 
       case cmd
       when *DOWNLOAD_COMMANDS
@@ -96,7 +99,7 @@ module Gitlab
     end
 
     def check_project_accessibility!
-      if project.blank? || !can_read_project?
+      if (project.blank? || !can_read_project?) && !can_create_project_in_namespace?
         raise NotFoundError, ERROR_MESSAGES[:project_not_found]
       end
     end
@@ -140,8 +143,16 @@ module Gitlab
     end
 
     def check_repository_existence!
-      unless project.repository.exists?
+      if (project.blank? || !project.repository.exists?) && !can_create_project_in_namespace?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
+      end
+    end
+
+    def check_repository_creation!
+      return unless target_namespace
+
+      unless can_create_project_in_namespace?
+        raise UnauthorizedError, ERROR_MESSAGES[:create]
       end
     end
 
@@ -158,6 +169,8 @@ module Gitlab
     end
 
     def check_push_access!(changes)
+      return if can_create_project_in_namespace?
+
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
@@ -232,6 +245,12 @@ module Gitlab
       elsif ci?
         true # allow CI (build without a user) for backwards compatibility
       end || Guest.can?(:read_project, project)
+    end
+
+    def can_create_project_in_namespace?
+      return unless target_namespace
+
+      actor.can?(:create_projects, target_namespace)
     end
 
     def http?
