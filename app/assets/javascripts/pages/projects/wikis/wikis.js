@@ -1,5 +1,5 @@
-import bp from './breakpoints';
-import { slugify } from './lib/utils/text_utility';
+import bp from '../../../breakpoints';
+import { slugify } from '../../../lib/utils/text_utility';
 
 export default class Wikis {
   constructor() {

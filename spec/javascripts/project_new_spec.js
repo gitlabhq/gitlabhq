@@ -1,4 +1,4 @@
-import ProjectNew from '~/project_new';
+import ProjectNew from '~/pages/projects/shared/project_new';
 
 describe('ApproversSelect', function () {
   const projectSettingsTemplate = 'projects/edit.html.raw';

@@ -18,7 +18,7 @@
 <template>
   <button
     type="button"
-    class="btn btn-blank gutter-toggle btn-sidebar-action"
+    class="btn btn-blank gutter-toggle"
     @click="toggle"
   >
     <i

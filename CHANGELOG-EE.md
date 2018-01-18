@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.3.5 (2018-01-18)
+
+- No changes.
+
 ## 10.3.4 (2018-01-10)
 
 ### Security (2 changes)
@@ -87,6 +91,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Document how to set up GitLab Geo for HA. !3468
 - Add border for epic edit button.
 
+
+## 10.2.7 (2018-01-18)
+
+- No changes.
 
 ## 10.2.6 (2018-01-11)
 
@@ -199,6 +207,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Suppress MergeableSelector warning candidates in EE-only files. !3225 (Takuya Noguchi)
 - Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
 
+
+## 10.1.7 (2018-01-18)
+
+- No changes.
 
 ## 10.1.6 (2018-01-11)
 

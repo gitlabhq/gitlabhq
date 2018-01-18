@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.5 (2018-01-18)
+
+- No changes.
+
 ## 10.3.4 (2018-01-10)
 
 ### Security (7 changes, 1 of them is from the community)
@@ -192,6 +196,10 @@ entry.
 - Update svg external depencency.
 - Clean up schema of the "merge_requests" table.
 
+
+## 10.2.7 (2018-01-18)
+
+- No changes.
 
 ## 10.2.6 (2018-01-11)
 
@@ -473,6 +481,10 @@ entry.
 - Use title as placeholder instead of issue title for reusability.
 - Add Gitaly metrics to the performance bar.
 
+
+## 10.1.7 (2018-01-18)
+
+- No changes.
 
 ## 10.1.6 (2018-01-11)
 

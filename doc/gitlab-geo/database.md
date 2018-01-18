@@ -317,6 +317,7 @@ because we have not yet configured the secondary server. This is the next step.
     # - replace '5.6.7.8' with the secondary private address
     postgresql['listen_address'] = '5.6.7.8'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','5.6.7.8/32']
+    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
     # gitlab database user's password (defined previously)
     gitlab_rails['db_password'] = 'mypassword'

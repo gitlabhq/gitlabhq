@@ -53,4 +53,3 @@ If you do not have any migrations yet, you will need to create an empty
 ## Sources
 
 - https://medium.com/@nahtnam/using-phoenix-on-gitlab-ci-5a51eec81142
-- https://davejlong.com/ci-with-phoenix-and-gitlab/

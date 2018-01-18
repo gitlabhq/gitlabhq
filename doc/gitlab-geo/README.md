@@ -190,14 +190,18 @@ Read through the [Geo High Availability documentation](ha.md).
 When you have object storage enabled, please consult the
 [Geo with Object Storage](object_storage.md) documentation.
 
+## Replicating the Container Registry
+
+Read how to [replicate the Container Registry](docker_registry.md).
+
 ## Current limitations
 
 - You cannot push code to secondary nodes
 - The primary node has to be online for OAuth login to happen (existing
   sessions and Git are not affected)
 - It works for repos, wikis, issues, and merge requests
-- It does not work for job logs, artifacts, Docker images of the Container
-  Registry, and GitLab Pages
+- It does not work for job logs, artifacts, GitLab Pages, and Docker images of the Container
+  Registry (by default, but you can configure it separately, see [replicate the Container Registry](docker_registry.md) for details)
 - It does not work for attachments uploaded before GitLab 9.0 because they will
   not present in the uploads table, until
   [#29249](https://gitlab.com/gitlab-org/gitlab-ce/issues/29240) is fixed.
@@ -221,7 +225,7 @@ example:
 
 This message shows that Geo detected that a repository update was needed for project 1.
 
-## Security of GitLab Geo  
+## Security of GitLab Geo
 
 Read the [security review](security-review.md) page.
 
