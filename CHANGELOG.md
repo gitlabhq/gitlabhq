@@ -482,6 +482,10 @@ entry.
 - Add Gitaly metrics to the performance bar.
 
 
+## 10.1.7 (2018-01-18)
+
+- No changes.
+
 ## 10.1.6 (2018-01-11)
 
 ### Security (8 changes, 1 of them is from the community)
