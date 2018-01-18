@@ -32,7 +32,9 @@ module QA
         end
 
         def go_to_activity
-          click_on class: 'shortcuts-project-activity'
+          within_sidebar do
+            click_on 'Activity'
+          end
         end
       end
     end
