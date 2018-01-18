@@ -7,6 +7,7 @@
 - Ubuntu
 - Debian
 - CentOS
+- openSUSE
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
