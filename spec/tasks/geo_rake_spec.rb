@@ -1,6 +1,6 @@
 require 'rake_helper'
 
-describe 'geo rake tasks' do
+describe 'geo rake tasks', :geo do
   include ::EE::GeoHelpers
 
   before do
@@ -59,8 +59,6 @@ describe 'geo rake tasks' do
   end
 
   describe 'status task' do
-    include ::EE::GeoHelpers
-
     let!(:current_node) { create(:geo_node) }
     let!(:primary_node) { create(:geo_node, :primary) }
     let!(:geo_event_log) { create(:geo_event_log) }
