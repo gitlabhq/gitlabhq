@@ -66,7 +66,7 @@ class Route < ActiveRecord::Base
     RedirectRoute.create(source: source, path: path, permanent: permanent)
   end
 
-  # Groups redirects are considered permanent to avoid 
+  # Groups redirects are considered permanent to avoid
   # any other Group/User reclaim an old path
   def permanent_redirect?
     source_type != "Project"
@@ -92,7 +92,7 @@ class Route < ActiveRecord::Base
     if source.is_a? Project
       [source.id]
     else
-      source.self_and_descendants.map(&:id)
+      source.self_and_descendants.select(:id)
     end
   end
 
