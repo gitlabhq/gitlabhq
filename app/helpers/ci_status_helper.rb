@@ -103,17 +103,6 @@ module CiStatusHelper
       tooltip_placement: tooltip_placement)
   end
 
-  def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')
-    project = commit.project
-    path = pipelines_project_commit_path(project, commit)
-
-    render_status_with_link(
-      'commit',
-      commit.status(ref),
-      path,
-      tooltip_placement: tooltip_placement)
-  end
-
   def render_pipeline_status(pipeline, tooltip_placement: 'auto left')
     project = pipeline.project
     path = project_pipeline_path(project, pipeline)
