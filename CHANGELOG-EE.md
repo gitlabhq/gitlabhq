@@ -208,6 +208,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
 
 
+## 10.1.7 (2018-01-18)
+
+- No changes.
+
 ## 10.1.6 (2018-01-11)
 
 ### Security (2 changes)
