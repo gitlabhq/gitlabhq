@@ -20,4 +20,4 @@ export default () => {
   $('#tree-slider').waitForImages(() => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
   });
-}
+};
