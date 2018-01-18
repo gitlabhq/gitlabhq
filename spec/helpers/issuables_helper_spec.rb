@@ -125,10 +125,10 @@ describe IssuablesHelper do
   describe '#updated_at_by' do
     let(:user) { create(:user) }
     let(:unedited_issuable) { create(:issue) }
-    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
+    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago) }
     let(:edited_updated_at_by) do
       {
-        updatedAt: edited_issuable.updated_at.to_time.iso8601,
+        updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
         updatedBy: {
           name: user.name,
           path: user_path(user)
@@ -142,7 +142,7 @@ describe IssuablesHelper do
     context 'when updated by a deleted user' do
       let(:edited_updated_at_by) do
         {
-          updatedAt: edited_issuable.updated_at.to_time.iso8601,
+          updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
           updatedBy: {
             name: User.ghost.name,
             path: user_path(User.ghost)

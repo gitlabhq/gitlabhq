@@ -241,7 +241,7 @@ module IssuablesHelper
     return {} unless issuable.edited?
 
     {
-      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedAt: issuable.last_edited_at.to_time.iso8601,
       updatedBy: {
         name: issuable.last_edited_by.name,
         path: user_path(issuable.last_edited_by)
