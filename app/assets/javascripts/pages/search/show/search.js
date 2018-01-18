@@ -15,6 +15,7 @@ export default class Search {
     $groupDropdown.glDropdown({
       selectable: true,
       filterable: true,
+      filterRemote: true,
       fieldName: 'group_id',
       search: {
         fields: ['full_name'],
@@ -43,6 +44,7 @@ export default class Search {
     $projectDropdown.glDropdown({
       selectable: true,
       filterable: true,
+      filterRemote: true,
       fieldName: 'project_id',
       search: {
         fields: ['name'],
