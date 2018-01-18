@@ -65,12 +65,12 @@ module API
     end
 
     class Hook < Grape::Entity
-      expose :id, :url, :created_at, :push_events, :tag_push_events, :repository_update_events
+      expose :id, :url, :created_at, :push_events, :tag_push_events, :merge_requests_events, :repository_update_events
       expose :enable_ssl_verification
     end
 
     class ProjectHook < Hook
-      expose :project_id, :issues_events, :merge_requests_events
+      expose :project_id, :issues_events
       expose :note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
