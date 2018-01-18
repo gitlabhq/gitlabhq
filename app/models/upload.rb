@@ -17,16 +17,13 @@ class Upload < ActiveRecord::Base
   end
 
   def self.record(uploader)
-    upload = uploader.upload&.dup || new
-
-    upload.update_attributes(
+    create(
       size: uploader.file.size,
       path: uploader.upload_path,
       model: uploader.model,
       uploader: uploader.class.to_s,
       store: uploader.try(:object_store) || ObjectStorage::Store::LOCAL
     )
-    upload
   end
 
   def self.hexdigest(path)

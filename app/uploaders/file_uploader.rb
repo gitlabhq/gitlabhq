@@ -16,13 +16,7 @@ class FileUploader < GitlabUploader
   DYNAMIC_PATH_PATTERN = %r{(?<secret>\h{32})/(?<identifier>.*)}
 
   attr_accessor :model
-  attr_reader :secret
 
-  # TODO: remove this, FileUploader should not have storage_options, this class
-  # should be abstract, or even a Concern that simply add the secret
-  #
-  # Then create a new AdhocUploader that implement the base_dir logic of this class,
-  # which is wrong anyways.
   storage_options Gitlab.config.uploads
 
   def self.root
@@ -32,7 +26,7 @@ class FileUploader < GitlabUploader
   def self.absolute_path(upload)
     File.join(
       absolute_base_dir(upload.model),
-      upload.path # this already contain the dynamic_segment, see #upload_path
+      upload.path # already contain the dynamic_segment, see #upload_path
     )
   end
 
@@ -40,7 +34,7 @@ class FileUploader < GitlabUploader
     model_path_segment(model)
   end
 
-  # this is used in migrations and import/exports
+  # used in migrations and import/exports
   def self.absolute_base_dir(model)
     File.join(root, base_dir(model))
   end

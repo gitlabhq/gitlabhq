@@ -59,8 +59,6 @@ module ObjectStorage
       before :store, :verify_license!
     end
 
-    attr_reader :object_store
-
     class_methods do
       def object_store_options
         storage_options&.object_store
@@ -99,10 +97,12 @@ module ObjectStorage
       @object_store ||= model.try(store_serialization_column) || Store::LOCAL
     end
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def object_store=(value)
       @object_store = value || Store::LOCAL
-      @storage = storage_for(@object_store)
+      @storage = storage_for(object_store)
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     # Return true if the current file is part or the model (i.e. is mounted in the model)
     #
@@ -114,7 +114,7 @@ module ObjectStorage
     def persist_object_store!
       return unless persist_object_store?
 
-      updated = model.update_column(store_serialization_column, @object_store)
+      updated = model.update_column(store_serialization_column, object_store)
       raise ActiveRecordError unless updated
     end
 
@@ -145,21 +145,17 @@ module ObjectStorage
       return unless file
 
       file_to_delete = file
-      self.object_store = new_store # this changes the storage and file
+      self.object_store = new_store # changes the storage and file
 
       cache_stored_file! if file_storage?
 
       with_callbacks(:store, file_to_delete) do # for #store_versions!
         storage.store!(file).tap do |new_file|
-          @file = new_file
           begin
-            # Triggering a model.save! will cause the new_file to be deleted.
-            # I still need to investigate exactly why, but this seems like a weird interaction
-            # between activerecord and carrierwave
+            retrieve_from_store!(identifier)
             persist_object_store!
             file_to_delete.delete if new_file.exists?
           rescue => e
-            # since we change storage store the new storage
             # in case of failure delete new file
             new_file.delete
             raise e
@@ -272,7 +268,7 @@ module ObjectStorage
       # To be safe, keep this directory outside of the the cache directory
       # because calling CarrierWave.clean_cache_files! will remove any files in
       # the cache directory.
-      File.join(work_dir, @cache_id, version_name.to_s, for_file)
+      File.join(work_dir, cache_id, version_name.to_s, for_file)
     end
   end
 end
