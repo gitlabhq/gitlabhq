@@ -13,12 +13,10 @@ Mousetrap.stopCallback = (e, element, combo) => {
 };
 
 export default class Shortcuts {
-  constructor(skipResetBindings) {
+  constructor() {
     this.onToggleHelp = this.onToggleHelp.bind(this);
     this.enabledHelp = [];
-    if (!skipResetBindings) {
-      Mousetrap.reset();
-    }
+
     Mousetrap.bind('?', this.onToggleHelp);
     Mousetrap.bind('s', Shortcuts.focusSearch);
     Mousetrap.bind('f', this.focusFilter.bind(this));
