@@ -255,7 +255,7 @@
 .stage-cell {
   &.table-section {
     @media (min-width: $screen-md-min) {
-      min-width: 148px;
+      min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
       margin-right: -4px;
     }
   }
