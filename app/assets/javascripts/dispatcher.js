@@ -1,9 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 import projectSelect from './project_select';
 import Milestone from './milestone';
-import IssuableForm from './issuable_form';
-import LabelsSelect from './labels_select';
-import MilestoneSelect from './milestone_select';
 import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
@@ -14,7 +11,6 @@ import Compare from './compare';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
-import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import BindInOut from './behaviors/bind_in_out';
 import SecretValues from './behaviors/secret_values';
@@ -245,14 +241,16 @@ import Activities from './activities';
             });
           }
         case 'projects:merge_requests:creations:diffs':
+          import('./pages/projects/merge_requests/creations/diffs')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:merge_requests:edit':
-          new Diff();
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'), true);
-          new IssuableForm($('.merge-request-form'));
-          new LabelsSelect();
-          new MilestoneSelect();
-          new IssuableTemplateSelectors();
+          import('./pages/projects/merge_requests/edit')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:tags:new':
           import('./pages/projects/tags/new')
