@@ -93,6 +93,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
+- **(EEU)** [Web IDE](user/project/repository/web-ide/index.md)
 
 ### Issues and Merge Requests (MRs)
 
