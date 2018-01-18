@@ -561,6 +561,8 @@ import Activities from './activities';
           new DueDateSelectors();
           break;
         case 'projects:clusters:show':
+        case 'projects:clusters:update':
+        case 'projects:clusters:destroy':
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
             .catch((err) => {
