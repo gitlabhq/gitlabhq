@@ -2,9 +2,11 @@ module Gitlab
   module Metrics
     module Concern
       class MetricOptions
+        SMALL_NETWORK_BUCKETS = [0.005, 0.01, 0.1, 1, 10].freeze
+
         def initialize(options = {})
           @multiprocess_mode = options[:multiprocess_mode] || :all
-          @buckets = options[:buckets] || ::Prometheus::Client::Histogram::DEFAULT_BUCKETS
+          @buckets = options[:buckets] || SMALL_NETWORK_BUCKETS
           @base_labels = options[:base_labels] || {}
           @docstring = options[:docstring]
           @with_feature = options[:with_feature]

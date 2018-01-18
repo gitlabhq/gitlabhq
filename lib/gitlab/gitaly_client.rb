@@ -6,6 +6,7 @@ require 'grpc/health/v1/health_services_pb'
 
 module Gitlab
   module GitalyClient
+    include Gitlab::Metrics::Concern
     module MigrationStatus
       DISABLED = 1
       OPT_IN = 2
@@ -33,8 +34,6 @@ module Gitlab
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
-    METRICS_MUTEX = Mutex.new
-    private_constant :MUTEX, :METRICS_MUTEX
 
     class << self
       attr_accessor :query_time
@@ -42,28 +41,14 @@ module Gitlab
 
     self.query_time = 0
 
-    def self.migrate_histogram
-      @migrate_histogram ||=
-        METRICS_MUTEX.synchronize do
-          # If a thread was blocked on the mutex, the value was set already
-          return @migrate_histogram if @migrate_histogram
-
-          Gitlab::Metrics.histogram(:gitaly_migrate_call_duration_seconds,
-                                    "Gitaly migration call execution timings",
-                                    gitaly_enabled: nil, feature: nil)
-        end
+    define_histogram :gitaly_migrate_call_duration_seconds do
+      docstring "Gitaly migration call execution timings"
+      base_labels gitaly_enabled: nil, feature: nil
     end
 
-    def self.gitaly_call_histogram
-      @gitaly_call_histogram ||=
-        METRICS_MUTEX.synchronize do
-          # If a thread was blocked on the mutex, the value was set already
-          return @gitaly_call_histogram if @gitaly_call_histogram
-
-          Gitlab::Metrics.histogram(:gitaly_controller_action_duration_seconds,
-                                    "Gitaly endpoint histogram by controller and action combination",
-                                    Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil))
-        end
+    define_histogram :gitaly_controller_action_duration_seconds do
+      docstring "Gitaly endpoint histogram by controller and action combination"
+      base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
     end
 
     def self.stub(name, storage)
@@ -145,7 +130,7 @@ module Gitlab
 
       # Keep track, seperately, for the performance bar
       self.query_time += duration
-      gitaly_call_histogram.observe(
+      gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
     end
@@ -247,7 +232,7 @@ module Gitlab
             yield is_enabled
           ensure
             total_time = Gitlab::Metrics::System.monotonic_time - start
-            migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
+            gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
           end
