@@ -525,8 +525,9 @@ module Gitlab
         install_rename_triggers(table, column, temp_column)
 
         # Schedule the jobs that will copy the data from the old column to the
-        # new one.
-        relation.each_batch(of: batch_size) do |batch, index|
+        # new one. Rows with NULL values in our source column are skipped since
+        # the target column is already NULL at this point.
+        relation.where.not(column => nil).each_batch(of: batch_size) do |batch, index|
           start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
           max_index = index
 
