@@ -15,7 +15,11 @@ describe Gitlab::FileDetector do
 
   describe '.type_of' do
     it 'returns the type of a README file' do
-      expect(described_class.type_of('README.md')).to eq(:readme)
+      %w(README readme INDEX index).each do |filename|
+        %w(.md .adoc).each do |extname|
+          expect(described_class.type_of(filename + extname)).to eq(:readme)
+        end
+      end
     end
 
     it 'returns nil for a README file in a directory' do
