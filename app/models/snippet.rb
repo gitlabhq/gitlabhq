@@ -76,6 +76,27 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
+  # Returns a collection of snippets that are either public or visible to the
+  # logged in user.
+  #
+  # This method does not verify the user actually has the access to the project
+  # the snippet is in, so it should be only used on a relation that's already scoped
+  # for project access
+  def self.public_or_visible_to_user(user = nil)
+    if user
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = snippets.project_id')
+
+      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+
+      where('EXISTS (?) OR snippets.visibility_level IN (?) or snippets.author_id = (?)', authorized, levels, user.id)
+    else
+      public_to_user
+    end
+  end
+
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
