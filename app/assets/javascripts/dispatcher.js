@@ -264,13 +264,13 @@ import Activities from './activities';
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:create':
-          import('./pages/projects/snippets/create')
+          import('./pages/projects/snippets/new')
             .then(callDefault)
             .catch(fail);
           break;
         case 'projects:snippets:edit':
         case 'projects:snippets:update':
-          import('./pages/projects/snippets/update')
+          import('./pages/projects/snippets/edit')
             .then(callDefault)
             .catch(fail);
           break;
