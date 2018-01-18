@@ -265,20 +265,12 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:snippets:new':
-          import('./pages/projects/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:edit':
-          import('./pages/projects/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:snippets:create':
           import('./pages/projects/snippets/create')
             .then(callDefault)
             .catch(fail);
           break;
+        case 'projects:snippets:edit':
         case 'projects:snippets:update':
           import('./pages/projects/snippets/update')
             .then(callDefault)
@@ -305,7 +297,7 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:releases:edit':
-          import('./pages/projects/releases')
+          import('./pages/projects/releases/edit')
             .then(callDefault)
             .catch(fail);
           break;
