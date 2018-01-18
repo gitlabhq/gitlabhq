@@ -106,8 +106,6 @@ const bindEvents = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', bindEvents);
-
 export default {
   bindEvents,
   deriveProjectPathFromUrl,
