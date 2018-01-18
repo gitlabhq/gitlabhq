@@ -1,9 +1,14 @@
 class ProjectHook < WebHook
+<<<<<<< HEAD
   include CustomModelNaming
   include TriggerableHooks
 
   self.singular_route_key = :hook
 
+=======
+  include TriggerableHooks
+
+>>>>>>> upstream/master
   triggerable_hooks [
     :push_hooks,
     :tag_push_hooks,
