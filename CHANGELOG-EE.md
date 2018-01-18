@@ -92,6 +92,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add border for epic edit button.
 
 
+## 10.2.7 (2018-01-18)
+
+- No changes.
+
 ## 10.2.6 (2018-01-11)
 
 ### Security (2 changes)
