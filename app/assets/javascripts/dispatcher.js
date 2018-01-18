@@ -33,8 +33,6 @@ import initSettingsPanels from './settings_panels';
 import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
-import GpgBadges from './gpg_badges';
-import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
