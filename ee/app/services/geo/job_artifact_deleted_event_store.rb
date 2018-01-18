@@ -24,7 +24,7 @@ module Geo
     end
 
     def local_store_path
-      Pathname.new(JobArtifactUploader.local_store_path)
+      Pathname.new(JobArtifactUploader.root)
     end
 
     def relative_file_path

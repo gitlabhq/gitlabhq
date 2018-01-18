@@ -9,11 +9,11 @@ module EE
     prepended do
       after_destroy :log_geo_event
 
-      scope :with_files_stored_locally, -> { where(file_store: [nil, JobArtifactUploader::LOCAL_STORE]) }
+      scope :with_files_stored_locally, -> { where(file_store: [nil, JobArtifactUploader::Store::LOCAL]) }
     end
 
     def local_store?
-      [nil, JobArtifactUploader::LOCAL_STORE].include?(self.file_store)
+      [nil, JobArtifactUploader::Store::LOCAL].include?(self.file_store)
     end
 
     private

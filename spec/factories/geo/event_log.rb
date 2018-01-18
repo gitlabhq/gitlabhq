@@ -100,7 +100,7 @@ FactoryBot.define do
     lfs_object { create(:lfs_object, :with_file) }
 
     after(:build, :stub) do |event, _|
-      local_store_path = Pathname.new(LfsObjectUploader.local_store_path)
+      local_store_path = Pathname.new(LfsObjectUploader.root)
       relative_path = Pathname.new(event.lfs_object.file.path).relative_path_from(local_store_path)
 
       event.oid = event.lfs_object.oid
@@ -112,7 +112,7 @@ FactoryBot.define do
     job_artifact { create(:ci_job_artifact, :archive) }
 
     after(:build, :stub) do |event, _|
-      local_store_path = Pathname.new(JobArtifactUploader.local_store_path)
+      local_store_path = Pathname.new(JobArtifactUploader.root)
       relative_path = Pathname.new(event.job_artifact.file.path).relative_path_from(local_store_path)
 
       event.file_path = relative_path
