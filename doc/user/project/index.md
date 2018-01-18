@@ -24,7 +24,7 @@ integrated platform
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
-- **(EEU)** [Web IDE](web-ide/index.md)
+- **(EEU)** [Web IDE](web_ide/index.md)
 
 **Issues and merge requests:**
 

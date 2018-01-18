@@ -72,7 +72,7 @@ Shortcuts to GitLab's most visited docs:
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
-- **(EEU)** [Web IDE](user/project/web-ide/index.md)
+- **(EEU)** [Web IDE](user/project/web_ide/index.md)
 
 ### Repository
 
