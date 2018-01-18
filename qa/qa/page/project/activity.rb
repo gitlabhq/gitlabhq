@@ -3,11 +3,7 @@ module QA
     module Project
       class Activity < Page::Base
         view 'app/views/shared/_event_filter.html.haml' do
-          ##
-          # TODO, This needs improvement, _event_filter.html.haml
-          # doesn't have proper elements defined
-          #
-          element :push_events, '.event-filter'
+          element :push_events, "event_filter_link EventFilter.push, _('Push events')"
         end
 
         def go_to_push_events
