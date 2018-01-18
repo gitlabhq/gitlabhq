@@ -12,7 +12,7 @@ module API
         end
         delete ':id' do
           TodoService.new.mark_todos_as_done_by_ids(params[:id], current_user)
-          todo = Todo.find(params[:id])
+          todo = current_user.todos.find(params[:id])
 
           present todo, with: ::API::Entities::Todo, current_user: current_user
         end
