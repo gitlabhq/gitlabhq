@@ -1,10 +1,16 @@
 html {
   overflow-y: scroll;
 
-  &.touch .tooltip { display: none !important; }
+  &.touch .tooltip {
+    display: none !important;
+  }
 }
 
 body {
+  // Improves readability for dyslexic users
+  // Supported only in Chrome/Safari so far
+  text-decoration-skip: ink;
+
   &.navless {
     background-color: $white-light !important;
   }
