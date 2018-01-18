@@ -153,10 +153,13 @@
         return !!this.state.updatedAt;
       },
       issueChanged() {
-        return this.initialDescriptionText
-        !== this.store.formState.description
-        || this.initialTitleText
-        !== this.store.formState.title;
+        let descriptionChanged =
+          this.initialDescriptionText !== this.store.formState.description;
+        
+        let titleChanged =
+          this.initialTitleText !== this.store.formState.title;
+        
+        return descriptionChanged || titleChanged;
       },
     },
     created() {
@@ -194,6 +197,7 @@
       eventHub.$off('update.issuable', this.updateIssuable);
       eventHub.$off('close.form', this.closeForm);
       eventHub.$off('open.form', this.openForm);
+      window.removeEventListener('beforeunload', this.handleBeforeUnloadEvent);
     },
     methods: {
       handleBeforeUnloadEvent(e) {
