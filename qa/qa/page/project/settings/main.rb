@@ -5,6 +5,11 @@ module QA
         class Main < Page::Base
           include Common
 
+          view 'app/views/projects/edit.html.haml' do
+            element :advanced_settings_section, '%section.settings.advanced-settings'
+            element :advanced_settings_expand, "= expanded ? 'Collapse' : 'Expand'"
+          end
+
           def expand_advanced_settings(&block)
             expand_section('section.advanced-settings') do
               Advanced.perform(&block)

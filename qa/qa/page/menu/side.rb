@@ -15,7 +15,7 @@ module QA
         end
 
         def go_to_settings
-          page.within('.sidebar-top-level-items') do
+          within_sidebar do
             click_on 'Settings'
           end
         end

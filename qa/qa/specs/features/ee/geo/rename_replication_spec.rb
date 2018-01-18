@@ -21,7 +21,6 @@ module QA
         end
 
         # rename the project
-        Runtime::Browser.visit(:geo_primary)
         Page::Menu::Main.act { go_to_projects }
 
         Page::Dashboard::Projects.perform do |dashboard|
@@ -30,10 +29,10 @@ module QA
 
         Page::Menu::Side.act { go_to_settings }
 
-        geo_project_newname = "geo-after-rename-#{SecureRandom.hex(8)}"
+        geo_project_renamed = "geo-after-rename-#{SecureRandom.hex(8)}"
         Page::Project::Settings::Main.perform do |settings|
           settings.expand_advanced_settings do |page|
-            page.rename_to(geo_project_newname)
+            page.rename_to(geo_project_renamed)
           end
         end
 
@@ -50,11 +49,11 @@ module QA
           Page::Menu::Main.perform do |menu|
             menu.go_to_projects
 
-            expect(page).to have_content(geo_project_newname)
+            expect(page).to have_content(geo_project_renamed)
           end
 
           Page::Dashboard::Projects.perform do |dashboard|
-            dashboard.go_to_project(geo_project_newname)
+            dashboard.go_to_project(geo_project_renamed)
           end
 
           Page::Project::Show.perform do
