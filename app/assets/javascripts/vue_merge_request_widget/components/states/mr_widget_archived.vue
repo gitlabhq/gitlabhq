@@ -12,7 +12,7 @@
   <div class="mr-widget-body media">
     <div class="space-children">
       <status-icon
-        status="failed"
+        status="warning"
       />
       <button
         type="button"
