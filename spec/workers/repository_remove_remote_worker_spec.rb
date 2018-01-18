@@ -1,17 +1,20 @@
 require 'rails_helper'
 
 describe RepositoryRemoveRemoteWorker do
+  subject(:worker) { described_class.new }
+
   describe '#perform' do
     let(:remote_name) { 'joe'}
     let!(:project) { create(:project, :repository) }
 
-    context 'when it does not get the lease' do
-      it 'does not execute' do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
+    context 'when it cannot obtain lease' do
+      it 'logs error' do
+        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
 
         expect_any_instance_of(Repository).not_to receive(:remove_remote)
+        expect(worker).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
 
-        subject.perform(project.id, remote_name)
+        worker.perform(project.id, remote_name)
       end
     end
 
@@ -22,7 +25,7 @@ describe RepositoryRemoveRemoteWorker do
 
       context 'when project does not exist' do
         it 'returns nil' do
-          expect { subject.perform(-1, 'remote_name') }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { worker.perform(-1, 'remote_name') }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
@@ -34,7 +37,7 @@ describe RepositoryRemoveRemoteWorker do
 
           expect_any_instance_of(Repository).to receive(:remove_remote).with(remote_name).and_call_original
 
-          subject.perform(project.id, remote_name)
+          worker.perform(project.id, remote_name)
         end
       end
     end

@@ -1,33 +1,25 @@
 class RepositoryRemoveRemoteWorker
   include ApplicationWorker
+  include ExclusiveLeaseGuard
 
   LEASE_TIMEOUT = 1.hour
 
+  attr_reader :project, :remote_name
+
   def perform(project_id, remote_name)
-    lease_uuid = try_obtain_lease(project_id)
-    return unless lease_uuid
+    @remote_name = remote_name
+    @project = Project.find(project_id)
 
-    project = Project.find(project_id)
-    project.repository.remove_remote(remote_name)
-
-    cancel_lease(project_id, lease_uuid)
+    try_obtain_lease do
+      @project.repository.remove_remote(remote_name)
+    end
   end
 
-  private
-
-  def lease_key(project_id)
-    "remove_remote_#{project_id}"
+  def lease_timeout
+    LEASE_TIMEOUT
   end
 
-  def try_obtain_lease(id)
-    key = lease_key(id)
-
-    Gitlab::ExclusiveLease.new(key, timeout: LEASE_TIMEOUT).try_obtain
-  end
-
-  def cancel_lease(id, uuid)
-    key = lease_key(id)
-
-    Gitlab::ExclusiveLease.cancel(key, uuid)
+  def lease_key
+    "remove_remote_#{project.id}_#{remote_name}"
   end
 end
