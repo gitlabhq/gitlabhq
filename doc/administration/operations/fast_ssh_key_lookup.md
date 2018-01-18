@@ -1,5 +1,10 @@
 # Fast lookup of authorized SSH keys in the database
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in 
+> [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee) 9.3.
+>
+> Available in GitLab Community Edition 10.4.
+
 Regular SSH operations become slow as the number of users grows because OpenSSH
 searches for a key to authorize a user via a linear search. In the worst case,
 such as when the user is not authorized to access GitLab, OpenSSH will scan the
