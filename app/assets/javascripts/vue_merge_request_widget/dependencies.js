@@ -33,7 +33,7 @@ export { default as PipelineBlockedState } from './components/states/mr_widget_p
 export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';
 export { default as MergeWhenPipelineSucceedsState } from './components/states/mr_widget_merge_when_pipeline_succeeds';
 export { default as RebaseState } from './components/states/mr_widget_rebase.vue';
-export { default as AutoMergeFailed } from './components/states/mr_widget_auto_merge_failed';
+export { default as AutoMergeFailed } from './components/states/mr_widget_auto_merge_failed.vue';
 export { default as CheckingState } from './components/states/mr_widget_checking';
 export { default as MRWidgetStore } from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 export { default as MRWidgetService } from 'ee/vue_merge_request_widget/services/mr_widget_service';
