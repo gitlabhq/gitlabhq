@@ -44,9 +44,9 @@ module Gitlab
 
         # Use feature toggle to control whether certain metric is enabled/disabled
         def with_feature(name = nil)
-          @feature_name = name unless name.nil?
+          @with_feature = name unless name.nil?
 
-          @feature_name
+          @with_feature
         end
 
         def evaluate(&block)
