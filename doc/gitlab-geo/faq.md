@@ -34,3 +34,7 @@ connectivity between your nodes, your hardware, etc.
 We send the clone url from the primary server to any secondaries, so it
 doesn't matter. If primary is running on port `2200`, clone url will reflect
 that.
+
+## Is this possible to set up a Docker Registry for a secondary node that mirrors the one on a primary node?
+
+Yes. See [Docker Registry for a secondary Geo node](docker_registry.md).
