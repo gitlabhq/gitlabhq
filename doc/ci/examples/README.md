@@ -54,13 +54,20 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Analyze code quality with the Code Climate CLI](code_climate.md)
 
-### Other
+### Static Application Security Testing (SAST)
 
-- [Using `dpl` as deployment tool](deployment/README.md)
-- [Repositories with examples for various languages](https://gitlab.com/groups/gitlab-examples)
-- [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-- [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
-- [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md)
+- **(EEU)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
+- [Scan your Docker images for vulnerabilities](sast_docker.md)
+
+### Dynamic Application Security Testing (DAST)
+
+Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md).
+
+### Browser Performance Testing with Sitespeed.io
+
+Analyze your [browser performance with Sitespeed.io](browser_performance.md).
+
+### GitLab CI/CD for Review Apps
 
 ## GitLab CI/CD for GitLab Pages
 

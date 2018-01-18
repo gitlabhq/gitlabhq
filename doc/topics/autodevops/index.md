@@ -20,6 +20,8 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
+1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto Deploy](#auto-deploy)
@@ -193,8 +195,10 @@ Auto Code Quality uses the open source
 [`codeclimate` image](https://hub.docker.com/r/codeclimate/codeclimate/) to run
 static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
-out. In GitLab Enterprise Edition Starter, differences between the source and
-target branches are
+out.
+
+In GitLab Enterprise Edition Starter, differences between the source and
+target branches are also
 [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
 
 ### Auto SAST
@@ -207,7 +211,34 @@ analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
+
+### Auto SAST for Docker images
+
+> Introduced in GitLab 10.4.
+
+Vulnerability Static Analysis for containers uses
+[Clair](https://github.com/coreos/clair) to run static analysis on a
+Docker image and checks for potential security issues. Once the report is
+created, it's uploaded as an artifact which you can later download and
+check out.
+
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast_docker.html).
+
+### Auto DAST
+
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+
+Dynamic Application Security Testing (DAST) uses the
+popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
+to perform an analysis on the current code and checks for potential security
+issues. Once the report is created, it's uploaded as an artifact which you can
+later download and check out.
+
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/dast.html).
 
 ### Auto Browser Performance Testing
 
