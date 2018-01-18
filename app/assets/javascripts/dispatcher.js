@@ -10,7 +10,6 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-import Compare from './compare';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
@@ -231,19 +230,9 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
-          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
-          if (mrNewCompareNode) {
-            new Compare({
-              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
-              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
-              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
-            });
-          } else {
-            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
-            new MergeRequest({
-              action: mrNewSubmitNode.dataset.mrSubmitAction,
-            });
-          }
+          import('./pages/projects/merge_requests/creations/new')
+            .then(callDefault)
+            .catch(fail);
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new Diff();
