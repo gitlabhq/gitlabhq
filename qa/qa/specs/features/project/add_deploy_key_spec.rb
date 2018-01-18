@@ -1,7 +1,7 @@
 module QA
   feature 'deploy keys support', :core do
     given(:deploy_key_title) { 'deploy key title' }
-    given(:deploy_key_value) { Runtime::User.ssh_key }
+    given(:deploy_key_value) { Runtime::RSAKey.new.public_key }
 
     scenario 'user adds a deploy key' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
