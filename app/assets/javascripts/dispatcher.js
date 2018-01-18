@@ -10,6 +10,7 @@ import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
+import initCompareAutocomplete from './compare_autocomplete';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
