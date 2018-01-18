@@ -1,16 +1,13 @@
 import IssuableIndex from '~/issuable_index';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import UsersSelect from '~/users_select';
+import initFilteredSearch from '~/pages/search/init_filtered_search';
+import { FILTERED_SEARCH } from '~/pages/constants';
+import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 
 export default () => {
-  const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
-
-  if (filteredSearchEnabled) {
-    const filteredSearchManager = new gl.FilteredSearchManager('merge_requests');
-    filteredSearchManager.setup();
-  }
-
-  new IssuableIndex('merge_request_'); // eslint-disable-line no-new
+  initFilteredSearch(FILTERED_SEARCH.MERGE_REQUESTS);
+  new IssuableIndex(ISSUABLE_INDEX.MERGE_REQUEST); // eslint-disable-line no-new
   new ShortcutsNavigation(); // eslint-disable-line no-new
   new UsersSelect(); // eslint-disable-line no-new
 };
