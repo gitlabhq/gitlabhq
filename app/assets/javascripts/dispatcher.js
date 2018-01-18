@@ -346,6 +346,7 @@ import Activities from './activities';
           import('./pages/projects/show')
             .then(callDefault)
             .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:edit':
           import('./pages/projects/edit')

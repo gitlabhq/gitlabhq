@@ -6,7 +6,7 @@ import BlobViewer from '~/blob/viewer/index';
 import Activities from '~/activities';
 import { ajaxGet } from '~/lib/utils/common_utils';
 
-export default function () {
+export default () => {
   new ShortcutsNavigation(); // eslint-disable-line no-new
   new NotificationsForm(); // eslint-disable-line no-new
   new UserCallout({ // eslint-disable-line no-new
