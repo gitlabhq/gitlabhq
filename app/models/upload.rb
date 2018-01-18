@@ -9,21 +9,11 @@ class Upload < ActiveRecord::Base
   validates :model, presence: true
   validates :uploader, presence: true
 
-  before_save  :calculate_checksum!, if: :foreground_checksumable?
-  after_commit :schedule_checksum,   if: :checksumable?
+  before_save  :calculate_checksum!, if: :foreground_checksummable?
+  after_commit :schedule_checksum,   if: :checksummable?
 
   def self.remove_path(path)
     where(path: path).destroy_all
-  end
-
-  def self.record(uploader)
-    create(
-      size: uploader.file.size,
-      path: uploader.upload_path,
-      model: uploader.model,
-      uploader: uploader.class.to_s,
-      store: uploader.try(:object_store) || ObjectStorage::Store::LOCAL
-    )
   end
 
   def self.hexdigest(path)
@@ -39,14 +29,15 @@ class Upload < ActiveRecord::Base
 
   def calculate_checksum!
     self.checksum = nil
-    return unless checksumable?
+    return unless checksummable?
 
     self.checksum = self.class.hexdigest(absolute_path)
   end
 
-  def build_uploader(from = nil)
-    (from || uploader_class.new(model)).tap do |uploader|
+  def build_uploader
+    uploader_class.new(model).tap do |uploader|
       uploader.upload = self
+      uploader.retrieve_from_store!(identifier)
     end
   end
 
@@ -56,7 +47,7 @@ class Upload < ActiveRecord::Base
 
   private
 
-  def checksumable?
+  def checksummable?
     checksum.nil? && local? && exist?
   end
 
@@ -66,8 +57,8 @@ class Upload < ActiveRecord::Base
     store == ObjectStorage::Store::LOCAL
   end
 
-  def foreground_checksumable?
-    checksumable? && size <= CHECKSUM_THRESHOLD
+  def foreground_checksummable?
+    checksummable? && size <= CHECKSUM_THRESHOLD
   end
 
   def schedule_checksum
@@ -76,6 +67,10 @@ class Upload < ActiveRecord::Base
 
   def relative_path?
     !path.start_with?('/')
+  end
+
+  def identifier
+    File.basename(path)
   end
 
   def uploader_class

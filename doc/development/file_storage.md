@@ -82,23 +82,24 @@ The `RecordsUploads::Concern` concern will create an `Upload` entry for every fi
 ## Object Storage
 
 By including the `ObjectStorage::Concern` in the `GitlabUploader` derived class, you may enable the object storage for this uploader. To enable the object storage
-in your uploader, you need to either 1) include `RecordsUploads::Concern` or 2) mount the uploader and create a new field named `<mount>_store`.
+in your uploader, you need to either 1) include `RecordsUpload::Concern` and prepend `ObjectStorage::Extension::RecordsUploads` or 2) mount the uploader and create a new field named `<mount>_store`.
 
 The `CarrierWave::Uploader#store_dir` is overriden to
 
  - `GitlabUploader.base_dir` + `GitlabUploader.dynamic_segment` when the store is LOCAL
  - `GitlabUploader.dynamic_segment` when the store is REMOTE (the bucket name is used to namespace)
 
+### Using `ObjectStorage::Extension::RecordsUploads`
 
-### Using `RecordsUploads::Concern`
+> Note: this concern will automatically include `RecordsUploads::Concern` if not already included.
 
-The `ObjectStorage::Concern` uploader will search for the correct `Upload` model in the `RecordsUploads::Concern#uploads` relationship to select the correct object store.
-`Upload` is mapped using the `CarrierWave::Uploader#upload_path` for each store (LOCAL/REMOTE).
+The `ObjectStorage::Concern` uploader will search for the correct `Upload` in the model's `uploads` relationship to select the correct object store. A basic implementation of the `ObjectStorage:: The `Upload` is mapped using the `RecordsUploads::Concern#upload_path` for each store (LOCAL/REMOTE).
 
 ```ruby
 class SongUploader < GitlabUploader
-  include ObjectStorage::Concern
   include RecordsUploads::Concern
+  include ObjectStorage::Concern
+  prepend ObjectStorage::Extension::RecordsUploads
 
   ...
 end
@@ -112,7 +113,7 @@ end
 
 ### Using a mounted uploader
 
-The `ObjectStorage::Concern` will query the `model.<mount>_store' attribute to select the correct object store.
+The `ObjectStorage::Concern` will query the `model.<mount>_store` attribute to select the correct object store.
 
 ```ruby
 class SongUploader < GitlabUploader

@@ -2,7 +2,6 @@ module UploadsActions
   include Gitlab::Utils::StrongMemoize
 
   def create
-    # TODO why not pass a GitlabUploader instance
     link_to_file = UploadService.new(model, params[:file], uploader_class).execute
 
     respond_to do |format|
@@ -18,7 +17,10 @@ module UploadsActions
     end
   end
 
-  # This should either find the @file and redirect to its URL
+  # This should either
+  #   - find the file and redirect to its URL
+  #   - send the file
+  #
   def show
     return render_404 unless uploader.exists?
 
@@ -47,21 +49,21 @@ module UploadsActions
     upload_model_class < CarrierWave::Mount::Extension && !upload_mount.nil?
   end
 
-  # TODO: this method is too complex
-  #
   def uploader
-    @uploader ||= if uploader_mounted?
-                    model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
-                  else
-                    build_uploader_from_upload || build_uploader_from_params
-                  end
+    strong_memoize(:uploader) do
+      if uploader_mounted?
+        model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
+      else
+        build_uploader_from_upload || build_uploader_from_params
+      end
+    end
   end
 
   def build_uploader_from_upload
     return nil unless params[:secret] && params[:filename]
 
     upload_path = uploader_class.upload_path(params[:secret], params[:filename])
-    upload = Upload.where(uploader: uploader_class.to_s, path: upload_path)&.last
+    upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_path)
     upload&.build_uploader
   end
 

@@ -1,19 +1,16 @@
-# Used out-of-context uploads
-#   see #upload_model_classs
-#
 class UploadsController < ApplicationController
   include UploadsActions
 
   UnknownUploadModelError = Class.new(StandardError)
 
   MODEL_CLASSES = {
-    "user"    => User,
-    "project" => Project,
-    "note"    => Note,
-    "group"   => Group,
-    "appearance" => Appearance,
+    "user"             => User,
+    "project"          => Project,
+    "note"             => Note,
+    "group"            => Group,
+    "appearance"       => Appearance,
     "personal_snippet" => PersonalSnippet,
-    nil => PersonalSnippet
+    nil                => PersonalSnippet
   }.freeze
 
   rescue_from UnknownUploadModelError, with: :render_404
@@ -72,9 +69,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_model_class
-    raise UnknownUploadModelError unless cls = MODEL_CLASSES[params[:model]]
-
-    cls
+    MODEL_CLASSES[params[:model]] || raise(UnknownUploadModelError)
   end
 
   def upload_model_class_has_mounts?

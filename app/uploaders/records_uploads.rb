@@ -5,7 +5,7 @@ module RecordsUploads
     attr_accessor :upload
 
     included do
-      before :store,  :destroy_upload
+      before :store,  :destroy_previous_upload
       after  :store,  :record_upload
       before :remove, :destroy_upload
     end
@@ -21,7 +21,12 @@ module RecordsUploads
       return unless model
       return unless file && file.exists?
 
-      Upload.record(self)
+      Upload.create(
+        size: file.size,
+        path: upload_path,
+        model: model,
+        uploader: self.class.to_s
+      )
     end
 
     def upload_path
@@ -29,6 +34,12 @@ module RecordsUploads
     end
 
     private
+
+    def destroy_previous_upload(*args)
+      return unless upload
+
+      upload.destroy!
+    end
 
     # Before removing an attachment, destroy any Upload records at the same path
     #

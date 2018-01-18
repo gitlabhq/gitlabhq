@@ -26,14 +26,28 @@ module ObjectStorage
         base.include(::RecordsUploads::Concern)
       end
 
-      def initialize(model = nil, mounted_as = nil)
-        super
+      def retrieve_from_store!(identifier)
+        paths = store_dirs.map { |store, path| File.join(path, identifier) }
 
-        self.upload = model&.try(:"#{mounted_as}_upload", self) if mounted_as
+        unless paths.include?(upload&.path)
+          # we already have the right upload, don't fetch
+          self.upload = Upload.find_by(uploader: self.class.to_s, model: model, path: paths)
+        end
+
+        super
       end
 
       def record_upload(_tempfile = nil)
-        self.upload = super
+        return unless model
+        return unless file && file.exists?
+
+        self.upload = Upload.create(
+          size: file.size,
+          path: upload_path,
+          model: model,
+          uploader: self.class.to_s,
+          store: object_store
+        )
       end
 
       def destroy_upload(_tempfile = nil)
@@ -152,7 +166,7 @@ module ObjectStorage
       with_callbacks(:store, file_to_delete) do # for #store_versions!
         storage.store!(file).tap do |new_file|
           begin
-            retrieve_from_store!(identifier)
+            @file = new_file
             persist_object_store!
             file_to_delete.delete if new_file.exists?
           rescue => e

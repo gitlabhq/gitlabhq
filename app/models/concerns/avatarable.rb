@@ -7,10 +7,6 @@ module Avatarable
       validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
       mount_uploader :avatar, AvatarUploader
-
-      # the AvatarUploader < RecordsUploads::Concern
-      # TODO: rename to avatar_uploads and use a scope
-      has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     end
   end
 
@@ -18,16 +14,6 @@ module Avatarable
     unless self.avatar.image?
       self.errors.add :avatar, "only images allowed"
     end
-  end
-
-  # As the associated `Upload` may have multiple difference paths, we need to find
-  # the last one that fits. There should only be one upload per file anyways.
-  #
-  def avatar_upload(uploader)
-    return unless avatar_identifier
-
-    paths = uploader.store_dirs.map {|store, path| File.join(path, avatar_identifier) }
-    uploads.where(uploader: uploader.class.to_s, path: paths)&.last
   end
 
   def avatar_path(only_path: true)

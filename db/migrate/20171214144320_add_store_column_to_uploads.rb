@@ -9,8 +9,4 @@ class AddStoreColumnToUploads < ActiveRecord::Migration
   def change
     add_column :uploads, :store, :integer
   end
-
-  def down
-    add_column :uploads, :store
-  end
 end

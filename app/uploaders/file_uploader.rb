@@ -125,8 +125,6 @@ class FileUploader < GitlabUploader
     if matches = DYNAMIC_PATH_PATTERN.match(value.path)
       @secret = matches[:secret]
       @identifier = matches[:identifier]
-
-      retrieve_from_store!(@identifier)
     end
 
     super

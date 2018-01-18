@@ -11,7 +11,6 @@ class Appearance < ActiveRecord::Base
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   CACHE_KEY = 'current_appearance'.freeze
 
@@ -29,22 +28,5 @@ class Appearance < ActiveRecord::Base
     if self.class.any?
       errors.add(:single_appearance_row, 'Only 1 appearances row can exist')
     end
-  end
-
-  def logo_upload(uploader)
-    find_upload(uploader, logo_identifier)
-  end
-
-  def header_logo_upload(uploader)
-    find_upload(uploader, header_logo_identifier)
-  end
-
-  private
-
-  def find_upload(uploader, identifier)
-    return unless identifier
-
-    paths = uploader.store_dirs.map { |store, path| File.join(path, identifier) }
-    uploads.where(uploader: uploader.class.to_s, path: paths)&.last
   end
 end
