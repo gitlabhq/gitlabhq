@@ -13,7 +13,7 @@ projects by providing an advanced editor with commit staging.
 While in the early stages of the Beta, access to the Web IDE is by opting in.
 
 To enable the Web IDE, click on your profile image in the top right corner and
-navigate to `Settings → Preferences`, check `Enable Web IDE` and save.
+navigate to **Settings > Preferences**, check **Enable Web IDE** and save.
 
 ![Enable Web IDE](img/enable-web-ide.png)
 
