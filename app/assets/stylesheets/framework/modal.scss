@@ -12,6 +12,7 @@
   min-height: $modal-body-height;
   position: relative;
   padding: #{3 * $grid-size} #{2 * $grid-size};
+  text-align: left;
 
   .form-actions {
     margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
