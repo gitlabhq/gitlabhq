@@ -809,6 +809,18 @@
       margin: 0;
       line-height: $code_line_height;
 
+      .failed .mr-widget-code-quality-icon {
+        color: $red-500;
+      }
+
+      .success .mr-widget-code-quality-icon {
+        color: $green-500;
+      }
+
+      .neutral .mr-widget-code-quality-icon {
+        color: $gl-gray-light;
+      }
+
       .mr-widget-code-quality-icon {
         margin-right: 12px;
         fill: currentColor;
@@ -817,22 +829,6 @@
           width: 10px;
           height: 10px;
         }
-      }
-
-      .success {
-        color: $green-500;
-      }
-
-      .failed {
-        color: $red-500;
-      }
-
-      .neutral {
-        color: $gl-gray-light;
-      }
-
-      .modal-body {
-        color: $gl-text-color;
       }
     }
   }
