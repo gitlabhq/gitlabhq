@@ -153,12 +153,10 @@
         return !!this.state.updatedAt;
       },
       issueChanged() {
-        let descriptionChanged =
+        const descriptionChanged =
           this.initialDescriptionText !== this.store.formState.description;
-        
-        let titleChanged =
+        const titleChanged =
           this.initialTitleText !== this.store.formState.title;
-        
         return descriptionChanged || titleChanged;
       },
     },
