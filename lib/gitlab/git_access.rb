@@ -250,7 +250,7 @@ module Gitlab
     def can_create_project_in_namespace?
       return unless target_namespace
 
-      actor.can?(:create_projects, target_namespace)
+      user.can?(:create_projects, target_namespace)
     end
 
     def http?

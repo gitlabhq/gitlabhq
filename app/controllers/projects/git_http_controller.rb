@@ -12,7 +12,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     log_user_activity if upload_pack?
 
     if project.blank? && params[:service] == 'git-receive-pack'
-      @project = ::Projects::CreateService.new(access_actor, project_params).execute
+      @project = ::Projects::CreateService.new(user, project_params).execute
 
       return render_ok if @project.saved?
     end
@@ -34,10 +34,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def project_params
     {
-        description: "",
-        path: params[:project_id].gsub("\.git", ''),
-        namespace_id: namespace.id.to_s,
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
+      description: "",
+      path: params[:project_id].gsub("\.git", ''),
+      namespace_id: namespace.id.to_s,
+      visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
     }
   end
 

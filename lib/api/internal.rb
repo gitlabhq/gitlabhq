@@ -43,12 +43,25 @@ module API
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path, target_namespace: user.namespace)
 
         begin
           access_checker.check(params[:action], params[:changes])
         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
           return { status: false, message: e.message }
+        end
+
+        if project.blank? && params[:action] == 'git-receive-pack'
+          project_params = {
+            description: "",
+            path: params[:project].split('/').last.gsub("\.git", ''),
+            namespace_id: user.namespace.id.to_s,
+            visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
+          }
+
+          @project = ::Projects::CreateService.new(user, project_params).execute
+
+          return { status: false, message: "Could not create project" } unless @project.saved?
         end
 
         log_user_activity(actor)
