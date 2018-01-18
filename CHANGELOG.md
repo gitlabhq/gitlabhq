@@ -197,6 +197,10 @@ entry.
 - Clean up schema of the "merge_requests" table.
 
 
+## 10.2.7 (2018-01-18)
+
+- No changes.
+
 ## 10.2.6 (2018-01-11)
 
 ### Security (9 changes, 1 of them is from the community)
