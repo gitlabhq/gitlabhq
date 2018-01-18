@@ -33,19 +33,25 @@ module Gitlab
           options = MetricOptions.new(opts)
           options.evaluate(&block)
 
+          if disabled_by_feature(options)
+            synchronized_cache_fill(name) { NullMetric.new }
+          else
+            synchronized_cache_fill(name) { build_metric!(type, name, options) }
+          end
+        end
+
+        def synchronized_cache_fill(key)
           MUTEX.synchronize do
             @_metrics_provider_cache ||= {}
-            @_metrics_provider_cache[name] ||= build_metric!(type, name, options)
+            @_metrics_provider_cache[key] ||= yield
           end
+        end
 
-          @_metrics_provider_cache[name]
+        def disabled_by_feature(options)
+          options.with_feature && !Feature.get(options.with_feature).enabled?
         end
 
         def build_metric!(type, name, options)
-          unless options.with_feature.nil? || Feature.get(options.with_feature).enabled?
-            return NullMetric.new
-          end
-
           case type
           when :gauge
             Gitlab::Metrics.gauge(name, options.docstring, options.base_labels, options.multiprocess_mode)
