@@ -72,6 +72,7 @@ Shortcuts to GitLab's most visited docs:
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
+- **(EEU)** [Web IDE](user/project/web-ide/index.md)
 
 ### Repository
 
@@ -93,7 +94,6 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
-- **(EEU)** [Web IDE](user/project/repository/web-ide/index.md)
 
 ### Issues and Merge Requests (MRs)
 
