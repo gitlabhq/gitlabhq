@@ -261,12 +261,14 @@ class Repository
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
       raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
-    rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
-    rescue Rugged::OSError => ex
-      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+    rescue Gitlab::Git::CommandError => ex
+      if ex.message.start_with?("ReferenceError: ")
+        Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
+      elsif ex.message.start_with?("OSError: ")
+        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
 
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
+        Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
+      end
     end
   end
 
