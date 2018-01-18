@@ -138,6 +138,23 @@ NFS mount point is `/gitlab-data`. Then, add the following bind mounts in
 /gitlab-data/builds /var/opt/gitlab/gitlab-ci/builds none bind 0 0
 ```
 
+#### SELinux
+
+SELinux requires a boolean change and context update so that SSH can be 
+read from an NFS share.  
+
+First set the boolean:
+
+```
+setsebool use_nfs_home_dirs on 
+```
+
+Then add `context="system_u:object_r:user_home_dir_t:s0` to the mount 
+parameters in /etc/fstab and remount the share.
+
+---
+
+
 ---
 
 Read more on high-availability configuration:
