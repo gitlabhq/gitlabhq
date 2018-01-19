@@ -72,12 +72,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def remote_name
-    name = read_attribute(:remote_name)
-
-    return name if name
-    return unless id
-
-    fallback_remote_name
+    super || fallback_remote_name
   end
 
   def update_failed?
@@ -160,6 +155,8 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def fallback_remote_name
+    return unless id
+
     "remote_mirror_#{id}"
   end
 
@@ -211,7 +208,7 @@ class RemoteMirror < ActiveRecord::Base
     # the previous remote name
     prev_remote_name = remote_name_was || fallback_remote_name
     run_after_commit do
-      project.repository.schedule_remove_remote(prev_remote_name)
+      project.repository.async_remove_remote(prev_remote_name)
     end
 
     project.repository.add_remote(remote_name, url)
@@ -220,7 +217,7 @@ class RemoteMirror < ActiveRecord::Base
   def remove_remote
     return unless project # could be pending to delete so don't need to touch the git repository
 
-    project.repository.schedule_remove_remote(remote_name)
+    project.repository.async_remove_remote(remote_name)
   end
 
   def mirror_url_changed?

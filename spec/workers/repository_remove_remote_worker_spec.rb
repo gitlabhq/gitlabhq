@@ -25,7 +25,7 @@ describe RepositoryRemoveRemoteWorker do
 
       context 'when project does not exist' do
         it 'returns nil' do
-          expect { worker.perform(-1, 'remote_name') }.to raise_error(ActiveRecord::RecordNotFound)
+          expect(worker.perform(-1, 'remote_name')).to be_nil
         end
       end
 

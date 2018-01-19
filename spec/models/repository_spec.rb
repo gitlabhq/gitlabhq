@@ -701,7 +701,7 @@ describe Repository do
     end
   end
 
-  describe '#schedule_remove_remote' do
+  describe '#async_remove_remote' do
     before do
       masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
@@ -716,7 +716,7 @@ describe Repository do
       end
 
       it 'returns job_id' do
-        expect(repository.schedule_remove_remote('joe')).to eq('1234')
+        expect(repository.async_remove_remote('joe')).to eq('1234')
       end
     end
 
@@ -726,9 +726,9 @@ describe Repository do
       end
 
       it 'returns nil' do
-        expect(Rails.logger).to receive(:info).with("RepositoryRemoveRemoteWorker job failed to create for #{project.id} with remote name joe.")
+        expect(Rails.logger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
 
-        expect(repository.schedule_remove_remote('joe')).to be_nil
+        expect(repository.async_remove_remote('joe')).to be_nil
       end
     end
   end
