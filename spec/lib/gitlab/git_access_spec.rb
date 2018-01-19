@@ -501,15 +501,17 @@ describe Gitlab::GitAccess do
           end
 
           aggregate_failures do
-            matrix.each do |action, allowed|
-              check = -> { access.send(:check_push_access!, changes[action]) }
+            Gitlab::GitAccess::ALL_COMMANDS.each do |cmd|
+              matrix.each do |action, allowed|
+                check = -> { access.send(:check_push_access!, cmd, changes[action]) }
 
-              if allowed
-                expect(&check).not_to raise_error,
-                  -> { "expected #{action} to be allowed" }
-              else
-                expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
-                  -> { "expected #{action} to be disallowed" }
+                if allowed
+                  expect(&check).not_to raise_error,
+                                        -> { "expected #{action} to be allowed" }
+                else
+                  expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
+                                    -> { "expected #{action} to be disallowed" }
+                end
               end
             end
           end

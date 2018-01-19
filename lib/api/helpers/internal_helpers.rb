@@ -29,6 +29,10 @@ module API
         {}
       end
 
+      def receive_pack?
+        params[:action] == 'git-receive-pack'
+      end
+
       def fix_git_env_repository_paths(env, repository_path)
         if obj_dir_relative = env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence
           env['GIT_OBJECT_DIRECTORY'] = File.join(repository_path, obj_dir_relative)
@@ -61,6 +65,18 @@ module API
       end
 
       private
+
+      def project_path_regex
+        @project_regex ||= /\A(?<namespace_id>#{Gitlab::PathRegex.full_namespace_route_regex})\/(?<project_id>#{Gitlab::PathRegex.project_git_route_regex})\z/.freeze
+      end
+
+      def project_match
+        @match ||= params[:project].match(project_path_regex).captures
+      end
+
+      def namespace
+        @namespace ||= Namespace.find_by_path_or_name(project_match[:namespace_id])
+      end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
