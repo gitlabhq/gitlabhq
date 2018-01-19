@@ -403,6 +403,20 @@ feature 'Jobs' do
 
       it 'shows empty state' do
         expect(page).to have_content('This job has not been triggered yet')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
+      end
+    end
+
+    context 'Pending job' do
+      let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'does not show non triggered screen' do
+        expect(page).not_to have_content('This job has not been triggered yet')
+        expect(page).not_to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
       end
     end
   end
