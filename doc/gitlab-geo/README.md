@@ -202,9 +202,6 @@ Read how to [replicate the Container Registry](docker_registry.md).
 - It works for repos, wikis, issues, and merge requests
 - It does not work for job logs, artifacts, GitLab Pages, and Docker images of the Container
   Registry (by default, but you can configure it separately, see [replicate the Container Registry](docker_registry.md) for details)
-- It does not work for attachments uploaded before GitLab 9.0 because they will
-  not present in the uploads table, until
-  [#29249](https://gitlab.com/gitlab-org/gitlab-ce/issues/29240) is fixed.
 
 ## Frequently Asked Questions
 
