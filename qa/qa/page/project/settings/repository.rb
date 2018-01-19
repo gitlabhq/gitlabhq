@@ -7,7 +7,6 @@ module QA
 
           view 'app/views/projects/deploy_keys/_index.html.haml' do
             element :expand_deploy_keys_section, '.repository-deploy-keys'
-            element :expand_deploy_keys_button, "= expanded ? 'Collapse' : 'Expand'"
           end
 
           def expand_deploy_keys(&block)
