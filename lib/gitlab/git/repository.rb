@@ -1317,8 +1317,8 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
-      def write_config(full_path: nil)
-        rugged.config['gitlab.fullpath'] = full_path
+      def write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
       end
 
       def gitaly_repository
