@@ -38,13 +38,13 @@
         />
       </span>
     </div>
-    <div v-else>
+    <template v-else>
       <component
         ref="titleWrapper"
         :is="titleTag"
         :href="diffFile.discussionPath"
       >
-        <div v-html="diffFile.blobIcon"></div>
+        <span v-html="diffFile.blobIcon"></span>
         <span v-if="diffFile.renamedFile">
           <strong
             class="file-title-name has-tooltip"
@@ -84,6 +84,6 @@
       <small v-if="diffFile.modeChanged" ref="fileMode">
         {{diffFile.aMode}} → {{diffFile.bMode}}
       </small>
-    </div>
+    </template>
   </div>
 </template>
