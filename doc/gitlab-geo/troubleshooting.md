@@ -23,6 +23,12 @@ to help identify if something is wrong:
 
 ![GitLab Geo health check](img/geo-node-healthcheck.png)
 
+There is also an option to check the status of the secondary node by running a special rake task:
+
+```
+sudo gitlab-rake geo:status
+```
+
 #### Is Postgres replication working?
 
 #### Are my nodes pointing to the correct database instance?
@@ -133,4 +139,3 @@ sudo gitlab-ctl reconfigure
 
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accomodate a full clone of your largest repositories.
-

@@ -1,6 +1,11 @@
+require 'action_view/helpers'
+
 task spec: ['geo:db:test:prepare']
 
 namespace :geo do
+  include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::NumberHelper
+
   GEO_LICENSE_ERROR_TEXT = 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.'.freeze
 
   namespace :db do |ns|
@@ -200,5 +205,65 @@ namespace :geo do
     abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
 
     Gitlab::Geo::GeoTasks.update_primary_geo_node_url
+  end
+
+  desc 'Print Geo node status'
+  task status: :environment do
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
+
+    COLUMN_WIDTH = 35
+    current_node_status = GeoNodeStatus.current_node_status
+    geo_node = current_node_status.geo_node
+
+    unless geo_node.secondary?
+      puts 'This command is only available on a secondary node'.color(:red)
+      exit
+    end
+
+    puts
+    puts GeoNode.current_node_url
+    puts '-----------------------------------------------------'.color(:yellow)
+
+    print 'GitLab version: '.rjust(COLUMN_WIDTH)
+    puts Gitlab::VERSION
+
+    print 'Health Status: '.rjust(COLUMN_WIDTH)
+    puts current_node_status.health_status
+
+    print 'Repositories: '.rjust(COLUMN_WIDTH)
+    print "#{current_node_status.repositories_synced_count}/#{current_node_status.repositories_count} "
+    puts "(#{number_to_percentage(current_node_status.repositories_synced_in_percentage, precision: 0)})"
+
+    print 'LFS objects: '.rjust(COLUMN_WIDTH)
+    print "#{current_node_status.lfs_objects_synced_count}/#{current_node_status.lfs_objects_count} "
+    puts "(#{number_to_percentage(current_node_status.lfs_objects_synced_in_percentage, precision: 0)})"
+
+    print 'Attachments: '.rjust(COLUMN_WIDTH)
+    print "#{current_node_status.attachments_synced_count}/#{current_node_status.attachments_count} "
+    puts "(#{number_to_percentage(current_node_status.attachments_synced_in_percentage, precision: 0)})"
+
+    print 'Wikis: '.rjust(COLUMN_WIDTH)
+    print "#{current_node_status.wikis_synced_count}/#{current_node_status.wikis_count} "
+    puts "(#{number_to_percentage(current_node_status.wikis_synced_in_percentage, precision: 0)})"
+
+    print 'Sync settings: '.rjust(COLUMN_WIDTH)
+    puts  geo_node.namespaces.any? ? 'Selective' : 'Full'
+
+    print 'Database replication lag: '.rjust(COLUMN_WIDTH)
+    puts "#{Gitlab::Geo::HealthCheck.db_replication_lag_seconds} seconds"
+
+    print 'Last event ID seen from primary: '.rjust(COLUMN_WIDTH)
+    last_event = Geo::EventLog.last
+    last_event_id = last_event&.id
+    print last_event_id
+    puts "(#{time_ago_in_words(last_event&.created_at)} ago)"
+
+    print 'Last event ID processed by cursor: '.rjust(COLUMN_WIDTH)
+    cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
+
+    if cursor_last_event_id
+      print cursor_last_event_id
+      puts "(#{time_ago_in_words(Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at)} ago)"
+    end
   end
 end
