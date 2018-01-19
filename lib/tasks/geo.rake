@@ -271,8 +271,8 @@ namespace :geo do
     if current_node_status.updated_at
       puts "#{time_ago_in_words(current_node_status.updated_at)} ago"
     else
-      # Only primary node can create a status record in the database so if it's not exists
-      # we get not persistant AR record here.
+      # Only primary node can create a status record in the database so if it does not exist
+      # we get unsaved record where updated_at is nil
       puts "Never"
     end
   end
