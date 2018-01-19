@@ -11,10 +11,7 @@ import GroupLabelSubscription from './group_label_subscription';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
 import Compare from './compare';
-<<<<<<< HEAD
 import initCompareAutocomplete from './compare_autocomplete';
-=======
->>>>>>> upstream/master
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';

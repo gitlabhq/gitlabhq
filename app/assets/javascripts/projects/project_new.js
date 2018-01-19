@@ -99,7 +99,6 @@ const bindEvents = () => {
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 
-<<<<<<< HEAD
   $('.import_git').on('click', () => {
     const $projectMirror = $('#project_mirror');
 
@@ -107,8 +106,6 @@ const bindEvents = () => {
   });
 };
 
-=======
->>>>>>> upstream/master
 export default {
   bindEvents,
   deriveProjectPathFromUrl,
