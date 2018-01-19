@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180105233807) do
+ActiveRecord::Schema.define(version: 20180119135717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2250,7 +2250,7 @@ ActiveRecord::Schema.define(version: 20180105233807) do
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
   add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
-  add_index "uploads", ["path"], name: "index_uploads_on_path", using: :btree
+  add_index "uploads", ["uploader", "path"], name: "index_uploads_on_uploader_and_path", using: :btree
 
   create_table "user_agent_details", force: :cascade do |t|
     t.string "user_agent", null: false
