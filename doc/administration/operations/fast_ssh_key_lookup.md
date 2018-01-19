@@ -36,7 +36,7 @@ Add the following to your `sshd_config` file. This is usuaully located at
 Omnibus Docker:
 
 ```
-AuthorizedKeysCommand /opt/embedded/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
+AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
 AuthorizedKeysCommandUser git
 ```
 
