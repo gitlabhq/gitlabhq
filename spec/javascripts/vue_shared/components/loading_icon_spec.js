@@ -16,7 +16,8 @@ describe('Loading Icon Component', () => {
     ).toEqual('fa fa-spin fa-spinner fa-1x');
 
     expect(component.$el.tagName).toEqual('DIV');
-    expect(component.$el.classList.contains('text-center')).toEqual(true);
+    expect(component.$el.classList).toContain('text-center');
+    expect(component.$el.classList).toContain('loading-container');
   });
 
   it('should render accessibility attributes', () => {
