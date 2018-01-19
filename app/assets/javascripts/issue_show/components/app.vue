@@ -25,9 +25,26 @@ export default {
       required: true,
       type: Boolean,
     },
+<<<<<<< HEAD
     canDestroy: {
       required: true,
       type: Boolean,
+=======
+    computed: {
+      formState() {
+        return this.store.formState;
+      },
+      hasUpdated() {
+        return !!this.state.updatedAt;
+      },
+      issueChanged() {
+        const descriptionChanged =
+          this.initialDescriptionText !== this.store.formState.description;
+        const titleChanged =
+          this.initialTitleText !== this.store.formState.title;
+        return descriptionChanged || titleChanged;
+      },
+>>>>>>> 28bd902980f... Merge branch 'fix-description-loss' into 'master'
     },
     showInlineEditButton: {
       type: Boolean,
@@ -155,6 +172,7 @@ export default {
     recaptchaModalImplementor,
   ],
 
+<<<<<<< HEAD
   methods: {
     openForm() {
       if (!this.showForm) {
@@ -170,6 +188,45 @@ export default {
     closeForm() {
       this.showForm = false;
     },
+=======
+      window.addEventListener('beforeunload', this.handleBeforeUnloadEvent);
+
+      eventHub.$on('delete.issuable', this.deleteIssuable);
+      eventHub.$on('update.issuable', this.updateIssuable);
+      eventHub.$on('close.form', this.closeForm);
+      eventHub.$on('open.form', this.openForm);
+    },
+    beforeDestroy() {
+      eventHub.$off('delete.issuable', this.deleteIssuable);
+      eventHub.$off('update.issuable', this.updateIssuable);
+      eventHub.$off('close.form', this.closeForm);
+      eventHub.$off('open.form', this.openForm);
+      window.removeEventListener('beforeunload', this.handleBeforeUnloadEvent);
+    },
+    methods: {
+      handleBeforeUnloadEvent(e) {
+        const event = e;
+        if (this.showForm && this.issueChanged) {
+          event.returnValue = 'Are you sure you want to lose your issue information?';
+        }
+        return undefined;
+      },
+
+      openForm() {
+        if (!this.showForm) {
+          this.showForm = true;
+          this.store.setFormState({
+            title: this.state.titleText,
+            description: this.state.descriptionText,
+            lockedWarningVisible: false,
+            updateLoading: false,
+          });
+        }
+      },
+      closeForm() {
+        this.showForm = false;
+      },
+>>>>>>> 28bd902980f... Merge branch 'fix-description-loss' into 'master'
 
     updateIssuable() {
       return this.service.updateIssuable(this.store.formState)
