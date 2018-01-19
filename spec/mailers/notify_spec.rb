@@ -312,7 +312,6 @@ describe Notify do
             expect(new_subject).to have_body_text(text)
           end
         end
-<<<<<<< HEAD
       end
 
       describe "that are new with approver" do
@@ -340,8 +339,6 @@ describe Notify do
         it 'contains the description' do
           is_expected.to have_html_escaped_body_text merge_request.description
         end
-=======
->>>>>>> upstream/master
       end
 
       describe 'that have been relabeled' do
