@@ -112,9 +112,14 @@
           });
       },
       initPolling() {
+        if (this.isPollingInitialized) {
+          return;
+        }
+
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
         this.poll();
+        this.isPollingInitialized = true;
       },
       checkLocationHash() {
         const hash = getLocationHash();
@@ -144,23 +149,9 @@
         });
       }
 
-      document.addEventListener('newNoteAdded', () => {
-        this.poll();
+      document.addEventListener('refreshVueNotes', () => {
+        this.fetchNotes();
       });
-    },
-    watch: {
-      notes: {
-        deep: true,
-        handler() {
-          if (isInMRPage()) {
-            const legacyNotesApp = window.Notes.getInstance();
-
-            if (legacyNotesApp) {
-              legacyNotesApp.refresh();
-            }
-          }
-        },
-      },
     },
   };
 </script>

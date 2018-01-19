@@ -147,6 +147,9 @@ export default class Notes {
     this.$wrapperEl.on('keydown', '.js-note-text', this.keydownNoteText);
     // When the URL fragment/hash has changed, `#note_xxx`
     $(window).on('hashchange', this.onHashChange);
+    document.addEventListener('refreshLegacyNotes', () => {
+      this.getContent(true);
+    });
     this.eventsBound = true;
   }
 
@@ -362,11 +365,6 @@ export default class Notes {
    * Note: for rendering inline notes use renderDiscussionNote
    */
   renderNote(noteEntity, $form, $notesList = $('.main-notes-list')) {
-    // Let realtime Vue polling handle Changes tab
-    if (window.mrTabs.getCurrentAction() !== 'diffs') {
-      return;
-    }
-
     if (noteEntity.discussion_html) {
       return this.renderDiscussionNote(noteEntity, $form);
     }
@@ -421,6 +419,8 @@ export default class Notes {
         this.setupNewNote($updatedNote);
       }
     }
+
+    this.refreshVueNotes();
   }
 
   isParallelView() {
@@ -428,13 +428,18 @@ export default class Notes {
   }
 
   /**
-   * Render note in discussion area.
-   *
-   * Note: for rendering inline notes use renderDiscussionNote
+   * Render note in discussion area. To render inline notes use renderDiscussionNote.
    */
   renderDiscussionNote(noteEntity, $form) {
     var discussionContainer, form, row, lineType, diffAvatarContainer;
+
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
+      const $formEl = $form || $(`.diffs .note-row-${noteEntity.id}`);
+
+      if (Notes.isUpdatedNote(noteEntity, $formEl)) {
+        this.updateNote(noteEntity, $formEl);
+      }
+
       return;
     }
     this.note_ids.push(noteEntity.id);
@@ -474,7 +479,8 @@ export default class Notes {
       // Init discussion on 'Discussion' page if it is merge request page
       const page = $('body').attr('data-page');
       if ((page && page.indexOf('projects:merge_request') !== -1) || !noteEntity.diff_discussion_html) {
-        Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
+        const $container = Cookies.get('vue_mr_discussions') ? $('.diffs.active') : $('.main-notes-list');
+        Notes.animateAppendNote(noteEntity.discussion_html, $container);
       }
     } else {
       // append new note to all matching discussions
@@ -841,8 +847,13 @@ export default class Notes {
       };
     })(this));
 
+    this.refreshVueNotes();
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(-1);
+  }
+
+  refreshVueNotes() {
+    document.dispatchEvent(new CustomEvent('refreshVueNotes'));
   }
 
   /**
@@ -1288,10 +1299,6 @@ export default class Notes {
   }
 
   static animateAppendNote(noteHtml, $notesList) {
-    if (Cookies.get('vue_mr_discussions')) {
-      return;
-    }
-
     const $note = $(noteHtml);
 
     $note.addClass('fade-in-full').renderGFM();
@@ -1573,7 +1580,7 @@ export default class Notes {
             $notesContainer.append('<div class="flash-container" style="display: none;"></div>');
           }
 
-          document.dispatchEvent(new CustomEvent('newNoteAdded'));
+          document.dispatchEvent(new CustomEvent('refreshVueNotes'));
         } else if (isMainForm) { // Check if this was main thread comment
           // Show final note element on UI and perform form and action buttons cleanup
           this.addNote($form, note);

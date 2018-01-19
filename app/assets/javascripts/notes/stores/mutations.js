@@ -25,6 +25,7 @@ export default {
       }
 
       state.notes.push(noteData);
+      document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
 
@@ -33,6 +34,7 @@ export default {
 
     if (noteObj) {
       noteObj.notes.push(note);
+      document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
 
@@ -49,6 +51,8 @@ export default {
         state.notes.splice(state.notes.indexOf(noteObj), 1);
       }
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
@@ -142,6 +146,8 @@ export default {
         user: { id, name, username },
       });
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.TOGGLE_DISCUSSION](state, { discussionId }) {
@@ -159,6 +165,8 @@ export default {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.UPDATE_DISCUSSION](state, noteData) {
@@ -173,5 +181,7 @@ export default {
 
     note.expanded = true; // override expand flag to prevent collapse
     state.notes.splice(index, 1, note);
+
+    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 };
