@@ -4,7 +4,6 @@ import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
 import Sidebar from './right_sidebar';
 import Flash from './flash';
@@ -240,19 +239,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
-          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
-          if (mrNewCompareNode) {
-            new Compare({
-              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
-              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
-              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
-            });
-          } else {
-            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
-            new MergeRequest({
-              action: mrNewSubmitNode.dataset.mrSubmitAction,
-            });
-          }
+          import('./pages/projects/merge_requests/creations/new')
+            .then(callDefault)
+            .catch(fail);
           new UserCallout();
         case 'projects:merge_requests:creations:diffs':
           import('./pages/projects/merge_requests/creations/diffs')
