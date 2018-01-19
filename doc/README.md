@@ -3,7 +3,7 @@ toc: false
 comments: false
 ---
 
-DANGER: Danger!
+DANGER: Danger! I tell you.
 
 # GitLab Documentation
 
