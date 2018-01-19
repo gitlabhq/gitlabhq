@@ -64,7 +64,6 @@
     .label {
       overflow: hidden;
       text-overflow: ellipsis;
-      vertical-align: middle;
       max-width: 100%;
     }
   }
@@ -86,14 +85,17 @@
   .label-description {
     display: block;
     margin-bottom: 10px;
-    margin-left: 50px;
+
+    a {
+      color: $blue-600;
+    }
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
-      width: 30%;
+      max-width: 50%;
       margin-left: 10px;
       margin-bottom: 0;
-      vertical-align: middle;
+      vertical-align: top;
     }
   }
 
@@ -116,6 +118,10 @@
 }
 
 .manage-labels-list {
+  &.content-list li {
+    padding: $gl-padding 0;
+  }
+
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
     cursor: move;
@@ -133,8 +139,6 @@
   }
 
   .btn-action {
-    color: $gl-text-color;
-
     .fa {
       font-size: 18px;
       vertical-align: middle;
@@ -153,6 +157,12 @@
   .dropdown {
     @media (min-width: $screen-sm-min) {
       float: right;
+    }
+  }
+
+  @media (max-width: $screen-sm-max) {
+    .dropdown-menu {
+      min-width: 100%;
     }
   }
 }
