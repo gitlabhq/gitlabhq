@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder, :migration do
+describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder, :delete do
   let(:migration) { described_class.new }
 
   before do
