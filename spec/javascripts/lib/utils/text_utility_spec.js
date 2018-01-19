@@ -55,6 +55,7 @@ describe('text_utility', () => {
     });
   });
 
+<<<<<<< HEAD
   describe('capitalizeFirstCharacter', () => {
     it('returns string with first letter capitalized', () => {
       expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
@@ -62,12 +63,15 @@ describe('text_utility', () => {
   });
 
   describe('stripeHtml', () => {
+=======
+  describe('stripHtml', () => {
+>>>>>>> upstream/master
     it('replaces html tag with the default replacement', () => {
-      expect(textUtils.stripeHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
+      expect(textUtils.stripHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
     });
 
     it('replaces html tags with the provided replacement', () => {
-      expect(textUtils.stripeHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
+      expect(textUtils.stripHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
     });
   });
 });

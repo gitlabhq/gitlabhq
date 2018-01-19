@@ -434,6 +434,7 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(method, recipient.user.id, target.id, status, current_user.id, recipient.reason).deliver_later
+<<<<<<< HEAD
     end
   end
 
@@ -458,6 +459,8 @@ class NotificationService
       recipient = approver.user
 
       mailer.add_merge_request_approver_email(recipient.id, merge_request.id, current_user.id).deliver_later
+=======
+>>>>>>> upstream/master
     end
   end
 
