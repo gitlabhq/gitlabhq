@@ -196,4 +196,9 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       end
     end
   end
+
+  def create_bare_repository(project_path)
+    repo_path = File.join(base_dir, project_path)
+    Gitlab::Git::Repository.create(repo_path, bare: true)
+  end
 end
