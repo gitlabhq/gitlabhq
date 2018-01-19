@@ -1,6 +1,6 @@
 module Gitlab
   module Metrics
-    extend Gitlab::Metrics::InfluxDb
+    include Gitlab::Metrics::InfluxDb
     include Gitlab::Metrics::Prometheus
 
     def self.enabled?

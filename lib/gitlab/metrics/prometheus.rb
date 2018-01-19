@@ -4,13 +4,12 @@ module Gitlab
   module Metrics
     module Prometheus
       extend ActiveSupport::Concern
-      include Gitlab::Metrics::Concern
-      include Gitlab::CurrentSettings
 
       REGISTRY_MUTEX = Mutex.new
       PROVIDER_MUTEX = Mutex.new
 
       class_methods do
+        include Gitlab::CurrentSettings
         include Gitlab::Utils::StrongMemoize
 
         def metrics_folder_present?
