@@ -47,7 +47,6 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
-<<<<<<< HEAD
     def add_merge_request_approver_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
@@ -69,8 +68,6 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(unapproved_by_user_id, recipient_id, reason))
     end
 
-=======
->>>>>>> upstream/master
     def resolved_all_discussions_email(recipient_id, merge_request_id, resolved_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
