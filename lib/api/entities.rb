@@ -483,6 +483,10 @@ module API
       expose :id
     end
 
+    class PipelineBasic < Grape::Entity
+      expose :id, :sha, :ref, :status
+    end
+
     class MergeRequestSimple < ProjectEntity
       expose :title
       expose :web_url do |merge_request, options|
@@ -547,6 +551,42 @@ module API
 
       expose :changes_count do |merge_request, _options|
         merge_request.merge_request_diff.real_size
+      end
+
+      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.merged_by
+      end
+
+      expose :merged_at do |merge_request, _options|
+        merge_request.metrics&.merged_at
+      end
+
+      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.latest_closed_by
+      end
+
+      expose :closed_at do |merge_request, _options|
+        merge_request.metrics&.latest_closed_at
+      end
+
+      expose :latest_build_started_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.latest_build_started_at
+      end
+
+      expose :latest_build_finished_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.latest_build_finished_at
+      end
+
+      expose :first_deployed_to_production_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.first_deployed_to_production_at
+      end
+
+      expose :pipeline, using: Entities::PipelineBasic, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+        merge_request.metrics&.pipeline
+      end
+
+      def build_available?(options)
+        options[:project]&.feature_available?(:builds, options[:current_user])
       end
     end
 
@@ -909,10 +949,6 @@ module API
 
     class JobArtifactFile < Grape::Entity
       expose :filename, :size
-    end
-
-    class PipelineBasic < Grape::Entity
-      expose :id, :sha, :ref, :status
     end
 
     class JobBasic < Grape::Entity
