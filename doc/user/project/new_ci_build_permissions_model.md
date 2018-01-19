@@ -91,7 +91,7 @@ to steal the tokens of other jobs.
 
 Since 9.0 [pipeline triggers][triggers] do support the new permission model.
 The new triggers do impersonate their associated user including their access
-to projects and their project permissions. To migrate trigger to use new permisison
+to projects and their project permissions. To migrate trigger to use new permission
 model use **Take ownership**.
 
 ## Before GitLab 8.12

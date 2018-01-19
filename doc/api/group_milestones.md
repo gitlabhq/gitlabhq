@@ -73,7 +73,7 @@ POST /groups/:id/milestones
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
-- `title` (required) - The title of an milestone
+- `title` (required) - The title of a milestone
 - `description` (optional) - The description of the milestone
 - `due_date` (optional) - The due date of the milestone
 - `start_date` (optional) - The start date of the milestone
