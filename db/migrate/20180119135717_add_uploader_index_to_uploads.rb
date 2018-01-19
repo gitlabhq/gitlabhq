@@ -8,8 +8,13 @@ class AddUploaderIndexToUploads < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     remove_concurrent_index :uploads, :path
-    add_concurrent_index :uploads, [:uploader, :path], using: :btree
+    add_concurrent_index    :uploads, [:uploader, :path], using: :btree
+  end
+
+  def down
+    remove_concurrent_index :uploads, [:uploader, :path]
+    add_concurrent_index    :uploads, :path, using: :btree
   end
 end

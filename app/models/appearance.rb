@@ -12,6 +12,8 @@ class Appearance < ActiveRecord::Base
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
 
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
   CACHE_KEY = 'current_appearance'.freeze
 
   after_commit :flush_redis_cache

@@ -7,13 +7,9 @@ describe RecordsUploads do
 
       storage_options Gitlab.config.uploads
       storage :file
-
-      def model
-        FactoryBot.build_stubbed(:user)
-      end
     end
 
-    RecordsUploadsExampleUploader.new
+    RecordsUploadsExampleUploader.new(build_stubbed(:user))
   end
 
   def upload_fixture(filename)
@@ -56,7 +52,7 @@ describe RecordsUploads do
         expect(upload.path).to eq uploader.upload_path
         expect(upload.model_id).to eq uploader.model.id
         expect(upload.model_type).to eq uploader.model.class.to_s
-        expect(upload.uploader).to eq uploader.class
+        expect(upload.uploader).to eq uploader.class.to_s
       end
     end
 
