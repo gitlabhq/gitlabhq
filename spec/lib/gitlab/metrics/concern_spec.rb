@@ -53,7 +53,9 @@ describe Gitlab::Metrics::Concern do
 
     describe "#fetch_#{metric_type}" do
       let(:fetch_method) { "fetch_#{metric_type}".to_sym }
-      let(:null_metric) { Gitlab::Metrics::NullMetric.new }
+      let(:_metric_type) { metric_type }
+
+      let(:null_metric) { Gitlab::Metrics::NullMetric.instance }
 
       context "when #{metric_type} is not cached" do
         it 'initializes counter metric' do

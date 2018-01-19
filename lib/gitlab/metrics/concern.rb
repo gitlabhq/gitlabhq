@@ -34,7 +34,7 @@ module Gitlab
           options.evaluate(&block)
 
           if disabled_by_feature(options)
-            synchronized_cache_fill(name) { NullMetric.new }
+            synchronized_cache_fill(name) { NullMetric.instance }
           else
             synchronized_cache_fill(name) { build_metric!(type, name, options) }
           end
