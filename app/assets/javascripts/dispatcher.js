@@ -1,8 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 import Milestone from './milestone';
-import IssuableForm from './issuable_form';
-import LabelsSelect from './labels_select';
-import MilestoneSelect from './milestone_select';
 import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
@@ -10,8 +7,6 @@ import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
 import Sidebar from './right_sidebar';
-
-import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import SecretValues from './behaviors/secret_values';
 import UserCallout from './user_callout';
@@ -260,15 +255,19 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           }
           new UserCallout();
         case 'projects:merge_requests:creations:diffs':
+          import('./pages/projects/merge_requests/creations/diffs')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          // ee-start
+          initApprovals();
+          // ee-end
+          break;
         case 'projects:merge_requests:edit':
-          new Diff();
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'), true);
-          new IssuableForm($('.merge-request-form'));
-          new LabelsSelect();
-          new MilestoneSelect();
-          new IssuableTemplateSelectors();
-
+          import('./pages/projects/merge_requests/edit')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           // ee-start
           initApprovals();
           // ee-end
