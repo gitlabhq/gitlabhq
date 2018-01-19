@@ -1,8 +1,13 @@
+# rubocop:disable Style/ClassVars
+
 module Gitlab
   module Metrics
     module Concern
       extend ActiveSupport::Concern
-      MUTEX = Mutex.new
+
+      included do
+        @@_metric_provider_mutex = Mutex.new
+      end
 
       class_methods do
         def reload_metric!(name)
@@ -37,7 +42,7 @@ module Gitlab
         end
 
         def synchronized_cache_fill(key)
-          MUTEX.synchronize do
+          @@_metric_provider_mutex.synchronize do
             @_metrics_provider_cache ||= {}
             @_metrics_provider_cache[key] ||= yield
           end
