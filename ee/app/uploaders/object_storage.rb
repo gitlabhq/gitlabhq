@@ -29,30 +29,16 @@ module ObjectStorage
       def retrieve_from_store!(identifier)
         paths = store_dirs.map { |store, path| File.join(path, identifier) }
 
-        unless paths.include?(upload&.path)
+        unless current_upload_satisfies?(paths, model)
           # we already have the right upload, don't fetch
-          self.upload = Upload.find_by(uploader: self.class.to_s, model: model, path: paths)
+          self.upload = uploads.find_by(model: model, path: paths)
         end
 
         super
       end
 
-      def record_upload(_tempfile = nil)
-        return unless model
-        return unless file && file.exists?
-
-        self.upload = Upload.create(
-          size: file.size,
-          path: upload_path,
-          model: model,
-          uploader: self.class.to_s,
-          store: object_store
-        )
-      end
-
-      def destroy_upload(_tempfile = nil)
-        super
-        self.upload = nil
+      def build_upload_from_uploader(uploader)
+        super.tap { |upload| upload.store = object_store }
       end
 
       def upload=(upload)
@@ -60,6 +46,17 @@ module ObjectStorage
 
         self.object_store = upload.store
         super
+      end
+
+      private
+
+      def current_upload_satisfies?(paths, model)
+        return false unless upload
+        return false unless model
+
+        paths.include?(upload.path) &&
+          upload.model_id == model.id &&
+          upload.model_type == model.class.to_s
       end
     end
   end

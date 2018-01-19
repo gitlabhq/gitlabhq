@@ -110,26 +110,16 @@ describe ObjectStorage do
   # this means the model shall include
   #   include RecordsUpload::Concern
   #   prepend ObjectStorage::Extension::RecordsUploads
-  # the object_store persistence is delegated to the `Upload` model
-  # this also implies a <mounted_as>_uploader method can be implemented to
-  # correctly fetch the upload.
+  # the object_store persistence is delegated to the `Upload` model.
   #
   context 'when persist_object_store? is false' do
     let(:object) { create(:project, :with_avatar) }
-    let(:uploader_class) { AvatarUploader }
-    let(:uploader) { uploader_class.new(object, :avatar) }
-    # let(:upload) { create(:upload, model: project) }
+    let(:uploader) { object.avatar }
 
     it { expect(object).to be_a(Avatarable) }
     it { expect(uploader.persist_object_store?).to be_falsey }
 
     describe 'delegates the object_store logic to the `Upload` model' do
-      it 'call the <mounted_as>_uploader hook' do
-        expect(object).to receive(:avatar_upload)
-
-        expect(uploader).to be
-      end
-
       it 'sets @upload to the found `upload`' do
         expect(uploader.upload).to eq(uploader.upload)
       end
@@ -140,7 +130,6 @@ describe ObjectStorage do
     end
   end
 
-  # TODO: persist_object_store? is true
   # this means the model holds an <mounted_as>_store attribute directly
   # and do not delegate the object_store persistence to the `Upload` model.
   #

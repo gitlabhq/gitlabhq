@@ -12,10 +12,6 @@ class Upload < ActiveRecord::Base
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
 
-  def self.remove_path(path)
-    where(path: path).destroy_all
-  end
-
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest
   end

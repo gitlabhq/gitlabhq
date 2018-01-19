@@ -33,12 +33,6 @@ describe RecordsUploads do
       uploader.store!(upload_fixture('doc_sample.txt'))
     end
 
-    it '#destroy_upload before `store`' do
-      expect(uploader).to receive(:destroy_upload).once
-
-      uploader.store!(upload_fixture('doc_sample.txt'))
-    end
-
     it '#destroy_upload after `remove`' do
       uploader.store!(upload_fixture('doc_sample.txt'))
 
@@ -48,25 +42,34 @@ describe RecordsUploads do
   end
 
   describe '#record_upload callback' do
-    it "returns early when the file doesn't exist" do
-      allow(uploader).to receive(:file).and_return(double(exists?: false))
-      expect(Upload).not_to receive(:record)
-
-      uploader.store!(upload_fixture('rails_sample.jpg'))
+    it 'creates an Upload record after store' do
+      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.to change { Upload.count }.by(1)
     end
 
-    it 'creates an Upload record after store' do
-      expect(Upload).to receive(:record)
-        .with(uploader)
-
+    it 'creates a new record and assigns size, path, model, and uploader' do
       uploader.store!(upload_fixture('rails_sample.jpg'))
+
+      upload = uploader.upload
+      aggregate_failures do
+        expect(upload).to be_persisted
+        expect(upload.size).to eq uploader.file.size
+        expect(upload.path).to eq uploader.upload_path
+        expect(upload.model_id).to eq uploader.model.id
+        expect(upload.model_type).to eq uploader.model.class.to_s
+        expect(upload.uploader).to eq uploader.class
+      end
+    end
+
+    it "does not create an Upload record when the file doesn't exist" do
+      allow(uploader).to receive(:file).and_return(double(exists?: false))
+
+      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.to_not change { Upload.count }
     end
 
     it 'does not create an Upload record if model is missing' do
-      expect_any_instance_of(RecordsUploadsExampleUploader).to receive(:model).and_return(nil)
-      expect(Upload).not_to receive(:record).with(uploader)
+      allow_any_instance_of(RecordsUploadsExampleUploader).to receive(:model).and_return(nil)
 
-      uploader.store!(upload_fixture('rails_sample.jpg'))
+      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.to_not change { Upload.count }
     end
 
     it 'it destroys Upload records at the same path before recording' do
@@ -77,6 +80,7 @@ describe RecordsUploads do
         uploader: uploader.class.to_s
       )
 
+      uploader.upload = existing
       uploader.store!(upload_fixture('rails_sample.jpg'))
 
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
@@ -85,12 +89,6 @@ describe RecordsUploads do
   end
 
   describe '#destroy_upload callback' do
-    it 'returns early when file is nil' do
-      expect(Upload).not_to receive(:remove_path)
-
-      uploader.remove!
-    end
-
     it 'it destroys Upload records at the same path after removal' do
       uploader.store!(upload_fixture('rails_sample.jpg'))
 
