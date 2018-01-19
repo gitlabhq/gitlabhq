@@ -12,8 +12,8 @@ describe('Pipelines Table', () => {
 
   beforeEach(() => {
     PipelinesTableComponent = Vue.extend(pipelinesTableComp);
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines; // ordered by id, descending
+    pipeline = pipelines[2];
   });
 
   describe('table', () => {
