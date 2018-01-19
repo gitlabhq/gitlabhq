@@ -50,7 +50,7 @@ module Banzai
       end
 
       def process_link_to_upload_attr(html_attr)
-        path_parts = [html_attr.value]
+        path_parts = [Addressable::URI.unescape(html_attr.value)]
 
         if group
           path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
@@ -58,13 +58,13 @@ module Banzai
           path_parts.unshift(relative_url_root, project.full_path)
         end
 
-        path = File.join(*path_parts)
+        path = Addressable::URI.escape(File.join(*path_parts))
 
         html_attr.value =
           if context[:only_path]
             path
           else
-            URI.join(Gitlab.config.gitlab.base_url, path).to_s
+            Addressable::URI.join(Gitlab.config.gitlab.base_url, path).to_s
           end
       end
 
