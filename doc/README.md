@@ -3,6 +3,8 @@ toc: false
 comments: false
 ---
 
+DANGER: Danger!
+
 # GitLab Documentation
 
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
