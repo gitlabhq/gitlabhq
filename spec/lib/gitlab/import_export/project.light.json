@@ -54,7 +54,6 @@
       "iid": 20,
       "updated_by_id": 1,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "lock_version": null,
