@@ -93,7 +93,7 @@ describe Project do
       let(:developer) { create(:user) }
       before do
         project.request_access(requester)
-        project.team << [developer, :developer]
+        project.add_developer(developer)
       end
 
       it_behaves_like 'members and requesters associations' do
@@ -418,14 +418,21 @@ describe Project do
   end
 
   describe '#merge_method' do
-    it 'returns "ff" merge_method when ff is enabled' do
-      project = build(:project, merge_requests_ff_only_enabled: true)
-      expect(project.merge_method).to be :ff
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff, :rebase, :method) do
+      true  | true  | :ff
+      true  | false | :ff
+      false | true  | :rebase_merge
+      false | false | :merge
     end
 
-    it 'returns "merge" merge_method when ff is disabled' do
-      project = build(:project, merge_requests_ff_only_enabled: false)
-      expect(project.merge_method).to be :merge
+    with_them do
+      let(:project) { build(:project, merge_requests_rebase_enabled: rebase, merge_requests_ff_only_enabled: ff) }
+
+      subject { project.merge_method }
+
+      it { is_expected.to eq(method) }
     end
   end
 
@@ -520,7 +527,7 @@ describe Project do
     let(:user)    { create(:user) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'with default issues tracker' do
@@ -1435,35 +1442,35 @@ describe Project do
     let(:user)    { create(:user) }
 
     it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
     it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
     it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
     it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
     it 'returns true when user is master' do
-      project.team << [user, :master]
+      project.add_master(user)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
@@ -1863,10 +1870,8 @@ describe Project do
       project.change_head(project.default_branch)
     end
 
-    it 'creates the new reference' do
-      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD',
-                                                                            "refs/heads/#{project.default_branch}",
-                                                                            force: true)
+    it 'creates the new reference with rugged' do
+      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
 
       project.change_head(project.default_branch)
     end
@@ -2627,6 +2632,14 @@ describe Project do
           project.rename_repo
         end
       end
+
+      it 'updates project full path in .git/config' do
+        allow(project_storage).to receive(:rename_repo).and_return(true)
+
+        project.rename_repo
+
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+      end
     end
 
     describe '#pages_path' do
@@ -2669,14 +2682,12 @@ describe Project do
   end
 
   context 'hashed storage' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
-    let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
+    let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
 
     before do
       stub_application_setting(hashed_storage_enabled: true)
-      allow(Digest::SHA2).to receive(:hexdigest) { hash }
-      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
     end
 
     describe '#legacy_storage?' do
@@ -2699,13 +2710,13 @@ describe Project do
 
     describe '#base_dir' do
       it 'returns base_dir based on hash of project id' do
-        expect(project.base_dir).to eq('@hashed/6b/86')
+        expect(project.base_dir).to eq("@hashed/#{hash[0..1]}/#{hash[2..3]}")
       end
     end
 
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
-        hashed_path = '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+        hashed_path = "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}"
 
         expect(project.disk_path).to eq(hashed_path)
       end
@@ -2713,7 +2724,9 @@ describe Project do
 
     describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '@hashed/6b/86')
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, "@hashed/#{hash[0..1]}/#{hash[2..3]}")
 
         project.ensure_storage_path_exists
       end
@@ -2773,7 +2786,7 @@ describe Project do
         end
 
         context 'when not rolled out' do
-          let(:project) { create(:project, :repository, storage_version: 1) }
+          let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
           it 'moves pages folder to new location' do
             expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
@@ -2781,6 +2794,12 @@ describe Project do
             project.rename_repo
           end
         end
+      end
+
+      it 'updates project full path in .git/config' do
+        project.rename_repo
+
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3059,8 +3078,50 @@ describe Project do
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
+      expect(project).to receive(:after_create_default_branch)
 
       project.after_import
+    end
+
+    context 'branch protection' do
+      let(:project) { create(:project, :repository) }
+
+      it 'does not protect when branch protection is disabled' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+
+        project.after_import
+
+        expect(project.protected_branches).to be_empty
+      end
+
+      it "gives developer access to push when branch protection is set to 'developers can push'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it "gives developer access to merge when branch protection is set to 'developers can merge'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it 'protects default branch' do
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+      end
     end
   end
 
@@ -3124,22 +3185,25 @@ describe Project do
     end
   end
 
-  describe '#deployment_platform' do
-    subject { project.deployment_platform }
+  describe '#write_repository_config' do
+    set(:project) { create(:project, :repository) }
 
-    let(:project) { create(:project) }
+    it 'writes full path in .git/config when key is missing' do
+      project.write_repository_config
 
-    context 'when user configured kubernetes from Integration > Kubernetes' do
-      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
-
-      it { is_expected.to eq(kubernetes_service) }
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
-    context 'when user configured kubernetes from CI/CD > Clusters' do
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-      let(:platform_kubernetes) { cluster.platform_kubernetes }
+    it 'updates full path in .git/config when key is present' do
+      project.write_repository_config(gl_full_path: 'old/path')
 
-      it { is_expected.to eq(platform_kubernetes) }
+      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+    end
+
+    it 'does not raise an error with an empty repository' do
+      project = create(:project_empty_repo)
+
+      expect { project.write_repository_config }.not_to raise_error
     end
   end
 end

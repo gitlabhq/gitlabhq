@@ -51,12 +51,12 @@ describe Gitlab::GitAccess do
     context 'when the project exists' do
       context 'when actor exists' do
         context 'when actor is a DeployKey' do
-          let(:deploy_key) { create(:deploy_key, user: user, can_push: true) }
+          let(:deploy_key) { create(:deploy_key, user: user) }
           let(:actor) { deploy_key }
 
           context 'when the DeployKey has access to the project' do
             before do
-              deploy_key.projects << project
+              deploy_key.deploy_keys_projects.create(project: project, can_push: true)
             end
 
             it 'allows push and pull access' do
@@ -275,7 +275,7 @@ describe Gitlab::GitAccess do
 
   describe '#check_command_disabled!' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     context 'over http' do
@@ -404,7 +404,7 @@ describe Gitlab::GitAccess do
 
       describe 'reporter user' do
         before do
-          project.team << [user, :reporter]
+          project.add_reporter(user)
         end
 
         context 'pull code' do
@@ -417,7 +417,7 @@ describe Gitlab::GitAccess do
 
         context 'when member of the project' do
           before do
-            project.team << [user, :reporter]
+            project.add_reporter(user)
           end
 
           context 'pull code' do
@@ -497,7 +497,7 @@ describe Gitlab::GitAccess do
           if role == :admin
             user.update_attribute(:admin, true)
           else
-            project.team << [user, role]
+            project.add_role(user, role)
           end
 
           aggregate_failures do
@@ -658,7 +658,7 @@ describe Gitlab::GitAccess do
 
     context 'when project is authorized' do
       before do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
       end
 
       it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
@@ -696,15 +696,13 @@ describe Gitlab::GitAccess do
   end
 
   describe 'deploy key permissions' do
-    let(:key) { create(:deploy_key, user: user, can_push: can_push) }
+    let(:key) { create(:deploy_key, user: user) }
     let(:actor) { key }
 
     context 'when deploy_key can push' do
-      let(:can_push) { true }
-
       context 'when project is authorized' do
         before do
-          key.projects << project
+          key.deploy_keys_projects.create(project: project, can_push: true)
         end
 
         it { expect { push_access_check }.not_to raise_error }
@@ -732,11 +730,9 @@ describe Gitlab::GitAccess do
     end
 
     context 'when deploy_key cannot push' do
-      let(:can_push) { false }
-
       context 'when project is authorized' do
         before do
-          key.projects << project
+          key.deploy_keys_projects.create(project: project, can_push: false)
         end
 
         it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }

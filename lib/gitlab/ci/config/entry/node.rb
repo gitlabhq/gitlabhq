@@ -93,9 +93,7 @@ module Gitlab
 
           private
 
-          def entries
-            @entries
-          end
+          attr_reader :entries
         end
       end
     end

@@ -8,19 +8,19 @@ describe Gitlab::UserAccess do
   describe '#can_push_to_branch?' do
     describe 'push to none protected branch' do
       it 'returns true if user is a master' do
-        project.team << [user, :master]
+        project.add_master(user)
 
         expect(access.can_push_to_branch?('random_branch')).to be_truthy
       end
 
       it 'returns true if user is a developer' do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         expect(access.can_push_to_branch?('random_branch')).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(access.can_push_to_branch?('random_branch')).to be_falsey
       end
@@ -31,34 +31,34 @@ describe Gitlab::UserAccess do
       let(:project_access) { described_class.new(user, project: empty_project) }
 
       it 'returns true if user is master' do
-        empty_project.team << [user, :master]
+        empty_project.add_master(user)
 
         expect(project_access.can_push_to_branch?('master')).to be_truthy
       end
 
       it 'returns false if user is developer and project is fully protected' do
-        empty_project.team << [user, :developer]
+        empty_project.add_developer(user)
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
         expect(project_access.can_push_to_branch?('master')).to be_falsey
       end
 
       it 'returns false if user is developer and it is not allowed to push new commits but can merge into branch' do
-        empty_project.team << [user, :developer]
+        empty_project.add_developer(user)
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
         expect(project_access.can_push_to_branch?('master')).to be_falsey
       end
 
       it 'returns true if user is developer and project is unprotected' do
-        empty_project.team << [user, :developer]
+        empty_project.add_developer(user)
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
         expect(project_access.can_push_to_branch?('master')).to be_truthy
       end
 
       it 'returns true if user is developer and project grants developers permission' do
-        empty_project.team << [user, :developer]
+        empty_project.add_developer(user)
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         expect(project_access.can_push_to_branch?('master')).to be_truthy
@@ -70,25 +70,25 @@ describe Gitlab::UserAccess do
       let(:not_existing_branch) { create :protected_branch, :developers_can_merge, project: project }
 
       it 'returns true if user is a master' do
-        project.team << [user, :master]
+        project.add_master(user)
 
         expect(access.can_push_to_branch?(branch.name)).to be_truthy
       end
 
       it 'returns false if user is a developer' do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
       end
 
       it 'returns false if user is a reporter' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
       end
 
       it 'returns false if branch does not exist' do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         expect(access.can_push_to_branch?(not_existing_branch.name)).to be_falsey
       end
@@ -100,19 +100,19 @@ describe Gitlab::UserAccess do
       end
 
       it 'returns true if user is a master' do
-        project.team << [user, :master]
+        project.add_master(user)
 
         expect(access.can_push_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns true if user is a developer' do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         expect(access.can_push_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(access.can_push_to_branch?(@branch.name)).to be_falsey
       end
@@ -124,19 +124,19 @@ describe Gitlab::UserAccess do
       end
 
       it 'returns true if user is a master' do
-        project.team << [user, :master]
+        project.add_master(user)
 
         expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns true if user is a developer' do
-        project.team << [user, :developer]
+        project.add_developer(user)
 
         expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
 
         expect(access.can_merge_to_branch?(@branch.name)).to be_falsey
       end

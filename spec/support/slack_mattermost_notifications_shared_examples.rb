@@ -57,6 +57,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       @issue = issue_service.execute
       @issues_sample_data = issue_service.hook_data(@issue, 'open')
 
+      project.add_developer(user)
       opts = {
         title: 'Awesome merge_request',
         description: 'please fix',

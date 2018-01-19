@@ -1,5 +1,0 @@
----
-title: Prevent 500 error when inspecting job after trigger was removed
-merge_request:
-author:
-type: fixed

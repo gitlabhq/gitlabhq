@@ -8,7 +8,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
     visit project_tree_path(@project, root_ref)
   end
 
@@ -276,17 +276,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I see a commit error message' do
     expect(page).to have_content('Your changes could not be committed')
-  end
-
-  step 'I create bare repo' do
-    click_link 'Create empty bare repository'
-  end
-
-  step 'I click on "README" link' do
-    click_link 'README'
-
-    # Remove pre-receive hook so we can push without auth
-    FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
   end
 
   step "I switch ref to 'test'" do

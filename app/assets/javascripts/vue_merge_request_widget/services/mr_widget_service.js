@@ -1,57 +1,51 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '../../lib/utils/axios_utils';
 
 export default class MRWidgetService {
   constructor(endpoints) {
-    this.mergeResource = Vue.resource(endpoints.mergePath);
-    this.mergeCheckResource = Vue.resource(endpoints.statusPath);
-    this.cancelAutoMergeResource = Vue.resource(endpoints.cancelAutoMergePath);
-    this.removeWIPResource = Vue.resource(endpoints.removeWIPPath);
-    this.removeSourceBranchResource = Vue.resource(endpoints.sourceBranchPath);
-    this.deploymentsResource = Vue.resource(endpoints.ciEnvironmentsStatusPath);
-    this.pollResource = Vue.resource(`${endpoints.statusPath}?serializer=basic`);
-    this.mergeActionsContentResource = Vue.resource(endpoints.mergeActionsContentPath);
+    this.endpoints = endpoints;
   }
 
   merge(data) {
-    return this.mergeResource.save(data);
+    return axios.post(this.endpoints.mergePath, data);
   }
 
   cancelAutomaticMerge() {
-    return this.cancelAutoMergeResource.save();
+    return axios.post(this.endpoints.cancelAutoMergePath);
   }
 
   removeWIP() {
-    return this.removeWIPResource.save();
+    return axios.post(this.endpoints.removeWIPPath);
   }
 
   removeSourceBranch() {
-    return this.removeSourceBranchResource.delete();
+    return axios.delete(this.endpoints.sourceBranchPath);
   }
 
   fetchDeployments() {
-    return this.deploymentsResource.get();
+    return axios.get(this.endpoints.ciEnvironmentsStatusPath);
   }
 
   poll() {
-    return this.pollResource.get();
+    return axios.get(`${this.endpoints.statusPath}?serializer=basic`);
   }
 
   checkStatus() {
-    return this.mergeCheckResource.get();
+    return axios.get(`${this.endpoints.statusPath}?serializer=widget`);
   }
 
   fetchMergeActionsContent() {
-    return this.mergeActionsContentResource.get();
+    return axios.get(this.endpoints.mergeActionsContentPath);
+  }
+
+  rebase() {
+    return axios.post(this.endpoints.rebasePath);
   }
 
   static stopEnvironment(url) {
-    return Vue.http.post(url);
+    return axios.post(url);
   }
 
   static fetchMetrics(metricsUrl) {
-    return Vue.http.get(`${metricsUrl}.json`);
+    return axios.get(`${metricsUrl}.json`);
   }
 }

@@ -51,7 +51,10 @@ export default class Shortcuts {
   }
 
   onToggleHelp(e) {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     Shortcuts.toggleHelp(this.enabledHelp);
   }
 
@@ -59,7 +62,7 @@ export default class Shortcuts {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
     if (Cookies.get(performanceBarCookieName) === 'true') {
-      Cookies.remove(performanceBarCookieName, { path: '/' });
+      Cookies.set(performanceBarCookieName, 'false', { path: '/' });
     } else {
       Cookies.set(performanceBarCookieName, 'true', { path: '/' });
     }
@@ -112,6 +115,9 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     $('#search').focus();
-    e.preventDefault();
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
   }
 }

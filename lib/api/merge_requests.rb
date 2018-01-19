@@ -8,7 +8,7 @@ module API
 
     helpers do
       def find_merge_requests(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
@@ -22,6 +22,13 @@ module API
 
         merge_requests
           .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
+      end
+
+      def merge_request_pipelines_with_access
+        authorize! :read_pipeline, user_project
+
+        mr = find_merge_request_with_access(params[:merge_request_iid])
+        mr.all_pipelines
       end
 
       params :merge_requests_params do
@@ -41,6 +48,7 @@ module API
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
         use :pagination
       end
     end
@@ -184,6 +192,16 @@ module API
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
+      desc 'Get the participants of a merge request' do
+        success Entities::UserBasic
+      end
+      get ':id/merge_requests/:merge_request_iid/participants' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        participants = ::Kaminari.paginate_array(merge_request.participants)
+
+        present paginate(participants), with: Entities::UserBasic
+      end
+
       desc 'Get the commits of a merge request' do
         success Entities::Commit
       end
@@ -201,6 +219,15 @@ module API
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+      end
+
+      desc 'Get the merge request pipelines' do
+        success Entities::PipelineBasic
+      end
+      get ':id/merge_requests/:merge_request_iid/pipelines' do
+        pipelines = merge_request_pipelines_with_access
+
+        present paginate(pipelines), with: Entities::PipelineBasic
       end
 
       desc 'Update a merge request' do

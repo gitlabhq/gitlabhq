@@ -37,6 +37,12 @@ const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
+  static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
+    if (!this.instance) {
+      this.instance = new Notes(notes_url, note_ids, last_fetched_at, view, enableGFM);
+    }
+  }
+
   constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);

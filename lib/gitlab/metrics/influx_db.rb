@@ -38,6 +38,7 @@ module Gitlab
         # This is memoized since this method is called for every instrumented
         # method. Loading data from an external cache on every method call slows
         # things down too much.
+        # in milliseconds
         @method_call_threshold ||= settings[:method_call_threshold]
       end
 
@@ -168,6 +169,7 @@ module Gitlab
               end
             end
           end
+
           @pool
         end
       end

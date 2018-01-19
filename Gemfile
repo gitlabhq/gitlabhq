@@ -12,7 +12,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.4.5', group: :mysql
+gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
@@ -70,6 +70,10 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
+
+# Before updating this gem, check if
+# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
+# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
@@ -78,7 +82,7 @@ gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 # API
 gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
@@ -111,7 +115,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
+gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
@@ -229,6 +233,9 @@ gem 'charlock_holmes', '~> 0.7.5'
 # Faster JSON
 gem 'oj', '~> 2.17.4'
 
+# Faster blank
+gem 'fast_blank'
+
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
@@ -263,7 +270,7 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
-gem 'batch-loader'
+gem 'batch-loader', '~> 1.2.1'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
@@ -283,7 +290,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -334,10 +341,12 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.49.1', require: false
-  gem 'rubocop-rspec', '~> 1.15.1', require: false
-  gem 'rubocop-gitlab-security', '~> 0.1.0', require: false
-  gem 'scss_lint', '~> 0.54.0', require: false
+  gem 'gitlab-styles', '~> 2.2.0', require: false
+  # Pin these dependencies, otherwise a new rule could break the CI pipelines
+  gem 'rubocop', '~> 0.52.0'
+  gem 'rubocop-rspec', '~> 1.20.1'
+
+  gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
@@ -379,9 +388,6 @@ gem 'ruby-prof', '~> 0.16.2'
 # OAuth
 gem 'oauth2', '~> 1.4'
 
-# Soft deletion
-gem 'paranoia', '~> 2.3.1'
-
 # Health check
 gem 'health_check', '~> 2.6.0'
 
@@ -400,7 +406,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.61.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.73.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

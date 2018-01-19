@@ -7,7 +7,7 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
 
-    belongs_to :project
+    belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
@@ -287,8 +287,12 @@ module Ci
       Ci::Pipeline.truncate_sha(sha)
     end
 
+    # NOTE: This is loaded lazily and will never be nil, even if the commit
+    # cannot be found.
+    #
+    # Use constructs like: `pipeline.commit.present?`
     def commit
-      @commit ||= project.commit_by(oid: sha)
+      @commit ||= Commit.lazy(project, sha)
     end
 
     def branch?
@@ -338,12 +342,9 @@ module Ci
     end
 
     def latest?
-      return false unless ref
+      return false unless ref && commit.present?
 
-      commit = project.commit(ref)
-      return false unless commit
-
-      commit.sha == sha
+      project.commit(ref) == commit
     end
 
     def retried

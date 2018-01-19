@@ -12,7 +12,7 @@ feature 'Contributions Calendar', :js do
   issue_params = { title: issue_title }
 
   def get_cell_color_selector(contributions)
-    activity_colors = %w[#ededed #acd5f2 #7fa8c9 #527ba0 #254e77]
+    activity_colors = ["#ededed", "rgb(172, 213, 242)", "rgb(127, 168, 201)", "rgb(82, 123, 160)", "rgb(37, 78, 119)"]
     # We currently don't actually test the cases with contributions >= 20
     activity_colors_index =
       if contributions > 0 && contributions < 10

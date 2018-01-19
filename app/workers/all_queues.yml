@@ -22,6 +22,7 @@
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
+- gcp_cluster:check_gcp_project_billing
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -39,6 +40,7 @@
 - pipeline_cache:expire_job_cache
 - pipeline_cache:expire_pipeline_cache
 - pipeline_creation:create_pipeline
+- pipeline_creation:run_pipeline_schedule
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
 - pipeline_default:pipeline_metrics
@@ -88,6 +90,7 @@
 - project_service
 - propagate_service_template
 - reactive_caching
+- rebase
 - repository_fork
 - repository_import
 - storage_migrator

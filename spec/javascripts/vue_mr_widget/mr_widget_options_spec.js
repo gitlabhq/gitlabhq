@@ -2,15 +2,13 @@ import Vue from 'vue';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData from './mock_data';
 import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
-    json() {
-      return data;
-    },
-    body: data,
+    data,
   });
 });
 
@@ -342,6 +340,33 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
       expect(comps['mr-widget-pipeline-failed']).toBeDefined();
       expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
+    });
+  });
+
+  describe('rendering relatedLinks', () => {
+    beforeEach((done) => {
+      vm.mr.relatedLinks = {
+        assignToMe: null,
+        closing: `
+          <a class="close-related-link" href="#'>
+            Close
+          </a>
+        `,
+        mentioned: '',
+      };
+      Vue.nextTick(done);
+    });
+
+    it('renders if there are relatedLinks', () => {
+      expect(vm.$el.querySelector('.close-related-link')).toBeDefined();
+    });
+
+    it('does not render if state is nothingToMerge', (done) => {
+      vm.mr.state = stateKey.nothingToMerge;
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.close-related-link')).toBeNull();
+        done();
+      });
     });
   });
 });

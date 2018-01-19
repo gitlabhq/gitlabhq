@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 gitaly_dir = 'tmp/tests/gitaly'
-env = { 'HOME' => File.expand_path('tmp/tests') }
+env = { 'HOME' => File.expand_path('tmp/tests'),
+        'GEM_PATH' => Gem.path.join(':') }
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
 
 # Print the PID of the spawned process

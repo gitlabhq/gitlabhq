@@ -203,6 +203,7 @@ class ProjectsController < Projects::ApplicationController
     else
       flash[:alert] = _("Project export could not be deleted.")
     end
+
     redirect_to(edit_project_path(@project))
   end
 
@@ -353,7 +354,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def repo_exists?
-    project.repository_exists? && !project.empty_repo? && project.repo
+    project.repository_exists? && !project.empty_repo?
 
   rescue Gitlab::Git::Repository::NoRepository
     project.repository.expire_exists_cache

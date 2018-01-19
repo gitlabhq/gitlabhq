@@ -9,9 +9,9 @@ describe MergeRequests::CloseService do
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
@@ -50,6 +50,19 @@ describe MergeRequests::CloseService do
       it 'marks todos as done' do
         expect(todo.reload).to be_done
       end
+    end
+
+    it 'updates metrics' do
+      metrics = merge_request.metrics
+      metrics_service = double(MergeRequestMetricsService)
+      allow(MergeRequestMetricsService)
+        .to receive(:new)
+        .with(metrics)
+        .and_return(metrics_service)
+
+      expect(metrics_service).to receive(:close)
+
+      described_class.new(project, user, {}).execute(merge_request)
     end
 
     it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do

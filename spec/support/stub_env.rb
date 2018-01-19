@@ -4,6 +4,7 @@ module StubENV
 
   def stub_env(key_or_hash, value = nil)
     init_stub unless env_stubbed?
+
     if key_or_hash.is_a? Hash
       key_or_hash.each { |k, v| add_stubbed_value(k, v) }
     else

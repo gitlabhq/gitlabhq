@@ -10,6 +10,16 @@ module GoogleApi
       request.session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] = 1.hour.ago.to_i.to_s
     end
 
+    def stub_cloud_platform_projects_list(options)
+      WebMock.stub_request(:get, cloud_platform_projects_list_url)
+        .to_return(cloud_platform_response(cloud_platform_projects_body(options)))
+    end
+
+    def stub_cloud_platform_projects_get_billing_info(project_id, billing_enabled)
+      WebMock.stub_request(:get, cloud_platform_projects_get_billing_info_url(project_id))
+        .to_return(cloud_platform_response(cloud_platform_projects_billing_info_body(project_id, billing_enabled)))
+    end
+
     def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, **options)
       WebMock.stub_request(:get, cloud_platform_get_zone_cluster_url(project_id, zone, cluster_id))
         .to_return(cloud_platform_response(cloud_platform_cluster_body(options)))
@@ -38,6 +48,14 @@ module GoogleApi
     def stub_cloud_platform_get_zone_operation_error(project_id, zone, operation_id)
       WebMock.stub_request(:get, cloud_platform_get_zone_operation_url(project_id, zone, operation_id))
         .to_return(status: [500, "Internal Server Error"])
+    end
+
+    def cloud_platform_projects_list_url
+      "https://cloudresourcemanager.googleapis.com/v1/projects"
+    end
+
+    def cloud_platform_projects_get_billing_info_url(project_id)
+      "https://cloudbilling.googleapis.com/v1/projects/#{project_id}/billingInfo"
     end
 
     def cloud_platform_get_zone_cluster_url(project_id, zone, cluster_id)
@@ -113,6 +131,33 @@ module GoogleApi
         "targetLink": options[:targetLink] || 'https://container.googleapis.com/v1/projects/123456789101/zones/us-central1-a/clusters/test-cluster',
         "startTime": options[:startTime] || '2017-09-13T16:49:13.055601589Z',
         "endTime": options[:endTime] || ''
+      }
+    end
+
+    def cloud_platform_projects_body(**options)
+      {
+        "projects": [
+          {
+            "projectNumber": options[:project_number] || "1234",
+            "projectId": options[:project_id] || "test-project-1234",
+            "lifecycleState": "ACTIVE",
+            "name": options[:name] || "test-project",
+            "createTime": "2017-12-16T01:48:29.129Z",
+            "parent": {
+              "type": "organization",
+              "id": "12345"
+            }
+          }
+        ]
+      }
+    end
+
+    def cloud_platform_projects_billing_info_body(project_id, billing_enabled)
+      {
+        "name": "projects/#{project_id}/billingInfo",
+        "projectId": "#{project_id}",
+        "billingAccountName": "account-name",
+        "billingEnabled": billing_enabled
       }
     end
   end

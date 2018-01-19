@@ -1,0 +1,18 @@
+- illustration = local_assigns.fetch(:illustration)
+- illustration_size = local_assigns.fetch(:illustration_size)
+- title = local_assigns.fetch(:title)
+- content = local_assigns.fetch(:content, nil)
+- action = local_assigns.fetch(:action, nil)
+
+.row.empty-state
+  .col-xs-12
+    .svg-content{ class: illustration_size }
+      = image_tag illustration
+  .col-xs-12
+    .text-content
+      %h4.text-center= title
+      - if content
+        %p= content
+      - if action
+        .text-center
+          = action

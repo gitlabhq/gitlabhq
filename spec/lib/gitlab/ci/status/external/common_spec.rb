@@ -29,7 +29,7 @@ describe Gitlab::Ci::Status::External::Common do
   describe '#has_details?' do
     context 'when user has access to read commit status' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it { is_expected.to have_details }

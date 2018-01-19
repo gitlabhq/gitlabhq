@@ -94,7 +94,7 @@ export default class ImageFile {
     });
     return [maxWidth, maxHeight];
   }
-
+  // eslint-disable-next-line
   views = {
     'two-up': function() {
       return $('.two-up.view .wrap', this.file).each((function(_this) {
@@ -176,6 +176,7 @@ export default class ImageFile {
             left: dragTrackWidth
           });
 
+          $frameAdded.css('opacity', 1);
           framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
 
           _this.initDraggable($dragger, framePadding, function(e, left) {

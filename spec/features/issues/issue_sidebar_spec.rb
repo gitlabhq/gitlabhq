@@ -8,6 +8,7 @@ feature 'Issue Sidebar' do
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
+  let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
     sign_in(user)
@@ -18,7 +19,7 @@ feature 'Issue Sidebar' do
     let(:issue2) { create(:issue, project: project, author: user2) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       visit_issue(project, issue2)
 
       find('.block.assignee .edit-link').click
@@ -78,7 +79,7 @@ feature 'Issue Sidebar' do
 
   context 'as a allowed user' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       visit_issue(project, issue)
     end
 
@@ -98,6 +99,14 @@ feature 'Issue Sidebar' do
         # Restore the window size as it was including the sidebar
         restore_window_size
         open_issue_sidebar
+      end
+
+      it 'escapes XSS when viewing issue labels' do
+        page.within('.block.labels') do
+          find('.edit-link').click
+
+          expect(page).to have_content '<script>alert("xss");</script>'
+        end
       end
     end
 
@@ -156,7 +165,7 @@ feature 'Issue Sidebar' do
 
   context 'as a guest' do
     before do
-      project.team << [user, :guest]
+      project.add_guest(user)
       visit_issue(project, issue)
     end
 

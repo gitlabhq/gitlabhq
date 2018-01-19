@@ -6,26 +6,21 @@ module QA
       class Project < Factory::Base
         attr_writer :description
 
+        dependency Factory::Resource::Group, as: :group
+
         def name=(name)
           @name = "#{name}-#{SecureRandom.hex(8)}"
+          @description = 'My awesome project'
+        end
+
+        product :name do
+          Page::Project::Show.act { project_name }
         end
 
         def fabricate!
-          Factory::Resource::Sandbox.fabricate!
+          group.visit!
 
-          Page::Group::Show.perform do |page|
-            if page.has_subgroup?(Runtime::Namespace.name)
-              page.go_to_subgroup(Runtime::Namespace.name)
-            else
-              page.go_to_new_subgroup
-
-              Factory::Resource::Group.fabricate! do |group|
-                group.path = Runtime::Namespace.name
-              end
-            end
-
-            page.go_to_new_project
-          end
+          Page::Group::Show.act { go_to_new_project }
 
           Page::Project::New.perform do |page|
             page.choose_test_namespace

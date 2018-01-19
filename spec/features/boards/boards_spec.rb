@@ -11,8 +11,8 @@ describe 'Issue Boards', :js do
   let!(:user2)  { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
 
     set_cookie('sidebar_collapsed', 'true')
 
@@ -551,7 +551,7 @@ describe 'Issue Boards', :js do
     let(:user_guest) { create(:user) }
 
     before do
-      project.team << [user_guest, :guest]
+      project.add_guest(user_guest)
       sign_out(:user)
       sign_in(user_guest)
       visit project_board_path(project, board)

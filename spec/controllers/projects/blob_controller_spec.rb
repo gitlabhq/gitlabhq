@@ -89,7 +89,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
     end
@@ -147,7 +147,7 @@ describe Projects::BlobController do
       let(:developer) { create(:user) }
 
       before do
-        project.team << [developer, :developer]
+        project.add_developer(developer)
         sign_in(developer)
         get :edit, default_params
       end
@@ -161,7 +161,7 @@ describe Projects::BlobController do
       let(:master) { create(:user) }
 
       before do
-        project.team << [master, :master]
+        project.add_master(master)
         sign_in(master)
         get :edit, default_params
       end
@@ -190,7 +190,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
 
       sign_in(user)
     end

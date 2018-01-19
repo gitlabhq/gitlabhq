@@ -147,7 +147,7 @@ describe API::Internal do
 
   describe "POST /internal/lfs_authenticate" do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'user key' do
@@ -192,6 +192,54 @@ describe API::Internal do
     end
   end
 
+  describe "GET /internal/authorized_keys" do
+    context "using an existing key's fingerprint" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+    end
+
+    context "non existing key's fingerprint" do
+      it "returns 404" do
+        get(api('/internal/authorized_keys'), fingerprint: "no:t-:va:li:d0", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "using a partial fingerprint" do
+      it "returns 404" do
+        get(api('/internal/authorized_keys'), fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "sending the key" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1], secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+
+      it "returns 404 with a partial key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1][0...-3], secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+
+      it "returns 404 with an not valid base64 string" do
+        get(api('/internal/authorized_keys'), key: "whatever!", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
       around do |example|
@@ -199,7 +247,7 @@ describe API::Internal do
       end
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context 'with env passed as a JSON' do
@@ -359,7 +407,7 @@ describe API::Internal do
 
     context "access denied" do
       before do
-        project.team << [user, :guest]
+        project.add_guest(user)
       end
 
       context "git pull" do
@@ -413,7 +461,7 @@ describe API::Internal do
 
     context "archived project" do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         project.archive!
       end
 
@@ -527,7 +575,7 @@ describe API::Internal do
     context 'web actions are always allowed' do
       it 'allows WEB push' do
         stub_application_setting(enabled_git_access_protocol: 'ssh')
-        project.team << [user, :developer]
+        project.add_developer(user)
         push(key, project, 'web')
 
         expect(response.status).to eq(200)
@@ -540,7 +588,7 @@ describe API::Internal do
       let!(:repository) { project.repository }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         project.path = 'new_path'
         project.save!
       end
@@ -566,7 +614,7 @@ describe API::Internal do
     let(:changes) { URI.escape("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch") }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'returns link to create new merge request' do
@@ -701,7 +749,7 @@ describe API::Internal do
     end
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(described_class).to receive(:identify).and_return(user)
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
@@ -782,6 +830,16 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
         expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
+      end
+    end
+
+    context 'with an orphaned write deploy key' do
+      it 'does not try to notify that project moved' do
+        allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

@@ -12,13 +12,13 @@ describe('Markdown field component', () => {
 
   beforeEach((done) => {
     vm = new Vue({
+      components: {
+        fieldComponent,
+      },
       data() {
         return {
           text: 'testing\n123',
         };
-      },
-      components: {
-        fieldComponent,
       },
       template: `
         <field-component

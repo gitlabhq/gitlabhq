@@ -24,9 +24,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def create
     @key = DeployKeys::CreateService.new(current_user, create_params).execute
 
-    unless @key.valid? && @project.deploy_keys << @key
+    unless @key.valid?
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
+
     redirect_to_repository_settings(@project)
   end
 
@@ -70,11 +71,14 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:deploy_key).permit(:key, :title, :can_push)
+    create_params = params.require(:deploy_key)
+                          .permit(:key, :title, deploy_keys_projects_attributes: [:can_push])
+    create_params.dig(:deploy_keys_projects_attributes, '0')&.merge!(project_id: @project.id)
+    create_params
   end
 
   def update_params
-    params.require(:deploy_key).permit(:title, :can_push)
+    params.require(:deploy_key).permit(:title, deploy_keys_projects_attributes: [:id, :can_push])
   end
 
   def authorize_update_deploy_key!

@@ -116,7 +116,7 @@ describe MergeRequestPresenter do
     end
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
@@ -270,7 +270,7 @@ describe MergeRequestPresenter do
     context 'when can create issue and issues enabled' do
       it 'returns path' do
         allow(project).to receive(:issues_enabled?) { true }
-        project.team << [user, :master]
+        project.add_master(user)
 
         is_expected
           .to eq("/#{resource.project.full_path}/issues/new?merge_request_to_resolve_discussions_of=#{resource.iid}")
@@ -288,7 +288,7 @@ describe MergeRequestPresenter do
     context 'when issues disabled' do
       it 'returns nil' do
         allow(project).to receive(:issues_enabled?) { false }
-        project.team << [user, :master]
+        project.add_master(user)
 
         is_expected.to be_nil
       end
@@ -307,7 +307,7 @@ describe MergeRequestPresenter do
     context 'when merge request enabled and has permission' do
       it 'has remove_wip_path' do
         allow(project).to receive(:merge_requests_enabled?) { true }
-        project.team << [user, :master]
+        project.add_master(user)
 
         is_expected
           .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/remove_wip")
@@ -402,6 +402,69 @@ describe MergeRequestPresenter do
 
       is_expected
         .to eq("<a href=\"/#{resource.source_project.full_path}/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
+    end
+  end
+
+  describe '#rebase_path' do
+    before do
+      allow(resource).to receive(:rebase_in_progress?) { rebase_in_progress }
+      allow(resource).to receive(:should_be_rebased?) { should_be_rebased }
+
+      allow_any_instance_of(Gitlab::UserAccess::RequestCacheExtension)
+        .to receive(:can_push_to_branch?)
+        .with(resource.source_branch)
+        .and_return(can_push_to_branch)
+    end
+
+    subject do
+      described_class.new(resource, current_user: user).rebase_path
+    end
+
+    context 'when can rebase' do
+      let(:rebase_in_progress) { false }
+      let(:can_push_to_branch) { true }
+      let(:should_be_rebased) { true }
+
+      before do
+        allow(resource).to receive(:source_branch_exists?) { true }
+      end
+
+      it 'returns path' do
+        is_expected
+          .to eq("/#{project.full_path}/merge_requests/#{resource.iid}/rebase")
+      end
+    end
+
+    context 'when cannot rebase' do
+      context 'when rebase in progress' do
+        let(:rebase_in_progress) { true }
+        let(:can_push_to_branch) { true }
+        let(:should_be_rebased) { true }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when user cannot merge' do
+        let(:rebase_in_progress) { false }
+        let(:can_push_to_branch) { false }
+        let(:should_be_rebased) { true }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'should not be rebased' do
+        let(:rebase_in_progress) { false }
+        let(:can_push_to_branch) { true }
+        let(:should_be_rebased) { false }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
     end
   end
 end

@@ -7,7 +7,7 @@ describe 'Project variables', :js do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
     project.variables << variable
 
     visit project_settings_ci_cd_path(project)

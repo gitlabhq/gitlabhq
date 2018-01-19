@@ -188,7 +188,7 @@ describe SnippetsFinder do
     end
 
     it "returns all snippets for project members" do
-      project1.team << [user, :developer]
+      project1.add_developer(user)
 
       snippets = described_class.new(user, project: project1).execute
 
@@ -196,7 +196,7 @@ describe SnippetsFinder do
     end
 
     it "returns private snippets for project members" do
-      project1.team << [user, :developer]
+      project1.add_developer(user)
 
       snippets = described_class.new(user, project: project1, visibility: Snippet::PRIVATE).execute
 

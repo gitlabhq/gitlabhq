@@ -31,7 +31,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is authorized to resolve the discussion" do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context "when the discussion is not resolvable" do
@@ -92,7 +92,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is authorized to resolve the discussion" do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       context "when the discussion is not resolvable" do

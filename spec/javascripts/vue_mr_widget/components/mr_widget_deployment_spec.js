@@ -95,10 +95,8 @@ describe('MRWidgetDeployment', () => {
       const url = '/foo/bar';
       const returnPromise = () => new Promise((resolve) => {
         resolve({
-          json() {
-            return {
-              redirect_url: url,
-            };
+          data: {
+            redirect_url: url,
           },
         });
       });

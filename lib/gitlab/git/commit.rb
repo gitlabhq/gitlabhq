@@ -15,8 +15,6 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :rugged_commit
-
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -228,6 +226,19 @@ module Gitlab
             end
           end
         end
+
+        # Only to be used when the object ids will not necessarily have a
+        # relation to each other. The last 10 commits for a branch for example,
+        # should go through .where
+        def batch_by_oid(repo, oids)
+          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.list_commits_by_oid(oids)
+            else
+              oids.map { |oid| find(repo, oid) }.compact
+            end
+          end
+        end
       end
 
       def initialize(repository, raw_commit, head = nil)
@@ -425,6 +436,16 @@ module Gitlab
         parent_ids.size > 1
       end
 
+      def tree_entry(path)
+        @repository.gitaly_migrate(:commit_tree_entry) do |is_migrated|
+          if is_migrated
+            gitaly_tree_entry(path)
+          else
+            rugged_tree_entry(path)
+          end
+        end
+      end
+
       def to_gitaly_commit
         return raw_commit if raw_commit.is_a?(Gitaly::GitCommit)
 
@@ -483,6 +504,28 @@ module Gitlab
 
       def serialize_keys
         SERIALIZE_KEYS
+      end
+
+      def gitaly_tree_entry(path)
+        # We're only interested in metadata, so limit actual data to 1 byte
+        # since Gitaly doesn't support "send no data" option.
+        entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
+        return unless entry
+
+        # To be compatible with the rugged format
+        entry = entry.to_h
+        entry.delete(:data)
+        entry[:name] = File.basename(path)
+        entry[:type] = entry[:type].downcase
+
+        entry
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
+      rescue Rugged::TreeError
+        nil
       end
 
       def gitaly_commit_author_from_rugged(author_or_committer)

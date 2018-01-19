@@ -5,7 +5,7 @@ feature 'Developer views empty project instructions' do
   let(:developer) { create(:user) }
 
   background do
-    project.team << [developer, :developer]
+    project.add_developer(developer)
 
     sign_in(developer)
   end
