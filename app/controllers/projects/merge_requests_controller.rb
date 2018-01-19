@@ -94,7 +94,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     discussions = Discussion.build_collection(notes, @merge_request)
 
-    render json: DiscussionSerializer.new(project: @project, noteable: @merge_request, current_user: current_user).represent(discussions)
+    render json: DiscussionSerializer.new(project: @project, noteable: @merge_request, current_user: current_user).represent(discussions, context: self)
   end
 
   def pipelines
