@@ -278,18 +278,19 @@ describe Banzai::Filter::RelativeLinkFilter do
         expect(doc.at_css('a')['href']).to eq 'http://example.com'
       end
 
-      it 'supports Unicode filenames' do
+      it 'supports unescaped Unicode filenames' do
+        path = '/uploads/한글.png'
+        doc = filter(link(path))
+
+        expect(doc.at_css('a')['href']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
+      end
+
+      it 'supports escaped Unicode filenames' do
         path = '/uploads/한글.png'
         escaped = Addressable::URI.escape(path)
-
-        # Stub these methods so the file doesn't actually need to be in the repo
-        allow_any_instance_of(described_class)
-          .to receive(:file_exists?).and_return(true)
-        allow_any_instance_of(described_class)
-          .to receive(:image?).with(path).and_return(true)
-
         doc = filter(image(escaped))
-        expect(doc.at_css('img')['src']).to match "/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png"
+
+        expect(doc.at_css('img')['src']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
       end
     end
 
