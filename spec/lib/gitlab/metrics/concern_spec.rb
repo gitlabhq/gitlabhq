@@ -8,13 +8,17 @@ describe Gitlab::Metrics::Concern do
     let(:metric_name) { :sample_metric }
 
     describe "#define_#{metric_type}" do
-      let(:define_method) { "define_#{metric_type}".to_sym }
+      let(:_metric_type) { metric_type }
+
+      def define_metric_method(**args)
+        subject.send("define_#{_metric_type}", metric_name, **args)
+      end
 
       context 'metrics access method not defined' do
         it "defines metrics accessing method" do
           expect(subject).not_to respond_to(metric_name)
 
-          subject.send(define_method, metric_name, docstring: docstring)
+          define_metric_method(docstring: docstring)
 
           expect(subject).to respond_to(metric_name)
         end
@@ -22,16 +26,16 @@ describe Gitlab::Metrics::Concern do
 
       context 'metrics access method defined' do
         before do
-          subject.send(define_method, metric_name, docstring: docstring)
+          define_metric_method(docstring: docstring)
         end
 
         it 'raises error when trying to redefine method' do
-          expect { subject.send(define_method, metric_name, docstring: docstring) }.to raise_error(ArgumentError)
+          expect { define_metric_method(docstring: docstring) }.to raise_error(ArgumentError)
         end
 
         context 'metric is not cached' do
           it 'calls fetch_metric' do
-            expect(subject).to receive(:fetch_metric).with(metric_type, metric_name, docstring: docstring)
+            expect(subject).to receive(:init_metric).with(metric_type, metric_name, docstring: docstring)
 
             subject.send(metric_name)
           end
@@ -43,7 +47,7 @@ describe Gitlab::Metrics::Concern do
           end
 
           it 'returns cached metric' do
-            expect(subject).not_to receive(:fetch_metric)
+            expect(subject).not_to receive(:init_metric)
 
             subject.send(metric_name)
           end
@@ -52,16 +56,18 @@ describe Gitlab::Metrics::Concern do
     end
 
     describe "#fetch_#{metric_type}" do
-      let(:fetch_method) { "fetch_#{metric_type}".to_sym }
       let(:_metric_type) { metric_type }
-
       let(:null_metric) { Gitlab::Metrics::NullMetric.instance }
+
+      def fetch_metric_method(**args)
+        subject.send("fetch_#{_metric_type}", metric_name, **args)
+      end
 
       context "when #{metric_type} is not cached" do
         it 'initializes counter metric' do
           allow(Gitlab::Metrics).to receive(metric_type).and_return(null_metric)
 
-          subject.send(fetch_method, metric_name, docstring: docstring)
+          fetch_metric_method(docstring: docstring)
 
           expect(Gitlab::Metrics).to have_received(metric_type).with(metric_name, docstring, *args)
         end
@@ -69,13 +75,13 @@ describe Gitlab::Metrics::Concern do
 
       context "when #{metric_type} is cached" do
         before do
-          subject.send(fetch_method, metric_name, docstring: docstring)
+          fetch_metric_method(docstring: docstring)
         end
 
         it 'uses class metric cache' do
           expect(Gitlab::Metrics).not_to receive(metric_type)
 
-          subject.send(fetch_method, metric_name, docstring: docstring)
+          fetch_metric_method(docstring: docstring)
         end
 
         context 'when metric is reloaded' do
@@ -86,7 +92,7 @@ describe Gitlab::Metrics::Concern do
           it "initializes #{metric_type} metric" do
             allow(Gitlab::Metrics).to receive(metric_type).and_return(null_metric)
 
-            subject.send(fetch_method, metric_name, docstring: docstring)
+            fetch_metric_method(docstring: docstring)
 
             expect(Gitlab::Metrics).to have_received(metric_type).with(metric_name, docstring, *args)
           end
@@ -95,7 +101,7 @@ describe Gitlab::Metrics::Concern do
 
       context 'when metric is configured with feature' do
         let(:feature_name) { :some_metric_feature }
-        let(:metric) { subject.send(fetch_method, metric_name, docstring: docstring, with_feature: feature_name) }
+        let(:metric) { fetch_metric_method(docstring: docstring, with_feature: feature_name) }
 
         context 'when feature is enabled' do
           before do
@@ -117,7 +123,7 @@ describe Gitlab::Metrics::Concern do
           end
 
           it "returns NullMetric" do
-            allow(Gitlab::Metrics).to receive(metric_type).and_return(null_metric)
+            allow(Gitlab::Metrics).to receive(metric_type)
 
             expect(metric).to be_instance_of(Gitlab::Metrics::NullMetric)
 

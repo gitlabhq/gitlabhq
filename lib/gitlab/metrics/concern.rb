@@ -13,23 +13,19 @@ module Gitlab
 
         def define_metric(type, name, opts = {}, &block)
           if respond_to?(name)
-            raise ArgumentError, "metrics method #{name} already exists"
+            raise ArgumentError, "method #{name} already exists"
           end
 
           define_singleton_method(name) do
-            # avoid unnecessary method call to speed up metric access
-            metric = @_metrics_provider_cache&.[](name)
-            return metric if metric
-
-            fetch_metric(type, name, opts, &block)
+            @_metrics_provider_cache&.[](name) || init_metric(type, name, opts, &block)
           end
         end
 
         def fetch_metric(type, name, opts = {}, &block)
-          # avoid synchronization to speed up metrics access
-          metric = @_metrics_provider_cache&.[](name)
-          return metric if metric
+          @_metrics_provider_cache&.[](name) || init_metric(type, name, opts, &block)
+        end
 
+        def init_metric(type, name, opts = {}, &block)
           options = MetricOptions.new(opts)
           options.evaluate(&block)
 
@@ -73,7 +69,7 @@ module Gitlab
           fetch_metric(:counter, name, opts, &block)
         end
 
-        # DFetch and/or initialize gauge metric
+        # Fetch and/or initialize gauge metric
         # @param [Symbol] name
         # @param [Hash] opts
         def fetch_gauge(name, opts = {}, &block)
