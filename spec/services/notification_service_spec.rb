@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe NotificationService, :mailer do
+  include EmailSpec::Matchers
+
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
@@ -30,6 +32,14 @@ describe NotificationService, :mailer do
     it 'does not email new mentions with a watch level equal to or less than mention' do
       send_notifications(@u_disabled)
       should_not_email_anyone
+    end
+
+    it 'sends the proper notification reason header' do
+      send_notifications(@u_watcher)
+      should_only_email(@u_watcher)
+      email = find_email_for(@u_watcher)
+
+      expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::MENTIONED)
     end
   end
 
@@ -511,12 +521,35 @@ describe NotificationService, :mailer do
         should_not_email(issue.assignees.first)
       end
 
+      it 'properly prioritizes notification reason' do
+        # have assignee be both assigned and mentioned
+        issue.update_attribute(:description, "/cc #{assignee.to_reference} #{@u_mentioned.to_reference}")
+
+        notification.new_issue(issue, @u_disabled)
+
+        email = find_email_for(assignee)
+        expect(email).to have_header('X-GitLab-NotificationReason', 'assigned')
+
+        email = find_email_for(@u_mentioned)
+        expect(email).to have_header('X-GitLab-NotificationReason', 'mentioned')
+      end
+
+      it 'adds "assigned" reason for assignees if any' do
+        notification.new_issue(issue, @u_disabled)
+
+        email = find_email_for(assignee)
+
+        expect(email).to have_header('X-GitLab-NotificationReason', 'assigned')
+      end
+
       it "emails any mentioned users with the mention level" do
         issue.description = @u_mentioned.to_reference
 
         notification.new_issue(issue, @u_disabled)
 
-        should_email(@u_mentioned)
+        email = find_email_for(@u_mentioned)
+        expect(email).not_to be_nil
+        expect(email).to have_header('X-GitLab-NotificationReason', 'mentioned')
       end
 
       it "emails the author if they've opted into notifications about their activity" do
@@ -618,6 +651,14 @@ describe NotificationService, :mailer do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
+      end
+
+      it 'adds "assigned" reason for new assignee' do
+        notification.reassigned_issue(issue, @u_disabled, [assignee])
+
+        email = find_email_for(assignee)
+
+        expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
       end
 
       it 'emails previous assignee even if he has the "on mention" notif level' do
@@ -910,6 +951,14 @@ describe NotificationService, :mailer do
         should_not_email(@u_lazy_participant)
       end
 
+      it 'adds "assigned" reason for assignee, if any' do
+        notification.new_merge_request(merge_request, @u_disabled)
+
+        email = find_email_for(merge_request.assignee)
+
+        expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+      end
+
       it "emails any mentioned users with the mention level" do
         merge_request.description = @u_mentioned.to_reference
 
@@ -924,6 +973,9 @@ describe NotificationService, :mailer do
         notification.new_merge_request(merge_request, merge_request.author)
 
         should_email(merge_request.author)
+
+        email = find_email_for(merge_request.author)
+        expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::OWN_ACTIVITY)
       end
 
       it "doesn't email the author if they haven't opted into notifications about their activity" do
@@ -1049,6 +1101,14 @@ describe NotificationService, :mailer do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
+      end
+
+      it 'adds "assigned" reason for new assignee' do
+        notification.reassigned_merge_request(merge_request, merge_request.author)
+
+        email = find_email_for(merge_request.assignee)
+
+        expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
       end
 
       it_behaves_like 'participating notifications' do
