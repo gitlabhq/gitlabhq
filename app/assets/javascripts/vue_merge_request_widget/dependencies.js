@@ -21,7 +21,7 @@ export { default as FailedToMerge } from './components/states/mr_widget_failed_t
 export { default as ClosedState } from './components/states/mr_widget_closed';
 export { default as MergingState } from './components/states/mr_widget_merging';
 export { default as WipState } from './components/states/mr_widget_wip';
-export { default as ArchivedState } from './components/states/mr_widget_archived';
+export { default as ArchivedState } from './components/states/mr_widget_archived.vue';
 export { default as ConflictsState } from './components/states/mr_widget_conflicts';
 export { default as NothingToMergeState } from './components/states/mr_widget_nothing_to_merge';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch';
