@@ -1,7 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
-var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
