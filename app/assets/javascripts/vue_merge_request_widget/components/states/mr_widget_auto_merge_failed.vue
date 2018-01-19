@@ -32,7 +32,7 @@
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon status="failed" />
+    <status-icon status="warning" />
     <div class="media-body space-children">
       <span class="bold">
         <template v-if="mr.mergeError">{{ mr.mergeError }}.</template>
