@@ -1,5 +1,5 @@
 import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
-import { stripeHtml } from '~/lib/utils/text_utility';
+import { stripHtml } from '~/lib/utils/text_utility';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
@@ -103,7 +103,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
       .filter(item => unapproved.find(el => el === item.vulnerability)) || [];
   }
   /**
-   * Dast Report sends some keys in HTML, we need to stripe the `<p>` tags.
+   * Dast Report sends some keys in HTML, we need to strip the `<p>` tags.
    * This should be moved to the backend.
    *
    * @param {Array} data
@@ -112,7 +112,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   setDastReport(data) {
     this.dastReport = data.site.alerts.map(alert => ({
       name: alert.name,
-      parsedDescription: stripeHtml(alert.desc, ' '),
+      parsedDescription: stripHtml(alert.desc, ' '),
       priority: alert.riskdesc,
       ...alert,
     }));
