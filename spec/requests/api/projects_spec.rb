@@ -150,6 +150,19 @@ describe API::Projects do
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
+      context 'and with_issues_enabled=true' do
+        it 'only returns projects with issues enabled' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get api('/projects?with_issues_enabled=true', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+      end
+
       it "does not include statistics by default" do
         get api('/projects', user)
 
@@ -351,6 +364,19 @@ describe API::Projects do
         let(:filter) { {} }
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
+      end
+
+      context 'and with_issues_enabled=true' do
+        it 'does not return private issue projects' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+
+          get api('/projects?with_issues_enabled=true', user2)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
       end
     end
 
