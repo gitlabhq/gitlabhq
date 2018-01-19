@@ -4,11 +4,8 @@ import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-<<<<<<< HEAD
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-=======
->>>>>>> upstream/master
 import Sidebar from './right_sidebar';
 import Flash from './flash';
 import SecretValues from './behaviors/secret_values';
@@ -77,7 +74,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         });
       });
 
-<<<<<<< HEAD
       function initBlobEE() {
         const dataEl = document.getElementById('js-file-lock');
 
@@ -91,8 +87,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
         }
       }
 
-=======
->>>>>>> upstream/master
       switch (page) {
         case 'sessions:new':
           import('./pages/sessions/new')
@@ -246,7 +240,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
-<<<<<<< HEAD
           const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
           if (mrNewCompareNode) {
             new Compare({
@@ -261,34 +254,23 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             });
           }
           new UserCallout();
-=======
-          import('./pages/projects/merge_requests/creations/new')
-            .then(callDefault)
-            .catch(fail);
->>>>>>> upstream/master
         case 'projects:merge_requests:creations:diffs':
           import('./pages/projects/merge_requests/creations/diffs')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
-<<<<<<< HEAD
           // ee-start
           initApprovals();
           // ee-end
-=======
->>>>>>> upstream/master
           break;
         case 'projects:merge_requests:edit':
           import('./pages/projects/merge_requests/edit')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
-<<<<<<< HEAD
           // ee-start
           initApprovals();
           // ee-end
-=======
->>>>>>> upstream/master
           break;
         case 'projects:tags:new':
           import('./pages/projects/tags/new')
