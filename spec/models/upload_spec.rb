@@ -45,45 +45,6 @@ describe Upload do
     end
   end
 
-  describe '.remove_path' do
-    it 'removes all records at the given path' do
-      described_class.create!(
-        size: File.size(__FILE__),
-        path: __FILE__,
-        model: build_stubbed(:user),
-        uploader: 'AvatarUploader'
-      )
-
-      expect { described_class.remove_path(__FILE__) }
-        .to change { described_class.count }.from(1).to(0)
-    end
-  end
-
-  describe '.record' do
-    let(:fake_uploader) do
-      double(
-        file: double(size: 12_345),
-        upload_path: 'foo/bar.jpg',
-        model: build_stubbed(:user),
-        class: 'AvatarUploader',
-        upload: nil
-      )
-    end
-
-    it 'creates a new record and assigns size, path, model, and uploader' do
-      upload = described_class.record(fake_uploader)
-
-      aggregate_failures do
-        expect(upload).to be_persisted
-        expect(upload.size).to eq fake_uploader.file.size
-        expect(upload.path).to eq fake_uploader.upload_path
-        expect(upload.model_id).to eq fake_uploader.model.id
-        expect(upload.model_type).to eq fake_uploader.model.class.to_s
-        expect(upload.uploader).to eq fake_uploader.class
-      end
-    end
-  end
-
   describe '#absolute_path' do
     it 'returns the path directly when already absolute' do
       path = '/path/to/namespace/project/secret/file.jpg'

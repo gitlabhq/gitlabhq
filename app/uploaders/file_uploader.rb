@@ -56,16 +56,6 @@ class FileUploader < GitlabUploader
     end
   end
 
-  # Auxiliary method to build dynamic path segment when not using a project model
-  #
-  # Prefer to use the `.model_path_segment` as it includes Hashed Storage specific logic
-  #
-  # TODO: review this path?
-  # TODO: remove me this makes no sense
-  def self.dynamic_path_builder(path)
-    File.join(root, path)
-  end
-
   def self.upload_path(secret, identifier)
     File.join(secret, identifier)
   end

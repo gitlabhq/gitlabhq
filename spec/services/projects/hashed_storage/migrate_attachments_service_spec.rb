@@ -58,6 +58,6 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
   end
 
   def base_path(storage)
-    FileUploader.dynamic_path_builder(storage.disk_path)
+    File.join(FileUploader.root, storage.disk_path)
   end
 end
