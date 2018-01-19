@@ -55,6 +55,12 @@ The following metrics are available:
 | filesystem_circuitbreaker                       | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds   | Histogram | 10.3  | Time a single storage probe took |
 
+NOTE: Histogram metrics are composed of 3 pieces.
+
+* <name>_bucket - The histogram buckets. (`le` label for each bucket)
+* <name>_sum - The total of observations.
+* <name>_count - The total count of observations.
+
 ## Metrics shared directory
 
 GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.
