@@ -10,6 +10,7 @@
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';
   import noteForm from './note_form.vue';
+  import diffWithNote from './diff_with_note.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
@@ -32,6 +33,7 @@
     },
     components: {
       noteableNote,
+      diffWithNote,
       userAvatarLink,
       noteHeader,
       noteSignedOutWidget,
@@ -51,7 +53,13 @@
         'unresolvedDiscussions',
       ]),
       discussion() {
-        return this.note.notes[0];
+        return {
+          ...this.note.notes[0],
+          truncatedDiffLines: this.note.truncated_diff_lines,
+          diffFile: this.note.diff_file,
+          diffDiscussion: this.note.diff_discussion,
+          imageDiffHtml: this.note.image_diff_html,
+        };
       },
       author() {
         return this.discussion.author;
@@ -83,6 +91,12 @@
       hasUnresolvedDiscussion() {
         return this.unresolvedDiscussions.length > 0;
       },
+      wrapperComponent() {
+        return (this.discussion.diffDiscussion && this.discussion.diffFile) ? diffWithNote : 'div';
+      },
+      wrapperClass() {
+        return this.isDiffDiscussion ? '' : 'panel panel-default';
+      },
     },
     methods: {
       ...mapActions([
@@ -102,7 +116,7 @@
         return noteableNote;
       },
       componentData(note) {
-        return note.isPlaceholderNote ? note.notes[0] : note;
+        return note.isPlaceholderNote ? this.notes[0] : note;
       },
       toggleDiscussionHandler() {
         this.toggleDiscussion({ discussionId: this.note.id });
@@ -218,13 +232,16 @@
               :edited-by="lastUpdatedBy"
               action-text="Last updated"
               class-name="discussion-headline-light js-discussion-headline"
-              />
-            </div>
+            />
           </div>
           <div
             v-if="note.expanded"
             class="discussion-body">
-            <div class="panel panel-default">
+            <component
+              :is="wrapperComponent"
+              :discussion="discussion"
+              :class="wrapperClass"
+            >
               <div class="discussion-notes">
                 <ul class="notes">
                   <component
@@ -308,7 +325,7 @@
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
-            </div>
+            </component>
           </div>
         </div>
       </div>
