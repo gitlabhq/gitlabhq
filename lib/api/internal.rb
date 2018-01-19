@@ -43,7 +43,7 @@ module API
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path, target_namespace: user.namespace)
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path, target_namespace: namespace)
 
         begin
           access_checker.check(params[:action], params[:changes])
@@ -51,17 +51,21 @@ module API
           return { status: false, message: e.message }
         end
 
-        if project.blank? && params[:action] == 'git-receive-pack'
+        if user && project.blank? && receive_pack?
           project_params = {
             description: "",
-            path: params[:project].split('/').last.gsub("\.git", ''),
-            namespace_id: user.namespace.id.to_s,
+            path: Project.parse_project_id(project_match[:project_name]),
+            namespace_id: namespace&.id,
             visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
           }
 
           @project = ::Projects::CreateService.new(user, project_params).execute
 
-          return { status: false, message: "Could not create project" } unless @project.saved?
+          if @project.saved?
+            Gitlab::Checks::NewProject.new(user, @project, protocol).add_new_project_message
+          else
+            return { status: false, message: "Could not create project" }
+          end
         end
 
         log_user_activity(actor)
@@ -221,7 +225,10 @@ module API
         # key could be used
         if user
           redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
+          new_project_message = Gitlab::Checks::NewProject.fetch_new_project_message(user.id, project.id)
+
           output[:redirected_message] = redirect_message if redirect_message
+          output[:new_project_message] = new_project_message if new_project_message
         end
 
         output

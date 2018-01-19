@@ -474,6 +474,10 @@ class Project < ActiveRecord::Base
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
+
+    def parse_project_id(project_id)
+      project_id.gsub("\.git", '')
+    end
   end
 
   # returns all ancestor-groups upto but excluding the given namespace

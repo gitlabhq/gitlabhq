@@ -13,6 +13,7 @@ module Gitlab
         'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
+      namespace_not_found: 'The namespace you were looking for could not be found.',
       account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
@@ -41,18 +42,18 @@ module Gitlab
       check_protocol!
       check_valid_actor!
       check_active_user!
-      check_project_accessibility!
+      check_project_accessibility!(cmd)
       check_project_moved!
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
-      check_repository_existence!
-      check_repository_creation!
+      check_repository_existence!(cmd)
 
       case cmd
       when *DOWNLOAD_COMMANDS
         check_download_access!
       when *PUSH_COMMANDS
-        check_push_access!(changes)
+        check_push_access!(cmd, changes)
+        check_repository_creation!(cmd)
       end
 
       true
@@ -98,8 +99,8 @@ module Gitlab
       end
     end
 
-    def check_project_accessibility!
-      if (project.blank? || !can_read_project?) && !can_create_project_in_namespace?
+    def check_project_accessibility!(cmd)
+      if (project.blank? || !can_read_project?) && !can_create_project_in_namespace?(cmd)
         raise NotFoundError, ERROR_MESSAGES[:project_not_found]
       end
     end
@@ -142,16 +143,20 @@ module Gitlab
       end
     end
 
-    def check_repository_existence!
-      if (project.blank? || !project.repository.exists?) && !can_create_project_in_namespace?
+    def check_repository_existence!(cmd)
+      if (project.blank? || !project.repository.exists?) && !can_create_project_in_namespace?(cmd)
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
       end
     end
 
-    def check_repository_creation!
-      return unless target_namespace
+    def check_repository_creation!(cmd)
+      return unless project.blank?
 
-      unless can_create_project_in_namespace?
+      unless target_namespace
+        raise NotFoundError, ERROR_MESSAGES[:namespace_not_found]
+      end
+
+      unless can_create_project_in_namespace?(cmd)
         raise UnauthorizedError, ERROR_MESSAGES[:create]
       end
     end
@@ -168,8 +173,8 @@ module Gitlab
       end
     end
 
-    def check_push_access!(changes)
-      return if can_create_project_in_namespace?
+    def check_push_access!(cmd, changes)
+      return if project.blank? && can_create_project_in_namespace?(cmd)
 
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
@@ -247,8 +252,8 @@ module Gitlab
       end || Guest.can?(:read_project, project)
     end
 
-    def can_create_project_in_namespace?
-      return unless target_namespace
+    def can_create_project_in_namespace?(cmd)
+      return false unless PUSH_COMMANDS.include?(cmd) && target_namespace
 
       user.can?(:create_projects, target_namespace)
     end

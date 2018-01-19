@@ -11,10 +11,14 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   def info_refs
     log_user_activity if upload_pack?
 
-    if project.blank? && params[:service] == 'git-receive-pack'
+    if user && project.blank? && receive_pack?
       @project = ::Projects::CreateService.new(user, project_params).execute
 
-      return render_ok if @project.saved?
+      if @project.saved?
+        Gitlab::Checks::NewProject.new(user, @project, 'http').add_new_project_message
+      else
+        raise Gitlab::GitAccess::NotFoundError, 'Could not create project'
+      end
     end
 
     render_ok
@@ -32,21 +36,16 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   private
 
-  def project_params
-    {
-      description: "",
-      path: params[:project_id].gsub("\.git", ''),
-      namespace_id: namespace.id.to_s,
-      visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
-    }
-  end
-
   def download_request?
     upload_pack?
   end
 
   def upload_pack?
     git_command == 'git-upload-pack'
+  end
+
+  def receive_pack?
+    git_command == 'git-receive-pack'
   end
 
   def git_command
@@ -74,10 +73,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: namespace)
   end
 
-  def namespace
-    @namespace = Namespace.find_by_path_or_name(params[:namespace_id])
-  end
-
   def access_actor
     return user if user
     return :ci if ci?
@@ -91,6 +86,19 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def access_klass
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+  end
+
+  def project_params
+    {
+        description: "",
+        path: Project.parse_project_id(params[:project_id]),
+        namespace_id: namespace&.id,
+        visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
+    }
+  end
+
+  def namespace
+    @namespace ||= Namespace.find_by_path_or_name(params[:namespace_id])
   end
 
   def log_user_activity
