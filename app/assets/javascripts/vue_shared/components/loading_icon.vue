@@ -32,8 +32,13 @@
 </script>
 <template>
   <component
+<<<<<<< HEAD
     :is="this.rootElementType"
     class="text-center">
+=======
+    :is="rootElementType"
+    class="loading-container text-center">
+>>>>>>> 218136ac405... Merge branch 'tz-fix-ide-bugs' into 'master'
     <i
       class="fa fa-spin fa-spinner"
       :class="cssClass"
