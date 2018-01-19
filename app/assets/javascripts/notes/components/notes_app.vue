@@ -149,9 +149,10 @@
         });
       }
 
-      document.addEventListener('refreshVueNotes', () => {
-        this.fetchNotes();
-      });
+      document.addEventListener('refreshVueNotes', this.fetchNotes);
+    },
+    beforeDestroy() {
+      document.removeEventListener('refreshVueNotes', this.fetchNotes);
     },
   };
 </script>
