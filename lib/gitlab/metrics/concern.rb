@@ -6,12 +6,13 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        @@_metric_provider_mutex = Mutex.new
+        @_metric_provider_mutex = Mutex.new
+        @_metrics_provider_cache = {}
       end
 
       class_methods do
         def reload_metric!(name)
-          @_metrics_provider_cache&.delete(name)
+          @_metrics_provider_cache.delete(name)
         end
 
         private
@@ -22,12 +23,12 @@ module Gitlab
           end
 
           define_singleton_method(name) do
-            @_metrics_provider_cache&.[](name) || init_metric(type, name, opts, &block)
+            @_metrics_provider_cache[name] || init_metric(type, name, opts, &block)
           end
         end
 
         def fetch_metric(type, name, opts = {}, &block)
-          @_metrics_provider_cache&.[](name) || init_metric(type, name, opts, &block)
+          @_metrics_provider_cache[name] || init_metric(type, name, opts, &block)
         end
 
         def init_metric(type, name, opts = {}, &block)
@@ -42,8 +43,7 @@ module Gitlab
         end
 
         def synchronized_cache_fill(key)
-          @@_metric_provider_mutex.synchronize do
-            @_metrics_provider_cache ||= {}
+          @_metric_provider_mutex.synchronize do
             @_metrics_provider_cache[key] ||= yield
           end
         end

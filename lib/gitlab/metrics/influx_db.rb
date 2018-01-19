@@ -1,7 +1,7 @@
 module Gitlab
   module Metrics
     module InfluxDb
-      include Gitlab::Metrics::Concern::ClassMethods
+      include Gitlab::Metrics::Concern
       include Gitlab::CurrentSettings
       extend self
 
