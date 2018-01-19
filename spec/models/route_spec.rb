@@ -77,13 +77,15 @@ describe Route do
       end
 
       context 'when reclaiming an old path' do
-        let(:group_foo) { create(:group, path: 'foo') }
+        let(:group_foo) { create(:group, name: 'foo', path: 'foo') }
+        let!(:project_baz) { create(:project, :repository, name: 'baz', path: 'baz', namespace: group_foo) }
 
         before do
           group_foo.path = 'baz'
           group_foo.save
 
           group_foo.path = 'foo'
+          TestEnv.clean_test_path
         end
 
         it 'should be valid' do
@@ -94,12 +96,18 @@ describe Route do
           expect(group_foo.save).to be_truthy
         end
 
-        it 'should delete old redirect routes' do
+        it 'should delete old redirect routes for the group' do
           group_foo.save
 
           expect(group_foo.redirect_routes.permanent.where(path: 'foo')).to be_empty
           expect(group_foo.redirect_routes.permanent.count).to eq(1)
           expect(group_foo.redirect_routes.permanent.first.path).to eq('baz')
+        end
+
+        it 'should not delete old redirect routes for the project' do
+          group_foo.save
+          expect(project_baz.redirect_routes.count).to eq(2)
+          expect(project_baz.redirect_routes.pluck(:path)).to match_array(['foo/baz', 'baz/baz'])
         end
       end
     end
@@ -329,32 +337,6 @@ describe Route do
         end
       end
     end
-
-    context 'when a group with descendants is renamed' do
-      let!(:group_foo) { create(:group, name: 'foo', path: 'foo') }
-      let!(:project) { create(:project, path: 'bar', namespace: group_foo) }
-
-      it 'should destroy the appropriate redirect routes' do
-        expect(project.redirect_routes.temporary.count).to eq(0)
-        project.path = 'baz'
-        project.save
-        expect(project.redirect_routes.temporary.count).to eq(1)
-        expect(project.redirect_routes.temporary.first.path).to eq('foo/bar')
-
-        group_foo.path = 'foot'
-        group_foo.save
-        expect(group_foo.redirect_routes.permanent.count).to eq(1)
-        expect(group_foo.redirect_routes.permanent.first.path).to eq('foo')
-        expect(project.redirect_routes.temporary.count).to eq(2)
-        expect(project.redirect_routes.temporary.pluck(:path)).to match_array(['foo/bar', 'foo/baz'])
-
-        group_foo.path = 'foo'
-        group_foo.save
-        expect(group_foo.redirect_routes.permanent.count).to eq(1)
-        expect(group_foo.redirect_routes.permanent.first.path).to eq('foot')
-        expect(group_foo.redirect_routes.temporary.count).to eq(0)
-      end
-    end
   end
 
   describe '#deletable_conflicting_redirects' do
@@ -532,4 +514,6 @@ describe Route do
       end
     end
   end
+
+  include_examples 'route redirects for groups, users and projects', described_class
 end

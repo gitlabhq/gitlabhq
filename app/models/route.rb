@@ -92,7 +92,7 @@ class Route < ActiveRecord::Base
     if source.is_a? Project
       [source.id]
     else
-      source.self_and_descendants.select(:id)
+      source.self_and_descendants.select(:id).map(&:id)
     end
   end
 

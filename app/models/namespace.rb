@@ -261,7 +261,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def namespace_previously_created_with_same_path?
-    RedirectRoute.permanent.where("source_id != ?", id).exists?(path: path)
+    RedirectRoute.permanent.where.not(source: self).exists?(path: path)
   end
 
   def write_projects_repository_config
