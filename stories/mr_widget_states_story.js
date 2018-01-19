@@ -103,9 +103,11 @@ makeStories({
     {
       title: 'default',
       props: {
-        closedBy: author,
-        closedAt: 'a while ago',
-        updatedAt: '3 mins ago',
+        metrics: {
+          closedBy: author,
+          closedAt: 'a while ago',
+          updatedAt: '3 mins ago',
+        },
         targetBranch: 'master',
       },
     },
@@ -186,11 +188,13 @@ const mergedProps = {
   sourceBranchRemoved: true,
   updatedAt: '',
   targetBranch: 'foo',
-  mergedAt: 'some time ago',
-  mergedBy: {
-    webUrl: 'http://foo.bar',
-    avatarUrl: 'http://gravatar.com/foo',
-    name: 'fatihacet',
+  metrics: {
+    mergedAt: 'some time ago',
+    mergedBy: {
+      webUrl: 'http://foo.bar',
+      avatarUrl: 'http://gravatar.com/foo',
+      name: 'fatihacet',
+    },
   },
 };
 
