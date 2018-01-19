@@ -1,13 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 import Milestone from './milestone';
-import IssuableForm from './issuable_form';
-import LabelsSelect from './labels_select';
-import MilestoneSelect from './milestone_select';
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
 import Sidebar from './right_sidebar';
-import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import UserCallout from './user_callout';
 import BlobViewer from './blob/viewer/index';
@@ -216,14 +212,16 @@ import SearchAutocomplete from './search_autocomplete';
             .then(callDefault)
             .catch(fail);
         case 'projects:merge_requests:creations:diffs':
+          import('./pages/projects/merge_requests/creations/diffs')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
+          break;
         case 'projects:merge_requests:edit':
-          new Diff();
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'), true);
-          new IssuableForm($('.merge-request-form'));
-          new LabelsSelect();
-          new MilestoneSelect();
-          new IssuableTemplateSelectors();
+          import('./pages/projects/merge_requests/edit')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:tags:new':
           import('./pages/projects/tags/new')

@@ -300,19 +300,6 @@ describe('Multi-file store actions', () => {
           }).catch(done.fail);
       });
 
-      it('closes all files', (done) => {
-        store.state.openFiles.push(file());
-        store.state.openFiles[0].opened = true;
-
-        store.dispatch('commitChanges', { payload, newMr: false })
-          .then(Vue.nextTick)
-          .then(() => {
-            expect(store.state.openFiles.length).toBe(0);
-
-            done();
-          }).catch(done.fail);
-      });
-
       it('scrolls to top of page', (done) => {
         store.dispatch('commitChanges', { payload, newMr: false })
           .then(() => {
