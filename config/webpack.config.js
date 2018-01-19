@@ -119,7 +119,12 @@ var config = {
       {
         test: /\_worker\.js$/,
         use: [
-          { loader: 'worker-loader' },
+          { 
+            loader: 'worker-loader',
+            options: { 
+              inline: true
+            }
+          },
           { loader: 'babel-loader' },
         ],
       },
