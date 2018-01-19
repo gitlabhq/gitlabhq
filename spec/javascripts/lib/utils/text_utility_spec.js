@@ -62,4 +62,27 @@ describe('text_utility', () => {
       expect(textUtils.slugify('João')).toEqual('joão');
     });
   });
+
+  describe('camelCase', () => {
+    it('converts a snake_case string to camelCase', () => {
+      expect(textUtils.camelCase('snake_case_string')).toEqual('snakeCaseString');
+    });
+
+    it('converts string with numbers', () => {
+      expect(textUtils.camelCase('test1twothree')).toEqual('test1twothree');
+    });
+  });
+
+  describe('camelCaseKeys', () => {
+    it('converts object keys to camelCase', () => {
+      const input = {
+        my_key: 'some_value',
+      };
+      const expected = {
+        myKey: 'some_value',
+      };
+
+      expect(textUtils.camelCaseKeys(input)).toEqual(expected);
+    });
+  });
 });

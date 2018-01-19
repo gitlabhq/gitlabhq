@@ -104,8 +104,8 @@ describe('note_app', () => {
       vm = mountComponent();
     });
 
-    it('should render loading icon', () => {
-      expect(vm.$el.querySelector('.js-loading')).toBeDefined();
+    it('renders skeleton notes', () => {
+      expect(vm.$el.querySelector('.animation-container')).toBeDefined();
     });
 
     it('should render form', () => {
