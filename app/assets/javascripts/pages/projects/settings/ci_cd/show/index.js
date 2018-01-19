@@ -9,4 +9,10 @@ export default function () {
     const runnerTokenSecretValue = new SecretValues(runnerToken);
     runnerTokenSecretValue.init();
   }
+
+  const secretVariableTable = document.querySelector('.js-secret-variable-table');
+  if (secretVariableTable) {
+    const secretVariableTableValues = new SecretValues(secretVariableTable);
+    secretVariableTableValues.init();
+  }
 }
