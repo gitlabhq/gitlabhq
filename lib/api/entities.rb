@@ -1227,6 +1227,8 @@ module API
 
       expose :namespaces, using: NamespaceBasic
 
+      expose :updated_at
+
       # We load GeoNodeStatus data in two ways:
       #
       # 1. Directly by asking a Geo node via an API call
