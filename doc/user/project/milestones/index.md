@@ -82,7 +82,7 @@ special options available when filtering by milestone:
 The milestone sidebar shows percentage complete, start date and due date,
 issues, total issue weight, total issue time spent, and merge requests.
 
-The percentage complete is calcualted as: Closed and merged merge requests plus all closed issues divided by
+The percentage complete is calculated as: Closed and merged merge requests plus all closed issues divided by
 total merge requests and issues.
 
 ![Milestone sidebar](img/sidebar.png)

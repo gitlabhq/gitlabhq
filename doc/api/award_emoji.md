@@ -172,7 +172,7 @@ Parameters:
 | ---------   | ----    | -------- | -----------                 |
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
-| `award_id`  | integer | yes      | The ID of a award_emoji     |
+| `award_id`  | integer | yes      | The ID of an award_emoji    |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
@@ -197,7 +197,7 @@ Parameters:
 | ---------   | ----    | -------- | -----------                 |
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
-| `note_id`   | integer | yes      | The ID of an note           |
+| `note_id`   | integer | yes      | The ID of a note            |
 
 
 ```bash
@@ -323,7 +323,7 @@ Parameters:
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
 | `note_id`   | integer | yes      | The ID of a note            |
-| `award_id`  | integer | yes      | The ID of a award_emoji     |
+| `award_id`  | integer | yes      | The ID of an award_emoji    |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/345
