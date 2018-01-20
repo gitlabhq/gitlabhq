@@ -211,7 +211,7 @@ namespace :geo do
   task status: :environment do
     abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
 
-    COLUMN_WIDTH = 35
+    COLUMN_WIDTH = 40
     current_node_status = GeoNodeStatus.current_node_status
     geo_node = current_node_status.geo_node
 
@@ -264,6 +264,16 @@ namespace :geo do
     if cursor_last_event_id
       print cursor_last_event_id
       puts "(#{time_ago_in_words(Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at)} ago)"
+    end
+
+    print 'Last status was pulled by primary node: '.rjust(COLUMN_WIDTH)
+
+    if current_node_status.updated_at
+      puts "#{time_ago_in_words(current_node_status.updated_at)} ago"
+    else
+      # Only primary node can create a status record in the database so if it does not exist
+      # we get unsaved record where updated_at is nil
+      puts "Never"
     end
   end
 end

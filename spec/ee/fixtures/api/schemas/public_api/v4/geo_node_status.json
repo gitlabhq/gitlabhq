@@ -33,7 +33,8 @@
     "namespaces",
     "version",
     "revision",
-    "_links"
+    "_links",
+    "updated_at"
   ],
   "properties" : {
     "geo_node_id": { "type": "integer" },
@@ -84,7 +85,8 @@
         "node": { "type": "string" }
       },
       "additionalProperties": false
-    }
+    },
+    "updated_at": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }
