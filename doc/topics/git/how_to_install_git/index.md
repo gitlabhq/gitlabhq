@@ -14,7 +14,7 @@ This article will show you how to install Git on macOS, Ubuntu Linux and Windows
 Although it is easy to use the version of Git shipped with macOS
 or install the latest version of Git on macOS by downloading it from the project website,
 we recommend installing it via Homebrew to get access to
-an extensive selection of dependancy managed libraries and applications.
+an extensive selection of dependency managed libraries and applications.
 
 If you are sure you don't need access to any additional development libraries
 or don't have approximately 15gb of available disk space for Xcode and Homebrew

@@ -992,7 +992,7 @@ Example response:
 ## Unarchive a project
 
 Unarchives the project if the user is either admin or the project owner of this project. This action is
-idempotent, thus unarchiving an non-archived project will not change the project.
+idempotent, thus unarchiving a non-archived project will not change the project.
 
 ```
 POST /projects/:id/unarchive

@@ -88,7 +88,7 @@ future GitLab releases.**
 
 ## 9.0 Renaming
 
-To follow conventions of naming across GitLab, and to futher move away from the
+To follow conventions of naming across GitLab, and to further move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
 
