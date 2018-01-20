@@ -73,7 +73,7 @@ describe GroupDescendantsFinder do
     end
 
     context 'with a filter' do
-      let(:params) { { filter: 'tes' } }
+      let(:params) { { filter: 'test' } }
 
       it 'includes only projects matching the filter' do
         _other_project = create(:project, namespace: group)
@@ -196,6 +196,17 @@ describe GroupDescendantsFinder do
             matching_project = create(:project, namespace: subgroup, name: 'Testproject')
 
             expect(finder.execute).to contain_exactly(subgroup, matching_project)
+          end
+
+          context 'with a small page size' do
+            let(:params) { { filter: 'test', per_page: 1 } }
+
+            it 'contains all the ancestors of a matching subgroup regardless the page size' do
+              subgroup = create(:group, :private, parent: group)
+              matching = create(:group, :private, name: 'testgroup', parent: subgroup)
+
+              expect(finder.execute).to contain_exactly(subgroup, matching)
+            end
           end
 
           it 'does not include the parent itself' do
