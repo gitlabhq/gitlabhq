@@ -256,18 +256,20 @@ module QuickActions
       end
     end
 
-    desc 'Inherit (copy) labels and milestone from other issue'
-    explanation do |issue_id|
-      "Inherit (copy) labels and milestone from issue \"#{issue_id}\"."
+    desc 'Copy labels and milestone from other issue or merge request'
+    explanation do |issueable_id|
+      "Copy labels and milestone from issue or merge_request \"#{issueable_id}\"."
     end
-    params '#issue'
+    params '< #issue | !merge_request >'
     condition do
       issuable.persisted? &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
-    command :inherit do |issue_id|
-      issue = extract_references(issue_id, :issue).first
-      if issue.present? && issue.project_id == issuable.project_id
+    command :copy_metadata do |issueable_id|
+      reference_type = issueable_id.include?("#") ? :issue : :merge_request
+      issue = extract_references(issueable_id, reference_type).first
+
+      if issue.present? && issue.project.id == issuable.project.id
         @updates[:add_label_ids] = issue.labels.map(&:id)
 
         @updates[:milestone_id] = issue.milestone.id if issue.milestone

@@ -306,17 +306,17 @@ describe QuickActions::InterpretService do
       end
     end
 
-    shared_examples 'inherit command' do
-      it 'fetches issue and copies labels and milestone if content contains /inherit issue_reference' do
-        issue_father # populate the issue
+    shared_examples 'copy_metadata command' do
+      it 'fetches issue or merge request and copies labels and milestone if content contains /copy_metadata reference' do
+        issueable_father # populate the issue
         todo_label # populate this label
         inreview_label # populate this label
         _, updates = service.execute(content, issuable)
 
         expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
 
-        if issue_father.milestone
-          expect(updates[:milestone_id]).to eq(issue_father.milestone.id)
+        if issueable_father.milestone
+          expect(updates[:milestone_id]).to eq(issueable_father.milestone.id)
         else
           expect(updates).not_to have_key(:milestone_id)
         end
@@ -758,49 +758,49 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    context '/inherit command' do
+    context '/copy_metadata command' do
       let!(:todo_label) { create(:label, project: project, title: 'To Do') }
       let!(:inreview_label) { create(:label, project: project, title: 'In Review') }
 
-      it_behaves_like 'inherit command' do
-        # Without milestone assignment
-        let(:issue_father) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
-
-        let(:content) { "/inherit #{issue_father.to_reference}" }
-        let(:issuable) { issue }
-      end
-
-      it_behaves_like 'inherit command' do
-        # With milestone assignment
-        let(:issue_father) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
-
-        let(:content) { "/inherit #{issue_father.to_reference(project)}" }
-        let(:issuable) { issue }
-      end
-
       it_behaves_like 'empty command' do
-        let(:content) { '/inherit' }
+        let(:content) { '/copy_metadata' }
         let(:issuable) { issue }
+      end
+
+      it_behaves_like 'copy_metadata command' do
+        let(:issueable_father) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+
+        let(:content) { "/copy_metadata #{issueable_father.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      context 'when the parent issueable has a milestone' do
+        it_behaves_like 'copy_metadata command' do
+          let(:issueable_father) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
+
+          let(:content) { "/copy_metadata #{issueable_father.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
       end
 
       context 'cross project references' do
         it_behaves_like 'empty command' do
           let(:other_project) { create(:project, :public) }
-          let(:issue_father) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
-          let(:content) { "/inherit #{issue_father.to_reference(project)}" }
+          let(:issueable_father) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
+          let(:content) { "/copy_metadata #{issueable_father.to_reference(project)}" }
           let(:issuable) { issue }
         end
 
         it_behaves_like 'empty command' do
-          let(:content) { "/inherit imaginary#1234" }
+          let(:content) { "/copy_metadata imaginary#1234" }
           let(:issuable) { issue }
         end
 
         it_behaves_like 'empty command' do
           let(:other_project) { create(:project, :private) }
-          let(:issue_father) { create(:issue, project: other_project) }
+          let(:issueable_father) { create(:issue, project: other_project) }
 
-          let(:content) { "/inherit #{issue_father.to_reference(project)}" }
+          let(:content) { "/copy_metadata #{issueable_father.to_reference(project)}" }
           let(:issuable) { issue }
         end
       end
