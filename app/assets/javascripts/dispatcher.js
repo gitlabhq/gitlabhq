@@ -6,7 +6,6 @@ import MergeRequest from './merge_request';
 import initCompareAutocomplete from './compare_autocomplete';
 import Sidebar from './right_sidebar';
 import Flash from './flash';
-import UserCallout from './user_callout';
 import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
@@ -24,6 +23,7 @@ import SearchAutocomplete from './search_autocomplete';
 
 // EE-only
 import UsersSelect from './users_select';
+import UserCallout from './user_callout';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
