@@ -389,7 +389,7 @@ feature 'Jobs' do
 
         wait_for_requests
         expect(page).to have_content('This job has not started yet')
-        expect(page).to have_content('This job is in pending state and is waiting to be picked by the runner')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
         expect(page).to have_content('pending')
       end
     end
@@ -416,7 +416,7 @@ feature 'Jobs' do
 
       it 'shows pending empty state' do
         expect(page).to have_content('This job has not started yet')
-        expect(page).to have_content('This job is in pending state and is waiting to be picked by the runner')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
       end
     end
   end
