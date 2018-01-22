@@ -1005,11 +1005,25 @@ class Repository
     add_remote(remote_name, url, mirror_refmap: refmap)
     fetch_remote(remote_name, forced: forced)
   ensure
-    remove_remote(remote_name) if tmp_remote_name
+    async_remove_remote(remote_name) if tmp_remote_name
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+  end
+
+  def async_remove_remote(remote_name)
+    return unless remote_name
+
+    job_id = RepositoryRemoveRemoteWorker.perform_async(project.id, remote_name)
+
+    if job_id
+      Rails.logger.info("Remove remote job scheduled for #{project.id} with remote name: #{remote_name} job ID #{job_id}.")
+    else
+      Rails.logger.info("Remove remote job failed to create for #{project.id} with remote name #{remote_name}.")
+    end
+
+    job_id
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)
