@@ -146,6 +146,7 @@ export default {
         type="submit"
         :disabled="commitButtonDisabled"
         class="btn btn-default btn-sm append-right-10 prepend-left-10"
+        :class="{ disabled: submitCommitsLoading }"
       >
         <i
           v-if="submitCommitsLoading"
@@ -161,46 +162,7 @@ export default {
       >
         {{ commitMessageCount }}
       </div>
-<<<<<<< HEAD
     </div>
   </form>
 </div>
-=======
-      <div class="multi-file-commit-fieldset">
-        <label
-          v-tooltip
-          title="Create a new merge request with these changes"
-          data-container="body"
-          data-placement="top"
-        >
-          <input
-            type="checkbox"
-            v-model="startNewMR"
-          />
-          Merge Request
-        </label>
-        <button
-          type="submit"
-          :disabled="commitButtonDisabled"
-          class="btn btn-default btn-sm append-right-10 prepend-left-10"
-          :class="{ disabled: submitCommitsLoading }"
-        >
-          <i
-            v-if="submitCommitsLoading"
-            class="js-commit-loading-icon fa fa-spinner fa-spin"
-            aria-hidden="true"
-            aria-label="loading"
-          >
-          </i>
-          Commit
-        </button>
-        <div
-          class="multi-file-commit-message-count"
-        >
-          {{ commitMessageCount }}
-        </div>
-      </div>
-    </form>
-  </div>
->>>>>>> 218136ac405... Merge branch 'tz-fix-ide-bugs' into 'master'
 </template>
