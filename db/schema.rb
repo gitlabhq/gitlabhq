@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180113220114) do
+ActiveRecord::Schema.define(version: 20180122162010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 20180113220114) do
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "authorized_keys_enabled", default: true, null: false
+    t.string "auto_devops_domain"
   end
 
   create_table "audit_events", force: :cascade do |t|
