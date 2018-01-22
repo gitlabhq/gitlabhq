@@ -12,7 +12,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 ## List epics for a group
 
-Gets all epics of the requested group.
+Gets all epics of the requested group and its subgroups.
 
 ```
 GET /groups/:id/-/epics
