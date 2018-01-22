@@ -415,8 +415,8 @@ feature 'Jobs' do
       end
 
       it 'shows pending empty state' do
-        expect(page).not_to have_content('This job has not been triggered yet')
-        expect(page).not_to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by the runner')
       end
     end
   end
