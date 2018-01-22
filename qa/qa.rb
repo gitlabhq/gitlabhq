@@ -126,10 +126,13 @@ module QA
   end
 
   ##
-  # Classes describing shell interaction with GitLab
+  # Classes describing services being part of GitLab and how we can interact
+  # with these services, like through the shell.
   #
-  module Shell
-    autoload :Omnibus, 'qa/shell/omnibus'
+  module Service
+    autoload :Shellable, 'qa/service/shellable'
+    autoload :Omnibus, 'qa/service/omnibus'
+    autoload :Runner, 'qa/service/runner'
   end
 
   ##
