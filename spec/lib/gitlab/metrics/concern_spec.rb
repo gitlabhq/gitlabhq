@@ -8,17 +8,15 @@ describe Gitlab::Metrics::Concern do
     let(:metric_name) { :sample_metric }
 
     describe "#define_#{metric_type}" do
-      let(:_metric_type) { metric_type }
-
-      def define_metric_method(**args)
-        subject.send("define_#{_metric_type}", metric_name, **args)
+      define_method(:call_define_metric_method) do |**args|
+        subject.__send__("define_#{metric_type}", metric_name, **args)
       end
 
       context 'metrics access method not defined' do
         it "defines metrics accessing method" do
           expect(subject).not_to respond_to(metric_name)
 
-          define_metric_method(docstring: docstring)
+          call_define_metric_method(docstring: docstring)
 
           expect(subject).to respond_to(metric_name)
         end
@@ -26,11 +24,11 @@ describe Gitlab::Metrics::Concern do
 
       context 'metrics access method defined' do
         before do
-          define_metric_method(docstring: docstring)
+          call_define_metric_method(docstring: docstring)
         end
 
         it 'raises error when trying to redefine method' do
-          expect { define_metric_method(docstring: docstring) }.to raise_error(ArgumentError)
+          expect { call_define_metric_method(docstring: docstring) }.to raise_error(ArgumentError)
         end
 
         context 'metric is not cached' do
@@ -56,18 +54,17 @@ describe Gitlab::Metrics::Concern do
     end
 
     describe "#fetch_#{metric_type}" do
-      let(:_metric_type) { metric_type }
       let(:null_metric) { Gitlab::Metrics::NullMetric.instance }
 
-      def fetch_metric_method(**args)
-        subject.send("fetch_#{_metric_type}", metric_name, **args)
+      define_method(:call_fetch_metric_method) do |**args|
+        subject.__send__("fetch_#{metric_type}", metric_name, **args)
       end
 
       context "when #{metric_type} is not cached" do
         it 'initializes counter metric' do
           allow(Gitlab::Metrics).to receive(metric_type).and_return(null_metric)
 
-          fetch_metric_method(docstring: docstring)
+          call_fetch_metric_method(docstring: docstring)
 
           expect(Gitlab::Metrics).to have_received(metric_type).with(metric_name, docstring, *args)
         end
@@ -75,13 +72,13 @@ describe Gitlab::Metrics::Concern do
 
       context "when #{metric_type} is cached" do
         before do
-          fetch_metric_method(docstring: docstring)
+          call_fetch_metric_method(docstring: docstring)
         end
 
         it 'uses class metric cache' do
           expect(Gitlab::Metrics).not_to receive(metric_type)
 
-          fetch_metric_method(docstring: docstring)
+          call_fetch_metric_method(docstring: docstring)
         end
 
         context 'when metric is reloaded' do
@@ -92,7 +89,7 @@ describe Gitlab::Metrics::Concern do
           it "initializes #{metric_type} metric" do
             allow(Gitlab::Metrics).to receive(metric_type).and_return(null_metric)
 
-            fetch_metric_method(docstring: docstring)
+            call_fetch_metric_method(docstring: docstring)
 
             expect(Gitlab::Metrics).to have_received(metric_type).with(metric_name, docstring, *args)
           end
@@ -101,7 +98,7 @@ describe Gitlab::Metrics::Concern do
 
       context 'when metric is configured with feature' do
         let(:feature_name) { :some_metric_feature }
-        let(:metric) { fetch_metric_method(docstring: docstring, with_feature: feature_name) }
+        let(:metric) { call_fetch_metric_method(docstring: docstring, with_feature: feature_name) }
 
         context 'when feature is enabled' do
           before do
