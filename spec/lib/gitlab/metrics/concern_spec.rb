@@ -35,19 +35,19 @@ describe Gitlab::Metrics::Concern do
           it 'calls fetch_metric' do
             expect(subject).to receive(:init_metric).with(metric_type, metric_name, docstring: docstring)
 
-            subject.send(metric_name)
+            subject.public_send(metric_name)
           end
         end
 
         context 'metric is cached' do
           before do
-            subject.send(metric_name)
+            subject.public_send(metric_name)
           end
 
           it 'returns cached metric' do
             expect(subject).not_to receive(:init_metric)
 
-            subject.send(metric_name)
+            subject.public_send(metric_name)
           end
         end
       end
