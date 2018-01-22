@@ -150,6 +150,7 @@
           this.saveNote(noteData)
             .then((res) => {
               this.isSubmitting = false;
+              this.noteType = constants.COMMENT;
               this.restartPolling();
 
               if (res.errors) {
