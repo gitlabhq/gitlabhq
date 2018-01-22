@@ -85,7 +85,62 @@ Make sure the secondary instance is
 running and accessible. You can login to the secondary node
 with the same credentials as used in the primary.
 
-### Step 2. (Optional) Enabling hashed storage (from GitLab 10.0)
+### Step 2. Manually replicate primary SSH host keys
+
+GitLab integrates with the system-installed SSH daemon, designating a user
+(typically named git) through which all access requests are handled.
+
+In a [Disaster Recovery](disaster-recovery.md) situation, GitLab system
+administrators will promote a secondary Geo replica to a primary and they can
+update the DNS records for the primary domain to point to the secondary to prevent
+the need to update all references to the primary domain to the secondary domain,
+like changing Git remotes and API URLs.
+
+This will cause all SSH requests to the newly promoted primary node from
+failing due to SSH host key mismatch. To prevent this, the primary SSH host
+keys must be manually replicated to the secondary node.
+
+1. SSH into the **secondary** node and login as the `root` user:
+
+    ```
+    sudo -i
+    ```
+
+1. Make a backup of any existing SSH host keys:
+
+    ```bash
+    find /etc/ssh -iname ssh_host_* -exec mv {} {}.backup.`date +%F` \;
+    ```
+
+1. SSH into the **primary** node, and execute the command below:
+
+    ```bash
+    sudo find /etc/ssh -iname ssh_host_* -not -iname '*.pub'
+    ```
+
+1. For each file in that list copy the file from the primary node to
+   the **same** location on your **secondary** node.
+
+1. On your **secondary** node, ensure the file permissions are correct:
+
+    ```bash
+    chown root:root /etc/ssh/ssh_host_*
+    chmod 0600 /etc/ssh/ssh_host_*
+    ```
+
+1. Regenerate the public keys from the private keys:
+
+    ```bash
+    find /etc/ssh -iname ssh_host_* -not -iname '*.backup*' -exec sh -c 'ssh-keygen -y -f "{}" > "{}.pub"' \;
+    ```
+
+1. Restart sshd:
+
+    ```bash
+    service ssh restart
+    ```
+
+### Step 3. (Optional) Enabling hashed storage (from GitLab 10.0)
 
 >**Warning**
 Hashed storage is in **Alpha**. It is considered experimental and not
@@ -102,7 +157,7 @@ renames no longer require synchronization between nodes.
 
     ![](img/hashed-storage.png)
 
-### Step 3. (Optional) Configuring the secondary to trust the primary
+### Step 4. (Optional) Configuring the secondary to trust the primary
 
 You can safely skip this step if your primary uses a CA-issued HTTPS certificate.
 
@@ -112,14 +167,14 @@ certificate from the primary and follow
 [these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html)
 on the secondary.
 
-### Step 4. Enable Git access over HTTP/HTTPS
+### Step 5. Enable Git access over HTTP/HTTPS
 
 GitLab Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
-### Step 5. Verify proper functioning of the secondary node
+### Step 6. Verify proper functioning of the secondary node
 
 Congratulations! Your secondary geo node is now configured!
 
