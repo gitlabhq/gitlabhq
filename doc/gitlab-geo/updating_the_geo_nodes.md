@@ -14,6 +14,28 @@ all you need to do is update GitLab itself:
    the tracking database is enabled.
 1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
 
+## Upgrading to GitLab 10.5
+
+For Geo Disaster Recovery to work with minimum downtime, your Geo secondary
+should use the same set of secrets as the primary. However, setup instructions
+prior to the 10.5 release only synchronized the `db_key_base` secret.
+
+To rectify this error on existing installations, you should **overwrite** the
+contents of `/etc/gitlab/gitlab-secrets.json` on the secondary node with the
+contents of `/etc/gitlab/gitlab-secrets.json` on the primary node, then run the
+following command on the secondary node:
+
+```bash
+sudo gitlab-ctl reconfigure
+```
+
+If you do not perform this step, you may find that two-factor authentication
+[is broken following DR](faq.md#i-followed-the-disaster-recovery-instructions-and-now-two-factor-auth-is-broken).
+
+## Upgrading to GitLab 10.4
+
+There are no Geo-specific steps to take!
+
 ## Upgrading to GitLab 10.3
 
 ### Support for SSH repository synchronization removed
