@@ -64,6 +64,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Make scoped issue board specs more reliable.
 
 
+## 10.3.6 (2018-01-22)
+
+### Fixed (3 changes)
+
+- Geo - Fix repository clean up when selective replication changes with hashed storage enabled. !4059
+- Fix JavaScript bundle running on Cluster update/destroy pages. !4112
+- Fix export to CSV if a filter with multiple labels is used.
+
+
 ## 10.3.5 (2018-01-18)
 
 - No changes.
