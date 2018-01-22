@@ -1,5 +1,0 @@
----
-title: Speed up generation of commit stats by using Rugged native methods
-merge_request:
-author:
-type: performance
