@@ -26,6 +26,7 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :SecretVariable, 'qa/factory/resource/secret_variable'
     end
 
     module Repository
@@ -105,6 +106,8 @@ module QA
         autoload :Common, 'qa/page/project/settings/common'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :CICD, 'qa/page/project/settings/cicd'
+        autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
       end
     end
 
