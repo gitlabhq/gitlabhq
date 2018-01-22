@@ -1,10 +1,10 @@
 import Vue from 'vue';
+import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import TreeView from '../../../../tree';
 import ShortcutsNavigation from '../../../../shortcuts_navigation';
 import BlobViewer from '../../../../blob/viewer';
 import NewCommitForm from '../../../../new_commit_form';
 import { ajaxGet } from '../../../../lib/utils/common_utils';
-import commitPipelineStatus from '../components/commit_pipeline_status_component.vue';
 
 export default () => {
   new ShortcutsNavigation(); // eslint-disable-line no-new

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
 import UserCallout from '~/user_callout';
@@ -5,6 +6,7 @@ import TreeView from '~/tree';
 import BlobViewer from '~/blob/viewer/index';
 import Activities from '~/activities';
 import { ajaxGet } from '~/lib/utils/common_utils';
+import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
 
@@ -23,5 +25,22 @@ export default () => {
   if ($('.project-show-activity').length) new Activities(); // eslint-disable-line no-new
   $('#tree-slider').waitForImages(() => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+  });
+
+  const commitPipelineStatusEl = document.getElementById('commit-pipeline-status');
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: '#commit-pipeline-status',
+    components: {
+      commitPipelineStatus,
+    },
+    render(createElement) {
+      return createElement('commit-pipeline-status', {
+        props: {
+          endpoint: commitPipelineStatusEl.dataset.endpoint,
+          realtime: false,
+        },
+      });
+    },
   });
 };

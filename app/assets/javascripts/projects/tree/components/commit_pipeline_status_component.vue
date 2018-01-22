@@ -18,22 +18,33 @@
         type: String,
         required: true,
       },
+      realtime: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
         ciStatus: {},
         isLoading: true,
         service: {},
+        stageTitle: '',
       };
     },
     mounted() {
       this.service = new CommitPipelineService(this.endpoint);
-      this.initPolling();
+      if (this.realtime) {
+        this.initPolling();
+      } else {
+        this.fetchPipelineCommitData();
+      }
     },
     methods: {
       successCallback(res) {
         if (res.data.pipelines.length > 0) {
-          this.ciStatus = res.data.pipelines[0].details.status;
+          this.ciStatus = res.data.pipelines[0].details.stages[0].status;
+          this.stageTitle = res.data.pipelines[0].details.stages[0].title;
           this.isLoading = false;
         } else {
           this.isLoading = true;
@@ -86,8 +97,8 @@
   >
     <ci-icon
       v-tooltip
-      :title="ciStatus.text"
-      :aria-label="ciStatus.text"
+      :title="stageTitle"
+      :aria-label="stageTitle"
       data-container="body"
       :status="ciStatus"
     />
