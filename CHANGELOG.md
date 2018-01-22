@@ -168,7 +168,7 @@ entry.
 
 ## 10.3.5 (2018-01-18)
 
-- No changes.
+- Fix error that prevented the 'deploy_keys' migration from working in MySQL databases.
 
 ## 10.3.4 (2018-01-10)
 
