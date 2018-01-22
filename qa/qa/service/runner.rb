@@ -6,11 +6,11 @@ module QA
       include Scenario::Actable
       include Service::Shellout
 
-      attr_writer :token, :address, :tags, :image, :name
+      attr_accessor :token, :address, :tags, :image, :name
 
       def initialize
         @image = 'gitlab/gitlab-runner:alpine'
-        @name = "gitlab-runner-qa-#{SecureRandom.hex(4)}"
+        @name = "qa-runner-#{SecureRandom.hex(4)}"
       end
 
       def pull
@@ -18,6 +18,10 @@ module QA
       end
 
       def register!
+        ##
+        # TODO, this assumes that `test` network exists, because we know that
+        # gitlab-qa environment orchestration tool creates it.
+        #
         shell <<~CMD.tr("\n", ' ')
           docker run -d --rm --entrypoint=/bin/sh
           --network test --name #{@name}
