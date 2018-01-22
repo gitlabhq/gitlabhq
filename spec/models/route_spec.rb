@@ -27,7 +27,7 @@ describe Route do
             redirect.save!(validate: false)
 
             expect(new_route.valid?).to be_falsey
-            expect(new_route.errors.first[1]).to eq('foo has been taken before. Please use another one')
+            expect(new_route.errors.first[1]).to eq('foo has been taken before. Please use another one.')
           end
         end
 
@@ -45,11 +45,11 @@ describe Route do
 
         context 'when permanent conflicting redirects exist' do
           it 'is invalid' do
-            redirect = build(:redirect_route, :permanent, path: 'foo/bar/baz')
+            redirect = build(:redirect_route, :permanent, path: 'foo')
             redirect.save!(validate: false)
 
             expect(route.valid?).to be_falsey
-            expect(route.errors.first[1]).to eq('foo has been taken before. Please use another one')
+            expect(route.errors.first[1]).to eq('foo has been taken before. Please use another one.')
           end
         end
 
@@ -96,18 +96,16 @@ describe Route do
           expect(group_foo.save).to be_truthy
         end
 
-        it 'should delete old redirect routes for the group' do
+        it 'should delete old redirect routes for the group and project' do
           group_foo.save
 
-          expect(group_foo.redirect_routes.permanent.where(path: 'foo')).to be_empty
-          expect(group_foo.redirect_routes.permanent.count).to eq(1)
+          expect(group_foo.redirect_routes.permanent.find_by(path: 'foo')).to be_nil
+          expect(group_foo.redirect_routes.count).to eq(1)
           expect(group_foo.redirect_routes.permanent.first.path).to eq('baz')
-        end
 
-        it 'should not delete old redirect routes for the project' do
-          group_foo.save
-          expect(project_baz.redirect_routes.count).to eq(2)
-          expect(project_baz.redirect_routes.pluck(:path)).to match_array(['foo/baz', 'baz/baz'])
+          expect(project_baz.redirect_routes.permanent.find_by(path: 'foo/baz')).to be_nil
+          expect(project_baz.redirect_routes.count).to eq(1)
+          expect(project_baz.redirect_routes.permanent.first.path).to eq('baz/baz')
         end
       end
     end
@@ -122,23 +120,14 @@ describe Route do
     end
 
     context 'after update' do
-      it 'calls #create_redirect_for_old_path' do
+      it 'calls #update_redirect_routes' do
         expect(route).to receive(:create_redirect_for_old_path)
         route.update_attributes(path: 'foo')
       end
 
-      it 'calls #delete_conflicting_redirects' do
-        expect(route).to receive(:delete_conflicting_redirects)
+      it 'calls #rename_descendants' do
+        expect(route).to receive(:rename_descendants)
         route.update_attributes(path: 'foo')
-      end
-    end
-
-    context 'after create' do
-      it 'calls #delete_conflicting_redirects' do
-        route.destroy
-        new_route = described_class.new(source: group, path: group.path)
-        expect(new_route).to receive(:delete_conflicting_redirects)
-        new_route.save!
       end
     end
   end
@@ -181,7 +170,7 @@ describe Route do
         it 'creates redirects for children' do
           expect(nested_group.redirect_routes.permanent.count).to eq(1)
           expect(deep_nested_group.redirect_routes.permanent.count).to eq(1)
-          expect(foo_project.redirect_routes.temporary.count).to eq(1)
+          expect(foo_project.redirect_routes.permanent.count).to eq(1)
         end
       end
 
@@ -197,9 +186,9 @@ describe Route do
 
       context 'when conflicting redirects exist' do
         let(:route) { create(:project).route }
-        let!(:conflicting_redirect1) { route.create_redirect('bar/test') }
-        let!(:conflicting_redirect2) { route.create_redirect('bar/test/foo') }
-        let!(:conflicting_redirect3) { route.create_redirect('gitlab-org') }
+        let!(:conflicting_redirect1) { create(:redirect_route, source: route, path: 'bar/test') }
+        let!(:conflicting_redirect2) { create(:redirect_route, source: route, path: 'bar/test/foo') }
+        let!(:conflicting_redirect3) { create(:redirect_route, source: route, path: 'gitlab-org') }
 
         it 'deletes the conflicting redirects' do
           route.update_attributes(path: 'bar')
@@ -231,222 +220,70 @@ describe Route do
     end
   end
 
-  describe '#create_redirect_for_old_path' do
-    context 'if the path changed' do
-      it 'creates a RedirectRoute for the old path' do
-        redirect_scope = route.source.redirect_routes.where(path: 'git_lab')
-        expect(redirect_scope.exists?).to be_falsey
-        route.path = 'new-path'
-        route.save!
-        expect(redirect_scope.exists?).to be_truthy
-      end
-    end
-  end
+  # Redirect route scenarios are included in more detail in spec/support/route_redirects.rb
+  describe '#update_redirect_routes' do
+    it 'creates a temporary RedirectRoute if the source is a Project' do
+      project = create(:project, path: 'foo')
+      project.path = 'baz'
+      project.save
 
-  describe '#create_redirect' do
-    it 'creates a RedirectRoute with the same source' do
-      redirect_route = route.create_redirect('foo')
-      expect(redirect_route).to be_a(RedirectRoute)
-      expect(redirect_route).to be_persisted
-      expect(redirect_route.source).to eq(route.source)
-      expect(redirect_route.path).to eq('foo')
+      expect(project.redirect_routes.count).to eq(1)
+      expect(project.redirect_routes.temporary.first.path).to eq("#{project.namespace.name}/foo")
     end
 
-    context 'when the source is a Project' do
-      it 'creates a temporal RedirectRoute' do
-        project = create(:project)
-        route = project.route
-        redirect_route = route.create_redirect('foo')
-        expect(redirect_route.permanent?).to be_falsy
-      end
+    it 'creates a permanent RedirectRoute if the source is not a Project' do
+      group.path = 'foo'
+      group.save
+
+      expect(group.redirect_routes.count).to eq(1)
+      expect(group.redirect_routes.permanent.first.path).to eq('git_lab')
     end
 
-    context 'when the source is not a project' do
-      it 'creates a permanent RedirectRoute' do
-        redirect_route = route.create_redirect('foo', permanent: true)
-        expect(redirect_route.permanent?).to be_truthy
-      end
-    end
-  end
-
-  describe '#delete_conflicting_redirects' do
     context 'with a permanent RedirectRoute with a different path' do
-      it 'does not delete the redirect' do
-        route.create_redirect("#{route.path}/foo", permanent: true)
+      it 'Creates a new RedirectRoute' do
+        create(:redirect_route, source: route, path: "#{route.path}/foo", permanent: true)
+
         expect do
-          route.delete_conflicting_redirects
-        end.not_to change { RedirectRoute.count }
+          group.path = 'baz'
+          group.save
+        end.to change { RedirectRoute.count }.by(1)
       end
     end
 
     context 'with a permanent RedirectRoute with the same path' do
-      it 'does delete the redirect' do
-        route.create_redirect(route.path, permanent: true)
-
-        expect do
-          route.delete_conflicting_redirects
-        end.to change { RedirectRoute.count }.by(-1)
-      end
-    end
-
-    context 'with temporal redirect' do
-      let(:route) { create(:project).route }
-
-      it 'deletes the redirect' do
-        route.create_redirect("#{route.path}/foo")
-
-        expect do
-          route.delete_conflicting_redirects
-        end.to change { RedirectRoute.count }.by(-1)
-      end
-    end
-
-    context 'when a redirect route with the same path exists' do
-      context 'when the redirect route has matching case' do
-        let(:route) { create(:project).route }
-        let!(:redirect1) { route.create_redirect(route.path) }
-
-        it 'deletes the redirect' do
-          expect do
-            route.delete_conflicting_redirects
-          end.to change { RedirectRoute.count }.by(-1)
-        end
-
-        context 'when redirect routes with paths descending from the route path exists' do
-          let!(:redirect2) { route.create_redirect("#{route.path}/foo") }
-          let!(:redirect3) { route.create_redirect("#{route.path}/foo/bar") }
-          let!(:redirect4) { route.create_redirect("#{route.path}/baz/quz") }
-          let!(:other_redirect) { route.create_redirect("other") }
-
-          it 'deletes all redirects with paths that descend from the route path' do
-            expect do
-              route.delete_conflicting_redirects
-            end.to change { RedirectRoute.count }.by(-4)
-          end
-        end
-      end
-
-      context 'when the redirect route is differently cased' do
-        let(:route) { create(:project).route }
-        let!(:redirect1) { route.create_redirect(route.path.upcase) }
-
-        it 'deletes the redirect' do
-          expect do
-            route.delete_conflicting_redirects
-          end.to change { RedirectRoute.count }.by(-1)
-        end
-      end
-    end
-  end
-
-  describe '#deletable_conflicting_redirects' do
-    it 'returns an ActiveRecord::Relation' do
-      expect(route.deletable_conflicting_redirects).to be_an(ActiveRecord::Relation)
-    end
-
-    context 'with permanent redirects' do
-      it 'does not return anything' do
-        route.create_redirect("#{route.path}/foo", permanent: true)
-        route.create_redirect("#{route.path}/foo/bar", permanent: true)
-        route.create_redirect("#{route.path}/baz/quz", permanent: true)
-
-        expect(route.deletable_conflicting_redirects).to be_empty
-      end
-    end
-
-    context 'with temporal redirects' do
-      let(:route) { create(:project).route }
-
-      it 'returns the redirect routes' do
-        route = create(:project).route
-        redirect1 = route.create_redirect("#{route.path}/foo")
-        redirect2 = route.create_redirect("#{route.path}/foo/bar")
-        redirect3 = route.create_redirect("#{route.path}/baz/quz")
-
-        expect(route.deletable_conflicting_redirects).to match_array([redirect1, redirect2, redirect3])
-      end
-    end
-
-    context 'when a redirect route with the same path exists' do
-      let(:route) { create(:project).route }
-
-      context 'when the redirect route has matching case' do
-        let!(:redirect1) { route.create_redirect(route.path) }
-
-        it 'returns the redirect route' do
-          expect(route.deletable_conflicting_redirects).to match_array([redirect1])
-        end
-
-        context 'when redirect routes with paths descending from the route path exists' do
-          let!(:redirect2) { route.create_redirect("#{route.path}/foo") }
-          let!(:redirect3) { route.create_redirect("#{route.path}/foo/bar") }
-          let!(:redirect4) { route.create_redirect("#{route.path}/baz/quz") }
-          let!(:other_redirect) { route.create_redirect("other") }
-
-          it 'returns the redirect routes' do
-            expect(route.deletable_conflicting_redirects).to match_array([redirect1, redirect2, redirect3, redirect4])
-          end
-        end
-      end
-
-      context 'when the redirect route is differently cased' do
-        let!(:redirect1) { route.create_redirect(route.path.upcase) }
-
-        it 'returns the redirect route' do
-          expect(route.deletable_conflicting_redirects).to match_array([redirect1])
-        end
-      end
-    end
-
-    context 'with a permanent redirect with the same path' do
-      let!(:group) { create(:group, path: 'foo', name: 'foo') }
-
-      it 'returns does not return anything' do
-        group.path = 'foot'
+      it 'does delete the old redirect' do
+        group.path = 'baz'
         group.save
 
-        group.path = 'foo'
+        expect(group.redirect_routes.permanent.count).to eq(1)
+        expect(group.redirect_routes.permanent.first.path).to eq('git_lab')
+
+        group.path = 'git_lab'
         group.save
-        expect(group.route.deletable_conflicting_redirects).to be_empty
+
+        expect(group.redirect_routes.permanent.count).to eq(1)
+        expect(group.redirect_routes.permanent.first.path).to eq('baz')
       end
     end
 
-    context 'with permanent and temporary redirects' do
-      let!(:group) { create(:group, path: 'foo', name: 'foo') }
-      let!(:project) { create(:project, name: 'bar', path: 'bar', namespace: group) }
+    context 'with temporary redirect' do
+      let(:project) { create(:project) }
 
-      it 'returns temporary redirects' do
+      it 'creates temporary redirects for a project' do
         project.path = 'baz'
         project.save
-        expect(group.route.deletable_conflicting_redirects.pluck(:path)).to match_array(['foo/bar'])
+
+        expect(project.redirect_routes.count).to eq(1)
+
+        project.path = 'bax'
+        project.save
+
+        expect(project.redirect_routes.count).to eq(2)
       end
     end
   end
 
   describe "#conflicting_redirect_exists?" do
-    context 'when a conflicting redirect exists' do
-      let(:group1) { create(:group, path: 'foo') }
-      let(:group2) { create(:group, path: 'baz') }
-
-      it 'should not be saved' do
-        group1.path = 'bar'
-        group1.save
-
-        group2.path = 'foo'
-
-        expect(group2.save).to be_falsy
-      end
-
-      it 'should return an error on path' do
-        group1.path = 'bar'
-        group1.save
-
-        group2.path = 'foo'
-        group2.valid?
-        expect(group2.errors["route.path"].first).to eq('foo has been taken before. Please use another one')
-      end
-    end
-
     context 'when a conflicting redirect does not exist' do
       let(:project1) { create(:project, path: 'foo') }
       let(:project2) { create(:project, path: 'baz') }

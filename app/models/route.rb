@@ -11,11 +11,9 @@ class Route < ActiveRecord::Base
     uniqueness: { case_sensitive: false }
 
   validate :ensure_permanent_paths, if: :path_changed?
-
   before_validation :delete_conflicting_orphaned_routes
-  after_create :delete_conflicting_redirects
-  after_update :delete_conflicting_redirects, if: :path_changed?
-  after_update :create_redirect_for_old_path, if: :path_changed?
+
+  after_update :update_redirect_routes, if: :path_changed?
   after_update :rename_descendants
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
@@ -45,55 +43,25 @@ class Route < ActiveRecord::Base
         # We are not calling route.delete_conflicting_redirects here, in hopes
         # of avoiding deadlocks. The parent (self, in this method) already
         # called it, which deletes conflicts for all descendants.
-        route.create_redirect(old_path, permanent: route.permanent_redirect?) if attributes[:path]
+        route.source.redirect_routes.create(path: old_path, permanent: permanent_redirect?) if attributes[:path]
       end
     end
   end
 
-  def delete_conflicting_redirects
-    deletable_conflicting_redirects.delete_all
-  end
-
-  def deletable_conflicting_redirects
-    if permanent_redirect_routes.where(path: path).exists?
-      source.redirect_routes.matching_path_and_descendants(path)
-    else
-      RedirectRoute.temporary.matching_path_and_descendants(path)
-    end
-  end
-
-  def create_redirect(path, permanent: false)
-    RedirectRoute.create(source: source, path: path, permanent: permanent)
-  end
-
-  # Groups redirects are considered permanent to avoid
-  # any other Group/User reclaim an old path
-  def permanent_redirect?
-    source_type != "Project"
-  end
-
   private
 
-  def create_redirect_for_old_path
-    create_redirect(path_was, permanent: permanent_redirect?)
+  def permanent_redirect?
+    source_type != "Project"
   end
 
   def ensure_permanent_paths
     return if path.nil?
 
-    errors.add(:path, "#{path} has been taken before. Please use another one") if conflicting_redirect_exists?
+    errors.add(:path, "#{path} has been taken before. Please use another one.") if redirect_with_same_path_exists?
   end
 
-  def conflicting_redirect_exists?
+  def redirect_with_same_path_exists?
     permanent_redirect_routes.where.not(source_id: self_and_descendant_ids).exists?
-  end
-
-  def self_and_descendant_ids
-    if source.is_a? Project
-      [source.id]
-    else
-      source.self_and_descendants.select(:id).map(&:id)
-    end
   end
 
   def permanent_redirect_routes
@@ -101,6 +69,36 @@ class Route < ActiveRecord::Base
       .permanent
       .namespace_type
       .matching_path_and_descendants(path)
+  end
+
+  def self_and_descendant_ids
+    if source.is_a?(Project) || Gitlab::Database.mysql?
+      source.id
+    else
+      source.self_and_descendants.select(:id)
+    end
+  end
+
+  def update_redirect_routes
+    deletable_conflicting_redirects.delete_all
+
+    create_redirect_for_old_path
+  end
+
+  def deletable_conflicting_redirects
+    if reclaiming_an_old_path?
+      RedirectRoute.matching_path_and_descendants(path)
+    else
+      RedirectRoute.temporary.matching_path_and_descendants(path)
+    end
+  end
+
+  def reclaiming_an_old_path?
+    permanent_redirect_routes.where(path: path).exists?
+  end
+
+  def create_redirect_for_old_path
+    source.redirect_routes.create(path: path_was, permanent: permanent_redirect?)
   end
 
   def delete_conflicting_orphaned_routes

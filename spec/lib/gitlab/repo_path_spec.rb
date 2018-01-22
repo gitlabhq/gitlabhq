@@ -28,7 +28,7 @@ describe ::Gitlab::RepoPath do
       end
 
       context 'of a redirected project' do
-        let(:redirect) { project.route.create_redirect('foo/bar') }
+        let(:redirect) { create(:redirect_route, source: project, path: 'foo/bar') }
 
         it 'parses a relative repository path' do
           expect(described_class.parse(redirect.path + '.git')).to eq([project, false, 'foo/bar'])
@@ -66,7 +66,7 @@ describe ::Gitlab::RepoPath do
 
   describe '.find_project' do
     let(:project) { create(:project) }
-    let(:redirect) { project.route.create_redirect('foo/bar/baz') }
+    let(:redirect) { create(:redirect_route, source: project, path: 'foo/bar/baz') }
 
     context 'when finding a project by its canonical path' do
       context 'when the cases match' do

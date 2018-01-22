@@ -318,7 +318,7 @@ describe 'Git HTTP requests' do
         end
 
         context 'and the user requests a redirected path' do
-          let!(:redirect) { project.route.create_redirect('foo/bar') }
+          let!(:redirect) { create(:redirect_route, source: project, path: 'foo/bar') }
           let(:path) { "#{redirect.path}.git" }
           let(:project_moved_message) do
             <<-MSG.strip_heredoc
@@ -527,7 +527,7 @@ describe 'Git HTTP requests' do
               end
 
               context 'and the user requests a redirected path' do
-                let!(:redirect) { project.route.create_redirect('foo/bar') }
+                let!(:redirect) { create(:redirect_route, source: project, path: 'foo/bar') }
                 let(:path) { "#{redirect.path}.git" }
                 let(:project_moved_message) do
                   <<-MSG.strip_heredoc

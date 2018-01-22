@@ -70,7 +70,7 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
   describe '#permanent_redirect?' do
     context 'with a permanent RedirectRoute' do
       it 'should return true' do
-        project.route.create_redirect('foo/bar', permanent: true)
+        create(:redirect_route, :permanent, source: project, path: 'foo/bar')
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         expect(project_moved.permanent_redirect?).to be_truthy
       end
@@ -78,7 +78,7 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
     context 'without a permanent RedirectRoute' do
       it 'should return false' do
-        project.route.create_redirect('foo/bar')
+        create(:redirect_route, source: project, path: 'foo/bar')
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         expect(project_moved.permanent_redirect?).to be_falsy
       end
