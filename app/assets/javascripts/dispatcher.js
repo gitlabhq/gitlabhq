@@ -122,7 +122,9 @@ import SearchAutocomplete from './search_autocomplete';
             .catch(fail);
           break;
         case 'dashboard:todos:index':
-          import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
+          import('./pages/dashboard/todos/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:jobs:index':
           import('./pages/admin/jobs/index')
@@ -482,13 +484,19 @@ import SearchAutocomplete from './search_autocomplete';
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          import('./pages/ci/lints').then(m => m.default()).catch(fail);
+          import('./pages/ci/lints')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'users:show':
-          import('./pages/users/show').then(callDefault).catch(fail);
+          import('./pages/users/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
+          import('./pages/admin/conversational_development_index/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'snippets:show':
           import('./pages/snippets/show')
@@ -496,7 +504,9 @@ import SearchAutocomplete from './search_autocomplete';
             .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
+          import('./pages/import/fogbugz/new_user_map')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
           import('./pages/profiles/personal_access_tokens')
