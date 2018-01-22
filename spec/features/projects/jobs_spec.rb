@@ -388,7 +388,8 @@ feature 'Jobs' do
         click_link 'Trigger this manual action'
 
         wait_for_requests
-        expect(page).to have_content('This job is stuck, because the project doesn\'t have any runners online assigned to it.')
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by the runner')
         expect(page).to have_content('pending')
       end
     end
@@ -402,7 +403,7 @@ feature 'Jobs' do
 
       it 'shows empty state' do
         expect(page).to have_content('This job has not been triggered yet')
-        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
     end
 
@@ -413,9 +414,9 @@ feature 'Jobs' do
         visit project_job_path(project, job)
       end
 
-      it 'does not show non triggered screen' do
+      it 'shows pending empty state' do
         expect(page).not_to have_content('This job has not been triggered yet')
-        expect(page).not_to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
+        expect(page).not_to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
     end
   end
