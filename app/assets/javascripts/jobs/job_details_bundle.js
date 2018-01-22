@@ -3,7 +3,7 @@ import JobMediator from './job_details_mediator';
 import jobHeader from './components/header.vue';
 import detailsBlock from './components/sidebar_details_block.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   const dataset = document.getElementById('js-job-details-vue').dataset;
   const mediator = new JobMediator({ endpoint: dataset.endpoint });
 
@@ -55,4 +55,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+};

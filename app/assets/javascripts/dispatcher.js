@@ -95,6 +95,11 @@ import Activities from './activities';
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:jobs:show':
+          import('./pages/projects/jobs/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:milestones:index':
           import('./pages/dashboard/milestones/index')
             .then(callDefault)
