@@ -64,6 +64,15 @@ module API
         false
       end
 
+      def project_params
+        {
+          description: "",
+          path: Project.parse_project_id(project_match[:project_id]),
+          namespace_id: project_namespace&.id,
+          visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
+        }
+      end
+
       private
 
       def project_path_regex
@@ -71,11 +80,13 @@ module API
       end
 
       def project_match
-        @match ||= params[:project].match(project_path_regex).captures
+        @project_match ||= params[:project].match(project_path_regex)
       end
 
-      def namespace
-        @namespace ||= Namespace.find_by_path_or_name(project_match[:namespace_id])
+      def project_namespace
+        return unless project_match
+
+        @project_namespace ||= Namespace.find_by_path_or_name(project_match[:namespace_id])
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables

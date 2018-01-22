@@ -19,8 +19,7 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
-      create: "Creating a repository to that namespace is not allowed."
+      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -53,7 +52,7 @@ module Gitlab
         check_download_access!
       when *PUSH_COMMANDS
         check_push_access!(cmd, changes)
-        check_repository_creation!(cmd)
+        check_namespace_accessibility!(cmd)
       end
 
       true
@@ -149,15 +148,11 @@ module Gitlab
       end
     end
 
-    def check_repository_creation!(cmd)
+    def check_namespace_accessibility!(cmd)
       return unless project.blank?
 
       unless target_namespace
         raise NotFoundError, ERROR_MESSAGES[:namespace_not_found]
-      end
-
-      unless can_create_project_in_namespace?(cmd)
-        raise UnauthorizedError, ERROR_MESSAGES[:create]
       end
     end
 

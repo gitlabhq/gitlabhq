@@ -6,14 +6,14 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
   describe '.fetch_redirct_message' do
     context 'with a redirect message queue' do
-      it 'should return the redirect message' do
+      it 'returns the redirect message' do
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         project_moved.add_redirect_message
 
         expect(described_class.fetch_redirect_message(user.id, project.id)).to eq(project_moved.redirect_message)
       end
 
-      it 'should delete the redirect message from redis' do
+      it 'deletes the redirect message from redis' do
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         project_moved.add_redirect_message
 
@@ -24,19 +24,19 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
     end
 
     context 'with no redirect message queue' do
-      it 'should return nil' do
+      it 'returns nil' do
         expect(described_class.fetch_redirect_message(1, 2)).to be_nil
       end
     end
   end
 
   describe '#add_redirect_message' do
-    it 'should queue a redirect message' do
+    it 'queues a redirect message' do
       project_moved = described_class.new(project, user, 'foo/bar', 'http')
       expect(project_moved.add_redirect_message).to eq("OK")
     end
 
-    it 'should handle anonymous clones' do
+    it 'handles anonymous clones' do
       project_moved = described_class.new(project, nil, 'foo/bar', 'http')
 
       expect(project_moved.add_redirect_message).to eq(nil)
@@ -45,7 +45,7 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
   describe '#redirect_message' do
     context 'when the push is rejected' do
-      it 'should return a redirect message telling the user to try again' do
+      it 'returns a redirect message telling the user to try again' do
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         message = "Project 'foo/bar' was moved to '#{project.full_path}'." +
           "\n\nPlease update your Git remote:" +
@@ -56,7 +56,7 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
     end
 
     context 'when the push is not rejected' do
-      it 'should return a redirect message' do
+      it 'returns a redirect message' do
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         message = "Project 'foo/bar' was moved to '#{project.full_path}'." +
           "\n\nPlease update your Git remote:" +
@@ -69,7 +69,7 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
   describe '#permanent_redirect?' do
     context 'with a permanent RedirectRoute' do
-      it 'should return true' do
+      it 'returns true' do
         project.route.create_redirect('foo/bar', permanent: true)
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         expect(project_moved.permanent_redirect?).to be_truthy
@@ -77,7 +77,7 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
     end
 
     context 'without a permanent RedirectRoute' do
-      it 'should return false' do
+      it 'returns false' do
         project.route.create_redirect('foo/bar')
         project_moved = described_class.new(project, user, 'foo/bar', 'http')
         expect(project_moved.permanent_redirect?).to be_falsy

@@ -366,25 +366,28 @@ describe API::Internal do
           end
         end
 
-        context 'project as /namespace/project' do
+        context 'project as namespace/project' do
           it do
-            pull(key, project_with_repo_path('/' + project.full_path))
+            push(key, project_with_repo_path(project.full_path))
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           end
-        end
 
-        context 'project as namespace/project' do
-          it do
-            pull(key, project_with_repo_path(project.full_path))
+          context 'when project does not exist' do
+            it 'creates a new project' do
+              path = "#{user.namespace.path}/notexist.git"
 
-            expect(response).to have_gitlab_http_status(200)
-            expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+              expect do
+                push_with_path(key, path)
+              end.to change { Project.count }.by(1)
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(json_response["status"]).to be_truthy
+              expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(path)
+            end
           end
         end
       end
@@ -815,6 +818,19 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
         expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
+      end
+    end
+
+    context 'with new project data' do
+      it 'returns new project message on the response' do
+        new_project = Gitlab::Checks::NewProject.new(user, project, 'http')
+        new_project.add_new_project_message
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response["new_project_message"]).to be_present
+        expect(json_response["new_project_message"]).to eq(new_project.new_project_message)
       end
     end
 

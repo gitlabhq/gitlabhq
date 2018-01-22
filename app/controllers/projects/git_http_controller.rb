@@ -31,6 +31,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   # POST /foo/bar.git/git-receive-pack" (git push)
   def git_receive_pack
+    raise Gitlab::GitAccess::NotFoundError, 'Could not create project' unless project
+
     render_ok
   end
 

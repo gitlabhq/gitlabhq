@@ -107,15 +107,39 @@ describe 'Git HTTP requests' do
     let(:user) { create(:user) }
 
     context "when the project doesn't exist" do
-      let(:path) { 'doesnt/exist.git' }
+      context "when namespace doesn't exist" do
+        let(:path) { 'doesnt/exist.git' }
 
-      it_behaves_like 'pulls require Basic HTTP Authentication'
-      it_behaves_like 'pushes require Basic HTTP Authentication'
+        it_behaves_like 'pulls require Basic HTTP Authentication'
+        it_behaves_like 'pushes require Basic HTTP Authentication'
 
-      context 'when authenticated' do
-        it 'rejects downloads and uploads with 404 Not Found' do
-          download_or_upload(path, user: user.username, password: user.password) do |response|
-            expect(response).to have_gitlab_http_status(:not_found)
+        context 'when authenticated' do
+          it 'rejects downloads and uploads with 404 Not Found' do
+            download_or_upload(path, user: user.username, password: user.password) do |response|
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
+      end
+
+      context 'when namespace exists' do
+        let(:path) { "#{user.namespace.path}/new-project.git"}
+
+        context 'when authenticated' do
+          it 'creates a new project under the existing namespace' do
+            expect do
+              upload(path, user: user.username, password: user.password) do |response|
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end.to change { user.projects.count }.by(1)
+          end
+
+          it 'rejects upload with 404 Not Found when project is invalid' do
+            path = "#{user.namespace.path}/new.git"
+
+            upload(path, user: user.username, password: user.password) do |response|
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
           end
         end
       end

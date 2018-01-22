@@ -20,6 +20,8 @@ module Gitlab
       end
 
       def add_new_project_message
+        return unless user.present? && project.present?
+
         Gitlab::Redis::SharedState.with do |redis|
           key = self.class.new_project_message_key(user.id, project.id)
           redis.setex(key, 5.minutes, new_project_message)
