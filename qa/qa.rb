@@ -26,6 +26,7 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :Runner, 'qa/factory/resource/runner'
     end
 
     module Repository
@@ -104,7 +105,9 @@ module QA
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
         autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :Runners, 'qa/page/project/settings/runners'
       end
     end
 
@@ -130,7 +133,7 @@ module QA
   # with these services, like through the shell.
   #
   module Service
-    autoload :Shellable, 'qa/service/shellable'
+    autoload :Shellout, 'qa/service/shellout'
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
   end
