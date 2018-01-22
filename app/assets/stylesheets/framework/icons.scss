@@ -33,7 +33,8 @@
 }
 
 .ci-status-icon-created,
-.ci-status-icon-skipped {
+.ci-status-icon-skipped,
+.ci-status-icon-notfound {
   svg {
     fill: $gray-darkest;
   }
@@ -42,12 +43,6 @@
 .ci-status-icon-manual {
   svg {
     fill: $gl-text-color;
-  }
-}
-
-.ci-status-icon-notfound {
-  svg {
-    fill: $common-gray-light;
   }
 }
 
