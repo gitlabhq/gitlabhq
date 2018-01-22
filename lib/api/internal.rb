@@ -43,7 +43,7 @@ module API
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path, target_namespace: namespace)
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path, target_namespace: project_namespace)
 
         begin
           access_checker.check(params[:action], params[:changes])
@@ -52,13 +52,6 @@ module API
         end
 
         if user && project.blank? && receive_pack?
-          project_params = {
-            description: "",
-            path: Project.parse_project_id(project_match[:project_name]),
-            namespace_id: namespace&.id,
-            visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
-          }
-
           @project = ::Projects::CreateService.new(user, project_params).execute
 
           if @project.saved?
