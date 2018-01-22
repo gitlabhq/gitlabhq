@@ -165,7 +165,7 @@ export default class Notes {
     $(window).off('hashchange', this.onHashChange);
   }
 
-  static initCommentTypeToggle(form) {
+  initCommentTypeToggle(form) {
     const dropdownTrigger = form.querySelector('.js-comment-type-dropdown .dropdown-toggle');
     const dropdownList = form.querySelector('.js-comment-type-dropdown .dropdown-menu');
     const noteTypeInput = form.querySelector('#note_type');
@@ -173,7 +173,7 @@ export default class Notes {
     const closeButton = form.querySelector('.js-note-target-close');
     const reopenButton = form.querySelector('.js-note-target-reopen');
 
-    const commentTypeToggle = new CommentTypeToggle({
+    this.commentTypeToggle = new CommentTypeToggle({
       dropdownTrigger,
       dropdownList,
       noteTypeInput,
@@ -182,7 +182,7 @@ export default class Notes {
       reopenButton,
     });
 
-    commentTypeToggle.initDroplab();
+    this.commentTypeToggle.initDroplab();
   }
 
   keydownNoteText(e) {
@@ -550,7 +550,7 @@ export default class Notes {
     this.parentTimeline = form.parents('.timeline');
 
     if (form.length) {
-      Notes.initCommentTypeToggle(form.get(0));
+      this.initCommentTypeToggle(form.get(0));
     }
   }
 
@@ -1553,6 +1553,10 @@ export default class Notes {
           // Show final note element on UI and perform form and action buttons cleanup
           this.addNote($form, note);
           this.reenableTargetFormSubmitButton(e);
+
+          // Default comment form dropdown selection to comment
+          const { dropdownList } = this.commentTypeToggle;
+          dropdownList.querySelector('#comment').click();
         }
 
         if (note.commands_changes) {
