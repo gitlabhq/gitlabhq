@@ -1,6 +1,0 @@
----
-title: Check user authorization for source and target projects when creating a merge
-  request.
-merge_request:
-author:
-type: security

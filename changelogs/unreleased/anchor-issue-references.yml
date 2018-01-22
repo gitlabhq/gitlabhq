@@ -1,6 +1,0 @@
----
-title: Fix false positive issue references in merge requests caused by header anchor
-  links.
-merge_request:
-author:
-type: fixed

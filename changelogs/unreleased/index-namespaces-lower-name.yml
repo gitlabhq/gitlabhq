@@ -1,5 +1,0 @@
----
-title: Add index on namespaces lower(name) for UsersController#exists
-merge_request:
-author:
-type: performance
