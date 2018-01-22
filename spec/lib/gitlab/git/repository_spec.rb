@@ -1954,6 +1954,42 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#create_from_bundle' do
+    shared_examples 'creating repo from bundle' do
+      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+      let(:project) { create(:project) }
+      let(:imported_repo) { project.repository.raw }
+
+      before { expect(repository.bundle_to_disk(bundle_path)).to be true }
+      after { FileUtils.rm_rf(bundle_path) }
+
+      it 'creates a repo from a bundle file' do
+        expect(imported_repo).not_to exist
+
+        result = imported_repo.create_from_bundle(bundle_path)
+
+        expect(result).to be true
+        expect(imported_repo).to exist
+        expect { imported_repo.fsck }.not_to raise_exception
+      end
+
+      it 'creates a symlink to the global hooks dir' do
+        imported_repo.create_from_bundle(bundle_path)
+        hooks_path = File.join(imported_repo.path, 'hooks')
+
+        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+      end
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is enabled' do
+      it_behaves_like 'creating repo from bundle'
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
+      it_behaves_like 'creating repo from bundle'
+    end
+  end
+
   context 'gitlab_projects commands' do
     let(:gitlab_projects) { repository.gitlab_projects }
     let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
