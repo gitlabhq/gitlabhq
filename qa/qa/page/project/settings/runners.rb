@@ -12,6 +12,10 @@ module QA
             #
             all('code').first.text
           end
+
+          def has_online_runner?
+            page.has_css?('.runner-status-online')
+          end
         end
       end
     end

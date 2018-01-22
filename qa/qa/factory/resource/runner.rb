@@ -35,12 +35,15 @@ module QA
                 runner.register!
               end
 
-              sleep 5 # TODO, non-blocking waiting for Runner to register.
-
+              ##
+              #  TODO, refactor to support non-blocking wait time until
+              # GitLab Runner sucessfully registers itself.
+              #
+              sleep 5
               settings.refresh
 
               settings.expand_runners_settings do |runners|
-                perform&.call(runners)
+                perform&.call(runners, runner)
                 runner.remove!
               end
             end

@@ -5,11 +5,9 @@ module QA
       Page::Main::Login.act { sign_in_using_credentials }
 
       Factory::Resource::Runner.fabricate! do |runner|
-        runner.name = 'my-qa-runner'
-
-        runner.perform do |page|
-          expect(page).to have_content('my-qa-runner')
-          expect(page).to have_css('.runner-status-online')
+        runner.perform do |page, runner|
+          expect(page).to have_content(runner.name)
+          expect(page).to have_online_runner
         end
       end
     end
