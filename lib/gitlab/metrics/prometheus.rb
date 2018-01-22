@@ -9,7 +9,6 @@ module Gitlab
       PROVIDER_MUTEX = Mutex.new
 
       class_methods do
-        include Gitlab::CurrentSettings
         include Gitlab::Utils::StrongMemoize
 
         def metrics_folder_present?
@@ -72,7 +71,8 @@ module Gitlab
         end
 
         def prometheus_metrics_enabled_unmemoized
-          metrics_folder_present? && current_application_settings[:prometheus_metrics_enabled] || false
+          metrics_folder_present? &&
+            Gitlab::CurrentSettings.current_application_settings[:prometheus_metrics_enabled] || false
         end
       end
     end

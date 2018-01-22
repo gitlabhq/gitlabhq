@@ -13,8 +13,6 @@ module Gitlab
       private_constant :MUTEX
 
       class_methods do
-        include Gitlab::CurrentSettings
-
         def influx_metrics_enabled?
           settings[:enabled] || false
         end
@@ -22,16 +20,20 @@ module Gitlab
         # Prometheus histogram buckets used for arbitrary code measurements
 
         def settings
-          @settings ||= {
-            enabled: current_application_settings[:metrics_enabled],
-            pool_size: current_application_settings[:metrics_pool_size],
-            timeout: current_application_settings[:metrics_timeout],
-            method_call_threshold: current_application_settings[:metrics_method_call_threshold],
-            host: current_application_settings[:metrics_host],
-            port: current_application_settings[:metrics_port],
-            sample_interval: current_application_settings[:metrics_sample_interval] || 15,
-            packet_size: current_application_settings[:metrics_packet_size] || 1
+          @settings ||= begin
+            current_settings = Gitlab::CurrentSettings.current_application_settings
+
+            {
+              enabled: current_settings[:metrics_enabled],
+              pool_size: current_settings[:metrics_pool_size],
+              timeout: current_settings[:metrics_timeout],
+              method_call_threshold: current_settings[:metrics_method_call_threshold],
+              host: current_settings[:metrics_host],
+              port: current_settings[:metrics_port],
+              sample_interval: current_settings[:metrics_sample_interval] || 15,
+              packet_size: current_settings[:metrics_packet_size] || 1
           }
+          end
         end
 
         def mri?
