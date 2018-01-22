@@ -1556,7 +1556,9 @@ export default class Notes {
 
           // Default comment form dropdown selection to comment
           const { dropdownList } = this.commentTypeToggle;
-          dropdownList.querySelector('#comment').click();
+          if (dropdownList) {
+            dropdownList.querySelector('#comment').click();
+          }
         }
 
         if (note.commands_changes) {
