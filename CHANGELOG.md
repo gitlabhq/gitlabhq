@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.6 (2018-01-22)
+
+### Fixed (17 changes, 2 of them are from the community)
+
+- Fix abuse reports link url in admin area navbar. !16068 (megos)
+- Fix gitlab-rake gitlab:import:repos import schedule. !16115
+- Fixing bug when wiki last version. !16197
+- Prevent excessive DB load due to faulty DeleteConflictingRedirectRoutes background migration. !16205
+- Default merge request title is set correctly again when external issue tracker is activated. !16356 (Ben305)
+- Prevent invalid Route path if path is unchanged. !16397
+- Fixing rack request mime type when using rack attack. !16427
+- Prevent RevList failing on non utf8 paths. !16440
+- Fix 500 error when visiting a commit where the blobs do not exist.
+- Fix viewing merge request diffs where the underlying blobs are unavailable.
+- Gracefully handle garbled URIs in Markdown.
+- Fix hooks not being set up properly for bare import Rake task.
+- Fix Mermaid drawings not loading on some browsers.
+- Fixed chanages dropdown ellipsis positioning.
+- Avoid leaving a push event empty if payload cannot be created.
+- Set target_branch to the ref branch when creating MR from issue.
+- Fix shortcut links on help page.
+
+
 ## 10.3.5 (2018-01-18)
 
 - No changes.
