@@ -313,7 +313,7 @@ flaky-examples-check:
     - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
-setup-test-env:
+compile-assets:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *use-pg
@@ -324,13 +324,25 @@ setup-test-env:
     - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
-    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
-    - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
       - node_modules
       - public/assets
+
+setup-test-env:
+  <<: *dedicated-runner
+  <<: *except-docs
+  <<: *use-pg
+  stage: prepare
+  cache:
+    <<: *default-cache
+  script:
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+    - scripts/gitaly-test-build # Do not use 'bundle exec' here
+  artifacts:
+    expire_in: 7d
+    paths:
       - tmp/tests
 
 rspec-pg geo: *rspec-metadata-pg-geo
@@ -689,6 +701,7 @@ lint:javascript:report:
   <<: *pull-cache
   stage: post-test
   dependencies:
+    - compile-assets
     - setup-test-env
   before_script: []
   script:
