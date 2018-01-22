@@ -7,7 +7,7 @@ module Gitlab
         define_histogram :gitlab_view_rendering_duration_seconds do
           docstring 'View rendering time'
           base_labels Transaction::BASE_LABELS.merge({ path: nil })
-          buckets [0.001, 0.01, 0.1, 10.0]
+          buckets [0.001, 0.01, 0.1, 1, 10.0]
           with_feature :prometheus_metrics_view_instrumentation
         end
 
