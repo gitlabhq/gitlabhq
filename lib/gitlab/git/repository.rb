@@ -1395,9 +1395,11 @@ module Gitlab
       def rugged_write_ref(ref_path, ref)
         rugged.references.create(ref_path, ref, force: true)
       rescue Rugged::ReferenceError => ex
-        raise CommandError, "ReferenceError: #{ex}"
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
       rescue Rugged::OSError => ex
-        raise CommandError, "OSError: #{ex}"
+        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
       end
 
       def fresh_worktree?(path)
