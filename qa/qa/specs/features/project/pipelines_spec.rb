@@ -15,8 +15,10 @@ module QA
       end
 
       Page::Project::Settings::CICD.perform do |settings|
+        settings.refresh
+
         settings.expand_runners_settings do |page|
-          expect(page).to have_content(runner)
+          expect(page).to have_content(executor)
           expect(page).to have_online_runner
         end
       end
@@ -58,6 +60,8 @@ module QA
       end
 
       Page::Project::Show.act { wait_for_push }
+
+      expect(page).to have_content('Add .gitlab-ci.yml')
     end
   end
 end
