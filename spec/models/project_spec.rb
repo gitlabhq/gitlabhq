@@ -1952,6 +1952,10 @@ describe Project do
 
         expect(second_fork.fork_source).to eq(project)
       end
+
+      it 'returns nil if it is the root of the fork network' do
+        expect(project.fork_source).to be_nil
+      end
     end
 
     describe '#lfs_storage_project' do
