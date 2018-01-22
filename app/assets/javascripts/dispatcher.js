@@ -5,7 +5,6 @@ import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
 import Sidebar from './right_sidebar';
 import Flash from './flash';
-import UserCallout from './user_callout';
 import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
