@@ -15,36 +15,21 @@ module QA
           @name || "qa-runner-#{SecureRandom.hex(4)}"
         end
 
-        def perform(&block)
-          @block ||= block
-        end
-
         def fabricate!
           project.visit!
 
           Page::Menu::Side.act { click_ci_cd_settings }
 
-          Service::Runner.perform do |runner|
+          Service::Runner.new(name).tap do |runner|
             Page::Project::Settings::CICD.perform do |settings|
               settings.expand_runners_settings do |runners|
                 runner.pull
-                runner.name = name
                 runner.token = runners.registration_token
                 runner.address = runners.coordinator_address
                 runner.tags = %w[qa test]
                 runner.register!
-              end
-
-              ##
-              #  TODO, refactor to support non-blocking wait time until
-              # GitLab Runner sucessfully registers itself.
-              #
-              sleep 5
-              settings.refresh
-
-              settings.expand_runners_settings do |runners|
-                perform&.call(runners, runner)
-                runner.remove!
+                # TODO, wait for runner to register using non-blocking method.
+                sleep 5
               end
             end
           end
