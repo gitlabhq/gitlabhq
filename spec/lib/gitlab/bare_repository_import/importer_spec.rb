@@ -68,14 +68,24 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect(Project.find_by_full_path(project_path)).not_to be_nil
       end
 
-      it 'creates the Git repo in disk' do
-        FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
+      it 'does not schedule an import' do
+        expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+        importer.create_project_if_needed
+      end
+
+      it 'creates the Git repo on disk with the proper symlink for hooks' do
+        create_bare_repository("#{project_path}.git")
 
         importer.create_project_if_needed
 
         project = Project.find_by_full_path(project_path)
+        repo_path = File.join(project.repository_storage_path, project.disk_path + '.git')
+        hook_path = File.join(repo_path, 'hooks')
 
-        expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+        expect(File).to exist(repo_path)
+        expect(File.symlink?(hook_path)).to be true
+        expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
       end
 
       context 'hashed storage enabled' do
@@ -131,6 +141,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
       expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
     end
 
     it 'moves an existing project to the correct path' do
@@ -161,6 +172,9 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.wiki.git"))
 
+      expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
+                                                                                  import_type: 'bare_repository')).and_call_original
+
       importer.create_project_if_needed
 
       project = Project.find_by_full_path(project_path)
@@ -181,5 +195,10 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect { importer.create_project_if_needed }.to raise_error('Nested groups are not supported on MySQL')
       end
     end
+  end
+
+  def create_bare_repository(project_path)
+    repo_path = File.join(base_dir, project_path)
+    Gitlab::Git::Repository.create(repo_path, bare: true)
   end
 end

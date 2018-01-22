@@ -70,6 +70,10 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
+
+# Before updating this gem, check if
+# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
+# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
@@ -283,7 +287,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
   gem 'raindrops', '~> 0.18'
 end
 

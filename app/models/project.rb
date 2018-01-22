@@ -639,7 +639,7 @@ class Project < ActiveRecord::Base
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import?
+    external_import? || forked? || gitlab_project_import? || bare_repository_import?
   end
 
   def no_import?
@@ -677,6 +677,10 @@ class Project < ActiveRecord::Base
 
   def safe_import_url
     Gitlab::UrlSanitizer.new(import_url).masked_url
+  end
+
+  def bare_repository_import?
+    import_type == 'bare_repository'
   end
 
   def gitlab_project_import?

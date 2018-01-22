@@ -55,11 +55,14 @@ module Gitlab
                                               name: project_name,
                                               path: project_name,
                                               skip_disk_validation: true,
-                                              import_type: 'gitlab_project',
+                                              skip_wiki: bare_repo.wiki_exists?,
+                                              import_type: 'bare_repository',
                                               namespace_id: group&.id).execute
 
         if project.persisted? && mv_repo(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
+
+          project.repository.create_hooks
 
           ProjectCacheWorker.perform_async(project.id)
         else

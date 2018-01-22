@@ -70,6 +70,11 @@ describe Banzai::Filter::RelativeLinkFilter do
     expect { filter(act) }.not_to raise_error
   end
 
+  it 'does not raise an exception with a garbled path' do
+    act = link("open(/var/tmp/):%20/location%0Afrom:%20/test")
+    expect { filter(act) }.not_to raise_error
+  end
+
   it 'ignores ref if commit is passed' do
     doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
     expect(doc.at_css('a')['href'])

@@ -32,6 +32,24 @@ describe 'Help Pages' do
 
       it_behaves_like 'help page', prefix: '/gitlab'
     end
+
+    context 'quick link shortcuts', :js do
+      before do
+        visit help_path
+      end
+
+      it 'focuses search bar' do
+        find('.js-trigger-search-bar').click
+
+        expect(page).to have_selector('#search:focus')
+      end
+
+      it 'opens shortcuts help dialog' do
+        find('.js-trigger-shortcut').click
+
+        expect(page).to have_selector('#modal-shortcuts')
+      end
+    end
   end
 
   context 'in a production environment with version check enabled', :js do

@@ -56,11 +56,7 @@ module Projects
 
       after_create_actions if @project.persisted?
 
-      if @project.errors.empty?
-        @project.import_schedule if @project.import?
-      else
-        fail(error: @project.errors.full_messages.join(', '))
-      end
+      import_schedule
 
       @project
     rescue ActiveRecord::RecordInvalid => e
@@ -162,6 +158,16 @@ module Projects
         # For compatibility - set path from name
         # TODO: remove this in 8.0
         @project.path = @project.name.dup.parameterize
+      end
+    end
+
+    private
+
+    def import_schedule
+      if @project.errors.empty?
+        @project.import_schedule if @project.import? && !@project.bare_repository_import?
+      else
+        fail(error: @project.errors.full_messages.join(', '))
       end
     end
   end
