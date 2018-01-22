@@ -23,7 +23,6 @@ import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
 import ShortcutsNavigation from './shortcuts_navigation';
 import ShortcutsIssuable from './shortcuts_issuable';
-import U2FAuthenticate from './u2f/authenticate';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
@@ -537,18 +536,15 @@ import Activities from './activities';
       }
       switch (path[0]) {
         case 'sessions':
+          import('./pages/sessions')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'omniauth_callbacks':
-          if (!gon.u2f) break;
-          const u2fAuthenticate = new U2FAuthenticate(
-            $('#js-authenticate-u2f'),
-            '#js-login-u2f-form',
-            gon.u2f,
-            document.querySelector('#js-login-2fa-device'),
-            document.querySelector('.js-2fa-form'),
-          );
-          u2fAuthenticate.start();
-          // needed in rspec
-          gl.u2fAuthenticate = u2fAuthenticate;
+          import('./pages/omniauth_callbacks')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin':
           import('./pages/admin')
             .then(callDefault)
@@ -597,10 +593,6 @@ import Activities from './activities';
                 .catch(fail);
               break;
           }
-          break;
-        case 'dashboard':
-        case 'root':
-          new UserCallout();
           break;
         case 'profiles':
           import('./pages/profiles/index/')
