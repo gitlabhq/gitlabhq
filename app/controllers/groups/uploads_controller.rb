@@ -26,8 +26,4 @@ class Groups::UploadsController < Groups::ApplicationController
   def authorize_upload_file!
     render_404 unless can?(current_user, :upload_file, group)
   end
-
-  def model
-    @model ||= find_model
-  end
 end

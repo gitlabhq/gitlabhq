@@ -93,7 +93,7 @@ The `CarrierWave::Uploader#store_dir` is overriden to
 
 > Note: this concern will automatically include `RecordsUploads::Concern` if not already included.
 
-The `ObjectStorage::Concern` uploader will search for the correct `Upload` in the model's `uploads` relationship to select the correct object store. A basic implementation of the `ObjectStorage:: The `Upload` is mapped using the `RecordsUploads::Concern#upload_path` for each store (LOCAL/REMOTE).
+The `ObjectStorage::Concern` uploader will search for the matching `Upload` to select the correct object store. The `Upload` is mapped using `#store_dirs + identifier` for each store (LOCAL/REMOTE).
 
 ```ruby
 class SongUploader < GitlabUploader
@@ -114,6 +114,7 @@ end
 ### Using a mounted uploader
 
 The `ObjectStorage::Concern` will query the `model.<mount>_store` attribute to select the correct object store.
+This column must be present in the model schema.
 
 ```ruby
 class SongUploader < GitlabUploader
@@ -127,7 +128,7 @@ class Thing < ActiveRecord::Base
   mount :theme, SongUploader # we have a great theme song!
 
   def theme_store
-    super || ObjectStorage::Store::REMOTE # send new files to object store
+    super || ObjectStorage::Store::LOCAL
   end
 
   ...

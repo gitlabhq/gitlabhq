@@ -76,4 +76,12 @@ module UploadsActions
   def image_or_video?
     uploader && uploader.exists? && uploader.image_or_video?
   end
+
+  def find_model
+    nil
+  end
+
+  def model
+    strong_memoize(:model) { find_model }
+  end
 end

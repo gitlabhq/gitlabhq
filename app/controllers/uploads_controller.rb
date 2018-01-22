@@ -28,7 +28,7 @@ class UploadsController < ApplicationController
   def find_model
     return nil unless params[:id]
 
-    @model = upload_model_class.find(params[:id])
+    upload_model_class.find(params[:id])
   end
 
   def authorize_access!
@@ -80,9 +80,5 @@ class UploadsController < ApplicationController
     return true unless upload_model_class_has_mounts?
 
     upload_model_class.uploader_options.has_key?(upload_mount)
-  end
-
-  def model
-    @model ||= find_model
   end
 end

@@ -25,8 +25,4 @@ class Projects::UploadsController < Projects::ApplicationController
 
     Project.find_by_full_path("#{namespace}/#{id}")
   end
-
-  def model
-    @model || find_model
-  end
 end
