@@ -1604,7 +1604,15 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    auto_devops&.variables || []
+    variables = []
+
+    if current_application_settings.auto_devops_domain.present?
+      variables << { key: 'AUTO_DEVOPS_DOMAIN',
+                     value: current_application_settings.auto_devops_domain,
+                     public: true }
+    end
+
+    auto_devops&.variables || variables
   end
 
   def append_or_update_attribute(name, value)
