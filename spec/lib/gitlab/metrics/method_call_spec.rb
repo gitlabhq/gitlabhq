@@ -5,7 +5,7 @@ describe Gitlab::Metrics::MethodCall do
   let(:method_call) { described_class.new('Foo#bar', :Foo, '#bar', transaction) }
 
   describe '#measure' do
-    before do
+    after do
       described_class.reload_metric!(:gitlab_method_call_duration_seconds)
     end
 
