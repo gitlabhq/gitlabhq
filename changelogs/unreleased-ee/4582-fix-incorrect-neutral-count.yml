@@ -1,5 +1,0 @@
----
-title: Fix neutralCount computation to prevent negative values
-merge_request: 4044
-author:
-type: fixed
