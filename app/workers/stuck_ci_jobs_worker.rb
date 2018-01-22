@@ -3,6 +3,7 @@
 class StuckCiJobsWorker
   include ApplicationWorker
   include CronjobQueue
+  include ExclusiveLeaseGuard
 
   EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'.freeze
 
@@ -11,25 +12,23 @@ class StuckCiJobsWorker
   BUILD_PENDING_STUCK_TIMEOUT = 1.hour
 
   def perform
-    return unless try_obtain_lease
+    try_obtain_lease do
+      Rails.logger.info "#{self.class}: Cleaning stuck builds"
 
-    Rails.logger.info "#{self.class}: Cleaning stuck builds"
-
-    drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT
-    drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT
-    drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT
-
-    remove_lease
+      drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT
+      drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT
+      drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT
+    end
   end
 
   private
 
-  def try_obtain_lease
-    @uuid = Gitlab::ExclusiveLease.new(EXCLUSIVE_LEASE_KEY, timeout: 30.minutes).try_obtain
+  def lease_key
+    EXCLUSIVE_LEASE_KEY
   end
 
-  def remove_lease
-    Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
+  def lease_timeout
+    30.minutes
   end
 
   def drop(status, timeout)

@@ -3,6 +3,7 @@
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
   include ApplicationWorker
+  include ExclusiveLeaseGuard
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
@@ -25,18 +26,20 @@ class ProjectCacheWorker
   end
 
   def update_statistics(project, statistics = [])
-    return unless try_obtain_lease_for(project.id, :update_statistics)
+    try_obtain_lease_for(project.id) do
+      Rails.logger.info("Updating statistics for project #{project.id}")
 
-    Rails.logger.info("Updating statistics for project #{project.id}")
-
-    project.statistics.refresh!(only: statistics)
+      project.statistics.refresh!(only: statistics)
+    end
   end
 
   private
 
-  def try_obtain_lease_for(project_id, section)
-    Gitlab::ExclusiveLease
-      .new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT)
-      .try_obtain
+  def lease_key_for(project_id)
+    "project_cache_worker:#{project_id}:update_statistics"
+  end
+
+  def lease_timeout
+    LEASE_TIMEOUT
   end
 end

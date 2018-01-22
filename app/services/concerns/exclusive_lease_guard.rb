@@ -2,28 +2,41 @@
 
 #
 # Concern that helps with getting an exclusive lease for running a block
-# of code.
+# of code. There are flavors:
+#  - `#try_obtain_lease`
+#  - `#try_obtain_lease_for`
 #
 # `#try_obtain_lease` takes a block which will be run if it was able to
 # obtain  the lease. Implement `#lease_timeout` to configure the timeout
 # for the exclusive lease. Optionally override `#lease_key` to set the
 # lease key, it defaults to the class name with underscores.
 #
+# `#try_obtain_lease_for` does about the same, but takes an additional
+# `id` parameter. This `id` is passed to `#lease_key_for`.
+#
 module ExclusiveLeaseGuard
   extend ActiveSupport::Concern
 
-  def try_obtain_lease
-    lease = exclusive_lease.try_obtain
+  def try_obtain_lease(&block)
+    try_obtain_lease_do(exclusive_lease, &block)
+  end
 
-    unless lease
+  def try_obtain_lease_for(id, &block)
+    try_obtain_lease_do(exclusive_lease_for(id), &block)
+  end
+
+  def try_obtain_lease_do(lease, &block)
+    uuid = lease.try_obtain
+
+    unless uuid
       log_error('Cannot obtain an exclusive lease. There must be another instance already in execution.')
       return
     end
 
     begin
-      yield lease
+      yield uuid
     ensure
-      release_lease(lease)
+      release_lease(uuid)
     end
   end
 
@@ -33,6 +46,14 @@ module ExclusiveLeaseGuard
 
   def lease_key
     @lease_key ||= self.class.name.underscore
+  end
+
+  def exclusive_lease_for(id)
+    Gitlab::ExclusiveLease.new(lease_key_for(id), timeout: lease_timeout)
+  end
+
+  def lease_key_for(id)
+    self.class.name.underscore.concat(":{#id}")
   end
 
   def lease_timeout

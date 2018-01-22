@@ -2,6 +2,7 @@
 
 class ProjectMigrateHashedStorageWorker
   include ApplicationWorker
+  include ExclusiveLeaseGuard
 
   LEASE_TIMEOUT = 30.seconds.to_i
 
@@ -9,28 +10,18 @@ class ProjectMigrateHashedStorageWorker
     project = Project.find_by(id: project_id)
     return if project.nil? || project.pending_delete?
 
-    uuid = lease_for(project_id).try_obtain
-    if uuid
+    try_obtain_lease_for(project_id) do
       ::Projects::HashedStorageMigrationService.new(project, logger).execute
-    else
-      false
     end
-  rescue => ex
-    cancel_lease_for(project_id, uuid) if uuid
-    raise ex
-  end
-
-  def lease_for(project_id)
-    Gitlab::ExclusiveLease.new(lease_key(project_id), timeout: LEASE_TIMEOUT)
   end
 
   private
 
-  def lease_key(project_id)
+  def lease_key_for(project_id)
     "project_migrate_hashed_storage_worker:#{project_id}"
   end
 
-  def cancel_lease_for(project_id, uuid)
-    Gitlab::ExclusiveLease.cancel(lease_key(project_id), uuid)
+  def lease_timeout
+    LEASE_TIMEOUT
   end
 end

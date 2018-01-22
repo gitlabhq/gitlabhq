@@ -42,9 +42,9 @@ module RepositoryCheck
       project_ids.each do |project_id|
         break if Time.now - start >= RUN_TIME
 
-        next unless try_obtain_lease_for_project(project_id)
-
-        SingleRepositoryWorker.new.perform(project_id)
+        try_obtain_lease_for(project_id) do
+          SingleRepositoryWorker.new.perform(project_id)
+        end
       end
     end
 
@@ -76,13 +76,14 @@ module RepositoryCheck
       Project.where(repository_storage: shard_name)
     end
 
-    def try_obtain_lease_for_project(id)
+    def lease_key_for(id)
+      "project_repository_check:#{id}"
+    end
+
+    def lease_timeout
       # Use a 24-hour timeout because on servers/projects where 'git fsck' is
       # super slow we definitely do not want to run it twice in parallel.
-      Gitlab::ExclusiveLease.new(
-        "project_repository_check:#{id}",
-        timeout: 24.hours
-      ).try_obtain
+      24.hours
     end
   end
 end
