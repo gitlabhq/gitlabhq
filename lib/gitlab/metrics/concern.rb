@@ -23,6 +23,7 @@ module Gitlab
           end
 
           define_singleton_method(name) do
+            # inlining fetch_metric method to avoid method call overhead when instrumenting hot spots
             @@_metrics_provider_cache[name] || init_metric(type, name, opts, &block)
           end
         end
