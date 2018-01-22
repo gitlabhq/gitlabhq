@@ -1,7 +1,10 @@
+/* eslint-disable no-new */
 import UsersSelect from '~/users_select';
 import ShortcutsNavigation from '~/shortcuts_navigation';
+import '~/filtered_search/filtered_search_bundle';
+import '~/boards/boards_bundle';
 
 export default () => {
-  new UsersSelect(); // eslint-disable-line no-new
-  new ShortcutsNavigation(); // eslint-disable-line no-new
+  new UsersSelect();
+  new ShortcutsNavigation();
 };
