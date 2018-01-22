@@ -130,6 +130,11 @@ class ApplicationSetting < ActiveRecord::Base
   validates :repository_storages, presence: true
   validate :check_repository_storages
 
+  validates :auto_devops_domain,
+            allow_blank: true,
+            hostname: { allow_numeric_hostname: true, require_valid_tld: true },
+            if: :auto_devops_enabled?
+
   validates :enabled_git_access_protocol,
             inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
 
