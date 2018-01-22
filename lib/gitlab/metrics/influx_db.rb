@@ -121,7 +121,7 @@ module Gitlab
             docstring "Measure #{name}"
             base_labels Transaction::BASE_LABELS
             buckets EXECUTION_MEASUREMENT_BUCKETS
-            # with_feature "prometheus_metrics_measure_#{name}_cpu_duration"
+            with_feature "prometheus_metrics_measure_#{name}_cpu_duration"
           end
           cpu_duration_seconds.observe(trans.labels, cpu_time)
 
