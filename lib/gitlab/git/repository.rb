@@ -490,11 +490,7 @@ module Gitlab
           return []
         end
 
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
+        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -618,37 +614,6 @@ module Gitlab
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
             popen(args, @path).first.split.last
           end
-        end
-      end
-
-      # Returns branch names collection that contains the special commit(SHA1
-      # or name)
-      #
-      # Ex.
-      #   repo.branch_names_contains('master')
-      #
-      def branch_names_contains(commit)
-        branches_contains(commit).map { |c| c.name }
-      end
-
-      # Returns branch collection that contains the special commit(SHA1 or name)
-      #
-      # Ex.
-      #   repo.branch_names_contains('master')
-      #
-      def branches_contains(commit)
-        commit_obj = rugged.rev_parse(commit)
-        parent = commit_obj.parents.first unless commit_obj.parents.empty?
-
-        walker = Rugged::Walker.new(rugged)
-
-        rugged.branches.select do |branch|
-          walker.push(branch.target_id)
-          walker.hide(parent) if parent
-          result = walker.any? { |c| c.oid == commit_obj.oid }
-          walker.reset
-
-          result
         end
       end
 
@@ -1126,19 +1091,6 @@ module Gitlab
         end
       end
 
-      def shell_write_ref(ref_path, ref, old_ref)
-        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
-        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
-        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
-
-        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
-        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
-      end
-
-      def rugged_write_ref(ref_path, ref)
-        rugged.references.create(ref_path, ref, force: true)
-      end
-
       def fetch_ref(source_repository, source_ref:, target_ref:)
         Gitlab::Git.check_namespace!(source_repository)
         source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
@@ -1236,33 +1188,31 @@ module Gitlab
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
-        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
-        env = git_env_for_user(user)
-
-        if remote_repository.is_a?(RemoteRepository)
-          env.merge!(remote_repository.fetch_env)
-          remote_repo_path = GITALY_INTERNAL_URL
-        else
-          remote_repo_path = remote_repository.path
-        end
-
-        with_worktree(rebase_path, branch, env: env) do
-          run_git!(
-            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
-            chdir: rebase_path, env: env
-          )
-
-          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
-
-          Gitlab::Git::OperationService.new(user, self)
-            .update_branch(branch, rebase_sha, branch_sha)
-
-          rebase_sha
+        gitaly_migrate(:rebase) do |is_enabled|
+          if is_enabled
+            gitaly_rebase(user, rebase_id,
+                          branch: branch,
+                          branch_sha: branch_sha,
+                          remote_repository: remote_repository,
+                          remote_branch: remote_branch)
+          else
+            git_rebase(user, rebase_id,
+                       branch: branch,
+                       branch_sha: branch_sha,
+                       remote_repository: remote_repository,
+                       remote_branch: remote_branch)
+          end
         end
       end
 
       def rebase_in_progress?(rebase_id)
-        fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
+        gitaly_migrate(:rebase_in_progress) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.rebase_in_progress?(rebase_id)
+          else
+            fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
+          end
+        end
       end
 
       def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
@@ -1354,6 +1304,10 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
+      def write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1397,6 +1351,25 @@ module Gitlab
       end
 
       private
+
+      def shell_write_ref(ref_path, ref, old_ref)
+        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
+        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
+        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
+
+        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
+      end
+
+      def rugged_write_ref(ref_path, ref)
+        rugged.references.create(ref_path, ref, force: true)
+      rescue Rugged::ReferenceError => ex
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      rescue Rugged::OSError => ex
+        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      end
 
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
@@ -1545,27 +1518,6 @@ module Gitlab
         end
       end
 
-      def log_using_shell?(options)
-        options[:path].present? ||
-          options[:disable_walk] ||
-          options[:skip_merges] ||
-          options[:after] ||
-          options[:before]
-      end
-
-      def log_by_walk(sha, options)
-        walk_options = {
-          show: sha,
-          sort: Rugged::SORT_NONE,
-          limit: options[:limit],
-          offset: options[:offset]
-        }
-        Rugged::Walker.walk(rugged, walk_options).to_a
-      end
-
-      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
-      # complexity is such that we should migrate it as Ruby before trying to
-      # do it in Go.
       def log_by_shell(sha, options)
         limit = options[:limit].to_i
         offset = options[:offset].to_i
@@ -2037,6 +1989,40 @@ module Gitlab
         return false unless diff_exists?(source_sha, tree_id)
 
         tree_id
+      end
+
+      def gitaly_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        gitaly_operation_client.user_rebase(user, rebase_id,
+                                            branch: branch,
+                                            branch_sha: branch_sha,
+                                            remote_repository: remote_repository,
+                                            remote_branch: remote_branch)
+      end
+
+      def git_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
+        env = git_env_for_user(user)
+
+        if remote_repository.is_a?(RemoteRepository)
+          env.merge!(remote_repository.fetch_env)
+          remote_repo_path = GITALY_INTERNAL_URL
+        else
+          remote_repo_path = remote_repository.path
+        end
+
+        with_worktree(rebase_path, branch, env: env) do
+          run_git!(
+            %W(pull --rebase #{remote_repo_path} #{remote_branch}),
+            chdir: rebase_path, env: env
+          )
+
+          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
+
+          Gitlab::Git::OperationService.new(user, self)
+            .update_branch(branch, rebase_sha, branch_sha)
+
+          rebase_sha
+        end
       end
 
       def local_fetch_ref(source_path, source_ref:, target_ref:)

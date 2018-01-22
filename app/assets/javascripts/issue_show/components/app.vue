@@ -152,6 +152,13 @@
       hasUpdated() {
         return !!this.state.updatedAt;
       },
+      issueChanged() {
+        const descriptionChanged =
+          this.initialDescriptionText !== this.store.formState.description;
+        const titleChanged =
+          this.initialTitleText !== this.store.formState.title;
+        return descriptionChanged || titleChanged;
+      },
     },
     created() {
       this.service = new Service(this.endpoint);
@@ -176,6 +183,8 @@
         }
       });
 
+      window.addEventListener('beforeunload', this.handleBeforeUnloadEvent);
+
       eventHub.$on('delete.issuable', this.deleteIssuable);
       eventHub.$on('update.issuable', this.updateIssuable);
       eventHub.$on('close.form', this.closeForm);
@@ -186,8 +195,17 @@
       eventHub.$off('update.issuable', this.updateIssuable);
       eventHub.$off('close.form', this.closeForm);
       eventHub.$off('open.form', this.openForm);
+      window.removeEventListener('beforeunload', this.handleBeforeUnloadEvent);
     },
     methods: {
+      handleBeforeUnloadEvent(e) {
+        const event = e;
+        if (this.showForm && this.issueChanged) {
+          event.returnValue = 'Are you sure you want to lose your issue information?';
+        }
+        return undefined;
+      },
+
       openForm() {
         if (!this.showForm) {
           this.showForm = true;

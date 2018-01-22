@@ -117,47 +117,6 @@
     top: $gl-padding-top;
   }
 
-  .content-list {
-    li {
-      padding: 18px $gl-padding $gl-padding;
-
-      .container-fluid {
-        padding: 0;
-      }
-    }
-
-    .title-col {
-      p {
-        margin: 0;
-
-        &.title {
-          line-height: 19px;
-          font-size: 14px;
-          font-weight: $gl-font-weight-bold;
-          color: $gl-text-color;
-        }
-
-        &.text {
-          color: $layout-link-gray;
-
-          &.value-col {
-            color: $gl-text-color;
-          }
-        }
-      }
-    }
-
-    .value-col {
-      text-align: right;
-
-      span {
-        position: relative;
-        vertical-align: middle;
-        top: 3px;
-      }
-    }
-  }
-
   .fa-spinner {
     font-size: 28px;
     position: relative;

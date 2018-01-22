@@ -66,7 +66,6 @@ var config = {
     pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    project_new:          './projects/project_new.js',
     prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
@@ -120,7 +119,12 @@ var config = {
       {
         test: /\_worker\.js$/,
         use: [
-          { loader: 'worker-loader' },
+          { 
+            loader: 'worker-loader',
+            options: { 
+              inline: true
+            }
+          },
           { loader: 'babel-loader' },
         ],
       },

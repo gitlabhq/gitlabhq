@@ -28,6 +28,9 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   scope :viewable, -> { without_state(:empty) }
+  scope :by_commit_sha, ->(sha) do
+    joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
+  end
 
   scope :recent, -> { order(id: :desc).limit(100) }
 

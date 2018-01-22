@@ -10,7 +10,6 @@
   ],
   "globals": {
     "__webpack_public_path__": true,
-    "_": false,
     "gl": false,
     "gon": false,
     "localStorage": false

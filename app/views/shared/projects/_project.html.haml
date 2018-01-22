@@ -52,7 +52,7 @@
             = render_project_pipeline_status(project.pipeline_status)
         - if forks
           %span.prepend-left-10
-            = sprite_icon('fork')
+            = sprite_icon('fork', size: 12)
             = number_with_delimiter(project.forks_count)
         - if stars
           %span.prepend-left-10

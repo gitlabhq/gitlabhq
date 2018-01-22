@@ -18,7 +18,7 @@ export const getProjectData = (
       resolve(data);
     })
     .catch(() => {
-      flash('Error loading project data. Please try again.');
+      flash('Error loading project data. Please try again.', 'alert', document, null, false, true);
       reject(new Error(`Project not loaded ${namespace}/${projectId}`));
     });
   } else {

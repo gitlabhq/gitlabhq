@@ -13,7 +13,7 @@ export default () => {
   initNotes();
 
   const mrShowNode = document.querySelector('.merge-request');
-  window.mergeRequest = new MergeRequest({ // eslint-disable-line no-new
+  new MergeRequest({ // eslint-disable-line no-new
     action: mrShowNode.dataset.mrAction,
   });
 

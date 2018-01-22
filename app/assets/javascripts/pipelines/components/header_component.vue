@@ -92,6 +92,7 @@
     <loading-icon
       v-if="isLoading"
       size="2"
+      class="prepend-top-default append-bottom-default"
     />
   </div>
 </template>

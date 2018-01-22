@@ -177,7 +177,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
-      rescue GRPC::Unknown # If no repository is found, happens mainly during testing
+      rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
 
@@ -280,6 +280,23 @@ module Gitlab
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
         end
+      end
+
+      def extract_signature(commit_id)
+        request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
+        response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request)
+
+        signature = ''.b
+        signed_text = ''.b
+
+        response.each do |message|
+          signature << message.signature
+          signed_text << message.signed_text
+        end
+
+        return if signature.blank? && signed_text.blank?
+
+        [signature, signed_text]
       end
 
       private

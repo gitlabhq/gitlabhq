@@ -28,6 +28,8 @@ module Gitlab
         UPDATE #{quoted_table}
         SET #{quoted_copy_to} = #{quoted_copy_from}
         WHERE id BETWEEN #{start_id} AND #{end_id}
+        AND #{quoted_copy_from} IS NOT NULL
+        AND #{quoted_copy_to} IS NULL
         SQL
       end
 

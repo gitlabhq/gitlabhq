@@ -3,9 +3,9 @@ module QA
     module Project
       module Settings
         module Common
-          def expand(selector)
+          def expand(element_name)
             page.within('#content-body') do
-              find(selector).click
+              click_element(element_name)
 
               yield
             end

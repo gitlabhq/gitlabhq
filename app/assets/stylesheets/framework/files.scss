@@ -124,6 +124,10 @@
 
     &.wiki {
       padding: $gl-padding;
+
+      @media (min-width: $screen-md-min) {
+        padding: $gl-padding * 2;
+      }
     }
 
     &.blob-no-preview {

@@ -750,7 +750,7 @@ describe 'Copy as GFM', :js do
     js = <<-JS.strip_heredoc
       (function(selector) {
         var els = document.querySelectorAll(selector);
-        var htmls = _.map(els, function(el) { return el.outerHTML; });
+        var htmls = [].slice.call(els).map(function(el) { return el.outerHTML; });
         return htmls.join("\\n");
       })("#{escape_javascript(selector)}")
     JS
