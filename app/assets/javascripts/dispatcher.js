@@ -77,6 +77,11 @@ import Activities from './activities';
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:environments:metrics':
+          import('./pages/projects/environments/metrics')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:index':
           import('./pages/projects/merge_requests/index')
             .then(callDefault)
