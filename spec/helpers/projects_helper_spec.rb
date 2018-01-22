@@ -30,7 +30,7 @@ describe ProjectsHelper do
 
     it 'allows visibility level to be changed if the project is forked' do
       allow(helper).to receive(:can?).with(user, :change_visibility_level, project) { true }
-      project.update! visibility_level:  Gitlab::VisibilityLevel::PRIVATE
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       fork_project(project)
 
       expect(helper.can_change_visibility_level?(project, user)).to be_truthy
@@ -40,7 +40,7 @@ describe ProjectsHelper do
       it "returns false if there are permissions and origin project is PRIVATE" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::PRIVATE
+        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
         expect(helper.can_change_visibility_level?(forked_project, user)).to be_falsey
       end
@@ -48,7 +48,7 @@ describe ProjectsHelper do
       it "returns true if there are permissions and origin project is INTERNAL" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::INTERNAL
+        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
         expect(helper.can_change_visibility_level?(forked_project, user)).to be_truthy
       end
