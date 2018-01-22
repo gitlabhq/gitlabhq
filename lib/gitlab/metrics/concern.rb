@@ -6,7 +6,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        @@_metric_provider_mutex = Mutex.new
+        @@_metric_provider_mutex ||= Mutex.new
         @_metrics_provider_cache = {}
       end
 
