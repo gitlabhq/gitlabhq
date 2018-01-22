@@ -120,6 +120,12 @@ describe ApplicationSetting do
           setting.update(auto_devops_enabled: true)
         end
 
+        it 'can be blank' do
+          setting.update(auto_devops_domain: '')
+
+          expect(setting).to be_valid
+        end
+
         context 'with a valid value' do
           before do
             setting.update(auto_devops_domain: 'domain.com')
@@ -138,18 +144,6 @@ describe ApplicationSetting do
           it 'is invalid' do
             expect(setting).to be_invalid
           end
-        end
-      end
-
-      context 'when auto_devops_enabled? is false' do
-        before do
-          setting.update(auto_devops_enabled: false)
-        end
-
-        it 'can be blank' do
-          setting.update(auto_devops_domain: '')
-
-          expect(setting).to be_valid
         end
       end
     end
