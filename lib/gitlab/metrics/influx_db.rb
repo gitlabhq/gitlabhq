@@ -5,9 +5,6 @@ module Gitlab
       include Gitlab::Metrics::Concern
 
       EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
-      RAILS_ROOT = Rails.root.to_s
-      METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
-      PATH_REGEX = /^#{RAILS_ROOT}\/?/
 
       MUTEX = Mutex.new
       private_constant :MUTEX
