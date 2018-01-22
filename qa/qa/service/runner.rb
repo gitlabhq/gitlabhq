@@ -6,11 +6,11 @@ module QA
       include Scenario::Actable
       include Service::Shellout
 
-      attr_accessor :token, :address, :tags, :image, :name
+      attr_accessor :token, :address, :tags, :image
 
-      def initialize
+      def initialize(name)
         @image = 'gitlab/gitlab-runner:alpine'
-        @name = "qa-runner-#{SecureRandom.hex(4)}"
+        @name = name || "qa-runner-#{SecureRandom.hex(4)}"
       end
 
       def pull
