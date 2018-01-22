@@ -5,6 +5,8 @@ feature 'Multi-file editor new file', :js do
   let(:project) { create(:project, :repository) }
 
   before do
+    stub_licensed_features(ide: true)
+
     project.add_master(user)
     sign_in(user)
 

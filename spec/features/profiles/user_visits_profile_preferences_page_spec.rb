@@ -4,6 +4,8 @@ describe 'User visits the profile preferences page' do
   let(:user) { create(:user) }
 
   before do
+    stub_licensed_features(ide: true)
+
     sign_in(user)
 
     visit(profile_preferences_path)
