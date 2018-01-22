@@ -58,6 +58,7 @@
 
     @media (min-width: $screen-sm-min) {
       width: 200px;
+      margin-left: $gl-padding * 2;
       margin-bottom: 0;
     }
 
@@ -78,13 +79,17 @@
       width: 100px;
       margin-left: 10px;
       margin-bottom: 0;
-      vertical-align: middle;
+      vertical-align: top;
     }
   }
 
   .label-description {
     display: block;
     margin-bottom: 10px;
+
+    .description-text {
+      margin-bottom: $gl-padding;
+    }
 
     a {
       color: $blue-600;
@@ -118,8 +123,10 @@
 }
 
 .manage-labels-list {
-  &.content-list li {
-    padding: $gl-padding 0;
+  @media(min-width: $screen-md-min) {
+    &.content-list li {
+      padding: $gl-padding 0;
+    }
   }
 
   > li:not(.empty-message):not(.is-not-draggable) {
@@ -160,7 +167,7 @@
     }
   }
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: $screen-xs-max) {
     .dropdown-menu {
       min-width: 100%;
     }
@@ -169,6 +176,8 @@
 
 .draggable-handler {
   display: inline-block;
+  vertical-align: top;
+  margin: 5px 0;
   opacity: 0;
   transition: opacity .3s;
   color: $gray-darkest;
@@ -198,7 +207,7 @@
 
 .toggle-priority {
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: top;
 
   button {
     border-color: transparent;
@@ -265,6 +274,11 @@
 }
 
 .label-subscribe-button {
+  @media(min-width: $screen-md-min) {
+    min-width: 105px;
+    margin-left: $gl-padding;
+  }
+
   .label-subscribe-button-icon {
     &[disabled] {
       opacity: 0.5;
