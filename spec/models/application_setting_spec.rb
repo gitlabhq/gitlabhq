@@ -114,6 +114,46 @@ describe ApplicationSetting do
       it { expect(setting.repository_storages).to eq(['default']) }
     end
 
+    context 'auto_devops_domain setting' do
+      context 'when auto_devops_enabled? is true' do
+        before do
+          setting.update(auto_devops_enabled: true)
+        end
+
+        context 'with a valid value' do
+          before do
+            setting.update(auto_devops_domain: 'domain.com')
+          end
+
+          it 'is valid' do
+            expect(setting).to be_valid
+          end
+        end
+
+        context 'with an invalid value' do
+          before do
+            setting.update(auto_devops_domain: 'definitelynotahostname')
+          end
+
+          it 'is invalid' do
+            expect(setting).to be_invalid
+          end
+        end
+      end
+
+      context 'when auto_devops_enabled? is false' do
+        before do
+          setting.update(auto_devops_enabled: false)
+        end
+
+        it 'can be blank' do
+          setting.update(auto_devops_domain: '')
+
+          expect(setting).to be_valid
+        end
+      end
+    end
+
     context 'circuitbreaker settings' do
       [:circuitbreaker_failure_count_threshold,
        :circuitbreaker_check_interval,
