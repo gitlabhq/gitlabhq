@@ -1,5 +1,0 @@
----
-title: Fix a bug where branch could not be delete due to a push rule config
-merge_request: 3900
-author:
-type: fixed

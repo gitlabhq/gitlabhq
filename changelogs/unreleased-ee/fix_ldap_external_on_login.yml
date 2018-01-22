@@ -1,5 +1,0 @@
----
-title: Fix LDAP external user/group bug on first sign in
-merge_request:
-author:
-type: security

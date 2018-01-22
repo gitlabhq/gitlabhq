@@ -93,6 +93,7 @@
 - rebase
 - repository_fork
 - repository_import
+- repository_remove_remote
 - storage_migrator
 - system_hook_push
 - update_merge_requests

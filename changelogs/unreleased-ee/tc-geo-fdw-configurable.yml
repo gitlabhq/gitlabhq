@@ -1,5 +1,0 @@
----
-title: Make it possible to enable/disable PostgreSQL FDW for Geo
-merge_request: 4020
-author:
-type: added

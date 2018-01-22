@@ -1,5 +1,0 @@
----
-title: Geo - Fix difference in FDW / non-FDW queries for Geo::FileRegistry queries
-merge_request: 3714
-author:
-type: fixed
