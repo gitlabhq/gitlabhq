@@ -97,7 +97,11 @@ export default {
           notes.push(nn);
         });
       } else {
-        notes.push(note);
+        const oldNote = utils.findNoteObjectById(state.notes, note.id);
+        const nn = note;
+        nn.expanded = oldNote ? oldNote.expanded : note.expanded;
+
+        notes.push(nn);
       }
     });
 
