@@ -1302,6 +1302,16 @@ ActiveRecord::Schema.define(version: 20180204200836) do
     t.string "filter"
   end
 
+  create_table "lfs_file_locks", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.string "path"
+    t.datetime "created_at", null: false
+  end
+
+  add_index "lfs_file_locks", ["project_id"], name: "index_lfs_file_locks_on_project_id", using: :btree
+  add_index "lfs_file_locks", ["user_id"], name: "index_lfs_file_locks_on_user_id", using: :btree
+
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
     t.integer "size", limit: 8, null: false
@@ -2552,6 +2562,8 @@ ActiveRecord::Schema.define(version: 20180204200836) do
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
+  add_foreign_key "lfs_file_locks", "projects", on_delete: :cascade
+  add_foreign_key "lfs_file_locks", "users", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
   add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade

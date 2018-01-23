@@ -14,4 +14,4 @@ Mime::Type.register "video/webm", :webm
 Mime::Type.register "video/ogg",  :ogv
 
 Mime::Type.unregister :json
-Mime::Type.register 'application/json', :json, %w(application/vnd.git-lfs+json application/json)
+Mime::Type.register 'application/json', :json, [LfsRequest::CONTENT_TYPE, 'application/json']
