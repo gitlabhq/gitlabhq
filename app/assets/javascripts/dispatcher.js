@@ -2,7 +2,10 @@
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
+<<<<<<< HEAD
 import initCompareAutocomplete from './compare_autocomplete';
+=======
+>>>>>>> upstream/master
 import Flash from './flash';
 import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
@@ -89,6 +92,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:environments:metrics':
+          import('./pages/projects/environments/metrics')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:index':
           import('./pages/projects/merge_requests/index')
             .then(callDefault)
@@ -116,7 +124,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/projects/milestones/show')
             .then(callDefault)
             .catch(fail);
+<<<<<<< HEAD
           new UserCallout();
+=======
+>>>>>>> upstream/master
           break;
         case 'groups:milestones:show':
           import('./pages/groups/milestones/show')
