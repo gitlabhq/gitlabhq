@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
 import UserCallout from '~/user_callout';
@@ -25,22 +24,5 @@ export default () => {
   if ($('.project-show-activity').length) new Activities(); // eslint-disable-line no-new
   $('#tree-slider').waitForImages(() => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-  });
-
-  const commitPipelineStatusEl = document.getElementById('commit-pipeline-status');
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#commit-pipeline-status',
-    components: {
-      commitPipelineStatus,
-    },
-    render(createElement) {
-      return createElement('commit-pipeline-status', {
-        props: {
-          endpoint: commitPipelineStatusEl.dataset.endpoint,
-          realtime: false,
-        },
-      });
-    },
   });
 };

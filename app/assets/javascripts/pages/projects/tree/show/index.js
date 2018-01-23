@@ -15,6 +15,11 @@ export default () => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
 
   const commitPipelineStatusEl = document.getElementById('commit-pipeline-status');
+  const $statusLink = $('.ci-status-link');
+  if ($statusLink.length > 0) {
+    $statusLink.remove();
+  }
+  commitPipelineStatusEl.classList.remove('hidden');
   // eslint-disable-next-line no-new
   new Vue({
     el: '#commit-pipeline-status',
