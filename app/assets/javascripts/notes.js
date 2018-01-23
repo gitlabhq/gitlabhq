@@ -383,6 +383,10 @@ export default class Notes {
 
     const $note = $notesList.find(`#note_${noteEntity.id}`);
     if (Notes.isNewNote(noteEntity, this.note_ids)) {
+      if (Cookies.get('vue_mr_discussions')) {
+        return;
+      }
+
       this.note_ids.push(noteEntity.id);
 
       if ($notesList.length) {
