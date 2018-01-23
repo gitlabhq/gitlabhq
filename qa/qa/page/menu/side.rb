@@ -5,7 +5,7 @@ module QA
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
           element :repository_link, "title: 'Repository'"
-          element :repository_link, "title: 'CI / CD'"
+          element :pipelines_settings_link, "title: 'CI / CD'"
           element :top_level_items, '.sidebar-top-level-items'
         end
 
@@ -22,6 +22,12 @@ module QA
             within_submenu do
               click_link('CI / CD')
             end
+          end
+        end
+
+        def click_ci_cd_pipelines
+          within_sidebar do
+            click_link('CI / CD')
           end
         end
 

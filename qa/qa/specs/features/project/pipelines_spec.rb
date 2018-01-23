@@ -44,13 +44,13 @@ module QA
         push.file_name = '.gitlab-ci.yml'
         push.commit_message = 'Add .gitlab-ci.yml'
         push.file_content = <<~EOF
-          echo-success-test:
+          test-success:
             tags:
               - qa
               - test
             script: echo 'OK'
 
-          echo-failure-test:
+          test-failure:
             tags:
               - qa
               - test
@@ -58,7 +58,13 @@ module QA
               - echo 'FAILURE'
               - exit 1
 
-          echo-artifacts-test:
+          test-tags:
+            tags:
+              - qa
+              - docker
+            script: echo 'NOOP'
+
+          test-artifacts:
             tags:
               - qa
               - test
@@ -72,6 +78,24 @@ module QA
       Page::Project::Show.act { wait_for_push }
 
       expect(page).to have_content('Add .gitlab-ci.yml')
+
+      Page::Menu::Side.act { click_ci_cd_pipelines }
+
+      expect(page).to have_content('All 1')
+      expect(page).to have_content('Add .gitlab-ci.yml')
+
+      puts 'Waiting for the runner to process the pipeline'
+      sleep 15 # Runner should process all jobs within 15 seconds.
+
+      Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+
+      Page::Project::Pipeline::Show.perform do |pipeline|
+        expect(pipeline).to be_running
+        expect(pipeline).to have_build('test-success', status: :success)
+        expect(pipeline).to have_build('test-failure', status: :failed)
+        expect(pipeline).to have_build('test-tags', status: :pending)
+        expect(pipeline).to have_build('test-artifacts', status: :failed)
+      end
     end
   end
 end
