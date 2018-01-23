@@ -11,6 +11,8 @@ module QA
       def initialize(name)
         @image = 'gitlab/gitlab-runner:alpine'
         @name = name || "qa-runner-#{SecureRandom.hex(4)}"
+        @network = Runtime::Scenario.attributes[:network] || 'test'
+        @tags = %w[qa test]
       end
 
       def pull
@@ -18,18 +20,14 @@ module QA
       end
 
       def register!
-        ##
-        # TODO, this assumes that `test` network exists, because we know that
-        # gitlab-qa environment orchestration tool creates it.
-        #
         shell <<~CMD.tr("\n", ' ')
           docker run -d --rm --entrypoint=/bin/sh
-          --network test --name #{@name}
+          --network #{@network} --name #{@name}
           -e CI_SERVER_URL=#{@address}
           -e REGISTER_NON_INTERACTIVE=true
           -e REGISTRATION_TOKEN=#{@token}
           -e RUNNER_EXECUTOR=shell
-          -e RUNNER_TAG_LIST=#{@tags.to_a.join(',')}
+          -e RUNNER_TAG_LIST=#{@tags.join(',')}
           -e RUNNER_NAME=#{@name}
           #{@image} -c 'gitlab-runner register && gitlab-runner run'
         CMD
