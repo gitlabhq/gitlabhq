@@ -40,6 +40,8 @@ class Group < Namespace
   # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
   has_many :audit_events, -> { where(entity_type: Group) }, foreign_key: 'entity_id'
 
+  accepts_nested_attributes_for :variables, allow_destroy: true
+
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent

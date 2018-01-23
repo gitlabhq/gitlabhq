@@ -28,7 +28,11 @@ constraints(GroupUrlConstrainer.new) do
       resource :ci_cd, only: [:show], controller: 'ci_cd'
     end
 
-    resources :variables, only: [:index, :show, :update, :create, :destroy]
+    resources :variables, only: [:index, :show, :update, :create, :destroy] do
+      collection do
+        post :save_multiple
+      end
+    end
 
     resources :children, only: [:index]
 

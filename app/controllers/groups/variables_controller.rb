@@ -31,6 +31,16 @@ module Groups
       end
     end
 
+    def save_multiple
+      respond_to do |format|
+        format.json do
+          return head :ok if @group.update(variables_params)
+
+          head :bad_request
+        end
+      end
+    end
+
     def destroy
       if variable.destroy
         redirect_to group_settings_ci_cd_path(group),
@@ -49,8 +59,12 @@ module Groups
       params.require(:variable).permit(*variable_params_attributes)
     end
 
+    def variables_params
+      params.permit(variables_attributes: [*variable_params_attributes])
+    end
+
     def variable_params_attributes
-      %i[key value protected]
+      %i[id key value protected _destroy]
     end
 
     def variable
