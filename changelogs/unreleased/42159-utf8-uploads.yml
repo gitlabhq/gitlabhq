@@ -1,0 +1,5 @@
+---
+title: Correctly escape UTF-8 path elements for uploads
+merge_request: 16560
+author:
+type: fixed

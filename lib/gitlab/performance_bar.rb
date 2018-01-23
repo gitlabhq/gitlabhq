@@ -6,6 +6,7 @@ module Gitlab
     EXPIRY_TIME = 5.minutes
 
     def self.enabled?(user = nil)
+      return true if Rails.env.development?
       return false unless user && allowed_group_id
 
       allowed_user_ids.include?(user.id)

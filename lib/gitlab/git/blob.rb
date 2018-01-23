@@ -132,6 +132,8 @@ module Gitlab
         end
 
         def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          return unless path
+
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
@@ -173,6 +175,8 @@ module Gitlab
         end
 
         def find_by_rugged(repository, sha, path, limit:)
+          return unless path
+
           rugged_commit = repository.lookup(sha)
           root_tree = rugged_commit.tree
 

@@ -76,6 +76,16 @@ describe Gitlab::Auth::UserAuthFinders do
         expect(find_user_from_rss_token).to be_nil
       end
     end
+
+    context 'when the request format is empty' do
+      it 'the method call does not modify the original value' do
+        env['action_dispatch.request.formats'] = nil
+
+        find_user_from_rss_token
+
+        expect(env['action_dispatch.request.formats']).to be_nil
+      end
+    end
   end
 
   describe '#find_user_from_access_token' do

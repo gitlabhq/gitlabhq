@@ -56,7 +56,7 @@ To help us mock the responses we need we use [axios-mock-adapter][axios-mock-ada
 
 ### Mock poll requests on tests with axios
 
-Because polling function requires an header object, we need to always include an object as the third argument:
+Because polling function requires a header object, we need to always include an object as the third argument:
 
 ```javascript
   mock.onGet('/users').reply(200, { foo: 'bar' }, {});

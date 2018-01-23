@@ -1038,7 +1038,7 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#change_column_type_using_background_migration' do
-    let!(:issue) { create(:issue) }
+    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
 
     let(:issue_model) do
       Class.new(ActiveRecord::Base) do

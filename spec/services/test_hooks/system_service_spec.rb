@@ -60,5 +60,25 @@ describe TestHooks::SystemService do
         expect(service.execute).to include(success_result)
       end
     end
+
+    context 'merge_requests_events' do
+      let(:trigger) { 'merge_requests_events' }
+
+      it 'returns error message if the user does not have any repository with a merge request' do
+        expect(hook).not_to receive(:execute)
+        expect(service.execute).to include({ status: :error, message: 'Ensure one of your projects has merge requests.' })
+      end
+
+      it 'executes hook' do
+        trigger_key = :merge_request_hooks
+        sample_data = { data: 'sample' }
+        create(:project_member, user: current_user, project: project)
+        create(:merge_request, source_project: project)
+        allow_any_instance_of(MergeRequest).to receive(:to_hook_data).and_return(sample_data)
+
+        expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
+        expect(service.execute).to include(success_result)
+      end
+    end
   end
 end

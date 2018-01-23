@@ -1,0 +1,5 @@
+---
+title: rework indexes on redirect_routes
+merge_request:
+author:
+type: performance

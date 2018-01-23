@@ -34,7 +34,10 @@ module Gitlab
 
         feature_enabled = case action.to_s
                           when 'git_receive_pack'
-                            Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                            Gitlab::GitalyClient.feature_enabled?(
+                              :post_receive_pack,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+                            )
                           when 'git_upload_pack'
                             true
                           when 'info_refs'

@@ -1,5 +1,0 @@
----
-title: Prevent invalid Route path if path is unchanged
-merge_request: 16397
-author:
-type: fixed

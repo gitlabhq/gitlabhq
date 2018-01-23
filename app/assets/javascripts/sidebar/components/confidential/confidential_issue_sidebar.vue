@@ -65,7 +65,7 @@
         href="#"
         @click.prevent="toggleForm"
       >
-        Edit
+        {{ __('Edit') }}
       </a>
     </div>
     <div class="value sidebar-item-value hide-collapsed">

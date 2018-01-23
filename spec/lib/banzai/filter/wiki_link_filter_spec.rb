@@ -10,7 +10,14 @@ describe Banzai::Filter::WikiLinkFilter do
 
   it "doesn't rewrite absolute links" do
     filtered_link = filter("<a href='http://example.com:8000/'>Link</a>", project_wiki: wiki).children[0]
+
     expect(filtered_link.attribute('href').value).to eq('http://example.com:8000/')
+  end
+
+  it "doesn't rewrite links to project uploads" do
+    filtered_link = filter("<a href='/uploads/a.test'>Link</a>", project_wiki: wiki).children[0]
+
+    expect(filtered_link.attribute('href').value).to eq('/uploads/a.test')
   end
 
   describe "invalid links" do
@@ -19,6 +26,7 @@ describe Banzai::Filter::WikiLinkFilter do
     invalid_links.each do |invalid_link|
       it "doesn't rewrite invalid invalid_links like #{invalid_link}" do
         filtered_link = filter("<a href='#{invalid_link}'>Link</a>", project_wiki: wiki).children[0]
+
         expect(filtered_link.attribute('href').value).to eq(invalid_link)
       end
     end

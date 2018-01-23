@@ -490,11 +490,7 @@ module Gitlab
           return []
         end
 
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
+        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -618,37 +614,6 @@ module Gitlab
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
             popen(args, @path).first.split.last
           end
-        end
-      end
-
-      # Returns branch names collection that contains the special commit(SHA1
-      # or name)
-      #
-      # Ex.
-      #   repo.branch_names_contains('master')
-      #
-      def branch_names_contains(commit)
-        branches_contains(commit).map { |c| c.name }
-      end
-
-      # Returns branch collection that contains the special commit(SHA1 or name)
-      #
-      # Ex.
-      #   repo.branch_names_contains('master')
-      #
-      def branches_contains(commit)
-        commit_obj = rugged.rev_parse(commit)
-        parent = commit_obj.parents.first unless commit_obj.parents.empty?
-
-        walker = Rugged::Walker.new(rugged)
-
-        rugged.branches.select do |branch|
-          walker.push(branch.target_id)
-          walker.hide(parent) if parent
-          result = walker.any? { |c| c.oid == commit_obj.oid }
-          walker.reset
-
-          result
         end
       end
 
@@ -1126,19 +1091,6 @@ module Gitlab
         end
       end
 
-      def shell_write_ref(ref_path, ref, old_ref)
-        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
-        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
-        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
-
-        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
-        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
-      end
-
-      def rugged_write_ref(ref_path, ref)
-        rugged.references.create(ref_path, ref, force: true)
-      end
-
       def fetch_ref(source_repository, source_ref:, target_ref:)
         Gitlab::Git.check_namespace!(source_repository)
         source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
@@ -1352,6 +1304,10 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
+      def write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1395,6 +1351,25 @@ module Gitlab
       end
 
       private
+
+      def shell_write_ref(ref_path, ref, old_ref)
+        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
+        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
+        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
+
+        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
+      end
+
+      def rugged_write_ref(ref_path, ref)
+        rugged.references.create(ref_path, ref, force: true)
+      rescue Rugged::ReferenceError => ex
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      rescue Rugged::OSError => ex
+        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      end
 
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
@@ -1543,27 +1518,6 @@ module Gitlab
         end
       end
 
-      def log_using_shell?(options)
-        options[:path].present? ||
-          options[:disable_walk] ||
-          options[:skip_merges] ||
-          options[:after] ||
-          options[:before]
-      end
-
-      def log_by_walk(sha, options)
-        walk_options = {
-          show: sha,
-          sort: Rugged::SORT_NONE,
-          limit: options[:limit],
-          offset: options[:offset]
-        }
-        Rugged::Walker.walk(rugged, walk_options).to_a
-      end
-
-      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
-      # complexity is such that we should migrate it as Ruby before trying to
-      # do it in Go.
       def log_by_shell(sha, options)
         limit = options[:limit].to_i
         offset = options[:offset].to_i
