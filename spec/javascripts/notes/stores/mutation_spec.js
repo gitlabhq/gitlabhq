@@ -103,7 +103,8 @@ describe('Mutation Notes Store', () => {
       };
 
       mutations.SET_INITIAL_NOTES(state, [note]);
-      expect(state.notes).toEqual([note]);
+      expect(state.notes[0].id).toEqual(note.id);
+      expect(state.notes.length).toEqual(1);
     });
   });
 

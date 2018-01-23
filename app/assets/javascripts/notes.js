@@ -420,7 +420,7 @@ export default class Notes {
       }
     }
 
-    this.refreshVueNotes();
+    Notes.refreshVueNotes();
   }
 
   isParallelView() {
@@ -845,13 +845,9 @@ export default class Notes {
       };
     })(this));
 
-    this.refreshVueNotes();
+    Notes.refreshVueNotes();
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(-1);
-  }
-
-  refreshVueNotes() {
-    document.dispatchEvent(new CustomEvent('refreshVueNotes'));
   }
 
   /**
@@ -1312,6 +1308,10 @@ export default class Notes {
     return $updatedNote;
   }
 
+  static refreshVueNotes() {
+    document.dispatchEvent(new CustomEvent('refreshVueNotes'));
+  }
+
   /**
    * Get data from Form attributes to use for saving/submitting comment.
    */
@@ -1578,7 +1578,7 @@ export default class Notes {
             $notesContainer.append('<div class="flash-container" style="display: none;"></div>');
           }
 
-          document.dispatchEvent(new CustomEvent('refreshVueNotes'));
+          Notes.refreshVueNotes();
         } else if (isMainForm) { // Check if this was main thread comment
           // Show final note element on UI and perform form and action buttons cleanup
           this.addNote($form, note);
