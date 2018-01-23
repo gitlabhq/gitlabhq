@@ -9,10 +9,12 @@ module QA
           end
 
           ##
-          # TODO, phase-out CSS classes from Ruby helpers.
+          # TODO, phase-out CSS classes added in Ruby helpers.
           #
           view 'app/helpers/runners_helper.rb' do
+            # rubocop:disable Lint/InterpolationCheck
             element :runner_status, 'runner-status-#{status}'
+            # rubocop:enable Lint/InterpolationCheck
           end
 
           def registration_token
