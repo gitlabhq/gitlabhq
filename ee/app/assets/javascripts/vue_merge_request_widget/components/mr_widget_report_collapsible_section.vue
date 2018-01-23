@@ -177,7 +177,7 @@
       v-else-if="loadingFailed"
       class="media"
     >
-      <status-icon status="failed" />
+      <status-icon status="notfound" />
       <div class="media-body">
         {{ errorText }}
       </div>
