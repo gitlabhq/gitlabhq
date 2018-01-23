@@ -26,4 +26,14 @@ describe NamespaceFileUploader do
                     store_dir: %r[namespace/\d+/\h+],
                     upload_path: IDENTIFIER
   end
+
+  describe "#migrate!" do
+    before do
+      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/doc_sample.txt')))
+      stub_uploads_object_storage
+    end
+
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
+  end
 end

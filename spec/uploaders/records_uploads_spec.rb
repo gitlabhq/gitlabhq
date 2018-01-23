@@ -59,13 +59,13 @@ describe RecordsUploads do
     it "does not create an Upload record when the file doesn't exist" do
       allow(uploader).to receive(:file).and_return(double(exists?: false))
 
-      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.to_not change { Upload.count }
+      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.not_to change { Upload.count }
     end
 
     it 'does not create an Upload record if model is missing' do
       allow_any_instance_of(RecordsUploadsExampleUploader).to receive(:model).and_return(nil)
 
-      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.to_not change { Upload.count }
+      expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.not_to change { Upload.count }
     end
 
     it 'it destroys Upload records at the same path before recording' do

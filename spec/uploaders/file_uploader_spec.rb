@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe FileUploader do
   let(:group) { create(:group, name: 'awesome') }
-  let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
+  let(:project) { create(:project, namespace: group, name: 'project') }
   let(:uploader) { described_class.new(project) }
   let(:upload)  { double(model: project, path: 'secret/foo.jpg') }
 
@@ -17,7 +17,7 @@ describe FileUploader do
   shared_examples 'uses hashed storage' do
     context 'when rolled out attachments' do
       before do
-        expect(project).to receive(:disk_path).and_return('ca/fe/fe/ed')
+        allow(project).to receive(:disk_path).and_return('ca/fe/fe/ed')
       end
 
       let(:project) { build_stubbed(:project, :hashed, namespace: group, name: 'project') }
@@ -66,15 +66,13 @@ describe FileUploader do
     end
   end
 
-  describe '#move_to_cache' do
-    it 'is true' do
-      expect(uploader.move_to_cache).to eq(true)
+  describe "#migrate!" do
+    before do
+      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
+      stub_uploads_object_storage
     end
-  end
 
-  describe '#move_to_store' do
-    it 'is true' do
-      expect(uploader.move_to_store).to eq(true)
-    end
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
 end

@@ -68,6 +68,7 @@ module ObjectStorage
       base.include(ObjectStorage)
 
       before :store, :verify_license!
+      after :migrate, :delete_migrated_file
     end
 
     class_methods do
@@ -155,26 +156,29 @@ module ObjectStorage
       return unless object_store != new_store
       return unless file
 
+      new_file = nil
       file_to_delete = file
+      from_object_store = object_store
       self.object_store = new_store # changes the storage and file
 
       cache_stored_file! if file_storage?
 
-      with_callbacks(:store, file_to_delete) do # for #store_versions!
-        storage.store!(file).tap do |new_file|
-          begin
-            @file = new_file
-            persist_object_store!
-            file_to_delete.delete if new_file.exists?
-          rescue => e
-            # in case of failure delete new file
-            new_file.delete
-            raise e
-          end
+      with_callbacks(:migrate, file_to_delete) do
+        with_callbacks(:store, file_to_delete) do # for #store_versions!
+          new_file = storage.store!(file)
+          persist_object_store!
+          self.file = new_file
         end
       end
 
       file
+    rescue => e
+      # in case of failure delete new file
+      new_file.delete unless new_file.nil?
+      # revert back to the old file
+      self.object_store = from_object_store
+      self.file = file_to_delete
+      raise e
     end
 
     def schedule_migration_to_object_storage(*args)
@@ -199,15 +203,15 @@ module ObjectStorage
     end
 
     def move_to_store
-      return true if Store::LOCAL
-
-      file.try(:storage) == storage
+      false
     end
 
     def move_to_cache
-      return true if object_store == Store::LOCAL
+      false
+    end
 
-      file.try(:storage) == cache_storage
+    def delete_migrated_file(migrated_file)
+      migrated_file.delete if exists?
     end
 
     def verify_license!(_file)
@@ -244,6 +248,12 @@ module ObjectStorage
     end
 
     private
+
+    # this is a hack around CarrierWave. The #migrate method needs to be
+    # able to force the current file to the migrated file upon success.
+    def file=(file)
+      @file = file
+    end
 
     def serialization_column
       model.class.uploader_options.dig(mounted_as, :mount_on) || mounted_as

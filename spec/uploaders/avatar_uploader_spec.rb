@@ -12,18 +12,6 @@ describe AvatarUploader do
                   upload_path: %r[uploads/-/system/user/avatar/],
                   absolute_path: %r[#{CarrierWave.root}/uploads/-/system/user/avatar/]
 
-  describe '#move_to_cache' do
-    it 'is false' do
-      expect(uploader.move_to_cache).to eq(false)
-    end
-  end
-
-  describe '#move_to_store' do
-    it 'is false' do
-      expect(uploader.move_to_store).to eq(false)
-    end
-  end
-
   # EE-specific
   context "object_store is REMOTE" do
     before do
@@ -35,5 +23,18 @@ describe AvatarUploader do
     it_behaves_like 'builds correct paths',
                     store_dir: %r[user/avatar/],
                     upload_path: %r[user/avatar/]
+  end
+
+  context "with a file" do
+    let(:project) { create(:project, :with_avatar) }
+    let(:uploader) { project.avatar }
+    let(:upload) { uploader.upload }
+
+    before do
+      stub_uploads_object_storage
+    end
+
+    it_behaves_like "migrates", to_store: described_class::Store::REMOTE
+    it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
 end

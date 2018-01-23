@@ -343,8 +343,8 @@ Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values_at('path', 'storage_path').compact.first || File.join(Settings.shared['path'], "artifacts"))
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
-Settings.artifacts['path'] = Settings.artifacts['storage_path']
-Settings.artifacts['max_size']   ||= 100 # in megabytes
+Settings.artifacts['path']         = Settings.artifacts['storage_path']
+Settings.artifacts['max_size'] ||= 100 # in megabytes
 
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled']           ||= false

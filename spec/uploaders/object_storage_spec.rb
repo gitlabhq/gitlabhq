@@ -83,7 +83,7 @@ describe ObjectStorage do
         expect(object).to receive(:file_store).and_return(described_class::Store::REMOTE)
       end
 
-      it "returns given value" do
+      it "returns the given value" do
         expect(uploader.object_store).to eq(described_class::Store::REMOTE)
       end
     end
@@ -142,11 +142,6 @@ describe ObjectStorage do
       context 'checking described_class' do
         it "uploader include described_class::Concern" do
           expect(uploader).to be_a(described_class::Concern)
-        end
-
-        it 'moves files locally' do
-          expect(uploader.move_to_store).to be(true)
-          expect(uploader.move_to_cache).to be(true)
         end
       end
 
