@@ -1,5 +1,0 @@
----
-title: Fix hooks not being set up properly for bare import Rake task
-merge_request:
-author:
-type: fixed
