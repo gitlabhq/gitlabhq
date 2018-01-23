@@ -74,11 +74,11 @@ export default class GeoNodesStore {
         failureCount: rawNodeDetails.attachments_failed_count || 0,
       },
       lastEvent: {
-        id: rawNodeDetails.last_event_id,
+        id: rawNodeDetails.last_event_id || 0,
         timeStamp: rawNodeDetails.last_event_timestamp,
       },
       cursorLastEvent: {
-        id: rawNodeDetails.cursor_last_event_id,
+        id: rawNodeDetails.cursor_last_event_id || 0,
         timeStamp: rawNodeDetails.cursor_last_event_timestamp,
       },
       namespaces: rawNodeDetails.namespaces,
