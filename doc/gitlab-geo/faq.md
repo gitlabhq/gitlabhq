@@ -10,6 +10,19 @@ primary, but this is not officially supported yet.
 If you still want to proceed, see our step-by-step instructions on how to
 manually [promote a secondary node](disaster-recovery.md) into primary.
 
+## I followed the disaster recovery instructions and now two-factor auth is broken!
+
+The setup instructions for GitLab Geo prior to 10.5 failed to replicate the
+`otp_key_base` secret, which used to encrypt the two-factor authentication
+secrets stored in the database. If it differs between primary and secondary
+nodes, users with two-factor authentication enabled won't be able to log in
+after a DR failover.
+
+If you still have access to the old primary node, you can follow the
+instructions in the [Upgrading to GitLab 10.5](updating_the_geo_nodes.md#upgrading-to-gitlab-105)
+section to resolve the error. Otherwise, the secret is lost and you'll need to
+[reset two-factor authentication for all users](../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+
 ## What data is replicated to a secondary node?
 
 We currently replicate project repositories, LFS objects, generated

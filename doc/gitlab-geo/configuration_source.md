@@ -26,30 +26,50 @@ in your testing/production environment.
 - **Do not** add anything in the secondaries Geo nodes admin area
   (**Admin Area ➔ Geo Nodes**). This is handled solely by the primary node.
 
-### Step 1. Copying the database encryption key
+### Step 1. Manually replicate secret GitLab values
 
-GitLab stores a unique encryption key on disk that is used to encrypt
-sensitive data stored in the database. All secondary nodes must have the
-**exact same value** for `db_key_base` as defined on the primary node.
+GitLab stores a number of secret values in the `/home/git/gitlab/config/secrets.yml`
+file which *must* match between the primary and secondary nodes. Until there is
+a means of automatically replicating these between nodes (see
+[issue #3789](https://gitlab.com/gitlab-org/gitlab-ee/issues/3789)), they must
+be manually replicated to the secondary.
 
-1. SSH into the **primary** node,  and execute the command below to display the
-current encryption key:
-
-    ```bash
-    sudo -u git -H bundle exec rake geo:db:show_encryption_key RAILS_ENV=production
-    ```
-
-Copy the encryption key to bring it to the secondary node in the following steps.
-
-1. SSH into the **secondary**, and execute the command below to open the
-`secrets.yml` file:
+1. SSH into the **primary** node, and execute the command below:
 
     ```bash
-    sudo -u git -H editor config/secrets.yml
+    sudo cat /home/git/gitlab/config/secrets.yml
     ```
 
-1. Change the value of `db_key_base` to the output from the primary node.
-Then save and close the file.
+    This will display the secrets that need to be replicated, in YAML format.
+
+1. SSH into the **secondary** node and login as the `git` user:
+
+    ```bash
+    sudo -i -u git
+    ```
+
+1. Make a backup of any existing secrets:
+
+    ```bash
+    mv /home/git/gitlab/config/secrets.yml /home/git/gitlab/config/secrets.yml.`date +%F`
+    ```
+
+1. Copy `/home/git/gitlab/config/secrets.yml` from the primary to the secondary, or
+   copy-and-paste the file contents between nodes:
+
+    ```bash
+    sudo editor /home/git/gitlab/config/secrets.yml
+
+    # paste the output of the `cat` command you ran on the primary
+    # save and exit
+    ```
+
+1. Ensure the file permissions are correct:
+
+    ```bash
+    chown git:git /home/git/gitlab/config/secrets.yml
+    chmod 0600 /home/git/gitlab/config/secrets.yml
+    ```
 
 1. Restart GitLab for the changes to take effect:
 

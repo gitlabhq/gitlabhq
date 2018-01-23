@@ -25,32 +25,49 @@ in your testing/production environment.
 - **Do not** add anything in the secondaries Geo nodes admin area
   (**Admin Area ➔ Geo Nodes**). This is handled solely by the primary node.
 
-### Step 1. Copying the database encryption key
+### Step 1. Manually replicate secret GitLab values
 
-GitLab stores a unique encryption key on disk that is used to encrypt
-sensitive data stored in the database. All secondary nodes must have the
-**exact same value** for `db_key_base` as defined on the primary node.
+GitLab stores a number of secret values in the `/etc/gitlab/gitlab-secrets.json`
+file which *must* match between the primary and secondary nodes. Until there is
+a means of automatically replicating these between nodes (see
+[issue #3789](https://gitlab.com/gitlab-org/gitlab-ee/issues/3789)), they must
+be manually replicated to the secondary.
 
-1. SSH into the **primary** node, and execute the command below
-to display the current encryption key:
+1. SSH into the **primary** node, and execute the command below:
 
     ```bash
-    sudo gitlab-rake geo:db:show_encryption_key
+    sudo cat /etc/gitlab/gitlab-secrets.json
     ```
 
-Copy the encryption key to bring it to the secondary node in the following steps.
+    This will display the secrets that need to be replicated, in JSON format.
 
-1. SSH into the **secondary** node and login as root:
+1. SSH into the **secondary** node and login as the `root` user:
 
     ```
     sudo -i
     ```
 
-1. Add the following to `/etc/gitlab/gitlab.rb`, replacing `encryption-key` with the output
-   of the previous command:
+1. Make a backup of any existing secrets:
 
-    ```ruby
-    gitlab_rails['db_key_base'] = 'encryption-key'
+    ```bash
+    mv /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.`date +%F`
+    ```
+
+1. Copy `/etc/gitlab/gitlab-secrets.json` from the primary to the secondary, or
+   copy-and-paste the file contents between nodes:
+
+    ```bash
+    sudo editor /etc/gitlab/gitlab-secrets.json
+
+    # paste the output of the `cat` command you ran on the primary
+    # save and exit
+    ```
+
+1. Ensure the file permissions are correct:
+
+    ```bash
+    chown root:root /etc/gitlab/gitlab-secrets.json
+    chmod 0600 /etc/gitlab/gitlab-secrets.json
     ```
 
 1. Reconfigure the secondary node for the change to take effect:
