@@ -2,10 +2,6 @@
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-<<<<<<< HEAD
-import initCompareAutocomplete from './compare_autocomplete';
-=======
->>>>>>> upstream/master
 import Flash from './flash';
 import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
@@ -24,6 +20,7 @@ import SearchAutocomplete from './search_autocomplete';
 // EE-only
 import UsersSelect from './users_select';
 import UserCallout from './user_callout';
+import initCompareAutocomplete from './compare_autocomplete';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
@@ -124,10 +121,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/projects/milestones/show')
             .then(callDefault)
             .catch(fail);
-<<<<<<< HEAD
           new UserCallout();
-=======
->>>>>>> upstream/master
           break;
         case 'groups:milestones:show':
           import('./pages/groups/milestones/show')
