@@ -125,6 +125,7 @@ module Gitlab
     config.assets.paths << "ee/app/assets/stylesheets"
 
     config.assets.precompile << "*.png"
+    config.assets.precompile << "*.ico"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
