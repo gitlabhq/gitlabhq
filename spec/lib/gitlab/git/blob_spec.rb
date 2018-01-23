@@ -16,6 +16,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   shared_examples 'finding blobs' do
+    context 'nil path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
+
+      it { expect(blob).to eq(nil) }
+    end
+
+    context 'blank path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, '') }
+
+      it { expect(blob).to eq(nil) }
+    end
+
     context 'file in subdir' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
 

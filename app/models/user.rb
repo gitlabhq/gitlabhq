@@ -331,6 +331,8 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
+      return none if query.blank?
+
       query = query.downcase
 
       order = <<~SQL
@@ -354,6 +356,8 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
+      return none if query.blank?
+
       query = query.downcase
 
       email_table = Email.arel_table

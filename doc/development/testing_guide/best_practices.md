@@ -88,6 +88,8 @@ Finished in 34.51 seconds (files took 0.76702 seconds to load)
 1 example, 0 failures
 ```
 
+Note: `live_debug` only works on javascript enabled specs.
+
 ### `let` variables
 
 GitLab's RSpec suite has made extensive use of `let` variables to reduce

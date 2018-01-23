@@ -32,8 +32,8 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     this.startLoadingSpinner();
     Api.issueTemplate(this.namespacePath, this.projectPath, query.name, this.issuableType, (err, currentTemplate) => {
       this.currentTemplate = currentTemplate;
-      if (err) return; // Error handled by global AJAX error handler
       this.stopLoadingSpinner();
+      if (err) return; // Error handled by global AJAX error handler
       this.setInputValueToTemplateContent();
     });
     return;
