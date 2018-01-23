@@ -156,10 +156,8 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :variables, only: [:index, :show, :update, :create, :destroy] do
-        collection do
-          post :save_multiple
-        end
+      namespace :variables do
+        post :save_multiple
       end
 
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
