@@ -32,8 +32,6 @@ module QA
                 runner.address = runners.coordinator_address
                 runner.tags = tags
                 runner.register!
-                # TODO, wait for runner to register using non-blocking method.
-                sleep 5
               end
             end
           end
