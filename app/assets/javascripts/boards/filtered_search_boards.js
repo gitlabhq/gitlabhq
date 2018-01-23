@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import '~/filtered_search/filtered_search_bundle';
 import FilteredSearchContainer from '../filtered_search/container';
 
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
