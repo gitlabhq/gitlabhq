@@ -22,7 +22,7 @@ module API
           source = find_source(source_type, params[:id])
 
           users = source.users
-          users = users.merge(User.search(params[:query])) if params[:query]
+          users = users.merge(User.search(params[:query])) if params[:query].present?
 
           present paginate(users), with: Entities::Member, source: source
         end

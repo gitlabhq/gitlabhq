@@ -1,0 +1,6 @@
+---
+title: Default to Gitaly for 'git push' HTTP/SSH, and make Gitaly mandatory for SSH
+  pull
+merge_request: 16586
+author:
+type: other

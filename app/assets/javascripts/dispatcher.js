@@ -17,9 +17,9 @@ import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
 import ShortcutsIssuable from './shortcuts_issuable';
-import U2FAuthenticate from './u2f/authenticate';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
+<<<<<<< HEAD
 
 // EE-only
 import UsersSelect from './users_select';
@@ -29,6 +29,8 @@ import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
+=======
+>>>>>>> upstream/master
 
 (function() {
   var Dispatcher;
@@ -349,9 +351,12 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
+<<<<<<< HEAD
           // ee-start
           initGeoInfoModal();
           // ee-end
+=======
+>>>>>>> upstream/master
           break;
         case 'projects:edit':
           import('./pages/projects/edit')
@@ -522,10 +527,13 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/projects/settings/repository/show')
             .then(callDefault)
             .catch(fail);
+<<<<<<< HEAD
           // ee-start
           new UsersSelect();
           new UserCallout();
           // ee-end
+=======
+>>>>>>> upstream/master
           break;
         case 'projects:settings:ci_cd:show':
           import('./pages/projects/settings/ci_cd/show')
@@ -602,18 +610,15 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
       switch (path[0]) {
         case 'sessions':
+          import('./pages/sessions')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'omniauth_callbacks':
-          if (!gon.u2f) break;
-          const u2fAuthenticate = new U2FAuthenticate(
-            $('#js-authenticate-u2f'),
-            '#js-login-u2f-form',
-            gon.u2f,
-            document.querySelector('#js-login-2fa-device'),
-            document.querySelector('.js-2fa-form'),
-          );
-          u2fAuthenticate.start();
-          // needed in rspec
-          gl.u2fAuthenticate = u2fAuthenticate;
+          import('./pages/omniauth_callbacks')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin':
           import('./pages/admin')
             .then(callDefault)
@@ -671,10 +676,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
                 .catch(() => {});
               break;
           }
-          break;
-        case 'dashboard':
-        case 'root':
-          new UserCallout();
           break;
         case 'profiles':
           import('./pages/profiles/index/')
