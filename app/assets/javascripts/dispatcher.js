@@ -2,22 +2,16 @@
 import Milestone from './milestone';
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
-import MergeRequest from './merge_request';
 import Sidebar from './right_sidebar';
 import Flash from './flash';
-import UserCallout from './user_callout';
 import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
 import Star from './star';
 import ZenMode from './zen_mode';
 import PerformanceBar from './performance_bar';
-import initNotes from './init_notes';
-import initIssuableSidebar from './init_issuable_sidebar';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
-import ShortcutsIssuable from './shortcuts_issuable';
-import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
 (function() {
