@@ -4,7 +4,7 @@ import repoTabs from '~/ide/components/repo_tabs.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoTabs', () => {
-  const openedFiles = [file(), file()];
+  const openedFiles = [file('open1'), file('open2')];
   let vm;
 
   function createComponent() {
