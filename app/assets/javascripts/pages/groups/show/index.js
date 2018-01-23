@@ -5,6 +5,7 @@ import notificationsDropdown from '~/notifications_dropdown';
 import NotificationsForm from '~/notifications_form';
 import ProjectsList from '~/projects_list';
 import ShortcutsNavigation from '~/shortcuts_navigation';
+import initGroupsList from '../../../groups';
 
 export default () => {
   const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
@@ -16,4 +17,6 @@ export default () => {
   if (newGroupChildWrapper) {
     new NewGroupChild(newGroupChildWrapper);
   }
+
+  initGroupsList();
 };

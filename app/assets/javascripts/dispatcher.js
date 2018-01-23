@@ -530,6 +530,11 @@ import SearchAutocomplete from './search_autocomplete';
             .then(callDefault)
             .catch(fail);
           break;
+        case 'dashboard:groups:index':
+          import('./pages/dashboard/groups/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
       }
       switch (path[0]) {
         case 'sessions':
