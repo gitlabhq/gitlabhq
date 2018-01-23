@@ -77,6 +77,23 @@ describe MergeRequest do
         expect(MergeRequest::Metrics.count).to eq(1)
       end
     end
+
+    describe '#mark_as_unchecked_if_target_branch_changed' do
+      let(:merge_request) { create(:merge_request, merge_status: :can_be_merged) }
+
+      it 'marks MR as unchecked if target_branch changes' do
+        expect { merge_request.update!(target_branch: 'bar') }
+          .to change(merge_request, :merge_status)
+          .from('can_be_merged')
+          .to('unchecked')
+      end
+
+      it 'does not marks MR as unchecked when target_branch does not changes' do
+        expect { merge_request.update!(title: 'foo') }
+          .not_to change(merge_request, :merge_status)
+          .from('can_be_merged')
+      end
+    end
   end
 
   describe 'respond to' do

@@ -1,0 +1,5 @@
+---
+title: Update merge_status on MR creation/update/get on the API
+merge_request:
+author:
+type: fixed
