@@ -2,6 +2,7 @@
   import axios from '~/lib/utils/axios_utils';
   import modal from '~/vue_shared/components/modal.vue';
   import { redirectTo } from '~/lib/utils/url_utility';
+  import Flash from '~/flash';
 
   export default {
     components: {
@@ -40,7 +41,7 @@
     },
     methods: {
       onSubmit() {
-        axios.delete(this.url)
+        return axios.delete(this.url)
         .then((resp) => {
           redirectTo(resp.request.responseURL);
         })

@@ -15,9 +15,9 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I delete all labels' do
     page.within '.labels' do
-      page.all('.label-list-item').each do
+      page.all('.remove-row').each do
         first('.remove-row').click
-        first(:link, 'Delete label').click
+        click_button 'Delete Label'
       end
     end
   end
