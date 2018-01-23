@@ -2029,6 +2029,7 @@ ActiveRecord::Schema.define(version: 20180113220114) do
     t.datetime "updated_at", null: false
     t.datetime "last_update_started_at"
     t.boolean "only_protected_branches", default: false, null: false
+    t.string "remote_name"
   end
 
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree

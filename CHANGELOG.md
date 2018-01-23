@@ -2,6 +2,194 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.4.0 (2018-01-22)
+
+### Security (8 changes, 1 of them is from the community)
+
+- Upgrade Ruby to 2.3.6 to include security patches. !16016
+- Filter out sensitive fields from the project services API. (Robert Schilling)
+- Fix RCE via project import mechanism.
+- Prevent OAuth login POST requests when a provider has been disabled.
+- Prevent a SQL injection in the MilestonesFinder.
+- Check user authorization for source and target projects when creating a merge request.
+- Fix path traversal in gitlab-ci.yml cache:key.
+- Fix writable shared deploy keys.
+
+### Fixed (69 changes, 24 of them are from the community)
+
+- Update comment on image cursor and icons. !15760
+- Fixes the wording of headers in system info page. !15802 (Gilbert Roulot)
+- Reset todo counters when the target is deleted. !15807
+- Execute quick actions (if present) when creating MR from issue. !15810
+- fix build count in pipeline success mail. !15827 (Christiaan Van den Poel)
+- Fix error that was preventing users to change the access level of access requests for Groups or Projects. !15832
+- Last push event widget width for fixed layout. !15862 (George Tsiolis)
+- Hide link to issues/MRs from labels list if issues/MRs are disabled. !15863 (Sophie Herold)
+- Use relative URL for projects to avoid storing domains. !15876
+- Fix gitlab-rake gitlab:import:repos import schedule. !15931
+- Removed incorrect guidance stating blocked users will be removed from groups and project as members. !15947 (CesarApodaca)
+- Fix some POST/DELETE requests in IE by switching some bundles to Axios for Ajax requests. !15951
+- Fixing error 500 when member exist but not the user. !15970
+- show None when issue is in closed list and no labels assigned. !15976 (Christiaan Van den Poel)
+- Fix tags in the Activity tab not being clickable. !15996 (Mario de la Ossa)
+- Disable Vue pagination when only one page of content is available. !15999 (Mario de la Ossa)
+- disables shortcut to issue boards when issues are not enabled. !16020 (Christiaan Van den Poel)
+- Ignore lost+found folder during backup on a volume. !16036 (Julien Millau)
+- Fix abuse reports link url in admin area navbar. !16068 (megos)
+- Keep typographic hierarchy in User Settings. !16090 (George Tsiolis)
+- Adjust content width for User Settings, GPG Keys. !16093 (George Tsiolis)
+- Fix gitlab-rake gitlab:import:repos import schedule. !16115
+- Fix import project url not updating project name. !16120
+- Fix activity inline event line height on mobile. !16121 (George Tsiolis)
+- Fix slash commands dropdown description mis-alignment on Firefox. !16125 (Maurizio De Santis)
+- Remove unnecessary sidebar element realignment. !16159 (George Tsiolis)
+- User#projects_limit remove DB default and added NOT NULL constraint. !16165 (Mario de la Ossa)
+- Fix API endpoints to edit wiki pages where project belongs to a group. !16170
+- Fix breadcrumbs in User Settings. !16172 (rfwatson)
+- Move 2FA disable button. !16177 (George Tsiolis)
+- Fixing bug when wiki last version. !16197
+- Protected branch is now created for default branch on import. !16198
+- Prevent excessive DB load due to faulty DeleteConflictingRedirectRoutes background migration. !16205
+- Force Auto DevOps kubectl version to 1.8.6. !16218
+- Fix missing references to pipeline objects when restoring project with import/export feature. !16221
+- Fix inconsistent downcase of filenames in prefilled `Add` commit messages. !16232 (James Ramsay)
+- Default merge request title is set correctly again when external issue tracker is activated. !16356 (Ben305)
+- Ensure that emails contain absolute, rather than relative, links to user uploads. !16364
+- Prevent invalid Route path if path is unchanged. !16397
+- Fixing rack request mime type when using rack attack. !16427
+- Prevent RevList failing on non utf8 paths. !16440
+- Fix giant fork icons on forks page. !16474
+- Fix links to uploaded files on wiki pages. !16499
+- Fix GitHub importer using removed interface.
+- Fix when branch creation fails don't post system note. (Mateusz Bajorski)
+- Show authored date rather than committed date on the commit list.
+- Fix ANSI 256 bold colors in pipelines job output.
+- Add optional search param for Merge Requests API.
+- fix button alignment on MWPS component.
+- Clears visual token on second backspace. (Martin Wortschack)
+- Fix viewing merge request diffs where the underlying blobs are unavailable.
+- Fix 500 error when visiting a commit where the blobs do not exist.
+- Set target_branch to the ref branch when creating MR from issue.
+- Fix closed text for issues on Todos page.
+- [API] Fix creating issue when assignee_id is empty.
+- Fix false positive issue references in merge requests caused by header anchor links.
+- Fixed chanages dropdown ellipsis positioning.
+- Fix shortcut links on help page.
+- Fix onion-skin re-entering state.
+- Normalizing Identity extern_uid when saving the record.
+- Fixed typo for issue description field declaration. (Marcus Amargi)
+- Modify `LDAP::Person` to return username value based on attributes.
+- Fixed merge request status badge not updating after merging.
+- Remove related links in MR widget when empty state.
+- Gracefully handle garbled URIs in Markdown.
+- Fix hooks not being set up properly for bare import Rake task.
+- Fix Mermaid drawings not loading on some browsers.
+- Humanize the units of "Showing last X KiB of log" in job trace.
+- Avoid leaving a push event empty if payload cannot be created.
+
+### Changed (18 changes, 3 of them are from the community)
+
+- Make mail notifications of discussion notes In-Reply-To of each other. !14289
+- Migrate existing data from KubernetesService to Clusters::Platforms::Kubernetes. !15589
+- Implement checking GCP project billing status in cluster creation form. !15665
+- Present multiple clusters in a single list instead of a tabbed view. !15669
+- Remove soft removals related code. !15789
+- Only mark import and fork jobs as failed once all Sidekiq retries get exhausted. !15844
+- Translate date ranges on contributors page. !15846
+- Update issuable status icons. !15898
+- Update feature toggle design to use icons and make it i18n friendly. !15904
+- Update groups tree to use GitLab SVG icons, add last updated at information for projects. !15980
+- Allow forking a public project to a private group. !16050
+- Expose project_id on /api/v4/pages/domains. !16200 (Luc Didry)
+- Display graph values on hover within monitoring page. !16261
+- Hide markdown toolbar in preview mode.
+- Run background migrations with a minimum interval.
+- Provide additional cookies to JIRA service requests to allow Oracle WebGates Basic Auth. (Stanislaw Wozniak)
+- removed tabindexes from tag form. (Marcus Amargi)
+- Move edit button to second row on issue page (and change it to a pencil icon).
+
+### Performance (11 changes)
+
+- Improve the performance for counting diverging commits. Show 999+ if it is more than 1000 commits. !15963
+- Improve search query for merge requests.
+- Improve search query for issues.
+- Eager load event target authors whenever possible.
+- Use simple Next/Prev paging for jobs to avoid large count queries on arbitrarily large sets of historical jobs.
+- Improve performance of MR discussions on large diffs.
+- Add index on namespaces lower(name) for UsersController#exists.
+- Fix timeout when filtering issues by label.
+- Treat empty markdown and html strings as valid cached text, not missing cache that needs to be updated.
+- Cache merged and closed events data in merge_request_metrics table.
+- Speed up generation of commit stats by using Rugged native methods.
+
+### Added (26 changes, 8 of them are from the community)
+
+- Support new chat notifications parameters in Services API. !11435
+- Add online and status attribute to runner api entity. !11750
+- Adds ordering to projects contributors in API. !15469 (Jacopo Beschi @jacopo-beschi)
+- Add assets_sync gem to Gemfile. !15734
+- Add a gitlab:tcp_check rake task. !15759
+- add support for sorting in tags api. !15772 (haseebeqx)
+- Add Prometheus to available Cluster applications. !15895
+- Validate file status when commiting multiple files. !15922
+- List of avatars should never show +1. !15972 (Jacopo Beschi @jacopo-beschi)
+- Do not generate NPM links for private NPM modules in blob view. !16002 (Mario de la Ossa)
+- Backport fast database lookup of SSH authorized_keys from EE. !16014
+- Add i18n helpers to branch comparison view. !16031 (James Ramsay)
+- Add pause/resume button to project runners. !16032 (Mario de la Ossa)
+- Added option to user preferences to enable the multi file editor. !16056
+- Implement project jobs cache reset. !16067
+- Rendering of emoji's in Group-Overview. !16098 (Jacopo Beschi @jacopo-beschi)
+- Allow automatic creation of Kubernetes Integration from template. !16104
+- API: get participants from merge_requests & issues. !16187 (Brent Greeff)
+- Added option to disable commits stats in the commit endpoint. !16309
+- Disable creation of new Kubernetes Integrations unless they're active or created from template. !41054
+- Enable ordering of groups and their children by name.
+- Hide runner token in CI/CD settings page.
+- Allow user to rebase merge requests.
+- Handle GitLab hashed storage repositories using the repo import task.
+- Added badge to tree & blob views to indicate LFS tracked files.
+- Add button to run scheduled pipeline immediately.
+
+### Other (12 changes, 3 of them are from the community)
+
+- Adds the multi file editor as a new beta feature. !15430
+- Use relative URLs when linking to uploaded files. !15751
+- Add docs for why you might be signed out when using the Remember me token. !15756
+- Replace '.team << [user, role]' with 'add_role(user)' in specs. !16069 (@blackst0ne)
+- Add id to modal.vue to support data-toggle="modal". !16189
+- Update scss-lint to 0.56.0. !16278 (Takuya Noguchi)
+- Fix web ide user preferences copy and buttons. !41789
+- Update Browse file to Choose file in all occurences.
+- Import some code and functionality from gitlab-shell to improve subprocess handling.
+- Bump mysql2 gem version from 0.4.5 to 0.4.10. (asaparov)
+- Use a background migration for issues.closed_at.
+- Update redis-rack to 2.0.4.
+
+
+## 10.3.6 (2018-01-22)
+
+### Fixed (17 changes, 2 of them are from the community)
+
+- Fix abuse reports link url in admin area navbar. !16068 (megos)
+- Fix gitlab-rake gitlab:import:repos import schedule. !16115
+- Fixing bug when wiki last version. !16197
+- Prevent excessive DB load due to faulty DeleteConflictingRedirectRoutes background migration. !16205
+- Default merge request title is set correctly again when external issue tracker is activated. !16356 (Ben305)
+- Prevent invalid Route path if path is unchanged. !16397
+- Fixing rack request mime type when using rack attack. !16427
+- Prevent RevList failing on non utf8 paths. !16440
+- Fix 500 error when visiting a commit where the blobs do not exist.
+- Fix viewing merge request diffs where the underlying blobs are unavailable.
+- Gracefully handle garbled URIs in Markdown.
+- Fix hooks not being set up properly for bare import Rake task.
+- Fix Mermaid drawings not loading on some browsers.
+- Fixed chanages dropdown ellipsis positioning.
+- Avoid leaving a push event empty if payload cannot be created.
+- Set target_branch to the ref branch when creating MR from issue.
+- Fix shortcut links on help page.
+
+
 ## 10.3.5 (2018-01-18)
 
 - No changes.

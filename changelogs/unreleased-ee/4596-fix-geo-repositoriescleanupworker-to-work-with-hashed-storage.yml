@@ -1,5 +1,0 @@
----
-title: Geo - Fix repository clean up when selective replication changes with hashed storage enabled
-merge_request: 4059
-author:
-type: fixed

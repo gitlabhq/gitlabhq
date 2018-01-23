@@ -1,5 +1,0 @@
----
-title: Hide link to issues/MRs from labels list if issues/MRs are disabled.
-merge_request: 15863
-author: Sophie Herold
-type: fixed

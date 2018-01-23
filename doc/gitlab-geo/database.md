@@ -304,6 +304,20 @@ because we have not yet configured the secondary server. This is the next step.
     connections. The certificate can only be replicated by someone with access
     to the private key, which is **only** present on the primary node.
 
+1. Test that the `gitlab-psql` user can connect to the primary's database:
+
+    ```bash
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql --list -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
+    ```
+
+    When prompted enter the password you set in the first step for the
+    `gitlab_replicator` user. If all worked correctly, you should see the
+    database prompt.
+
+    A failure to connect here indicates that the TLS configuration is incorrect.
+    Ensure that the contents of `~gitlab-psql/data/server.crt` on the primary
+    match the contents of `~gitlab-psql/.postgresql/root.crt` on the secondary.
+
 1. Configure PostreSQL to enable FDW support
 
     This step is similar to how we configured the primary instance.
@@ -326,20 +340,6 @@ because we have not yet configured the secondary server. This is the next step.
     geo_secondary['db_fdw'] = true
     ```
 
-1. Test that the `gitlab-psql` user can connect to the primary's database:
-
-    ```bash
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql --list -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
-    ```
-
-    When prompted enter the password you set in the first step for the
-    `gitlab_replicator` user. If all worked correctly, you should see the
-    database prompt.
-
-    A failure to connect here indicates that the TLS configuration is incorrect.
-    Ensure that the contents of `~gitlab-psql/data/server.crt` on the primary
-    match the contents of `~gitlab-psql/.postgresql/root.crt` on the secondary.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
@@ -352,6 +352,12 @@ because we have not yet configured the secondary server. This is the next step.
 
     ```bash
     gitlab-ctl reconfigure
+    ```
+
+1. Restart PostgreSQL for its changes to take effect:
+
+    ```bash
+    gitlab-ctl restart postgresql
     ```
 
 ### Step 4. Initiate the replication process

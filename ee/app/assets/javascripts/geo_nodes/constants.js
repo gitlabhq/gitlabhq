@@ -3,7 +3,7 @@ export const NODE_ACTION_BASE_PATH = '/admin/geo_nodes/';
 export const NODE_ACTIONS = {
   TOGGLE: '/toggle',
   EDIT: '/edit',
-  REPAIR: '/reconfigure',
+  REPAIR: '/repair',
 };
 
 export const VALUE_TYPE = {
