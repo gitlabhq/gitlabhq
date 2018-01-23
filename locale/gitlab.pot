@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-06 10:02+0100\n"
-"PO-Revision-Date: 2018-02-06 10:02+0100\n"
+"POT-Creation-Date: 2018-02-07 13:35+0100\n"
+"PO-Revision-Date: 2018-02-07 13:35+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -129,6 +129,9 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
+msgid "Add todo"
+msgstr ""
+
 msgid "AdminArea|Stop all jobs"
 msgstr ""
 
@@ -226,6 +229,21 @@ msgid "Are you sure?"
 msgstr ""
 
 msgid "Artifacts"
+msgstr ""
+
+msgid "Assign custom color like #FF0000"
+msgstr ""
+
+msgid "Assign labels"
+msgstr ""
+
+msgid "Assign milestone"
+msgstr ""
+
+msgid "Assign to"
+msgstr ""
+
+msgid "Assignee"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
@@ -524,13 +542,22 @@ msgstr ""
 msgid "CiVariables|Remove variable row"
 msgstr ""
 
+msgid "CiVariable|* (All environments)"
+msgstr ""
+
 msgid "CiVariable|All environments"
+msgstr ""
+
+msgid "CiVariable|Error occured while saving variables"
 msgstr ""
 
 msgid "CiVariable|Protected"
 msgstr ""
 
 msgid "CiVariable|Toggle protected"
+msgstr ""
+
+msgid "CiVariable|Validation failed"
 msgstr ""
 
 msgid "CircuitBreakerApiLink|circuitbreaker api"
@@ -696,6 +723,9 @@ msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to crea
 msgstr ""
 
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
+msgstr ""
+
+msgid "ClusterIntegration|More information"
 msgstr ""
 
 msgid "ClusterIntegration|Note:"
@@ -877,6 +907,9 @@ msgstr ""
 msgid "CompareBranches|There isn't anything to compare."
 msgstr ""
 
+msgid "Confidentiality"
+msgstr ""
+
 msgid "Container Registry"
 msgstr ""
 
@@ -949,6 +982,12 @@ msgstr ""
 msgid "Copy commit SHA to clipboard"
 msgstr ""
 
+msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
 msgid "Create New Directory"
 msgstr ""
 
@@ -964,6 +1003,9 @@ msgstr ""
 msgid "Create file"
 msgstr ""
 
+msgid "Create lists from labels. Issues with that label appear in that list."
+msgstr ""
+
 msgid "Create merge request"
 msgstr ""
 
@@ -974,6 +1016,9 @@ msgid "Create new directory"
 msgstr ""
 
 msgid "Create new file"
+msgstr ""
+
+msgid "Create new label"
 msgstr ""
 
 msgid "Create new..."
@@ -1096,6 +1141,9 @@ msgid "DownloadCommit|Plain Diff"
 msgstr ""
 
 msgid "DownloadSource|Download"
+msgstr ""
+
+msgid "Due date"
 msgstr ""
 
 msgid "Edit"
@@ -1512,6 +1560,9 @@ msgstr ""
 msgid "LastPushEvent|at"
 msgstr ""
 
+msgid "Learn more"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr ""
 
@@ -1533,16 +1584,28 @@ msgstr ""
 msgid "Lock"
 msgstr ""
 
+msgid "Lock %{issuableDisplayName}"
+msgstr ""
+
+msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
+msgstr ""
+
 msgid "Locked"
 msgstr ""
 
 msgid "Login"
 msgstr ""
 
+msgid "Manage labels"
+msgstr ""
+
 msgid "Mar"
 msgstr ""
 
 msgid "March"
+msgstr ""
+
+msgid "Mark done"
 msgstr ""
 
 msgid "Maximum git storage failures"
@@ -1575,6 +1638,9 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
+msgid "Milestone"
+msgstr ""
+
 msgid "Milestones|Delete milestone"
 msgstr ""
 
@@ -1594,6 +1660,15 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More information is available|here"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+msgid "Move issue"
+msgstr ""
+
+msgid "Name new label"
 msgstr ""
 
 msgid "New Issue"
@@ -1649,7 +1724,16 @@ msgstr ""
 msgid "New tag"
 msgstr ""
 
+msgid "No assignee"
+msgstr ""
+
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
+msgstr ""
+
+msgid "No due date"
+msgstr ""
+
+msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
@@ -1667,7 +1751,13 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+msgid "Not allowed to merge"
+msgstr ""
+
 msgid "Not available"
+msgstr ""
+
+msgid "Not confidential"
 msgstr ""
 
 msgid "Not enough data"
@@ -2069,6 +2159,9 @@ msgstr ""
 msgid "Push events"
 msgstr ""
 
+msgid "Quick actions can be used in the issues description and comment boxes."
+msgstr ""
+
 msgid "Read more"
 msgstr ""
 
@@ -2079,6 +2172,9 @@ msgid "RefSwitcher|Branches"
 msgstr ""
 
 msgid "RefSwitcher|Tags"
+msgstr ""
+
+msgid "Reference:"
 msgstr ""
 
 msgid "Register / Sign In"
@@ -2146,6 +2242,9 @@ msgstr ""
 msgid "Save pipeline schedule"
 msgstr ""
 
+msgid "Save variables"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr ""
 
@@ -2158,16 +2257,31 @@ msgstr ""
 msgid "Search branches and tags"
 msgstr ""
 
+msgid "Search milestones"
+msgstr ""
+
+msgid "Search project"
+msgstr ""
+
+msgid "Search users"
+msgstr ""
+
 msgid "Seconds before reseting failure information"
 msgstr ""
 
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
+msgid "Secret variables"
+msgstr ""
+
 msgid "Select Archive Format"
 msgstr ""
 
 msgid "Select a timezone"
+msgstr ""
+
+msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
@@ -2224,6 +2338,9 @@ msgid "Something went wrong on our end"
 msgstr ""
 
 msgid "Something went wrong on our end."
+msgstr ""
+
+msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr ""
 
 msgid "Something went wrong when toggling the button"
@@ -2558,6 +2675,9 @@ msgstr ""
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
+msgid "This issue is confidential"
+msgstr ""
+
 msgid "This issue is confidential and locked."
 msgstr ""
 
@@ -2603,7 +2723,19 @@ msgstr ""
 msgid "Time between merge request creation and merge/close"
 msgstr ""
 
+msgid "Time tracking"
+msgstr ""
+
 msgid "Time until first merge request"
+msgstr ""
+
+msgid "TimeTrackingEstimated|Est"
+msgstr ""
+
+msgid "TimeTracking|Estimated:"
+msgstr ""
+
+msgid "TimeTracking|Spent"
 msgstr ""
 
 msgid "Timeago|%s days ago"
@@ -2742,6 +2874,12 @@ msgstr[1] ""
 msgid "Time|s"
 msgstr ""
 
+msgid "Todo"
+msgstr ""
+
+msgid "Toggle sidebar"
+msgstr ""
+
 msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
@@ -2757,6 +2895,9 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+msgid "Track time with quick actions"
+msgstr ""
+
 msgid "Trigger this manual action"
 msgstr ""
 
@@ -2767,6 +2908,9 @@ msgid "Unable to reset project cache."
 msgstr ""
 
 msgid "Unlock"
+msgstr ""
+
+msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
 msgstr ""
 
 msgid "Unlocked"
@@ -2796,7 +2940,13 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
+msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
 msgid "View file @ "
+msgstr ""
+
+msgid "View labels"
 msgstr ""
 
 msgid "View open merge request"
@@ -3018,13 +3168,25 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
+msgid "assign yourself"
+msgstr ""
+
 msgid "branch name"
+msgstr ""
+
+msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
+msgstr ""
+
+msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
 msgstr ""
 
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
+msgstr ""
 
 msgid "merge request"
 msgid_plural "merge requests"
@@ -3180,7 +3342,13 @@ msgstr ""
 msgid "personal access token"
 msgstr ""
 
+msgid "remove due date"
+msgstr ""
+
 msgid "source"
+msgstr ""
+
+msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
 msgid "username"
