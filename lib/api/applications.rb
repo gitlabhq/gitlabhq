@@ -5,6 +5,7 @@ module API
 
     resource :applications do
       desc 'Create a new application' do
+        detail 'This feature was introduced in GitLab 10.5'
         success Entities::Application
       end
       params do
