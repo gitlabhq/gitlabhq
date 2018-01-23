@@ -59,7 +59,7 @@ describe('Issuable output', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
     realtimeRequestCount = 0;
 
     vm.poll.stop();
