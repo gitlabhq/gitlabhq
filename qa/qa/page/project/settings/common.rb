@@ -11,11 +11,16 @@ module QA
             end
           end
 
-          def expand_section(selector)
-            page.within(selector) do
-              find_button('Expand').click
+          # Click the Expand button present in the specified section
+          #
+          # @param [String] name present in the container in the DOM
+          def expand_section(name)
+            page.within('#content-body') do
+              page.within('section', text: name) do
+                click_button('Expand')
 
-              yield if block_given?
+                yield if block_given?
+              end
             end
           end
         end
