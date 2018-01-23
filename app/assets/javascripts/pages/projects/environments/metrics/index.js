@@ -1,3 +1,3 @@
-import '~/monitoring/monitoring_bundle';
+import monitoringBundle from '~/monitoring/monitoring_bundle';
 
-export default () => {};
+export default monitoringBundle;
