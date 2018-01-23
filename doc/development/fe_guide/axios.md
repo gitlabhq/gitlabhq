@@ -50,7 +50,7 @@ To help us mock the responses we need we use [axios-mock-adapter][axios-mock-ada
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 ```
 
