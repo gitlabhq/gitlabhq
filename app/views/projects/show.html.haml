@@ -7,7 +7,9 @@
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-= render "projects/last_push"
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
+  = render "projects/last_push"
+
 = render "home_panel"
 
 - if can?(current_user, :download_code, @project)
