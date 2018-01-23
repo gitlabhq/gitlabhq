@@ -36,6 +36,7 @@ module QA
       Factory::Resource::Runner.fabricate! do |runner|
         runner.project = project
         runner.name = executor
+        runner.tags = %w[qa test]
       end
 
       Factory::Repository::Push.fabricate! do |push|
@@ -44,14 +45,23 @@ module QA
         push.commit_message = 'Add .gitlab-ci.yml'
         push.file_content = <<~EOF
           echo-success-test:
+            tags:
+              - qa
+              - test
             script: echo 'OK'
 
           echo-failure-test:
+            tags:
+              - qa
+              - test
             script:
               - echo 'FAILURE'
               - exit 1
 
           echo-artifacts-test:
+            tags:
+              - qa
+              - test
             script: echo "CONTENTS" > my-artifacts/artifact.txt
             artifacts:
               paths:
