@@ -1,7 +1,5 @@
 describe QA::Runtime::Env do
-  before do
-    allow(ENV).to receive(:[]).and_call_original
-  end
+  include Support::StubENV
 
   describe '.chrome_headless?' do
     context 'when there is an env variable set' do
@@ -56,9 +54,5 @@ describe QA::Runtime::Env do
         expect(described_class.running_in_ci?).to be_falsey
       end
     end
-  end
-
-  def stub_env(name, value)
-    allow(ENV).to receive(:[]).with(name).and_return(value)
   end
 end
