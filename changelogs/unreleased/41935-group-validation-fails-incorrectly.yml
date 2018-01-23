@@ -1,0 +1,5 @@
+---
+title: Fixes route validation when reclaiming old paths
+merge_request: 16505
+author:
+type: fixed

@@ -61,21 +61,20 @@ class Route < ActiveRecord::Base
   end
 
   def redirect_with_same_path_exists?
-    permanent_redirect_routes.where.not(source_id: self_and_descendant_ids).exists?
+    base_redirect_routes.where.not(source_id: self_and_descendant_ids).exists?
   end
 
-  def permanent_redirect_routes
-    RedirectRoute
-      .permanent
-      .namespace_type
-      .matching_path_and_descendants(path)
+  def base_redirect_routes
+    RedirectRoute.permanent.matching_path_and_descendants(path)
   end
 
   def self_and_descendant_ids
-    if source.is_a?(Project) || Gitlab::Database.mysql?
+    if source.is_a?(Project)
       source.id
+    elsif Gitlab::Database.mysql?
+      [source.id] + source.projects.select(:id)
     else
-      source.self_and_descendants.select(:id)
+      source.self_and_descendants.select(:id) + source.projects.select(:id)
     end
   end
 
@@ -87,14 +86,14 @@ class Route < ActiveRecord::Base
 
   def deletable_conflicting_redirects
     if reclaiming_an_old_path?
-      RedirectRoute.matching_path_and_descendants(path)
+      base_redirect_routes
     else
       RedirectRoute.temporary.matching_path_and_descendants(path)
     end
   end
 
   def reclaiming_an_old_path?
-    permanent_redirect_routes.where(path: path).exists?
+    base_redirect_routes.namespace_type.where(path: path).exists?
   end
 
   def create_redirect_for_old_path

@@ -115,6 +115,7 @@ module Projects
 
     def rollback_side_effects
       rollback_folder_move
+      project.reload if Rails.env.test?
       update_namespace_and_visibility(@old_namespace)
       write_repository_config(@old_path)
     end
