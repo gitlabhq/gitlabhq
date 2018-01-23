@@ -16,7 +16,7 @@ module Gitlab
         lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
       }.freeze
 
-      attr_reader :user_access, :project, :skip_authorization, :protocol
+      attr_reader :user_access, :project, :skip_authorization, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
 
       def initialize(
         change, user_access:, project:, skip_authorization: false,
@@ -51,9 +51,9 @@ module Gitlab
       end
 
       def branch_checks
-        return unless @branch_name
+        return unless branch_name
 
-        if deletion? && @branch_name == project.default_branch
+        if deletion? && branch_name == project.default_branch
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:delete_default_branch]
         end
 
@@ -61,7 +61,7 @@ module Gitlab
       end
 
       def protected_branch_checks
-        return unless ProtectedBranch.protected?(project, @branch_name)
+        return unless ProtectedBranch.protected?(project, branch_name)
 
         if forced_push?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:force_push_protected_branch]
@@ -75,29 +75,29 @@ module Gitlab
       end
 
       def protected_branch_deletion_checks
-        unless user_access.can_delete_branch?(@branch_name)
+        unless user_access.can_delete_branch?(branch_name)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_master_delete_protected_branch]
         end
 
-        unless protocol == 'web'
+        unless updated_from_web?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_web_delete_protected_branch]
         end
       end
 
       def protected_branch_push_checks
         if matching_merge_request?
-          unless user_access.can_merge_to_branch?(@branch_name) || user_access.can_push_to_branch?(@branch_name)
+          unless user_access.can_merge_to_branch?(branch_name) || user_access.can_push_to_branch?(branch_name)
             raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:merge_protected_branch]
           end
         else
-          unless user_access.can_push_to_branch?(@branch_name)
+          unless user_access.can_push_to_branch?(branch_name)
             raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_protected_branch]
           end
         end
       end
 
       def tag_checks
-        return unless @tag_name
+        return unless tag_name
 
         if tag_exists? && user_access.cannot_do_action?(:admin_project)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:change_existing_tags]
@@ -107,40 +107,44 @@ module Gitlab
       end
 
       def protected_tag_checks
-        return unless ProtectedTag.protected?(project, @tag_name)
+        return unless ProtectedTag.protected?(project, tag_name)
 
         raise(GitAccess::UnauthorizedError, ERROR_MESSAGES[:update_protected_tag]) if update?
         raise(GitAccess::UnauthorizedError, ERROR_MESSAGES[:delete_protected_tag]) if deletion?
 
-        unless user_access.can_create_tag?(@tag_name)
+        unless user_access.can_create_tag?(tag_name)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:create_protected_tag]
         end
       end
 
       private
 
+      def updated_from_web?
+        protocol == 'web'
+      end
+
       def tag_exists?
-        project.repository.tag_exists?(@tag_name)
+        project.repository.tag_exists?(tag_name)
       end
 
       def forced_push?
-        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+        Gitlab::Checks::ForcePush.force_push?(project, oldrev, newrev)
       end
 
       def update?
-        !Gitlab::Git.blank_ref?(@oldrev) && !deletion?
+        !Gitlab::Git.blank_ref?(oldrev) && !deletion?
       end
 
       def deletion?
-        Gitlab::Git.blank_ref?(@newrev)
+        Gitlab::Git.blank_ref?(newrev)
       end
 
       def matching_merge_request?
-        Checks::MatchingMergeRequest.new(@newrev, @branch_name, @project).match?
+        Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
       end
 
       def lfs_objects_exist_check
-        lfs_check = Checks::LfsIntegrity.new(project, @newrev)
+        lfs_check = Checks::LfsIntegrity.new(project, newrev)
 
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]

@@ -1274,32 +1274,15 @@ module Gitlab
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_repository: self)
 
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
-          index = Gitlab::Git::Index.new(self)
-          parents = []
-
-          if start_commit
-            index.read_tree(start_commit.rugged_commit.tree)
-            parents = [start_commit.sha]
+        gitaly_migrate(:operation_user_commit_files) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_commit_files(user, branch_name,
+              message, actions, author_email, author_name,
+              start_branch_name, start_repository)
+          else
+            rugged_multi_action(user, branch_name, message, actions,
+              author_email, author_name, start_branch_name, start_repository)
           end
-
-          actions.each { |opts| index.apply(opts.delete(:action), opts) }
-
-          committer = user_to_committer(user)
-          author = Gitlab::Git.committer_hash(email: author_email, name: author_name) || committer
-          options = {
-            tree: index.write_tree,
-            message: message,
-            parents: parents,
-            author: author,
-            committer: committer
-          }
-
-          create_commit(options)
         end
       end
       # rubocop:enable Metrics/ParameterLists
@@ -2083,6 +2066,39 @@ module Gitlab
         fetch_remote(remote_name, env: repository.fetch_env)
       ensure
         remove_remote(remote_name)
+      end
+
+      def rugged_multi_action(
+        user, branch_name, message, actions, author_email, author_name,
+        start_branch_name, start_repository)
+
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+          index = Gitlab::Git::Index.new(self)
+          parents = []
+
+          if start_commit
+            index.read_tree(start_commit.rugged_commit.tree)
+            parents = [start_commit.sha]
+          end
+
+          actions.each { |opts| index.apply(opts.delete(:action), opts) }
+
+          committer = user_to_committer(user)
+          author = Gitlab::Git.committer_hash(email: author_email, name: author_name) || committer
+          options = {
+            tree: index.write_tree,
+            message: message,
+            parents: parents,
+            author: author,
+            committer: committer
+          }
+
+          create_commit(options)
+        end
       end
 
       def fetch_remote(remote_name = 'origin', env: nil)

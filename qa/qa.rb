@@ -11,6 +11,8 @@ module QA
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
+    autoload :Address, 'qa/runtime/address'
+    autoload :API, 'qa/runtime/api'
   end
 
   ##
@@ -26,6 +28,7 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
     end
 
     module Repository
@@ -85,6 +88,7 @@ module QA
       autoload :Main, 'qa/page/menu/main'
       autoload :Side, 'qa/page/menu/side'
       autoload :Admin, 'qa/page/menu/admin'
+      autoload :Profile, 'qa/page/menu/profile'
     end
 
     module Dashboard
@@ -106,6 +110,10 @@ module QA
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
       end
+    end
+
+    module Profile
+      autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
     end
 
     module Admin
