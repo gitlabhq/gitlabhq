@@ -147,9 +147,8 @@ export default class Notes {
     this.$wrapperEl.on('keydown', '.js-note-text', this.keydownNoteText);
     // When the URL fragment/hash has changed, `#note_xxx`
     $(window).on('hashchange', this.onHashChange);
-    document.addEventListener('refreshLegacyNotes', () => {
-      this.getContent(true);
-    });
+    this.boundGetContent = this.getContent.bind(this);
+    document.addEventListener('refreshLegacyNotes', this.boundGetContent);
     this.eventsBound = true;
   }
 
@@ -176,6 +175,7 @@ export default class Notes {
     this.$wrapperEl.off('ajax:success', '.js-main-target-form');
     this.$wrapperEl.off('ajax:success', '.js-discussion-note-form');
     this.$wrapperEl.off('ajax:complete', '.js-main-target-form');
+    document.removeEventListener('refreshLegacyNotes', this.boundGetContent);
     $(window).off('hashchange', this.onHashChange);
   }
 
@@ -435,10 +435,7 @@ export default class Notes {
 
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
       const $formEl = $form || $(`.diffs .note-row-${noteEntity.id}`);
-
-      if (Notes.isUpdatedNote(noteEntity, $formEl)) {
-        this.updateNote(noteEntity, $formEl);
-      }
+      this.updateNote(noteEntity, $formEl);
 
       return;
     }
@@ -479,8 +476,9 @@ export default class Notes {
       // Init discussion on 'Discussion' page if it is merge request page
       const page = $('body').attr('data-page');
       if ((page && page.indexOf('projects:merge_request') !== -1) || !noteEntity.diff_discussion_html) {
-        const $container = Cookies.get('vue_mr_discussions') ? $('.diffs.active') : $('.main-notes-list');
-        Notes.animateAppendNote(noteEntity.discussion_html, $container);
+        if (!Cookies.get('vue_mr_discussions')) {
+          Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
+        }
       }
     } else {
       // append new note to all matching discussions
@@ -662,7 +660,7 @@ export default class Notes {
     var $noteEntityEl, $note_li;
     // Convert returned HTML to a jQuery object so we can modify it further
     $noteEntityEl = $(noteEntity.html);
-    $noteEntityEl.addClass('fade-in-full');
+    // $noteEntityEl.addClass('fade-in-full'); // disabled for MR discussions refactor
     this.revertNoteEditForm($targetNote);
     $noteEntityEl.renderGFM();
     // Find the note's `li` element by ID and replace it with the updated HTML
@@ -774,7 +772,7 @@ export default class Notes {
   }
 
   removeNoteEditForm($note) {
-    var form = $note.find('.current-note-edit-form');
+    var form = $note.find('.diffs .current-note-edit-form');
 
     $note.removeClass('is-editing');
     form.removeClass('current-note-edit-form');
@@ -867,7 +865,7 @@ export default class Notes {
     $note.find('.note-attachment').remove();
     $note.find('.note-body > .note-text').show();
     $note.find('.note-header').show();
-    return $note.find('.current-note-edit-form').remove();
+    return $note.find('.diffs .current-note-edit-form').remove();
   }
 
   /**
