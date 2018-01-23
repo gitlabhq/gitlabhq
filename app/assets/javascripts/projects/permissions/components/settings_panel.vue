@@ -207,7 +207,7 @@ export default {
           </div>
         </div>
         <span class="help-block">{{ visibilityLevelDescription }}</span>
-        <label v-if="visibilityLevel !== visibilityOptions.PUBLIC" class="request-access">
+        <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="request-access">
           <input
             type="hidden"
             name="project[request_access_enabled]"
