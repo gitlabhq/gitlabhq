@@ -4185,9 +4185,9 @@ isurl@^1.0.0-alpha5:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
 
-jasmine-core@^2.6.3:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.6.3.tgz#45072950e4a42b1e322fe55c001100a465d77815"
+jasmine-core@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.9.0.tgz#bfbb56defcd30789adec5a3fbba8504233289c72"
 
 jasmine-jquery@^2.1.1:
   version "2.1.1"
@@ -4269,7 +4269,7 @@ json-stable-stringify@~0.0.0:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-safe@5.0.x, json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
+json-stringify-safe@5.0.x, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
@@ -6067,11 +6067,9 @@ raphael@^2.2.7:
   dependencies:
     eve-raphael "0.5.0"
 
-raven-js@^3.14.0:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.14.0.tgz#94dda81d975fdc4a42f193db437cf70021d654e0"
-  dependencies:
-    json-stringify-safe "^5.0.1"
+raven-js@^3.22.1:
+  version "3.22.1"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.22.1.tgz#1117f00dfefaa427ef6e1a7d50bbb1fb998a24da"
 
 raw-body@2:
   version "2.3.2"
