@@ -10,9 +10,9 @@ platform for software development!
 
 GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans:
 
-- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
+- **GitLab Community Edition (CE)** is an [open source product](https://gitlab.com/gitlab-org/gitlab-ce/),
 self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
-- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
+- **GitLab Enterprise Edition (EE)** is an [open-core product](https://gitlab.com/gitlab-org/gitlab-ee/),
 self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)**, **GitLab Enterprise Edition Premium (EEP)**, and **GitLab Enterprise Edition Ultimate (EEU)**.
 - **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
 
@@ -72,6 +72,7 @@ Shortcuts to GitLab's most visited docs:
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
+- **(EEU)** [Web IDE](user/project/web_ide/index.md)
 
 ### Repository
 
@@ -166,8 +167,8 @@ Regular users don't have access to GitLab administration tools and settings.
 
 ## Contributor documentation
 
-GitLab Community Edition is [opensource](https://gitlab.com/gitlab-org/gitlab-ce/)
-and Enterprise Editions are [opencore](https://gitlab.com/gitlab-org/gitlab-ee/).
+GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
+and Enterprise Editions are [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
 Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.

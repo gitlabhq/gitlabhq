@@ -1,5 +1,0 @@
----
-title: Show results from docker image scan in the merge request widget
-merge_request: 3672
-author:
-type: added

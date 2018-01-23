@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180105233807) do
+ActiveRecord::Schema.define(version: 20180113220114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1999,8 +1999,6 @@ ActiveRecord::Schema.define(version: 20180105233807) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
-  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
-  add_index "redirect_routes", ["permanent"], name: "index_redirect_routes_on_permanent", using: :btree
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2031,6 +2029,7 @@ ActiveRecord::Schema.define(version: 20180105233807) do
     t.datetime "updated_at", null: false
     t.datetime "last_update_started_at"
     t.boolean "only_protected_branches", default: false, null: false
+    t.string "remote_name"
   end
 
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree

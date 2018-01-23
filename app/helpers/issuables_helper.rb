@@ -244,7 +244,7 @@ module IssuablesHelper
     return {} unless issuable.edited?
 
     {
-      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedAt: issuable.last_edited_at.to_time.iso8601,
       updatedBy: {
         name: issuable.last_edited_by.name,
         path: user_path(issuable.last_edited_by)
@@ -305,6 +305,12 @@ module IssuablesHelper
 
   def issuable_display_type(issuable)
     issuable.model_name.human.downcase
+  end
+
+  def selected_labels
+    Array(params[:label_name]).map do |label_name|
+      Label.new(title: label_name)
+    end
   end
 
   private

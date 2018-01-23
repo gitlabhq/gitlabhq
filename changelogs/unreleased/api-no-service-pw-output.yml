@@ -1,5 +1,0 @@
----
-title: Filter out sensitive fields from the project services API
-merge_request:
-author: Robert Schilling
-type: security

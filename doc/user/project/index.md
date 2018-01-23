@@ -13,11 +13,8 @@ the number of private projects you create.
 When you create a project in GitLab, you'll have access to a large number of
 [features](https://about.gitlab.com/features/):
 
-**Issues and merge requests:**
+**Repositories:**
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team within issues
-  - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards) (**EES/EEP**): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Repositories](repository/index.md): Host your code in a fully
 integrated platform
   - [Branches](repository/branches/index.md): use Git branching strategies to
@@ -27,6 +24,13 @@ integrated platform
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
+- **(EEU)** [Web IDE](web_ide/index.md)
+
+**Issues and merge requests:**
+
+- [Issue tracker](issues/index.md): Discuss implementations with your team within issues
+  - [Issue Boards](issue_board.md): Organize and prioritize your workflow
+  - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards) (**EES/EEP**): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) (**EES/EEP**): Ask for approval before

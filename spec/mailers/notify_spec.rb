@@ -71,6 +71,18 @@ describe Notify do
           is_expected.to have_html_escaped_body_text issue.description
         end
 
+        it 'does not add a reason header' do
+          is_expected.not_to have_header('X-GitLab-NotificationReason', /.+/)
+        end
+
+        context 'when sent with a reason' do
+          subject { described_class.new_issue_email(issue.assignees.first.id, issue.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          end
+        end
+
         context 'when enabled email_author_in_body' do
           before do
             stub_application_setting(email_author_in_body: true)
@@ -106,6 +118,14 @@ describe Notify do
             is_expected.to have_html_escaped_body_text(previous_assignee.name)
             is_expected.to have_html_escaped_body_text(assignee.name)
             is_expected.to have_body_text(project_issue_path(project, issue))
+          end
+        end
+
+        context 'when sent with a reason' do
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
           end
         end
       end
@@ -226,6 +246,14 @@ describe Notify do
           is_expected.to have_html_escaped_body_text merge_request.description
         end
 
+        context 'when sent with a reason' do
+          subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          end
+        end
+
         context 'when enabled email_author_in_body' do
           before do
             stub_application_setting(email_author_in_body: true)
@@ -264,31 +292,52 @@ describe Notify do
           end
         end
 
-        describe "that are new with approver" do
-          before do
-            create(:approver, target: merge_request)
+        context 'when sent with a reason' do
+          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, NotificationReason::ASSIGNED) }
+
+          it 'includes the reason in a header' do
+            is_expected.to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
           end
 
-          subject do
-            described_class.new_merge_request_email(
-              merge_request.assignee_id, merge_request.id
-            )
-          end
+          it 'includes the reason in the footer' do
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::ASSIGNED)
+            is_expected.to have_body_text(text)
 
-          it "contains the approvers list" do
-            is_expected.to have_body_text /#{merge_request.approvers.first.user.name}/
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, NotificationReason::MENTIONED)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::MENTIONED)
+            expect(new_subject).to have_body_text(text)
+
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, nil)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(nil)
+            expect(new_subject).to have_body_text(text)
           end
         end
+      end
 
-        describe 'that are new with a description' do
-          subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+      describe "that are new with approver" do
+        before do
+          create(:approver, target: merge_request)
+        end
 
-          it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like "an unsubscribeable thread"
+        subject do
+          described_class.new_merge_request_email(
+            merge_request.assignee_id, merge_request.id
+          )
+        end
 
-          it 'contains the description' do
-            is_expected.to have_html_escaped_body_text merge_request.description
-          end
+        it "contains the approvers list" do
+          is_expected.to have_body_text /#{merge_request.approvers.first.user.name}/
+        end
+      end
+
+      describe 'that are new with a description' do
+        subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like "an unsubscribeable thread"
+
+        it 'contains the description' do
+          is_expected.to have_html_escaped_body_text merge_request.description
         end
       end
 

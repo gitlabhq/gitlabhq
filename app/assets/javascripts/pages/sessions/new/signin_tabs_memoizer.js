@@ -1,5 +1,3 @@
-/* eslint no-param-reassign: ["error", { "props": false }]*/
-/* eslint no-new: "off" */
 import AccessorUtilities from '~/lib/utils/accessor';
 
 /**
@@ -11,6 +9,10 @@ export default class SigninTabsMemoizer {
     this.currentTabKey = currentTabKey;
     this.tabSelector = tabSelector;
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+    // sets selected tab if given as hash tag
+    if (window.location.hash) {
+      this.saveData(window.location.hash);
+    }
 
     this.bootstrap();
   }

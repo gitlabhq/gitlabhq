@@ -83,7 +83,7 @@ describe('GeoNodeActionsComponent', () => {
 
     describe('nodeRepairAuthPath', () => {
       it('returns node repair authentication path', () => {
-        expect(vm.nodeRepairAuthPath).toBe('/admin/geo_nodes/1/reconfigure');
+        expect(vm.nodeRepairAuthPath).toBe('/admin/geo_nodes/1/repair');
       });
     });
 

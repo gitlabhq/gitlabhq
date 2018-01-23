@@ -12,9 +12,9 @@ following format:
 
 ```yaml
 ---
-title: "Going through change[log]s"
+title: "Change[log]s"
 merge_request: 1972
-author: Ozzy Osbourne
+author: Black Sabbath
 type: added
 ```
 

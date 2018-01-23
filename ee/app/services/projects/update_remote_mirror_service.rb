@@ -8,7 +8,7 @@ module Projects
       return success unless remote_mirror.enabled?
 
       begin
-        repository.fetch_remote(remote_mirror.ref_name, no_tags: true)
+        repository.fetch_remote(remote_mirror.remote_name, no_tags: true)
 
         opts = {}
         if remote_mirror.only_protected_branches?

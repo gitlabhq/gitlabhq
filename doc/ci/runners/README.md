@@ -144,6 +144,28 @@ To protect/unprotect Runners:
 
 ![specific Runners edit icon](img/protected_runners_check_box.png)
 
+## Manually clearing the Runners cache
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41249) in GitLab 10.4.
+
+GitLab Runners use [cache](../yaml/README.md#cache) to speed up the execution
+of your jobs by reusing existing data. This however, can sometimes lead to an
+inconsistent behavior.
+
+To start with a fresh copy of the cache, you can easily do it via GitLab's UI:
+
+1. Navigate to your project's **CI/CD > Pipelines** page.
+1. Click on the **Clear Runner caches** to clean up the cache.
+1. On the next push, your CI/CD job will use a new cache.
+
+That way, you don't have to change the [cache key](../yaml/README.md#cache-key)
+in your `.gitlab-ci.yml`.
+
+Behind the scenes, this works by increasing a counter in the database, and the
+value of that counter is used to create the key for the cache. After a push, a
+new key is generated and the old cache is not valid anymore. Eventually, the
+Runner's garbage collector will remove it form the filesystem.
+
 ## How shared Runners pick jobs
 
 Shared Runners abide to a process queue we call fair usage. The fair usage

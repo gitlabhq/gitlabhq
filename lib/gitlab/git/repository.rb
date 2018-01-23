@@ -490,11 +490,7 @@ module Gitlab
           return []
         end
 
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
+        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -1315,6 +1311,10 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
+      def write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1506,27 +1506,6 @@ module Gitlab
         end
       end
 
-      def log_using_shell?(options)
-        options[:path].present? ||
-          options[:disable_walk] ||
-          options[:skip_merges] ||
-          options[:after] ||
-          options[:before]
-      end
-
-      def log_by_walk(sha, options)
-        walk_options = {
-          show: sha,
-          sort: Rugged::SORT_NONE,
-          limit: options[:limit],
-          offset: options[:offset]
-        }
-        Rugged::Walker.walk(rugged, walk_options).to_a
-      end
-
-      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
-      # complexity is such that we should migrate it as Ruby before trying to
-      # do it in Go.
       def log_by_shell(sha, options)
         limit = options[:limit].to_i
         offset = options[:offset].to_i

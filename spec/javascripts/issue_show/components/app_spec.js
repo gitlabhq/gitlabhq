@@ -218,6 +218,39 @@ describe('Issuable output', () => {
       });
     });
 
+    describe('shows dialog when issue has unsaved changed', () => {
+      it('confirms on title change', (done) => {
+        vm.showForm = true;
+        vm.state.titleText = 'title has changed';
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        Vue.nextTick(() => {
+          expect(e.returnValue).not.toBeNull();
+          done();
+        });
+      });
+
+      it('confirms on description change', (done) => {
+        vm.showForm = true;
+        vm.state.descriptionText = 'description has changed';
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        Vue.nextTick(() => {
+          expect(e.returnValue).not.toBeNull();
+          done();
+        });
+      });
+
+      it('does nothing when nothing has changed', (done) => {
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        Vue.nextTick(() => {
+          expect(e.returnValue).toBeNull();
+          done();
+        });
+      });
+    });
+
     describe('error when updating', () => {
       beforeEach(() => {
         spyOn(window, 'Flash').and.callThrough();

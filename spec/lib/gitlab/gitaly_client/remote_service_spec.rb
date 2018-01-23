@@ -44,4 +44,18 @@ describe Gitlab::GitalyClient::RemoteService do
       expect(client.fetch_internal_remote(remote_repository)).to be(true)
     end
   end
+
+  describe '#update_remote_mirror' do
+    let(:ref_name) { 'remote_mirror_1' }
+    let(:only_branches_matching) { ['my-branch', 'master'] }
+
+    it 'sends an update_remote_mirror message' do
+      expect_any_instance_of(Gitaly::RemoteService::Stub)
+        .to receive(:update_remote_mirror)
+        .with(kind_of(Enumerator), kind_of(Hash))
+        .and_return(double(:update_remote_mirror_response))
+
+      client.update_remote_mirror(ref_name, only_branches_matching)
+    end
+  end
 end

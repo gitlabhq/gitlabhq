@@ -52,7 +52,7 @@ module BlobHelper
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    return unless show_new_ide?
+    return unless show_new_ide?(project)
 
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil

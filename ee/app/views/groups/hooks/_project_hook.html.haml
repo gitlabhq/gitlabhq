@@ -3,9 +3,9 @@
     .col-md-8.col-lg-7
       %strong.light-header= hook.url
       %div
-        - %w(push_events tag_push_events issues_events note_events merge_requests_events job_events wiki_page_events).each do |trigger|
-          - if hook.send(trigger)
-            %span.label.label-gray.deploy-project-label= trigger.titleize
+        - GroupHook.triggers.each_value do |trigger|
+          - if hook.public_send(trigger)
+            %span.label.label-gray.deploy-project-label= trigger.to_s.titleize
     .col-md-4.col-lg-5.text-right-lg.prepend-top-5
       %span.append-right-10.inline
         SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}

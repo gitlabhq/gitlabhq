@@ -220,7 +220,7 @@ module Gitlab
           file_registry_job_artifacts = ::Geo::FileRegistry.job_artifacts.where(file_id: event.job_artifact_id)
           return unless file_registry_job_artifacts.any? # avoid race condition
 
-          file_path = File.join(JobArtifactUploader.local_store_path, event.file_path)
+          file_path = File.join(::JobArtifactUploader.local_store_path, event.file_path)
 
           if File.file?(file_path)
             deleted = delete_file(file_path) # delete synchronously to ensure consistency
