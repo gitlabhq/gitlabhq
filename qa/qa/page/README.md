@@ -77,7 +77,7 @@ module Page
 
       view 'app/views/devise/sessions/_new_base.html.haml' do
         element :login_field, 'text_field :login'
-        element :passowrd_field, 'password_field :password'
+        element :password_field, 'password_field :password'
         element :sign_in_button, 'submit "Sign in"'
       end
 
@@ -102,6 +102,16 @@ view 'app/views/my/view.html.haml' do
   element :logout_button
 end
 ```
+
+## Running the test locally
+
+During development, you can run the `qa:selectors` test by running
+
+```shell
+bin/qa Test::Sanity::Selectors
+```
+
+from within the `qa` directory.
 
 ## Where to ask for help?
 
