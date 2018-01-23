@@ -109,6 +109,11 @@ module QA
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :Runners, 'qa/page/project/settings/runners'
       end
+
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
     end
 
     module Admin
