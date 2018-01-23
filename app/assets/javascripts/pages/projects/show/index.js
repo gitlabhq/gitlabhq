@@ -5,7 +5,6 @@ import TreeView from '~/tree';
 import BlobViewer from '~/blob/viewer/index';
 import Activities from '~/activities';
 import { ajaxGet } from '~/lib/utils/common_utils';
-import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
 

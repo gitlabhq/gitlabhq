@@ -23,7 +23,6 @@ Feature: Project
     And I visit project "Shop" page
     Then I should see project "Shop" README
 
-  @javascript
   Scenario: I should see last commit with CI
     Given project "Shop" has CI enabled
     Given project "Shop" has CI build

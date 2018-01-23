@@ -1,8 +1,10 @@
 <script>
   import Visibility from 'visibilityjs';
   import ciIcon from '~/vue_shared/components/ci_icon.vue';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import Poll from '~/lib/utils/poll';
   import Flash from '~/flash';
+  import { s__, sprintf } from '~/locale';
   import tooltip from '~/vue_shared/directives/tooltip';
   import CommitPipelineService from '../services/commit_pipeline_service';
 
@@ -12,46 +14,54 @@
     },
     components: {
       ciIcon,
+      loadingIcon,
     },
     props: {
       endpoint: {
         type: String,
         required: true,
       },
+      /* This prop can be used to replace some of the `render_commit_status`
+      used across GitLab, this way we could use this vue component and add a
+      realtime status where it makes sense
       realtime: {
         type: Boolean,
         required: false,
         default: true,
-      },
+      }, */
     },
     data() {
       return {
         ciStatus: {},
         isLoading: true,
-        service: {},
-        stageTitle: '',
       };
+    },
+    computed: {
+      statusTitle() {
+        return sprintf(s__('Commits|Commit: %{commitText}'), { commitText: this.ciStatus.text });
+      },
     },
     mounted() {
       this.service = new CommitPipelineService(this.endpoint);
-      if (this.realtime) {
-        this.initPolling();
-      } else {
-        this.fetchPipelineCommitData();
-      }
+      this.initPolling();
     },
     methods: {
       successCallback(res) {
-        if (res.data.pipelines.length > 0) {
-          this.ciStatus = res.data.pipelines[0].details.stages[0].status;
-          this.stageTitle = res.data.pipelines[0].details.stages[0].title;
-          this.isLoading = false;
-        } else {
-          this.isLoading = true;
+        const pipelines = res.data.pipelines;
+        if (pipelines.length > 0) {
+          // The pipeline entity always keeps the latest pipeline info on the `details.status`
+          this.ciStatus = pipelines[0].details.status;
         }
+        this.isLoading = false;
       },
-      errorCallback(err) {
-        Flash(err);
+      errorCallback() {
+        this.ciStatus = {
+          text: 'not found',
+          icon: 'status_notfound',
+          group: 'notfound',
+        };
+        this.isLoading = false;
+        Flash(s__('Something went wrong on our end'));
       },
       initPolling() {
         this.poll = new Poll({
@@ -78,8 +88,8 @@
       },
       fetchPipelineCommitData() {
         this.service.fetchData()
-        .then(this.successCallback)
-        .catch(this.errorCallback);
+          .then(this.successCallback)
+          .catch(this.errorCallback);
       },
     },
     destroy() {
@@ -88,19 +98,23 @@
   };
 </script>
 <template>
-  <div
-  v-if="isLoading">
-  </div>
-  <a
-    v-else
-    :href="ciStatus.details_path"
-  >
-    <ci-icon
-      v-tooltip
-      :title="stageTitle"
-      :aria-label="stageTitle"
-      data-container="body"
-      :status="ciStatus"
+  <div>
+    <loading-icon
+      label="Loading pipeline status"
+      size="3"
+      v-if="isLoading"
     />
-  </a>
+    <a
+      v-else
+      :href="ciStatus.details_path"
+    >
+      <ci-icon
+        v-tooltip
+        :title="statusTitle"
+        :aria-label="statusTitle"
+        data-container="body"
+        :status="ciStatus"
+      />
+    </a>
+  </div>
 </template>

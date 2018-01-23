@@ -15,24 +15,23 @@ export default () => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
 
   const commitPipelineStatusEl = document.getElementById('commit-pipeline-status');
-  const $statusLink = $('.ci-status-link');
-  if ($statusLink.length > 0) {
-    $statusLink.remove();
+  const statusLink = document.querySelector('.commit-actions .ci-status-link');
+  if (statusLink != null) {
+    statusLink.remove();
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: commitPipelineStatusEl,
+      components: {
+        commitPipelineStatus,
+      },
+      render(createElement) {
+        return createElement('commit-pipeline-status', {
+          props: {
+            endpoint: commitPipelineStatusEl.dataset.endpoint,
+          },
+        });
+      },
+    });
   }
-  commitPipelineStatusEl.classList.remove('hidden');
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#commit-pipeline-status',
-    components: {
-      commitPipelineStatus,
-    },
-    render(createElement) {
-      return createElement('commit-pipeline-status', {
-        props: {
-          endpoint: commitPipelineStatusEl.dataset.endpoint,
-        },
-      });
-    },
-  });
 };
 
