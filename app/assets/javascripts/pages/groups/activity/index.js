@@ -1,3 +1,3 @@
 import Activities from '~/activities';
 
-export default new Activities();
+export default () => new Activities();
