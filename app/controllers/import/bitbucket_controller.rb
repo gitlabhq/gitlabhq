@@ -46,7 +46,7 @@ class Import::BitbucketController < Import::BaseController
     repo_owner = current_user.username if repo_owner == bitbucket_client.user.username
     namespace_path = params[:new_namespace].presence || repo_owner
 
-    @target_namespace = find_or_create_namespace(namespace_path, current_user)
+    @target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
 
     if current_user.can?(:create_projects, @target_namespace)
       # The token in a session can be expired, we need to get most recent one because

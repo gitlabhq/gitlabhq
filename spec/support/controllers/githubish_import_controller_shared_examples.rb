@@ -235,7 +235,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
     end
 
-    context 'user has chosen an existing nested namespace and name for the project' do
+    context 'user has chosen an existing nested namespace and name for the project', :postgresql do
       let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
       let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
       let(:test_name) { 'test_name' }
@@ -253,7 +253,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
     end
 
-    context 'user has chosen a non-existent nested namespaces and name for the project' do
+    context 'user has chosen a non-existent nested namespaces and name for the project', :postgresql do
       let(:test_name) { 'test_name' }
 
       it 'takes the selected namespace and name' do
@@ -284,9 +284,13 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
     end
 
-    context 'user has chosen existent and non-existent nested namespaces and name for the project' do
+    context 'user has chosen existent and non-existent nested namespaces and name for the project', :postgresql do
       let(:test_name) { 'test_name' }
       let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+
+      before do
+        parent_namespace.add_owner(user)
+      end
 
       it 'takes the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
@@ -303,6 +307,53 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
         expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
           .to change { Namespace.count }.by(2)
+      end
+
+      it 'does not create a new namespace under the user namespace' do
+        expect(Gitlab::LegacyGithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
+                    .and_return(double(execute: true))
+
+        expect { post :create, { target_namespace: "#{user.namespace_path}/test_group", new_name: test_name, format: :js } }
+            .not_to change { Namespace.count }
+      end
+    end
+
+    context 'user cannot create a subgroup inside a group is not a member of' do
+      let(:test_name) { 'test_name' }
+      let!(:parent_namespace) { create(:group, name: 'foo') }
+
+      it 'does not take the selected namespace and name' do
+        expect(Gitlab::LegacyGithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
+                    .and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
+      end
+
+      it 'does not create the namespaces' do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
+                    .and_return(double(execute: true))
+
+        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
+            .not_to change { Namespace.count }
+      end
+    end
+
+    context 'user can use a group without having permissions to create a group' do
+      let(:test_name) { 'test_name' }
+      let!(:group) { create(:group, name: 'foo') }
+
+      it 'takes the selected namespace and name' do
+        group.add_owner(user)
+        user.update!(can_create_group: false)
+
+        expect(Gitlab::LegacyGithubImport::ProjectCreator)
+            .to receive(:new).with(provider_repo, test_name, group, user, access_params, type: provider)
+                    .and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo', new_name: test_name, format: :js }
       end
     end
   end
