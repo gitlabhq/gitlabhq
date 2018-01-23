@@ -2,7 +2,6 @@
 import notificationsDropdown from './notifications_dropdown';
 import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-import initCompareAutocomplete from './compare_autocomplete';
 import Flash from './flash';
 import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
@@ -21,6 +20,7 @@ import SearchAutocomplete from './search_autocomplete';
 // EE-only
 import UsersSelect from './users_select';
 import UserCallout from './user_callout';
+import initCompareAutocomplete from './compare_autocomplete';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
@@ -88,6 +88,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
+          break;
+        case 'projects:environments:metrics':
+          import('./pages/projects/environments/metrics')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:merge_requests:index':
           import('./pages/projects/merge_requests/index')
