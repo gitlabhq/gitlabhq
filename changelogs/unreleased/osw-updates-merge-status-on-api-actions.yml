@@ -1,5 +1,5 @@
 ---
-title: Update merge_status on MR creation/update/get on the API
+title: Return more consistent values for merge_status on MR APIs
 merge_request:
 author:
 type: fixed
