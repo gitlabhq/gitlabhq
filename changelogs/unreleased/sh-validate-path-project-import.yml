@@ -1,5 +1,0 @@
----
-title: Avoid leaving a push event empty if payload cannot be created
-merge_request:
-author:
-type: fixed

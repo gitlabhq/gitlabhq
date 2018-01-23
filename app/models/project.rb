@@ -314,6 +314,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -1031,6 +1032,8 @@ class Project < ActiveRecord::Base
   end
 
   def fork_source
+    return nil unless forked?
+
     forked_from_project || fork_network&.root_project
   end
 
@@ -1437,7 +1440,7 @@ class Project < ActiveRecord::Base
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
     # the import rake task.
-    repository.rugged.config['gitlab.fullpath'] = gl_full_path
+    repository.raw_repository.write_config(full_path: gl_full_path)
   rescue Gitlab::Git::Repository::NoRepository => e
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
