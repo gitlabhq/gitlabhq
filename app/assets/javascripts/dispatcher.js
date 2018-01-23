@@ -19,7 +19,6 @@ import Shortcuts from './shortcuts';
 import ShortcutsIssuable from './shortcuts_issuable';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
-<<<<<<< HEAD
 
 // EE-only
 import UsersSelect from './users_select';
@@ -29,8 +28,6 @@ import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
-=======
->>>>>>> upstream/master
 
 (function() {
   var Dispatcher;
@@ -351,12 +348,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
-<<<<<<< HEAD
           // ee-start
           initGeoInfoModal();
           // ee-end
-=======
->>>>>>> upstream/master
           break;
         case 'projects:edit':
           import('./pages/projects/edit')
@@ -527,13 +521,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/projects/settings/repository/show')
             .then(callDefault)
             .catch(fail);
-<<<<<<< HEAD
           // ee-start
           new UsersSelect();
           new UserCallout();
           // ee-end
-=======
->>>>>>> upstream/master
           break;
         case 'projects:settings:ci_cd:show':
           import('./pages/projects/settings/ci_cd/show')
