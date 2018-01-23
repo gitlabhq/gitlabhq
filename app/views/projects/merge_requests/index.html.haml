@@ -10,7 +10,8 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
 
-= render 'projects/last_push'
+%div{ class: container_class }
+  = render 'projects/last_push'
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }

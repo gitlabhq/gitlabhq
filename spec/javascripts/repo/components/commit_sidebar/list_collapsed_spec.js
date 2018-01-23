@@ -12,7 +12,7 @@ describe('Multi-file editor commit sidebar list collapsed', () => {
 
     vm = createComponentWithStore(Component, store);
 
-    vm.$store.state.openFiles.push(file(), file());
+    vm.$store.state.openFiles.push(file('file1'), file('file2'));
     vm.$store.state.openFiles[0].tempFile = true;
     vm.$store.state.openFiles.forEach((f) => {
       Object.assign(f, {
