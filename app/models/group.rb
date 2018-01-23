@@ -312,12 +312,6 @@ class Group < Namespace
     list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
-  def full_path_was
-    return path_was unless has_parent?
-
-    "#{parent.full_path}/#{path_was}"
-  end
-
   def group_member(user)
     if group_members.loaded?
       group_members.find { |gm| gm.user_id == user.id }
