@@ -507,7 +507,14 @@ module API
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_pipeline_succeeds
-      expose :merge_status
+
+      # Ideally we should deprecate `MergeRequest#merge_status` exposure and
+      # use `MergeRequest#mergeable?` instead (boolean).
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/42344 for more
+      # information.
+      expose :merge_status do |merge_request|
+        merge_request.tap(&:check_if_can_be_merged).merge_status
+      end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
