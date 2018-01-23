@@ -20,8 +20,11 @@ describe Projects::VariablesController do
       subject do
         post :save_multiple,
           namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [{ id: variable.id, key: variable.key, value: 'other_value' },
-                                 { key: '..?', value: 'dummy_value' }],
+          variables_attributes: [{ id: variable.id, key: variable.key,
+                                   value: 'other_value',
+                                   protected: variable.protected?.to_s },
+                                 { key: '..?', value: 'dummy_value',
+                                   protected: 'false' }],
           format: :json
       end
 
@@ -44,8 +47,11 @@ describe Projects::VariablesController do
       subject do
         post :save_multiple,
           namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [{ id: variable.id, key: variable.key, value: 'other_value' },
-                                 { key: 'new_key', value: 'dummy_value' }],
+          variables_attributes: [{ id: variable.id, key: variable.key,
+                                   value: 'other_value',
+                                   protected: variable.protected?.to_s },
+                                 { key: 'new_key', value: 'dummy_value',
+                                   protected: 'false' }],
           format: :json
       end
 
@@ -69,7 +75,9 @@ describe Projects::VariablesController do
         post :save_multiple,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: variable.value, _destroy: 'true' }],
+                                   value: variable.value,
+                                   protected: variable.protected?.to_s,
+                                   _destroy: 'true' }],
           format: :json
       end
 
