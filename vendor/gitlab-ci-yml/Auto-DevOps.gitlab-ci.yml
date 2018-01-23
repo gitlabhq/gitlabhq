@@ -462,11 +462,8 @@ production:
   }
 
   function create_secret() {
-<<<<<<< HEAD
-=======
     echo "Create secret..."
 
->>>>>>> ea14c1e6963... Merge branch 'vendor-10-4-auto-devops-template' into 'master'
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \
       --docker-server="$CI_REGISTRY" \
