@@ -9,7 +9,6 @@ def emit_warnings(static_analysis)
     puts
     puts "**** #{result.cmd.join(' ')} had the following warnings:"
     puts
-    puts result.stdout
     puts result.stderr
     puts
   end
