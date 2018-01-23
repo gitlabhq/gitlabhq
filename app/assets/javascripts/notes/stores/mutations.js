@@ -1,6 +1,7 @@
 import * as utils from './utils';
 import * as types from './mutation_types';
 import * as constants from '../constants';
+import { isInMRPage } from '../../lib/utils/common_utils';
 
 export default {
   [types.ADD_NEW_NOTE](state, note) {
@@ -17,7 +18,7 @@ export default {
         reply_id: discussion_id,
       };
 
-      if (isDiscussion) {
+      if (isDiscussion && isInMRPage()) {
         noteData.resolvable = note.resolvable;
         noteData.resolved = false;
         noteData.resolve_path = `${document.location.pathname}/discussions/${note.discussion_id}/resolve`;
