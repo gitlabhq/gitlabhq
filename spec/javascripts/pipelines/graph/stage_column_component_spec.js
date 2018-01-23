@@ -35,10 +35,7 @@ describe('stage column component', () => {
       propsData: {
         title: 'foo',
         jobs: mockJobs,
-<<<<<<< HEAD
         hasTriggeredBy: false,
-=======
->>>>>>> upstream/master
       },
     }).$mount();
   });
