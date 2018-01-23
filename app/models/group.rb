@@ -29,6 +29,8 @@ class Group < Namespace
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
+  accepts_nested_attributes_for :variables, allow_destroy: true
+
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
