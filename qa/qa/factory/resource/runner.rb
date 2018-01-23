@@ -4,7 +4,7 @@ module QA
   module Factory
     module Resource
       class Runner < Factory::Base
-        attr_writer :name
+        attr_writer :name, :tags
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-ci-cd'
@@ -13,6 +13,10 @@ module QA
 
         def name
           @name || "qa-runner-#{SecureRandom.hex(4)}"
+        end
+
+        def tags
+          @tags || %w[qa e2e]
         end
 
         def fabricate!
@@ -26,7 +30,7 @@ module QA
                 runner.pull
                 runner.token = runners.registration_token
                 runner.address = runners.coordinator_address
-                runner.tags = %w[qa test]
+                runner.tags = tags
                 runner.register!
                 # TODO, wait for runner to register using non-blocking method.
                 sleep 5
