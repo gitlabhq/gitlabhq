@@ -22,7 +22,7 @@ module SystemCheck
         \s*                        # optional any amount of space character
         (?:\#.*)?$                 # optional start-comment symbol followed by optionally any character until end of line
       }x
-      OPENSSH_EXPECTED_COMMAND = '/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check %u %k'.freeze
+      OPENSSH_EXPECTED_COMMAND = '/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k'.freeze
 
       def multi_check
         unless openssh_config_exists?
