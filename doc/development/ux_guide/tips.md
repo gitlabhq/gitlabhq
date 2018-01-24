@@ -43,7 +43,7 @@ Correct file will look like this:
 
 > TODO: Checkout [https://github.com/svg/svgo](https://github.com/svg/svgo)
 
-## Updating SVGs on  [gitlab-svgs](http://gitlab-org.gitlab.io/gitlab-svgs/)
+## Updating SVGs on [gitlab-svgs](http://gitlab-org.gitlab.io/gitlab-svgs/)
 
 - Exporting the icons or illustrations you created as SVGs.
 - Optimize them by [SVGO](https://github.com/svg/svgo).
