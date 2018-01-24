@@ -56,7 +56,6 @@ class MergeRequest < ActiveRecord::Base
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
-  after_update :mark_as_unchecked_if_target_branch_changed
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -560,12 +559,6 @@ class MergeRequest < ActiveRecord::Base
         (source_branch_head && target_branch_head)
       reload_diff
     end
-  end
-
-  def mark_as_unchecked_if_target_branch_changed
-    return unless target_branch_changed?
-
-    mark_as_unchecked
   end
 
   def reload_diff(current_user = nil)
