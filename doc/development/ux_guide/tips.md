@@ -42,3 +42,22 @@ Correct file will look like this:
 ```
 
 > TODO: Checkout [https://github.com/svg/svgo](https://github.com/svg/svgo)
+
+## Updating SVGs on  [gitlab-svgs](http://gitlab-org.gitlab.io/gitlab-svgs/)
+
+- Exporting the icons or illustrations you created as SVGs.
+- Optimize them by [SVGO](https://github.com/svg/svgo).
+- Switch to your terminal:
+ * Enter `git pull origin master` to pull the latest files.
+ * Enter `git checkout -b your-branch-name`  on the terminal.
+- Go to the `gitlab-svgs` directory locally, and then you will see `sprite_icons` and `illustrations` folders.
+ * For icons, paste the icons to `sprite_icons` folder.
+ * For illustrations, paste the illustrations to `illustrations` folder.
+- Switch to your terminal:
+ * Enter `yarn svg`
+ * Enter `git status` to check the files you will commit
+ * Enter  `git add .` to commit the files.
+ * Enter `git commit -m “your commit message”`
+ * Enter `git push origin your-branch-name`
+- Create a merge request on gitlab.com
+- Tag [@timzallmann](https://gitlab.com/timzallmann) or [@hazelyang](https://gitlab.com/hazelyang) to merge it.
