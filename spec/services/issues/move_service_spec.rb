@@ -302,7 +302,6 @@ describe Issues::MoveService do
         it 'executes project issue hooks' do
           allow_any_instance_of(WebHookService).to receive(:execute)
 
-<<<<<<< HEAD
           # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
           # but since the entire spec run takes place in a transaction, we never
           # actually get to the `after_commit` hook that queues these jobs.
@@ -317,8 +316,6 @@ describe Issues::MoveService do
         it 'executes group issue hooks' do
           allow_any_instance_of(WebHookService).to receive(:execute)
 
-=======
->>>>>>> upstream/master
           # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
           # but since the entire spec run takes place in a transaction, we never
           # actually get to the `after_commit` hook that queues these jobs.
