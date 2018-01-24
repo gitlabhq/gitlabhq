@@ -1,2 +1,15 @@
 worker_processes 2
 timeout 60
+
+before_fork do |server, worker|
+  if /darwin/ =~ RUBY_PLATFORM
+    require 'fiddle'
+
+    # Dynamically load Foundation.framework, ~implicitly~ initialising
+    # the Objective-C runtime before any forking happens in Unicorn
+    #
+    # From https://bugs.ruby-lang.org/issues/14009
+    Fiddle.dlopen '/System/Library/Frameworks/Foundation.framework/Foundation'
+  end
+end
+

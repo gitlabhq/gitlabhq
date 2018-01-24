@@ -1,5 +1,0 @@
----
-title: Ensure that emails contain absolute, rather than relative, links to user uploads
-merge_request: 16364
-author:
-type: fixed

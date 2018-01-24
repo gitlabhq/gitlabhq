@@ -1,0 +1,5 @@
+---
+title: Fix copy/paste on iOS devices due to a bug in webkit
+merge_request: 15804
+author:
+type: fixed
