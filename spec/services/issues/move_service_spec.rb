@@ -297,9 +297,11 @@ describe Issues::MoveService do
       end
 
       context 'project issue hooks' do
-        let(:hook) { create(:project_hook, project: old_project, issues_events: true) }
+        let!(:hook) { create(:project_hook, project: old_project, issues_events: true) }
 
         it 'executes project issue hooks' do
+          allow_any_instance_of(WebHookService).to receive(:execute)
+
           # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
           # but since the entire spec run takes place in a transaction, we never
           # actually get to the `after_commit` hook that queues these jobs.
