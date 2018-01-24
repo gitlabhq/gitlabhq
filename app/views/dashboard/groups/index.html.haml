@@ -3,9 +3,6 @@
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
-= webpack_bundle_tag 'common_vue'
-= webpack_bundle_tag 'groups'
-
 - if params[:filter].blank? && @groups.empty?
   = render 'shared/groups/empty_state'
 - else
