@@ -345,11 +345,8 @@ setup-test-env:
     paths:
       - tmp/tests
 
-<<<<<<< HEAD
 rspec-pg geo: *rspec-metadata-pg-geo
 
-=======
->>>>>>> upstream/master
 rspec-pg 0 27: *rspec-metadata-pg
 rspec-pg 1 27: *rspec-metadata-pg
 rspec-pg 2 27: *rspec-metadata-pg
