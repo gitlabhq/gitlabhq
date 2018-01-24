@@ -57,9 +57,9 @@ puts '==================================================='
 puts
 puts
 
-if static_analysis.all_good?
+if static_analysis.all_success_and_clean?
   puts 'All static analyses passed successfully.'
-elsif static_analysis.all_status_zero?
+elsif static_analysis.all_success?
   puts 'All static analyses passed successfully, but we have warnings:'
   puts
 

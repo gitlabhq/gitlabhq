@@ -16,7 +16,7 @@ describe Gitlab::Popen do
     it { expect(subject.cmd).to eq(cmd) }
     it { expect(subject.stdout).to eq("1\n") }
     it { expect(subject.stderr).to eq("2\n") }
-    it { expect(subject.status).to eq(3) }
+    it { expect(subject.status.exitstatus).to eq(3) }
     it { expect(subject.duration).to be_kind_of(Numeric) }
   end
 

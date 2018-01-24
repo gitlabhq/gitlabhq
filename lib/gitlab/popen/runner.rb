@@ -20,12 +20,12 @@ module Gitlab
         end
       end
 
-      def all_good?
-        all_status_zero? && all_stderr_empty?
+      def all_success_and_clean?
+        all_success? && all_stderr_empty?
       end
 
-      def all_status_zero?
-        results.all? { |result| result.status.zero? }
+      def all_success?
+        results.all? { |result| result.status.success? }
       end
 
       def all_stderr_empty?
@@ -33,12 +33,12 @@ module Gitlab
       end
 
       def failed_results
-        results.select { |result| result.status.nonzero? }
+        results.reject { |result| result.status.success? }
       end
 
       def warned_results
         results.select do |result|
-          result.status.zero? && !result.stderr.empty?
+          result.status.success? && !result.stderr.empty?
         end
       end
     end

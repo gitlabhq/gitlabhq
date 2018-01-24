@@ -11,43 +11,43 @@ describe Gitlab::Popen::Runner do
     end
   end
 
-  describe '#all_good?' do
+  describe '#all_success_and_clean?' do
     it 'returns true when exit status is 0 and stderr is empty' do
       run_command
 
-      expect(subject).to be_all_good
+      expect(subject).to be_all_success_and_clean
     end
 
     it 'returns false when exit status is not 0' do
       run_command(exitstatus: 1)
 
-      expect(subject).not_to be_all_good
+      expect(subject).not_to be_all_success_and_clean
     end
 
     it 'returns false when exit stderr has something' do
       run_command(stderr: 'stderr')
 
-      expect(subject).not_to be_all_good
+      expect(subject).not_to be_all_success_and_clean
     end
   end
 
-  describe '#all_status_zero?' do
+  describe '#all_success?' do
     it 'returns true when exit status is 0' do
       run_command
 
-      expect(subject).to be_all_status_zero
+      expect(subject).to be_all_success
     end
 
     it 'returns false when exit status is not 0' do
       run_command(exitstatus: 1)
 
-      expect(subject).not_to be_all_status_zero
+      expect(subject).not_to be_all_success
     end
 
     it 'returns true' do
       run_command(stderr: 'stderr')
 
-      expect(subject).to be_all_status_zero
+      expect(subject).to be_all_success
     end
   end
 

@@ -11,7 +11,7 @@ module Gitlab
     def popen(cmd, path = nil, vars = {}, &block)
       result = popen_with_detail(cmd, path, vars, &block)
 
-      [result.stdout << result.stderr, result.status]
+      [result.stdout << result.stderr, result.status&.exitstatus]
     end
 
     # Returns Result
@@ -30,7 +30,7 @@ module Gitlab
 
       cmd_stdout = ''
       cmd_stderr = ''
-      cmd_status = 0
+      cmd_status = nil
       start = Time.now
 
       Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
@@ -39,7 +39,7 @@ module Gitlab
 
         cmd_stdout = stdout.read
         cmd_stderr = stderr.read
-        cmd_status = wait_thr.value.exitstatus
+        cmd_status = wait_thr.value
       end
 
       Result.new(cmd, cmd_stdout, cmd_stderr, cmd_status, Time.now - start)
