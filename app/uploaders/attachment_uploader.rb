@@ -4,8 +4,6 @@ class AttachmentUploader < GitlabUploader
   prepend ObjectStorage::Extension::RecordsUploads
   include UploaderHelper
 
-  storage_options Gitlab.config.uploads
-
   private
 
   def dynamic_segment

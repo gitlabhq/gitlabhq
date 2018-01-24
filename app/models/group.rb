@@ -128,10 +128,6 @@ class Group < Namespace
       visibility_level_allowed_by_sub_groups?(level)
   end
 
-  def avatar_url(**args)
-    avatar_path(**args)
-  end
-
   def lfs_enabled?
     return false unless Gitlab.config.lfs.enabled
     return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?

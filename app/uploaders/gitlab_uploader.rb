@@ -1,18 +1,19 @@
 class GitlabUploader < CarrierWave::Uploader::Base
+  class_attribute :options
+
   class << self
     # DSL setter
-    def storage_options(options = nil)
-      @storage_options = options if options
-      @storage_options
+    def storage_options(options)
+      self.options = options
     end
 
     def root
-      storage_options&.storage_path
+      options.storage_path
     end
 
     # represent the directory namespacing at the class level
     def base_dir
-      storage_options.fetch('base_dir', '')
+      options.fetch('base_dir', '')
     end
 
     def file_storage?
@@ -23,6 +24,8 @@ class GitlabUploader < CarrierWave::Uploader::Base
       File.join(root, upload_record.path)
     end
   end
+
+  storage_options Gitlab.config.uploads
 
   delegate :base_dir, :file_storage?, to: :class
 

@@ -30,7 +30,7 @@ module ObjectStorage
         paths = store_dirs.map { |store, path| File.join(path, identifier) }
 
         unless current_upload_satisfies?(paths, model)
-          # we already have the right upload, don't fetch
+          # the upload we already have isn't right, find the correct one
           self.upload = uploads.find_by(model: model, path: paths)
         end
 
@@ -56,7 +56,7 @@ module ObjectStorage
 
         paths.include?(upload.path) &&
           upload.model_id == model.id &&
-          upload.model_type == model.class.to_s
+          upload.model_type == model.base_class.sti_name
       end
     end
   end
@@ -73,23 +73,23 @@ module ObjectStorage
 
     class_methods do
       def object_store_options
-        storage_options&.object_store
+        options.object_store
       end
 
       def object_store_enabled?
-        object_store_options&.enabled
+        object_store_options.enabled
       end
 
       def background_upload_enabled?
-        object_store_options&.background_upload
+        object_store_options.background_upload
       end
 
       def object_store_credentials
-        object_store_options&.connection&.to_hash&.deep_symbolize_keys
+        object_store_options.connection.to_hash.deep_symbolize_keys
       end
 
       def remote_store_path
-        object_store_options&.remote_directory
+        object_store_options.remote_directory
       end
 
       def licensed?
@@ -252,7 +252,7 @@ module ObjectStorage
     # this is a hack around CarrierWave. The #migrate method needs to be
     # able to force the current file to the migrated file upon success.
     def file=(file)
-      @file = file
+      @file = file # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def serialization_column

@@ -180,6 +180,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'user', mounted_as: 'avatar', id: user.id, filename: 'image.png'
+
               response
             end
           end
@@ -196,6 +197,7 @@ describe UploadsController do
         it_behaves_like 'content not cached without revalidation' do
           subject do
             get :show, model: 'user', mounted_as: 'avatar', id: user.id, filename: 'image.png'
+
             response
           end
         end
@@ -213,12 +215,14 @@ describe UploadsController do
         context "when not signed in" do
           it "responds with status 200" do
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
+
             expect(response).to have_gitlab_http_status(200)
           end
 
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+
               response
             end
           end
@@ -238,6 +242,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+
               response
             end
           end
@@ -290,6 +295,7 @@ describe UploadsController do
               it_behaves_like 'content not cached without revalidation' do
                 subject do
                   get :show, model: 'project', mounted_as: 'avatar', id: project.id, filename: 'image.png'
+
                   response
                 end
               end
@@ -321,6 +327,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+
               response
             end
           end
@@ -340,6 +347,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+
               response
             end
           end
@@ -383,6 +391,7 @@ describe UploadsController do
               it_behaves_like 'content not cached without revalidation' do
                 subject do
                   get :show, model: 'group', mounted_as: 'avatar', id: group.id, filename: 'image.png'
+
                   response
                 end
               end
@@ -419,6 +428,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+
               response
             end
           end
@@ -438,6 +448,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+
               response
             end
           end
@@ -490,6 +501,7 @@ describe UploadsController do
               it_behaves_like 'content not cached without revalidation' do
                 subject do
                   get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'image.png'
+
                   response
                 end
               end
@@ -521,6 +533,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
+
               response
             end
           end
@@ -540,6 +553,7 @@ describe UploadsController do
           it_behaves_like 'content not cached without revalidation' do
             subject do
               get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
+
               response
             end
           end

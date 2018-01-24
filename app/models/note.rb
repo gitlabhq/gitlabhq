@@ -207,13 +207,6 @@ class Note < ActiveRecord::Base
     current_application_settings.max_attachment_size.megabytes.to_i
   end
 
-  def attachment_upload(uploader)
-    return unless attachment_identifier
-
-    paths = uploader.store_dirs.map { |store, path| File.join(path, attachment_identifier) }
-    Upload.where(model: self, uploader: uploader.class.to_s, path: paths)&.last
-  end
-
   def hook_attrs
     attributes
   end

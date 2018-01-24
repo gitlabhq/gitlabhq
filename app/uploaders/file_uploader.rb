@@ -17,10 +17,8 @@ class FileUploader < GitlabUploader
 
   attr_accessor :model
 
-  storage_options Gitlab.config.uploads
-
   def self.root
-    File.join(storage_options&.storage_path, 'uploads')
+    File.join(options.storage_path, 'uploads')
   end
 
   def self.absolute_path(upload)

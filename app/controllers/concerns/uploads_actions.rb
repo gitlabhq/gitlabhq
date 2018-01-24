@@ -1,6 +1,8 @@
 module UploadsActions
   include Gitlab::Utils::StrongMemoize
 
+  UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo).freeze
+
   def create
     link_to_file = UploadService.new(model, params[:file], uploader_class).execute
 
@@ -18,19 +20,20 @@ module UploadsActions
   end
 
   # This should either
-  #   - find the file and redirect to its URL
-  #   - send the file
+  #   - send the file directly
+  #   - or redirect to its URL
   #
   def show
     return render_404 unless uploader.exists?
 
-    # send to the remote URL
-    redirect_to uploader.url unless uploader.file_storage?
+    if uploader.file_storage?
+      disposition = uploader.image_or_video? ? 'inline' : 'attachment'
+      expires_in 0.seconds, must_revalidate: true, private: true
 
-    # or send the file
-    disposition = uploader.image_or_video? ? 'inline' : 'attachment'
-    expires_in 0.seconds, must_revalidate: true, private: true
-    send_file uploader.file.path, disposition: disposition
+      send_file uploader.file.path, disposition: disposition
+    else
+      redirect_to uploader.url
+    end
   end
 
   private
@@ -41,8 +44,7 @@ module UploadsActions
 
   def upload_mount
     mounted_as = params[:mounted_as]
-    upload_mounts = %w(avatar attachment file logo header_logo)
-    mounted_as if upload_mounts.include? mounted_as
+    mounted_as if UPLOAD_MOUNTS.include?(mounted_as)
   end
 
   def uploader_mounted?
