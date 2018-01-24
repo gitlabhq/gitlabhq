@@ -23,10 +23,11 @@ describe('Pipelines Table Row', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines; // sorted by id, descending
-    pipeline = pipelines[2];
-    pipelineWithoutAuthor = pipelines[1];
-    pipelineWithoutCommit = pipelines[0];
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
+    pipelineWithoutAuthor = pipelines.find(p => p.user == null && p.commit !== null);
+    pipelineWithoutCommit = pipelines.find(p => p.user == null && p.commit == null);
   });
 
   afterEach(() => {

@@ -10,9 +10,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+
     PipelinesTable = Vue.extend(pipelinesTable);
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines; // sorted by id, descending
-    pipeline = pipelines[2];
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
   });
 
   describe('successful request', () => {
