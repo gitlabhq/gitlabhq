@@ -12,12 +12,19 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
     SQL
 
     execute <<~SQL
-      UPDATE ci_builds SET stage_id = NULL WHERE ci_builds.stage_id IN (#{redundant_stages_ids})
+      UPDATE ci_builds SET stage_id = NULL WHERE stage_id IN (#{redundant_stages_ids})
     SQL
 
-    execute <<~SQL
-      DELETE FROM ci_stages WHERE ci_stages.id IN (#{redundant_stages_ids})
-    SQL
+    if Gitlab::Database.postgresql?
+      execute <<~SQL
+        DELETE FROM ci_stages WHERE id IN (#{redundant_stages_ids})
+      SQL
+    else # We can't modify a table we are selecting from on MySQL
+      execute <<~SQL
+        DELETE a FROM ci_stages AS a, ci_stages AS b
+          WHERE a.pipeline_id = b.pipeline_id AND a.name = b.name
+      SQL
+    end
   end
 
   def down
