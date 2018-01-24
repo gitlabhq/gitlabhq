@@ -1293,7 +1293,7 @@ to the CI pipeline:
 ```yaml
 variables:
   GIT_STRATEGY: clone
-  GIT_CHECKOUT: false
+  GIT_CHECKOUT: "false"
 script:
   - git checkout master
   - git merge $CI_BUILD_REF_NAME
