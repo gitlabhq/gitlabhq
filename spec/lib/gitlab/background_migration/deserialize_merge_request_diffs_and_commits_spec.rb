@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :truncate, :migration, schema: 20171114162227 do
+describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :migration, schema: 20171114162227 do
   let(:merge_request_diffs) { table(:merge_request_diffs) }
   let(:merge_requests) { table(:merge_requests) }
 
