@@ -71,9 +71,9 @@
         <component
           :is="rowTag(html)"
           :class="html.className"
-          v-for="html in diffRows"
+          v-for="(html, index) in diffRows"
           v-html="html.outerHTML"
-          :key="html"
+          :key="index"
         />
         <tr class="notes_holder">
           <td
