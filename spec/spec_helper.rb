@@ -31,7 +31,7 @@ end
 require 'rainbow/ext/string'
 
 # EE specific support
-Dir[Rails.root.join("spec/ee/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("ee/spec/support/**/*.rb")].each { |f| require f }
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
