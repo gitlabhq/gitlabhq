@@ -66,12 +66,8 @@ export default {
       this.commitChanges({ payload, newMr: this.startNewMR })
         .then(() => {
           this.submitCommitsLoading = false;
-          this.$store.dispatch('getTreeData', {
-            projectId: this.currentProjectId,
-            branch: this.currentBranchId,
-            endpoint: `/tree/${this.currentBranchId}`,
-            force: true,
-          });
+          this.commitMessage = '';
+          this.startNewMR = false;
         })
         .catch(() => {
           this.submitCommitsLoading = false;
@@ -150,6 +146,7 @@ export default {
         type="submit"
         :disabled="commitButtonDisabled"
         class="btn btn-default btn-sm append-right-10 prepend-left-10"
+        :class="{ disabled: submitCommitsLoading }"
       >
         <i
           v-if="submitCommitsLoading"

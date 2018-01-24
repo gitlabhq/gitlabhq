@@ -462,6 +462,8 @@ production:
   }
 
   function create_secret() {
+    echo "Create secret..."
+
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \
       --docker-server="$CI_REGISTRY" \

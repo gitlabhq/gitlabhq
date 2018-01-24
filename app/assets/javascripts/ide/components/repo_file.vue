@@ -35,9 +35,12 @@
         return this.file.type === 'tree';
       },
       levelIndentation() {
-        return {
-          marginLeft: `${this.file.level * 16}px`,
-        };
+        if (this.file.level > 0) {
+          return {
+            marginLeft: `${this.file.level * 16}px`,
+          };
+        }
+        return {};
       },
       shortId() {
         return this.file.id.substr(0, 8);
@@ -111,7 +114,7 @@
         :parent="file"/>
       <i
         class="fa"
-        v-if="changedClass"
+        v-if="file.changed || file.tempFile"
         :class="changedClass"
         aria-hidden="true"
       >

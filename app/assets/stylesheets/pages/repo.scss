@@ -113,6 +113,11 @@ table.table tr td.multi-file-table-name {
     vertical-align: middle;
     margin-right: 2px;
   }
+
+  .loading-container {
+    margin-right: 4px;
+    display: inline-block;
+  }
 }
 
 .multi-file-table-col-commit-message {
@@ -253,7 +258,6 @@ table.table tr td.multi-file-table-name {
   display: flex;
   position: relative;
   flex-direction: column;
-  height: 100%;
   width: 290px;
   padding: 0;
   background-color: $gray-light;
@@ -262,6 +266,11 @@ table.table tr td.multi-file-table-name {
   .projects-sidebar {
     display: flex;
     flex-direction: column;
+
+    .context-header {
+      width: auto;
+      margin-right: 0;
+    }
   }
 
   .multi-file-commit-panel-inner {
@@ -502,18 +511,69 @@ table.table tr td.multi-file-table-name {
   }
 }
 
-.ide-flash-container.flash-container {
-  margin-top: $header-height;
-  margin-bottom: 0;
+.ide.nav-only {
+  .flash-container {
+    margin-top: $header-height;
+    margin-bottom: 0;
+  }
+
+  .alert-wrapper .flash-container .flash-alert:last-child,
+  .alert-wrapper .flash-container .flash-notice:last-child {
+    margin-bottom: 0;
+  }
+
+  .content {
+    margin-top: $header-height;
+  }
+
+  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+    max-height: calc(100vh - #{$header-height + $context-header-height});
+  }
+
+  &.flash-shown {
+    .content {
+      margin-top: 0;
+    }
+
+    .ide-view {
+      height: calc(100vh - #{$header-height + $flash-height});
+    }
+
+    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+      max-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
+    }
+  }
 }
 
-.with-performance-bar {
-  .ide-flash-container.flash-container {
-    margin-top: $header-height + $performance-bar-height;
+.with-performance-bar .ide.nav-only {
+  .flash-container {
+    margin-top: #{$header-height + $performance-bar-height};
+  }
+
+  .content {
+    margin-top: #{$header-height + $performance-bar-height};
   }
 
   .ide-view {
     height: calc(100vh - #{$header-height + $performance-bar-height});
+  }
+
+  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+    max-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
+  }
+
+  &.flash-shown {
+    .content {
+      margin-top: 0;
+    }
+
+    .ide-view {
+      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
+    }
+
+    .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+      max-height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height + $context-header-height});
+    }
   }
 }
 

@@ -143,6 +143,14 @@ export default {
     hasUpdated() {
       return !!this.state.updatedAt;
     },
+    issueChanged() {
+      const descriptionChanged =
+        this.initialDescriptionText !== this.store.formState.description;
+      const titleChanged =
+        this.initialTitleText !== this.store.formState.title;
+      return descriptionChanged || titleChanged;
+    },
+
   },
   components: {
     descriptionComponent,
@@ -156,6 +164,14 @@ export default {
   ],
 
   methods: {
+    handleBeforeUnloadEvent(e) {
+      const event = e;
+      if (this.showForm && this.issueChanged) {
+        event.returnValue = 'Are you sure you want to lose your issue information?';
+      }
+      return undefined;
+    },
+
     openForm() {
       if (!this.showForm) {
         this.showForm = true;
@@ -243,12 +259,14 @@ export default {
       }
     });
 
+    window.addEventListener('beforeunload', this.handleBeforeUnloadEvent);
     eventHub.$on('delete.issuable', this.deleteIssuable);
     eventHub.$on('update.issuable', this.updateIssuable);
     eventHub.$on('close.form', this.closeForm);
     eventHub.$on('open.form', this.openForm);
   },
   beforeDestroy() {
+    window.removeEventListener('beforeunload', this.handleBeforeUnloadEvent);
     eventHub.$off('delete.issuable', this.deleteIssuable);
     eventHub.$off('update.issuable', this.updateIssuable);
     eventHub.$off('close.form', this.closeForm);

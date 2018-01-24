@@ -54,7 +54,7 @@ export default class Editor {
 
   attachModel(model) {
     this.instance.setModel(model.getModel());
-    this.dirtyDiffController.attachModel(model);
+    if (this.dirtyDiffController) this.dirtyDiffController.attachModel(model);
 
     this.currentModel = model;
 
@@ -67,7 +67,7 @@ export default class Editor {
       return acc;
     }, {}));
 
-    this.dirtyDiffController.reDecorate(model);
+    if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
   clearEditor() {

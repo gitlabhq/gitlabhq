@@ -304,6 +304,12 @@ module IssuablesHelper
     issuable.model_name.human.downcase
   end
 
+  def selected_labels
+    Array(params[:label_name]).map do |label_name|
+      Label.new(title: label_name)
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?

@@ -95,12 +95,18 @@
         title: _('This job requires a manual action'),
         content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments'),
         action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), method: :post, class: 'btn btn-primary', title: _('Trigger this manual action') )
+    - elsif @build.created?
+      = render 'empty_state',
+        illustration: 'illustrations/job_not_triggered.svg',
+        illustration_size: 'svg-306',
+        title: _('This job has not been triggered yet'),
+        content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
     - else
       = render 'empty_state',
         illustration: 'illustrations/job_not_triggered.svg',
         illustration_size: 'svg-306',
-        title: _('This job has not been triggered yet')
-
+        title: _('This job has not started yet'),
+        content: _('This job is in pending state and is waiting to be picked by a runner')
   = render "sidebar"
 
 .js-build-options{ data: javascript_build_options }

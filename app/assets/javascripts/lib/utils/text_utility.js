@@ -72,4 +72,4 @@ export function capitalizeFirstCharacter(text) {
  * @param {*} replace
  * @returns {String}
  */
-export const stripeHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);
+export const stripHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);
