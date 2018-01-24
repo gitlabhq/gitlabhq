@@ -386,6 +386,17 @@ describe WikiPage do
     end
   end
 
+  describe '#formatted_content' do
+    it 'returns processed content of the page', :disable_gitaly do
+      subject.create({ title: "RDoc", content: "*bold*", format: "rdoc" })
+      page = wiki.find_page('RDoc')
+
+      expect(page.formatted_content).to eq("\n<p><strong>bold</strong></p>\n")
+
+      destroy_page('RDoc')
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
