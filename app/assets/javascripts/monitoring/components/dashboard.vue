@@ -11,6 +11,12 @@
 
   export default {
 
+    components: {
+      Graph,
+      GraphGroup,
+      EmptyState,
+    },
+
     data() {
       const metricsData = document.querySelector('#prometheus-graphs').dataset;
       const store = new MonitoringStore();
@@ -36,12 +42,30 @@
       };
     },
 
-    components: {
-      Graph,
-      GraphGroup,
-      EmptyState,
+    created() {
+      this.service = new MonitoringService({
+        metricsEndpoint: this.metricsEndpoint,
+        deploymentEndpoint: this.deploymentEndpoint,
+      });
+      eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$on('hoverChanged', this.hoverChanged);
     },
 
+    beforeDestroy() {
+      eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$off('hoverChanged', this.hoverChanged);
+      window.removeEventListener('resize', this.resizeThrottled, false);
+    },
+
+    mounted() {
+      this.resizeThrottled = _.throttle(this.resize, 600);
+      if (!this.hasMetrics) {
+        this.state = 'gettingStarted';
+      } else {
+        this.getGraphsData();
+        window.addEventListener('resize', this.resizeThrottled, false);
+      }
+    },
     methods: {
       getGraphsData() {
         this.state = 'loading';
@@ -72,36 +96,14 @@
         this.hoverData = data;
       },
     },
-
-    created() {
-      this.service = new MonitoringService({
-        metricsEndpoint: this.metricsEndpoint,
-        deploymentEndpoint: this.deploymentEndpoint,
-      });
-      eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
-      eventHub.$on('hoverChanged', this.hoverChanged);
-    },
-
-    beforeDestroy() {
-      eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
-      eventHub.$off('hoverChanged', this.hoverChanged);
-      window.removeEventListener('resize', this.resizeThrottled, false);
-    },
-
-    mounted() {
-      this.resizeThrottled = _.throttle(this.resize, 600);
-      if (!this.hasMetrics) {
-        this.state = 'gettingStarted';
-      } else {
-        this.getGraphsData();
-        window.addEventListener('resize', this.resizeThrottled, false);
-      }
-    },
   };
 </script>
 
 <template>
-  <div v-if="!showEmptyState" class="prometheus-graphs">
+  <div
+    v-if="!showEmptyState"
+    class="prometheus-graphs"
+  >
     <graph-group
       v-for="(groupData, index) in store.groups"
       :key="index"

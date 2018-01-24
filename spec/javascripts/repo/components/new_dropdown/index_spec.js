@@ -57,15 +57,16 @@ describe('new dropdown component', () => {
     });
   });
 
-  describe('toggleModalOpen', () => {
+  describe('hideModal', () => {
+    beforeAll((done) => {
+      vm.openModal = true;
+      Vue.nextTick(done);
+    });
+
     it('closes modal after toggling', (done) => {
-      vm.toggleModalOpen();
+      vm.hideModal();
 
       Vue.nextTick()
-        .then(() => {
-          expect(vm.$el.querySelector('.modal')).not.toBeNull();
-        })
-        .then(vm.toggleModalOpen)
         .then(() => {
           expect(vm.$el.querySelector('.modal')).toBeNull();
         })

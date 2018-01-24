@@ -7,7 +7,14 @@
   import resolvable from '../mixins/resolvable';
 
   export default {
-    name: 'issueNoteForm',
+    name: 'IssueNoteForm',
+    components: {
+      issueWarning,
+      markdownField,
+    },
+    mixins: [
+      issuableStateMixin,
+    ],
     props: {
       noteBody: {
         type: String,
@@ -17,6 +24,7 @@
       noteId: {
         type: Number,
         required: false,
+        default: 0,
       },
       saveButtonTitle: {
         type: String,
@@ -41,10 +49,6 @@
         isResolving: false,
         resolveAsThread: true,
       };
-    },
-    components: {
-      issueWarning,
-      markdownField,
     },
     computed: {
       ...mapGetters([
@@ -72,6 +76,18 @@
       isDisabled() {
         return !this.updatedNoteBody.length || this.isSubmitting;
       },
+    },
+    watch: {
+      noteBody() {
+        if (this.note === this.noteBody) {
+          this.note = this.noteBody;
+        } else {
+          this.conflictWhileEditing = true;
+        }
+      },
+    },
+    mounted() {
+      this.$refs.textarea.focus();
     },
     methods: {
       ...mapActions([
@@ -105,6 +121,7 @@
         this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.updatedNoteBody);
       },
     },
+<<<<<<< HEAD
     mixins: [
       issuableStateMixin,
       resolvable,
@@ -121,11 +138,15 @@
         }
       },
     },
+=======
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
   };
 </script>
 
 <template>
-  <div ref="editNoteForm" class="note-edit-form current-note-edit-form">
+  <div
+    ref="editNoteForm"
+    class="note-edit-form current-note-edit-form">
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger">
@@ -133,12 +154,13 @@
       <a
         :href="noteHash"
         target="_blank"
-        rel="noopener noreferrer">updated comment</a>
-        to ensure information is not lost.
+        rel="noopener noreferrer">
+        updated comment
+      </a>
+      to ensure information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
-    <form
-      class="edit-note common-note-form js-quick-submit gfm-form">
+    <form class="edit-note common-note-form js-quick-submit gfm-form">
 
       <issue-warning
         v-if="hasWarning(getNoteableData)"
@@ -154,7 +176,8 @@
         <textarea
           id="note_note"
           name="note[note]"
-          class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
+          class="note-textarea js-gfm-input
+js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           :data-supports-quick-actions="!isEditing"
           aria-label="Description"
           v-model="updatedNoteBody"
@@ -162,6 +185,7 @@
           slot="textarea"
           placeholder="Write a comment or drag your files here..."
           @keydown.meta.enter="handleUpdate()"
+          @keydown.ctrl.enter="handleUpdate()"
           @keydown.up="editMyLastNote()"
           @keydown.esc="cancelHandler(true)">
         </textarea>
@@ -172,7 +196,7 @@
           @click="handleUpdate()"
           :disabled="isDisabled"
           class="js-vue-issue-save btn btn-save">
-          {{saveButtonTitle}}
+          {{ saveButtonTitle }}
         </button>
         <button
           v-if="note.resolvable"

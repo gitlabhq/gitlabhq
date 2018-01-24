@@ -5,14 +5,27 @@
 An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** 
-of GitLab on which it was created. The best way to migrate your repositories 
+You can only restore a backup to **exactly the same version and type (CE/EE)**
+of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
 ## Backup
 
 GitLab provides a simple command line interface to backup your whole installation,
 and is flexible enough to fit your needs.
+
+### Requirements
+
+If you're using GitLab with the Omnibus package, you're all set. If you
+installed GitLab from source, make sure the following packages are installed:
+
+* rsync
+
+If you're using Ubuntu, you could run:
+
+```
+sudo apt-get install -y rsync
+```
 
 ### Backup timestamp
 
@@ -150,6 +163,30 @@ For Omnibus GitLab packages:
       'aws_secret_access_key' => 'secret123'
       # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
       # 'use_iam_profile' => true
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
+#### Digital Ocean Spaces and other S3-compatible providers
+
+Not all S3 providers are fully-compatible with the Fog library. For example,
+if you see `411 Length Required` errors after attempting to upload, you may
+need to downgrade the `aws_signature_version` value from the default value to
+2 [due to this issue](https://github.com/fog/fog-aws/issues/428).
+
+1. For example, with [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/),
+this example configuration can be used for a bucket in Amsterdam (AMS3):
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'ams3',
+      'aws_access_key_id' => 'AKIAKIAKI',
+      'aws_secret_access_key' => 'secret123',
+      'aws_signature_version' => 2,
+      'endpoint'              => 'https://ams3.digitaloceanspaces.com'
     }
     gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
     ```
@@ -431,7 +468,7 @@ The [restore prerequisites section](#restore-prerequisites) includes crucial
 information. Make sure to read and test the whole restore process at least once
 before attempting to perform it in a production environment.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** of 
+You can only restore a backup to **exactly the same version and type (CE/EE)** of
 GitLab that you created it on, for example CE 9.1.0.
 
 ### Restore prerequisites
@@ -511,7 +548,7 @@ sudo service gitlab restart
 
 This procedure assumes that:
 
-- You have installed the **exact same version and type (CE/EE)** of GitLab 
+- You have installed the **exact same version and type (CE/EE)** of GitLab
   Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running.  If not, start it using `sudo gitlab-ctl start`.

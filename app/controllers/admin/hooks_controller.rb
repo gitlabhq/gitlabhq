@@ -59,11 +59,9 @@ class Admin::HooksController < Admin::ApplicationController
   def hook_params
     params.require(:hook).permit(
       :enable_ssl_verification,
-      :push_events,
-      :tag_push_events,
-      :repository_update_events,
       :token,
-      :url
+      :url,
+      *SystemHook.triggers.values
     )
   end
 end

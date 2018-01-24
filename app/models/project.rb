@@ -19,6 +19,8 @@ class Project < ActiveRecord::Base
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
+  include DeploymentPlatform
+  include ::Gitlab::Utils::StrongMemoize
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -197,13 +199,13 @@ class Project < ActiveRecord::Base
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
-  has_many :pipelines, class_name: 'Ci::Pipeline'
+  has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
-  has_many :builds, class_name: 'Ci::Build', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -312,6 +314,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -632,6 +635,7 @@ class Project < ActiveRecord::Base
       project_import_data.data ||= {}
       project_import_data.data = project_import_data.data.merge(data)
     end
+
     if credentials
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
@@ -904,12 +908,6 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  # TODO: This will be extended for multiple enviroment clusters
-  def deployment_platform
-    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
-    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
-  end
-
   def monitoring_services
     services.where(category: :monitoring)
   end
@@ -970,10 +968,12 @@ class Project < ActiveRecord::Base
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.public_send(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
+      hooks.hooks_for(hooks_scope).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
     end
+
+    SystemHooksService.new.execute_hooks(data, hooks_scope)
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
@@ -992,18 +992,18 @@ class Project < ActiveRecord::Base
     false
   end
 
-  def repo
-    repository.rugged
-  end
-
   def url_to_repo
     gitlab_shell.url_to_repo(full_path)
   end
 
   def repo_exists?
-    @repo_exists ||= repository.exists?
-  rescue
-    @repo_exists = false
+    strong_memoize(:repo_exists) do
+      begin
+        repository.exists?
+      rescue
+        false
+      end
+    end
   end
 
   def root_ref?(branch)
@@ -1032,6 +1032,8 @@ class Project < ActiveRecord::Base
   end
 
   def fork_source
+    return nil unless forked?
+
     forked_from_project || fork_network&.root_project
   end
 
@@ -1158,7 +1160,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
@@ -1438,7 +1440,7 @@ class Project < ActiveRecord::Base
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
     # the import rake task.
-    repo.config['gitlab.fullpath'] = gl_full_path
+    repository.raw_repository.write_config(full_path: gl_full_path)
   rescue Gitlab::Git::Repository::NoRepository => e
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
@@ -1459,6 +1461,7 @@ class Project < ActiveRecord::Base
     import_finish
     remove_import_jid
     update_project_counter_caches
+    after_create_default_branch
   end
 
   def update_project_counter_caches
@@ -1469,6 +1472,27 @@ class Project < ActiveRecord::Base
 
     classes.each do |klass|
       klass.new(self).refresh_cache
+    end
+  end
+
+  def after_create_default_branch
+    return unless default_branch
+
+    # Ensure HEAD points to the default branch in case it is not master
+    change_head(default_branch)
+
+    if current_application_settings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
+      params = {
+        name: default_branch,
+        push_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }],
+        merge_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }]
+      }
+
+      ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
 

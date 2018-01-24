@@ -1,4 +1,5 @@
 require 'rspec/mocks'
+require 'toml'
 
 module TestEnv
   extend self
@@ -89,10 +90,6 @@ module TestEnv
     setup_forked_repo
   end
 
-  def cleanup
-    stop_gitaly
-  end
-
   def disable_mailer
     allow_any_instance_of(NotificationService).to receive(:mailer)
       .and_return(double.as_null_object)
@@ -147,6 +144,9 @@ module TestEnv
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{gitaly_dir}]") do
 
+      # Always re-create config, in case it's outdated. This is fast anyway.
+      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
+
       start_gitaly(gitaly_dir)
     end
   end
@@ -159,6 +159,8 @@ module TestEnv
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
+    Kernel.at_exit { stop_gitaly }
+
     wait_gitaly
   end
 
@@ -305,7 +307,7 @@ module TestEnv
 
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
-      cleanup && clean_gitlab_test_path && init unless reset.call
+      clean_gitlab_test_path && init unless reset.call
     end
   end
 
@@ -321,6 +323,7 @@ module TestEnv
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)
+
       unless system('rake', task)
         raise ComponentFailedToInstallError
       end
@@ -347,6 +350,9 @@ module TestEnv
   end
 
   def component_needs_update?(component_folder, expected_version)
+    # Allow local overrides of the component for tests during development
+    return false if Rails.env.test? && File.symlink?(component_folder)
+
     version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions

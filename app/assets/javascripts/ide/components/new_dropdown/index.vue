@@ -4,6 +4,11 @@
   import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      icon,
+      newModal,
+      upload,
+    },
     props: {
       branch: {
         type: String,
@@ -18,11 +23,6 @@
         default: null,
       },
     },
-    components: {
-      icon,
-      newModal,
-      upload,
-    },
     data() {
       return {
         openModal: false,
@@ -32,10 +32,10 @@
     methods: {
       createNewItem(type) {
         this.modalType = type;
-        this.toggleModalOpen();
+        this.openModal = true;
       },
-      toggleModalOpen() {
-        this.openModal = !this.openModal;
+      hideModal() {
+        this.openModal = false;
       },
     },
   };
@@ -95,7 +95,7 @@
       :branch-id="branch"
       :path="path"
       :parent="parent"
-      @toggle="toggleModalOpen"
+      @hide="hideModal"
     />
   </div>
 </template>

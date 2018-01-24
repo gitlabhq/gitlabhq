@@ -15,7 +15,24 @@
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
-    name: 'commentForm',
+    name: 'CommentForm',
+    components: {
+      issueWarning,
+      noteSignedOutWidget,
+      discussionLockedWidget,
+      markdownField,
+      userAvatarLink,
+    },
+    mixins: [
+      issuableStateMixin,
+    ],
+    props: {
+      noteableType: {
+        type: String,
+        required: false,
+        default: constants.NOTEABLE_TYPE,
+      },
+    },
     data() {
       return {
         note: '',
@@ -26,28 +43,6 @@
         isSubmitting: false,
         isSubmitButtonDisabled: true,
       };
-    },
-    props: {
-      noteableType: {
-        type: String,
-        required: false,
-        default: constants.NOTEABLE_TYPE,
-      },
-    },
-    components: {
-      issueWarning,
-      noteSignedOutWidget,
-      discussionLockedWidget,
-      markdownField,
-      userAvatarLink,
-    },
-    watch: {
-      note(newNote) {
-        this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
-      },
-      isSubmitting(newValue) {
-        this.setIsSubmitButtonDisabled(this.note, newValue);
-      },
     },
     computed: {
       ...mapGetters([
@@ -72,7 +67,9 @@
         if (this.note.length) {
           const actionText = this.isIssueOpen ? 'close' : 'reopen';
 
-          return this.noteType === constants.COMMENT ? `Comment & ${actionText} issue` : `Start discussion & ${actionText} issue`;
+          return this.noteType === constants.COMMENT ?
+            `Comment & ${actionText} issue` :
+            `Start discussion & ${actionText} issue`;
         }
 
         return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
@@ -103,6 +100,23 @@
       endpoint() {
         return this.getNoteableData.create_note_path;
       },
+    },
+    watch: {
+      note(newNote) {
+        this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
+      },
+      isSubmitting(newValue) {
+        this.setIsSubmitButtonDisabled(this.note, newValue);
+      },
+    },
+    mounted() {
+      // jQuery is needed here because it is a custom event being dispatched with jQuery.
+      $(document).on('issuable:change', (e, isClosed) => {
+        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+      });
+
+      this.initAutoSave();
+      this.initTaskList();
     },
     methods: {
       ...mapActions([
@@ -166,7 +180,9 @@
             .catch(() => {
               this.isSubmitting = false;
               this.discard(false);
-              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              const msg =
+                `Your comment could not be submitted!
+Please check your network connection and try again.`;
               Flash(msg, 'alert', this.$el);
               this.note = noteData.data.note.note; // Restore textarea content.
               this.removePlaceholderNotes();
@@ -233,18 +249,6 @@
         });
       },
     },
-    mixins: [
-      issuableStateMixin,
-    ],
-    mounted() {
-      // jQuery is needed here because it is a custom event being dispatched with jQuery.
-      $(document).on('issuable:change', (e, isClosed) => {
-        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
-      });
-
-      this.initAutoSave();
-      this.initTaskList();
-    },
   };
 </script>
 
@@ -268,12 +272,12 @@
               :img-src="author.avatar_url"
               :img-alt="author.name"
               :img-size="40"
-              />
+            />
           </div>
           <div class="timeline-content timeline-content-form">
             <form
               ref="commentForm"
-              class="new-note js-quick-submit common-note-form gfm-form js-main-target-form"
+              class="new-note common-note-form gfm-form js-main-target-form"
             >
 
               <div class="error-alert"></div>
@@ -293,7 +297,8 @@
                 <textarea
                   id="note-body"
                   name="note[note]"
-                  class="note-textarea js-vue-comment-form js-gfm-input js-autosize markdown-area js-vue-textarea"
+                  class="note-textarea js-vue-comment-form
+js-gfm-input js-autosize markdown-area js-vue-textarea"
                   data-supports-quick-actions="true"
                   aria-label="Description"
                   v-model="note"
@@ -302,17 +307,20 @@
                   :disabled="isSubmitting"
                   placeholder="Write a comment or drag your files here..."
                   @keydown.up="editCurrentUserLastNote()"
-                  @keydown.meta.enter="handleSave()">
+                  @keydown.meta.enter="handleSave()"
+                  @keydown.ctrl.enter="handleSave()">
                 </textarea>
               </markdown-field>
               <div class="note-form-actions">
-                <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
+                <div
+                  class="pull-left btn-group
+append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="submit">
-                    {{commentButtonTitle}}
+                    {{ commentButtonTitle }}
                   </button>
                   <button
                     :disabled="isSubmitButtonDisabled"
@@ -354,7 +362,7 @@
                         <i
                           aria-hidden="true"
                           class="fa fa-check icon">
-                          </i>
+                        </i>
                         <div class="description">
                           <strong>Start discussion</strong>
                           <p>
@@ -372,7 +380,7 @@
                   :class="actionButtonClassNames"
                   :disabled="isSubmitting"
                   class="btn btn-comment btn-comment-and-close js-action-button">
-                  {{issueActionButtonTitle}}
+                  {{ issueActionButtonTitle }}
                 </button>
                 <button
                   type="button"

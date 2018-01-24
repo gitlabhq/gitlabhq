@@ -21,22 +21,21 @@ describe('collapsedGroupedDatePicker', () => {
     });
   });
 
-  it('toggleCollapse events', () => {
-    const toggleCollapse = jasmine.createSpy();
-
+  describe('toggleCollapse events', () => {
     beforeEach((done) => {
+      spyOn(vm, 'toggleSidebar');
       vm.minDate = new Date('07/17/2016');
       Vue.nextTick(done);
     });
 
     it('should emit when sidebar is toggled', () => {
       vm.$el.querySelector('.gutter-toggle').click();
-      expect(toggleCollapse).toHaveBeenCalled();
+      expect(vm.toggleSidebar).toHaveBeenCalled();
     });
 
     it('should emit when collapsed-calendar-icon is clicked', () => {
       vm.$el.querySelector('.sidebar-collapsed-icon').click();
-      expect(toggleCollapse).toHaveBeenCalled();
+      expect(vm.toggleSidebar).toHaveBeenCalled();
     });
   });
 

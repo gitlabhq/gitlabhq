@@ -15,7 +15,7 @@
   = f.hidden_field :source_project_id
   = f.hidden_field :source_branch
   = f.hidden_field :target_project_id
-  = f.hidden_field :target_branch
+  = f.hidden_field :target_branch, id: ''
 
 .mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?

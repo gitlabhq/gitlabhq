@@ -369,6 +369,56 @@ feature 'Jobs' do
         end
       end
     end
+
+    context 'Playable manual action' do
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows manual action empty state' do
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+
+      it 'plays manual action and shows pending status', :js do
+        click_link 'Trigger this manual action'
+
+        wait_for_requests
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+        expect(page).to have_content('pending')
+      end
+    end
+
+    context 'Non triggered job' do
+      let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows empty state' do
+        expect(page).to have_content('This job has not been triggered yet')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+      end
+    end
+
+    context 'Pending job' do
+      let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows pending empty state' do
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do

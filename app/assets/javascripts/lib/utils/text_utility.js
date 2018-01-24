@@ -78,3 +78,12 @@ export function camelCaseKeys(obj = {}) {
     };
   }, {});
 }
+
+/**
+ * Replaces all html tags from a string with the given replacement.
+ *
+ * @param {String} string
+ * @param {*} replace
+ * @returns {String}
+ */
+export const stripHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);

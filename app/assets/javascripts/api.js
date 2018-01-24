@@ -218,6 +218,7 @@ const Api = {
         (jqXHR, textStatus, errorThrown) => {
           const error = new Error(`${options.url}: ${errorThrown}`);
           error.textStatus = textStatus;
+          if (jqXHR && jqXHR.responseJSON) error.responseJSON = jqXHR.responseJSON;
           reject(error);
         },
       );

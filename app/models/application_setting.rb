@@ -261,6 +261,7 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -417,6 +418,7 @@ class ApplicationSetting < ActiveRecord::Base
         super(group_full_path)
         Gitlab::PerformanceBar.expire_allowed_user_ids_cache
       end
+
       return
     end
 

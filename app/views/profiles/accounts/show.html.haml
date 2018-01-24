@@ -84,11 +84,13 @@
         = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
 
+      %button#delete-account-button.btn.btn-danger.disabled{ data: { toggle: 'modal',
+        target: '#delete-account-modal' } }
+        = s_('Profiles|Delete account')
+
       #delete-account-modal{ data: { action_url: user_registration_path,
         confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
         username: current_user.username } }
-        %button.btn.btn-danger.disabled
-          = s_('Profiles|Delete account')
     - else
       - if @user.solo_owned_groups.present?
         %p

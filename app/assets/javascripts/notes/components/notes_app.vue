@@ -14,7 +14,16 @@
   import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 
   export default {
-    name: 'notesApp',
+    name: 'NotesApp',
+    components: {
+      noteableNote,
+      noteableDiscussion,
+      systemNote,
+      commentForm,
+      loadingIcon,
+      placeholderNote,
+      placeholderSystemNote,
+    },
     props: {
       noteableData: {
         type: Object,
@@ -27,7 +36,7 @@
       userData: {
         type: Object,
         required: false,
-        default: {},
+        default: () => ({}),
       },
     },
     store,
@@ -35,15 +44,6 @@
       return {
         isLoading: true,
       };
-    },
-    components: {
-      noteableNote,
-      noteableDiscussion,
-      systemNote,
-      commentForm,
-      loadingIcon,
-      placeholderNote,
-      placeholderSystemNote,
     },
     computed: {
       ...mapGetters([
@@ -66,6 +66,24 @@
         }
         return this.notes;
       },
+    },
+    created() {
+      this.setNotesData(this.notesData);
+      this.setNoteableData(this.noteableData);
+      this.setUserData(this.userData);
+    },
+    mounted() {
+      this.fetchNotes();
+
+      const parentElement = this.$el.parentElement;
+
+      if (parentElement &&
+        parentElement.classList.contains('js-vue-notes-event')) {
+        parentElement.addEventListener('toggleAward', (event) => {
+          const { awardName, noteId } = event.detail;
+          this.actionToggleAward({ awardName, noteId });
+        });
+      }
     },
     methods: {
       ...mapActions({
@@ -130,6 +148,7 @@
         }
       },
     },
+<<<<<<< HEAD
     created() {
       this.setNotesData(this.notesData);
       this.setNoteableData(this.noteableData);
@@ -153,6 +172,8 @@
     beforeDestroy() {
       document.removeEventListener('refreshVueNotes', this.fetchNotes);
     },
+=======
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
   };
 </script>
 
@@ -163,6 +184,7 @@
         id="notes-list"
         class="notes main-notes-list timeline">
 
+<<<<<<< HEAD
         <component
           v-for="note in allNotes"
           :is="getComponentName(note)"
@@ -171,6 +193,15 @@
           />
       </ul>
     </template>
+=======
+      <component
+        v-for="note in notes"
+        :is="getComponentName(note)"
+        :note="getComponentData(note)"
+        :key="note.id"
+      />
+    </ul>
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
 
     <comment-form
       :noteable-type="noteableType"

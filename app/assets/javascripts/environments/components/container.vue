@@ -4,6 +4,11 @@
   import environmentTable from '../components/environments_table.vue';
 
   export default {
+    components: {
+      environmentTable,
+      loadingIcon,
+      tablePagination,
+    },
     props: {
       isLoading: {
         type: Boolean,
@@ -26,12 +31,6 @@
         required: true,
       },
     },
-    components: {
-      environmentTable,
-      loadingIcon,
-      tablePagination,
-    },
-
     methods: {
       onChangePage(page) {
         this.$emit('onChangePage', page);
@@ -47,7 +46,7 @@
       label="Loading environments"
       v-if="isLoading"
       size="3"
-      />
+    />
 
     <slot name="emptyState"></slot>
 
@@ -59,13 +58,13 @@
         :environments="environments"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        />
+      />
 
       <table-pagination
         v-if="pagination && pagination.totalPages > 1"
         :change="onChangePage"
-        :pageInfo="pagination"
-        />
+        :page-info="pagination"
+      />
     </div>
   </div>
 </template>

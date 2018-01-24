@@ -1,4 +1,6 @@
 class LabelsFinder < UnionFinder
+  include Gitlab::Utils::StrongMemoize
+
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
@@ -32,6 +34,8 @@ class LabelsFinder < UnionFinder
           label_ids << project.labels
         end
       end
+    elsif only_group_labels?
+      label_ids << Label.where(group_id: group.id)
     else
       label_ids << Label.where(group_id: projects.group_ids)
       label_ids << Label.where(project_id: projects.select(:id))
@@ -51,6 +55,13 @@ class LabelsFinder < UnionFinder
     items.where(title: title)
   end
 
+  def group
+    strong_memoize(:group) do
+      group = Group.find(params[:group_id])
+      authorized_to_read_labels?(group) && group
+    end
+  end
+
   def group?
     params[:group_id].present?
   end
@@ -60,7 +71,11 @@ class LabelsFinder < UnionFinder
   end
 
   def projects?
-    params[:project_ids].present?
+    params[:project_ids]
+  end
+
+  def only_group_labels?
+    params[:only_group_labels]
   end
 
   def title
@@ -96,9 +111,9 @@ class LabelsFinder < UnionFinder
     @projects
   end
 
-  def authorized_to_read_labels?(project)
+  def authorized_to_read_labels?(label_parent)
     return true if skip_authorization
 
-    Ability.allowed?(current_user, :read_label, project)
+    Ability.allowed?(current_user, :read_label, label_parent)
   end
 end

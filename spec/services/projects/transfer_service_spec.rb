@@ -58,7 +58,7 @@ describe Projects::TransferService do
     it 'updates project full path in .git/config' do
       transfer_project(project, user, group)
 
-      expect(project.repo.config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
     end
   end
 
@@ -95,7 +95,7 @@ describe Projects::TransferService do
     it 'rolls back project full path in .git/config' do
       attempt_project_transfer
 
-      expect(project.repo.config['gitlab.fullpath']).to eq project.full_path
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
     it "doesn't send move notifications" do
@@ -150,6 +150,7 @@ describe Projects::TransferService do
 
     before do
       group.add_owner(user)
+
       unless gitlab_shell.add_repository(repository_storage, "#{group.full_path}/#{project.path}")
         raise 'failed to add repository'
       end

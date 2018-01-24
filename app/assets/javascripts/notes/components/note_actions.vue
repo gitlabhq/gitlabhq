@@ -11,7 +11,13 @@
   import tooltip from '~/vue_shared/directives/tooltip';
 
   export default {
-    name: 'noteActions',
+    name: 'NoteActions',
+    directives: {
+      tooltip,
+    },
+    components: {
+      loadingIcon,
+    },
     props: {
       authorId: {
         type: Number,
@@ -62,12 +68,6 @@
         required: true,
       },
     },
-    directives: {
-      tooltip,
-    },
-    components: {
-      loadingIcon,
-    },
     computed: {
       ...mapGetters([
         'getUserDataByProp',
@@ -94,6 +94,15 @@
         return title;
       },
     },
+    created() {
+      this.emojiSmiling = emojiSmiling;
+      this.emojiSmile = emojiSmile;
+      this.emojiSmiley = emojiSmiley;
+      this.editSvg = editSvg;
+      this.ellipsisSvg = ellipsisSvg;
+      this.resolveDiscussionSvg = resolveDiscussionSvg;
+      this.resolvedDiscussionSvg = resolvedDiscussionSvg;
+    },
     methods: {
       onEdit() {
         this.$emit('handleEdit');
@@ -105,15 +114,6 @@
         this.$emit('handleResolve');
       },
     },
-    created() {
-      this.emojiSmiling = emojiSmiling;
-      this.emojiSmile = emojiSmile;
-      this.emojiSmiley = emojiSmiley;
-      this.editSvg = editSvg;
-      this.ellipsisSvg = ellipsisSvg;
-      this.resolveDiscussionSvg = resolveDiscussionSvg;
-      this.resolvedDiscussionSvg = resolvedDiscussionSvg;
-    },
   };
 </script>
 
@@ -121,7 +121,9 @@
   <div class="note-actions">
     <span
       v-if="accessLevel"
-      class="note-role user-access-role">{{accessLevel}}</span>
+      class="note-role user-access-role">
+      {{ accessLevel }}
+    </span>
     <div
       v-if="resolvable"
       class="note-actions-item">
@@ -157,20 +159,21 @@
         data-placement="bottom"
         data-container="body"
         href="#"
-        title="Add reaction">
-          <loading-icon :inline="true" />
-          <span
-            v-html="emojiSmiling"
-            class="link-highlight award-control-icon-neutral">
-          </span>
-          <span
-            v-html="emojiSmiley"
-            class="link-highlight award-control-icon-positive">
-          </span>
-          <span
-            v-html="emojiSmile"
-            class="link-highlight award-control-icon-super-positive">
-          </span>
+        title="Add reaction"
+      >
+        <loading-icon :inline="true" />
+        <span
+          v-html="emojiSmiling"
+          class="link-highlight award-control-icon-neutral">
+        </span>
+        <span
+          v-html="emojiSmiley"
+          class="link-highlight award-control-icon-positive">
+        </span>
+        <span
+          v-html="emojiSmile"
+          class="link-highlight award-control-icon-super-positive">
+        </span>
       </a>
     </div>
     <div
@@ -184,9 +187,10 @@
         class="note-action-button js-note-edit btn btn-transparent"
         data-container="body"
         data-placement="bottom">
-          <span
-            v-html="editSvg"
-            class="link-highlight"></span>
+        <span
+          v-html="editSvg"
+          class="link-highlight">
+        </span>
       </button>
     </div>
     <div
@@ -200,9 +204,10 @@
         data-toggle="dropdown"
         data-container="body"
         data-placement="bottom">
-          <span
-            class="icon"
-            v-html="ellipsisSvg"></span>
+        <span
+          class="icon"
+          v-html="ellipsisSvg">
+        </span>
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">

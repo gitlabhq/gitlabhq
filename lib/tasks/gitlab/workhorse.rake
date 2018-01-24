@@ -3,9 +3,11 @@ namespace :gitlab do
     desc "GitLab | Install or upgrade gitlab-workhorse"
     task :install, [:dir, :repo] => :environment do |t, args|
       warn_user_is_not_gitlab
+
       unless args.dir.present?
         abort %(Please specify the directory where you want to install gitlab-workhorse:\n  rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]")
       end
+
       args.with_defaults(repo: 'https://gitlab.com/gitlab-org/gitlab-workhorse.git')
 
       version = Gitlab::Workhorse.version

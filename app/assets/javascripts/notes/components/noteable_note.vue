@@ -11,10 +11,25 @@
   import resolvable from '../mixins/resolvable';
 
   export default {
+<<<<<<< HEAD
     mixins: [
       noteable,
       resolvable,
     ],
+=======
+    components: {
+      userAvatarLink,
+      noteHeader,
+      noteActions,
+      noteBody,
+    },
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
+    },
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     data() {
       return {
         isEditing: false,
@@ -22,12 +37,6 @@
         isRequesting: false,
         isResolving: false,
       };
-    },
-    components: {
-      userAvatarLink,
-      noteHeader,
-      noteActions,
-      noteBody,
     },
     computed: {
       ...mapGetters([
@@ -52,6 +61,16 @@
         return `note_${this.note.id}`;
       },
     },
+
+    created() {
+      eventHub.$on('enterEditMode', ({ noteId }) => {
+        if (noteId === this.note.id) {
+          this.isEditing = true;
+          this.scrollToNoteIfNeeded($(this.$el));
+        }
+      });
+    },
+
     methods: {
       ...mapActions([
         'deleteNote',
@@ -128,14 +147,6 @@
         this.$refs.noteBody.$refs.noteForm.note.note = noteText;
       },
     },
-    created() {
-      eventHub.$on('enterEditMode', ({ noteId }) => {
-        if (noteId === this.note.id) {
-          this.isEditing = true;
-          this.scrollToNoteIfNeeded($(this.$el));
-        }
-      });
-    },
   };
 </script>
 
@@ -152,7 +163,7 @@
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
-          />
+        />
       </div>
       <div class="timeline-content">
         <div class="note-header">
@@ -161,7 +172,7 @@
             :created-at="note.created_at"
             :note-id="note.id"
             action-text="commented"
-            />
+          />
           <note-actions
             :author-id="author.id"
             :note-id="note.id"
@@ -176,8 +187,12 @@
             :resolved-by="note.resolved_by"
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
+<<<<<<< HEAD
             @handleResolve="resolveHandler"
             />
+=======
+          />
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
         </div>
         <note-body
           :note="note"
@@ -186,7 +201,7 @@
           @handleFormUpdate="formUpdateHandler"
           @cancelFormEdition="formCancelHandler"
           ref="noteBody"
-          />
+        />
       </div>
     </div>
   </li>

@@ -105,12 +105,25 @@ describe SystemHooksService do
         expect(data[:old_username]).to eq(user.username_was)
       end
     end
+
+    context 'user_failed_login' do
+      it 'contains state of user' do
+        user.ldap_block!
+
+        data = event_data(user, :failed_login)
+
+        expect(data).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :state)
+        expect(data[:username]).to eq(user.username)
+        expect(data[:state]).to eq('ldap_blocked')
+      end
+    end
   end
 
   context 'event names' do
     it { expect(event_name(user, :create)).to eq "user_create" }
     it { expect(event_name(user, :destroy)).to eq "user_destroy" }
     it { expect(event_name(user, :rename)).to eq 'user_rename' }
+    it { expect(event_name(user, :failed_login)).to eq 'user_failed_login' }
     it { expect(event_name(project, :create)).to eq "project_create" }
     it { expect(event_name(project, :destroy)).to eq "project_destroy" }
     it { expect(event_name(project, :rename)).to eq "project_rename" }

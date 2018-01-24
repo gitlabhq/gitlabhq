@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-pipeline-graph-vue',
+    components: {
+      pipelineGraph,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      pipelineGraph,
     },
     render(createElement) {
       return createElement('pipeline-graph', {
@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-pipeline-header-vue',
+    components: {
+      pipelineHeader,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      pipelineHeader,
     },
     created() {
       eventHub.$on('headerPostAction', this.postAction);

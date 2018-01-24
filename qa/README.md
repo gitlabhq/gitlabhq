@@ -17,6 +17,17 @@ against any existing instance.
 1. Along with GitLab Docker Images we also build and publish GitLab QA images.
 1. GitLab QA project uses these images to execute integration tests.
 
+## Validating GitLab views / partials / selectors in merge requests
+
+We recently added a new CI job that is going to be triggered for every push
+event in CE and EE projects. The job is called `qa:selectors` and it will
+verify coupling between page objects implemented as a part of GitLab QA
+and corresponding views / partials / selectors in CE / EE.
+
+Whenever `qa:selectors` job fails in your merge request, you are supposed to
+fix [page objects](qa/page/README.md). You should also trigger end-to-end tests
+using `package-qa` manual action, to test if everything works fine.
+
 ## How can I use it?
 
 You can use GitLab QA to exercise tests on any live instance! For example, the
@@ -27,13 +38,17 @@ following call would login to a local [GDK] instance and run all specs in
 bin/qa Test::Instance http://localhost:3000
 ```
 
+### Writing tests
+
+1. [Using page objects](qa/page/README.md)
+
 ### Running specific tests
 
 You can also supply specific tests to run as another parameter. For example, to
-test the EE license specs, you can run:
+run the repository-related specs, you can execute:
 
 ```
-EE_LICENSE="<YOUR LICENSE KEY>" bin/qa Test::Instance http://localhost qa/specs/features/ee
+bin/qa Test::Instance http://localhost qa/specs/features/repository/
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`

@@ -11,7 +11,8 @@ class MergeRequest < ActiveRecord::Base
   include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
-                :ref_fetched
+                :ref_fetched,
+                :deleted_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -139,7 +140,9 @@ class MergeRequest < ActiveRecord::Base
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
-
+  scope :by_commit_sha, ->(sha) do
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
+  end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
   scope :assigned, -> { where("assignee_id IS NOT NULL") }
@@ -150,10 +153,15 @@ class MergeRequest < ActiveRecord::Base
 
   after_save :keep_around_commit
 
-  acts_as_paranoid
-
   def self.reference_prefix
     '!'
+  end
+
+  def rebase_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.rebase_in_progress?(id)
   end
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the
@@ -607,7 +615,7 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
   def mergeable_state?(skip_ci_check: false)
@@ -787,6 +795,7 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
+
     message << "#{description}" if include_description && description.present?
     message << "See merge request #{to_reference(full: true)}"
 
@@ -979,7 +988,16 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_reverted?(current_user)
-    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
+    return false unless merge_commit
+
+    merged_at = metrics&.merged_at
+    notes_association = notes_with_associations
+
+    if merged_at
+      notes_association = notes_association.where('created_at > ?', merged_at)
+    end
+
+    !merge_commit.has_been_reverted?(current_user, notes_association)
   end
 
   def can_be_cherry_picked?

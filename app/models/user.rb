@@ -53,7 +53,10 @@ class User < ActiveRecord::Base
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-    :validatable, :omniauthable, :confirmable, :registerable
+         :validatable, :omniauthable, :confirmable, :registerable
+
+  BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
+                    "administrator if you think this is an error.".freeze
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -217,8 +220,7 @@ class User < ActiveRecord::Base
       end
 
       def inactive_message
-        "Your account has been blocked. Please contact your GitLab " \
-          "administrator if you think this is an error."
+        BLOCKED_MESSAGE
       end
     end
   end
@@ -316,6 +318,8 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
+      return none if query.blank?
+
       query = query.downcase
 
       order = <<~SQL
@@ -339,6 +343,8 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
+      return none if query.blank?
+
       query = query.downcase
 
       email_table = Email.arel_table
@@ -794,10 +800,7 @@ class User < ActiveRecord::Base
     # `User.select(:id)` raises
     # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
     # without this safeguard!
-    return unless has_attribute?(:projects_limit)
-
-    connection_default_value_defined = new_record? && !projects_limit_changed?
-    return unless projects_limit.nil? || connection_default_value_defined
+    return unless has_attribute?(:projects_limit) && projects_limit.nil?
 
     self.projects_limit = current_application_settings.default_projects_limit
   end

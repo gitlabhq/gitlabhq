@@ -250,9 +250,13 @@ describe Namespace do
 
       parent.update(path: 'mygroup_new')
 
-      expect(project_in_parent_group.repo.config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
-      expect(hashed_project_in_subgroup.repo.config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-      expect(legacy_project_in_subgroup.repo.config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+      expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
+      expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+      expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+    end
+
+    def project_rugged(project)
+      project.repository.rugged
     end
   end
 
@@ -403,17 +407,6 @@ describe Namespace do
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
-    end
-  end
-
-  describe '#soft_delete_without_removing_associations' do
-    let(:project1) { create(:project_empty_repo, namespace: namespace) }
-
-    it 'updates the deleted_at timestamp but preserves projects' do
-      namespace.soft_delete_without_removing_associations
-
-      expect(Project.all).to include(project1)
-      expect(namespace.deleted_at).not_to be_nil
     end
   end
 

@@ -17,7 +17,7 @@ class CreatePipelineSchedulesTable < ActiveRecord::Migration
       t.boolean :active, default: true
       t.datetime :deleted_at
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     add_index(:ci_pipeline_schedules, :project_id)

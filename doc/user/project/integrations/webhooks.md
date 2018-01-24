@@ -54,6 +54,12 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
+> **Note:** When more than 20 commits are pushed at once, the `commits` web hook 
+  attribute will only contain the first 20 for performance reasons. Loading 
+  detailed commit data is expensive. Note that despite only 20 commits being 
+  present in the `commits` attribute, the `total_commits_count` attribute will
+  contain the actual total. 
+
 **Request header**:
 
 ```
@@ -310,7 +316,7 @@ X-Gitlab-Event: Issue Hook
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
 The note data will be stored in `object_attributes` (e.g. `note`, `noteable_type`). The
 payload will also include information about the target of the comment. For example,
-a comment on a issue will include the specific issue information under the `issue` key.
+a comment on an issue will include the specific issue information under the `issue` key.
 Valid target types:
 
 1. `commit`

@@ -16,6 +16,7 @@ class CreateDeploymentService
     ActiveRecord::Base.transaction do
       environment.external_url = expanded_environment_url if
         expanded_environment_url
+
       environment.fire_state_event(action)
 
       return unless environment.save

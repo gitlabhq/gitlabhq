@@ -12,6 +12,7 @@ module Gitlab
         puts "You are using the latest GitLab version"
       else
         puts "Newer GitLab version is available"
+
         answer = if ARGV.first == "-y"
                    "yes"
                  else
@@ -77,6 +78,7 @@ module Gitlab
       update_commands.each do |title, cmd|
         puts title
         puts " -> #{cmd.join(' ')}"
+
         if system(env, *cmd)
           puts " -> OK"
         else

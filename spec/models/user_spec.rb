@@ -136,6 +136,16 @@ describe User do
       end
     end
 
+    it 'has a DB-level NOT NULL constraint on projects_limit' do
+      user = create(:user)
+
+      expect(user.persisted?).to eq(true)
+
+      expect do
+        user.update_columns(projects_limit: nil)
+      end.to raise_error(ActiveRecord::StatementInvalid)
+    end
+
     it { is_expected.to validate_presence_of(:projects_limit) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
@@ -807,6 +817,13 @@ describe User do
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
       end
+
+      it 'does not undo projects_limit setting if it matches old DB default of 10' do
+        # If the real default project limit is 10 then this test is worthless
+        expect(Gitlab.config.gitlab.default_projects_limit).not_to eq(10)
+        user = described_class.new(projects_limit: 10)
+        expect(user.projects_limit).to eq(10)
+      end
     end
 
     context 'when current_application_settings.user_default_external is true' do
@@ -949,6 +966,14 @@ describe User do
         expect(described_class.search(user3.username.upcase)).to eq([user3])
       end
     end
+
+    it 'returns no matches for an empty string' do
+      expect(described_class.search('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(described_class.search(nil)).to be_empty
+    end
   end
 
   describe '.search_with_secondary_emails' do
@@ -1002,6 +1027,14 @@ describe User do
 
     it 'does not return users with a matching part of secondary email' do
       expect(search_with_secondary_emails(email.email[1..4])).not_to include([email.user])
+    end
+
+    it 'returns no matches for an empty string' do
+      expect(search_with_secondary_emails('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(search_with_secondary_emails(nil)).to be_empty
     end
   end
 

@@ -1,4 +1,5 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+import _ from 'underscore';
 import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';

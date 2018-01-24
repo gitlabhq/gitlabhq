@@ -13,7 +13,8 @@ module API
         formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
         include: [
           GrapeLogging::Loggers::FilterParameters.new,
-          GrapeLogging::Loggers::ClientEnv.new
+          GrapeLogging::Loggers::ClientEnv.new,
+          Gitlab::GrapeLogging::Loggers::UserLogger.new
         ]
 
     allow_access_with_scope :api
@@ -119,6 +120,7 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
+    mount ::API::GroupMilestones
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Jobs
@@ -129,8 +131,6 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::ProjectMilestones
-    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
@@ -139,6 +139,7 @@ module API
     mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::Projects
+    mount ::API::ProjectMilestones
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
     mount ::API::Repositories

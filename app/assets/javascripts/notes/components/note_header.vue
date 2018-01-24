@@ -3,6 +3,9 @@
   import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
   export default {
+    components: {
+      timeAgoTooltip,
+    },
     props: {
       author: {
         type: Object,
@@ -37,9 +40,6 @@
         isExpanded: true,
       };
     },
-    components: {
-      timeAgoTooltip,
-    },
     computed: {
       toggleChevronClass() {
         return this.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
@@ -66,15 +66,19 @@
 <template>
   <div class="note-header-info">
     <a :href="author.path">
+<<<<<<< HEAD
       <span class="note-header-author-name">{{author.name}}</span>
+=======
+      <span class="note-header-author-name">{{ author.name }}</span>
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
       <span class="note-headline-light">
-        @{{author.username}}
+        @{{ author.username }}
       </span>
     </a>
     <span class="note-headline-light">
       <span class="note-headline-meta">
         <template v-if="actionText">
-          {{actionText}}
+          {{ actionText }}
         </template>
         <span
           v-if="actionTextHtml"
@@ -88,12 +92,13 @@
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"
-            />
+          />
         </a>
         <i
           class="fa fa-spinner fa-spin editing-spinner"
           aria-label="Comment is being updated"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </i>
       </span>
     </span>
@@ -104,12 +109,12 @@
         @click="handleToggle"
         class="note-action-button discussion-toggle-button js-vue-toggle-button"
         type="button">
-          <i
-            :class="toggleChevronClass"
-            class="fa"
-            aria-hidden="true">
-          </i>
-          Toggle discussion
+        <i
+          :class="toggleChevronClass"
+          class="fa"
+          aria-hidden="true">
+        </i>
+        Toggle discussion
       </button>
     </div>
   </div>

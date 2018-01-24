@@ -19,6 +19,7 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+<<<<<<< HEAD
     mixins: [
       autosave,
       noteable,
@@ -31,6 +32,8 @@
         resolveAsThread: true,
       };
     },
+=======
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     components: {
       noteableNote,
       diffWithNote,
@@ -42,8 +45,24 @@
       placeholderNote,
       placeholderSystemNote,
     },
+<<<<<<< HEAD
     directives: {
       tooltip,
+=======
+    mixins: [
+      autosave,
+    ],
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
+    },
+    data() {
+      return {
+        isReplying: false,
+      };
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     },
     computed: {
       ...mapGetters([
@@ -97,6 +116,20 @@
       wrapperClass() {
         return this.isDiffDiscussion ? '' : 'panel panel-default';
       },
+    },
+    mounted() {
+      if (this.isReplying) {
+        this.initAutoSave();
+      }
+    },
+    updated() {
+      if (this.isReplying) {
+        if (!this.autosave) {
+          this.initAutoSave();
+        } else {
+          this.setAutoSave();
+        }
+      }
     },
     methods: {
       ...mapActions([
@@ -157,7 +190,8 @@
             this.removePlaceholderNotes();
             this.isReplying = true;
             this.$nextTick(() => {
-              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              const msg = `Your comment could not be submitted!
+Please check your network connection and try again.`;
               Flash(msg, 'alert', this.$el);
               this.$refs.noteForm.note = noteText;
               callback(err);
@@ -184,20 +218,6 @@
       this.resolveDiscussionsSvg = resolveDiscussionsSvg;
       this.nextDiscussionsSvg = nextDiscussionsSvg;
     },
-    mounted() {
-      if (this.isReplying) {
-        this.initAutoSave();
-      }
-    },
-    updated() {
-      if (this.isReplying) {
-        if (!this.autosave) {
-          this.initAutoSave();
-        } else {
-          this.setAutoSave();
-        }
-      }
-    },
   };
 </script>
 
@@ -212,7 +232,7 @@
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
-          />
+        />
       </div>
       <div class="timeline-content">
         <div class="discussion">
@@ -234,6 +254,7 @@
               class-name="discussion-headline-light js-discussion-headline"
             />
           </div>
+<<<<<<< HEAD
           <div
             v-if="note.expanded"
             class="discussion-body">
@@ -324,6 +345,43 @@
                     ref="noteForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
+=======
+        </div>
+        <div
+          v-if="note.expanded"
+          class="discussion-body">
+          <div class="panel panel-default">
+            <div class="discussion-notes">
+              <ul class="notes">
+                <component
+                  v-for="note in note.notes"
+                  :is="componentName(note)"
+                  :note="componentData(note)"
+                  :key="note.id"
+                />
+              </ul>
+              <div
+                :class="{ 'is-replying': isReplying }"
+                class="discussion-reply-holder">
+                <button
+                  v-if="canReply && !isReplying"
+                  @click="showReplyForm"
+                  type="button"
+                  class="js-vue-discussion-reply btn btn-text-field"
+                  title="Add a reply">
+                  Reply...
+                </button>
+                <note-form
+                  v-if="isReplying"
+                  save-button-title="Comment"
+                  :discussion="note"
+                  :is-editing="false"
+                  @handleFormUpdate="saveReply"
+                  @cancelFormEdition="cancelReplyForm"
+                  ref="noteForm"
+                />
+                <note-signed-out-widget v-if="!canReply" />
+>>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
               </div>
             </component>
           </div>

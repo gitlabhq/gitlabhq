@@ -61,6 +61,9 @@ stages:
 
 .use-pg: &use-pg
   services:
+    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
+    # so using the least common denominator ensures backwards compatibility
+    # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
 
@@ -287,7 +290,7 @@ flaky-examples-check:
     - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
-setup-test-env:
+compile-assets:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *use-pg
@@ -298,13 +301,25 @@ setup-test-env:
     - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
-    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
-    - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
       - node_modules
       - public/assets
+
+setup-test-env:
+  <<: *dedicated-runner
+  <<: *except-docs
+  <<: *use-pg
+  stage: prepare
+  cache:
+    <<: *default-cache
+  script:
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+    - scripts/gitaly-test-build # Do not use 'bundle exec' here
+  artifacts:
+    expire_in: 7d
+    paths:
       - tmp/tests
 
 rspec-pg 0 26: *rspec-metadata-pg
@@ -431,6 +446,7 @@ ee_compat_check:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   retry: 0
@@ -508,7 +524,7 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.db-seed_fu: &db-seed_fu
+.gitlab-setup: &gitlab-setup
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
@@ -529,12 +545,12 @@ db:rollback-mysql:
     paths:
       - log/development.log
 
-db:seed_fu-pg:
-  <<: *db-seed_fu
+gitlab:setup-pg:
+  <<: *gitlab-setup
   <<: *use-pg
 
-db:seed_fu-mysql:
-  <<: *db-seed_fu
+gitlab:setup-mysql:
+  <<: *gitlab-setup
   <<: *use-mysql
 
 # Frontend-related jobs
@@ -603,6 +619,7 @@ codequality:
     paths: [codeclimate.json]
 
 sast:
+  <<: *except-docs
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
   before_script: []
   script:
@@ -621,6 +638,18 @@ qa:internal:
     - cd qa/
     - bundle install
     - bundle exec rspec
+
+qa:selectors:
+  <<: *dedicated-runner
+  <<: *except-docs
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec bin/qa Test::Sanity::Selectors
 
 coverage:
   <<: *dedicated-runner
@@ -647,6 +676,7 @@ lint:javascript:report:
   <<: *pull-cache
   stage: post-test
   dependencies:
+    - compile-assets
     - setup-test-env
   before_script: []
   script:

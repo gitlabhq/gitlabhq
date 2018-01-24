@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';

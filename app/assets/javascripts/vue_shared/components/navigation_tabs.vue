@@ -45,7 +45,7 @@
         this.$emit('onChangeTab', tab.scope);
       },
     },
-};
+  };
 </script>
 <template>
   <ul class="nav-links scrolling-tabs">
@@ -55,21 +55,20 @@
       :class="{
         active: tab.isActive,
       }"
-      >
+    >
       <a
         role="button"
         @click="onTabClick(tab)"
         :class="`js-${scope}-tab-${tab.scope}`"
-        >
+      >
         {{ tab.name }}
 
         <span
           v-if="shouldRenderBadge(tab.count)"
           class="badge"
-          >
-          {{tab.count}}
+        >
+          {{ tab.count }}
         </span>
-
       </a>
     </li>
   </ul>
