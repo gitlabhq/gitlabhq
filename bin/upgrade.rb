@@ -1,3 +1,3 @@
-require_relative "../lib/gitlab/upgrader"
+require_relative '../config/environment'
 
 Gitlab::Upgrader.new.execute
