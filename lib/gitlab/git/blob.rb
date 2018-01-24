@@ -34,7 +34,7 @@ module Gitlab
         def raw(repository, sha)
           Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+              repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
               rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
             end
@@ -70,11 +70,19 @@ module Gitlab
         # Returns array of Gitlab::Git::Blob
         # Does not guarantee blob data will be set
         def batch_lfs_pointers(repository, blob_ids)
-          blob_ids.lazy
-                  .select { |sha| possible_lfs_blob?(repository, sha) }
-                  .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
-                  .select(&:lfs_pointer?)
-                  .force
+          return [] if blob_ids.empty?
+
+          repository.gitaly_migrate(:batch_lfs_pointers) do |is_enabled|
+            if is_enabled
+              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids)
+            else
+              blob_ids.lazy
+                      .select { |sha| possible_lfs_blob?(repository, sha) }
+                      .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
+                      .select(&:lfs_pointer?)
+                      .force
+            end
+          end
         end
 
         def binary?(data)
@@ -258,7 +266,7 @@ module Gitlab
         Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
           @data = begin
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
+              repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
             else
               repository.lookup(id).content
             end

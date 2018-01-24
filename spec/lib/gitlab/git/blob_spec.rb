@@ -260,29 +260,42 @@ describe Gitlab::Git::Blob, seed_helper: true do
       )
     end
 
-    it 'returns a list of Gitlab::Git::Blob' do
-      blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
+    shared_examples 'fetching batch of LFS pointers' do
+      it 'returns a list of Gitlab::Git::Blob' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
 
-      expect(blobs.count).to eq(1)
-      expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'silently ignores tree objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'silently ignores non lfs objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'avoids loading large blobs into memory' do
+        # This line could call `lookup` on `repository`, so do here before mocking.
+        non_lfs_blob_id = non_lfs_blob.id
+
+        expect(repository).not_to receive(:lookup)
+
+        described_class.batch_lfs_pointers(repository, [non_lfs_blob_id])
+      end
     end
 
-    it 'silently ignores tree objects' do
-      blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
-
-      expect(blobs).to eq([])
+    context 'when Gitaly batch_lfs_pointers is enabled' do
+      it_behaves_like 'fetching batch of LFS pointers'
     end
 
-    it 'silently ignores non lfs objects' do
-      blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
-
-      expect(blobs).to eq([])
-    end
-
-    it 'avoids loading large blobs into memory' do
-      expect(repository).not_to receive(:lookup)
-
-      described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
+    context 'when Gitaly batch_lfs_pointers is disabled', :disable_gitaly do
+      it_behaves_like 'fetching batch of LFS pointers'
     end
   end
 

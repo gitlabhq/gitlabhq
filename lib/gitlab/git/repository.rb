@@ -1331,6 +1331,10 @@ module Gitlab
         @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
       end
 
+      def gitaly_blob_client
+        @gitaly_blob_client ||= Gitlab::GitalyClient::BlobService.new(self)
+      end
+
       def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
         Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
