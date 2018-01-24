@@ -25,6 +25,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
+  delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 

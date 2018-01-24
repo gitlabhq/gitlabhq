@@ -1262,6 +1262,27 @@ module Gitlab
         success || gitlab_projects_error
       end
 
+<<<<<<< HEAD
+=======
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def bundle_to_disk(save_path)
+        gitaly_migrate(:bundle_to_disk) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.create_bundle(save_path)
+          else
+            run_git!(%W(bundle create #{save_path} --all))
+          end
+        end
+
+        true
+      end
+
+>>>>>>> upstream/master
       # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
@@ -1311,6 +1332,10 @@ module Gitlab
 
       def gitaly_remote_client
         @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
+      end
+
+      def gitaly_blob_client
+        @gitaly_blob_client ||= Gitlab::GitalyClient::BlobService.new(self)
       end
 
       def gitaly_conflicts_client(our_commit_oid, their_commit_oid)

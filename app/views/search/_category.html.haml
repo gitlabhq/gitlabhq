@@ -57,7 +57,6 @@
           Titles and Filenames
           %span.badge
             = @search_results.snippet_titles_count
-
     - else
       %li{ class: active_when(@scope == 'projects') }
         = link_to search_filter_path(scope: 'projects') do
@@ -79,6 +78,7 @@
           Milestones
           %span.badge
             = limited_count(@search_results.limited_milestones_count)
+<<<<<<< HEAD
       - if current_application_settings.elasticsearch_search?
         %li{ class: active_when(@scope == 'blobs') }
           = link_to search_filter_path(scope: 'blobs') do
@@ -95,3 +95,5 @@
             Wiki
             %span.badge
               = limited_count(@search_results.wiki_blobs_count)
+=======
+>>>>>>> upstream/master

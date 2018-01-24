@@ -6,7 +6,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-235-with-yarn"
+  key: "ruby-2.3.6-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -345,8 +345,11 @@ setup-test-env:
     paths:
       - tmp/tests
 
+<<<<<<< HEAD
 rspec-pg geo: *rspec-metadata-pg-geo
 
+=======
+>>>>>>> upstream/master
 rspec-pg 0 27: *rspec-metadata-pg
 rspec-pg 1 27: *rspec-metadata-pg
 rspec-pg 2 27: *rspec-metadata-pg

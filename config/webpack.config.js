@@ -96,7 +96,6 @@ var config = {
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
     users:                './users/index.js',
-    performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
 

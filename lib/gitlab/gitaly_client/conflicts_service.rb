@@ -25,6 +25,11 @@ module Gitlab
 
       def conflicts?
         list_conflict_files.any?
+      rescue GRPC::FailedPrecondition
+        # The server raises this exception when it encounters ConflictSideMissing, which
+        # means a conflict exists but its `theirs` or `ours` data is nil due to a non-existent
+        # file in one of the trees.
+        true
       end
 
       def resolve_conflicts(target_repository, resolution, source_branch, target_branch)
