@@ -1,0 +1,5 @@
+---
+title: Default to HTTPS for all Gravatar URLs
+merge_request: 16666
+author:
+type: fixed
