@@ -418,7 +418,7 @@ Settings['extra'] ||= Settingslogic.new({})
 #
 Settings['rack_attack'] ||= Settingslogic.new({})
 Settings.rack_attack['git_basic_auth'] ||= Settingslogic.new({})
-Settings.rack_attack.git_basic_auth['enabled'] = true if Settings.rack_attack.git_basic_auth['enabled'].nil?
+Settings.rack_attack.git_basic_auth['enabled'] = false if Settings.rack_attack.git_basic_auth['enabled'].nil?
 Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
