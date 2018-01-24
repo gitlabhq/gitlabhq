@@ -69,6 +69,7 @@ module API
         name = params[:name] || params[:context] || 'default'
 
         pipeline = @project.pipeline_for(ref, commit.sha)
+
         unless pipeline
           pipeline = @project.pipelines.create!(
             source: :external,
@@ -90,7 +91,14 @@ module API
         optional_attributes =
           attributes_for_keys(%w[target_url description coverage])
 
-        status.update(optional_attributes) if optional_attributes.any?
+        status.assign_attributes(optional_attributes) if optional_attributes.any?
+
+        if status.new_record?
+          Ci::CreateJobService.new(@project, current_user).execute(status)
+        else
+          status.save!
+        end
+
         render_validation_error!(status) if status.invalid?
 
         begin

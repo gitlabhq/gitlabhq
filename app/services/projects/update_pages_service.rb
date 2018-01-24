@@ -58,14 +58,16 @@ module Projects
     end
 
     def create_status
-      GenericCommitStatus.new(
-        project: project,
-        pipeline: build.pipeline,
-        user: build.user,
-        ref: build.ref,
-        stage: 'deploy',
-        name: 'pages:deploy'
-      )
+      Ci::CreateJobService.new(project, build.user).execute do
+        GenericCommitStatus.new(
+          project: project,
+          pipeline: build.pipeline,
+          user: build.user,
+          ref: build.ref,
+          stage: 'deploy',
+          name: 'pages:deploy'
+        )
+      end
     end
 
     def extract_archive!(temp_path)
