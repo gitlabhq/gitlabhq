@@ -51,6 +51,7 @@ to reading any data available in the GitLab web interface (see [current limitati
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
+- A Geo secondary can be promoted to become the primary in a [Disaster Recovery](disaster-recovery.md) scenario
 
 ## Architecture
 
