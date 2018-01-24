@@ -42,6 +42,16 @@ const issuable4 = {
   state: 'opened',
 };
 
+const issuable5 = {
+  id: 204,
+  epic_issue_id: 5,
+  reference: 'foo/bar#127',
+  displayReference: '#127',
+  title: 'some other other other thing',
+  path: '/foo/bar/issues/127',
+  state: 'opened',
+};
+
 describe('RelatedIssuesBlock', () => {
   let RelatedIssuesBlock;
   let vm;
@@ -148,6 +158,7 @@ describe('RelatedIssuesBlock', () => {
             issuable2,
             issuable3,
             issuable4,
+            issuable5,
           ],
         },
       }).$mount();
@@ -160,21 +171,27 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it('reorder item correctly when an item is moved to the top', () => {
-      const beforeAfterIds = vm.getBeforeAfterId(0, 3);
+      const beforeAfterIds = vm.getBeforeAfterId(vm.$el.querySelector('ul li:first-child'));
       expect(beforeAfterIds.beforeId).toBeNull();
-      expect(beforeAfterIds.afterId).toBe(1);
+      expect(beforeAfterIds.afterId).toBe(2);
     });
 
     it('reorder item correctly when an item is moved to the bottom', () => {
-      const beforeAfterIds = vm.getBeforeAfterId(3, 3);
+      const beforeAfterIds = vm.getBeforeAfterId(vm.$el.querySelector('ul li:last-child'));
       expect(beforeAfterIds.beforeId).toBe(4);
       expect(beforeAfterIds.afterId).toBeNull();
     });
 
-    it('reorder item correctly when an item is moved somewhere in the middle', () => {
-      const beforeAfterIds = vm.getBeforeAfterId(2, 3);
+    it('reorder item correctly when an item is swapped with adjecent item', () => {
+      const beforeAfterIds = vm.getBeforeAfterId(vm.$el.querySelector('ul li:nth-child(3)'));
       expect(beforeAfterIds.beforeId).toBe(2);
-      expect(beforeAfterIds.afterId).toBe(3);
+      expect(beforeAfterIds.afterId).toBe(4);
+    });
+
+    it('reorder item correctly when an item is moved somewhere in the middle', () => {
+      const beforeAfterIds = vm.getBeforeAfterId(vm.$el.querySelector('ul li:nth-child(4)'));
+      expect(beforeAfterIds.beforeId).toBe(3);
+      expect(beforeAfterIds.afterId).toBe(5);
     });
 
     it('when expanding add related issue form', () => {
