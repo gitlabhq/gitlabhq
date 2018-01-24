@@ -118,6 +118,10 @@
         }
       }
     },
+    created() {
+      this.resolveDiscussionsSvg = resolveDiscussionsSvg;
+      this.nextDiscussionsSvg = nextDiscussionsSvg;
+    },
     methods: {
       ...mapActions([
         'saveNote',
@@ -201,10 +205,6 @@ Please check your network connection and try again.`;
         }
       },
     },
-    created() {
-      this.resolveDiscussionsSvg = resolveDiscussionsSvg;
-      this.nextDiscussionsSvg = nextDiscussionsSvg;
-    },
   };
 </script>
 
@@ -256,7 +256,7 @@ Please check your network connection and try again.`;
                     :is="componentName(note)"
                     :note="componentData(note)"
                     :key="note.id"
-                    />
+                  />
                 </ul>
                 <div
                   :class="{ 'is-replying': isReplying }"
@@ -281,12 +281,14 @@ Please check your network connection and try again.`;
                         <button
                           @click="resolveHandler()"
                           type="button"
-                          class="btn btn-default">
-                            <i
-                              v-if="isResolving"
-                              aria-hidden="true"
-                              class="fa fa-spinner fa-spin"></i>
-                            {{resolveButtonTitle}}
+                          class="btn btn-default"
+                        >
+                          <i
+                            v-if="isResolving"
+                            aria-hidden="true"
+                            class="fa fa-spinner fa-spin"
+                          ></i>
+                          {{ resolveButtonTitle }}
                         </button>
                       </div>
                       <div
@@ -299,11 +301,13 @@ Please check your network connection and try again.`;
                           <a
                             :href="note.resolve_with_issue_path"
                             v-tooltip
-                            class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
+                            class="new-issue-for-discussion btn
+                              btn-default discussion-create-issue-btn"
                             title="Resolve this discussion in a new issue"
-                            data-container="body">
-                              <span v-html="resolveDiscussionsSvg"></span>
-                            </a>
+                            data-container="body"
+                          >
+                            <span v-html="resolveDiscussionsSvg"></span>
+                          </a>
                         </div>
                         <div
                           v-if="hasUnresolvedDiscussion"
@@ -314,9 +318,10 @@ Please check your network connection and try again.`;
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"
-                            data-container="body">
-                              <span v-html="nextDiscussionsSvg"></span>
-                            </button>
+                            data-container="body"
+                          >
+                            <span v-html="nextDiscussionsSvg"></span>
+                          </button>
                         </div>
                       </div>
                     </div>

@@ -62,6 +62,7 @@
       resolvedBy: {
         type: Object,
         required: false,
+        default: () => ({}),
       },
       canReportAsAbuse: {
         type: Boolean,
@@ -145,7 +146,8 @@
         </template>
         <loading-icon
           v-else
-          :inline="true"  />
+          :inline="true"
+        />
       </button>
     </div>
     <div

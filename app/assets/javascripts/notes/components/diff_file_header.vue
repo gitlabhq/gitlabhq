@@ -3,15 +3,15 @@
   import Icon from '~/vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      ClipboardButton,
+      Icon,
+    },
     props: {
       diffFile: {
         type: Object,
         required: true,
       },
-    },
-    components: {
-      ClipboardButton,
-      Icon,
     },
     computed: {
       titleTag() {
@@ -31,7 +31,7 @@
         <strong
           v-html="diffFile.submoduleLink"
           class="file-title-name"
-        />
+        ></strong>
         <clipboard-button
           title="Copy file path to clipboard"
           :text="diffFile.submoduleLink"
@@ -81,8 +81,11 @@
         :text="diffFile.filePath"
       />
 
-      <small v-if="diffFile.modeChanged" ref="fileMode">
-        {{diffFile.aMode}} → {{diffFile.bMode}}
+      <small
+        v-if="diffFile.modeChanged"
+        ref="fileMode"
+      >
+        {{ diffFile.aMode }} → {{ diffFile.bMode }}
       </small>
     </template>
   </div>

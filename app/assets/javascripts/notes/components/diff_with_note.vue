@@ -5,14 +5,14 @@
   import DiffFileHeader from './diff_file_header.vue';
 
   export default {
+    components: {
+      DiffFileHeader,
+    },
     props: {
       discussion: {
         type: Object,
         required: true,
       },
-    },
-    components: {
-      DiffFileHeader,
     },
     computed: {
       isImageDiff() {
@@ -73,13 +73,14 @@
           :class="html.className"
           v-for="html in diffRows"
           v-html="html.outerHTML"
+          :key="html"
         />
         <tr class="notes_holder">
           <td
             class="notes_line"
             colspan="2"
-           />
-           <td class="notes_content">
+          ></td>
+          <td class="notes_content">
             <slot></slot>
           </td>
         </tr>

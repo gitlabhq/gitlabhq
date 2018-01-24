@@ -8,6 +8,9 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    directives: {
+      tooltip,
+    },
     computed: {
       ...mapGetters([
         'getUserData',
@@ -37,6 +40,12 @@
         return item ? item.id : null;
       },
     },
+    created() {
+      this.resolveSvg = resolveSvg;
+      this.resolvedSvg = resolvedSvg;
+      this.mrIssueSvg = mrIssueSvg;
+      this.nextDiscussionSvg = nextDiscussionSvg;
+    },
     methods: {
       jumpToFirstDiscussion() {
         const el = document.querySelector(`[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`);
@@ -52,15 +61,6 @@
           });
         }
       },
-    },
-    created() {
-      this.resolveSvg = resolveSvg;
-      this.resolvedSvg = resolvedSvg;
-      this.mrIssueSvg = mrIssueSvg;
-      this.nextDiscussionSvg = nextDiscussionSvg;
-    },
-    directives: {
-      tooltip,
     },
   };
 </script>
@@ -86,7 +86,7 @@
           ></span>
         </span>
         <span class=".line-resolve-text">
-          {{resolvedDiscussionCount}}/{{discussionCount}} {{countText}} resolved
+          {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ countText }} resolved
         </span>
       </div>
       <div
