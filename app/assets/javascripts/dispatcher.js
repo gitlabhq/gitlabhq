@@ -596,7 +596,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           import('./pages/dashboard/groups/index')
             .then(callDefault)
             .catch(fail);
-<<<<<<< HEAD
         case 'admin:licenses:new':
           import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
           break;
@@ -605,8 +604,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'groups:ldap_group_links:index':
           initLDAPGroupsSelect();
-=======
->>>>>>> upstream/master
           break;
       }
       switch (path[0]) {
