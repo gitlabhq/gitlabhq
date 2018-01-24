@@ -105,14 +105,11 @@
     "merge_ongoing": { "type": "boolean" },
     "ff_only_enabled": { "type": ["boolean", false] },
     "should_be_rebased": { "type": "boolean" },
-<<<<<<< HEAD
-    "create_note_path": { "type": ["string", "null"] }
-=======
+    "create_note_path": { "type": ["string", "null"] },
     "rebase_commit_sha": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] }
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
   },
   "additionalProperties": false
 }

@@ -11,25 +11,22 @@
   import resolvable from '../mixins/resolvable';
 
   export default {
-<<<<<<< HEAD
-    mixins: [
-      noteable,
-      resolvable,
-    ],
-=======
     components: {
       userAvatarLink,
       noteHeader,
       noteActions,
       noteBody,
     },
+    mixins: [
+      noteable,
+      resolvable,
+    ],
     props: {
       note: {
         type: Object,
         required: true,
       },
     },
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     data() {
       return {
         isEditing: false,
@@ -187,12 +184,7 @@
             :resolved-by="note.resolved_by"
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
-<<<<<<< HEAD
-            @handleResolve="resolveHandler"
-            />
-=======
           />
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
         </div>
         <note-body
           :note="note"

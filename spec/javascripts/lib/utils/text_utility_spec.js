@@ -63,7 +63,6 @@ describe('text_utility', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('camelCase', () => {
     it('converts a snake_case string to camelCase', () => {
       expect(textUtils.camelCase('snake_case_string')).toEqual('snakeCaseString');
@@ -84,7 +83,9 @@ describe('text_utility', () => {
       };
 
       expect(textUtils.camelCaseKeys(input)).toEqual(expected);
-=======
+    });
+  });
+
   describe('stripHtml', () => {
     it('replaces html tag with the default replacement', () => {
       expect(textUtils.stripHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
@@ -92,7 +93,6 @@ describe('text_utility', () => {
 
     it('replaces html tags with the provided replacement', () => {
       expect(textUtils.stripHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     });
   });
 });

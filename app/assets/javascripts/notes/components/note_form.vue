@@ -14,6 +14,7 @@
     },
     mixins: [
       issuableStateMixin,
+      resolvable,
     ],
     props: {
       noteBody: {
@@ -79,8 +80,8 @@
     },
     watch: {
       noteBody() {
-        if (this.note === this.noteBody) {
-          this.note = this.noteBody;
+        if (this.updatedNoteBody === this.noteBody) {
+          this.updatedNoteBody = this.noteBody;
         } else {
           this.conflictWhileEditing = true;
         }
@@ -121,25 +122,6 @@
         this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.updatedNoteBody);
       },
     },
-<<<<<<< HEAD
-    mixins: [
-      issuableStateMixin,
-      resolvable,
-    ],
-    mounted() {
-      this.$refs.textarea.focus();
-    },
-    watch: {
-      noteBody() {
-        if (this.updatedNoteBody === this.noteBody) {
-          this.updatedNoteBody = this.noteBody;
-        } else {
-          this.conflictWhileEditing = true;
-        }
-      },
-    },
-=======
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
   };
 </script>
 

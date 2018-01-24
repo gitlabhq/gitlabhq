@@ -97,11 +97,8 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :remove_wip
           post :assign_related_issues
-<<<<<<< HEAD
           get :discussions, format: :json
-=======
           post :rebase
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }

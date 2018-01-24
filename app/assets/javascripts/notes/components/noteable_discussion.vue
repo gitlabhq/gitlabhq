@@ -19,21 +19,6 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
-<<<<<<< HEAD
-    mixins: [
-      autosave,
-      noteable,
-      resolvable,
-    ],
-    data() {
-      return {
-        isReplying: false,
-        isResolving: false,
-        resolveAsThread: true,
-      };
-    },
-=======
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     components: {
       noteableNote,
       diffWithNote,
@@ -45,12 +30,13 @@
       placeholderNote,
       placeholderSystemNote,
     },
-<<<<<<< HEAD
     directives: {
       tooltip,
-=======
+    },
     mixins: [
       autosave,
+      noteable,
+      resolvable,
     ],
     props: {
       note: {
@@ -61,8 +47,9 @@
     data() {
       return {
         isReplying: false,
+        isResolving: false,
+        resolveAsThread: true,
       };
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
     },
     computed: {
       ...mapGetters([
@@ -254,7 +241,6 @@ Please check your network connection and try again.`;
               class-name="discussion-headline-light js-discussion-headline"
             />
           </div>
-<<<<<<< HEAD
           <div
             v-if="note.expanded"
             class="discussion-body">
@@ -345,43 +331,6 @@ Please check your network connection and try again.`;
                     ref="noteForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
-=======
-        </div>
-        <div
-          v-if="note.expanded"
-          class="discussion-body">
-          <div class="panel panel-default">
-            <div class="discussion-notes">
-              <ul class="notes">
-                <component
-                  v-for="note in note.notes"
-                  :is="componentName(note)"
-                  :note="componentData(note)"
-                  :key="note.id"
-                />
-              </ul>
-              <div
-                :class="{ 'is-replying': isReplying }"
-                class="discussion-reply-holder">
-                <button
-                  v-if="canReply && !isReplying"
-                  @click="showReplyForm"
-                  type="button"
-                  class="js-vue-discussion-reply btn btn-text-field"
-                  title="Add a reply">
-                  Reply...
-                </button>
-                <note-form
-                  v-if="isReplying"
-                  save-button-title="Comment"
-                  :discussion="note"
-                  :is-editing="false"
-                  @handleFormUpdate="saveReply"
-                  @cancelFormEdition="cancelReplyForm"
-                  ref="noteForm"
-                />
-                <note-signed-out-widget v-if="!canReply" />
->>>>>>> 74da79113bb2eb7363403d7c2a9f1e0624590b74
               </div>
             </component>
           </div>
