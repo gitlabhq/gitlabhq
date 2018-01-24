@@ -221,7 +221,7 @@ namespace :geo do
 
     unless Gitlab::Database.pg_stat_wal_receiver_supported?
       puts
-      puts 'WARNING: Please upgrade Postgresql to version 9.6 or greater as the status of the streaming cannot be determined realiable enough for this version'.color(:red)
+      puts 'WARNING: Please upgrade PostgreSQL to version 9.6 or greater. The status of the replication cannot be determined reliably with the current version.'.color(:red)
       puts
     end
 
