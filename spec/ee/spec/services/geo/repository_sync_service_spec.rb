@@ -145,6 +145,16 @@ describe Geo::RepositorySyncService do
           expect(registry.reload.repository_retry_count).to be_nil
           expect(registry.repository_retry_at).to be_nil
         end
+
+        context 'with non empty repositories' do
+          let(:project) { create(:project, :repository) }
+
+          it 'syncs gitattributes to info/attributes' do
+            expect(repository).to receive(:copy_gitattributes)
+
+            subject.execute
+          end
+        end
       end
 
       context 'when repository sync fail' do
