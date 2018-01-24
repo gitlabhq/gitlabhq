@@ -5,7 +5,7 @@ module Ci
         Ci::EnsureStageService.new(project, current_user)
           .execute(subject)
 
-        subject.save!
+        subject.save
       end
     end
   end

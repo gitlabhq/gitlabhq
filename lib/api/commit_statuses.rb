@@ -96,7 +96,7 @@ module API
         if status.new_record?
           Ci::CreateJobService.new(@project, current_user).execute(status)
         else
-          status.save!
+          status.save if status.changed?
         end
 
         render_validation_error!(status) if status.invalid?

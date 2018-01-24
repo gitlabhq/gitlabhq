@@ -17,4 +17,10 @@ describe Ci::CreateJobService, '#execute' do
   it 'ensures that a job has a stage assigned' do
     expect(service.execute(status).stage_id).to be_present
   end
+
+  it 'does not raise error if status is invalid' do
+    status.name = nil
+
+    expect(service.execute(status)).not_to be_persisted
+  end
 end
