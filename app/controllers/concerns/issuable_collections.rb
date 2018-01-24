@@ -84,6 +84,7 @@ module IssuableCollections
       @filter_params[:project_id] = @project.id
     elsif @group
       @filter_params[:group_id] = @group.id
+      @filter_params[:include_subgroups] = true
     else
       # TODO: this filter ignore issues/mr created in public or
       # internal repos where you are not a member. Enable this filter
