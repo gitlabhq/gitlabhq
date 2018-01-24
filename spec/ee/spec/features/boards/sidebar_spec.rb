@@ -5,7 +5,8 @@ describe 'Issue Boards', :js do
 
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
-  let(:project)      { create(:project, :public) }
+  let(:group)        { create(:group) }
+  let(:project)      { create(:project, :public, group: group) }
   let!(:milestone)   { create(:milestone, project: project) }
   let!(:development) { create(:label, project: project, name: 'Development') }
   let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
@@ -137,6 +138,36 @@ describe 'Issue Boards', :js do
         click_link 'Edit'
 
         expect(find('.dropdown-menu')).to have_selector('.is-active')
+      end
+    end
+  end
+
+  context 'epic' do
+    before do
+      stub_licensed_features(epics: true)
+
+      visit project_board_path(project, board)
+      wait_for_requests
+    end
+
+    context 'when the issue is not associated with an epic' do
+      it 'displays `None` for value of epic' do
+        click_card(card1)
+        wait_for_requests
+
+        expect(find('.js-epic-label').text).to have_content('None')
+      end
+    end
+
+    context 'when the issue is associated with an epic' do
+      let(:epic)          { create(:epic, group: group) }
+      let!(:epic_issue)   { create(:epic_issue, issue: issue1, epic: epic) }
+
+      it 'displays name of epic and links to it' do
+        click_card(card1)
+        wait_for_requests
+
+        expect(find('.js-epic-label')).to have_link(epic.title, href: epic_path(epic))
       end
     end
   end
