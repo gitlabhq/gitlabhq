@@ -60,7 +60,7 @@ describe('Board list component', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('renders component', () => {

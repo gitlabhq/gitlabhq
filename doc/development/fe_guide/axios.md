@@ -63,7 +63,7 @@ We have also decided against using [axios interceptors] because they are not sui
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 ```
 
