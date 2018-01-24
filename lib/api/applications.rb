@@ -6,7 +6,7 @@ module API
     resource :applications do
       desc 'Create a new application' do
         detail 'This feature was introduced in GitLab 10.5'
-        success Entities::Application
+        success Entities::ApplicationWithSecret
       end
       params do
         requires :name, type: String, desc: 'Application name'
@@ -17,7 +17,7 @@ module API
         application = Doorkeeper::Application.new(declared_params)
 
         if application.save
-          present application, with: Entities::Application
+          present application, with: Entities::ApplicationWithSecret
         else
           render_validation_error! application
         end

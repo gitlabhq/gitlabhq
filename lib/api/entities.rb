@@ -1160,8 +1160,12 @@ module API
 
     class Application < Grape::Entity
       expose :uid, as: :application_id
-      expose :secret
       expose :redirect_uri, as: :callback_url
+    end
+
+    # Use with care, this exposes the secret
+    class ApplicationWithSecret < Application
+      expose :secret
     end
   end
 end
