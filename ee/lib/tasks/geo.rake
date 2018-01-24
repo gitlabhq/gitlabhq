@@ -219,6 +219,12 @@ namespace :geo do
     puts GeoNode.current_node_url
     puts '-----------------------------------------------------'.color(:yellow)
 
+    unless Gitlab::Database.pg_stat_wal_receiver_supported?
+      puts
+      puts 'WARNING: Please upgrade Postgresql to version 9.6 or greater as the status of the streaming cannot be determined realiable enough for this version'.color(:red)
+      puts
+    end
+
     print 'GitLab version: '.rjust(COLUMN_WIDTH)
     puts Gitlab::VERSION
 
