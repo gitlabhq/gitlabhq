@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180115201419) do
+ActiveRecord::Schema.define(version: 20180131104538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -810,9 +810,11 @@ ActiveRecord::Schema.define(version: 20180115201419) do
 
   add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
   add_index "epics", ["author_id"], name: "index_epics_on_author_id", using: :btree
+  add_index "epics", ["end_date"], name: "index_epics_on_end_date", using: :btree
   add_index "epics", ["group_id"], name: "index_epics_on_group_id", using: :btree
   add_index "epics", ["iid"], name: "index_epics_on_iid", using: :btree
   add_index "epics", ["milestone_id"], name: "index_milestone", using: :btree
+  add_index "epics", ["start_date"], name: "index_epics_on_start_date", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer "project_id"
