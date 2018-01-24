@@ -5,10 +5,10 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
 
   def up
    redundant_stages_ids = <<~SQL
-      SELECT id FROM ci_stages a WHERE (
-        SELECT COUNT(*) FROM ci_stages b
-          WHERE a.pipeline_id = b.pipeline_id AND a.name = b.name
-      ) > 1
+      SELECT id FROM ci_stages WHERE (pipeline_id, name) IN (
+        SELECT pipeline_id, name FROM ci_stages
+          GROUP BY pipeline_id, name HAVING COUNT(*) > 1
+      )
     SQL
 
     execute <<~SQL
