@@ -8,7 +8,7 @@
 - You should make sure that all nodes run the same GitLab version.
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
-- Using GitLab Geo in combination with High Availability is considered **Beta**
+- Using GitLab Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
 
 >**Note:**
 GitLab Geo changes significantly from release to release. Upgrades **are**
