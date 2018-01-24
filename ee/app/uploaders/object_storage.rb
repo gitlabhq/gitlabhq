@@ -56,7 +56,7 @@ module ObjectStorage
 
         paths.include?(upload.path) &&
           upload.model_id == model.id &&
-          upload.model_type == model.base_class.sti_name
+          upload.model_type == model.class.base_class.sti_name
       end
     end
   end

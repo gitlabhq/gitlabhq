@@ -4,7 +4,7 @@ shared_context 'with storage' do |store, **stub_params|
   end
 end
 
-shared_examples "migrates" do |to_store: , from_store: nil|
+shared_examples "migrates" do |to_store:, from_store: nil|
   let(:to) { to_store }
   let(:from) { from_store || subject.object_store }
 

@@ -50,5 +50,4 @@ module Avatarable
 
     url_base + avatar.url
   end
-
 end
