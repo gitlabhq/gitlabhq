@@ -1268,6 +1268,18 @@ module Gitlab
         success || gitlab_projects_error
       end
 
+      def bundle_to_disk(save_path)
+        gitaly_migrate(:bundle_to_disk) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.create_bundle(save_path)
+          else
+            run_git!(%W(bundle create #{save_path} --all))
+          end
+        end
+
+        true
+      end
+
       # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
