@@ -55,7 +55,7 @@ describe('Board card', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('returns false when detailIssue is empty', () => {

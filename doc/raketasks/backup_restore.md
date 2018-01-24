@@ -169,6 +169,30 @@ For Omnibus GitLab packages:
 
 1. [Reconfigure GitLab] for the changes to take effect
 
+#### Digital Ocean Spaces and other S3-compatible providers
+
+Not all S3 providers are fully-compatible with the Fog library. For example,
+if you see `411 Length Required` errors after attempting to upload, you may
+need to downgrade the `aws_signature_version` value from the default value to
+2 [due to this issue](https://github.com/fog/fog-aws/issues/428).
+
+1. For example, with [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/),
+this example configuration can be used for a bucket in Amsterdam (AMS3):
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'ams3',
+      'aws_access_key_id' => 'AKIAKIAKI',
+      'aws_secret_access_key' => 'secret123',
+      'aws_signature_version' => 2,
+      'endpoint'              => 'https://ams3.digitaloceanspaces.com'
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
 ---
 
 For installations from source:

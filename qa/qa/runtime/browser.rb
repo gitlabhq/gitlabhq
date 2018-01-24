@@ -24,9 +24,7 @@ module QA
       # based on `Runtime::Scenario#something_address`.
       #
       def visit(address, page, &block)
-        Browser::Session.new(address, page).tap do |session|
-          session.perform(&block)
-        end
+        Browser::Session.new(address, page).perform(&block)
       end
 
       def self.visit(address, page, &block)
@@ -94,20 +92,15 @@ module QA
         include Capybara::DSL
 
         def initialize(instance, page = nil)
-          @instance = instance
-          @address = host + page&.path
+          @session_address = Runtime::Address.new(instance, page)
         end
 
-        def host
-          if @instance.is_a?(Symbol)
-            Runtime::Scenario.send("#{@instance}_address")
-          else
-            @instance.to_s
-          end
+        def url
+          @session_address.address
         end
 
         def perform(&block)
-          visit(@address)
+          visit(url)
 
           yield if block_given?
         rescue
@@ -130,7 +123,7 @@ module QA
         # See gitlab-org/gitlab-qa#102
         #
         def clear!
-          visit(@address)
+          visit(url)
           reset_session!
         end
       end
