@@ -76,6 +76,7 @@
         'is-disabled': disabledInput,
         'is-loading': isLoading
       }"
+      :disabled="disabledInput"
       @click="toggleFeature"
     >
       <loadingIcon class="loading-icon" />
