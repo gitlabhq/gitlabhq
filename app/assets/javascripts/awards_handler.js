@@ -239,7 +239,7 @@ class AwardsHandler {
   }
 
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
-    const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
+    const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
     const vueDiscussions = isInIssuePage() || this.isVueMRDiscussions();
     if (vueDiscussions && !isMainAwardsBlock) {
