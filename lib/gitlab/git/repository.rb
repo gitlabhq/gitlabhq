@@ -1262,8 +1262,6 @@ module Gitlab
         success || gitlab_projects_error
       end
 
-<<<<<<< HEAD
-=======
       def delete_remote_branches(remote_name, branch_names)
         success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
 
@@ -1282,7 +1280,6 @@ module Gitlab
         true
       end
 
->>>>>>> upstream/master
       # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
