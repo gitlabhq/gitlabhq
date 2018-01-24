@@ -1,7 +1,3 @@
-# Temporary hack, until we migrate all checks to SystemCheck format
-require 'system_check'
-require 'system_check/helpers'
-
 namespace :gitlab do
   desc 'GitLab | Check the configuration of GitLab and its environment'
   task check: %w{gitlab:gitlab_shell:check
@@ -12,7 +8,7 @@ namespace :gitlab do
 
   namespace :app do
     desc 'GitLab | Check the configuration of the GitLab Rails app'
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
 
       checks = [
@@ -43,7 +39,7 @@ namespace :gitlab do
 
   namespace :gitlab_shell do
     desc "GitLab | Check the configuration of GitLab Shell"
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
       start_checking "GitLab Shell"
 
@@ -251,7 +247,7 @@ namespace :gitlab do
 
   namespace :sidekiq do
     desc "GitLab | Check the configuration of Sidekiq"
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
       start_checking "Sidekiq"
 
@@ -310,7 +306,7 @@ namespace :gitlab do
 
   namespace :incoming_email do
     desc "GitLab | Check the configuration of Reply by email"
-    task check: :environment  do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
 
       if Gitlab.config.incoming_email.enabled
@@ -333,7 +329,7 @@ namespace :gitlab do
   end
 
   namespace :ldap do
-    task :check, [:limit] => :environment do |_, args|
+    task :check, [:limit] => :gitlab_environment do |_, args|
       # Only show up to 100 results because LDAP directories can be very big.
       # This setting only affects the `rake gitlab:check` script.
       args.with_defaults(limit: 100)
@@ -389,7 +385,7 @@ namespace :gitlab do
 
   namespace :repo do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
-    task check: :environment do
+    task check: :gitlab_environment do
       puts "This task is deprecated. Please use gitlab:git:fsck instead".color(:red)
       Rake::Task["gitlab:git:fsck"].execute
     end
@@ -397,7 +393,7 @@ namespace :gitlab do
 
   namespace :orphans do
     desc 'Gitlab | Check for orphaned namespaces and repositories'
-    task check: :environment do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
       checks = [
         SystemCheck::Orphans::NamespaceCheck,
@@ -408,7 +404,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | Check for orphaned namespaces in the repositories path'
-    task check_namespaces: :environment do
+    task check_namespaces: :gitlab_environment do
       warn_user_is_not_gitlab
       checks = [SystemCheck::Orphans::NamespaceCheck]
 
@@ -416,7 +412,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | Check for orphaned repositories in the repositories path'
-    task check_repositories: :environment do
+    task check_repositories: :gitlab_environment do
       warn_user_is_not_gitlab
       checks = [SystemCheck::Orphans::RepositoryCheck]
 
@@ -426,7 +422,7 @@ namespace :gitlab do
 
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
-    task :check_repos, [:username] => :environment do |t, args|
+    task :check_repos, [:username] => :gitlab_environment do |t, args|
       username = args[:username] || prompt("Check repository integrity for username? ".color(:blue))
       user = User.find_by(username: username)
       if user
