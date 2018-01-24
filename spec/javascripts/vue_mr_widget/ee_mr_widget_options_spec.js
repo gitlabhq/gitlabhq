@@ -64,7 +64,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -87,7 +87,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -110,7 +110,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render error indicator', (done) => {
@@ -158,7 +158,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -209,7 +209,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -233,7 +233,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render error indicator', (done) => {
@@ -279,7 +279,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -331,7 +331,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -355,7 +355,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render error indicator', (done) => {
@@ -401,7 +401,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -440,7 +440,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render error indicator', (done) => {
@@ -487,7 +487,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render provided data', (done) => {
@@ -518,7 +518,7 @@ describe('ee merge request widget options', () => {
       });
 
       afterEach(() => {
-        mock.reset();
+        mock.restore();
       });
 
       it('should render error indicator', (done) => {

@@ -9,6 +9,10 @@ describe Geo::HashedStorageMigratedEventStore do
   subject(:event_store) { described_class.new(project, old_storage_version: nil, old_disk_path: old_disk_path, old_wiki_disk_path: old_wiki_disk_path) }
 
   describe '#create' do
+    before do
+      TestEnv.clean_test_path
+    end
+
     it 'does not create an event when not running on a primary node' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 

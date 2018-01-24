@@ -1,4 +1,4 @@
-import Project from '~/project';
+import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import Flash from '../flash';
 import {

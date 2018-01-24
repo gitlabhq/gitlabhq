@@ -56,6 +56,9 @@ module MergeRequests
       end
 
       true
+    rescue PushRule::MatchError => e
+      handle_merge_error(log_message: e.message, save_message_on_model: true)
+      false
     end
 
     private

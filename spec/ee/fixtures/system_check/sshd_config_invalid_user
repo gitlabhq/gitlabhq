@@ -4,5 +4,5 @@
 RSAAuthentication yes
 PubkeyAuthentication yes
 #AuthorizedKeysFile	%h/.ssh/authorized_keys
-AuthorizedKeysCommand /opt/gitlab-shell/authorized_keys %u %k          # comment
+AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check %u %k          # comment
 AuthorizedKeysCommandUser anotheruser  #comment with more stuff#

@@ -58,7 +58,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def self.allowed_params
     excluded_params = %w(id created_at updated_at).freeze
-    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision storage_shards).freeze
+    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision storage_shards updated_at).freeze
     self.column_names - excluded_params + extra_params
   end
 

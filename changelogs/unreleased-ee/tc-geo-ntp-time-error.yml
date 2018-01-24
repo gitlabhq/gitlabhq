@@ -1,5 +1,0 @@
----
-title: More descriptive error when clocks between Geo nodes are out of sync
-merge_request: 3860
-author:
-type: changed

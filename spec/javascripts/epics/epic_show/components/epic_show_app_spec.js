@@ -78,7 +78,7 @@ describe('EpicShowApp', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('should render epic-header', () => {

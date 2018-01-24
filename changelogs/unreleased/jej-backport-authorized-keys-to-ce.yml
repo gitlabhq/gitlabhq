@@ -1,5 +1,0 @@
----
-title: Backport fast database lookup of SSH authorized_keys from EE
-merge_request: 16014
-author:
-type: added

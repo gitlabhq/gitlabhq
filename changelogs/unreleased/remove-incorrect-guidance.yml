@@ -1,6 +1,0 @@
----
-title: Removed incorrect guidance stating blocked users will be removed from groups
-  and project as members
-merge_request: 15947
-author: CesarApodaca
-type: fixed

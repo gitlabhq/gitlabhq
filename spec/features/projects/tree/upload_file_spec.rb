@@ -7,6 +7,8 @@ feature 'Multi-file editor upload file', :js do
   let(:img_file) { File.join(Rails.root, 'spec', 'fixtures', 'dk.png') }
 
   before do
+    stub_licensed_features(ide: true)
+
     project.add_master(user)
     sign_in(user)
 

@@ -66,9 +66,7 @@
 <template>
   <div class="note-header-info">
     <a :href="author.path">
-      <span class="note-header-author-name">
-        {{ author.name }}
-      </span>
+      <span class="note-header-author-name">{{ author.name }}</span>
       <span class="note-headline-light">
         @{{ author.username }}
       </span>

@@ -550,112 +550,112 @@ describe Namespace do
     end
   end
 
-  describe '#share_with_group_lock with subgroups', :nested_groups do
+  describe '#membership_lock with subgroups', :nested_groups do
     context 'when creating a subgroup' do
-      let(:subgroup) { create(:group, parent: root_group )}
+      let(:subgroup) { create(:group, parent: root_group) }
 
-      context 'under a parent with "Share with group lock" enabled' do
-        let(:root_group) { create(:group, share_with_group_lock: true) }
+      context 'under a parent with "Membership lock" enabled' do
+        let(:root_group) { create(:group, membership_lock: true) }
 
-        it 'enables "Share with group lock" on the subgroup' do
-          expect(subgroup.share_with_group_lock).to be_truthy
+        it 'enables "Membership lock" on the subgroup' do
+          expect(subgroup.membership_lock).to be_truthy
         end
       end
 
-      context 'under a parent with "Share with group lock" disabled' do
+      context 'under a parent with "Membership lock" disabled' do
         let(:root_group) { create(:group) }
 
-        it 'does not enable "Share with group lock" on the subgroup' do
-          expect(subgroup.share_with_group_lock).to be_falsey
-        end
-      end
-    end
-
-    context 'when enabling the parent group "Share with group lock"' do
-      let(:root_group) { create(:group) }
-      let!(:subgroup) { create(:group, parent: root_group )}
-
-      it 'the subgroup "Share with group lock" becomes enabled' do
-        root_group.update!(share_with_group_lock: true)
-
-        expect(subgroup.reload.share_with_group_lock).to be_truthy
-      end
-    end
-
-    context 'when disabling the parent group "Share with group lock" (which was already enabled)' do
-      let(:root_group) { create(:group, share_with_group_lock: true) }
-
-      context 'and the subgroup "Share with group lock" is enabled' do
-        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true )}
-
-        it 'the subgroup "Share with group lock" does not change' do
-          root_group.update!(share_with_group_lock: false)
-
-          expect(subgroup.reload.share_with_group_lock).to be_truthy
+        it 'does not enable "Membership lock" on the subgroup' do
+          expect(subgroup.membership_lock).to be_falsey
         end
       end
 
-      context 'but the subgroup "Share with group lock" is disabled' do
-        let(:subgroup) { create(:group, parent: root_group )}
+      context 'when enabling the parent group "Membership lock"' do
+        let(:root_group) { create(:group) }
+        let!(:subgroup) { create(:group, parent: root_group) }
 
-        it 'the subgroup "Share with group lock" does not change' do
-          root_group.update!(share_with_group_lock: false)
+        it 'the subgroup "Membership lock" not changed' do
+          root_group.update!(membership_lock: true)
 
-          expect(subgroup.reload.share_with_group_lock?).to be_falsey
+          expect(subgroup.reload.membership_lock).to be_falsey
+        end
+      end
+
+      context 'when disabling the parent group "Membership lock" (which was already enabled)' do
+        let(:root_group) { create(:group, membership_lock: true) }
+
+        context 'and the subgroup "Membership lock" is enabled' do
+          let(:subgroup) { create(:group, parent: root_group, membership_lock: true) }
+
+          it 'the subgroup "Membership lock" does not change' do
+            root_group.update!(membership_lock: false)
+
+            expect(subgroup.reload.membership_lock).to be_truthy
+          end
+        end
+
+        context 'but the subgroup "Membership lock" is disabled' do
+          let(:subgroup) { create(:group, parent: root_group) }
+
+          it 'the subgroup "Membership lock" does not change' do
+            root_group.update!(membership_lock: false)
+
+            expect(subgroup.reload.membership_lock?).to be_falsey
+          end
         end
       end
     end
 
     # Note: Group transfers are not yet implemented
     context 'when a group is transferred into a root group' do
-      context 'when the root group "Share with group lock" is enabled' do
-        let(:root_group) { create(:group, share_with_group_lock: true) }
+      context 'when the root group "Membership lock" is enabled' do
+        let(:root_group) { create(:group, membership_lock: true) }
 
-        context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true )}
+        context 'when the subgroup "Membership lock" is enabled' do
+          let(:subgroup) { create(:group, membership_lock: true) }
 
-          it 'the subgroup "Share with group lock" does not change' do
+          it 'the subgroup "Membership lock" does not change' do
             subgroup.parent = root_group
             subgroup.save!
 
-            expect(subgroup.share_with_group_lock).to be_truthy
+            expect(subgroup.membership_lock).to be_truthy
           end
         end
 
-        context 'when the subgroup "Share with group lock" is disabled' do
-          let(:subgroup) { create(:group)}
+        context 'when the subgroup "Membership lock" is disabled' do
+          let(:subgroup) { create(:group) }
 
-          it 'the subgroup "Share with group lock" becomes enabled' do
+          it 'the subgroup "Membership lock" not changed' do
             subgroup.parent = root_group
             subgroup.save!
 
-            expect(subgroup.share_with_group_lock).to be_truthy
+            expect(subgroup.membership_lock).to be_falsey
           end
         end
       end
 
-      context 'when the root group "Share with group lock" is disabled' do
+      context 'when the root group "Membership lock" is disabled' do
         let(:root_group) { create(:group) }
 
-        context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true )}
+        context 'when the subgroup "Membership lock" is enabled' do
+          let(:subgroup) { create(:group, membership_lock: true) }
 
-          it 'the subgroup "Share with group lock" does not change' do
+          it 'the subgroup "Membership lock" does not change' do
             subgroup.parent = root_group
             subgroup.save!
 
-            expect(subgroup.share_with_group_lock).to be_truthy
+            expect(subgroup.membership_lock).to be_truthy
           end
         end
 
-        context 'when the subgroup "Share with group lock" is disabled' do
-          let(:subgroup) { create(:group)}
+        context 'when the subgroup "Membership lock" is disabled' do
+          let(:subgroup) { create(:group) }
 
-          it 'the subgroup "Share with group lock" does not change' do
+          it 'the subgroup "Membership lock" does not change' do
             subgroup.parent = root_group
             subgroup.save!
 
-            expect(subgroup.share_with_group_lock).to be_falsey
+            expect(subgroup.membership_lock).to be_falsey
           end
         end
       end

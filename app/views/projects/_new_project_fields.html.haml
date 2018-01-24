@@ -34,7 +34,7 @@
 .form-group.visibility-level-setting
   = f.label :visibility_level, class: 'label-light' do
     Visibility Level
-    = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }
+    = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
   = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
 
 = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4

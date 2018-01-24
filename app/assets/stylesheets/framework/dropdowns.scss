@@ -30,7 +30,7 @@
     @include set-visible;
     min-height: $dropdown-min-height;
     max-height: $dropdown-max-height;
-    overflow: auto;
+    overflow-y: auto;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -62,11 +62,6 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
-
-  &[disabled] {
-    opacity: .65;
-    cursor: not-allowed;
-  }
 
   &.no-outline {
     outline: 0;

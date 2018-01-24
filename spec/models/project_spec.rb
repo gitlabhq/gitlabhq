@@ -2273,6 +2273,10 @@ describe Project do
 
         expect(second_fork.fork_source).to eq(project)
       end
+
+      it 'returns nil if it is the root of the fork network' do
+        expect(project.fork_source).to be_nil
+      end
     end
 
     describe '#lfs_storage_project' do
@@ -3637,6 +3641,25 @@ describe Project do
       project = create(:project_empty_repo)
 
       expect { project.write_repository_config }.not_to raise_error
+    end
+  end
+
+  describe '#execute_hooks' do
+    it 'executes the projects hooks with the specified scope' do
+      hook1 = create(:project_hook, merge_requests_events: true, tag_push_events: false)
+      hook2 = create(:project_hook, merge_requests_events: false, tag_push_events: true)
+      project = create(:project, hooks: [hook1, hook2])
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+
+      project.execute_hooks({}, :tag_push_hooks)
+    end
+
+    it 'executes the system hooks with the specified scope' do
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with({ data: 'data' }, :merge_request_hooks)
+
+      project = build(:project)
+      project.execute_hooks({ data: 'data' }, :merge_request_hooks)
     end
   end
 end

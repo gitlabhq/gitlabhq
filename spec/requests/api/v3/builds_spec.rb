@@ -15,6 +15,7 @@ describe API::V3::Builds do
 
     before do |example|
       build
+
       create(:ci_build, :skipped, pipeline: pipeline)
 
       unless example.metadata[:skip_before_request]
@@ -43,7 +44,7 @@ describe API::V3::Builds do
         expect(json_build['pipeline']['status']).to eq build.pipeline.status
       end
 
-      it 'avoids N+1 queries', skip_before_request: true do
+      it 'avoids N+1 queries', :skip_before_request do
         first_build = create(:ci_build, :artifacts, pipeline: pipeline)
         first_build.runner = create(:ci_runner)
         first_build.user = create(:user)

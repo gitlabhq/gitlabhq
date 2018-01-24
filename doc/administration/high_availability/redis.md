@@ -154,7 +154,7 @@ who will take all the decisions to restore the service availability by:
 - Reconfigure the old **Master** and demote to **Slave** when it comes back online
 
 You must have at least `3` Redis Sentinel servers, and they need to
-be each in a independent machine (that are believed to fail independently),
+be each in an independent machine (that are believed to fail independently),
 ideally in different geographical areas.
 
 You can configure them in the same machines where you've configured the other

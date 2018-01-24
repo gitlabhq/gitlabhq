@@ -50,13 +50,13 @@
         Pipeline
       </div>
       <div
-        class="table-section section-25 js-pipeline-commit pipeline-commit"
+        class="table-section section-20 js-pipeline-commit pipeline-commit"
         role="rowheader"
       >
         Commit
       </div>
       <div
-        class="table-section section-15 js-pipeline-stages pipeline-stages"
+        class="table-section section-20 js-pipeline-stages pipeline-stages"
         role="rowheader"
       >
         Stages

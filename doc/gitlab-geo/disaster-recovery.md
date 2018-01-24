@@ -73,7 +73,7 @@ secondary domain, like changing Git remotes and API URLs.
 
 1. SSH in to your **secondary** and login as root:
 
-    ```
+    ```bash
     sudo -i
     ```
 
@@ -82,20 +82,20 @@ secondary domain, like changing Git remotes and API URLs.
     After updating the primary domain's DNS records to point to the secondary,
     edit `/etc/gitlab/gitlab.rb` on the the secondary to reflect the new URL:
 
-    ```
+    ```ruby
     # Change the existing external_url configuration
     external_url 'https://gitlab.example.com'
     ```
 
 1. Reconfigure the secondary node for the change to take effect:
 
-    ```
+    ```bash
     gitlab-ctl reconfigure
     ```
 
 1. Execute the command below to update the newly promoted primary node URL:
 
-    ```
+    ```bash
     gitlab-rake geo:update_primary_node_url
     ```
 

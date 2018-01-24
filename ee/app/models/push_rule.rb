@@ -1,4 +1,6 @@
 class PushRule < ActiveRecord::Base
+  MatchError = Class.new(StandardError)
+
   belongs_to :project
 
   validates :project, presence: true, unless: "is_sample?"
@@ -98,6 +100,8 @@ class PushRule < ActiveRecord::Base
     else
       true
     end
+  rescue RegexpError => e
+    raise MatchError, "Regular expression '#{regex}' is invalid: #{e.message}"
   end
 
   def read_setting_with_global_default(setting)
