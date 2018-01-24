@@ -37,7 +37,7 @@ describe JobArtifactUploader do
 
     it { is_expected.to start_with("#{uploader.root}/#{uploader.class.base_dir}") }
     it { is_expected.to include("/#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/") }
-    it { is_expected.to include("/#{job_artifact.project_id}/") }
+    it { is_expected.to include("/#{job_artifact.job_id}/#{job_artifact.id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
 end
