@@ -171,7 +171,7 @@ export default {
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
 
-    document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
+    // document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
 
   [types.UPDATE_DISCUSSION](state, noteData) {
