@@ -49,6 +49,24 @@ describe PushRule do
     end
   end
 
+  methods_and_regexes = {
+    commit_message_allowed?: :commit_message_regex,
+    branch_name_allowed?: :branch_name_regex,
+    author_email_allowed?: :author_email_regex,
+    filename_blacklisted?: :file_name_regex
+  }
+
+  methods_and_regexes.each do |method_name, regex_attr|
+    describe "##{method_name}" do
+      it 'raises a MatchError when the regex is invalid' do
+        push_rule[regex_attr] = '+'
+
+        expect { push_rule.public_send(method_name, 'foo') } # rubocop:disable GitlabSecurity/PublicSend
+          .to raise_error(PushRule::MatchError, /\ARegular expression '\+' is invalid/)
+      end
+    end
+  end
+
   describe '#commit_signature_allowed?' do
     let!(:premium_license) { create(:license, plan: License::PREMIUM_PLAN) }
     let(:signed_commit) { double(has_signature?: true) }

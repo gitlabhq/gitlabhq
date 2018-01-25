@@ -72,13 +72,15 @@ describe Files::UpdateService do
       end
     end
 
-    context 'when target branch is different than source branch' do
-      let(:branch_name) { "#{project.default_branch}-new" }
+    context 'with gitaly disabled', :skip_gitaly_mock do
+      context 'when target branch is different than source branch' do
+        let(:branch_name) { "#{project.default_branch}-new" }
 
-      it 'fires hooks only once' do
-        expect(Gitlab::Git::HooksService).to receive(:new).once.and_call_original
+        it 'fires hooks only once' do
+          expect(Gitlab::Git::HooksService).to receive(:new).once.and_call_original
 
-        subject.execute
+          subject.execute
+        end
       end
     end
   end

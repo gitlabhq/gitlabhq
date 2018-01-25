@@ -488,7 +488,7 @@ describe Member do
       member.accept_invite!(user)
     end
 
-    it "refreshes user's authorized projects", :truncate do
+    it "refreshes user's authorized projects", :delete do
       project = member.source
 
       expect(user.authorized_projects).not_to include(project)
@@ -523,7 +523,7 @@ describe Member do
     end
   end
 
-  describe "destroying a record", :truncate do
+  describe "destroying a record", :delete do
     it "refreshes user's authorized projects" do
       project = create(:project, :private)
       user    = create(:user)

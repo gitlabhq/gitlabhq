@@ -30,7 +30,7 @@ describe('List model', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('gets issues when created', (done) => {

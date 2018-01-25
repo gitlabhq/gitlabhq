@@ -87,6 +87,7 @@
     <div v-else-if="hasKeys">
       <keys-panel
         title="Enabled deploy keys for this project"
+        class="qa-project-deploy-keys"
         :keys="keys.enabled_keys"
         :store="store"
         :endpoint="endpoint"

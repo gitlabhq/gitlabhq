@@ -219,6 +219,9 @@ describe Gitlab::Git::GitlabProjects do
 
     before do
       FileUtils.mkdir_p(dest_repos_path)
+
+      # Undo spec_helper stub that deletes hooks
+      allow_any_instance_of(described_class).to receive(:fork_repository).and_call_original
     end
 
     after do

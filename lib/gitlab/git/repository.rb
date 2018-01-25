@@ -1091,19 +1091,6 @@ module Gitlab
         end
       end
 
-      def shell_write_ref(ref_path, ref, old_ref)
-        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
-        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
-        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
-
-        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
-        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
-      end
-
-      def rugged_write_ref(ref_path, ref)
-        rugged.references.create(ref_path, ref, force: true)
-      end
-
       def fetch_ref(source_repository, source_ref:, target_ref:)
         Gitlab::Git.check_namespace!(source_repository)
         source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
@@ -1281,32 +1268,15 @@ module Gitlab
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_repository: self)
 
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
-          index = Gitlab::Git::Index.new(self)
-          parents = []
-
-          if start_commit
-            index.read_tree(start_commit.rugged_commit.tree)
-            parents = [start_commit.sha]
+        gitaly_migrate(:operation_user_commit_files) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_commit_files(user, branch_name,
+              message, actions, author_email, author_name,
+              start_branch_name, start_repository)
+          else
+            rugged_multi_action(user, branch_name, message, actions,
+              author_email, author_name, start_branch_name, start_repository)
           end
-
-          actions.each { |opts| index.apply(opts.delete(:action), opts) }
-
-          committer = user_to_committer(user)
-          author = Gitlab::Git.committer_hash(email: author_email, name: author_name) || committer
-          options = {
-            tree: index.write_tree,
-            message: message,
-            parents: parents,
-            author: author,
-            committer: committer
-          }
-
-          create_commit(options)
         end
       end
       # rubocop:enable Metrics/ParameterLists
@@ -1358,6 +1328,25 @@ module Gitlab
       end
 
       private
+
+      def shell_write_ref(ref_path, ref, old_ref)
+        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
+        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
+        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
+
+        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
+      end
+
+      def rugged_write_ref(ref_path, ref)
+        rugged.references.create(ref_path, ref, force: true)
+      rescue Rugged::ReferenceError => ex
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      rescue Rugged::OSError => ex
+        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
+        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      end
 
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
@@ -2071,6 +2060,39 @@ module Gitlab
         fetch_remote(remote_name, env: repository.fetch_env)
       ensure
         remove_remote(remote_name)
+      end
+
+      def rugged_multi_action(
+        user, branch_name, message, actions, author_email, author_name,
+        start_branch_name, start_repository)
+
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+          index = Gitlab::Git::Index.new(self)
+          parents = []
+
+          if start_commit
+            index.read_tree(start_commit.rugged_commit.tree)
+            parents = [start_commit.sha]
+          end
+
+          actions.each { |opts| index.apply(opts.delete(:action), opts) }
+
+          committer = user_to_committer(user)
+          author = Gitlab::Git.committer_hash(email: author_email, name: author_name) || committer
+          options = {
+            tree: index.write_tree,
+            message: message,
+            parents: parents,
+            author: author,
+            committer: committer
+          }
+
+          create_commit(options)
+        end
       end
 
       def fetch_remote(remote_name = 'origin', env: nil)
