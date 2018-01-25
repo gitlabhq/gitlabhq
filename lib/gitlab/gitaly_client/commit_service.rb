@@ -38,19 +38,27 @@ module Gitlab
         from_id = case from
                   when NilClass
                     EMPTY_TREE_ID
-                  when Rugged::Commit
-                    from.oid
                   else
-                    from
+                    if from.respond_to?(:oid)
+                      # This is meant to match a Rugged::Commit. This should be impossible in
+                      # the future.
+                      from.oid
+                    else
+                      from
+                    end
                   end
 
         to_id = case to
                 when NilClass
                   EMPTY_TREE_ID
-                when Rugged::Commit
-                  to.oid
                 else
-                  to
+                  if to.respond_to?(:oid)
+                    # This is meant to match a Rugged::Commit. This should be impossible in
+                    # the future.
+                    to.oid
+                  else
+                    to
+                  end
                 end
 
         request_params = diff_between_commits_request_params(from_id, to_id, options)

@@ -13,7 +13,8 @@ tasks = [
   %w[bundle exec rake gettext:lint],
   %w[bundle exec rake lint:static_verification],
   %w[scripts/lint-changelog-yaml],
-  %w[scripts/lint-conflicts.sh]
+  %w[scripts/lint-conflicts.sh],
+  %w[scripts/lint-rugged]
 ]
 
 failed_tasks = tasks.reduce({}) do |failures, task|

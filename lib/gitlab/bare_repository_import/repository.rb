@@ -1,3 +1,5 @@
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/953
+#
 module Gitlab
   module BareRepositoryImport
     class Repository
