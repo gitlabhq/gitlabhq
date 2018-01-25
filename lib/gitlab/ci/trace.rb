@@ -65,7 +65,7 @@ module Gitlab
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact
+          if trace_artifact&.exists?
             trace_artifact.open
           elsif current_path
             File.open(current_path, "rb")
@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def erase!
-        job.job_artifacts_trace&.destory
+        trace_artifact&.destory
 
         paths.each do |trace_path|
           FileUtils.rm(trace_path, force: true)
