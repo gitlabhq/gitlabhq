@@ -54,6 +54,10 @@ module Gitlab
       postgresql? && version.to_f >= 9.4
     end
 
+    def self.pg_stat_wal_receiver_supported?
+      postgresql? && version.to_f >= 9.6
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 

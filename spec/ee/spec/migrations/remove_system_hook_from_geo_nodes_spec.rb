@@ -1,5 +1,5 @@
-require "spec_helper"
-require Rails.root.join("db", "post_migrate", "20170811082658_remove_system_hook_from_geo_nodes.rb")
+require 'spec_helper'
+require Rails.root.join('ee', 'db', 'post_migrate', '20170811082658_remove_system_hook_from_geo_nodes.rb')
 
 describe RemoveSystemHookFromGeoNodes, :migration do
   let(:geo_nodes) { table(:geo_nodes) }

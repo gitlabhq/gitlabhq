@@ -9,7 +9,9 @@ describe API::Entities::GeoNodeStatus, :postgresql do
 
   subject { entity.as_json }
 
-  before { stub_primary_node }
+  before do
+    stub_primary_node
+  end
 
   describe '#healthy' do
     context 'when node is healthy' do
@@ -127,7 +129,9 @@ describe API::Entities::GeoNodeStatus, :postgresql do
   end
 
   context 'secondary Geo node' do
-    before { stub_secondary_node }
+    before do
+      stub_secondary_node
+    end
 
     it { is_expected.to have_key(:storage_shards) }
     it { is_expected.not_to have_key(:storage_shards_match) }

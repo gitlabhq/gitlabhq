@@ -1,5 +1,5 @@
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20171103152048_geo_drain_redis_queues')
+require Rails.root.join('ee', 'db', 'post_migrate', '20171103152048_geo_drain_redis_queues')
 
 describe GeoDrainRedisQueues, :clean_gitlab_redis_shared_state do
   subject(:migration) { described_class.new }
