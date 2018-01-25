@@ -1,3 +1,5 @@
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/954
+#
 namespace :gitlab do
   namespace :cleanup do
     HASHED_REPOSITORY_NAME = '@hashed'.freeze
