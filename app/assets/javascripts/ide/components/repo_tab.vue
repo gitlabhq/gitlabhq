@@ -1,10 +1,12 @@
 <script>
   import { mapActions } from 'vuex';
   import fileIcon from '../../vue_shared/components/file_icon.vue';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
     components: {
       fileIcon,
+      icon,
     },
     props: {
       tab: {
@@ -61,22 +63,18 @@
       class="multi-file-tab-close"
       @click.stop.prevent="closeFile(tab)"
       :aria-label="closeLabel"
-      :class="{
-        'modified': tab.changed,
-      }"
     >
-      <i
+      <icon
         v-if="!showChangedIcon"
-        class="fa fa-times close-icon"
-        aria-hidden="true"
-      >
-      </i>
-      <i
+        name="close"
+        :size="12"
+      />
+      <icon
         v-else
-        class="fa fa-circle unsaved-icon"
-        aria-hidden="true"
-      >
-      </i>
+        name="file-modified"
+        :size="12"
+        css-classes="multi-file-modified"
+      />
     </button>
 
     <div

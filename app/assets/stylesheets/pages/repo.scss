@@ -160,20 +160,32 @@ table.table tr td.multi-file-table-name {
   position: absolute;
   right: 8px;
   top: 50%;
+  width: 16px;
+  height: 16px;
   padding: 0;
   background: none;
   border: 0;
-  font-size: $gl-font-size;
+  border-radius: $border-radius-default;
   color: $gray-darkest;
   transform: translateY(-50%);
 
-  &:not(.modified):hover,
-  &:not(.modified):focus {
+  svg {
+    position: relative;
+    top: -1px;
+  }
+
+  &:hover {
     color: $hint-color;
   }
 
-  &.modified {
-    color: $indigo-700;
+  &:focus {
+    background-color: #1f78d1;
+    color: $white-light;
+    outline: 0;
+
+    svg {
+      fill: currentColor;
+    }
   }
 }
 
