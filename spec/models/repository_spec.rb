@@ -365,8 +365,14 @@ describe Repository do
         it { is_expected.to be_truthy }
       end
 
-      context 'non-mergeable branches' do
+      context 'non-mergeable branches without conflict sides missing' do
         subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non-mergeable branches with conflict sides missing' do
+        subject { repository.can_be_merged?('conflict-missing-side', 'conflict-start') }
 
         it { is_expected.to be_falsey }
       end

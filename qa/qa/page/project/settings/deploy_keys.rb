@@ -10,6 +10,7 @@ module QA
 
           view 'app/assets/javascripts/deploy_keys/components/app.vue' do
             element :deploy_keys_section, /class=".*deploy\-keys.*"/
+            element :project_deploy_keys, 'class="qa-project-deploy-keys"'
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do
@@ -29,9 +30,9 @@ module QA
             click_on 'Add key'
           end
 
-          def has_key_title?(title)
-            page.within('.deploy-keys') do
-              page.find('.title', text: title)
+          def key_title
+            page.within('.qa-project-deploy-keys') do
+              page.find('.title').text
             end
           end
         end
