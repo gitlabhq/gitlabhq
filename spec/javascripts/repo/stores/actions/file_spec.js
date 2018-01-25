@@ -169,7 +169,7 @@ describe('Multi-file store file actions', () => {
         }),
       }));
 
-      localFile = file('newCreate');
+      localFile = file(`newCreate-${Math.random()}`);
       localFile.url = 'getFileDataURL';
     });
 
