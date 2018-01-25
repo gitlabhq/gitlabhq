@@ -10,6 +10,15 @@ module QA
             element :variable_value, '.variable-value'
           end
 
+          view 'app/views/ci/variables/_index.html.haml' do
+            element :add_new_variable, 'btn_text: "Add new variable"'
+          end
+
+          view 'app/assets/javascripts/behaviors/secret_values.js' do
+            element :reveal_value, 'Reveal value'
+            element :hide_value, 'Hide value'
+          end
+
           def fill_variable_key(key)
             fill_in 'variable_key', with: key
           end
