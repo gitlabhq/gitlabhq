@@ -1,7 +1,7 @@
 class PipelinesEmailService < Service
   prop_accessor :recipients
   boolean_accessor :notify_only_broken_pipelines
-  validates :recipients, presence: true, if: :activated?
+  validates :recipients, presence: true, if: :activated?, unless: :importing?
 
   def initialize_properties
     self.properties ||= { notify_only_broken_pipelines: true }

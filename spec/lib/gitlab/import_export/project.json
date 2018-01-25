@@ -7096,7 +7096,7 @@
       "project_id": 5,
       "created_at": "2016-06-14T15:01:51.232Z",
       "updated_at": "2016-06-14T15:01:51.232Z",
-      "active": false,
+      "active": true,
       "properties": {
 
       },
