@@ -84,6 +84,8 @@ module Gitlab
       end
 
       def erase!
+        job.job_artifacts_trace&.destory
+
         paths.each do |trace_path|
           FileUtils.rm(trace_path, force: true)
         end
@@ -106,17 +108,19 @@ module Gitlab
         end
       end
 
+      def current_path
+        @current_path ||= paths.find do |trace_path|
+          File.exist?(trace_path)
+        end
+      end
+
+      ##
+      # This doesn't include the latest path JobArtifactUploader#default_path.
       def paths
         [
           default_path,
           deprecated_path
         ].compact
-      end
-
-      def current_path
-        @current_path ||= paths.find do |trace_path|
-          File.exist?(trace_path)
-        end
       end
 
       def default_directory
