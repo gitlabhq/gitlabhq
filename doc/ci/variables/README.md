@@ -172,7 +172,7 @@ Project-level secret variables can be added by going to your project's
 **Settings > CI/CD**, then finding the section called **Secret variables**.
 
 Likewise, group-level secret variables can be added by going to your group's
-**Settings > CI/CD**, then finding the section called **Secret variables**.
+**Settings > CI/CD**.
 Any variables of [subgroups] will be inherited recursively.
 
 ![Secret variables](img/secret_variables.png)
