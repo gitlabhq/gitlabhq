@@ -184,7 +184,7 @@ production: &base
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   ## Auxiliary jobs
-  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
     # Flag stuck CI jobs as failed
@@ -642,6 +642,8 @@ test:
     enabled: true
   lfs:
     enabled: false
+  artifacts:
+    path: tmp/tests/artifacts
   gitlab:
     host: localhost
     port: 80
@@ -652,8 +654,6 @@ test:
     # user: YOUR_USERNAME
   pages:
     path: tmp/tests/pages
-  artifacts:
-    path: tmp/tests/artifacts
   repositories:
     storages:
       default:
