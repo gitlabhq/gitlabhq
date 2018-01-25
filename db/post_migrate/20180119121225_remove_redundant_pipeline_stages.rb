@@ -23,6 +23,7 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
       execute <<~SQL
         DELETE a FROM ci_stages AS a, ci_stages AS b
           WHERE a.pipeline_id = b.pipeline_id AND a.name = b.name
+            AND a.id <> b.id
       SQL
     end
   end
