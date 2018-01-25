@@ -31,6 +31,12 @@ module QA
           end
         end
 
+        def go_to_settings
+          within_sidebar do
+            click_on 'Settings'
+          end
+        end
+
         private
 
         def hover_settings
