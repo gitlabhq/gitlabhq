@@ -8,7 +8,7 @@ class Projects::VariablesController < Projects::ApplicationController
       format.json do
         return head :ok if @project.update(variables_params)
 
-        head :bad_request
+        render status: :bad_request, json: @project.errors.to_hash
       end
     end
   end
