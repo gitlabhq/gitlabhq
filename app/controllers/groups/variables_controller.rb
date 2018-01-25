@@ -7,7 +7,7 @@ module Groups
         format.json do
           return head :ok if @group.update(variables_params)
 
-          render status: :bad_request, json: @group.errors.to_hash
+          render status: :bad_request, json: @group.errors.full_messages
         end
       end
     end
