@@ -133,7 +133,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status:  Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
