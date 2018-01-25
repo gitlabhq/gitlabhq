@@ -9,12 +9,10 @@ module Gitlab
         end
 
         def type(job)
-          if job.complete? && job.job_artifacts_trace.exists?
+          if job.complete?
             'Full'
-          elsif job.running?
-            'Live'
           else
-            'Undefined'
+            'Live'
           end
         end
       end

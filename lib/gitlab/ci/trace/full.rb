@@ -5,7 +5,7 @@ module Gitlab
         delegate :old_trace, to: :job
 
         def exist?
-          job.job_artifacts_trace&.exists? || old_trace.present?
+          job.job_artifacts_trace&.exists? || current_path.present? || old_trace.present?
         end
 
         def erase!
@@ -26,11 +26,16 @@ module Gitlab
         end
 
         def paths
-          raise 'Full trace does not allow write operation'
+          [
+            default_path,
+            deprecated_path
+          ].compact
         end
 
         def current_path
-          raise 'Full trace does not allow write operation'
+          @current_path ||= paths.find do |trace_path|
+            File.exist?(trace_path)
+          end
         end
 
         def default_directory
