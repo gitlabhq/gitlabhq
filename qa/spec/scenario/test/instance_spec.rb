@@ -1,6 +1,6 @@
-describe QA::Scenario::Entrypoint do
+describe QA::Scenario::Test::Instance do
   subject do
-    Class.new(QA::Scenario::Entrypoint) do
+    Class.new(described_class) do
       tags :rspec
     end
   end
