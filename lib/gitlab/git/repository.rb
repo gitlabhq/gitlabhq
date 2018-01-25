@@ -888,16 +888,12 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        instructions = ref_names.map do |ref|
-          "delete #{ref}\x00\x00"
-        end
-
-        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
-          stdin.write(instructions.join)
-        end
-
-        unless status.zero?
-          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        gitaly_migrate(:delete_refs) do |is_enabled|
+          if is_enabled
+            gitaly_delete_refs(*ref_names)
+          else
+            git_delete_refs(*ref_names)
+          end
         end
       end
 
@@ -2202,6 +2198,24 @@ module Gitlab
         set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
       rescue Rugged::ConfigError
         remote_update(remote_name, url: url)
+      end
+
+      def git_delete_refs(*ref_names)
+        instructions = ref_names.map do |ref|
+          "delete #{ref}\x00\x00"
+        end
+
+        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
+          stdin.write(instructions.join)
+        end
+
+        unless status.zero?
+          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        end
+      end
+
+      def gitaly_delete_refs(*ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names)
       end
 
       def rugged_remove_remote(remote_name)
