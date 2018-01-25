@@ -563,6 +563,8 @@ module Gitlab
         return false if ancestor_id.nil? || descendant_id.nil?
 
         merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      rescue Rugged::OdbError
+        false
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
