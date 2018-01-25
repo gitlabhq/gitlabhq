@@ -7,28 +7,6 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
     visit edit_project_label_path(project, bug_label)
   end
 
-  step 'I remove label \'bug\'' do
-    page.within "#project_label_#{bug_label.id}" do
-      first(:link, 'Delete').click
-    end
-  end
-
-  step 'I delete all labels' do
-    page.within '.labels' do
-      page.all('.remove-row').each do
-        first('.remove-row').click
-        click_button 'Delete Label'
-      end
-    end
-  end
-
-  step 'I should see labels help message' do
-    page.within '.labels' do
-      expect(page).to have_content 'Generate a default set of labels'
-      expect(page).to have_content 'New label'
-    end
-  end
-
   step 'I submit new label \'support\'' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#F95610'
