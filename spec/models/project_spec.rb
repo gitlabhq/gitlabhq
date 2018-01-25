@@ -418,14 +418,21 @@ describe Project do
   end
 
   describe '#merge_method' do
-    it 'returns "ff" merge_method when ff is enabled' do
-      project = build(:project, merge_requests_ff_only_enabled: true)
-      expect(project.merge_method).to be :ff
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff, :rebase, :method) do
+      true  | true  | :ff
+      true  | false | :ff
+      false | true  | :rebase_merge
+      false | false | :merge
     end
 
-    it 'returns "merge" merge_method when ff is disabled' do
-      project = build(:project, merge_requests_ff_only_enabled: false)
-      expect(project.merge_method).to be :merge
+    with_them do
+      let(:project) { build(:project, merge_requests_rebase_enabled: rebase, merge_requests_ff_only_enabled: ff) }
+
+      subject { project.merge_method }
+
+      it { is_expected.to eq(method) }
     end
   end
 
@@ -1864,9 +1871,8 @@ describe Project do
     end
 
     it 'creates the new reference with rugged' do
-      expect(project.repository.rugged.references).to receive(:create).with('HEAD',
-                                                                            "refs/heads/#{project.default_branch}",
-                                                                            force: true)
+      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
+
       project.change_head(project.default_branch)
     end
 
@@ -1944,6 +1950,10 @@ describe Project do
         forked_project.destroy
 
         expect(second_fork.fork_source).to eq(project)
+      end
+
+      it 'returns nil if it is the root of the fork network' do
+        expect(project.fork_source).to be_nil
       end
     end
 
@@ -2632,7 +2642,7 @@ describe Project do
 
         project.rename_repo
 
-        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -2793,7 +2803,7 @@ describe Project do
       it 'updates project full path in .git/config' do
         project.rename_repo
 
-        expect(project.repo.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3072,8 +3082,50 @@ describe Project do
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
+      expect(project).to receive(:after_create_default_branch)
 
       project.after_import
+    end
+
+    context 'branch protection' do
+      let(:project) { create(:project, :repository) }
+
+      it 'does not protect when branch protection is disabled' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+
+        project.after_import
+
+        expect(project.protected_branches).to be_empty
+      end
+
+      it "gives developer access to push when branch protection is set to 'developers can push'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it "gives developer access to merge when branch protection is set to 'developers can merge'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it 'protects default branch' do
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+      end
     end
   end
 
@@ -3137,44 +3189,61 @@ describe Project do
     end
   end
 
-  describe '#deployment_platform' do
-    subject { project.deployment_platform }
-
-    let(:project) { create(:project) }
-
-    context 'when user configured kubernetes from Integration > Kubernetes' do
-      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
-
-      it { is_expected.to eq(kubernetes_service) }
-    end
-
-    context 'when user configured kubernetes from CI/CD > Clusters' do
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-      let(:platform_kubernetes) { cluster.platform_kubernetes }
-
-      it { is_expected.to eq(platform_kubernetes) }
-    end
-  end
-
   describe '#write_repository_config' do
     set(:project) { create(:project, :repository) }
 
     it 'writes full path in .git/config when key is missing' do
       project.write_repository_config
 
-      expect(project.repo.config['gitlab.fullpath']).to eq project.full_path
+      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.write_repository_config(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { project.repo.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
       project = create(:project_empty_repo)
 
       expect { project.write_repository_config }.not_to raise_error
+    end
+  end
+
+  describe '#execute_hooks' do
+    it 'executes the projects hooks with the specified scope' do
+      hook1 = create(:project_hook, merge_requests_events: true, tag_push_events: false)
+      hook2 = create(:project_hook, merge_requests_events: false, tag_push_events: true)
+      project = create(:project, hooks: [hook1, hook2])
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+
+      project.execute_hooks({}, :tag_push_hooks)
+    end
+
+    it 'executes the system hooks with the specified scope' do
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with({ data: 'data' }, :merge_request_hooks)
+
+      project = build(:project)
+      project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+    end
+
+    it 'executes the system hooks when inside a transaction' do
+      allow_any_instance_of(WebHookService).to receive(:execute)
+
+      create(:system_hook, merge_requests_events: true)
+
+      project = build(:project)
+
+      # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
+      # but since the entire spec run takes place in a transaction, we never
+      # actually get to the `after_commit` hook that queues these jobs.
+      expect do
+        project.transaction do
+          project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+        end
+      end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
     end
   end
 end

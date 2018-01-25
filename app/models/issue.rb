@@ -12,7 +12,7 @@ class Issue < ActiveRecord::Base
   include ThrottledTouch
   include IgnorableColumn
 
-  ignore_column :assignee_id, :branch_name
+  ignore_column :assignee_id, :branch_name, :deleted_at
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -34,6 +34,8 @@ class Issue < ActiveRecord::Base
   has_many :assignees, class_name: "User", through: :issue_assignees
 
   validates :project, presence: true
+
+  alias_attribute :parent_ids, :project_id
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
@@ -76,7 +78,9 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  acts_as_paranoid
+  class << self
+    alias_method :in_parents, :in_projects
+  end
 
   def self.reference_prefix
     '#'

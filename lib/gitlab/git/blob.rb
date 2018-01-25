@@ -34,7 +34,7 @@ module Gitlab
         def raw(repository, sha)
           Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+              repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
               rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
             end
@@ -50,10 +50,19 @@ module Gitlab
         # to the caller to limit the number of blobs and blob_size_limit.
         #
         # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/798
-        def batch(repository, blob_references, blob_size_limit: nil)
-          blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
-          blob_references.map do |sha, path|
-            find_by_rugged(repository, sha, path, limit: blob_size_limit)
+        def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
+          Gitlab::GitalyClient.migrate(:list_blobs_by_sha_path) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient.allow_n_plus_1_calls do
+                blob_references.map do |sha, path|
+                  find_by_gitaly(repository, sha, path, limit: blob_size_limit)
+                end
+              end
+            else
+              blob_references.map do |sha, path|
+                find_by_rugged(repository, sha, path, limit: blob_size_limit)
+              end
+            end
           end
         end
 
@@ -61,11 +70,19 @@ module Gitlab
         # Returns array of Gitlab::Git::Blob
         # Does not guarantee blob data will be set
         def batch_lfs_pointers(repository, blob_ids)
-          blob_ids.lazy
-                  .select { |sha| possible_lfs_blob?(repository, sha) }
-                  .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
-                  .select(&:lfs_pointer?)
-                  .force
+          return [] if blob_ids.empty?
+
+          repository.gitaly_migrate(:batch_lfs_pointers) do |is_enabled|
+            if is_enabled
+              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids)
+            else
+              blob_ids.lazy
+                      .select { |sha| possible_lfs_blob?(repository, sha) }
+                      .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
+                      .select(&:lfs_pointer?)
+                      .force
+            end
+          end
         end
 
         def binary?(data)
@@ -122,12 +139,24 @@ module Gitlab
           )
         end
 
-        def find_by_gitaly(repository, sha, path)
+        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          return unless path
+
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
-          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+
+          # Gitaly will think that setting the limit to 0 means unlimited, while
+          # the client might only need the metadata and thus set the limit to 0.
+          # In this method we'll then set the limit to 1, but clear the byte of data
+          # that we got back so for the outside world it looks like the limit was
+          # actually 0.
+          req_limit = limit == 0 ? 1 : limit
+
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
           return unless entry
+
+          entry.data = "" if limit == 0
 
           case entry.type
           when :COMMIT
@@ -154,8 +183,10 @@ module Gitlab
         end
 
         def find_by_rugged(repository, sha, path, limit:)
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
+          return unless path
+
+          rugged_commit = repository.lookup(sha)
+          root_tree = rugged_commit.tree
 
           blob_entry = find_entry_by_path(repository, root_tree.oid, path)
 
@@ -235,7 +266,7 @@ module Gitlab
         Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
           @data = begin
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
+              repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
             else
               repository.lookup(id).content
             end

@@ -12,9 +12,9 @@ following format:
 
 ```yaml
 ---
-title: "Going through change[log]s"
+title: "Change[log]s"
 merge_request: 1972
-author: Ozzy Osbourne
+author: Black Sabbath
 type: added
 ```
 
@@ -127,7 +127,7 @@ type:
 If you're working on the GitLab EE repository, the entry will be added to
 `changelogs/unreleased-ee/` instead.
 
-#### Arguments
+### Arguments
 
 | Argument            | Shorthand | Purpose                                                                                                    |
 | -----------------   | --------- | ---------------------------------------------------------------------------------------------------------- |

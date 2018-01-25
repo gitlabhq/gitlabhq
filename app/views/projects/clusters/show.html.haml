@@ -1,6 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - add_to_breadcrumbs "Clusters", project_clusters_path(@project)
-- breadcrumb_title @cluster.id
+- breadcrumb_title @cluster.name
 - page_title _("Cluster")
 
 - expanded = Rails.env.test?
@@ -18,9 +18,9 @@
   .js-cluster-application-notice
     .flash-container
 
-  %section.settings.no-animate.expanded
+  %section.settings.no-animate.expanded#cluster-integration
     = render 'banner'
-    = render 'enabled'
+    = render 'integration_form'
 
   .cluster-applications-table#js-cluster-applications
 
@@ -41,6 +41,6 @@
       %h4= _('Advanced settings')
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
-      %p= s_('ClusterIntegration|Manage cluster integration on your GitLab project')
+      %p= s_("ClusterIntegration|Advanced options on this cluster's integration")
     .settings-content
       = render 'advanced_settings'

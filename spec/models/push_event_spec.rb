@@ -63,12 +63,14 @@ describe PushEvent do
     let(:event2) { create(:push_event, project: project) }
     let(:event3) { create(:push_event, project: project) }
     let(:event4) { create(:push_event, project: project) }
+    let(:event5) { create(:push_event, project: project) }
 
     before do
       create(:push_event_payload, event: event1, ref: 'foo', action: :created)
       create(:push_event_payload, event: event2, ref: 'bar', action: :created)
-      create(:push_event_payload, event: event3, ref: 'baz', action: :removed)
-      create(:push_event_payload, event: event4, ref: 'baz', ref_type: :tag)
+      create(:push_event_payload, event: event3, ref: 'qux', action: :created)
+      create(:push_event_payload, event: event4, ref: 'baz', action: :removed)
+      create(:push_event_payload, event: event5, ref: 'baz', ref_type: :tag)
 
       project.repository.create_branch('bar', 'master')
 
@@ -78,6 +80,16 @@ describe PushEvent do
         target_project: project,
         source_branch: 'bar'
       )
+
+      project.repository.create_branch('qux', 'master')
+
+      create(
+        :merge_request,
+        :closed,
+        source_project: project,
+        target_project: project,
+        source_branch: 'qux'
+      )
     end
 
     let(:relation) { described_class.without_existing_merge_requests }
@@ -86,16 +98,20 @@ describe PushEvent do
       expect(relation).to include(event1)
     end
 
-    it 'does not include events that have a corresponding merge request' do
+    it 'does not include events that have a corresponding open merge request' do
       expect(relation).not_to include(event2)
     end
 
+    it 'includes events that has corresponding closed/merged merge requests' do
+      expect(relation).to include(event3)
+    end
+
     it 'does not include events for removed refs' do
-      expect(relation).not_to include(event3)
+      expect(relation).not_to include(event4)
     end
 
     it 'does not include events for pushing to tags' do
-      expect(relation).not_to include(event4)
+      expect(relation).not_to include(event5)
     end
   end
 

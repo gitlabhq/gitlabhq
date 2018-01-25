@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import pipelinesComp from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';

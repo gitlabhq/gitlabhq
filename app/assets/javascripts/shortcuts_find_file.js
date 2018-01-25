@@ -1,5 +1,4 @@
-/* global Mousetrap */
-
+import Mousetrap from 'mousetrap';
 import ShortcutsNavigation from './shortcuts_navigation';
 
 export default class ShortcutsFindFile extends ShortcutsNavigation {

@@ -27,13 +27,6 @@
    * }
    */
   export default {
-    props: {
-      job: {
-        type: Object,
-        required: true,
-      },
-    },
-
     directives: {
       tooltip,
     },
@@ -43,10 +36,21 @@
       jobNameComponent,
     },
 
+    props: {
+      job: {
+        type: Object,
+        required: true,
+      },
+    },
+
     computed: {
       tooltipText() {
         return `${this.job.name} - ${this.job.status.label}`;
       },
+    },
+
+    mounted() {
+      this.stopDropdownClickPropagation();
     },
 
     methods: {
@@ -59,15 +63,12 @@
      * target the click event of this component.
      */
       stopDropdownClickPropagation() {
-        $(this.$el.querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
+        $(this.$el
+          .querySelectorAll('.js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item'))
           .on('click', (e) => {
             e.stopPropagation();
           });
       },
-    },
-
-    mounted() {
-      this.stopDropdownClickPropagation();
     },
   };
 </script>
@@ -83,22 +84,25 @@
 
       <job-name-component
         :name="job.name"
-        :status="job.status" />
+        :status="job.status"
+      />
 
       <span class="dropdown-counter-badge">
-        {{job.size}}
+        {{ job.size }}
       </span>
     </button>
 
     <ul class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown">
       <li class="scrollable-menu">
         <ul>
-          <li v-for="item in job.jobs">
+          <li
+            v-for="(item, i) in job.jobs"
+            :key="i">
             <job-component
               :job="item"
               :is-dropdown="true"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
-              />
+            />
           </li>
         </ul>
       </li>

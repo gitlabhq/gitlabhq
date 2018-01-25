@@ -1,39 +1,44 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
-import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { ITEM_TYPE, VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE, PROJECT_VISIBILITY_TYPE } from '../constants';
-import itemStatsValue from './item_stats_value.vue';
+  import icon from '~/vue_shared/components/icon.vue';
+  import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+  import {
+    ITEM_TYPE,
+    VISIBILITY_TYPE_ICON,
+    GROUP_VISIBILITY_TYPE,
+    PROJECT_VISIBILITY_TYPE,
+  } from '../constants';
+  import itemStatsValue from './item_stats_value.vue';
 
-export default {
-  components: {
-    icon,
-    timeAgoTooltip,
-    itemStatsValue,
-  },
-  props: {
-    item: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      icon,
+      timeAgoTooltip,
+      itemStatsValue,
     },
-  },
-  computed: {
-    visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.item.visibility];
+    props: {
+      item: {
+        type: Object,
+        required: true,
+      },
     },
-    visibilityTooltip() {
-      if (this.item.type === ITEM_TYPE.GROUP) {
-        return GROUP_VISIBILITY_TYPE[this.item.visibility];
-      }
-      return PROJECT_VISIBILITY_TYPE[this.item.visibility];
+    computed: {
+      visibilityIcon() {
+        return VISIBILITY_TYPE_ICON[this.item.visibility];
+      },
+      visibilityTooltip() {
+        if (this.item.type === ITEM_TYPE.GROUP) {
+          return GROUP_VISIBILITY_TYPE[this.item.visibility];
+        }
+        return PROJECT_VISIBILITY_TYPE[this.item.visibility];
+      },
+      isProject() {
+        return this.item.type === ITEM_TYPE.PROJECT;
+      },
+      isGroup() {
+        return this.item.type === ITEM_TYPE.GROUP;
+      },
     },
-    isProject() {
-      return this.item.type === ITEM_TYPE.PROJECT;
-    },
-    isGroup() {
-      return this.item.type === ITEM_TYPE.GROUP;
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -42,28 +47,28 @@ export default {
       v-if="isGroup"
       css-class="number-subgroups"
       icon-name="folder"
-      :title="s__('Subgroups')"
-      :value=item.subgroupCount
+      :title="__('Subgroups')"
+      :value="item.subgroupCount"
     />
     <item-stats-value
       v-if="isGroup"
       css-class="number-projects"
       icon-name="bookmark"
-      :title="s__('Projects')"
-      :value=item.projectCount
+      :title="__('Projects')"
+      :value="item.projectCount"
     />
     <item-stats-value
       v-if="isGroup"
       css-class="number-users"
       icon-name="users"
-      :title="s__('Members')"
-      :value=item.memberCount
+      :title="__('Members')"
+      :value="item.memberCount"
     />
     <item-stats-value
       v-if="isProject"
       css-class="project-stars"
       icon-name="star"
-      :value=item.starCount
+      :value="item.starCount"
     />
     <item-stats-value
       css-class="item-visibility"

@@ -11,8 +11,9 @@ module Gitlab
         untar_with_options(archive: archive, dir: dir, options: 'zxf')
       end
 
-      def git_bundle(repo_path:, bundle_path:)
-        execute(%W(#{git_bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all))
+      def git_clone_bundle(repo_path:, bundle_path:)
+        execute(%W(#{git_bin_path} clone --bare -- #{bundle_path} #{repo_path}))
+        Gitlab::Git::Repository.create_hooks(repo_path, File.expand_path(Gitlab.config.gitlab_shell.hooks_path))
       end
 
       def mkdir_p(path)

@@ -156,12 +156,14 @@ module Gitlab
         %W[git apply --3way #{patch_path}]
       ) do |output, status|
         puts output
+
         unless status.zero?
           @failed_files = output.lines.reduce([]) do |memo, line|
             if line.start_with?('error: patch failed:')
               file = line.sub(/\Aerror: patch failed: /, '')
               memo << file unless file =~ IGNORED_FILES_REGEX
             end
+
             memo
           end
 

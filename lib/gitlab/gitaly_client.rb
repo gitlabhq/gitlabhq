@@ -1,6 +1,8 @@
 require 'base64'
 
 require 'gitaly'
+require 'grpc/health/v1/health_pb'
+require 'grpc/health/v1/health_services_pb'
 
 module Gitlab
   module GitalyClient
@@ -69,12 +71,25 @@ module Gitlab
         @stubs ||= {}
         @stubs[storage] ||= {}
         @stubs[storage][name] ||= begin
-          klass = Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
-          addr = address(storage)
-          addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
+          klass = stub_class(name)
+          addr = stub_address(storage)
           klass.new(addr, :this_channel_is_insecure)
         end
       end
+    end
+
+    def self.stub_class(name)
+      if name == :health_check
+        Grpc::Health::V1::Health::Stub
+      else
+        Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
+      end
+    end
+
+    def self.stub_address(storage)
+      addr = address(storage)
+      addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
+      addr
     end
 
     def self.clear_stubs!

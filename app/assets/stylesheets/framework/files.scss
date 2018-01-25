@@ -18,14 +18,9 @@
     margin: $gl-padding 0;
 
     &.limited-width-container .file-content {
-      max-width: $limited-layout-width-sm;
+      max-width: $limited-layout-width;
       margin-left: auto;
       margin-right: auto;
-
-      @media (min-width: $screen-md-min) {
-        padding-top: 64px;
-        padding-bottom: 64px;
-      }
     }
   }
 
@@ -128,7 +123,11 @@
     }
 
     &.wiki {
-      padding: 30px $gl-padding;
+      padding: $gl-padding;
+
+      @media (min-width: $screen-md-min) {
+        padding: $gl-padding * 2;
+      }
     }
 
     &.blob-no-preview {

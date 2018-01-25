@@ -73,6 +73,21 @@
       },
 
     },
+    mounted() {
+      this.$nextTick(() => {
+        const bbox = this.$refs.ylabel.getBBox();
+        this.metricUsageXPosition = 0;
+        this.seriesXPosition = 0;
+        if (this.$refs.legendTitleSvg != null) {
+          this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
+        }
+        if (this.$refs.seriesTitleSvg != null) {
+          this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
+        }
+        this.yLabelWidth = bbox.width + 10; // Added some padding
+        this.yLabelHeight = bbox.height + 5;
+      });
+    },
     methods: {
       translateLegendGroup(index) {
         return `translate(0, ${12 * (index)})`;
@@ -100,26 +115,10 @@
         return null;
       },
     },
-    mounted() {
-      this.$nextTick(() => {
-        const bbox = this.$refs.ylabel.getBBox();
-        this.metricUsageXPosition = 0;
-        this.seriesXPosition = 0;
-        if (this.$refs.legendTitleSvg != null) {
-          this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
-        }
-        if (this.$refs.seriesTitleSvg != null) {
-          this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
-        }
-        this.yLabelWidth = bbox.width + 10; // Added some padding
-        this.yLabelHeight = bbox.height + 5;
-      });
-    },
   };
 </script>
 <template>
-  <g
-    class="axis-label-container">
+  <g class="axis-label-container">
     <line
       class="label-x-axis-line"
       stroke="#000000"
@@ -127,8 +126,8 @@
       x1="10"
       :y1="yPosition"
       :x2="graphWidth + 20"
-      :y2="yPosition">
-    </line>
+      :y2="yPosition"
+    />
     <line
       class="label-y-axis-line"
       stroke="#000000"
@@ -136,39 +135,43 @@
       x1="10"
       y1="0"
       :x2="10"
-      :y2="yPosition">
-    </line>
+      :y2="yPosition"
+    />
     <rect
       class="rect-axis-text"
       :transform="rectTransform"
       :width="yLabelWidth"
-      :height="yLabelHeight">
-    </rect>
+      :height="yLabelHeight"
+    />
     <text
       class="label-axis-text y-label-text"
       text-anchor="middle"
       :transform="textTransform"
-      ref="ylabel">
-      {{yAxisLabel}}
+      ref="ylabel"
+    >
+      {{ yAxisLabel }}
     </text>
     <rect
       class="rect-axis-text"
       :x="xPosition + 60"
       :y="graphHeight - 80"
       width="35"
-      height="50">
-    </rect>
+      height="50"
+    />
     <text
       class="label-axis-text x-label-text"
       :x="xPosition + 60"
       :y="yPosition"
-      dy=".35em">
+      dy=".35em"
+    >
       Time
     </text>
-    <g class="legend-group"
+    <g
+      class="legend-group"
       v-for="(series, index) in timeSeries"
       :key="index"
-      :transform="translateLegendGroup(index)">
+      :transform="translateLegendGroup(index)"
+    >
       <line
         :stroke="series.lineColor"
         :stroke-width="measurements.legends.height"
@@ -176,23 +179,25 @@
         :x1="measurements.legends.offsetX"
         :x2="measurements.legends.offsetX + measurements.legends.width"
         :y1="graphHeight - measurements.legends.offsetY"
-        :y2="graphHeight - measurements.legends.offsetY">
-      </line>
+        :y2="graphHeight - measurements.legends.offsetY"
+      />
       <text
         v-if="timeSeries.length > 1"
         class="legend-metric-title"
         ref="legendTitleSvg"
         x="38"
-        :y="graphHeight - 30">
-        {{createSeriesString(index, series)}}
+        :y="graphHeight - 30"
+      >
+        {{ createSeriesString(index, series) }}
       </text>
       <text
         v-else
         class="legend-metric-title"
         ref="legendTitleSvg"
         x="38"
-        :y="graphHeight - 30">
-        {{legendTitle}} {{formatMetricUsage(series)}}
+        :y="graphHeight - 30"
+      >
+        {{ legendTitle }} {{ formatMetricUsage(series) }}
       </text>
     </g>
   </g>

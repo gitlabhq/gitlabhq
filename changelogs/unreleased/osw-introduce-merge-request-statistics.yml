@@ -1,5 +1,0 @@
----
-title: Cache merged and closed events data in merge_request_metrics table
-merge_request:
-author:
-type: performance

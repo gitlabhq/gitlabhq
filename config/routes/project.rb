@@ -50,6 +50,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :revert
           post :cherry_pick
           get :diff_for_path
+          get :merge_requests
         end
       end
 
@@ -96,6 +97,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :remove_wip
           post :assign_related_issues
+          post :rebase
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -407,7 +409,9 @@ constraints(ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
+        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+          post :reset_cache
+        end
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository
       end

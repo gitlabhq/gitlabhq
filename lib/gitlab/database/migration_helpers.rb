@@ -512,6 +512,7 @@ module Gitlab
         batch_size: 10_000,
         interval: 10.minutes
       )
+
         unless relation.model < EachBatch
           raise TypeError, 'The relation must include the EachBatch module'
         end
@@ -524,8 +525,9 @@ module Gitlab
         install_rename_triggers(table, column, temp_column)
 
         # Schedule the jobs that will copy the data from the old column to the
-        # new one.
-        relation.each_batch(of: batch_size) do |batch, index|
+        # new one. Rows with NULL values in our source column are skipped since
+        # the target column is already NULL at this point.
+        relation.where.not(column => nil).each_batch(of: batch_size) do |batch, index|
           start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
           max_index = index
 
@@ -841,6 +843,12 @@ into similar problems in the future (e.g. when new tables are created).
       #     end
       def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        # To not overload the worker too much we enforce a minimum interval both
+        # when scheduling and performing jobs.
+        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
+          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        end
 
         model_class.each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck('MIN(id), MAX(id)').first

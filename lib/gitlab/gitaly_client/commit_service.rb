@@ -125,11 +125,11 @@ module Gitlab
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: ref
+          revision: encode_binary(ref)
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
-        request.path = options[:path] if options[:path].present?
+        request.path = encode_binary(options[:path]) if options[:path].present?
         request.max_count = options[:max_count] if options[:max_count].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
@@ -177,7 +177,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
-      rescue GRPC::Unknown # If no repository is found, happens mainly during testing
+      rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
 
@@ -280,6 +280,23 @@ module Gitlab
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
         end
+      end
+
+      def extract_signature(commit_id)
+        request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
+        response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request)
+
+        signature = ''.b
+        signed_text = ''.b
+
+        response.each do |message|
+          signature << message.signature
+          signed_text << message.signed_text
+        end
+
+        return if signature.blank? && signed_text.blank?
+
+        [signature, signed_text]
       end
 
       private

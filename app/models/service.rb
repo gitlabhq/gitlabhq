@@ -44,6 +44,7 @@ class Service < ActiveRecord::Base
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
+  scope :deployment, -> { where(category: 'deployment') }
 
   default_value_for :category, 'common'
 
@@ -115,6 +116,11 @@ class Service < ActiveRecord::Base
 
   def event_field(event)
     nil
+  end
+
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key)/ }
   end
 
   def global_fields
@@ -249,6 +255,7 @@ class Service < ActiveRecord::Base
       teamcity
       microsoft_teams
     ]
+
     if Rails.env.development?
       service_names += %w[mock_ci mock_deployment mock_monitoring]
     end
@@ -269,6 +276,10 @@ class Service < ActiveRecord::Base
 
   def deprecation_message
     nil
+  end
+
+  def self.find_by_template
+    find_by(template: true)
   end
 
   private

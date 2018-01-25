@@ -66,6 +66,7 @@ module SystemCheck
 
         if check.can_repair?
           $stdout.print 'Trying to fix error automatically. ...'
+
           if check.repair!
             $stdout.puts 'Success'.color(:green)
             return

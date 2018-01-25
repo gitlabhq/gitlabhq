@@ -35,7 +35,7 @@ describe('Store', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('starts with a blank state', () => {

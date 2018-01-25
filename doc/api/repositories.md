@@ -113,7 +113,7 @@ GET /projects/:id/repository/archive
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
+- `sha` (optional) - The commit SHA to download. A tag, branch reference or sha can be used. This defaults to the tip of the default branch if not specified
 
 ## Compare branches, tags or commits
 

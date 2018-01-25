@@ -649,28 +649,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
       Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
     end
 
-    it 'fetches a repository as a mirror remote' do
-      subject
-
-      expect(refs(new_repository.path)).to eq(refs(repository.path))
-    end
-
-    context 'with keep-around refs' do
-      let(:sha) { SeedRepo::Commit::ID }
-      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
-      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
-
-      before do
-        repository.rugged.references.create(keep_around_ref, sha, force: true)
-        repository.rugged.references.create(tmp_ref, sha, force: true)
-      end
-
-      it 'includes the temporary and keep-around refs' do
+    shared_examples 'repository mirror fecthing' do
+      it 'fetches a repository as a mirror remote' do
         subject
 
-        expect(refs(new_repository.path)).to include(keep_around_ref)
-        expect(refs(new_repository.path)).to include(tmp_ref)
+        expect(refs(new_repository.path)).to eq(refs(repository.path))
       end
+
+      context 'with keep-around refs' do
+        let(:sha) { SeedRepo::Commit::ID }
+        let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+        let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+        before do
+          repository.rugged.references.create(keep_around_ref, sha, force: true)
+          repository.rugged.references.create(tmp_ref, sha, force: true)
+        end
+
+        it 'includes the temporary and keep-around refs' do
+          subject
+
+          expect(refs(new_repository.path)).to include(keep_around_ref)
+          expect(refs(new_repository.path)).to include(tmp_ref)
+        end
+      end
+    end
+
+    context 'with gitaly enabled' do
+      it_behaves_like 'repository mirror fecthing'
+    end
+
+    context 'with gitaly enabled', :skip_gitaly_mock do
+      it_behaves_like 'repository mirror fecthing'
     end
   end
 
@@ -889,44 +899,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context "compare results between log_by_walk and log_by_shell" do
-      let(:options) { { ref: "master" } }
-      let(:commits_by_walk) { repository.log(options).map(&:id) }
-      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
-
-      it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-      context "with limit" do
-        let(:options) { { ref: "master", limit: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with offset" do
-        let(:options) { { ref: "master", offset: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with skip_merges" do
-        let(:options) { { ref: "master", skip_merges: true } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with path" do
-        let(:options) { { ref: "master", path: "encoding" } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-        context "with follow" do
-          let(:options) { { ref: "master", path: "encoding", follow: true } }
-
-          it { expect(commits_by_walk).to eq(commits_by_shell) }
-        end
-      end
-    end
-
     context "where provides 'after' timestamp" do
       options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
 
@@ -1030,11 +1002,49 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
 
+      context 'with max_count' do
+        it 'returns the number of commits with path ' do
+          options = { ref: 'master', max_count: 5 }
+
+          expect(repository.count_commits(options)).to eq(5)
+        end
+      end
+
       context 'with path' do
         it 'returns the number of commits with path ' do
-          options = { ref: 'master', path: "encoding" }
+          options = { ref: 'master', path: 'encoding' }
 
           expect(repository.count_commits(options)).to eq(2)
+        end
+      end
+
+      context 'with option :from and option :to' do
+        it 'returns the number of commits ahead for fix-mode..fix-blob-path' do
+          options = { from: 'fix-mode', to: 'fix-blob-path' }
+
+          expect(repository.count_commits(options)).to eq(2)
+        end
+
+        it 'returns the number of commits ahead for fix-blob-path..fix-mode' do
+          options = { from: 'fix-blob-path', to: 'fix-mode' }
+
+          expect(repository.count_commits(options)).to eq(1)
+        end
+
+        context 'with option :left_right' do
+          it 'returns the number of commits for fix-mode...fix-blob-path' do
+            options = { from: 'fix-mode', to: 'fix-blob-path', left_right: true }
+
+            expect(repository.count_commits(options)).to eq([1, 2])
+          end
+
+          context 'with max_count' do
+            it 'returns the number of commits with path ' do
+              options = { from: 'fix-mode', to: 'fix-blob-path', left_right: true, max_count: 1 }
+
+              expect(repository.count_commits(options)).to eq([1, 1])
+            end
+          end
         end
       end
 
@@ -1054,14 +1064,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     context 'when Gitaly count_commits feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'extended commit counting'
     end
-  end
-
-  describe "branch_names_contains" do
-    subject { repository.branch_names_contains(SeedRepo::LastCommit::ID) }
-
-    it { is_expected.to include('master') }
-    it { is_expected.not_to include('feature') }
-    it { is_expected.not_to include('fix') }
   end
 
   describe '#autocrlf' do
@@ -1235,47 +1237,57 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#merged_branch_names' do
-    context 'when branch names are passed' do
-      it 'only returns the names we are asking' do
-        names = repository.merged_branch_names(%w[merge-test])
+    shared_examples 'finding merged branch names' do
+      context 'when branch names are passed' do
+        it 'only returns the names we are asking' do
+          names = repository.merged_branch_names(%w[merge-test])
 
-        expect(names).to contain_exactly('merge-test')
+          expect(names).to contain_exactly('merge-test')
+        end
+
+        it 'does not return unmerged branch names' do
+          names = repository.merged_branch_names(%w[feature])
+
+          expect(names).to be_empty
+        end
       end
 
-      it 'does not return unmerged branch names' do
-        names = repository.merged_branch_names(%w[feature])
+      context 'when no root ref is available' do
+        it 'returns empty list' do
+          project = create(:project, :empty_repo)
 
-        expect(names).to be_empty
+          names = project.repository.merged_branch_names(%w[feature])
+
+          expect(names).to be_empty
+        end
+      end
+
+      context 'when no branch names are specified' do
+        before do
+          repository.create_branch('identical', 'master')
+        end
+
+        after do
+          ensure_seeds
+        end
+
+        it 'returns all merged branch names except for identical one' do
+          names = repository.merged_branch_names
+
+          expect(names).to include('merge-test')
+          expect(names).to include('fix-mode')
+          expect(names).not_to include('feature')
+          expect(names).not_to include('identical')
+        end
       end
     end
 
-    context 'when no root ref is available' do
-      it 'returns empty list' do
-        project = create(:project, :empty_repo)
-
-        names = project.repository.merged_branch_names(%w[feature])
-
-        expect(names).to be_empty
-      end
+    context 'when Gitaly merged_branch_names feature is enabled' do
+      it_behaves_like 'finding merged branch names'
     end
 
-    context 'when no branch names are specified' do
-      before do
-        repository.create_branch('identical', 'master')
-      end
-
-      after do
-        ensure_seeds
-      end
-
-      it 'returns all merged branch names except for identical one' do
-        names = repository.merged_branch_names
-
-        expect(names).to include('merge-test')
-        expect(names).to include('fix-mode')
-        expect(names).not_to include('feature')
-        expect(names).not_to include('identical')
-      end
+    context 'when Gitaly merged_branch_names feature is disabled', :disable_gitaly do
+      it_behaves_like 'finding merged branch names'
     end
   end
 
@@ -1912,6 +1924,34 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it { expect(subject.shard_path).to eq(storage_path) }
     it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
+  end
+
+  describe '#bundle_to_disk' do
+    shared_examples 'bundling to disk' do
+      let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+
+      after do
+        FileUtils.rm_rf(save_path)
+      end
+
+      it 'saves a bundle to disk' do
+        repository.bundle_to_disk(save_path)
+
+        success = system(
+          *%W(#{Gitlab.config.git.bin_path} -C #{repository.path} bundle verify #{save_path}),
+          [:out, :err] => '/dev/null'
+        )
+        expect(success).to be true
+      end
+    end
+
+    context 'when Gitaly bundle_to_disk feature is enabled' do
+      it_behaves_like 'bundling to disk'
+    end
+
+    context 'when Gitaly bundle_to_disk feature is disabled', :disable_gitaly do
+      it_behaves_like 'bundling to disk'
+    end
   end
 
   context 'gitlab_projects commands' do

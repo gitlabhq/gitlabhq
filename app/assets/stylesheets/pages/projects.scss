@@ -322,13 +322,6 @@
   }
 }
 
-.project-repo-buttons {
-  .project-action-button .dropdown-menu {
-    max-height: 250px;
-    overflow-y: auto;
-  }
-}
-
 .split-one {
   display: inline-table;
   margin-right: 12px;
@@ -900,17 +893,6 @@ pre.light-well {
     margin-top: 6px;
     font-weight: $gl-font-weight-normal;
   }
-}
-
-.create-new-protected-branch-button,
-.create-new-protected-tag-button {
-  @include dropdown-link;
-
-  width: 100%;
-  background-color: transparent;
-  border: 0;
-  text-align: left;
-  text-overflow: ellipsis;
 }
 
 .protected-branches-list,

@@ -5,7 +5,7 @@
 
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-
+import _ from 'underscore';
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';
@@ -30,7 +30,7 @@ describe('List model', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('gets issues when created', (done) => {

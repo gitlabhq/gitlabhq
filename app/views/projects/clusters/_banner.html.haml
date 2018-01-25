@@ -1,6 +1,6 @@
-%h4= s_('ClusterIntegration|Enable cluster integration')
-.settings-content
+%h4= s_('ClusterIntegration|Cluster integration')
 
+.settings-content
   .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
     = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine')
     %p.js-error-reason
@@ -11,11 +11,4 @@
   .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
     = s_('ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine. Refresh the page to see cluster\'s details')
 
-  %p
-    - if @cluster.enabled?
-      - if can?(current_user, :update_cluster, @cluster)
-        = s_('ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab\'s connection to it.')
-      - else
-        = s_('ClusterIntegration|Cluster integration is enabled for this project.')
-    - else
-      = s_('ClusterIntegration|Cluster integration is disabled for this project.')
+  %p= s_('ClusterIntegration|Control how your cluster integrates with GitLab')

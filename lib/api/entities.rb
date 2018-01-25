@@ -65,12 +65,12 @@ module API
     end
 
     class Hook < Grape::Entity
-      expose :id, :url, :created_at, :push_events, :tag_push_events, :repository_update_events
+      expose :id, :url, :created_at, :push_events, :tag_push_events, :merge_requests_events, :repository_update_events
       expose :enable_ssl_verification
     end
 
     class ProjectHook < Hook
-      expose :project_id, :issues_events, :merge_requests_events
+      expose :project_id, :issues_events
       expose :note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
@@ -278,7 +278,7 @@ module API
     end
 
     class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats
+      expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
@@ -507,7 +507,16 @@ module API
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_pipeline_succeeds
-      expose :merge_status
+
+      # Ideally we should deprecate `MergeRequest#merge_status` exposure and
+      # use `MergeRequest#mergeable?` instead (boolean).
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/42344 for more
+      # information.
+      expose :merge_status do |merge_request|
+        # In order to avoid having a breaking change for users, we keep returning the
+        # expected values from MergeRequest#merge_status state machine.
+        merge_request.mergeable? ? 'can_be_merged' : 'cannot_be_merged'
+      end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
@@ -554,11 +563,16 @@ module API
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at, :can_push
+      expose :id, :title, :key, :created_at
     end
 
     class SSHKeyWithUser < SSHKey
       expose :user, using: Entities::UserPublic
+    end
+
+    class DeployKeysProject < Grape::Entity
+      expose :deploy_key, merge: true, using: Entities::SSHKey
+      expose :can_push
     end
 
     class GPGKey < Grape::Entity
@@ -714,10 +728,7 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields
-          .select { |field| options[:include_passwords] || field[:type] != 'password' }
-          .map { |field| field[:name] }
-        service.properties.slice(*field_names)
+        service.properties.slice(*service.api_field_names)
       end
     end
 
@@ -791,6 +802,8 @@ module API
 
     class Board < Grape::Entity
       expose :id
+      expose :project, using: Entities::BasicProjectDetails
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
@@ -862,6 +875,8 @@ module API
       expose :active
       expose :is_shared
       expose :name
+      expose :online?, as: :online
+      expose :status
     end
 
     class RunnerDetails < Runner
@@ -914,7 +929,7 @@ module API
     class Trigger < Grape::Entity
       expose :id
       expose :token, :description
-      expose :created_at, :updated_at, :deleted_at, :last_used
+      expose :created_at, :updated_at, :last_used
       expose :owner, using: Entities::UserBasic
     end
 
@@ -1133,6 +1148,7 @@ module API
     class PagesDomainBasic < Grape::Entity
       expose :domain
       expose :url
+      expose :project_id
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },
@@ -1149,6 +1165,16 @@ module API
         using: PagesDomainCertificate do |pages_domain|
         pages_domain
       end
+    end
+
+    class Application < Grape::Entity
+      expose :uid, as: :application_id
+      expose :redirect_uri, as: :callback_url
+    end
+
+    # Use with care, this exposes the secret
+    class ApplicationWithSecret < Application
+      expose :secret
     end
   end
 end
