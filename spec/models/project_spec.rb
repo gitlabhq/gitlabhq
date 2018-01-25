@@ -1080,12 +1080,6 @@ describe Project do
     end
   end
 
-  describe '.parse_project_id' do
-    it 'removes .git from the project_id' do
-      expect(described_class.parse_project_id('new-project.git')).to eq('new-project')
-    end
-  end
-
   context 'repository storage by default' do
     let(:project) { create(:project) }
 

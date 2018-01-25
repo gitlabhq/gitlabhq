@@ -51,13 +51,11 @@ module API
           return { status: false, message: e.message }
         end
 
-        if user && project.blank? && receive_pack?
-          @project = ::Projects::CreateService.new(user, project_params).execute
-
-          if @project.saved?
-            Gitlab::Checks::NewProject.new(user, @project, protocol).add_new_project_message
-          else
-            return { status: false, message: "Could not create project" }
+        if receive_pack? && project.blank?
+          begin
+            @project = ::Projects::CreateFromPushService.new(user, project_match[:project_path], project_namespace, protocol).execute
+          rescue Gitlab::GitAccess::ProjectCreationError => e
+            return { status: false, message: e.message }
           end
         end
 
@@ -218,10 +216,10 @@ module API
         # key could be used
         if user
           redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
-          new_project_message = Gitlab::Checks::NewProject.fetch_new_project_message(user.id, project.id)
+          project_created_message = Gitlab::Checks::ProjectCreated.fetch_project_created_message(user.id, project.id)
 
           output[:redirected_message] = redirect_message if redirect_message
-          output[:new_project_message] = new_project_message if new_project_message
+          output[:project_created_message] = project_created_message if project_created_message
         end
 
         output

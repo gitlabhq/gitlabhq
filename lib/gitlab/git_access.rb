@@ -4,6 +4,7 @@ module Gitlab
   class GitAccess
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
+    ProjectCreationError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
 
     ERROR_MESSAGES = {
@@ -13,13 +14,13 @@ module Gitlab
         'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
-      namespace_not_found: 'The namespace you were looking for could not be found.',
       account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
+      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
+      namespace_not_found: 'The namespace you were looking for could not be found.'
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -52,7 +53,7 @@ module Gitlab
         check_download_access!
       when *PUSH_COMMANDS
         check_push_access!(cmd, changes)
-        check_namespace_accessibility!(cmd)
+        check_namespace_accessibility!
       end
 
       true
@@ -148,7 +149,7 @@ module Gitlab
       end
     end
 
-    def check_namespace_accessibility!(cmd)
+    def check_namespace_accessibility!
       return unless project.blank?
 
       unless target_namespace
@@ -248,7 +249,7 @@ module Gitlab
     end
 
     def can_create_project_in_namespace?(cmd)
-      return false unless PUSH_COMMANDS.include?(cmd) && target_namespace
+      return false unless push?(cmd) && target_namespace
 
       user.can?(:create_projects, target_namespace)
     end
@@ -263,6 +264,10 @@ module Gitlab
 
     def receive_pack?(command)
       command == 'git-receive-pack'
+    end
+
+    def push?(cmd)
+      PUSH_COMMANDS.include?(cmd)
     end
 
     def upload_pack_disabled_over_http?
