@@ -18,7 +18,7 @@ class JobArtifactUploader < GitlabUploader
     if file_storage?
       File.open(path, "rb")
     else
-      raise 'Only File System is supported'
+      Gitlab::Ci::Trace::HTTP_IO.new(url, size)
     end
   end
 
