@@ -6,14 +6,14 @@ const ASSIGNEE = {
   id: 2,
   name: 'gitlab user 2',
   username: 'gitlab2',
-  avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+  avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
 };
 
 const ANOTHER_ASSINEE = {
   id: 3,
   name: 'gitlab user 3',
   username: 'gitlab3',
-  avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+  avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
 };
 
 const PARTICIPANT = {
@@ -38,7 +38,7 @@ describe('Sidebar store', () => {
         id: 1,
         name: 'Administrator',
         username: 'root',
-        avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
       },
       editable: true,
       rootPath: '/',

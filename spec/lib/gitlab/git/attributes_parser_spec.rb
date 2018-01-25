@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::Git::Attributes, seed_helper: true do
-  let(:path) do
-    File.join(SEED_STORAGE_PATH, 'with-git-attributes.git')
-  end
+describe Gitlab::Git::AttributesParser, seed_helper: true do
+  let(:attributes_path) { File.join(SEED_STORAGE_PATH, 'with-git-attributes.git', 'info', 'attributes') }
+  let(:data) { File.read(attributes_path) }
 
-  subject { described_class.new(path) }
+  subject { described_class.new(data) }
 
   describe '#attributes' do
     context 'using a path with attributes' do
@@ -66,6 +65,26 @@ describe Gitlab::Git::Attributes, seed_helper: true do
         expect(subject.attributes('test.foo')).to eq({})
       end
     end
+
+    context 'when attributes data is a file handle' do
+      subject do
+        File.open(attributes_path, 'r') do |file_handle|
+          described_class.new(file_handle)
+        end
+      end
+
+      it 'returns the attributes as a Hash' do
+        expect(subject.attributes('test.txt')).to eq({ 'text' => true })
+      end
+    end
+
+    context 'when attributes data is nil' do
+      let(:data) { nil }
+
+      it 'returns an empty Hash' do
+        expect(subject.attributes('test.foo')).to eq({})
+      end
+    end
   end
 
   describe '#patterns' do
@@ -74,28 +93,20 @@ describe Gitlab::Git::Attributes, seed_helper: true do
     end
 
     it 'parses an entry that uses a tab to separate the pattern and attributes' do
-      expect(subject.patterns[File.join(path, '*.md')])
+      expect(subject.patterns[File.join('/', '*.md')])
         .to eq({ 'gitlab-language' => 'markdown' })
     end
 
     it 'stores patterns in reverse order' do
       first = subject.patterns.to_a[0]
 
-      expect(first[0]).to eq(File.join(path, 'bla/bla.txt'))
+      expect(first[0]).to eq(File.join('/', 'bla/bla.txt'))
     end
 
     # It's a bit hard to test for something _not_ being processed. As such we'll
     # just test the number of entries.
     it 'ignores any comments and empty lines' do
       expect(subject.patterns.length).to eq(10)
-    end
-
-    it 'does not parse anything when the attributes file does not exist' do
-      expect(File).to receive(:exist?)
-        .with(File.join(path, 'info/attributes'))
-        .and_return(false)
-
-      expect(subject.patterns).to eq({})
     end
   end
 
@@ -132,17 +143,9 @@ describe Gitlab::Git::Attributes, seed_helper: true do
       expect { |b| subject.each_line(&b) }.to yield_successive_args(*args)
     end
 
-    it 'does not yield when the attributes file does not exist' do
-      expect(File).to receive(:exist?)
-        .with(File.join(path, 'info/attributes'))
-        .and_return(false)
-
-      expect { |b| subject.each_line(&b) }.not_to yield_control
-    end
-
     it 'does not yield when the attributes file has an unsupported encoding' do
-      path = File.join(SEED_STORAGE_PATH, 'with-invalid-git-attributes.git')
-      attrs = described_class.new(path)
+      path = File.join(SEED_STORAGE_PATH, 'with-invalid-git-attributes.git', 'info', 'attributes')
+      attrs = described_class.new(File.read(path))
 
       expect { |b| attrs.each_line(&b) }.not_to yield_control
     end

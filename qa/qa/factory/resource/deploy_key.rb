@@ -10,6 +10,12 @@ module QA
           end
         end
 
+        product :fingerprint do
+          Page::Project::Settings::Repository.act do
+            expand_deploy_keys(&:key_fingerprint)
+          end
+        end
+
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-to-deploy'
           project.description = 'project for adding deploy key test'

@@ -1336,9 +1336,19 @@ describe MergeRequest do
           end
         end
 
-        context 'when the revert commit is mentioned in a note before the MR was merged' do
+        context 'when the revert commit is mentioned in a note just before the MR was merged' do
           before do
-            subject.notes.last.update!(created_at: subject.metrics.merged_at - 1.second)
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 30.seconds)
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when the revert commit is mentioned in a note long before the MR was merged' do
+          before do
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 2.minutes)
           end
 
           it 'returns true' do
