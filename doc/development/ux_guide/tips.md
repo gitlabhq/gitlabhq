@@ -46,18 +46,16 @@ Correct file will look like this:
 ## Updating SVGs on [gitlab-svgs](http://gitlab-org.gitlab.io/gitlab-svgs/)
 
 - Exporting the icons or illustrations you created as SVGs.
-- Optimize them by [SVGO](https://github.com/svg/svgo).
+- Download [SVGO Compressor Sketch plugin](https://github.com/bohemiancoding/svgo-compressor) or use [SVGO](https://github.com/svg/svgo) to optimize them.
 - Switch to your terminal:
- * Enter `git pull origin master` to pull the latest files.
- * Enter `git checkout -b your-branch-name`  on the terminal.
+ 1. Go to `gitlab-svgs` directory.
+ 1. Pull latest changes from master
+ 1. Create a new branch for your changes
 - Go to the `gitlab-svgs` directory locally, and then you will see `sprite_icons` and `illustrations` folders.
- * For icons, paste the icons to `sprite_icons` folder.
- * For illustrations, paste the illustrations to `illustrations` folder.
+ * For icons, copy and paste the icons to `sprite_icons` folder.
+ * For illustrations, copy and paste the illustrations to `illustrations` folder.
 - Switch to your terminal:
- * Enter `yarn svg`
- * Enter `git status` to check the files you will commit
- * Enter  `git add .` to commit the files.
- * Enter `git commit -m “your commit message”`
- * Enter `git push origin your-branch-name`
-- Create a merge request on gitlab.com
-- Tag [@timzallmann](https://gitlab.com/timzallmann) or [@hazelyang](https://gitlab.com/hazelyang) to merge it.
+ 1. Run `brew install yarn` to install [Yarn](https://yarnpkg.com/en/).
+ 1. Run `yarn svg`.
+ 1. Push your changes and create a merge request on [gitlab-svgs](https://gitlab.com/gitlab-org/gitlab-svgs).
+- Assign [@timzallmann](https://gitlab.com/timzallmann) or [@hazelyang](https://gitlab.com/hazelyang) to merge it.
