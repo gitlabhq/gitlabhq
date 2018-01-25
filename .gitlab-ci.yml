@@ -722,8 +722,6 @@ pages:
 cache gems:
   <<: *dedicated-runner
   <<: *pull-cache
-  only:
-    - tags
   variables:
     SETUP_DB: "false"
   script:
@@ -734,6 +732,7 @@ cache gems:
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+    - tags
 
 gitlab_git_test:
   <<: *dedicated-runner
