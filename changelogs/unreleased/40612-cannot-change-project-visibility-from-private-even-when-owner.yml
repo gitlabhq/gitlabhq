@@ -1,6 +1,0 @@
----
-title: Fix bug in which projects with forks could not change visibility settings from
-  Private to Public
-merge_request: 16595
-author:
-type: fixed
