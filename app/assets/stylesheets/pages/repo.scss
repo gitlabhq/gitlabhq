@@ -166,7 +166,7 @@ table.table tr td.multi-file-table-name {
   background: none;
   border: 0;
   border-radius: $border-radius-default;
-  color: $gray-darkest;
+  color: $theme-gray-900;
   transform: translateY(-50%);
 
   svg {
@@ -175,11 +175,11 @@ table.table tr td.multi-file-table-name {
   }
 
   &:hover {
-    color: $hint-color;
+    background-color: $theme-gray-200;
   }
 
   &:focus {
-    background-color: #1f78d1;
+    background-color: $blue-500;
     color: $white-light;
     outline: 0;
 
