@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.4.1 (2018-01-24)
+
+### Fixed (4 changes)
+
+- Ensure that users can reclaim a namespace or project path that is blocked by an orphaned route. !16242
+- Correctly escape UTF-8 path elements for uploads. !16560
+- Fix issues when rendering groups and their children. !16584
+- Fix bug in which projects with forks could not change visibility settings from Private to Public. !16595
+
+### Performance (2 changes)
+
+- rework indexes on redirect_routes.
+- Remove unecessary query from labels filter.
+
+
 ## 10.4.0 (2018-01-22)
 
 ### Security (8 changes, 1 of them is from the community)
