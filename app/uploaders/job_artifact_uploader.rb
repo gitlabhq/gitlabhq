@@ -13,6 +13,10 @@ class JobArtifactUploader < GitlabUploader
     dynamic_segment
   end
 
+  def open
+    File.open(path, "rb")
+  end
+
   private
 
   def dynamic_segment
