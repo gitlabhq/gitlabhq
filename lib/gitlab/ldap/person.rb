@@ -63,8 +63,6 @@ module Gitlab
         Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
         @provider = provider
-
-        validate_entry
       end
 
       def name
@@ -114,19 +112,6 @@ module Gitlab
         return nil unless selected_attr
 
         entry.public_send(selected_attr) # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      def validate_entry
-        allowed_attrs = self.class.ldap_attributes(config).map(&:downcase)
-
-        # Net::LDAP::Entry transforms keys to symbols. Change to strings to compare.
-        entry_attrs = entry.attribute_names.map { |n| n.to_s.downcase }
-        invalid_attrs = entry_attrs - allowed_attrs
-
-        if invalid_attrs.any?
-          raise InvalidEntryError,
-                "#{self.class.name} initialized with Net::LDAP::Entry containing invalid attributes(s): #{invalid_attrs}"
-        end
       end
     end
   end
