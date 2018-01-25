@@ -19,11 +19,7 @@ export { default as WidgetRelatedLinks } from './components/mr_widget_related_li
 export { default as MergedState } from './components/states/mr_widget_merged';
 export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge';
 export { default as ClosedState } from './components/states/mr_widget_closed.vue';
-<<<<<<< HEAD
-export { default as MergingState } from './components/states/mr_widget_merging';
-=======
 export { default as MergingState } from './components/states/mr_widget_merging.vue';
->>>>>>> upstream/master
 export { default as WipState } from './components/states/mr_widget_wip';
 export { default as ArchivedState } from './components/states/mr_widget_archived.vue';
 export { default as ConflictsState } from './components/states/mr_widget_conflicts.vue';
@@ -39,13 +35,8 @@ export { default as MergeWhenPipelineSucceedsState } from './components/states/m
 export { default as RebaseState } from './components/states/mr_widget_rebase.vue';
 export { default as AutoMergeFailed } from './components/states/mr_widget_auto_merge_failed.vue';
 export { default as CheckingState } from './components/states/mr_widget_checking.vue';
-<<<<<<< HEAD
 export { default as MRWidgetStore } from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 export { default as MRWidgetService } from 'ee/vue_merge_request_widget/services/mr_widget_service';
-=======
-export { default as MRWidgetStore } from './stores/mr_widget_store';
-export { default as MRWidgetService } from './services/mr_widget_service';
->>>>>>> upstream/master
 export { default as eventHub } from './event_hub';
 export { default as getStateKey } from 'ee/vue_merge_request_widget/stores/get_state_key';
 export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options';
