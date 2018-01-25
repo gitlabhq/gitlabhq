@@ -19,9 +19,12 @@ module EE
         def exec
           return true if skip_authorization
 
-          super
+          super(skip_commits_check: true)
 
           push_rule_check
+          # Check of commits should happen as the last step
+          # given they're expensive in terms of performance
+          commits_check
 
           true
         end
@@ -91,10 +94,6 @@ module EE
             error = check_commit(commit)
             raise ::Gitlab::GitAccess::UnauthorizedError, error if error
           end
-
-          if error = check_commit_diff(commit)
-            raise ::Gitlab::GitAccess::UnauthorizedError, error
-          end
         end
 
         # If commit does not pass push rule validation the whole push should be rejected.
@@ -148,38 +147,22 @@ module EE
           end
         end
 
-        def check_commit_diff(commit)
-          validations = validations_for_commit(commit)
+        override :validations_for_commit
+        def validations_for_commit(commit)
+          validations = super
 
-          return if validations.empty?
+          validations.push(path_locks_validation) if validate_path_locks?
+          validations.concat(push_rule_commit_validations(commit))
+        end
 
-          commit.raw_deltas.each do |diff|
-            validations.each do |validation|
-              if error = validation.call(diff)
-                return error
-              end
+        def push_rule_commit_validations(commit)
+          return [] unless push_rule
+
+          [file_name_validation].tap do |validations|
+            if push_rule.max_file_size > 0
+              validations << file_size_validation(commit, push_rule.max_file_size)
             end
           end
-
-          nil
-        end
-
-        def validations_for_commit(commit)
-          validations = base_validations
-
-          return validations unless push_rule
-
-          validations << file_name_validation
-
-          if push_rule.max_file_size > 0
-            validations << file_size_validation(commit, push_rule.max_file_size)
-          end
-
-          validations
-        end
-
-        def base_validations
-          validate_path_locks? ? [path_locks_validation] : []
         end
 
         def validate_path_locks?
@@ -204,10 +187,14 @@ module EE
 
         def file_name_validation
           lambda do |diff|
-            if (diff.renamed_file || diff.new_file) && blacklisted_regex = push_rule.filename_blacklisted?(diff.new_path)
-              return nil unless blacklisted_regex.present?
+            begin
+              if (diff.renamed_file || diff.new_file) && blacklisted_regex = push_rule.filename_blacklisted?(diff.new_path)
+                return nil unless blacklisted_regex.present?
 
-              "File name #{diff.new_path} was blacklisted by the pattern #{blacklisted_regex}."
+                "File name #{diff.new_path} was blacklisted by the pattern #{blacklisted_regex}."
+              end
+            rescue ::PushRule::MatchError => e
+              raise ::Gitlab::GitAccess::UnauthorizedError, e.message
             end
           end
         end
@@ -221,10 +208,6 @@ module EE
               return "File #{diff.new_path.inspect} is larger than the allowed size of #{max_file_size} MB"
             end
           end
-        end
-
-        def commits
-          project.repository.new_commits(newrev)
         end
       end
     end

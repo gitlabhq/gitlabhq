@@ -171,6 +171,13 @@ class Repository
     commits
   end
 
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+
+    refs.map { |sha| commit(sha.strip) }
+  end
+
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
     unless exists? && has_visible_content? && query.present?

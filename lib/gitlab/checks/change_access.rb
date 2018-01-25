@@ -33,13 +33,14 @@ module Gitlab
         @protocol = protocol
       end
 
-      def exec
+      def exec(skip_commits_check: false)
         return true if skip_authorization
 
         push_checks
         branch_checks
         tag_checks
         lfs_objects_exist_check
+        commits_check unless skip_commits_check
 
         true
       end
@@ -119,6 +120,50 @@ module Gitlab
         end
       end
 
+      def commits_check
+        return if deletion? || newrev.nil?
+
+        commits.each do |commit|
+          check_commit_diff(commit)
+        end
+      end
+
+      def check_commit_diff(commit)
+        validations = validations_for_commit(commit)
+
+        return if validations.empty?
+
+        commit.raw_deltas.each do |diff|
+          validations.each do |validation|
+            if error = validation.call(diff)
+              raise ::Gitlab::GitAccess::UnauthorizedError, error
+            end
+          end
+        end
+
+        nil
+      end
+
+      def validations_for_commit(commit)
+        validate_lfs_file_locks? ? [lfs_file_locks_validation] : []
+      end
+
+      def validate_lfs_file_locks?
+        project.lfs_enabled? && project.lfs_file_locks.any? && newrev && oldrev
+      end
+
+      def lfs_file_locks_validation
+        lambda do |diff|
+          path = diff.new_path || diff.old_path
+
+          lfs_lock = project.lfs_file_locks.find_by(path: path)
+
+          if lfs_lock && lfs_lock.user != user_access.user
+            return "The path '#{lfs_lock.path}' is locked in Git LFS by #{lfs_lock.user.name}"
+          end
+        end
+      end
+
       private
 
       def updated_from_web?
@@ -151,6 +196,10 @@ module Gitlab
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
         end
+      end
+
+      def commits
+        project.repository.new_commits(newrev)
       end
     end
   end

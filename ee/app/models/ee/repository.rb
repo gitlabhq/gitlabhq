@@ -22,13 +22,6 @@ module EE
       expire_content_cache
     end
 
-    # Returns a list of commits that are not present in any reference
-    def new_commits(newrev)
-      refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
-
-      refs.map { |sha| commit(sha.strip) }
-    end
-
     def squash(user, merge_request)
       raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                          start_sha: merge_request.diff_start_sha,
