@@ -3,7 +3,21 @@ module Gitlab
     class Trace
       attr_reader :job
 
-      delegate :old_trace, to: :job
+      class << self
+        def fabricate!(job)
+          Gitlab::Ci::Trace.const_get(self.type(job)).new(@job)
+        end
+
+        def type(job)
+          if job.complete? && job.job_artifacts_trace.exists?
+            'Full'
+          elsif job.running?
+            'Live'
+          else
+            'Undefined'
+          end
+        end
+      end
 
       def initialize(job)
         @job = job
@@ -52,19 +66,31 @@ module Gitlab
       end
 
       def exist?
-        trace_artifact&.exists? || current_path.present? || old_trace.present?
+        raise NotImplementedError
       end
 
+      # def exist?
+      #   trace_artifact&.exists? || current_path.present? || old_trace.present?
+      # end
+
+      # def read
+      #   stream = Gitlab::Ci::Trace::Stream.new do
+      #     if trace_artifact
+      #       trace_artifact.open
+      #     elsif current_path
+      #       File.open(current_path, "rb")
+      #     elsif old_trace
+      #       StringIO.new(old_trace)
+      #     end
+      #   end
+
+      #   yield stream
+      # ensure
+      #   stream&.close
+      # end
+
       def read
-        stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact
-            trace_artifact.open
-          elsif current_path
-            File.open(current_path, "rb")
-          elsif old_trace
-            StringIO.new(old_trace)
-          end
-        end
+        stream = Gitlab::Ci::Trace::Stream.new(io_read)
 
         yield stream
       ensure
@@ -72,9 +98,7 @@ module Gitlab
       end
 
       def write
-        stream = Gitlab::Ci::Trace::Stream.new do
-          File.open(ensure_path, "a+b")
-        end
+        stream = Gitlab::Ci::Trace::Stream.new(io_write)
 
         yield(stream).tap do
           job.touch if job.needs_touch?
@@ -83,65 +107,50 @@ module Gitlab
         stream&.close
       end
 
-      def erase!
-        paths.each do |trace_path|
-          FileUtils.rm(trace_path, force: true)
-        end
+      # def erase!
+      #   paths.each do |trace_path|
+      #     FileUtils.rm(trace_path, force: true)
+      #   end
 
-        job.erase_old_trace!
-      end
+      #   job.erase_old_trace!
+      # end
 
       private
 
       def ensure_path
-        return current_path if current_path
-
-        ensure_directory
-        default_path
+        raise NotImplementedError
       end
 
       def ensure_directory
-        unless Dir.exist?(default_directory)
-          FileUtils.mkdir_p(default_directory)
-        end
+        raise NotImplementedError
       end
 
       def paths
-        [
-          default_path,
-          deprecated_path
-        ].compact
+        raise NotImplementedError
       end
 
       def current_path
-        @current_path ||= paths.find do |trace_path|
-          File.exist?(trace_path)
-        end
+        raise NotImplementedError
       end
 
       def default_directory
-        File.join(
-          Settings.gitlab_ci.builds_path,
-          job.created_at.utc.strftime("%Y_%m"),
-          job.project_id.to_s
-        )
+        raise NotImplementedError
       end
 
       def default_path
-        File.join(default_directory, "#{job.id}.log")
+        raise NotImplementedError
       end
 
       def deprecated_path
-        File.join(
-          Settings.gitlab_ci.builds_path,
-          job.created_at.utc.strftime("%Y_%m"),
-          job.project.ci_id.to_s,
-          "#{job.id}.log"
-        ) if job.project&.ci_id
+        raise NotImplementedError
       end
 
-      def trace_artifact
-        job.job_artifacts_trace
+      def io_read
+        raise NotImplementedError
+      end
+
+      def io_write
+        raise NotImplementedError
       end
     end
   end
