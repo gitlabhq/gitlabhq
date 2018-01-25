@@ -70,6 +70,12 @@ class Upload < ActiveRecord::Base
     store == ObjectStorage::Store::LOCAL
   end
 
+  private
+
+  def checksummable?
+    checksum.nil? && local? && exist?
+  end
+
   def foreground_checksummable?
     checksummable? && size <= CHECKSUM_THRESHOLD
   end
