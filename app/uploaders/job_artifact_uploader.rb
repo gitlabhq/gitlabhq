@@ -27,6 +27,10 @@ class JobArtifactUploader < GitlabUploader
     File.join(self.class.local_store_path, 'tmp/work')
   end
 
+  def open
+    File.open(path, "rb")
+  end
+
   private
 
   def default_local_path
