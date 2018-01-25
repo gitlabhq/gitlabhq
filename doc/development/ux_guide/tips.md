@@ -47,14 +47,14 @@ Correct file will look like this:
 
 - Exporting the icons or illustrations you created as SVGs.
 - Download [SVGO Compressor Sketch plugin](https://github.com/bohemiancoding/svgo-compressor) or use [SVGO](https://github.com/svg/svgo) to optimize them.
-- Switch to your terminal:
+- Switch to terminal:
  1. Go to `gitlab-svgs` directory.
- 1. Pull latest changes from master
- 1. Create a new branch for your changes
+ 1. Pull latest changes from master.
+ 1. Create a new branch for your changes.
 - Go to the `gitlab-svgs` directory locally, and then you will see `sprite_icons` and `illustrations` folders.
  * For icons, copy and paste the icons to `sprite_icons` folder.
  * For illustrations, copy and paste the illustrations to `illustrations` folder.
-- Switch to your terminal:
+- Switch to terminal:
  1. Run `brew install yarn` to install [Yarn](https://yarnpkg.com/en/).
  1. Run `yarn svg`.
  1. Push your changes and create a merge request on [gitlab-svgs](https://gitlab.com/gitlab-org/gitlab-svgs).
