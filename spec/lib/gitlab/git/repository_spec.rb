@@ -1998,8 +1998,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:project) { create(:project) }
       let(:imported_repo) { project.repository.raw }
 
-      before { expect(repository.bundle_to_disk(bundle_path)).to be true }
-      after { FileUtils.rm_rf(bundle_path) }
+      before do
+        expect(repository.bundle_to_disk(bundle_path)).to be true
+      end
+
+      after do
+        FileUtils.rm_rf(bundle_path)
+      end
 
       it 'creates a repo from a bundle file' do
         expect(imported_repo).not_to exist
