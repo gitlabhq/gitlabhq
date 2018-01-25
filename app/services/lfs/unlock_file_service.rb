@@ -1,5 +1,7 @@
 module Lfs
   class UnlockFileService < BaseService
+    prepend EE::Lfs::UnlockFileService
+
     def execute
       @lock = project.lfs_file_locks.find_by(id: params[:id])
 

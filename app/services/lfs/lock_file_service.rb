@@ -1,5 +1,7 @@
 module Lfs
   class LockFileService < BaseService
+    prepend EE::Lfs::LockFileService
+
     def execute
       if current_lock
         error('already created lock', 409, current_lock)
