@@ -1,5 +1,9 @@
 <script>
+<<<<<<< HEAD
   import statusIcon from '../mr_widget_status_icon';
+=======
+  import statusIcon from '../mr_widget_status_icon.vue';
+>>>>>>> upstream/master
 
   export default {
     name: 'MRWidgetChecking',

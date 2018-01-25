@@ -107,7 +107,7 @@ export const note = {
     "name": "Administrator",
     "username": "root",
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
     "path": "/root"
   },
   "created_at": "2017-08-10T15:24:03.087Z",

@@ -1,6 +1,10 @@
 <script>
   import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
+<<<<<<< HEAD
   import statusIcon from '../mr_widget_status_icon';
+=======
+  import statusIcon from '../mr_widget_status_icon.vue';
+>>>>>>> upstream/master
 
   export default {
     name: 'MRWidgetClosed',
