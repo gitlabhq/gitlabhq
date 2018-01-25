@@ -117,7 +117,7 @@ describe ApplicationHelper do
         stub_config_setting(https: false)
 
         expect(helper.gravatar_icon(user_email))
-          .to match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+          .to match('https://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
       end
 
       it 'uses HTTPs when configured' do
