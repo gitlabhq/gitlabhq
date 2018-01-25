@@ -387,13 +387,23 @@ describe WikiPage do
   end
 
   describe '#formatted_content' do
-    it 'returns processed content of the page', :disable_gitaly do
-      subject.create({ title: "RDoc", content: "*bold*", format: "rdoc" })
-      page = wiki.find_page('RDoc')
+    shared_examples 'fetching page formatted content' do
+      it 'returns processed content of the page' do
+        subject.create({ title: "RDoc", content: "*bold*", format: "rdoc" })
+        page = wiki.find_page('RDoc')
 
-      expect(page.formatted_content).to eq("\n<p><strong>bold</strong></p>\n")
+        expect(page.formatted_content).to eq("\n<p><strong>bold</strong></p>\n")
 
-      destroy_page('RDoc')
+        destroy_page('RDoc')
+      end
+    end
+
+    context 'when Gitaly wiki_page_formatted_data is enabled' do
+      it_behaves_like 'fetching page formatted content'
+    end
+
+    context 'when Gitaly wiki_page_formatted_data is disabled', :disable_gitaly do
+      it_behaves_like 'fetching page formatted content'
     end
   end
 
