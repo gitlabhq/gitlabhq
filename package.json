@@ -89,7 +89,7 @@
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.6.0",
+    "@gitlab-org/gitlab-svgs": "^1.7.0",
     "axios-mock-adapter": "^1.10.0",
     "babel-plugin-istanbul": "^4.1.5",
     "eslint": "^3.18.0",
