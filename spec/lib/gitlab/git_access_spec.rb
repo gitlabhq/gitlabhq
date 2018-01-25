@@ -335,7 +335,7 @@ describe Gitlab::GitAccess do
     end
   end
 
-  describe '#check_namespace_accessibility!' do
+  describe '#check_namespace_existence!' do
     context 'when project exists' do
       context 'when user can pull or push' do
         before do
@@ -838,18 +838,11 @@ describe Gitlab::GitAccess do
   end
 
   def raise_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError,
-                Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
+    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
   end
 
   def raise_namespace_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError,
-                Gitlab::GitAccess::ERROR_MESSAGES[:namespace_not_found])
-  end
-
-  def raise_project_create
-    raise_error(Gitlab::GitAccess::NotFoundError,
-                Gitlab::GitAccess::ERROR_MESSAGES[:create])
+    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:namespace_not_found])
   end
 
   def build_authentication_abilities

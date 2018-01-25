@@ -25,10 +25,6 @@ module Gitlab
       true
     end
 
-    def check_repository_creation!(cmd)
-      # Method not used in wiki
-    end
-
     def push_to_read_only_message
       ERROR_MESSAGES[:read_only]
     end

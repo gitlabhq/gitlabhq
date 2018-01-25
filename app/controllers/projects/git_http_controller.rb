@@ -5,21 +5,13 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
   rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
+  rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
   def info_refs
     log_user_activity if upload_pack?
-
-    if user && project.blank? && receive_pack?
-      @project = ::Projects::CreateService.new(user, project_params).execute
-
-      if @project.saved?
-        Gitlab::Checks::NewProject.new(user, @project, 'http').add_new_project_message
-      else
-        raise Gitlab::GitAccess::NotFoundError, 'Could not create project'
-      end
-    end
+    create_new_project if receive_pack? && project.blank?
 
     render_ok
   end
@@ -31,8 +23,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   # POST /foo/bar.git/git-receive-pack" (git push)
   def git_receive_pack
-    raise Gitlab::GitAccess::NotFoundError, 'Could not create project' unless project
-
     render_ok
   end
 
@@ -58,6 +48,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     end
   end
 
+  def create_new_project
+    @project = ::Projects::CreateFromPushService.new(user, params[:project_id], namespace, 'http').execute
+  end
+
   def render_ok
     set_workhorse_internal_api_content_type
     render json: Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name)
@@ -69,6 +63,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_404(exception)
     render plain: exception.message, status: :not_found
+  end
+
+  def render_422(exception)
+    render plain: exception.message, status: :unprocessable_entity
   end
 
   def access
@@ -90,17 +88,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
   end
 
-  def project_params
-    {
-        description: "",
-        path: Project.parse_project_id(params[:project_id]),
-        namespace_id: namespace&.id,
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
-    }
-  end
-
   def namespace
-    @namespace ||= Namespace.find_by_path_or_name(params[:namespace_id])
+    @namespace ||= Namespace.find_by_full_path(params[:namespace_id])
   end
 
   def log_user_activity

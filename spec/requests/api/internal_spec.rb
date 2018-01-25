@@ -366,6 +366,17 @@ describe API::Internal do
           end
         end
 
+        context 'project as /namespace/project' do
+          it do
+            push(key, project_with_repo_path('/' + project.full_path))
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          end
+        end
+
         context 'project as namespace/project' do
           it do
             push(key, project_with_repo_path(project.full_path))
@@ -823,14 +834,14 @@ describe API::Internal do
 
     context 'with new project data' do
       it 'returns new project message on the response' do
-        new_project = Gitlab::Checks::NewProject.new(user, project, 'http')
-        new_project.add_new_project_message
+        project_created = Gitlab::Checks::ProjectCreated.new(user, project, 'http')
+        project_created.add_project_created_message
 
         post api("/internal/post_receive"), valid_params
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response["new_project_message"]).to be_present
-        expect(json_response["new_project_message"]).to eq(new_project.new_project_message)
+        expect(json_response["project_created_message"]).to be_present
+        expect(json_response["project_created_message"]).to eq(project_created.project_created_message)
       end
     end
 
