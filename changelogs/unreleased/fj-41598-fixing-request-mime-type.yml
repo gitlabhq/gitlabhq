@@ -1,5 +1,0 @@
----
-title: Fixing rack request mime type when using rack attack
-merge_request: 16427
-author:
-type: fixed

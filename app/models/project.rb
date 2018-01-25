@@ -971,9 +971,9 @@ class Project < ActiveRecord::Base
       hooks.hooks_for(hooks_scope).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
-    end
 
-    SystemHooksService.new.execute_hooks(data, hooks_scope)
+      SystemHooksService.new.execute_hooks(data, hooks_scope)
+    end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
@@ -1032,6 +1032,8 @@ class Project < ActiveRecord::Base
   end
 
   def fork_source
+    return nil unless forked?
+
     forked_from_project || fork_network&.root_project
   end
 

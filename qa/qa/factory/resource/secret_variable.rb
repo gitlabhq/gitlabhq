@@ -25,7 +25,7 @@ module QA
           project.visit!
 
           Page::Menu::Side.act do
-            click_cicd_setting
+            click_ci_cd_settings
           end
 
           Page::Project::Settings::CICD.perform do |setting|

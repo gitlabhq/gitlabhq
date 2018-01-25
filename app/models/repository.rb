@@ -20,6 +20,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
+  delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -259,15 +260,7 @@ class Repository
     return if kept_around?(sha)
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
-    begin
-      raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
-    rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
-    rescue Rugged::OSError => ex
-      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
-    end
+    raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
   end
 
   def kept_around?(sha)

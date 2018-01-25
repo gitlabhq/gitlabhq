@@ -1,5 +1,0 @@
----
-title: Disable Vue pagination when only one page of content is available
-merge_request: 15999
-author: Mario de la Ossa
-type: fixed

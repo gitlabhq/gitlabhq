@@ -1,5 +1,3 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('group')
 - parent = @group.parent
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent

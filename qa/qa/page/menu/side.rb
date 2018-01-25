@@ -5,28 +5,33 @@ module QA
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
           element :repository_link, "title: 'Repository'"
+          element :pipelines_settings_link, "title: 'CI / CD'"
           element :top_level_items, '.sidebar-top-level-items'
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
-          element :fly_out, "IS_SHOWING_FLY_OUT_CLASS = 'is-showing-fly-out'"
+          element :fly_out, "classList.add('fly-out-list')"
         end
 
-        def click_repository_setting
-          hover_setting do
-            click_link('Repository')
+        def click_repository_settings
+          hover_settings do
+            within_submenu do
+              click_link('Repository')
+            end
           end
         end
 
-        def click_cicd_setting
-          hover_setting do
-            click_link('CI / CD')
+        def click_ci_cd_settings
+          hover_settings do
+            within_submenu do
+              click_link('CI / CD')
+            end
           end
         end
 
         private
 
-        def hover_setting
+        def hover_settings
           within_sidebar do
             find('.qa-settings-item').hover
 
@@ -42,8 +47,8 @@ module QA
           end
         end
 
-        def within_fly_out
-          page.within('.is-showing-fly-out') do
+        def within_submenu
+          page.within('.fly-out-list') do
             yield
           end
         end

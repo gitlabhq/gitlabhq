@@ -11,6 +11,8 @@ module QA
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
+    autoload :Address, 'qa/runtime/address'
+    autoload :API, 'qa/runtime/api'
   end
 
   ##
@@ -27,6 +29,8 @@ module QA
       autoload :Project, 'qa/factory/resource/project'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
+      autoload :Runner, 'qa/factory/resource/runner'
+      autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
     end
 
     module Repository
@@ -47,7 +51,7 @@ module QA
     #
     autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
-    autoload :Entrypoint, 'qa/scenario/entrypoint'
+    autoload :Taggable, 'qa/scenario/taggable'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -86,6 +90,7 @@ module QA
       autoload :Main, 'qa/page/menu/main'
       autoload :Side, 'qa/page/menu/side'
       autoload :Admin, 'qa/page/menu/admin'
+      autoload :Profile, 'qa/page/menu/profile'
     end
 
     module Dashboard
@@ -105,10 +110,21 @@ module QA
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
         autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :CICD, 'qa/page/project/settings/cicd'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
+        autoload :Runners, 'qa/page/project/settings/runners'
       end
+
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
+    end
+
+    module Profile
+      autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
     end
 
     module Admin
@@ -129,10 +145,13 @@ module QA
   end
 
   ##
-  # Classes describing shell interaction with GitLab
+  # Classes describing services being part of GitLab and how we can interact
+  # with these services, like through the shell.
   #
-  module Shell
-    autoload :Omnibus, 'qa/shell/omnibus'
+  module Service
+    autoload :Shellout, 'qa/service/shellout'
+    autoload :Omnibus, 'qa/service/omnibus'
+    autoload :Runner, 'qa/service/runner'
   end
 
   ##

@@ -1,6 +1,0 @@
----
-title: Disable creation of new Kubernetes Integrations unless they're active or created
-  from template
-merge_request: 41054
-author:
-type: added

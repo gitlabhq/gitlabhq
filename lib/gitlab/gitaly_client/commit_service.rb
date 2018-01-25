@@ -125,11 +125,11 @@ module Gitlab
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: ref
+          revision: encode_binary(ref)
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
-        request.path = options[:path] if options[:path].present?
+        request.path = encode_binary(options[:path]) if options[:path].present?
         request.max_count = options[:max_count] if options[:max_count].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
