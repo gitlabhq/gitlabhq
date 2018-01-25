@@ -19,8 +19,8 @@ describe('MRWidgetMerging', () => {
 
   it('renders information about merge request being merged', () => {
     expect(
-      vm.$el.querySelector('.media-body').textContent.trim(),
-    ).toEqual('This merge request is in the process of being merged');
+      vm.$el.querySelector('.media-body').textContent.trim().replace(/\s\s+/g, ' ').replace(/[\r\n]+/g, ' '),
+    ).toContain('This merge request is in the process of being merged');
   });
 
   it('renders branch information', () => {
