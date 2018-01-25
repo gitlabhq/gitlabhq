@@ -1,5 +1,0 @@
----
-title: Fix failed LDAP logins when sync_ssh_keys is included in config
-merge_request:
-author:
-type: fixed
