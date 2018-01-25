@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def path
-          true
+          @uri.to_s
         end
 
         def seek(pos, where)
