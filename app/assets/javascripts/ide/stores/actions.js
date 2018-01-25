@@ -90,7 +90,7 @@ export const commitChanges = (
 ) =>
   service
     .commit(state.currentProjectId, payload)
-    .then((data) => {
+    .then(({ data }) => {
       const { branch } = payload;
       if (!data.short_id) {
         flash(data.message, 'alert', document, null, false, true);
@@ -147,8 +147,8 @@ export const commitChanges = (
     })
     .catch((err) => {
       let errMsg = 'Error committing changes. Please try again.';
-      if (err.responseJSON && err.responseJSON.message) {
-        errMsg += ` (${stripHtml(err.responseJSON.message)})`;
+      if (err.response.data && err.response.data.message) {
+        errMsg += ` (${stripHtml(err.response.data.message)})`;
       }
       flash(errMsg, 'alert', document, null, false, true);
       window.dispatchEvent(new Event('resize'));
