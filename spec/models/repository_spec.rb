@@ -2356,7 +2356,7 @@ describe Repository do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    context 'with Gitaly enabled' do
+    shared_examples '#ancestor?' do
       it 'it is an ancestor' do
         expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
@@ -2369,28 +2369,20 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+
+      it 'returns false for invalid commit IDs' do
+        expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
+        expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
       end
     end
 
-    context 'with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(false)
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(false)
-      end
+    context 'with Gitaly enabled' do
+      it_behaves_like('#ancestor?')
+    end
 
-      it 'it is an ancestor' do
-        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
-      end
-
-      it 'it is not an ancestor' do
-        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
-      end
-
-      it 'returns false on nil-values' do
-        expect(repository.ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.ancestor?(nil, nil)).to eq(false)
-      end
+    context 'with Gitaly disabled', :skip_gitaly_mock do
+      it_behaves_like('#ancestor?')
     end
   end
 
