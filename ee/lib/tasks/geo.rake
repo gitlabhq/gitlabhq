@@ -41,14 +41,14 @@ namespace :geo do
       puts "Current version: #{Gitlab::Geo::DatabaseTasks.version}"
     end
 
-    desc 'Drops and recreates the database from db/geo/schema.rb for the current environment and loads the seeds.'
+    desc 'Drops and recreates the database from ee/db/geo/schema.rb for the current environment and loads the seeds.'
     task reset: [:environment] do
       ns['drop'].invoke
       ns['create'].invoke
       ns['setup'].invoke
     end
 
-    desc 'Load the seed data from db/geo/seeds.rb'
+    desc 'Load the seed data from ee/db/geo/seeds.rb'
     task seed: [:environment] do
       ns['abort_if_pending_migrations'].invoke
 
@@ -97,7 +97,7 @@ namespace :geo do
         Gitlab::Geo::DatabaseTasks.load_schema_current(:ruby, ENV['SCHEMA'])
       end
 
-      desc 'Create a db/geo/schema.rb file that is portable against any DB supported by AR'
+      desc 'Create a ee/db/geo/schema.rb file that is portable against any DB supported by AR'
       task dump: [:environment] do
         Gitlab::Geo::DatabaseTasks::Schema.dump
 

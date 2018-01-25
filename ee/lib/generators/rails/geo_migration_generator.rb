@@ -12,6 +12,6 @@ class GeoMigrationGenerator < ActiveRecord::Generators::MigrationGenerator
   def create_migration_file
     set_local_assigns!
     validate_file_name!
-    migration_template @migration_template, "db/geo/migrate/#{file_name}.rb"
+    migration_template @migration_template, "ee/db/geo/migrate/#{file_name}.rb"
   end
 end
