@@ -38,6 +38,7 @@ module Gitlab
       def projects_count
         @projects_count ||= projects.total_count
       end
+      alias_method :limited_projects_count, :projects_count
 
       def blobs_count
         @blobs_count ||= blobs.total_count
@@ -54,14 +55,17 @@ module Gitlab
       def issues_count
         @issues_count ||= issues.total_count
       end
+      alias_method :limited_issues_count, :issues_count
 
       def merge_requests_count
         @merge_requests_count ||= merge_requests.total_count
       end
+      alias_method :limited_merge_requests_count, :merge_requests_count
 
       def milestones_count
         @milestones_count ||= milestones.total_count
       end
+      alias_method :limited_milestones_count, :milestones_count
 
       def single_commit_result?
         false

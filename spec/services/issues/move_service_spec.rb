@@ -6,7 +6,7 @@ describe Issues::MoveService do
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:new_project) { create(:project, group: create(:group)) }
   let(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do
@@ -297,9 +297,25 @@ describe Issues::MoveService do
       end
 
       context 'project issue hooks' do
-        let(:hook) { create(:project_hook, project: old_project, issues_events: true) }
+        let!(:hook) { create(:project_hook, project: old_project, issues_events: true) }
 
         it 'executes project issue hooks' do
+          allow_any_instance_of(WebHookService).to receive(:execute)
+
+          # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
+          # but since the entire spec run takes place in a transaction, we never
+          # actually get to the `after_commit` hook that queues these jobs.
+          expect { move_service.execute(old_issue, new_project) }
+            .not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+        end
+      end
+
+      context 'group issue hooks' do
+        let!(:hook) { create(:group_hook, group: new_project.group, issues_events: true) }
+
+        it 'executes group issue hooks' do
+          allow_any_instance_of(WebHookService).to receive(:execute)
+
           # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
           # but since the entire spec run takes place in a transaction, we never
           # actually get to the `after_commit` hook that queues these jobs.

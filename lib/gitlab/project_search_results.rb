@@ -20,7 +20,7 @@ module Gitlab
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       else
-        super
+        super(scope, page, false)
       end
     end
 

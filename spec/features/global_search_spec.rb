@@ -22,7 +22,7 @@ feature 'Global search' do
       click_button "Go"
 
       select_filter("Issues")
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
+      expect(page).to have_selector('.gl-pagination .next')
     end
   end
 end
