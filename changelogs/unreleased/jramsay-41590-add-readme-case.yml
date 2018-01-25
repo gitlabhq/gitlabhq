@@ -1,5 +1,0 @@
----
-title: Fix inconsistent downcase of filenames in prefilled `Add` commit messages
-merge_request: 16232
-author: James Ramsay
-type: fixed

@@ -164,6 +164,7 @@ $gl-text-color-tertiary: #949494;
 $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
+$gl-text-color-disabled: #919191;
 $gl-text-green: $green-600;
 $gl-text-green-hover: $green-700;
 $gl-text-red: $red-500;
@@ -258,6 +259,8 @@ $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
+$flash-height: 52px;
+$context-header-height: 60px;
 
 /*
 * Common component specific colors

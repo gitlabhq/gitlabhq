@@ -170,14 +170,14 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.iconClass).toEqual('success');
       });
 
-      it('shows x for failed status', () => {
+      it('shows warning icon for failed status', () => {
         vm.mr.hasCI = true;
-        expect(vm.iconClass).toEqual('failed');
+        expect(vm.iconClass).toEqual('warning');
       });
 
-      it('shows x for merge not allowed', () => {
+      it('shows warning icon for merge not allowed', () => {
         vm.mr.hasCI = true;
-        expect(vm.iconClass).toEqual('failed');
+        expect(vm.iconClass).toEqual('warning');
       });
     });
 
@@ -404,7 +404,7 @@ describe('MRWidgetReadyToMerge', () => {
 
         setTimeout(() => {
           const statusBox = document.querySelector('.status-box');
-          expect(statusBox.classList.contains('status-box-merged')).toBeTruthy();
+          expect(statusBox.classList.contains('status-box-mr-merged')).toBeTruthy();
           expect(statusBox.textContent).toContain('Merged');
 
           done();

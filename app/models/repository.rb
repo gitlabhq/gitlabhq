@@ -20,6 +20,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
+  delegate :bundle_to_disk, :create_from_bundle, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -165,16 +166,10 @@ class Repository
       return []
     end
 
-    raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
-      commits =
-        if is_enabled
-          find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-        else
-          find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-        end
-
-      CommitCollection.new(project, commits, ref)
+    commits = raw_repository.find_commits_by_message(query, ref, path, limit, offset).map do |c|
+      commit(c)
     end
+    CommitCollection.new(project, commits, ref)
   end
 
   def find_branch(name, fresh_repo: true)
@@ -259,15 +254,7 @@ class Repository
     return if kept_around?(sha)
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
-    begin
-      raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
-    rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
-    rescue Rugged::OSError => ex
-      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
-    end
+    raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
   end
 
   def kept_around?(sha)
@@ -747,23 +734,6 @@ class Repository
     Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
-  def refs_contains_sha(ref_type, sha)
-    args = %W(#{ref_type} --contains #{sha})
-    names = run_git(args).first
-
-    if names.respond_to?(:split)
-      names = names.split("\n").map(&:strip)
-
-      names.each do |name|
-        name.slice! '* '
-      end
-
-      names
-    else
-      []
-    end
-  end
-
   def branch_names_contains(sha)
     refs_contains_sha('branch', sha)
   end
@@ -928,25 +898,6 @@ class Repository
     end
   end
 
-  def search_files_by_content(query, ref)
-    return [] if empty? || query.blank?
-
-    offset = 2
-    args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
-
-    run_git(args).first.scrub.split(/^--$/)
-  end
-
-  def search_files_by_name(query, ref)
-    safe_query = Regexp.escape(query.sub(/^\/*/, ""))
-
-    return [] if empty? || safe_query.blank?
-
-    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{safe_query})
-
-    run_git(args).first.lines.map(&:strip)
-  end
-
   def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
     unless remote_name
       remote_name = "tmp-#{SecureRandom.hex}"
@@ -978,6 +929,18 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
+  end
+
+  def search_files_by_content(query, ref)
+    return [] if empty? || query.blank?
+
+    raw_repository.search_files_by_content(query, ref)
+  end
+
+  def search_files_by_name(query, ref)
+    return [] if empty?
+
+    raw_repository.search_files_by_name(query, ref)
   end
 
   def copy_gitattributes(ref)
@@ -1139,26 +1102,5 @@ class Repository
 
   def rugged_can_be_merged?(their_commit, our_commit)
     !rugged.merge_commits(our_commit, their_commit).conflicts?
-  end
-
-  def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-    ref ||= root_ref
-
-    args = %W(
-      log #{ref} --pretty=%H --skip #{offset}
-      --max-count #{limit} --grep=#{query} --regexp-ignore-case
-    )
-    args = args.concat(%W(-- #{path})) if path.present?
-
-    git_log_results = run_git(args).first.lines
-
-    git_log_results.map { |c| commit(c.chomp) }.compact
-  end
-
-  def find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-    raw_repository
-      .gitaly_commit_client
-      .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
-      .map { |c| commit(c) }
   end
 end

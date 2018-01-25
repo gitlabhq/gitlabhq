@@ -95,7 +95,7 @@ module Gitlab
         object_output.map do |output_line|
           sha, path = output_line.split(' ', 2)
 
-          next if require_path && path.blank?
+          next if require_path && path.to_s.empty?
 
           sha
         end.reject(&:nil?)

@@ -17,12 +17,16 @@ module Gitlab
       def import
         mkdir_p(@shared.export_path)
 
+        remove_symlinks!
+
         wait_for_archived_file do
           decompress_archive
         end
       rescue => e
         @shared.error(e)
         false
+      ensure
+        remove_symlinks!
       end
 
       private
@@ -43,7 +47,7 @@ module Gitlab
 
         raise Projects::ImportService::Error.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
 
-        remove_symlinks!
+        result
       end
 
       def remove_symlinks!

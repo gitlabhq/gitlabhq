@@ -1,6 +1,0 @@
----
-title: Treat empty markdown and html strings as valid cached text, not missing cache
-  that needs to be updated
-merge_request:
-author:
-type: performance

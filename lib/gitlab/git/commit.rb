@@ -239,6 +239,24 @@ module Gitlab
             end
           end
         end
+
+        def extract_signature(repository, commit_id)
+          repository.gitaly_migrate(:extract_commit_signature) do |is_enabled|
+            if is_enabled
+              repository.gitaly_commit_client.extract_signature(commit_id)
+            else
+              rugged_extract_signature(repository, commit_id)
+            end
+          end
+        end
+
+        def rugged_extract_signature(repository, commit_id)
+          begin
+            Rugged::Commit.extract_signature(repository.rugged, commit_id)
+          rescue Rugged::OdbError
+            nil
+          end
+        end
       end
 
       def initialize(repository, raw_commit, head = nil)

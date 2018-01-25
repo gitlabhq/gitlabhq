@@ -29,7 +29,7 @@ describe('RepoCommitSection', () => {
 
     comp.$store.state.rightPanelCollapsed = false;
     comp.$store.state.currentBranch = 'master';
-    comp.$store.state.openFiles = [file(), file()];
+    comp.$store.state.openFiles = [file('file1'), file('file2')];
     comp.$store.state.openFiles.forEach(f => Object.assign(f, {
       changed: true,
       content: 'testing',

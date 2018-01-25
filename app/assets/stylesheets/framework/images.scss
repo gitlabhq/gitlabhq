@@ -20,7 +20,7 @@
     width: 100%;
   }
 
-  $image-widths: 250 306 394;
+  $image-widths: 250 306 394 430;
   @each $width in $image-widths {
     &.svg-#{$width} {
       img,

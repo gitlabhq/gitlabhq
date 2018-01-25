@@ -18,7 +18,7 @@ function renderWithKaTeX(elements) {
 
     const display = $this.attr('data-math-style') === 'display';
     try {
-      katex.render($this.text(), mathNode.get(0), { displayMode: display });
+      katex.render($this.text(), mathNode.get(0), { displayMode: display, throwOnError: false });
       mathNode.insertAfter($this);
       $this.remove();
     } catch (err) {

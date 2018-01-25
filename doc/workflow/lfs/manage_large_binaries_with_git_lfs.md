@@ -4,6 +4,11 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
+![Git LFS tracking status](img/lfs-icon.png)
+
+An LFS icon is shown on files tracked by Git LFS to denote if a file is stored
+as a blob or as an LFS pointer.
+
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication

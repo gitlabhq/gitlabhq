@@ -60,7 +60,7 @@ describe('Board list component', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   it('renders component', () => {
@@ -184,9 +184,9 @@ describe('Board list component', () => {
     component.$refs.list.style.height = '100px';
     component.$refs.list.style.overflow = 'scroll';
 
-    for (let i = 0; i < 19; i += 1) {
-      const issue = component.list.issues[0];
-      issue.id += 1;
+    for (let i = 1; i < 20; i += 1) {
+      const issue = Object.assign({}, component.list.issues[0]);
+      issue.id += i;
       component.list.issues.push(issue);
     }
 

@@ -299,6 +299,13 @@ const gfmRules = {
 
 export class CopyAsGFM {
   constructor() {
+    // iOS currently does not support clipboardData.setData(). This bug should
+    // be fixed in iOS 12, but for now we'll disable this for all iOS browsers
+    // ref: https://trac.webkit.org/changeset/222228/webkit
+    const userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+    const isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
+    if (isIOS) return;
+
     $(document).on('copy', '.md, .wiki', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
     $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
     $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);

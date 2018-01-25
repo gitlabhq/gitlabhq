@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170815060945_remove_duplicate_mr_events.rb')
 
-describe RemoveDuplicateMrEvents, truncate: true do
+describe RemoveDuplicateMrEvents, :delete do
   let(:migration) { described_class.new }
 
   describe '#up' do

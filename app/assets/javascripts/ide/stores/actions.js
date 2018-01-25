@@ -3,6 +3,7 @@ import { visitUrl } from '../../lib/utils/url_utility';
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
+import { stripHtml } from '../../lib/utils/text_utility';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
@@ -81,7 +82,7 @@ export const checkCommitStatus = ({ state }) =>
 
       return false;
     })
-    .catch(() => flash('Error checking branch data. Please try again.'));
+    .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
 
 export const commitChanges = (
   { commit, state, dispatch, getters },
@@ -92,7 +93,7 @@ export const commitChanges = (
     .then((data) => {
       const { branch } = payload;
       if (!data.short_id) {
-        flash(data.message);
+        flash(data.message, 'alert', document, null, false, true);
         return;
       }
 
@@ -105,19 +106,25 @@ export const commitChanges = (
         },
       };
 
+      let commitMsg = `Your changes have been committed. Commit ${data.short_id}`;
+      if (data.stats) {
+        commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
+      }
+
       flash(
-        `Your changes have been committed. Commit ${data.short_id} with ${
-          data.stats.additions
-        } additions, ${data.stats.deletions} deletions.`,
+        commitMsg,
         'notice',
-      );
+        document,
+        null,
+        false,
+        true);
+      window.dispatchEvent(new Event('resize'));
 
       if (newMr) {
+        dispatch('discardAllChanges');
         dispatch(
           'redirectToUrl',
-          `${
-            selectedProject.web_url
-          }/merge_requests/new?merge_request%5Bsource_branch%5D=${branch}`,
+          `${selectedProject.web_url}/merge_requests/new?merge_request%5Bsource_branch%5D=${branch}`,
         );
       } else {
         commit(types.SET_BRANCH_WORKING_REFERENCE, {
@@ -134,12 +141,18 @@ export const commitChanges = (
         });
 
         dispatch('discardAllChanges');
-        dispatch('closeAllFiles');
 
         window.scrollTo(0, 0);
       }
     })
-    .catch(() => flash('Error committing changes. Please try again.'));
+    .catch((err) => {
+      let errMsg = 'Error committing changes. Please try again.';
+      if (err.responseJSON && err.responseJSON.message) {
+        errMsg += ` (${stripHtml(err.responseJSON.message)})`;
+      }
+      flash(errMsg, 'alert', document, null, false, true);
+      window.dispatchEvent(new Event('resize'));
+    });
 
 export const createTempEntry = (
   { state, dispatch },

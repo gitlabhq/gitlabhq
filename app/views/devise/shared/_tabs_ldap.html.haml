@@ -7,7 +7,7 @@
       = link_to server['label'], "##{server['provider_name']}",  'data-toggle' => 'tab'
   - if password_authentication_enabled_for_web?
     %li
-      = link_to 'Standard', '#ldap-standard', 'data-toggle' => 'tab'
+      = link_to 'Standard', '#login-pane', 'data-toggle' => 'tab'
   - if allow_signup?
     %li
       = link_to 'Register', '#register-pane', 'data-toggle' => 'tab'
