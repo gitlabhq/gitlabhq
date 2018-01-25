@@ -100,7 +100,7 @@ export default class LabelManager {
   rollbackLabelPosition($label, originalAction) {
     const action = originalAction === 'remove' ? 'add' : 'remove';
     this.toggleLabelPriority($label, action, false);
-    return flash(this.errorMessage);
+    flash(this.errorMessage);
   }
 
   getSortedLabelsIds() {
