@@ -1,5 +1,6 @@
-require 'gitlab/utils/bisect_enumerable.rb'
-require_relative 'helpers.rb'
+require_relative 'helpers'
+
+include UploadTaskHelpers
 
 module UploadTask
   module Migrate
@@ -102,14 +103,14 @@ namespace :gitlab do
         uploader_class,
         model_class,
         mounted_as,
-        ObjectStorage::Store::LOCAL
+        ObjectStorage::Store::REMOTE
       )
 
       migrator.migrate(batch_size) do |results|
         UploadTask::Migrate::Reporter.new(results).report
       end
 
-      puts "\n === Migration summary ==="
+      puts "\n=== Migration summary ==="
       migrator.report
     end
   end
