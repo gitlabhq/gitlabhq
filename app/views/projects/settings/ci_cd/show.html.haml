@@ -26,12 +26,12 @@
   .settings-content
     = render 'projects/runners/index'
 
-%section.settings.no-animate.qa-secret-variables{ class: ('expanded' if expanded) }
+%section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Secret variables
       = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'secret-variables'), target: '_blank'
-    %button.btn.js-settings-toggle.qa-expand-secret-variables
+    %button.btn.js-settings-toggle
       = expanded ? 'Collapse' : 'Expand'
     %p
       = render "ci/variables/content"

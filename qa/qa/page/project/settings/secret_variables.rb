@@ -3,13 +3,11 @@ module QA
     module Project
       module Settings
         class SecretVariables < Page::Base
+          include Common
+
           view 'app/views/ci/variables/_table.html.haml' do
             element :variable_key, '.variable-key'
             element :variable_value, '.variable-value'
-          end
-
-          view 'app/views/projects/settings/ci_cd/show.html.haml' do
-            element :secret_variable
           end
 
           def fill_variable_key(key)
@@ -36,21 +34,11 @@ module QA
 
           private
 
-          def within_section
-            page.within('.qa-secret-variables') do
-              yield
-            end
-          end
-
           def reveal_value
-            within_section do
-              click_button('Reveal value')
-            end
+            click_button('Reveal value')
 
             yield.tap do
-              within_section do
-                click_button('Hide value')
-              end
+              click_button('Hide value')
             end
           end
         end

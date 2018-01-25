@@ -29,15 +29,19 @@ module QA
           end
         end
 
+        def click_ci_cd_pipelines
+          within_sidebar do
+            click_link('CI / CD')
+          end
+        end
+
         private
 
         def hover_settings
           within_sidebar do
             find('.qa-settings-item').hover
 
-            within_fly_out do
-              yield
-            end
+            yield
           end
         end
 
