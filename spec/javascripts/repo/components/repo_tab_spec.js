@@ -27,7 +27,7 @@ describe('RepoTab', () => {
     const close = vm.$el.querySelector('.multi-file-tab-close');
     const name = vm.$el.querySelector(`[title="${vm.tab.url}"]`);
 
-    expect(close.querySelector('.fa-times')).toBeTruthy();
+    expect(close.innerHTML).toContain('#close');
     expect(name.textContent.trim()).toEqual(vm.tab.name);
   });
 
@@ -55,14 +55,14 @@ describe('RepoTab', () => {
     expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
   });
 
-  it('renders an fa-circle icon if tab is changed', () => {
+  it('shows changed icon if tab is changed', () => {
     const tab = file('changedFile');
     tab.changed = true;
     vm = createComponent({
       tab,
     });
 
-    expect(vm.$el.querySelector('.multi-file-tab-close .fa-circle')).not.toBeNull();
+    expect(vm.changedIcon).toBe('file-modified');
   });
 
   it('changes icon on hover', (done) => {
@@ -76,15 +76,13 @@ describe('RepoTab', () => {
 
     Vue.nextTick()
       .then(() => {
-        expect(vm.$el.querySelector('.unsaved-icon')).toBeNull();
-        expect(vm.$el.querySelector('.close-icon')).not.toBeNull();
+        expect(vm.$el.querySelector('.multi-file-modified')).toBeNull();
 
         vm.$el.dispatchEvent(new Event('mouseout'));
       })
       .then(Vue.nextTick)
       .then(() => {
-        expect(vm.$el.querySelector('.close-icon')).toBeNull();
-        expect(vm.$el.querySelector('.unsaved-icon')).not.toBeNull();
+        expect(vm.$el.querySelector('.multi-file-modified')).not.toBeNull();
 
         done();
       })

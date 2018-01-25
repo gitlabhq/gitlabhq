@@ -238,13 +238,7 @@ describe('Multi-file store actions', () => {
       });
 
       it('adds commit data to changed files', (done) => {
-<<<<<<< HEAD
-        const changedFile = file('changed');
-        const f = file('newfile');
-        changedFile.changed = true;
-=======
         const changedFile = file();
->>>>>>> Added changed state to IDE
 
         store.state.changedFiles.push(changedFile);
 
