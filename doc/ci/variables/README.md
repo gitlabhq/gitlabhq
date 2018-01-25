@@ -111,7 +111,7 @@ future GitLab releases.**
 | `CI_BUILD_MANUAL`     | `CI_JOB_MANUAL`         |
 | `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 
-## `.gitlab-ci.yaml` defined variables
+## `.gitlab-ci.yml` defined variables
 
 >**Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher.
