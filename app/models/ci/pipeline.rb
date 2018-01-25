@@ -537,7 +537,7 @@ module Ci
       return unless sha
 
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
-    rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
+    rescue GRPC::NotFound, GRPC::Internal
       nil
     end
 

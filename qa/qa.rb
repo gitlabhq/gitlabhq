@@ -106,17 +106,19 @@ module QA
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
 
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
+
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
+        autoload :Advanced, 'qa/page/project/settings/advanced'
+        autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :Runners, 'qa/page/project/settings/runners'
-      end
-
-      module Pipeline
-        autoload :Index, 'qa/page/project/pipeline/index'
-        autoload :Show, 'qa/page/project/pipeline/show'
       end
     end
 

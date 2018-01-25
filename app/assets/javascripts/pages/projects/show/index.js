@@ -5,8 +5,12 @@ import TreeView from '~/tree';
 import BlobViewer from '~/blob/viewer/index';
 import Activities from '~/activities';
 import { ajaxGet } from '~/lib/utils/common_utils';
+import Star from '../../../star';
+import notificationsDropdown from '../../../notifications_dropdown';
 
 export default () => {
+  new Star(); // eslint-disable-line no-new
+  notificationsDropdown();
   new ShortcutsNavigation(); // eslint-disable-line no-new
   new NotificationsForm(); // eslint-disable-line no-new
   new UserCallout({ // eslint-disable-line no-new

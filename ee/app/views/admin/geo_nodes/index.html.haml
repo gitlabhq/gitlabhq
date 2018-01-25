@@ -18,6 +18,10 @@
   %strong exact order
   they appear.
 
+- unless Gitlab::Database.pg_stat_wal_receiver_supported?
+  = content_for :flash_message do
+    .alert.alert-warning WARNING: Please upgrade PostgreSQL to version 9.6 or greater. The status of the replication cannot be determined reliably with the current version.
+
 - if @nodes.any?
   #js-geo-nodes{ data: { primary_version: "#{Gitlab::VERSION}", primary_revision: "#{Gitlab::REVISION}", node_details_path: "#{admin_geo_nodes_path}", node_actions_allowed: "#{Gitlab::Database.read_write?}", node_edit_allowed: "#{Gitlab::Geo.license_allows?}" } }
 - else

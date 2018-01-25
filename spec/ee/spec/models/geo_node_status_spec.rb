@@ -474,7 +474,9 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#storage_shards_match?' do
-    before { stub_primary_node }
+    before do
+      stub_primary_node
+    end
 
     set(:status) { create(:geo_node_status) }
     let(:data) { GeoNodeStatusSerializer.new.represent(status).as_json }

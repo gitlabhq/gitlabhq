@@ -167,7 +167,7 @@ otherwise it may fail with an encryption error.
 Secondary Geo nodes track data about what has been downloaded in a second
 PostgreSQL database that is distinct from the production GitLab database.
 The database configuration is set in `config/database_geo.yml`.
-`db/geo` contains the schema and migrations for this database.
+`ee/db/geo` contains the schema and migrations for this database.
 
 To write a migration for the database, use the `GeoMigrationGenerator`:
 

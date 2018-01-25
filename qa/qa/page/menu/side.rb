@@ -4,6 +4,7 @@ module QA
       class Side < Page::Base
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
+          element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: 'Repository'"
           element :pipelines_settings_link, "title: 'CI / CD'"
           element :top_level_items, '.sidebar-top-level-items'
@@ -28,6 +29,12 @@ module QA
         def click_ci_cd_pipelines
           within_sidebar do
             click_link('CI / CD')
+          end
+        end
+
+        def go_to_settings
+          within_sidebar do
+            click_on 'Settings'
           end
         end
 

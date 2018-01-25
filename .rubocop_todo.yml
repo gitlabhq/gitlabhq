@@ -342,10 +342,6 @@ RSpec/SharedContext:
   Exclude:
     - 'spec/features/admin/admin_groups_spec.rb'
 
-# Offense count: 90
-RSpec/SingleLineHook:
-  Enabled: false
-
 # Offense count: 5
 RSpec/VoidExpect:
   Exclude:

@@ -3661,5 +3661,22 @@ describe Project do
       project = build(:project)
       project.execute_hooks({ data: 'data' }, :merge_request_hooks)
     end
+
+    it 'executes the system hooks when inside a transaction' do
+      allow_any_instance_of(WebHookService).to receive(:execute)
+
+      create(:system_hook, merge_requests_events: true)
+
+      project = build(:project)
+
+      # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
+      # but since the entire spec run takes place in a transaction, we never
+      # actually get to the `after_commit` hook that queues these jobs.
+      expect do
+        project.transaction do
+          project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+        end
+      end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+    end
   end
 end

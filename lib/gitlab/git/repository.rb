@@ -559,6 +559,8 @@ module Gitlab
         return false if ancestor_id.nil? || descendant_id.nil?
 
         merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      rescue Rugged::OdbError
+        false
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
@@ -1110,23 +1112,6 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, chdir: path, env: {}, nice: false, &block)
-        cmd = [Gitlab.config.git.bin_path, *args]
-        cmd.unshift("nice") if nice
-        circuit_breaker.perform do
-          popen(cmd, chdir, env, &block)
-        end
-      end
-
-      def run_git!(args, chdir: path, env: {}, nice: false, &block)
-        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
-
-        raise GitError, output unless status.zero?
-
-        output
-      end
-
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def run_git_with_timeout(args, timeout, env: {})
         circuit_breaker.perform do
           popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
@@ -1262,6 +1247,24 @@ module Gitlab
         success || gitlab_projects_error
       end
 
+      def delete_remote_branches(remote_name, branch_names)
+        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
+
+        success || gitlab_projects_error
+      end
+
+      def bundle_to_disk(save_path)
+        gitaly_migrate(:bundle_to_disk) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.create_bundle(save_path)
+          else
+            run_git!(%W(bundle create #{save_path} --all))
+          end
+        end
+
+        true
+      end
+
       # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
@@ -1313,6 +1316,10 @@ module Gitlab
         @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
       end
 
+      def gitaly_blob_client
+        @gitaly_blob_client ||= Gitlab::GitalyClient::BlobService.new(self)
+      end
+
       def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
         Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
@@ -1325,6 +1332,52 @@ module Gitlab
         raise ArgumentError.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
+      end
+
+      def refs_contains_sha(ref_type, sha)
+        args = %W(#{ref_type} --contains #{sha})
+        names = run_git(args).first
+
+        if names.respond_to?(:split)
+          names = names.split("\n").map(&:strip)
+
+          names.each do |name|
+            name.slice! '* '
+          end
+
+          names
+        else
+          []
+        end
+      end
+
+      def search_files_by_content(query, ref)
+        return [] if empty? || query.blank?
+
+        offset = 2
+        args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+
+        run_git(args).first.scrub.split(/^--$/)
+      end
+
+      def search_files_by_name(query, ref)
+        safe_query = Regexp.escape(query.sub(/^\/*/, ""))
+
+        return [] if empty? || safe_query.blank?
+
+        args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{safe_query})
+
+        run_git(args).first.lines.map(&:strip)
+      end
+
+      def find_commits_by_message(query, ref, path, limit, offset)
+        gitaly_migrate(:commits_by_message) do |is_enabled|
+          if is_enabled
+            find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+          else
+            find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+          end
+        end
       end
 
       private
@@ -1346,6 +1399,22 @@ module Gitlab
         raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
 
         Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      end
+
+      def run_git(args, chdir: path, env: {}, nice: false, &block)
+        cmd = [Gitlab.config.git.bin_path, *args]
+        cmd.unshift("nice") if nice
+        circuit_breaker.perform do
+          popen(cmd, chdir, env, &block)
+        end
+      end
+
+      def run_git!(args, chdir: path, env: {}, nice: false, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+
+        raise GitError, output unless status.zero?
+
+        output
       end
 
       def fresh_worktree?(path)
@@ -2101,6 +2170,26 @@ module Gitlab
 
       def gitlab_projects_error
         raise CommandError, @gitlab_projects.output
+      end
+
+      def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+        ref ||= root_ref
+
+        args = %W(
+          log #{ref} --pretty=%H --skip #{offset}
+          --max-count #{limit} --grep=#{query} --regexp-ignore-case
+        )
+        args = args.concat(%W(-- #{path})) if path.present?
+
+        git_log_results = run_git(args).first.lines
+
+        git_log_results.map { |c| commit(c.chomp) }.compact
+      end
+
+      def find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+        gitaly_commit_client
+          .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
+          .map { |c| commit(c) }
       end
     end
   end
