@@ -6,9 +6,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     super(data);
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
-
-    this.initSecurityReports(data);
-
     this.initSecurityReport(data);
     this.initDockerReport(data);
     this.initDastReport(data);
@@ -61,27 +58,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.performanceMetrics = {
       improved: [],
       degraded: [],
-    };
-  }
-  // TODO - blob paths and head & base for sast
-  initSecurityReports(data) {
-    this.securityReports = {
-      fixed: null,
-      approved: null,
-      sast: {
-        path: data.sast,
-        issues: [],
-      },
-      sastContainer: {
-        path: data.sast_container,
-        approved: [],
-        unapproved: [],
-        vulnerabilities: [],
-      },
-      dast: {
-        path: data.dast,
-        issues: [],
-      },
     };
   }
 
