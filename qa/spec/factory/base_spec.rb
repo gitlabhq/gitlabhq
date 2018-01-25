@@ -19,7 +19,6 @@ describe QA::Factory::Base do
 
     it 'returns fabrication product' do
       allow(subject).to receive(:new).and_return(factory)
-      allow(factory).to receive(:fabricate!).and_return('something')
 
       result = subject.fabricate!('something')
 

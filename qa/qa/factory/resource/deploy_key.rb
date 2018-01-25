@@ -19,7 +19,7 @@ module QA
           project.visit!
 
           Page::Menu::Side.act do
-            click_repository_setting
+            click_repository_settings
           end
 
           Page::Project::Settings::Repository.perform do |setting|

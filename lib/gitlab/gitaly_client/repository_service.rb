@@ -161,6 +161,23 @@ module Gitlab
           return response.error.b, 1
         end
       end
+
+      def create_bundle(save_path)
+        request = Gitaly::CreateBundleRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_bundle,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+
+        File.open(save_path, 'wb') do |f|
+          response.each do |message|
+            f.write(message.data)
+          end
+        end
+      end
     end
   end
 end
