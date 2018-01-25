@@ -10,6 +10,16 @@ module QA
               yield
             end
           end
+
+          def expand_section(name)
+            page.within('#content-body') do
+              page.within('section', text: name) do
+                click_button 'Expand'
+
+                yield
+              end
+            end
+          end
         end
       end
     end

@@ -3,7 +3,8 @@
   = render 'shared/promotions/promote_advanced_search'
 - else
   .row-content-block
-    = search_entries_info(@search_objects, @scope, @search_term)
+    - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
+      = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
         in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
@@ -23,4 +24,4 @@
           = render partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
     - if @scope != 'projects'
-      = paginate(@search_objects, theme: 'gitlab')
+      = paginate_collection(@search_objects)

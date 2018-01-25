@@ -33,6 +33,7 @@ module QA
 
         def wait_for_push
           sleep 5
+          refresh
         end
       end
     end

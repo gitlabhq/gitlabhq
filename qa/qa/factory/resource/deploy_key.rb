@@ -4,6 +4,12 @@ module QA
       class DeployKey < Factory::Base
         attr_accessor :title, :key
 
+        product :title do
+          Page::Project::Settings::Repository.act do
+            expand_deploy_keys(&:key_title)
+          end
+        end
+
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-to-deploy'
           project.description = 'project for adding deploy key test'
@@ -13,7 +19,7 @@ module QA
           project.visit!
 
           Page::Menu::Side.act do
-            click_repository_setting
+            click_repository_settings
           end
 
           Page::Project::Settings::Repository.perform do |setting|

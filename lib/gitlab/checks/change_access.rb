@@ -1,8 +1,7 @@
 module Gitlab
   module Checks
     class ChangeAccess
-      include PathLocksHelper
-      include Gitlab::Utils::StrongMemoize
+      prepend EE::Gitlab::Checks::ChangeAccess
 
       ERROR_MESSAGES = {
         push_code: 'You are not allowed to push code to this project.',
@@ -16,14 +15,10 @@ module Gitlab
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
-        lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".',
-        push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'",
-        push_rule_committer_not_verified: "Comitter email '%{commiter_email}' is not verified.",
-        push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}'. You can only push commits that were committed with one of your own verified emails."
+        lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
       }.freeze
 
-      # protocol is currently used only in EE
-      attr_reader :user_access, :project, :skip_authorization, :protocol
+      attr_reader :user_access, :project, :skip_authorization, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
 
       def initialize(
         change, user_access:, project:, skip_authorization: false,
@@ -45,7 +40,6 @@ module Gitlab
         branch_checks
         tag_checks
         lfs_objects_exist_check
-        push_rule_check
 
         true
       end
@@ -59,9 +53,9 @@ module Gitlab
       end
 
       def branch_checks
-        return unless @branch_name
+        return unless branch_name
 
-        if deletion? && @branch_name == project.default_branch
+        if deletion? && branch_name == project.default_branch
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:delete_default_branch]
         end
 
@@ -69,7 +63,7 @@ module Gitlab
       end
 
       def protected_branch_checks
-        return unless ProtectedBranch.protected?(project, @branch_name)
+        return unless ProtectedBranch.protected?(project, branch_name)
 
         if forced_push?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:force_push_protected_branch]
@@ -83,7 +77,7 @@ module Gitlab
       end
 
       def protected_branch_deletion_checks
-        unless user_access.can_delete_branch?(@branch_name)
+        unless user_access.can_delete_branch?(branch_name)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_master_delete_protected_branch]
         end
 
@@ -94,18 +88,18 @@ module Gitlab
 
       def protected_branch_push_checks
         if matching_merge_request?
-          unless user_access.can_merge_to_branch?(@branch_name) || user_access.can_push_to_branch?(@branch_name)
+          unless user_access.can_merge_to_branch?(branch_name) || user_access.can_push_to_branch?(branch_name)
             raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:merge_protected_branch]
           end
         else
-          unless user_access.can_push_to_branch?(@branch_name)
+          unless user_access.can_push_to_branch?(branch_name)
             raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_protected_branch]
           end
         end
       end
 
       def tag_checks
-        return unless @tag_name
+        return unless tag_name
 
         if tag_exists? && user_access.cannot_do_action?(:admin_project)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:change_existing_tags]
@@ -115,12 +109,12 @@ module Gitlab
       end
 
       def protected_tag_checks
-        return unless ProtectedTag.protected?(project, @tag_name)
+        return unless ProtectedTag.protected?(project, tag_name)
 
         raise(GitAccess::UnauthorizedError, ERROR_MESSAGES[:update_protected_tag]) if update?
         raise(GitAccess::UnauthorizedError, ERROR_MESSAGES[:delete_protected_tag]) if deletion?
 
-        unless user_access.can_create_tag?(@tag_name)
+        unless user_access.can_create_tag?(tag_name)
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:create_protected_tag]
         end
       end
@@ -132,217 +126,31 @@ module Gitlab
       end
 
       def tag_exists?
-        project.repository.tag_exists?(@tag_name)
+        project.repository.tag_exists?(tag_name)
       end
 
       def forced_push?
-        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+        Gitlab::Checks::ForcePush.force_push?(project, oldrev, newrev)
       end
 
       def update?
-        !Gitlab::Git.blank_ref?(@oldrev) && !deletion?
+        !Gitlab::Git.blank_ref?(oldrev) && !deletion?
       end
 
       def deletion?
-        Gitlab::Git.blank_ref?(@newrev)
+        Gitlab::Git.blank_ref?(newrev)
       end
 
       def matching_merge_request?
-        Checks::MatchingMergeRequest.new(@newrev, @branch_name, @project).match?
+        Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
       end
 
       def lfs_objects_exist_check
-        lfs_check = Checks::LfsIntegrity.new(project, @newrev)
+        lfs_check = Checks::LfsIntegrity.new(project, newrev)
 
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
         end
-      end
-
-      def push_rule_check
-        return unless @newrev && @oldrev && project.feature_available?(:push_rules)
-
-        push_rule = project.push_rule
-
-        # Prevent tag removal
-        if @tag_name
-          if tag_deletion_denied_by_push_rule?(push_rule)
-            raise GitAccess::UnauthorizedError, 'You cannot delete a tag'
-          end
-        else
-          unless branch_name_allowed_by_push_rule?(push_rule)
-            message = ERROR_MESSAGES[:push_rule_branch_name] % { branch_name_regex: push_rule.branch_name_regex }
-            raise GitAccess::UnauthorizedError.new(message)
-          end
-
-          commit_validation = push_rule.try(:commit_validation?)
-          # if newrev is blank, the branch was deleted
-          return if deletion? || !(commit_validation || validate_path_locks?)
-
-          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
-          Gitlab::GitalyClient.allow_n_plus_1_calls do
-            commits.each do |commit|
-              if commit_validation
-                error = check_commit(commit, push_rule)
-                raise GitAccess::UnauthorizedError, error if error
-              end
-
-              if error = check_commit_diff(commit, push_rule)
-                raise GitAccess::UnauthorizedError, error
-              end
-            end
-          end
-        end
-      end
-
-      def branch_name_allowed_by_push_rule?(push_rule)
-        return true if skip_branch_name_push_rule?(push_rule)
-
-        push_rule.branch_name_allowed?(@branch_name)
-      end
-
-      def skip_branch_name_push_rule?(push_rule)
-        push_rule.nil? ||
-          deletion? ||
-          @branch_name.blank? ||
-          @branch_name == @project.default_branch
-      end
-
-      def tag_deletion_denied_by_push_rule?(push_rule)
-        push_rule.try(:deny_delete_tag) &&
-          !updated_from_web? &&
-          deletion? &&
-          tag_exists?
-      end
-
-      # If commit does not pass push rule validation the whole push should be rejected.
-      # This method should return nil if no error found or a string if error.
-      # In case of errors - all other checks will be canceled and push will be rejected.
-      def check_commit(commit, push_rule)
-        unless push_rule.commit_message_allowed?(commit.safe_message)
-          return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
-        end
-
-        unless push_rule.author_email_allowed?(commit.committer_email)
-          return "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
-        end
-
-        unless push_rule.author_email_allowed?(commit.author_email)
-          return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
-        end
-
-        committer_error_message = committer_check(commit, push_rule)
-        return committer_error_message if committer_error_message
-
-        if !updated_from_web? && !push_rule.commit_signature_allowed?(commit)
-          return "Commit must be signed with a GPG key"
-        end
-
-        # Check whether author is a GitLab member
-        if push_rule.member_check
-          unless User.existing_member?(commit.author_email.downcase)
-            return "Author '#{commit.author_email}' is not a member of team"
-          end
-
-          if commit.author_email.casecmp(commit.committer_email) == -1
-            unless User.existing_member?(commit.committer_email.downcase)
-              return "Committer '#{commit.committer_email}' is not a member of team"
-            end
-          end
-        end
-
-        nil
-      end
-
-      def committer_check(commit, push_rule)
-        unless push_rule.committer_allowed?(commit.committer_email, user_access.user)
-          committer_is_current_user = commit.committer == user_access.user
-
-          if committer_is_current_user && !commit.committer.verified_email?(commit.committer_email)
-            ERROR_MESSAGES[:push_rule_committer_not_verified] % { committer_email: commit.committer_email }
-          else
-            ERROR_MESSAGES[:push_rule_committer_not_allowed] % { committer_email: commit.committer_email }
-          end
-        end
-      end
-
-      def check_commit_diff(commit, push_rule)
-        validations = validations_for_commit(commit, push_rule)
-
-        return if validations.empty?
-
-        commit.raw_deltas.each do |diff|
-          validations.each do |validation|
-            if error = validation.call(diff)
-              return error
-            end
-          end
-        end
-
-        nil
-      end
-
-      def validations_for_commit(commit, push_rule)
-        validations = base_validations
-
-        return validations unless push_rule
-
-        validations << file_name_validation(push_rule)
-
-        if push_rule.max_file_size > 0
-          validations << file_size_validation(commit, push_rule.max_file_size)
-        end
-
-        validations
-      end
-
-      def base_validations
-        validate_path_locks? ? [path_locks_validation] : []
-      end
-
-      def validate_path_locks?
-        strong_memoize(:validate_path_locks) do
-          @project.feature_available?(:file_locks) &&
-            project.path_locks.any? && @newrev && @oldrev &&
-            project.default_branch == @branch_name # locks protect default branch only
-        end
-      end
-
-      def path_locks_validation
-        lambda do |diff|
-          path = diff.new_path || diff.old_path
-
-          lock_info = project.find_path_lock(path)
-
-          if lock_info && lock_info.user != user_access.user
-            return "The path '#{lock_info.path}' is locked by #{lock_info.user.name}"
-          end
-        end
-      end
-
-      def file_name_validation(push_rule)
-        lambda do |diff|
-          if (diff.renamed_file || diff.new_file) && blacklisted_regex = push_rule.filename_blacklisted?(diff.new_path)
-            return nil unless blacklisted_regex.present?
-
-            "File name #{diff.new_path} was blacklisted by the pattern #{blacklisted_regex}."
-          end
-        end
-      end
-
-      def file_size_validation(commit, max_file_size)
-        lambda do |diff|
-          return if diff.deleted_file
-
-          blob = project.repository.blob_at(commit.id, diff.new_path)
-          if blob && blob.size && blob.size > max_file_size.megabytes
-            return "File #{diff.new_path.inspect} is larger than the allowed size of #{max_file_size} MB"
-          end
-        end
-      end
-
-      def commits
-        project.repository.new_commits(@newrev)
       end
     end
   end

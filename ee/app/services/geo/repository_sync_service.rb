@@ -22,6 +22,8 @@ module Geo
         fetch_geo_mirror(project.repository)
       end
 
+      update_gitattributes
+
       update_registry!(finished_at: DateTime.now, attrs: { last_repository_sync_failure: nil })
       log_info('Finished repository sync',
                update_delay_s: update_delay_in_seconds,
@@ -50,6 +52,13 @@ module Geo
 
     def repository
       project.repository
+    end
+
+    # Update info/attributes file using the contents of .gitattributes file from the default branch
+    def update_gitattributes
+      return if project.default_branch.nil?
+
+      repository.copy_gitattributes(project.default_branch)
     end
 
     def retry_count

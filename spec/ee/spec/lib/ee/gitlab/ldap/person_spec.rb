@@ -69,6 +69,50 @@ describe Gitlab::LDAP::Person do
     end
   end
 
+  describe '.ldap_attributes' do
+    def stub_sync_ssh_keys(value)
+      stub_ldap_config(
+        options: {
+          'uid'          => nil,
+          'attributes'   => {
+            'name'       => 'cn',
+            'email'      => 'mail',
+            'username'   => %w(uid mail memberof)
+          },
+          'sync_ssh_keys' => value
+        }
+      )
+    end
+
+    let(:config) { Gitlab::LDAP::Config.new('ldapmain') }
+    let(:ldap_attributes) { described_class.ldap_attributes(config) }
+    let(:expected_attributes) { %w(dn cn uid mail memberof) }
+
+    it 'includes a real attribute name' do
+      stub_sync_ssh_keys('my-ssh-attribute')
+
+      expect(ldap_attributes).to match_array(expected_attributes + ['my-ssh-attribute'])
+    end
+
+    it 'excludes integers' do
+      stub_sync_ssh_keys(0)
+
+      expect(ldap_attributes).to match_array(expected_attributes)
+    end
+
+    it 'excludes false values' do
+      stub_sync_ssh_keys(false)
+
+      expect(ldap_attributes).to match_array(expected_attributes)
+    end
+
+    it 'excludes true values' do
+      stub_sync_ssh_keys(true)
+
+      expect(ldap_attributes).to match_array(expected_attributes)
+    end
+  end
+
   describe '#kerberos_principal' do
     let(:entry) do
       ldif = "dn: cn=foo, dc=bar, dc=com\nsAMAccountName: myName\n"
