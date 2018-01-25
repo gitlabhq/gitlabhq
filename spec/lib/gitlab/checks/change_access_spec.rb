@@ -225,7 +225,6 @@ describe Gitlab::Checks::ChangeAccess do
 
           subject.exec
         end
-
       end
 
       context 'with LFS enabled' do

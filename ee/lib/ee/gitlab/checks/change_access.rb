@@ -13,8 +13,6 @@ module EE
           push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}'. You can only push commits that were committed with one of your own verified emails."
         }.freeze
 
-        attr_reader :push_rule
-
         override :exec
         def exec
           return true if skip_authorization
@@ -31,10 +29,12 @@ module EE
 
         private
 
+        def push_rule
+          project.push_rule
+        end
+
         def push_rule_check
           return unless newrev && oldrev && project.feature_available?(:push_rules)
-
-          @push_rule = project.push_rule
 
           if tag_name
             push_rule_tag_check

@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Lfs::UnlockFileService do
-  let(:project) { create(:project) }
-  let(:user)    { create(:user) }
-  let!(:lock)   { create(:lfs_file_lock, user: user, project: project) }
+  let(:project)      { create(:project) }
+  let(:current_user) { create(:user) }
+  let(:lock_author) { create(:user) }
+  let!(:lock)        { create(:lfs_file_lock, user: lock_author, project: project) }
+  let(:params)       { {} }
 
-  subject { described_class.new(project, user, params) }
+  subject { described_class.new(project, current_user, params) }
 
   describe '#execute' do
     context 'when lock does not exists' do
@@ -19,6 +21,7 @@ describe Lfs::UnlockFileService do
     end
 
     context 'when unlocked by the author' do
+      let(:current_user) { lock_author }
       let(:params) { { id: lock.id } }
 
       it "succeeds" do
@@ -30,13 +33,14 @@ describe Lfs::UnlockFileService do
     end
 
     context 'when unlocked by a different user' do
-      let(:user) { create(:user) }
+      let(:current_user) { create(:user) }
+      let(:params) { { id: lock.id } }
 
       it "doesn't succeed" do
         result = subject.execute
 
         expect(result[:status]).to eq(:error)
-        expect(result[:message]).to match(/is locked by GitLab User #{user.id}/)
+        expect(result[:message]).to match(/is locked by GitLab User #{lock_author.id}/)
         expect(result[:http_status]).to eq(403)
       end
     end
@@ -51,7 +55,7 @@ describe Lfs::UnlockFileService do
       end
 
       context 'by a regular user' do
-        let(:user) { developer }
+        let(:current_user) { developer }
         let(:params) do
           { id: lock.id,
             force: true }
@@ -67,7 +71,7 @@ describe Lfs::UnlockFileService do
       end
 
       context 'by a master user' do
-        let(:user) { developer }
+        let(:current_user) { master }
         let(:params) do
           { id: lock.id,
             force: true }

@@ -36,15 +36,13 @@ class Projects::LfsLocksApiController < Projects::GitHttpClientController
   end
 
   def build_payload(data, process)
-    serialized_data = process ? LfsFileLockSerializer.new.represent(data) : data
+    data = LfsFileLockSerializer.new.represent(data) if process
 
-    if @result[:status] == :success
-      serialized_data
-    else
-      # When the locking failed due to an existent Lock the existent record
-      # is returned in `@result[:lock]`
-      error_payload(@result[:message], @result[:lock] ? serialized_data : {})
-    end
+    return data if @result[:status] == :success
+
+    # When the locking failed due to an existent Lock, the existent record
+    # is returned in `@result[:lock]`
+    error_payload(@result[:message], @result[:lock] ? data : {})
   end
 
   def error_payload(message, custom_attrs = {})

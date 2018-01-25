@@ -22,7 +22,7 @@ module Lfs
       elsif forced
         error('You must have master access to force delete a lock', 403)
       else
-        error("#{@lock.path} is locked by GitLab User #{current_user.id}", 403)
+        error("#{@lock.path} is locked by GitLab User #{@lock.user_id}", 403)
       end
     end
   end

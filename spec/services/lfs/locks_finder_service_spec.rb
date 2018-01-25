@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Lfs::LocksFinderService do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
-  let(:params)  { Hash.new }
+  let(:params)  { {} }
 
   subject { described_class.new(project, user, params) }
 
