@@ -29,6 +29,12 @@
       showChangedIcon() {
         return this.tab.changed ? !this.tabMouseOver : false;
       },
+      changedIcon() {
+        return this.tab.tempFile ? 'file-addition' : 'file-modified';
+      },
+      changedIconClass() {
+        return this.tab.tempFile ? 'multi-file-addition' : 'multi-file-modified';
+      },
     },
 
     methods: {
@@ -71,9 +77,9 @@
       />
       <icon
         v-else
-        name="file-modified"
+        :name="changedIcon"
         :size="12"
-        css-classes="multi-file-modified"
+        :css-classes="changedIconClass"
       />
     </button>
 
