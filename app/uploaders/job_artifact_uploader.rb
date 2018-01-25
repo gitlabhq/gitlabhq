@@ -14,6 +14,14 @@ class JobArtifactUploader < GitlabUploader
     dynamic_segment
   end
 
+  def open
+    if file_storage?
+      File.open(path, "rb")
+    else
+      raise 'Only File System is supported'
+    end
+  end
+
   private
 
   def dynamic_segment
