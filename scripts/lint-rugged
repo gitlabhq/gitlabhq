@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 
 ALLOWED = [
+<<<<<<< HEAD
   # https://gitlab.com/gitlab-org/gitaly/issues/760
   'lib/elasticsearch/git/repository.rb',
 
+=======
+>>>>>>> upstream/master
   # Can be deleted (?) once rugged is no longer used in production. Doesn't make Rugged calls.
   'config/initializers/8_metrics.rb',
 
