@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :truncate do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :delete do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
   let(:namespace) { create(:group, name: 'the-path') }

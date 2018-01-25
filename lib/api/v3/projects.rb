@@ -179,7 +179,7 @@ module API
         end
         get "/search/:query", requirements: { query: /[^\/]+/ } do
           search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
-          projects = search_service.objects('projects', params[:page])
+          projects = search_service.objects('projects', params[:page], false)
           projects = projects.reorder(params[:order_by] => params[:sort])
 
           present paginate(projects), with: ::API::V3::Entities::Project

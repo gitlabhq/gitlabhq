@@ -8,7 +8,7 @@
 - You should make sure that all nodes run the same GitLab version.
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
-- Using GitLab Geo in combination with High Availability is considered **Beta**
+- Using GitLab Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
 
 >**Note:**
 GitLab Geo changes significantly from release to release. Upgrades **are**
@@ -51,6 +51,7 @@ to reading any data available in the GitLab web interface (see [current limitati
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
+- A Geo secondary can be promoted to become the primary in a [Disaster Recovery](disaster-recovery.md) scenario
 
 ## Architecture
 

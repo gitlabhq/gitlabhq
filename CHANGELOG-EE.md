@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.4.1 (2018-01-24)
+
+### Fixed (1 change)
+
+- Fix failed LDAP logins when sync_ssh_keys is included in config.
+
+
 ## 10.4.0 (2018-01-22)
 
 ### Security (2 changes)

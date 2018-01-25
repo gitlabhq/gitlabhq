@@ -28,6 +28,7 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
     end
 
@@ -49,7 +50,7 @@ module QA
     #
     autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
-    autoload :Entrypoint, 'qa/scenario/entrypoint'
+    autoload :Taggable, 'qa/scenario/taggable'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -104,13 +105,20 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+      
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
 
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
-        autoload :Repository, 'qa/page/project/settings/repository'
-        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :Advanced, 'qa/page/project/settings/advanced'
         autoload :Main, 'qa/page/project/settings/main'
+        autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :CICD, 'qa/page/project/settings/ci_cd'
+        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :Runners, 'qa/page/project/settings/runners'
       end
     end
 
@@ -136,10 +144,13 @@ module QA
   end
 
   ##
-  # Classes describing shell interaction with GitLab
+  # Classes describing services being part of GitLab and how we can interact
+  # with these services, like through the shell.
   #
-  module Shell
-    autoload :Omnibus, 'qa/shell/omnibus'
+  module Service
+    autoload :Shellout, 'qa/service/shellout'
+    autoload :Omnibus, 'qa/service/omnibus'
+    autoload :Runner, 'qa/service/runner'
   end
 
   ##

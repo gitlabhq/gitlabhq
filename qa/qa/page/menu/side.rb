@@ -6,12 +6,29 @@ module QA
           element :settings_item
           element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: 'Repository'"
+          element :pipelines_settings_link, "title: 'CI / CD'"
           element :top_level_items, '.sidebar-top-level-items'
         end
 
-        def click_repository_setting
-          hover_setting do
-            click_link('Repository')
+        def click_repository_settings
+          hover_settings do
+            within_submenu do
+              click_link('Repository')
+            end
+          end
+        end
+
+        def click_ci_cd_settings
+          hover_settings do
+            within_submenu do
+              click_link('CI / CD')
+            end
+          end
+        end
+
+        def click_ci_cd_pipelines
+          within_sidebar do
+            click_link('CI / CD')
           end
         end
 
@@ -23,7 +40,7 @@ module QA
 
         private
 
-        def hover_setting
+        def hover_settings
           within_sidebar do
             find('.qa-settings-item').hover
 
@@ -33,6 +50,12 @@ module QA
 
         def within_sidebar
           page.within('.sidebar-top-level-items') do
+            yield
+          end
+        end
+
+        def within_submenu
+          page.within('.fly-out-list') do
             yield
           end
         end

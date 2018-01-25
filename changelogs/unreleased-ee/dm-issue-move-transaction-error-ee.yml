@@ -1,0 +1,5 @@
+---
+title: Execute group hooks after-commit when moving an issue
+merge_request:
+author:
+type: fixed

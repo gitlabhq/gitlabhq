@@ -77,13 +77,6 @@ be manually replicated to the secondary.
     service gitlab restart
     ```
 
-The secondary will start automatically replicating missing data from the
-primary in a process known as backfill. Meanwhile, the primary node will start
-to notify changes to the secondary, which will act on those notifications
-immediately. Make sure the secondary instance is running and accessible.
-
-### Step 2. (Optional) Enabling hashed storage
-
 Once restarted, the secondary will automatically start replicating missing data
 from the primary in a process known as backfill. Meanwhile, the primary node
 will start to notify the secondary of any changes, so that the secondary can
@@ -92,11 +85,15 @@ act on those notifications immediately.
 Make sure the secondary instance is running and accessible. You can login to
 the secondary node with the same credentials as used in the primary.
 
-### Step 2. (Optional) Enabling hashed storage (from GitLab 10.0)
+### Step 2. Manually replicate primary SSH host keys
 
-Read [Enabling Hashed Storage](configuration.md#step-2-optional-enabling-hashed-storage-from-gitlab-10-0)
+Read [Manually replicate primary SSH host keys](configuration.md#step-2-manually-replicate-primary-ssh-host-keys)
 
-### Step 3. (Optional) Configuring the secondary to trust the primary
+### Step 3. (Optional) Enabling hashed storage (from GitLab 10.0)
+
+Read [Enabling Hashed Storage](configuration.md#step-3-optional-enabling-hashed-storage-from-gitlab-10-0)
+
+### Step 4. (Optional) Configuring the secondary to trust the primary
 
 You can safely skip this step if your primary uses a CA-issued HTTPS certificate.
 
@@ -112,16 +109,16 @@ cp primary.geo.example.com.crt /usr/local/share/ca-certificates
 update-ca-certificates
 ```
 
-### Step 4. Enable Git access over HTTP/HTTPS
+### Step 5. Enable Git access over HTTP/HTTPS
 
 GitLab Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
-### Step 5. Verify proper functioning of the secondary node
+### Step 6. Verify proper functioning of the secondary node
 
-Read [Verify proper functioning of the secondary node](configuration.md#step-5-verify-proper-functioning-of-the-secondary-node).
+Read [Verify proper functioning of the secondary node](configuration.md#step-6-verify-proper-functioning-of-the-secondary-node).
 
 
 ## Selective replication

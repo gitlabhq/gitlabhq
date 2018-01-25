@@ -597,6 +597,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           break;
+        case 'dashboard:groups:index':
+          import('./pages/dashboard/groups/index')
+            .then(callDefault)
+            .catch(fail);
         case 'admin:licenses:new':
           import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
           break;

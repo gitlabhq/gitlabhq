@@ -1618,7 +1618,7 @@ describe User do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects', :truncate do
+  describe '#authorized_projects', :delete do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
