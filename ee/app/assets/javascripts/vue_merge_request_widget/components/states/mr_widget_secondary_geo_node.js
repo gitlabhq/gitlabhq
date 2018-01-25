@@ -1,4 +1,4 @@
-import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
+import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 
 export default {
   props: {
