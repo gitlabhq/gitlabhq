@@ -101,6 +101,12 @@ module Gitlab
         job.erase_old_trace!
       end
 
+      def current_path
+        @current_path ||= paths.find do |trace_path|
+          File.exist?(trace_path)
+        end
+      end
+
       private
 
       def ensure_path
@@ -113,12 +119,6 @@ module Gitlab
       def ensure_directory
         unless Dir.exist?(live_trace_default_directory)
           FileUtils.mkdir_p(live_trace_default_directory)
-        end
-      end
-
-      def current_path
-        @current_path ||= paths.find do |trace_path|
-          File.exist?(trace_path)
         end
       end
 
