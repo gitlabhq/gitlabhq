@@ -13,16 +13,18 @@ module QA
         visit current_url
       end
 
-      def wait(css = '.application', time: 60)
-        Time.now.tap do |start|
-          while Time.now - start < time
-            break if page.has_css?(css, wait: 5)
+      def wait(max: 60, time: 1, reload: true)
+        start = Time.now
 
-            refresh
-          end
+        while Time.now - start < max
+          return true if yield
+
+          sleep(time)
+
+          refresh if reload
         end
 
-        yield if block_given?
+        false
       end
 
       def scroll_to(selector, text: nil)
