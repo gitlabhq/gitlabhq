@@ -58,9 +58,10 @@ module UploadTask
 
       def migrate(batch_size, &block)
         each_upload_batch(batch_size) do |batch|
-          results = build_uploaders(batch)
-                      .map(&method(:process_uploader))
+          results = build_uploaders(batch).map(&method(:process_uploader))
+
           yield results # yield processed batch as [MigrationResult]
+
           @results.concat(results)
         end
       end
@@ -74,7 +75,7 @@ module UploadTask
           .where.not(store: @to_store)
           .where(uploader: @uploader_class.to_s,
                  model_type: @model_class.to_s)
-          .in_batches(of: batch_size, &block)
+          .in_batches(of: batch_size, &block) # rubocop: disable Cop/InBatches
       end
 
       def process_uploader(uploader)

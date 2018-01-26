@@ -5,7 +5,7 @@ describe 'gitlab:uploads rake tasks' do
     let!(:upload) { create(:upload, path: Rails.root.join('spec/fixtures/banana_sample.gif')) }
 
     before do
-      Rake.application.rake_require 'tasks/gitlab/uploads'
+      Rake.application.rake_require 'tasks/gitlab/uploads/check'
     end
 
     it 'outputs the integrity check for each uploaded file' do
@@ -33,7 +33,7 @@ describe 'gitlab:uploads rake tasks' do
     let(:batch_size) { 3 }
 
     before do
-      ENV['BATCH'] = batch_size.to_s
+      stub_env('BATCH', batch_size.to_s)
       stub_uploads_object_storage(uploader_class)
       Rake.application.rake_require 'tasks/gitlab/uploads/migrate'
     end
@@ -50,15 +50,15 @@ describe 'gitlab:uploads rake tasks' do
         batch_count = [batch_size, total].min
 
         expect { run }.to output(%r{Migrated #{batch_count}/#{batch_count} files}).to_stdout
-      end if success > 0
+      end if success > 0 # rubocop:disable Style/MultilineIfModifier
 
       it 'outputs the results for the task' do
         expect { run }.to output(%r{Migrated #{success}/#{total} files}).to_stdout
-      end if success > 0
+      end if success > 0 # rubocop:disable Style/MultilineIfModifier
 
       it 'outputs upload failures' do
         expect { run }.to output(/Error .* I am a teapot/).to_stdout
-      end if failures > 0
+      end if failures > 0 # rubocop:disable Style/MultilineIfModifier
     end
 
     it_behaves_like 'outputs correctly', success: 10
