@@ -94,23 +94,23 @@ export default class GroupFilterableList extends FilterableList {
     this.form.querySelector(`[name="${this.filterInputField}"]`).value = '';
   }
 
-  onFilterSuccess(data, xhr, queryData) {
+  onFilterSuccess(res, queryData) {
     const currentPath = this.getPagePath(queryData);
 
     const paginationData = {
-      'X-Per-Page': xhr.getResponseHeader('X-Per-Page'),
-      'X-Page': xhr.getResponseHeader('X-Page'),
-      'X-Total': xhr.getResponseHeader('X-Total'),
-      'X-Total-Pages': xhr.getResponseHeader('X-Total-Pages'),
-      'X-Next-Page': xhr.getResponseHeader('X-Next-Page'),
-      'X-Prev-Page': xhr.getResponseHeader('X-Prev-Page'),
+      'X-Per-Page': res.headers['x-per-page'],
+      'X-Page': res.headers['x-page'],
+      'X-Total': res.headers['x-total'],
+      'X-Total-Pages': res.headers['x-total-pages'],
+      'X-Next-Page': res.headers['x-next-page'],
+      'X-Prev-Page': res.headers['x-prev-page'],
     };
 
     window.history.replaceState({
       page: currentPath,
     }, document.title, currentPath);
 
-    eventHub.$emit('updateGroups', data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
+    eventHub.$emit('updateGroups', res.data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
     eventHub.$emit('updatePagination', paginationData);
   }
 }
