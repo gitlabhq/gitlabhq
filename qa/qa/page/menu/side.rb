@@ -7,6 +7,7 @@ module QA
           element :repository_link, "title: 'Repository'"
           element :pipelines_settings_link, "title: 'CI / CD'"
           element :top_level_items, '.sidebar-top-level-items'
+          element :activity_link, "title: 'Activity'"
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
@@ -48,6 +49,12 @@ module QA
         def within_sidebar
           page.within('.sidebar-top-level-items') do
             yield
+          end
+        end
+
+        def go_to_activity
+          within_sidebar do
+            click_on 'Activity'
           end
         end
 

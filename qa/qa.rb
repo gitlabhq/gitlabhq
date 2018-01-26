@@ -107,6 +107,7 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+      autoload :Activity, 'qa/page/project/activity'
 
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
