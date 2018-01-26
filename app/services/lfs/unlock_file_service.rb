@@ -20,7 +20,6 @@ module Lfs
 
     def unlock_file
       forced = params[:force] == true
-      lock = project.lfs_file_locks.find(params[:id])
 
       if lock.can_be_unlocked_by?(current_user, forced)
         lock.destroy!
@@ -31,6 +30,16 @@ module Lfs
       else
         error("#{lock.path} is locked by GitLab User #{lock.user_id}", 403)
       end
+    end
+
+    def lock
+      return @lock if defined?(@lock)
+
+      @lock = if params[:id].present?
+                project.lfs_file_locks.find(params[:id])
+              elsif params[:path].present?
+                project.lfs_file_locks.find_by!(path: params[:path])
+              end
     end
   end
 end
