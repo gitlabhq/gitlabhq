@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
+import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 
@@ -19,7 +20,7 @@ export default function initCompareAutocomplete() {
           },
         }).then(({ data }) => {
           callback(data);
-        }).catch(() => flash('Error fetching refs'));
+        }).catch(() => flash(__('Error fetching refs')));
       },
       selectable: true,
       filterable: true,

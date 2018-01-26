@@ -77,7 +77,7 @@ export default class Compare {
     }).then(({ data }) => {
       loading.hide();
       $target.html(data);
-      var className = '.' + $target[0].className.replace(' ', '.');
+      const className = '.' + $target[0].className.replace(' ', '.');
       localTimeAgo($('.js-timeago', className));
     });
   }

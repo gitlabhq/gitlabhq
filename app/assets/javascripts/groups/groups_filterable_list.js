@@ -1,6 +1,6 @@
 import FilterableList from '~/filterable_list';
 import eventHub from './event_hub';
-import { getParameterByName } from '../lib/utils/common_utils';
+import { normalizeHeaders, getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
   constructor({ form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField }) {
@@ -97,20 +97,11 @@ export default class GroupFilterableList extends FilterableList {
   onFilterSuccess(res, queryData) {
     const currentPath = this.getPagePath(queryData);
 
-    const paginationData = {
-      'X-Per-Page': res.headers['x-per-page'],
-      'X-Page': res.headers['x-page'],
-      'X-Total': res.headers['x-total'],
-      'X-Total-Pages': res.headers['x-total-pages'],
-      'X-Next-Page': res.headers['x-next-page'],
-      'X-Prev-Page': res.headers['x-prev-page'],
-    };
-
     window.history.replaceState({
       page: currentPath,
     }, document.title, currentPath);
 
     eventHub.$emit('updateGroups', res.data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
-    eventHub.$emit('updatePagination', paginationData);
+    eventHub.$emit('updatePagination', normalizeHeaders(res.headers));
   }
 }
