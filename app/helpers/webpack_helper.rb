@@ -2,7 +2,7 @@ require 'webpack/rails/manifest'
 
 module WebpackHelper
   def webpack_bundle_tag(bundle, force_same_domain: false)
-    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: true))
+    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: force_same_domain))
   end
 
   # override webpack-rails gem helper until changes can make it upstream
