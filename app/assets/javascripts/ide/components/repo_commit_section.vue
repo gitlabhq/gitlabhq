@@ -14,6 +14,16 @@ export default {
   directives: {
     tooltip,
   },
+  props: {
+    noChangesStateSvgPath: {
+      type: String,
+      required: true,
+    },
+    committedStateSvgPath: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       showNewBranchModal: false,
@@ -27,6 +37,7 @@ export default {
       'currentProjectId',
       'currentBranchId',
       'rightPanelCollapsed',
+      'lastCommitMsg',
     ]),
     ...mapGetters([
       'changedFiles',
@@ -36,6 +47,9 @@ export default {
     },
     commitMessageCount() {
       return this.commitMessage.length;
+    },
+    statusSvg() {
+      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
     },
   },
   methods: {
@@ -101,7 +115,12 @@ export default {
 </script>
 
 <template>
-  <div class="multi-file-commit-panel-section">
+  <div
+    class="multi-file-commit-panel-section"
+    :class="{
+      'multi-file-commit-empty-state-container': !changedFiles.length
+    }"
+  >
     <modal
       v-if="showNewBranchModal"
       :primary-button-label="__('Create new branch')"
@@ -118,54 +137,92 @@ you started editing. Would you like to create a new branch?`)"
       :collapsed="rightPanelCollapsed"
       @toggleCollapsed="toggleCollapsed"
     />
-    <form
-      class="form-horizontal multi-file-commit-form"
-      @submit.prevent="tryCommit"
-      v-if="!rightPanelCollapsed"
+    <template
+      v-if="changedFiles.length"
     >
-      <div class="multi-file-commit-fieldset">
-        <textarea
-          class="form-control multi-file-commit-message"
-          name="commit-message"
-          v-model="commitMessage"
-          placeholder="Commit message"
-        >
-        </textarea>
-      </div>
-      <div class="multi-file-commit-fieldset">
-        <label
-          v-tooltip
-          title="Create a new merge request with these changes"
-          data-container="body"
-          data-placement="top"
-        >
-          <input
-            type="checkbox"
-            v-model="startNewMR"
-          />
-          Merge Request
-        </label>
-        <button
-          type="submit"
-          :disabled="commitButtonDisabled"
-          class="btn btn-default btn-sm append-right-10 prepend-left-10"
-          :class="{ disabled: submitCommitsLoading }"
-        >
-          <i
-            v-if="submitCommitsLoading"
-            class="js-commit-loading-icon fa fa-spinner fa-spin"
-            aria-hidden="true"
-            aria-label="loading"
+      <form
+        class="form-horizontal multi-file-commit-form"
+        @submit.prevent="tryCommit"
+        v-if="!rightPanelCollapsed"
+      >
+        <div class="multi-file-commit-fieldset">
+          <textarea
+            class="form-control multi-file-commit-message"
+            name="commit-message"
+            v-model="commitMessage"
+            placeholder="Commit message"
           >
-          </i>
-          Commit
-        </button>
-        <div
-          class="multi-file-commit-message-count"
-        >
-          {{ commitMessageCount }}
+          </textarea>
+        </div>
+        <div class="multi-file-commit-fieldset">
+          <label
+            v-tooltip
+            title="Create a new merge request with these changes"
+            data-container="body"
+            data-placement="top"
+          >
+            <input
+              type="checkbox"
+              v-model="startNewMR"
+            />
+            {{ __('Merge Request') }}
+          </label>
+          <button
+            type="submit"
+            :disabled="commitButtonDisabled"
+            class="btn btn-default btn-sm append-right-10 prepend-left-10"
+            :class="{ disabled: submitCommitsLoading }"
+          >
+            <i
+              v-if="submitCommitsLoading"
+              class="js-commit-loading-icon fa fa-spinner fa-spin"
+              aria-hidden="true"
+              aria-label="loading"
+            >
+            </i>
+            {{ __('Commit') }}
+          </button>
+          <div
+            class="multi-file-commit-message-count"
+          >
+            {{ commitMessageCount }}
+          </div>
+        </div>
+      </form>
+    </template>
+    <div
+      v-else-if="!rightPanelCollapsed"
+      class="row js-empty-state"
+    >
+      <div class="col-xs-10 col-xs-offset-1">
+        <div class="svg-content svg-80">
+          <img :src="statusSvg" />
         </div>
       </div>
-    </form>
+      <div class="col-xs-10 col-xs-offset-1">
+        <div
+          class="text-content text-center"
+          v-if="!lastCommitMsg"
+        >
+          <h4>
+            {{ __('No changes') }}
+          </h4>
+          <p>
+            {{ __('Edit files in the editor and commit changes here') }}
+          </p>
+        </div>
+        <div
+          class="text-content text-center"
+          v-else
+        >
+          <h4>
+            {{ __('All changes are committed') }}
+          </h4>
+          <p>
+            {{ lastCommitMsg }}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
