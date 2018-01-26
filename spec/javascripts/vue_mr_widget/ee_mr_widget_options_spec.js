@@ -38,9 +38,7 @@ describe('ee merge request widget options', () => {
         ...mockData,
         sast: {
           base_path: 'path.json',
-          base_blob_path: 'blob_path',
           head_path: 'head_path.json',
-          head_blob_path: 'blob_path',
         },
       };
 
@@ -380,7 +378,6 @@ describe('ee merge request widget options', () => {
         ...mockData,
         sast_container: {
           path: 'gl-sast-container.json',
-          blob_path: 'blob_path',
         },
       };
 

@@ -232,7 +232,7 @@ export default {
     },
 
     fetchCodeQuality() {
-      const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
+      const { head_path, base_path } = this.mr.codeclimate;
 
       this.isLoadingCodequality = true;
 
@@ -241,7 +241,12 @@ export default {
         this.service.fetchReport(base_path),
       ])
         .then((values) => {
-          this.mr.compareCodeclimateMetrics(values[0], values[1], head_blob_path, base_blob_path);
+          this.mr.compareCodeclimateMetrics(
+            values[0],
+            values[1],
+            this.mr.headBlobPath,
+            this.mr.baseBlobPath,
+          );
           this.isLoadingCodequality = false;
         })
         .catch(() => {
@@ -286,9 +291,9 @@ export default {
           .then((values) => {
             this.handleSecuritySuccess({
               head: values[0],
-              headBlobPath: sast.head_blob_path,
+              headBlobPath: this.mr.headBlobPath,
               base: values[1],
-              baseBlobPath: sast.base_blob_path,
+              baseBlobPath: this.mr.baseBlobPath,
             });
           })
           .catch(() => this.handleSecurityError());
@@ -297,7 +302,7 @@ export default {
           .then((data) => {
             this.handleSecuritySuccess({
               head: data,
-              headBlobPath: sast.head_blob_path,
+              headBlobPath: this.mr.headBlobPath,
             });
           })
           .catch(() => this.handleSecurityError());

@@ -4,6 +4,11 @@ import { stripHtml } from '~/lib/utils/text_utility';
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
     super(data);
+
+    const blobPath = data.blob_path || {};
+    this.headBlobPath = blobPath.head || '';
+    this.baseBlobPath = blobPath.base || '';
+
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
     this.initSecurityReport(data);
