@@ -2,55 +2,7 @@ import Vue from 'vue';
 import eventHub from '~/issuable/related_issues/event_hub';
 import relatedIssuesBlock from '~/issuable/related_issues/components/related_issues_block.vue';
 
-const issuable1 = {
-  id: 200,
-  epic_issue_id: 1,
-  reference: 'foo/bar#123',
-  displayReference: '#123',
-  title: 'some title',
-  path: '/foo/bar/issues/123',
-  state: 'opened',
-};
-
-const issuable2 = {
-  id: 201,
-  epic_issue_id: 2,
-  reference: 'foo/bar#124',
-  displayReference: '#124',
-  title: 'some other thing',
-  path: '/foo/bar/issues/124',
-  state: 'opened',
-};
-
-const issuable3 = {
-  id: 202,
-  epic_issue_id: 3,
-  reference: 'foo/bar#125',
-  displayReference: '#125',
-  title: 'some other other thing',
-  path: '/foo/bar/issues/125',
-  state: 'opened',
-};
-
-const issuable4 = {
-  id: 203,
-  epic_issue_id: 4,
-  reference: 'foo/bar#126',
-  displayReference: '#126',
-  title: 'some other other other thing',
-  path: '/foo/bar/issues/126',
-  state: 'opened',
-};
-
-const issuable5 = {
-  id: 204,
-  epic_issue_id: 5,
-  reference: 'foo/bar#127',
-  displayReference: '#127',
-  title: 'some other other other thing',
-  path: '/foo/bar/issues/127',
-  state: 'opened',
-};
+import { issuable1, issuable2, issuable3, issuable4, issuable5 } from '../mock_data';
 
 describe('RelatedIssuesBlock', () => {
   let RelatedIssuesBlock;
