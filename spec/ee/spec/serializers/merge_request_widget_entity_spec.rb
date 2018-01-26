@@ -24,7 +24,7 @@ describe MergeRequestWidgetEntity do
     build = create(:ci_build, name: 'sast')
 
     allow(subject).to receive(:expose_sast_data?).and_return(true)
-    allow(merge_request).to receive(:sast_artifact).and_return(build)
+    allow(merge_request).to receive(:head_sast_artifact).and_return(build)
 
     expect(subject.as_json).to include(:sast)
   end

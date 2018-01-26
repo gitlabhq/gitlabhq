@@ -3,6 +3,16 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
+      expose :blob_path do
+        expose :head, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
+          project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
+        end
+
+        expose :base, if: -> (mr, _) { mr.base_pipeline_sha } do |merge_request|
+          project_blob_path(merge_request.project, merge_request.base_pipeline_sha)
+        end
+      end
+
       expose :codeclimate, if: -> (mr, _) { mr.has_codeclimate_data? } do
         expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_codeclimate_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
@@ -10,18 +20,10 @@ module EE
                                           path: Ci::Build::CODEQUALITY_FILE)
         end
 
-        expose :head_blob_path, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
-          project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
-        end
-
         expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_codeclimate_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.target_project,
                                           merge_request.base_codeclimate_artifact,
                                           path: Ci::Build::CODEQUALITY_FILE)
-        end
-
-        expose :base_blob_path, if: -> (mr, _) { mr.base_pipeline_sha } do |merge_request|
-          project_blob_path(merge_request.project, merge_request.base_pipeline_sha)
         end
       end
 
@@ -40,14 +42,16 @@ module EE
       end
 
       expose :sast, if: -> (mr, _) { expose_sast_data?(mr, current_user) } do
-        expose :path do |merge_request|
+        expose :head_path do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.sast_artifact,
+                                          merge_request.head_sast_artifact,
                                           path: Ci::Build::SAST_FILE)
         end
 
-        expose :blob_path, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
-          project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
+        expose :base_path, if: -> (mr, _) { mr.has_base_sast_data? } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_sast_artifact,
+                                          path: Ci::Build::SAST_FILE)
         end
       end
 
@@ -56,10 +60,6 @@ module EE
           raw_project_build_artifacts_url(merge_request.source_project,
                                           merge_request.sast_container_artifact,
                                           path: Ci::Build::SAST_CONTAINER_FILE)
-        end
-
-        expose :blob_path, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
-          project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
         end
       end
 

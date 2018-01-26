@@ -13,7 +13,8 @@ module EE
       delegate :codeclimate_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :performance_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :performance_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
-      delegate :sast_artifact, to: :head_pipeline, allow_nil: true
+      delegate :sast_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+      delegate :sast_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :sast_container_artifact, to: :head_pipeline, allow_nil: true
       delegate :dast_artifact, to: :head_pipeline, allow_nil: true
       delegate :sha, to: :head_pipeline, prefix: :head_pipeline, allow_nil: true
@@ -47,7 +48,11 @@ module EE
     end
 
     def has_sast_data?
-      sast_artifact&.success?
+      head_sast_artifact&.success?
+    end
+
+    def has_base_sast_data?
+      base_sast_artifact&.success?
     end
 
     def has_sast_container_data?

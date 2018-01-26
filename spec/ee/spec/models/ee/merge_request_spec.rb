@@ -173,8 +173,12 @@ describe MergeRequest do
     end
   end
 
-  describe '#sast_artifact' do
-    it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline) }
+  describe '#head_sast_artifact' do
+    it { is_expected.to delegate_method(:head_sast_artifact).to(:head_pipeline) }
+  end
+
+  describe '#base_sast_artifact' do
+    it { is_expected.to delegate_method(:base_sast_artifact).to(:base_pipeline) }
   end
 
   describe '#has_sast_data?' do
