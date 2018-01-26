@@ -16,5 +16,33 @@ unless Rails.env.production?
     task :javascript do
       Rake::Task['eslint'].invoke
     end
+
+    desc "GitLab | lint | Run several lint checks"
+    task :all do
+      status = 0
+      original_stdout = $stdout
+
+      %w[
+        config_lint
+        haml_lint
+        scss_lint
+        flay
+        gettext:lint
+        lint:static_verification
+      ].each do |task|
+        begin
+          $stdout = StringIO.new
+          Rake::Task[task].invoke
+        rescue RuntimeError, SystemExit => ex
+          raise ex if ex.is_a?(RuntimeError) && task != 'haml_lint'
+          original_stdout << $stdout.string
+          status = 1
+        ensure
+          $stdout = original_stdout
+        end
+      end
+
+      exit status
+    end
   end
 end
