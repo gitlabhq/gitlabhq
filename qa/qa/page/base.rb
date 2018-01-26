@@ -13,13 +13,13 @@ module QA
         visit current_url
       end
 
-      def wait(max: 60, time: 1, reload: true)
+      def wait(max: 60, sleep_time: 1, reload: true)
         start = Time.now
 
         while Time.now - start < max
           return true if yield
 
-          sleep(time)
+          sleep(sleep_time)
 
           refresh if reload
         end
