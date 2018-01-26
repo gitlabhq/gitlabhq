@@ -278,6 +278,17 @@ ActiveRecord::Schema.define(version: 20180201101405) do
 
   add_index "broadcast_messages", ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id", using: :btree
 
+  create_table "callouts", force: :cascade do |t|
+    t.string "feature_name", null: false
+    t.boolean "dismissed_state", null: false
+    t.integer "user_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "callouts", ["feature_name"], name: "index_callouts_on_feature_name", unique: true, using: :btree
+  add_index "callouts", ["user_id"], name: "index_callouts_on_user_id", using: :btree
+
   create_table "chat_names", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "service_id", null: false
@@ -2442,6 +2453,7 @@ ActiveRecord::Schema.define(version: 20180201101405) do
   add_foreign_key "board_labels", "labels", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
+  add_foreign_key "callouts", "users", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_build_trace_section_names", column: "section_name_id", name: "fk_264e112c66", on_delete: :cascade
