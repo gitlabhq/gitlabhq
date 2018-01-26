@@ -73,7 +73,7 @@ export default class FilterableList {
   }
 
   onFilterSuccess(response, queryData) {
-    if (response.html) {
+    if (response.data.html) {
       this.listHolderElement.innerHTML = response.data.html;
     }
 
