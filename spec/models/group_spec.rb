@@ -550,7 +550,7 @@ describe Group do
 
     context 'when the ref is a protected branch' do
       before do
-        create(:protected_branch, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -558,7 +558,7 @@ describe Group do
 
     context 'when the ref is a protected tag' do
       before do
-        create(:protected_tag, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -571,6 +571,10 @@ describe Group do
       let(:variable_child)   { create(:ci_group_variable, group: group_child) }
       let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
       let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
+
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
 
       it 'returns all variables belong to the group and parent groups' do
         expected_array1 = [protected_variable, secret_variable]
