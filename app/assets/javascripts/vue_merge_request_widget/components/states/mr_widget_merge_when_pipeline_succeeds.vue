@@ -84,15 +84,9 @@
     <div class="media-body">
       <h4 class="flex-container-block">
         <span class="append-right-10">
-<<<<<<< HEAD
-          Set by
-          <mr-widget-author :author="mr.setToMWPSBy" />
-          to be merged automatically when the pipeline succeeds
-=======
           {{ s__("mrWidget|Set by") }}
           <mr-widget-author :author="mr.setToMWPSBy" />
           {{ s__("mrWidget|to be merged automatically when the pipeline succeeds") }}
->>>>>>> upstream/master
         </span>
         <a
           v-if="mr.canCancelAutomaticMerge"
