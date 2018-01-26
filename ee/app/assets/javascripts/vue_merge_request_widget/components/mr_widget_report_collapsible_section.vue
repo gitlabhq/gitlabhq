@@ -5,7 +5,7 @@
   import issuesBlock from './mr_widget_report_issues.vue';
 
   export default {
-    name: 'MRWidgetCodeQuality',
+    name: 'MRWidgetCodeQualityCollapsible',
     components: {
       issuesBlock,
       loadingIcon,
@@ -49,6 +49,11 @@
         required: false,
         default: () => [],
       },
+      allIssues: {
+        type: Array,
+        required: false,
+        default: () => [],
+      },
       infoText: {
         type: String,
         required: false,
@@ -64,6 +69,7 @@
       return {
         collapseText: 'Expand',
         isCollapsed: true,
+        isFullReportVisible: false,
       };
     },
 
@@ -84,7 +90,9 @@
         return 'success';
       },
       hasIssues() {
-        return this.unresolvedIssues.length || this.resolvedIssues.length;
+        return this.unresolvedIssues.length ||
+          this.resolvedIssues.length ||
+          this.allIssues.length;
       },
     },
 
@@ -95,6 +103,9 @@
         const text = this.isCollapsed ? 'Expand' : 'Collapse';
         this.collapseText = text;
       },
+      toggleFullReport() {
+        this.isFullReportVisible = !this.isFullReportVisible;
+      }
     },
   };
 </script>
@@ -172,6 +183,26 @@
         :issues="resolvedIssues"
         :has-priority="hasPriority"
       />
+
+      <template v-if="allIssues.length">
+        <button
+          type="button"
+          class="btn-link"
+          @click="toggleFullReport"
+        >
+          Show complete code vulnerabilities report
+        </button>
+
+        <issues-block
+          class="js-mr-code-resolved-issues"
+          v-if="isFullReportVisible"
+          :type="type"
+          status="failed"
+          :issues="allIssues"
+          :has-priority="hasPriority"
+        />
+
+      </template>
     </div>
     <div
       v-else-if="loadingFailed"

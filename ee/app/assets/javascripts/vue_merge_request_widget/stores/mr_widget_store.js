@@ -71,6 +71,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.securityReport = {
       newIssues: [],
       resolvedIssues: [],
+      allIssues: [],
     };
   }
 
@@ -92,6 +93,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     if (data.base) {
       const parsedHead = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
       const parsedBase = MergeRequestStore.parseIssues(data.base, data.baseBlobPath);
+
+      this.securityReport.allIssues = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
 
       this.securityReport.newIssues = MergeRequestStore.filterByKey(
         parsedHead,
