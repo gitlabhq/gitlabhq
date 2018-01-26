@@ -77,7 +77,7 @@ module EE
     def expose_sast_data?(mr, current_user)
       mr.project.feature_available?(:sast) &&
         mr.has_sast_data? &&
-        can?(current_user, :read_build, mr.sast_artifact)
+        can?(current_user, :read_build, mr.head_sast_artifact)
     end
 
     def expose_performance_data?(mr)
