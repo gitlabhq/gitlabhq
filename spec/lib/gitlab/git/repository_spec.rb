@@ -1790,6 +1790,44 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#write_config' do
+    before do
+      repository.rugged.config["gitlab.fullpath"] = repository.path
+    end
+
+    shared_examples 'writing repo config' do
+      context 'is given a path' do
+        it 'writes it to disk' do
+          repository.write_config(full_path: "not-the/real-path.git")
+
+          config = File.read(File.join(repository.path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = not-the/real-path.git")
+        end
+      end
+
+      context 'it is given an empty path' do
+        it 'does not write it to disk' do
+          repository.write_config(full_path: "")
+
+          config = File.read(File.join(repository.path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = #{repository.path}")
+        end
+      end
+    end
+
+    context "when gitaly_write_config is enabled" do
+      it_behaves_like "writing repo config"
+    end
+
+    context "when gitaly_write_config is disabled", :disable_gitaly do
+      it_behaves_like "writing repo config"
+    end
+  end
+
   describe '#merge' do
     let(:repository) do
       Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')

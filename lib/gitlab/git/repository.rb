@@ -1311,7 +1311,15 @@ module Gitlab
       # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
-        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
+        return unless full_path.present?
+
+        gitaly_migrate(:write_config) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.write_config(full_path: full_path)
+          else
+            rugged_write_config(full_path: full_path)
+          end
+        end
       end
 
       def gitaly_repository
@@ -1449,6 +1457,10 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
+      end
+
+      def rugged_write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path
       end
 
       def shell_write_ref(ref_path, ref, old_ref)
