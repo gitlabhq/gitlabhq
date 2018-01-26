@@ -178,7 +178,9 @@ describe('Multi-file store actions', () => {
 
     it('calls service', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '123' },
+        data: {
+          commit: { id: '123' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -192,7 +194,9 @@ describe('Multi-file store actions', () => {
 
     it('returns true if current ref does not equal returned ID', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '123' },
+        data: {
+          commit: { id: '123' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -206,7 +210,9 @@ describe('Multi-file store actions', () => {
 
     it('returns false if current ref equals returned ID', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '1' },
+        data: {
+          commit: { id: '1' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
