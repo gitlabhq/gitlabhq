@@ -297,4 +297,8 @@ class Service < ActiveRecord::Base
       project.cache_has_external_wiki
     end
   end
+
+  def valid_recipients?
+    activated? && !importing?
+  end
 end

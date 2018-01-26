@@ -49,7 +49,7 @@ describe RepositoryImportWorker do
 
         expect do
           subject.perform(project.id)
-        end.to raise_error(StandardError, error)
+        end.to raise_error(RuntimeError, error)
         expect(project.reload.import_jid).not_to be_nil
       end
 
@@ -61,7 +61,7 @@ describe RepositoryImportWorker do
 
         expect do
           subject.perform(project.id)
-        end.to raise_error(StandardError, error)
+        end.to raise_error(RuntimeError, error)
 
         expect(project.reload.import_error).not_to be_nil
       end
