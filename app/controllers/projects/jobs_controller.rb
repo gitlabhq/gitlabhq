@@ -1,4 +1,6 @@
 class Projects::JobsController < Projects::ApplicationController
+  include SendFileUpload
+
   before_action :build, except: [:index, :cancel_all]
 
   before_action :authorize_read_build!,
@@ -117,11 +119,24 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    build.trace.read do |stream|
-      if stream.file?
-        send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-      else
-        render_404
+    if trace_artifact
+      send_upload(trace_artifact.file,
+        send_params:
+          {
+            type: 'text/plain; charset=utf-8',
+            disposition: 'inline'
+          },
+        redirect_params:
+          {
+            query: { "response-content-disposition" => "inline" }
+          } )
+    else
+      build.trace.read do |stream|
+        if stream.file?
+          send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+        else
+          render_404
+        end
       end
     end
   end
@@ -143,5 +158,9 @@ class Projects::JobsController < Projects::ApplicationController
 
   def build_path(build)
     project_job_path(build.project, build)
+  end
+
+  def trace_artifact
+    build.job_artifacts_trace
   end
 end
