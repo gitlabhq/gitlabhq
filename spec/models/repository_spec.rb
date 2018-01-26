@@ -1179,6 +1179,15 @@ describe Repository do
     end
   end
 
+  describe '#tag_exists?' do
+    it 'uses tag_names' do
+      allow(repository).to receive(:tag_names).and_return(['foobar'])
+
+      expect(repository.tag_exists?('foobar')).to eq(true)
+      expect(repository.tag_exists?('master')).to eq(false)
+    end
+  end
+
   describe '#branch_names', :use_clean_rails_memory_store_caching do
     let(:fake_branch_names) { ['foobar'] }
 
