@@ -1,6 +1,8 @@
 module API
   module Helpers
     module InternalHelpers
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :redirected_path
 
       def wiki?
@@ -65,13 +67,15 @@ module API
       end
 
       def project_namespace
-        @project_namespace ||= project&.namespace || Namespace.find_by_full_path(project_match[:namespace_path])
+        strong_memoize(:project_namespace) do
+          project&.namespace || Namespace.find_by_full_path(project_match[:namespace_path])
+        end
       end
 
       private
 
       def project_match
-        @project_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex)
+        @project_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex) || {}
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables

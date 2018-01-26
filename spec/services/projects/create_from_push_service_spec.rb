@@ -23,7 +23,7 @@ describe Projects::CreateFromPushService do
   context 'when user is nil' do
     let(:user) { nil }
 
-    subject { described_class.new(user, project_path, namespace, cmd, protocol) }
+    subject { described_class.new(user, project_path, namespace, protocol) }
 
     it 'returns nil' do
       expect_any_instance_of(Projects::CreateService).not_to receive(:execute)

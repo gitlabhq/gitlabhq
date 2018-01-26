@@ -134,12 +134,12 @@ describe 'Git HTTP requests' do
             end.to change { user.projects.count }.by(1)
           end
 
-          it 'rejects upload with 404 Not Found when project is invalid' do
+          it 'rejects push with 422 Unprocessable Entity when project is invalid' do
             path = "#{user.namespace.path}/new.git"
 
-            upload(path, user: user.username, password: user.password) do |response|
-              expect(response).to have_gitlab_http_status(:not_found)
-            end
+            push_get(path, user: user.username, password: user.password)
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
         end
       end

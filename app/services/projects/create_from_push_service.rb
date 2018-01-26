@@ -15,7 +15,7 @@ module Projects
       project = Projects::CreateService.new(user, project_params).execute
 
       if project.saved?
-        Gitlab::Checks::ProjectCreated.new(user, project, protocol).add_project_created_message
+        Gitlab::Checks::ProjectCreated.new(project, user, protocol).add_message
       else
         raise Gitlab::GitAccess::ProjectCreationError, "Could not create project: #{project.errors.full_messages.join(', ')}"
       end

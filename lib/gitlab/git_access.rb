@@ -19,8 +19,7 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
-      namespace_not_found: 'The namespace you were looking for could not be found.'
+      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -53,7 +52,6 @@ module Gitlab
         check_download_access!
       when *PUSH_COMMANDS
         check_push_access!(cmd, changes)
-        check_namespace_accessibility!
       end
 
       true
@@ -100,7 +98,7 @@ module Gitlab
     end
 
     def check_project_accessibility!(cmd)
-      if (project.blank? || !can_read_project?) && !can_create_project_in_namespace?(cmd)
+      unless can_create_project_in_namespace?(cmd) || can_read_project?
         raise NotFoundError, ERROR_MESSAGES[:project_not_found]
       end
     end
@@ -108,12 +106,12 @@ module Gitlab
     def check_project_moved!
       return if redirected_path.nil?
 
-      project_moved = Checks::ProjectMoved.new(project, user, redirected_path, protocol)
+      project_moved = Checks::ProjectMoved.new(project, user, protocol, redirected_path)
 
       if project_moved.permanent_redirect?
-        project_moved.add_redirect_message
+        project_moved.add_message
       else
-        raise ProjectMovedError, project_moved.redirect_message(rejected: true)
+        raise ProjectMovedError, project_moved.message(rejected: true)
       end
     end
 
@@ -144,16 +142,8 @@ module Gitlab
     end
 
     def check_repository_existence!(cmd)
-      if (project.blank? || !project.repository.exists?) && !can_create_project_in_namespace?(cmd)
+      unless can_create_project_in_namespace?(cmd) || project.repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
-      end
-    end
-
-    def check_namespace_accessibility!
-      return unless project.blank?
-
-      unless target_namespace
-        raise NotFoundError, ERROR_MESSAGES[:namespace_not_found]
       end
     end
 
@@ -170,14 +160,14 @@ module Gitlab
     end
 
     def check_push_access!(cmd, changes)
-      return if project.blank? && can_create_project_in_namespace?(cmd)
+      if Gitlab::Database.read_only?
+        raise UnauthorizedError, push_to_read_only_message
+      end
+
+      return if can_create_project_in_namespace?(cmd)
 
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
-      end
-
-      if Gitlab::Database.read_only?
-        raise UnauthorizedError, push_to_read_only_message
       end
 
       if deploy_key
@@ -249,7 +239,7 @@ module Gitlab
     end
 
     def can_create_project_in_namespace?(cmd)
-      return false unless push?(cmd) && target_namespace
+      return false unless push?(cmd) && target_namespace && project.blank?
 
       user.can?(:create_projects, target_namespace)
     end
