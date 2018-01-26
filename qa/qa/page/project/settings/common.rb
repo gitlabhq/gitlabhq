@@ -14,7 +14,7 @@ module QA
           def expand_section(name)
             page.within('#content-body') do
               page.within('section', text: name) do
-                click_button 'Expand'
+                click_button 'Expand' unless first('button', text: 'Collapse')
 
                 yield
               end

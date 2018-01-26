@@ -9,6 +9,10 @@ module QA
           element :top_level_items, '.sidebar-top-level-items'
         end
 
+        view 'app/assets/javascripts/fly_out_nav.js' do
+          element :fly_out, "classList.add('fly-out-list')"
+        end
+
         def click_repository_settings
           hover_settings do
             within_submenu do
