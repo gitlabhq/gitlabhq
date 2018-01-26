@@ -16,7 +16,7 @@ module FixtureHelpers
   end
 
   def expand_fixture_ee_path(filename)
-    File.expand_path(Rails.root.join('spec/ee/fixtures/', filename))
+    File.expand_path(Rails.root.join('ee/spec/fixtures/', filename))
   end
 end
 

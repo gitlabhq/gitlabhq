@@ -136,7 +136,7 @@ learn more.
 
 ## EE-specific tests
 
-EE-specific tests follows the same organization, but under the `spec/ee` folder.
+EE-specific tests follows the same organization, but under the `ee/spec` folder.
 
 ## How to test at the correct level?
 
