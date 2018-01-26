@@ -3,12 +3,12 @@ class CreateLfsFileLocks < ActiveRecord::Migration
 
   def change
     create_table :lfs_file_locks do |t|
-      t.references :project, null: false, index: true, foreign_key: { on_delete: :cascade }
+      t.references :project, null: false, foreign_key: { on_delete: :cascade }
       t.references :user, null: false, index: true, foreign_key: { on_delete: :cascade }
-      t.string :path
       t.datetime :created_at, null: false
+      t.string :path, limit: 65500
     end
 
-    add_index :lfs_file_locks, [:path, :project_id], unique: true
+    add_index :lfs_file_locks, [:project_id, :path], unique: true
   end
 end

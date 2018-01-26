@@ -9,7 +9,7 @@ module Lfs
 
       create_lock!
     rescue ActiveRecord::RecordNotUnique
-      error('already created lock', 409, current_lock)
+      error('already locked', 409, current_lock)
     rescue Gitlab::GitAccess::UnauthorizedError => ex
       error(ex.message, 403)
     rescue => ex

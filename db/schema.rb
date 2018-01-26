@@ -1305,12 +1305,11 @@ ActiveRecord::Schema.define(version: 20180204200836) do
   create_table "lfs_file_locks", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "user_id", null: false
-    t.string "path"
     t.datetime "created_at", null: false
+    t.string "path", limit: 65500
   end
 
-  add_index "lfs_file_locks", ["path", "project_id"], name: "index_lfs_file_locks_on_path_and_project_id", unique: true, using: :btree
-  add_index "lfs_file_locks", ["project_id"], name: "index_lfs_file_locks_on_project_id", using: :btree
+  add_index "lfs_file_locks", ["project_id", "path"], name: "index_lfs_file_locks_on_project_id_and_path", unique: true, using: :btree
   add_index "lfs_file_locks", ["user_id"], name: "index_lfs_file_locks_on_user_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|

@@ -52,7 +52,7 @@ describe 'Git LFS File Locking API' do
         expect(response).to have_gitlab_http_status(409)
 
         expect(json_response.keys).to match_array(%w(lock message documentation_url))
-        expect(json_response['message']).to match(/already created lock/)
+        expect(json_response['message']).to match(/already locked/)
       end
 
       it 'returns the existen lock' do
