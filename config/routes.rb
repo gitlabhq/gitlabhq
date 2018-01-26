@@ -105,6 +105,11 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
+  # Callouts
+  namespace :callouts do
+    post :dismiss
+  end
+
   draw :google_api
   draw :import
   draw :uploads
