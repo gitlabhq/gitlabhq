@@ -108,7 +108,7 @@ Primary buttons communicate the main call to action. There should only be one ca
 ![Primary button example](img/button-primary.png)
 
 #### Secondary
-Secondary buttons are for alternative commands. They should be conveyed by a button with an stroke, and no background fill.
+Secondary buttons are for alternative commands. They should be conveyed by a button with a stroke, and no background fill.
 
 ![Secondary button example](img/button-secondary.png)
 
@@ -181,7 +181,7 @@ A count element is used in navigation contexts where it is helpful to indicate t
 
 ## Lists
 
-Lists are used where ever there is a single column of information to display. Ths [issues list](https://gitlab.com/gitlab-org/gitlab-ce/issues) is an example of a important list in the GitLab UI.
+Lists are used where ever there is a single column of information to display. Ths [issues list](https://gitlab.com/gitlab-org/gitlab-ce/issues) is an example of an important list in the GitLab UI.
 
 ### Types
 
@@ -269,7 +269,7 @@ Modals are only used for having a conversation and confirmation with the user. T
 * Modals contain the header, body, and actions.
   * **Header(1):** The header title is a question instead of a descriptive phrase.
   * **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
-  * **Actions(3):** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
+  * **Actions(3):** Contains an affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
 * Confirmations regarding labels should keep labeling styling.
 * References to commits, branches, and tags should be **monospaced**.
 

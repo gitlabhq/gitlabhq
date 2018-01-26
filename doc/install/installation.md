@@ -431,7 +431,7 @@ GitLab Shell is an SSH access and repository management software developed speci
 **Note:** GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several manners:
 
 * Export `RUBYOPT=--disable-gems` environment variable for the processes
-* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommened for system-wide Ruby.
+* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommended for system-wide Ruby.
 * Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707)
 
 ### Install gitlab-workhorse
@@ -442,7 +442,7 @@ which is the recommended location.
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
-You can specify a different Git repository by providing it as an extra paramter:
+You can specify a different Git repository by providing it as an extra parameter:
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 
@@ -486,7 +486,7 @@ Make GitLab start on boot:
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
-You can specify a different Git repository by providing it as an extra paramter:
+You can specify a different Git repository by providing it as an extra parameter:
 
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
 
@@ -656,7 +656,7 @@ Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-
 
 ### Adding your Trusted Proxies
 
-If you are using a reverse proxy on an separate machine, you may want to add the
+If you are using a reverse proxy on a separate machine, you may want to add the
 proxy to the trusted proxies list. Otherwise users will appear signed in from the
 proxy's IP address.
 

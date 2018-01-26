@@ -46,7 +46,7 @@ module EE
           def ldap_attributes(config)
             attributes = super + [
               'memberof',
-              config.sync_ssh_keys
+              (config.sync_ssh_keys if config.sync_ssh_keys.is_a?(String))
             ]
             attributes.compact.uniq
           end

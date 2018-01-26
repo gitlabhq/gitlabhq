@@ -5,6 +5,8 @@ feature 'Multi-file editor new directory', :js do
   let(:project) { create(:project, :repository) }
 
   before do
+    stub_licensed_features(ide: true)
+
     project.add_master(user)
     sign_in(user)
 
@@ -45,8 +47,6 @@ feature 'Multi-file editor new directory', :js do
     end
 
     wait_for_requests
-
-    find('.multi-file-commit-panel-collapse-btn').click
 
     fill_in('commit-message', with: 'commit message ide')
 

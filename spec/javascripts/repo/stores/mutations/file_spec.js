@@ -117,7 +117,7 @@ describe('Multi-file store file mutations', () => {
 
   describe('CREATE_TMP_FILE', () => {
     it('adds file into parent tree', () => {
-      const f = file();
+      const f = file('tmpFile');
 
       mutations.CREATE_TMP_FILE(localState, {
         file: f,

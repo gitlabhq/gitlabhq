@@ -1,0 +1,5 @@
+---
+title: Fixed membership Lock should propagate from parent group to sub-groups
+merge_request: 4111
+author:
+type: fixed

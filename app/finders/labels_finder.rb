@@ -71,7 +71,7 @@ class LabelsFinder < UnionFinder
   end
 
   def projects?
-    params[:project_ids].present?
+    params[:project_ids]
   end
 
   def only_group_labels?

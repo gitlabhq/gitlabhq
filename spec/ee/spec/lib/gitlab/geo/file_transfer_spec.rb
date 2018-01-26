@@ -13,7 +13,7 @@ describe Gitlab::Geo::FileTransfer do
         expect(subject.file_id).to eq(upload.id)
         expect(subject.filename).to eq(AvatarUploader.absolute_path(upload))
         expect(Pathname.new(subject.filename).absolute?).to be_truthy
-        expect(subject.request_data).to eq({ id: upload.id,
+        expect(subject.request_data).to eq({ id: upload.model_id,
                                              type: 'User',
                                              checksum: upload.checksum })
       end

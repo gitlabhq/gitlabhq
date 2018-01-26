@@ -180,7 +180,7 @@ const Api = {
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {
     const url = Api.buildUrl(Api.issuableTemplatePath)
-      .replace(':key', key)
+      .replace(':key', encodeURIComponent(key))
       .replace(':type', type)
       .replace(':project_path', projectPath)
       .replace(':namespace_path', namespacePath);
@@ -245,6 +245,7 @@ const Api = {
         (jqXHR, textStatus, errorThrown) => {
           const error = new Error(`${options.url}: ${errorThrown}`);
           error.textStatus = textStatus;
+          if (jqXHR && jqXHR.responseJSON) error.responseJSON = jqXHR.responseJSON;
           reject(error);
         },
       );

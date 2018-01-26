@@ -202,6 +202,7 @@ module ApplicationSettingsHelper
       :metrics_sample_interval,
       :metrics_timeout,
       :password_authentication_enabled_for_web,
+      :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
       :plantuml_enabled,

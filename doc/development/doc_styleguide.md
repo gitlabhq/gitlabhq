@@ -201,7 +201,7 @@ You can combine one or more of the following:
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
-- Compress gifs with <https://ezgif.com/optimize> or similar toll.
+- Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
 of a process, not to _replace_ it.
 
@@ -420,7 +420,7 @@ the style below as a guide:
 In this case:
 
 - before each step list the installation method is declared in bold
-- three dashes (`---`) are used to create an horizontal line and separate the
+- three dashes (`---`) are used to create a horizontal line and separate the
   two methods
 - the code blocks are indented one or more spaces under the list item to render
   correctly

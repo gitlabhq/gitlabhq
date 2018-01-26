@@ -314,8 +314,8 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $common-gray-dark);
-    border-color: $common-gray-light;
+    @include status-color($gray-dark, $gray, $gray-darkest);
+    border-color: $gray-darkest;
   }
 }
 
@@ -339,8 +339,8 @@
 
   &.invalid {
     svg {
-      border: 1px solid $common-gray-light;
-      fill: $common-gray-light;
+      border: 1px solid $gray-darkest;
+      fill: $gray-darkest;
     }
   }
 

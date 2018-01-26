@@ -59,7 +59,7 @@ describe API::Jobs do
         expect(json_job['pipeline']['status']).to eq job.pipeline.status
       end
 
-      it 'avoids N+1 queries', skip_before_request: true do
+      it 'avoids N+1 queries', :skip_before_request do
         first_build = create(:ci_build, :artifacts, pipeline: pipeline)
         first_build.runner = create(:ci_runner)
         first_build.user = create(:user)

@@ -258,7 +258,7 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
->**Note:** The `cache:key` variable cannot contain the `/` character.
+>**Note:** The `cache:key` variable cannot contain the `/` character, or the equivalent URI encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
 
 ---
 
@@ -1293,7 +1293,7 @@ to the CI pipeline:
 ```yaml
 variables:
   GIT_STRATEGY: clone
-  GIT_CHECKOUT: false
+  GIT_CHECKOUT: "false"
 script:
   - git checkout master
   - git merge $CI_BUILD_REF_NAME

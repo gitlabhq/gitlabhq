@@ -1,0 +1,12 @@
+- return unless @group&.feature_available?(:epics) || @project&.group&.feature_available?(:epics)
+
+.block.epic
+  .title
+    Epic
+    %span.js-epic-label-loading{ "v-if" => "issue.isFetching && issue.isFetching.epic" }
+      = icon('spinner spin', class: 'loading-icon')
+  .value.js-epic-label{ "v-if" => "issue.isFetching && !issue.isFetching.epic" }
+    %a.bold{ "v-if" => "issue.epic", ":href" => "issue.epic.url" }
+      {{ issue.epic.title }}
+    .no-value{ "v-if" => "!issue.epic" }
+      None

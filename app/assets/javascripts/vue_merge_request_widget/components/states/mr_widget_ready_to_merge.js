@@ -3,7 +3,7 @@ import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
 import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
 
 export default {
@@ -170,7 +170,7 @@ export default {
             // If state is merged we should update the widget and stop the polling
             eventHub.$emit('MRWidgetUpdateRequested');
             eventHub.$emit('FetchActionsContent');
-            MergeRequest.updateStatusText('status-box-open', 'status-box-merged', 'Merged');
+            MergeRequest.setStatusBoxToMerged();
             MergeRequest.hideCloseButton();
             MergeRequest.decreaseCounter();
             stopPolling();

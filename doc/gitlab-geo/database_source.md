@@ -33,9 +33,8 @@ recover. See below for more details.
 
 The following guide assumes that:
 
-- You are using PostgreSQL 9.6 or later
-  which includes the
-  [`pg_basebackup` tool][pgback] and improved [Foreign Data Wrapper][FDW] support. 
+- You are using PostgreSQL 9.6 or later which includes the
+  [`pg_basebackup` tool][pgback] and improved [Foreign Data Wrapper][FDW] support.
 - You have a primary node already set up (the GitLab server you are
   replicating from), running PostgreSQL 9.6 or later, and
   you have a new secondary server set up with the same versions of the OS,
@@ -290,6 +289,9 @@ node.
     sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "CREATE SCHEMA gitlab_secondary;"
     sudo -u postgres psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO $(GEO_DB_USER);"
     ```
+
+    And edit the content of `database_geo.yml` and to add `fdw: true` to
+    the  `production:` block.
 
 ### Step 4. Initiate the replication process
 

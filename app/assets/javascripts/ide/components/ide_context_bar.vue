@@ -10,6 +10,16 @@
       icon,
       panelResizer,
     },
+    props: {
+      noChangesStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      committedStateSvgPath: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return {
         width: 290,
@@ -46,6 +56,11 @@
           collapsed: !this.rightPanelCollapsed,
         });
       },
+      toggleFullbarCollapsed() {
+        if (this.rightPanelCollapsed) {
+          this.toggleCollapsed();
+        }
+      },
       resizingStarted() {
         this.setResizingStatus(true);
       },
@@ -63,8 +78,11 @@
       'is-collapsed': rightPanelCollapsed,
     }"
     :style="panelStyle"
+    @click="toggleFullbarCollapsed"
   >
-    <div class="multi-file-commit-panel-section">
+    <div
+      class="multi-file-commit-panel-section"
+    >
       <header
         class="multi-file-commit-panel-header"
         :class="{
@@ -75,16 +93,20 @@
           class="multi-file-commit-panel-header-title"
           v-if="!rightPanelCollapsed"
         >
-          <icon
-            name="list-bulleted"
-            :size="18"
-          />
-          Staged
+          <div
+            v-if="changedFiles.length"
+          >
+            <icon
+              name="list-bulleted"
+              :size="18"
+            />
+            Staged
+          </div>
         </div>
         <button
           type="button"
           class="btn btn-transparent multi-file-commit-panel-collapse-btn"
-          @click="toggleCollapsed"
+          @click.stop="toggleCollapsed"
         >
           <icon
             :name="currentIcon"
@@ -92,7 +114,10 @@
           />
         </button>
       </header>
-      <repo-commit-section />
+      <repo-commit-section
+        :no-changes-state-svg-path="noChangesStateSvgPath"
+        :committed-state-svg-path="committedStateSvgPath"
+      />
     </div>
     <panel-resizer
       :size.sync="width"

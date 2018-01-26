@@ -1,5 +1,0 @@
----
-title: Execute quick actions (if present) when creating MR from issue
-merge_request: 15810
-author:
-type: fixed

@@ -374,15 +374,27 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(400)
       end
 
-      context 'when target_branch is specified' do
+      context 'when target_branch and target_project_id is specified' do
+        let(:params) do
+          { title: 'Test merge_request',
+            target_branch: 'master',
+            source_branch: 'markdown',
+            author: user2,
+            target_project_id: unrelated_project.id }
+        end
+
         it 'returns 422 if targeting a different fork' do
-          post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
-               title: 'Test merge_request',
-               target_branch: 'master',
-               source_branch: 'markdown',
-               author: user2,
-               target_project_id: unrelated_project.id
+          unrelated_project.add_developer(user2)
+
+          post v3_api("/projects/#{forked_project.id}/merge_requests", user2), params
+
           expect(response).to have_gitlab_http_status(422)
+        end
+
+        it 'returns 403 if targeting a different fork which user can not access' do
+          post v3_api("/projects/#{forked_project.id}/merge_requests", user2), params
+
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 

@@ -38,7 +38,7 @@ describe('Dashboard', () => {
     });
 
     afterEach(() => {
-      mock.reset();
+      mock.restore();
     });
 
     it('shows up a loading state', (done) => {

@@ -65,7 +65,17 @@ export default class CreateItemDropdown {
 
   getData(term, callback) {
     this.getDataOption(term, (data = []) => {
-      callback(data.concat(this.selectedItem || []));
+      // Ensure the selected item isn't already in the data to avoid duplicates
+      const alreadyHasSelectedItem = this.selectedItem && data.some(item =>
+        item.id === this.selectedItem.id,
+      );
+
+      let uniqueData = data;
+      if (!alreadyHasSelectedItem) {
+        uniqueData = data.concat(this.selectedItem || []);
+      }
+
+      callback(uniqueData);
     });
   }
 

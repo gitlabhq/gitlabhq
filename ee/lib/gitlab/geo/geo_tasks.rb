@@ -15,6 +15,24 @@ module Gitlab
         end
       end
 
+      def update_primary_geo_node_url
+        node = Gitlab::Geo.primary_node
+
+        unless node.present?
+          $stdout.puts 'This is not a primary node'.color(:red)
+          exit 1
+        end
+
+        $stdout.puts "Updating primary Geo node with URL #{node.url} ..."
+
+        if node.update(url: GeoNode.current_node_url)
+          $stdout.puts "#{node.url} is now the primary Geo node URL".color(:green)
+        else
+          $stdout.puts "Error saving Geo node:\n#{node.errors.full_messages.join("\n")}".color(:red)
+          exit 1
+        end
+      end
+
       def refresh_foreign_tables!
         sql = <<~SQL
             DROP SCHEMA IF EXISTS gitlab_secondary CASCADE;

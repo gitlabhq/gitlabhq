@@ -1,0 +1,5 @@
+---
+title: Fix Epic issue item reordering to handle different scenarios
+merge_request: 4142
+author:
+type: fixed

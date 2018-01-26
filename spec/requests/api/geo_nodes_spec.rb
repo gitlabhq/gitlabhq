@@ -6,20 +6,19 @@ describe API::GeoNodes, :geo, api: true do
 
   set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
-  set(:another_secondary) { create(:geo_node) }
+  set(:secondary_status) { create(:geo_node_status, :healthy, geo_node: secondary) }
 
-  set(:secondary_status) { create(:geo_node_status, :healthy, geo_node_id: secondary.id) }
-  set(:another_secondary_status) { create(:geo_node_status, :healthy, geo_node_id: another_secondary.id) }
+  let(:unexisting_node_id) { GeoNode.maximum(:id).to_i.succ }
 
-  let(:admin) { create(:admin) }
-  let(:user) { create(:user) }
+  set(:admin) { create(:admin) }
+  set(:user) { create(:user) }
 
   describe 'GET /geo_nodes' do
     it 'retrieves the Geo nodes if admin is logged in' do
       get api("/geo_nodes", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('geo_nodes')
+      expect(response).to match_response_schema('public_api/v4/geo_nodes', dir: 'ee')
     end
 
     it 'denies access if not admin' do
@@ -34,7 +33,15 @@ describe API::GeoNodes, :geo, api: true do
       get api("/geo_nodes/#{primary.id}", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('geo_node')
+      expect(response).to match_response_schema('public_api/v4/geo_node', dir: 'ee')
+
+      links = json_response['_links']
+      expect(links['self']).to end_with("/api/v4/geo_nodes/#{primary.id}")
+      expect(links['repair']).to end_with("/api/v4/geo_nodes/#{primary.id}/repair")
+    end
+
+    it_behaves_like '404 response' do
+      let(:request) { get api("/geo_nodes/#{unexisting_node_id}", admin) }
     end
 
     it 'denies access if not admin' do
@@ -49,7 +56,7 @@ describe API::GeoNodes, :geo, api: true do
       get api("/geo_nodes/status", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('geo_node_statuses')
+      expect(response).to match_response_schema('public_api/v4/geo_node_statuses', dir: 'ee')
     end
 
     it 'denies access if not admin' do
@@ -68,7 +75,11 @@ describe API::GeoNodes, :geo, api: true do
       get api("/geo_nodes/#{secondary.id}/status", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('geo_node_status')
+      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+
+      links = json_response['_links']
+      expect(links['self']).to end_with("/api/v4/geo_nodes/#{secondary.id}/status")
+      expect(links['node']).to end_with("/api/v4/geo_nodes/#{secondary.id}")
     end
 
     it 'fetches the current node status' do
@@ -80,13 +91,81 @@ describe API::GeoNodes, :geo, api: true do
       get api("/geo_nodes/#{secondary.id}/status", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('geo_node_status')
+      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+    end
+
+    it_behaves_like '404 response' do
+      let(:request) { get api("/geo_nodes/#{unexisting_node_id}/status", admin) }
     end
 
     it 'denies access if not admin' do
-      get api('/geo_nodes', user)
+      get api("/geo_nodes/#{secondary.id}/status", user)
 
       expect(response).to have_gitlab_http_status(403)
+    end
+  end
+
+  describe 'POST /geo_nodes/:id/repair' do
+    it_behaves_like '404 response' do
+      let(:request) { post api("/geo_nodes/#{unexisting_node_id}/status", admin) }
+    end
+
+    it 'denies access if not admin' do
+      post api("/geo_nodes/#{secondary.id}/repair", user)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'returns 200 for the primary node' do
+      post api("/geo_nodes/#{primary.id}/repair", admin)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+    end
+
+    it 'returns 200 when node does not need repairing' do
+      allow_any_instance_of(GeoNode).to receive(:missing_oauth_application?).and_return(false)
+
+      post api("/geo_nodes/#{secondary.id}/repair", admin)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+    end
+
+    it 'repairs a secondary with oauth application missing' do
+      allow_any_instance_of(GeoNode).to receive(:missing_oauth_application?).and_return(true)
+
+      post api("/geo_nodes/#{secondary.id}/repair", admin)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+    end
+  end
+
+  describe 'PUT /geo_nodes/:id' do
+    it_behaves_like '404 response' do
+      let(:request) { get api("/geo_nodes/#{unexisting_node_id}/status", admin) }
+    end
+
+    it 'denies access if not admin' do
+      put api("/geo_nodes/#{secondary.id}", user), {}
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'updates the parameters' do
+      params = {
+        enabled: false,
+        url: 'https://updated.example.com/',
+        files_max_capacity: 33,
+        repos_max_capacity: 44
+      }.stringify_keys
+
+      put api("/geo_nodes/#{secondary.id}", admin), params
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/geo_node', dir: 'ee')
+      expect(json_response).to include(params)
     end
   end
 
@@ -101,7 +180,7 @@ describe API::GeoNodes, :geo, api: true do
       get api("/geo_nodes/current/failures", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('geo_project_registry')
+      expect(response).to match_response_schema('public_api/v4/geo_project_registry', dir: 'ee')
     end
 
     it 'does not show any registry when there is no failure' do

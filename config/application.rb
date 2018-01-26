@@ -43,13 +43,9 @@ module Gitlab
     end
     config.eager_load_paths.concat(ee_paths)
 
-    config.paths['app/views'].concat(%W[
-      #{config.root}/ee/app/views
-    ])
-
-    config.helpers_paths.push(*%W[
-      #{config.root}/ee/app/helpers
-    ])
+    config.paths['lib/tasks'] << "#{config.root}/ee/lib/tasks"
+    config.paths['app/views'] << "#{config.root}/ee/app/views"
+    config.helpers_paths << "#{config.root}/ee/app/helpers"
 
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly
@@ -115,10 +111,11 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
-    config.assets.paths << "vendor/assets/fonts"
-    config.assets.precompile << "*.png"
+    config.assets.paths << "#{config.root}/vendor/assets/fonts"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
@@ -127,9 +124,22 @@ module Gitlab
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
     config.assets.precompile << "locale/**/app.js"
+
+    ## EE-specific assets config START
+    %w[images javascripts stylesheets].each do |path|
+      config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
+    end
+
+    # Compile non-JS/CSS assets in the ee/app/assets folder by default
+    # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
+    LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
+      filename.start_with?(config.root.join("ee/app/assets").to_s) &&
+        !['.js', '.css', ''].include?(File.extname(logical_path))
+    end
+    config.assets.precompile << LOOSE_EE_APP_ASSETS
+    ## EE-specific assets config END
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

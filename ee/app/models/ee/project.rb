@@ -268,8 +268,10 @@ module EE
       super
 
       if group && feature_available?(:group_webhooks)
-        group.hooks.__send__(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
-          hook.async_execute(data, hooks_scope.to_s)
+        run_after_commit_or_now do
+          group.hooks.hooks_for(hooks_scope).each do |hook|
+            hook.async_execute(data, hooks_scope.to_s)
+          end
         end
       end
     end
@@ -329,7 +331,7 @@ module EE
     end
 
     def remove_mirror_repository_reference
-      repository.remove_remote(::Repository::MIRROR_REMOTE)
+      repository.async_remove_remote(::Repository::MIRROR_REMOTE)
     end
 
     def import_url_availability

@@ -1,5 +1,0 @@
----
-title: Fix successful rebase throwing flash error message
-merge_request: 3727
-author:
-type: fixed

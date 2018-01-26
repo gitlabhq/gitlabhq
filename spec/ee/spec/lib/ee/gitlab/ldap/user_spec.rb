@@ -100,6 +100,14 @@ describe Gitlab::LDAP::User do
       it "sets the user's external flag to false" do
         expect(gl_user.external).to be_falsey
       end
+
+      context 'when the user_default_external application setting is true' do
+        it 'does not set the external flag to false' do
+          stub_application_setting(user_default_external: true)
+
+          expect(gl_user.external).to be_truthy
+        end
+      end
     end
   end
 end

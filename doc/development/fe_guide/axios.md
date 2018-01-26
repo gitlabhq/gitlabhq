@@ -27,10 +27,23 @@ This exported module should be used instead of directly using `axios` to ensure 
     });
 ```
 
-## Mock axios response on tests
+## Mock axios response in tests
 
-To help us mock the responses we need we use [axios-mock-adapter][axios-mock-adapter]
+To help us mock the responses we are using [axios-mock-adapter][axios-mock-adapter].
 
+Advantages over [`spyOn()`]:
+
+- no need to create response objects
+- does not allow call through (which we want to avoid)
+- simple API to test error cases 
+- provides `replyOnce()` to allow for different responses
+
+We have also decided against using [axios interceptors] because they are not suitable for mocking.
+
+[axios interceptors]: https://github.com/axios/axios#interceptors
+[`spyOn()`]: https://jasmine.github.io/api/edge/global.html#spyOn
+
+### Example
 
 ```javascript
   import axios from '~/lib/utils/axios_utils';
@@ -50,13 +63,13 @@ To help us mock the responses we need we use [axios-mock-adapter][axios-mock-ada
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 ```
 
-### Mock poll requests on tests with axios
+### Mock poll requests in tests with axios
 
-Because polling function requires an header object, we need to always include an object as the third argument:
+Because polling function requires a header object, we need to always include an object as the third argument:
 
 ```javascript
   mock.onGet('/users').reply(200, { foo: 'bar' }, {});

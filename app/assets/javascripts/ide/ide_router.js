@@ -84,13 +84,13 @@ router.beforeEach((to, from, next) => {
           }
         })
         .catch((e) => {
-          flash('Error while loading the branch files. Please try again.');
+          flash('Error while loading the branch files. Please try again.', 'alert', document, null, false, true);
           throw e;
         });
       }
     })
     .catch((e) => {
-      flash('Error while loading the project data. Please try again.');
+      flash('Error while loading the project data. Please try again.', 'alert', document, null, false, true);
       throw e;
     });
   }

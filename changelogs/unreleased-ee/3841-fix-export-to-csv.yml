@@ -1,5 +1,0 @@
----
-title: Fix export to CSV if a filter with multiple labels is used
-merge_request:
-author:
-type: fixed

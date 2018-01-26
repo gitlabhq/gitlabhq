@@ -1,5 +1,0 @@
----
-title: Fix gitlab-rake gitlab:import:repos import schedule
-merge_request: 15931
-author:
-type: fixed

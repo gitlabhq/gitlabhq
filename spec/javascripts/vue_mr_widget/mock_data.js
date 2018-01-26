@@ -38,7 +38,7 @@ export default {
       "username": "root",
       "id": 1,
       "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
     "merged_at": "2017-04-07T15:39:25.696Z",
@@ -50,7 +50,7 @@ export default {
     "username": "root",
     "id": 1,
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
     "web_url": "http://localhost:3000/root"
   },
   "merge_user": null,
@@ -64,7 +64,7 @@ export default {
       "username": "root",
       "id": 1,
       "state": "active",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
     },
     "active": false,
@@ -159,10 +159,10 @@ export default {
         "username": "root",
         "id": 1,
         "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
         "web_url": "http://localhost:3000/root"
       },
-      "author_gravatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "author_gravatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "commit_url": "http://localhost:3000/root/acets-app/commit/104096c51715e12e7ae41f9333e9fa35b73f385d",
       "commit_path": "/root/acets-app/commit/104096c51715e12e7ae41f9333e9fa35b73f385d"
     },

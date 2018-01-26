@@ -110,7 +110,7 @@ export const mockNodeDetails = {
   revision: 'b93c51849b',
   primaryVersion: '10.4.0-pre',
   primaryRevision: 'b93c51849b',
-  replicationSlotWAL: null,
+  replicationSlotWAL: 502658737,
   missingOAuthApplication: false,
   storageShardsMatch: false,
   replicationSlots: {

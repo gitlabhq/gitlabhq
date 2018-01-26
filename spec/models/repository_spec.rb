@@ -365,8 +365,14 @@ describe Repository do
         it { is_expected.to be_truthy }
       end
 
-      context 'non-mergeable branches' do
+      context 'non-mergeable branches without conflict sides missing' do
         subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non-mergeable branches with conflict sides missing' do
+        subject { repository.can_be_merged?('conflict-missing-side', 'conflict-start') }
 
         it { is_expected.to be_falsey }
       end
@@ -657,7 +663,7 @@ describe Repository do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG\x00190\x00  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -697,6 +703,38 @@ describe Repository do
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
+      end
+    end
+  end
+
+  describe '#async_remove_remote' do
+    before do
+      masterrev = repository.find_branch('master').dereferenced_target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+    end
+
+    context 'when worker is scheduled successfully' do
+      before do
+        masterrev = repository.find_branch('master').dereferenced_target
+        create_remote_branch('remote_name', 'remote_branch', masterrev)
+
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
+      end
+
+      it 'returns job_id' do
+        expect(repository.async_remove_remote('joe')).to eq('1234')
+      end
+    end
+
+    context 'when worker does not schedule successfully' do
+      before do
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(Rails.logger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
+
+        expect(repository.async_remove_remote('joe')).to be_nil
       end
     end
   end
@@ -2440,7 +2478,7 @@ describe Repository do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    context 'with Gitaly enabled' do
+    shared_examples '#ancestor?' do
       it 'it is an ancestor' do
         expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
@@ -2453,28 +2491,20 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+
+      it 'returns false for invalid commit IDs' do
+        expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
+        expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
       end
     end
 
-    context 'with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(false)
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(false)
-      end
+    context 'with Gitaly enabled' do
+      it_behaves_like('#ancestor?')
+    end
 
-      it 'it is an ancestor' do
-        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
-      end
-
-      it 'it is not an ancestor' do
-        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
-      end
-
-      it 'returns false on nil-values' do
-        expect(repository.ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.ancestor?(nil, nil)).to eq(false)
-      end
+    context 'with Gitaly disabled', :skip_gitaly_mock do
+      it_behaves_like('#ancestor?')
     end
   end
 

@@ -173,7 +173,7 @@
         href="#"
         @click="showDropdown"
       >
-        {{ s__('Sidebar|Edit') }}
+        {{ __('Edit') }}
       </a>
     </div>
     <div

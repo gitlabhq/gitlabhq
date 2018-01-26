@@ -88,7 +88,7 @@ future GitLab releases.**
 
 ## 9.0 Renaming
 
-To follow conventions of naming across GitLab, and to futher move away from the
+To follow conventions of naming across GitLab, and to further move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
 
@@ -111,7 +111,7 @@ future GitLab releases.**
 | `CI_BUILD_MANUAL`     | `CI_JOB_MANUAL`         |
 | `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 
-## `.gitlab-ci.yaml` defined variables
+## `.gitlab-ci.yml` defined variables
 
 >**Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher.
