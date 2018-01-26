@@ -25,7 +25,7 @@
     },
     "issue": {
        "allOf": [
-        { "$ref": "../../../../../../fixtures/api/schemas/public_api/v4/issue.json" },
+        { "$ref": "../../../../../../../spec/fixtures/api/schemas/public_api/v4/issue.json" },
           {
             "properties": {
               "weight": { "type": ["integer", "null"] }

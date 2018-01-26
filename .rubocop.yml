@@ -46,3 +46,16 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'ee/db/**/*'
+    - 'features/**/*'
+    - 'lib/**/*.rake'
+    - 'ee/lib/**/*.rake'
+    - 'qa/**/*'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
