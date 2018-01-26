@@ -250,13 +250,15 @@ describe('Multi-file store actions', () => {
     describe('success', () => {
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(Promise.resolve({
-          id: '123456',
-          short_id: '123',
-          message: 'test message',
-          committed_date: 'date',
-          stats: {
-            additions: '1',
-            deletions: '2',
+          data: {
+            id: '123456',
+            short_id: '123',
+            message: 'test message',
+            committed_date: 'date',
+            stats: {
+              additions: '1',
+              deletions: '2',
+            },
           },
         }));
       });
@@ -321,7 +323,9 @@ describe('Multi-file store actions', () => {
     describe('failed', () => {
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(Promise.resolve({
-          message: 'failed message',
+          data: {
+            message: 'failed message',
+          },
         }));
       });
 
