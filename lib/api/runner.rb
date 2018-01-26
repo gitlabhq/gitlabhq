@@ -120,16 +120,7 @@ module API
       put '/:id' do
         job = authenticate_job!
 
-        if params[:trace]
-          # Overwrite live-trace by full-trace
-          job.trace.set(params[:trace])
-
-          # Move full-trace to JobArtifactUploader#default_path
-          job.build_job_artifacts_trace(
-            project: job.project,
-            file_type: :trace,
-            file: UploadedFile.new(job.trace.current_path, 'trace.log'))
-        end
+        job.trace.set(params[:trace]) if params[:trace]
 
         Gitlab::Metrics.add_event(:update_build,
                                   project: job.project.full_path)
