@@ -15,10 +15,12 @@ export default class SecretValues {
   init() {
     this.revealButton = this.container.querySelector('.js-secret-value-reveal-button');
 
-    const isRevealed = convertPermissionToBoolean(this.revealButton.dataset.secretRevealStatus);
-    this.updateDom(isRevealed);
+    if (this.revealButton) {
+      const isRevealed = convertPermissionToBoolean(this.revealButton.dataset.secretRevealStatus);
+      this.updateDom(isRevealed);
 
-    this.revealButton.addEventListener('click', this.onRevealButtonClicked.bind(this));
+      this.revealButton.addEventListener('click', this.onRevealButtonClicked.bind(this));
+    }
   }
 
   onRevealButtonClicked() {
