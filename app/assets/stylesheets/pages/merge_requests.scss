@@ -785,10 +785,6 @@
 }
 
 .mr-widget-code-quality {
-  .ci-status-icon-warning svg {
-    fill: $theme-gray-600;
-  }
-
   .code-quality-container {
     border-top: 1px solid $gray-darker;
     padding: $gl-padding-top;
@@ -805,9 +801,13 @@
 
     .mr-widget-code-quality-list {
       list-style: none;
-      padding: 0 12px;
+      padding: 0 9px;
       margin: 0;
       line-height: $code_line_height;
+
+      .mr-widget-code-quality-list-item {
+        display: flex;
+      }
 
       .failed .mr-widget-code-quality-icon {
         color: $red-500;
@@ -822,13 +822,8 @@
       }
 
       .mr-widget-code-quality-icon {
-        margin-right: 12px;
+        margin: 3px 12px 0 0;
         fill: currentColor;
-
-        svg {
-          width: 10px;
-          height: 10px;
-        }
       }
     }
   }

@@ -45,6 +45,15 @@
       fixedLabel() {
         return s__('ciReport|Fixed:');
       },
+      iconName() {
+        if (this.isStatusFailed) {
+          return 'status_failed_borderless';
+        } else if (this.isStatusSuccess) {
+          return 'status_success_borderless';
+        }
+
+        return 'status_created_borderless';
+      },
       isStatusFailed() {
         return this.status === 'failed';
       },
@@ -109,18 +118,13 @@
         success: isStatusSuccess,
         neutral: isStatusNeutral
       }"
+      class="mr-widget-code-quality-list-item"
       v-for="(issue, index) in issues"
       :key="index"
     >
       <icon
         class="mr-widget-code-quality-icon"
-        v-if="isStatusSuccess"
-        name="status_success_borderless"
-      />
-      <icon
-        v-else
-        class="mr-widget-code-quality-icon"
-        name="status_failed_borderless"
+        :name="iconName"
       />
 
       <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>

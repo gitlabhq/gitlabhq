@@ -41,7 +41,6 @@ export default {
       return this.mr.sast;
     },
     shouldRenderDockerReport() {
-      return true;
       return this.mr.sastContainer;
     },
     shouldRenderDastReport() {
@@ -312,31 +311,9 @@ export default {
     if (this.shouldRenderSecurityReport) {
       this.fetchSecurity();
     }
-    this.mr.setDockerReport({
-      unapproved: [
-        'CVE-2017-12944',
-        'CVE-2017-16232'
-      ],
-      vulnerabilities: [
-        {
-          vulnerability: 'CVE-2017-12944',
-          namespace: 'debian:8',
-          severity: 'Medium'
-        },
-        {
-            vulnerability: 'CVE-2017-16232',
-            namespace: 'debian:8',
-            severity: 'Negligible'
-        },
-        {
-            vulnerability: 'CVE-2014-8130',
-            namespace: 'debian:8',
-            severity: 'Negligible'
-        }
-      ]
-    });
+
     if (this.shouldRenderDockerReport) {
-      //this.fetchDockerReport();
+      this.fetchDockerReport();
     }
 
     if (this.shouldRenderDastReport) {
