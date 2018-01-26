@@ -23,6 +23,14 @@
         type: String,
         required: true,
       },
+      noChangesStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      committedStateSvgPath: {
+        type: String,
+        required: true,
+      },
     },
     computed: {
       ...mapState([
@@ -94,6 +102,9 @@
         </div>
       </template>
     </div>
-    <ide-contextbar/>
+    <ide-contextbar
+      :no-changes-state-svg-path="noChangesStateSvgPath"
+      :committed-state-svg-path="committedStateSvgPath"
+    />
   </div>
 </template>

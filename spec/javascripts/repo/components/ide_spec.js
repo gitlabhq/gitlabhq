@@ -12,6 +12,8 @@ describe('ide component', () => {
 
     vm = createComponentWithStore(Component, store, {
       emptyStateSvgPath: 'svg',
+      noChangesStateSvgPath: 'svg',
+      committedStateSvgPath: 'svg',
     }).$mount();
   });
 

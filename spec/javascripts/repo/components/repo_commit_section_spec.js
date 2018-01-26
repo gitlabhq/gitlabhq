@@ -4,21 +4,23 @@ import store from '~/ide/stores';
 import service from '~/ide/services';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
 describe('RepoCommitSection', () => {
   let vm;
 
   function createComponent() {
-    const RepoCommitSection = Vue.extend(repoCommitSection);
+    const Component = Vue.extend(repoCommitSection);
 
-    const comp = new RepoCommitSection({
-      store,
-    }).$mount();
+    vm = createComponentWithStore(Component, store, {
+      noChangesStateSvgPath: 'svg',
+      committedStateSvgPath: 'commitsvg',
+    });
 
-    comp.$store.state.currentProjectId = 'abcproject';
-    comp.$store.state.currentBranchId = 'master';
-    comp.$store.state.projects.abcproject = {
+    vm.$store.state.currentProjectId = 'abcproject';
+    vm.$store.state.currentBranchId = 'master';
+    vm.$store.state.projects.abcproject = {
       web_url: '',
       branches: {
         master: {
@@ -27,15 +29,15 @@ describe('RepoCommitSection', () => {
       },
     };
 
-    comp.$store.state.rightPanelCollapsed = false;
-    comp.$store.state.currentBranch = 'master';
-    comp.$store.state.openFiles = [file('file1'), file('file2')];
-    comp.$store.state.openFiles.forEach(f => Object.assign(f, {
+    vm.$store.state.rightPanelCollapsed = false;
+    vm.$store.state.currentBranch = 'master';
+    vm.$store.state.openFiles = [file('file1'), file('file2')];
+    vm.$store.state.openFiles.forEach(f => Object.assign(f, {
       changed: true,
       content: 'testing',
     }));
 
-    return comp.$mount();
+    return vm.$mount();
   }
 
   beforeEach((done) => {
@@ -62,6 +64,23 @@ describe('RepoCommitSection', () => {
     vm.$destroy();
 
     resetStore(vm.$store);
+  });
+
+  describe('empty Stage', () => {
+    it('renders no changes text', () => {
+      resetStore(vm.$store);
+      const Component = Vue.extend(repoCommitSection);
+
+      vm = createComponentWithStore(Component, store, {
+        noChangesStateSvgPath: 'nochangessvg',
+        committedStateSvgPath: 'svg',
+      }).$mount();
+
+      // Vue.nextTick();
+
+      expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('No changes');
+      expect(vm.$el.querySelector('.js-empty-state img').getAttribute('src')).toBe('nochangessvg');
+    });
   });
 
   it('renders a commit section', () => {
@@ -115,6 +134,9 @@ describe('RepoCommitSection', () => {
           expect(actions[1].content).toEqual(changedFiles[1].content);
           expect(actions[0].file_path).toEqual(changedFiles[0].path);
           expect(actions[1].file_path).toEqual(changedFiles[1].path);
+
+          expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('All changes are committed');
+          expect(vm.$el.querySelector('.js-empty-state img').getAttribute('src')).toBe('commitsvg');
         })
         .then(done)
         .catch(done.fail);
