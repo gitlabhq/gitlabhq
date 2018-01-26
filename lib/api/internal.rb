@@ -215,8 +215,8 @@ module API
         # A user is not guaranteed to be returned; an orphaned write deploy
         # key could be used
         if user
-          redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
-          project_created_message = Gitlab::Checks::ProjectCreated.fetch_project_created_message(user.id, project.id)
+          redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
+          project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
 
           output[:redirected_message] = redirect_message if redirect_message
           output[:project_created_message] = project_created_message if project_created_message

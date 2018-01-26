@@ -221,7 +221,7 @@ describe Gitlab::GitAccess do
     it 'enqueues a redirected message' do
       push_access_check
 
-      expect(Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)).not_to be_nil
+      expect(Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)).not_to be_nil
     end
   end
 
@@ -335,7 +335,7 @@ describe Gitlab::GitAccess do
     end
   end
 
-  describe '#check_namespace_existence!' do
+  describe '#check_namespace_accessibility!' do
     context 'when project exists' do
       context 'when user can pull or push' do
         before do
@@ -352,28 +352,16 @@ describe Gitlab::GitAccess do
     end
 
     context 'when project does not exist' do
-      context 'when namespace does not exist' do
-        let(:access) { described_class.new(actor, nil, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: nil) }
-
-        it 'blocks push and pull' do
-          aggregate_failures do
-            expect { push_access_check }.not_to raise_namespace_not_found
-            expect { pull_access_check }.not_to raise_namespace_not_found
-          end
-        end
-      end
-
       context 'when namespace exists' do
         context 'when user is unable to push to namespace' do
           let(:user2) { create(:user) }
           let(:access) { described_class.new(actor, nil, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: user2.namespace) }
 
-          it 'blocks push' do
-            expect { push_access_check }.to raise_project_create
-          end
-
-          it 'does not block pull' do
-            expect { push_access_check }.to raise_error
+          it 'blocks push and pull' do
+            aggregate_failures do
+              expect { push_access_check }.to raise_not_found
+              expect { pull_access_check }.to raise_not_found
+            end
           end
         end
       end
@@ -839,10 +827,6 @@ describe Gitlab::GitAccess do
 
   def raise_not_found
     raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
-  end
-
-  def raise_namespace_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:namespace_not_found])
   end
 
   def build_authentication_abilities

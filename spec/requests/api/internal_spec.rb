@@ -399,6 +399,18 @@ describe API::Internal do
               expect(json_response["status"]).to be_truthy
               expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(path)
             end
+
+            it 'handles project creation failure' do
+              path = "#{user.namespace.path}/new.git"
+
+              expect do
+                push_with_path(key, path)
+              end.not_to change { Project.count }
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(json_response["status"]).to be_falsey
+              expect(json_response["message"]).to eq("Could not create project: Path new is a reserved name")
+            end
           end
         end
       end
@@ -821,27 +833,27 @@ describe API::Internal do
 
     context 'with a redirected data' do
       it 'returns redirected message on the response' do
-        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'foo/baz', 'http')
-        project_moved.add_redirect_message
+        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
+        project_moved.add_message
 
         post api("/internal/post_receive"), valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
-        expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
+        expect(json_response["redirected_message"]).to eq(project_moved.message)
       end
     end
 
     context 'with new project data' do
       it 'returns new project message on the response' do
-        project_created = Gitlab::Checks::ProjectCreated.new(user, project, 'http')
-        project_created.add_project_created_message
+        project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
+        project_created.add_message
 
         post api("/internal/post_receive"), valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["project_created_message"]).to be_present
-        expect(json_response["project_created_message"]).to eq(project_created.project_created_message)
+        expect(json_response["project_created_message"]).to eq(project_created.message)
       end
     end
 
