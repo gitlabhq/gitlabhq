@@ -3,7 +3,7 @@
 # Era 1: Live/Full traces in database (ci_builds.trace)
 # Era 2: Live/Full traces in `setting_root/YYYY_MM/project_ci_id/job_id.log`
 # Era 3: Live/Full traces in `setting_root/YYYY_MM/project_id/job_id.log`
-# Era 4: Live traces in `setting_root/live_trace/job_id.log`. Full traces in JobArtifactUploader#legacy_default_path.
+# Era 4: Live traces in `setting_root/YYYY_MM/project_id/job_id.log`. Full traces in JobArtifactUploader#default_path(FileStorage/ObjectStorage).
 #
 # The legacy paths are to be migrated to the latest era.
 module Gitlab
@@ -65,7 +65,7 @@ module Gitlab
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact&.exists?
+          if trace_artifact
             trace_artifact.open
           elsif current_path
             File.open(current_path, "rb")
@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def erase!
-        trace_artifact&.destory
+        trace_artifact&.destroy
 
         paths.each do |trace_path|
           FileUtils.rm(trace_path, force: true)
@@ -107,12 +107,12 @@ module Gitlab
         return current_path if current_path
 
         ensure_directory
-        live_trace_default_path
+        default_path
       end
 
       def ensure_directory
-        unless Dir.exist?(live_trace_default_directory)
-          FileUtils.mkdir_p(live_trace_default_directory)
+        unless Dir.exist?(default_directory)
+          FileUtils.mkdir_p(default_directory)
         end
       end
 
@@ -122,35 +122,23 @@ module Gitlab
         end
       end
 
-      ##
-      # This method doesn't include the latest path, which is JobArtifactUploader#default_path,
-      # Because, in EE, traces can be moved to ObjectStorage, so checking paths in Filestorage doesn't make sense.
-      # All legacy paths (`legacy_default_path` and `deprecated_path`) are to be migrated to JobArtifactUploader#default_path
       def paths
         [
-          live_trace_default_path,
-          legacy_default_path,
+          default_path,
           deprecated_path
         ].compact
       end
 
-      def live_trace_default_directory
-        File.join(
-          Settings.gitlab_ci.builds_path,
-          'live_trace'
-        )
-      end
-
-      def live_trace_default_path
-        File.join(live_trace_default_directory, "#{job.id}.log")
-      end
-
-      def legacy_default_path
+      def default_directory
         File.join(
           Settings.gitlab_ci.builds_path,
           job.created_at.utc.strftime("%Y_%m"),
-          job.project_id.to_s,
-          "#{job.id}.log")
+          job.project_id.to_s
+        )
+      end
+
+      def default_path
+        File.join(default_directory, "#{job.id}.log")
       end
 
       def deprecated_path
