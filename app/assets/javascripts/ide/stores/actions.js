@@ -71,7 +71,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 export const checkCommitStatus = ({ state }) =>
   service
     .getBranchData(state.currentProjectId, state.currentBranchId)
-    .then((data) => {
+    .then(({ data }) => {
       const { id } = data.commit;
       const selectedBranch =
         state.projects[state.currentProjectId].branches[state.currentBranchId];
