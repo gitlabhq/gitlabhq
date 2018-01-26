@@ -3,6 +3,8 @@ module Gitlab
     class RepositoryService
       include Gitlab::EncodingHelper
 
+      MAX_MSG_SIZE = 128.kilobytes.freeze
+
       def initialize(repository)
         @repository = repository
         @gitaly_repo = repository.gitaly_repository
@@ -177,6 +179,29 @@ module Gitlab
             f.write(message.data)
           end
         end
+      end
+
+      def create_from_bundle(bundle_path)
+        request = Gitaly::CreateRepositoryFromBundleRequest.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(bundle_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+
+              request = Gitaly::CreateRepositoryFromBundleRequest.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_bundle,
+          enum,
+          timeout: GitalyClient.default_timeout
+        )
       end
     end
   end

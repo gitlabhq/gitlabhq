@@ -66,9 +66,8 @@ To make full use of Auto DevOps, you will need:
    a domain configured with wildcard DNS which is gonna be used by all of your
    Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
 1. **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
-   To enable deployments, you will need Kubernetes 1.5+. The [Kubernetes service][kubernetes-service]
-   integration will need to be enabled for the project, or enabled as a
-   [default service template](../../user/project/integrations/services_templates.md)
+   To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
+   for the project, or a Kubernetes [default service template](../../user/project/integrations/services_templates.md)
    for the entire GitLab installation.
     1. **A load balancer** - You can use NGINX ingress by deploying it to your
        Kubernetes cluster using the
@@ -588,7 +587,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37115
-[kubernetes-service]: ../../user/project/integrations/kubernetes.md
+[kubernetes-clusters]: ../../user/project/clusters/index.md
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md

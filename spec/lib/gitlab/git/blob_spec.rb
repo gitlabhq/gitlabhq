@@ -268,6 +268,21 @@ describe Gitlab::Git::Blob, seed_helper: true do
         expect(blobs).to all( be_a(Gitlab::Git::Blob) )
       end
 
+      it 'accepts blob IDs as a lazy enumerator' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id].lazy)
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'handles empty list of IDs gracefully' do
+        blobs_1 = described_class.batch_lfs_pointers(repository, [].lazy)
+        blobs_2 = described_class.batch_lfs_pointers(repository, [])
+
+        expect(blobs_1).to eq([])
+        expect(blobs_2).to eq([])
+      end
+
       it 'silently ignores tree objects' do
         blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
 
