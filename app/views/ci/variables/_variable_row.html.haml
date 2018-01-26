@@ -44,6 +44,7 @@
             = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
             = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
       -# EE-specific start
+      = render 'ci/variables/environment_scope', form_field: form_field, variable: variable
       -# EE-specific end
   %button.js-row-remove-button.ci-variable-row-remove-button{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
     = icon('minus-circle')
