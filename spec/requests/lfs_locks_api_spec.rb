@@ -46,7 +46,7 @@ describe 'Git LFS File Locking API' do
         lock_file('README.md', developer)
       end
 
-      it 'responds with 409' do
+      it 'return an error message' do
         post_lfs_json url, body, headers
 
         expect(response).to have_gitlab_http_status(409)
@@ -54,10 +54,16 @@ describe 'Git LFS File Locking API' do
         expect(json_response.keys).to match_array(%w(lock message documentation_url))
         expect(json_response['message']).to match(/already created lock/)
       end
+
+      it 'returns the existen lock' do
+        post_lfs_json url, body, headers
+
+        expect(json_response['lock']['path']).to eq('README.md')
+      end
     end
 
     context 'without an existent lock' do
-      it 'responds with 201' do
+      it 'creates the lock' do
         post_lfs_json url, body, headers
 
         expect(response).to have_gitlab_http_status(201)
@@ -73,7 +79,7 @@ describe 'Git LFS File Locking API' do
 
     include_examples 'unauthorized request'
 
-    it 'responds with 200' do
+    it 'returns the list of locked files' do
       lock_file('README.md', developer)
       lock_file('README', developer)
 
@@ -92,7 +98,7 @@ describe 'Git LFS File Locking API' do
 
     include_examples 'unauthorized request'
 
-    it 'responds with 200' do
+    it 'returns the list of locked files grouped by owner' do
       lock_file('README.md', master)
       lock_file('README', developer)
 
@@ -115,10 +121,14 @@ describe 'Git LFS File Locking API' do
     include_examples 'unauthorized request'
 
     context 'with an existent lock' do
-      it 'responds with 200' do
+      it 'deletes the lock' do
         post_lfs_json url, nil, headers
 
         expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns the deleted lock' do
+        post_lfs_json url, nil, headers
 
         expect(json_response['lock'].keys).to match_array(%w(id path locked_at owner))
       end

@@ -8,5 +8,7 @@ class CreateLfsFileLocks < ActiveRecord::Migration
       t.string :path
       t.datetime :created_at, null: false
     end
+
+    add_index :lfs_file_locks, [:path, :project_id], unique: true
   end
 end

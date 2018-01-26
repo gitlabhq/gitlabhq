@@ -10,7 +10,6 @@ describe LfsFileLock do
   it { is_expected.to validate_presence_of(:project_id) }
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.to validate_presence_of(:path) }
-  it { is_expected.to validate_uniqueness_of(:path).scoped_to(:project_id) }
 
   describe '#can_be_unlocked_by?' do
     let(:developer) { create(:user) }

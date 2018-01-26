@@ -3,7 +3,6 @@ class LfsFileLock < ActiveRecord::Base
   belongs_to :user
 
   validates :project_id, :user_id, :path, presence: true
-  validates :path, uniqueness: { scope: [:project_id] }
 
   def can_be_unlocked_by?(current_user, forced = false)
     return true if current_user.id == user_id

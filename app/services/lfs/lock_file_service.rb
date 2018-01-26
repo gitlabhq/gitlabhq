@@ -3,11 +3,15 @@ module Lfs
     prepend EE::Lfs::LockFileService
 
     def execute
-      if current_lock
-        error('already created lock', 409, current_lock)
-      else
-        create_lock!
+      unless can?(current_user, :push_code, project)
+        raise Gitlab::GitAccess::UnauthorizedError, 'You have no permissions'
       end
+
+      create_lock!
+    rescue ActiveRecord::RecordNotUnique
+      error('already created lock', 409, current_lock)
+    rescue Gitlab::GitAccess::UnauthorizedError => ex
+      error(ex.message, 403)
     rescue => ex
       error(ex.message, 500)
     end
@@ -15,7 +19,7 @@ module Lfs
     private
 
     def current_lock
-      @current_lock ||= project.lfs_file_locks.find_by(path: params[:path])
+      project.lfs_file_locks.find_by(path: params[:path])
     end
 
     def create_lock!
