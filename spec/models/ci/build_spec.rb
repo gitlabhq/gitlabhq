@@ -1431,7 +1431,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          create(:protected_branch, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1439,7 +1439,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          create(:protected_tag, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1476,7 +1476,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          create(:protected_branch, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1484,7 +1484,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          create(:protected_tag, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }

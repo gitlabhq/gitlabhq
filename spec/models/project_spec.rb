@@ -2042,7 +2042,7 @@ describe Project do
 
     context 'when the ref is a protected branch' do
       before do
-        create(:protected_branch, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -2050,7 +2050,7 @@ describe Project do
 
     context 'when the ref is a protected tag' do
       before do
-        create(:protected_tag, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -2075,6 +2075,8 @@ describe Project do
 
     context 'when the ref is a protected branch' do
       before do
+        allow(project).to receive(:repository).and_call_original
+        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(true)
         create(:protected_branch, name: 'ref', project: project)
       end
 
@@ -2085,6 +2087,8 @@ describe Project do
 
     context 'when the ref is a protected tag' do
       before do
+        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(false)
+        allow(project).to receive_message_chain(:repository, :tag_exists?).and_return(true)
         create(:protected_tag, name: 'ref', project: project)
       end
 

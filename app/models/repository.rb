@@ -220,6 +220,12 @@ class Repository
     branch_names.include?(branch_name)
   end
 
+  def tag_exists?(tag_name)
+    return false unless raw_repository
+
+    tag_names.include?(tag_name)
+  end
+
   def ref_exists?(ref)
     !!raw_repository&.ref_exists?(ref)
   rescue ArgumentError
