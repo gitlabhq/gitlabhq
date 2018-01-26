@@ -10,12 +10,14 @@ module QA
 
         view 'app/views/devise/sessions/_new_base.html.haml' do
           element :login_field, 'text_field :login'
-          element :passowrd_field, 'password_field :password'
+          element :password_field, 'password_field :password'
           element :sign_in_button, 'submit "Sign in"'
         end
 
         def initialize
-          wait('.application', time: 500)
+          wait(max: 500) do
+            page.has_css?('.application')
+          end
         end
 
         def sign_in_using_credentials
