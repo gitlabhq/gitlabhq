@@ -55,9 +55,10 @@
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = sprite_icon('pencil')
-      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
-        %span.sr-only Delete
-        = sprite_icon('remove')
+      %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
+        = link_to "#", title: "Delete", class: 'btn btn-transparent btn-action remove-row', data: { toggle: "tooltip" } do
+          %span.sr-only Delete
+          = sprite_icon('remove')
     - if current_user
       .label-subscription.inline
         - if can_subscribe_to_label_in_different_levels?(label)
@@ -79,3 +80,5 @@
           %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_path } }
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
+
+= render 'shared/delete_label_modal', label: label
