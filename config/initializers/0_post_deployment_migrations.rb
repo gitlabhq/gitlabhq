@@ -11,7 +11,6 @@ unless ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS']
     # path just yet. As such we must also update the following list of paths.
     ActiveRecord::Migrator.migrations_paths << path
   end
-<<<<<<< HEAD
 end
 
 migrate_paths = Rails.application.config.paths['db/migrate'].to_a
@@ -21,6 +20,4 @@ migrate_paths.each do |migrate_path|
 
   Rails.application.config.paths['db/migrate'] << ee_migrate_path.to_s
   ActiveRecord::Migrator.migrations_paths << ee_migrate_path.to_s
-=======
->>>>>>> upstream/master
 end
