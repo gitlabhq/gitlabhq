@@ -95,7 +95,7 @@ feature 'Gcp Cluster', :js do
 
         context 'when user disables the cluster' do
           before do
-            page.find(:css, '.js-toggle-cluster').click
+            page.find(:css, '.js-cluster-enable-toggle-area .js-project-feature-toggle').click
             page.within('#cluster-integration') { click_button 'Save changes' }
           end
 

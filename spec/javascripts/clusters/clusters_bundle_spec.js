@@ -23,16 +23,24 @@ describe('Clusters', () => {
   });
 
   describe('toggle', () => {
-    it('should update the button and the input field on click', () => {
-      cluster.toggleButton.click();
+    it('should update the button and the input field on click', (done) => {
+      const toggleButton = document.querySelector('.js-cluster-enable-toggle-area .js-project-feature-toggle');
+      const toggleInput = document.querySelector('.js-cluster-enable-toggle-area .js-project-feature-toggle-input');
 
-      expect(
-        cluster.toggleButton.classList,
-      ).not.toContain('is-checked');
+      toggleButton.click();
 
-      expect(
-        cluster.toggleInput.getAttribute('value'),
-      ).toEqual('false');
+      getSetTimeoutPromise()
+        .then(() => {
+          expect(
+            toggleButton.classList,
+          ).not.toContain('is-checked');
+
+          expect(
+            toggleInput.getAttribute('value'),
+          ).toEqual('false');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 

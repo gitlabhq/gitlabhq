@@ -12,11 +12,12 @@
   .table-section.section-10
     .table-mobile-header{ role: "rowheader" }
     .table-mobile-content
-      %button{ type: "button",
-        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' if cluster.enabled?} #{'is-disabled' if !cluster.can_toggle_cluster?}",
+      %button.js-project-feature-toggle.project-feature-toggle{ type: "button",
+        class: "#{'is-checked' if cluster.enabled?} #{'is-disabled' if !cluster.can_toggle_cluster?}",
         "aria-label": s_("ClusterIntegration|Toggle Cluster"),
         disabled: !cluster.can_toggle_cluster?,
         data: { endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }
+        %input.js-project-feature-toggle-input{ type: "hidden", value: cluster.enabled? }
         = icon("spinner spin", class: "loading-icon")
         %span.toggle-icon
           = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
