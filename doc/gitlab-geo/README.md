@@ -197,12 +197,11 @@ Read how to [replicate the Container Registry](docker_registry.md).
 
 ## Current limitations
 
-- You cannot push code to secondary nodes
-- The primary node has to be online for OAuth login to happen (existing
-  sessions and Git are not affected)
-- It works for repos, wikis, issues, and merge requests
-- It does not work for job logs, artifacts, GitLab Pages, and Docker images of the Container
+- You cannot push code to secondary nodes, see [3912](https://gitlab.com/gitlab-org/gitlab-ee/issues/3912) for details.
+- The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
+- It works for repos, wikis, issues, and merge requests, but it does not work for job logs, artifacts, GitLab Pages, and Docker images of the Container
   Registry (by default, but you can configure it separately, see [replicate the Container Registry](docker_registry.md) for details)
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are working on improving this experience, see [#2978](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978) for details.
 
 ## Frequently Asked Questions
 
