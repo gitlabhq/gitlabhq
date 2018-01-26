@@ -31,7 +31,7 @@ function formatTooltipText({ date, count }) {
   return `${contribText}<br />${dateDayName} ${dateText}`;
 }
 
-const initColorKey = () => d3.scaleLinear().range(['#acd5f2', '#254e77']).domain([0, 3]);
+const initColorKey = (c1, c2) => d3.scaleLinear().range([c1, c2]).domain([0, 3]);
 
 export default class ActivityCalendar {
   constructor(container, timestamps, calendarActivitiesPath, utcOffset = 0) {
@@ -77,7 +77,8 @@ export default class ActivityCalendar {
     }
 
     // Init color functions
-    this.colorKey = initColorKey();
+    this.colorKey = initColorKey('#acd5f2', '#254e77');
+    this.fireColorKey = initColorKey('#fdaf88', '#fc6d26');
     this.color = this.initColor();
 
     // Init the svg element
@@ -140,7 +141,7 @@ export default class ActivityCalendar {
           .attr('width', this.daySize)
           .attr('height', this.daySize)
           .attr('fill', stamp => (
-            stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed'
+            stamp.count !== 0 ? this.color(Math.min(stamp.count, 80)) : '#ededed'
           ))
           .attr('title', stamp => formatTooltipText(stamp))
           .attr('class', 'user-contrib-cell js-tooltip')
@@ -187,8 +188,12 @@ export default class ActivityCalendar {
   }
 
   renderKey() {
-    const keyValues = ['no contributions', '1-9 contributions', '10-19 contributions', '20-29 contributions', '30+ contributions'];
-    const keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
+    const keyValues = ['no contributions',
+                        '1-9 contributions', '10-19 contributions', '20-29 contributions', '30-39 contributions',
+                        '40-49 contributions', '50-59 contributions', '60-69 contributions', '70+ contributions'];
+    const keyColors = ['#ededed',
+                        this.colorKey(0), this.colorKey(1), this.colorKey(2),this.colorKey(3),
+                        this.fireColorKey(0), this.fireColorKey(1), this.fireColorKey(2),this.fireColorKey(3)];
 
     this.svg.append('g')
       .attr('transform', `translate(18, ${(this.daySizeWithSpace * 8) + 16})`)
@@ -207,8 +212,10 @@ export default class ActivityCalendar {
   }
 
   initColor() {
-    const colorRange = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
-    return d3.scaleThreshold().domain([0, 10, 20, 30]).range(colorRange);
+    const colorRange = ['#ededed',
+                        this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3),
+                        this.fireColorKey(0), this.fireColorKey(1), this.fireColorKey(2), this.fireColorKey(3)];
+    return d3.scaleThreshold().domain([0, 10, 20, 30, 40, 50, 60, 70, 80]).range(colorRange);
   }
 
   clickDay(stamp) {
