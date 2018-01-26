@@ -1,18 +1,17 @@
-require 'net/http'
-
 ##
-#
 # This class is compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 # source: https://gitlab.com/snippets/1685610
 module Gitlab
   module Ci
     class Trace
       class HTTP_IO
-        BUFFER_SIZE = 128*1024
+        BUFFER_SIZE = 128.kilobytes
 
         attr_reader :uri, :size
         attr_reader :tell
         attr_reader :chunk, :chunk_range
+
+        alias_method :pos, :tell
 
         def initialize(url, size)
           @uri = URI(url)
@@ -24,13 +23,14 @@ module Gitlab
         end
 
         def binmode
+          # no-op
         end
 
         def path
           @uri.to_s
         end
 
-        def seek(pos, where)
+        def seek(pos, where=IO::SEEK_SET)
           new_pos =
             case where
             when IO::SEEK_END
@@ -54,38 +54,43 @@ module Gitlab
 
         def each_line
           while !eof? do
-            line = read_line
+            line = readline
             yield(line)
           end
         end
 
-        def read
+        def read(length = nil)
           out = ""
-          loop do
+
+          while length.nil? || out.length < length
             data = get_chunk
             break if data.empty?
             out += data
             @tell += data.bytesize
           end
+
+          if length && out.length > length
+            extra = out.length - length
+            out = out[0..-extra]
+          end
+
           out
         end
 
         def readline
           out = ""
 
-          data = get_chunk
-          while !data.empty? do
-            new_line = data.index('\n')
+          while !eof? do
+            data = get_chunk
+            new_line = data.index("\n")
+
             if !new_line.nil?
-              out = data[0..new_line]
+              out += data[0..new_line]
               @tell += new_line+1
               break
-            elsif data.empty?
-              break
             else
-              out = data
+              out += data
               @tell += data.bytesize
-              data = get_chunk
             end
           end
 
@@ -110,6 +115,9 @@ module Gitlab
 
         private
 
+        ##
+        # The below methods are not implemented in IO class
+        #
         def in_range?
           @chunk_range&.include?(tell)
         end
@@ -129,7 +137,6 @@ module Gitlab
 
         def request
           Net::HTTP::Get.new(uri).tap do |request|
-            puts "Requesting chunk: #{chunk_start}-#{chunk_end}"
             request.set_range(chunk_start, BUFFER_SIZE)
           end
         end
