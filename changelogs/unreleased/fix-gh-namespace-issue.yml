@@ -1,0 +1,5 @@
+---
+title: Fix namespace access issue for GitHub, BitBucket, and GitLab.com project importers
+merge_request:
+author:
+type: security
