@@ -312,7 +312,7 @@ because we have not yet configured the secondary server. This is the next step.
 
     When prompted enter the password you set in the first step for the
     `gitlab_replicator` user. If all worked correctly, you should see the
-    database prompt.
+    the list of primary's databases.
 
     A failure to connect here indicates that the TLS configuration is incorrect.
     Ensure that the contents of `~gitlab-psql/data/server.crt` on the primary
