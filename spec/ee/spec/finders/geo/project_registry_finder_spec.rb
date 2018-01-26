@@ -34,7 +34,7 @@ describe Geo::ProjectRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #legacy_find_synced_repositories' do
@@ -85,7 +85,7 @@ describe Geo::ProjectRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #legacy_find_synced_wiki' do
@@ -125,7 +125,7 @@ describe Geo::ProjectRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #find_failed_repositories' do
@@ -165,7 +165,7 @@ describe Geo::ProjectRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #find_failed_wikis' do
@@ -212,7 +212,7 @@ describe Geo::ProjectRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #legacy_find_filtered_failed_projects' do
@@ -265,7 +265,7 @@ describe Geo::ProjectRegistryFinder, :geo do
       end
 
       it 'delegates to #legacy_find_unsynced_projects when node has selective sync' do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
 
         expect(subject).to receive(:legacy_find_unsynced_projects).and_call_original
 
@@ -290,7 +290,7 @@ describe Geo::ProjectRegistryFinder, :geo do
       end
 
       it 'delegates to #legacy_find_projects_updated_recently when node has selective sync' do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
 
         expect(subject).to receive(:legacy_find_projects_updated_recently).and_call_original
 

@@ -10,7 +10,7 @@ describe Geo::RepositoriesCleanUpWorker do
 
     context 'when node has namespace restrictions' do
       let(:synced_group) { create(:group) }
-      let(:geo_node) { create(:geo_node, namespaces: [synced_group]) }
+      let(:geo_node) { create(:geo_node, selective_sync_type: 'namespaces', namespaces: [synced_group]) }
 
       context 'legacy storage' do
         it 'performs GeoRepositoryDestroyWorker for each project that does not belong to selected namespaces to replicate' do

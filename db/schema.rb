@@ -1014,6 +1014,8 @@ ActiveRecord::Schema.define(version: 20180131104538) do
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
     t.string "url", null: false
+    t.string "selective_sync_type"
+    t.text "selective_sync_shards"
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree

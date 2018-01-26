@@ -66,6 +66,7 @@ export const rawMockNodeDetails = {
   last_successful_status_check_timestamp: 1515142330,
   version: '10.4.0-pre',
   revision: 'b93c51849b',
+  selective_sync_type: 'namespaces',
   namespaces: [
     {
       id: 54,

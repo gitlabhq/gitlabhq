@@ -204,7 +204,13 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       end
 
       it 'does not replay events for projects that do not belong to selected namespaces to replicate' do
-        secondary.update!(namespaces: [group_2])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [group_2])
+
+        expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
+      end
+
+      it 'does not replay events for projects that do not belong to selected shards to replicate' do
+        secondary.update!(selective_sync_type: 'shards', selective_sync_shards: ['broken'])
 
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end

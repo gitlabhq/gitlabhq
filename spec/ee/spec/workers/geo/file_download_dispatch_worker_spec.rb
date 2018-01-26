@@ -181,7 +181,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       before do
         allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)
 
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'does not perform Geo::FileDownloadWorker for LFS object that does not belong to selected namespaces to replicate' do

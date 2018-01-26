@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Geo::NodeUpdateService do
-  let(:groups) { create_list(:group, 2) }
-  let!(:primary) { create(:geo_node, :primary) }
+  set(:primary) { create(:geo_node, :primary) }
+
   let(:geo_node) { create(:geo_node) }
-  let(:geo_node_with_restrictions) { create(:geo_node, namespace_ids: [groups.first.id]) }
+  let(:groups) { create_list(:group, 2) }
+  let(:namespace_ids) { groups.map(&:id).join(',') }
 
   describe '#execute' do
     it 'updates the node' do
@@ -31,22 +32,58 @@ describe Geo::NodeUpdateService do
       expect(service.execute).to eq false
     end
 
-    it 'logs an event to the Geo event log when namespaces change' do
-      service = described_class.new(geo_node, namespace_ids: groups.map(&:id).join(','))
+    context 'selective sync disabled' do
+      it 'does not log an event to the Geo event log when adding restrictions' do
+        service = described_class.new(geo_node, namespace_ids: namespace_ids, selective_sync_shards: ['default'])
 
-      expect { service.execute }.to change(Geo::RepositoriesChangedEvent, :count).by(1)
+        expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      end
     end
 
-    it 'does not log an event to the Geo event log when removing namespace restrictions' do
-      service = described_class.new(geo_node_with_restrictions, namespace_ids: '')
+    context 'selective sync by namespaces' do
+      let(:restricted_geo_node) { create(:geo_node, selective_sync_type: 'namespaces', namespaces: [create(:group)]) }
 
-      expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      it 'logs an event to the Geo event log when adding namespace restrictions' do
+        service = described_class.new(restricted_geo_node, namespace_ids: namespace_ids)
+
+        expect { service.execute }.to change(Geo::RepositoriesChangedEvent, :count).by(1)
+      end
+
+      it 'does not log an event to the Geo event log when removing namespace restrictions' do
+        service = described_class.new(restricted_geo_node, namespace_ids: '')
+
+        expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      end
+
+      it 'does not log an event to the Geo event log when node is a primary node' do
+        primary.update!(selective_sync_type: 'namespaces')
+        service = described_class.new(primary, namespace_ids: namespace_ids)
+
+        expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      end
     end
 
-    it 'does not log an event to the Geo event log when node is a primary node' do
-      service = described_class.new(primary, namespace_ids: groups.map(&:id).join(','))
+    context 'selective sync by shards' do
+      let(:restricted_geo_node) { create(:geo_node, selective_sync_type: 'shards', selective_sync_shards: ['default']) }
 
-      expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      it 'logs an event to the Geo event log when adding shard restrictions' do
+        service = described_class.new(restricted_geo_node, selective_sync_shards: %w[default broken])
+
+        expect { service.execute }.to change(Geo::RepositoriesChangedEvent, :count).by(1)
+      end
+
+      it 'does not log an event to the Geo event log when removing shard restrictions' do
+        service = described_class.new(restricted_geo_node, selective_sync_shards: [])
+
+        expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      end
+
+      it 'does not log an event to the Geo event log when node is a primary node' do
+        primary.update!(selective_sync_type: 'shards')
+        service = described_class.new(primary, selective_sync_shards: %w[default broken'])
+
+        expect { service.execute }.not_to change(Geo::RepositoriesChangedEvent, :count)
+      end
     end
   end
 end

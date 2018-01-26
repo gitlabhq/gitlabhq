@@ -1226,6 +1226,9 @@ module API
       expose :version
       expose :revision
 
+      expose :selective_sync_type
+
+      # Deprecated: remove in API v5. We use selective_sync_type instead now.
       expose :namespaces, using: NamespaceBasic
 
       expose :updated_at
