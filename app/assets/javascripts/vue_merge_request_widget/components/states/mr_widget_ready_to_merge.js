@@ -3,7 +3,7 @@ import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
 import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
 
 export default {

@@ -1,7 +1,7 @@
 <script>
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import eventHub from '../../event_hub';
-  import statusIcon from '../mr_widget_status_icon';
+  import statusIcon from '../mr_widget_status_icon.vue';
 
   export default {
     name: 'MRWidgetAutoMergeFailed',

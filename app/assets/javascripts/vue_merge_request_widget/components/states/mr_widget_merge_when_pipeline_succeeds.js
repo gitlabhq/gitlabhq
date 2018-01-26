@@ -1,5 +1,5 @@
 import Flash from '../../../flash';
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 import MRWidgetAuthor from '../../components/mr_widget_author';
 import eventHub from '../../event_hub';
 

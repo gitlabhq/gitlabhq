@@ -102,7 +102,7 @@ module Gitlab
         )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
-        @attributes = Gitlab::Git::Attributes.new(path)
+        @attributes = Gitlab::Git::InfoAttributes.new(path)
       end
 
       def ==(other)
@@ -133,7 +133,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status:  Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -490,7 +490,11 @@ module Gitlab
           return []
         end
 
-        log_by_shell(sha, options)
+        if log_using_shell?(options)
+          log_by_shell(sha, options)
+        else
+          log_by_walk(sha, options)
+        end
       end
 
       def count_commits(options)
@@ -993,6 +997,18 @@ module Gitlab
         attributes(path)[name]
       end
 
+      # Check .gitattributes for a given ref
+      #
+      # This only checks the root .gitattributes file,
+      # it does not traverse subfolders to find additional .gitattributes files
+      #
+      # This method is around 30 times slower than `attributes`,
+      # which uses `$GIT_DIR/info/attributes`
+      def attributes_at(ref, file_path)
+        parser = AttributesAtRefParser.new(self, ref)
+        parser.attributes(file_path)
+      end
+
       def languages(ref = nil)
         Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
           if is_enabled
@@ -1170,6 +1186,19 @@ module Gitlab
 
           raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
         end
+      end
+
+      def create_from_bundle(bundle_path)
+        gitaly_migrate(:create_repo_from_bundle) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.create_from_bundle(bundle_path)
+          else
+            run_git!(%W(clone --bare -- #{bundle_path} #{path}), chdir: nil)
+            self.class.create_hooks(path, File.expand_path(Gitlab.config.gitlab_shell.hooks_path))
+          end
+        end
+
+        true
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
@@ -1564,6 +1593,27 @@ module Gitlab
         end
       end
 
+      def log_using_shell?(options)
+        options[:path].present? ||
+          options[:disable_walk] ||
+          options[:skip_merges] ||
+          options[:after] ||
+          options[:before]
+      end
+
+      def log_by_walk(sha, options)
+        walk_options = {
+          show: sha,
+          sort: Rugged::SORT_NONE,
+          limit: options[:limit],
+          offset: options[:offset]
+        }
+        Rugged::Walker.walk(rugged, walk_options).to_a
+      end
+
+      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
+      # complexity is such that we should migrate it as Ruby before trying to
+      # do it in Go.
       def log_by_shell(sha, options)
         limit = options[:limit].to_i
         offset = options[:offset].to_i
