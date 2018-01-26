@@ -2,6 +2,8 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
+  include Importable
+
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
@@ -293,5 +295,9 @@ class Service < ActiveRecord::Base
     if project && !project.destroyed?
       project.cache_has_external_wiki
     end
+  end
+
+  def valid_recipients?
+    activated? && !importing?
   end
 end
