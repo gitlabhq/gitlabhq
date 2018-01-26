@@ -35,16 +35,24 @@
   <div
     class="node-detail-value"
   >
-    <strong>
-      {{ eventId }}
-    </strong>
-    <span
-      v-tooltip
-      class="event-status-timestamp"
-      data-placement="bottom"
-      :title="timeStampString"
+    <template v-if="eventTimeStamp">
+      <strong>
+        {{ eventId }}
+      </strong>
+      <span
+        v-tooltip
+        v-if="eventTimeStamp"
+        class="event-status-timestamp"
+        data-placement="bottom"
+        :title="timeStampString"
+      >
+        ({{ timeFormated(timeStamp) }})
+      </span>
+    </template>
+    <strong
+      v-else
     >
-      ({{ timeFormated(timeStamp) }})
-    </span>
+      {{ __('Not available') }}
+    </strong>
   </div>
 </template>
