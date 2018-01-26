@@ -19,10 +19,6 @@ AllCops:
     - 'builds/**/*'
   CacheRootDirectory: tmp
 
-# TODO: Remove me after updating gitlab-style
-Style/TrailingUnderscoreVariable:
-  Enabled: false
-
 # Gitlab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
