@@ -6,7 +6,7 @@ class PushRule < ActiveRecord::Base
   validates :project, presence: true, unless: "is_sample?"
   validates :max_file_size, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
-  FILES_BLACKLIST = YAML.load_file(Rails.root.join('lib/gitlab/checks/files_blacklist.yml'))
+  FILES_BLACKLIST = YAML.load_file(Rails.root.join('ee/lib/gitlab/checks/files_blacklist.yml'))
   SETTINGS_WITH_GLOBAL_DEFAULT = %i[
     reject_unsigned_commits
     commit_committer_check
