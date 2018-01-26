@@ -21,7 +21,6 @@ class RepositoryImportWorker
     return if service.async?
 
     if result[:status] == :error
-
       fail_import(project, result[:message]) if project.gitlab_project_import?
 
       raise result[:message]

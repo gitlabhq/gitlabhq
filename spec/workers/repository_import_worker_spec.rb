@@ -52,6 +52,19 @@ describe RepositoryImportWorker do
         end.to raise_error(StandardError, error)
         expect(project.reload.import_jid).not_to be_nil
       end
+
+      it 'updates the error on Import/Export' do
+        error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
+
+        project.update_attributes(import_jid: '123', import_type: 'gitlab_project')
+        expect_any_instance_of(Projects::ImportService).to receive(:execute).and_return({ status: :error, message: error })
+
+        expect do
+          subject.perform(project.id)
+        end.to raise_error(StandardError, error)
+
+        expect(project.reload.import_error).not_to be_nil
+      end
     end
 
     context 'when using an asynchronous importer' do
