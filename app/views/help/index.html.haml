@@ -6,6 +6,7 @@
   %hr
 
 %h1
+<<<<<<< HEAD
 GitLab
 Enterprise Edition
 - if user_signed_in?
@@ -13,6 +14,15 @@ Enterprise Edition
   %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ee', Gitlab::REVISION)
   - if current_application_settings.version_check_enabled
     = version_status_badge
+=======
+  GitLab
+  Community Edition
+  - if user_signed_in?
+    %span= Gitlab::VERSION
+    %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
+    = version_status_badge
+  %hr
+>>>>>>> upstream/master
 
 - unless current_application_settings.help_page_hide_commercial_content?
   %p.slead
