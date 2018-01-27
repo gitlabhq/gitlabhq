@@ -49,7 +49,7 @@ module Gitlab
 
     def fetch_git_tags
       remote_tags, _ = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
-      remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
+      remote_tags.split("\n").grep(%r{tags/v#{current_version.major}})
     end
 
     def update_commands

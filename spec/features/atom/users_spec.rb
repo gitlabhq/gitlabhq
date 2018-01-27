@@ -64,7 +64,7 @@ describe "User Feed"  do
       end
 
       it 'has XHTML summaries in issue descriptions' do
-        expect(body).to match /<hr ?\/>/
+        expect(body).to match %r{<hr ?/>}
       end
 
       it 'has XHTML summaries in notes' do
@@ -72,7 +72,7 @@ describe "User Feed"  do
       end
 
       it 'has XHTML summaries in merge request descriptions' do
-        expect(body).to match /Here is the fix: <a[^>]*><img[^>]*\/><\/a>/
+        expect(body).to match %r{Here is the fix: <a[^>]*><img[^>]*/></a>}
       end
 
       it 'has push event commit ID' do

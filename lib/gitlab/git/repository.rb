@@ -1397,7 +1397,7 @@ module Gitlab
       end
 
       def search_files_by_name(query, ref)
-        safe_query = Regexp.escape(query.sub(/^\/*/, ""))
+        safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
 
         return [] if empty? || safe_query.blank?
 
@@ -2025,7 +2025,7 @@ module Gitlab
         target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ %r{'refs/heads/#{ref}'}
 
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
