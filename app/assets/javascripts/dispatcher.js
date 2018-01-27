@@ -1,29 +1,21 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import Milestone from './milestone';
-import notificationsDropdown from './notifications_dropdown';
-import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-import initCompareAutocomplete from './compare_autocomplete';
-import Sidebar from './right_sidebar';
 import Flash from './flash';
-import UserCallout from './user_callout';
-import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
-import Star from './star';
 import ZenMode from './zen_mode';
-import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
 import ShortcutsIssuable from './shortcuts_issuable';
-import U2FAuthenticate from './u2f/authenticate';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
 // EE-only
 import UsersSelect from './users_select';
+import UserCallout from './user_callout';
+import initCompareAutocomplete from './compare_autocomplete';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
@@ -92,6 +84,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:environments:metrics':
+          import('./pages/projects/environments/metrics')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:index':
           import('./pages/projects/merge_requests/index')
             .then(callDefault)
@@ -115,11 +112,21 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           break;
+        case 'projects:milestones:index':
+          import('./pages/projects/milestones/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:milestones:show':
+          import('./pages/projects/milestones/show')
+            .then(callDefault)
+            .catch(fail);
           new UserCallout();
+          break;
         case 'groups:milestones:show':
-          new Milestone();
-          new Sidebar();
+          import('./pages/groups/milestones/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'dashboard:milestones:show':
           import('./pages/dashboard/milestones/show')
@@ -147,7 +154,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'dashboard:todos:index':
-          import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
+          import('./pages/dashboard/todos/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:jobs:index':
           import('./pages/admin/jobs/index')
@@ -537,13 +546,19 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          import('./pages/ci/lints').then(m => m.default()).catch(fail);
+          import('./pages/ci/lints')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'users:show':
-          import('./pages/users/show').then(callDefault).catch(fail);
+          import('./pages/users/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
+          import('./pages/admin/conversational_development_index/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'snippets:show':
           import('./pages/snippets/show')
@@ -551,7 +566,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
+          import('./pages/import/fogbugz/new_user_map')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
           import('./pages/profiles/personal_access_tokens')
@@ -580,6 +597,10 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .then(callDefault)
             .catch(fail);
           break;
+        case 'dashboard:groups:index':
+          import('./pages/dashboard/groups/index')
+            .then(callDefault)
+            .catch(fail);
         case 'admin:licenses:new':
           import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
           break;
@@ -592,18 +613,15 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
       switch (path[0]) {
         case 'sessions':
+          import('./pages/sessions')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'omniauth_callbacks':
-          if (!gon.u2f) break;
-          const u2fAuthenticate = new U2FAuthenticate(
-            $('#js-authenticate-u2f'),
-            '#js-login-u2f-form',
-            gon.u2f,
-            document.querySelector('#js-login-2fa-device'),
-            document.querySelector('.js-2fa-form'),
-          );
-          u2fAuthenticate.start();
-          // needed in rspec
-          gl.u2fAuthenticate = u2fAuthenticate;
+          import('./pages/omniauth_callbacks')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'admin':
           import('./pages/admin')
             .then(callDefault)
@@ -662,10 +680,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
               break;
           }
           break;
-        case 'dashboard':
-        case 'root':
-          new UserCallout();
-          break;
         case 'profiles':
           import('./pages/profiles/index/')
             .then(callDefault)
@@ -686,22 +700,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
                 .then(callDefault)
                 .catch(fail);
               break;
-            case 'show':
-              new Star();
-              notificationsDropdown();
-              break;
             case 'wikis':
               import('./pages/projects/wikis')
                 .then(callDefault)
                 .catch(fail);
               shortcut_handler = true;
-              break;
-            case 'snippets':
-              if (path[2] === 'show') {
-                new ZenMode();
-                new LineHighlighter();
-                new BlobViewer();
-              }
               break;
           }
           break;
@@ -712,7 +715,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
 
       if (document.querySelector('#peek')) {
-        new PerformanceBar({ container: '#peek' });
+        import('./performance_bar')
+          .then(m => new m.default({ container: '#peek' })) // eslint-disable-line new-cap
+          .catch(fail);
       }
     };
 

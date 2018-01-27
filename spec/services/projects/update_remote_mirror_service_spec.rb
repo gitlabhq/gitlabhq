@@ -9,7 +9,7 @@ describe Projects::UpdateRemoteMirrorService do
 
   subject { described_class.new(project, project.creator) }
 
-  describe "#execute" do
+  describe "#execute", :skip_gitaly_mock do
     before do
       create_branch(repository, 'existing-branch')
       allow(raw_repository).to receive(:remote_tags) do
@@ -82,7 +82,10 @@ describe Projects::UpdateRemoteMirrorService do
       end
 
       context 'when push only protected branches option is set' do
-        let(:protected_branch_name) { project.repository.branch_names.first }
+        let(:unprotected_branch_name) { 'existing-branch' }
+        let(:protected_branch_name) do
+          project.repository.branch_names.find { |n| n != unprotected_branch_name }
+        end
         let!(:protected_branch) do
           create(:protected_branch, project: project, name: protected_branch_name)
         end
@@ -106,10 +109,10 @@ describe Projects::UpdateRemoteMirrorService do
         it 'does not sync unprotected branches' do
           allow(repository).to receive(:fetch_remote) do
             sync_remote(repository, remote_mirror.remote_name, local_branch_names)
-            update_branch(repository, 'existing-branch')
+            update_branch(repository, unprotected_branch_name)
           end
 
-          expect(raw_repository).not_to receive(:push_remote_branches).with(remote_mirror.remote_name, ['existing-branch'])
+          expect(raw_repository).not_to receive(:push_remote_branches).with(remote_mirror.remote_name, [unprotected_branch_name])
 
           subject.execute(remote_mirror)
         end

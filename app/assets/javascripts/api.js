@@ -180,7 +180,7 @@ const Api = {
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {
     const url = Api.buildUrl(Api.issuableTemplatePath)
-      .replace(':key', key)
+      .replace(':key', encodeURIComponent(key))
       .replace(':type', type)
       .replace(':project_path', projectPath)
       .replace(':namespace_path', namespacePath);

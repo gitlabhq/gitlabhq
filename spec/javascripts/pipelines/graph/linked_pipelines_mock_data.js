@@ -223,7 +223,7 @@ export default {
     "created_at": "2017-05-24T14:46:24.630Z",
     "updated_at": "2017-05-24T14:49:45.091Z"
   }, {
-    "id": 132,
+    "id": 131,
     "active": true,
     "path": "/gitlab-org/gitlab-ce/pipelines/132",
     "project": {
@@ -278,7 +278,7 @@ export default {
     "created_at": "2017-05-24T14:46:24.644Z",
     "updated_at": "2017-05-24T14:48:55.226Z"
   }, {
-    "id": 133,
+    "id": 134,
     "active": true,
     "path": "/gitlab-org/gitlab-ce/pipelines/133",
     "project": {
@@ -333,7 +333,7 @@ export default {
     "created_at": "2017-05-24T14:46:24.648Z",
     "updated_at": "2017-05-24T14:48:59.673Z"
   }, {
-    "id": 130,
+    "id": 135,
     "active": true,
     "path": "/gitlab-org/gitlab-ce/pipelines/130",
     "project": {

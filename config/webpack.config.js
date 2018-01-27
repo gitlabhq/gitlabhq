@@ -49,9 +49,6 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',
-    group:                './group.js',
-    groups:               './groups/index.js',
-    groups_list:          './groups_list.js',
     help:                 './help/help.js',
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
@@ -99,7 +96,6 @@ var config = {
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
     users:                './users/index.js',
-    performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
 
@@ -133,9 +129,9 @@ var config = {
       {
         test: /\_worker\.js$/,
         use: [
-          { 
+          {
             loader: 'worker-loader',
-            options: { 
+            options: {
               inline: true
             }
           },

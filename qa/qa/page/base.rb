@@ -41,7 +41,21 @@ module QA
       end
 
       def click_element(name)
-        find(Page::Element.new(name).selector_css).click
+        find_element(name).click
+      end
+
+      def find_element(name)
+        find(element_selector_css(name))
+      end
+
+      def within_element(name)
+        page.within(element_selector_css(name)) do
+          yield
+        end
+      end
+
+      def element_selector_css(name)
+        Page::Element.new(name).selector_css
       end
 
       def self.path

@@ -27,6 +27,26 @@ describe('GeoNodeSyncSettingsComponent', () => {
         vm.$destroy();
       });
     });
+
+    describe('eventTimestampEmpty', () => {
+      it('returns `true` if one of the event timestamp is empty', () => {
+        const vmEmptyTimestamp = createComponent(mockNodeDetails.namespaces, {
+          id: 0,
+          timeStamp: 0,
+        }, {
+          id: 0,
+          timeStamp: 0,
+        });
+        expect(vmEmptyTimestamp.eventTimestampEmpty).toBeTruthy();
+        vmEmptyTimestamp.$destroy();
+      });
+
+      it('return `false` if one of the event timestamp is present', () => {
+        const vm = createComponent();
+        expect(vm.eventTimestampEmpty).toBeFalsy();
+        vm.$destroy();
+      });
+    });
   });
 
   describe('methods', () => {

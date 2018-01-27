@@ -21,10 +21,10 @@ project in an easy and automatic way:
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
 1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
-1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
 1. [Auto Review Apps](#auto-review-apps)
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Deploy](#auto-deploy)
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -66,9 +66,8 @@ To make full use of Auto DevOps, you will need:
    a domain configured with wildcard DNS which is gonna be used by all of your
    Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
 1. **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
-   To enable deployments, you will need Kubernetes 1.5+. The [Kubernetes service][kubernetes-service]
-   integration will need to be enabled for the project, or enabled as a
-   [default service template](../../user/project/integrations/services_templates.md)
+   To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
+   for the project, or a Kubernetes [default service template](../../user/project/integrations/services_templates.md)
    for the entire GitLab installation.
     1. **A load balancer** - You can use NGINX ingress by deploying it to your
        Kubernetes cluster using the
@@ -229,6 +228,32 @@ check out.
 In GitLab Enterprise Edition Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
 
+### Auto Review Apps
+
+NOTE: **Note:**
+This is an optional step, since many projects do not have a Kubernetes cluster
+available. If the [prerequisites](#prerequisites) are not met, the job will
+silently be skipped.
+
+CAUTION: **Caution:**
+Your apps should *not* be manipulated outside of Helm (using Kubernetes directly.)
+This can cause confusion with Helm not detecting the change, and subsequent
+deploys with Auto DevOps can undo your changes. Also, if you change something
+and want to undo it by deploying again, Helm may not detect that anything changed
+in the first place, and thus not realize that it needs to re-apply the old config.
+
+[Review Apps][review-app] are temporary application environments based on the
+branch's code so developers, designers, QA, product managers, and other
+reviewers can actually see and interact with code changes as part of the review
+process. Auto Review Apps create a Review App for each branch.
+
+The Review App will have a unique URL based on the project name, the branch
+name, and a unique number, combined with the Auto DevOps base domain. For
+example, `user-project-branch-1234.example.com`. A link to the Review App shows
+up in the merge request widget for easy discovery. When the branch is deleted,
+for example after the merge request is merged, the Review App will automatically
+be deleted.
+
 ### Auto DAST
 
 > Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
@@ -256,32 +281,6 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 
 In GitLab Enterprise Edition Premium, performance differences between the source
 and target branches are [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
-
-### Auto Review Apps
-
-NOTE: **Note:**
-This is an optional step, since many projects do not have a Kubernetes cluster
-available. If the [prerequisites](#prerequisites) are not met, the job will
-silently be skipped.
-
-CAUTION: **Caution:**
-Your apps should *not* be manipulated outside of Helm (using Kubernetes directly.)
-This can cause confusion with Helm not detecting the change, and subsequent
-deploys with Auto DevOps can undo your changes. Also, if you change something
-and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old config.
-
-[Review Apps][review-app] are temporary application environments based on the
-branch's code so developers, designers, QA, product managers, and other
-reviewers can actually see and interact with code changes as part of the review
-process. Auto Review Apps create a Review App for each branch.
-
-The Review App will have a unique URL based on the project name, the branch
-name, and a unique number, combined with the Auto DevOps base domain. For
-example, `user-project-branch-1234.example.com`. A link to the Review App shows
-up in the merge request widget for easy discovery. When the branch is deleted,
-for example after the merge request is merged, the Review App will automatically
-be deleted.
 
 ### Auto Deploy
 
@@ -588,7 +587,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37115
-[kubernetes-service]: ../../user/project/integrations/kubernetes.md
+[kubernetes-clusters]: ../../user/project/clusters/index.md
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md

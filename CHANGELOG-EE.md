@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.4.1 (2018-01-24)
+
+### Fixed (1 change)
+
+- Fix failed LDAP logins when sync_ssh_keys is included in config.
+
+
 ## 10.4.0 (2018-01-22)
 
 ### Security (2 changes)
@@ -62,6 +69,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove unnecessary NTP checks now included in gitlab:geo:check. !3940
 - Move geo status check after db replication to avoid anticipated failures. !3941
 - Make scoped issue board specs more reliable.
+
+
+## 10.3.6 (2018-01-22)
+
+### Fixed (3 changes)
+
+- Geo - Fix repository clean up when selective replication changes with hashed storage enabled. !4059
+- Fix JavaScript bundle running on Cluster update/destroy pages. !4112
+- Fix export to CSV if a filter with multiple labels is used.
 
 
 ## 10.3.5 (2018-01-18)

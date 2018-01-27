@@ -1,5 +1,5 @@
 import Flash from '~/flash';
-import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
+import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 import ApprovalsBody from './approvals_body';
 import ApprovalsFooter from './approvals_footer';
 

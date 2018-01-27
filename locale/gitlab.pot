@@ -195,13 +195,13 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
-msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgid "Auto Review Apps and Auto Deploy need a domain name and a %{kubernetes} to work correctly."
 msgstr ""
 
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr ""
 
-msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
 msgstr ""
 
 msgid "AutoDevOps|Auto DevOps (Beta)"

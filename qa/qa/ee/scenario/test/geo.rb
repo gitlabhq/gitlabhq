@@ -67,7 +67,7 @@ module QA
             def set_replication_password
               puts 'Setting replication password on primary node ...'
 
-              QA::Shell::Omnibus.new(@name).act do
+              QA::Service::Omnibus.new(@name).act do
                 gitlab_ctl 'set-replication-password', input: 'echo mypass'
               end
             end
@@ -75,7 +75,7 @@ module QA
             def set_primary_node
               puts 'Making this node a primary node  ...'
 
-              Shell::Omnibus.new(@name).act do
+              QA::Service::Omnibus.new(@name).act do
                 gitlab_ctl 'set-geo-primary-node'
               end
             end
@@ -91,7 +91,7 @@ module QA
             def replicate_database
               puts 'Starting Geo replication on secondary node ...'
 
-              Shell::Omnibus.new(@name).act do
+              QA::Service::Omnibus.new(@name).act do
                 require 'uri'
 
                 host = URI(QA::Runtime::Scenario.geo_primary_address).host

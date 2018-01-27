@@ -106,7 +106,7 @@ describe SystemCheck::Geo::AuthorizedKeysCheck do
     it 'returns correct (uncommented) command' do
       override_sshd_config('system_check/sshd_config')
 
-      expect(subject.extract_authorized_keys_command).to eq('/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check %u %k')
+      expect(subject.extract_authorized_keys_command).to eq('/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k')
     end
 
     it 'returns command without comments and without quotes' do

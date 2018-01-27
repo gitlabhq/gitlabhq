@@ -18,6 +18,8 @@ webpackConfig.devtool = 'cheap-inline-source-map';
 
 // Karma configuration
 module.exports = function(config) {
+  process.env.TZ = 'Etc/UTC';
+
   var progressReporter = process.env.CI ? 'mocha' : 'progress';
 
   var karmaConfig = {

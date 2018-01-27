@@ -576,6 +576,9 @@ class Project < ActiveRecord::Base
         RepositoryForkWorker.perform_async(id,
                                            forked_from_project.repository_storage_path,
                                            forked_from_project.disk_path)
+      elsif gitlab_project_import?
+        # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
+        RepositoryImportWorker.set(retry: false).perform_async(self.id)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
@@ -981,9 +984,9 @@ class Project < ActiveRecord::Base
       hooks.hooks_for(hooks_scope).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
-    end
 
-    SystemHooksService.new.execute_hooks(data, hooks_scope)
+      SystemHooksService.new.execute_hooks(data, hooks_scope)
+    end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
@@ -1042,6 +1045,8 @@ class Project < ActiveRecord::Base
   end
 
   def fork_source
+    return nil unless forked?
+
     forked_from_project || fork_network&.root_project
   end
 

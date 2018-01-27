@@ -9,7 +9,7 @@ describe JobArtifactUploader do
   describe '#store_dir' do
     subject { uploader.store_dir }
 
-    let(:path) { "#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/#{job_artifact.project_id}/#{job_artifact.id}" }
+    let(:path) { "#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/#{job_artifact.job_id}/#{job_artifact.id}" }
 
     context 'when using local storage' do
       it { is_expected.to start_with(local_path) }
@@ -57,7 +57,7 @@ describe JobArtifactUploader do
 
     it { is_expected.to start_with(local_path) }
     it { is_expected.to include("/#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/") }
-    it { is_expected.to include("/#{job_artifact.project_id}/") }
+    it { is_expected.to include("/#{job_artifact.job_id}/#{job_artifact.id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
 end

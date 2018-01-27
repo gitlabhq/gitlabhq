@@ -1,0 +1,5 @@
+---
+title: Handle empty event timestamp and larger memory units
+merge_request: 4206
+author:
+type: fixed

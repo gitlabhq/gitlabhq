@@ -56,7 +56,7 @@ describe('RepoTab', () => {
   });
 
   it('renders an fa-circle icon if tab is changed', () => {
-    const tab = file();
+    const tab = file('changedFile');
     tab.changed = true;
     vm = createComponent({
       tab,
@@ -98,7 +98,7 @@ describe('RepoTab', () => {
   describe('methods', () => {
     describe('closeTab', () => {
       it('does not close tab if is changed', (done) => {
-        const tab = file();
+        const tab = file('closeFile');
         tab.changed = true;
         tab.opened = true;
         vm = createComponent({

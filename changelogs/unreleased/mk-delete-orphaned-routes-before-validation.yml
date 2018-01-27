@@ -1,6 +1,0 @@
----
-title: Ensure that users can reclaim a namespace or project path that is blocked by
-  an orphaned route
-merge_request: 16242
-author:
-type: fixed

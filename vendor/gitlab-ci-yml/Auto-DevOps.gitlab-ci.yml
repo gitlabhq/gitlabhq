@@ -345,12 +345,6 @@ production:
       replicas="$new_replicas"
     fi
 
-    if [[ "$CI_PROJECT_VISIBILITY" != "public" ]]; then
-      secret_name='gitlab-registry'
-    else
-      secret_name=''
-    fi
-
     helm upgrade --install \
       --wait \
       --set service.enabled="$service_enabled" \
@@ -358,7 +352,6 @@ production:
       --set image.repository="$CI_APPLICATION_REPOSITORY" \
       --set image.tag="$CI_APPLICATION_TAG" \
       --set image.pullPolicy=IfNotPresent \
-      --set image.secrets[0].name="$secret_name" \
       --set application.track="$track" \
       --set application.database_url="$DATABASE_URL" \
       --set service.url="$CI_ENVIRONMENT_URL" \
@@ -488,9 +481,6 @@ production:
 
   function create_secret() {
     echo "Create secret..."
-    if [[ "$CI_PROJECT_VISIBILITY" == "public" ]]; then
-      return
-    fi
 
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \

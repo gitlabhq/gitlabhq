@@ -430,7 +430,7 @@ namespace :gitlab do
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
-      username = args[:username] || prompt("Check repository integrity for fsername? ".color(:blue))
+      username = args[:username] || prompt("Check repository integrity for username? ".color(:blue))
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|

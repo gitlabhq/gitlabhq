@@ -210,7 +210,7 @@
         </div>
         <span class="help-block">{{ visibilityLevelDescription }}</span>
         <label
-          v-if="visibilityLevel !== visibilityOptions.PUBLIC"
+          v-if="visibilityLevel !== visibilityOptions.PRIVATE"
           class="request-access"
         >
           <input

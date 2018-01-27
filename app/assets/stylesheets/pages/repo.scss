@@ -355,6 +355,11 @@ table.table tr td.multi-file-table-name {
   flex: 1;
 }
 
+.multi-file-commit-empty-state-container {
+  align-items: center;
+  justify-content: center;
+}
+
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
@@ -381,7 +386,7 @@ table.table tr td.multi-file-table-name {
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
-  padding: $gl-btn-padding;
+  padding: 0 $gl-btn-padding;
 
   svg {
     margin-right: $gl-btn-padding;

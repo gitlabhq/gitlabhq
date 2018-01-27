@@ -4,7 +4,7 @@ module QA
       Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::Project.fabricate! do |project|
+        project = Factory::Resource::Project.fabricate! do |project|
           project.name = 'geo-project'
           project.description = 'Geo test project'
         end
@@ -12,21 +12,11 @@ module QA
         geo_project_name = Page::Project::Show.act { project_name }
         expect(geo_project_name).to include 'geo-project'
 
-        Git::Repository.perform do |repository|
-          repository.location = Page::Project::Show.act do
-            choose_repository_clone_http
-            repository_location
-          end
-
-          repository.use_default_credentials
-
-          repository.act do
-            clone
-            configure_identity('GitLab QA', 'root@gitlab.com')
-            add_file('README.md', '# This is Geo project!')
-            commit('Add README.md')
-            push_changes
-          end
+        Factory::Repository::Push.fabricate! do |push|
+          push.file_name = 'README.md'
+          push.file_content = '# This is Geo project!'
+          push.commit_message = 'Add README.md'
+          push.project = project
         end
 
         Runtime::Browser.visit(:geo_secondary, QA::Page::Main::Login) do

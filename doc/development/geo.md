@@ -167,7 +167,7 @@ otherwise it may fail with an encryption error.
 Secondary Geo nodes track data about what has been downloaded in a second
 PostgreSQL database that is distinct from the production GitLab database.
 The database configuration is set in `config/database_geo.yml`.
-`db/geo` contains the schema and migrations for this database.
+`ee/db/geo` contains the schema and migrations for this database.
 
 To write a migration for the database, use the `GeoMigrationGenerator`:
 
@@ -190,3 +190,26 @@ synchronization operations.
 While FDW is available in older versions of Postgres, we needed to bump the
 minimum required version to 9.6 as this includes many performance improvements
 to the FDW implementation.
+
+### Refeshing the Foreign Tables
+
+Whenever the database schema changes on the primary, the secondary will need to refresh
+its foreign tables by running the following:
+
+```sh
+bundle exec rake geo:db:refresh_foreign_tables
+```
+
+Failure to do this will prevent the secondary from functioning properly. The
+secondary will generate error messages, as the following PostgreSQL error:
+
+```
+ERROR:  relation "gitlab_secondary.ci_job_artifacts" does not exist at character 323
+STATEMENT:                SELECT a.attname, format_type(a.atttypid, a.atttypmod),
+                          pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod
+                     FROM pg_attribute a LEFT JOIN pg_attrdef d
+                       ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+                    WHERE a.attrelid = '"gitlab_secondary"."ci_job_artifacts"'::regclass
+                      AND a.attnum > 0 AND NOT a.attisdropped
+                    ORDER BY a.attnum
+```

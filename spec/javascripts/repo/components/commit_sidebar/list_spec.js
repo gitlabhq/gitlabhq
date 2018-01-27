@@ -24,12 +24,6 @@ describe('Multi-file editor commit sidebar list', () => {
     vm.$destroy();
   });
 
-  describe('empty file list', () => {
-    it('renders no changes text', () => {
-      expect(vm.$el.querySelector('.help-block').textContent.trim()).toBe('No changes');
-    });
-  });
-
   describe('with a list of files', () => {
     beforeEach((done) => {
       const f = file('file name');
