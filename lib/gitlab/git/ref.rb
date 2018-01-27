@@ -23,7 +23,7 @@ module Gitlab
       # Ex.
       #   Ref.extract_branch_name('refs/heads/master') #=> 'master'
       def self.extract_branch_name(str)
-        str.gsub(/\Arefs\/heads\//, '')
+        str.gsub(%r{\Arefs/heads/}, '')
       end
 
       # Gitaly: this method will probably be migrated indirectly via its call sites.

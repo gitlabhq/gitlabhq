@@ -135,7 +135,7 @@ class Settings < Settingslogic
       url = "http://#{url}" unless url.start_with?('http')
 
       # Get rid of the path so that we don't even have to encode it
-      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+      url_without_path = url.sub(%r{(https?://[^/]+)/?.*}, '\1')
 
       URI.parse(url_without_path).host
     end
@@ -554,10 +554,10 @@ end
 # repository_downloads_path value.
 #
 repositories_storages          = Settings.repositories.storages.values
-repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(/\/$/, '')
+repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(/\/$/, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 
