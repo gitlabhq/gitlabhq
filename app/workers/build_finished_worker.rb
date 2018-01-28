@@ -8,7 +8,7 @@ class BuildFinishedWorker
     Ci::Build.find_by(id: build_id).try do |build|
       UpdateBuildMinutesService.new(build.project, nil).execute(build)
       BuildTraceSectionsWorker.perform_async(build.id)
-      CreateArtifactsTraceWorker.perform_async(build.id)
+      CreateTraceArtifactWorker.perform_async(build.id)
       BuildCoverageWorker.new.perform(build.id)
       BuildHooksWorker.new.perform(build.id)
     end
