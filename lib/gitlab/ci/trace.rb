@@ -1,11 +1,3 @@
-##
-# Current status of paths
-# Era 1: Live/Full traces in database (ci_builds.trace)
-# Era 2: Live/Full traces in `setting_root/YYYY_MM/project_ci_id/job_id.log`
-# Era 3: Live/Full traces in `setting_root/YYYY_MM/project_id/job_id.log`
-# Era 4: Live traces in `setting_root/YYYY_MM/project_id/job_id.log`. Full traces in JobArtifactUploader#default_path(FileStorage/ObjectStorage).
-#
-# The legacy paths are to be migrated to the latest era.
 module Gitlab
   module Ci
     class Trace
