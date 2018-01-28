@@ -27,6 +27,8 @@ module API
       end
 
       def update_runner_info
+        update_runner_info_cache
+
         return unless update_runner?
 
         current_runner.contacted_at = Time.now
@@ -35,13 +37,17 @@ module API
       end
 
       def update_runner?
-        # Use a random threshold to prevent beating DB updates.
-        # It generates a distribution between [40m, 80m].
-        #
-        contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
+        # Use a 1h threshold to prevent beating DB updates.
 
         current_runner.contacted_at.nil? ||
-          (Time.now - current_runner.contacted_at) >= contacted_at_max_age
+          (Time.now - current_runner.contacted_at) >= UPDATE_RUNNER_EVERY
+      end
+
+      def update_runner_info_cache
+        Gitlab::Redis::SharedState.with do |redis|
+          redis_key = "#{current_runner.runner_info_key}:contacted_at"
+          redis.set(redis_key, Time.now)
+        end
       end
 
       def validate_job!(job)
