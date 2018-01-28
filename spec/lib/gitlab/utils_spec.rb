@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Utils do
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, to: :described_class
 
   describe '.slugify' do
     {
@@ -13,6 +13,22 @@ describe Gitlab::Utils do
     }.each do |original, expected|
       it "slugifies #{original} to #{expected}" do
         expect(slugify(original)).to eq(expected)
+      end
+    end
+  end
+
+  describe '.remove_line_breaks' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:original, :expected) do
+      "foo\nbar\nbaz"     | "foobarbaz"
+      "foo\r\nbar\r\nbaz" | "foobarbaz"
+      "foobar"            | "foobar"
+    end
+
+    with_them do
+      it "replace line breaks with an empty string" do
+        expect(described_class.remove_line_breaks(original)).to eq(expected)
       end
     end
   end
@@ -57,6 +73,14 @@ describe Gitlab::Utils do
   describe '.random_string' do
     it 'generates a string' do
       expect(random_string).to be_kind_of(String)
+    end
+  end
+
+  describe '.which' do
+    it 'finds the full path to an executable binary' do
+      expect(File).to receive(:executable?).with('/bin/sh').and_return(true)
+
+      expect(which('sh', 'PATH' => '/bin')).to eq('/bin/sh')
     end
   end
 end

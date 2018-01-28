@@ -66,16 +66,21 @@ describe PostReceive do
     end
 
     context "gitlab-ci.yml" do
+      let(:changes) { "123456 789012 refs/heads/feature\n654321 210987 refs/tags/tag" }
+
       subject { described_class.new.perform(gl_repository, key_id, base64_changes) }
 
       context "creates a Ci::Pipeline for every change" do
         before do
-          allow_any_instance_of(Ci::CreatePipelineService).to receive(:commit) do
-            OpenStruct.new(id: '123456')
-          end
-          allow_any_instance_of(Ci::CreatePipelineService).to receive(:branch?).and_return(true)
-          allow_any_instance_of(Repository).to receive(:ref_exists?).and_return(true)
           stub_ci_pipeline_to_return_yaml_file
+
+          allow_any_instance_of(Project)
+            .to receive(:commit)
+            .and_return(project.commit)
+
+          allow_any_instance_of(Repository)
+            .to receive(:branch_exists?)
+            .and_return(true)
         end
 
         it { expect { subject }.to change { Ci::Pipeline.count }.by(2) }

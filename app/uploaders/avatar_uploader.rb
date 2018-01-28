@@ -9,7 +9,7 @@ class AvatarUploader < GitlabUploader
   end
 
   def exists?
-    model.avatar.file && model.avatar.file.exists?
+    model.avatar.file && model.avatar.file.present?
   end
 
   # We set move_to_store and move_to_cache to 'false' to prevent stealing

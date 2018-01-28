@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe NamespacelessProjectDestroyWorker do
+  include ProjectForksHelper
+
   subject { described_class.new }
 
   before do
@@ -55,9 +57,11 @@ describe NamespacelessProjectDestroyWorker do
 
       context 'project forked from another' do
         let!(:parent_project) { create(:project) }
-
-        before do
-          create(:forked_project_link, forked_to_project: project, forked_from_project: parent_project)
+        let(:project) do
+          namespaceless_project = fork_project(parent_project)
+          namespaceless_project.namespace_id = nil
+          namespaceless_project.save(validate: false)
+          namespaceless_project
         end
 
         it 'closes open merge requests' do

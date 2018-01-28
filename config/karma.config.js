@@ -18,6 +18,8 @@ webpackConfig.devtool = 'cheap-inline-source-map';
 
 // Karma configuration
 module.exports = function(config) {
+  process.env.TZ = 'Etc/UTC';
+
   var progressReporter = process.env.CI ? 'mocha' : 'progress';
 
   var karmaConfig = {
@@ -56,15 +58,6 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true
     };
     karmaConfig.browserNoActivityTimeout = 60000; // 60 seconds
-  }
-
-  if (process.env.DEBUG) {
-    karmaConfig.logLevel = config.LOG_DEBUG;
-    process.env.CHROME_LOG_FILE = process.env.CHROME_LOG_FILE || 'chrome_debug.log';
-  }
-
-  if (process.env.CHROME_LOG_FILE) {
-    karmaConfig.customLaunchers.ChromeHeadlessCustom.flags.push('--enable-logging', '--v=1');
   }
 
   if (process.env.DEBUG) {

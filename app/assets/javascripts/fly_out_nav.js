@@ -21,7 +21,7 @@ let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
 
-export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-icons-only');
+export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
 
 export const canShowActiveSubItems = (el) => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {
@@ -34,7 +34,7 @@ export const canShowActiveSubItems = (el) => {
 export const canShowSubItems = () => bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md' || bp.getBreakpointSize() === 'lg';
 
 export const getHideSubItemsInterval = () => {
-  if (!currentOpenMenu) return 0;
+  if (!currentOpenMenu || !mousePos.length) return 0;
 
   const currentMousePos = mousePos[mousePos.length - 1];
   const prevMousePos = mousePos[0];
@@ -77,10 +77,11 @@ export const hideMenu = (el) => {
 export const moveSubItemsToPosition = (el, subItems) => {
   const boundingRect = el.getBoundingClientRect();
   const top = calculateTop(boundingRect, subItems.offsetHeight);
+  const left = sidebar ? sidebar.offsetWidth : 50;
   const isAbove = top < boundingRect.top;
 
   subItems.classList.add('fly-out-list');
-  subItems.style.transform = `translate3d(0, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
+  subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
 
   const subItemsRect = subItems.getBoundingClientRect();
 
@@ -117,14 +118,14 @@ export const showSubLevelItems = (el) => {
   moveSubItemsToPosition(el, subItems);
 };
 
-export const mouseEnterTopItems = (el) => {
+export const mouseEnterTopItems = (el, timeout = getHideSubItemsInterval()) => {
   clearTimeout(timeoutId);
 
   timeoutId = setTimeout(() => {
     if (currentOpenMenu) hideMenu(currentOpenMenu);
 
     showSubLevelItems(el);
-  }, getHideSubItemsInterval());
+  }, timeout);
 };
 
 export const mouseLeaveTopItem = (el) => {
@@ -160,13 +161,16 @@ export default () => {
 
   const items = [...sidebar.querySelectorAll('.sidebar-top-level-items > li')];
 
-  sidebar.querySelector('.sidebar-top-level-items').addEventListener('mouseleave', () => {
-    clearTimeout(timeoutId);
+  const topItems = sidebar.querySelector('.sidebar-top-level-items');
+  if (topItems) {
+    sidebar.querySelector('.sidebar-top-level-items').addEventListener('mouseleave', () => {
+      clearTimeout(timeoutId);
 
-    timeoutId = setTimeout(() => {
-      if (currentOpenMenu) hideMenu(currentOpenMenu);
-    }, getHideSubItemsInterval());
-  });
+      timeoutId = setTimeout(() => {
+        if (currentOpenMenu) hideMenu(currentOpenMenu);
+      }, getHideSubItemsInterval());
+    });
+  }
 
   headerHeight = document.querySelector('.nav-sidebar').offsetTop;
 

@@ -1,9 +1,10 @@
 module Ci
   class PipelineSchedule < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include Importable
+    include IgnorableColumn
 
-    acts_as_paranoid
+    ignore_column :deleted_at
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'

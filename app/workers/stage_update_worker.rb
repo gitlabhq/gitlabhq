@@ -1,8 +1,8 @@
 class StageUpdateWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include PipelineQueue
 
-  enqueue_in group: :processing
+  queue_namespace :pipeline_processing
 
   def perform(stage_id)
     Ci::Stage.find_by(id: stage_id).try do |stage|

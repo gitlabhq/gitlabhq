@@ -13,7 +13,6 @@ class RenameAllReservedPathsAgain < ActiveRecord::Migration
       .well-known
       abuse_reports
       admin
-      all
       api
       assets
       autocomplete
@@ -24,29 +23,20 @@ class RenameAllReservedPathsAgain < ActiveRecord::Migration
       groups
       health_check
       help
-      hooks
       import
       invites
-      issues
       jwt
       koding
-      member
-      merge_requests
-      new
-      notes
       notification_settings
       oauth
       profile
       projects
       public
-      repository
       robots.txt
       s
       search
       sent_notifications
-      services
       snippets
-      teams
       u
       unicorn_test
       unsubscribes
@@ -94,7 +84,6 @@ class RenameAllReservedPathsAgain < ActiveRecord::Migration
       notification_setting
       pipeline_quota
       projects
-      subgroups
   ].freeze
 
   def up

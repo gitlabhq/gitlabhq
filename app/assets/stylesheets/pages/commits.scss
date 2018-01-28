@@ -1,6 +1,6 @@
 .commit-description {
   background: none;
-  border: none;
+  border: 0;
   padding: 0;
   margin-top: 10px;
   word-break: normal;
@@ -54,10 +54,13 @@
   .mr-widget-pipeline-graph {
     display: inline-block;
     vertical-align: middle;
-    margin-right: 4px;
 
     .stage-cell .stage-container {
       margin: 3px 3px 3px 0;
+    }
+
+    .stage-container:last-child {
+      margin-right: 0;
     }
 
     .dropdown-menu {
@@ -186,6 +189,7 @@
 
 .commit-content {
   padding-right: 10px;
+  white-space: normal;
 }
 
 .commit-actions {
@@ -244,7 +248,7 @@
     word-break: normal;
 
     pre {
-      border: none;
+      border: 0;
       background: inherit;
       padding: 0;
       margin: 0;
@@ -306,8 +310,8 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $common-gray-dark);
-    border-color: $common-gray-light;
+    @include status-color($gray-dark, $gray, $gray-darkest);
+    border-color: $gray-darkest;
   }
 }
 
@@ -331,8 +335,8 @@
 
   &.invalid {
     svg {
-      border: 1px solid $common-gray-light;
-      fill: $common-gray-light;
+      border: 1px solid $gray-darkest;
+      fill: $gray-darkest;
     }
   }
 

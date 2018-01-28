@@ -1,5 +1,6 @@
-/* global Flash */
-
+import Project from '~/pages/projects/project';
+import SmartInterval from '~/smart_interval';
+import Flash from '../flash';
 import {
   WidgetHeader,
   WidgetMergeHelp,
@@ -9,6 +10,7 @@ import {
   MergedState,
   ClosedState,
   MergingState,
+  RebaseState,
   WipState,
   ArchivedState,
   ConflictsState,
@@ -31,6 +33,7 @@ import {
   SquashBeforeMerge,
   notify,
 } from './dependencies';
+import { setFavicon } from '../lib/utils/common_utils';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -57,10 +60,10 @@ export default {
       return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
-      return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
+      return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return this.mr.relatedLinks;
+      return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
@@ -77,19 +80,20 @@ export default {
         ciEnvironmentsStatusPath: store.ciEnvironmentsStatusPath,
         statusPath: store.statusPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
+        rebasePath: store.rebasePath,
       };
       return new MRWidgetService(endpoints);
     },
     checkStatus(cb) {
-      this.service.checkStatus()
-        .then(res => res.json())
-        .then((res) => {
-          this.handleNotification(res);
-          this.mr.setData(res);
-          this.setFavicon();
+      return this.service.checkStatus()
+        .then(res => res.data)
+        .then((data) => {
+          this.handleNotification(data);
+          this.mr.setData(data);
+          this.setFaviconHelper();
 
           if (cb) {
-            cb.call(null, res);
+            cb.call(null, data);
           }
         })
         .catch(() => {
@@ -97,7 +101,7 @@ export default {
         });
     },
     initPolling() {
-      this.pollingInterval = new gl.SmartInterval({
+      this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
         startingInterval: 10000,
         maxInterval: 30000,
@@ -106,7 +110,7 @@ export default {
       });
     },
     initDeploymentsPolling() {
-      this.deploymentsInterval = new gl.SmartInterval({
+      this.deploymentsInterval = new SmartInterval({
         callback: this.fetchDeployments,
         startingInterval: 30000,
         maxInterval: 120000,
@@ -115,17 +119,17 @@ export default {
         immediateExecution: true,
       });
     },
-    setFavicon() {
+    setFaviconHelper() {
       if (this.mr.ciStatusFaviconPath) {
-        gl.utils.setFavicon(this.mr.ciStatusFaviconPath);
+        setFavicon(this.mr.ciStatusFaviconPath);
       }
     },
     fetchDeployments() {
-      this.service.fetchDeployments()
-        .then(res => res.json())
-        .then((res) => {
-          if (res.length) {
-            this.mr.deployments = res;
+      return this.service.fetchDeployments()
+        .then(res => res.data)
+        .then((data) => {
+          if (data.length) {
+            this.mr.deployments = data;
           }
         })
         .catch(() => {
@@ -135,10 +139,11 @@ export default {
     fetchActionsContent() {
       this.service.fetchMergeActionsContent()
         .then((res) => {
-          if (res.body) {
+          if (res.data) {
             const el = document.createElement('div');
-            el.innerHTML = res.body;
+            el.innerHTML = res.data;
             document.body.appendChild(el);
+            Project.initRefSwitcher();
           }
         })
         .catch(() => {
@@ -193,7 +198,7 @@ export default {
       });
     },
     handleMounted() {
-      this.setFavicon();
+      this.setFaviconHelper();
       this.initDeploymentsPolling();
     },
   },
@@ -229,13 +234,17 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-rebase': RebaseState,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline
         v-if="shouldRenderPipelines"
-        :mr="mr" />
+        :pipeline="mr.pipeline"
+        :ci-status="mr.ciStatus"
+        :has-ci="mr.hasCI"
+        />
       <mr-widget-deployment
         v-if="shouldRenderDeployments"
         :mr="mr"

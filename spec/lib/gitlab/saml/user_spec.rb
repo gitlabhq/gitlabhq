@@ -1,11 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::Saml::User do
+  include LdapHelpers
+  include LoginHelpers
+
   let(:saml_user) { described_class.new(auth_hash) }
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
+  let(:dn) { 'uid=user1,ou=people,dc=example' }
   let(:provider) { 'saml' }
-  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w(Developers Freelancers Designers) }) }) }
+  let(:raw_info_attr) { { 'groups' => %w(Developers Freelancers Designers) } }
+  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new(raw_info_attr) }) }
   let(:info_hash) do
     {
       name: 'John',
@@ -15,22 +20,6 @@ describe Gitlab::Saml::User do
   let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
   describe '#save' do
-    def stub_omniauth_config(messages)
-      allow(Gitlab.config.omniauth).to receive_messages(messages)
-    end
-
-    def stub_ldap_config(messages)
-      allow(Gitlab::LDAP::Config).to receive_messages(messages)
-    end
-
-    def stub_basic_saml_config
-      allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', args: {} } })
-    end
-
-    def stub_saml_group_config(groups)
-      allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
-    end
-
     before do
       stub_basic_saml_config
     end
@@ -163,13 +152,17 @@ describe Gitlab::Saml::User do
           end
 
           context 'and a corresponding LDAP person' do
+            let(:adapter) { ldap_adapter('ldapmain') }
+
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
               allow(ldap_user).to receive(:email) { %w(john@mail.com john2@example.com) }
-              allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
-              allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
-              allow(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
+              allow(ldap_user).to receive(:dn) { dn }
+              allow(Gitlab::LDAP::Adapter).to receive(:new).and_return(adapter)
+              allow(Gitlab::LDAP::Person).to receive(:find_by_uid).with(uid, adapter).and_return(ldap_user)
+              allow(Gitlab::LDAP::Person).to receive(:find_by_dn).with(dn, adapter).and_return(ldap_user)
+              allow(Gitlab::LDAP::Person).to receive(:find_by_email).with('john@mail.com', adapter).and_return(ldap_user)
             end
 
             context 'and no account for the LDAP user' do
@@ -181,18 +174,84 @@ describe Gitlab::Saml::User do
                 expect(gl_user.email).to eql 'john@mail.com'
                 expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: dn },
                                                            { provider: 'saml', extern_uid: uid }])
               end
             end
 
             context 'and LDAP user has an account already' do
+              let(:auth_hash_base_attributes) do
+                {
+                  uid: uid,
+                  provider: provider,
+                  info: info_hash,
+                  extra: {
+                    raw_info: OneLogin::RubySaml::Attributes.new(
+                      { 'groups' => %w(Developers Freelancers Designers) }
+                    )
+                  }
+                }
+              end
+              let(:auth_hash) { OmniAuth::AuthHash.new(auth_hash_base_attributes) }
+              let(:uid_types) { %w(uid dn email) }
+
               before do
                 create(:omniauth_user,
                        email: 'john@mail.com',
-                       extern_uid: 'uid=user1,ou=People,dc=example',
+                       extern_uid: dn,
                        provider: 'ldapmain',
                        username: 'john')
+              end
+
+              shared_examples 'find LDAP person' do |uid_type, uid|
+                let(:auth_hash) { OmniAuth::AuthHash.new(auth_hash_base_attributes.merge(uid: extern_uid)) }
+
+                before do
+                  nil_types = uid_types - [uid_type]
+
+                  nil_types.each do |type|
+                    allow(Gitlab::LDAP::Person).to receive(:"find_by_#{type}").and_return(nil)
+                  end
+
+                  allow(Gitlab::LDAP::Person).to receive(:"find_by_#{uid_type}").and_return(ldap_user)
+                end
+
+                it 'adds the omniauth identity to the LDAP account' do
+                  identities = [
+                    { provider: 'ldapmain', extern_uid: dn },
+                    { provider: 'saml', extern_uid: extern_uid }
+                  ]
+
+                  identities_as_hash = gl_user.identities.map do |id|
+                    { provider: id.provider, extern_uid: id.extern_uid }
+                  end
+
+                  saml_user.save
+
+                  expect(gl_user).to be_valid
+                  expect(gl_user.username).to eql 'john'
+                  expect(gl_user.email).to eql 'john@mail.com'
+                  expect(gl_user.identities.length).to be 2
+                  expect(identities_as_hash).to match_array(identities)
+                end
+              end
+
+              context 'when uid is an uid' do
+                it_behaves_like 'find LDAP person', 'uid' do
+                  let(:extern_uid) { uid }
+                end
+              end
+
+              context 'when uid is a dn' do
+                it_behaves_like 'find LDAP person', 'dn' do
+                  let(:extern_uid) { dn }
+                end
+              end
+
+              context 'when uid is an email' do
+                it_behaves_like 'find LDAP person', 'email' do
+                  let(:extern_uid) { 'john@mail.com' }
+                end
               end
 
               it 'adds the omniauth identity to the LDAP account' do
@@ -203,7 +262,7 @@ describe Gitlab::Saml::User do
                 expect(gl_user.email).to eql 'john@mail.com'
                 expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: dn },
                                                            { provider: 'saml', extern_uid: uid }])
               end
 
@@ -219,17 +278,21 @@ describe Gitlab::Saml::User do
 
             context 'user has SAML user, and wants to add their LDAP identity' do
               it 'adds the LDAP identity to the existing SAML user' do
-                create(:omniauth_user, email: 'john@mail.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'saml', username: 'john')
-                local_hash = OmniAuth::AuthHash.new(uid: 'uid=user1,ou=People,dc=example', provider: provider, info: info_hash)
+                create(:omniauth_user, email: 'john@mail.com', extern_uid: dn, provider: 'saml', username: 'john')
+
+                allow(Gitlab::LDAP::Person).to receive(:find_by_uid).with(dn, adapter).and_return(ldap_user)
+
+                local_hash = OmniAuth::AuthHash.new(uid: dn, provider: provider, info: info_hash)
                 local_saml_user = described_class.new(local_hash)
+
                 local_saml_user.save
                 local_gl_user = local_saml_user.gl_user
 
                 expect(local_gl_user).to be_valid
                 expect(local_gl_user.identities.length).to be 2
                 identities_as_hash = local_gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                           { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: dn },
+                                                           { provider: 'saml', extern_uid: dn }])
               end
             end
           end
@@ -322,6 +385,18 @@ describe Gitlab::Saml::User do
             expect(gl_user).not_to be_blocked
           end
         end
+      end
+    end
+  end
+
+  describe '#find_user' do
+    context 'raw info hash attributes empty' do
+      let(:raw_info_attr) { {} }
+
+      it 'does not mark user as external' do
+        stub_saml_group_config(%w(Freelancers))
+
+        expect(saml_user.find_user.external).to be_falsy
       end
     end
   end

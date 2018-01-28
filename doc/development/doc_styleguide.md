@@ -18,6 +18,10 @@ like `docs.gitlab.com/user/project/merge_requests.html`. With this pattern,
 you can immediately tell that you are navigating a user related documentation
 and is about the project and its merge requests.
 
+Do not create summaries of similar types of content (e.g. an index of all articles, videos, etc.),
+rather organise content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
 The table below shows what kind of documentation goes where.
 
 | Directory | What belongs here |
@@ -30,7 +34,6 @@ The table below shows what kind of documentation goes where.
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
 | `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
-| `doc/articles/` | [Technical Articles](writing_documentation.md#technical-articles): user guides, admin guides, technical overviews, tutorials (`doc/articles/article-title/index.md`). |
 
 ---
 
@@ -63,11 +66,10 @@ The table below shows what kind of documentation goes where.
 1. The `doc/topics/` directory holds topic-related technical content. Create
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
-1. For technical articles, place their images under `doc/articles/article-title/img/`.
 
 ---
 
-If you are unsure where a document should live, you can ping `@axil` in your
+If you are unsure where a document should live, you can ping `@axil` or `@marcia` in your
 merge request.
 
 ## Text
@@ -104,8 +106,8 @@ merge request.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`.
+  grammatically and syntactically correct. Mention one or all
+  of the following GitLab members for a review: `@axil` or `@marcia`.
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected
@@ -170,12 +172,6 @@ You can combine one or more of the following:
     = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
     ```
 
-1. **Underlining a link.**
-
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions'), class: 'underlined-link'
-    ```
-
 1. **Using links inline of some text.**
 
     ```haml
@@ -205,7 +201,7 @@ You can combine one or more of the following:
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
-- Compress gifs with <https://ezgif.com/optimize> or similar toll.
+- Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
 of a process, not to _replace_ it.
 
@@ -303,10 +299,10 @@ GitLab.com or http://docs.gitlab.com. Make sure this is discussed with the
 Documentation team beforehand.
 
 If you indeed need to change a document's location, do NOT remove the old
-document, but rather put a text in it that points to the new location, like:
+document, but rather replace all of its contents with a new line:
 
 ```
-This document was moved to [path/to/new_doc.md](path/to/new_doc.md).
+This document was moved to [another location](path/to/new_doc.md).
 ```
 
 where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
@@ -320,7 +316,7 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
 1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
 
     ```
-    This document was moved to [administration/lfs.md](../../administration/lfs.md).
+    This document was moved to [another location](../../administration/lfs.md).
     ```
 
 1. Find and replace any occurrences of the old location with the new one.
@@ -331,6 +327,10 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
     git grep -n "workflow/lfs/lfs_administration"
     git grep -n "lfs/lfs_administration"
     ```
+
+NOTE: **Note:**
+If the document being moved has any Disqus comments on it, there are extra steps
+to follow documented just [below](#redirections-for-pages-with-disqus-comments).
 
 Things to note:
 
@@ -344,6 +344,32 @@ Things to note:
   documentation, sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
+- Use the checklist on the documentation MR description template.
+
+### Redirections for pages with Disqus comments
+
+If the documentation page being relocated already has any Disqus comments,
+we need to preserve the Disqus thread.
+
+Disqus uses an identifier per page, and for docs.gitlab.com, the page identifier
+is configured to be the page URL. Therefore, when we change the document location,
+we need to preserve the old URL as the same Disqus identifier.
+
+To do that, add to the frontmatter the variable `redirect_from`,
+using the old URL as value. For example, let's say I moved the document
+available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
+`https://docs.gitlab.com/my-new-location/index.html`.
+
+Into the **new document** frontmatter add the following:
+
+```yaml
+---
+redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
+---
+```
+
+Note: it is necessary to include the file name in the `redirect_from` URL,
+even if it's `index.html` or `README.html`.
 
 ## Configuration documentation for source and Omnibus installations
 
@@ -394,7 +420,7 @@ the style below as a guide:
 In this case:
 
 - before each step list the installation method is declared in bold
-- three dashes (`---`) are used to create an horizontal line and separate the
+- three dashes (`---`) are used to create a horizontal line and separate the
   two methods
 - the code blocks are indented one or more spaces under the list item to render
   correctly
@@ -459,11 +485,11 @@ Rendered example:
 ### cURL commands
 
 - Use `https://gitlab.example.com/api/v4/` as an endpoint.
-- Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
+- Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
 - Use double quotes to the URL when it includes additional parameters.
-- Prefer to use examples using the private token and don't pass data of
+- Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
 | Methods | Description |

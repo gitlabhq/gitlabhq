@@ -6,6 +6,13 @@
   import descriptionTemplate from './fields/description_template.vue';
 
   export default {
+    components: {
+      lockedWarning,
+      titleField,
+      descriptionField,
+      descriptionTemplate,
+      editActions,
+    },
     props: {
       canDestroy: {
         type: Boolean,
@@ -36,13 +43,21 @@
         type: String,
         required: true,
       },
-    },
-    components: {
-      lockedWarning,
-      titleField,
-      descriptionField,
-      descriptionTemplate,
-      editActions,
+      showDeleteButton: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     computed: {
       hasIssuableTemplates() {
@@ -63,24 +78,32 @@
           :form-state="formState"
           :issuable-templates="issuableTemplates"
           :project-path="projectPath"
-          :project-namespace="projectNamespace" />
+          :project-namespace="projectNamespace"
+        />
       </div>
       <div
         :class="{
           'col-sm-8 col-lg-9': hasIssuableTemplates,
           'col-xs-12': !hasIssuableTemplates,
-        }">
+        }"
+      >
         <title-field
           :form-state="formState"
-          :issuable-templates="issuableTemplates" />
+          :issuable-templates="issuableTemplates"
+        />
       </div>
     </div>
     <description-field
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath" />
+      :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    />
     <edit-actions
       :form-state="formState"
-      :can-destroy="canDestroy" />
+      :can-destroy="canDestroy"
+      :show-delete-button="showDeleteButton"
+    />
   </form>
 </template>

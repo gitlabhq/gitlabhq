@@ -341,8 +341,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     end
 
     context 'when diff is quite large will collapse by default' do
-      let(:iterator) { [{ diff: 'a' * (Gitlab::Git::Diff.collapse_limit + 1) }] }
-      let(:max_files) { 100 }
+      let(:iterator) { [{ diff: 'a' * 20480 }] }
 
       context 'when no collapse is set' do
         let(:expanded) { true }
@@ -488,6 +487,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
 
       loop do
         break if @count.zero?
+
         # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
         @count -= 1
         yield @value

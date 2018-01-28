@@ -1,6 +1,8 @@
 /* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
@@ -298,7 +300,7 @@ GitLabDropdown = (function() {
             return function(data) {
               _this.fullData = data;
               _this.parseData(_this.fullData);
-              _this.focusTextInput(true);
+              _this.focusTextInput();
               if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val() && _this.filter.input.val().trim() !== '') {
                 return _this.filter.input.trigger('input');
               }
@@ -330,7 +332,7 @@ GitLabDropdown = (function() {
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
               selector = ".dropdown-page-one " + selector;
             }
-            return $(selector);
+            return $(selector, this.instance.dropdown);
           };
         })(this),
         data: (function(_this) {
@@ -513,10 +515,11 @@ GitLabDropdown = (function() {
 
     const dropdownToggle = this.dropdown.find('.dropdown-menu-toggle');
     const hasFilterBulkUpdate = dropdownToggle.hasClass('js-filter-bulk-update');
+    const shouldRefreshOnOpen = dropdownToggle.hasClass('js-gl-dropdown-refresh-on-open');
     const hasMultiSelect = dropdownToggle.hasClass('js-multiselect');
 
     // Makes indeterminate items effective
-    if (this.fullData && hasFilterBulkUpdate) {
+    if (this.fullData && (shouldRefreshOnOpen || hasFilterBulkUpdate)) {
       this.parseData(this.fullData);
     }
 
@@ -548,6 +551,7 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.positionMenuAbove = function() {
     var $menu = this.dropdown.find('.dropdown-menu');
 
+    $menu.addClass('dropdown-open-top');
     $menu.css('top', 'initial');
     $menu.css('bottom', '100%');
   };
@@ -737,7 +741,7 @@ GitLabDropdown = (function() {
       : selectedObject.id;
     if (isInput) {
       field = $(this.el);
-    } else if (value) {
+    } else if (value != null) {
       field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
     }
 
@@ -745,7 +749,7 @@ GitLabDropdown = (function() {
       return;
     }
 
-    if (el.hasClass(ACTIVE_CLASS)) {
+    if (el.hasClass(ACTIVE_CLASS) && value !== 0) {
       isMarking = false;
       el.removeClass(ACTIVE_CLASS);
       if (field && field.length) {
@@ -786,24 +790,16 @@ GitLabDropdown = (function() {
     return [selectedObject, isMarking];
   };
 
-  GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
+  GitLabDropdown.prototype.focusTextInput = function() {
     if (this.options.filterable) {
-      this.dropdown.one('transitionend', () => {
-        const initialScrollTop = $(window).scrollTop();
+      const initialScrollTop = $(window).scrollTop();
 
-        if (this.dropdown.is('.open')) {
-          this.filterInput.focus();
-        }
+      if (this.dropdown.is('.open')) {
+        this.filterInput.focus();
+      }
 
-        if ($(window).scrollTop() < initialScrollTop) {
-          $(window).scrollTop(initialScrollTop);
-        }
-      });
-
-      if (triggerFocus) {
-        // This triggers after a ajax request
-        // in case of slow requests, the dropdown transition could already be finished
-        this.dropdown.trigger('transitionend');
+      if ($(window).scrollTop() < initialScrollTop) {
+        $(window).scrollTop(initialScrollTop);
       }
     }
   };
@@ -849,9 +845,9 @@ GitLabDropdown = (function() {
     if ($el.length) {
       var href = $el.attr('href');
       if (href && href !== '#') {
-        gl.utils.visitUrl(href);
+        visitUrl(href);
       } else {
-        $el.first().trigger('click');
+        $el.trigger('click');
       }
     }
   };

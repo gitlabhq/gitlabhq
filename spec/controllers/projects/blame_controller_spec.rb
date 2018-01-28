@@ -7,7 +7,7 @@ describe Projects::BlameController do
   before do
     sign_in(user)
 
-    project.team << [user, :master]
+    project.add_master(user)
     controller.instance_variable_set(:@project, project)
   end
 
@@ -28,7 +28,7 @@ describe Projects::BlameController do
 
     context "invalid file" do
       let(:id) { 'master/files/ruby/missing_file.rb'}
-      it { expect(response).to have_http_status(404) }
+      it { expect(response).to have_gitlab_http_status(404) }
     end
   end
 end

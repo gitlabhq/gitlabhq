@@ -24,7 +24,7 @@ describe Projects::PrometheusController do
         it 'returns no content response' do
           get :active_metrics, project_params(format: :json)
 
-          expect(response).to have_http_status(204)
+          expect(response).to have_gitlab_http_status(204)
         end
       end
 
@@ -38,7 +38,7 @@ describe Projects::PrometheusController do
         it 'returns no content response' do
           get :active_metrics, project_params(format: :json)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response).to eq(sample_response.deep_stringify_keys)
         end
       end
@@ -47,7 +47,7 @@ describe Projects::PrometheusController do
         it 'returns not found response' do
           get :active_metrics, project_params
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

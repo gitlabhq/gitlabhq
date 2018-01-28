@@ -17,7 +17,7 @@ describe API::V3::Repositories do
       it 'returns the repository tree' do
         get v3_api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
 
         first_commit = json_response.first
@@ -97,20 +97,21 @@ describe API::V3::Repositories do
     end
   end
 
-  {
-    'blobs/:sha' => 'blobs/master',
-    'commits/:sha/blob' => 'commits/master/blob'
-  }.each do |desc_path, example_path|
+  [
+    ['blobs/:sha', 'blobs/master'],
+    ['blobs/:sha', 'blobs/v1.1.0'],
+    ['commits/:sha/blob', 'commits/master/blob']
+  ].each do |desc_path, example_path|
     describe "GET /projects/:id/repository/#{desc_path}" do
       let(:route) { "/projects/#{project.id}/repository/#{example_path}?filepath=README.md" }
       shared_examples_for 'repository blob' do
         it 'returns the repository blob' do
           get v3_api(route, current_user)
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
         context 'when sha does not exist' do
           it_behaves_like '404 response' do
-            let(:request) { get v3_api(route.sub('master', 'invalid_branch_name'), current_user) }
+            let(:request) { get v3_api("/projects/#{project.id}/repository/#{desc_path.sub(':sha', 'invalid_branch_name')}?filepath=README.md", current_user) }
             let(:message) { '404 Commit Not Found' }
           end
         end
@@ -161,7 +162,7 @@ describe API::V3::Repositories do
     shared_examples_for 'repository raw blob' do
       it 'returns the repository raw blob' do
         get v3_api(route, current_user)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
@@ -204,7 +205,7 @@ describe API::V3::Repositories do
     shared_examples_for 'repository archive' do
       it 'returns the repository archive' do
         get v3_api(route, current_user)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
         expect(type).to eq('git-archive')
@@ -212,7 +213,7 @@ describe API::V3::Repositories do
       end
       it 'returns the repository archive archive.zip' do
         get v3_api("/projects/#{project.id}/repository/archive.zip", user)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
         expect(type).to eq('git-archive')
@@ -220,7 +221,7 @@ describe API::V3::Repositories do
       end
       it 'returns the repository archive archive.tar.bz2' do
         get v3_api("/projects/#{project.id}/repository/archive.tar.bz2", user)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
         expect(type).to eq('git-archive')
@@ -262,32 +263,32 @@ describe API::V3::Repositories do
     shared_examples_for 'repository compare' do
       it "compares branches" do
         get v3_api(route, current_user), from: 'master', to: 'feature'
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
       it "compares tags" do
         get v3_api(route, current_user), from: 'v1.0.0', to: 'v1.1.0'
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
       it "compares commits" do
         get v3_api(route, current_user), from: sample_commit.id, to: sample_commit.parent_id
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_empty
         expect(json_response['diffs']).to be_empty
         expect(json_response['compare_same_ref']).to be_falsey
       end
       it "compares commits in reverse order" do
         get v3_api(route, current_user), from: sample_commit.parent_id, to: sample_commit.id
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
       it "compares same refs" do
         get v3_api(route, current_user), from: 'master', to: 'master'
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_empty
         expect(json_response['diffs']).to be_empty
         expect(json_response['compare_same_ref']).to be_truthy
@@ -324,7 +325,7 @@ describe API::V3::Repositories do
       it 'returns valid data' do
         get v3_api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
 
         first_contributor = json_response.first

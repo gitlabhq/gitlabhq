@@ -93,7 +93,13 @@ be an array or a multi-line string.
 > Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
-jobs. This has to be an array or a multi-line string.
+jobs, including failed ones. This has to be an array or a multi-line string.
+
+> **Note:**
+The `before_script` and the main `script` are concatenated and run in a single context/container.
+The `after_script` is run separately, so depending on the executor, changes done
+outside of the working tree might not be visible, e.g. software installed in the
+`before_script`.
 
 ### stages
 
@@ -118,7 +124,7 @@ stages:
 1. First, all jobs of `build` are executed in parallel.
 1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
 1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
-1. If all jobs of `deploy` succeed, the commit is marked as `success`.
+1. If all jobs of `deploy` succeed, the commit is marked as `passed`.
 1. If any of the previous jobs fails, the commit is marked as `failed` and no
    jobs of further stage are executed.
 
@@ -252,6 +258,8 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
+>**Note:** The `cache:key` variable cannot contain the `/` character, or the equivalent URI encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
+
 ---
 
 **Example configurations**
@@ -276,7 +284,7 @@ To enable per-job and per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_NAME/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -284,7 +292,7 @@ To enable per-branch and per-stage caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_STAGE/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -293,7 +301,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%/%CI_COMMIT_REF_NAME%"
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
   untracked: true
 ```
 
@@ -302,7 +310,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -727,6 +735,9 @@ deployment to the `production` environment.
 - Before GitLab 8.11, the name of an environment could be defined as a string like
   `environment: production`. The recommended way now is to define it under the
   `name` keyword.
+- The `name` parameter can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 The `environment` name can contain:
 
@@ -762,6 +773,9 @@ deploy to production:
 - Introduced in GitLab 8.11.
 - Before GitLab 8.11, the URL could be added only in GitLab's UI. The
   recommended way now is to define it in `.gitlab-ci.yml`.
+- The `url` parameter can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 This is an optional value that when set, it exposes buttons in various places
 in GitLab which when clicked take you to the defined URL.
@@ -841,10 +855,9 @@ The `stop_review_app` job is **required** to have the following keywords defined
 **Notes:**
 - [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
 - The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
-
-`environment` can also represent a configuration hash with `name` and `url`.
-These parameters can use any of the defined [CI variables](#variables)
-(including predefined, secure variables and `.gitlab-ci.yml` variables).
+- The `name` and `url` parameters can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 For example:
 
@@ -1140,6 +1153,20 @@ deploy:
   script: make deploy
 ```
 
+#### When a dependent job will fail
+
+> Introduced in GitLab 10.3.
+
+If the artifacts of the job that is set as a dependency have been
+[expired](#artifacts-expire_in) or
+[erased](../../user/project/pipelines/job_artifacts.md#erasing-artifacts), then
+the dependent job will fail.
+
+NOTE: **Note:**
+You can ask your administrator to
+[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
+and bring back the old behavior.
+
 ### before_script and after_script
 
 It's possible to overwrite the globally defined `before_script` and `after_script`:
@@ -1266,7 +1293,7 @@ to the CI pipeline:
 ```yaml
 variables:
   GIT_STRATEGY: clone
-  GIT_CHECKOUT: false
+  GIT_CHECKOUT: "false"
 script:
   - git checkout master
   - git merge $CI_BUILD_REF_NAME
@@ -1562,6 +1589,11 @@ Read more on [GitLab Pages user documentation](../../user/project/pages/index.md
 
 Each instance of GitLab CI has an embedded debug tool called Lint.
 You can find the link under `/ci/lint` of your gitlab instance.
+
+## Using reserved keywords
+
+If you get validation error when using specific values (e.g., `true` or `false`),
+try to quote them, or change them to a different form (e.g., `/bin/true`).
 
 ## Skipping jobs
 

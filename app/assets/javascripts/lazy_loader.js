@@ -1,5 +1,3 @@
-/* eslint-disable one-export, one-var, one-var-declaration-per-line */
-
 import _ from 'underscore';
 
 export const placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
@@ -21,7 +19,10 @@ export default class LazyLoader {
   }
   searchLazyImages() {
     this.lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
-    this.checkElementsInView();
+
+    if (this.lazyImages.length) {
+      this.checkElementsInView();
+    }
   }
   startContentObserver() {
     const contentNode = document.querySelector(this.observerNode) || document.querySelector('body');
@@ -45,15 +46,13 @@ export default class LazyLoader {
   checkElementsInView() {
     const scrollTop = pageYOffset;
     const visHeight = scrollTop + innerHeight + SCROLL_THRESHOLD;
-    let imgBoundRect, imgTop, imgBound;
 
     // Loading Images which are in the current viewport or close to them
     this.lazyImages = this.lazyImages.filter((selectedImage) => {
       if (selectedImage.getAttribute('data-src')) {
-        imgBoundRect = selectedImage.getBoundingClientRect();
-
-        imgTop = scrollTop + imgBoundRect.top;
-        imgBound = imgTop + imgBoundRect.height;
+        const imgBoundRect = selectedImage.getBoundingClientRect();
+        const imgTop = scrollTop + imgBoundRect.top;
+        const imgBound = imgTop + imgBoundRect.height;
 
         if (scrollTop < imgBound && visHeight > imgTop) {
           LazyLoader.loadImage(selectedImage);

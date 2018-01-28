@@ -19,7 +19,7 @@ describe SessionsController do
         it 'redirects to :omniauth_authorize_path' do
           get(:new)
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(response).to redirect_to('/saml')
         end
       end
@@ -28,7 +28,7 @@ describe SessionsController do
         it 'responds with 200' do
           get(:new, auto_sign_in: 'false')
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end

@@ -46,6 +46,7 @@ module Noteable
     notes.inc_relations_for_view.grouped_diff_discussions(*args)
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def resolvable_discussions
     @resolvable_discussions ||=
       if defined?(@discussions)
@@ -54,6 +55,7 @@ module Noteable
         discussion_notes.resolvable.discussions(self)
       end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def discussions_resolvable?
     resolvable_discussions.any?(&:resolvable?)
@@ -73,5 +75,9 @@ module Noteable
 
   def discussions_can_be_resolved_by?(user)
     discussions_to_be_resolved.all? { |discussion| discussion.can_resolve?(user) }
+  end
+
+  def lockable?
+    [MergeRequest, Issue].include?(self.class)
   end
 end

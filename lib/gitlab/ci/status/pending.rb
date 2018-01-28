@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def icon
-          'icon_status_pending'
+          'status_pending'
         end
 
         def favicon

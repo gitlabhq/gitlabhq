@@ -54,6 +54,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     name = request.headers['X-Gitlab-Lfs-Tmp']
     return if name.include?('/')
     return unless oid.present? && name.start_with?(oid)
+
     name
   end
 

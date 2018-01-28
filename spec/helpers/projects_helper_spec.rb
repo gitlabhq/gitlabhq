@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectsHelper do
+  include ProjectForksHelper
+
   describe "#project_status_css_class" do
     it "returns appropriate class" do
       expect(project_status_css_class("started")).to eq("active")
@@ -10,9 +12,9 @@ describe ProjectsHelper do
   end
 
   describe "can_change_visibility_level?" do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project) }
     let(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
-    let(:fork_project) { Projects::ForkService.new(project, user).execute }
+    let(:forked_project) { fork_project(project, user) }
 
     it "returns false if there are no appropriate permissions" do
       allow(helper).to receive(:can?) { false }
@@ -26,21 +28,29 @@ describe ProjectsHelper do
       expect(helper.can_change_visibility_level?(project, user)).to be_truthy
     end
 
+    it 'allows visibility level to be changed if the project is forked' do
+      allow(helper).to receive(:can?).with(user, :change_visibility_level, project) { true }
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      fork_project(project)
+
+      expect(helper.can_change_visibility_level?(project, user)).to be_truthy
+    end
+
     context "forks" do
       it "returns false if there are permissions and origin project is PRIVATE" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::PRIVATE
+        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
-        expect(helper.can_change_visibility_level?(fork_project, user)).to be_falsey
+        expect(helper.can_change_visibility_level?(forked_project, user)).to be_falsey
       end
 
       it "returns true if there are permissions and origin project is INTERNAL" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::INTERNAL
+        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
-        expect(helper.can_change_visibility_level?(fork_project, user)).to be_truthy
+        expect(helper.can_change_visibility_level?(forked_project, user)).to be_truthy
       end
     end
   end
@@ -63,7 +73,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
+  describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :repository) }
 
     it "includes the route" do
@@ -150,17 +160,26 @@ describe ProjectsHelper do
       end
     end
 
-    context 'user requires a password' do
-      let(:user) { create(:user, password_automatically_set: true) }
+    context 'user has hidden the message' do
+      it 'returns false' do
+        allow(helper).to receive(:cookies).and_return(hide_no_password_message: true)
 
+        expect(helper.show_no_password_message?).to be_falsey
+      end
+    end
+
+    context 'user requires a password for Git' do
       it 'returns true' do
+        allow(user).to receive(:require_password_creation_for_git?).and_return(true)
+
         expect(helper.show_no_password_message?).to be_truthy
       end
     end
 
-    context 'user requires a personal access token' do
+    context 'user requires a personal access token for Git' do
       it 'returns true' do
-        stub_application_setting(password_authentication_enabled?: false)
+        allow(user).to receive(:require_password_creation_for_git?).and_return(false)
+        allow(user).to receive(:require_personal_access_token_creation_for_git_auth?).and_return(true)
 
         expect(helper.show_no_password_message?).to be_truthy
       end
@@ -168,23 +187,23 @@ describe ProjectsHelper do
   end
 
   describe '#link_to_set_password' do
+    let(:user) { create(:user, password_automatically_set: true) }
+
     before do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    context 'user requires a password' do
-      let(:user) { create(:user, password_automatically_set: true) }
-
+    context 'password authentication is enabled for Git' do
       it 'returns link to set a password' do
+        stub_application_setting(password_authentication_enabled_for_git?: true)
+
         expect(helper.link_to_set_password).to match %r{<a href="#{edit_profile_password_path}">set a password</a>}
       end
     end
 
-    context 'user requires a personal access token' do
-      let(:user) { create(:user) }
-
+    context 'password authentication is disabled for Git' do
       it 'returns link to create a personal access token' do
-        stub_application_setting(password_authentication_enabled?: false)
+        stub_application_setting(password_authentication_enabled_for_git?: false)
 
         expect(helper.link_to_set_password).to match %r{<a href="#{profile_personal_access_tokens_path}">create a personal access token</a>}
       end
@@ -200,13 +219,13 @@ describe ProjectsHelper do
     end
 
     it 'returns image tag for member avatar' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "", "data-src" => anything })
 
       helper.link_to_member_avatar(user)
     end
 
     it 'returns image tag with avatar class' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "", "data-src" => anything })
 
       helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
     end
@@ -420,22 +439,26 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#has_projects_or_name?' do
+  describe '#show_projects' do
     let(:projects) do
       create(:project)
       Project.all
     end
 
     it 'returns true when there are projects' do
-      expect(helper.has_projects_or_name?(projects, {})).to eq(true)
+      expect(helper.show_projects?(projects, {})).to eq(true)
     end
 
     it 'returns true when there are no projects but a name is given' do
-      expect(helper.has_projects_or_name?(Project.none, name: 'foo')).to eq(true)
+      expect(helper.show_projects?(Project.none, name: 'foo')).to eq(true)
+    end
+
+    it 'returns true when there are no projects but personal is present' do
+      expect(helper.show_projects?(Project.none, personal: 'true')).to eq(true)
     end
 
     it 'returns false when there are no projects and there is no name' do
-      expect(helper.has_projects_or_name?(Project.none, {})).to eq(false)
+      expect(helper.show_projects?(Project.none, {})).to eq(false)
     end
   end
 
@@ -467,6 +490,17 @@ describe ProjectsHelper do
       end
 
       expect(recorder.count).to eq(1)
+    end
+  end
+
+  describe '#git_user_name' do
+    let(:user) { double(:user, name: 'John "A" Doe53') }
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'parses quotes in name' do
+      expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
     end
   end
 end

@@ -4,8 +4,8 @@ module Gitlab
       class Health
         attr_reader :storage_name, :info
 
-        def self.pattern_for_storage(storage_name)
-          "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage_name}:*"
+        def self.prefix_for_storage(storage_name)
+          "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage_name}:"
         end
 
         def self.for_all_storages
@@ -23,26 +23,25 @@ module Gitlab
           end
         end
 
-        def self.all_keys_for_storages(storage_names, redis)
+        private_class_method def self.all_keys_for_storages(storage_names, redis)
           keys_per_storage = {}
+          all_keys = redis.zrange(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, -1)
 
-          redis.pipelined do
-            storage_names.each do |storage_name|
-              pattern = pattern_for_storage(storage_name)
+          storage_names.each do |storage_name|
+            prefix = prefix_for_storage(storage_name)
 
-              keys_per_storage[storage_name] = redis.keys(pattern)
-            end
+            keys_per_storage[storage_name] = all_keys.select { |key| key.starts_with?(prefix) }
           end
 
           keys_per_storage
         end
 
-        def self.load_for_keys(keys_per_storage, redis)
+        private_class_method def self.load_for_keys(keys_per_storage, redis)
           info_for_keys = {}
 
           redis.pipelined do
             keys_per_storage.each do |storage_name, keys_future|
-              info_for_storage = keys_future.value.map do |key|
+              info_for_storage = keys_future.map do |key|
                 { name: key, failure_count: redis.hget(key, :failure_count) }
               end
 
@@ -78,7 +77,7 @@ module Gitlab
 
         def failing_circuit_breakers
           @failing_circuit_breakers ||= failing_on_hosts.map do |hostname|
-            CircuitBreaker.new(storage_name, hostname)
+            CircuitBreaker.build(storage_name, hostname)
           end
         end
 

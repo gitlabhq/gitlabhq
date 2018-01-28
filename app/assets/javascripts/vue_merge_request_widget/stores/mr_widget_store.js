@@ -1,5 +1,7 @@
 import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
+import { stateKey } from './state_maps';
+import { formatDate } from '../../lib/utils/datetime_utility';
 
 export default class MergeRequestStore {
 
@@ -24,6 +26,7 @@ export default class MergeRequestStore {
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
+    this.initRebase(data);
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -37,11 +40,8 @@ export default class MergeRequestStore {
     }
 
     this.updatedAt = data.updated_at;
-    this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
-    this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
-    this.mergedBy = MergeRequestStore.getAuthorObject(data.merge_event);
-    this.closedBy = MergeRequestStore.getAuthorObject(data.closed_event);
-    this.setToMWPSBy = MergeRequestStore.getAuthorObject({ author: data.merge_user || {} });
+    this.metrics = MergeRequestStore.buildMetrics(data.metrics);
+    this.setToMWPSBy = MergeRequestStore.formatUserObject(data.merge_user || {});
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
     this.sourceBranchPath = data.source_branch_path;
@@ -57,6 +57,8 @@ export default class MergeRequestStore {
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
+    this.ffOnlyEnabled = data.ff_only_enabled;
+    this.shouldBeRebased = !!data.should_be_rebased;
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
@@ -73,6 +75,7 @@ export default class MergeRequestStore {
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
     this.hasSHAChanged = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
+    this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
 
     // Cherry-pick and Revert actions related
@@ -85,7 +88,9 @@ export default class MergeRequestStore {
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
-    this.isPipelineFailed = this.ciStatus ? (this.ciStatus === 'failed' || this.ciStatus === 'canceled') : false;
+    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
+    this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+    this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
@@ -116,27 +121,53 @@ export default class MergeRequestStore {
     }
   }
 
-  static getAuthorObject(event) {
-    if (!event) {
+  get isNothingToMergeState() {
+    return this.state === stateKey.nothingToMerge;
+  }
+
+  initRebase(data) {
+    this.canPushToSourceBranch = data.can_push_to_source_branch;
+    this.rebaseInProgress = data.rebase_in_progress;
+    this.approvalsLeft = !data.approved;
+    this.rebasePath = data.rebase_path;
+  }
+
+  static buildMetrics(metrics) {
+    if (!metrics) {
       return {};
     }
 
     return {
-      name: event.author.name || '',
-      username: event.author.username || '',
-      webUrl: event.author.web_url || '',
-      avatarUrl: event.author.avatar_url || '',
+      mergedBy: MergeRequestStore.formatUserObject(metrics.merged_by),
+      closedBy: MergeRequestStore.formatUserObject(metrics.closed_by),
+      mergedAt: formatDate(metrics.merged_at),
+      closedAt: formatDate(metrics.closed_at),
+      readableMergedAt: MergeRequestStore.getReadableDate(metrics.merged_at),
+      readableClosedAt: MergeRequestStore.getReadableDate(metrics.closed_at),
     };
   }
 
-  static getEventDate(event) {
-    const timeagoInstance = new Timeago();
+  static formatUserObject(user) {
+    if (!user) {
+      return {};
+    }
 
-    if (!event) {
+    return {
+      name: user.name || '',
+      username: user.username || '',
+      webUrl: user.web_url || '',
+      avatarUrl: user.avatar_url || '',
+    };
+  }
+
+  static getReadableDate(date) {
+    if (!date) {
       return '';
     }
 
-    return timeagoInstance.format(event.updated_at);
+    const timeagoInstance = new Timeago();
+
+    return timeagoInstance.format(date);
   }
 
 }

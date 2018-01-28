@@ -1,39 +1,57 @@
 <script>
-import tablePagination from '~/vue_shared/components/table_pagination.vue';
-import eventHub from '../event_hub';
+  import tablePagination from '~/vue_shared/components/table_pagination.vue';
+  import eventHub from '../event_hub';
+  import { getParameterByName } from '../../lib/utils/common_utils';
 
-export default {
-  props: {
-    groups: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      tablePagination,
     },
-    pageInfo: {
-      type: Object,
-      required: true,
+    props: {
+      groups: {
+        type: Array,
+        required: true,
+      },
+      pageInfo: {
+        type: Object,
+        required: true,
+      },
+      searchEmpty: {
+        type: Boolean,
+        required: true,
+      },
+      searchEmptyMessage: {
+        type: String,
+        required: true,
+      },
     },
-  },
-  components: {
-    tablePagination,
-  },
-  methods: {
-    change(page) {
-      const filterGroupsParam = gl.utils.getParameterByName('filter_groups');
-      const sortParam = gl.utils.getParameterByName('sort');
-      eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam);
+    methods: {
+      change(page) {
+        const filterGroupsParam = getParameterByName('filter_groups');
+        const sortParam = getParameterByName('sort');
+        const archivedParam = getParameterByName('archived');
+        eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam, archivedParam);
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
   <div class="groups-list-tree-container">
+    <div
+      v-if="searchEmpty"
+      class="has-no-search-results"
+    >
+      {{ searchEmptyMessage }}
+    </div>
     <group-folder
+      v-if="!searchEmpty"
       :groups="groups"
     />
     <table-pagination
+      v-if="!searchEmpty"
       :change="change"
-      :pageInfo="pageInfo"
+      :page-info="pageInfo"
     />
   </div>
 </template>

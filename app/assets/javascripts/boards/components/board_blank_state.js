@@ -65,7 +65,7 @@ export default {
 
       // Save the labels
       gl.boardService.generateDefaultLists()
-        .then(resp => resp.json())
+        .then(res => res.data)
         .then((data) => {
           data.forEach((listObj) => {
             const list = Store.findList('title', listObj.title);

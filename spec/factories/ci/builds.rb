@@ -1,18 +1,16 @@
 include ActionDispatch::TestProcess
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_build, class: Ci::Build do
     name 'test'
     stage 'test'
     stage_idx 0
     ref 'master'
     tag false
-    status 'pending'
-    created_at 'Di 29. Okt 09:50:00 CET 2013'
-    started_at 'Di 29. Okt 09:51:28 CET 2013'
-    finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
     protected false
+    created_at 'Di 29. Okt 09:50:00 CET 2013'
+    pending
 
     options do
       {
@@ -29,23 +27,37 @@ FactoryGirl.define do
 
     pipeline factory: :ci_pipeline
 
+    trait :started do
+      started_at 'Di 29. Okt 09:51:28 CET 2013'
+    end
+
+    trait :finished do
+      started
+      finished_at 'Di 29. Okt 09:53:28 CET 2013'
+    end
+
     trait :success do
+      finished
       status 'success'
     end
 
     trait :failed do
+      finished
       status 'failed'
     end
 
     trait :canceled do
+      finished
       status 'canceled'
     end
 
     trait :skipped do
+      started
       status 'skipped'
     end
 
     trait :running do
+      started
       status 'running'
     end
 
@@ -114,12 +126,7 @@ FactoryGirl.define do
       build.project ||= build.pipeline.project
     end
 
-    factory :ci_not_started_build do
-      started_at nil
-      finished_at nil
-    end
-
-    factory :ci_build_tag do
+    trait :tag do
       tag true
     end
 
@@ -154,34 +161,27 @@ FactoryGirl.define do
       runner factory: :ci_runner
     end
 
-    trait :artifacts do
+    trait :legacy_artifacts do
       after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-                             'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-                             'application/x-gzip')
-
-        build.save!
+        build.update!(
+          legacy_artifacts_file: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip'),
+          legacy_artifacts_metadata: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+        )
       end
     end
 
-    trait :artifacts_expired do
-      after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-            'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-            'application/x-gzip')
-
-        build.artifacts_expire_at = 1.minute.ago
-
-        build.save!
+    trait :artifacts do
+      after(:create) do |build|
+        create(:ci_job_artifact, :archive, job: build)
+        create(:ci_job_artifact, :metadata, job: build)
+        build.reload
       end
+    end
+
+    trait :expired do
+      artifacts_expire_at 1.minute.ago
     end
 
     trait :with_commit do

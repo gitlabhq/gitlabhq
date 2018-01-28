@@ -55,6 +55,22 @@ feature 'Project members list' do
     end
   end
 
+  scenario 'remove user from project', :js do
+    other_user = create(:user)
+    project.add_developer(other_user)
+
+    visit_members_page
+
+    accept_confirm do
+      find(:css, 'li.project_member', text: other_user.name).find(:css, 'a.btn-remove').click
+    end
+
+    wait_for_requests
+
+    expect(page).not_to have_content(other_user.name)
+    expect(project.users).not_to include(other_user)
+  end
+
   scenario 'invite user to project', :js do
     visit_members_page
 

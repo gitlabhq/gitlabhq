@@ -160,9 +160,22 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
-          = f.label :password_authentication_enabled do
-            = f.check_box :password_authentication_enabled
-            Sign-in enabled
+          = f.label :password_authentication_enabled_for_web do
+            = f.check_box :password_authentication_enabled_for_web
+            Password authentication enabled for web interface
+            .help-block
+              When disabled, an external authentication provider must be used.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :password_authentication_enabled_for_git do
+            = f.check_box :password_authentication_enabled_for_git
+            Password authentication enabled for Git over HTTP(S)
+            .help-block
+              When disabled, a Personal Access Token
+              - if Gitlab::LDAP::Config.enabled?
+                or LDAP password
+              must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
@@ -530,6 +543,38 @@
           = succeed "." do
             = link_to "repository storages documentation", help_page_path("administration/repository_storages")
 
+  %fieldset
+    %legend Git Storage Circuitbreaker settings
+    .form-group
+      = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_check_interval, class: 'form-control'
+        .help-block
+          = circuitbreaker_check_interval_help_text
+    .form-group
+      = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_access_retries, class: 'form-control'
+        .help-block
+          = circuitbreaker_access_retries_help_text
+    .form-group
+      = f.label :circuitbreaker_storage_timeout, _('Seconds to wait for a storage access attempt'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
+        .help-block
+          = circuitbreaker_storage_timeout_help_text
+    .form-group
+      = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_failure_count_threshold, class: 'form-control'
+        .help-block
+          = circuitbreaker_failure_count_help_text
+    .form-group
+      = f.label :circuitbreaker_failure_reset_time, _('Seconds before reseting failure information'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_failure_reset_time, class: 'form-control'
+        .help-block
+          = circuitbreaker_failure_reset_time_help_text
 
   %fieldset
     %legend Repository Checks
@@ -681,6 +726,30 @@
           Number of Git pushes after which 'git gc' is run.
 
   %fieldset
+    %legend Gitaly Timeouts
+    .form-group
+      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_default, class: 'form-control'
+        .help-block
+          Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
+          for git fetch/push operations or Sidekiq jobs.
+    .form-group
+      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_fast, class: 'form-control'
+        .help-block
+          Fast operation timeout (in seconds). Some Gitaly operations are expected to be fast.
+          If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
+          can help maintain the stability of the GitLab instance.
+    .form-group
+      = f.label :gitaly_timeout_medium, 'Medium Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_medium, class: 'form-control'
+        .help-block
+          Medium operation timeout (in seconds). This should be a value between the Fast and the Default timeout.
+
+  %fieldset
     %legend Web terminal
     .form-group
       = f.label :terminal_max_session_time, 'Max session time', class: 'control-label col-sm-2'
@@ -704,6 +773,73 @@
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
           = link_to icon('question-circle'), help_page_path('administration/polling')
+
+  %fieldset
+    %legend Performance optimization
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :authorized_keys_enabled do
+            = f.check_box :authorized_keys_enabled
+            Write to "authorized_keys" file
+          .help-block
+            By default, we write to the "authorized_keys" file to support Git
+            over SSH without additional configuration. GitLab can be optimized
+            to authenticate SSH keys via the database file. Only uncheck this
+            if you have configured your OpenSSH server to use the
+            AuthorizedKeysCommand. Click on the help icon for more details.
+            = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
+
+  %fieldset
+    %legend User and IP Rate Limits
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_unauthenticated_enabled do
+            = f.check_box :throttle_unauthenticated_enabled
+            Enable unauthenticated request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_unauthenticated_requests_per_period, 'Max requests per period per IP', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_unauthenticated_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_authenticated_api_enabled do
+            = f.check_box :throttle_authenticated_api_enabled
+            Enable authenticated API request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_authenticated_api_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_authenticated_api_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_authenticated_web_enabled do
+            = f.check_box :throttle_authenticated_web_enabled
+            Enable authenticated web request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_authenticated_web_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_authenticated_web_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

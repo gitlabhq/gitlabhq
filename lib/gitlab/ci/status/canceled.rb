@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def icon
-          'icon_status_canceled'
+          'status_canceled'
         end
 
         def favicon

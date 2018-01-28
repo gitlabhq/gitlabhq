@@ -109,12 +109,16 @@ describe('PrometheusMetrics', () => {
 
     it('should show loader animation while response is being loaded and hide it when request is complete', (done) => {
       const deferred = $.Deferred();
-      spyOn($, 'getJSON').and.returnValue(deferred.promise());
+      spyOn($, 'ajax').and.returnValue(deferred.promise());
 
       prometheusMetrics.loadActiveMetrics();
 
       expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
-      expect($.getJSON).toHaveBeenCalledWith(prometheusMetrics.activeMetricsEndpoint);
+      expect($.ajax).toHaveBeenCalledWith({
+        url: prometheusMetrics.activeMetricsEndpoint,
+        dataType: 'json',
+        global: false,
+      });
 
       deferred.resolve({ data: metrics, success: true });
 
@@ -126,7 +130,7 @@ describe('PrometheusMetrics', () => {
 
     it('should show empty state if response failed to load', (done) => {
       const deferred = $.Deferred();
-      spyOn($, 'getJSON').and.returnValue(deferred.promise());
+      spyOn($, 'ajax').and.returnValue(deferred.promise());
       spyOn(prometheusMetrics, 'populateActiveMetrics');
 
       prometheusMetrics.loadActiveMetrics();
@@ -142,7 +146,7 @@ describe('PrometheusMetrics', () => {
 
     it('should populate metrics list once response is loaded', (done) => {
       const deferred = $.Deferred();
-      spyOn($, 'getJSON').and.returnValue(deferred.promise());
+      spyOn($, 'ajax').and.returnValue(deferred.promise());
       spyOn(prometheusMetrics, 'populateActiveMetrics');
 
       prometheusMetrics.loadActiveMetrics();

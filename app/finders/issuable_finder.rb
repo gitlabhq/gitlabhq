@@ -25,6 +25,29 @@ class IssuableFinder
 
   NONE = '0'.freeze
 
+  SCALAR_PARAMS = %i[
+    assignee_id
+    assignee_username
+    author_id
+    author_username
+    authorized_only
+    due_date
+    group_id
+    iids
+    label_name
+    milestone_title
+    my_reaction_emoji
+    non_archived
+    project_id
+    scope
+    search
+    sort
+    state
+  ].freeze
+  ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
+
+  VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
+
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})
@@ -244,6 +267,8 @@ class IssuableFinder
   end
 
   def by_scope(items)
+    return items.none if current_user_related? && !current_user
+
     case params[:scope]
     when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)
@@ -349,19 +374,14 @@ class IssuableFinder
   end
 
   def by_label(items)
-    if labels?
-      if filter_by_no_label?
-        items = items.without_label
-      else
-        items = items.with_label(label_names, params[:sort])
-        items_projects = projects(items)
+    return items unless labels?
 
-        if items_projects
-          label_ids = LabelsFinder.new(current_user, project_ids: items_projects).execute(skip_authorization: true).select(:id)
-          items = items.where(labels: { id: label_ids })
-        end
+    items =
+      if filter_by_no_label?
+        items.without_label
+      else
+        items.with_label(label_names, params[:sort])
       end
-    end
 
     items
   end

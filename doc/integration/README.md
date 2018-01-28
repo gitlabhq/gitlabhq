@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab Integration
 
 GitLab integrates with multiple third-party services to allow external issue

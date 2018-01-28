@@ -17,9 +17,9 @@ describe Issues::UpdateService, :mailer do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -48,7 +48,8 @@ describe Issues::UpdateService, :mailer do
           assignee_ids: [user2.id],
           state_event: 'close',
           label_ids: [label.id],
-          due_date: Date.tomorrow
+          due_date: Date.tomorrow,
+          discussion_locked: true
         }
       end
 
@@ -62,6 +63,14 @@ describe Issues::UpdateService, :mailer do
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
+        expect(issue.discussion_locked).to be_truthy
+      end
+
+      it 'refreshes the number of open issues when the issue is made confidential', :use_clean_rails_memory_store_caching do
+        issue # make sure the issue is created first so our counts are correct.
+
+        expect { update_issue(confidential: true) }
+          .to change { project.open_issues_count }.from(1).to(0)
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do
@@ -90,7 +99,7 @@ describe Issues::UpdateService, :mailer do
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
@@ -103,6 +112,7 @@ describe Issues::UpdateService, :mailer do
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
+          expect(issue.discussion_locked).to be_falsey
         end
       end
 
@@ -140,6 +150,13 @@ describe Issues::UpdateService, :mailer do
 
           expect(note).not_to be_nil
           expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
+        end
+
+        it 'creates system note about discussion lock' do
+          note = find_note('locked this issue')
+
+          expect(note).not_to be_nil
+          expect(note.note).to eq 'locked this issue'
         end
       end
     end
@@ -250,6 +267,30 @@ describe Issues::UpdateService, :mailer do
         end
       end
 
+      context 'when a new assignee added' do
+        subject { update_issue(assignees: issue.assignees + [user2]) }
+
+        it 'creates only 1 new todo' do
+          expect { subject }.to change { Todo.count }.by(1)
+        end
+
+        it 'creates a todo for new assignee' do
+          subject
+
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: issue.id,
+            target_type: issue.class.name,
+            action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq(1)
+        end
+      end
+
       context 'when the milestone change' do
         it 'marks todos as done' do
           update_issue(milestone: create(:milestone))
@@ -277,7 +318,7 @@ describe Issues::UpdateService, :mailer do
       let!(:subscriber) do
         create(:user).tap do |u|
           label.toggle_subscription(u, project)
-          project.team << [u, :developer]
+          project.add_developer(u)
         end
       end
 
@@ -515,7 +556,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
         end
 
         it 'calls the move service with the proper issue and project' do

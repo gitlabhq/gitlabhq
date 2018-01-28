@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     let!(:project) { setup_project }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
       allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
@@ -77,6 +77,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['issues'].first['notes']).not_to be_empty
       end
 
+      it 'has issue assignees' do
+        expect(saved_project_json['issues'].first['issue_assignees']).not_to be_empty
+      end
+
       it 'has author on issue comments' do
         expect(saved_project_json['issues'].first['notes'].first['author']).not_to be_empty
       end
@@ -87,10 +91,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has merge requests diffs' do
         expect(saved_project_json['merge_requests'].first['merge_request_diff']).not_to be_empty
-      end
-
-      it 'has merge requests diff st_diffs' do
-        expect(saved_project_json['merge_requests'].first['merge_request_diff']['utf8_st_diffs']).not_to be_nil
       end
 
       it 'has merge request diff files' do
@@ -109,17 +109,25 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['merge_requests'].first['notes'].first['author']).not_to be_empty
       end
 
+      it 'has pipeline stages' do
+        expect(saved_project_json.dig('pipelines', 0, 'stages')).not_to be_empty
+      end
+
       it 'has pipeline statuses' do
-        expect(saved_project_json['pipelines'].first['statuses']).not_to be_empty
+        expect(saved_project_json.dig('pipelines', 0, 'stages', 0, 'statuses')).not_to be_empty
       end
 
       it 'has pipeline builds' do
-        expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build' }).to eq(1)
+        builds_count = saved_project_json
+          .dig('pipelines', 0, 'stages', 0, 'statuses')
+          .count { |hash| hash['type'] == 'Ci::Build' }
+
+        expect(builds_count).to eq(1)
       end
 
       it 'has no when YML attributes but only the DB column' do
         allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file).and_return(File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')))
-        expect_any_instance_of(Ci::GitlabCiYamlProcessor).not_to receive(:build_attributes)
+        expect_any_instance_of(Gitlab::Ci::YamlProcessor).not_to receive(:build_attributes)
 
         saved_project_json
       end
@@ -156,6 +164,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['services'].first['type']).to eq('CustomIssueTrackerService')
       end
 
+      it 'saves the properties for a service' do
+        expect(saved_project_json['services'].first['properties']).to eq('one' => 'value')
+      end
+
       it 'has project feature' do
         project_feature = saved_project_json['project_feature']
         expect(project_feature).not_to be_empty
@@ -164,10 +176,8 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(project_feature["builds_access_level"]).to eq(ProjectFeature::PRIVATE)
       end
 
-      it 'does not complain about non UTF-8 characters in MR diffs' do
-        ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
-
-        expect(project_tree_saver.save).to be true
+      it 'has custom attributes' do
+        expect(saved_project_json['custom_attributes'].count).to eq(2)
       end
 
       it 'does not complain about non UTF-8 characters in MR diff files' do
@@ -273,7 +283,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
            commit_id: ci_build.pipeline.sha)
 
     create(:event, :created, target: milestone, project: project, author: user)
-    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
+    create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker', properties: { one: 'value' })
+
+    create(:project_custom_attribute, project: project)
+    create(:project_custom_attribute, project: project)
 
     project
   end

@@ -69,6 +69,12 @@ describe 'GitLab Markdown' do
         end
       end
 
+      it 'parses mermaid code block' do
+        aggregate_failures do
+          expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
+        end
+      end
+
       it 'parses strikethroughs' do
         expect(doc).to have_selector(%{del:contains("and this text doesn't")})
       end
@@ -201,8 +207,9 @@ describe 'GitLab Markdown' do
   before do
     @feat = MarkdownFeature.new
 
-    # `markdown` helper expects a `@project` variable
+    # `markdown` helper expects a `@project` and `@group` variable
     @project = @feat.project
+    @group = @feat.group
   end
 
   context 'default pipeline' do

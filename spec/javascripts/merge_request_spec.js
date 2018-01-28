@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
-/* global MergeRequest */
 
-import '~/merge_request';
+import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import IssuablesHelper from '~/helpers/issuables_helper';
 
@@ -20,17 +19,24 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
         return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
-      return it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
+
+      it('submits an ajax request on tasklist:changed', (done) => {
+        spyOn(jQuery, 'ajax').and.callFake((req) => {
           expect(req.type).toBe('PATCH');
           expect(req.url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
-          return expect(req.data.merge_request.description).not.toBe(null);
+          expect(req.data.merge_request.description).not.toBe(null);
+          done();
         });
-        return $('.js-task-list-field').trigger('tasklist:changed');
+
+        $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
 
     describe('class constructor', () => {
+      beforeEach(() => {
+        spyOn(jQuery, 'ajax').and.stub();
+      });
+
       it('calls .initCloseReopenReport', () => {
         spyOn(IssuablesHelper, 'initCloseReopenReport');
 
@@ -56,6 +62,44 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-menu');
         expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-button');
         expect(CloseReopenReportToggle.prototype.initDroplab).toHaveBeenCalled();
+      });
+    });
+
+    describe('hideCloseButton', () => {
+      describe('merge request of another user', () => {
+        beforeEach(() => {
+          loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+          this.el = document.querySelector('.js-issuable-actions');
+          new MergeRequest(); // eslint-disable-line no-new
+          MergeRequest.hideCloseButton();
+        });
+
+        it('hides the dropdown close item and selects the next item', () => {
+          const closeItem = this.el.querySelector('li.close-item');
+          const smallCloseItem = this.el.querySelector('.js-close-item');
+          const reportItem = this.el.querySelector('li.report-item');
+
+          expect(closeItem).toHaveClass('hidden');
+          expect(smallCloseItem).toHaveClass('hidden');
+          expect(reportItem).toHaveClass('droplab-item-selected');
+          expect(reportItem).not.toHaveClass('hidden');
+        });
+      });
+
+      describe('merge request of current_user', () => {
+        beforeEach(() => {
+          loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+          this.el = document.querySelector('.js-issuable-actions');
+          MergeRequest.hideCloseButton();
+        });
+
+        it('hides the close button', () => {
+          const closeButton = this.el.querySelector('.btn-close');
+          const smallCloseItem = this.el.querySelector('.js-close-item');
+
+          expect(closeButton).toHaveClass('hidden');
+          expect(smallCloseItem).toHaveClass('hidden');
+        });
       });
     });
   });

@@ -18,6 +18,7 @@ module Gitlab
         def read(path)
           blob = @repository.blob_at(@commit.id, path) if @commit
           raise FileNotFoundError if blob.nil?
+
           blob.data
         end
 

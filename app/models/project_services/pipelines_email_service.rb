@@ -1,7 +1,7 @@
 class PipelinesEmailService < Service
   prop_accessor :recipients
   boolean_accessor :notify_only_broken_pipelines
-  validates :recipients, presence: true, if: :activated?
+  validates :recipients, presence: true, if: :valid_recipients?
 
   def initialize_properties
     self.properties ||= { notify_only_broken_pipelines: true }
@@ -80,6 +80,6 @@ class PipelinesEmailService < Service
   end
 
   def retrieve_recipients(data)
-    recipients.to_s.split(',').reject(&:blank?)
+    recipients.to_s.split(/[,(?:\r?\n) ]+/).reject(&:empty?)
   end
 end

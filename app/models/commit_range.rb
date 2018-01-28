@@ -89,8 +89,8 @@ class CommitRange
 
   alias_method :id, :to_s
 
-  def to_reference(from_project = nil, full: false)
-    project_reference = project.to_reference(from_project, full: full)
+  def to_reference(from = nil, full: false)
+    project_reference = project.to_reference(from, full: full)
 
     if project_reference.present?
       project_reference + self.class.reference_prefix + self.id
@@ -99,8 +99,8 @@ class CommitRange
     end
   end
 
-  def reference_link_text(from_project = nil)
-    project_reference = project.to_reference(from_project)
+  def reference_link_text(from = nil)
+    project_reference = project.to_reference(from)
     reference         = ref_from + notation + ref_to
 
     if project_reference.present?

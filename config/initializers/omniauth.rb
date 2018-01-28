@@ -3,6 +3,7 @@ if Gitlab::LDAP::Config.enabled?
     Gitlab::LDAP::Config.available_servers.each do |server|
       # do not redeclare LDAP
       next if server['provider_name'] == 'ldap'
+
       const_set(server['provider_class'], Class.new(LDAP))
     end
   end

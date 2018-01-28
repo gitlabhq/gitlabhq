@@ -3,10 +3,8 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
 
-= render "projects/settings/head"
-
 .project-edit-container
-  %section.settings.general-settings
+  %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         General project settings
@@ -14,7 +12,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Update your project name, description, avatar, and other general settings.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset
@@ -44,26 +42,25 @@
           = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
           %p.help-block Separate tags with commas.
         %fieldset.features
-          %h5.prepend-top-0
-            Project avatar
+          %h5.prepend-top-0= _("Project avatar")
           .form-group
             - if @project.avatar?
-              .avatar-container.s160
+              .avatar-container.s160.append-bottom-15
                 = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
-            %p.light
-              - if @project.avatar_in_git
-                Project avatar in repository: #{ @project.avatar_in_git }
-            %a.choose-btn.btn.js-choose-project-avatar-button
-              Browse file...
-            %span.file_name.prepend-left-default.js-avatar-filename No file chosen
-            = f.file_field :avatar, class: "js-project-avatar-input hidden"
-            .help-block The maximum file size allowed is 200KB.
+            - if @project.avatar_in_git
+              %p.light
+                = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
+            .prepend-top-5.append-bottom-10
+              %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
+              %span.file_name.prepend-left-default.js-avatar-filename= _("No file chosen")
+              = f.file_field :avatar, class: "js-project-avatar-input hidden"
+            .help-block= _("The maximum file size allowed is 200KB.")
             - if @project.avatar?
               %hr
-              = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
-        = f.submit 'Save changes', class: "btn btn-save"
+              = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
+        = f.submit 'Save changes', class: "btn btn-success"
 
-  %section.settings.sharing-permissions
+  %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Permissions
@@ -71,13 +68,13 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
         %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
-  %section.settings.merge-requests-feature{ class: ("hidden" if @project.project_feature.send(:merge_requests_access_level) == 0) }
+  %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
         Merge request settings
@@ -85,22 +82,22 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your merge request restrictions.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
   = render 'export', project: @project
 
-  %section.settings.advanced-settings
+  %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Advanced settings
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p
-        Perform advanced options such as housekeeping, exporting, archiving, renaming, transferring, or removing your project.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+        Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project.
+    .settings-content
       .sub-section
         %h4 Housekeeping
         %p
@@ -149,7 +146,7 @@
             %ul
               %li Be careful. Renaming a project's repository can have unintended side effects.
               %li You will need to update your local repositories to point to the new location.
-              - if @project.deployment_services.any?
+              - if @project.deployment_platform.present?
                 %li Your deployment services will be broken, you will need to manually fix the services after renaming.
           = f.submit 'Rename project', class: "btn btn-warning"
       - if can?(current_user, :change_namespace, @project)
@@ -175,7 +172,10 @@
           %p
             This will remove the fork relationship to source project
             = succeed "." do
-              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+              - if @project.fork_source
+                = link_to(fork_source_name(@project), project_path(@project.fork_source))
+              - else
+                = fork_source_name(@project)
           = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
             %p
               %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.

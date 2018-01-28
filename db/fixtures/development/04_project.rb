@@ -4,9 +4,9 @@ Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     project_urls = [
       'https://gitlab.com/gitlab-org/gitlab-test.git',
-      'https://gitlab.com/gitlab-org/gitlab-ce.git',
-      'https://gitlab.com/gitlab-org/gitlab-ci.git',
       'https://gitlab.com/gitlab-org/gitlab-shell.git',
+      'https://gitlab.com/gnuwget/wget2.git',
+      'https://gitlab.com/Commit451/LabCoat.git',
       'https://github.com/documentcloud/underscore.git',
       'https://github.com/twitter/flight.git',
       'https://github.com/twitter/typeahead.js.git',
@@ -63,7 +63,8 @@ Sidekiq::Testing.inline! do
         namespace_id: group.id,
         name: project_path.titleize,
         description: FFaker::Lorem.sentence,
-        visibility_level: Gitlab::VisibilityLevel.values.sample
+        visibility_level: Gitlab::VisibilityLevel.values.sample,
+        skip_disk_validation: true
       }
 
       project = Projects::CreateService.new(User.first, params).execute

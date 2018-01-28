@@ -39,7 +39,7 @@ describe API::CommitStatuses do
           end
 
           it 'returns latest commit statuses' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
 
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
@@ -55,7 +55,7 @@ describe API::CommitStatuses do
           end
 
           it 'returns all commit statuses' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status1.id, status2.id,
@@ -70,7 +70,7 @@ describe API::CommitStatuses do
           end
 
           it 'returns latest commit statuses for specific ref' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status5.id)
@@ -83,7 +83,7 @@ describe API::CommitStatuses do
           end
 
           it 'return latest commit statuses for specific name' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status4.id, status5.id)
@@ -110,7 +110,7 @@ describe API::CommitStatuses do
       end
 
       it "does not return project commits" do
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -120,7 +120,7 @@ describe API::CommitStatuses do
       end
 
       it "does not return project commits" do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -135,13 +135,14 @@ describe API::CommitStatuses do
             it 'creates commit status' do
               post api(post_url, developer), state: status
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['sha']).to eq(commit.id)
               expect(json_response['status']).to eq(status)
               expect(json_response['name']).to eq('default')
               expect(json_response['ref']).not_to be_empty
               expect(json_response['target_url']).to be_nil
               expect(json_response['description']).to be_nil
+
               if status == 'failed'
                 expect(CommitStatus.find(json_response['id'])).to be_api_failure
               end
@@ -159,7 +160,7 @@ describe API::CommitStatuses do
           it "to #{status}" do
             expect { post api(post_url, developer), state: status }.not_to change { CommitStatus.count }
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
             expect(json_response['status']).to eq(status)
           end
         end
@@ -181,7 +182,7 @@ describe API::CommitStatuses do
           it 'creates commit status' do
             subject
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
             expect(json_response['sha']).to eq(commit.id)
             expect(json_response['status']).to eq('success')
             expect(json_response['name']).to eq('coverage')
@@ -197,7 +198,7 @@ describe API::CommitStatuses do
             it 'sets head pipeline' do
               subject
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(merge_request.reload.head_pipeline).not_to be_nil
             end
           end
@@ -224,7 +225,7 @@ describe API::CommitStatuses do
           end
 
           it 'updates a commit status' do
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
             expect(json_response['sha']).to eq(commit.id)
             expect(json_response['status']).to eq('success')
             expect(json_response['name']).to eq('coverage')
@@ -250,7 +251,7 @@ describe API::CommitStatuses do
         end
 
         it 'correctly posts a new commit status' do
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['sha']).to eq(commit.id)
           expect(json_response['status']).to eq('success')
         end
@@ -268,7 +269,7 @@ describe API::CommitStatuses do
         end
 
         it 'does not create commit status' do
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
         end
       end
 
@@ -278,7 +279,7 @@ describe API::CommitStatuses do
         end
 
         it 'does not create commit status' do
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
         end
       end
 
@@ -290,7 +291,7 @@ describe API::CommitStatuses do
         end
 
         it 'returns not found error' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -301,7 +302,7 @@ describe API::CommitStatuses do
         end
 
         it 'responds with bad request status and validation errors' do
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['target_url'])
             .to include 'must be a valid URL'
         end
@@ -314,7 +315,7 @@ describe API::CommitStatuses do
       end
 
       it 'does not create commit status' do
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -324,7 +325,7 @@ describe API::CommitStatuses do
       end
 
       it 'does not create commit status' do
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -334,7 +335,7 @@ describe API::CommitStatuses do
       end
 
       it 'does not create commit status' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end

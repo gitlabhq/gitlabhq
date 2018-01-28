@@ -9,16 +9,22 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def index
     @sort = params[:sort].presence || sort_value_recently_updated
-    @branches = BranchesFinder.new(@repository, params).execute
+    @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
     @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     respond_to do |format|
       format.html do
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
+        @merged_branch_names =
+          repository.merged_branch_names(@branches.map(&:name))
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37429
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          @max_commits = @branches.reduce(0) do |memo, branch|
+            diverging_commit_counts = repository.diverging_commit_counts(branch)
+            [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+          end
 
-        @max_commits = @branches.reduce(0) do |memo, branch|
-          diverging_commit_counts = repository.diverging_commit_counts(branch)
-          [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+          render
         end
       end
       format.json do
@@ -35,19 +41,21 @@ class Projects::BranchesController < Projects::ApplicationController
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
 
-    redirect_to_autodeploy = project.empty_repo? && project.deployment_services.present?
+    redirect_to_autodeploy = project.empty_repo? && project.deployment_platform.present?
 
     result = CreateBranchService.new(project, current_user)
         .execute(branch_name, ref)
 
-    if params[:issue_iid]
+    success = (result[:status] == :success)
+
+    if params[:issue_iid] && success
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
       SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 
     respond_to do |format|
       format.html do
-        if result[:status] == :success
+        if success
           if redirect_to_autodeploy
             redirect_to url_to_autodeploy_setup(project, branch_name),
               notice: view_context.autodeploy_flash_notice(branch_name)
@@ -61,7 +69,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
 
       format.json do
-        if result[:status] == :success
+        if success
           render json: { name: branch_name, url: project_tree_url(@project, branch_name) }
         else
           render json: result[:messsage], status: :unprocessable_entity

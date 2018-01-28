@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group variables', js: true do
+feature 'Group variables', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
 
@@ -24,7 +24,7 @@ feature 'Group variables', js: true do
         expect(find(".variable-value")).to have_content('******')
         expect(find(".variable-protected")).to have_content('Yes')
       end
-      click_on 'Reveal Values'
+      click_on 'Reveal value'
       page.within('.variables-table') do
         expect(find(".variable-value")).to have_content('AAA123')
       end

@@ -1,6 +1,4 @@
-/* eslint-disable func-names, object-shorthand, comma-dangle, wrap-iife, space-before-function-paren, no-param-reassign, max-len */
-
-class GroupLabelSubscription {
+export default class GroupLabelSubscription {
   constructor(container) {
     const $container = $(container);
     this.$dropdown = $container.find('.dropdown');
@@ -18,7 +16,7 @@ class GroupLabelSubscription {
 
     $.ajax({
       type: 'POST',
-      url: url
+      url,
     }).done(() => {
       this.toggleSubscriptionButtons();
       this.$unsubscribeButtons.removeAttr('data-url');
@@ -35,7 +33,7 @@ class GroupLabelSubscription {
 
     $.ajax({
       type: 'POST',
-      url: url
+      url,
     }).done(() => {
       this.toggleSubscriptionButtons();
     });
@@ -47,6 +45,3 @@ class GroupLabelSubscription {
     this.$unsubscribeButtons.toggleClass('hidden');
   }
 }
-
-window.gl = window.gl || {};
-window.gl.GroupLabelSubscription = GroupLabelSubscription;

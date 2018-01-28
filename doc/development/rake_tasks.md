@@ -8,7 +8,7 @@ Note that if your db user does not have advanced privileges you must create the 
 bundle exec rake setup
 ```
 
-The `setup` task is a alias for `gitlab:setup`.
+The `setup` task is an alias for `gitlab:setup`.
 This tasks calls `db:reset` to create the database, calls `add_limits_mysql` that adds limits to the database schema in case of a MySQL database and finally it calls `db:seed_fu` to seed the database.
 Note: `db:setup` calls `db:seed` but this does nothing.
 
@@ -122,6 +122,15 @@ they can be easily inspected.
 bundle exec rake services:doc
 ```
 
+## Updating Emoji Aliases
+
+To update the Emoji aliases file (used for Emoji autocomplete) you must run the
+following:
+
+```
+bundle exec rake gemojione:aliases
+```
+
 ## Updating Emoji Digests
 
 To update the Emoji digests file (used for Emoji autocomplete) you must run the
@@ -130,6 +139,7 @@ following:
 ```
 bundle exec rake gemojione:digests
 ```
+
 
 This will update the file `fixtures/emojis/digests.json` based on the currently
 available Emoji.
@@ -153,7 +163,7 @@ Starting a project from a template needs this project to be exported. On a
 up to date master branch with run:
 
 ```
-gdk run db
+gdk run
 # In a new terminal window
 bundle exec rake gitlab:update_project_templates
 git checkout -b update-project-templates

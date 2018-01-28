@@ -85,6 +85,22 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
+    .block.time_spent
+      .sidebar-collapsed-icon
+        = custom_icon('icon_hourglass')
+        %span.collapsed-milestone-total-time-spent
+        - if milestone.human_total_issue_time_spent
+          = milestone.human_total_issue_time_spent
+        - else
+          = _("None")
+      .title.hide-collapsed
+        = _("Total issue time spent")
+      .value.hide-collapsed
+        - if milestone.human_total_issue_time_spent
+          %span.bold= milestone.human_total_issue_time_spent
+        - else
+          %span.no-value= _("No time spent")
+
     .block.merge-requests
       .sidebar-collapsed-icon
         %strong

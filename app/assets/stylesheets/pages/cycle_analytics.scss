@@ -1,6 +1,4 @@
 #cycle-analytics {
-  @include new-style-dropdown;
-
   max-width: 1000px;
   margin: 24px auto 0;
   position: relative;
@@ -21,6 +19,11 @@
           margin: 0 auto;
         }
       }
+    }
+
+    svg {
+      width: 136px;
+      height: 136px;
     }
   }
 
@@ -75,7 +78,7 @@
   .panel {
     .content-block {
       padding: 24px 0;
-      border-bottom: none;
+      border-bottom: 0;
       position: relative;
 
       @media (max-width: $screen-xs-max) {
@@ -112,52 +115,6 @@
 
   .js-ca-dropdown {
     top: $gl-padding-top;
-  }
-
-  .content-list {
-    li {
-      padding: 18px $gl-padding $gl-padding;
-
-      .container-fluid {
-        padding: 0;
-      }
-    }
-
-    .title-col {
-      p {
-        margin: 0;
-
-        &.title {
-          line-height: 19px;
-          font-size: 14px;
-          font-weight: $gl-font-weight-bold;
-          color: $gl-text-color;
-        }
-
-        &.text {
-          color: $layout-link-gray;
-
-          &.value-col {
-            color: $gl-text-color;
-          }
-        }
-      }
-    }
-
-    .value-col {
-      text-align: right;
-
-      span {
-        position: relative;
-        vertical-align: middle;
-        top: 3px;
-      }
-    }
-  }
-
-  .landing svg {
-    width: 136px;
-    height: 136px;
   }
 
   .fa-spinner {
@@ -222,11 +179,11 @@
       }
 
       &:first-child {
-        border-top: none;
+        border-top: 0;
       }
 
       &:last-child {
-        border-bottom: none;
+        border-bottom: 0;
       }
 
       .stage-nav-item-cell {
@@ -290,7 +247,7 @@
     border-bottom: 1px solid $gray-darker;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
       margin-bottom: 0;
     }
 

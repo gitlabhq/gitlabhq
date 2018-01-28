@@ -26,6 +26,7 @@ class Projects::TreeController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        lfs_blob_ids
         @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
       end
 
@@ -35,7 +36,12 @@ class Projects::TreeController < Projects::ApplicationController
       end
 
       format.json do
-        render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
+        page_title @path.presence || _("Files"), @ref, @project.name_with_namespace
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38261
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
+        end
       end
     end
   end

@@ -1,3 +1,7 @@
+// Remove body class for any previous theme, re-add current one
+$('body').removeClass('<%= Gitlab::Themes.body_classes %>')
+$('body').addClass('<%= user_application_theme %>')
+
 // Toggle container-fluid class
 if ('<%= current_user.layout %>' === 'fluid') {
   $('.content-wrapper .container-fluid').removeClass('container-limited')

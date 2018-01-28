@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateLargeTable
 # rubocop:disable Migration/UpdateColumnInBatches
 class EnableAutoCancelPendingPipelinesForAll < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers

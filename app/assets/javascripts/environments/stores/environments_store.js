@@ -1,4 +1,4 @@
-import '~/lib/utils/common_utils';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 /**
  * Environments Store.
  *
@@ -36,7 +36,12 @@ export default class EnvironmentsStore {
   storeEnvironments(environments = []) {
     const filteredEnvironments = environments.map((env) => {
       const oldEnvironmentState = this.state.environments
-        .find(element => element.id === env.latest.id) || {};
+      .find((element) => {
+        if (env.latest) {
+          return element.id === env.latest.id;
+        }
+        return element.id === env.id;
+      }) || {};
 
       let filtered = {};
 
@@ -66,8 +71,8 @@ export default class EnvironmentsStore {
   }
 
   setPagination(pagination = {}) {
-    const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
-    const paginationInformation = gl.utils.parseIntPagination(normalizedHeaders);
+    const normalizedHeaders = normalizeHeaders(pagination);
+    const paginationInformation = parseIntPagination(normalizedHeaders);
 
     this.state.paginationInformation = paginationInformation;
     return paginationInformation;

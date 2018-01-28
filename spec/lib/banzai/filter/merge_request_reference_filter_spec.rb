@@ -214,4 +214,14 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(merge.to_reference(project))} \(diffs, comment 123\)<\/a>\.\)/)
     end
   end
+
+  context 'group context' do
+    it 'links to a valid reference' do
+      reference = "#{project.full_path}!#{merge.iid}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.project_merge_request_url(project, merge))
+    end
+  end
 end

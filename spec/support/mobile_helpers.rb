@@ -12,6 +12,6 @@ module MobileHelpers
   end
 
   def resize_window(width, height)
-    page.driver.resize_window width, height
+    Capybara.current_session.current_window.resize_to(width, height)
   end
 end

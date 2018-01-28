@@ -72,6 +72,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
+    "theme_id": 1,
     "last_activity_on": "2012-05-23",
     "color_scheme_id": 2,
     "projects_limit": 100,
@@ -105,6 +106,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
+    "theme_id": 1,
     "last_activity_on": "2012-05-23",
     "color_scheme_id": 3,
     "projects_limit": 100,
@@ -150,6 +152,12 @@ You can search users by creation date time range with:
 
 ```
 GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
+```
+
+You can filter by [custom attributes](custom_attributes.md) with:
+
+```
+GET /users?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
 ## Single user
@@ -215,6 +223,7 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "theme_id": 1,
   "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
@@ -288,6 +297,7 @@ Parameters:
 - `location` (optional)         - User's location
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `avatar` (optional)           - Image file for user's avatar
 
@@ -341,6 +351,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "theme_id": 1,
   "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
@@ -387,6 +398,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "theme_id": 1,
   "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
@@ -399,10 +411,13 @@ GET /user
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false,
-  "private_token": "dd34asd13as"
+  "external": false
 }
 ```
+
+## List user projects
+
+Please refer to the [List of user projects ](projects.md#list-user-projects).
 
 ## List SSH keys
 

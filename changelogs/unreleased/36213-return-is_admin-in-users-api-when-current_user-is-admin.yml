@@ -1,6 +1,0 @@
----
-title: Include the `is_admin` field in the `GET /users/:id` API when current user
-  is an admin
-merge_request:
-author:
-type: fixed

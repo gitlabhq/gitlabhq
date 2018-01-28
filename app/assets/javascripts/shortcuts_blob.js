@@ -1,7 +1,6 @@
-/* global Mousetrap */
-/* global Shortcuts */
-
-import './shortcuts';
+import Mousetrap from 'mousetrap';
+import { getLocationHash, visitUrl } from './lib/utils/url_utility';
+import Shortcuts from './shortcuts';
 
 const defaults = {
   skipResetBindings: false,
@@ -19,9 +18,9 @@ export default class ShortcutsBlob extends Shortcuts {
 
   moveToFilePermalink() {
     if (this.options.fileBlobPermalinkUrl) {
-      const hash = gl.utils.getLocationHash();
+      const hash = getLocationHash();
       const hashUrlString = hash ? `#${hash}` : '';
-      gl.utils.visitUrl(`${this.options.fileBlobPermalinkUrl}${hashUrlString}`);
+      visitUrl(`${this.options.fileBlobPermalinkUrl}${hashUrlString}`);
     }
   }
 }

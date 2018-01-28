@@ -12,9 +12,9 @@ following format:
 
 ```yaml
 ---
-title: "Going through change[log]s"
+title: "Change[log]s"
 merge_request: 1972
-author: Ozzy Osbourne
+author: Black Sabbath
 type: added
 ```
 
@@ -80,7 +80,7 @@ changes.
 
 The first example focuses on _how_ we fixed something, not on _what_ it fixes.
 The rewritten version clearly describes the _end benefit_ to the user (fewer 500
-errors), and _when_ (searching commits with ElasticSearch).
+errors), and _when_ (searching commits with Elasticsearch).
 
 Use your best judgement and try to put yourself in the mindset of someone
 reading the compiled changelog. Does this entry add value? Does it offer context
@@ -127,7 +127,7 @@ type:
 If you're working on the GitLab EE repository, the entry will be added to
 `changelogs/unreleased-ee/` instead.
 
-#### Arguments
+### Arguments
 
 | Argument            | Shorthand | Purpose                                                                                                    |
 | -----------------   | --------- | ---------------------------------------------------------------------------------------------------------- |

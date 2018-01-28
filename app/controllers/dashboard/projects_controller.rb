@@ -1,5 +1,6 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
+  include RendersMemberAccess
 
   before_action :set_non_archived_param
   before_action :default_sorting
@@ -45,10 +46,12 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def load_projects(finder_params)
-    ProjectsFinder
-      .new(params: finder_params, current_user: current_user)
-      .execute
-      .includes(:route, :creator, namespace: [:route, :owner])
+    projects = ProjectsFinder
+                .new(params: finder_params, current_user: current_user)
+                .execute
+                .includes(:route, :creator, namespace: [:route, :owner])
+
+    prepare_projects_for_rendering(projects)
   end
 
   def load_events
@@ -57,5 +60,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @events = EventCollection
       .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 end

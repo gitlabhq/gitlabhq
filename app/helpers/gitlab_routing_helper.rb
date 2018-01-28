@@ -71,11 +71,13 @@ module GitlabRoutingHelper
     project_commit_url(entity.project, entity.sha, *args)
   end
 
-  def preview_markdown_path(project, *args)
+  def preview_markdown_path(parent, *args)
+    return group_preview_markdown_path(parent) if parent.is_a?(Group)
+
     if @snippet.is_a?(PersonalSnippet)
       preview_markdown_snippets_path
     else
-      preview_markdown_project_path(project, *args)
+      preview_markdown_project_path(parent, *args)
     end
   end
 
@@ -178,6 +180,11 @@ module GitlabRoutingHelper
   def edit_pipeline_schedule_path(schedule)
     project = schedule.project
     edit_project_pipeline_schedule_path(project, schedule)
+  end
+
+  def play_pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    play_project_pipeline_schedule_path(project, schedule, *args)
   end
 
   def take_ownership_pipeline_schedule_path(schedule, *args)

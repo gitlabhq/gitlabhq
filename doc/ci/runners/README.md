@@ -1,4 +1,4 @@
-# Runners
+# Configuring GitLab Runners
 
 In GitLab CI, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 They are isolated (virtual) machines that pick up jobs through the coordinator
@@ -35,7 +35,7 @@ are:
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
 can run jobs for every project that has enabled the option **Allow shared Runners**
-under **Settings ➔ Pipelines**.
+under **Settings ➔ CI/CD**.
 
 Projects with high demand of CI activity can also benefit from using specific
 Runners. By having dedicated Runners you are guaranteed that the Runner is not
@@ -61,7 +61,7 @@ You can only register a shared Runner if you are an admin of the GitLab instance
 
 Shared Runners are enabled by default as of GitLab 8.2, but can be disabled
 with the **Disable shared Runners** button which is present under each project's
-**Settings ➔ Pipelines** page. Previous versions of GitLab defaulted shared
+**Settings ➔ CI/CD** page. Previous versions of GitLab defaulted shared
 Runners to disabled.
 
 ## Registering a specific Runner
@@ -76,7 +76,7 @@ Registering a specific can be done in two ways:
 To create a specific Runner without having admin rights to the GitLab instance,
 visit the project you want to make the Runner work for in GitLab:
 
-1. Go to **Settings ➔ Pipelines** to obtain the token
+1. Go to **Settings ➔ CI/CD** to obtain the token
 1. [Register the Runner][register]
 
 ### Making an existing shared Runner specific
@@ -101,7 +101,7 @@ can be changed afterwards under each Runner's settings.
 
 To lock/unlock a Runner:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find the Runner you wish to lock/unlock and make sure it's enabled
 1. Click the pencil button
 1. Check the **Lock to current projects** option
@@ -115,7 +115,7 @@ you can enable the Runner also on any other project where you have Master permis
 
 To enable/disable a Runner in your project:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find the Runner you wish to enable/disable
 1. Click **Enable for this project** or **Disable for this project**
 
@@ -136,13 +136,35 @@ Whenever a Runner is protected, the Runner picks only jobs created on
 
 To protect/unprotect Runners:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find a Runner you want to protect/unprotect and make sure it's enabled
 1. Click the pencil button besides the Runner name
 1. Check the **Protected** option
 1. Click **Save changes** for the changes to take effect
 
 ![specific Runners edit icon](img/protected_runners_check_box.png)
+
+## Manually clearing the Runners cache
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41249) in GitLab 10.4.
+
+GitLab Runners use [cache](../yaml/README.md#cache) to speed up the execution
+of your jobs by reusing existing data. This however, can sometimes lead to an
+inconsistent behavior.
+
+To start with a fresh copy of the cache, you can easily do it via GitLab's UI:
+
+1. Navigate to your project's **CI/CD > Pipelines** page.
+1. Click on the **Clear Runner caches** to clean up the cache.
+1. On the next push, your CI/CD job will use a new cache.
+
+That way, you don't have to change the [cache key](../yaml/README.md#cache-key)
+in your `.gitlab-ci.yml`.
+
+Behind the scenes, this works by increasing a counter in the database, and the
+value of that counter is used to create the key for the cache. After a push, a
+new key is generated and the old cache is not valid anymore. Eventually, the
+Runner's garbage collector will remove it form the filesystem.
 
 ## How shared Runners pick jobs
 
@@ -220,7 +242,7 @@ each Runner's settings.
 
 To make a Runner pick tagged/untagged jobs:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find the Runner you wish and make sure it's enabled
 1. Click the pencil button
 1. Check the **Run untagged jobs** option

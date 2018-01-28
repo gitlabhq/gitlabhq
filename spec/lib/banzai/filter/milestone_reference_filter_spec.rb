@@ -294,9 +294,8 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     end
   end
 
-  context 'project milestones' do
-    let(:milestone) { create(:milestone, project: project) }
-    let(:reference) { milestone.to_reference }
+  shared_context 'project milestones' do
+    let(:reference) { milestone.to_reference(format: :iid) }
 
     include_examples 'reference parsing'
 
@@ -309,8 +308,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     it_behaves_like 'cross project shorthand reference'
   end
 
-  context 'group milestones' do
-    let(:milestone) { create(:milestone, group: group) }
+  shared_context 'group milestones' do
     let(:reference) { milestone.to_reference(format: :name) }
 
     include_examples 'reference parsing'
@@ -341,6 +339,45 @@ describe Banzai::Filter::MilestoneReferenceFilter do
       doc = reference_filter("See #{project_reference}#{reference}")
 
       expect(doc.css('a')).to be_empty
+    end
+  end
+
+  context 'group context' do
+    it 'links to a valid reference' do
+      milestone = create(:milestone, project: project)
+      reference = "#{project.full_path}%#{milestone.iid}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+    end
+  end
+
+  context 'when milestone is open' do
+    context 'project milestones' do
+      let(:milestone) { create(:milestone, project: project) }
+
+      include_context 'project milestones'
+    end
+
+    context 'group milestones' do
+      let(:milestone) { create(:milestone, group: group) }
+
+      include_context 'group milestones'
+    end
+  end
+
+  context 'when milestone is closed' do
+    context 'project milestones' do
+      let(:milestone) { create(:milestone, :closed, project: project) }
+
+      include_context 'project milestones'
+    end
+
+    context 'group milestones' do
+      let(:milestone) { create(:milestone, :closed, group: group) }
+
+      include_context 'group milestones'
     end
   end
 end

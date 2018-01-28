@@ -12,7 +12,7 @@ describe 'Issue Boards add issue modal', :js do
   let!(:issue2) { create(:issue, project: project, title: 'hij', description: 'klm') }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
 
@@ -101,7 +101,7 @@ describe 'Issue Boards add issue modal', :js do
           click_button 'Cancel'
         end
 
-        first('.board-delete').click
+        accept_confirm { first('.board-delete').click }
 
         click_button('Add issues')
 

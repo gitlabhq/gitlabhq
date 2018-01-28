@@ -62,6 +62,7 @@ module Gitlab
 
       def user
         return nil unless ldap_user
+
         Gitlab::LDAP::User.find_by_uid_and_provider(ldap_user.dn, provider)
       end
     end

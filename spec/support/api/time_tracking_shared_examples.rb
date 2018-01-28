@@ -15,7 +15,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
     it "sets the time estimate for #{issuable_name}" do
       post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: '1w'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['human_time_estimate']).to eq('1w')
     end
 
@@ -28,7 +28,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
         it 'does not modify the original estimate' do
           post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: 'foo'
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(issuable.reload.human_time_estimate).to eq('1w')
         end
       end
@@ -37,7 +37,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
         it 'updates the estimate' do
           post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: '3w1h'
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(issuable.reload.human_time_estimate).to eq('3w 1h')
         end
       end
@@ -54,7 +54,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
     it "resets the time estimate for #{issuable_name}" do
       post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_time_estimate", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['time_estimate']).to eq(0)
     end
   end
@@ -73,30 +73,30 @@ shared_examples 'time tracking endpoints' do |issuable_name|
       post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
            duration: '2h'
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['human_total_time_spent']).to eq('2h')
     end
 
     context 'when subtracting time' do
       it 'subtracts time of the total spent time' do
-        issuable.update_attributes!(spend_time: { duration: 7200, user: user })
+        issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
 
         post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
              duration: '-1h'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['total_time_spent']).to eq(3600)
       end
     end
 
     context 'when time to subtract is greater than the total spent time' do
       it 'does not modify the total time spent' do
-        issuable.update_attributes!(spend_time: { duration: 7200, user: user })
+        issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
 
         post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
              duration: '-1w'
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']['time_spent'].first).to match(/exceeds the total time spent/)
       end
     end
@@ -112,19 +112,19 @@ shared_examples 'time tracking endpoints' do |issuable_name|
     it "resets spent time for #{issuable_name}" do
       post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['total_time_spent']).to eq(0)
     end
   end
 
   describe "GET /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_stats" do
     it "returns the time stats for #{issuable_name}" do
-      issuable.update_attributes!(spend_time: { duration: 1800, user: user },
+      issuable.update_attributes!(spend_time: { duration: 1800, user_id: user.id },
                                   time_estimate: 3600)
 
       get api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_stats", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['total_time_spent']).to eq(1800)
       expect(json_response['time_estimate']).to eq(3600)
     end

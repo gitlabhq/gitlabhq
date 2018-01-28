@@ -53,6 +53,7 @@ module MarkupHelper
       # text, wrapping anything found in the requested link
       fragment.children.each do |node|
         next unless node.text?
+
         node.replace(link_to(node.text, url, html_options))
       end
     end
@@ -69,29 +70,39 @@ module MarkupHelper
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
-  def first_line_in_markdown(text, max_chars = nil, options = {})
-    md = markdown(text, options).strip
+  def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
+    md = markdown_field(object, attribute, options)
 
-    truncate_visible(md, max_chars || md.length) if md.present?
+    text = truncate_visible(md, max_chars || md.length) if md.present?
+
+    sanitize(
+      text,
+      tags: %w(a img gl-emoji b pre code p span),
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
+    )
   end
 
   def markdown(text, context = {})
     return '' unless text.present?
 
     context[:project] ||= @project
+    context[:group] ||= @group
+
     html = markdown_unsafe(text, context)
     prepare_for_rendering(html, context)
   end
 
-  def markdown_field(object, field)
+  def markdown_field(object, field, context = {})
     object = object.for_display if object.respond_to?(:for_display)
     redacted_field_html = object.try(:"redacted_#{field}_html")
 
     return '' unless object.present?
     return redacted_field_html if redacted_field_html
 
-    html = Banzai.render_field(object, field)
-    prepare_for_rendering(html, object.banzai_render_context(field))
+    html = Banzai.render_field(object, field, context)
+    context.reverse_merge!(object.banzai_render_context(field)) if object.respond_to?(:banzai_render_context)
+
+    prepare_for_rendering(html, context)
   end
 
   def markup(file_name, text, context = {})
@@ -104,7 +115,13 @@ module MarkupHelper
     text = wiki_page.content
     return '' unless text.present?
 
-    context = { pipeline: :wiki, project: @project, project_wiki: @project_wiki, page_slug: wiki_page.slug }
+    context = {
+      pipeline: :wiki,
+      project: @project,
+      project_wiki: @project_wiki,
+      page_slug: wiki_page.slug,
+      issuable_state_filter_enabled: true
+    }
 
     html =
       case wiki_page.format
@@ -186,6 +203,7 @@ module MarkupHelper
           node.content = node.content.truncate(num_remaining)
           truncated = true
         end
+
         content_length += node.content.length
       end
 
@@ -213,12 +231,12 @@ module MarkupHelper
     data = options[:data].merge({ container: 'body' })
     content_tag :button,
       type: 'button',
-      class: 'toolbar-btn js-md has-tooltip hidden-xs',
+      class: 'toolbar-btn js-md has-tooltip',
       tabindex: -1,
       data: data,
       title: options[:title],
       aria: { label: options[:title] } do
-      icon(options[:icon])
+      sprite_icon(options[:icon])
     end
   end
 

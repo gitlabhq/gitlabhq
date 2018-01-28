@@ -36,7 +36,7 @@ Devise.setup do |config|
   # Configure which authentication keys should be case-insensitive.
   # These keys will be downcased upon creating or modifying a user and when used
   # to authenticate or find a user. Default is :email.
-  config.case_insensitive_keys = [:email]
+  config.case_insensitive_keys = [:email, :email_confirmation]
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
@@ -175,7 +175,7 @@ Devise.setup do |config|
 
   # Configure the default scope given to Warden. By default it's the first
   # devise role declared in your routes (usually :user).
-  # config.default_scope = :user
+  config.default_scope = :user  # now have an :email scope as well, so set the default
 
   # Configure sign_out behavior.
   # Sign_out action can be scoped (i.e. /users/sign_out affects only :user scope).
@@ -195,7 +195,7 @@ Devise.setup do |config|
   config.navigational_formats = [:"*/*", "*/*", :html, :zip]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
-  config.sign_out_via = :delete
+  config.sign_out_via = :get
 
   # ==> OmniAuth
   # To configure a new OmniAuth provider copy and edit omniauth.rb.sample
@@ -236,10 +236,12 @@ Devise.setup do |config|
         provider['args'][:on_single_sign_out] = lambda do |request|
           ticket = request.params[:session_index]
           raise "Service Ticket not found." unless Gitlab::OAuth::Session.valid?(:cas3, ticket)
+
           Gitlab::OAuth::Session.destroy(:cas3, ticket)
           true
         end
       end
+
       if provider['name'] == 'authentiq'
         provider['args'][:remote_sign_out_handler] = lambda do |request|
           authentiq_session = request.params['sid']

@@ -26,7 +26,6 @@ module Gitlab
       apple-touch-icon.png
       assets
       autocomplete
-      boards
       ci
       dashboard
       deploy.html
@@ -52,7 +51,6 @@ module Gitlab
       slash-command-logo.png
       snippets
       u
-      unicorn_test
       unsubscribes
       uploads
       users
@@ -113,23 +111,6 @@ module Gitlab
     # this would map to the activity-page of its parent.
     GROUP_ROUTES = %w[
       -
-      activity
-      analytics
-      audit_events
-      avatar
-      edit
-      group_members
-      hooks
-      issues
-      labels
-      ldap
-      ldap_group_links
-      merge_requests
-      milestones
-      notification_setting
-      pipeline_quota
-      projects
-      subgroups
     ].freeze
 
     ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES

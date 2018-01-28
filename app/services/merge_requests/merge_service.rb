@@ -10,18 +10,17 @@ module MergeRequests
 
     attr_reader :merge_request, :source
 
+    delegate :merge_jid, :state, to: :@merge_request
+
     def execute(merge_request)
+      if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
-      unless @merge_request.mergeable?
-        return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
-      end
-
-      @source = find_merge_source
-
-      unless @source
-        return log_merge_error('No source for merge', save_message_on_model: true)
-      end
+      error_check!
 
       merge_request.in_locked_state do
         if commit
@@ -30,23 +29,32 @@ module MergeRequests
           success
         end
       end
+      log_info("Merge process finished on JID #{merge_jid} with state #{state}")
     rescue MergeError => e
-      clean_merge_jid
-      log_merge_error(e.message, save_message_on_model: true)
+      handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
     private
 
+    def error_check!
+      error =
+        if @merge_request.should_be_rebased?
+          'Only fast-forward merge is allowed for your project. Please update your source branch'
+        elsif !@merge_request.mergeable?
+          'Merge request is not mergeable'
+        elsif !source
+          'No source for merge'
+        end
+
+      raise MergeError, error if error
+    end
+
     def commit
-      committer = repository.user_to_committer(current_user)
+      message = params[:commit_message] || merge_request.merge_commit_message
 
-      options = {
-        message: params[:commit_message] || merge_request.merge_commit_message,
-        author: committer,
-        committer: committer
-      }
-
-      commit_id = repository.merge(current_user, source, merge_request, options)
+      log_info("Git merge started on JID #{merge_jid}")
+      commit_id = repository.merge(current_user, source, merge_request, message)
+      log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
 
       raise MergeError, 'Conflicts detected during merge' unless commit_id
 
@@ -60,15 +68,13 @@ module MergeRequests
     end
 
     def after_merge
+      log_info("Post merge started on JID #{merge_jid} with state #{state}")
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
+      log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
-      if params[:should_remove_source_branch].present? || @merge_request.force_remove_source_branch?
-        # Verify again that the source branch can be removed, since branch may be protected,
-        # or the source branch may have been updated.
-        if @merge_request.can_remove_source_branch?(branch_deletion_user)
-          DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
-            .execute(merge_request.source_branch)
-        end
+      if delete_source_branch?
+        DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
+          .execute(merge_request.source_branch)
       end
     end
 
@@ -80,18 +86,30 @@ module MergeRequests
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
 
-    def log_merge_error(message, save_message_on_model: false)
-      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{message}")
+    # Verify again that the source branch can be removed, since branch may be protected,
+    # or the source branch may have been updated, or the user may not have permission
+    #
+    def delete_source_branch?
+      params.fetch('should_remove_source_branch', @merge_request.force_remove_source_branch?) &&
+        @merge_request.can_remove_source_branch?(branch_deletion_user)
+    end
 
-      @merge_request.update(merge_error: message) if save_message_on_model
+    def handle_merge_error(log_message:, save_message_on_model: false)
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
+      @merge_request.update(merge_error: log_message) if save_message_on_model
+    end
+
+    def log_info(message)
+      @logger ||= Rails.logger
+      @logger.info("#{merge_request_info} - #{message}")
     end
 
     def merge_request_info
       merge_request.to_reference(full: true)
     end
 
-    def find_merge_source
-      merge_request.diff_head_sha
+    def source
+      @source ||= @merge_request.diff_head_sha
     end
   end
 end

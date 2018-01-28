@@ -1,6 +1,5 @@
-/* global Flash */
-
 import Vue from 'vue';
+import Flash from '../flash';
 import PipelinesMediator from './pipeline_details_mediatior';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
@@ -16,13 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-pipeline-graph-vue',
+    components: {
+      pipelineGraph,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      pipelineGraph,
     },
     render(createElement) {
       return createElement('pipeline-graph', {
@@ -37,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-pipeline-header-vue',
+    components: {
+      pipelineHeader,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      pipelineHeader,
     },
     created() {
       eventHub.$on('headerPostAction', this.postAction);

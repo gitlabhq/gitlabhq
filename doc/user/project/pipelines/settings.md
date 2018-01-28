@@ -1,7 +1,7 @@
 # Pipelines settings
 
 To reach the pipelines settings navigate to your project's
-**Settings ➔ Pipelines**.
+**Settings ➔ CI/CD**.
 
 The following settings can be configured per project.
 
@@ -68,7 +68,7 @@ in the pipelines settings page.
 
 Access to pipelines and job details (including output of logs and artifacts)
 is checked against your current user access level and the **Public pipelines**
-project setting.
+project setting under your project's **Settings > CI/CD > General pipelines settings**.
 
 If **Public pipelines** is enabled (default):
 
@@ -115,10 +115,12 @@ pages.
 
 Depending on the status of your job, a badge can have the following values:
 
+- pending
 - running
-- success
+- passed
 - failed
 - skipped
+- canceled
 - unknown
 
 You can access a pipeline status badge image using the following link:

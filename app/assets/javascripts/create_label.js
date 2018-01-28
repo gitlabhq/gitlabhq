@@ -1,8 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-param-reassign, wrap-iife, max-len */
+/* eslint-disable func-names, prefer-arrow-callback */
 import Api from './api';
+import { humanize } from './lib/utils/text_utility';
 
-class CreateLabelDropdown {
-  constructor ($el, namespacePath, projectPath) {
+export default class CreateLabelDropdown {
+  constructor($el, namespacePath, projectPath) {
     this.$el = $el;
     this.namespacePath = namespacePath;
     this.projectPath = projectPath;
@@ -22,7 +23,7 @@ class CreateLabelDropdown {
     this.addBinding();
   }
 
-  cleanBinding () {
+  cleanBinding() {
     this.$colorSuggestions.off('click');
     this.$newLabelField.off('keyup change');
     this.$newColorField.off('keyup change');
@@ -31,7 +32,7 @@ class CreateLabelDropdown {
     this.$newLabelCreateButton.off('click');
   }
 
-  addBinding () {
+  addBinding() {
     const self = this;
 
     this.$colorSuggestions.on('click', function (e) {
@@ -44,7 +45,7 @@ class CreateLabelDropdown {
 
     this.$dropdownBack.on('click', this.resetForm.bind(this));
 
-    this.$cancelButton.on('click', function(e) {
+    this.$cancelButton.on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -55,7 +56,7 @@ class CreateLabelDropdown {
     this.$newLabelCreateButton.on('click', this.saveLabel.bind(this));
   }
 
-  addColorValue (e, $this) {
+  addColorValue(e, $this) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -66,7 +67,7 @@ class CreateLabelDropdown {
       .addClass('is-active');
   }
 
-  enableLabelCreateButton () {
+  enableLabelCreateButton() {
     if (this.$newLabelField.val() !== '' && this.$newColorField.val() !== '') {
       this.$newLabelError.hide();
       this.$newLabelCreateButton.enable();
@@ -75,7 +76,7 @@ class CreateLabelDropdown {
     }
   }
 
-  resetForm () {
+  resetForm() {
     this.$newLabelField
       .val('')
       .trigger('change');
@@ -90,13 +91,13 @@ class CreateLabelDropdown {
       .removeClass('is-active');
   }
 
-  saveLabel (e) {
+  saveLabel(e) {
     e.preventDefault();
     e.stopPropagation();
 
     Api.newLabel(this.namespacePath, this.projectPath, {
       title: this.$newLabelField.val(),
-      color: this.$newColorField.val()
+      color: this.$newColorField.val(),
     }, (label) => {
       this.$newLabelCreateButton.enable();
 
@@ -107,8 +108,8 @@ class CreateLabelDropdown {
           errors = label.message;
         } else {
           errors = Object.keys(label.message).map(key =>
-            `${gl.text.humanize(key)} ${label.message[key].join(', ')}`
-          ).join("<br/>");
+            `${humanize(key)} ${label.message[key].join(', ')}`,
+          ).join('<br/>');
         }
 
         this.$newLabelError
@@ -122,6 +123,3 @@ class CreateLabelDropdown {
     });
   }
 }
-
-window.gl = window.gl || {};
-gl.CreateLabelDropdown = CreateLabelDropdown;

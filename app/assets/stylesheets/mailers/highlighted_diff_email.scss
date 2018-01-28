@@ -158,13 +158,31 @@ span.highlight_word {
 .cp { color: $highlighted-cp; font-weight: $gl-font-weight-bold; }
 .c1 { color: $highlighted-c1; font-style: italic; }
 .cs { color: $highlighted-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
-.gd { color: $highlighted-gd; background-color: $highlighted-gd-bg; }
-.gd .x { color: $highlighted-gd; background-color: $highlighted-gd-x-bg; }
+
+.gd {
+  color: $highlighted-gd;
+  background-color: $highlighted-gd-bg;
+
+  .x {
+    color: $highlighted-gd;
+    background-color: $highlighted-gd-x-bg;
+  }
+}
+
 .ge { font-style: italic; }
 .gr { color: $highlighted-gr; }
 .gh { color: $highlighted-gh; }
-.gi { color: $highlighted-gi; background-color: $highlighted-gi-bg; }
-.gi .x { color: $highlighted-gi; background-color: $highlighted-gi-x-bg; }
+
+.gi {
+  color: $highlighted-gi;
+  background-color: $highlighted-gi-bg;
+
+  .x {
+    color: $highlighted-gi;
+    background-color: $highlighted-gi-x-bg;
+  }
+}
+
 .go { color: $highlighted-go; }
 .gp { color: $highlighted-gp; }
 .gs { font-weight: $gl-font-weight-bold; }

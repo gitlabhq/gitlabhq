@@ -6,7 +6,7 @@ module BoardsHelper
   def board_data
     {
       boards_endpoint: @boards_endpoint,
-      lists_endpoint: board_lists_url(board),
+      lists_endpoint: board_lists_path(board),
       board_id: board.id,
       disabled: "#{!can?(current_user, :admin_list, current_board_parent)}",
       issue_link_base: build_issue_link_base,
@@ -18,17 +18,6 @@ module BoardsHelper
 
   def build_issue_link_base
     project_issues_path(@project)
-  end
-
-  def current_board_json
-    board = @board || @boards.first
-
-    board.to_json(
-      only: [:id, :name, :milestone_id],
-      include: {
-        milestone: { only: [:title] }
-      }
-    )
   end
 
   def board_base_url
@@ -76,5 +65,9 @@ module BoardsHelper
       'dropdown-header': dropdown_options[:data][:'dropdown-header'],
       'max-select': dropdown_options[:data][:'max-select']
     }
+  end
+
+  def boards_link_text
+    s_("IssueBoards|Board")
   end
 end

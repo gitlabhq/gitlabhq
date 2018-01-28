@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::Success do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_success' }
+    it { expect(subject.icon).to eq 'status_success' }
   end
 
   describe '#favicon' do

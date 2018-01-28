@@ -13,6 +13,11 @@
         type: Object,
         required: true,
       },
+      showDeleteButton: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -22,6 +27,9 @@
     computed: {
       isSubmitEnabled() {
         return this.formState.title.trim() !== '';
+      },
+      shouldShowDeleteButton() {
+        return this.canDestroy && this.showDeleteButton;
       },
     },
     methods: {
@@ -62,7 +70,7 @@
       Cancel
     </button>
     <button
-      v-if="canDestroy"
+      v-if="shouldShowDeleteButton"
       class="btn btn-danger pull-right append-right-default"
       :class="{ disabled: deleteLoading }"
       type="button"

@@ -2,13 +2,13 @@ module API
   class MergeRequests < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
 
     helpers do
       def find_merge_requests(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
@@ -21,7 +21,14 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels, :timelogs)
+          .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
+      end
+
+      def merge_request_pipelines_with_access
+        authorize! :read_pipeline, user_project
+
+        mr = find_merge_request_with_access(params[:merge_request_iid])
+        mr.all_pipelines
       end
 
       params :merge_requests_params do
@@ -41,6 +48,7 @@ module API
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
         use :pagination
       end
     end
@@ -55,6 +63,7 @@ module API
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
+        authenticate! unless params[:scope] == 'all'
         merge_requests = find_merge_requests
 
         options = { with: Entities::MergeRequestBasic,
@@ -166,7 +175,9 @@ module API
 
         authorize!(:destroy_merge_request, merge_request)
 
-        destroy_conditionally!(merge_request)
+        destroy_conditionally!(merge_request) do |merge_request|
+          Issuable::DestroyService.new(user_project, current_user).execute(merge_request)
+        end
       end
 
       params do
@@ -181,14 +192,24 @@ module API
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
+      desc 'Get the participants of a merge request' do
+        success Entities::UserBasic
+      end
+      get ':id/merge_requests/:merge_request_iid/participants' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        participants = ::Kaminari.paginate_array(merge_request.participants)
+
+        present paginate(participants), with: Entities::UserBasic
+      end
+
       desc 'Get the commits of a merge request' do
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       get ':id/merge_requests/:merge_request_iid/commits' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         commits = ::Kaminari.paginate_array(merge_request.commits)
 
-        present paginate(commits), with: Entities::RepoCommit
+        present paginate(commits), with: Entities::Commit
       end
 
       desc 'Show the merge request changes' do
@@ -198,6 +219,15 @@ module API
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
+      end
+
+      desc 'Get the merge request pipelines' do
+        success Entities::PipelineBasic
+      end
+      get ':id/merge_requests/:merge_request_iid/pipelines' do
+        pipelines = merge_request_pipelines_with_access
+
+        present paginate(pipelines), with: Entities::PipelineBasic
       end
 
       desc 'Update a merge request' do
@@ -213,12 +243,14 @@ module API
           :remove_source_branch,
           :state_event,
           :target_branch,
-          :title
+          :title,
+          :discussion_locked
         ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
+        optional :discussion_locked, type: Boolean, desc: 'Whether the MR discussion is locked'
 
         use :optional_params
         at_least_one_of(*at_least_one_of_ce)
@@ -292,7 +324,7 @@ module API
 
         unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
 
-        ::MergeRequest::MergeWhenPipelineSucceedsService
+        ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(merge_request.target_project, current_user)
           .cancel(merge_request)
       end

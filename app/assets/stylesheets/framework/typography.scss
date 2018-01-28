@@ -167,7 +167,7 @@
 
     &.plain-readme {
       background: none;
-      border: none;
+      border: 0;
       padding: 0;
       margin: 0;
       font-size: 14px;
@@ -176,6 +176,10 @@
 
   p > code {
     font-weight: inherit;
+  }
+
+  dd {
+    margin-left: $gl-padding;
   }
 
   ul,
@@ -342,8 +346,6 @@ a > code {
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
 }
-
-@include new-style-dropdown('.git-revision-dropdown');
 
 /**
  * Apply Markdown typography

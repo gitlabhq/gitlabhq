@@ -2,7 +2,6 @@
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 
 - page_title "Activity"
-= render 'groups/head'
 
 %section.activities
   = render 'activities'

@@ -79,8 +79,6 @@ const Filter = {
 
     this.hook.trigger.addEventListener('keydown.dl', this.eventWrapper.debounceKeydown);
     this.hook.trigger.addEventListener('mousedown.dl', this.eventWrapper.debounceKeydown);
-
-    this.debounceKeydown({ detail: { hook: this.hook } });
   },
 
   destroy: function destroy() {

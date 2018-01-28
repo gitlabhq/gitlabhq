@@ -10,6 +10,7 @@ namespace :gitlab do
       puts "This rake task is not meant fo production instances".red
       exit(1)
     end
+
     admin = User.find_by(admin: true)
 
     unless admin

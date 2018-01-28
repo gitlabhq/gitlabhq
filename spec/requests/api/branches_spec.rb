@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe API::Branches do
-  let(:user) { create(:user) }
-  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  set(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
@@ -40,7 +40,9 @@ describe API::Branches do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      before do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
 
       it_behaves_like 'repository branches'
     end
@@ -108,6 +110,15 @@ describe API::Branches do
         end
       end
 
+      context 'when the branch refname is invalid' do
+        let(:branch_name) { 'branch*' }
+        let(:message) { 'The branch refname is invalid' }
+
+        it_behaves_like '400 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
       context 'when repository is disabled' do
         include_context 'disabled repository'
 
@@ -118,7 +129,9 @@ describe API::Branches do
     end
 
     context 'when unauthenticated', 'and project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      before do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
 
       it_behaves_like 'repository branch'
     end
@@ -227,6 +240,15 @@ describe API::Branches do
         it_behaves_like '404 response' do
           let(:request) { put api(route, current_user) }
           let(:message) { '404 Branch Not Found' }
+        end
+      end
+
+      context 'when the branch refname is invalid' do
+        let(:branch_name) { 'branch*' }
+        let(:message) { 'The branch refname is invalid' }
+
+        it_behaves_like '400 response' do
+          let(:request) { put api(route, current_user) }
         end
       end
 
@@ -352,6 +374,15 @@ describe API::Branches do
         it_behaves_like '404 response' do
           let(:request) { put api(route, current_user) }
           let(:message) { '404 Branch Not Found' }
+        end
+      end
+
+      context 'when the branch refname is invalid' do
+        let(:branch_name) { 'branch*' }
+        let(:message) { 'The branch refname is invalid' }
+
+        it_behaves_like '400 response' do
+          let(:request) { put api(route, current_user) }
         end
       end
 
@@ -514,6 +545,15 @@ describe API::Branches do
       delete api("/projects/#{project.id}/repository/branches/foobar", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+
+    context 'when the branch refname is invalid' do
+      let(:branch_name) { 'branch*' }
+      let(:message) { 'The branch refname is invalid' }
+
+      it_behaves_like '400 response' do
+        let(:request) { delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user) }
+      end
     end
 
     it_behaves_like '412 response' do

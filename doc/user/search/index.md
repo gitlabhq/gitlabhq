@@ -31,8 +31,8 @@ on the search field on the top-right of your screen:
 
 If you want to search for issues present in a specific project, navigate to
 a project's **Issues** tab, and click on the field **Search or filter results...**. It will
-display a dropdown menu, from which you can add filters per author, assignee, milestone, label,
-and weight. When done, press **Enter** on your keyboard to filter the issues.
+display a dropdown menu, from which you can add filters per author, assignee, milestone, 
+label, weight, and 'my-reaction' (based on your emoji votes). When done, press **Enter** on your keyboard to filter the issues.
 
 ![filter issues in a project](img/issue_search_filter.png)
 

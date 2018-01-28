@@ -6,7 +6,7 @@ import _ from 'underscore';
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
-function UsersSelect(currentUser, els) {
+function UsersSelect(currentUser, els, options = {}) {
   var $els;
   this.users = this.users.bind(this);
   this.user = this.user.bind(this);
@@ -19,6 +19,8 @@ function UsersSelect(currentUser, els) {
       this.currentUser = JSON.parse(currentUser);
     }
   }
+
+  const { handleClick } = options;
 
   $els = $(els);
 
@@ -424,7 +426,7 @@ function UsersSelect(currentUser, els) {
           }
 
           var isIssueIndex, isMRIndex, page, selected;
-          page = $('body').data('page');
+          page = $('body').attr('data-page');
           isIssueIndex = page === 'projects:issues:index';
           isMRIndex = (page === page && page === 'projects:merge_requests:index');
           if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
@@ -442,6 +444,9 @@ function UsersSelect(currentUser, els) {
           }
           if ($el.closest('.add-issues-modal').length) {
             gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
+          } else if (handleClick) {
+            e.preventDefault();
+            handleClick(user, isMarking);
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));
           } else if ($dropdown.hasClass('js-filter-submit')) {
@@ -536,7 +541,6 @@ function UsersSelect(currentUser, els) {
       options.projectId = $(select).data('project-id');
       options.groupId = $(select).data('group-id');
       options.showCurrentUser = $(select).data('current-user');
-      options.pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches');
       options.authorId = $(select).data('author-id');
       options.skipUsers = $(select).data('skip-users');
       showNullUser = $(select).data('null-user');
@@ -683,7 +687,6 @@ UsersSelect.prototype.users = function(query, options, callback) {
       todo_filter: options.todoFilter || null,
       todo_state_filter: options.todoStateFilter || null,
       current_user: options.showCurrentUser || null,
-      push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
       author_id: options.authorId || null,
       skip_users: options.skipUsers || null
     },

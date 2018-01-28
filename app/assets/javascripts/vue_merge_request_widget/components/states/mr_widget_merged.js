@@ -1,9 +1,8 @@
-/* global Flash */
-
+import Flash from '../../../flash';
 import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
 
 export default {
@@ -48,9 +47,9 @@ export default {
     removeSourceBranch() {
       this.isMakingRequest = true;
       this.service.removeSourceBranch()
-        .then(res => res.json())
-        .then((res) => {
-          if (res.message === 'Branch was removed') {
+        .then(res => res.data)
+        .then((data) => {
+          if (data.message === 'Branch was removed') {
             eventHub.$emit('MRWidgetUpdateRequested', () => {
               this.isMakingRequest = false;
             });
@@ -69,9 +68,9 @@ export default {
         <div class="space-children">
           <mr-widget-author-and-time
             actionText="Merged by"
-            :author="mr.mergedBy"
-            :dateTitle="mr.updatedAt"
-            :dateReadable="mr.mergedAt" />
+            :author="mr.metrics.mergedBy"
+            :date-title="mr.metrics.mergedAt"
+            :date-readable="mr.metrics.readableMergedAt" />
           <a
             v-if="mr.canRevertInCurrentMR"
             v-tooltip

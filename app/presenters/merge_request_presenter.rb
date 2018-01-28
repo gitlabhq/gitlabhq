@@ -31,7 +31,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def remove_wip_path
-    if can?(current_user, :update_merge_request, merge_request.project)
+    if work_in_progress? && can?(current_user, :update_merge_request, merge_request.project)
       remove_wip_project_merge_request_path(project, merge_request)
     end
   end
@@ -73,6 +73,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   def conflict_resolution_path
     if conflicts.can_be_resolved_in_ui? && conflicts.can_be_resolved_by?(current_user)
       conflicts_project_merge_request_path(project, merge_request)
+    end
+  end
+
+  def rebase_path
+    if !rebase_in_progress? && should_be_rebased? && user_can_push_to_source_branch?
+      rebase_project_merge_request_path(project, merge_request)
     end
   end
 
@@ -152,6 +158,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     user_can_collaborate_with_project? && can_be_cherry_picked?
   end
 
+  def can_push_to_source_branch?
+    source_branch_exists? && user_can_push_to_source_branch?
+  end
+
   private
 
   def conflicts
@@ -163,7 +173,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def pipeline
-    @pipeline ||= head_pipeline
+    @pipeline ||= actual_head_pipeline
   end
 
   def issues_sentence(project, issues)
@@ -172,6 +182,14 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     issues.map do |issue|
       issue.to_reference(project)
     end.sort.to_sentence
+  end
+
+  def user_can_push_to_source_branch?
+    return false unless source_branch_exists?
+
+    ::Gitlab::UserAccess
+      .new(current_user, project: source_project)
+      .can_push_to_branch?(source_branch)
   end
 
   def user_can_collaborate_with_project?

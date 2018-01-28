@@ -51,24 +51,24 @@ describe Ci::Runner do
 
   describe '#display_name' do
     it 'returns the description if it has a value' do
-      runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
+      runner = FactoryBot.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
       expect(runner.display_name).to eq 'Linux/Ruby-1.9.3-p448'
     end
 
     it 'returns the token if it does not have a description' do
-      runner = FactoryGirl.create(:ci_runner)
+      runner = FactoryBot.create(:ci_runner)
       expect(runner.display_name).to eq runner.description
     end
 
     it 'returns the token if the description is an empty string' do
-      runner = FactoryGirl.build(:ci_runner, description: '', token: 'token')
+      runner = FactoryBot.build(:ci_runner, description: '', token: 'token')
       expect(runner.display_name).to eq runner.token
     end
   end
 
   describe '#assign_to' do
-    let!(:project) { FactoryGirl.create :project }
-    let!(:shared_runner) { FactoryGirl.create(:ci_runner, :shared) }
+    let!(:project) { FactoryBot.create :project }
+    let!(:shared_runner) { FactoryBot.create(:ci_runner, :shared) }
 
     before do
       shared_runner.assign_to(project)
@@ -83,15 +83,15 @@ describe Ci::Runner do
     subject { described_class.online }
 
     before do
-      @runner1 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.year.ago)
-      @runner2 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago)
+      @runner1 = FactoryBot.create(:ci_runner, :shared, contacted_at: 1.year.ago)
+      @runner2 = FactoryBot.create(:ci_runner, :shared, contacted_at: 1.second.ago)
     end
 
     it { is_expected.to eq([@runner2])}
   end
 
   describe '#online?' do
-    let(:runner) { FactoryGirl.create(:ci_runner, :shared) }
+    let(:runner) { FactoryBot.create(:ci_runner, :shared) }
 
     subject { runner.online? }
 
@@ -183,74 +183,41 @@ describe Ci::Runner do
       end
     end
 
-    context 'when runner is locked' do
+    context 'when runner is shared' do
       before do
-        runner.locked = true
+        runner.is_shared = true
+        build.project.runners = []
       end
 
-      shared_examples 'locked build picker' do
-        context 'when runner cannot pick untagged jobs' do
-          before do
-            runner.run_untagged = false
-          end
-
-          it 'cannot handle builds without tags' do
-            expect(runner.can_pick?(build)).to be_falsey
-          end
-        end
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = %w(bb cc)
-          end
-
-          it 'cannot handle it for builds without matching tags' do
-            build.tag_list = ['aa']
-
-            expect(runner.can_pick?(build)).to be_falsey
-          end
-        end
+      it 'can handle builds' do
+        expect(runner.can_pick?(build)).to be_truthy
       end
 
-      context 'when serving the same project' do
-        it 'can handle it' do
+      context 'when runner is locked' do
+        before do
+          runner.locked = true
+        end
+
+        it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
         end
+      end
+    end
 
-        it_behaves_like 'locked build picker'
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = %w(bb cc)
-            build.tag_list = ['bb']
-          end
-
-          it 'can handle it for matching tags' do
-            expect(runner.can_pick?(build)).to be_truthy
-          end
+    context 'when runner is not shared' do
+      context 'when runner is assigned to a project' do
+        it 'can handle builds' do
+          expect(runner.can_pick?(build)).to be_truthy
         end
       end
 
-      context 'serving a different project' do
+      context 'when runner is not assigned to a project' do
         before do
-          runner.runner_projects.destroy_all
+          build.project.runners = []
         end
 
-        it 'cannot handle it' do
+        it 'cannot handle builds' do
           expect(runner.can_pick?(build)).to be_falsey
-        end
-
-        it_behaves_like 'locked build picker'
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = %w(bb cc)
-            build.tag_list = ['bb']
-          end
-
-          it 'cannot handle it for matching tags' do
-            expect(runner.can_pick?(build)).to be_falsey
-          end
         end
       end
     end
@@ -301,7 +268,7 @@ describe Ci::Runner do
   end
 
   describe '#status' do
-    let(:runner) { FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
+    let(:runner) { FactoryBot.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
 
     subject { runner.status }
 
@@ -475,9 +442,9 @@ describe Ci::Runner do
 
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
-      runner = FactoryGirl.create(:ci_runner)
-      project = FactoryGirl.create(:project)
-      project1 = FactoryGirl.create(:project)
+      runner = FactoryBot.create(:ci_runner)
+      project = FactoryBot.create(:project)
+      project1 = FactoryBot.create(:project)
       project.runners << runner
       project1.runners << runner
 
@@ -485,8 +452,8 @@ describe Ci::Runner do
     end
 
     it "returns true" do
-      runner = FactoryGirl.create(:ci_runner)
-      project = FactoryGirl.create(:project)
+      runner = FactoryBot.create(:ci_runner)
+      project = FactoryBot.create(:project)
       project.runners << runner
 
       expect(runner.belongs_to_one_project?).to be_truthy
@@ -506,7 +473,7 @@ describe Ci::Runner do
   end
 
   describe '.search' do
-    let(:runner) { create(:ci_runner, token: '123abc') }
+    let(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
 
     it 'returns runners with a matching token' do
       expect(described_class.search(runner.token)).to eq([runner])

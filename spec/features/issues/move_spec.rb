@@ -13,7 +13,7 @@ feature 'issue move to another project' do
 
   context 'user does not have permission to move issue' do
     background do
-      old_project.team << [user, :guest]
+      old_project.add_guest(user)
 
       visit issue_path(issue)
     end
@@ -31,14 +31,14 @@ feature 'issue move to another project' do
     let(:cross_reference) { old_project.to_reference(new_project) }
 
     background do
-      old_project.team << [user, :reporter]
-      new_project.team << [user, :reporter]
+      old_project.add_reporter(user)
+      new_project.add_reporter(user)
 
       visit issue_path(issue)
     end
 
-    scenario 'moving issue to another project', js: true do
-      find('.js-move-issue').trigger('click')
+    scenario 'moving issue to another project', :js do
+      find('.js-move-issue').click
       wait_for_requests
       all('.js-move-issue-dropdown-item')[0].click
       find('.js-move-issue-confirmation-button').click
@@ -49,10 +49,10 @@ feature 'issue move to another project' do
       expect(page.current_path).to include project_path(new_project)
     end
 
-    scenario 'searching project dropdown', js: true do
-      new_project_search.team << [user, :reporter]
+    scenario 'searching project dropdown', :js do
+      new_project_search.add_reporter(user)
 
-      find('.js-move-issue').trigger('click')
+      find('.js-move-issue').click
       wait_for_requests
 
       page.within '.js-sidebar-move-issue-block' do
@@ -63,13 +63,13 @@ feature 'issue move to another project' do
       end
     end
 
-    context 'user does not have permission to move the issue to a project', js: true do
+    context 'user does not have permission to move the issue to a project', :js do
       let!(:private_project) { create(:project, :private) }
       let(:another_project) { create(:project) }
-      background { another_project.team << [user, :guest] }
+      background { another_project.add_guest(user) }
 
       scenario 'browsing projects in projects select' do
-        find('.js-move-issue').trigger('click')
+        find('.js-move-issue').click
         wait_for_requests
 
         page.within '.js-sidebar-move-issue-block' do

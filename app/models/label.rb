@@ -127,7 +127,13 @@ class Label < ActiveRecord::Base
   end
 
   def priority(project)
-    priorities.find_by(project: project).try(:priority)
+    priority = if priorities.loaded?
+                 priorities.first { |p| p.project == project }
+               else
+                 priorities.find_by(project: project)
+               end
+
+    priority.try(:priority)
   end
 
   def template?
@@ -160,12 +166,12 @@ class Label < ActiveRecord::Base
   #
   # Returns a String
   #
-  def to_reference(from_project = nil, target_project: nil, format: :id, full: false)
+  def to_reference(from = nil, target_project: nil, format: :id, full: false)
     format_reference = label_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if from_project
-      "#{from_project.to_reference(target_project, full: full)}#{reference}"
+    if from
+      "#{from.to_reference(target_project, full: full)}#{reference}"
     else
       reference
     end

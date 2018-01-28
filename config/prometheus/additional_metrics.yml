@@ -145,7 +145,7 @@
       - container_memory_usage_bytes
     weight: 1
     queries:
-    - query_range: '(sum(container_memory_usage_bytes{container_name!="POD",%{environment_filter}}) / count(container_memory_usage_bytes{container_name!="POD",%{environment_filter}})) /1024/1024'
+    - query_range: '(sum(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) without (job))) / count(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) without (job)) /1024/1024'
       label: Average
       unit: MB
   - title: "CPU Utilization"
@@ -154,8 +154,6 @@
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) by (cpu)  * 100'
-      label: CPU
+    - query_range: 'sum(avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}"}[2m])) without (job)) * 100'
+      label: Average
       unit: "%"
-      series:
-        - label: cpu

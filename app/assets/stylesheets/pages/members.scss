@@ -3,39 +3,10 @@
   border-bottom: 1px solid $border-color;
 }
 
-.project-member-tabs {
-  background: $gray-light;
-  border: 1px solid $border-color;
-
-  li {
-    width: 50%;
-
-    &.active {
-      background: $white-light;
-    }
-
-    &:first-child {
-      border-right: 1px solid $border-color;
-    }
-
-    a {
-      width: 100%;
-      text-align: center;
-    }
-  }
-}
-
 .users-project-form {
   .btn-create {
     margin-right: 10px;
   }
-}
-
-.project-member-tab-content {
-  padding: $gl-padding;
-  border: 1px solid $border-color;
-  border-top: 0;
-  margin-bottom: $gl-padding;
 }
 
 .member {
@@ -78,6 +49,12 @@
       width: auto;
     }
   }
+
+  &.existing-title {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+    }
+  }
 }
 
 .member-form-control {
@@ -93,15 +70,7 @@
   line-height: 43px;
 }
 
-.member.existing-title {
-  @media (min-width: $screen-sm-min) {
-    float: left;
-  }
-}
-
 .member-search-form {
-  @include new-style-dropdown;
-
   position: relative;
 
   @media (min-width: $screen-sm-min) {
@@ -309,8 +278,4 @@
       margin-left: 0;
     }
   }
-}
-
-.member-form-control {
-  @include new-style-dropdown;
 }

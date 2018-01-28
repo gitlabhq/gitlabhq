@@ -1,8 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-param-reassign, quotes, prefer-template, no-var, one-var, no-unused-vars, one-var-declaration-per-line, no-void, consistent-return, no-empty, max-len */
+/* eslint-disable no-param-reassign, prefer-template, no-var, no-void, consistent-return */
+
 import AccessorUtilities from './lib/utils/accessor';
 
-window.Autosave = (function() {
-  function Autosave(field, key, resource) {
+export default class Autosave {
+  constructor(field, key, resource) {
     this.field = field;
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
     this.resource = resource;
@@ -12,14 +13,10 @@ window.Autosave = (function() {
     this.key = 'autosave/' + key;
     this.field.data('autosave', this);
     this.restore();
-    this.field.on('input', (function(_this) {
-      return function() {
-        return _this.save();
-      };
-    })(this));
+    this.field.on('input', () => this.save());
   }
 
-  Autosave.prototype.restore = function() {
+  restore() {
     var text;
 
     if (!this.isLocalStorageAvailable) return;
@@ -40,9 +37,9 @@ window.Autosave = (function() {
         field.dispatchEvent(event);
       }
     }
-  };
+  }
 
-  Autosave.prototype.save = function() {
+  save() {
     var text;
     text = this.field.val();
 
@@ -51,15 +48,11 @@ window.Autosave = (function() {
     }
 
     return this.reset();
-  };
+  }
 
-  Autosave.prototype.reset = function() {
+  reset() {
     if (!this.isLocalStorageAvailable) return;
 
     return window.localStorage.removeItem(this.key);
-  };
-
-  return Autosave;
-})();
-
-export default window.Autosave;
+  }
+}

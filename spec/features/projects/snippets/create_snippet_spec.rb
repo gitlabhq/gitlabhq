@@ -10,13 +10,13 @@ feature 'Create Snippet', :js do
     fill_in 'project_snippet_title', with: 'My Snippet Title'
     fill_in 'project_snippet_description', with: 'My Snippet **Description**'
     page.within('.file-editor') do
-      find('.ace_editor').native.send_keys('Hello World!')
+      find('.ace_text-input', visible: false).send_keys('Hello World!')
     end
   end
 
   context 'when a user is authenticated' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
 
       visit project_snippets_path(project)
@@ -59,7 +59,7 @@ feature 'Create Snippet', :js do
       fill_form
       dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-      click_button('Create snippet')
+      find("input[value='Create snippet']").send_keys(:return)
       wait_for_requests
 
       expect(page).to have_content('My Snippet Title')

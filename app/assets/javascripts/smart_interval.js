@@ -3,9 +3,10 @@
  * and controllable by a public API.
  */
 
-class SmartInterval {
+export default class SmartInterval {
   /**
-   * @param { function } opts.callback Function to be called on each iteration (required)
+   * @param { function } opts.callback Function that returns a promise, called on each iteration
+   *                     unless still in progress (required)
    * @param { milliseconds } opts.startingInterval `currentInterval` is set to this initially
    * @param { milliseconds } opts.maxInterval `currentInterval` will be incremented to this
    * @param { milliseconds } opts.hiddenInterval `currentInterval` is set to this
@@ -42,13 +43,16 @@ class SmartInterval {
     const cfg = this.cfg;
     const state = this.state;
 
-    if (cfg.immediateExecution) {
+    if (cfg.immediateExecution && !this.isLoading) {
       cfg.immediateExecution = false;
-      cfg.callback();
+      this.triggerCallback();
     }
 
     state.intervalId = window.setInterval(() => {
-      cfg.callback();
+      if (this.isLoading) {
+        return;
+      }
+      this.triggerCallback();
 
       if (this.getCurrentInterval() === cfg.maxInterval) {
         return;
@@ -76,7 +80,7 @@ class SmartInterval {
 
   // start a timer, using the existing interval
   resume() {
-    this.stopTimer(); // stop exsiting timer, in case timer was not previously stopped
+    this.stopTimer(); // stop existing timer, in case timer was not previously stopped
     this.start();
   }
 
@@ -102,6 +106,18 @@ class SmartInterval {
 
     this.initVisibilityChangeHandling();
     this.initPageUnloadHandling();
+  }
+
+  triggerCallback() {
+    this.isLoading = true;
+    this.cfg.callback()
+      .then(() => {
+        this.isLoading = false;
+      })
+      .catch((err) => {
+        this.isLoading = false;
+        throw err;
+      });
   }
 
   initVisibilityChangeHandling() {
@@ -154,4 +170,3 @@ class SmartInterval {
   }
 }
 
-window.gl.SmartInterval = SmartInterval;

@@ -149,18 +149,3 @@ cp config/secrets.yml.bak config/secrets.yml
 sudo /etc/init.d/gitlab start
 
 ```
-
-## Clear authentication tokens for all users. Important! Data loss!
-
-Clear authentication tokens for all users in the GitLab database. This
-task is useful if your users' authentication tokens might have been exposed in
-any way. All the existing tokens will become invalid, and new tokens are
-automatically generated upon sign-in or user modification.
-
-```
-# omnibus-gitlab
-sudo gitlab-rake gitlab:users:clear_all_authentication_tokens
-
-# installation from source
-bundle exec rake gitlab:users:clear_all_authentication_tokens RAILS_ENV=production
-```

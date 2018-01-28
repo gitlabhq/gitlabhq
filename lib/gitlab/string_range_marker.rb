@@ -90,6 +90,7 @@ module Gitlab
     # Takes an array of integers, and returns an array of ranges covering the same integers
     def collapse_ranges(positions)
       return [] if positions.empty?
+
       ranges = []
 
       start = prev = positions[0]

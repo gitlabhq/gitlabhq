@@ -50,8 +50,6 @@
 }
 
 .filtered-search-wrapper {
-  @include new-style-dropdown;
-
   display: -webkit-flex;
   display: flex;
 
@@ -65,7 +63,7 @@
     display: flex;
     flex: 1;
     -webkit-flex: 1;
-    padding-left: 30px;
+    padding-left: 12px;
     position: relative;
     margin-bottom: 0;
   }
@@ -165,16 +163,6 @@
   }
 }
 
-.droplab-dropdown li.filtered-search-token {
-  padding: 0;
-
-  &:hover,
-  &:focus {
-    background-color: inherit;
-    color: inherit;
-  }
-}
-
 .filtered-search-term {
   .name {
     background-color: inherit;
@@ -221,10 +209,6 @@
     box-shadow: 0 0 4px $search-input-focus-shadow-color;
   }
 
-  &.focus .fa-filter {
-    color: $common-gray-dark;
-  }
-
   gl-emoji {
     display: inline-block;
     font-family: inherit;
@@ -251,13 +235,6 @@
     }
   }
 
-  .fa-filter {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: $gray-darkest;
-  }
-
   .fa-times {
     right: 10px;
     color: $gray-darkest;
@@ -266,7 +243,7 @@
   .clear-search {
     width: 35px;
     background-color: $white-light;
-    border: none;
+    border: 0;
     outline: none;
     z-index: 1;
 
@@ -279,17 +256,11 @@
 .filtered-search-box-input-container {
   flex: 1;
   position: relative;
-  // Fix PhantomJS not supporting `flex: 1;` properly.
-  // This is important because it can change the expected `e.target` when clicking things in tests.
-  // See https://gitlab.com/gitlab-org/gitlab-ce/blob/b54acba8b732688c59fe2f38510c469dc86ee499/spec/features/issues/filtered_search/visual_tokens_spec.rb#L61
-  // - With `width: 100%`: `e.target` = `.tokens-container`, https://i.imgur.com/jGq7wbx.png
-  // - Without `width: 100%`: `e.target` = `.filtered-search`, https://i.imgur.com/cNI2CyT.png
-  width: 100%;
   min-width: 0;
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 260px;
+  max-height: $dropdown-max-height;
   max-width: 280px;
   overflow: auto;
 
@@ -322,16 +293,11 @@
     color: $gl-text-color;
     border-color: $dropdown-input-focus-border;
     outline: none;
-
-    svg {
-      fill: $gl-text-color;
-    }
   }
 
   svg {
     height: 14px;
     width: 14px;
-    fill: $gl-text-color-secondary;
     vertical-align: middle;
   }
 
@@ -358,21 +324,12 @@
 
 .filtered-search-history-dropdown-content {
   max-height: none;
-}
 
-.filtered-search-history-dropdown-item,
-.filtered-search-history-clear-button {
-  @include dropdown-link;
-
-  overflow: hidden;
-  width: 100%;
-  margin: 0.5em 0;
-
-  background-color: transparent;
-  border: 0;
-  text-align: left;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  .filtered-search-history-dropdown-item,
+  .filtered-search-history-clear-button {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .filtered-search-history-dropdown-token {
@@ -424,24 +381,9 @@
   }
 }
 
-%filter-dropdown-item-btn-hover {
-  text-decoration: none;
-  outline: 0;
-
-  .avatar {
-    border-color: $white-light;
-  }
-}
-
 .droplab-dropdown .dropdown-menu .filter-dropdown-item {
   .btn {
-    border: none;
-    width: 100%;
-    text-align: left;
-    padding: 8px 16px;
     text-overflow: ellipsis;
-    overflow: hidden;
-    border-radius: 0;
 
     .fa {
       width: 15px;
@@ -454,11 +396,7 @@
       border-width: 1px;
       width: 17px;
       height: 17px;
-    }
-
-    &:hover,
-    &:focus {
-      @extend %filter-dropdown-item-btn-hover;
+      top: 0;
     }
   }
 
@@ -482,15 +420,7 @@
   }
 }
 
-.filter-dropdown-item.droplab-item-active .btn {
-  @extend %filter-dropdown-item-btn-hover;
-}
-
 .filter-dropdown-loading {
   padding: 8px 16px;
   text-align: center;
-}
-
-.issues-details-filters {
-  @include new-style-dropdown;
 }

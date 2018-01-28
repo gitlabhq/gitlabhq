@@ -29,13 +29,17 @@ class Projects::ArtifactsController < Projects::ApplicationController
     blob = @entry.blob
     conditionally_expand_blob(blob)
 
-    respond_to do |format|
-      format.html do
-        render 'file'
-      end
+    if blob.external_link?(build)
+      redirect_to blob.external_url(@project, build)
+    else
+      respond_to do |format|
+        format.html do
+          render 'file'
+        end
 
-      format.json do
-        render_blob_json(blob)
+        format.json do
+          render_blob_json(blob)
+        end
       end
     end
   end

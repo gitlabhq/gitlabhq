@@ -16,7 +16,12 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
   end
 
   it 'only whitelists safe files' do
-    expect(described_class::WHITELIST).to contain_exactly('authorized_keys', 'authorized_keys2', 'known_hosts')
+    expect(described_class::WHITELIST).to contain_exactly(
+      'authorized_keys',
+      'authorized_keys2',
+      'authorized_keys.lock',
+      'known_hosts'
+    )
   end
 
   describe '#skip?' do

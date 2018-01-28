@@ -126,6 +126,7 @@ module API
             if status == :deprecated
               detail DEPRECATION_MESSAGE
             end
+
             success ::API::V3::Entities::MergeRequest
           end
           get path do
@@ -135,12 +136,12 @@ module API
           end
 
           desc 'Get the commits of a merge request' do
-            success ::API::Entities::RepoCommit
+            success ::API::Entities::Commit
           end
           get "#{path}/commits" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-            present merge_request.commits, with: ::API::Entities::RepoCommit
+            present merge_request.commits, with: ::API::Entities::Commit
           end
 
           desc 'Show the merge request changes' do

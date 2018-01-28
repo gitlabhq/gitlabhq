@@ -58,11 +58,11 @@ module Gitlab
         end
 
         def repository_storages
-          @repository_storage ||= Gitlab::CurrentSettings.current_application_settings.repository_storages
+          storages_paths.keys
         end
 
         def storages_paths
-          @storage_paths ||= Gitlab.config.repositories.storages
+          Gitlab.config.repositories.storages
         end
 
         def exec_with_timeout(cmd_args, *args, &block)
@@ -125,7 +125,7 @@ module Gitlab
         end
 
         def storage_circuitbreaker_test(storage_name)
-          Gitlab::Git::Storage::CircuitBreaker.new(storage_name).perform { "OK" }
+          Gitlab::Git::Storage::CircuitBreaker.build(storage_name).perform { "OK" }
         rescue Gitlab::Git::Storage::Inaccessible
           nil
         end

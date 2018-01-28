@@ -1,0 +1,4 @@
+.js-groups-list-holder
+  #js-groups-tree{ data: { hide_projects: 'false', group_id: group.id, endpoint: group_children_path(group, format: :json), path: group_path(group), form_sel: 'form#group-filter-form', filter_sel: '.js-groups-list-filter', holder_sel: '.js-groups-list-holder', dropdown_sel: '.js-group-filter-dropdown-wrap' } }
+    .loading-container.text-center
+      = icon('spinner spin 2x', class: 'loading-animation prepend-top-20')

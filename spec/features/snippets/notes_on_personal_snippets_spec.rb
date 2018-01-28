@@ -74,24 +74,21 @@ describe 'Comments on personal snippets', :js do
 
     it 'should not have autocomplete' do
       wait_for_requests
-      request_count_before = page.driver.network_traffic.count
 
       find('#note_note').native.send_keys('')
       fill_in 'note[note]', with: '@'
 
       wait_for_requests
-      request_count_after = page.driver.network_traffic.count
 
       # This selector probably won't be in place even if autocomplete was enabled
       # but we want to make sure
       expect(page).not_to have_selector('.atwho-view')
-      expect(request_count_before).to eq(request_count_after)
     end
   end
 
   context 'when editing a note' do
     it 'changes the text' do
-      find('.js-note-edit').trigger('click')
+      find('.js-note-edit').click
 
       page.within('.current-note-edit-form') do
         fill_in 'note[note]', with: 'new content'
@@ -113,7 +110,7 @@ describe 'Comments on personal snippets', :js do
       open_more_actions_dropdown(snippet_notes[0])
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Delete comment'
+        accept_confirm { click_on 'Delete comment' }
       end
 
       wait_for_requests

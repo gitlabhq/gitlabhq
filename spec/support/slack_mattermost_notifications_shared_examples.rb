@@ -57,6 +57,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       @issue = issue_service.execute
       @issues_sample_data = issue_service.hook_data(@issue, 'open')
 
+      project.add_developer(user)
       opts = {
         title: 'Awesome merge_request',
         description: 'please fix',
@@ -76,8 +77,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         message: "user created page: Awesome wiki_page"
       }
 
-      wiki_page_service = WikiPages::CreateService.new(project, user, opts)
-      @wiki_page = wiki_page_service.execute
+      @wiki_page = create(:wiki_page, wiki: project.wiki, attrs: opts)
       @wiki_page_sample_data = Gitlab::DataBuilder::WikiPage.build(@wiki_page, user, 'create')
     end
 

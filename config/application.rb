@@ -29,9 +29,14 @@ module Gitlab
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
+                                     #{config.root}/app/serializers/concerns
                                      #{config.root}/app/finders/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
+
+    # Rake tasks ignore the eager loading settings, so we need to set the
+    # autoload paths explicitly
+    config.autoload_paths = config.eager_load_paths.dup
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -56,6 +61,7 @@ module Gitlab
     # - Any parameter containing `secret`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
+    # - Build traces (:trace)
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
@@ -70,6 +76,7 @@ module Gitlab
       key
       otp_attempt
       sentry_dsn
+      trace
       variables
     )
 
@@ -91,10 +98,11 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
-    config.assets.paths << "vendor/assets/fonts"
-    config.assets.precompile << "*.png"
+    config.assets.paths << "#{config.root}/vendor/assets/fonts"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
@@ -103,17 +111,15 @@ module Gitlab
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
-    config.assets.precompile << "new_nav.css"
-    config.assets.precompile << "new_sidebar.css"
+    config.assets.precompile << "locale/**/app.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    config.middleware.insert_before Warden::Manager, Rack::Attack
+    config.middleware.insert_after Warden::Manager, Rack::Attack
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
@@ -145,6 +151,7 @@ module Gitlab
       caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
       caching_config_hash[:pool_timeout] = 1
     end
+
     config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
@@ -155,8 +162,11 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
+    # Gitlab Read-only middleware support
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
+
     config.generators do |g|
-      g.factory_girl false
+      g.factory_bot false
     end
 
     config.after_initialize do

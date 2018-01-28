@@ -14,7 +14,7 @@ linters:
 
   # Whether or not to prefer `border: 0` over `border: none`.
   BorderZero:
-    enabled: false
+    enabled: true
 
   # Reports when you define a rule set using a selector with chained classes
   # (a.k.a. adjoining classes).
@@ -112,7 +112,7 @@ linters:
 
   # Reports when you define the same selector twice in a single sheet.
   MergeableSelector:
-    enabled: false
+    enabled: true
 
   # Functions, mixins, variables, and placeholders should be declared
   # with all lowercase letters and hyphens instead of underscores.
@@ -121,7 +121,8 @@ linters:
 
   # Avoid nesting selectors too deeply.
   NestingDepth:
-    enabled: false
+    enabled: true
+    max_depth: 6
 
   # Always use placeholder selectors in @extend.
   PlaceholderInExtend:
@@ -240,7 +241,7 @@ linters:
 
   # Numeric values should not contain unnecessary fractional portions.
   UnnecessaryMantissa:
-    enabled: false
+    enabled: true
 
   # Do not use parent selector references (&) when they would otherwise
   # be unnecessary.

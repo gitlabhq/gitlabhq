@@ -1,7 +1,7 @@
 /* eslint-disable new-cap, comma-dangle, no-new */
-/* global Flash */
 
 import Vue from 'vue';
+import Flash from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
 import './merge_conflict_service';
@@ -10,6 +10,7 @@ import './mixins/line_conflict_actions';
 import './components/diff_file_editor';
 import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
+import syntaxHighlight from '../syntax_highlight';
 
 $(() => {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
@@ -24,12 +25,12 @@ $(() => {
 
   gl.MergeConflictsResolverApp = new Vue({
     el: '#conflicts',
-    data: mergeConflictsStore.state,
     components: {
       'diff-file-editor': gl.mergeConflicts.diffFileEditor,
       'inline-conflict-lines': gl.mergeConflicts.inlineConflictLines,
       'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines
     },
+    data: mergeConflictsStore.state,
     computed: {
       conflictsCountText() { return mergeConflictsStore.getConflictsCountText(); },
       readyToCommit() { return mergeConflictsStore.isReadyToCommit(); },
@@ -53,7 +54,7 @@ $(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $('.js-syntax-highlight').syntaxHighlight();
+            syntaxHighlight($('.js-syntax-highlight'));
           });
         });
     },

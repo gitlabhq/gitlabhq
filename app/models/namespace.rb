@@ -1,6 +1,4 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid without_default_scope: true
-
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
@@ -9,6 +7,10 @@ class Namespace < ActiveRecord::Base
   include Routable
   include AfterCommitQueue
   include Storage::LegacyNamespace
+  include Gitlab::SQL::Pattern
+  include IgnorableColumn
+
+  ignore_column :deleted_at
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -36,9 +38,10 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    dynamic_path: true
+    namespace_path: true
 
   validate :nesting_level_allowed
+  validate :allowed_path_by_redirects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -86,10 +89,7 @@ class Namespace < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:name].matches(pattern).or(t[:path].matches(pattern)))
+      fuzzy_search(query, [:name, :path])
     end
 
     def clean_path(path)
@@ -139,7 +139,19 @@ class Namespace < ActiveRecord::Base
   end
 
   def find_fork_of(project)
-    projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+    return nil unless project.fork_network
+
+    if RequestStore.active?
+      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+        Hash.new do |found_forks, project|
+          found_forks[project] = project.fork_network.find_forks_in(projects).first
+        end
+      end
+
+      forks_in_namespace[project]
+    else
+      project.fork_network.find_forks_in(projects).first
+    end
   end
 
   def lfs_enabled?
@@ -158,6 +170,13 @@ class Namespace < ActiveRecord::Base
     Gitlab::GroupHierarchy
       .new(self.class.where(id: parent_id))
       .base_and_ancestors
+  end
+
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
   end
 
   def self_and_ancestors
@@ -203,12 +222,6 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
-  def soft_delete_without_removing_associations
-    # We can't use paranoia's `#destroy` since this will hard-delete projects.
-    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
-    self.deleted_at = Time.now
-  end
-
   private
 
   def refresh_access_of_projects_invited_groups
@@ -231,6 +244,30 @@ class Namespace < ActiveRecord::Base
   end
 
   def force_share_with_group_lock_on_descendants
-    descendants.update_all(share_with_group_lock: true)
+    return unless Group.supports_nested_groups?
+
+    # We can't use `descendants.update_all` since Rails will throw away the WITH
+    # RECURSIVE statement. We also can't use WHERE EXISTS since we can't use
+    # different table aliases, hence we're just using WHERE IN. Since we have a
+    # maximum of 20 nested groups this should be fine.
+    Namespace.where(id: descendants.select(:id))
+      .update_all(share_with_group_lock: true)
+  end
+
+  def allowed_path_by_redirects
+    return if path.nil?
+
+    errors.add(:path, "#{path} has been taken before. Please use another one") if namespace_previously_created_with_same_path?
+  end
+
+  def namespace_previously_created_with_same_path?
+    RedirectRoute.permanent.exists?(path: path)
+  end
+
+  def write_projects_repository_config
+    all_projects.find_each do |project|
+      project.expires_full_path_cache # we need to clear cache to validate renames correctly
+      project.write_repository_config
+    end
   end
 end

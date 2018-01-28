@@ -30,7 +30,7 @@ const utils = {
   },
 
   isDropDownParts(target) {
-    if (!target || target.tagName === 'HTML') return false;
+    if (!target || !target.hasAttribute || target.tagName === 'HTML') return false;
     return target.hasAttribute(DATA_TRIGGER) || target.hasAttribute(DATA_DROPDOWN);
   },
 };

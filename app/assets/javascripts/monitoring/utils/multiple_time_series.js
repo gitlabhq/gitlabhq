@@ -1,5 +1,10 @@
-import d3 from 'd3';
 import _ from 'underscore';
+import { scaleLinear, scaleTime } from 'd3-scale';
+import { line, area, curveLinear } from 'd3-shape';
+import { extent, max } from 'd3-array';
+import { timeMinute } from 'd3-time';
+
+const d3 = { scaleLinear, scaleTime, line, area, curveLinear, extent, max, timeMinute };
 
 const defaultColorPalette = {
   blue: ['#1f78d1', '#8fbce8'],
@@ -11,7 +16,9 @@ const defaultColorPalette = {
 
 const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
 
-export default function createTimeSeries(queryData, graphWidth, graphHeight, graphHeightOffset) {
+const defaultStyleOrder = ['solid', 'dashed', 'dotted'];
+
+function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle) {
   let usedColors = [];
 
   function pickColor(name) {
@@ -31,47 +38,41 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
     return defaultColorPalette[pick];
   }
 
-  const maxValues = queryData.result.map((timeSeries, index) => {
-    const maxValue = d3.max(timeSeries.values.map(d => d.value));
-    return {
-      maxValue,
-      index,
-    };
-  });
-
-  const maxValueFromSeries = _.max(maxValues, val => val.maxValue);
-
-  return queryData.result.map((timeSeries, timeSeriesNumber) => {
+  return query.result.map((timeSeries, timeSeriesNumber) => {
     let metricTag = '';
     let lineColor = '';
     let areaColor = '';
 
-    const timeSeriesScaleX = d3.time.scale()
+    const timeSeriesScaleX = d3.scaleTime()
       .range([0, graphWidth - 70]);
 
-    const timeSeriesScaleY = d3.scale.linear()
+    const timeSeriesScaleY = d3.scaleLinear()
       .range([graphHeight - graphHeightOffset, 0]);
 
-    timeSeriesScaleX.domain(d3.extent(timeSeries.values, d => d.time));
-    timeSeriesScaleX.ticks(d3.time.minute, 60);
-    timeSeriesScaleY.domain([0, maxValueFromSeries.maxValue]);
+    timeSeriesScaleX.domain(xDom);
+    timeSeriesScaleX.ticks(d3.timeMinute, 60);
+    timeSeriesScaleY.domain(yDom);
 
-    const lineFunction = d3.svg.line()
-      .interpolate('linear')
+    const defined = d => !isNaN(d.value) && d.value != null;
+
+    const lineFunction = d3.line()
+      .defined(defined)
+      .curve(d3.curveLinear) // d3 v4 uses curbe instead of interpolate
       .x(d => timeSeriesScaleX(d.time))
       .y(d => timeSeriesScaleY(d.value));
 
-    const areaFunction = d3.svg.area()
-      .interpolate('linear')
+    const areaFunction = d3.area()
+      .defined(defined)
+      .curve(d3.curveLinear)
       .x(d => timeSeriesScaleX(d.time))
       .y0(graphHeight - graphHeightOffset)
       .y1(d => timeSeriesScaleY(d.value));
 
     const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
-    const seriesCustomizationData = queryData.series != null &&
-                                    _.findWhere(queryData.series[0].when,
-                                    { value: timeSeriesMetricLabel });
-    if (seriesCustomizationData != null) {
+    const seriesCustomizationData = query.series != null &&
+      _.findWhere(query.series[0].when, { value: timeSeriesMetricLabel });
+
+    if (seriesCustomizationData) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
@@ -79,14 +80,35 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
       [lineColor, areaColor] = pickColor();
     }
 
+    if (query.track) {
+      metricTag += ` - ${query.track}`;
+    }
+
     return {
       linePath: lineFunction(timeSeries.values),
       areaPath: areaFunction(timeSeries.values),
       timeSeriesScaleX,
       values: timeSeries.values,
+      lineStyle,
       lineColor,
       areaColor,
       metricTag,
     };
   });
+}
+
+export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
+  const allValues = queries.reduce((allQueryResults, query) => allQueryResults.concat(
+    query.result.reduce((allResults, result) => allResults.concat(result.values), []),
+  ), []);
+
+  const xDom = d3.extent(allValues, d => d.time);
+  const yDom = [0, d3.max(allValues.map(d => d.value))];
+
+  return queries.reduce((series, query, index) => {
+    const lineStyle = defaultStyleOrder[index % defaultStyleOrder.length];
+    return series.concat(
+      queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle),
+    );
+  }, []);
 }

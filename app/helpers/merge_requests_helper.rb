@@ -73,7 +73,8 @@ module MergeRequestsHelper
   end
 
   def target_projects(project)
-    [project, project.default_merge_request_target].uniq
+    MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: project)
+      .execute
   end
 
   def merge_request_button_visibility(merge_request, closed)
@@ -98,6 +99,30 @@ module MergeRequestsHelper
       should_remove_source_branch: true,
       sha: merge_request.diff_head_sha
     }.merge(merge_params_ee(merge_request))
+  end
+
+  def tab_link_for(merge_request, tab, options = {}, &block)
+    data_attrs = {
+      action: tab.to_s,
+      target: "##{tab}",
+      toggle: options.fetch(:force_link, false) ? '' : 'tab'
+    }
+
+    url = case tab
+          when :show
+            data_attrs[:target] = '#notes'
+            method(:project_merge_request_path)
+          when :commits
+            method(:commits_project_merge_request_path)
+          when :pipelines
+            method(:pipelines_project_merge_request_path)
+          when :diffs
+            method(:diffs_project_merge_request_path)
+          else
+            raise "Cannot create tab #{tab}."
+          end
+
+    link_to(url[merge_request.project, merge_request], data: data_attrs, &block)
   end
 
   def merge_params_ee(merge_request)

@@ -1,10 +1,18 @@
 require "spec_helper"
 
 describe Projects::UpdatePagesService do
-  let(:project) { create(:project, :repository) }
-  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
-  let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
+  set(:project) { create(:project, :repository) }
+  set(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
+  set(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
   let(:invalid_file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png') }
+  let(:extension) { 'zip' }
+
+  let(:file) { fixture_file_upload(Rails.root + "spec/fixtures/pages.#{extension}") }
+  let(:empty_file) { fixture_file_upload(Rails.root + "spec/fixtures/pages_empty.#{extension}") }
+  let(:metadata) do
+    filename = Rails.root + "spec/fixtures/pages.#{extension}.meta"
+    fixture_file_upload(filename) if File.exist?(filename)
+  end
 
   subject { described_class.new(project, build) }
 
@@ -12,18 +20,85 @@ describe Projects::UpdatePagesService do
     project.remove_pages
   end
 
-  %w(tar.gz zip).each do |format|
-    context "for valid #{format}" do
-      let(:file) { fixture_file_upload(Rails.root + "spec/fixtures/pages.#{format}") }
-      let(:empty_file) { fixture_file_upload(Rails.root + "spec/fixtures/pages_empty.#{format}") }
-      let(:metadata) do
-        filename = Rails.root + "spec/fixtures/pages.#{format}.meta"
-        fixture_file_upload(filename) if File.exist?(filename)
-      end
+  context 'legacy artifacts' do
+    %w(tar.gz zip).each do |format|
+      let(:extension) { format }
 
+      context "for valid #{format}" do
+        before do
+          build.update_attributes(legacy_artifacts_file: file)
+          build.update_attributes(legacy_artifacts_metadata: metadata)
+        end
+
+        describe 'pages artifacts' do
+          context 'with expiry date' do
+            before do
+              build.artifacts_expire_in = "2 days"
+            end
+
+            it "doesn't delete artifacts" do
+              expect(execute).to eq(:success)
+
+              expect(build.reload.artifacts?).to eq(true)
+            end
+          end
+
+          context 'without expiry date' do
+            it "does delete artifacts" do
+              expect(execute).to eq(:success)
+
+              expect(build.reload.artifacts?).to eq(false)
+            end
+          end
+        end
+
+        it 'succeeds' do
+          expect(project.pages_deployed?).to be_falsey
+          expect(execute).to eq(:success)
+          expect(project.pages_deployed?).to be_truthy
+
+          # Check that all expected files are extracted
+          %w[index.html zero .hidden/file].each do |filename|
+            expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
+          end
+        end
+
+        it 'limits pages size' do
+          stub_application_setting(max_pages_size: 1)
+          expect(execute).not_to eq(:success)
+        end
+
+        it 'removes pages after destroy' do
+          expect(PagesWorker).to receive(:perform_in)
+          expect(project.pages_deployed?).to be_falsey
+          expect(execute).to eq(:success)
+          expect(project.pages_deployed?).to be_truthy
+          project.destroy
+          expect(project.pages_deployed?).to be_falsey
+        end
+
+        it 'fails if sha on branch is not latest' do
+          build.update_attributes(ref: 'feature')
+
+          expect(execute).not_to eq(:success)
+        end
+
+        it 'fails for empty file fails' do
+          build.update_attributes(legacy_artifacts_file: empty_file)
+
+          expect(execute).not_to eq(:success)
+        end
+      end
+    end
+  end
+
+  context 'for new artifacts' do
+    context "for a valid job" do
       before do
-        build.update_attributes(artifacts_file: file)
-        build.update_attributes(artifacts_metadata: metadata)
+        create(:ci_job_artifact, file: file, job: build)
+        create(:ci_job_artifact, file_type: :metadata, file: metadata, job: build)
+
+        build.reload
       end
 
       describe 'pages artifacts' do
@@ -35,7 +110,7 @@ describe Projects::UpdatePagesService do
           it "doesn't delete artifacts" do
             expect(execute).to eq(:success)
 
-            expect(build.reload.artifacts_file?).to eq(true)
+            expect(build.artifacts?).to eq(true)
           end
         end
 
@@ -43,7 +118,7 @@ describe Projects::UpdatePagesService do
           it "does delete artifacts" do
             expect(execute).to eq(:success)
 
-            expect(build.reload.artifacts_file?).to eq(false)
+            expect(build.reload.artifacts?).to eq(false)
           end
         end
       end
@@ -52,6 +127,11 @@ describe Projects::UpdatePagesService do
         expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)
         expect(project.pages_deployed?).to be_truthy
+
+        # Check that all expected files are extracted
+        %w[index.html zero .hidden/file].each do |filename|
+          expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
+        end
       end
 
       it 'limits pages size' do
@@ -69,13 +149,14 @@ describe Projects::UpdatePagesService do
       end
 
       it 'fails if sha on branch is not latest' do
-        pipeline.update_attributes(sha: 'old_sha')
-        build.update_attributes(artifacts_file: file)
+        build.update_attributes(ref: 'feature')
+
         expect(execute).not_to eq(:success)
       end
 
       it 'fails for empty file fails' do
-        build.update_attributes(artifacts_file: empty_file)
+        build.job_artifacts_archive.update_attributes(file: empty_file)
+
         expect(execute).not_to eq(:success)
       end
     end
@@ -92,7 +173,7 @@ describe Projects::UpdatePagesService do
   end
 
   it 'fails for invalid archive' do
-    build.update_attributes(artifacts_file: invalid_file)
+    build.update_attributes(legacy_artifacts_file: invalid_file)
     expect(execute).not_to eq(:success)
   end
 
@@ -103,8 +184,8 @@ describe Projects::UpdatePagesService do
       file = fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip')
       metafile = fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
 
-      build.update_attributes(artifacts_file: file)
-      build.update_attributes(artifacts_metadata: metafile)
+      build.update_attributes(legacy_artifacts_file: file)
+      build.update_attributes(legacy_artifacts_metadata: metafile)
 
       allow(build).to receive(:artifacts_metadata_entry)
         .and_return(metadata)

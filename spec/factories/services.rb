@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :service do
     project
     type 'Service'
@@ -18,6 +18,7 @@ FactoryGirl.define do
 
   factory :kubernetes_service do
     project
+    type 'KubernetesService'
     active true
     properties({
       api_url: 'https://kubernetes.example.com',
@@ -38,6 +39,8 @@ FactoryGirl.define do
     active true
     properties(
       url: 'https://jira.example.com',
+      username: 'jira_user',
+      password: 'my-secret-password',
       project_key: 'jira-key'
     )
   end

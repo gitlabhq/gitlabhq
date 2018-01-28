@@ -17,7 +17,7 @@
    [Project Templates](https://gitlab.com/gitlab-org/project-templates):
    this will kickstart your repository code and CI automatically.
    Otherwise, if you have a project in a different repository, you can [import it] by
-   clicking an **Import project from** button provided this is enabled in
+   clicking on the **Import project** tab, provided this is enabled in
    your GitLab instance. Ask your administrator if not.
 
 1. Provide the following information:

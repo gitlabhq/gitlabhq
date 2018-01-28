@@ -6,12 +6,14 @@ module API
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      include CustomAttributesEndpoints
+
       before do
         authenticate_non_get!
       end
 
       helpers do
-        def find_user(params)
+        def find_user_by_id(params)
           id = params[:user_id] || params[:id]
           User.find_by(id: id) || not_found!('User')
         end
@@ -29,7 +31,6 @@ module API
           optional :location, type: String, desc: 'The location of the user'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
-          optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
@@ -75,6 +76,8 @@ module API
         forbidden!("Not authorized to access /api/v4/users") unless authorized
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+
         present paginate(users), with: entity
       end
 
@@ -88,7 +91,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : {}
+        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
         present user, opts
       end
 
@@ -99,6 +102,7 @@ module API
         requires :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
+        optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
         at_least_one_of :password, :reset_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
@@ -132,6 +136,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         optional :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
+        optional :skip_reconfirmation, type: Boolean, desc: 'Flag indicating the account skips the confirmation by email'
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
@@ -166,7 +171,7 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic
@@ -326,10 +331,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
+        email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -367,10 +371,8 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: user).execute(email)
         end
-
-        user.update_secondary_emails!
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -430,7 +432,7 @@ module API
         resource :impersonation_tokens do
           helpers do
             def finder(options = {})
-              user = find_user(params)
+              user = find_user_by_id(params)
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
@@ -508,9 +510,7 @@ module API
       end
       get do
         entity =
-          if sudo?
-            Entities::UserWithPrivateDetails
-          elsif current_user.admin?
+          if current_user.admin?
             Entities::UserWithAdmin
           else
             Entities::UserPublic
@@ -672,10 +672,9 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = Emails::CreateService.new(current_user, declared_params).execute
+        email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -691,10 +690,8 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: current_user).execute(email)
         end
-
-        current_user.update_secondary_emails!
       end
 
       desc 'Get a list of user activities'

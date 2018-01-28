@@ -24,8 +24,17 @@ module Projects
 
         success
       else
-        error('Project could not be updated!')
+        model_errors = project.errors.full_messages.to_sentence
+        error_message = model_errors.presence || 'Project could not be updated!'
+
+        error(error_message)
       end
+    end
+
+    def run_auto_devops_pipeline?
+      return false if project.repository.gitlab_ci_yml || !project.auto_devops.previous_changes.include?('enabled')
+
+      project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && current_application_settings.auto_devops_enabled?)
     end
 
     private

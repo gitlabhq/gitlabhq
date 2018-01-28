@@ -104,8 +104,7 @@ class NotesFinder
     query = @params[:search]
     return notes unless query
 
-    pattern = "%#{query}%"
-    notes.where(Note.arel_table[:note].matches(pattern))
+    notes.search(query)
   end
 
   # Notes changed since last fetch

@@ -38,7 +38,7 @@ module CapybaraHelpers
 
   # Simulate a browser restart by clearing the session cookie.
   def clear_browser_session
-    page.driver.remove_cookie('_gitlab_session')
+    page.driver.browser.manage.delete_cookie('_gitlab_session')
   end
 end
 

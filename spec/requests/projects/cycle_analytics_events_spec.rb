@@ -7,7 +7,7 @@ describe 'cycle analytics events' do
 
   describe 'GET /:namespace/:project/cycle_analytics/events/issues' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       3.times do |count|
         Timecop.freeze(Time.now + count.days) do
@@ -99,19 +99,19 @@ describe 'cycle analytics events' do
       it 'does not list the test events' do
         get project_cycle_analytics_test_path(project, format: :json)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not list the staging events' do
         get project_cycle_analytics_staging_path(project, format: :json)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'lists the issue events' do
         get project_cycle_analytics_issue_path(project, format: :json)
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

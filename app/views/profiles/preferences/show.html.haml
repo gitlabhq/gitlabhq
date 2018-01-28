@@ -3,6 +3,26 @@
 = render 'profiles/head'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
+  .col-lg-4.application-theme
+    %h4.prepend-top-0
+      GitLab navigation theme
+    %p Customize the appearance of the application header and navigation sidebar.
+  .col-lg-8.application-theme
+    - Gitlab::Themes.each do |theme|
+      = label_tag do
+        .preview{ class: theme.name.downcase }
+          .preview-row
+            .quadrant.one
+            .quadrant.two
+          .preview-row
+            .quadrant.three
+            .quadrant.four
+        = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
+        = theme.name
+
+  .col-sm-12
+    %hr
+
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Syntax highlighting theme

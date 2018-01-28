@@ -1,3 +1,4 @@
+# coding: utf-8
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
@@ -25,8 +26,8 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
-  # The SHA can be between 7 and 40 hex characters.
-  COMMIT_SHA_PATTERN = '\h{7,40}'.freeze
+  MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
+  COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
   def banzai_render_context(field)
     context = { pipeline: :single_line, project: self.project }
@@ -51,9 +52,23 @@ class Commit
       diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
     end
 
+    def order_by(collection:, order_by:, sort:)
+      return collection unless %w[email name commits].include?(order_by)
+      return collection unless %w[asc desc].include?(sort)
+
+      collection.sort do |a, b|
+        operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
+
+        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable PublicSend
+
+        # use case insensitive comparison for string values
+        order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2
+      end
+    end
+
     # Truncate sha to 8 characters
     def truncate_sha(sha)
-      sha[0..7]
+      sha[0..MIN_SHA_LENGTH]
     end
 
     def max_diff_options
@@ -71,6 +86,20 @@ class Commit
     def valid_hash?(key)
       !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
     end
+
+    def lazy(project, oid)
+      BatchLoader.for({ project: project, oid: oid }).batch do |items, loader|
+        items_by_project = items.group_by { |i| i[:project] }
+
+        items_by_project.each do |project, commit_ids|
+          oids = commit_ids.map { |i| i[:oid] }
+
+          project.repository.commits_by(oids: oids).each do |commit|
+            loader.call({ project: commit.project, oid: commit.id }, commit) if commit
+          end
+        end
+      end
+    end
   end
 
   attr_accessor :raw
@@ -80,14 +109,15 @@ class Commit
 
     @raw = raw_commit
     @project = project
+    @statuses = {}
   end
 
   def id
-    @raw.id
+    raw.id
   end
 
   def ==(other)
-    (self.class === other) && (raw == other.raw)
+    other.is_a?(self.class) && raw == other.raw
   end
 
   def self.reference_prefix
@@ -100,7 +130,7 @@ class Commit
   def self.reference_pattern
     @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{7,40})
+      (?<commit>#{COMMIT_SHA_PATTERN})
     }x
   end
 
@@ -108,12 +138,12 @@ class Commit
     @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
   end
 
-  def to_reference(from_project = nil, full: false)
-    commit_reference(from_project, id, full: full)
+  def to_reference(from = nil, full: false)
+    commit_reference(from, id, full: full)
   end
 
-  def reference_link_text(from_project = nil, full: false)
-    commit_reference(from_project, short_id, full: full)
+  def reference_link_text(from = nil, full: false)
+    commit_reference(from, short_id, full: full)
   end
 
   def diff_line_count
@@ -208,17 +238,20 @@ class Commit
     notes.includes(:author)
   end
 
-  def method_missing(m, *args, &block)
-    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def merge_requests
+    @merge_requests ||= project.merge_requests.by_commit_sha(sha)
+  end
+
+  def method_missing(method, *args, &block)
+    @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
     @raw.respond_to?(method, include_private) || super
   end
 
-  # Truncate sha to 8 characters
   def short_id
-    @raw.short_id(7)
+    @raw.short_id(MIN_SHA_LENGTH)
   end
 
   def diff_refs
@@ -237,11 +270,13 @@ class Commit
   end
 
   def status(ref = nil)
-    @statuses ||= {}
-
     return @statuses[ref] if @statuses.key?(ref)
 
-    @statuses[ref] = pipelines.latest_status(ref)
+    @statuses[ref] = project.pipelines.latest_status_per_commit(id, ref)[id]
+  end
+
+  def set_status_for_ref(ref, status)
+    @statuses[ref] = status
   end
 
   def signature
@@ -311,10 +346,11 @@ class Commit
     @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user, noteable = self)
+  def has_been_reverted?(current_user, notes_association = nil)
     ext = all_references(current_user)
+    notes_association ||= notes_with_associations
 
-    noteable.notes_with_associations.system.each do |note|
+    notes_association.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 
@@ -336,19 +372,19 @@ class Commit
   #   uri_type('doc/README.md') # => :blob
   #   uri_type('doc/logo.png')  # => :raw
   #   uri_type('doc/api')       # => :tree
-  #   uri_type('not/found')     # => :nil
+  #   uri_type('not/found')     # => nil
   #
   # Returns a symbol
   def uri_type(path)
-    entry = @raw.tree.path(path)
+    entry = @raw.tree_entry(path)
+    return unless entry
+
     if entry[:type] == :blob
       blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob
     else
       entry[:type]
     end
-  rescue Rugged::TreeError
-    nil
   end
 
   def raw_diffs(*args)
@@ -359,7 +395,7 @@ class Commit
     @deltas ||= raw.deltas
   end
 
-  def diffs(diff_options = nil)
+  def diffs(diff_options = {})
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 
@@ -379,8 +415,8 @@ class Commit
 
   private
 
-  def commit_reference(from_project, referable_commit_id, full: false)
-    reference = project.to_reference(from_project, full: full)
+  def commit_reference(from, referable_commit_id, full: false)
+    reference = project.to_reference(from, full: full)
 
     if reference.present?
       "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"

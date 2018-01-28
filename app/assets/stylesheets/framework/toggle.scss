@@ -1,0 +1,142 @@
+/**
+* Toggle button
+*
+* @usage
+*  ### Active and Inactive text should be provided as data attributes:
+*  <button type="button" class="project-feature-toggle" data-enabled-text="Enabled" data-disabled-text="Disabled">
+*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  </button>
+
+*  ### Checked should have `is-checked` class
+*  <button type="button" class="project-feature-toggle is-checked" data-enabled-text="Enabled" data-disabled-text="Disabled">
+*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  </button>
+
+*  ### Disabled should have `is-disabled` class
+*  <button type="button" class="project-feature-toggle is-disabled" data-enabled-text="Enabled" data-disabled-text="Disabled" disabled="true">
+*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  </button>
+
+*  ### Loading should have `is-loading` and an icon with `loading-icon` class
+*  <button type="button" class="project-feature-toggle is-loading" data-enabled-text="Enabled" data-disabled-text="Disabled">
+*  <i class="fa fa-spinner fa-spin loading-icon"></i>
+*  </button>
+*/
+.project-feature-toggle {
+  position: relative;
+  border: 0;
+  outline: 0;
+  display: block;
+  width: 50px;
+  height: 24px;
+  cursor: pointer;
+  user-select: none;
+  background: $feature-toggle-color-disabled;
+  border-radius: 12px;
+  padding: 3px;
+  transition: all .4s ease;
+
+  &::selection,
+  &::before::selection,
+  &::after::selection {
+    background: none;
+  }
+
+  .toggle-icon {
+    position: relative;
+    display: block;
+    left: 0;
+    border-radius: 9px;
+    background: $feature-toggle-color;
+    transition: all .2s ease;
+
+    &,
+    .toggle-icon-svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .toggle-icon-svg {
+      fill: $feature-toggle-color-disabled;
+    }
+
+    .toggle-status-checked {
+      display: none;
+    }
+
+    .toggle-status-unchecked {
+      display: inline;
+    }
+  }
+
+  .loading-icon {
+    display: none;
+    font-size: 12px;
+    color: $white-light;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &.is-loading {
+    .toggle-icon {
+      display: none;
+    }
+
+    .loading-icon {
+      display: block;
+
+      &::before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  &.is-checked {
+    background: $feature-toggle-color-enabled;
+
+    .toggle-icon {
+      left: calc(100% - 18px);
+
+      .toggle-icon-svg {
+        fill: $feature-toggle-color-enabled;
+      }
+
+      .toggle-status-checked {
+        display: inline;
+      }
+
+      .toggle-status-unchecked {
+        display: none;
+      }
+    }
+  }
+
+  &.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: $screen-xs-min) {
+    width: 50px;
+
+    &::before,
+    &.is-checked::before {
+      display: none;
+    }
+  }
+
+  @keyframes animate-enabled {
+    0%, 35% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes animate-disabled {
+    0%, 35% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+}

@@ -1,4 +1,3 @@
-import 'dropzone';
 import BlobFileDropzone from '~/blob/blob_file_dropzone';
 
 describe('BlobFileDropzone', () => {

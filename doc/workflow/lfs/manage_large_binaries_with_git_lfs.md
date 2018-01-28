@@ -4,6 +4,11 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
+![Git LFS tracking status](img/lfs-icon.png)
+
+An LFS icon is shown on files tracked by Git LFS to denote if a file is stored
+as a blob or as an LFS pointer.
+
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
@@ -163,3 +168,11 @@ For Windows, you can use `wincred` or Microsoft's [Git Credential Manager for Wi
 
 More details about various methods of storing the user credentials can be found
 on [Git Credential Storage documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+
+### LFS objects are missing on push
+
+GitLab checks files to detect LFS pointers on push. If LFS pointers are detected, GitLab tries to verify that those files already exist in LFS on GitLab.
+
+Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
+
+If you are storing LFS files outside of GitLab you can disable LFS on the project by settting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).

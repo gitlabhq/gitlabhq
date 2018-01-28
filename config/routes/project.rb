@@ -40,7 +40,7 @@ constraints(ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template
+      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: /[^\/]+/ }
 
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
@@ -50,6 +50,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :revert
           post :cherry_pick
           get :diff_for_path
+          get :merge_requests
         end
       end
 
@@ -96,6 +97,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :remove_wip
           post :assign_related_issues
+          post :rebase
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -179,7 +181,29 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :pipeline_schedules, except: [:show] do
         member do
+          post :play
           post :take_ownership
+        end
+      end
+
+      resources :clusters, except: [:edit, :create] do
+        collection do
+          scope :providers do
+            get '/user/new', to: 'clusters/user#new'
+            post '/user', to: 'clusters/user#create'
+
+            get '/gcp/new', to: 'clusters/gcp#new'
+            get '/gcp/login', to: 'clusters/gcp#login'
+            post '/gcp', to: 'clusters/gcp#create'
+          end
+        end
+
+        member do
+          get :status, format: :json
+
+          scope :applications do
+            post '/:application', to: 'clusters/applications#create', as: :install_applications
+          end
         end
       end
 
@@ -271,13 +295,19 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :registry do
         resources :repository, only: [] do
-          resources :tags, only: [:destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+          # We default to JSON format in the controller to avoid ambiguity.
+          # `latest.json` could either be a request for a tag named `latest`
+          # in JSON format, or a request for tag named `latest.json`.
+          scope format: false do
+            resources :tags, only: [:index, :destroy],
+                             constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+          end
         end
       end
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do
+          post :promote
           put :sort_issues
           put :sort_merge_requests
           get :merge_requests
@@ -355,8 +385,8 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :runners, only: [:index, :edit, :update, :destroy, :show] do
         member do
-          get :resume
-          get :pause
+          post :resume
+          post :pause
         end
 
         collection do
@@ -378,8 +408,10 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
       namespace :settings do
-        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
+        get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
+        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+          post :reset_cache
+        end
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository
       end
@@ -408,7 +440,7 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        put :new_issue_address
+        put :new_issuable_address
       end
     end
   end

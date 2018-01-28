@@ -1,6 +1,6 @@
 require 'ostruct'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :wiki_page do
     transient do
       attrs do

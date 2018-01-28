@@ -136,9 +136,9 @@ describe DiffHelper do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
       expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">'def'</span>})
-      expect(marked_old_line).not_to be_html_safe
+      expect(marked_old_line).to be_html_safe
       expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">"def"</span>})
-      expect(marked_new_line).not_to be_html_safe
+      expect(marked_new_line).to be_html_safe
     end
   end
 
@@ -264,6 +264,16 @@ describe DiffHelper do
       it 'includes a "view the blob" link' do
         expect(helper.diff_render_error_options(viewer)).to include(/view the blob/)
       end
+    end
+  end
+
+  context '#diff_file_path_text' do
+    it 'returns full path by default' do
+      expect(diff_file_path_text(diff_file)).to eq(diff_file.new_path)
+    end
+
+    it 'returns truncated path' do
+      expect(diff_file_path_text(diff_file, max: 10)).to eq("...open.rb")
     end
   end
 end

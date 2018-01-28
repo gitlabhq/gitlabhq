@@ -1,5 +1,0 @@
----
-title: Fix the /projects/:id/repository/files/:file_path/raw endpoint to handle dots in the file_path
-merge_request: 13512
-author: mahcsig
-type: fixed

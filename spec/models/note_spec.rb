@@ -5,7 +5,7 @@ describe Note do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:noteable).touch(true) }
+    it { is_expected.to belong_to(:noteable).touch(false) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos).dependent(:destroy) }
@@ -195,7 +195,7 @@ describe Note do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_master(private_user) } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
     let(:ext_proj)  { create(:project, :public) }
@@ -228,6 +228,37 @@ describe Note do
 
       expect(note).not_to receive(:reference_mentionables)
       expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+    end
+  end
+
+  describe '#cross_reference?' do
+    it 'falsey for user-generated notes' do
+      note = create(:note, system: false)
+
+      expect(note.cross_reference?).to be_falsy
+    end
+
+    context 'when the note might contain cross references' do
+      SystemNoteMetadata::TYPES_WITH_CROSS_REFERENCES.each do |type|
+        let(:note) { create(:note, :system) }
+        let!(:metadata) { create(:system_note_metadata, note: note, action: type) }
+
+        it 'delegates to the cross-reference regex' do
+          expect(note).to receive(:matches_cross_reference_regex?).and_return(false)
+
+          note.cross_reference?
+        end
+      end
+    end
+
+    context 'when the note cannot contain cross references' do
+      let(:commit_note) { build(:note, note: 'mentioned in 1312312313 something else.', system: true) }
+      let(:label_note) { build(:note, note: 'added ~2323232323', system: true) }
+
+      it 'scan for a `mentioned in` prefix' do
+        expect(commit_note.cross_reference?).to be_truthy
+        expect(label_note.cross_reference?).to be_falsy
+      end
     end
   end
 
@@ -313,6 +344,56 @@ describe Note do
       it "groups the discussions by line code" do
         expect(subject[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
         expect(subject[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
+      end
+
+      context 'with image discussions' do
+        let(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images and changes") }
+        let(:image_path) { "files/images/ee_repo_logo.png" }
+        let(:text_path) { "bar/branch-test.txt" }
+        let!(:image_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: image_position) }
+        let!(:text_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: text_position) }
+
+        let(:image_position) do
+          Gitlab::Diff::Position.new(
+            old_path: image_path,
+            new_path: image_path,
+            width: 100,
+            height: 100,
+            x: 1,
+            y: 1,
+            position_type: "image",
+            diff_refs: merge_request2.diff_refs
+          )
+        end
+
+        let(:text_position) do
+          Gitlab::Diff::Position.new(
+            old_path: text_path,
+            new_path: text_path,
+            old_line: nil,
+            new_line: 2,
+            position_type: "text",
+            diff_refs: merge_request2.diff_refs
+          )
+        end
+
+        it "groups image discussions by file identifier" do
+          diff_discussion = DiffDiscussion.new([image_note])
+
+          discussions = merge_request2.notes.grouped_diff_discussions
+
+          expect(discussions.size).to eq(2)
+          expect(discussions[image_note.diff_file.new_path]).to include(diff_discussion)
+        end
+
+        it "groups text discussions by line code" do
+          diff_discussion = DiffDiscussion.new([text_note])
+
+          discussions = merge_request2.notes.grouped_diff_discussions
+
+          expect(discussions.size).to eq(2)
+          expect(discussions[text_note.line_code]).to include(diff_discussion)
+        end
       end
     end
 
@@ -671,6 +752,28 @@ describe Note do
         it 'returns false' do
           expect(subject.in_reply_to?(note.noteable)).to be_falsey
         end
+      end
+    end
+  end
+
+  describe '#references' do
+    context 'when part of a discussion' do
+      it 'references all earlier notes in the discussion' do
+        first_note = create(:discussion_note_on_issue)
+        second_note = create(:discussion_note_on_issue, in_reply_to: first_note)
+        third_note = create(:discussion_note_on_issue, in_reply_to: second_note)
+        create(:discussion_note_on_issue, in_reply_to: third_note)
+
+        expect(third_note.references).to eq([first_note.noteable, first_note, second_note])
+      end
+    end
+
+    context 'when not part of a discussion' do
+      subject { create(:note) }
+      let(:note) { create(:note, in_reply_to: subject) }
+
+      it 'returns the noteable' do
+        expect(note.references).to eq([note.noteable])
       end
     end
   end

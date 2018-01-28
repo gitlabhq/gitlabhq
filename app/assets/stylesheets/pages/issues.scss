@@ -134,29 +134,20 @@ ul.related-merge-requests > li {
 }
 
 @media (max-width: $screen-xs-max) {
-  .issue-btn-group {
-    width: 100%;
-
-    .btn {
-      width: 100%;
+  .detail-page-header {
+    .issuable-meta {
+      line-height: 18px;
     }
   }
 }
 
 .issue-form {
-  @include new-style-dropdown;
-
   .select2-container {
     width: 250px !important;
   }
 }
 
-.issues-footer {
-  padding-top: $gl-padding;
-  padding-bottom: 37px;
-}
-
-.issue-email-modal-btn {
+.issuable-email-modal-btn {
   padding: 0;
   color: $gl-link-color;
   background-color: transparent;
@@ -190,7 +181,24 @@ ul.related-merge-requests > li {
 }
 
 .create-mr-dropdown-wrap {
-  @include new-style-dropdown;
+  .branch-message,
+  .ref-message {
+    display: none;
+  }
+
+  .ref::selection {
+    color: $placeholder-text-color;
+  }
+
+  .dropdown {
+    .dropdown-menu-toggle {
+      min-width: 285px;
+    }
+
+    .dropdown-select {
+      width: 285px;
+    }
+  }
 
   .btn-group:not(.hide) {
     display: flex;
@@ -201,15 +209,16 @@ ul.related-merge-requests > li {
     flex-shrink: 0;
   }
 
-  .dropdown-menu {
+  .create-merge-request-dropdown-menu {
     width: 300px;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     display: none;
+    margin-top: 4px;
   }
 
-  .dropdown-toggle {
+  .create-merge-request-dropdown-toggle {
     .fa-caret-down {
       pointer-events: none;
       color: inherit;
@@ -217,18 +226,50 @@ ul.related-merge-requests > li {
     }
   }
 
+  .droplab-item-ignore {
+    pointer-events: auto;
+  }
+
+  .create-item {
+    cursor: pointer;
+    margin: 0 1px;
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-item-hover-bg;
+      color: $gl-text-color;
+    }
+  }
+
+  li.divider {
+    margin: 8px 10px;
+  }
+
   li:not(.divider) {
+    padding: 8px 9px;
+
+    &:last-child {
+      padding-bottom: 8px;
+    }
+
     &.droplab-item-selected {
       .icon-container {
         i {
           visibility: visible;
         }
       }
+
+      .description {
+        display: block;
+      }
+    }
+
+    &.droplab-item-ignore {
+      padding-top: 8px;
     }
 
     .icon-container {
       float: left;
-      padding-left: 6px;
 
       i {
         visibility: hidden;
@@ -236,13 +277,12 @@ ul.related-merge-requests > li {
     }
 
     .description {
-      padding-left: 30px;
-      font-size: 13px;
+      padding-left: 22px;
+    }
 
-      strong {
-        display: block;
-        font-weight: $gl-font-weight-bold;
-      }
+    input,
+    span {
+      margin: 4px 0 0;
     }
   }
 }

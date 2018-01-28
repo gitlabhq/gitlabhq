@@ -1,6 +1,5 @@
 class EmailsOnPushWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   attr_reader :email, :skip_premailer
 

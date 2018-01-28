@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "author_id": { "type": "integer" },
+    "description": { "type": ["string", "null"] },
+    "lock_version": { "type": ["string", "null"] },
+    "milestone_id": { "type": ["string", "null"] },
+    "title": { "type": "string" },
+    "moved_to_id": { "type": ["integer", "null"] },
+    "project_id": { "type": "integer" },
+    "web_url": { "type": "string" },
+    "state": { "type": "string" },
+    "create_note_path": { "type": "string" },
+    "preview_note_path": { "type": "string" },
+    "current_user": {
+      "type": "object",
+      "properties": {
+        "can_create_note": { "type": "boolean" },
+        "can_update": { "type": "boolean" }
+      }
+    },
+    "created_at": { "type": "date-time" },
+    "updated_at": { "type": "date-time" },
+    "branch_name": { "type": ["string", "null"] },
+    "due_date": { "type": "date" },
+    "confidential": { "type": "boolean" },
+    "discussion_locked": { "type": ["boolean", "null"] },
+    "updated_by_id": { "type": ["string", "null"] },
+    "time_estimate": { "type": "integer" },
+    "total_time_spent": { "type": "integer" },
+    "human_time_estimate": { "type": ["integer", "null"] },
+    "human_total_time_spent": { "type": ["integer", "null"] },
+    "milestone": { "type": ["object", "null"] },
+    "labels": {
+      "type": "array",
+      "items": { "$ref": "label.json" }
+    },
+    "assignees": { "type": ["array", "null"] }
+  },
+  "additionalProperties": false
+}

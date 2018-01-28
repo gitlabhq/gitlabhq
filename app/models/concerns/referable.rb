@@ -7,7 +7,7 @@ module Referable
 
   # Returns the String necessary to reference this object in Markdown
   #
-  # from_project - Refering Project object
+  # from - Referring parent object
   #
   # This should be overridden by the including class.
   #
@@ -17,12 +17,12 @@ module Referable
   #   Issue.last.to_reference(other_project) # => "cross-project#1"
   #
   # Returns a String
-  def to_reference(_from_project = nil, full:)
+  def to_reference(_from = nil, full:)
     ''
   end
 
-  def reference_link_text(from_project = nil)
-    to_reference(from_project)
+  def reference_link_text(from = nil)
+    to_reference(from)
   end
 
   included do

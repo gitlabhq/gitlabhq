@@ -63,7 +63,7 @@ class WebHookService
   end
 
   def async_execute
-    Sidekiq::Client.enqueue(WebHookWorker, hook.id, data, hook_name)
+    WebHookWorker.perform_async(hook.id, data, hook_name)
   end
 
   private
@@ -113,7 +113,7 @@ class WebHookService
         'Content-Type' => 'application/json',
         'X-Gitlab-Event' => hook_name.singularize.titleize
       }.tap do |hash|
-        hash['X-Gitlab-Token'] = hook.token if hook.token.present?
+        hash['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
       end
     end
   end

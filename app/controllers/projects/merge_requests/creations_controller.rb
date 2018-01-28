@@ -4,13 +4,15 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include RendersCommits
 
   skip_before_action :merge_request
-  skip_before_action :ensure_ref_fetched
   before_action :authorize_create_merge_request!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
   def new
-    define_new_vars
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/40934
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      define_new_vars
+    end
   end
 
   def create
@@ -41,11 +43,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def diffs
-    @diffs = if @merge_request.can_be_created
-               @merge_request.diffs(diff_options)
-             else
-               []
-             end
+    @diffs = @merge_request.diffs(diff_options) if @merge_request.can_be_created
+
     @diff_notes_disabled = true
 
     @environment = @merge_request.environments_for(current_user).last
@@ -66,7 +65,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @repository.commit("refs/heads/#{@ref}")
+      @commit = @repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
 
     render layout: false
@@ -77,7 +76,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @target_project.commit("refs/heads/#{@ref}")
+      @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
 
     render layout: false
@@ -111,19 +110,19 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @commits = prepare_commits_for_rendering(@merge_request.commits)
     @commit = @merge_request.diff_head_commit
 
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
-
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     set_pipeline_variables
   end
 
   def selected_target_project
-    if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?
+    if @project.id.to_s == params[:target_project_id] || !@project.forked?
       @project
+    elsif params[:target_project_id].present?
+      MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
+        .execute.find(params[:target_project_id])
     else
-      @project.forked_project_link.forked_from_project
+      @project.forked_from_project
     end
   end
 end

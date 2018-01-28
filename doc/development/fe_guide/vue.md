@@ -178,65 +178,14 @@ itself, please read this guide: [State Management][state-management]
 
 The Service is a class used only to communicate with the server.
 It does not store or manipulate any data. It is not aware of the store or the components.
-We use [vue-resource][vue-resource-repo] to communicate with the server.
+We use [axios][axios] to communicate with the server.
+Refer to [axios](axios.md) for more details.
 
-Vue Resource should only be imported in the service file.
-
-  ```javascript
-  import Vue from 'vue';
-  import VueResource from 'vue-resource';
-
-  Vue.use(VueResource);
-  ```
-
-#### Vue-resource gotchas
-#### Headers
-Headers are being parsed into a plain object in an interceptor.
-In Vue-resource 1.x `headers` object was changed into an `Headers` object. In order to not change all old code, an interceptor was added.
-
-If you need to write a unit test that takes the headers in consideration, you need to include an interceptor to parse the headers after your test interceptor.
-You can see an example in `spec/javascripts/environments/environment_spec.js`:
-  ```javascript
-  import { headersInterceptor } from './helpers/vue_resource_helper';
-
-  beforeEach(() => {
-    Vue.http.interceptors.push(myInterceptor);
-    Vue.http.interceptors.push(headersInterceptor);
-  });
-
-  afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, myInterceptor);
-    Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
-  });
-  ```
-
-#### `.json()`
-When making a request to the server, you will most likely need to access the body of the response.
-Use `.json()` to convert. Because `.json()` returns a Promise the follwoing structure should be used:
+Axios instance should only be imported in the service file.
 
   ```javascript
-  service.get('url')
-    .then(resp => resp.json())
-    .then((data) => {
-      this.store.storeData(data);
-    })
-    .catch(() => new Flash('Something went wrong'));
+  import axios from 'javascripts/lib/utils/axios_utils';
   ```
-
-When using `Poll` (`app/assets/javascripts/lib/utils/poll.js`), the `successCallback` needs to handle `.json()` as a Promise:
-  ```javascript
-  successCallback: (response) => {
-    return response.json().then((data) => {
-      // handle the response
-    });
-  }
-  ```
-
-#### CSRF token
-We use a Vue Resource interceptor to manage the CSRF token.
-`app/assets/javascripts/vue_shared/vue_resource_interceptor.js` holds all our common interceptors.
-Note: You don't need to load `app/assets/javascripts/vue_shared/vue_resource_interceptor.js`
-since it's already being loaded by `common_vue.js`.
 
 ### End Result
 
@@ -278,15 +227,14 @@ export default class Store {
 }
 
 // service.js
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-import 'vue_shared/vue_resource_interceptor';
-
-Vue.use(VueResource);
+import axios from 'javascripts/lib/utils/axios_utils'
 
 export default class Service {
   constructor(options) {
-    this.todos = Vue.resource(endpoint.todosEndpoint);
+    this.todos = axios.create({
+      baseURL: endpoint.todosEndpoint
+    });
+
   }
 
   getTodos() {
@@ -428,7 +376,7 @@ is a good example of this pattern.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
+Please refer to the Vue section of our [style guide](style_guide_js.md#vue-js)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components
@@ -508,7 +456,7 @@ describe('Todos App', () => {
 });
 ```
 #### `mountComponent` helper
-There is an helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
+There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
 
 ```javascript
 import Vue from 'vue';
@@ -525,50 +473,8 @@ The main return value of a Vue component is the rendered output. In order to tes
 need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
 
 ### Stubbing API responses
-[Vue Resource Interceptors][vue-resource-interceptor] allow us to add a interceptor with
-the response we need:
+Refer to [mock axios](axios.md#mock-axios-response-on-tests)
 
-  ```javascript
-    // Mock the service to return data
-    const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([{
-        title: 'This is a todo',
-        body: 'This is the text'
-      }]), {
-        status: 200,
-      }));
-    };
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-    });
-
-    it('should do something', (done) => {
-      setTimeout(() => {
-        // Test received data
-        done();
-      }, 0);
-    });
-  ```
-
-1. Headers interceptor
-Refer to [this section](vue.md#headers)
-
-1. Use `$.mount()` to mount the component
-
-```javascript
-// bad
-new Component({
-  el: document.createElement('div')
-});
-
-// good
-new Component().$mount();
-```
 
 ## Vuex
 To manage the state of an application you may use [Vuex][vuex-docs].
@@ -769,8 +675,6 @@ describe('component', () => {
 [component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow
-[vue-resource-repo]: https://github.com/pagekit/vue-resource
-[vue-resource-interceptor]: https://github.com/pagekit/vue-resource/blob/develop/docs/http.md#interceptors
 [vue-test]: https://vuejs.org/v2/guide/unit-testing.html
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [flux]: https://facebook.github.io/flux
@@ -778,3 +682,6 @@ describe('component', () => {
 [vuex-structure]: https://vuex.vuejs.org/en/structure.html
 [vuex-mutations]: https://vuex.vuejs.org/en/mutations.html
 [vuex-testing]: https://vuex.vuejs.org/en/testing.html
+[axios]: https://github.com/axios/axios
+[axios-interceptors]: https://github.com/axios/axios#interceptors
+

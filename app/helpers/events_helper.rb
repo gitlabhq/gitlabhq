@@ -1,13 +1,15 @@
 module EventsHelper
   ICON_NAMES_BY_EVENT_TYPE = {
-    'pushed to' => 'icon_commit',
-    'pushed new' => 'icon_commit',
-    'created' => 'icon_status_open',
-    'opened' => 'icon_status_open',
-    'closed' => 'icon_status_closed',
-    'accepted' => 'icon_code_fork',
-    'commented on' => 'icon_comment_o',
-    'deleted' => 'icon_trash_o'
+    'pushed to' => 'commit',
+    'pushed new' => 'commit',
+    'created' => 'status_open',
+    'opened' => 'status_open',
+    'closed' => 'status_closed',
+    'accepted' => 'fork',
+    'commented on' => 'comment',
+    'deleted' => 'remove',
+    'imported' => 'import',
+    'joined' => 'users'
   }.freeze
 
   def link_to_author(event, self_added: false)
@@ -170,16 +172,6 @@ module EventsHelper
     end
   end
 
-  def event_note(text, options = {})
-    text = first_line_in_markdown(text, 150, options)
-
-    sanitize(
-      text,
-      tags: %w(a img gl-emoji b pre code p span),
-      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
-    )
-  end
-
   def event_commit_title(message)
     message ||= ''
     (message.split("\n").first || "").truncate(70)
@@ -197,7 +189,7 @@ module EventsHelper
 
   def icon_for_event(note)
     icon_name = ICON_NAMES_BY_EVENT_TYPE[note]
-    custom_icon(icon_name) if icon_name
+    sprite_icon(icon_name) if icon_name
   end
 
   def icon_for_profile_event(event)

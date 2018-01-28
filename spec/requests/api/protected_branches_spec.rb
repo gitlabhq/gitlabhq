@@ -80,6 +80,12 @@ describe API::ProtectedBranches do
 
         it_behaves_like 'protected branch'
       end
+
+      context 'when protected branch contains a period' do
+        let(:protected_name) { 'my.feature' }
+
+        it_behaves_like 'protected branch'
+      end
     end
 
     context 'when authenticated as a guest' do
@@ -95,6 +101,12 @@ describe API::ProtectedBranches do
 
   describe 'POST /projects/:id/protected_branches' do
     let(:branch_name) { 'new_branch' }
+    let(:post_endpoint) { api("/projects/#{project.id}/protected_branches", user) }
+
+    def expect_protection_to_be_successful
+      expect(response).to have_gitlab_http_status(201)
+      expect(json_response['name']).to eq(branch_name)
+    end
 
     context 'when authenticated as a master' do
       before do
@@ -102,7 +114,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch' do
-        post api("/projects/#{project.id}/protected_branches", user), name: branch_name
+        post post_endpoint, name: branch_name
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -111,8 +123,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and developers can push' do
-        post api("/projects/#{project.id}/protected_branches", user),
-            name: branch_name, push_access_level: 30
+        post post_endpoint, name: branch_name, push_access_level: 30
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -121,8 +132,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and developers can merge' do
-        post api("/projects/#{project.id}/protected_branches", user),
-            name: branch_name, merge_access_level: 30
+        post post_endpoint, name: branch_name, merge_access_level: 30
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -131,8 +141,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and developers can push and merge' do
-        post api("/projects/#{project.id}/protected_branches", user),
-            name: branch_name, push_access_level: 30, merge_access_level: 30
+        post post_endpoint, name: branch_name, push_access_level: 30, merge_access_level: 30
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -141,8 +150,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and no one can push' do
-        post api("/projects/#{project.id}/protected_branches", user),
-            name: branch_name, push_access_level: 0
+        post post_endpoint, name: branch_name, push_access_level: 0
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -151,8 +159,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and no one can merge' do
-        post api("/projects/#{project.id}/protected_branches", user),
-            name: branch_name, merge_access_level: 0
+        post post_endpoint, name: branch_name, merge_access_level: 0
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -161,8 +168,7 @@ describe API::ProtectedBranches do
       end
 
       it 'protects a single branch and no one can push or merge' do
-        post api("/projects/#{project.id}/protected_branches", user),
-            name: branch_name, push_access_level: 0, merge_access_level: 0
+        post post_endpoint, name: branch_name, push_access_level: 0, merge_access_level: 0
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
@@ -171,7 +177,8 @@ describe API::ProtectedBranches do
       end
 
       it 'returns a 409 error if the same branch is protected twice' do
-        post api("/projects/#{project.id}/protected_branches", user), name: protected_name
+        post post_endpoint, name: protected_name
+
         expect(response).to have_gitlab_http_status(409)
       end
 
@@ -179,10 +186,9 @@ describe API::ProtectedBranches do
         let(:branch_name) { 'feature/*' }
 
         it "protects multiple branches with a wildcard in the name" do
-          post api("/projects/#{project.id}/protected_branches", user), name: branch_name
+          post post_endpoint, name: branch_name
 
-          expect(response).to have_gitlab_http_status(201)
-          expect(json_response['name']).to eq(branch_name)
+          expect_protection_to_be_successful
           expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
           expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
         end
@@ -195,7 +201,7 @@ describe API::ProtectedBranches do
       end
 
       it "returns a 403 error if guest" do
-        post api("/projects/#{project.id}/protected_branches/", user), name: branch_name
+        post post_endpoint, name: branch_name
 
         expect(response).to have_gitlab_http_status(403)
       end

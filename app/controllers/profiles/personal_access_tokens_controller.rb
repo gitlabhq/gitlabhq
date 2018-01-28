@@ -1,13 +1,14 @@
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
     set_index_vars
+    @personal_access_token = finder.build
   end
 
   def create
     @personal_access_token = finder.build(personal_access_token_params)
 
     if @personal_access_token.save
-      flash[:personal_access_token] = @personal_access_token.token
+      PersonalAccessToken.redis_store!(current_user.id, @personal_access_token.token)
       redirect_to profile_personal_access_tokens_path, notice: "Your new personal access token has been created."
     else
       set_index_vars
@@ -38,10 +39,11 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def set_index_vars
-    @scopes = Gitlab::Auth::AVAILABLE_SCOPES
+    @scopes = Gitlab::Auth.available_scopes(current_user)
 
-    @personal_access_token = finder.build
     @inactive_personal_access_tokens = finder(state: 'inactive').execute
     @active_personal_access_tokens = finder(state: 'active').execute.order(:expires_at)
+
+    @new_personal_access_token = PersonalAccessToken.redis_getdel(current_user.id)
   end
 end

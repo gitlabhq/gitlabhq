@@ -6,11 +6,6 @@
 # See 'detailed_status?` method and `Gitlab::Ci::Status` module.
 #
 module CiStatusHelper
-  def ci_status_path(pipeline)
-    project = pipeline.project
-    project_pipeline_path(project, pipeline)
-  end
-
   def ci_label_for_status(status)
     if detailed_status?(status)
       return status.label
@@ -63,34 +58,34 @@ module CiStatusHelper
 
   def ci_icon_for_status(status)
     if detailed_status?(status)
-      return custom_icon(status.icon)
+      return sprite_icon(status.icon)
     end
 
     icon_name =
       case status
       when 'success'
-        'icon_status_success'
+        'status_success'
       when 'success_with_warnings'
-        'icon_status_warning'
+        'status_warning'
       when 'failed'
-        'icon_status_failed'
+        'status_failed'
       when 'pending'
-        'icon_status_pending'
+        'status_pending'
       when 'running'
-        'icon_status_running'
+        'status_running'
       when 'play'
-        'icon_play'
+        'play'
       when 'created'
-        'icon_status_created'
+        'status_created'
       when 'skipped'
-        'icon_status_skipped'
+        'status_skipped'
       when 'manual'
-        'icon_status_manual'
+        'status_manual'
       else
-        'icon_status_canceled'
+        'status_canceled'
       end
 
-    custom_icon(icon_name)
+    sprite_icon(icon_name, size: 16)
   end
 
   def pipeline_status_cache_key(pipeline_status)

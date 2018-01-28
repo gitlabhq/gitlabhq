@@ -15,7 +15,7 @@ feature 'Jobs' do
   end
 
   before do
-    project.team << [user, user_access_level]
+    project.add_role(user, user_access_level)
     sign_in(user)
   end
 
@@ -164,9 +164,9 @@ feature 'Jobs' do
         end
 
         it 'links to issues/new with the title and description filled in' do
-          button_title = "Build Failed ##{job.id}"
-          job_path = project_job_path(project, job)
-          options = { issue: { title: button_title, description: job_path } }
+          button_title = "Job Failed ##{job.id}"
+          job_url = project_job_path(project, job)
+          options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)
 
@@ -187,7 +187,7 @@ feature 'Jobs' do
 
     context "Download artifacts" do
       before do
-        job.update_attributes(artifacts_file: artifacts_file)
+        job.update_attributes(legacy_artifacts_file: artifacts_file)
         visit project_job_path(project, job)
       end
 
@@ -198,7 +198,7 @@ feature 'Jobs' do
 
     context 'Artifacts expire date' do
       before do
-        job.update_attributes(artifacts_file: artifacts_file,
+        job.update_attributes(legacy_artifacts_file: artifacts_file,
                               artifacts_expire_at: expire_at)
 
         visit project_job_path(project, job)
@@ -299,14 +299,14 @@ feature 'Jobs' do
       end
 
       shared_examples 'expected variables behavior' do
-        it 'shows variable key and value after click', js: true do
-          expect(page).to have_css('.reveal-variables')
+        it 'shows variable key and value after click', :js do
+          expect(page).to have_css('.js-reveal-variables')
           expect(page).not_to have_css('.js-build-variable')
           expect(page).not_to have_css('.js-build-value')
 
           click_button 'Reveal Variables'
 
-          expect(page).not_to have_css('.reveal-variables')
+          expect(page).not_to have_css('.js-reveal-variables')
           expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
           expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
         end
@@ -369,6 +369,56 @@ feature 'Jobs' do
         end
       end
     end
+
+    context 'Playable manual action' do
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows manual action empty state' do
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+
+      it 'plays manual action and shows pending status', :js do
+        click_link 'Trigger this manual action'
+
+        wait_for_requests
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+        expect(page).to have_content('pending')
+      end
+    end
+
+    context 'Non triggered job' do
+      let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows empty state' do
+        expect(page).to have_content('This job has not been triggered yet')
+        expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+      end
+    end
+
+    context 'Pending job' do
+      let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'shows pending empty state' do
+        expect(page).to have_content('This job has not started yet')
+        expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do
@@ -380,7 +430,6 @@ feature 'Jobs' do
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page.status_code).to eq(200)
         expect(page).to have_content 'Retry'
       end
     end
@@ -392,11 +441,10 @@ feature 'Jobs' do
         job.run!
         visit project_job_path(project, job)
         find('.js-cancel-job').click()
-        find('.js-retry-button').trigger('click')
+        find('.js-retry-button').click
       end
 
       it 'shows the right status and buttons', :js do
-        expect(page).to have_http_status(200)
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end
@@ -424,14 +472,14 @@ feature 'Jobs' do
 
   describe "GET /:project/jobs/:id/download" do
     before do
-      job.update_attributes(artifacts_file: artifacts_file)
+      job.update_attributes(legacy_artifacts_file: artifacts_file)
       visit project_job_path(project, job)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
-        job2.update_attributes(artifacts_file: artifacts_file)
+        job2.update_attributes(legacy_artifacts_file: artifacts_file)
         visit download_project_job_artifacts_path(project, job2)
       end
 
@@ -443,28 +491,30 @@ feature 'Jobs' do
     context 'access source' do
       context 'job from project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job.run!
-          visit project_job_path(project, job)
-          find('.js-raw-link-controller').click()
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+
+          expect(requests.first.status_code).to eq(200)
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
         end
       end
 
       context 'job from other project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job2.run!
-          visit raw_project_job_path(project, job2)
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(404)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job2)
+          end
+          expect(requests.first.status_code).to eq(404)
         end
       end
     end
@@ -473,8 +523,6 @@ feature 'Jobs' do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
-
         job.run!
       end
 
@@ -483,16 +531,14 @@ feature 'Jobs' do
           allow_any_instance_of(Gitlab::Ci::Trace)
             .to receive(:paths)
             .and_return([existing_file])
-
-          visit project_job_path(project, job)
-
-          find('.js-raw-link-controller').click
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(existing_file)
         end
       end
 

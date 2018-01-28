@@ -4,11 +4,11 @@ GitLab CE is licensed under the terms of the MIT License. GitLab EE is licensed 
 
 ## Automated Testing
 
-In order to comply with the terms the libraries we use are licensed under, we have to make sure to check new gems for compatible licenses whenever they're added. To automate this process, we use the [license_finder][license_finder] gem by Pivotal. It runs every time a new commit is pushed and verifies that all gems in the bundle use a license that doesn't conflict with the licensing of either GitLab Community Edition or GitLab Enterprise Edition.
+In order to comply with the terms the libraries we use are licensed under, we have to make sure to check new gems for compatible licenses whenever they're added. To automate this process, we use the [license_finder][license_finder] gem by Pivotal. It runs every time a new commit is pushed and verifies that all gems and node modules in the bundle use a license that doesn't conflict with the licensing of either GitLab Community Edition or GitLab Enterprise Edition.
 
-There are some limitations with the automated testing, however. CSS and JavaScript libraries, as well as any Ruby libraries not included by way of Bundler, must be verified manually and independently. Take care whenever one such library is used, as automated tests won't catch problematic licenses from them.
+There are some limitations with the automated testing, however. CSS, JavaScript, or Ruby libraries which are not included by way of Bundler, NPM, or Yarn (for instance those manually copied into our source tree in the `vendor` directory), must be verified manually and independently. Take care whenever one such library is used, as automated tests won't catch problematic licenses from them.
 
-Some gems may not include their license information in their `gemspec` file. These won't be detected by License Finder, and will have to be verified manually.
+Some gems may not include their license information in their `gemspec` file, and some node modules may not include their license information in their `package.json` file. These won't be detected by License Finder, and will have to be verified manually.
 
 ### License Finder commands
 
@@ -56,6 +56,7 @@ Libraries with the following licenses are acceptable for use:
 - [ISC License][ISC] (also known as the OpenBSD License): A permissive (non-copyleft) license as defined by the Open Source Initiative.
 - [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 - [Unlicense][UNLICENSE]: Another public domain dedication.
+- [OWFa 1.0][OWFa1]: An open-source license and patent grant designed for specifications.
 
 ## Unacceptable Licenses
 
@@ -65,6 +66,7 @@ Libraries with the following licenses are unacceptable for use:
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
 - [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
 - [Facebook BSD + PATENTS][Facebook]: is a 3-clause BSD license with a patent grant that has been deemed [Category X][x-list] by the Apache foundation.
+- [WTFPL][WTFPL]: is a public domain dedication [rejected by the OSI (3.2)][WTFPL-OSI]. Also has a strong language which is not in accordance with our diversity policy.
 
 ## Requesting Approval for Licenses
 
@@ -104,7 +106,10 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [OSL-GNU]: https://www.gnu.org/licenses/license-list.en.html#OSL
 [Org-Repo]: https://gitlab.com/gitlab-com/organization
 [UNLICENSE]: https://unlicense.org
+[OWFa1]: http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0
 [Facebook]: https://code.facebook.com/pages/850928938376556
 [x-list]: https://www.apache.org/legal/resolved.html#category-x
 [Acceptable-Licenses]: #acceptable-licenses
 [Unacceptable-Licenses]: #unacceptable-licenses
+[WTFPL]: https://wtfpl.net
+[WTFPL-OSI]: https://opensource.org/minutes20090304

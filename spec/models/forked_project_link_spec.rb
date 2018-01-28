@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe ForkedProjectLink, "add link on fork" do
+  include ProjectForksHelper
+
   let(:project_from) { create(:project, :repository) }
   let(:project_to) { fork_project(project_from, user) }
   let(:user) { create(:user) }
-  let(:namespace) { user.namespace }
 
   before do
     project_from.add_reporter(user)
@@ -63,14 +64,5 @@ describe ForkedProjectLink, "add link on fork" do
 
       expect(ForkedProjectLink.exists?(id: forked_project_link.id)).to eq(false)
     end
-  end
-
-  def fork_project(from_project, user)
-    service = Projects::ForkService.new(from_project, user)
-    shell = double('gitlab_shell', fork_repository: true)
-
-    allow(service).to receive(:gitlab_shell).and_return(shell)
-
-    service.execute
   end
 end

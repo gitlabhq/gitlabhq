@@ -9,6 +9,7 @@ module Gitlab
   class Seeder
     def self.quiet
       mute_mailer
+
       SeedFu.quiet = true
 
       yield

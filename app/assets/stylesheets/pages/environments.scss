@@ -12,8 +12,6 @@
 
 .environments-container {
   .ci-table {
-    @include new-style-dropdown;
-
     .deployment-column {
       > span {
         word-break: break-all;
@@ -117,7 +115,7 @@
     }
 
     .no-btn {
-      border: none;
+      border: 0;
       background: none;
       outline: none;
       width: 100%;
@@ -133,12 +131,11 @@
 }
 
 .folder-row {
-  padding: 15px 0;
-  border-bottom: 1px solid $white-normal;
+  border-left: 0;
+  border-right: 0;
 
-  @media (max-width: $screen-sm-max) {
-    border-top: 1px solid $white-normal;
-    margin-top: 10px;
+  @media (min-width: $screen-sm-max) {
+    border-top: 0;
   }
 }
 
@@ -174,7 +171,7 @@
 
 .prometheus-graph-overlay {
   fill: none;
-  opacity: 0.0;
+  opacity: 0;
   pointer-events: all;
 }
 
@@ -202,15 +199,19 @@
   stroke-width: 1;
 }
 
-.deploy-info-text {
-  dominant-baseline: text-before-edge;
+.divider-line {
+  stroke-width: 1;
+  stroke: $gray-darkest;
 }
 
 .prometheus-state {
-  margin-top: 10px;
+  max-width: 430px;
+  margin: 10px auto;
+  text-align: center;
 
-  .state-button-section {
-    margin-top: 10px;
+  .state-svg {
+    max-width: 80vw;
+    margin: 0 auto;
   }
 }
 
@@ -247,35 +248,79 @@
   }
 }
 
+.prometheus-graph-cursor {
+  position: absolute;
+  background: $theme-gray-600;
+  width: 1px;
+}
+
+.prometheus-graph-flag {
+  display: block;
+  min-width: 160px;
+
+  h5 {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  table {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+  }
+
+  td {
+    vertical-align: middle;
+
+    + td {
+      padding-left: 5px;
+      vertical-align: top;
+    }
+  }
+
+  .deploy-meta-content {
+    border-bottom: 1px solid $white-dark;
+
+    svg {
+      height: 15px;
+      vertical-align: bottom;
+    }
+  }
+
+  &.popover {
+    &.left {
+      left: auto;
+      right: 0;
+      margin-right: 10px;
+    }
+
+    &.right {
+      left: 0;
+      right: auto;
+      margin-left: 10px;
+    }
+
+    > .arrow {
+      top: 40px;
+    }
+
+    > .popover-title,
+    > .popover-content {
+      padding: 5px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  }
+}
+
 .prometheus-svg-container {
   position: relative;
   height: 0;
   width: 100%;
   padding: 0;
   padding-bottom: 100%;
-}
-
-.prometheus-svg-container > svg {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  top: 0;
-
-  text {
-    fill: $gl-text-color;
-    stroke-width: 0;
-  }
-
-  .text-metric-bold {
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .label-axis-text {
-    fill: $black;
-    font-weight: $gl-font-weight-normal;
-    font-size: 10px;
-  }
 
   .text-metric-usage,
   .legend-metric-title {
@@ -284,36 +329,79 @@
     font-size: 12px;
   }
 
-  .legend-axis-text {
-    fill: $black;
-  }
+  > svg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
 
-  .tick > text {
-    font-size: 12px;
-  }
-
-  .text-metric-title {
-    font-size: 12px;
-  }
-
-  .y-label-text,
-  .x-label-text {
-    fill: $gray-darkest;
-  }
-
-  .axis-tick {
-    stroke: $gray-darker;
-  }
-
-  @media (max-width: $screen-sm-max) {
-    .label-axis-text,
-    .text-metric-usage,
-    .legend-axis-text {
-      font-size: 8px;
+    text {
+      fill: $gl-text-color;
+      stroke-width: 0;
     }
 
-    .tick > text {
-      font-size: 8px;
+    .text-metric-bold {
+      font-weight: $gl-font-weight-bold;
+    }
+
+    .label-axis-text {
+      fill: $black;
+      font-weight: $gl-font-weight-normal;
+      font-size: 10px;
+    }
+
+    .legend-axis-text {
+      fill: $black;
+    }
+
+    .tick {
+      > line {
+        stroke: $gray-darker;
+      }
+
+      > text {
+        font-size: 12px;
+      }
+    }
+
+    .text-metric-title {
+      font-size: 12px;
+    }
+
+    .y-label-text,
+    .x-label-text {
+      fill: $gray-darkest;
+    }
+
+    .axis-tick {
+      stroke: $gray-darker;
+    }
+
+    .deploy-info-text {
+      dominant-baseline: text-before-edge;
+      font-size: 12px;
+    }
+
+    .deploy-info-text-link {
+      font-family: $monospace_font;
+      fill: $gl-link-color;
+
+      &:hover {
+        fill: $gl-link-hover-color;
+      }
+    }
+
+    @media (max-width: $screen-sm-max) {
+      .label-axis-text,
+      .text-metric-usage,
+      .legend-axis-text {
+        font-size: 8px;
+      }
+
+      .tick > text {
+        font-size: 8px;
+      }
     }
   }
 }

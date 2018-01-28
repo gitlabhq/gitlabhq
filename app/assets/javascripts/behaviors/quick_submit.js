@@ -1,4 +1,5 @@
 import '../commons/bootstrap';
+import { isInIssuePage } from '../lib/utils/common_utils';
 
 // Quick Submit behavior
 //
@@ -45,7 +46,7 @@ $(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
   if (!$submitButton.attr('disabled')) {
     $submitButton.trigger('click', [e]);
 
-    if (!gl.utils.isInIssuePage()) {
+    if (!isInIssuePage()) {
       $submitButton.disable();
     }
   }

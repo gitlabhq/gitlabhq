@@ -1,7 +1,12 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-7.1-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.14-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
+
+.dedicated-runner: &dedicated-runner
+  retry: 1
+  tags:
+    - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-233-with-yarn"
+  key: "ruby-2.3.6-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -23,11 +28,10 @@ variables:
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"
-  PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
-  FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/${CI_PROJECT_NAME}/report-master.json
+  FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
 
 before_script:
   - bundle --version
@@ -43,17 +47,12 @@ stages:
   - post-cleanup
 
 # Predefined scopes
-.dedicated-runner: &dedicated-runner
-  retry: 1
-  tags:
-    - gitlab-org
-
 .tests-metadata-state: &tests-metadata-state
-  services: []
+  <<: *dedicated-runner
   variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
+  before_script:
+    - source scripts/utils.sh
   artifacts:
     expire_in: 31d
     paths:
@@ -62,6 +61,9 @@ stages:
 
 .use-pg: &use-pg
   services:
+    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
+    # so using the least common denominator ensures backwards compatibility
+    # (as many users are still using 9.2).
     - postgres:9.2
     - redis:alpine
 
@@ -77,8 +79,18 @@ stages:
   except:
     - /(^docs[\/-].*|.*-docs$)/
 
+.except-qa: &except-qa
+  except:
+    - /(^qa[\/-].*|.*-qa$)/
+
+.except-docs-and-qa: &except-docs-and-qa
+  except:
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: test
   script:
@@ -87,12 +99,13 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
-    - export ALL_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/${CI_PROJECT_NAME}/all_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/${CI_PROJECT_NAME}/new_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export SUITE_FLAKY_RSPEC_REPORT_PATH=${FLAKY_RSPEC_SUITE_REPORT_PATH}
+    - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export FLAKY_RSPEC_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
-    - cp ${FLAKY_RSPEC_SUITE_REPORT_PATH} ${ALL_FLAKY_RSPEC_REPORT_PATH}
+    - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
     - knapsack rspec "--color --format documentation"
@@ -108,15 +121,14 @@ stages:
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
   <<: *use-pg
-  <<: *except-docs
 
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
-  <<: *except-docs
 
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: test
   script:
@@ -128,7 +140,7 @@ stages:
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
-    - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack spinach "-r rerun" -b || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -b -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
     when: always
@@ -140,12 +152,10 @@ stages:
 .spinach-metadata-pg: &spinach-metadata-pg
   <<: *spinach-metadata
   <<: *use-pg
-  <<: *except-docs
 
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
-  <<: *except-docs
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -154,14 +164,13 @@ stages:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
 
+##
 # Trigger a package build in omnibus-gitlab repository
-build-package:
-  image: ruby:2.3-alpine
+#
+package-qa:
+  <<: *dedicated-runner
+  image: ruby:2.4-alpine
   before_script: []
-  services: []
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
   stage: build
   cache: {}
   when: manual
@@ -173,13 +182,21 @@ build-package:
 
 # Review docs base
 .review-docs: &review-docs
+  <<: *dedicated-runner
+  <<: *except-qa
   image: ruby:2.4-alpine
-  before_script: []
-  services: []
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
+  before_script:
+    - gem install gitlab --no-doc
+    # We need to download the script rather than clone the repo since the
+    # review-docs-cleanup job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
+    - chmod 755 trigger-build-docs
   cache: {}
+  dependencies: []
+  variables:
+    GIT_STRATEGY: none
   when: manual
   only:
     - branches
@@ -191,10 +208,12 @@ review-docs-deploy:
   stage: build
   environment:
     name: review-docs/$CI_COMMIT_REF_NAME
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
+    url: http://$DOCS_GITLAB_REPO_SUFFIX-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
-    - gem install gitlab --no-doc
-    - scripts/trigger-build-docs deploy
+    - ./trigger-build-docs deploy
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
@@ -204,14 +223,12 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_NAME
     action: stop
   script:
-    - gem install gitlab --no-doc
-    - scripts/trigger-build-docs cleanup
+    - ./trigger-build-docs cleanup
 
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
   <<: *tests-metadata-state
-  <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   stage: prepare
   cache:
     key: tests_metadata
@@ -222,13 +239,12 @@ retrieve-tests-metadata:
     - wget -O $KNAPSACK_SPINACH_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_SPINACH_SUITE_REPORT_PATH || rm $KNAPSACK_SPINACH_SUITE_REPORT_PATH
     - '[[ -f $KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
     - '[[ -f $KNAPSACK_SPINACH_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_SPINACH_SUITE_REPORT_PATH}'
-    - mkdir -p rspec_flaky/${CI_PROJECT_NAME}/
+    - mkdir -p rspec_flaky/
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
 
 update-tests-metadata:
   <<: *tests-metadata-state
-  <<: *dedicated-runner
   <<: *only-canonical-masters
   stage: post-test
   cache:
@@ -241,42 +257,43 @@ update-tests-metadata:
     - retry gem install fog-aws mime-types
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
-    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/${CI_PROJECT_NAME}/all_node_*.json
+    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-    - rm -f rspec_flaky/${CI_PROJECT_NAME}/*_node_*.json
+    - rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
 
 flaky-examples-check:
   <<: *dedicated-runner
   image: ruby:2.3-alpine
   services: []
   before_script: []
-  cache: {}
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
-    NEW_FLAKY_SPECS_REPORT: rspec_flaky/${CI_PROJECT_NAME}/new_rspec_flaky_examples.json
+    NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
   stage: post-test
-  allow_failure: yes
+  allow_failure: true
+  retry: 0
   only:
     - branches
   except:
     - master
     - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
   artifacts:
     expire_in: 30d
     paths:
       - rspec_flaky/
   script:
     - '[[ -f $NEW_FLAKY_SPECS_REPORT ]] || echo "{}" > ${NEW_FLAKY_SPECS_REPORT}'
-    - scripts/merge-reports $NEW_FLAKY_SPECS_REPORT rspec_flaky/${CI_PROJECT_NAME}/new_node_*.json
+    - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
-setup-test-env:
-  <<: *use-pg
+compile-assets:
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *use-pg
   stage: prepare
   cache:
     <<: *default-cache
@@ -284,108 +301,126 @@ setup-test-env:
     - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
-    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
-    - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
       - node_modules
       - public/assets
+
+setup-test-env:
+  <<: *dedicated-runner
+  <<: *except-docs
+  <<: *use-pg
+  stage: prepare
+  cache:
+    <<: *default-cache
+  script:
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+    - scripts/gitaly-test-build # Do not use 'bundle exec' here
+  artifacts:
+    expire_in: 7d
+    paths:
       - tmp/tests
 
-rspec-pg 0 25: *rspec-metadata-pg
-rspec-pg 1 25: *rspec-metadata-pg
-rspec-pg 2 25: *rspec-metadata-pg
-rspec-pg 3 25: *rspec-metadata-pg
-rspec-pg 4 25: *rspec-metadata-pg
-rspec-pg 5 25: *rspec-metadata-pg
-rspec-pg 6 25: *rspec-metadata-pg
-rspec-pg 7 25: *rspec-metadata-pg
-rspec-pg 8 25: *rspec-metadata-pg
-rspec-pg 9 25: *rspec-metadata-pg
-rspec-pg 10 25: *rspec-metadata-pg
-rspec-pg 11 25: *rspec-metadata-pg
-rspec-pg 12 25: *rspec-metadata-pg
-rspec-pg 13 25: *rspec-metadata-pg
-rspec-pg 14 25: *rspec-metadata-pg
-rspec-pg 15 25: *rspec-metadata-pg
-rspec-pg 16 25: *rspec-metadata-pg
-rspec-pg 17 25: *rspec-metadata-pg
-rspec-pg 18 25: *rspec-metadata-pg
-rspec-pg 19 25: *rspec-metadata-pg
-rspec-pg 20 25: *rspec-metadata-pg
-rspec-pg 21 25: *rspec-metadata-pg
-rspec-pg 22 25: *rspec-metadata-pg
-rspec-pg 23 25: *rspec-metadata-pg
-rspec-pg 24 25: *rspec-metadata-pg
+rspec-pg 0 27: *rspec-metadata-pg
+rspec-pg 1 27: *rspec-metadata-pg
+rspec-pg 2 27: *rspec-metadata-pg
+rspec-pg 3 27: *rspec-metadata-pg
+rspec-pg 4 27: *rspec-metadata-pg
+rspec-pg 5 27: *rspec-metadata-pg
+rspec-pg 6 27: *rspec-metadata-pg
+rspec-pg 7 27: *rspec-metadata-pg
+rspec-pg 8 27: *rspec-metadata-pg
+rspec-pg 9 27: *rspec-metadata-pg
+rspec-pg 10 27: *rspec-metadata-pg
+rspec-pg 11 27: *rspec-metadata-pg
+rspec-pg 12 27: *rspec-metadata-pg
+rspec-pg 13 27: *rspec-metadata-pg
+rspec-pg 14 27: *rspec-metadata-pg
+rspec-pg 15 27: *rspec-metadata-pg
+rspec-pg 16 27: *rspec-metadata-pg
+rspec-pg 17 27: *rspec-metadata-pg
+rspec-pg 18 27: *rspec-metadata-pg
+rspec-pg 19 27: *rspec-metadata-pg
+rspec-pg 20 27: *rspec-metadata-pg
+rspec-pg 21 27: *rspec-metadata-pg
+rspec-pg 22 27: *rspec-metadata-pg
+rspec-pg 23 27: *rspec-metadata-pg
+rspec-pg 24 27: *rspec-metadata-pg
+rspec-pg 25 27: *rspec-metadata-pg
+rspec-pg 26 27: *rspec-metadata-pg
 
-rspec-mysql 0 25: *rspec-metadata-mysql
-rspec-mysql 1 25: *rspec-metadata-mysql
-rspec-mysql 2 25: *rspec-metadata-mysql
-rspec-mysql 3 25: *rspec-metadata-mysql
-rspec-mysql 4 25: *rspec-metadata-mysql
-rspec-mysql 5 25: *rspec-metadata-mysql
-rspec-mysql 6 25: *rspec-metadata-mysql
-rspec-mysql 7 25: *rspec-metadata-mysql
-rspec-mysql 8 25: *rspec-metadata-mysql
-rspec-mysql 9 25: *rspec-metadata-mysql
-rspec-mysql 10 25: *rspec-metadata-mysql
-rspec-mysql 11 25: *rspec-metadata-mysql
-rspec-mysql 12 25: *rspec-metadata-mysql
-rspec-mysql 13 25: *rspec-metadata-mysql
-rspec-mysql 14 25: *rspec-metadata-mysql
-rspec-mysql 15 25: *rspec-metadata-mysql
-rspec-mysql 16 25: *rspec-metadata-mysql
-rspec-mysql 17 25: *rspec-metadata-mysql
-rspec-mysql 18 25: *rspec-metadata-mysql
-rspec-mysql 19 25: *rspec-metadata-mysql
-rspec-mysql 20 25: *rspec-metadata-mysql
-rspec-mysql 21 25: *rspec-metadata-mysql
-rspec-mysql 22 25: *rspec-metadata-mysql
-rspec-mysql 23 25: *rspec-metadata-mysql
-rspec-mysql 24 25: *rspec-metadata-mysql
+rspec-mysql 0 27: *rspec-metadata-mysql
+rspec-mysql 1 27: *rspec-metadata-mysql
+rspec-mysql 2 27: *rspec-metadata-mysql
+rspec-mysql 3 27: *rspec-metadata-mysql
+rspec-mysql 4 27: *rspec-metadata-mysql
+rspec-mysql 5 27: *rspec-metadata-mysql
+rspec-mysql 6 27: *rspec-metadata-mysql
+rspec-mysql 7 27: *rspec-metadata-mysql
+rspec-mysql 8 27: *rspec-metadata-mysql
+rspec-mysql 9 27: *rspec-metadata-mysql
+rspec-mysql 10 27: *rspec-metadata-mysql
+rspec-mysql 11 27: *rspec-metadata-mysql
+rspec-mysql 12 27: *rspec-metadata-mysql
+rspec-mysql 13 27: *rspec-metadata-mysql
+rspec-mysql 14 27: *rspec-metadata-mysql
+rspec-mysql 15 27: *rspec-metadata-mysql
+rspec-mysql 16 27: *rspec-metadata-mysql
+rspec-mysql 17 27: *rspec-metadata-mysql
+rspec-mysql 18 27: *rspec-metadata-mysql
+rspec-mysql 19 27: *rspec-metadata-mysql
+rspec-mysql 20 27: *rspec-metadata-mysql
+rspec-mysql 21 27: *rspec-metadata-mysql
+rspec-mysql 22 27: *rspec-metadata-mysql
+rspec-mysql 23 27: *rspec-metadata-mysql
+rspec-mysql 24 27: *rspec-metadata-mysql
+rspec-mysql 25 27: *rspec-metadata-mysql
+rspec-mysql 26 27: *rspec-metadata-mysql
 
-spinach-pg 0 5: *spinach-metadata-pg
-spinach-pg 1 5: *spinach-metadata-pg
-spinach-pg 2 5: *spinach-metadata-pg
-spinach-pg 3 5: *spinach-metadata-pg
-spinach-pg 4 5: *spinach-metadata-pg
+spinach-pg 0 3: *spinach-metadata-pg
+spinach-pg 1 3: *spinach-metadata-pg
+spinach-pg 2 3: *spinach-metadata-pg
 
-spinach-mysql 0 5: *spinach-metadata-mysql
-spinach-mysql 1 5: *spinach-metadata-mysql
-spinach-mysql 2 5: *spinach-metadata-mysql
-spinach-mysql 3 5: *spinach-metadata-mysql
-spinach-mysql 4 5: *spinach-metadata-mysql
+spinach-mysql 0 3: *spinach-metadata-mysql
+spinach-mysql 1 3: *spinach-metadata-mysql
+spinach-mysql 2 3: *spinach-metadata-mysql
 
 # Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
-  <<: *pull-cache
   variables:
     SIMPLECOV: "false"
     SETUP_DB: "false"
 
 .rake-exec: &rake-exec
-  <<: *ruby-static-analysis
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
+  <<: *ruby-static-analysis
   stage: test
   script:
     - bundle exec rake $CI_JOB_NAME
 
 static-analysis:
-  <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *ruby-static-analysis
   stage: test
   script:
     - scripts/static-analysis
+  cache:
+    key: "ruby-2.3.6-with-yarn-and-rubocop"
+    paths:
+      - vendor/ruby
+      - .yarn-cache/
+      - tmp/rubocop_cache
 
 # Documentation checks:
 # - Check validity of relative links
 # - Make sure cURL examples in API docs use the full switches
 docs lint:
   <<: *dedicated-runner
+  <<: *except-qa
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
   cache: {}
@@ -393,6 +428,7 @@ docs lint:
   before_script: []
   script:
     - scripts/lint-doc.sh
+    - scripts/lint-changelog-yaml
     - mv doc/ /nanoc/content/
     - cd /nanoc
     # Build HTML from Markdown
@@ -407,23 +443,21 @@ downtime_check:
     - tags
     - /^[\d-]+-stable(-ee)?$/
     - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
 
 ee_compat_check:
   <<: *rake-exec
-  only:
-    - branches@gitlab-org/gitlab-ce
   except:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
-  allow_failure: yes
-  cache:
-    key: "ee_compat_check_repo"
-    paths:
-      - ee_compat_check/ee-repo/
+    - /^security-/
+    - branches@gitlab-org/gitlab-ee
+    - branches@gitlab/gitlab-ee
+  retry: 0
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
-    when: on_failure
+    when: always
     expire_in: 10d
     paths:
       - ee_compat_check/patches/*.patch
@@ -431,7 +465,7 @@ ee_compat_check:
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: test
   script:
@@ -445,15 +479,22 @@ db:migrate:reset-mysql:
   <<: *db-migrate-reset
   <<: *use-mysql
 
+db:check-schema-pg:
+  <<: *db-migrate-reset
+  <<: *use-pg
+  script:
+    - source scripts/schema_changed.sh
+
 .migration-paths: &migration-paths
   <<: *dedicated-runner
+  <<: *except-docs-and-qa
   <<: *pull-cache
-  <<: *except-docs
   stage: test
   variables:
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
-    - git fetch origin v8.14.10
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml
@@ -473,11 +514,11 @@ migration:path-mysql:
 
 .db-rollback: &db-rollback
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: test
   script:
-    - bundle exec rake db:rollback STEP=120
+    - bundle exec rake db:rollback STEP=119
     - bundle exec rake db:migrate
 
 db:rollback-pg:
@@ -488,36 +529,39 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.db-seed_fu: &db-seed_fu
+.gitlab-setup: &gitlab-setup
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: test
   variables:
     SIZE: "1"
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
+    FIXTURE_PATH: db/fixtures/development
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
+    - scripts/gitaly-test-spawn
+    - force=yes bundle exec rake gitlab:setup
   artifacts:
     when: on_failure
     expire_in: 1d
     paths:
       - log/development.log
 
-db:seed_fu-pg:
-  <<: *db-seed_fu
+gitlab:setup-pg:
+  <<: *gitlab-setup
   <<: *use-pg
 
-db:seed_fu-mysql:
-  <<: *db-seed_fu
+gitlab:setup-mysql:
+  <<: *gitlab-setup
   <<: *use-mysql
 
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: test
   dependencies: []
@@ -525,7 +569,6 @@ gitlab:assets:compile:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "false"
-    USE_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
@@ -539,11 +582,10 @@ gitlab:assets:compile:
       - webpack-report/
 
 karma:
-  <<: *use-pg
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-60.0-node-7.1-postgresql-9.6"
+  <<: *use-pg
   stage: test
   variables:
     BABEL_ENV: "coverage"
@@ -561,7 +603,7 @@ karma:
     - chrome_debug.log
     - coverage-javascript/
 
-codeclimate:
+codequality:
   <<: *except-docs
   <<: *pull-cache
   before_script: []
@@ -575,15 +617,48 @@ codeclimate:
   script:
     - cp .rubocop.yml .rubocop.yml.bak
     - grep -v "rubocop-gitlab-security" .rubocop.yml.bak > .rubocop.yml
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > raw_codeclimate.json
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-v2 analyze -f json > raw_codeclimate.json
     - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,fingerprint,location})' > codeclimate.json
     - mv .rubocop.yml.bak .rubocop.yml
   artifacts:
     paths: [codeclimate.json]
 
-coverage:
+sast:
+  <<: *except-docs
+  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  before_script: []
+  script:
+    - /app/bin/run .
+  artifacts:
+    paths: [gl-sast-report.json]
+
+qa:internal:
   <<: *dedicated-runner
   <<: *except-docs
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec rspec
+
+qa:selectors:
+  <<: *dedicated-runner
+  <<: *except-docs
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec bin/qa Test::Sanity::Selectors
+
+coverage:
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: post-test
   services: []
@@ -602,10 +677,11 @@ coverage:
 
 lint:javascript:report:
   <<: *dedicated-runner
-  <<: *except-docs
+  <<: *except-docs-and-qa
   <<: *pull-cache
   stage: post-test
   dependencies:
+    - compile-assets
     - setup-test-env
   before_script: []
   script:
@@ -646,8 +722,6 @@ pages:
 cache gems:
   <<: *dedicated-runner
   <<: *pull-cache
-  only:
-    - tags
   variables:
     SETUP_DB: "false"
   script:
@@ -658,10 +732,12 @@ cache gems:
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+    - tags
 
 gitlab_git_test:
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
   <<: *pull-cache
-  <<: *except-docs
   variables:
     SETUP_DB: "false"
   script:

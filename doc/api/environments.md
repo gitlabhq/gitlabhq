@@ -36,7 +36,7 @@ Creates a new environment with the given name and external_url.
 It returns `201` if the environment was successfully created, `400` for wrong parameters.
 
 ```
-POST /projects/:id/environment
+POST /projects/:id/environments
 ```
 
 | Attribute     | Type    | Required | Description                  |

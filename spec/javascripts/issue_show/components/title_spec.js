@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Store from '~/issue_show/stores';
 import titleComponent from '~/issue_show/components/title.vue';
+import eventHub from '~/issue_show/event_hub';
 
 describe('Title component', () => {
   let vm;
@@ -25,7 +26,7 @@ describe('Title component', () => {
 
   it('renders title HTML', () => {
     expect(
-      vm.$el.innerHTML.trim(),
+      vm.$el.querySelector('.title').innerHTML.trim(),
     ).toBe('Testing <img>');
   });
 
@@ -47,12 +48,12 @@ describe('Title component', () => {
 
     Vue.nextTick(() => {
       expect(
-        vm.$el.classList.contains('issue-realtime-pre-pulse'),
+        vm.$el.querySelector('.title').classList.contains('issue-realtime-pre-pulse'),
       ).toBeTruthy();
 
       setTimeout(() => {
         expect(
-          vm.$el.classList.contains('issue-realtime-trigger-pulse'),
+          vm.$el.querySelector('.title').classList.contains('issue-realtime-trigger-pulse'),
         ).toBeTruthy();
 
         done();
@@ -70,6 +71,38 @@ describe('Title component', () => {
       ).toContain('changed');
 
       done();
+    });
+  });
+
+  describe('inline edit button', () => {
+    beforeEach(() => {
+      spyOn(eventHub, '$emit');
+    });
+
+    it('should not show by default', () => {
+      expect(vm.$el.querySelector('.btn-edit')).toBeNull();
+    });
+
+    it('should not show if canUpdate is false', () => {
+      vm.showInlineEditButton = true;
+      vm.canUpdate = false;
+      expect(vm.$el.querySelector('.btn-edit')).toBeNull();
+    });
+
+    it('should show if showInlineEditButton and canUpdate', () => {
+      vm.showInlineEditButton = true;
+      vm.canUpdate = true;
+      expect(vm.$el.querySelector('.btn-edit')).toBeDefined();
+    });
+
+    it('should trigger open.form event when clicked', () => {
+      vm.showInlineEditButton = true;
+      vm.canUpdate = true;
+
+      Vue.nextTick(() => {
+        vm.$el.querySelector('.btn-edit').click();
+        expect(eventHub.$emit).toHaveBeenCalledWith('open.form');
+      });
     });
   });
 });

@@ -1,20 +1,20 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
-  include Gitlab::EncodingHelper
+  include ManualInverseAssociation
+  include IgnorableColumn
 
-  # Prevent store of diff if commits amount more then 500
+  # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
 
-  # Valid types of serialized diffs allowed by Gitlab::Git::Diff
-  VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta].freeze
+  ignore_column :st_commits,
+                :st_diffs
 
   belongs_to :merge_request
+  manual_inverse_association :merge_request, :merge_request_diff
+
   has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
-
-  serialize :st_commits # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :st_diffs # rubocop:disable Cop/ActiveRecordSerialize
 
   state_machine :state, initial: :empty do
     state :collected
@@ -28,6 +28,11 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   scope :viewable, -> { without_state(:empty) }
+  scope :by_commit_sha, ->(sha) do
+    joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
+  end
+
+  scope :recent, -> { order(id: :desc).limit(100) }
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
@@ -37,29 +42,24 @@ class MergeRequestDiff < ActiveRecord::Base
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
   end
 
-  def self.select_without_diff
-    select(column_names - ['st_diffs'])
-  end
-
-  def st_commits
-    super || []
-  end
-
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
+    MergeRequest
+      .where('id = ? AND COALESCE(latest_merge_request_diff_id, 0) < ?', self.merge_request_id, self.id)
+      .update_all(latest_merge_request_diff_id: self.id)
+
     ensure_commit_shas
     save_commits
     save_diffs
+    save
     keep_around_commits
   end
 
   def ensure_commit_shas
-    merge_request.fetch_ref
     self.start_commit_sha ||= merge_request.target_branch_sha
     self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
-    save
   end
 
   # Override head_commit_sha to keep compatibility with merge request diff
@@ -107,27 +107,23 @@ class MergeRequestDiff < ActiveRecord::Base
   def base_commit
     return unless base_commit_sha
 
-    project.commit(base_commit_sha)
+    project.commit_by(oid: base_commit_sha)
   end
 
   def start_commit
     return unless start_commit_sha
 
-    project.commit(start_commit_sha)
+    project.commit_by(oid: start_commit_sha)
   end
 
   def head_commit
     return unless head_commit_sha
 
-    project.commit(head_commit_sha)
+    project.commit_by(oid: head_commit_sha)
   end
 
   def commit_shas
-    if st_commits.present?
-      st_commits.map { |commit| commit[:id] }
-    else
-      merge_request_diff_commits.map(&:sha)
-    end
+    merge_request_diff_commits.map(&:sha)
   end
 
   def diff_refs=(new_diff_refs)
@@ -191,7 +187,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def latest?
-    self == merge_request.merge_request_diff
+    self.id == merge_request.latest_merge_request_diff_id
   end
 
   def compare_with(sha)
@@ -202,33 +198,10 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits_count
-    if st_commits.present?
-      st_commits.size
-    else
-      merge_request_diff_commits.size
-    end
-  end
-
-  def utf8_st_diffs
-    return [] if st_diffs.blank?
-
-    st_diffs.map do |diff|
-      diff.each do |k, v|
-        diff[k] = encode_utf8(v) if v.respond_to?(:encoding)
-      end
-    end
+    super || merge_request_diff_commits.size
   end
 
   private
-
-  # Old GitLab implementations may have generated diffs as ["--broken-diff"].
-  # Avoid an error 500 by ignoring bad elements. See:
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/20776
-  def valid_raw_diff?(raw)
-    return false unless raw.respond_to?(:each)
-
-    raw.any? { |element| VALID_CLASSES.include?(element.class) }
-  end
 
   def create_merge_request_diff_files(diffs)
     rows = diffs.map.with_index do |diff, index|
@@ -253,9 +226,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def load_diffs(options)
-    return Gitlab::Git::DiffCollection.new([]) unless diffs_from_database
-
-    raw = diffs_from_database
+    raw = merge_request_diff_files.map(&:to_hash)
 
     if paths = options[:paths]
       raw = raw.select do |diff|
@@ -266,23 +237,11 @@ class MergeRequestDiff < ActiveRecord::Base
     Gitlab::Git::DiffCollection.new(raw, options)
   end
 
-  def diffs_from_database
-    return @diffs_from_database if defined?(@diffs_from_database)
-
-    @diffs_from_database =
-      if st_diffs.present?
-        if valid_raw_diff?(st_diffs)
-          st_diffs
-        end
-      elsif merge_request_diff_files.present?
-        merge_request_diff_files.map(&:to_hash)
-      end
-  end
-
   def load_commits
-    commits = st_commits.presence || merge_request_diff_commits
+    commits = merge_request_diff_commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
 
-    commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
+    CommitCollection
+      .new(merge_request.source_project, commits, merge_request.source_branch)
   end
 
   def save_diffs
@@ -308,13 +267,16 @@ class MergeRequestDiff < ActiveRecord::Base
       new_attributes[:state] = :overflow if diff_collection.overflow?
     end
 
-    update(new_attributes)
+    assign_attributes(new_attributes)
   end
 
   def save_commits
     MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
 
-    merge_request_diff_commits.reload
+    # merge_request_diff_commits.reload is preferred way to reload associated
+    # objects but it returns cached result for some reason in this case
+    commits = merge_request_diff_commits(true)
+    self.commits_count = commits.size
   end
 
   def repository

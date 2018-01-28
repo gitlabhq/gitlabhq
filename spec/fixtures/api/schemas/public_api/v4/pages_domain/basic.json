@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "domain": { "type": "string" },
+    "url": { "type": "uri" },
+    "project_id": { "type": "integer" },
+    "certificate_expiration": {
+      "type": "object",
+      "properties": {
+        "expired": { "type": "boolean" },
+        "expiration": { "type": "string" }
+      },
+      "required": ["expired", "expiration"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["domain", "url", "project_id"],
+  "additionalProperties": false
+}

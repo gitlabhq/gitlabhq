@@ -1,5 +1,0 @@
----
-title: 'API: Respect the "If-Unmodified-Since" header when delting a resource'
-merge_request: 9621
-author: Robert Schilling
-type: added

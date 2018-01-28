@@ -5,6 +5,7 @@ module API
 
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
+    API_USER_ENV = 'gitlab.api.user'.freeze
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -25,6 +26,7 @@ module API
       check_unmodified_since!(last_updated)
 
       status 204
+
       if block_given?
         yield resource
       else
@@ -32,6 +34,11 @@ module API
       end
     end
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    # We can't rewrite this with StrongMemoize because `sudo!` would
+    # actually write to `@current_user`, and `sudo?` would immediately
+    # call `current_user` again which reads from `@current_user`.
+    # We should rewrite this in a way that using StrongMemoize is possible
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -41,11 +48,24 @@ module API
 
       sudo!
 
+      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+
+      save_current_user_in_env(@current_user) if @current_user
+
       @current_user
+    end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+    def save_current_user_in_env(user)
+      env[API_USER_ENV] = { user_id: user.id, username: user.username }
     end
 
     def sudo?
       initial_current_user != current_user
+    end
+
+    def user_namespace
+      @user_namespace ||= find_namespace!(params[:id])
     end
 
     def user_group
@@ -57,13 +77,20 @@ module API
     end
 
     def wiki_page
-      page = user_project.wiki.find_page(params[:slug])
+      page = ProjectWiki.new(user_project, current_user).find_page(params[:slug])
 
       page || not_found!('Wiki Page')
     end
 
-    def available_labels
-      @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
+    def available_labels_for(label_parent)
+      search_params =
+        if label_parent.is_a?(Project)
+          { project_id: label_parent.id }
+        else
+          { group_id: label_parent.id, only_group_labels: true }
+        end
+
+      LabelsFinder.new(current_user, search_params).execute
     end
 
     def find_user(id)
@@ -110,8 +137,28 @@ module API
       end
     end
 
+    def find_namespace(id)
+      if id.to_s =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
+    def find_namespace!(id)
+      namespace = find_namespace(id)
+
+      if can?(current_user, :read_namespace, namespace)
+        namespace
+      else
+        not_found!('Namespace')
+      end
+    end
+
     def find_project_label(id)
-      label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
+      labels = available_labels_for(user_project)
+      label = labels.find_by_id(id) || labels.find_by_title(id)
+
       label || not_found!('Label')
     end
 
@@ -139,7 +186,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user && can?(initial_current_user, :access_api)
+      unauthorized! unless current_user
     end
 
     def authenticate_non_get!
@@ -151,6 +198,11 @@ module API
       unless Devise.secure_compare(secret_token, input)
         unauthorized!
       end
+    end
+
+    def authenticated_with_full_private_access!
+      authenticate!
+      forbidden! unless current_user.full_private_access?
     end
 
     def authenticated_as_admin!
@@ -182,6 +234,14 @@ module API
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
       end
+    end
+
+    def require_pages_enabled!
+      not_found! unless user_project.pages_available?
+    end
+
+    def require_pages_config_enabled!
+      not_found! unless Gitlab.config.pages.enabled
     end
 
     def can?(object, action, subject = :global)
@@ -285,7 +345,7 @@ module API
       if sentry_enabled? && report_exception?(exception)
         define_params_for_grape_middleware
         sentry_context
-        Raven.capture_exception(exception)
+        Raven.capture_exception(exception, extra: params)
       end
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
@@ -322,6 +382,7 @@ module API
       finder_params[:archived] = params[:archived]
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
       finder_params
     end
 
@@ -377,59 +438,37 @@ module API
 
     private
 
-    def private_token
-      params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
-    end
-
-    def warden
-      env['warden']
-    end
-
-    # Check if the request is GET/HEAD, or if CSRF token is valid.
-    def verified_request?
-      Gitlab::RequestForgeryProtection.verified?(env)
-    end
-
-    # Check the Rails session for valid authentication details
-    def find_user_from_warden
-      warden.try(:authenticate) if verified_request?
-    end
-
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
-      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= find_user_from_warden
 
-        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-          @initial_current_user = nil
-        end
-
-        @initial_current_user
+      begin
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
+      rescue Gitlab::Auth::UnauthorizedError
+        unauthorized!
       end
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo!
       return unless sudo_identifier
-      return unless initial_current_user
+
+      unauthorized! unless initial_current_user
 
       unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 
-      # Only private tokens should be used for the SUDO feature
-      unless private_token == initial_current_user.private_token
-        forbidden!('Private token must be specified in order to use sudo')
+      unless access_token
+        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
+
+      validate_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
+      not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      if sudoed_user
-        @current_user = sudoed_user
-      else
-        not_found!("No user id or username for: #{sudo_identifier}")
-      end
+      @current_user = sudoed_user # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def sudo_identifier
@@ -454,10 +493,12 @@ module API
       header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     end
 
-    # The Grape Error Middleware only has access to env but no params. We workaround this by
-    # defining a method that returns the right value.
+    # The Grape Error Middleware only has access to `env` but not `params` nor
+    # `request`. We workaround this by defining methods that returns the right
+    # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:params) { Rack::Request.new(env).params.symbolize_keys }
+      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 
     # We could get a Grape or a standard Ruby exception. We should only report anything that
@@ -466,23 +507,6 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
-    end
-
-    # An array of scopes that were registered (using `allow_access_with_scope`)
-    # for the current endpoint class. It also returns scopes registered on
-    # `API::API`, since these are meant to apply to all API routes.
-    def scopes_registered_for_endpoint
-      @scopes_registered_for_endpoint ||=
-        begin
-          endpoint_classes = [options[:for].presence, ::API::API].compact
-          endpoint_classes.reduce([]) do |memo, endpoint|
-            if endpoint.respond_to?(:allowed_scopes)
-              memo.concat(endpoint.allowed_scopes)
-            else
-              memo
-            end
-          end
-        end
     end
   end
 end

@@ -1,6 +1,6 @@
 require_relative '../support/test_env'
 
-FactoryGirl.define do
+FactoryBot.define do
   # Project without repository
   #
   # Project does not have bare repository.
@@ -141,6 +141,16 @@ FactoryGirl.define do
         # an API that isn't running
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
       end
+    end
+
+    trait :wiki_repo do
+      after(:create) do |project|
+        raise 'Failed to create wiki repository!' unless project.create_wiki
+      end
+    end
+
+    trait :read_only do
+      repository_read_only true
     end
 
     trait :broken_repo do

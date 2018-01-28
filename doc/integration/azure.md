@@ -74,6 +74,9 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
        tenant_id: "TENANT ID" } }
     ```
 
+    The `base_azure_url` is optional and can be added for different locales;
+    e.g. `base_azure_url: "https://login.microsoftonline.de"`.
+
 1.  Replace 'CLIENT ID', 'CLIENT SECRET' and 'TENANT ID' with the values you got above.
 
 1.  Save the configuration file.

@@ -5,8 +5,10 @@
 @import "framework/layout";
 
 @import "framework/animations";
+@import "framework/vue_transitions";
 @import "framework/avatar";
 @import "framework/asciidoctor";
+@import "framework/banner";
 @import "framework/blocks";
 @import "framework/buttons";
 @import "framework/badges";
@@ -19,6 +21,7 @@
 @import "framework/flash";
 @import "framework/forms";
 @import "framework/gfm";
+@import "framework/gitlab-theme";
 @import "framework/header";
 @import "framework/highlight";
 @import "framework/issue_box";
@@ -29,14 +32,19 @@
 @import "framework/media_object";
 @import "framework/mobile";
 @import "framework/modal";
-@import "framework/nav";
 @import "framework/pagination";
 @import "framework/panels";
+@import "framework/popup";
+@import "framework/secondary-navigation-elements";
 @import "framework/selects";
 @import "framework/sidebar";
+@import "framework/contextual-sidebar";
 @import "framework/tables";
 @import "framework/notes";
+@import "framework/tabs";
 @import "framework/timeline";
+@import "framework/tooltips";
+@import "framework/toggle";
 @import "framework/typography";
 @import "framework/zen";
 @import "framework/blank";
@@ -50,5 +58,5 @@
 @import "framework/icons";
 @import "framework/snippets";
 @import "framework/memory_graph";
-@import "framework/responsive-tables";
-@import "framework/feature_highlight";
+@import "framework/responsive_tables";
+@import "framework/stacked-progress-bar";

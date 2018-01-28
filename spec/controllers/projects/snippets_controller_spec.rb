@@ -29,7 +29,7 @@ describe Projects::SnippetsController do
           project_id: project, page: last_page.to_param
 
         expect(assigns(:snippets).current_page).to eq(last_page)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -41,7 +41,7 @@ describe Projects::SnippetsController do
           get :index, namespace_id: project.namespace, project_id: project
 
           expect(assigns(:snippets)).not_to include(project_snippet)
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
 
@@ -54,7 +54,7 @@ describe Projects::SnippetsController do
           get :index, namespace_id: project.namespace, project_id: project
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
 
@@ -67,7 +67,7 @@ describe Projects::SnippetsController do
           get :index, namespace_id: project.namespace, project_id: project
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end
@@ -316,7 +316,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -329,7 +329,7 @@ describe Projects::SnippetsController do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
 
@@ -342,7 +342,7 @@ describe Projects::SnippetsController do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
       end
@@ -352,7 +352,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, namespace_id: project.namespace, project_id: project, id: 42
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -364,7 +364,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, namespace_id: project.namespace, project_id: project, id: 42
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end

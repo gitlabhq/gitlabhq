@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Projects::CommitController do
-  let(:project)  { create(:project, :repository) }
-  let(:user)     { create(:user) }
+  set(:project)  { create(:project, :repository) }
+  set(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET show' do
@@ -132,10 +132,26 @@ describe Projects::CommitController do
         expect(response).to be_success
       end
     end
+
+    context 'in the context of a merge_request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:commit) { merge_request.commits.first }
+
+      it 'prepare diff notes in the context of the merge request' do
+        go(id: commit.id, merge_request_iid: merge_request.iid)
+
+        expect(assigns(:new_diff_note_attrs)).to eq({
+                                                      noteable_type: 'MergeRequest',
+                                                      noteable_id: merge_request.id,
+                                                      commit_id: commit.id
+                                                    })
+        expect(response).to be_ok
+      end
+    end
   end
 
-  describe "GET branches" do
-    it "contains branch and tags information" do
+  describe 'GET branches' do
+    it 'contains branch and tags information' do
       commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
 
       get(:branches,
@@ -143,8 +159,26 @@ describe Projects::CommitController do
           project_id: project,
           id: commit.id)
 
-      expect(assigns(:branches)).to include("master", "feature_conflict")
-      expect(assigns(:tags)).to include("v1.1.0")
+      expect(assigns(:branches)).to include('master', 'feature_conflict')
+      expect(assigns(:branches_limit_exceeded)).to be_falsey
+      expect(assigns(:tags)).to include('v1.1.0')
+      expect(assigns(:tags_limit_exceeded)).to be_falsey
+    end
+
+    it 'returns :limit_exceeded when number of branches/tags reach a threshhold' do
+      commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      allow_any_instance_of(Repository).to receive(:branch_count).and_return(1001)
+      allow_any_instance_of(Repository).to receive(:tag_count).and_return(1001)
+
+      get(:branches,
+          namespace_id: project.namespace,
+          project_id: project,
+          id: commit.id)
+
+      expect(assigns(:branches)).to eq([])
+      expect(assigns(:branches_limit_exceeded)).to be_truthy
+      expect(assigns(:tags)).to eq([])
+      expect(assigns(:tags_limit_exceeded)).to be_truthy
     end
   end
 
@@ -157,7 +191,7 @@ describe Projects::CommitController do
             id: commit.id)
 
         expect(response).not_to be_success
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -206,7 +240,7 @@ describe Projects::CommitController do
             id: master_pickable_commit.id)
 
         expect(response).not_to be_success
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -286,7 +320,7 @@ describe Projects::CommitController do
           end
 
           it 'returns a 404' do
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -298,18 +332,18 @@ describe Projects::CommitController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
 
     context 'when the commit does not exist' do
       before do
-        diff_for_path(id: commit.id.succ, old_path: existing_path, new_path: existing_path)
+        diff_for_path(id: commit.id.reverse, old_path: existing_path, new_path: existing_path)
       end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -356,7 +390,7 @@ describe Projects::CommitController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

@@ -6,9 +6,9 @@ describe 'Edit Project Settings' do
   let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
-  describe 'project features visibility selectors', js: true do
+  describe 'project features visibility selectors', :js do
     before do
-      project.team << [member, :master]
+      project.add_master(member)
       sign_in(member)
     end
 
@@ -22,7 +22,7 @@ describe 'Edit Project Settings' do
           # disable by clicking toggle
           toggle_feature_off("project[project_feature_attributes][#{tool_name}_access_level]")
           page.within('.sharing-permissions') do
-            click_button 'Save changes'
+            find('input[value="Save changes"]').click
           end
           wait_for_requests
           expect(page).not_to have_selector(".shortcuts-#{shortcut_name}")
@@ -30,7 +30,7 @@ describe 'Edit Project Settings' do
           # re-enable by clicking toggle again
           toggle_feature_on("project[project_feature_attributes][#{tool_name}_access_level]")
           page.within('.sharing-permissions') do
-            click_button 'Save changes'
+            find('input[value="Save changes"]').click
           end
           wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
@@ -163,9 +163,9 @@ describe 'Edit Project Settings' do
     end
   end
 
-  describe 'repository visibility', js: true do
+  describe 'repository visibility', :js do
     before do
-      project.team << [member, :master]
+      project.add_master(member)
       sign_in(member)
       visit edit_project_path(project)
     end
@@ -177,7 +177,7 @@ describe 'Edit Project Settings' do
         click_button "Save changes"
       end
 
-      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.disabled", count: 2)
+      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.is-disabled", count: 2)
     end
 
     it "shows empty features project homepage" do
@@ -261,7 +261,7 @@ describe 'Edit Project Settings' do
     let!(:project) { create(:project, :private) }
 
     before do
-      project.team << [member, :guest]
+      project.add_guest(member)
       sign_in(member)
       visit project_path(project)
     end
@@ -272,10 +272,10 @@ describe 'Edit Project Settings' do
   end
 
   def toggle_feature_off(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle.checked").click
+    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle.is-checked").click
   end
 
   def toggle_feature_on(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle:not(.checked)").click
+    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle:not(.is-checked)").click
   end
 end

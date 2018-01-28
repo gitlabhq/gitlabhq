@@ -1,4 +1,0 @@
----
-title: Refactor Timelogs structure to use foreign keys.
-merge_request: 8769
-author:

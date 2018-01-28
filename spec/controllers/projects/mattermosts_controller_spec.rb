@@ -5,7 +5,7 @@ describe Projects::MattermostsController do
   let!(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -20,7 +20,7 @@ describe Projects::MattermostsController do
           namespace_id: project.namespace.to_param,
           project_id: project)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 

@@ -44,19 +44,19 @@ describe API::Features do
     it 'returns a 401 for anonymous users' do
       get api('/features')
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     it 'returns a 403 for users' do
       get api('/features', user)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'returns the feature list for admins' do
       get api('/features', admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to match_array(expected_features)
     end
   end
@@ -68,20 +68,20 @@ describe API::Features do
       it 'returns a 401 for anonymous users' do
         post api("/features/#{feature_name}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it 'returns a 403 for users' do
         post api("/features/#{feature_name}", user)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       context 'when passed value=true' do
         it 'creates an enabled feature' do
           post api("/features/#{feature_name}", admin), value: 'true'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'on',
@@ -91,7 +91,7 @@ describe API::Features do
         it 'creates an enabled feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), value: 'true', feature_group: 'perf_team'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -104,7 +104,7 @@ describe API::Features do
         it 'creates an enabled feature for the given user when passed user=username' do
           post api("/features/#{feature_name}", admin), value: 'true', user: user.username
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -117,7 +117,7 @@ describe API::Features do
         it 'creates an enabled feature for the given user and feature group when passed user=username and feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), value: 'true', user: user.username, feature_group: 'perf_team'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -132,7 +132,7 @@ describe API::Features do
       it 'creates a feature with the given percentage if passed an integer' do
         post api("/features/#{feature_name}", admin), value: '50'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response).to eq(
           'name' => 'my_feature',
           'state' => 'conditional',
@@ -154,7 +154,7 @@ describe API::Features do
         it 'enables the feature' do
           post api("/features/#{feature_name}", admin), value: 'true'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'on',
@@ -164,7 +164,7 @@ describe API::Features do
         it 'enables the feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), value: 'true', feature_group: 'perf_team'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -177,7 +177,7 @@ describe API::Features do
         it 'enables the feature for the given user when passed user=username' do
           post api("/features/#{feature_name}", admin), value: 'true', user: user.username
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -195,7 +195,7 @@ describe API::Features do
 
           post api("/features/#{feature_name}", admin), value: 'false'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'off',
@@ -208,7 +208,7 @@ describe API::Features do
 
           post api("/features/#{feature_name}", admin), value: 'false', feature_group: 'perf_team'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'off',
@@ -221,7 +221,7 @@ describe API::Features do
 
           post api("/features/#{feature_name}", admin), value: 'false', user: user.username
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'off',
@@ -237,7 +237,7 @@ describe API::Features do
         it 'updates the percentage of time if passed an integer' do
           post api("/features/#{feature_name}", admin), value: '30'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',

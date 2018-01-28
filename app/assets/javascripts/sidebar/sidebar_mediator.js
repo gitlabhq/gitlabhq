@@ -1,21 +1,25 @@
-/* global Flash */
-
+import { visitUrl } from '../lib/utils/url_utility';
+import Flash from '../flash';
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
 
 export default class SidebarMediator {
   constructor(options) {
     if (!SidebarMediator.singleton) {
-      this.store = new Store(options);
-      this.service = new Service({
-        endpoint: options.endpoint,
-        moveIssueEndpoint: options.moveIssueEndpoint,
-        projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
-      });
-      SidebarMediator.singleton = this;
+      this.initSingleton(options);
     }
-
     return SidebarMediator.singleton;
+  }
+
+  initSingleton(options) {
+    this.store = new Store(options);
+    this.service = new Service({
+      endpoint: options.endpoint,
+      toggleSubscriptionEndpoint: options.toggleSubscriptionEndpoint,
+      moveIssueEndpoint: options.moveIssueEndpoint,
+      projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
+    });
+    SidebarMediator.singleton = this;
   }
 
   assignYourself() {
@@ -35,13 +39,32 @@ export default class SidebarMediator {
   }
 
   fetch() {
-    this.service.get()
+    return this.service.get()
       .then(response => response.json())
       .then((data) => {
-        this.store.setAssigneeData(data);
-        this.store.setTimeTrackingData(data);
+        this.processFetchedData(data);
       })
-      .catch(() => new Flash('Error occured when fetching sidebar data'));
+      .catch(() => new Flash('Error occurred when fetching sidebar data'));
+  }
+
+  processFetchedData(data) {
+    this.store.setAssigneeData(data);
+    this.store.setTimeTrackingData(data);
+    this.store.setParticipantsData(data);
+    this.store.setSubscriptionsData(data);
+  }
+
+  toggleSubscription() {
+    this.store.setFetchingState('subscriptions', true);
+    return this.service.toggleSubscription()
+      .then(() => {
+        this.store.setSubscribedState(!this.store.subscribed);
+        this.store.setFetchingState('subscriptions', false);
+      })
+      .catch((err) => {
+        this.store.setFetchingState('subscriptions', false);
+        throw err;
+      });
   }
 
   fetchAutocompleteProjects(searchTerm) {
@@ -58,7 +81,7 @@ export default class SidebarMediator {
       .then(response => response.json())
       .then((data) => {
         if (location.pathname !== data.web_url) {
-          gl.utils.visitUrl(data.web_url);
+          visitUrl(data.web_url);
         }
       });
   }

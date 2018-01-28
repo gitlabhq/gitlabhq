@@ -336,7 +336,7 @@ Parameters
 | Attribute   | Type    | Required | Description               |
 |-------------|---------|----------|-------------------------- |
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
-| `ref_name`  | string  | yes      | The ref from a repository |
+| `ref_name`  | string  | yes      | The ref from a repository (can only be branch or tag name, not HEAD or SHA) |
 | `job`       | string  | yes      | The name of the job       |
 
 Example request:

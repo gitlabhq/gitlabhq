@@ -102,6 +102,26 @@ describe CacheMarkdownField do
     it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION) }
   end
 
+  context 'when a markdown field is set repeatedly to an empty string' do
+    it do
+      expect(thing).to receive(:refresh_markdown_cache).once
+      thing.foo = ''
+      thing.save
+      thing.foo = ''
+      thing.save
+    end
+  end
+
+  context 'when a markdown field is set repeatedly to a string which renders as empty html' do
+    it do
+      expect(thing).to receive(:refresh_markdown_cache).once
+      thing.foo = '[//]: # (This is also a comment.)'
+      thing.save
+      thing.foo = '[//]: # (This is also a comment.)'
+      thing.save
+    end
+  end
+
   context 'a non-markdown field changed' do
     before do
       thing.bar = 'OK'
@@ -178,57 +198,59 @@ describe CacheMarkdownField do
     end
   end
 
+  describe '#refresh_markdown_cache' do
+    before do
+      thing.foo = updated_markdown
+    end
+
+    it 'fills all html fields' do
+      thing.refresh_markdown_cache
+
+      expect(thing.foo_html).to eq(updated_html)
+      expect(thing.foo_html_changed?).to be_truthy
+      expect(thing.baz_html_changed?).to be_truthy
+    end
+
+    it 'does not save the result' do
+      expect(thing).not_to receive(:update_columns)
+
+      thing.refresh_markdown_cache
+    end
+
+    it 'updates the markdown cache version' do
+      thing.cached_markdown_version = nil
+      thing.refresh_markdown_cache
+
+      expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION)
+    end
+  end
+
   describe '#refresh_markdown_cache!' do
     before do
       thing.foo = updated_markdown
     end
 
-    context 'do_update: false' do
-      it 'fills all html fields' do
-        thing.refresh_markdown_cache!
+    it 'fills all html fields' do
+      thing.refresh_markdown_cache!
 
-        expect(thing.foo_html).to eq(updated_html)
-        expect(thing.foo_html_changed?).to be_truthy
-        expect(thing.baz_html_changed?).to be_truthy
-      end
-
-      it 'does not save the result' do
-        expect(thing).not_to receive(:update_columns)
-
-        thing.refresh_markdown_cache!
-      end
-
-      it 'updates the markdown cache version' do
-        thing.cached_markdown_version = nil
-        thing.refresh_markdown_cache!
-
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_VERSION)
-      end
+      expect(thing.foo_html).to eq(updated_html)
+      expect(thing.foo_html_changed?).to be_truthy
+      expect(thing.baz_html_changed?).to be_truthy
     end
 
-    context 'do_update: true' do
-      it 'fills all html fields' do
-        thing.refresh_markdown_cache!(do_update: true)
+    it 'skips saving if not persisted' do
+      expect(thing).to receive(:persisted?).and_return(false)
+      expect(thing).not_to receive(:update_columns)
 
-        expect(thing.foo_html).to eq(updated_html)
-        expect(thing.foo_html_changed?).to be_truthy
-        expect(thing.baz_html_changed?).to be_truthy
-      end
+      thing.refresh_markdown_cache!
+    end
 
-      it 'skips saving if not persisted' do
-        expect(thing).to receive(:persisted?).and_return(false)
-        expect(thing).not_to receive(:update_columns)
+    it 'saves the changes using #update_columns' do
+      expect(thing).to receive(:persisted?).and_return(true)
+      expect(thing).to receive(:update_columns)
+        .with("foo_html" => updated_html, "baz_html" => "", "cached_markdown_version" => CacheMarkdownField::CACHE_VERSION)
 
-        thing.refresh_markdown_cache!(do_update: true)
-      end
-
-      it 'saves the changes using #update_columns' do
-        expect(thing).to receive(:persisted?).and_return(true)
-        expect(thing).to receive(:update_columns)
-          .with("foo_html" => updated_html, "baz_html" => "", "cached_markdown_version" => CacheMarkdownField::CACHE_VERSION)
-
-        thing.refresh_markdown_cache!(do_update: true)
-      end
+      thing.refresh_markdown_cache!
     end
   end
 

@@ -17,11 +17,11 @@ describe 'User deletes files' do
 
   context 'when an user has write access' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       visit(project_tree_path_root_ref)
     end
 
-    it 'deletes the file', js: true do
+    it 'deletes the file', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
@@ -37,11 +37,11 @@ describe 'User deletes files' do
 
   context 'when an user does not have write access' do
     before do
-      project2.team << [user, :reporter]
+      project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
     end
 
-    it 'deletes the file in a forked project', js: true do
+    it 'deletes the file in a forked project', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
@@ -59,7 +59,7 @@ describe 'User deletes files' do
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Delete file')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
       expect(page).to have_content('New commit message')

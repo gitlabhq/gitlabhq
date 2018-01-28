@@ -11,7 +11,7 @@
       = hook_log.trigger.singularize.titleize
 %p
   %strong Elapsed time:
-  #{number_with_precision(hook_log.execution_duration, precision: 2)} ms
+  #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
 %p
   %strong Request time:
   = time_ago_with_tooltip(hook_log.created_at)

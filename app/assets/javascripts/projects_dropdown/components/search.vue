@@ -1,47 +1,47 @@
 <script>
-import _ from 'underscore';
-import eventHub from '../event_hub';
+  import _ from 'underscore';
+  import eventHub from '../event_hub';
 
-export default {
-  data() {
-    return {
-      searchQuery: '',
-    };
-  },
-  watch: {
-    searchQuery() {
-      this.handleInput();
+  export default {
+    data() {
+      return {
+        searchQuery: '',
+      };
     },
-  },
-  methods: {
-    setFocus() {
-      this.$refs.search.focus();
+    watch: {
+      searchQuery() {
+        this.handleInput();
+      },
     },
-    emitSearchEvents() {
-      if (this.searchQuery) {
-        eventHub.$emit('searchProjects', this.searchQuery);
-      } else {
-        eventHub.$emit('searchCleared');
-      }
+    mounted() {
+      eventHub.$on('dropdownOpen', this.setFocus);
     },
-    /**
-     * Callback function within _.debounce is intentionally
-     * kept as ES5 `function() {}` instead of ES6 `() => {}`
-     * as it otherwise messes up function context
-     * and component reference is no longer accessible via `this`
-     */
-    // eslint-disable-next-line func-names
-    handleInput: _.debounce(function () {
-      this.emitSearchEvents();
-    }, 500),
-  },
-  mounted() {
-    eventHub.$on('dropdownOpen', this.setFocus);
-  },
-  beforeDestroy() {
-    eventHub.$off('dropdownOpen', this.setFocus);
-  },
-};
+    beforeDestroy() {
+      eventHub.$off('dropdownOpen', this.setFocus);
+    },
+    methods: {
+      setFocus() {
+        this.$refs.search.focus();
+      },
+      emitSearchEvents() {
+        if (this.searchQuery) {
+          eventHub.$emit('searchProjects', this.searchQuery);
+        } else {
+          eventHub.$emit('searchCleared');
+        }
+      },
+      /**
+       * Callback function within _.debounce is intentionally
+       * kept as ES5 `function() {}` instead of ES6 `() => {}`
+       * as it otherwise messes up function context
+       * and component reference is no longer accessible via `this`
+       */
+      // eslint-disable-next-line func-names
+      handleInput: _.debounce(function () {
+        this.emitSearchEvents();
+      }, 500),
+    },
+  };
 </script>
 
 <template>
@@ -59,6 +59,7 @@ export default {
       v-if="!searchQuery"
       class="search-icon fa fa-fw fa-search"
       aria-hidden="true"
-    />
+    >
+    </i>
   </div>
 </template>

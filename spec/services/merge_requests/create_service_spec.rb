@@ -21,8 +21,8 @@ describe MergeRequests::CreateService do
       let(:merge_request) { service.execute }
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :developer]
+        project.add_master(user)
+        project.add_developer(assignee)
         allow(service).to receive(:execute_hooks)
       end
 
@@ -37,7 +37,7 @@ describe MergeRequests::CreateService do
         expect(service).to have_received(:execute_hooks).with(merge_request)
       end
 
-      it 'refreshes the number of open merge requests' do
+      it 'refreshes the number of open merge requests', :use_clean_rails_memory_store_caching do
         expect { service.execute }
           .to change { project.open_merge_requests_count }.from(0).to(1)
       end
@@ -148,8 +148,8 @@ describe MergeRequests::CreateService do
         end
 
         before do
-          project.team << [user, :master]
-          project.team << [assignee, :master]
+          project.add_master(user)
+          project.add_master(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -165,7 +165,7 @@ describe MergeRequests::CreateService do
         let(:assignee) { create(:user) }
 
         before do
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'removes assignee_id when user id is invalid' do
@@ -185,7 +185,7 @@ describe MergeRequests::CreateService do
         end
 
         it 'saves assignee when user id is valid' do
-          project.team << [assignee, :master]
+          project.add_master(assignee)
           opts = { title: 'Title', description: 'Description', assignee_id: assignee.id }
 
           merge_request = described_class.new(project, user, opts).execute
@@ -205,7 +205,7 @@ describe MergeRequests::CreateService do
           end
 
           it 'invalidates open merge request counter for assignees when merge request is assigned' do
-            project.team << [assignee, :master]
+            project.add_master(assignee)
 
             described_class.new(project, user, opts).execute
 
@@ -249,8 +249,8 @@ describe MergeRequests::CreateService do
       end
 
       before do
-        project.team << [user, :master]
-        project.team << [assignee, :developer]
+        project.add_master(user)
+        project.add_developer(assignee)
       end
 
       it 'creates a `MergeRequestsClosingIssues` record for each issue' do
@@ -261,6 +261,67 @@ describe MergeRequests::CreateService do
 
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+      end
+    end
+
+    context 'when source and target projects are different' do
+      let(:target_project) { create(:project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          target_project_id: target_project.id
+        }
+      end
+
+      context 'when user can not access source project' do
+        before do
+          target_project.add_developer(assignee)
+          target_project.add_master(user)
+        end
+
+        it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+
+      context 'when user can not access target project' do
+        before do
+          target_project.add_developer(assignee)
+          target_project.add_master(user)
+        end
+
+        it 'raises an error' do
+          expect { described_class.new(project, user, opts).execute }
+            .to raise_error Gitlab::Access::AccessDeniedError
+        end
+      end
+    end
+
+    context 'when user sets source project id' do
+      let(:another_project) { create(:project) }
+
+      let(:opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master',
+          source_project_id: another_project.id
+        }
+      end
+
+      before do
+        project.add_developer(assignee)
+        project.add_master(user)
+      end
+
+      it 'ignores source_project_id' do
+        merge_request = described_class.new(project, user, opts).execute
+
+        expect(merge_request.source_project_id).to eq(project.id)
       end
     end
   end

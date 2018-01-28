@@ -5,14 +5,27 @@
 An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** 
-of GitLab on which it was created. The best way to migrate your repositories 
+You can only restore a backup to **exactly the same version and type (CE/EE)**
+of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
 ## Backup
 
 GitLab provides a simple command line interface to backup your whole installation,
 and is flexible enough to fit your needs.
+
+### Requirements
+
+If you're using GitLab with the Omnibus package, you're all set. If you
+installed GitLab from source, make sure the following packages are installed:
+
+* rsync
+
+If you're using Ubuntu, you could run:
+
+```
+sudo apt-get install -y rsync
+```
 
 ### Backup timestamp
 
@@ -136,44 +149,78 @@ In the example below we use Amazon S3 for storage, but Fog also lets you use
 for AWS, Google, OpenStack Swift, Rackspace and Aliyun as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
-For omnibus packages, add the following to `/etc/gitlab/gitlab.rb`:
+#### Using Amazon S3
 
-```ruby
-gitlab_rails['backup_upload_connection'] = {
-  'provider' => 'AWS',
-  'region' => 'eu-west-1',
-  'aws_access_key_id' => 'AKIAKIAKI',
-  'aws_secret_access_key' => 'secret123'
-  # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
-  # 'use_iam_profile' => true
-}
-gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
-```
+For Omnibus GitLab packages:
 
-Make sure to run `sudo gitlab-ctl reconfigure` after editing `/etc/gitlab/gitlab.rb` to reflect the changes.
+1. Add the following to `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'eu-west-1',
+      'aws_access_key_id' => 'AKIAKIAKI',
+      'aws_secret_access_key' => 'secret123'
+      # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
+      # 'use_iam_profile' => true
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
+#### Digital Ocean Spaces and other S3-compatible providers
+
+Not all S3 providers are fully-compatible with the Fog library. For example,
+if you see `411 Length Required` errors after attempting to upload, you may
+need to downgrade the `aws_signature_version` value from the default value to
+2 [due to this issue](https://github.com/fog/fog-aws/issues/428).
+
+1. For example, with [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/),
+this example configuration can be used for a bucket in Amsterdam (AMS3):
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'ams3',
+      'aws_access_key_id' => 'AKIAKIAKI',
+      'aws_secret_access_key' => 'secret123',
+      'aws_signature_version' => 2,
+      'endpoint'              => 'https://ams3.digitaloceanspaces.com'
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
+---
 
 For installations from source:
 
-```yaml
-  backup:
-    # snip
-    upload:
-      # Fog storage connection settings, see http://fog.io/storage/ .
-      connection:
-        provider: AWS
-        region: eu-west-1
-        aws_access_key_id: AKIAKIAKI
-        aws_secret_access_key: 'secret123'
-        # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
-        # ie. aws_access_key_id: ''
-        # use_iam_profile: 'true'
-      # The remote 'directory' to store your backups. For S3, this would be the bucket name.
-      remote_directory: 'my.s3.bucket'
-      # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
-      # encryption: 'AES256'
-      # Specifies Amazon S3 storage class to use for backups, this is optional
-      # storage_class: 'STANDARD'
-```
+1. Edit `home/git/gitlab/config/gitlab.yml`:
+
+    ```yaml
+      backup:
+        # snip
+        upload:
+          # Fog storage connection settings, see http://fog.io/storage/ .
+          connection:
+            provider: AWS
+            region: eu-west-1
+            aws_access_key_id: AKIAKIAKI
+            aws_secret_access_key: 'secret123'
+            # If using an IAM Profile, leave aws_access_key_id & aws_secret_access_key empty
+            # ie. aws_access_key_id: ''
+            # use_iam_profile: 'true'
+          # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+          remote_directory: 'my.s3.bucket'
+          # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+          # encryption: 'AES256'
+          # Specifies Amazon S3 storage class to use for backups, this is optional
+          # storage_class: 'STANDARD'
+    ```
+
+1. [Restart GitLab] for the changes to take effect
 
 If you are uploading your backups to S3 you will probably want to create a new
 IAM user with restricted access rights. To give the upload user access only for
@@ -225,6 +272,50 @@ with the name of your bucket:
   ]
 }
 ```
+
+#### Using Google Cloud Storage
+
+If you want to use Google Cloud Storage to save backups, you'll have to create
+an access key from the Google console first:
+
+1. Go to the storage settings page https://console.cloud.google.com/storage/settings
+1. Select "Interoperability" and create an access key
+1. Make note of the "Access Key" and "Secret" and replace them in the
+   configurations below
+1. Make sure you already have a bucket created
+
+For Omnibus GitLab packages:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'Google',
+      'google_storage_access_key_id' => 'Access Key',
+      'google_storage_secret_access_key' => 'Secret'
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
+---
+
+For installations from source:
+
+1. Edit `home/git/gitlab/config/gitlab.yml`:
+
+    ```yaml
+      backup:
+        upload:
+          connection:
+            provider: 'Google'
+            google_storage_access_key_id: 'Access Key'
+            google_storage_secret_access_key: 'Secret'
+          remote_directory: 'my.google.bucket'
+    ```
+
+1. [Restart GitLab] for the changes to take effect
 
 ### Uploading to locally mounted shares
 
@@ -370,14 +461,14 @@ This is recommended to reduce cron spam.
 
 ## Restore
 
-GitLab provides a simple command line interface to backup your whole installation,
+GitLab provides a simple command line interface to restore your whole installation,
 and is flexible enough to fit your needs.
 
 The [restore prerequisites section](#restore-prerequisites) includes crucial
 information. Make sure to read and test the whole restore process at least once
 before attempting to perform it in a production environment.
 
-You can only restore a backup to **exactly the same version and type (CE/EE)** of 
+You can only restore a backup to **exactly the same version and type (CE/EE)** of
 GitLab that you created it on, for example CE 9.1.0.
 
 ### Restore prerequisites
@@ -445,11 +536,19 @@ Restoring repositories:
 Deleting tmp directories...[DONE]
 ```
 
+Next, restore `/home/git/gitlab/.secret` if necessary as mentioned above.
+
+Restart GitLab:
+
+```shell
+sudo service gitlab restart
+```
+
 ### Restore for Omnibus installations
 
 This procedure assumes that:
 
-- You have installed the **exact same version and type (CE/EE)** of GitLab 
+- You have installed the **exact same version and type (CE/EE)** of GitLab
   Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
@@ -480,10 +579,12 @@ restore:
 sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2017_04_25_9.1.0
 ```
 
+Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
+
 Restart and check GitLab:
 
 ```shell
-sudo gitlab-ctl start
+sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
@@ -544,3 +645,6 @@ The rake task runs this as the `gitlab` user which does not have the superuser a
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
 For more information see similar questions on postgresql issue tracker[here](http://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](http://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](http://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+
+[reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

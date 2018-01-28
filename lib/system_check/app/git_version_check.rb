@@ -9,7 +9,7 @@ module SystemCheck
       end
 
       def self.current_version
-        @current_version ||= Gitlab::VersionInfo.parse(run_command(%W(#{Gitlab.config.git.bin_path} --version)))
+        @current_version ||= Gitlab::VersionInfo.parse(Gitlab::TaskHelpers.run_command(%W(#{Gitlab.config.git.bin_path} --version)))
       end
 
       def check?

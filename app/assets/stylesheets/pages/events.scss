@@ -85,7 +85,7 @@
       }
 
       pre {
-        border: none;
+        border: 0;
         background: $gray-light;
         border-radius: 0;
         color: $events-pre-color;
@@ -128,14 +128,14 @@
     }
   }
 
-  &:last-child { border: none; }
+  &:last-child { border: 0; }
 
   .event_commits {
     li {
       &.commit {
         background: transparent;
         padding: 0;
-        border: none;
+        border: 0;
 
         .commit-row-title {
           font-size: $gl-font-size;
@@ -159,7 +159,6 @@
   }
 }
 
-
 /*
  * Last push widget
  */
@@ -181,6 +180,12 @@
 @media (max-width: $screen-xs-max) {
   .event-item {
     padding-left: 0;
+
+    &.event-inline {
+      .event-title {
+        line-height: 20px;
+      }
+    }
 
     .event-title {
       white-space: normal;

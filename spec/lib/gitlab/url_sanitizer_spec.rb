@@ -39,7 +39,8 @@ describe Gitlab::UrlSanitizer do
       false | nil
       false | ''
       false | '123://invalid:url'
-      true  | 'valid@project:url.git'
+      false | 'valid@project:url.git'
+      false | 'valid:pass@project:url.git'
       true  | 'ssh://example.com'
       true  | 'ssh://:@example.com'
       true  | 'ssh://foo@example.com'
@@ -81,24 +82,6 @@ describe Gitlab::UrlSanitizer do
 
   describe '#credentials' do
     context 'credentials in hash' do
-      where(:input, :output) do
-        { user: 'foo', password: 'bar' } | { user: 'foo', password: 'bar' }
-        { user: 'foo', password: ''    } | { user: 'foo', password: nil }
-        { user: 'foo', password: nil   } | { user: 'foo', password: nil }
-        { user: '',    password: 'bar' } | { user: nil,   password: 'bar' }
-        { user: '',    password: ''    } | { user: nil,   password: nil }
-        { user: '',    password: nil   } | { user: nil,   password: nil }
-        { user: nil,   password: 'bar' } | { user: nil,   password: 'bar' }
-        { user: nil,   password: ''    } | { user: nil,   password: nil }
-        { user: nil,   password: nil   } | { user: nil,   password: nil }
-      end
-
-      with_them do
-        subject { described_class.new('user@example.com:path.git', credentials: input).credentials }
-
-        it { is_expected.to eq(output) }
-      end
-
       it 'overrides URL-provided credentials' do
         sanitizer = described_class.new('http://a:b@example.com', credentials: { user: 'c', password: 'd' })
 
@@ -115,10 +98,6 @@ describe Gitlab::UrlSanitizer do
         'http://:@example.com'       | { user: nil,   password: nil }
         'http://@example.com'        | { user: nil,   password: nil }
         'http://example.com'         | { user: nil,   password: nil }
-
-        # Credentials from SCP-style URLs are not supported at present
-        'foo@example.com:path'     | { user: nil, password: nil }
-        'foo:bar@example.com:path' | { user: nil, password: nil }
 
         # Other invalid URLs
         nil  | { user: nil, password: nil }
@@ -172,6 +151,15 @@ describe Gitlab::UrlSanitizer do
 
         it { expect(described_class.new(input).full_url).to eq(expected) }
       end
+    end
+  end
+
+  context 'when credentials contains special chars' do
+    it 'should parse the URL without errors' do
+      url_sanitizer = described_class.new("https://foo:b?r@github.com/me/project.git")
+
+      expect(url_sanitizer.sanitized_url).to eq("https://github.com/me/project.git")
+      expect(url_sanitizer.full_url).to eq("https://foo:b?r@github.com/me/project.git")
     end
   end
 end

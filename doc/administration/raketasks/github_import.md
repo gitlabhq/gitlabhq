@@ -7,6 +7,7 @@
 >    projects. You can get it from: https://github.com/settings/tokens
 >  - You also need to pass an username as the second argument to the rake task
 >    which will become the owner of the project.
+>  - You can also resume an import with the same command.
 
 To import a project from the list of your GitHub projects available:
 

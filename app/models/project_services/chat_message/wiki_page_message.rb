@@ -31,7 +31,7 @@ module ChatMessage
 
     def activity
       {
-        title: "#{user_name} #{action} #{wiki_page_link}",
+        title: "#{user_combined_name} #{action} #{wiki_page_link}",
         subtitle: "in #{project_link}",
         text: title,
         image: user_avatar
@@ -41,7 +41,7 @@ module ChatMessage
     private
 
     def message
-      "#{user_name} #{action} #{wiki_page_link} in #{project_link}: *#{title}*"
+      "#{user_combined_name} #{action} #{wiki_page_link} in #{project_link}: *#{title}*"
     end
 
     def description_message

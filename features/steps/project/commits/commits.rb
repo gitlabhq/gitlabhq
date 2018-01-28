@@ -62,7 +62,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I should see additional file lines' do
-    page.within @diff.parent do
+    page.within @diff.query_scope do
       expect(first('.new_line').text).not_to have_content "..."
     end
   end
@@ -139,7 +139,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'The diff links to both the previous and current image' do
-    links = page.all('.two-up span div a')
+    links = page.all('.file-actions a')
     expect(links[0]['href']).to match %r{blob/#{sample_image_commit.old_blob_id}}
     expect(links[1]['href']).to match %r{blob/#{sample_image_commit.new_blob_id}}
   end
@@ -180,11 +180,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     dropdown.find(".compare-dropdown-toggle").click
     dropdown.find('.dropdown-menu', visible: true)
     dropdown.fill_in("Filter by Git revision", with: selection)
+
     if is_commit
       dropdown.find('input[type="search"]').send_keys(:return)
     else
       find_link(selection, visible: true).click
     end
+
     dropdown.find('.dropdown-menu', visible: false)
   end
 end

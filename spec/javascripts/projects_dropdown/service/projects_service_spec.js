@@ -34,7 +34,7 @@ describe('ProjectsService', () => {
 
       const searchQuery = 'lab';
       const queryParams = {
-        simple: false,
+        simple: true,
         per_page: 20,
         membership: true,
         order_by: 'last_activity_at',

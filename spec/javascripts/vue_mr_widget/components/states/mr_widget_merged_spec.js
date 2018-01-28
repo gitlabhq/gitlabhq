@@ -14,9 +14,15 @@ const createComponent = () => {
     canRevertInCurrentMR: true,
     canRemoveSourceBranch: true,
     sourceBranchRemoved: true,
-    mergedBy: {},
-    mergedAt: '',
-    updatedAt: '',
+    metrics: {
+      mergedBy: {},
+      mergedAt: 'mergedUpdatedAt',
+      readableMergedAt: '',
+      closedBy: {},
+      closedAt: 'mergedUpdatedAt',
+      readableClosedAt: '',
+    },
+    updatedAt: 'mrUpdatedAt',
     targetBranch,
   };
 
@@ -108,10 +114,8 @@ describe('MRWidgetMerged', () => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeSourceBranch').and.returnValue(new Promise((resolve) => {
           resolve({
-            json() {
-              return {
-                message: 'Branch was removed',
-              };
+            data: {
+              message: 'Branch was removed',
             },
           });
         }));
@@ -169,6 +173,12 @@ describe('MRWidgetMerged', () => {
         expect(el.innerText).not.toContain('The source branch has been removed');
         done();
       });
+    });
+
+    it('should use mergedEvent updatedAt as tooltip title', () => {
+      expect(
+        el.querySelector('time').getAttribute('title'),
+      ).toBe('mergedUpdatedAt');
     });
   });
 });

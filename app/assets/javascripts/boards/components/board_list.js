@@ -1,6 +1,6 @@
-/* global Sortable */
+import Sortable from 'vendor/Sortable';
 import boardNewIssue from './board_new_issue';
-import boardCard from './board_card';
+import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
@@ -115,7 +115,7 @@ export default {
   },
   mounted() {
     const options = gl.issueBoards.getBoardSortableDefaultOptions({
-      scroll: document.querySelectorAll('.boards-list')[0],
+      scroll: true,
       group: 'issues',
       disabled: this.disabled,
       filter: '.board-list-count, .is-disabled',
@@ -187,7 +187,7 @@ export default {
         <li
           class="board-list-count text-center"
           v-if="showCount"
-          data-id="-1">
+          data-issue-id="-1">
 
           <loading-icon
             v-show="list.loadingMore"

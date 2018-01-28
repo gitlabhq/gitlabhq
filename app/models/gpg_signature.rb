@@ -15,10 +15,41 @@ class GpgSignature < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :gpg_key
+  belongs_to :gpg_key_subkey
 
   validates :commit_sha, presence: true
   validates :project_id, presence: true
   validates :gpg_key_primary_keyid, presence: true
+
+  def self.with_key_and_subkeys(gpg_key)
+    subkey_ids = gpg_key.subkeys.pluck(:id)
+
+    where(
+      arel_table[:gpg_key_id].eq(gpg_key.id).or(
+        arel_table[:gpg_key_subkey_id].in(subkey_ids)
+      )
+    )
+  end
+
+  def gpg_key=(model)
+    case model
+    when GpgKey
+      super
+    when GpgKeySubkey
+      self.gpg_key_subkey = model
+    when NilClass
+      super
+      self.gpg_key_subkey = nil
+    end
+  end
+
+  def gpg_key
+    if gpg_key_id
+      super
+    elsif gpg_key_subkey_id
+      gpg_key_subkey
+    end
+  end
 
   def gpg_key_primary_keyid
     super&.upcase
@@ -29,6 +60,8 @@ class GpgSignature < ActiveRecord::Base
   end
 
   def gpg_commit
+    return unless commit
+
     Gitlab::Gpg::Commit.new(commit)
   end
 end

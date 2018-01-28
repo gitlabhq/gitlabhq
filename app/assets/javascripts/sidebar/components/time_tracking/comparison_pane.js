@@ -1,6 +1,4 @@
-import '../../../lib/utils/pretty_time';
-
-const prettyTime = gl.utils.prettyTime;
+import { parseSeconds, stringifyTime } from '../../../lib/utils/pretty_time';
 
 export default {
   name: 'time-tracking-comparison-pane',
@@ -23,12 +21,12 @@ export default {
     },
   },
   computed: {
-    parsedRemaining() {
+    parsedTimeRemaining() {
       const diffSeconds = this.timeEstimate - this.timeSpent;
-      return prettyTime.parseSeconds(diffSeconds);
+      return parseSeconds(diffSeconds);
     },
     timeRemainingHumanReadable() {
-      return prettyTime.stringifyTime(this.parsedRemaining);
+      return stringifyTime(this.parsedTimeRemaining);
     },
     timeRemainingTooltip() {
       const prefix = this.timeRemainingMinutes < 0 ? 'Over by' : 'Time remaining:';
@@ -43,13 +41,6 @@ export default {
     },
     timeRemainingStatusClass() {
       return this.timeEstimate >= this.timeSpent ? 'within_estimate' : 'over_estimate';
-    },
-    /* Parsed time values */
-    parsedEstimate() {
-      return prettyTime.parseSeconds(this.timeEstimate);
-    },
-    parsedSpent() {
-      return prettyTime.parseSeconds(this.timeSpent);
     },
   },
   template: `

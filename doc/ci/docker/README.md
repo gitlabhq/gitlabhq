@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Docker integration
 
 - [Using Docker Images](using_docker_images.md)

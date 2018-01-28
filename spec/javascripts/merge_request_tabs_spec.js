@@ -1,13 +1,12 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
-/* global Notes */
 
-import '~/merge_request_tabs';
+import * as urlUtils from '~/lib/utils/url_utility';
+import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
-import '~/diff';
-import '~/files_comment_button';
-import '~/notes';
+import Diff from '~/diff';
+import Notes from '~/notes';
 import 'vendor/jquery.scrollTo';
 
 (function () {
@@ -32,7 +31,7 @@ import 'vendor/jquery.scrollTo';
     );
 
     beforeEach(function () {
-      this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
+      this.class = new MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
       this.spies = {
@@ -78,8 +77,9 @@ import 'vendor/jquery.scrollTo';
       });
 
       describe('meta click', () => {
+        let metakeyEvent;
         beforeEach(function () {
-          spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
+          metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
         });
 
         it('opens page when commits link is clicked', function () {
@@ -89,7 +89,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           this.class.bindEvents();
-          document.querySelector('.merge-request-tabs .commits-tab a').click();
+          $('.merge-request-tabs .commits-tab a').trigger(metakeyEvent);
         });
 
         it('opens page when commits badge is clicked', function () {
@@ -99,7 +99,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           this.class.bindEvents();
-          document.querySelector('.merge-request-tabs .commits-tab a .badge').click();
+          $('.merge-request-tabs .commits-tab a .badge').trigger(metakeyEvent);
         });
       });
 
@@ -224,7 +224,7 @@ import 'vendor/jquery.scrollTo';
       describe('with "Side-by-side"/parallel diff view', () => {
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
-          gl.Diff.prototype.diffViewType = () => 'parallel';
+          Diff.prototype.diffViewType = () => 'parallel';
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {
@@ -276,26 +276,32 @@ import 'vendor/jquery.scrollTo';
     describe('loadDiff', function () {
       beforeEach(() => {
         loadFixtures('merge_requests/diff_comment.html.raw');
-        spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+        $('body').attr('data-page', 'projects:merge_requests:show');
         window.gl.ImageFile = () => {};
-        window.notes = new Notes('', []);
-        spyOn(window.notes, 'toggleDiffNote').and.callThrough();
+        Notes.initialize('', []);
+        spyOn(Notes.instance, 'toggleDiffNote').and.callThrough();
       });
 
       afterEach(() => {
         delete window.gl.ImageFile;
         delete window.notes;
+
+        // Undo what we did to the shared <body>
+        $('body').removeAttr('data-page');
       });
 
-      it('requires an absolute pathname', function () {
-        spyOn($, 'ajax').and.callFake(function (options) {
-          expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
+      it('triggers Ajax request to JSON endpoint', function (done) {
+        const url = '/foo/bar/merge_requests/1/diffs';
+        spyOn(this.class, 'ajaxGet').and.callFake((options) => {
+          expect(options.url).toEqual(`${url}.json`);
+          done();
         });
 
-        this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+        this.class.loadDiff(url);
       });
 
-      it('triggers scroll event when diff already loaded', function () {
+      it('triggers scroll event when diff already loaded', function (done) {
+        spyOn(this.class, 'ajaxGet').and.callFake(() => done.fail());
         spyOn(document, 'dispatchEvent');
 
         this.class.diffsLoaded = true;
@@ -304,6 +310,7 @@ import 'vendor/jquery.scrollTo';
         expect(
           document.dispatchEvent,
         ).toHaveBeenCalledWith(new CustomEvent('scroll'));
+        done();
       });
 
       describe('with inline diff', () => {
@@ -330,11 +337,11 @@ import 'vendor/jquery.scrollTo';
 
         describe('with note fragment hash', () => {
           it('should expand and scroll to linked fragment hash #note_xxx', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+            expect(Notes.instance.toggleDiffNote).toHaveBeenCalledWith({
               target: jasmine.any(Object),
               lineType: 'old',
               forceShow: true,
@@ -342,20 +349,20 @@ import 'vendor/jquery.scrollTo';
           });
 
           it('should gracefully ignore non-existant fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
 
         describe('with line number fragment hash', () => {
           it('should gracefully ignore line number fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteLineNumId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
       });
@@ -384,12 +391,12 @@ import 'vendor/jquery.scrollTo';
 
         describe('with note fragment hash', () => {
           it('should expand and scroll to linked fragment hash #note_xxx', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
 
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+            expect(Notes.instance.toggleDiffNote).toHaveBeenCalledWith({
               target: jasmine.any(Object),
               lineType: 'new',
               forceShow: true,
@@ -397,22 +404,45 @@ import 'vendor/jquery.scrollTo';
           });
 
           it('should gracefully ignore non-existant fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
 
         describe('with line number fragment hash', () => {
           it('should gracefully ignore line number fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteLineNumId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);
-            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
+      });
+    });
+
+    describe('expandViewContainer', function () {
+      beforeEach(() => {
+        $('body').append('<div class="content-wrapper"><div class="container-fluid container-limited"></div></div>');
+      });
+
+      afterEach(() => {
+        $('.content-wrapper').remove();
+      });
+
+      it('removes container-limited from containers', function () {
+        this.class.expandViewContainer();
+
+        expect($('.content-wrapper')).not.toContainElement('.container-limited');
+      });
+
+      it('does remove container-limited from breadcrumbs', function () {
+        $('.container-limited').addClass('breadcrumbs');
+        this.class.expandViewContainer();
+
+        expect($('.content-wrapper')).toContainElement('.container-limited');
       });
     });
   });

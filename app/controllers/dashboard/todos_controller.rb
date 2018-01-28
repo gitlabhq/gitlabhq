@@ -7,9 +7,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def index
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
-    if @todos.out_of_range? && @todos.total_pages != 0
-      redirect_to url_for(params.merge(page: @todos.total_pages, only_path: true))
-    end
+
+    return if redirect_out_of_range(@todos)
   end
 
   def destroy
@@ -60,7 +59,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def find_todos
-    @todos ||= TodosFinder.new(current_user, params).execute
+    @todos ||= TodosFinder.new(current_user, todo_params).execute
   end
 
   def todos_counts
@@ -68,5 +67,28 @@ class Dashboard::TodosController < Dashboard::ApplicationController
       count: number_with_delimiter(current_user.todos_pending_count),
       done_count: number_with_delimiter(current_user.todos_done_count)
     }
+  end
+
+  def todo_params
+    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state)
+  end
+
+  def redirect_out_of_range(todos)
+    total_pages =
+      if todo_params.except(:sort, :page).empty?
+        (current_user.todos_pending_count.to_f / todos.limit_value).ceil
+      else
+        todos.total_pages
+      end
+
+    return false if total_pages.zero?
+
+    out_of_range = todos.current_page > total_pages
+
+    if out_of_range
+      redirect_to url_for(params.merge(page: total_pages, only_path: true))
+    end
+
+    out_of_range
   end
 end

@@ -276,6 +276,7 @@ module DeclarativePolicy
     # boolean `false`
     def cache(key, &b)
       return @cache[key] if cached?(key)
+
       @cache[key] = yield
     end
 
@@ -291,6 +292,7 @@ module DeclarativePolicy
       @_conditions[name] ||=
         begin
           raise "invalid condition #{name}" unless self.class.conditions.key?(name)
+
           ManifestCondition.new(self.class.conditions[name], self)
         end
     end

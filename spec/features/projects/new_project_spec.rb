@@ -9,11 +9,13 @@ feature 'New project' do
     sign_in(user)
   end
 
-  it 'shows "New project" page' do
+  it 'shows "New project" page', :js do
     visit new_project_path
 
     expect(page).to have_content('Project path')
     expect(page).to have_content('Project name')
+
+    find('#import-project-tab').click
 
     expect(page).to have_link('GitHub')
     expect(page).to have_link('Bitbucket')
@@ -23,14 +25,15 @@ feature 'New project' do
     expect(page).to have_link('GitLab export')
   end
 
-  context 'Visibility level selector' do
+  context 'Visibility level selector', :js do
     Gitlab::VisibilityLevel.options.each do |key, level|
       it "sets selector to #{key}" do
         stub_application_setting(default_project_visibility: level)
 
         visit new_project_path
-
-        expect(find_field("project_visibility_level_#{level}")).to be_checked
+        page.within('#blank-project-pane') do
+          expect(find_field("project_visibility_level_#{level}")).to be_checked
+        end
       end
 
       it "saves visibility level #{level} on validation error" do
@@ -38,8 +41,9 @@ feature 'New project' do
 
         choose(s_(key))
         click_button('Create project')
-
-        expect(find_field("project_visibility_level_#{level}")).to be_checked
+        page.within('#blank-project-pane') do
+          expect(find_field("project_visibility_level_#{level}")).to be_checked
+        end
       end
     end
   end
@@ -51,9 +55,11 @@ feature 'New project' do
       end
 
       it 'selects the user namespace' do
-        namespace = find('#project_namespace_id')
+        page.within('#blank-project-pane') do
+          namespace = find('#project_namespace_id')
 
-        expect(namespace.text).to eq user.username
+          expect(namespace.text).to eq user.username
+        end
       end
     end
 
@@ -66,9 +72,11 @@ feature 'New project' do
       end
 
       it 'selects the group namespace' do
-        namespace = find('#project_namespace_id option[selected]')
+        page.within('#blank-project-pane') do
+          namespace = find('#project_namespace_id option[selected]')
 
-        expect(namespace.text).to eq group.name
+          expect(namespace.text).to eq group.name
+        end
       end
     end
 
@@ -82,9 +90,11 @@ feature 'New project' do
       end
 
       it 'selects the group namespace' do
-        namespace = find('#project_namespace_id option[selected]')
+        page.within('#blank-project-pane') do
+          namespace = find('#project_namespace_id option[selected]')
 
-        expect(namespace.text).to eq subgroup.full_path
+          expect(namespace.text).to eq subgroup.full_path
+        end
       end
     end
 
@@ -124,9 +134,10 @@ feature 'New project' do
     end
   end
 
-  context 'Import project options' do
+  context 'Import project options', :js do
     before do
       visit new_project_path
+      find('#import-project-tab').click
     end
 
     context 'from git repository url' do

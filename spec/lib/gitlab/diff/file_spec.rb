@@ -116,12 +116,8 @@ describe Gitlab::Diff::File do
     end
 
     context 'when renamed' do
-      let(:commit) { project.commit('6907208d755b60ebeacb2e9dfea74c92c3449a1f') }
-      let(:diff_file) { commit.diffs.diff_file_with_new_path('files/js/commit.coffee') }
-
-      before do
-        allow(diff_file.new_blob).to receive(:id).and_return(diff_file.old_blob.id)
-      end
+      let(:commit) { project.commit('94bb47ca1297b7b3731ff2a36923640991e9236f') }
+      let(:diff_file) { commit.diffs.diff_file_with_new_path('CHANGELOG.md') }
 
       it 'returns false' do
         expect(diff_file.content_changed?).to be_falsey
@@ -432,6 +428,31 @@ describe Gitlab::Diff::File do
 
       it 'returns false' do
         expect(diff_file.rendered_as_text?).to be_falsey
+      end
+    end
+  end
+
+  context 'when neither blob exists' do
+    let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::BLANK_SHA, head_sha: Gitlab::Git::BLANK_SHA) }
+    let(:diff_file) { described_class.new(diff, diff_refs: blank_diff_refs, repository: project.repository) }
+
+    describe '#blob' do
+      it 'returns a concrete nil so it can be used in boolean expressions' do
+        actual = diff_file.blob && true
+
+        expect(actual).to be_nil
+      end
+    end
+
+    describe '#binary?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_binary
+      end
+    end
+
+    describe '#size' do
+      it 'returns zero' do
+        expect(diff_file.size).to be_zero
       end
     end
   end

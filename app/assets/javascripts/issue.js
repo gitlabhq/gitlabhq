@@ -1,27 +1,14 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, max-len */
-/* global Flash */
-
 import 'vendor/jquery.waitforimages';
-import '~/lib/utils/text_utility';
-import './flash';
+import { addDelimiter } from './lib/utils/text_utility';
+import Flash from './flash';
 import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import IssuablesHelper from './helpers/issuables_helper';
 
-class Issue {
+export default class Issue {
   constructor() {
-    if ($('a.btn-close').length) {
-      this.taskList = new TaskList({
-        dataType: 'issue',
-        fieldName: 'description',
-        selector: '.detail-page-description',
-        onSuccess: (result) => {
-          document.querySelector('#task_status').innerText = result.task_status;
-          document.querySelector('#task_status_short').innerText = result.task_status_short;
-        }
-      });
-      this.initIssueBtnEventListeners();
-    }
+    if ($('a.btn-close').length) this.initIssueBtnEventListeners();
 
     Issue.$btnNewBranch = $('#new-branch');
     Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
@@ -61,7 +48,7 @@ class Issue {
       })
       .fail(() => new Flash(issueFailMessage))
       .done((data) => {
-        const isClosedBadge = $('div.status-box-closed');
+        const isClosedBadge = $('div.status-box-issue-closed');
         const isOpenBadge = $('div.status-box-open');
         const projectIssuesCounter = $('.issue_counter');
 
@@ -75,7 +62,7 @@ class Issue {
 
           let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
-          projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
+          projectIssuesCounter.text(addDelimiter(numProjectIssues));
 
           if (this.createMergeRequestDropdown) {
             if (isClosed) {
@@ -149,5 +136,3 @@ class Issue {
     });
   }
 }
-
-export default Issue;

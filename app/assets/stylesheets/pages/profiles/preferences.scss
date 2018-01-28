@@ -1,3 +1,83 @@
+@mixin application-theme-preview($color-1, $color-2, $color-3, $color-4) {
+  .one {
+    background-color: $color-1;
+    border-top-left-radius: $border-radius-default;
+  }
+
+  .two {
+    background-color: $color-2;
+    border-top-right-radius: $border-radius-default;
+  }
+
+  .three {
+    background-color: $color-3;
+    border-bottom-left-radius: $border-radius-default;
+  }
+
+  .four {
+    background-color: $color-4;
+    border-bottom-right-radius: $border-radius-default;
+  }
+}
+
+.multi-file-editor-options {
+  label {
+    margin-right: 20px;
+    text-align: center;
+  }
+
+  .preview {
+    font-size: 0;
+
+    img {
+      border: 1px solid $border-color-settings;
+      border-radius: 4px;
+    }
+  }
+}
+
+.application-theme {
+  label {
+    margin-right: 20px;
+    text-align: center;
+  }
+
+  .preview {
+    font-size: 0;
+    margin-bottom: 10px;
+
+    &.indigo {
+      @include application-theme-preview($indigo-900, $indigo-700, $indigo-800, $indigo-500);
+    }
+
+    &.dark {
+      @include application-theme-preview($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-600);
+    }
+
+    &.light {
+      @include application-theme-preview($theme-gray-600, $theme-gray-200, $theme-gray-400, $theme-gray-100);
+    }
+
+    &.blue {
+      @include application-theme-preview($theme-blue-900, $theme-blue-700, $theme-blue-800, $theme-blue-500);
+    }
+
+    &.green {
+      @include application-theme-preview($theme-green-900, $theme-green-700, $theme-green-800, $theme-green-500);
+    }
+  }
+
+  .preview-row {
+    display: block;
+  }
+
+  .quadrant {
+    display: inline-block;
+    height: 50px;
+    width: 80px;
+  }
+}
+
 .syntax-theme {
   label {
     margin-right: 20px;

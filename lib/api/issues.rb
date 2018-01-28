@@ -8,7 +8,7 @@ module API
 
     helpers do
       def find_issues(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
@@ -48,6 +48,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
+        optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
       end
 
       params :issue_params do
@@ -67,7 +68,7 @@ module API
                          desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
-        issues = find_issues
+        issues = paginate(find_issues)
 
         options = {
           with: Entities::IssueBasic,
@@ -75,7 +76,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
     end
 
@@ -94,7 +95,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = find_issues(group_id: group.id)
+        issues = paginate(find_issues(group_id: group.id))
 
         options = {
           with: Entities::IssueBasic,
@@ -102,7 +103,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
     end
 
@@ -123,7 +124,7 @@ module API
       get ":id/issues" do
         project = find_project!(params[:id])
 
-        issues = find_issues(project_id: project.id)
+        issues = paginate(find_issues(project_id: project.id))
 
         options = {
           with: Entities::IssueBasic,
@@ -132,7 +133,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
 
       desc 'Get a single project issue' do
@@ -160,6 +161,8 @@ module API
         use :issue_params
       end
       post ':id/issues' do
+        authorize! :create_issue, user_project
+
         # Setting created_at time only allowed for admins and project owners
         unless current_user.admin? || user_project.owner == current_user
           params.delete(:created_at)
@@ -172,6 +175,7 @@ module API
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,
                                             issue_params.merge(request: request, api: true)).execute
+
         if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
@@ -193,7 +197,7 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
-        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
+        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
       put ':id/issues/:issue_iid' do
@@ -254,7 +258,9 @@ module API
 
         authorize!(:destroy_issue, issue)
 
-        destroy_conditionally!(issue)
+        destroy_conditionally!(issue) do |issue|
+          Issuable::DestroyService.new(user_project, current_user).execute(issue)
+        end
       end
 
       desc 'List merge requests closing issue'  do
@@ -270,6 +276,19 @@ module API
         merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+      end
+
+      desc 'List participants for an issue'  do
+        success Entities::UserBasic
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ':id/issues/:issue_iid/participants' do
+        issue = find_project_issue(params[:issue_iid])
+        participants = ::Kaminari.paginate_array(issue.participants)
+
+        present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
       end
 
       desc 'Get the user agent details for an issue' do

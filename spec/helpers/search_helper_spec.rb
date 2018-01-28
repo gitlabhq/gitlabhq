@@ -102,6 +102,10 @@ describe SearchHelper do
       it 'includes project base-endpoint' do
         expect(search_filter_input_options('')[:data]['base-endpoint']).to eq(project_path(@project))
       end
+
+      it 'includes autocomplete=off flag' do
+        expect(search_filter_input_options('')[:autocomplete]).to eq('off')
+      end
     end
 
     context 'group' do

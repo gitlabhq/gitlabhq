@@ -7,6 +7,9 @@
    * Given an array of objects, renders a table.
    */
   export default {
+    components: {
+      pipelinesTableRowComponent,
+    },
     props: {
       pipelines: {
         type: Array,
@@ -21,9 +24,10 @@
         type: String,
         required: true,
       },
-    },
-    components: {
-      pipelinesTableRowComponent,
+      viewType: {
+        type: String,
+        required: true,
+      },
     },
   };
 </script>
@@ -31,25 +35,30 @@
   <div class="ci-table">
     <div
       class="gl-responsive-table-row table-row-header"
-      role="row">
+      role="row"
+    >
       <div
         class="table-section section-10 js-pipeline-status pipeline-status"
-        role="rowheader">
+        role="rowheader"
+      >
         Status
       </div>
       <div
         class="table-section section-15 js-pipeline-info pipeline-info"
-        role="rowheader">
+        role="rowheader"
+      >
         Pipeline
       </div>
       <div
-        class="table-section section-25 js-pipeline-commit pipeline-commit"
-        role="rowheader">
+        class="table-section section-20 js-pipeline-commit pipeline-commit"
+        role="rowheader"
+      >
         Commit
       </div>
       <div
-        class="table-section section-15 js-pipeline-stages pipeline-stages"
-        role="rowheader">
+        class="table-section section-20 js-pipeline-stages pipeline-stages"
+        role="rowheader"
+      >
         Stages
       </div>
     </div>
@@ -59,6 +68,7 @@
       :pipeline="model"
       :update-graph-dropdown="updateGraphDropdown"
       :auto-devops-help-path="autoDevopsHelpPath"
+      :view-type="viewType"
     />
   </div>
 </template>

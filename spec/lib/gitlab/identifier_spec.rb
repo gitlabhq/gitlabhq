@@ -70,6 +70,10 @@ describe Gitlab::Identifier do
         expect(identifier.identify_using_commit(project, '123')).to eq(user)
       end
     end
+
+    it 'returns nil if the project & ref are not present' do
+      expect(identifier.identify_using_commit(nil, nil)).to be_nil
+    end
   end
 
   describe '#identify_using_user' do

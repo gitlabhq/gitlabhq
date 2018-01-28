@@ -7,7 +7,7 @@ feature 'Environment' do
 
   background do
     sign_in(user)
-    project.team << [user, role]
+    project.add_role(user, role)
   end
 
   feature 'environment details page' do
@@ -101,35 +101,48 @@ feature 'Environment' do
           end
 
           context 'with terminal' do
-            let(:project) { create(:kubernetes_project, :test_repo) }
+            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+              context 'for project master' do
+                let(:role) { :master }
 
-            context 'for project master' do
-              let(:role) { :master }
-
-              scenario 'it shows the terminal button' do
-                expect(page).to have_terminal_button
-              end
-
-              context 'web terminal', :js do
-                before do
-                  # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
-                  allow_any_instance_of(Environment).to receive(:terminals) { nil }
-                  visit terminal_project_environment_path(project, environment)
+                scenario 'it shows the terminal button' do
+                  expect(page).to have_terminal_button
                 end
 
-                it 'displays a web terminal' do
-                  expect(page).to have_selector('#terminal')
-                  expect(page).to have_link(nil, href: environment.external_url)
+                context 'web terminal', :js do
+                  before do
+                    # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
+                    allow_any_instance_of(Environment).to receive(:terminals) { nil }
+                    visit terminal_project_environment_path(project, environment)
+                  end
+
+                  it 'displays a web terminal' do
+                    expect(page).to have_selector('#terminal')
+                    expect(page).to have_link(nil, href: environment.external_url)
+                  end
+                end
+              end
+
+              context 'for developer' do
+                let(:role) { :developer }
+
+                scenario 'does not show terminal button' do
+                  expect(page).not_to have_terminal_button
                 end
               end
             end
 
-            context 'for developer' do
-              let(:role) { :developer }
+            context 'when user configured kubernetes from Integration > Kubernetes' do
+              let(:project) { create(:kubernetes_project, :test_repo) }
 
-              scenario 'does not show terminal button' do
-                expect(page).not_to have_terminal_button
-              end
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+            end
+
+            context 'when user configured kubernetes from CI/CD > Clusters' do
+              let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+              let(:project) { cluster.project }
+
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
           end
 
@@ -193,12 +206,14 @@ feature 'Environment' do
         create(:environment, project: project,
                              name: 'staging-1.0/review',
                              state: :available)
-
-        visit folder_project_environments_path(project, id: 'staging-1.0')
       end
 
       it 'renders a correct environment folder' do
-        expect(page).to have_http_status(:ok)
+        reqs = inspect_requests do
+          visit folder_project_environments_path(project, id: 'staging-1.0')
+        end
+
+        expect(reqs.first.status_code).to eq(200)
         expect(page).to have_content('Environments / staging-1.0')
       end
     end

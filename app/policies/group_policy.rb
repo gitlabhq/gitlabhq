@@ -9,6 +9,7 @@ class GroupPolicy < BasePolicy
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
+  condition(:developer) { access_level >= GroupMember::DEVELOPER }
   condition(:owner) { access_level >= GroupMember::OWNER }
   condition(:master) { access_level >= GroupMember::MASTER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
@@ -27,17 +28,30 @@ class GroupPolicy < BasePolicy
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
-  rule { public_group }      .enable :read_group
+  rule { public_group }.policy do
+    enable :read_group
+    enable :read_list
+    enable :read_label
+  end
+
   rule { logged_in_viewable }.enable :read_group
-  rule { guest }             .enable :read_group
+
+  rule { guest }.policy do
+    enable :read_group
+    enable :upload_file
+    enable :read_label
+  end
+
   rule { admin }             .enable :read_group
   rule { has_projects }      .enable :read_group
 
+  rule { has_access }.enable :read_namespace
+
+  rule { developer }.enable :admin_milestones
   rule { reporter }.enable :admin_label
 
   rule { master }.policy do
     enable :create_projects
-    enable :admin_milestones
     enable :admin_pipeline
     enable :admin_build
   end

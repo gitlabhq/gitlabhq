@@ -16,9 +16,9 @@ describe MergeRequests::UpdateService, :mailer do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -49,7 +49,8 @@ describe MergeRequests::UpdateService, :mailer do
           state_event: 'close',
           label_ids: [label.id],
           target_branch: 'target',
-          force_remove_source_branch: '1'
+          force_remove_source_branch: '1',
+          discussion_locked: true
         }
       end
 
@@ -64,7 +65,7 @@ describe MergeRequests::UpdateService, :mailer do
         end
       end
 
-      it 'mathces base expectations' do
+      it 'matches base expectations' do
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignee).to eq(user2)
@@ -73,11 +74,21 @@ describe MergeRequests::UpdateService, :mailer do
         expect(@merge_request.labels.first.title).to eq(label.name)
         expect(@merge_request.target_branch).to eq('target')
         expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+        expect(@merge_request.discussion_locked).to be_truthy
       end
 
       it 'executes hooks with update action' do
         expect(service).to have_received(:execute_hooks)
-                               .with(@merge_request, 'update')
+          .with(
+            @merge_request,
+            'update',
+            old_associations: {
+              labels: [],
+              mentioned_users: [user2],
+              assignees: [user3],
+              total_time_spent: 0
+            }
+          )
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -121,6 +132,13 @@ describe MergeRequests::UpdateService, :mailer do
 
         expect(note).not_to be_nil
         expect(note.note).to eq 'changed target branch from `master` to `target`'
+      end
+
+      it 'creates system note about discussion lock' do
+        note = find_note('locked this merge request')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'locked this merge request'
       end
 
       context 'when not including source branch removal options' do
@@ -338,8 +356,8 @@ describe MergeRequests::UpdateService, :mailer do
       let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
       before do
-        project.team << [non_subscriber, :developer]
-        project.team << [subscriber, :developer]
+        project.add_developer(non_subscriber)
+        project.add_developer(subscriber)
       end
 
       it 'sends notifications for subscribers of newly added labels' do

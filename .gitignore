@@ -2,6 +2,7 @@
 *.swp
 *.mo
 *.edit.po
+*.rej
 .DS_Store
 .bundle
 .chef
@@ -63,4 +64,5 @@ eslint-report.html
 /.gitlab_workhorse_secret
 /webpack-report/
 /locale/**/LC_MESSAGES
+/locale/**/*.time_stamp
 /.rspec

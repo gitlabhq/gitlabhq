@@ -105,7 +105,7 @@ merge request.
 
 Once you click it, a new branch will be created that diverges from the default
 branch of your project, by default `master`. The branch name will be based on
-the title of the issue and as suffix it will have its ID. Thus, the example
+the title of the issue and as a prefix, it will have its internal ID. Thus, the example
 screenshot above will yield a branch named
 `2-et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum`.
 

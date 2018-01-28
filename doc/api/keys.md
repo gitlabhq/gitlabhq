@@ -32,6 +32,7 @@ Parameters:
     "twitter": "",
     "website_url": "",
     "email": "john@example.com",
+    "theme_id": 2,
     "color_scheme_id": 1,
     "projects_limit": 10,
     "current_sign_in_at": null,

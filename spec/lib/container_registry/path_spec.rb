@@ -86,6 +86,24 @@ describe ContainerRegistry::Path do
 
       it { is_expected.to be_valid }
     end
+
+    context 'when path contains double underscore' do
+      let(:path) { 'my/repository__name' }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when path contains invalid separator with dot' do
+      let(:path) { 'some/registry-.name' }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when path contains invalid separator with underscore' do
+      let(:path) { 'some/registry._name' }
+
+      it { is_expected.not_to be_valid }
+    end
   end
 
   describe '#has_repository?' do

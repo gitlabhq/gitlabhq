@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'User interacts with project stars' do
   let(:project) { create(:project, :public, :repository) }
 
-  context 'when user is signed in', js: true do
+  context 'when user is signed in', :js do
     let(:user) { create(:user) }
 
     before do

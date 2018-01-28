@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::Failed do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_failed' }
+    it { expect(subject.icon).to eq 'status_failed' }
   end
 
   describe '#favicon' do

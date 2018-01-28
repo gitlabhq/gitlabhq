@@ -2,9 +2,8 @@ require 'digest/md5'
 
 class Key < ActiveRecord::Base
   include Gitlab::CurrentSettings
+  include AfterCommitQueue
   include Sortable
-
-  LAST_USED_AT_REFRESH_TIME = 1.day.to_i
 
   belongs_to :user
 
@@ -28,15 +27,17 @@ class Key < ActiveRecord::Base
   delegate :name, :email, to: :user, prefix: true
 
   after_commit :add_to_shell, on: :create
-  after_commit :notify_user, on: :create
   after_create :post_create_hook
+  after_create :refresh_user_cache
   after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
+  after_destroy :refresh_user_cache
 
   def key=(value)
     value&.delete!("\n\r")
     value.strip! unless value.blank?
     write_attribute(:key, value)
+    @public_key = nil
   end
 
   def publishable_key
@@ -55,10 +56,7 @@ class Key < ActiveRecord::Base
   end
 
   def update_last_used_at
-    lease = Gitlab::ExclusiveLease.new("key_update_last_used_at:#{id}", timeout: LAST_USED_AT_REFRESH_TIME)
-    return unless lease.try_obtain
-
-    UseKeyWorker.perform_async(id)
+    Keys::LastUsedService.new(self).execute
   end
 
   def add_to_shell
@@ -79,6 +77,12 @@ class Key < ActiveRecord::Base
       shell_id,
       key
     )
+  end
+
+  def refresh_user_cache
+    return unless user
+
+    Users::KeysCountService.new(user).refresh_cache
   end
 
   def post_destroy_hook
@@ -117,9 +121,5 @@ class Key < ActiveRecord::Base
         .to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
 
     "type is forbidden. Must be #{allowed_types}"
-  end
-
-  def notify_user
-    NotificationService.new.new_key(self)
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Active Tab', js: true do
+RSpec.describe 'Dashboard Active Tab', :js do
   before do
     sign_in(create(:user))
   end

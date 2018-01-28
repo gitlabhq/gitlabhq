@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe "Compare", js: true do
+describe "Compare", :js do
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
     visit project_compare_index_path(project, from: "master", to: "master")
   end

@@ -372,8 +372,10 @@ CREATE TABLE
 ```
 
 To fix that you need to apply this SQL statement before doing final backup:
-```
-# Omnibus
+
+```sql
+## Omnibus GitLab
+
 gitlab-ci-rails dbconsole <<EOF
 -- ALTER TABLES - DROP DEFAULTS
 ALTER TABLE ONLY ci_application_settings ALTER COLUMN id DROP DEFAULT;
@@ -427,7 +429,8 @@ ALTER TABLE ONLY ci_variables ALTER COLUMN id SET DEFAULT nextval('ci_variables_
 ALTER TABLE ONLY ci_web_hooks ALTER COLUMN id SET DEFAULT nextval('ci_web_hooks_id_seq'::regclass);
 EOF
 
-# Source
+## Source installations
+
 cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec rails dbconsole production <<EOF
 ... COPY SQL STATEMENTS FROM ABOVE ...

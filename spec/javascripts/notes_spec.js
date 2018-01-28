@@ -1,12 +1,11 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
-/* global Notes */
-
-import 'vendor/autosize';
+import _ from 'underscore';
+import * as urlUtils from '~/lib/utils/url_utility';
+import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';
-import '~/render_math';
-import '~/notes';
+import Notes from '~/notes';
 
 (function() {
   window.gon || (window.gon = {});
@@ -39,7 +38,12 @@ import '~/notes';
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:merge_requets:show');
+      $('body').attr('data-page', 'projects:merge_requets:show');
+    });
+
+    afterEach(() => {
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
     });
 
     describe('task lists', function() {
@@ -98,6 +102,16 @@ import '~/notes';
         $('.js-comment-button').click();
         expect(this.autoSizeSpy).toHaveBeenTriggered();
       });
+
+      it('should not place escaped text in the comment box in case of error', function() {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        $(textarea).text('A comment with `markup`.');
+
+        deferred.reject();
+        $('.js-comment-button').click();
+        expect($(textarea).val()).toEqual('A comment with `markup`.');
+      });
     });
 
     describe('updateNote', () => {
@@ -154,8 +168,7 @@ import '~/notes';
       });
 
       it('sets target when hash matches', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue(hash);
+        spyOn(urlUtils, 'getLocationHash').and.returnValue(hash);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -164,8 +177,7 @@ import '~/notes';
       });
 
       it('unsets target when hash does not match', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue('note_doesnotexist');
+        spyOn(urlUtils, 'getLocationHash').and.returnValue('note_doesnotexist');
 
         Notes.updateNoteTargetSelector($note);
 
@@ -173,8 +185,7 @@ import '~/notes';
       });
 
       it('unsets target when there is not a hash fragment anymore', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue(null);
+        spyOn(urlUtils, 'getLocationHash').and.returnValue(null);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -210,7 +221,6 @@ import '~/notes';
         notes.note_ids = [];
         notes.updatedNotesTrackingMap = {};
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote').and.callThrough();
         spyOn(Notes, 'isUpdatedNote').and.callThrough();
         spyOn(Notes, 'animateAppendNote').and.callThrough();
@@ -328,6 +338,7 @@ import '~/notes';
           diff_discussion_html: false,
         };
         $form = jasmine.createSpyObj('$form', ['closest', 'find']);
+        $form.length = 1;
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
         notes = jasmine.createSpyObj('notes', [
@@ -336,7 +347,6 @@ import '~/notes';
         ]);
         notes.note_ids = [];
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote');
         spyOn(Notes, 'animateAppendNote');
         Notes.isNewNote.and.returnValue(true);
@@ -356,12 +366,28 @@ import '~/notes';
           $form.closest.and.returnValues(row, $form);
           $form.find.and.returnValues(discussionContainer);
           body.attr.and.returnValue('');
-
-          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
         });
 
         it('should call Notes.animateAppendNote', () => {
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
           expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $('.main-notes-list'));
+        });
+
+        it('should append to row selected with line_code', () => {
+          $form.length = 0;
+          note.discussion_line_code = 'line_code';
+          note.diff_discussion_html = '<tr></tr>';
+
+          const line = document.createElement('div');
+          line.id = note.discussion_line_code;
+          document.body.appendChild(line);
+
+          $form.closest.and.returnValues($form);
+
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
+          expect(line.nextSibling.outerHTML).toEqual(note.diff_discussion_html);
         });
       });
 
@@ -426,19 +452,17 @@ import '~/notes';
     });
 
     describe('putEditFormInPlace', () => {
-      it('should call gl.GLForm with GFM parameter passed through', () => {
-        spyOn(gl, 'GLForm');
+      it('should call GLForm with GFM parameter passed through', () => {
+        const notes = new Notes('', []);
+        const $el = $(`
+          <div>
+            <form></form>
+          </div>
+        `);
 
-        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
-        $el.find.and.returnValue($('<div>'));
-        $el.closest.and.returnValue($('<div>'));
+        notes.putEditFormInPlace($el);
 
-        Notes.prototype.putEditFormInPlace.call({
-          getEditFormSelector: () => '',
-          enableGFM: true
-        }, $el);
-
-        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+        expect(notes.glForm.enableGFM).toBeTruthy();
       });
     });
 
@@ -815,7 +839,7 @@ import '~/notes';
       });
 
       it('shows a flash message', () => {
-        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         expect($('.flash-alert').is(':visible')).toBeTruthy();
       });
@@ -828,7 +852,7 @@ import '~/notes';
       });
 
       it('hides visible flash message', () => {
-        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         this.notes.clearFlash();
 

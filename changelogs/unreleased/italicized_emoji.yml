@@ -1,5 +1,0 @@
----
-title: Update native unicode emojis to always render as normal text (previously could render italicized)
-merge_request:
-author: Branka Martinovic
-type: fixed

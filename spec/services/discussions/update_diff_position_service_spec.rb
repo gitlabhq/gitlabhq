@@ -164,8 +164,8 @@ describe Discussions::UpdateDiffPositionService do
         change_position = discussion.change_position
         expect(change_position.start_sha).to eq(old_diff_refs.head_sha)
         expect(change_position.head_sha).to eq(new_diff_refs.head_sha)
-        expect(change_position.old_line).to eq(9)
-        expect(change_position.new_line).to be_nil
+        expect(change_position.formatter.old_line).to eq(9)
+        expect(change_position.formatter.new_line).to be_nil
       end
 
       it 'creates a system discussion' do
@@ -184,7 +184,7 @@ describe Discussions::UpdateDiffPositionService do
 
         expect(discussion.original_position).to eq(old_position)
         expect(discussion.position).not_to eq(old_position)
-        expect(discussion.position.new_line).to eq(22)
+        expect(discussion.position.formatter.new_line).to eq(22)
       end
 
       context 'when the resolve_outdated_diff_discussions setting is set' do

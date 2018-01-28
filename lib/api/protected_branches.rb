@@ -2,7 +2,7 @@ module API
   class ProtectedBranches < Grape::API
     include PaginationParams
 
-    BRANCH_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
+    BRANCH_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
 
     before { authorize_admin_project }
 
@@ -39,11 +39,11 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the protected branch'
-        optional :push_access_level, type: Integer, default: Gitlab::Access::MASTER,
-                                     values: ProtectedBranchAccess::ALLOWED_ACCESS_LEVELS,
+        optional :push_access_level, type: Integer,
+                                     values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                      desc: 'Access levels allowed to push (defaults: `40`, master access level)'
-        optional :merge_access_level, type: Integer, default: Gitlab::Access::MASTER,
-                                      values: ProtectedBranchAccess::ALLOWED_ACCESS_LEVELS,
+        optional :merge_access_level, type: Integer,
+                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                       desc: 'Access levels allowed to merge (defaults: `40`, master access level)'
       end
       post ':id/protected_branches' do
@@ -52,15 +52,13 @@ module API
           conflict!("Protected branch '#{params[:name]}' already exists")
         end
 
-        protected_branch_params = {
-          name: params[:name],
-          push_access_levels_attributes: [{ access_level: params[:push_access_level] }],
-          merge_access_levels_attributes: [{ access_level: params[:merge_access_level] }]
-        }
+        # Replace with `declared(params)` after updating to grape v1.0.2
+        # See https://github.com/ruby-grape/grape/pull/1710
+        # and https://gitlab.com/gitlab-org/gitlab-ce/issues/40843
+        declared_params = params.slice("name", "push_access_level", "merge_access_level", "allowed_to_push", "allowed_to_merge")
 
-        service_args = [user_project, current_user, protected_branch_params]
-
-        protected_branch = ::ProtectedBranches::CreateService.new(*service_args).execute
+        api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared_params)
+        protected_branch = api_service.create
 
         if protected_branch.persisted?
           present protected_branch, with: Entities::ProtectedBranch, project: user_project

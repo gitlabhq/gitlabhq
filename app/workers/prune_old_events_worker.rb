@@ -1,5 +1,5 @@
 class PruneOldEventsWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform

@@ -7,6 +7,7 @@
   Sample configuration:
 
   <user-avatar-image
+    :lazy="true"
     :img-src="userAvatarSrc"
     :img-alt="tooltipText"
     :tooltip-text="tooltipText"
@@ -16,11 +17,20 @@
 */
 
 import defaultAvatarUrl from 'images/no_avatar.png';
+import { placeholderImage } from '../../../lazy_loader';
 import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
+  directives: {
+    tooltip,
+  },
   props: {
+    lazy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     imgSrc: {
       type: String,
       required: false,
@@ -52,21 +62,21 @@ export default {
       default: 'top',
     },
   },
-  directives: {
-    tooltip,
-  },
   computed: {
+    // API response sends null when gravatar is disabled and
+    // we provide an empty string when we use it inside user avatar link.
+    // In both cases we should render the defaultAvatarUrl
+    sanitizedSource() {
+      return this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+    },
+    resultantSrcAttribute() {
+      return this.lazy ? placeholderImage : this.sanitizedSource;
+    },
     tooltipContainer() {
       return this.tooltipText ? 'body' : null;
     },
     avatarSizeClass() {
       return `s${this.size}`;
-    },
-    // API response sends null when gravatar is disabled and
-    // we provide an empty string when we use it inside user avatar link.
-    // In both cases we should render the defaultAvatarUrl
-    imageSource() {
-      return this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
     },
   },
 };
@@ -76,11 +86,16 @@ export default {
   <img
     v-tooltip
     class="avatar"
-    :class="[avatarSizeClass, cssClasses]"
-    :src="imageSource"
+    :class="{
+      lazy: lazy,
+      [avatarSizeClass]: true,
+      [cssClasses]: true
+    }"
+    :src="resultantSrcAttribute"
     :width="size"
     :height="size"
     :alt="imgAlt"
+    :data-src="sanitizedSource"
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     :title="tooltipText"

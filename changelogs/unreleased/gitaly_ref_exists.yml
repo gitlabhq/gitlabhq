@@ -1,4 +1,0 @@
----
-title: Implement the Gitaly RefService::RefExists endpoint
-merge_request: 13528
-author: Andrew Newdigate

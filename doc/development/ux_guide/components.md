@@ -10,6 +10,7 @@
 * [Tables](#tables)
 * [Blocks](#blocks)
 * [Panels](#panels)
+* [Modals](#modals)
 * [Alerts](#alerts)
 * [Forms](#forms)
 * [Search box](#search-box)
@@ -39,6 +40,37 @@ Tooltips shouldn’t repeat information that is shown near the referring element
 By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport, the tooltip should be moved to the side as needed.
 
 ![Tooltip placement location](img/tooltip-placement.png)
+
+---
+
+## Popovers
+
+Popovers provide additional, useful, unique information about the referring elements and can provide one or multiple actionable elements. They inform the user of additional information within the context of their original view, but without forcing the user to act upon it like a modal. Popovers are different from tooltips, which do not provide rich markup and actionable items. A popover can contain a header section with a different background color.
+
+Popovers are summoned:
+
+* Upon hover or touch on an element
+
+### Usage
+A popover should be used:
+* When you don't want to let the user lose context, but still want to provide additional useful unique information about referring elements
+* When it isn’t critical for the user to act upon the information
+* When you want to give a user a summary of extended information and the option to switch context if they want to dive in deeper.
+
+### Styling
+
+A popover can contain a header section with a different background color if that improves readability and separation of content within.
+
+![Popover usage](img/popover-placement-below.png)
+
+This example shows two sections, where each section includes an actionable element. The first section shows a summary of the content shown when clicking the "read more" link. With this information the user can decide to dive deeper or start their GitLab Enterprise Edition trial immediately.
+
+### Placement
+By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport or it blocks related content, the tooltip should be moved to the side or above as needed.
+
+![Tooltip placement location](img/popover-placement-above.png)
+
+In this example we let the user know more about the setting they are deciding over, without loosing context. If they want to know even more they can do so, but with the expectation of opening that content in a new view.
 
 ---
 
@@ -76,7 +108,7 @@ Primary buttons communicate the main call to action. There should only be one ca
 ![Primary button example](img/button-primary.png)
 
 #### Secondary
-Secondary buttons are for alternative commands. They should be conveyed by a button with an stroke, and no background fill.
+Secondary buttons are for alternative commands. They should be conveyed by a button with a stroke, and no background fill.
 
 ![Secondary button example](img/button-secondary.png)
 
@@ -149,7 +181,7 @@ A count element is used in navigation contexts where it is helpful to indicate t
 
 ## Lists
 
-Lists are used where ever there is a single column of information to display. Ths [issues list](https://gitlab.com/gitlab-org/gitlab-ce/issues) is an example of a important list in the GitLab UI.
+Lists are used where ever there is a single column of information to display. Ths [issues list](https://gitlab.com/gitlab-org/gitlab-ce/issues) is an example of an important list in the GitLab UI.
 
 ### Types
 
@@ -201,6 +233,57 @@ A background color can be added to this blocks. For example, items in the [issue
 Cover blocks are generally used to create a heading element for a page, such as a new project, or a user profile page. Below is a cover block (`.cover-block`) for the profile page with an avatar, name and description.
 
 ![Cover block](img/components-coverblock.png)
+
+---
+
+## Skeleton loading
+
+Skeleton loading is a way to convey to the user what kind of content is currently being loaded. It's a paradigm with which content can independently and asynchronously be loaded, while still adhering to the structure and look of the completely loaded view.
+
+### Requirements
+
+* A skeleton should represent an organism in a recognisable way
+* Atom elements within organisms (for reference see this article on [atomic design methodology](http://atomicdesign.bradfrost.com/chapter-2/)) may be represented in a maximum of 3 repetitions, if applicable.
+* Skeletons should only be presented in grayscale using the HEX colors: `#fafafa` or `#ffffff` (except for shadows)
+* Animate the grey atoms in a pulsating way to show motion, as if "loading". The pulse animation transitions colors horizontally from left to right, starting with `#f2f2f2` to `#fafafa`.
+
+![Skeleton loading animation](img/skeleton-loading.gif)
+
+### Usage
+
+Skeleton loading can replace any existing UI elements for the period in which they are loaded and should aim for maintaining a similar structure visually.
+
+---
+
+## Modals
+
+Modals are only used for having a conversation and confirmation with the user. The user is not able to access the features on the main page until closing the modal.
+
+### Usage
+
+* When the action is irreversible, modals provide the details and confirm with the user before they take an advanced action.
+* When the action will affect privacy or authorization, modals provide advanced information and confirm with the user.
+
+### Style
+
+* Modals contain the header, body, and actions.
+  * **Header(1):** The header title is a question instead of a descriptive phrase.
+  * **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
+  * **Actions(3):** Contains an affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
+* Confirmations regarding labels should keep labeling styling.
+* References to commits, branches, and tags should be **monospaced**.
+
+![layout-modal](img/modals-layout-for-modals.png)
+
+### Placement
+
+* Modals should always be the center of the screen horizontally and be positioned **72px** from the top.
+
+| Modal with 2 actions | Modal with 3 actions | Special confirmation |
+| --------------------- | --------------------- | -------------------- |
+| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
+
+> TODO: Special case for modal.
 
 ---
 

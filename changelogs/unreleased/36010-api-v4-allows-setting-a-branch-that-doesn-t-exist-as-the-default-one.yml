@@ -1,4 +1,0 @@
----
-title: Add checks for branch existence before changing HEAD
-merge_request: 13359
-author: Vitaliy @blackst0ne Klachkov

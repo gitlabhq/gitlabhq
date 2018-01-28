@@ -25,6 +25,14 @@ describe 'help/index' do
     end
   end
 
+  describe 'instance configuration link' do
+    it 'is visible to guests' do
+      render
+
+      expect(rendered).to have_link(nil, help_instance_configuration_url)
+    end
+  end
+
   def stub_user(user = double)
     allow(view).to receive(:user_signed_in?).and_return(user)
   end

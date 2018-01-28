@@ -292,6 +292,30 @@ describe Ci::ProcessPipelineService, '#execute' do
     end
   end
 
+  context 'when there is only one manual action' do
+    before do
+      create_build('deploy', stage_idx: 0, when: 'manual', allow_failure: true)
+
+      process_pipeline
+    end
+
+    it 'skips the pipeline' do
+      expect(pipeline.reload).to be_skipped
+    end
+
+    context 'when the action was played' do
+      before do
+        play_manual_action('deploy')
+      end
+
+      it 'queues the action and pipeline' do
+        expect(all_builds_statuses).to eq(%w[pending])
+
+        expect(pipeline.reload).to be_pending
+      end
+    end
+  end
+
   context 'when blocking manual actions are defined' do
     before do
       create_build('code:test', stage_idx: 0)

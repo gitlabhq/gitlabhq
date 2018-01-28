@@ -9,11 +9,11 @@ feature 'Labels subscription' do
 
   context 'when signed in' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       sign_in user
     end
 
-    scenario 'users can subscribe/unsubscribe to labels', js: true do
+    scenario 'users can subscribe/unsubscribe to labels', :js do
       visit project_labels_path(project)
 
       expect(page).to have_content('bug')

@@ -72,9 +72,9 @@ module IssuesHelper
     if item.try(:expired?)
       'status-box-expired'
     elsif item.try(:merged?)
-      'status-box-merged'
+      'status-box-mr-merged'
     elsif item.closed?
-      'status-box-closed'
+      'status-box-mr-closed'
     elsif item.try(:upcoming?)
       'status-box-upcoming'
     else

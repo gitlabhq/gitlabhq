@@ -4,7 +4,7 @@ describe 'Projects > Wiki > User views wiki in project page' do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -18,12 +18,7 @@ describe 'Projects > Wiki > User views wiki in project page' do
 
     context 'when wiki homepage contains a link' do
       before do
-        WikiPages::CreateService.new(
-          project,
-          user,
-          title: 'home',
-          content: '[some link](other-page)'
-        ).execute
+        create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: '[some link](other-page)' })
       end
 
       it 'displays the correct URL for the link' do

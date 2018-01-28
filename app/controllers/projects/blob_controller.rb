@@ -5,9 +5,6 @@ class Projects::BlobController < Projects::ApplicationController
   include RendersBlob
   include ActionView::Helpers::SanitizeHelper
 
-  # Raised when given an invalid file path
-  InvalidPathError = Class.new(StandardError)
-
   prepend_before_action :authenticate_user!, only: [:edit]
 
   before_action :require_non_empty_project, except: [:new, :create]
@@ -41,6 +38,8 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       format.json do
+        page_title @blob.path, @ref, @project.name_with_namespace
+
         show_json
       end
     end
@@ -59,7 +58,6 @@ class Projects::BlobController < Projects::ApplicationController
     create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
                                         failure_path: project_blob_path(@project, @id))
-
   rescue Files::UpdateService::FileChangedError
     @conflict = true
     render :edit
@@ -130,7 +128,6 @@ class Projects::BlobController < Projects::ApplicationController
   def assign_blob_vars
     @id = params[:id]
     @ref, @path = extract_ref(@id)
-
   rescue InvalidPathError
     render_404
   end
@@ -153,6 +150,7 @@ class Projects::BlobController < Projects::ApplicationController
         if params[:file].present?
           params[:file_name] = params[:file].original_filename
         end
+
         File.join(@path, params[:file_name])
       elsif params[:file_path].present?
         params[:file_path]
@@ -203,6 +201,7 @@ class Projects::BlobController < Projects::ApplicationController
     tree_path = path_segments.join('/')
 
     render json: json.merge(
+      id: @blob.id,
       path: blob.path,
       name: blob.name,
       extension: blob.extension,

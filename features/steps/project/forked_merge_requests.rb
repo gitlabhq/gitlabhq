@@ -5,15 +5,18 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedPaths
   include Select2Helper
   include WaitForRequests
+  include ProjectForksHelper
 
   step 'I am a member of project "Shop"' do
     @project = ::Project.find_by(name: "Shop")
     @project ||= create(:project, :repository, name: "Shop")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
-    @forked_project = Projects::ForkService.new(@project, @user).execute
+    @forked_project = fork_project(@project, @user,
+                                   namespace: @user.namespace,
+                                   repository: true)
   end
 
   step 'I click link "New Merge Request"' do

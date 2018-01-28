@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
     source :push
     ref 'master'
@@ -47,6 +47,7 @@ FactoryGirl.define do
 
       trait :invalid do
         config(rspec: nil)
+        failure_reason :config_error
       end
 
       trait :blocked do

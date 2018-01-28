@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Visibility settings', js: true do
+feature 'Visibility settings', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, visibility_level: 20) }
 
@@ -31,7 +31,7 @@ feature 'Visibility settings', js: true do
     let(:master_user) { create(:user) }
 
     before do
-      project.team << [master_user, :master]
+      project.add_master(master_user)
       sign_in(master_user)
       visit edit_project_path(project)
     end

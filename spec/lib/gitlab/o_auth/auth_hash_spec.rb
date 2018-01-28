@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::OAuth::AuthHash do
+  let(:provider) { 'ldap'.freeze }
   let(:auth_hash) do
     described_class.new(
       OmniAuth::AuthHash.new(
-        provider: provider_ascii,
+        provider: provider,
         uid: uid_ascii,
         info: info_hash
       )
@@ -20,7 +21,6 @@ describe Gitlab::OAuth::AuthHash do
   let(:last_name_raw) { "K\xC3\xBC\xC3\xA7\xC3\xBCk" }
   let(:name_raw) { "Onur K\xC3\xBC\xC3\xA7\xC3\xBCk" }
 
-  let(:provider_ascii) { 'ldap'.force_encoding(Encoding::ASCII_8BIT) }
   let(:uid_ascii) { uid_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:email_ascii) { email_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:nickname_ascii) { nickname_raw.force_encoding(Encoding::ASCII_8BIT) }
@@ -28,7 +28,6 @@ describe Gitlab::OAuth::AuthHash do
   let(:last_name_ascii) { last_name_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:name_ascii) { name_raw.force_encoding(Encoding::ASCII_8BIT) }
 
-  let(:provider_utf8) { provider_ascii.force_encoding(Encoding::UTF_8) }
   let(:uid_utf8) { uid_ascii.force_encoding(Encoding::UTF_8) }
   let(:email_utf8) { email_ascii.force_encoding(Encoding::UTF_8) }
   let(:nickname_utf8) { nickname_ascii.force_encoding(Encoding::UTF_8) }
@@ -46,7 +45,7 @@ describe Gitlab::OAuth::AuthHash do
   end
 
   context 'defaults' do
-    it { expect(auth_hash.provider).to eql provider_utf8 }
+    it { expect(auth_hash.provider).to eq provider }
     it { expect(auth_hash.uid).to eql uid_utf8 }
     it { expect(auth_hash.email).to eql email_utf8 }
     it { expect(auth_hash.username).to eql nickname_utf8 }

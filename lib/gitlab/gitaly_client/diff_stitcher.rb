@@ -12,7 +12,7 @@ module Gitlab
 
         @rpc_response.each do |diff_msg|
           if current_diff.nil?
-            diff_params = diff_msg.to_h.slice(*GitalyClient::Diff::FIELDS)
+            diff_params = diff_msg.to_h.slice(*GitalyClient::Diff::ATTRS)
             # gRPC uses frozen strings by default, and we need to have an unfrozen string as it
             # gets processed further down the line. So we unfreeze the first chunk of the patch
             # in case it's the only chunk we receive for this diff.

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PersonalAccessToken do
+  subject { described_class }
+
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }
@@ -42,6 +44,29 @@ describe PersonalAccessToken do
       active_personal_access_token.revoke!
 
       expect(active_personal_access_token).to be_revoked
+    end
+  end
+
+  describe 'Redis storage' do
+    let(:user_id) { 123 }
+    let(:token) { 'abc000foo' }
+
+    before do
+      subject.redis_store!(user_id, token)
+    end
+
+    it 'returns stored data' do
+      expect(subject.redis_getdel(user_id)).to eq(token)
+    end
+
+    context 'after deletion' do
+      before do
+        expect(subject.redis_getdel(user_id)).to eq(token)
+      end
+
+      it 'token is removed' do
+        expect(subject.redis_getdel(user_id)).to be_nil
+      end
     end
   end
 

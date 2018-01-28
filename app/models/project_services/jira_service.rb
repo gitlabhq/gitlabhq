@@ -3,6 +3,8 @@ class JiraService < IssueTrackerService
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
+  validates :username, presence: true, if: :activated?
+  validates :password, presence: true, if: :activated?
 
   prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
@@ -44,6 +46,8 @@ class JiraService < IssueTrackerService
       context_path: url.path,
       auth_type: :basic,
       read_timeout: 120,
+      use_cookies: true,
+      additional_cookies: ['OBBasicAuth=fromDialog'],
       use_ssl: url.scheme == 'https'
     }
   end
@@ -174,6 +178,7 @@ class JiraService < IssueTrackerService
 
   def test_settings
     return unless client_url.present?
+
     # Test settings by getting the project
     jira_request { client.ServerInfo.all.attrs }
   end

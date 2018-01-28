@@ -1,23 +1,16 @@
 module API
   module Helpers
     module InternalHelpers
-      SSH_GITALY_FEATURES = {
-        'git-receive-pack' => :ssh_receive_pack,
-        'git-upload-pack' => :ssh_upload_pack
-      }.freeze
+      attr_reader :redirected_path
 
       def wiki?
-        set_project unless defined?(@wiki)
-        @wiki
+        set_project unless defined?(@wiki) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @wiki # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def project
-        set_project unless defined?(@project)
-        @project
-      end
-
-      def redirected_path
-        @redirected_path
+        set_project unless defined?(@project) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def ssh_authentication_abilities
@@ -34,6 +27,18 @@ module API
         JSON.parse(params[:env])
       rescue JSON::ParserError
         {}
+      end
+
+      def fix_git_env_repository_paths(env, repository_path)
+        if obj_dir_relative = env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence
+          env['GIT_OBJECT_DIRECTORY'] = File.join(repository_path, obj_dir_relative)
+        end
+
+        if alt_obj_dirs_relative = env['GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE'].presence
+          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = alt_obj_dirs_relative.map { |dir| File.join(repository_path, dir) }
+        end
+
+        env
       end
 
       def log_user_activity(actor)
@@ -57,6 +62,7 @@ module API
 
       private
 
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
         if params[:gl_repository]
           @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])
@@ -65,6 +71,7 @@ module API
           @project, @wiki, @redirected_path = Gitlab::RepoPath.parse(params[:project])
         end
       end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       # Project id to pass between components that don't share/don't have
       # access to the same filesystem mounts
@@ -90,8 +97,14 @@ module API
 
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
-        feature = SSH_GITALY_FEATURES[action]
-        return unless feature && Gitlab::GitalyClient.feature_enabled?(feature)
+        return unless %w[git-receive-pack git-upload-pack].include?(action)
+
+        if action == 'git-receive-pack'
+          return unless Gitlab::GitalyClient.feature_enabled?(
+            :ssh_receive_pack,
+            status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+          )
+        end
 
         {
           repository: repository.gitaly_repository,

@@ -12,7 +12,11 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string| yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user|
+| `order_by` | string | no | Return tags ordered by `name` or `updated` fields. Default is `updated` |
+| `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
 
 ```json
 [
@@ -131,7 +135,7 @@ Parameters:
   "message": null
 }
 ```
-The message will be `nil` when creating a lightweight tag otherwise
+The message will be `null` when creating a lightweight tag otherwise
 it will contain the annotation.
 
 In case of an error,

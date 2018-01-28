@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Style/Documentation
+
 module Gitlab
   module BackgroundMigration
     class MigrateStageStatus

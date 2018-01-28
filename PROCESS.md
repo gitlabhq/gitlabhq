@@ -1,4 +1,4 @@
-## GitLab Core Team & GitLab Inc. Contribution Process
+## GitLab core team & GitLab Inc. contribution process
 
 ---
 
@@ -85,7 +85,8 @@ These types of merge requests for the upcoming release need special consideratio
   and a dedicated team with front-end, back-end, and UX.
 * **Small features**: any other feature request.
 
-**Large features** must be with a maintainer **by the 1st**. This means that:
+It is strongly recommended that **large features** be with a maintainer **by the
+1st**. This means that:
 
 * There is a merge request (even if it's WIP).
 * The person (or people, if it needs a frontend and backend maintainer) who will
@@ -100,13 +101,36 @@ The maintainer can also choose to assign a reviewer to perform an initial
 review, but this way the maintainer is unlikely to be surprised by receiving an
 MR later in the cycle.
 
-**Small features** must be with a reviewer (not necessarily maintainer) **by the
-3rd**.
+It is strongly recommended that **small features** be with a reviewer (not
+necessarily a maintainer) **by the 3rd**.
 
 Most merge requests from the community do not have a specific release
 target. However, if one does and falls into either of the above categories, it's
 the reviewer's responsibility to manage the above communication and assignment
 on behalf of the community member.
+
+#### What happens if these deadlines are missed?
+
+If a small or large feature is _not_ with a maintainer or reviewer by the
+recommended date, this does _not_ mean that maintainers or reviewers will refuse
+to review or merge it, or that the feature will definitely not make it in before
+the feature freeze.
+
+However, with every day that passes without review, it will become more likely
+that the feature will slip, because maintainers and reviewers may not have
+enough time to do a thorough review, and developers may not have enough time to
+adequately address any feedback that may come back.
+
+A maintainer or reviewer may also determine that it will not be possible to
+finish the current scope of the feature in time, but that it is possible to
+reduce the scope so that something can still ship this month, with the remaining
+scope moving to the next release. The sooner this decision is made, in
+conversation with the Product Manager and developer, the more time there is to
+extract that which is now out of scope, and to finish that which remains in scope.
+
+For these reasons, it is strongly recommended to follow the guidelines above,
+to maximize the chances of your feature making it in before the feature freeze,
+and to prevent any last minute surprises.
 
 ### On the 7th
 
@@ -130,7 +154,8 @@ freeze date (the 7th) should have a corresponding Enterprise Edition merge
 request, even if there are no conflicts. This is to reduce the size of the
 subsequent EE merge, as we often merge a lot to CE on the release date. For more
 information, see
-[limit conflicts with EE when developing on CE][limit_ee_conflicts].
+[Automatic CE->EE merge][automatic_ce_ee_merge] and
+[Guidelines for implementing Enterprise Edition features][ee_features].
 
 ### After the 7th
 
@@ -141,21 +166,29 @@ the stable branch are:
 * Fixes for security issues
 * New or updated translations (as long as they do not touch application code)
 
-During the feature freeze all merge requests that are meant to go into the upcoming
-release should have the correct milestone assigned _and_ have the label
-~"Pick into Stable" set, so that release managers can find and pick them.
-Merge requests without a milestone and this label will
-not be merged into any stable branches.
+During the feature freeze all merge requests that are meant to go into the
+upcoming release should have the correct milestone assigned _and_ the
+`Pick into X.Y` label where `X.Y` is equal to the milestone, so that release
+managers can find and pick them.
+Merge requests without this label will not be picked into the stable release.
 
-Fixes marked like this will be shipped in the next RC for that release. Once
-the final RC has been prepared ready for release on the 22nd, further fixes
-marked ~"Pick into Stable" will go into a patch for that release.
+For example, if the upcoming release is `10.2.0` you will need to set the
+`Pick into 10.2` label.
 
-If a merge request is to be picked into more than one release it will also need
-the ~"Pick into Backports" label set to remind the release manager to change
-the milestone after cherry-picking. As before, it should still have the
-~"Pick into Stable" label and the milestone of the highest release it will be
-picked into.
+Fixes marked like this will be shipped in the next RC (before the 22nd), or the
+next patch release.
+
+If a merge request is to be picked into more than one release it will need one
+`Pick into X.Y` label per release where the merge request should be back-ported
+to.
+
+For example, if the current patch release is `10.1.1` and a regression fix needs
+to be backported down to the `9.5` release, you will need to assign it the
+`10.1` milestone and the following labels:
+
+- `Pick into 10.1`
+- `Pick into 10.0`
+- `Pick into 9.5`
 
 ### Asking for an exception
 
@@ -196,6 +229,11 @@ reported in a release before its 'official' release date on the 22nd of the
 month. When we say 'the most recent monthly release', this can refer to either
 the version currently running on GitLab.com, or the most recent version
 available in the package repositories.
+
+A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
+and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+just like any other issue, to help GitLab team members focus on issues that are
+relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
 
 ## Release retrospective and kickoff
 
@@ -268,4 +306,5 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
 [done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
-[limit_ee_conflicts]: https://docs.gitlab.com/ce/development/limit_ee_conflicts.html
+[automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
+[ee_features]: https://docs.gitlab.com/ce/development/ee_features.html

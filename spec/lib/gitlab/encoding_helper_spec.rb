@@ -6,6 +6,10 @@ describe Gitlab::EncodingHelper do
 
   describe '#encode!' do
     [
+      ["nil", nil, nil],
+      ["empty string", "".encode("ASCII-8BIT"), "".encode("UTF-8")],
+      ["invalid utf-8 encoded string", "my bad string\xE5".force_encoding("UTF-8"), "my bad string"],
+      ["frozen non-ascii string", "é".force_encoding("ASCII-8BIT").freeze, "é".encode("UTF-8")],
       [
         'leaves ascii only string as is',
         'ascii only string',
@@ -81,6 +85,9 @@ describe Gitlab::EncodingHelper do
 
   describe '#encode_utf8' do
     [
+      ["nil", nil, nil],
+      ["empty string", "".encode("ASCII-8BIT"), "".encode("UTF-8")],
+      ["invalid utf-8 encoded string", "my bad string\xE5".force_encoding("UTF-8"), "my bad stringå"],
       [
         "encodes valid utf8 encoded string to utf8",
         "λ, λ, λ".encode("UTF-8"),
@@ -95,17 +102,41 @@ describe Gitlab::EncodingHelper do
         "encodes valid ISO-8859-1 encoded string to utf8",
         "Rüby ist eine Programmiersprache. Wir verlängern den text damit ICU die Sprache erkennen kann.".encode("ISO-8859-1", "UTF-8"),
         "Rüby ist eine Programmiersprache. Wir verlängern den text damit ICU die Sprache erkennen kann.".encode("UTF-8")
+      ],
+      [
+        # Test case from https://gitlab.com/gitlab-org/gitlab-ce/issues/39227
+        "Equifax branch name",
+        "refs/heads/Equifax".encode("UTF-8"),
+        "refs/heads/Equifax".encode("UTF-8")
       ]
     ].each do |description, test_string, xpect|
       it description do
-        r = ext_class.encode_utf8(test_string.force_encoding('UTF-8'))
+        r = ext_class.encode_utf8(test_string)
         expect(r).to eq(xpect)
-        expect(r.encoding.name).to eq('UTF-8')
+        expect(r.encoding.name).to eq('UTF-8') if xpect
       end
     end
 
     it 'returns empty string on conversion errors' do
       expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
+    end
+
+    context 'with strings that can be forcefully encoded into utf8' do
+      let(:test_string) do
+        "refs/heads/FixSymbolsTitleDropdown".encode("ASCII-8BIT")
+      end
+      let(:expected_string) do
+        "refs/heads/FixSymbolsTitleDropdown".encode("UTF-8")
+      end
+
+      subject { ext_class.encode_utf8(test_string) }
+
+      it "doesn't use CharlockHolmes if the encoding can be forced into utf_8" do
+        expect(CharlockHolmes::EncodingDetector).not_to receive(:detect)
+
+        expect(subject).to eq(expected_string)
+        expect(subject.encoding.name).to eq('UTF-8')
+      end
     end
   end
 
@@ -129,6 +160,20 @@ describe Gitlab::EncodingHelper do
     ].each do |description, test_string, xpect|
       it description do
         expect(ext_class.encode!(test_string)).to eq(xpect)
+      end
+    end
+  end
+
+  describe 'encode_binary' do
+    [
+      [nil, ""],
+      ["", ""],
+      ["  ", "  "],
+      %w(a1 a1),
+      ["编码", "\xE7\xBC\x96\xE7\xA0\x81".b]
+    ].each do |input, result|
+      it "encodes #{input.inspect} to #{result.inspect}" do
+        expect(ext_class.encode_binary(input)).to eq(result)
       end
     end
   end

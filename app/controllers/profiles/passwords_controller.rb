@@ -21,10 +21,10 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       password_automatically_set: false
     }
 
-    result = Users::UpdateService.new(@user, password_attributes).execute
+    result = Users::UpdateService.new(current_user, password_attributes.merge(user: @user)).execute
 
     if result[:status] == :success
-      Users::UpdateService.new(@user, password_expires_at: nil).execute
+      Users::UpdateService.new(current_user, user: @user, password_expires_at: nil).execute
 
       redirect_to root_path, notice: 'Password successfully changed'
     else
@@ -46,7 +46,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       return
     end
 
-    result = Users::UpdateService.new(@user, password_attributes).execute
+    result = Users::UpdateService.new(current_user, password_attributes.merge(user: @user)).execute
 
     if result[:status] == :success
       flash[:notice] = "Password was successfully updated. Please login with it"
@@ -77,7 +77,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
   end
 
   def authorize_change_password!
-    render_404 if @user.ldap_user?
+    render_404 unless @user.allow_password_authentication?
   end
 
   def user_params

@@ -9,7 +9,7 @@ describe 'Cherry-pick Commits' do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
     visit project_commit_path(project, master_pickable_commit.id)
   end
 
@@ -64,7 +64,7 @@ describe 'Cherry-pick Commits' do
     end
   end
 
-  context "I cherry-pick a commit from a different branch", js: true do
+  context "I cherry-pick a commit from a different branch", :js do
     it do
       find('.header-action-buttons a.dropdown-toggle').click
       find(:css, "a[href='#modal-cherry-pick-commit']").click

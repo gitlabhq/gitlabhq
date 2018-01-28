@@ -1,9 +1,10 @@
 require('spec_helper')
 
-describe ProfilesController do
-  describe "PUT update" do
-    it "allows an email update from a user without an external email address" do
-      user = create(:user)
+describe ProfilesController, :request_store do
+  let(:user) { create(:user) }
+
+  describe 'PUT update' do
+    it 'allows an email update from a user without an external email address' do
       sign_in(user)
 
       put :update,
@@ -15,7 +16,21 @@ describe ProfilesController do
       expect(user.unconfirmed_email).to eq('john@gmail.com')
     end
 
-    it "ignores an email update from a user with an external email address" do
+    it "allows an email update without confirmation if existing verified email" do
+      user = create(:user)
+      create(:email, :confirmed, user: user, email: 'john@gmail.com')
+      sign_in(user)
+
+      put :update,
+          user: { email: "john@gmail.com", name: "John" }
+
+      user.reload
+
+      expect(response.status).to eq(302)
+      expect(user.unconfirmed_email).to eq nil
+    end
+
+    it 'ignores an email update from a user with an external email address' do
       stub_omniauth_setting(sync_profile_from_provider: ['ldap'])
       stub_omniauth_setting(sync_profile_attributes: true)
 
@@ -32,7 +47,7 @@ describe ProfilesController do
       expect(ldap_user.unconfirmed_email).not_to eq('john@gmail.com')
     end
 
-    it "ignores an email and name update but allows a location update from a user with external email and name, but not external location" do
+    it 'ignores an email and name update but allows a location update from a user with external email and name, but not external location' do
       stub_omniauth_setting(sync_profile_from_provider: ['ldap'])
       stub_omniauth_setting(sync_profile_attributes: true)
 
@@ -49,6 +64,37 @@ describe ProfilesController do
       expect(ldap_user.unconfirmed_email).not_to eq('john@gmail.com')
       expect(ldap_user.name).not_to eq('John')
       expect(ldap_user.location).to eq('City, Country')
+    end
+  end
+
+  describe 'PUT update_username' do
+    let(:namespace) { user.namespace }
+    let(:project) { create(:project_empty_repo, namespace: namespace) }
+    let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:new_username) { 'renamedtosomethingelse' }
+
+    it 'allows username change' do
+      sign_in(user)
+
+      put :update_username,
+        user: { username: new_username }
+
+      user.reload
+
+      expect(response.status).to eq(302)
+      expect(user.username).to eq(new_username)
+    end
+
+    it 'moves dependent projects to new namespace' do
+      sign_in(user)
+
+      put :update_username,
+        user: { username: new_username }
+
+      user.reload
+
+      expect(response.status).to eq(302)
+      expect(gitlab_shell.exists?(project.repository_storage_path, "#{new_username}/#{project.path}.git")).to be_truthy
     end
   end
 end

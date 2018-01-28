@@ -1,14 +1,6 @@
 require 'spec_helper'
 
 describe MembersHelper do
-  describe '#action_member_permission' do
-    let(:project_member) { build(:project_member) }
-    let(:group_member) { build(:group_member) }
-
-    it { expect(action_member_permission(:admin, project_member)).to eq :admin_project_member }
-    it { expect(action_member_permission(:admin, group_member)).to eq :admin_group_member }
-  end
-
   describe '#remove_member_message' do
     let(:requester) { create(:user) }
     let(:project) { create(:project, :public, :access_requestable) }

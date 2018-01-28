@@ -1,7 +1,10 @@
 require 'rspec/mocks'
+require 'toml'
 
 module TestEnv
   extend self
+
+  ComponentFailedToInstallError = Class.new(StandardError)
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
@@ -15,8 +18,9 @@ module TestEnv
     'feature_conflict'                   => 'bb5206f',
     'fix'                                => '48f0be4',
     'improve/awesome'                    => '5937ac0',
+    'merged-target'                      => '21751bf',
     'markdown'                           => '0ed8c6c',
-    'lfs'                                => 'be93687',
+    'lfs'                                => '55bc176',
     'master'                             => 'b83d6e3',
     'merge-test'                         => '5937ac0',
     "'test'"                             => 'e56497b',
@@ -43,7 +47,8 @@ module TestEnv
     'v1.1.0'                             => 'b83d6e3',
     'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd',
-    'add-pdf-text-binary'                => '79faa7b'
+    'add-pdf-text-binary'                => '79faa7b',
+    'add_images_and_changes'             => '010d106'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -63,6 +68,11 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
+    unless Rails.env.test?
+      puts "\nTestEnv.init can only be run if `RAILS_ENV` is set to 'test' not '#{Rails.env}'!\n"
+      exit 1
+    end
+
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
@@ -73,15 +83,11 @@ module TestEnv
 
     setup_gitaly
 
-    # Create repository for FactoryGirl.create(:project)
+    # Create repository for FactoryBot.create(:project)
     setup_factory_repo
 
-    # Create repository for FactoryGirl.create(:forked_project_with_submodules)
+    # Create repository for FactoryBot.create(:forked_project_with_submodules)
     setup_forked_repo
-  end
-
-  def cleanup
-    stop_gitaly
   end
 
   def disable_mailer
@@ -111,6 +117,7 @@ module TestEnv
     FileUtils.mkdir_p(repos_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
+    FileUtils.mkdir_p(artifacts_path)
   end
 
   def clean_gitlab_test_path
@@ -122,50 +129,26 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    puts "\n==> Setting up Gitlab Shell..."
-    start = Time.now
-    gitlab_shell_dir = Gitlab.config.gitlab_shell.path
-    shell_needs_update = component_needs_update?(gitlab_shell_dir,
-      Gitlab::Shell.version_required)
-
-    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
-      puts "\nGitLab Shell failed to install, cleaning up #{gitlab_shell_dir}!\n"
-      FileUtils.rm_rf(gitlab_shell_dir)
-      exit 1
-    end
-
-    puts "    GitLab Shell setup in #{Time.now - start} seconds...\n"
+    component_timed_setup('GitLab Shell',
+      install_dir: Gitlab.config.gitlab_shell.path,
+      version: Gitlab::Shell.version_required,
+      task: 'gitlab:shell:install')
   end
 
   def setup_gitaly
-    puts "\n==> Setting up Gitaly..."
-    start = Time.now
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
-    if gitaly_dir_stale?(gitaly_dir)
-      puts "    Gitaly is outdated, cleaning up #{gitaly_dir}!"
-      FileUtils.rm_rf(gitaly_dir)
+    component_timed_setup('Gitaly',
+      install_dir: gitaly_dir,
+      version: Gitlab::GitalyClient.expected_server_version,
+      task: "gitlab:gitaly:install[#{gitaly_dir}]") do
+
+      # Always re-create config, in case it's outdated. This is fast anyway.
+      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
+
+      start_gitaly(gitaly_dir)
     end
-
-    gitaly_needs_update = component_needs_update?(gitaly_dir,
-      Gitlab::GitalyClient.expected_server_version)
-
-    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      puts "\nGitaly failed to install, cleaning up #{gitaly_dir}!\n"
-      FileUtils.rm_rf(gitaly_dir)
-      exit 1
-    end
-
-    start_gitaly(gitaly_dir)
-    puts "    Gitaly setup in #{Time.now - start} seconds...\n"
-  end
-
-  def gitaly_dir_stale?(dir)
-    gitaly_executable = File.join(dir, 'gitaly')
-    return false unless File.exist?(gitaly_executable)
-
-    File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION'))
   end
 
   def start_gitaly(gitaly_dir)
@@ -176,6 +159,8 @@ module TestEnv
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
+    Kernel.at_exit { stop_gitaly }
+
     wait_gitaly
   end
 
@@ -200,6 +185,8 @@ module TestEnv
     return unless @gitaly_pid
 
     Process.kill('KILL', @gitaly_pid)
+  rescue Errno::ESRCH
+    # The process can already be gone if the test run was INTerrupted.
   end
 
   def setup_factory_repo
@@ -230,7 +217,7 @@ module TestEnv
   end
 
   def copy_repo(project, bare_repo:, refs:)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.disk_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -247,6 +234,10 @@ module TestEnv
 
   def pages_path
     Gitlab.config.pages.path
+  end
+
+  def artifacts_path
+    Gitlab.config.artifacts.path
   end
 
   # When no cached assets exist, manually hit the root path to create them
@@ -316,11 +307,52 @@ module TestEnv
 
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
-      cleanup && clean_gitlab_test_path && init unless reset.call
+      clean_gitlab_test_path && init unless reset.call
+    end
+  end
+
+  def component_timed_setup(component, install_dir:, version:, task:)
+    puts "\n==> Setting up #{component}..."
+    start = Time.now
+
+    ensure_component_dir_name_is_correct!(component, install_dir)
+
+    # On CI, once installed, components never need update
+    return if File.exist?(install_dir) && ENV['CI']
+
+    if component_needs_update?(install_dir, version)
+      # Cleanup the component entirely to ensure we start fresh
+      FileUtils.rm_rf(install_dir)
+
+      unless system('rake', task)
+        raise ComponentFailedToInstallError
+      end
+    end
+
+    yield if block_given?
+
+  rescue ComponentFailedToInstallError
+    puts "\n#{component} failed to install, cleaning up #{install_dir}!\n"
+    FileUtils.rm_rf(install_dir)
+    exit 1
+  ensure
+    puts "    #{component} setup in #{Time.now - start} seconds...\n"
+  end
+
+  def ensure_component_dir_name_is_correct!(component, path)
+    actual_component_dir_name = File.basename(path)
+    expected_component_dir_name = component.parameterize
+
+    unless actual_component_dir_name == expected_component_dir_name
+      puts "    #{component} install dir should be named '#{expected_component_dir_name}', not '#{actual_component_dir_name}' (full install path given was '#{path}')!\n"
+      exit 1
     end
   end
 
   def component_needs_update?(component_folder, expected_version)
+    # Allow local overrides of the component for tests during development
+    return false if Rails.env.test? && File.symlink?(component_folder)
+
     version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions

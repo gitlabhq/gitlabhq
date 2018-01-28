@@ -1,6 +1,5 @@
-/* global Flash */
-
-import AjaxFilter from '~/droplab/plugins/ajax_filter';
+import Flash from '../flash';
+import AjaxFilter from '../droplab/plugins/ajax_filter';
 import './filtered_search_dropdown';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
@@ -15,6 +14,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         params: {
           per_page: 20,
           active: true,
+          group_id: this.getGroupId(),
           project_id: this.getProjectId(),
           current_user: true,
         },
@@ -25,7 +25,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         },
         onError() {
           /* eslint-disable no-new */
-          new Flash('An error occured fetching the dropdown data.');
+          new Flash('An error occurred fetching the dropdown data.');
           /* eslint-enable no-new */
         },
       },
@@ -45,6 +45,10 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   renderContent(forceShowList = false) {
     this.droplab.changeHookList(this.hookId, this.dropdown, [AjaxFilter], this.config);
     super.renderContent(forceShowList);
+  }
+
+  getGroupId() {
+    return this.input.getAttribute('data-group-id');
   }
 
   getProjectId() {

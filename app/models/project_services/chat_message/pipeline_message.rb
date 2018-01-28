@@ -9,7 +9,7 @@ module ChatMessage
     def initialize(data)
       super
 
-      @user_name = data.dig(:user, :name) || 'API'
+      @user_name = data.dig(:user, :username) || 'API'
 
       pipeline_attributes = data[:object_attributes]
       @ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
@@ -35,7 +35,7 @@ module ChatMessage
 
     def activity
       {
-        title: "Pipeline #{pipeline_link} of #{ref_type} #{branch_link} by #{user_name} #{humanized_status}",
+        title: "Pipeline #{pipeline_link} of #{ref_type} #{branch_link} by #{user_combined_name} #{humanized_status}",
         subtitle: "in #{project_link}",
         text: "in #{pretty_duration(duration)}",
         image: user_avatar || ''
@@ -45,7 +45,7 @@ module ChatMessage
     private
 
     def message
-      "#{project_link}: Pipeline #{pipeline_link} of #{ref_type} #{branch_link} by #{user_name} #{humanized_status} in #{pretty_duration(duration)}"
+      "#{project_link}: Pipeline #{pipeline_link} of #{ref_type} #{branch_link} by #{user_combined_name} #{humanized_status} in #{pretty_duration(duration)}"
     end
 
     def humanized_status

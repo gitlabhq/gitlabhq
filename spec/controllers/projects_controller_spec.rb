@@ -1,6 +1,8 @@
 require('spec_helper')
 
 describe ProjectsController do
+  include ProjectForksHelper
+
   let(:project) { create(:project) }
   let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
@@ -22,7 +24,7 @@ describe ProjectsController do
 
             get :new, namespace_id: group.id
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to render_template('new')
           end
         end
@@ -31,7 +33,7 @@ describe ProjectsController do
           it 'responds with status 404' do
             get :new, namespace_id: group.id
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
             expect(response).not_to render_template('new')
           end
         end
@@ -100,7 +102,7 @@ describe ProjectsController do
         render_views
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
         end
 
@@ -139,8 +141,9 @@ describe ProjectsController do
       end
     end
 
-    context 'when the storage is not available', broken_storage: true do
-      let(:project) { create(:project, :broken_storage) }
+    context 'when the storage is not available', :broken_storage do
+      set(:project) { create(:project, :broken_storage) }
+
       before do
         project.add_developer(user)
         sign_in(user)
@@ -149,7 +152,7 @@ describe ProjectsController do
       it 'renders a 503' do
         get :show, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(503)
+        expect(response).to have_gitlab_http_status(503)
       end
     end
 
@@ -219,6 +222,14 @@ describe ProjectsController do
         get :show, namespace_id: public_project.namespace, id: public_project
         expect(response).to render_template('_files')
       end
+
+      it "renders the readme view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('readme')
+
+        get :show, namespace_id: public_project.namespace, id: public_project
+        expect(response).to render_template('_readme')
+      end
     end
 
     context "when the url contains .atom" do
@@ -246,8 +257,29 @@ describe ProjectsController do
 
         get :show, namespace_id: project.namespace, id: project, format: :git
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(namespace_project_path)
+      end
+    end
+
+    context 'when the project is forked and has a repository', :request_store do
+      let(:public_project) { create(:project, :public, :repository) }
+      let(:other_user) { create(:user) }
+
+      render_views
+
+      before do
+        # View the project as a user that does not have any rights
+        sign_in(other_user)
+
+        fork_project(public_project)
+      end
+
+      it 'does not increase the number of queries when the project is forked' do
+        expected_query = /#{public_project.fork_network.find_forks_in(other_user.namespace).to_sql}/
+
+        expect { get(:show, namespace_id: public_project.namespace, id: public_project) }
+          .not_to exceed_query_limit(1).for_query(expected_query)
       end
     end
   end
@@ -269,7 +301,7 @@ describe ProjectsController do
 
         expect(project.path).to include 'renamed_path'
         expect(assigns(:repository).path).to include project.path
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -285,7 +317,25 @@ describe ProjectsController do
           .not_to change { project.reload.path }
 
         expect(controller).to set_flash[:alert].to(/container registry tags/)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    it 'updates Fast Forward Merge attributes' do
+      controller.instance_variable_set(:@project, project)
+
+      params = {
+        merge_method: :ff
+      }
+
+      put :update,
+          namespace_id: project.namespace,
+          id: project.id,
+          project: params
+
+      expect(response).to have_gitlab_http_status(302)
+      params.each do |param, value|
+        expect(project.public_send(param)).to eq(value)
       end
     end
 
@@ -316,7 +366,7 @@ describe ProjectsController do
       project.reload
 
       expect(project.namespace).to eq(new_namespace)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     context 'when new namespace is empty' do
@@ -335,7 +385,7 @@ describe ProjectsController do
         project.reload
 
         expect(project.namespace).to eq(old_namespace)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
       end
     end
@@ -352,16 +402,16 @@ describe ProjectsController do
       delete :destroy, namespace_id: project.namespace, id: project
 
       expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(response).to redirect_to(dashboard_projects_path)
     end
 
     context "when the project is forked" do
       let(:project)      { create(:project, :repository) }
-      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+      let(:forked_project) { fork_project(project, nil, repository: true) }
       let(:merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -369,24 +419,53 @@ describe ProjectsController do
         project.merge_requests << merge_request
         sign_in(admin)
 
-        delete :destroy, namespace_id: fork_project.namespace, id: fork_project
+        delete :destroy, namespace_id: forked_project.namespace, id: forked_project
 
         expect(merge_request.reload.state).to eq('closed')
       end
     end
   end
 
-  describe 'PUT #new_issue_address' do
+  describe 'PUT #new_issuable_address for issue' do
     subject do
-      put :new_issue_address,
+      put :new_issuable_address,
         namespace_id: project.namespace,
-        id: project
+        id: project,
+        issuable_type: 'issue'
       user.reload
     end
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+    end
+
+    it 'has http status 200' do
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'changes the user incoming email token' do
+      expect { subject }.to change { user.incoming_email_token }
+    end
+
+    it 'changes projects new issue address' do
+      expect { subject }.to change { project.new_issuable_address(user, 'issue') }
+    end
+  end
+
+  describe 'PUT #new_issuable_address for merge request' do
+    subject do
+      put :new_issuable_address,
+        namespace_id: project.namespace,
+        id: project,
+        issuable_type: 'merge_request'
+      user.reload
+    end
+
+    before do
+      sign_in(user)
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -398,8 +477,8 @@ describe ProjectsController do
       expect { subject }.to change { user.incoming_email_token }
     end
 
-    it 'changes projects new issue address' do
-      expect { subject }.to change { project.new_issue_address(user) }
+    it 'changes projects new merge request address' do
+      expect { subject }.to change { project.new_issuable_address(user, 'merge_request') }
     end
   end
 
@@ -436,18 +515,14 @@ describe ProjectsController do
       end
 
       context 'with forked project' do
-        let(:project_fork) { create(:project, :repository, namespace: user.namespace) }
-
-        before do
-          create(:forked_project_link, forked_to_project: project_fork)
-        end
+        let(:forked_project) { fork_project(create(:project, :public), user) }
 
         it 'removes fork from project' do
           delete(:remove_fork,
-              namespace_id: project_fork.namespace.to_param,
-              id: project_fork.to_param, format: :js)
+              namespace_id: forked_project.namespace.to_param,
+              id: forked_project.to_param, format: :js)
 
-          expect(project_fork.forked?).to be_falsey
+          expect(forked_project.reload.forked?).to be_falsey
           expect(flash[:notice]).to eq('The fork relationship has been removed.')
           expect(response).to render_template(:remove_fork)
         end
@@ -471,20 +546,21 @@ describe ProjectsController do
       delete(:remove_fork,
           namespace_id: project.namespace,
           id: project, format: :js)
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
   end
 
   describe "GET refs" do
     let(:public_project) { create(:project, :public, :repository) }
 
-    it "gets a list of branches and tags" do
-      get :refs, namespace_id: public_project.namespace, id: public_project
+    it 'gets a list of branches and tags' do
+      get :refs, namespace_id: public_project.namespace, id: public_project, sort: 'updated_desc'
 
       parsed_body = JSON.parse(response.body)
-      expect(parsed_body["Branches"]).to include("master")
-      expect(parsed_body["Tags"]).to include("v1.0.0")
-      expect(parsed_body["Commits"]).to be_nil
+      expect(parsed_body['Branches']).to include('master')
+      expect(parsed_body['Tags'].first).to eq('v1.1.0')
+      expect(parsed_body['Tags'].last).to eq('v1.0.0')
+      expect(parsed_body['Commits']).to be_nil
     end
 
     it "gets a list of branches, tags and commits" do
@@ -519,7 +595,7 @@ describe ProjectsController do
             get :show, namespace_id: public_project.namespace, id: public_project
 
             expect(assigns(:project)).to eq(public_project)
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
 
@@ -558,13 +634,13 @@ describe ProjectsController do
         it 'does not 404' do
           post :toggle_star, namespace_id: public_project.namespace, id: public_project.path.upcase
 
-          expect(response).not_to have_http_status(404)
+          expect(response).not_to have_gitlab_http_status(404)
         end
 
         it 'does not redirect to the correct casing' do
           post :toggle_star, namespace_id: public_project.namespace, id: public_project.path.upcase
 
-          expect(response).not_to have_http_status(301)
+          expect(response).not_to have_gitlab_http_status(301)
         end
       end
 
@@ -574,7 +650,7 @@ describe ProjectsController do
         it 'returns not found' do
           post :toggle_star, namespace_id: 'foo', id: 'bar'
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -588,13 +664,13 @@ describe ProjectsController do
         it 'does not 404' do
           delete :destroy, namespace_id: project.namespace, id: project.path.upcase
 
-          expect(response).not_to have_http_status(404)
+          expect(response).not_to have_gitlab_http_status(404)
         end
 
         it 'does not redirect to the correct casing' do
           delete :destroy, namespace_id: project.namespace, id: project.path.upcase
 
-          expect(response).not_to have_http_status(301)
+          expect(response).not_to have_gitlab_http_status(301)
         end
       end
 
@@ -604,7 +680,7 @@ describe ProjectsController do
         it 'returns not found' do
           delete :destroy, namespace_id: 'foo', id: 'bar'
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -621,7 +697,7 @@ describe ProjectsController do
       it 'returns 302' do
         get :export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -633,7 +709,7 @@ describe ProjectsController do
       it 'returns 404' do
         get :export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -649,7 +725,7 @@ describe ProjectsController do
       it 'returns 302' do
         get :download_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -661,7 +737,7 @@ describe ProjectsController do
       it 'returns 404' do
         get :download_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -677,7 +753,7 @@ describe ProjectsController do
       it 'returns 302' do
         post :remove_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -689,7 +765,7 @@ describe ProjectsController do
       it 'returns 404' do
         post :remove_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -705,7 +781,7 @@ describe ProjectsController do
       it 'returns 302' do
         post :generate_new_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -717,7 +793,7 @@ describe ProjectsController do
       it 'returns 404' do
         post :generate_new_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

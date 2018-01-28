@@ -24,7 +24,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
     context 'JSON' do
       it 'restores models based on JSON' do
-        expect(@restored_project_json).to be true
+        expect(@restored_project_json).to be_truthy
       end
 
       it 'restore correct project features' do
@@ -63,6 +63,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
       end
 
+      it 'has issue assignees' do
+        expect(Issue.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
+      end
+
       it 'contains the merge access levels on a protected branch' do
         expect(ProtectedBranch.first.merge_access_levels).not_to be_empty
       end
@@ -91,26 +95,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
       end
 
-      it 'has the correct data for merge request st_diffs' do
-        # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
-        # one MergeRequestDiff uses the new format, where st_diffs is expected to be nil
-
-        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(8)
-      end
-
       it 'has the correct data for merge request diff files' do
-        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
+        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(55)
       end
 
-      it 'has the correct data for merge request diff commits in serialised and table formats' do
-        expect(MergeRequestDiff.where.not(st_commits: nil).count).to eq(7)
-        expect(MergeRequestDiffCommit.count).to eq(6)
+      it 'has the correct data for merge request diff commits' do
+        expect(MergeRequestDiffCommit.count).to eq(77)
       end
 
-      it 'has the correct time for merge request st_commits' do
-        st_commits = MergeRequestDiff.where.not(st_commits: nil).first.st_commits
-
-        expect(st_commits.first[:committed_date]).to be_kind_of(Time)
+      it 'has the correct data for merge request latest_merge_request_diff' do
+        MergeRequest.find_each do |merge_request|
+          expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.maximum(:id))
+        end
       end
 
       it 'has labels associated to label links, associated to issues' do
@@ -127,6 +123,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'has a project feature' do
         expect(@project.project_feature).not_to be_nil
+      end
+
+      it 'has custom attributes' do
+        expect(@project.custom_attributes.count).to eq(2)
       end
 
       it 'restores the correct service' do
@@ -147,7 +147,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has no source if source/target differ' do
-          expect(MergeRequest.find_by_title('MR2').source_project_id).to eq(-1)
+          expect(MergeRequest.find_by_title('MR2').source_project_id).to be_nil
         end
       end
 
@@ -179,6 +179,79 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
             end
         end
       end
+
+      context 'when restoring hierarchy of pipeline, stages and jobs' do
+        it 'restores pipelines' do
+          expect(Ci::Pipeline.all.count).to be 5
+        end
+
+        it 'restores pipeline stages' do
+          expect(Ci::Stage.all.count).to be 6
+        end
+
+        it 'correctly restores association between stage and a pipeline' do
+          expect(Ci::Stage.all).to all(have_attributes(pipeline_id: a_value > 0))
+        end
+
+        it 'restores statuses' do
+          expect(CommitStatus.all.count).to be 10
+        end
+
+        it 'correctly restores association between a stage and a job' do
+          expect(CommitStatus.all).to all(have_attributes(stage_id: a_value > 0))
+        end
+
+        it 'correctly restores association between a pipeline and a job' do
+          expect(CommitStatus.all).to all(have_attributes(pipeline_id: a_value > 0))
+        end
+      end
+    end
+  end
+
+  shared_examples 'restores project successfully' do
+    it 'correctly restores project' do
+      expect(shared.errors).to be_empty
+      expect(restored_project_json).to be_truthy
+    end
+  end
+
+  shared_examples 'restores project correctly' do |**results|
+    it 'has labels' do
+      expect(project.labels.size).to eq(results.fetch(:labels, 0))
+    end
+
+    it 'has label priorities' do
+      expect(project.labels.first.priorities).not_to be_empty
+    end
+
+    it 'has milestones' do
+      expect(project.milestones.size).to eq(results.fetch(:milestones, 0))
+    end
+
+    it 'has issues' do
+      expect(project.issues.size).to eq(results.fetch(:issues, 0))
+    end
+
+    it 'has issue with group label and project label' do
+      labels = project.issues.first.labels
+
+      expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
+    end
+  end
+
+  shared_examples 'restores group correctly' do |**results|
+    it 'has group label' do
+      expect(project.group.labels.size).to eq(results.fetch(:labels, 0))
+    end
+
+    it 'has group milestone' do
+      expect(project.group.milestones.size).to eq(results.fetch(:milestones, 0))
+    end
+
+    it 'has issue with group label' do
+      labels = project.issues.first.labels
+
+      expect(labels.where(type: "GroupLabel").count).to eq(results.fetch(:first_issue_labels, 0))
     end
   end
 
@@ -190,33 +263,45 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     let(:restored_project_json) { project_tree_restorer.restore }
 
     before do
-      project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
-
       allow(shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
     end
 
-    context 'project.json file access check' do
-      it 'does not read a symlink' do
-        Dir.mktmpdir do |tmpdir|
-          setup_symlink(tmpdir, 'project.json')
-          allow(shared).to receive(:export_path).and_call_original
+    context 'with a simple project' do
+      before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
 
-          restored_project_json
+        restored_project_json
+      end
 
-          expect(shared.errors.first).to be_nil
+      it_behaves_like 'restores project correctly',
+                      issues: 1,
+                      labels: 1,
+                      milestones: 1,
+                      first_issue_labels: 1
+
+      context 'project.json file access check' do
+        it 'does not read a symlink' do
+          Dir.mktmpdir do |tmpdir|
+            setup_symlink(tmpdir, 'project.json')
+            allow(shared).to receive(:export_path).and_call_original
+
+            restored_project_json
+
+            expect(shared.errors).to be_empty
+          end
         end
       end
-    end
 
-    context 'when there is an existing build with build token' do
-      it 'restores project json correctly' do
-        create(:ci_build, token: 'abcd')
+      context 'when there is an existing build with build token' do
+        before do
+          create(:ci_build, token: 'abcd')
+        end
 
-        expect(restored_project_json).to be true
+        it_behaves_like 'restores project successfully'
       end
     end
 
-    context 'with group' do
+    context 'with a project that has a group' do
       let!(:project) do
         create(:project,
                :builds_disabled,
@@ -227,43 +312,22 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.group.json")
 
         restored_project_json
       end
 
-      it 'correctly restores project' do
-        expect(restored_project_json).to be_truthy
-        expect(shared.errors).to be_empty
-      end
+      it_behaves_like 'restores project successfully'
+      it_behaves_like 'restores project correctly',
+                      issues: 2,
+                      labels: 1,
+                      milestones: 1,
+                      first_issue_labels: 1
 
-      it 'has labels' do
-        expect(project.labels.count).to eq(2)
-      end
-
-      it 'creates group label' do
-        expect(project.group.labels.count).to eq(1)
-      end
-
-      it 'has label priorities' do
-        expect(project.labels.first.priorities).not_to be_empty
-      end
-
-      it 'has milestones' do
-        expect(project.milestones.count).to eq(1)
-      end
-
-      it 'has issue' do
-        expect(project.issues.count).to eq(1)
-        expect(project.issues.first.labels.count).to eq(2)
-      end
-
-      it 'has issue with group label and project label' do
-        labels = project.issues.first.labels
-
-        expect(labels.where(type: "GroupLabel").count).to eq(1)
-        expect(labels.where(type: "ProjectLabel").count).to eq(1)
-      end
+      it_behaves_like 'restores group correctly',
+                      labels: 1,
+                      milestones: 1,
+                      first_issue_labels: 1
     end
   end
 end

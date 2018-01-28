@@ -70,17 +70,20 @@ module API
         optional :import_url, type: String, desc: 'URL from which the project is imported'
       end
 
-      def present_projects(options = {})
-        projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+      def load_projects
+        ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+      end
+
+      def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_statistics if params[:statistics]
-        projects = projects.with_issues_enabled if params[:with_issues_enabled]
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
+        projects = paginate(projects)
 
         if current_user
-          projects = projects.includes(:route, :taggings, namespace: :route)
-          project_members = current_user.project_members
-          group_members = current_user.group_members
+          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
+          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
         end
 
         options = options.reverse_merge(
@@ -92,7 +95,7 @@ module API
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        present paginate(projects), options
+        present options[:with].prepare_relation(projects, options), options
       end
     end
 
@@ -111,11 +114,13 @@ module API
 
         params[:user] = user
 
-        present_projects
+        present_projects load_projects
       end
     end
 
     resource :projects do
+      include CustomAttributesEndpoints
+
       desc 'Get a list of visible projects for authenticated user' do
         success Entities::BasicProjectDetails
       end
@@ -124,7 +129,7 @@ module API
         use :statistics_params
       end
       get do
-        present_projects
+        present_projects load_projects
       end
 
       desc 'Create new project' do
@@ -149,6 +154,7 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
           render_validation_error!(project)
         end
       end
@@ -227,6 +233,18 @@ module API
           present forked_project, with: Entities::Project,
                                   user_can_admin_project: can?(current_user, :admin_project, forked_project)
         end
+      end
+
+      desc 'List forks of this project' do
+        success Entities::Project
+      end
+      params do
+        use :collection_params
+      end
+      get ':id/forks' do
+        forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
+
+        present_projects forks
       end
 
       desc 'Update an existing project' do
@@ -350,15 +368,16 @@ module API
       post ":id/fork/:forked_from_id" do
         authenticated_as_admin!
 
-        forked_from_project = find_project!(params[:forked_from_id])
-        not_found!("Source Project") unless forked_from_project
+        fork_from_project = find_project!(params[:forked_from_id])
 
-        if user_project.forked_from_project.nil?
-          user_project.create_forked_project_link(forked_to_project_id: user_project.id, forked_from_project_id: forked_from_project.id)
+        not_found!("Source Project") unless fork_from_project
 
-          ::Projects::ForksCountService.new(forked_from_project).refresh_cache
+        result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
+
+        if result
+          present user_project.reload, with: Entities::Project
         else
-          render_api_error!("Project already forked", 409)
+          render_api_error!("Project already forked", 409) if user_project.forked?
         end
       end
 
@@ -366,11 +385,11 @@ module API
       delete ":id/fork" do
         authorize! :remove_fork_project, user_project
 
-        if user_project.forked?
-          destroy_conditionally!(user_project.forked_project_link)
-        else
-          not_modified!
+        result = destroy_conditionally!(user_project) do
+          ::Projects::UnlinkForkService.new(user_project, current_user).execute
         end
+
+        result ? status(204) : not_modified!
       end
 
       desc 'Share the project with a group' do

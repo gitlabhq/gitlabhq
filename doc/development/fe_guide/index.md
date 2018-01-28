@@ -29,34 +29,6 @@ For our currently-supported browsers, see our [requirements][requirements].
 
 ## Development Process
 
-When you are assigned an issue please follow the next steps:
-
-### Divide a big feature into small Merge Requests
-1. Big Merge Request are painful to review. In order to make this process easier we
-must break a big feature into smaller ones and create a Merge Request for each step.
-1. First step is to create a branch from `master`, let's call it `new-feature`. This branch
-will be the recipient of all the smaller Merge Requests. Only this one will be merged to master.
-1. Don't do any work on this one, let's keep it synced with master.
-1. Create a new branch from `new-feature`, let's call it `new-feature-step-1`. We advise you
-to clearly identify which step the branch represents.
-1. Do the first part of the modifications in this branch. The target branch of this Merge Request
-should be `new-feature`.
-1. Once `new-feature-step-1` gets merged into `new-feature` we can continue our work. Create a new
-branch from `new-feature`, let's call it `new-feature-step-2` and repeat the process done before.
-
-```shell
-master
-└─ new-feature
-   ├─ new-feature-step-1
-   ├─ new-feature-step-2
-   └─ new-feature-step-3
-```
-
-**Tips**
-- Make sure `new-feature` branch is always synced with `master`: merge master frequently.
-- Do the same for the feature branch you have opened. This can be accomplished by merging `master` into `new-feature` and `new-feature` into `new-feature-step-*`
-- Avoid rewriting history.
-
 ### Share your work early
 1. Before writing code guarantee your vision of the architecture is aligned with
 GitLab's architecture.
@@ -82,7 +54,8 @@ or make changes to our frontend development guidelines.
 
 ---
 
-## [Testing](testing.md)
+## [Testing](../testing_guide/frontend_testing.md)
+
 How we write frontend tests, run the GitLab test suite, and debug test related
 issues.
 
@@ -96,6 +69,16 @@ Common JavaScript design patterns in GitLab's codebase.
 ## [Vue.js Best Practices](vue.md)
 Vue specific design patterns and practices.
 
+---
+
+## [Axios](axios.md)
+Axios specific practices and gotchas.
+
+## [Icons](icons.md)
+How we use SVG for our Icons.
+
+## [Dropdowns](dropdowns.md)
+How we use dropdowns.
 ---
 
 ## Style Guides
@@ -124,6 +107,10 @@ Frontend security practices.
 
 ## [Accessibility](accessibility.md)
 Our accessibility standards and resources.
+
+## [Internationalization (i18n) and Translations](../i18n/externalization.md)
+Frontend internationalization support is described in [this document](../i18n/).
+The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
 
 [rails]: http://rubyonrails.org/

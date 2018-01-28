@@ -81,8 +81,32 @@ describe Gitlab::ProjectSearchResults do
         expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
       end
 
+      context 'when the matching filename contains a colon' do
+        let(:search_result) { "\nmaster:testdata/project::function1.yaml\x001\x00---\n" }
+
+        it 'returns a valid FoundBlob' do
+          expect(subject.filename).to eq('testdata/project::function1.yaml')
+          expect(subject.basename).to eq('testdata/project::function1')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq('---')
+        end
+      end
+
+      context 'when the matching content contains a number surrounded by colons' do
+        let(:search_result) { "\nmaster:testdata/foo.txt\x001\x00blah:9:blah" }
+
+        it 'returns a valid FoundBlob' do
+          expect(subject.filename).to eq('testdata/foo.txt')
+          expect(subject.basename).to eq('testdata/foo')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq('blah:9:blah')
+        end
+      end
+
       context "when filename has extension" do
-        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
+        let(:search_result) { "master:CONTRIBUTE.md\x005\x00- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
         it { expect(subject.path).to eq('CONTRIBUTE.md') }
         it { expect(subject.filename).to eq('CONTRIBUTE.md') }
@@ -90,7 +114,7 @@ describe Gitlab::ProjectSearchResults do
       end
 
       context "when file under directory" do
-        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
+        let(:search_result) { "master:a/b/c.md\x005\x00a b c\n" }
 
         it { expect(subject.path).to eq('a/b/c.md') }
         it { expect(subject.filename).to eq('a/b/c.md') }
@@ -135,7 +159,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'finds by content' do
-      expect(results).to include("master:Title.md:1:Content\n")
+      expect(results).to include("master:Title.md\x001\x00Content\n")
     end
   end
 
@@ -170,7 +194,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'does not list project confidential issues for project members with guest role' do
-      project.team << [member, :guest]
+      project.add_guest(member)
 
       results = described_class.new(member, project, query)
       issues = results.objects('issues')
@@ -202,7 +226,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'lists project confidential issues for project members' do
-      project.team << [member, :developer]
+      project.add_developer(member)
 
       results = described_class.new(member, project, query)
       issues = results.objects('issues')
@@ -281,12 +305,12 @@ describe Gitlab::ProjectSearchResults do
       let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
       let(:team_master) do
         user = create(:user, username: 'private-project-master')
-        private_project.team << [user, :master]
+        private_project.add_master(user)
         user
       end
       let(:team_reporter) do
         user = create(:user, username: 'private-project-reporter')
-        private_project.team << [user, :reporter]
+        private_project.add_reporter(user)
         user
       end
 

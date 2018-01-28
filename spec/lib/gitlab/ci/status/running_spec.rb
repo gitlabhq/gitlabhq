@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::Running do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_running' }
+    it { expect(subject.icon).to eq 'status_running' }
   end
 
   describe '#favicon' do

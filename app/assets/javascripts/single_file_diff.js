@@ -1,6 +1,8 @@
 /* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
 import FilesCommentButton from './files_comment_button';
+import imageDiffHelper from './image_diff/helpers/index';
+import syntaxHighlight from './syntax_highlight';
 
 const WRAPPER = '<div class="diff-content"></div>';
 const LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
@@ -63,7 +65,7 @@ export default class SingleFileDiff {
         _this.loadingContent.hide();
         if (data.html) {
           _this.content = $(data.html);
-          _this.content.syntaxHighlight();
+          syntaxHighlight(_this.content);
         } else {
           _this.hasError = true;
           _this.content = $(ERROR_HTML);
@@ -74,7 +76,11 @@ export default class SingleFileDiff {
           gl.diffNotesCompileComponents();
         }
 
-        FilesCommentButton.init($(_this.file));
+        const $file = $(_this.file);
+        FilesCommentButton.init($file);
+
+        const canCreateNote = $file.closest('.files').is('[data-can-create-note]');
+        imageDiffHelper.initImageDiff($file[0], canCreateNote);
 
         if (cb) cb();
       };

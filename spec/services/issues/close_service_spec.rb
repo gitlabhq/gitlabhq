@@ -9,9 +9,9 @@ describe Issues::CloseService do
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do
@@ -42,7 +42,7 @@ describe Issues::CloseService do
       service.execute(issue)
     end
 
-    it 'refreshes the number of open issues' do
+    it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
       expect { service.execute(issue) }
         .to change { project.open_issues_count }.from(1).to(0)
     end

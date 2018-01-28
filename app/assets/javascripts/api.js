@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',
@@ -6,6 +7,7 @@ const Api = {
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
+  projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
   groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
@@ -15,6 +17,8 @@ const Api = {
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
   commitPath: '/api/:version/projects/:id/repository/commits',
+  branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
+  createBranchPath: '/api/:version/projects/:id/repository/branches',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)
@@ -74,6 +78,14 @@ const Api = {
       .done(projects => callback(projects));
   },
 
+  // Return single project
+  project(projectPath) {
+    const url = Api.buildUrl(Api.projectPath)
+            .replace(':id', encodeURIComponent(projectPath));
+
+    return axios.get(url);
+  },
+
   newLabel(namespacePath, projectPath, data, callback) {
     let url;
 
@@ -113,12 +125,25 @@ const Api = {
   commitMultiple(id, data) {
     // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
-      .replace(':id', id);
+      .replace(':id', encodeURIComponent(id));
     return this.wrapAjaxCall({
       url,
       type: 'POST',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data),
+      dataType: 'json',
+    });
+  },
+
+  branchSingle(id, branch) {
+    const url = Api.buildUrl(Api.branchSinglePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':branch', branch);
+
+    return this.wrapAjaxCall({
+      url,
+      type: 'GET',
+      contentType: 'application/json; charset=utf-8',
       dataType: 'json',
     });
   },
@@ -153,7 +178,7 @@ const Api = {
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {
     const url = Api.buildUrl(Api.issuableTemplatePath)
-      .replace(':key', key)
+      .replace(':key', encodeURIComponent(key))
       .replace(':type', type)
       .replace(':project_path', projectPath)
       .replace(':namespace_path', namespacePath);
@@ -193,6 +218,7 @@ const Api = {
         (jqXHR, textStatus, errorThrown) => {
           const error = new Error(`${options.url}: ${errorThrown}`);
           error.textStatus = textStatus;
+          if (jqXHR && jqXHR.responseJSON) error.responseJSON = jqXHR.responseJSON;
           reject(error);
         },
       );

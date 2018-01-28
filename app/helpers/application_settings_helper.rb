@@ -3,9 +3,9 @@ module ApplicationSettingsHelper
 
   include Gitlab::CurrentSettings
 
-  delegate  :gravatar_enabled?,
-            :signup_enabled?,
-            :password_authentication_enabled?,
+  delegate  :allow_signup?,
+            :gravatar_enabled?,
+            :password_authentication_enabled_for_web?,
             :akismet_enabled?,
             :koding_enabled?,
             to: :current_application_settings
@@ -30,9 +30,9 @@ module ApplicationSettingsHelper
   def enabled_project_button(project, protocol)
     case protocol
     when 'ssh'
-      ssh_clone_button(project, 'bottom', append_link: false)
+      ssh_clone_button(project, append_link: false)
     else
-      http_clone_button(project, 'bottom', append_link: false)
+      http_clone_button(project, append_link: false)
     end
   end
 
@@ -108,6 +108,37 @@ module ApplicationSettingsHelper
     options_for_select(Sidekiq::Queue.all.map(&:name), @application_setting.sidekiq_throttling_queues)
   end
 
+  def circuitbreaker_failure_count_help_text
+    health_link = link_to(s_('AdminHealthPageLink|health page'), admin_health_check_path)
+    api_link = link_to(s_('CircuitBreakerApiLink|circuitbreaker api'), help_page_path("api/repository_storage_health"))
+    message = _("The number of failures of after which GitLab will completely "\
+                "prevent access to the storage. The number of failures can be "\
+                "reset in the admin interface: %{link_to_health_page} or using "\
+                "the %{api_documentation_link}.")
+    message = message % { link_to_health_page: health_link, api_documentation_link: api_link }
+
+    message.html_safe
+  end
+
+  def circuitbreaker_access_retries_help_text
+    _('The number of attempts GitLab will make to access a storage.')
+  end
+
+  def circuitbreaker_failure_reset_time_help_text
+    _("The time in seconds GitLab will keep failure information. When no "\
+      "failures occur during this time, information about the mount is reset.")
+  end
+
+  def circuitbreaker_storage_timeout_help_text
+    _("The time in seconds GitLab will try to access storage. After this time a "\
+      "timeout error will be raised.")
+  end
+
+  def circuitbreaker_check_interval_help_text
+    _("The time in seconds between storage checks. When a previous check did "\
+      "complete yet, GitLab will skip a check.")
+  end
+
   def visible_attributes
     [
       :admin_notification_email,
@@ -115,7 +146,13 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :authorized_keys_enabled,
       :auto_devops_enabled,
+      :circuitbreaker_access_retries,
+      :circuitbreaker_check_interval,
+      :circuitbreaker_failure_count_threshold,
+      :circuitbreaker_failure_reset_time,
+      :circuitbreaker_storage_timeout,
       :clientside_sentry_dsn,
       :clientside_sentry_enabled,
       :container_registry_token_expire_delay,
@@ -134,6 +171,9 @@ module ApplicationSettingsHelper
       :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
+      :gitaly_timeout_default,
+      :gitaly_timeout_medium,
+      :gitaly_timeout_fast,
       :gravatar_enabled,
       :hashed_storage_enabled,
       :help_page_hide_commercial_content,
@@ -160,7 +200,8 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
-      :password_authentication_enabled,
+      :password_authentication_enabled_for_web,
+      :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
       :plantuml_enabled,
@@ -188,6 +229,15 @@ module ApplicationSettingsHelper
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
+      :throttle_unauthenticated_enabled,
+      :throttle_unauthenticated_requests_per_period,
+      :throttle_unauthenticated_period_in_seconds,
+      :throttle_authenticated_web_enabled,
+      :throttle_authenticated_web_requests_per_period,
+      :throttle_authenticated_web_period_in_seconds,
+      :throttle_authenticated_api_enabled,
+      :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_api_period_in_seconds,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,

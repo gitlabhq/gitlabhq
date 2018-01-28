@@ -63,6 +63,8 @@ common actions on issues or merge requests
      browse, and download job artifacts
      - [Pipeline settings](pipelines/settings.md): Set up Git strategy (choose the default way your repository is fetched from GitLab in a job),
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
+  - [GKE cluster integration](clusters/index.md): Connecting your GitLab project
+    with Google Kubernetes Engine
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
 website with GitLab Pages
 
@@ -91,6 +93,9 @@ from your fork to the upstream project
 
 ## Project settings
 
+Set the project's visibility level and  the access levels to its various pages
+and perform actions like archiving, renaming or transferring a project.
+
 Read through the documentation on [project settings](settings/index.md).
 
 ## Import or export a project
@@ -114,3 +119,32 @@ when a project is part of a group (under a
 [group namespace](../group/index.md#namespaces)).
 If you choose to leave a project you will no longer be a project
 member, therefore, unable to contribute.
+
+## Redirects when changing repository paths
+
+When a repository path changes, it is essential to smoothly transition from the
+old location to the new one. GitLab provides two kinds of redirects: the web UI
+and Git push/pull redirects.
+
+Depending on the situation, different things apply.
+
+When [transferring a project](settings/index.md#transferring-an-existing-project-into-another-namespace),
+or [renaming a user](../profile/index.md#changing-your-username) or
+[changing a group path](../group/index.md#changing-a-group-s-path):
+
+- **The redirect to the new URL is permanent**, which means that the original
+  namespace can't be claimed again by any group or user.
+- Existing web URLs for the namespace and anything under it (e.g., projects) will
+  redirect to the new URLs.
+- Starting with GitLab 10.3, existing Git remote URLs for projects under the
+  namespace will redirect to the new remote URL. Every time you push/pull to a
+  repository that has changed its location, a warning message to update
+  your remote will be displayed instead of rejecting your action.
+  This means that any automation scripts, or Git clients will continue to
+  work after a rename, making any transition a lot smoother.
+  To avoid pulling from or pushing to an entirely incorrect repository, the old
+  path will be reserved.
+
+When [renaming-a-repository](settings/index.md#renaming-a-repository), the same
+things apply, except for the Git push/pull actions which will be rejected with a
+warning message to change to the new remote URL.

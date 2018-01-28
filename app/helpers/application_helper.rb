@@ -306,7 +306,11 @@ module ApplicationHelper
     cookies["sidebar_collapsed"] == "true"
   end
 
-  def show_new_repo?
+  def show_new_ide?
     cookies["new_repo"] == "true" && body_data_page != 'projects:show'
+  end
+
+  def locale_path
+    asset_path("locale/#{Gitlab::I18n.locale}/app.js")
   end
 end

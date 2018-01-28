@@ -167,19 +167,36 @@ describe "Admin::Users" do
         it 'sees impersonation log out icon' do
           icon = first('.fa.fa-user-secret')
 
-          expect(icon).not_to eql nil
+          expect(icon).not_to be nil
         end
 
         it 'logs out of impersonated user back to original user' do
           find(:css, 'li.impersonation a').click
 
-          expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(current_user.username)
+          expect(page.find(:css, '.header-user .profile-link')['data-user']).to eq(current_user.username)
         end
 
         it 'is redirected back to the impersonated users page in the admin after stopping' do
           find(:css, 'li.impersonation a').click
 
-          expect(current_path).to eql "/admin/users/#{another_user.username}"
+          expect(current_path).to eq("/admin/users/#{another_user.username}")
+        end
+      end
+
+      context 'when impersonating a user with an expired password' do
+        before do
+          another_user.update(password_expires_at: Time.now - 5.minutes)
+          click_link 'Impersonate'
+        end
+
+        it 'does not redirect to password change page' do
+          expect(current_path).to eq('/')
+        end
+
+        it 'is redirected back to the impersonated users page in the admin after stopping' do
+          find(:css, 'li.impersonation a').click
+
+          expect(current_path).to eq("/admin/users/#{another_user.username}")
         end
       end
     end
@@ -288,9 +305,9 @@ describe "Admin::Users" do
       end
     end
 
-    it 'allows group membership to be revoked', js: true do
+    it 'allows group membership to be revoked', :js do
       page.within(first('.group_member')) do
-        find('.btn-remove').click
+        accept_confirm { find('.btn-remove').click }
       end
       wait_for_requests
 
@@ -309,7 +326,7 @@ describe "Admin::Users" do
     end
   end
 
-  describe 'remove users secondary email', js: true do
+  describe 'remove users secondary email', :js do
     let!(:secondary_email) do
       create :email, email: 'secondary@example.com', user: user
     end
@@ -319,7 +336,7 @@ describe "Admin::Users" do
 
       expect(page).to have_content("Secondary email: #{secondary_email.email}")
 
-      find("#remove_email_#{secondary_email.id}").click
+      accept_confirm { find("#remove_email_#{secondary_email.id}").click }
 
       expect(page).not_to have_content(secondary_email.email)
     end

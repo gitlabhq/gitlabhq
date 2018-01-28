@@ -1,6 +1,5 @@
-/* global Flash */
-import '~/flash';
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import emptyState from '../components/empty_state.vue';
 import errorState from '../components/error_state.vue';
@@ -97,7 +96,7 @@ export default {
     postAction(endpoint) {
       this.service.postAction(endpoint)
         .then(() => eventHub.$emit('refreshPipelines'))
-        .catch(() => new Flash('An error occured while making the request.'));
+        .catch(() => new Flash('An error occurred while making the request.'));
     },
   },
 };

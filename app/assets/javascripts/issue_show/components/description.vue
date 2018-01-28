@@ -1,9 +1,14 @@
 <script>
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
+  import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
   export default {
-    mixins: [animateMixin],
+    mixins: [
+      animateMixin,
+      recaptchaModalImplementor,
+    ],
+
     props: {
       canUpdate: {
         type: Boolean,
@@ -21,6 +26,16 @@
         type: String,
         required: false,
         default: '',
+      },
+      issuableType: {
+        type: String,
+        required: false,
+        default: 'issue',
+      },
+      updateUrl: {
+        type: String,
+        required: false,
+        default: null,
       },
     },
     data() {
@@ -41,6 +56,10 @@
         this.updateTaskStatusText();
       },
     },
+    mounted() {
+      this.renderGFM();
+      this.updateTaskStatusText();
+    },
     methods: {
       renderGFM() {
         $(this.$refs['gfm-content']).renderGFM();
@@ -48,12 +67,22 @@
         if (this.canUpdate) {
           // eslint-disable-next-line no-new
           new TaskList({
-            dataType: 'issue',
+            dataType: this.issuableType,
             fieldName: 'description',
             selector: '.detail-page-description',
+            onSuccess: this.taskListUpdateSuccess.bind(this),
           });
         }
       },
+
+      taskListUpdateSuccess(data) {
+        try {
+          this.checkForSpam(data);
+        } catch (error) {
+          if (error && error.name === 'SpamError') this.openRecaptcha();
+        }
+      },
+
       updateTaskStatusText() {
         const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
         const $issuableHeader = $('.issuable-meta');
@@ -62,16 +91,16 @@
 
         if (taskRegexMatches) {
           $tasks.text(this.taskStatus);
-          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+          $tasksShort.text(
+            `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ?
+            's' :
+            ''}`,
+          );
         } else {
           $tasks.text('');
           $tasksShort.text('');
         }
       },
-    },
-    mounted() {
-      this.renderGFM();
-      this.updateTaskStatusText();
     },
   };
 </script>
@@ -82,7 +111,8 @@
     class="description"
     :class="{
       'js-task-list-container': canUpdate
-    }">
+    }"
+  >
     <div
       class="wiki"
       :class="{
@@ -95,7 +125,15 @@
     <textarea
       class="hidden js-task-list-field"
       v-if="descriptionText"
-      v-model="descriptionText">
+      v-model="descriptionText"
+      :data-update-url="updateUrl"
+    >
     </textarea>
+
+    <recaptcha-modal
+      v-show="showRecaptcha"
+      :html="recaptchaHTML"
+      @close="closeRecaptcha"
+    />
   </div>
 </template>

@@ -11,6 +11,7 @@
       %li
         If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
       %li
-        The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
+        The import will time out after #{time_interval_in_words(Gitlab.config.gitlab_shell.git_timeout)}.
+        For repositories that take longer, use a clone/push combination.
       %li
         To migrate an SVN repository, check out #{link_to "this document", help_page_path('user/project/import/svn')}.

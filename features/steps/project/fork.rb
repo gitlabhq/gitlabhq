@@ -10,7 +10,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I am a member of project "Shop"' do
     @project = create(:project, :repository, name: "Shop")
-    @project.team << [@user, :reporter]
+    @project.add_reporter(@user)
   end
 
   step 'I should see the forked project page' do
@@ -26,7 +26,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I fork to my namespace' do
-    page.within '.fork-namespaces' do
+    page.within '.fork-thumbnail-container' do
       click_link current_user.name
     end
   end
@@ -58,20 +58,20 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I should see my fork on the list' do
     page.within('.js-projects-list-holder') do
-      project = @user.fork_of(@project)
+      project = @user.fork_of(@project.reload)
       expect(page).to have_content("#{project.namespace.human_name} / #{project.name}")
     end
   end
 
   step 'I make forked repo invalid' do
-    project = @user.fork_of(@project)
+    project = @user.fork_of(@project.reload)
     project.path = 'test-crappy-path'
     project.save!
   end
 
   step 'There is an existent fork of the "Shop" project' do
     user = create(:user, name: 'Mike')
-    @project.team << [user, :reporter]
+    @project.add_reporter(user)
     @forked_project = Projects::ForkService.new(@project, user).execute
   end
 

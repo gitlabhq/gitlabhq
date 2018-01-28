@@ -74,8 +74,9 @@ module LfsRequest
 
   def lfs_upload_access?
     return false unless project.lfs_enabled?
+    return false unless has_authentication_ability?(:push_code)
 
-    has_authentication_ability?(:push_code) && can?(user, :push_code, project)
+    lfs_deploy_token? || can?(user, :push_code, project)
   end
 
   def lfs_deploy_token?
@@ -91,16 +92,7 @@ module LfsRequest
   end
 
   def storage_project
-    @storage_project ||= begin
-      result = project
-
-      loop do
-        break unless result.forked?
-        result = result.forked_from_project
-      end
-
-      result
-    end
+    @storage_project ||= project.lfs_storage_project
   end
 
   def objects

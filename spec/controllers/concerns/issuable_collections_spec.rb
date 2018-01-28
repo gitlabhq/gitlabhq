@@ -12,71 +12,70 @@ describe IssuableCollections do
 
     controller = klass.new
 
-    allow(controller).to receive(:params).and_return(state: 'opened')
+    allow(controller).to receive(:params).and_return(ActionController::Parameters.new(params))
 
     controller
   end
 
-  describe '#redirect_out_of_range' do
-    before do
-      allow(controller).to receive(:url_for)
-    end
-
-    it 'returns true and redirects if the offset is out of range' do
-      relation = double(:relation, current_page: 10)
-
-      expect(controller).to receive(:redirect_to)
-      expect(controller.send(:redirect_out_of_range, relation, 2)).to eq(true)
-    end
-
-    it 'returns false if the offset is not out of range' do
-      relation = double(:relation, current_page: 1)
-
-      expect(controller).not_to receive(:redirect_to)
-      expect(controller.send(:redirect_out_of_range, relation, 2)).to eq(false)
-    end
-  end
-
-  describe '#issues_page_count' do
-    it 'returns the number of issue pages' do
-      project = create(:project, :public)
-
-      create(:issue, project: project)
-
-      finder = IssuesFinder.new(user)
-      issues = finder.execute
-
-      allow(controller).to receive(:issues_finder)
-        .and_return(finder)
-
-      expect(controller.send(:issues_page_count, issues)).to eq(1)
-    end
-  end
-
-  describe '#merge_requests_page_count' do
-    it 'returns the number of merge request pages' do
-      project = create(:project, :public)
-
-      create(:merge_request, source_project: project, target_project: project)
-
-      finder = MergeRequestsFinder.new(user)
-      merge_requests = finder.execute
-
-      allow(controller).to receive(:merge_requests_finder)
-        .and_return(finder)
-
-      pages = controller.send(:merge_requests_page_count, merge_requests)
-
-      expect(pages).to eq(1)
-    end
-  end
-
   describe '#page_count_for_relation' do
+    let(:params) { { state: 'opened' } }
+
     it 'returns the number of pages' do
       relation = double(:relation, limit_value: 20)
       pages = controller.send(:page_count_for_relation, relation, 28)
 
       expect(pages).to eq(2)
+    end
+  end
+
+  describe '#filter_params' do
+    let(:params) do
+      {
+        assignee_id: '1',
+        assignee_username: 'user1',
+        author_id: '2',
+        author_username: 'user2',
+        authorized_only: 'true',
+        due_date: '2017-01-01',
+        group_id: '3',
+        iids: '4',
+        label_name: 'foo',
+        milestone_title: 'bar',
+        my_reaction_emoji: 'thumbsup',
+        non_archived: 'true',
+        project_id: '5',
+        scope: 'all',
+        search: 'baz',
+        sort: 'priority',
+        state: 'opened',
+        invalid_param: 'invalid_param'
+      }
+    end
+
+    it 'filters params' do
+      allow(controller).to receive(:cookies).and_return({})
+
+      filtered_params = controller.send(:filter_params)
+
+      expect(filtered_params).to eq({
+        'assignee_id' => '1',
+        'assignee_username' => 'user1',
+        'author_id' => '2',
+        'author_username' => 'user2',
+        'authorized_only' => 'true',
+        'due_date' => '2017-01-01',
+        'group_id' => '3',
+        'iids' => '4',
+        'label_name' => 'foo',
+        'milestone_title' => 'bar',
+        'my_reaction_emoji' => 'thumbsup',
+        'non_archived' => 'true',
+        'project_id' => '5',
+        'scope' => 'all',
+        'search' => 'baz',
+        'sort' => 'priority',
+        'state' => 'opened'
+      })
     end
   end
 end

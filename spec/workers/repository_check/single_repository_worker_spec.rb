@@ -69,7 +69,12 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   def break_wiki(project)
-    FileUtils.rm_rf(wiki_path(project) + '/objects')
+    objects_dir = wiki_path(project) + '/objects'
+
+    # Replace the /objects directory with a file so that the repo is
+    # invalid, _and_ 'git init' cannot fix it.
+    FileUtils.rm_rf(objects_dir)
+    FileUtils.touch(objects_dir) if File.directory?(wiki_path(project))
   end
 
   def wiki_path(project)

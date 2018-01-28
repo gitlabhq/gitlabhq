@@ -34,6 +34,7 @@ module ActiveRecord
         yield yielded_relation
 
         break if ids.length < of
+
         batch_relation = relation.where(arel_table[primary_key].gt(primary_key_offset))
       end
     end

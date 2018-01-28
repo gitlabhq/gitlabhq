@@ -1,6 +1,7 @@
 module Ci
   class Runner < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
+    include Gitlab::SQL::Pattern
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
@@ -59,10 +60,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:token].matches(pattern).or(t[:description].matches(pattern)))
+      fuzzy_search(query, [:token, :description])
     end
 
     def self.contact_time_deadline
@@ -114,7 +112,7 @@ module Ci
     def can_pick?(build)
       return false if self.ref_protected? && !build.protected?
 
-      assignable_for?(build.project) && accepting_tags?(build)
+      assignable_for?(build.project_id) && accepting_tags?(build)
     end
 
     def only_for?(project)
@@ -173,8 +171,8 @@ module Ci
       end
     end
 
-    def assignable_for?(project)
-      !locked? || projects.exists?(id: project.id)
+    def assignable_for?(project_id)
+      is_shared? || projects.exists?(id: project_id)
     end
 
     def accepting_tags?(build)

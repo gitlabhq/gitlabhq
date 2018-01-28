@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateLargeTable
 class UpdateRetriedForCiBuild < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

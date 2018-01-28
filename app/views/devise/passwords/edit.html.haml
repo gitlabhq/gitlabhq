@@ -1,7 +1,7 @@
 = render 'devise/shared/tab_single', tab_title:'Change your password'
 .login-box
   .login-body
-    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: 'gl-show-field-errors' }) do |f|
+    = form_for(resource, as: resource_name, url: password_path(:user), html: { method: :put, class: 'gl-show-field-errors' }) do |f|
       .devise-errors
         = devise_error_messages!
       = f.hidden_field :reset_password_token
@@ -17,5 +17,5 @@
 .clearfix.prepend-top-20
   %p
     %span.light Didn't receive a confirmation email?
-    = link_to "Request a new one", new_confirmation_path(resource_name)
+    = link_to "Request a new one", new_confirmation_path(:user)
 = render 'devise/shared/sign_in_link'

@@ -23,7 +23,7 @@ module API
             source = find_source(source_type, params[:id])
 
             users = source.users
-            users = users.merge(User.search(params[:query])) if params[:query]
+            users = users.merge(User.search(params[:query])) if params[:query].present?
 
             present paginate(users), with: ::API::Entities::Member, source: source
           end
@@ -67,6 +67,7 @@ module API
             unless member
               member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
             end
+
             if member.persisted? && member.valid?
               present member.user, with: ::API::Entities::Member, member: member
             else

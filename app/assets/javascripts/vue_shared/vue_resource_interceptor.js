@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import csrf from '../lib/utils/csrf';
 
 Vue.use(VueResource);
 
@@ -18,9 +19,7 @@ Vue.http.interceptors.push((request, next) => {
 // New Vue Resource version uses Headers, we are expecting a plain object to render pagination
 // and polling.
 Vue.http.interceptors.push((request, next) => {
-  if ($.rails) {
-    request.headers.set('X-CSRF-Token', $.rails.csrfToken());
-  }
+  request.headers.set(csrf.headerKey, csrf.token);
 
   next((response) => {
     // Headers object has a `forEach` property that iterates through all values.

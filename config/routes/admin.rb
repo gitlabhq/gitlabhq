@@ -97,7 +97,7 @@ namespace :admin do
 
   resource :appearances, only: [:show, :create, :update], path: 'appearance' do
     member do
-      get :preview
+      get :preview_sign_in
       delete :logo
       delete :header_logos
     end

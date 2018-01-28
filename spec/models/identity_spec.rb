@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Identity do
+describe Identity do
   describe 'relations' do
     it { is_expected.to belong_to(:user) }
   end
@@ -20,6 +20,55 @@ RSpec.describe Identity do
 
     it 'returns false if it is not a ldap identity' do
       expect(other_identity.ldap?).to be_falsey
+    end
+  end
+
+  describe '.with_extern_uid' do
+    context 'LDAP identity' do
+      let!(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com') }
+
+      it 'finds the identity when the DN is formatted differently' do
+        identity = described_class.with_extern_uid('ldapmain', 'uid=John Smith, ou=People, dc=example, dc=com').first
+
+        expect(identity).to eq(ldap_identity)
+      end
+    end
+
+    context 'any other provider' do
+      let!(:test_entity) { create(:identity, provider: 'test_provider', extern_uid: 'test_uid') }
+
+      it 'the extern_uid lookup is case insensitive' do
+        identity = described_class.with_extern_uid('test_provider', 'TEST_UID').first
+
+        expect(identity).to eq(test_entity)
+      end
+    end
+  end
+
+  context 'callbacks' do
+    context 'before_save' do
+      describe 'normalizes extern uid' do
+        let!(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com') }
+
+        it 'if extern_uid changes' do
+          expect(ldap_identity).not_to receive(:ensure_normalized_extern_uid)
+          ldap_identity.save
+        end
+
+        it 'if current_uid is nil' do
+          expect(ldap_identity).to receive(:ensure_normalized_extern_uid)
+
+          ldap_identity.update(extern_uid: nil)
+
+          expect(ldap_identity.extern_uid).to be_nil
+        end
+
+        it 'if extern_uid changed and not nil' do
+          ldap_identity.update(extern_uid: 'uid=john1,ou=PEOPLE,dc=example,dc=com')
+
+          expect(ldap_identity.extern_uid).to eq 'uid=john1,ou=people,dc=example,dc=com'
+        end
+      end
     end
   end
 end

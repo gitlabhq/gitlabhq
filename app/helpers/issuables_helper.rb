@@ -32,16 +32,18 @@ module IssuablesHelper
     end
   end
 
-  def serialize_issuable(issuable)
-    case issuable
-    when Issue
-      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
-    when MergeRequest
-      MergeRequestSerializer
-        .new(current_user: current_user, project: issuable.project)
-        .represent(issuable)
-        .to_json
-    end
+  def serialize_issuable(issuable, serializer: nil)
+    serializer_klass = case issuable
+                       when Issue
+                         IssueSerializer
+                       when MergeRequest
+                         MergeRequestSerializer
+                       end
+
+    serializer_klass
+      .new(current_user: current_user, project: issuable.project)
+      .represent(issuable, serializer: serializer)
+      .to_json
   end
 
   def template_dropdown_tag(issuable, &block)
@@ -209,21 +211,26 @@ module IssuablesHelper
 
   def issuable_initial_data(issuable)
     data = {
-      endpoint: project_issue_path(@project, issuable),
-      canUpdate: can?(current_user, :update_issue, issuable),
-      canDestroy: can?(current_user, :destroy_issue, issuable),
+      endpoint: issuable_path(issuable),
+      updateEndpoint: "#{issuable_path(issuable)}.json",
+      canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
+      canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
-      markdownPreviewPath: preview_markdown_path(@project),
+      markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
-      projectPath: ref_project.path,
-      projectNamespace: ref_project.namespace.full_path,
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
       initialTaskStatus: issuable.task_status
     }
+
+    if parent.is_a?(Group)
+      data[:groupPath] = parent.path
+    else
+      data.merge!(projectPath: ref_project.path, projectNamespace: ref_project.namespace.full_path)
+    end
 
     data.merge!(updated_at_by(issuable))
 
@@ -234,7 +241,7 @@ module IssuablesHelper
     return {} unless issuable.edited?
 
     {
-      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedAt: issuable.last_edited_at.to_time.iso8601,
       updatedBy: {
         name: issuable.last_edited_by.name,
         path: user_path(issuable.last_edited_by)
@@ -243,21 +250,23 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-
     Gitlab::IssuablesCountForState.new(finder)[state]
   end
 
-  def close_issuable_url(issuable)
-    issuable_url(issuable, close_reopen_params(issuable, :close))
+  def close_issuable_path(issuable)
+    issuable_path(issuable, close_reopen_params(issuable, :close))
   end
 
-  def reopen_issuable_url(issuable)
-    issuable_url(issuable, close_reopen_params(issuable, :reopen))
+  def reopen_issuable_path(issuable)
+    issuable_path(issuable, close_reopen_params(issuable, :reopen))
   end
 
-  def close_reopen_issuable_url(issuable, should_inverse = false)
-    issuable.closed? ^ should_inverse ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
+  def close_reopen_issuable_path(issuable, should_inverse = false)
+    issuable.closed? ^ should_inverse ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
+  end
+
+  def issuable_path(issuable, *options)
+    polymorphic_path(issuable, *options)
   end
 
   def issuable_url(issuable, *options)
@@ -295,6 +304,12 @@ module IssuablesHelper
     issuable.model_name.human.downcase
   end
 
+  def selected_labels
+    Array(params[:label_name]).map do |label_name|
+      Label.new(title: label_name)
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -305,18 +320,10 @@ module IssuablesHelper
     @issuable_templates ||=
       case issuable
       when Issue
-        issue_template_names
+        ref_project.repository.issue_template_names
       when MergeRequest
-        merge_request_template_names
+        ref_project.repository.merge_request_template_names
       end
-  end
-
-  def merge_request_template_names
-    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
-  end
-
-  def issue_template_names
-    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
   end
 
   def selected_template(issuable)
@@ -356,13 +363,18 @@ module IssuablesHelper
 
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
-      endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      endpoint: "#{issuable_json_path(issuable)}?serializer=sidebar",
+      toggleSubscriptionEndpoint: toggle_subscription_path(issuable),
       moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
       projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
-      currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
+      currentUser: UserSerializer.new.represent(current_user),
       rootPath: root_path,
       fullPath: @project.full_path
     }
+  end
+
+  def parent
+    @project || @group
   end
 end

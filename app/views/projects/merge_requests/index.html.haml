@@ -4,20 +4,17 @@
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
-- unless @project.issues_enabled?
-  = content_for :sub_nav do
-    = render "projects/merge_requests/head"
+- new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
 
-= render 'projects/last_push'
+%div{ class: container_class }
+  = render 'projects/last_push'
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }
-    - if show_auto_devops_callout?(@project)
-      = render 'shared/auto_devops_callout'
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
       .nav-controls
@@ -30,5 +27,7 @@
 
     .merge-requests-holder
       = render 'merge_requests'
+      - if new_merge_request_email
+        = render 'projects/issuable_by_email', email: new_merge_request_email, issuable_type: 'merge_request'
 - else
   = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path

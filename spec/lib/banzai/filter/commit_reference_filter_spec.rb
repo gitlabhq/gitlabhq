@@ -92,6 +92,18 @@ describe Banzai::Filter::CommitReferenceFilter do
       expect(link).not_to match %r(https?://)
       expect(link).to eq urls.project_commit_url(project, reference, only_path: true)
     end
+
+    context "in merge request context" do
+      let(:noteable) { create(:merge_request, target_project: project, source_project: project) }
+      let(:commit) { noteable.commits.first }
+
+      it 'handles merge request contextual commit references' do
+        url = urls.diffs_project_merge_request_url(project, noteable, commit_id: commit.id)
+        doc = reference_filter("See #{reference}", noteable: noteable)
+
+        expect(doc.css('a').first[:href]).to eq(url)
+      end
+    end
   end
 
   context 'cross-project / cross-namespace complete reference' do

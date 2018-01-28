@@ -1,10 +1,7 @@
 import Vue from 'vue';
 import Dashboard from './components/dashboard.vue';
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+export default () => new Vue({
   el: '#prometheus-graphs',
-  components: {
-    Dashboard,
-  },
-  render: createElement => createElement('dashboard'),
-}));
+  render: createElement => createElement(Dashboard),
+});

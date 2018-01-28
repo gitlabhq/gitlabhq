@@ -7,7 +7,7 @@ feature 'Milestone' do
 
   before do
     create(:group_member, group: group, user: user)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -63,6 +63,35 @@ feature 'Milestone' do
       find('input[name="commit"]').click
 
       expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
+    end
+  end
+
+  feature 'Open a milestone' do
+    scenario 'shows total issue time spent correctly when no time has been logged' do
+      milestone = create(:milestone, project: project, title: 8.7)
+
+      visit project_milestone_path(project, milestone)
+
+      page.within('.block.time_spent') do
+        expect(page).to have_content 'No time spent'
+        expect(page).to have_content 'None'
+      end
+    end
+
+    scenario 'shows total issue time spent' do
+      milestone = create(:milestone, project: project, title: 8.7)
+      issue1 = create(:issue, project: project, milestone: milestone)
+      issue2 = create(:issue, project: project, milestone: milestone)
+      issue1.spend_time(duration: 3600, user_id: user.id)
+      issue1.save!
+      issue2.spend_time(duration: 7200, user_id: user.id)
+      issue2.save!
+
+      visit project_milestone_path(project, milestone)
+
+      page.within('.block.time_spent') do
+        expect(page).to have_content '3h'
+      end
     end
   end
 end

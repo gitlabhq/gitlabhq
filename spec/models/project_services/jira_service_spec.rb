@@ -24,6 +24,8 @@ describe JiraService do
       end
 
       it { is_expected.not_to validate_presence_of(:url) }
+      it { is_expected.not_to validate_presence_of(:username) }
+      it { is_expected.not_to validate_presence_of(:password) }
     end
 
     context 'validating urls' do
@@ -50,6 +52,18 @@ describe JiraService do
 
       it 'is not valid when api url is not a valid url' do
         service.api_url = 'not valid'
+
+        expect(service).not_to be_valid
+      end
+
+      it 'is not valid when username is missing' do
+        service.username = nil
+
+        expect(service).not_to be_valid
+      end
+
+      it 'is not valid when password is missing' do
+        service.password = nil
 
         expect(service).not_to be_valid
       end
@@ -377,6 +391,26 @@ describe JiraService do
       it "is correct" do
         expect(@service.title).to eq('Jira One')
         expect(@service.description).to eq('Jira One issue tracker')
+      end
+    end
+  end
+
+  describe 'additional cookies' do
+    let(:project) { create(:project) }
+
+    context 'provides additional cookies to allow basic auth with oracle webgate' do
+      before do
+        @service = project.create_jira_service(
+          active: true, properties: { url: 'http://jira.com' })
+      end
+
+      after do
+        @service.destroy!
+      end
+
+      it 'is initialized' do
+        expect(@service.options[:use_cookies]).to eq(true)
+        expect(@service.options[:additional_cookies]).to eq(["OBBasicAuth=fromDialog"])
       end
     end
   end

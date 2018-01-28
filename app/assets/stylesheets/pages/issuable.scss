@@ -5,27 +5,21 @@
   margin-right: auto;
 }
 
-.is-confidential {
-  color: $orange-600;
-  background-color: $orange-50;
+.issuable-warning-icon {
+  background-color: $orange-100;
   border-radius: $border-radius-default;
-  padding: 5px;
-  margin: 0 3px 0 -4px;
-}
+  margin: 0 $btn-side-margin 0 0;
+  width: $issuable-warning-size;
+  height: $issuable-warning-size;
+  text-align: center;
 
-.is-not-confidential {
-  border-radius: $border-radius-default;
-  padding: 5px;
-  margin: 0 3px 0 -4px;
-}
-
-.confidentiality {
-  .is-not-confidential {
-    margin: auto;
+  .icon {
+    fill: $orange-600;
+    vertical-align: text-bottom;
   }
 
-  .is-confidential {
-    margin: auto;
+  &:first-of-type {
+    margin-right: $issuable-warning-icon-margin;
   }
 }
 
@@ -70,10 +64,19 @@
     }
   }
 
+  .title-container {
+    display: flex;
+  }
+
   .title {
     padding: 0;
-    margin-bottom: 16px;
-    border-bottom: none;
+    margin-bottom: $gl-padding;
+    border-bottom: 0;
+  }
+
+  .btn-edit {
+    margin-left: auto;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -107,6 +110,10 @@
       padding: 6px 10px;
       border-radius: $label-border-radius;
     }
+
+    &:hover .color-label {
+      text-decoration: underline;
+    }
   }
 
   &.has-labels {
@@ -115,7 +122,16 @@
 }
 
 .right-sidebar {
-  a,
+  position: fixed;
+  top: $header-height;
+  bottom: 0;
+  right: 0;
+  transition: width $sidebar-transition-duration;
+  background: $gray-light;
+  z-index: 200;
+  overflow: hidden;
+
+  a:not(.btn-retry),
   .btn-link {
     color: inherit;
   }
@@ -143,11 +159,7 @@
     }
 
     &:last-child {
-      border: none;
-    }
-
-    span {
-      display: inline-block;
+      border: 0;
     }
 
     .select2-container span {
@@ -160,6 +172,14 @@
 
       &:hover {
         color: $gray-darkest;
+      }
+    }
+
+    &.assignee {
+      .author_link:hover {
+        .author {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -216,21 +236,10 @@
   .btn-clipboard:hover {
     color: $gl-text-color;
   }
-}
-
-.right-sidebar {
-  position: absolute;
-  top: $new-navbar-height;
-  bottom: 0;
-  right: 0;
-  transition: width .3s;
-  background: $gray-light;
-  z-index: 200;
-  overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$new-navbar-height});
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -274,8 +283,13 @@
       font-weight: $gl-font-weight-normal;
     }
 
-    .no-value {
+    .no-value,
+    .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
+    }
+
+    .btn-secondary-hover-link:hover {
+      color: $gl-link-color;
     }
 
     .sidebar-collapsed-icon {
@@ -285,6 +299,7 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      text-align: center;
     }
 
     .title .gutter-toggle {
@@ -328,7 +343,7 @@
     .block {
       width: $gutter_collapsed_width - 2px;
       padding: 15px 0 0;
-      border-bottom: none;
+      border-bottom: 0;
       overflow: hidden;
     }
 
@@ -357,7 +372,7 @@
         fill: $issuable-sidebar-color;
       }
 
-      &:hover,
+      &:hover:not(.disabled),
       &:hover .todo-undone {
         color: $gl-text-color;
 
@@ -389,7 +404,7 @@
       }
 
       .btn-clipboard {
-        border: none;
+        border: 0;
         color: $issuable-sidebar-color;
 
         &:hover {
@@ -449,22 +464,22 @@
         }
       }
     }
+
+    .milestone-title span,
+    .collapse-truncated-title {
+      @include str-truncated(100%);
+      display: block;
+      margin: 0 4px;
+    }
   }
 
-  a {
+  a:not(.btn-retry) {
     &:hover {
       color: $md-link-color;
-      text-decoration: none;
 
       .avatar {
         border-color: rgba($avatar-border, .2);
       }
-    }
-  }
-
-  .dropdown-content {
-    a:hover {
-      color: inherit;
     }
   }
 
@@ -479,15 +494,11 @@
 }
 
 .with-performance-bar .right-sidebar {
-  top: $new-navbar-height + $performance-bar-height;
+  top: $header-height + $performance-bar-height;
 
   .issuable-sidebar {
-    height: calc(100% - #{$new-navbar-height} - #{$performance-bar-height});
+    height: calc(100% - #{$performance-bar-height});
   }
-}
-
-.sidebar-move-issue-dropdown {
-  @include new-style-dropdown;
 }
 
 .sidebar-move-issue-confirmation-button {
@@ -524,7 +535,9 @@
 }
 
 .participants-list {
-  margin: -5px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -7px;
 }
 
 
@@ -535,7 +548,7 @@
 
 .participants-author {
   display: inline-block;
-  padding: 5px;
+  padding: 7px;
 
   &:nth-of-type(7n) {
     padding-right: 0;
@@ -592,53 +605,33 @@
 }
 
 .issuable-status-box {
-  float: none;
-  display: inline-block;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 0;
-
-  @media (max-width: $screen-xs-max) {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.issuable-header {
-  position: relative;
-  padding-left: 45px;
-  padding-right: 45px;
-  line-height: 35px;
+  padding-left: 9px;
+  padding-right: 9px;
 
   @media (min-width: $screen-sm-min) {
-    float: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.issuable-actions {
-  @include new-style-dropdown;
-
-  padding-top: 10px;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
-    padding-top: 0;
+    display: inline-block;
+    height: auto;
+    align-self: center;
   }
 }
 
 .issuable-gutter-toggle {
   @media (max-width: $screen-sm-max) {
-    position: absolute;
-    top: 0;
-    right: 0;
+    margin-left: $btn-side-margin;
   }
 }
 
 .issuable-meta {
+  flex: 1;
   display: inline-block;
-  line-height: 18px;
   font-size: 14px;
+  line-height: 24px;
+  align-self: center;
 }
 
 .js-issuable-selector-wrap {
@@ -882,5 +875,23 @@
 
   .dropdown-toggle > .icon {
     margin: 0 3px;
+  }
+}
+
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $theme-gray-700;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
+      }
+    }
   }
 }

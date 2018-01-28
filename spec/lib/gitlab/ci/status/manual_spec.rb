@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::Manual do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_manual' }
+    it { expect(subject.icon).to eq 'status_manual' }
   end
 
   describe '#favicon' do

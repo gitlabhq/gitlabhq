@@ -115,7 +115,7 @@
             = f.label :new_namespace_id, "Namespace", class: 'control-label'
             .col-sm-10
               .dropdown
-                = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id', show_any: 'false' }, { toggle_class: 'js-namespace-select large' })
+                = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
                 .dropdown-menu.dropdown-select
                   = dropdown_title('Namespaces')
                   = dropdown_filter("Search for Namespace")

@@ -1,9 +1,13 @@
-## Contributor license agreement
+## Developer Certificate of Origin + License
 
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+By contributing to GitLab B.V., You accept and agree to the following terms and
+conditions for Your present and future Contributions submitted to GitLab B.V.
+Except for the license granted herein to GitLab B.V. and recipients of software
+distributed by GitLab B.V., You reserve all right, title, and interest in and to
+Your Contributions. All Contributions are subject to the following DCO + License
+terms.
+
+[DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
 
 _This notice should stay as the first item in the CONTRIBUTING.md file._
 
@@ -21,10 +25,10 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
+  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
   - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
-- [Implement design & UI elements](#implement-design--ui-elements)
+- [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
   - [Issue triaging](#issue-triaging)
   - [Feature proposals](#feature-proposals)
@@ -49,7 +53,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
 
-Looking for something to work on? Look for the label [Accepting Merge Requests](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
 
 GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
@@ -100,10 +104,13 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
-These issues will be of reasonable size and challenge, for anyone to start
-contributing to GitLab.
+If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
+is a great place to start. Issues with a lower weight (1 or 2) are deemed
+suitable for beginners. These issues will be of reasonable size and challenge,
+for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
+please consider we favor 
+[asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
 
@@ -164,7 +171,7 @@ Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
-~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+~Geo, ~Gitaly, ~Platform, ~Monitoring, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -209,8 +216,7 @@ We add the ~"Accepting Merge Requests" label to:
 
 - Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
 solve in the ~"Next Patch Release")
-- Small ~"feature proposal" that do not need ~UX / ~"Product work", or for which
-the ~UX / ~"Product work" is already done
+- Small ~"feature proposal"
 - Small ~"technical debt" issues
 
 After adding the ~"Accepting Merge Requests" label, we try to estimate the
@@ -222,6 +228,17 @@ know how difficult the issue is. Additionally:
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
   look for ["Accepting Merge Requests" issues with a weight of 1][firt-timers]
+
+If you've decided that you would like to work on an issue, please @-mention
+the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
+as soon as possible. The product manager will then pull in appropriate GitLab team
+members to further discuss scope, design, and technical considerations. This will
+ensure that that your contribution is aligned with the GitLab product and minimize
+any rework and delay in getting it merged into master.
+
+GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
+should update the issue description with a responsible product manager, inviting
+any potential community contributor to @-mention per above.
 
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
@@ -286,7 +303,10 @@ might be edited to make them small and simple.
 
 Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
-For changes in the interface, it can be helpful to create a mockup first.
+For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
+be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
+need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself.
+
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
 
@@ -527,6 +547,7 @@ When having your code reviewed and when reviewing merge requests please take the
    etc.), they should conform to our [Licensing guidelines][license-finder-doc].
    See the instructions in that document for help if your MR fails the
    "license-finder" test with a "Dependencies that need approval" error.
+1. The merge request meets the [definition of done](#definition-of-done).
 
 ## Definition of done
 
@@ -536,7 +557,7 @@ the feature you contribute through all of these steps.
 
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
-1. [Unit and system tests][testing] that pass on the CI server
+1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
@@ -581,6 +602,7 @@ merge request:
     present time and never use past tense (has been/was). For example instead
     of _prohibited this user from being saved due to the following errors:_ the
     text should be _sorry, we could not create your account because:_
+1.  Code should be written in [US English][us-english]
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop),
@@ -645,7 +667,8 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [license-finder-doc]: doc/development/licensing.md
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
-[testing]: doc/development/testing.md
+[testing]: doc/development/testing_guide/index.md
+[us-english]: https://en.wikipedia.org/wiki/American_English
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.

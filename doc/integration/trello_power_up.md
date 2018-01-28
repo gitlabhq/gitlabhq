@@ -39,4 +39,4 @@ Learn more about generating a personal access token in the
 [Personal Access Token Documentation][personal-access-token-documentation].
 Don't forget to check the API scope checkbox!
 
-[personal-access-token-documentation]: ../user/profile/personal_access_tokens.html
+[personal-access-token-documentation]: ../user/profile/personal_access_tokens.md

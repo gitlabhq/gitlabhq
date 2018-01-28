@@ -2,9 +2,8 @@ class Appearance < ActiveRecord::Base
   include CacheMarkdownField
 
   cache_markdown_field :description
+  cache_markdown_field :new_project_guidelines
 
-  validates :title,       presence: true
-  validates :description, presence: true
   validates :logo,        file_size: { maximum: 1.megabyte }
   validates :header_logo, file_size: { maximum: 1.megabyte }
 

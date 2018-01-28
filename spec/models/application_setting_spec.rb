@@ -114,6 +114,19 @@ describe ApplicationSetting do
       it { expect(setting.repository_storages).to eq(['default']) }
     end
 
+    context 'circuitbreaker settings' do
+      [:circuitbreaker_failure_count_threshold,
+       :circuitbreaker_check_interval,
+       :circuitbreaker_failure_reset_time,
+       :circuitbreaker_storage_timeout].each do |field|
+        it "Validates #{field} as number" do
+          is_expected.to validate_numericality_of(field)
+                           .only_integer
+                           .is_greater_than_or_equal_to(0)
+        end
+      end
+    end
+
     context 'repository storages' do
       before do
         storages = {
@@ -195,6 +208,65 @@ describe ApplicationSetting do
         expect(subject).to be_valid
       end
     end
+
+    context 'gitaly timeouts' do
+      [:gitaly_timeout_default, :gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
+        it do
+          is_expected.to validate_presence_of(timeout_name)
+          is_expected.to validate_numericality_of(timeout_name).only_integer
+            .is_greater_than_or_equal_to(0)
+        end
+      end
+
+      [:gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
+        it "validates that #{timeout_name} is lower than timeout_default" do
+          subject[:gitaly_timeout_default] = 50
+          subject[timeout_name] = 100
+
+          expect(subject).to be_invalid
+        end
+      end
+
+      it 'accepts all timeouts equal' do
+        subject.gitaly_timeout_default = 0
+        subject.gitaly_timeout_medium = 0
+        subject.gitaly_timeout_fast = 0
+
+        expect(subject).to be_valid
+      end
+
+      it 'accepts timeouts in descending order' do
+        subject.gitaly_timeout_default = 50
+        subject.gitaly_timeout_medium = 30
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_valid
+      end
+
+      it 'rejects timeouts in ascending order' do
+        subject.gitaly_timeout_default = 20
+        subject.gitaly_timeout_medium = 30
+        subject.gitaly_timeout_fast = 50
+
+        expect(subject).to be_invalid
+      end
+
+      it 'rejects medium timeout larger than default' do
+        subject.gitaly_timeout_default = 30
+        subject.gitaly_timeout_medium = 50
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_invalid
+      end
+
+      it 'rejects medium timeout smaller than fast' do
+        subject.gitaly_timeout_default = 30
+        subject.gitaly_timeout_medium = 15
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_invalid
+      end
+    end
   end
 
   describe '.current' do
@@ -206,6 +278,31 @@ describe ApplicationSetting do
 
         expect(described_class.current).to eq(:last)
       end
+    end
+
+    context 'when an ApplicationSetting is not yet present' do
+      it 'does not cache nil object' do
+        # when missing settings a nil object is returned, but not cached
+        allow(described_class).to receive(:last).and_return(nil).twice
+        expect(described_class.current).to be_nil
+
+        # when the settings are set the method returns a valid object
+        allow(described_class).to receive(:last).and_return(:last)
+        expect(described_class.current).to eq(:last)
+
+        # subsequent calls get everything from cache
+        expect(described_class.current).to eq(:last)
+      end
+    end
+  end
+
+  context 'restrict creating duplicates' do
+    before do
+      described_class.create_from_defaults
+    end
+
+    it 'raises an record creation violation if already created' do
+      expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end
 
@@ -513,6 +610,24 @@ describe ApplicationSetting do
 
     it 'returns forbidden for unrecognised type' do
       expect(setting.key_restriction_for(:foo)).to eq(described_class::FORBIDDEN_KEY_VALUE)
+    end
+  end
+
+  describe '#allow_signup?' do
+    it 'returns true' do
+      expect(setting.allow_signup?).to be_truthy
+    end
+
+    it 'returns false if signup is disabled' do
+      allow(setting).to receive(:signup_enabled?).and_return(false)
+
+      expect(setting.allow_signup?).to be_falsey
+    end
+
+    it 'returns false if password authentication is disabled for the web interface' do
+      allow(setting).to receive(:password_authentication_enabled_for_web?).and_return(false)
+
+      expect(setting.allow_signup?).to be_falsey
     end
   end
 end

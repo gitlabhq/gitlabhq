@@ -1,5 +1,3 @@
-/* global Flash */
-
 import Vue from 'vue';
 import JobMediator from './job_details_mediator';
 import jobHeader from './components/header.vue';
@@ -15,13 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-build-header-vue',
+    components: {
+      jobHeader,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      jobHeader,
     },
     mounted() {
       this.mediator.initBuildClass();
@@ -40,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line
   new Vue({
     el: '#js-details-block-vue',
+    components: {
+      detailsBlock,
+    },
     data() {
       return {
         mediator,
       };
-    },
-    components: {
-      detailsBlock,
     },
     render(createElement) {
       return createElement('details-block', {

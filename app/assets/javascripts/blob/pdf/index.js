@@ -7,6 +7,9 @@ export default () => {
 
   return new Vue({
     el,
+    components: {
+      pdfLab,
+    },
     data() {
       return {
         error: false,
@@ -14,9 +17,6 @@ export default () => {
         loading: true,
         pdf: el.dataset.endpoint,
       };
-    },
-    components: {
-      pdfLab,
     },
     methods: {
       onLoad() {
@@ -48,10 +48,10 @@ export default () => {
           class="text-center"
           v-if="error">
           <span v-if="loadError">
-            An error occured whilst loading the file. Please try again later.
+            An error occurred whilst loading the file. Please try again later.
           </span>
           <span v-else>
-            An error occured whilst decoding the file.
+            An error occurred whilst decoding the file.
           </span>
         </p>
       </div>

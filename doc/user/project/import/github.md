@@ -24,6 +24,8 @@ constrains of a Sidekiq worker.
   - the milestones (GitLab 8.7+)
   - the labels (GitLab 8.7+)
   - the release note descriptions (GitLab 8.12+)
+  - the pull request review comments (GitLab 10.2+)
+  - the regular issue and pull request comments
 - References to pull requests and issues are preserved (GitLab 8.7+)
 - Repository public access is retained. If a repository is private in GitHub
   it will be created as private in GitLab as well.
@@ -41,6 +43,14 @@ the issue about the original GitHub author is kept.
 The importer will create any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository will be imported under the user's
 namespace that started the import process.
+
+The importer will also import branches on forks of projects related to open pull
+requests. These branches will be imported with a naming scheme similar to
+GH-SHA-Username/Pull-Request-number/fork-name/branch. This may lead to a discrepency
+in branches compared to the GitHub Repository.
+
+For a more technical description and an overview of the architecture you can
+refer to [Working with the GitHub importer][gh-import-dev-docs].
 
 ## Importing your GitHub repositories
 
@@ -116,7 +126,29 @@ If you want, you can import all your GitHub projects in one go by hitting
 You can also choose a different name for the project and a different namespace,
 if you have the privileges to do so.
 
+## Making the import process go faster
+
+For large projects it may take a while to import all data. To reduce the time
+necessary you can increase the number of Sidekiq workers that process the
+following queues:
+
+* `github_importer`
+* `github_importer_advance_stage`
+
+For an optimal experience we recommend having at least 4 Sidekiq processes (each
+running a number of threads equal to the number of CPU cores) that _only_
+process these queues. We also recommend that these processes run on separate
+servers. For 4 servers with 8 cores this means you can import up to 32 objects
+(e.g. issues) in parallel.
+
+Reducing the time spent in cloning a repository can be done by increasing
+network throughput, CPU capacity, and disk performance (e.g.  by using high
+performance SSDs) of the disks that store the Git repositories (for your GitLab
+instance). Increasing the number of Sidekiq workers will _not_ reduce the time
+spent cloning repositories.
+
 [gh-import]: ../../../integration/github.md "GitHub integration"
 [gh-rake]: ../../../administration/raketasks/github_import.md "GitHub rake task"
 [gh-integration]: #authorize-access-to-your-repositories-using-the-github-integration
 [gh-token]: #authorize-access-to-your-repositories-using-a-personal-access-token
+[gh-import-dev-docs]: ../../../development/github_importer.md "Working with the GitHub importer"

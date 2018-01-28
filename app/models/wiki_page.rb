@@ -50,7 +50,7 @@ class WikiPage
   # The Gitlab ProjectWiki instance.
   attr_reader :wiki
 
-  # The raw Gollum::Page instance.
+  # The raw Gitlab::Git::WikiPage instance.
   attr_reader :page
 
   # The attributes Hash used for storing and validating
@@ -75,7 +75,7 @@ class WikiPage
     if @attributes[:slug].present?
       @attributes[:slug]
     else
-      wiki.wiki.preview_page(title, '', format).url_path
+      wiki.wiki.preview_slug(title, format)
     end
   end
 
@@ -127,19 +127,24 @@ class WikiPage
     @version ||= @page.version
   end
 
-  # Returns an array of Gitlab Commit instances.
-  def versions
+  def versions(options = {})
     return [] unless persisted?
 
-    @page.versions
+    wiki.wiki.page_versions(@page.path, options)
   end
 
-  def commit
-    versions.first
+  def count_versions
+    return [] unless persisted?
+
+    wiki.wiki.count_page_versions(@page.path)
+  end
+
+  def last_version
+    @last_version ||= versions(limit: 1).first
   end
 
   def last_commit_sha
-    commit&.sha
+    last_version&.sha
   end
 
   # Returns the Date that this latest version was
@@ -151,7 +156,7 @@ class WikiPage
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?
-    @page.historical? && versions.first.sha != version.sha
+    @page.historical? && last_version.sha != version.sha
   end
 
   # Returns boolean True or False if this instance
@@ -264,8 +269,8 @@ class WikiPage
     end
 
     page_title, page_dir = wiki.page_title_and_dir(page_details)
-    gollum_wiki = wiki.wiki
-    @page = gollum_wiki.paged(page_title, page_dir)
+    gitlab_git_wiki = wiki.wiki
+    @page = gitlab_git_wiki.page(title: page_title, dir: page_dir)
 
     set_attributes
     @persisted = errors.blank?

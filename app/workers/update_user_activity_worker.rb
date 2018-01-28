@@ -1,6 +1,5 @@
 class UpdateUserActivityWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(pairs)
     pairs = cast_data(pairs)

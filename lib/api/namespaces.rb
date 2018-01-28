@@ -19,6 +19,16 @@ module API
 
         present paginate(namespaces), with: Entities::Namespace, current_user: current_user
       end
+
+      desc 'Get a namespace by ID' do
+        success Entities::Namespace
+      end
+      params do
+        requires :id, type: String, desc: "Namespace's ID or path"
+      end
+      get ':id' do
+        present user_namespace, with: Entities::Namespace, current_user: current_user
+      end
     end
   end
 end

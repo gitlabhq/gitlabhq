@@ -55,7 +55,6 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(@commit.parents).to eq(@gitlab_parents) }
     it { expect(@commit.parent_id).to eq(@parents.first.oid) }
     it { expect(@commit.no_commit_message).to eq("--no commit message") }
-    it { expect(@commit.tree).to eq(@tree) }
 
     after do
       # Erase the new commit so other tests get the original repo
@@ -65,34 +64,12 @@ describe Gitlab::Git::Commit, seed_helper: true do
   end
 
   describe "Commit info from gitaly commit" do
-    let(:id) { 'f00' }
-    let(:parent_ids) { %w(b45 b46) }
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
     let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
-    let(:committer) do
-      Gitaly::CommitAuthor.new(
-        name: generate(:name),
-        email: generate(:email),
-        date: Google::Protobuf::Timestamp.new(seconds: 123)
-      )
-    end
-    let(:author) do
-      Gitaly::CommitAuthor.new(
-        name: generate(:name),
-        email: generate(:email),
-        date: Google::Protobuf::Timestamp.new(seconds: 456)
-      )
-    end
-    let(:gitaly_commit) do
-      Gitaly::GitCommit.new(
-        id: id,
-        subject: subject,
-        body: body,
-        author: author,
-        committer: committer,
-        parent_ids: parent_ids
-      )
-    end
+    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body) }
+    let(:id) { gitaly_commit.id }
+    let(:committer) { gitaly_commit.committer }
+    let(:author) { gitaly_commit.author }
     let(:commit) { described_class.new(repository, gitaly_commit) }
 
     it { expect(commit.short_id).to eq(id[0..10]) }
@@ -104,7 +81,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.author_name).to eq(author.name) }
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
-    it { expect(commit.parent_ids).to eq(parent_ids) }
+    it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
 
     context 'no body' do
       let(:body) { "".force_encoding('ASCII-8BIT') }
@@ -181,7 +158,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
-    describe '.where' do
+    shared_examples '.where' do
       context 'path is empty string' do
         subject do
           commits = described_class.where(
@@ -279,6 +256,14 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
+    describe '.where with gitaly' do
+      it_should_behave_like '.where'
+    end
+
+    describe '.where without gitaly', :skip_gitaly_mock do
+      it_should_behave_like '.where'
+    end
+
     describe '.between' do
       subject do
         commits = described_class.between(repository, SeedRepo::Commit::PARENT_ID, SeedRepo::Commit::ID)
@@ -290,6 +275,35 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
       it { is_expected.to include(SeedRepo::Commit::ID) }
       it { is_expected.not_to include(SeedRepo::FirstCommit::ID) }
+    end
+
+    shared_examples '.shas_with_signatures' do
+      let(:signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e 570e7b2abdd848b95f2f578043fc23bd6f6fd24d] }
+      let(:unsigned_shas) { %w[19e2e9b4ef76b422ce1154af39a91323ccc57434 c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
+      let(:first_signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
+
+      it 'has 2 signed shas' do
+        ret = described_class.shas_with_signatures(repository, signed_shas)
+        expect(ret).to eq(signed_shas)
+      end
+
+      it 'has 0 signed shas' do
+        ret = described_class.shas_with_signatures(repository, unsigned_shas)
+        expect(ret).to eq([])
+      end
+
+      it 'has 1 signed sha' do
+        ret = described_class.shas_with_signatures(repository, first_signed_shas)
+        expect(ret).to contain_exactly(first_signed_shas.first)
+      end
+    end
+
+    describe '.shas_with_signatures with gitaly on' do
+      it_should_behave_like '.shas_with_signatures'
+    end
+
+    describe '.shas_with_signatures with gitaly disabled', :disable_gitaly do
+      it_should_behave_like '.shas_with_signatures'
     end
 
     describe '.find_all' do
@@ -350,7 +364,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it_behaves_like 'finding all commits'
       end
 
-      context 'when Gitaly find_all_commits feature is disabled', skip_gitaly_mock: true do
+      context 'when Gitaly find_all_commits feature is disabled', :skip_gitaly_mock do
         it_behaves_like 'finding all commits'
 
         context 'while applying a sort order based on the `order` option' do
@@ -372,6 +386,84 @@ describe Gitlab::Git::Commit, seed_helper: true do
             described_class.find_all(repository)
           end
         end
+      end
+    end
+
+    describe '.extract_signature' do
+      subject { described_class.extract_signature(repository, commit_id) }
+
+      shared_examples '.extract_signature' do
+        context 'when the commit is signed' do
+          let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
+
+          it 'returns signature and signed text' do
+            signature, signed_text = subject
+
+            expected_signature = <<~SIGNATURE
+              -----BEGIN PGP SIGNATURE-----
+              Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
+              Comment: GPGTools - https://gpgtools.org
+
+              iQEcBAABCgAGBQJTDvaZAAoJEGJ8X1ifRn8XfvYIAMuB0yrbTGo1BnOSoDfyrjb0
+              Kw2EyUzvXYL72B63HMdJ+/0tlSDC6zONF3fc+bBD8z+WjQMTbwFNMRbSSy2rKEh+
+              mdRybOP3xBIMGgEph0/kmWln39nmFQBsPRbZBWoU10VfI/ieJdEOgOphszgryRar
+              TyS73dLBGE9y9NIININVaNISet9D9QeXFqc761CGjh4YIghvPpi+YihMWapGka6v
+              hgKhX+hc5rj+7IEE0CXmlbYR8OYvAbAArc5vJD7UTxAY4Z7/l9d6Ydt9GQ25khfy
+              ANFgltYzlR6evLFmDjssiP/mx/ZMN91AL0ueJ9nNGv411Mu2CUW+tDCaQf35mdc=
+              =j51i
+              -----END PGP SIGNATURE-----
+            SIGNATURE
+
+            expect(signature).to eq(expected_signature.chomp)
+            expect(signature).to be_a_binary_string
+
+            expected_signed_text = <<~SIGNED_TEXT
+              tree 22bfa2fbd217df24731f43ff43a4a0f8db759dae
+              parent ae73cb07c9eeaf35924a10f713b364d32b2dd34f
+              author Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com> 1393489561 +0200
+              committer Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com> 1393489561 +0200
+
+              Feature added
+
+              Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+            SIGNED_TEXT
+
+            expect(signed_text).to eq(expected_signed_text)
+            expect(signed_text).to be_a_binary_string
+          end
+        end
+
+        context 'when the commit has no signature' do
+          let(:commit_id) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
+        end
+
+        context 'when the commit cannot be found' do
+          let(:commit_id) { Gitlab::Git::BLANK_SHA }
+
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
+        end
+
+        context 'when the commit ID is invalid' do
+          let(:commit_id) { '4b4918a572fa86f9771e5ba40fbd48e' }
+
+          it 'raises ArgumentError' do
+            expect { subject }.to raise_error(ArgumentError)
+          end
+        end
+      end
+
+      context 'with gitaly' do
+        it_behaves_like '.extract_signature'
+      end
+
+      context 'without gitaly', :skip_gitaly_mock do
+        it_behaves_like '.extract_signature'
       end
     end
   end
@@ -401,7 +493,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
   end
 
-  describe '#stats' do
+  shared_examples '#stats' do
     subject { commit.stats }
 
     describe '#additions' do
@@ -413,6 +505,19 @@ describe Gitlab::Git::Commit, seed_helper: true do
       subject { super().deletions }
       it { is_expected.to eq(6) }
     end
+
+    describe '#total' do
+      subject { super().total }
+      it { is_expected.to eq(17) }
+    end
+  end
+
+  describe '#stats with gitaly on' do
+    it_should_behave_like '#stats'
+  end
+
+  describe '#stats with gitaly disabled', :skip_gitaly_mock do
+    it_should_behave_like '#stats'
   end
 
   describe '#to_diff' do

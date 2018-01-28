@@ -99,7 +99,7 @@
 
           %td.build-link
             - if project
-              = link_to ci_status_path(build.pipeline) do
+              = link_to pipeline_path(build.pipeline) do
                 %strong= build.pipeline.short_sha
 
           %td.timestamp

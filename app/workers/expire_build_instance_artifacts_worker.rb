@@ -1,6 +1,5 @@
 class ExpireBuildInstanceArtifactsWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(build_id)
     build = Ci::Build

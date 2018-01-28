@@ -51,6 +51,10 @@ describe Gitlab::GitalyClient::CommitService do
 
       expect(ret).to be_kind_of(Gitlab::GitalyClient::DiffStitcher)
     end
+
+    it 'encodes paths correctly' do
+      expect { client.diff_from_parent(commit, paths: ['encoding/test.txt', 'encoding/テスト.txt', nil]) }.not_to raise_error
+    end
   end
 
   describe '#commit_deltas' do
@@ -127,6 +131,29 @@ describe Gitlab::GitalyClient::CommitService do
     end
   end
 
+  describe '#commit_count' do
+    before do
+      expect_any_instance_of(Gitaly::CommitService::Stub)
+        .to receive(:count_commits)
+        .with(gitaly_request_with_path(storage_name, relative_path),
+              kind_of(Hash))
+        .and_return([])
+    end
+
+    it 'sends a commit_count message' do
+      client.commit_count(revision)
+    end
+
+    context 'with UTF-8 params strings' do
+      let(:revision) { "branch\u011F" }
+      let(:path) { "foo/\u011F.txt" }
+
+      it 'handles string encodings correctly' do
+        client.commit_count(revision, path: path)
+      end
+    end
+  end
+
   describe '#find_commit' do
     let(:revision) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
     it 'sends an RPC request' do
@@ -163,6 +190,31 @@ describe Gitlab::GitalyClient::CommitService do
         .with(request, kind_of(Hash)).and_return(response)
 
       expect(subject).to eq("my diff")
+    end
+  end
+
+  describe '#commit_stats' do
+    let(:request) do
+      Gitaly::CommitStatsRequest.new(
+        repository: repository_message, revision: revision
+      )
+    end
+    let(:response) do
+      Gitaly::CommitStatsResponse.new(
+        oid: revision,
+        additions: 11,
+        deletions: 15
+      )
+    end
+
+    subject { described_class.new(repository).commit_stats(revision) }
+
+    it 'sends an RPC request' do
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:commit_stats)
+        .with(request, kind_of(Hash)).and_return(response)
+
+      expect(subject.additions).to eq(11)
+      expect(subject.deletions).to eq(15)
     end
   end
 end

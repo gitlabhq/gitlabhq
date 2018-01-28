@@ -22,7 +22,7 @@ module API
           source = find_source(source_type, params[:id])
 
           users = source.users
-          users = users.merge(User.search(params[:query])) if params[:query]
+          users = users.merge(User.search(params[:query])) if params[:query].present?
 
           present paginate(users), with: Entities::Member, source: source
         end
@@ -59,7 +59,9 @@ module API
 
           member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
-          if member.persisted? && member.valid?
+          if !member
+            not_allowed! # This currently can only be reached in EE
+          elsif member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
             render_validation_error!(member)

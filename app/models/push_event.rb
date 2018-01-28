@@ -3,12 +3,6 @@ class PushEvent < Event
   # different "action" value.
   validate :validate_push_action
 
-  # Authors are required as they're used to display who pushed data.
-  #
-  # We're just validating the presence of the ID here as foreign key constraints
-  # should ensure the ID points to a valid user.
-  validates :author_id, presence: true
-
   # The project is required to build links to commits, commit ranges, etc.
   #
   # We're just validating the presence of the ID here as foreign key constraints
@@ -52,10 +46,11 @@ class PushEvent < Event
 
   # Returns PushEvent instances for which no merge requests have been created.
   def self.without_existing_merge_requests
-    existing_mrs = MergeRequest.except(:order)
+    existing_mrs = MergeRequest.except(:order, :where)
       .select(1)
       .where('merge_requests.source_project_id = events.project_id')
       .where('merge_requests.source_branch = push_event_payloads.ref')
+      .where(state: :opened)
 
     # For reasons unknown the use of #eager_load will result in the
     # "push_event_payload" association not being set. Because of this we're

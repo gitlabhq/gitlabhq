@@ -19,6 +19,11 @@ describe('Quick Submit behavior', () => {
     this.textarea = $('.js-quick-submit textarea').first();
   });
 
+  afterEach(() => {
+    // Undo what we did to the shared <body>
+    $('body').removeAttr('data-page');
+  });
+
   it('does not respond to other keyCodes', () => {
     this.textarea.trigger(keydownEvent({
       keyCode: 32,

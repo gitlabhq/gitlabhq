@@ -1,6 +1,9 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
+      BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
+
       # Adds `created_at` and `updated_at` columns with timezone information.
       #
       # This method is an improved version of Rails' built-in method `add_timestamps`.
@@ -217,6 +220,15 @@ module Gitlab
       # column - The name of the column to update.
       # value - The value for the column.
       #
+      # The `value` argument is typically a literal. To perform a computed
+      # update, an Arel literal can be used instead:
+      #
+      #     update_value = Arel.sql('bar * baz')
+      #
+      #     update_column_in_batches(:projects, :foo, update_value) do |table, query|
+      #       query.where(table[:some_column].eq('hello'))
+      #     end
+      #
       # Rubocop's Metrics/AbcSize metric is disabled for this method as Rubocop
       # determines this method to be too complex while there's no way to make it
       # less "complex" without introducing extra methods (which actually will
@@ -373,10 +385,27 @@ module Gitlab
         # necessary since we copy over old values further down.
         change_column_default(table, new, old_col.default) if old_col.default
 
-        trigger_name = rename_trigger_name(table, old, new)
+        install_rename_triggers(table, old, new)
+
+        update_column_in_batches(table, new, Arel::Table.new(table)[old])
+
+        change_column_null(table, new, false) unless old_col.null
+
+        copy_indexes(table, old, new)
+        copy_foreign_keys(table, old, new)
+      end
+
+      # Installs triggers in a table that keep a new column in sync with an old
+      # one.
+      #
+      # table - The name of the table to install the trigger in.
+      # old_column - The name of the old column.
+      # new_column - The name of the new column.
+      def install_rename_triggers(table, old_column, new_column)
+        trigger_name = rename_trigger_name(table, old_column, new_column)
         quoted_table = quote_table_name(table)
-        quoted_old = quote_column_name(old)
-        quoted_new = quote_column_name(new)
+        quoted_old = quote_column_name(old_column)
+        quoted_new = quote_column_name(new_column)
 
         if Database.postgresql?
           install_rename_triggers_for_postgresql(trigger_name, quoted_table,
@@ -385,13 +414,6 @@ module Gitlab
           install_rename_triggers_for_mysql(trigger_name, quoted_table,
                                             quoted_old, quoted_new)
         end
-
-        update_column_in_batches(table, new, Arel::Table.new(table)[old])
-
-        change_column_null(table, new, false) unless old_col.null
-
-        copy_indexes(table, old, new)
-        copy_foreign_keys(table, old, new)
       end
 
       # Changes the type of a column concurrently.
@@ -441,6 +463,99 @@ module Gitlab
         end
 
         remove_column(table, old)
+      end
+
+      # Changes the column type of a table using a background migration.
+      #
+      # Because this method uses a background migration it's more suitable for
+      # large tables. For small tables it's better to use
+      # `change_column_type_concurrently` since it can complete its work in a
+      # much shorter amount of time and doesn't rely on Sidekiq.
+      #
+      # Example usage:
+      #
+      #     class Issue < ActiveRecord::Base
+      #       self.table_name = 'issues'
+      #
+      #       include EachBatch
+      #
+      #       def self.to_migrate
+      #         where('closed_at IS NOT NULL')
+      #       end
+      #     end
+      #
+      #     change_column_type_using_background_migration(
+      #       Issue.to_migrate,
+      #       :closed_at,
+      #       :datetime_with_timezone
+      #     )
+      #
+      # Reverting a migration like this is done exactly the same way, just with
+      # a different type to migrate to (e.g. `:datetime` in the above example).
+      #
+      # relation - An ActiveRecord relation to use for scheduling jobs and
+      #            figuring out what table we're modifying. This relation _must_
+      #            have the EachBatch module included.
+      #
+      # column - The name of the column for which the type will be changed.
+      #
+      # new_type - The new type of the column.
+      #
+      # batch_size - The number of rows to schedule in a single background
+      #              migration.
+      #
+      # interval - The time interval between every background migration.
+      def change_column_type_using_background_migration(
+        relation,
+        column,
+        new_type,
+        batch_size: 10_000,
+        interval: 10.minutes
+      )
+
+        unless relation.model < EachBatch
+          raise TypeError, 'The relation must include the EachBatch module'
+        end
+
+        temp_column = "#{column}_for_type_change"
+        table = relation.table_name
+        max_index = 0
+
+        add_column(table, temp_column, new_type)
+        install_rename_triggers(table, column, temp_column)
+
+        # Schedule the jobs that will copy the data from the old column to the
+        # new one. Rows with NULL values in our source column are skipped since
+        # the target column is already NULL at this point.
+        relation.where.not(column => nil).each_batch(of: batch_size) do |batch, index|
+          start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
+          max_index = index
+
+          BackgroundMigrationWorker.perform_in(
+            index * interval,
+            'CopyColumn',
+            [table, column, temp_column, start_id, end_id]
+          )
+        end
+
+        # Schedule the renaming of the column to happen (initially) 1 hour after
+        # the last batch finished.
+        BackgroundMigrationWorker.perform_in(
+          (max_index * interval) + 1.hour,
+          'CleanupConcurrentTypeChange',
+          [table, column, temp_column]
+        )
+
+        if perform_background_migration_inline?
+          # To ensure the schema is up to date immediately we perform the
+          # migration inline in dev / test environments.
+          Gitlab::BackgroundMigration.steal('CopyColumn')
+          Gitlab::BackgroundMigration.steal('CleanupConcurrentTypeChange')
+        end
+      end
+
+      def perform_background_migration_inline?
+        Rails.env.test? || Rails.env.development?
       end
 
       # Performs a concurrent column rename when using PostgreSQL.
@@ -651,6 +766,97 @@ For MySQL you instead need to run:
 Both queries will grant the user super user permissions, ensuring you don't run
 into similar problems in the future (e.g. when new tables are created).
           EOF
+        end
+      end
+
+      # Bulk queues background migration jobs for an entire table, batched by ID range.
+      # "Bulk" meaning many jobs will be pushed at a time for efficiency.
+      # If you need a delay interval per job, then use `queue_background_migration_jobs_by_range_at_intervals`.
+      #
+      # model_class - The table being iterated over
+      # job_class_name - The background migration job class as a string
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     bulk_queue_background_migration_jobs_by_range(Route, 'ProcessRoutes')
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(start_id, end_id)
+      #         # do something
+      #       end
+      #     end
+      def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        jobs = []
+
+        model_class.each_batch(of: batch_size) do |relation|
+          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+          if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
+            # Note: This code path generally only helps with many millions of rows
+            # We push multiple jobs at a time to reduce the time spent in
+            # Sidekiq/Redis operations. We're using this buffer based approach so we
+            # don't need to run additional queries for every range.
+            BackgroundMigrationWorker.bulk_perform_async(jobs)
+            jobs.clear
+          end
+
+          jobs << [job_class_name, [start_id, end_id]]
+        end
+
+        BackgroundMigrationWorker.bulk_perform_async(jobs) unless jobs.empty?
+      end
+
+      # Queues background migration jobs for an entire table, batched by ID range.
+      # Each job is scheduled with a `delay_interval` in between.
+      # If you use a small interval, then some jobs may run at the same time.
+      #
+      # model_class - The table being iterated over
+      # job_class_name - The background migration job class as a string
+      # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     queue_background_migration_jobs_by_range_at_intervals(Route, 'ProcessRoutes', 1.minute)
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(start_id, end_id)
+      #         # do something
+      #       end
+      #     end
+      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        # To not overload the worker too much we enforce a minimum interval both
+        # when scheduling and performing jobs.
+        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
+          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        end
+
+        model_class.each_batch(of: batch_size) do |relation, index|
+          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+          # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
+          # the same time, which is not helpful in most cases where we wish to
+          # spread the work over time.
+          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
         end
       end
     end

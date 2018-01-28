@@ -1,5 +1,7 @@
 module Ci
   class PipelineTriggerService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     def execute
       if trigger_from_token
         create_pipeline_from_trigger(trigger_from_token)
@@ -14,7 +16,7 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
-          trigger.trigger_requests.create!(pipeline: pipeline)
+          pipeline.trigger_requests.create!(trigger: trigger)
           create_pipeline_variables!(pipeline)
         end
 
@@ -26,9 +28,9 @@ module Ci
     end
 
     def trigger_from_token
-      return @trigger if defined?(@trigger)
-
-      @trigger = Ci::Trigger.find_by_token(params[:token].to_s)
+      strong_memoize(:trigger) do
+        Ci::Trigger.find_by_token(params[:token].to_s)
+      end
     end
 
     def create_pipeline_variables!(pipeline)

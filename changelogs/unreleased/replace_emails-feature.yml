@@ -1,5 +1,0 @@
----
-title: Replace the profile/emails.feature spinach test with an rspec analog
-merge_request: 14172
-author: Vitaliy @blackst0ne Klachkov
-type: other

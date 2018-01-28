@@ -107,7 +107,7 @@ describe PipelineDetailsEntity do
       it 'contains stages' do
         expect(subject).to include(:details)
         expect(subject[:details]).to include(:stages)
-        expect(subject[:details][:stages].first).to include(name: 'external')
+        expect(subject[:details][:stages].first).to include(name: 'test')
       end
     end
 

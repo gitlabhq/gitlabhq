@@ -1,0 +1,5 @@
+---
+title: Store number of commits in merge_request_diffs table.
+merge_request:
+author:
+type: performance

@@ -1,6 +1,0 @@
----
-title: 'Improve bare project import: Allow subgroups, take default visibility level
-  into account'
-merge_request: 13670
-author:
-type: fixed

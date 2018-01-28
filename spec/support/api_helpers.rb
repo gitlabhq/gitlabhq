@@ -18,21 +18,23 @@ module ApiHelpers
   #
   # Returns the relative path to the requested API resource
   def api(path, user = nil, version: API::API.version, personal_access_token: nil, oauth_access_token: nil)
-    "/api/#{version}#{path}" +
+    full_path = "/api/#{version}#{path}"
 
-      # Normalize query string
-      (path.index('?') ? '' : '?') +
+    if oauth_access_token
+      query_string = "access_token=#{oauth_access_token.token}"
+    elsif personal_access_token
+      query_string = "private_token=#{personal_access_token.token}"
+    elsif user
+      personal_access_token = create(:personal_access_token, user: user)
+      query_string = "private_token=#{personal_access_token.token}"
+    end
 
-      if personal_access_token.present?
-        "&private_token=#{personal_access_token.token}"
-      elsif oauth_access_token.present?
-        "&access_token=#{oauth_access_token.token}"
-      # Append private_token if given a User object
-      elsif user.respond_to?(:private_token)
-        "&private_token=#{user.private_token}"
-      else
-        ''
-      end
+    if query_string
+      full_path << (path.index('?') ? '&' : '?')
+      full_path << query_string
+    end
+
+    full_path
   end
 
   # Temporary helper method for simplifying V3 exclusive API specs

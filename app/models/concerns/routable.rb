@@ -88,7 +88,7 @@ module Routable
 
   def full_name
     if route && route.name.present?
-      @full_name ||= route.name
+      @full_name ||= route.name # rubocop:disable Gitlab/ModuleWithInstanceVariables
     else
       update_route if persisted?
 
@@ -106,9 +106,13 @@ module Routable
     RequestStore[full_path_key] ||= uncached_full_path
   end
 
+  def full_path_components
+    full_path.split('/')
+  end
+
   def expires_full_path_cache
     RequestStore.delete(full_path_key) if RequestStore.active?
-    @full_path = nil
+    @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def build_full_path
@@ -123,7 +127,7 @@ module Routable
 
   def uncached_full_path
     if route && route.path.present?
-      @full_path ||= route.path
+      @full_path ||= route.path # rubocop:disable Gitlab/ModuleWithInstanceVariables
     else
       update_route if persisted?
 
@@ -152,6 +156,8 @@ module Routable
   end
 
   def update_route
+    return if Gitlab::Database.read_only?
+
     prepare_route
     route.save
   end
@@ -160,7 +166,7 @@ module Routable
     route || build_route(source: self)
     route.path = build_full_path
     route.name = build_full_name
-    @full_path = nil
-    @full_name = nil
+    @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @full_name = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

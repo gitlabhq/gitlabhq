@@ -1,6 +1,5 @@
 - breadcrumb_title "Runners"
 - @no_container = true
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
   .bs-callout
@@ -53,22 +52,23 @@
   %br
 
   - if @runners.any?
-    .table-holder
-      %table.table
-        %thead
-          %tr
-            %th Type
-            %th Runner token
-            %th Description
-            %th Version
-            %th Projects
-            %th Jobs
-            %th Tags
-            %th Last contact
-            %th
+    .runners-content
+      .table-holder
+        %table.table
+          %thead
+            %tr
+              %th Type
+              %th Runner token
+              %th Description
+              %th Version
+              %th Projects
+              %th Jobs
+              %th Tags
+              %th= link_to 'Last contact', admin_runners_path(params.slice(:search).merge(sort: 'contacted_asc'))
+              %th
 
-        - @runners.each do |runner|
-          = render "admin/runners/runner", runner: runner
-    = paginate @runners, theme: "gitlab"
+          - @runners.each do |runner|
+            = render "admin/runners/runner", runner: runner
+      = paginate @runners, theme: "gitlab"
   - else
     .nothing-here-block No runners found

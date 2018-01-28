@@ -27,6 +27,12 @@ module Gitlab
         end
       end
 
+      def extract_sections
+        read do |stream|
+          stream.extract_sections
+        end
+      end
+
       def set(data)
         write do |stream|
           data = job.hide_secrets(data)

@@ -4,12 +4,15 @@
 - page_description @user.bio
 - header_title     @user.name, user_path(@user)
 - @no_container = true
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_d3'
+  = webpack_bundle_tag 'users'
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block.layout-nav
+  .cover-block.user-cover-block.top-area
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
@@ -48,22 +51,22 @@
         .cover-desc
           - unless @user.public_email.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.public_email, "mailto:#{@user.public_email}"
+              = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
           - unless @user.skype.blank?
             .profile-link-holder.middle-dot-divider
               = link_to "skype:#{@user.skype}", title: "Skype" do
                 = icon('skype')
           - unless @user.linkedin.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to linkedin_url(@user), title: "LinkedIn" do
+              = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
                 = icon('linkedin-square')
           - unless @user.twitter.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to twitter_url(@user), title: "Twitter" do
+              = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.short_website_url, @user.full_website_url
+              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'noopener noreferrer nofollow'
           - unless @user.location.blank?
             .profile-link-holder.middle-dot-divider
               = icon('map-marker')
@@ -99,8 +102,6 @@
             Snippets
 
   %div{ class: container_class }
-    - if @user == current_user && show_callout?('user_callout_dismissed')
-      = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs

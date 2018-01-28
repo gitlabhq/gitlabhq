@@ -9,6 +9,10 @@ module Banzai
         end
 
         def apply_rules
+          # Special case: relative URLs beginning with `/uploads/` refer to
+          # user-uploaded files and will be handled elsewhere.
+          return @uri.to_s if @uri.relative? && @uri.path.starts_with?('/uploads/')
+
           apply_file_link_rules!
           apply_hierarchical_link_rules!
           apply_relative_link_rules!

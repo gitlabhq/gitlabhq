@@ -2,7 +2,6 @@ class Projects::ApplicationController < ApplicationController
   include RoutableActions
 
   skip_before_action :authenticate_user!
-  before_action :redirect_git_extension
   before_action :project
   before_action :repository
   layout 'project'
@@ -10,15 +9,6 @@ class Projects::ApplicationController < ApplicationController
   helper_method :repository, :can_collaborate_with_project?
 
   private
-
-  def redirect_git_extension
-    # Redirect from
-    #   localhost/group/project.git
-    # to
-    #   localhost/group/project
-    #
-    redirect_to url_for(params.merge(format: nil)) if params[:format] == 'git'
-  end
 
   def project
     return @project if @project
@@ -95,5 +85,9 @@ class Projects::ApplicationController < ApplicationController
 
   def require_pages_enabled!
     not_found unless @project.pages_available?
+  end
+
+  def check_issues_available!
+    return render_404 unless @project.feature_available?(:issues, current_user)
   end
 end

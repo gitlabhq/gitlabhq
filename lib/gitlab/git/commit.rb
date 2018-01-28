@@ -6,6 +6,7 @@ module Gitlab
 
       attr_accessor :raw_commit, :head
 
+      MIN_SHA_LENGTH = 7
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,
@@ -13,8 +14,6 @@ module Gitlab
       ].freeze
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
-
-      delegate :tree, to: :rugged_commit
 
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
@@ -72,7 +71,8 @@ module Gitlab
 
           decorate(repo, commit) if commit
         rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError,
-               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository
+               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
+               Rugged::OdbError, Rugged::TreeError, ArgumentError
           nil
         end
 
@@ -212,12 +212,49 @@ module Gitlab
         end
 
         def shas_with_signatures(repository, shas)
-          shas.select do |sha|
-            begin
-              Rugged::Commit.extract_signature(repository.rugged, sha)
-            rescue Rugged::OdbError
-              false
+          GitalyClient.migrate(:filter_shas_with_signatures) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient::CommitService.new(repository).filter_shas_with_signatures(shas)
+            else
+              shas.select do |sha|
+                begin
+                  Rugged::Commit.extract_signature(repository.rugged, sha)
+                rescue Rugged::OdbError
+                  false
+                end
+              end
             end
+          end
+        end
+
+        # Only to be used when the object ids will not necessarily have a
+        # relation to each other. The last 10 commits for a branch for example,
+        # should go through .where
+        def batch_by_oid(repo, oids)
+          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.list_commits_by_oid(oids)
+            else
+              oids.map { |oid| find(repo, oid) }.compact
+            end
+          end
+        end
+
+        def extract_signature(repository, commit_id)
+          repository.gitaly_migrate(:extract_commit_signature) do |is_enabled|
+            if is_enabled
+              repository.gitaly_commit_client.extract_signature(commit_id)
+            else
+              rugged_extract_signature(repository, commit_id)
+            end
+          end
+        end
+
+        def rugged_extract_signature(repository, commit_id)
+          begin
+            Rugged::Commit.extract_signature(repository.rugged, commit_id)
+          rescue Rugged::OdbError
+            nil
           end
         end
       end
@@ -352,7 +389,7 @@ module Gitlab
       end
 
       def stats
-        Gitlab::Git::CommitStats.new(self)
+        Gitlab::Git::CommitStats.new(@repository, self)
       end
 
       def to_patch(options = {})
@@ -413,6 +450,34 @@ module Gitlab
                            end
       end
 
+      def merge_commit?
+        parent_ids.size > 1
+      end
+
+      def tree_entry(path)
+        @repository.gitaly_migrate(:commit_tree_entry) do |is_migrated|
+          if is_migrated
+            gitaly_tree_entry(path)
+          else
+            rugged_tree_entry(path)
+          end
+        end
+      end
+
+      def to_gitaly_commit
+        return raw_commit if raw_commit.is_a?(Gitaly::GitCommit)
+
+        message_split = raw_commit.message.split("\n", 2)
+        Gitaly::GitCommit.new(
+          id: raw_commit.oid,
+          subject: message_split[0] ? message_split[0].chomp.b : "",
+          body: raw_commit.message.b,
+          parent_ids: raw_commit.parent_ids,
+          author: gitaly_commit_author_from_rugged(raw_commit.author),
+          committer: gitaly_commit_author_from_rugged(raw_commit.committer)
+        )
+      end
+
       private
 
       def init_from_hash(hash)
@@ -457,6 +522,36 @@ module Gitlab
 
       def serialize_keys
         SERIALIZE_KEYS
+      end
+
+      def gitaly_tree_entry(path)
+        # We're only interested in metadata, so limit actual data to 1 byte
+        # since Gitaly doesn't support "send no data" option.
+        entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
+        return unless entry
+
+        # To be compatible with the rugged format
+        entry = entry.to_h
+        entry.delete(:data)
+        entry[:name] = File.basename(path)
+        entry[:type] = entry[:type].downcase
+
+        entry
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
+      rescue Rugged::TreeError
+        nil
+      end
+
+      def gitaly_commit_author_from_rugged(author_or_committer)
+        Gitaly::CommitAuthor.new(
+          name: author_or_committer[:name].b,
+          email: author_or_committer[:email].b,
+          date: Google::Protobuf::Timestamp.new(seconds: author_or_committer[:time].to_i)
+        )
       end
     end
   end

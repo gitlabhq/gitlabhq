@@ -14,8 +14,21 @@ Prometheus::Client.configure do |config|
   config.pid_provider = Prometheus::Client::Support::Unicorn.method(:worker_pid_provider)
 end
 
+Gitlab::Application.configure do |config|
+  # 0 should be Sentry to catch errors in this middleware
+  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
+end
+
 Sidekiq.configure_server do |config|
   config.on(:startup) do
     Gitlab::Metrics::SidekiqMetricsExporter.instance.start
   end
+end
+
+if Gitlab::Metrics.prometheus_metrics_enabled?
+  unless Sidekiq.server?
+    Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+  end
+
+  Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
 end

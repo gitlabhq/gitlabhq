@@ -3,9 +3,10 @@ module Banzai
     class PostProcessPipeline < BasePipeline
       def self.filters
         FilterArray[
+          Filter::RedactorFilter,
           Filter::RelativeLinkFilter,
           Filter::IssuableStateFilter,
-          Filter::RedactorFilter
+          Filter::AbsoluteLinkFilter
         ]
       end
 

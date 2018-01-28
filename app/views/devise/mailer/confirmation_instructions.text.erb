@@ -1,9 +1,1 @@
-Welcome, <%= @resource.name %>!
-
-<% if @resource.unconfirmed_email.present? %>
-You can confirm your email (<%= @resource.unconfirmed_email %>) through the link below:
-<% else %>
-You can confirm your account through the link below:
-<% end %>
-
-<%= confirmation_url(@resource, confirmation_token: @token) %>
+<%= render partial: "confirmation_instructions_#{@resource.is_a?(User) ? 'account' : 'secondary'}" %>

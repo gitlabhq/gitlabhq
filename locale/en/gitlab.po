@@ -1057,7 +1057,7 @@ msgstr ""
 msgid "Timeago|a week ago"
 msgstr ""
 
-msgid "Timeago|a while"
+msgid "Timeago|in a while"
 msgstr ""
 
 msgid "Timeago|a year ago"

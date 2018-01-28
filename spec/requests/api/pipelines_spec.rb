@@ -11,7 +11,7 @@ describe API::Pipelines do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET /projects/:id/pipelines ' do
@@ -19,7 +19,7 @@ describe API::Pipelines do
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
@@ -37,7 +37,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), scope: target
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
               json_response.each { |r| expect(r['status']).to eq(target) }
@@ -55,7 +55,7 @@ describe API::Pipelines do
           it 'returns matched pipelines' do
             get api("/projects/#{project.id}/pipelines", user), scope: 'finished'
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).not_to be_empty
             json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
@@ -70,7 +70,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), scope: 'branches'
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
               expect(json_response.last['id']).to eq(pipeline_branch.id)
@@ -81,7 +81,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), scope: 'tags'
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
               expect(json_response.last['id']).to eq(pipeline_tag.id)
@@ -93,7 +93,7 @@ describe API::Pipelines do
           it 'returns bad_request' do
             get api("/projects/#{project.id}/pipelines", user), scope: 'invalid-scope'
 
-            expect(response).to have_http_status(:bad_request)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
 
@@ -108,7 +108,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), status: target
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
               json_response.each { |r| expect(r['status']).to eq(target) }
@@ -120,7 +120,7 @@ describe API::Pipelines do
           it 'returns bad_request' do
             get api("/projects/#{project.id}/pipelines", user), status: 'invalid-status'
 
-            expect(response).to have_http_status(:bad_request)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
 
@@ -133,7 +133,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), ref: 'master'
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
               json_response.each { |r| expect(r['ref']).to eq('master') }
@@ -144,7 +144,7 @@ describe API::Pipelines do
             it 'returns empty' do
               get api("/projects/#{project.id}/pipelines", user), ref: 'invalid-ref'
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_empty
             end
@@ -158,7 +158,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), name: user.name
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response.first['id']).to eq(pipeline.id)
             end
@@ -168,7 +168,7 @@ describe API::Pipelines do
             it 'returns empty' do
               get api("/projects/#{project.id}/pipelines", user), name: 'invalid-name'
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_empty
             end
@@ -182,7 +182,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), username: user.username
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response.first['id']).to eq(pipeline.id)
             end
@@ -192,7 +192,7 @@ describe API::Pipelines do
             it 'returns empty' do
               get api("/projects/#{project.id}/pipelines", user), username: 'invalid-username'
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_empty
             end
@@ -207,7 +207,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: true
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response.first['id']).to eq(pipeline1.id)
             end
@@ -217,7 +217,7 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: false
 
-              expect(response).to have_http_status(:ok)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response.first['id']).to eq(pipeline2.id)
             end
@@ -227,7 +227,7 @@ describe API::Pipelines do
             it 'returns bad_request' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: 'invalid-yaml_errors'
 
-              expect(response).to have_http_status(:bad_request)
+              expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
         end
@@ -244,7 +244,7 @@ describe API::Pipelines do
               it 'sorts as user_id: :desc' do
                 get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'desc'
 
-                expect(response).to have_http_status(:ok)
+                expect(response).to have_gitlab_http_status(:ok)
                 expect(response).to include_pagination_headers
                 expect(json_response).not_to be_empty
 
@@ -257,7 +257,7 @@ describe API::Pipelines do
               it 'returns bad_request' do
                 get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'invalid_sort'
 
-                expect(response).to have_http_status(:bad_request)
+                expect(response).to have_gitlab_http_status(:bad_request)
               end
             end
           end
@@ -266,7 +266,7 @@ describe API::Pipelines do
             it 'returns bad_request' do
               get api("/projects/#{project.id}/pipelines", user), order_by: 'lock_version', sort: 'asc'
 
-              expect(response).to have_http_status(:bad_request)
+              expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
         end
@@ -277,7 +277,7 @@ describe API::Pipelines do
       it 'does not return project pipelines' do
         get api("/projects/#{project.id}/pipelines", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response).not_to be_an Array
       end
@@ -296,7 +296,7 @@ describe API::Pipelines do
             post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
           end.to change { Ci::Pipeline.count }.by(1)
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response).to be_a Hash
           expect(json_response['sha']).to eq project.commit.id
         end
@@ -304,7 +304,7 @@ describe API::Pipelines do
         it 'fails when using an invalid ref' do
           post api("/projects/#{project.id}/pipeline", user), ref: 'invalid_ref'
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['base'].first).to eq 'Reference not found'
           expect(json_response).not_to be_an Array
         end
@@ -314,7 +314,7 @@ describe API::Pipelines do
         it 'fails to create pipeline' do
           post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
           expect(json_response).not_to be_an Array
         end
@@ -325,7 +325,7 @@ describe API::Pipelines do
       it 'does not create pipeline' do
         post api("/projects/#{project.id}/pipeline", non_member), ref: project.default_branch
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response).not_to be_an Array
       end
@@ -337,14 +337,14 @@ describe API::Pipelines do
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['sha']).to match /\A\h{40}\z/
       end
 
       it 'returns 404 when it does not exist' do
         get api("/projects/#{project.id}/pipelines/123456", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Not found'
         expect(json_response['id']).to be nil
       end
@@ -366,7 +366,7 @@ describe API::Pipelines do
       it 'should not return a project pipeline' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response['id']).to be nil
       end
@@ -387,7 +387,7 @@ describe API::Pipelines do
           post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
         end.to change { pipeline.builds.count }.from(1).to(2)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(build.reload.retried?).to be true
       end
     end
@@ -396,7 +396,7 @@ describe API::Pipelines do
       it 'should not return a project pipeline' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response['id']).to be nil
       end
@@ -415,7 +415,7 @@ describe API::Pipelines do
       it 'retries failed builds' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to eq('canceled')
       end
     end
@@ -424,13 +424,13 @@ describe API::Pipelines do
       let!(:reporter) { create(:user) }
 
       before do
-        project.team << [reporter, :reporter]
+        project.add_reporter(reporter)
       end
 
       it 'rejects the action' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", reporter)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
         expect(pipeline.reload.status).to eq('pending')
       end
     end

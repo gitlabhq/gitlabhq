@@ -1,5 +1,5 @@
 <script>
-  import getActionIcon from '../../../vue_shared/ci_action_icons';
+  import icon from '../../../vue_shared/components/icon.vue';
   import tooltip from '../../../vue_shared/directives/tooltip';
 
   /**
@@ -7,6 +7,13 @@
    * TODO: Remove UJS from here and use an async request instead.
    */
   export default {
+    components: {
+      icon,
+    },
+
+    directives: {
+      tooltip,
+    },
     props: {
       tooltipText: {
         type: String,
@@ -28,16 +35,6 @@
         required: true,
       },
     },
-
-    directives: {
-      tooltip,
-    },
-
-    computed: {
-      actionIconSvg() {
-        return getActionIcon(this.actionIcon);
-      },
-    },
   };
 </script>
 <template>
@@ -49,7 +46,8 @@
     rel="nofollow"
     class="ci-action-icon-wrapper js-ci-status-icon"
     data-container="body"
-    v-html="actionIconSvg"
-    aria-label="Job's action">
+    aria-label="Job's action"
+  >
+    <icon :name="actionIcon" />
   </a>
 </template>

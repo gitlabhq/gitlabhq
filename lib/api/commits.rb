@@ -4,8 +4,6 @@ module API
   class Commits < Grape::API
     include PaginationParams
 
-    COMMIT_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: API::NO_SLASH_URL_PART_REGEX)
-
     before { authorize! :download_code, user_project }
 
     params do
@@ -13,7 +11,7 @@ module API
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository commits' do
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
@@ -46,11 +44,11 @@ module API
 
         paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
-        present paginate(paginated_commits), with: Entities::RepoCommit
+        present paginate(paginated_commits), with: Entities::Commit
       end
 
       desc 'Commit multiple file changes as one commit' do
-        success Entities::RepoCommitDetail
+        success Entities::CommitDetail
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
@@ -72,25 +70,26 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
-          present commit_detail, with: Entities::RepoCommitDetail
+          present commit_detail, with: Entities::CommitDetail
         else
           render_api_error!(result[:message], 400)
         end
       end
 
       desc 'Get a specific commit of a project' do
-        success Entities::RepoCommitDetail
+        success Entities::CommitDetail
         failure [[404, 'Commit Not Found']]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+        optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
       end
-      get ':id/repository/commits/:sha', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
 
-        present commit, with: Entities::RepoCommitDetail
+        present commit, with: Entities::CommitDetail, stats: params[:stats]
       end
 
       desc 'Get the diff for a specific commit of a project' do
@@ -99,12 +98,12 @@ module API
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha/diff', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
 
-        present commit.raw_diffs.to_a, with: Entities::RepoDiff
+        present commit.raw_diffs.to_a, with: Entities::Diff
       end
 
       desc "Get a commit's comments" do
@@ -115,24 +114,24 @@ module API
         use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha/comments', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = user_project.notes.where(commit_id: commit.id).order(:created_at)
+        notes = commit.notes.order(:created_at)
 
         present paginate(notes), with: Entities::CommitNote
       end
 
       desc 'Cherry pick commit into a branch' do
         detail 'This feature was introduced in GitLab 8.15'
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      post ':id/repository/commits/:sha/cherry_pick', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         commit = user_project.commit(params[:sha])
@@ -151,7 +150,7 @@ module API
 
         if result[:status] == :success
           branch = user_project.repository.find_branch(params[:branch])
-          present user_project.repository.commit(branch.dereferenced_target), with: Entities::RepoCommit
+          present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
         else
           render_api_error!(result[:message], 400)
         end
@@ -169,7 +168,7 @@ module API
           requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
-      post ':id/repository/commits/:sha/comments', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
@@ -182,11 +181,13 @@ module API
         if params[:path]
           commit.raw_diffs(limits: false).each do |diff|
             next unless diff.new_path == params[:path]
+
             lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 
             lines.each do |line|
               next unless line.new_pos == params[:line] && line.type == params[:line_type]
-              break opts[:line_code] = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
+
+              break opts[:line_code] = Gitlab::Git.diff_line_code(diff.new_path, line.new_pos, line.old_pos)
             end
 
             break if opts[:line_code]

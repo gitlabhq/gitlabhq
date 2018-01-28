@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe SystemNoteService do
   include Gitlab::Routing
+  include RepoHelpers
 
   set(:group)    { create(:group) }
   set(:project)  { create(:project, :repository, group: group) }
@@ -157,7 +158,7 @@ describe SystemNoteService do
     end
 
     it 'builds a correct phrase when assignee removed' do
-      expect(build_note([assignee1], [])).to eq 'removed assignee'
+      expect(build_note([assignee1], [])).to eq "unassigned @#{assignee1.username}"
     end
 
     it 'builds a correct phrase when assignees changed' do
@@ -232,7 +233,9 @@ describe SystemNoteService do
 
       context 'when milestone added' do
         it 'sets the note text' do
-          expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+          reference = milestone.to_reference(format: :iid)
+
+          expect(subject.note).to eq "changed milestone to #{reference}"
         end
       end
 
@@ -500,20 +503,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.cross_reference?' do
-    it 'is truthy when text begins with expected text' do
-      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
-    end
-
-    it 'is truthy when text begins with legacy capitalized expected text' do
-      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
-    end
-
-    it 'is falsey when text does not begin with expected text' do
-      expect(described_class.cross_reference?('this is a note')).to be_falsey
-    end
-  end
-
   describe '.cross_reference_disallowed?' do
     context 'when mentioner is not a MergeRequest' do
       it 'is falsey' do
@@ -704,9 +693,9 @@ describe SystemNoteService do
   describe '.new_commit_summary' do
     it 'escapes HTML titles' do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
-      escaped = '* 12345678 - &lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
+      escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
 
-      expect(described_class.new_commit_summary([commit])).to eq([escaped])
+      expect(described_class.new_commit_summary([commit])).to all(match(%r[- #{escaped}]))
     end
   end
 
@@ -738,6 +727,7 @@ describe SystemNoteService do
               else
                 "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
               end
+
         link = double(object: { 'url' => url })
         links << link
         expect(link).to receive(:save!)
@@ -939,7 +929,7 @@ describe SystemNoteService do
     # We need a custom noteable in order to the shared examples to be green.
     let(:noteable) do
       mr = create(:merge_request, source_project: project)
-      mr.spend_time(duration: 360000, user: author)
+      mr.spend_time(duration: 360000, user_id: author.id)
       mr.save!
       mr
     end
@@ -977,36 +967,38 @@ describe SystemNoteService do
     end
 
     def spend_time!(seconds)
-      noteable.spend_time(duration: seconds, user: author)
+      noteable.spend_time(duration: seconds, user_id: author.id)
       noteable.save!
     end
   end
 
-  describe '.remove_merge_request_wip' do
-    let(:noteable) { create(:issue, project: project, title: 'WIP: Lorem ipsum') }
+  describe '.handle_merge_request_wip' do
+    context 'adding wip note' do
+      let(:noteable) { create(:merge_request, source_project: project, title: 'WIP Lorem ipsum') }
 
-    subject { described_class.remove_merge_request_wip(noteable, project, author) }
+      subject { described_class.handle_merge_request_wip(noteable, project, author) }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'title' }
+      it_behaves_like 'a system note' do
+        let(:action) { 'title' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'marked as a **Work In Progress**'
+      end
     end
 
-    it 'sets the note text' do
-      expect(subject.note).to eq 'unmarked as a **Work In Progress**'
-    end
-  end
+    context 'removing wip note' do
+      let(:noteable) { create(:merge_request, source_project: project, title: 'Lorem ipsum') }
 
-  describe '.add_merge_request_wip' do
-    let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
+      subject { described_class.handle_merge_request_wip(noteable, project, author) }
 
-    subject { described_class.add_merge_request_wip(noteable, project, author) }
+      it_behaves_like 'a system note' do
+        let(:action) { 'title' }
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'title' }
-    end
-
-    it 'sets the note text' do
-      expect(subject.note).to eq 'marked as a **Work In Progress**'
+      it 'sets the note text' do
+        expect(subject.note).to eq 'unmarked as a **Work In Progress**'
+      end
     end
   end
 
@@ -1080,17 +1072,32 @@ describe SystemNoteService do
       let(:action)            { 'outdated' }
     end
 
-    it 'creates a new note in the discussion' do
-      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
-      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    context 'when the change_position is valid for the discussion' do
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'links to the diff in the system note' do
+        expect(subject.note).to include('version 1')
+
+        diff_id = merge_request.merge_request_diff.id
+        line_code = change_position.line_code(project.repository)
+        expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+      end
     end
 
-    it 'links to the diff in the system note' do
-      expect(subject.note).to include('version 1')
+    context 'when the change_position is invalid for the discussion' do
+      let(:change_position) { project.commit(sample_commit.id) }
 
-      diff_id = merge_request.merge_request_diff.id
-      line_code = change_position.line_code(project.repository)
-      expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'does not create a link' do
+        expect(subject.note).to eq('changed this line in version 1 of the diff')
+      end
     end
   end
 
@@ -1141,6 +1148,44 @@ describe SystemNoteService do
       end
 
       it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue" }
+    end
+  end
+
+  describe '.discussion_lock' do
+    subject { described_class.discussion_lock(noteable, author)  }
+
+    context 'discussion unlocked' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'unlocked' }
+      end
+
+      it 'creates the note text correctly' do
+        [:issue, :merge_request].each do |type|
+          issuable = create(type)
+
+          expect(described_class.discussion_lock(issuable, author).note)
+            .to eq("unlocked this #{type.to_s.titleize.downcase}")
+        end
+      end
+    end
+
+    context 'discussion locked' do
+      before do
+        noteable.update_attribute(:discussion_locked, true)
+      end
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'locked' }
+      end
+
+      it 'creates the note text correctly' do
+        [:issue, :merge_request].each do |type|
+          issuable = create(type, discussion_locked: true)
+
+          expect(described_class.discussion_lock(issuable, author).note)
+            .to eq("locked this #{type.to_s.titleize.downcase}")
+        end
+      end
     end
   end
 end

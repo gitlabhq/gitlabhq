@@ -1,17 +1,3 @@
-<template>
-  <div :class="type">
-    <prompt
-      :type="promptType"
-      :count="count" />
-    <pre
-      class="language-python"
-      :class="codeCssClass"
-      ref="code"
-      v-text="code">
-    </pre>
-  </div>
-</template>
-
 <script>
   import Prism from '../../lib/highlight';
   import Prompt from '../prompt.vue';
@@ -55,3 +41,17 @@
     },
   };
 </script>
+
+<template>
+  <div :class="type">
+    <prompt
+      :type="promptType"
+      :count="count" />
+    <pre
+      class="language-python"
+      :class="codeCssClass"
+      ref="code"
+      v-text="code">
+    </pre>
+  </div>
+</template>

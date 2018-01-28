@@ -1,17 +1,15 @@
 /* eslint-disable comma-dangle */
 /* global BoardService */
 /* global ListIssue */
-/* global mockBoardService */
 
 import Vue from 'vue';
-import '~/lib/utils/url_utility';
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('Issue model', () => {
   let issue;
@@ -131,6 +129,25 @@ describe('Issue model', () => {
     });
 
     expect(relativePositionIssue.position).toBe(1);
+  });
+
+  it('updates data', () => {
+    issue.updateData({ subscribed: true });
+    expect(issue.subscribed).toBe(true);
+  });
+
+  it('sets fetching state', () => {
+    expect(issue.isFetching.subscriptions).toBe(true);
+
+    issue.setFetchingState('subscriptions', false);
+
+    expect(issue.isFetching.subscriptions).toBe(false);
+  });
+
+  it('sets loading state', () => {
+    issue.setLoadingState('foo', true);
+
+    expect(issue.isLoading.foo).toBe(true);
   });
 
   describe('update', () => {

@@ -902,7 +902,7 @@ describe Gitlab::Database::MigrationHelpers do
   describe '#check_trigger_permissions!' do
     it 'does nothing when the user has the correct permissions' do
       expect { model.check_trigger_permissions!('users') }
-        .not_to raise_error(RuntimeError)
+        .not_to raise_error
     end
 
     it 'raises RuntimeError when the user does not have the correct permissions' do
@@ -912,6 +912,217 @@ describe Gitlab::Database::MigrationHelpers do
 
       expect { model.check_trigger_permissions!('kittens') }
         .to raise_error(RuntimeError, /Your database user is not allowed/)
+    end
+  end
+
+  describe '#bulk_queue_background_migration_jobs_by_range', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with enough rows to bulk queue jobs more than once' do
+        before do
+          stub_const('Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_JOB_BUFFER_SIZE', 1)
+        end
+
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in groups of buffer size 1' do
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id1, id2]]])
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id3, id3]]])
+
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+        end
+      end
+
+      context 'with not enough rows to bulk queue jobs more than once' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in bulk all at once (big buffer size)' do
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id1, id2]],
+                                                                                  ['FooJob', [id3, id3]]])
+
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+        end
+      end
+
+      context 'without specifying batch_size' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob')
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+          end
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.bulk_queue_background_migration_jobs_by_range(ProjectAuthorization, 'FooJob')
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
+
+  describe '#queue_background_migration_jobs_by_range_at_intervals', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with batch_size option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+            expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.minutes.from_now.to_f)
+          end
+        end
+      end
+
+      context 'without batch_size option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+          end
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
+
+  describe '#change_column_type_using_background_migration' do
+    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
+
+    let(:issue_model) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = 'issues'
+        include EachBatch
+      end
+    end
+
+    it 'changes the type of a column using a background migration' do
+      expect(model)
+        .to receive(:add_column)
+        .with('issues', 'closed_at_for_type_change', :datetime_with_timezone)
+
+      expect(model)
+        .to receive(:install_rename_triggers)
+        .with('issues', :closed_at, 'closed_at_for_type_change')
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          10.minutes,
+          'CopyColumn',
+          ['issues', :closed_at, 'closed_at_for_type_change', issue.id, issue.id]
+        )
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          1.hour + 10.minutes,
+          'CleanupConcurrentTypeChange',
+          ['issues', :closed_at, 'closed_at_for_type_change']
+        )
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CopyColumn')
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CleanupConcurrentTypeChange')
+
+      model.change_column_type_using_background_migration(
+        issue_model.all,
+        :closed_at,
+        :datetime_with_timezone
+      )
+    end
+  end
+
+  describe '#perform_background_migration_inline?' do
+    it 'returns true in a test environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(true)
+
+      expect(model.perform_background_migration_inline?).to eq(true)
+    end
+
+    it 'returns true in a development environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(false)
+
+      allow(Rails.env)
+        .to receive(:development?)
+        .and_return(true)
+
+      expect(model.perform_background_migration_inline?).to eq(true)
+    end
+
+    it 'returns false in a production environment' do
+      allow(Rails.env)
+        .to receive(:test?)
+        .and_return(false)
+
+      allow(Rails.env)
+        .to receive(:development?)
+        .and_return(false)
+
+      expect(model.perform_background_migration_inline?).to eq(false)
     end
   end
 end

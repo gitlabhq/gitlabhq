@@ -58,6 +58,7 @@ module SubmoduleHelper
     url_no_dotgit = url.chomp('.git')
     return true if url_no_dotgit == [Gitlab.config.gitlab.url, '/', namespace, '/',
                                      project].join('')
+
     url_with_dotgit = url_no_dotgit + '.git'
     url_with_dotgit == Gitlab::Shell.new.url_to_repo([namespace, '/', project].join(''))
   end
@@ -87,10 +88,14 @@ module SubmoduleHelper
       namespace = @project.namespace.full_path
     end
 
-    [
-      namespace_project_path(namespace, base),
-      namespace_project_tree_path(namespace, base, commit)
-    ]
+    begin
+      [
+        namespace_project_path(namespace, base),
+        namespace_project_tree_path(namespace, base, commit)
+      ]
+    rescue ActionController::UrlGenerationError
+      [nil, nil]
+    end
   end
 
   def sanitize_submodule_url(url)

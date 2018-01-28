@@ -16,6 +16,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   shared_examples 'finding blobs' do
+    context 'nil path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
+
+      it { expect(blob).to eq(nil) }
+    end
+
+    context 'blank path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, '') }
+
+      it { expect(blob).to eq(nil) }
+    end
+
     context 'file in subdir' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
 
@@ -112,17 +124,20 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs'
     end
 
-    context 'when project_raw_show Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when project_raw_show Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs'
     end
   end
 
   shared_examples 'finding blobs by ID' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
+    let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
+
     it { expect(raw_blob.id).to eq(SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.data[0..10]).to eq("require \'fi") }
     it { expect(raw_blob.size).to eq(669) }
     it { expect(raw_blob.truncated?).to be_falsey }
+    it { expect(bad_blob).to be_nil }
 
     context 'large file' do
       it 'limits the size of a large file' do
@@ -140,6 +155,16 @@ describe Gitlab::Git::Blob, seed_helper: true do
         expect(blob.loaded_size).to eq(blob_size)
       end
     end
+
+    context 'when sha references a tree' do
+      it 'returns nil' do
+        tree = repository.rugged.rev_parse('master^{tree}')
+
+        blob = Gitlab::Git::Blob.raw(repository, tree.oid)
+
+        expect(blob).to be_nil
+      end
+    end
   end
 
   describe '.raw' do
@@ -147,7 +172,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs by ID'
     end
 
-    context 'when the blob_raw Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when the blob_raw Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs by ID'
     end
   end
@@ -189,16 +214,6 @@ describe Gitlab::Git::Blob, seed_helper: true do
     context 'limiting' do
       subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
 
-      context 'default' do
-        let(:blob_size_limit) { nil }
-
-        it 'limits to MAX_DATA_DISPLAY_SIZE' do
-          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
-
-          expect(subject.first.data.size).to eq(100)
-        end
-      end
-
       context 'positive' do
         let(:blob_size_limit) { 10 }
 
@@ -208,7 +223,10 @@ describe Gitlab::Git::Blob, seed_helper: true do
       context 'zero' do
         let(:blob_size_limit) { 0 }
 
-        it { expect(subject.first.data).to eq('') }
+        it 'only loads the metadata' do
+          expect(subject.first.size).not_to be(0)
+          expect(subject.first.data).to eq('')
+        end
       end
 
       context 'negative' do
@@ -220,6 +238,79 @@ describe Gitlab::Git::Blob, seed_helper: true do
           expect(subject.first.data.size).to eq(669)
         end
       end
+    end
+  end
+
+  describe '.batch_lfs_pointers' do
+    let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
+
+    let(:non_lfs_blob) do
+      Gitlab::Git::Blob.find(
+        repository,
+        'master',
+        'README.md'
+      )
+    end
+
+    let(:lfs_blob) do
+      Gitlab::Git::Blob.find(
+        repository,
+        '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
+        'files/lfs/image.jpg'
+      )
+    end
+
+    shared_examples 'fetching batch of LFS pointers' do
+      it 'returns a list of Gitlab::Git::Blob' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'accepts blob IDs as a lazy enumerator' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id].lazy)
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'handles empty list of IDs gracefully' do
+        blobs_1 = described_class.batch_lfs_pointers(repository, [].lazy)
+        blobs_2 = described_class.batch_lfs_pointers(repository, [])
+
+        expect(blobs_1).to eq([])
+        expect(blobs_2).to eq([])
+      end
+
+      it 'silently ignores tree objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'silently ignores non lfs objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'avoids loading large blobs into memory' do
+        # This line could call `lookup` on `repository`, so do here before mocking.
+        non_lfs_blob_id = non_lfs_blob.id
+
+        expect(repository).not_to receive(:lookup)
+
+        described_class.batch_lfs_pointers(repository, [non_lfs_blob_id])
+      end
+    end
+
+    context 'when Gitaly batch_lfs_pointers is enabled' do
+      it_behaves_like 'fetching batch of LFS pointers'
+    end
+
+    context 'when Gitaly batch_lfs_pointers is disabled', :disable_gitaly do
+      it_behaves_like 'fetching batch of LFS pointers'
     end
   end
 

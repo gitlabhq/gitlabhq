@@ -10,6 +10,7 @@ import 'core-js/fn/string/from-code-point';
 import 'core-js/fn/symbol';
 
 // Browser polyfills
+import 'classlist-polyfill';
 import './polyfills/custom_event';
 import './polyfills/element';
 import './polyfills/event';

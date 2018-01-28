@@ -91,11 +91,13 @@ module API
         put ':id' do
           snippet = snippets_for_current_user.find_by(id: params.delete(:id))
           return not_found!('Snippet') unless snippet
+
           authorize! :update_personal_snippet, snippet
 
           attrs = declared_params(include_missing: false)
 
           UpdateSnippetService.new(nil, current_user, snippet, attrs).execute
+
           if snippet.persisted?
             present snippet, with: ::API::Entities::PersonalSnippet
           else
@@ -113,6 +115,7 @@ module API
         delete ':id' do
           snippet = snippets_for_current_user.find_by(id: params.delete(:id))
           return not_found!('Snippet') unless snippet
+
           authorize! :destroy_personal_snippet, snippet
           snippet.destroy
           no_content!

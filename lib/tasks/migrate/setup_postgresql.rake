@@ -6,6 +6,8 @@ require Rails.root.join('db/migrate/20161212142807_add_lower_path_index_to_route
 require Rails.root.join('db/migrate/20170317203554_index_routes_path_for_like')
 require Rails.root.join('db/migrate/20170724214302_add_lower_path_index_to_redirect_routes')
 require Rails.root.join('db/migrate/20170503185032_index_redirect_routes_path_for_like')
+require Rails.root.join('db/migrate/20171220191323_add_index_on_namespaces_lower_name.rb')
+require Rails.root.join('db/migrate/20180113220114_rework_redirect_routes_indexes.rb')
 
 desc 'GitLab | Sets up PostgreSQL'
 task setup_postgresql: :environment do
@@ -15,4 +17,6 @@ task setup_postgresql: :environment do
   IndexRoutesPathForLike.new.up
   AddLowerPathIndexToRedirectRoutes.new.up
   IndexRedirectRoutesPathForLike.new.up
+  AddIndexOnNamespacesLowerName.new.up
+  ReworkRedirectRoutesIndexes.new.up
 end

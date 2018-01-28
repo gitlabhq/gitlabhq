@@ -144,7 +144,7 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
 1. [Reconfigure][reconf] or [restart] GitLab for Omnibus and installations
    from source respectively for the changes to take effect.
 
-You might want to try this out on a incognito browser window.
+You might want to try this out on an incognito browser window.
 
 ## Configuring groups
 

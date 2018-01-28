@@ -1,30 +1,30 @@
 <script>
-import editFormButtons from './edit_form_buttons.vue';
+  import editFormButtons from './edit_form_buttons.vue';
 
-export default {
-  components: {
-    editFormButtons,
-  },
-  props: {
-    isConfidential: {
-      required: true,
-      type: Boolean,
+  export default {
+    components: {
+      editFormButtons,
     },
-    toggleForm: {
-      required: true,
-      type: Function,
+    props: {
+      isConfidential: {
+        required: true,
+        type: Boolean,
+      },
+      toggleForm: {
+        required: true,
+        type: Function,
+      },
+      updateConfidentialAttribute: {
+        required: true,
+        type: Function,
+      },
     },
-    updateConfidentialAttribute: {
-      required: true,
-      type: Function,
-    },
-  },
-};
+  };
 </script>
 
 <template>
   <div class="dropdown open">
-    <div class="dropdown-menu confidential-warning-message">
+    <div class="dropdown-menu sidebar-item-warning-message">
       <div>
         <p v-if="!isConfidential">
           You are going to turn on the confidentiality. This means that only team members with

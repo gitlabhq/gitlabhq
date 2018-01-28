@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 
 # High Availability on AWS
 
@@ -21,6 +25,10 @@ Login to your AWS account through the `My Account` dropdown on
 `https://myteam.signin.aws.amazon.com/console/`. You'll start on the
 Amazon Web Services console from where we can choose all of the services
 we'll be using to configure our cloud infrastructure.
+
+### Reference Architecture
+
+![Reference Architecture](img/reference-arch.png)
 
 ***
 
@@ -139,7 +147,7 @@ change which will be helpful is the database name for which we can use
 ## ElastiCache
 
 EC is an in-memory hosted caching solution. Redis maintains its own
-persistance and is used for certain types of application.
+persistence and is used for certain types of application.
 
 Let's choose the ElastiCache service in the Database section from our
 AWS console. Now lets create a cache subnet group which will be very
@@ -303,7 +311,7 @@ Here is a tricky part though, when adding subnets we need to associate
 public subnets instead of the private ones where our instances will
 actually live.
 
-On the secruity group section let's create a new one named
+On the security group section let's create a new one named
 `gitlab-loadbalancer-sec-group` and allow both HTTP ad HTTPS traffic
 from anywhere.
 

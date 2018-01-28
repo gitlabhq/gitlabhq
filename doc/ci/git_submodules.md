@@ -8,7 +8,7 @@
   with the use of [SSH keys](ssh_keys/README.md).
 - With GitLab 8.12 onward, your permissions are used to evaluate what a CI job
   can access. More information about how this system works can be found in the
-  [Jobs permissions model](../user/permissions.md#jobs-permissions).
+  [Jobs permissions model](../user/permissions.md#job-permissions).
 - The HTTP(S) Git protocol [must be enabled][gitpro] in your GitLab instance.
 
 ## Configuring the `.gitmodules` file
@@ -61,7 +61,7 @@ correctly with your CI jobs:
 
 1. First, make sure you have used [relative URLs](#configuring-the-gitmodules-file)
    for the submodules located in the same GitLab server.
-1. Next, if you are using `gitlab-ci-multi-runner` v1.10+, you can set the
+1. Next, if you are using `gitlab-runner` v1.10+, you can set the
    `GIT_SUBMODULE_STRATEGY` variable to either `normal` or `recursive` to tell
    the runner to fetch your submodules before the job:
     ```yaml
@@ -71,7 +71,7 @@ correctly with your CI jobs:
     See the [`.gitlab-ci.yml` reference](yaml/README.md#git-submodule-strategy)
     for more details about `GIT_SUBMODULE_STRATEGY`.
 
-1. If you are using an older version of `gitlab-ci-multi-runner`, then use
+1. If you are using an older version of `gitlab-runner`, then use
    `git submodule sync/update` in `before_script`:
 
     ```yaml

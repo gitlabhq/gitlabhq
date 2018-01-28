@@ -33,6 +33,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
+  default_value_for :id, 1
+
   validates :uuid, presence: true
 
   validates :session_expire_delay,
@@ -151,6 +153,38 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+  validates :circuitbreaker_failure_count_threshold,
+            :circuitbreaker_failure_reset_time,
+            :circuitbreaker_storage_timeout,
+            :circuitbreaker_check_interval,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :circuitbreaker_access_retries,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+
+  validates :gitaly_timeout_default,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :gitaly_timeout_medium,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :gitaly_timeout_medium,
+            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+            if: :gitaly_timeout_default
+  validates :gitaly_timeout_medium,
+            numericality: { greater_than_or_equal_to: :gitaly_timeout_fast },
+            if: :gitaly_timeout_fast
+
+  validates :gitaly_timeout_fast,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :gitaly_timeout_fast,
+            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+            if: :gitaly_timeout_default
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -194,7 +228,10 @@ class ApplicationSetting < ActiveRecord::Base
     ensure_cache_setup
 
     Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last
+      ApplicationSetting.last.tap do |settings|
+        # do not cache nils
+        raise 'missing settings' unless settings
+      end
     end
   rescue
     # Fall back to an uncached value if there are any problems (e.g. redis down)
@@ -224,6 +261,7 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -252,7 +290,8 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
-      password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
+      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
+      password_authentication_enabled_for_git: true,
       performance_bar_allowed_group_id: nil,
       rsa_key_restriction: 0,
       plantuml_enabled: false,
@@ -271,10 +310,22 @@ class ApplicationSetting < ActiveRecord::Base
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
+      throttle_unauthenticated_enabled: false,
+      throttle_unauthenticated_requests_per_period: 3600,
+      throttle_unauthenticated_period_in_seconds: 3600,
+      throttle_authenticated_web_enabled: false,
+      throttle_authenticated_web_requests_per_period: 7200,
+      throttle_authenticated_web_period_in_seconds: 3600,
+      throttle_authenticated_api_enabled: false,
+      throttle_authenticated_api_requests_per_period: 7200,
+      throttle_authenticated_api_period_in_seconds: 3600,
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_medium: 30,
+      gitaly_timeout_default: 55
     }
   end
 
@@ -367,6 +418,7 @@ class ApplicationSetting < ActiveRecord::Base
         super(group_full_path)
         Gitlab::PerformanceBar.expire_allowed_user_ids_cache
       end
+
       return
     end
 
@@ -396,7 +448,7 @@ class ApplicationSetting < ActiveRecord::Base
   #   the enabling/disabling is `performance_bar_allowed_group_id`
   # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
   def performance_bar_enabled=(enable)
-    return if enable
+    return if Gitlab::Utils.to_boolean(enable)
 
     self.performance_bar_allowed_group_id = nil
   end
@@ -439,6 +491,14 @@ class ApplicationSetting < ActiveRecord::Base
     attr_name = "#{type}_key_restriction"
 
     has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def allow_signup?
+    signup_enabled? && password_authentication_enabled_for_web?
+  end
+
+  def password_authentication_enabled?
+    password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
   end
 
   private

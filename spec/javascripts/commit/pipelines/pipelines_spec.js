@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 
@@ -9,9 +10,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    PipelinesTable = Vue.extend(pipelinesTable);
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
+
+    PipelinesTable = Vue.extend(pipelinesTable);
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
   });
 
   describe('successful request', () => {
@@ -29,6 +31,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
@@ -65,6 +69,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
@@ -117,6 +123,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
@@ -139,6 +147,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         propsData: {
           endpoint: 'endpoint',
           helpPagePath: 'foo',
+          emptyStateSvgPath: 'foo',
+          errorStateSvgPath: 'foo',
           autoDevopsHelpPath: 'foo',
         },
       }).$mount();

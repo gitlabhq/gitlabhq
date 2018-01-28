@@ -12,15 +12,17 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines, :merge_requests]
   before_action :define_note_vars, only: [:show, :diff_for_path]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
+
+  BRANCH_SEARCH_LIMIT = 1000
 
   def show
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html
+      format.html  { render }
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
@@ -50,9 +52,27 @@ class Projects::CommitController < Projects::ApplicationController
     end
   end
 
+  def merge_requests
+    @merge_requests = @commit.merge_requests.map do |mr|
+      { iid: mr.iid, path: merge_request_path(mr), title: mr.title }
+    end
+
+    respond_to do |format|
+      format.json do
+        render json: @merge_requests.to_json
+      end
+    end
+  end
+
   def branches
-    @branches = @project.repository.branch_names_contains(commit.id)
-    @tags = @project.repository.tag_names_contains(commit.id)
+    # branch_names_contains/tag_names_contains can take a long time when there are thousands of
+    # branches/tags - each `git branch --contains xxx` request can consume a cpu core.
+    # so only do the query when there are a manageable number of branches/tags
+    @branches_limit_exceeded = @project.repository.branch_count > BRANCH_SEARCH_LIMIT
+    @branches = @branches_limit_exceeded ? [] : @project.repository.branch_names_contains(commit.id)
+
+    @tags_limit_exceeded = @project.repository.tag_count > BRANCH_SEARCH_LIMIT
+    @tags = @tags_limit_exceeded ? [] : @project.repository.tag_names_contains(commit.id)
     render layout: false
   end
 
@@ -99,7 +119,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit(params[:id])
+    @noteable = @commit ||= @project.commit_by(oid: params[:id])
   end
 
   def define_commit_vars
@@ -125,6 +145,23 @@ class Projects::CommitController < Projects::ApplicationController
 
     @grouped_diff_discussions = commit.grouped_diff_discussions
     @discussions = commit.discussions
+
+    if merge_request_iid = params[:merge_request_iid]
+      @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: merge_request_iid)
+
+      if @merge_request
+        @new_diff_note_attrs.merge!(
+          noteable_type: 'MergeRequest',
+          noteable_id: @merge_request.id
+        )
+
+        merge_request_commit_notes = @merge_request.notes.where(commit_id: @commit.id).inc_relations_for_view
+        merge_request_commit_diff_discussions = merge_request_commit_notes.grouped_diff_discussions(@commit.diff_refs)
+        @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |line_code, left, right|
+          left + right
+        end
+      end
+    end
 
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes, @commit)

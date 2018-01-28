@@ -8,7 +8,7 @@ describe RecordsUploads do
       storage :file
 
       def model
-        FactoryGirl.build_stubbed(:user)
+        FactoryBot.build_stubbed(:user)
       end
     end
 

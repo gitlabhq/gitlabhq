@@ -1,18 +1,3 @@
-<template>
-  <div class="cell">
-    <code-cell
-      type="input"
-      :raw-code="rawInputCode"
-      :count="cell.execution_count"
-      :code-css-class="codeCssClass" />
-    <output-cell
-      v-if="hasOutput"
-      :count="cell.execution_count"
-      :output="output"
-      :code-css-class="codeCssClass" />
-  </div>
-</template>
-
 <script>
 import CodeCell from './code/index.vue';
 import OutputCell from './output/index.vue';
@@ -50,6 +35,21 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="cell">
+    <code-cell
+      type="input"
+      :raw-code="rawInputCode"
+      :count="cell.execution_count"
+      :code-css-class="codeCssClass" />
+    <output-cell
+      v-if="hasOutput"
+      :count="cell.execution_count"
+      :output="output"
+      :code-css-class="codeCssClass" />
+  </div>
+</template>
 
 <style scoped>
 .cell {

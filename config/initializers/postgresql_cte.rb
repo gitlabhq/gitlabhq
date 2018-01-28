@@ -61,11 +61,13 @@ module ActiveRecord
 
     def with_values=(values)
       raise ImmutableRelation if @loaded
+
       @values[:with] = values
     end
 
     def recursive_value=(value)
       raise ImmutableRelation if @loaded
+
       @values[:recursive] = value
     end
 

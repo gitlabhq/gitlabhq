@@ -28,14 +28,29 @@ describe MergeRequests::BuildService do
   end
 
   before do
-    project.team << [user, :guest]
+    project.add_guest(user)
+  end
 
+  def stub_compare
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
     allow(project).to receive(:commit).and_return(commit_1)
     allow(project).to receive(:commit).and_return(commit_2)
   end
 
-  describe 'execute' do
+  describe '#execute' do
+    it 'calls the compare service with the correct arguments' do
+      allow_any_instance_of(described_class).to receive(:branches_valid?).and_return(true)
+      expect(CompareService).to receive(:new)
+                                  .with(project, Gitlab::Git::BRANCH_REF_PREFIX + source_branch)
+                                  .and_call_original
+
+      expect_any_instance_of(CompareService).to receive(:execute)
+                                                  .with(project, Gitlab::Git::BRANCH_REF_PREFIX + target_branch)
+                                                  .and_call_original
+
+      merge_request
+    end
+
     context 'missing source branch' do
       let(:source_branch) { '' }
 
@@ -51,6 +66,10 @@ describe MergeRequests::BuildService do
     context 'when target branch is missing' do
       let(:target_branch) { nil }
       let(:commits) { Commit.decorate([commit_1], project) }
+
+      before do
+        stub_compare
+      end
 
       it 'creates compare object with target branch as default branch' do
         expect(merge_request.compare).to be_present
@@ -77,6 +96,10 @@ describe MergeRequests::BuildService do
     context 'no commits in the diff' do
       let(:commits) { [] }
 
+      before do
+        stub_compare
+      end
+
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)
       end
@@ -88,6 +111,10 @@ describe MergeRequests::BuildService do
 
     context 'one commit in the diff' do
       let(:commits) { Commit.decorate([commit_1], project) }
+
+      before do
+        stub_compare
+      end
 
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)
@@ -144,10 +171,32 @@ describe MergeRequests::BuildService do
           end
         end
       end
+
+      context 'branch starts with external issue IID followed by a hyphen' do
+        let(:source_branch) { '12345-fix-issue' }
+
+        before do
+          allow(project).to receive(:external_issue_tracker).and_return(true)
+        end
+
+        it 'uses the title of the commit as the title of the merge request' do
+          expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
+        end
+
+        it 'uses the description of the commit as the description of the merge request and appends the closes text' do
+          commit_description = commit_1.safe_message.split(/\n+/, 2).last
+
+          expect(merge_request.description).to eq("#{commit_description}\n\nCloses #12345")
+        end
+      end
     end
 
     context 'more than one commit in the diff' do
       let(:commits) { Commit.decorate([commit_1, commit_2], project) }
+
+      before do
+        stub_compare
+      end
 
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)
@@ -210,8 +259,12 @@ describe MergeRequests::BuildService do
           allow(project).to receive(:external_issue_tracker).and_return(true)
         end
 
-        it 'sets the title to: Resolves External Issue $issue-iid' do
-          expect(merge_request.title).to eq('Resolve External Issue 12345')
+        it 'sets the title to the humanized branch title' do
+          expect(merge_request.title).to eq('12345 fix issue')
+        end
+
+        it 'appends the closes text' do
+          expect(merge_request.description).to eq('Closes #12345')
         end
       end
     end

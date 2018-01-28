@@ -1,5 +1,5 @@
 class PipelineScheduleWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform
@@ -9,7 +9,7 @@ class PipelineScheduleWorker
         pipeline = Ci::CreatePipelineService.new(schedule.project,
                                                  schedule.owner,
                                                  ref: schedule.ref)
-          .execute(:schedule, save_on_errors: false, schedule: schedule)
+          .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
 
         schedule.deactivate! unless pipeline.persisted?
       rescue => e

@@ -11,8 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
-  before_action :authenticate_user_from_private_token!
-  before_action :authenticate_user_from_rss_token!
+  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -24,6 +23,8 @@ class ApplicationController < ActionController::Base
   before_action :require_email, unless: :devise_controller?
 
   around_action :set_locale
+
+  after_action :set_page_title_header, if: -> { request.format == :json }
 
   protect_from_forgery with: :exception
 
@@ -83,34 +84,27 @@ class ApplicationController < ActionController::Base
     super
     payload[:remote_ip] = request.remote_ip
 
-    if current_user.present?
-      payload[:user_id] = current_user.id
-      payload[:username] = current_user.username
+    logged_user = auth_user
+
+    if logged_user.present?
+      payload[:user_id] = logged_user.try(:id)
+      payload[:username] = logged_user.try(:username)
     end
   end
 
-  # This filter handles both private tokens and personal access tokens
-  def authenticate_user_from_private_token!
-    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
+  # Controllers such as GitHttpController may use alternative methods
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  def auth_user
+    return current_user if current_user.present?
 
-    return unless token.present?
-
-    user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
-
-    sessionless_sign_in(user)
+    return try(:authenticated_user)
   end
 
-  # This filter handles authentication for atom request with an rss_token
-  def authenticate_user_from_rss_token!
-    return unless request.format.atom?
+  # This filter handles personal access tokens, and atom requests with rss tokens
+  def authenticate_sessionless_user!
+    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 
-    token = params[:rss_token].presence
-
-    return unless token.present?
-
-    user = User.find_by_rss_token(token)
-
-    sessionless_sign_in(user)
+    sessionless_sign_in(user) if user
   end
 
   def log_exception(exception)
@@ -153,6 +147,8 @@ class ApplicationController < ActionController::Base
       format.html do
         render file: Rails.root.join("public", "404"), layout: false, status: "404"
       end
+      # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
+      format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
     end
   end
@@ -202,7 +198,11 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    return if session[:impersonator_id] || !current_user&.allow_password_authentication?
+
+    password_expires_at = current_user&.password_expires_at
+
+    if password_expires_at && password_expires_at < Time.now
       return redirect_to new_profile_password_path
     end
   end
@@ -334,5 +334,10 @@ class ApplicationController < ActionController::Base
       # sign in token, you can simply remove store: false.
       sign_in user, store: false
     end
+  end
+
+  def set_page_title_header
+    # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
+    response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
   end
 end

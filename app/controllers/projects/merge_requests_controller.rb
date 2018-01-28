@@ -7,37 +7,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include IssuableCollections
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
-  skip_before_action :ensure_ref_fetched, only: [:index, :bulk_update]
-
-  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
-
+  before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
+  before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
+  before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   def index
-    @collection_type    = "MergeRequest"
-    @merge_requests     = merge_requests_collection
-    @merge_requests     = @merge_requests.page(params[:page])
-    @merge_requests     = @merge_requests.preload(merge_request_diff: :merge_request)
-    @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
-    @total_pages        = merge_requests_page_count(@merge_requests)
-
-    return if redirect_out_of_range(@merge_requests, @total_pages)
-
-    if params[:label_name].present?
-      labels_params = { project_id: @project.id, title: params[:label_name] }
-      @labels = LabelsFinder.new(current_user, labels_params).execute
-    end
-
-    @users = []
-    if params[:assignee_id].present?
-      assignee = User.find_by_id(params[:assignee_id])
-      @users.push(assignee) if assignee
-    end
-
-    if params[:author_id].present?
-      author = User.find_by_id(params[:author_id])
-      @users.push(author) if author
-    end
+    @merge_requests = @issuables
 
     respond_to do |format|
       format.html
@@ -52,9 +28,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     validates_merge_request
-    ensure_ref_fetched
     close_merge_request_without_source_project
     check_if_can_be_merged
+
+    # Return if the response has already been rendered
+    return if response_body
 
     respond_to do |format|
       format.html do
@@ -70,12 +48,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         labels
 
         set_pipeline_variables
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37432
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
       end
 
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: serializer.represent(@merge_request, basic: params[:basic])
+        render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
       format.patch  do
@@ -95,9 +78,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def commits
     # Get commits from repository
     # or from cache if already merged
-    @commits = prepare_commits_for_rendering(@merge_request.commits)
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
+    @commits =
+      prepare_commits_for_rendering(@merge_request.commits.with_pipeline_status)
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end
@@ -150,7 +132,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(project, current_user, wip_event: 'unwip')
       .execute(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def commit_change_content
@@ -166,7 +148,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(@project, current_user)
       .cancel(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def merge
@@ -242,19 +224,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     render json: environments
   end
 
+  def rebase
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+
+    render nothing: true, status: 200
+  end
+
   protected
 
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
-
-  def authorize_update_merge_request!
-    return render_404 unless can?(current_user, :update_merge_request, @merge_request)
-  end
-
-  def authorize_admin_merge_request!
-    return render_404 unless can?(current_user, :admin_merge_request, @merge_request)
-  end
 
   def validates_merge_request
     # Show git not found page
@@ -307,15 +287,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_pipeline_succeeds].present?
-      return :failed unless @merge_request.head_pipeline
+      return :failed unless @merge_request.actual_head_pipeline
 
-      if @merge_request.head_pipeline.active?
+      if @merge_request.actual_head_pipeline.active?
         ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(@project, current_user, merge_params)
           .execute(@merge_request)
 
         :merge_when_pipeline_succeeds
-      elsif @merge_request.head_pipeline.success?
+      elsif @merge_request.actual_head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
         @merge_request.merge_async(current_user.id, params)
@@ -331,6 +311,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  def serialize_widget(merge_request)
+    serializer.represent(merge_request, serializer: 'widget')
+  end
+
   def serializer
     MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
@@ -339,5 +323,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+  end
+
+  def set_issuables_index
+    @finder_type = MergeRequestsFinder
+    super
+  end
+
+  def check_user_can_push_to_source_branch!
+    return access_denied! unless @merge_request.source_branch_exists?
+
+    access_check = ::Gitlab::UserAccess
+      .new(current_user, project: @merge_request.source_project)
+      .can_push_to_branch?(@merge_request.source_branch)
+
+    access_denied! unless access_check
   end
 end

@@ -15,7 +15,7 @@ export default new Vuex.Store({
     // holds endpoints and permissions provided through haml
     notesData: {},
     userData: {},
-    issueData: {},
+    noteableData: {},
   },
   actions,
   getters,

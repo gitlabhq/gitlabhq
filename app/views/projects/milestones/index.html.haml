@@ -1,8 +1,6 @@
 - @no_container = true
 - page_title 'Milestones'
 
-= render "shared/mr_head"
-
 %div{ class: container_class }
   .top-area
     = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
@@ -14,6 +12,8 @@
           New milestone
 
   .milestones
+    #delete-milestone-modal
+
     %ul.content-list
       = render @milestones
 

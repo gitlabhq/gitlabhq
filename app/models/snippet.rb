@@ -9,6 +9,7 @@ class Snippet < ActiveRecord::Base
   include Mentionable
   include Spammable
   include Editable
+  include Gitlab::SQL::Pattern
 
   extend Gitlab::CurrentSettings
 
@@ -75,11 +76,11 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
-  def to_reference(from_project = nil, full: false)
+  def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
     if project.present?
-      "#{project.to_reference(from_project, full: full)}#{reference}"
+      "#{project.to_reference(from, full: full)}#{reference}"
     else
       reference
     end
@@ -135,10 +136,7 @@ class Snippet < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:title].matches(pattern).or(t[:file_name].matches(pattern)))
+      fuzzy_search(query, [:title, :file_name])
     end
 
     # Searches for snippets with matching content.
@@ -149,10 +147,7 @@ class Snippet < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search_code(query)
-      table   = Snippet.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:content].matches(pattern))
+      fuzzy_search(query, [:content])
     end
   end
 end

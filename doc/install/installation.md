@@ -64,7 +64,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake
 
 Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
 you can [install re2 manually](https://github.com/google/re2/wiki/Install).
@@ -80,7 +80,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.13.0 or higher
+    # Make sure Git is version 2.14.3 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -121,7 +121,7 @@ The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.  
+advise everyone to follow the instructions below to use a system Ruby.
 
 Linux distributions generally have older versions of Ruby available, so these
 instructions are designed to install Ruby from the official source code.
@@ -133,9 +133,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo '1014ee699071aa2ddd501907d18cbe15399c997d  ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
-    cd ruby-2.3.3
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.6.tar.gz
+    echo '4e6a0f828819e15d274ae58485585fc8b7caace0  ruby-2.3.6.tar.gz' | shasum -c - && tar xzf ruby-2.3.6.tar.gz
+    cd ruby-2.3.6
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -299,9 +299,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-0-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-4-stable gitlab
 
-**Note:** You can change `10-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `10-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -368,6 +368,9 @@ sudo usermod -aG redis git
     # Enable packfile bitmaps
     sudo -u git -H git config --global repack.writeBitmaps true
 
+    # Enable push options
+    sudo -u git -H git config --global receive.advertisePushOptions true
+
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
 
@@ -428,7 +431,7 @@ GitLab Shell is an SSH access and repository management software developed speci
 **Note:** GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several manners:
 
 * Export `RUBYOPT=--disable-gems` environment variable for the processes
-* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommened for system-wide Ruby.
+* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommended for system-wide Ruby.
 * Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707)
 
 ### Install gitlab-workhorse
@@ -439,7 +442,7 @@ which is the recommended location.
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 
-You can specify a different Git repository by providing it as an extra paramter:
+You can specify a different Git repository by providing it as an extra parameter:
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 
@@ -483,7 +486,7 @@ Make GitLab start on boot:
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
-You can specify a different Git repository by providing it as an extra paramter:
+You can specify a different Git repository by providing it as an extra parameter:
 
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
 
@@ -513,8 +516,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile GetText PO files
 
-    sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
-    sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Compile Assets
 
@@ -654,7 +656,7 @@ Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-
 
 ### Adding your Trusted Proxies
 
-If you are using a reverse proxy on an separate machine, you may want to add the
+If you are using a reverse proxy on a separate machine, you may want to add the
 proxy to the trusted proxies list. Otherwise users will appear signed in from the
 proxy's IP address.
 

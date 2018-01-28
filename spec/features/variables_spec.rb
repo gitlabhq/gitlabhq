@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe 'Project variables', js: true do
+describe 'Project variables', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project) }
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
     project.variables << variable
 
     visit project_settings_ci_cd_path(project)
@@ -65,14 +65,14 @@ describe 'Project variables', js: true do
       expect(page).to have_content('******')
     end
 
-    click_button('Reveal Values')
+    click_button('Reveal values')
 
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('key value')
     end
 
-    click_button('Hide Values')
+    click_button('Hide values')
 
     page.within('.variables-table') do
       expect(page).to have_content('key')
@@ -82,7 +82,7 @@ describe 'Project variables', js: true do
 
   it 'deletes variable' do
     page.within('.variables-table') do
-      click_on 'Remove'
+      accept_confirm { click_on 'Remove' }
     end
 
     expect(page).not_to have_selector('variables-table')

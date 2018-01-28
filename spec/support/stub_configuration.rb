@@ -7,6 +7,9 @@ module StubConfiguration
     allow_any_instance_of(ApplicationSetting).to receive_messages(to_settings(messages))
     allow(Gitlab::CurrentSettings.current_application_settings)
       .to receive_messages(to_settings(messages))
+
+    # Ensure that we don't use the Markdown cache when stubbing these values
+    allow_any_instance_of(ApplicationSetting).to receive(:cached_html_up_to_date?).and_return(false)
   end
 
   def stub_not_protect_default_branch
@@ -38,15 +41,17 @@ module StubConfiguration
     allow(Gitlab.config.backup).to receive_messages(to_settings(messages))
   end
 
+  def stub_lfs_setting(messages)
+    allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
+  end
+
   def stub_storage_settings(messages)
+    messages.deep_stringify_keys!
+
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages.default
     messages.each do |storage_name, storage_settings|
-      storage_settings['path'] ||= TestEnv.repos_path
-      storage_settings['failure_count_threshold'] ||= 10
-      storage_settings['failure_wait_time'] ||= 30
-      storage_settings['failure_reset_time'] ||= 1800
-      storage_settings['storage_timeout'] ||= 5
+      storage_settings['path'] = TestEnv.repos_path unless storage_settings.key?('path')
     end
 
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))

@@ -1,12 +1,12 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
-/* global BoardService */
-/* global Flash */
 
 import _ from 'underscore';
 import Vue from 'vue';
-import VueResource from 'vue-resource';
+import Flash from '../flash';
+import { __ } from '../locale';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
+import sidebarEventHub from '../sidebar/event_hub';
 import './models/issue';
 import './models/label';
 import './models/list';
@@ -14,7 +14,7 @@ import './models/milestone';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';
-import './services/board_service';
+import BoardService from './services/board_service';
 import './mixins/modal_mixins';
 import './mixins/sortable_default_options';
 import './filters/due_date_filters';
@@ -23,8 +23,6 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
-
-Vue.use(VueResource);
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -77,26 +75,30 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
-      this.filterManager.setup();
-
-      // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
+      eventHub.$on('newDetailIssue', this.updateDetailIssue);
+      eventHub.$on('clearDetailIssue', this.clearDetailIssue);
+      sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
+      eventHub.$off('newDetailIssue', this.updateDetailIssue);
+      eventHub.$off('clearDetailIssue', this.clearDetailIssue);
+      sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
     },
     mounted () {
+      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager.setup();
+
       Store.disabled = this.disabled;
       gl.boardService.all()
-        .then(response => response.json())
-        .then((resp) => {
-          resp.forEach((board) => {
+        .then(res => res.data)
+        .then((data) => {
+          data.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
               list.position = Infinity;
-              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
             } else if (list.type === 'backlog') {
               list.position = -1;
             }
@@ -107,11 +109,53 @@ $(() => {
           Store.addBlankState();
           this.loading = false;
         })
-        .catch(() => new Flash('An error occurred. Please try again.'));
+        .catch(() => {
+          Flash('An error occurred while fetching the board lists. Please try again.');
+        });
     },
     methods: {
       updateTokens() {
         this.filterManager.updateTokens();
+      },
+      updateDetailIssue(newIssue) {
+        const sidebarInfoEndpoint = newIssue.sidebarInfoEndpoint;
+        if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
+          newIssue.setFetchingState('subscriptions', true);
+          BoardService.getIssueInfo(sidebarInfoEndpoint)
+            .then(res => res.data)
+            .then((data) => {
+              newIssue.setFetchingState('subscriptions', false);
+              newIssue.updateData({
+                subscribed: data.subscribed,
+              });
+            })
+            .catch(() => {
+              newIssue.setFetchingState('subscriptions', false);
+              Flash(__('An error occurred while fetching sidebar data'));
+            });
+        }
+
+        Store.detail.issue = newIssue;
+      },
+      clearDetailIssue() {
+        Store.detail.issue = {};
+      },
+      toggleSubscription(id) {
+        const issue = Store.detail.issue;
+        if (issue.id === id && issue.toggleSubscriptionEndpoint) {
+          issue.setFetchingState('subscriptions', true);
+          BoardService.toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
+            .then(() => {
+              issue.setFetchingState('subscriptions', false);
+              issue.updateData({
+                subscribed: !issue.subscribed,
+              });
+            })
+            .catch(() => {
+              issue.setFetchingState('subscriptions', false);
+              Flash(__('An error occurred when toggling the notification subscription'));
+            });
+        }
       }
     },
   });
@@ -127,18 +171,13 @@ $(() => {
   });
 
   gl.IssueBoardsModalAddBtn = new Vue({
-    mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
+    mixins: [gl.issueBoards.ModalMixins],
     data() {
       return {
         modal: ModalStore.store,
         store: Store.state,
       };
-    },
-    watch: {
-      disabled() {
-        this.updateTooltip();
-      },
     },
     computed: {
       disabled() {
@@ -154,6 +193,14 @@ $(() => {
 
         return '';
       },
+    },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     methods: {
       updateTooltip() {
@@ -172,9 +219,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-    },
-    mounted() {
-      this.updateTooltip();
     },
     template: `
       <div class="board-extra-actions">

@@ -14,10 +14,11 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
-  include TimeTrackable
   include Importable
   include Editable
   include AfterCommitQueue
+  include Sortable
+  include CreatedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -95,9 +96,7 @@ module Issuable
 
     strip_attributes :title
 
-    acts_as_paranoid
-
-    after_save :record_metrics, unless: :imported?
+    after_save :ensure_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -123,9 +122,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      title = to_fuzzy_arel(:title, query)
-
-      where(title)
+      fuzzy_search(query, [:title])
     end
 
     # Searches for records with a matching title or description.
@@ -136,23 +133,22 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      title = to_fuzzy_arel(:title, query)
-      description = to_fuzzy_arel(:description, query)
-
-      where(title&.or(description))
+      fuzzy_search(query, [:title, :description])
     end
 
     def sort(method, excluded_labels: [])
-      sorted = case method.to_s
-               when 'milestone_due_asc' then order_milestone_due_asc
-               when 'milestone_due_desc' then order_milestone_due_desc
-               when 'downvotes_desc' then order_downvotes_desc
-               when 'upvotes_desc' then order_upvotes_desc
-               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
-               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-               else
-                 order_by(method)
-               end
+      sorted =
+        case method.to_s
+        when 'downvotes_desc'     then order_downvotes_desc
+        when 'label_priority'     then order_labels_priority(excluded_labels: excluded_labels)
+        when 'milestone'          then order_milestone_due_asc
+        when 'milestone_due_asc'  then order_milestone_due_asc
+        when 'milestone_due_desc' then order_milestone_due_desc
+        when 'popularity'         then order_upvotes_desc
+        when 'priority'           then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+        when 'upvotes_desc'       then order_upvotes_desc
+        else order_by(method)
+        end
 
       # Break ties with the ID column for pagination
       sorted.order(id: :desc)
@@ -214,7 +210,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if %w(milestone_due_desc milestone_due_asc).include?(sort)
+      if %w(milestone_due_desc milestone_due_asc milestone).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
@@ -254,23 +250,32 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user)
-    hook_data = {
-      object_kind: self.class.name.underscore,
-      user: user.hook_attrs,
-      project: project.hook_attrs,
-      object_attributes: hook_attrs,
-      labels: labels.map(&:hook_attrs),
-      # DEPRECATED
-      repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
-    }
-    if self.is_a?(Issue)
-      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
-    else
-      hook_data[:assignee] = assignee.hook_attrs if assignee
+  def to_hook_data(user, old_associations: {})
+    changes = previous_changes
+    old_labels = old_associations.fetch(:labels, [])
+    old_assignees = old_associations.fetch(:assignees, [])
+
+    if old_labels != labels
+      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
     end
 
-    hook_data
+    if old_assignees != assignees
+      if self.is_a?(Issue)
+        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+      else
+        changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      end
+    end
+
+    if self.respond_to?(:total_time_spent)
+      old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+
+      if old_total_time_spent != total_time_spent
+        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+      end
+    end
+
+    Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)
   end
 
   def labels_array
@@ -309,6 +314,7 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
+
     if includes.any?
       notes.includes(includes)
     else
@@ -330,15 +336,21 @@ module Issuable
     false
   end
 
-  def record_metrics
-    metrics = self.metrics || create_metrics
-    metrics.record!
-  end
-
   ##
   # Override in issuable specialization
   #
   def first_contribution?
     false
+  end
+
+  def ensure_metrics
+    self.metrics || create_metrics
+  end
+
+  ##
+  # Overriden in MergeRequest
+  #
+  def wipless_title_changed(old_title)
+    old_title != title
   end
 end

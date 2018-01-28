@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe BuildDetailsEntity do
+  include ProjectForksHelper
+
   set(:user) { create(:admin) }
 
   it 'inherits from JobEntity' do
@@ -56,18 +58,16 @@ describe BuildDetailsEntity do
       end
 
       context 'when merge request is from a fork' do
-        let(:fork_project) do
-          create(:project, forked_from_project: project)
-        end
+        let(:forked_project) { fork_project(project) }
 
-        let(:pipeline) { create(:ci_pipeline, project: fork_project) }
+        let(:pipeline) { create(:ci_pipeline, project: forked_project) }
 
         before do
           allow(build).to receive(:merge_request).and_return(merge_request)
         end
 
         let(:merge_request) do
-          create(:merge_request, source_project: fork_project,
+          create(:merge_request, source_project: forked_project,
                                  target_project: project,
                                  source_branch: build.ref)
         end

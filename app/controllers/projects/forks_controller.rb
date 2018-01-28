@@ -9,14 +9,12 @@ class Projects::ForksController < Projects::ApplicationController
   def index
     base_query = project.forks.includes(:creator)
 
-    @forks               = base_query.merge(ProjectsFinder.new(current_user: current_user).execute)
+    forks                = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
     @total_forks_count   = base_query.size
-    @private_forks_count = @total_forks_count - @forks.size
+    @private_forks_count = @total_forks_count - forks.size
     @public_forks_count  = @total_forks_count - @private_forks_count
 
-    @sort  = params[:sort] || 'id_desc'
-    @forks = @forks.search(params[:filter_projects]) if params[:filter_projects].present?
-    @forks = @forks.order_by(@sort).page(params[:page])
+    @forks = forks.page(params[:page])
 
     respond_to do |format|
       format.html

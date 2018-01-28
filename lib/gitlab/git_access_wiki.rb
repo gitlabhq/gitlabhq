@@ -1,6 +1,7 @@
 module Gitlab
   class GitAccessWiki < GitAccess
     ERROR_MESSAGES = {
+      read_only:     "You can't push code to a read-only GitLab instance.",
       write_to_wiki: "You are not allowed to write to this project's wiki."
     }.freeze
 
@@ -17,7 +18,15 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
       end
 
+      if Gitlab::Database.read_only?
+        raise UnauthorizedError, push_to_read_only_message
+      end
+
       true
+    end
+
+    def push_to_read_only_message
+      ERROR_MESSAGES[:read_only]
     end
   end
 end

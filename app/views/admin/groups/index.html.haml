@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title "Groups"
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
   .top-area
@@ -12,23 +11,7 @@
           .search-field-holder
             = search_field_tag :name, project_name, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name'
             = icon("search", class: "search-icon")
-          .dropdown
-            - toggle_text = @sort.present? ? sort_options_hash[@sort] : sort_title_recently_created
-            = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
-            %ul.dropdown-menu.dropdown-menu-align-right
-              %li.dropdown-header
-                Sort by
-              %li
-                = link_to admin_groups_path(sort: sort_value_recently_created, name: project_name) do
-                  = sort_title_recently_created
-                = link_to admin_groups_path(sort: sort_value_oldest_created, name: project_name) do
-                  = sort_title_oldest_created
-                = link_to admin_groups_path(sort: sort_value_recently_updated, name: project_name) do
-                  = sort_title_recently_updated
-                = link_to admin_groups_path(sort: sort_value_oldest_updated, name: project_name) do
-                  = sort_title_oldest_updated
-                = link_to admin_groups_path(sort: sort_value_largest_group, name: project_name) do
-                  = sort_title_largest_group
+          = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
           = link_to new_admin_group_path, class: "btn btn-new" do
             New group
   %ul.content-list

@@ -12,6 +12,12 @@ module Gitlab
       # blob data should use load_all_data!.
       MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
+      # These limits are used as a heuristic to ignore files which can't be LFS
+      # pointers. The format of these is described in
+      # https://github.com/git-lfs/git-lfs/blob/master/docs/spec.md#the-pointer
+      LFS_POINTER_MIN_SIZE = 120.bytes
+      LFS_POINTER_MAX_SIZE = 200.bytes
+
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
       class << self
@@ -28,16 +34,9 @@ module Gitlab
         def raw(repository, sha)
           Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+              repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
-              blob = repository.lookup(sha)
-
-              new(
-                id: blob.oid,
-                size: blob.size,
-                data: blob.content(MAX_DATA_DISPLAY_SIZE),
-                binary: blob.binary?
-              )
+              rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
             end
           end
         end
@@ -50,15 +49,46 @@ module Gitlab
         # Keep in mind that this method may allocate a lot of memory. It is up
         # to the caller to limit the number of blobs and blob_size_limit.
         #
-        def batch(repository, blob_references, blob_size_limit: nil)
-          blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
-          blob_references.map do |sha, path|
-            find_by_rugged(repository, sha, path, limit: blob_size_limit)
+        # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/798
+        def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
+          Gitlab::GitalyClient.migrate(:list_blobs_by_sha_path) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient.allow_n_plus_1_calls do
+                blob_references.map do |sha, path|
+                  find_by_gitaly(repository, sha, path, limit: blob_size_limit)
+                end
+              end
+            else
+              blob_references.map do |sha, path|
+                find_by_rugged(repository, sha, path, limit: blob_size_limit)
+              end
+            end
+          end
+        end
+
+        # Find LFS blobs given an array of sha ids
+        # Returns array of Gitlab::Git::Blob
+        # Does not guarantee blob data will be set
+        def batch_lfs_pointers(repository, blob_ids)
+          repository.gitaly_migrate(:batch_lfs_pointers) do |is_enabled|
+            if is_enabled
+              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids.to_a)
+            else
+              blob_ids.lazy
+                      .select { |sha| possible_lfs_blob?(repository, sha) }
+                      .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
+                      .select(&:lfs_pointer?)
+                      .force
+            end
           end
         end
 
         def binary?(data)
           EncodingHelper.detect_libgit2_binary?(data)
+        end
+
+        def size_could_be_lfs?(size)
+          size.between?(LFS_POINTER_MIN_SIZE, LFS_POINTER_MAX_SIZE)
         end
 
         private
@@ -88,6 +118,7 @@ module Gitlab
 
           if path_arr.size > 1
             return nil unless entry[:type] == :tree
+
             path_arr.shift
             find_entry_by_path(repository, entry[:oid], path_arr.join('/'))
           else
@@ -106,12 +137,24 @@ module Gitlab
           )
         end
 
-        def find_by_gitaly(repository, sha, path)
+        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          return unless path
+
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
-          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+
+          # Gitaly will think that setting the limit to 0 means unlimited, while
+          # the client might only need the metadata and thus set the limit to 0.
+          # In this method we'll then set the limit to 1, but clear the byte of data
+          # that we got back so for the outside world it looks like the limit was
+          # actually 0.
+          req_limit = limit == 0 ? 1 : limit
+
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
           return unless entry
+
+          entry.data = "" if limit == 0
 
           case entry.type
           when :COMMIT
@@ -138,8 +181,10 @@ module Gitlab
         end
 
         def find_by_rugged(repository, sha, path, limit:)
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
+          return unless path
+
+          rugged_commit = repository.lookup(sha)
+          root_tree = rugged_commit.tree
 
           blob_entry = find_entry_by_path(repository, root_tree.oid, path)
 
@@ -164,6 +209,31 @@ module Gitlab
               )
             end
           end
+        rescue Rugged::ReferenceError
+          nil
+        end
+
+        def rugged_raw(repository, sha, limit:)
+          blob = repository.lookup(sha)
+
+          return unless blob.is_a?(Rugged::Blob)
+
+          new(
+            id: blob.oid,
+            size: blob.size,
+            data: blob.content(limit),
+            binary: blob.binary?
+          )
+        end
+
+        # Efficient lookup to determine if object size
+        # and type make it a possible LFS blob without loading
+        # blob content into memory with repository.lookup(sha)
+        def possible_lfs_blob?(repository, sha)
+          object_header = repository.rugged.read_header(sha)
+
+          object_header[:type] == :blob &&
+            size_could_be_lfs?(object_header[:len])
         end
       end
 
@@ -194,7 +264,7 @@ module Gitlab
         Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
           @data = begin
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
+              repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
             else
               repository.lookup(id).content
             end
@@ -224,7 +294,7 @@ module Gitlab
       # size
       # see https://github.com/github/git-lfs/blob/v1.1.0/docs/spec.md#the-pointer
       def lfs_pointer?
-        has_lfs_version_key? && lfs_oid.present? && lfs_size.present?
+        self.class.size_could_be_lfs?(size) && has_lfs_version_key? && lfs_oid.present? && lfs_size.present?
       end
 
       def lfs_oid

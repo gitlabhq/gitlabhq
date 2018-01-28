@@ -4,6 +4,7 @@ describe Gitlab::OAuth::User do
   let(:oauth_user) { described_class.new(auth_hash) }
   let(:gl_user) { oauth_user.gl_user }
   let(:uid) { 'my-uid' }
+  let(:dn) { 'uid=user1,ou=people,dc=example' }
   let(:provider) { 'my-provider' }
   let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash) }
   let(:info_hash) do
@@ -197,15 +198,17 @@ describe Gitlab::OAuth::User do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
               allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
-              allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
+              allow(ldap_user).to receive(:dn) { dn }
             end
 
             context "and no account for the LDAP user" do
-              it "creates a user with dual LDAP and omniauth identities" do
+              before do
                 allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
 
                 oauth_user.save
+              end
 
+              it "creates a user with dual LDAP and omniauth identities" do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql uid
                 expect(gl_user.email).to eql 'johndoe@example.com'
@@ -213,15 +216,27 @@ describe Gitlab::OAuth::User do
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
                   [
-                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                    { provider: 'ldapmain', extern_uid: dn },
                     { provider: 'twitter', extern_uid: uid }
                   ]
                 )
               end
+
+              it "has email set as synced" do
+                expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
+              end
+
+              it "has email set as read-only" do
+                expect(gl_user.read_only_attribute?(:email)).to be_truthy
+              end
+
+              it "has synced attributes provider set to ldapmain" do
+                expect(gl_user.user_synced_attributes_metadata.provider).to eql 'ldapmain'
+              end
             end
 
             context "and LDAP user has an account already" do
-              let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
+              let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
               it "adds the omniauth identity to the LDAP account" do
                 allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
 
@@ -234,7 +249,7 @@ describe Gitlab::OAuth::User do
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
                   [
-                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                    { provider: 'ldapmain', extern_uid: dn },
                     { provider: 'twitter', extern_uid: uid }
                   ]
                 )
@@ -252,10 +267,30 @@ describe Gitlab::OAuth::User do
                 expect(identities_as_hash)
                   .to match_array(
                     [
-                      { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                      { provider: 'ldapmain', extern_uid: dn },
                       { provider: 'twitter', extern_uid: uid }
                     ]
                   )
+              end
+            end
+          end
+
+          context 'and a corresponding LDAP person with a non-default username' do
+            before do
+              allow(ldap_user).to receive(:uid) { uid }
+              allow(ldap_user).to receive(:username) { 'johndoe@example.com' }
+              allow(ldap_user).to receive(:email) { %w(johndoe@example.com john2@example.com) }
+              allow(ldap_user).to receive(:dn) { dn }
+            end
+
+            context 'and no account for the LDAP user' do
+              it 'creates a user favoring the LDAP username and strips email domain' do
+                allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
+
+                oauth_user.save
+
+                expect(gl_user).to be_valid
+                expect(gl_user.username).to eql 'johndoe'
               end
             end
           end
@@ -310,8 +345,8 @@ describe Gitlab::OAuth::User do
           allow(ldap_user).to receive(:uid) { uid }
           allow(ldap_user).to receive(:username) { uid }
           allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
-          allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
-          allow(oauth_user).to receive(:ldap_person).and_return(ldap_user)
+          allow(ldap_user).to receive(:dn) { dn }
+          allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
         end
 
         context "and no account for the LDAP user" do
@@ -341,7 +376,7 @@ describe Gitlab::OAuth::User do
         end
 
         context 'and LDAP user has an account already' do
-          let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
+          let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
           context 'dont block on create (LDAP)' do
             before do
@@ -439,11 +474,15 @@ describe Gitlab::OAuth::User do
         expect(gl_user.email).to eq(info_hash[:email])
       end
 
-      it "has external_attributes set to true" do
-        expect(gl_user.user_synced_attributes_metadata).not_to be_nil
+      it "has email set as synced" do
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
       end
 
-      it "has attributes_provider set to my-provider" do
+      it "has email set as read-only" do
+        expect(gl_user.read_only_attribute?(:email)).to be_truthy
+      end
+
+      it "has synced attributes provider set to my-provider" do
         expect(gl_user.user_synced_attributes_metadata.provider).to eql 'my-provider'
       end
     end
@@ -457,9 +496,12 @@ describe Gitlab::OAuth::User do
         expect(gl_user.email).not_to eq(info_hash[:email])
       end
 
-      it "has user_synced_attributes_metadata set to nil" do
-        expect(gl_user.user_synced_attributes_metadata.provider).to eql 'my-provider'
+      it "has email set as not synced" do
         expect(gl_user.user_synced_attributes_metadata.email_synced).to be_falsey
+      end
+
+      it "does not have email set as read-only" do
+        expect(gl_user.read_only_attribute?(:email)).to be_falsey
       end
     end
   end
@@ -507,11 +549,15 @@ describe Gitlab::OAuth::User do
         expect(gl_user.email).to eq(info_hash[:email])
       end
 
-      it "has email_synced_attribute set to true" do
+      it "has email set as synced" do
         expect(gl_user.user_synced_attributes_metadata.email_synced).to be(true)
       end
 
-      it "has my-provider as attributes_provider" do
+      it "has email set as read-only" do
+        expect(gl_user.read_only_attribute?(:email)).to be_truthy
+      end
+
+      it "has synced attributes provider set to my-provider" do
         expect(gl_user.user_synced_attributes_metadata.provider).to eql 'my-provider'
       end
     end
@@ -523,7 +569,14 @@ describe Gitlab::OAuth::User do
 
       it "does not update the user email" do
         expect(gl_user.email).not_to eq(info_hash[:email])
-        expect(gl_user.user_synced_attributes_metadata.email_synced).to be(false)
+      end
+
+      it "has email set as not synced" do
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be_falsey
+      end
+
+      it "does not have email set as read-only" do
+        expect(gl_user.read_only_attribute?(:email)).to be_falsey
       end
     end
   end
@@ -659,6 +712,15 @@ describe Gitlab::OAuth::User do
       it "does not update the user location" do
         expect(gl_user.location).not_to eq(info_hash[:address][:country])
       end
+    end
+  end
+
+  describe '.find_by_uid_and_provider' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    it 'normalizes extern_uid' do
+      allow(oauth_user.auth_hash).to receive(:uid).and_return('MY-UID')
+      expect(oauth_user.find_user).to eql gl_user
     end
   end
 end

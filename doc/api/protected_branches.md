@@ -4,7 +4,7 @@
 
 **Valid access levels**
 
-The access levels are defined in the `ProtectedBranchAccess::ALLOWED_ACCESS_LEVELS` constant. Currently, these levels are recognized:
+The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS` constant. Currently, these levels are recognized:
 ```
 0  => No access
 30 => Developer access
@@ -136,7 +136,7 @@ DELETE /projects/:id/protected_branches/:name
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_branches/*-stable'
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_branches/*-stable'
 ```
 
 | Attribute | Type | Required | Description |

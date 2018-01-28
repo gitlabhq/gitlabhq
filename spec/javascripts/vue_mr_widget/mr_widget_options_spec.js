@@ -1,31 +1,29 @@
 import Vue from 'vue';
-import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData from './mock_data';
-
-const createComponent = () => {
-  delete mrWidgetOptions.el; // Prevent component mounting
-  gl.mrWidgetData = mockData;
-  const Component = Vue.extend(mrWidgetOptions);
-  return new Component();
-};
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
-    json() {
-      return data;
-    },
-    body: data,
+    data,
   });
 });
 
 describe('mrWidgetOptions', () => {
   let vm;
+  let MrWidgetOptions;
 
   beforeEach(() => {
-    vm = createComponent();
+    // Prevent component mounting
+    delete mrWidgetOptions.el;
+
+    MrWidgetOptions = Vue.extend(mrWidgetOptions);
+    vm = mountComponent(MrWidgetOptions, {
+      mrData: { ...mockData },
+    });
   });
 
   describe('data', () => {
@@ -59,23 +57,15 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('shouldRenderPipelines', () => {
-      it('should return true for the initial data', () => {
+      it('should return true when hasCI is true', () => {
+        vm.mr.hasCI = true;
+
         expect(vm.shouldRenderPipelines).toBeTruthy();
       });
 
-      it('should return true when pipeline is empty but MR.hasCI is set to true', () => {
-        vm.mr.pipeline = {};
-        expect(vm.shouldRenderPipelines).toBeTruthy();
-      });
-
-      it('should return true when pipeline available', () => {
+      it('should return false when hasCI is false', () => {
         vm.mr.hasCI = false;
-        expect(vm.shouldRenderPipelines).toBeTruthy();
-      });
 
-      it('should return false when there is no pipeline', () => {
-        vm.mr.pipeline = {};
-        vm.mr.hasCI = false;
         expect(vm.shouldRenderPipelines).toBeFalsy();
       });
     });
@@ -86,7 +76,7 @@ describe('mrWidgetOptions', () => {
       });
 
       it('should return true if there is relatedLinks in MR', () => {
-        vm.mr.relatedLinks = {};
+        Vue.set(vm.mr, 'relatedLinks', {});
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
     });
@@ -129,24 +119,28 @@ describe('mrWidgetOptions', () => {
 
     describe('initPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval').and.returnValue({
-          resume() {},
-          stopTimer() {},
-        });
+        spyOn(vm, 'checkStatus').and.returnValue(Promise.resolve());
+        jasmine.clock().install();
         vm.initPolling();
 
+        expect(vm.checkStatus).not.toHaveBeenCalled();
+
+        jasmine.clock().tick(10000);
+
         expect(vm.pollingInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.checkStatus).toHaveBeenCalled();
+
+        jasmine.clock().uninstall();
       });
     });
 
     describe('initDeploymentsPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval');
+        spyOn(vm, 'fetchDeployments').and.returnValue(Promise.resolve());
         vm.initDeploymentsPolling();
 
         expect(vm.deploymentsInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.fetchDeployments).toHaveBeenCalled();
       });
     });
 
@@ -232,29 +226,41 @@ describe('mrWidgetOptions', () => {
     describe('handleMounted', () => {
       it('should call required methods to do the initial kick-off', () => {
         spyOn(vm, 'initDeploymentsPolling');
-        spyOn(vm, 'setFavicon');
+        spyOn(vm, 'setFaviconHelper');
 
         vm.handleMounted();
 
-        expect(vm.setFavicon).toHaveBeenCalled();
+        expect(vm.setFaviconHelper).toHaveBeenCalled();
         expect(vm.initDeploymentsPolling).toHaveBeenCalled();
       });
     });
 
     describe('setFavicon', () => {
-      it('should call setFavicon method', () => {
-        spyOn(gl.utils, 'setFavicon');
-        vm.setFavicon();
+      let faviconElement;
 
-        expect(gl.utils.setFavicon).toHaveBeenCalledWith(vm.mr.ciStatusFaviconPath);
+      beforeEach(() => {
+        const favicon = document.createElement('link');
+        favicon.setAttribute('id', 'favicon');
+        document.body.appendChild(favicon);
+
+        faviconElement = document.getElementById('favicon');
+      });
+
+      afterEach(() => {
+        document.body.removeChild(document.getElementById('favicon'));
+      });
+
+      it('should call setFavicon method', () => {
+        vm.setFaviconHelper();
+
+        expect(faviconElement.getAttribute('href')).toEqual(vm.mr.ciStatusFaviconPath);
       });
 
       it('should not call setFavicon when there is no ciStatusFaviconPath', () => {
-        spyOn(gl.utils, 'setFavicon');
         vm.mr.ciStatusFaviconPath = null;
-        vm.setFavicon();
+        vm.setFaviconHelper();
 
-        expect(gl.utils.setFavicon).not.toHaveBeenCalled();
+        expect(faviconElement.getAttribute('href')).toEqual(null);
       });
     });
 
@@ -308,28 +314,6 @@ describe('mrWidgetOptions', () => {
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
       });
     });
-
-    describe('createService', () => {
-      it('should instantiate a Service', () => {
-        const endpoints = {
-          mergePath: '/nice/path',
-          mergeCheckPath: '/nice/path',
-          cancelAutoMergePath: '/nice/path',
-          removeWIPPath: '/nice/path',
-          sourceBranchPath: '/nice/path',
-          ciEnvironmentsStatusPath: '/nice/path',
-          statusPath: '/nice/path',
-          mergeActionsContentPath: '/nice/path',
-        };
-
-        const serviceInstance = vm.createService(endpoints);
-        const isInstanceOfMRService = serviceInstance instanceof MRWidgetService;
-        expect(isInstanceOfMRService).toBe(true);
-        Object.keys(serviceInstance).forEach((key) => {
-          expect(serviceInstance[key]).toBeDefined();
-        });
-      });
-    });
   });
 
   describe('components', () => {
@@ -356,6 +340,33 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
       expect(comps['mr-widget-pipeline-failed']).toBeDefined();
       expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
+    });
+  });
+
+  describe('rendering relatedLinks', () => {
+    beforeEach((done) => {
+      vm.mr.relatedLinks = {
+        assignToMe: null,
+        closing: `
+          <a class="close-related-link" href="#'>
+            Close
+          </a>
+        `,
+        mentioned: '',
+      };
+      Vue.nextTick(done);
+    });
+
+    it('renders if there are relatedLinks', () => {
+      expect(vm.$el.querySelector('.close-related-link')).toBeDefined();
+    });
+
+    it('does not render if state is nothingToMerge', (done) => {
+      vm.mr.state = stateKey.nothingToMerge;
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.close-related-link')).toBeNull();
+        done();
+      });
     });
   });
 });

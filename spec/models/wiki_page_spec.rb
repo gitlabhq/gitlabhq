@@ -80,7 +80,7 @@ describe WikiPage do
     context "when initialized with an existing gollum page" do
       before do
         create_page("test page", "test content")
-        @page = wiki.wiki.paged("test page")
+        @page = wiki.wiki.page(title: "test page")
         @wiki_page = described_class.new(wiki, @page, true)
       end
 
@@ -105,7 +105,7 @@ describe WikiPage do
       end
 
       it "sets the version attribute" do
-        expect(@wiki_page.version).to be_a Gollum::Git::Commit
+        expect(@wiki_page.version).to be_a Gitlab::Git::WikiPageVersion
       end
     end
   end
@@ -321,14 +321,14 @@ describe WikiPage do
     end
 
     it 'returns true when requesting an old version' do
-      old_version = @page.versions.last.to_s
+      old_version = @page.versions.last.id
       old_page = wiki.find_page('Update', old_version)
 
       expect(old_page.historical?).to eq true
     end
 
     it 'returns false when requesting latest version' do
-      latest_version = @page.versions.first.to_s
+      latest_version = @page.versions.first.id
       latest_page = wiki.find_page('Update', latest_version)
 
       expect(latest_page.historical?).to eq false
@@ -373,7 +373,7 @@ describe WikiPage do
     end
 
     it 'returns commit sha' do
-      expect(@page.last_commit_sha).to eq @page.commit.sha
+      expect(@page.last_commit_sha).to eq @page.last_version.sha
     end
 
     it 'is changed after page updated' do
@@ -386,6 +386,17 @@ describe WikiPage do
     end
   end
 
+  describe '#formatted_content' do
+    it 'returns processed content of the page', :disable_gitaly do
+      subject.create({ title: "RDoc", content: "*bold*", format: "rdoc" })
+      page = wiki.find_page('RDoc')
+
+      expect(page.formatted_content).to eq("\n<p><strong>bold</strong></p>\n")
+
+      destroy_page('RDoc')
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
@@ -393,7 +404,7 @@ describe WikiPage do
   end
 
   def commit_details
-    { name: user.name, email: user.email, message: "test commit" }
+    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
   end
 
   def create_page(name, content)
@@ -401,8 +412,8 @@ describe WikiPage do
   end
 
   def destroy_page(title)
-    page = wiki.wiki.paged(title)
-    wiki.wiki.delete_page(page, commit_details)
+    page = wiki.wiki.page(title: title)
+    wiki.delete_page(page, "test commit")
   end
 
   def get_slugs(page_or_dir)

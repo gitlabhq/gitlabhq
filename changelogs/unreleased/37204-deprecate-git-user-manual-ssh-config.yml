@@ -1,5 +1,0 @@
----
-title: Deprecate custom SSH client configuration for the git user
-merge_request: 13930
-author:
-type: deprecated

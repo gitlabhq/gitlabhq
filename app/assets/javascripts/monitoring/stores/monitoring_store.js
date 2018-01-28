@@ -13,7 +13,7 @@ function normalizeMetrics(metrics) {
         ...result,
         values: result.values.map(([timestamp, value]) => ({
           time: new Date(timestamp * 1000),
-          value,
+          value: Number(value),
         })),
       })),
     })),

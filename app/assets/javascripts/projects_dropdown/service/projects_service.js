@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
@@ -19,7 +20,7 @@ export default class ProjectsService {
 
   getSearchedProjects(searchQuery) {
     return this.projectsPath.get({
-      simple: false,
+      simple: true,
       per_page: 20,
       membership: !!gon.current_user_id,
       order_by: 'last_activity_at',

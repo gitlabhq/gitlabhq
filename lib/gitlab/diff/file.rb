@@ -5,7 +5,7 @@ module Gitlab
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
-        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, to: :diff, prefix: false
+        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, :has_binary_notice?, to: :diff, prefix: false
 
       # Finding a viewer for a diff file happens based only on extension and whether the
       # diff file blobs are binary or text, which means 1 diff file should only be matched by 1 viewer,
@@ -25,24 +25,35 @@ module Gitlab
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
+
+        # Ensure items are collected in the the batch
+        new_blob
+        old_blob
       end
 
-      def position(line)
+      def position(position_marker, position_type: :text)
         return unless diff_refs
 
-        Position.new(
+        data = {
+          diff_refs: diff_refs,
+          position_type: position_type.to_s,
           old_path: old_path,
-          new_path: new_path,
-          old_line: line.old_line,
-          new_line: line.new_line,
-          diff_refs: diff_refs
-        )
+          new_path: new_path
+        }
+
+        if position_type == :text
+          data.merge!(text_position_properties(position_marker))
+        else
+          data.merge!(image_position_properties(position_marker))
+        end
+
+        Position.new(data)
       end
 
       def line_code(line)
         return if line.meta?
 
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+        Gitlab::Git.diff_line_code(file_path, line.new_pos, line.old_pos)
       end
 
       def line_for_line_code(code)
@@ -50,7 +61,9 @@ module Gitlab
       end
 
       def line_for_position(pos)
-        diff_lines.find { |line| position(line) == pos }
+        return nil unless pos.position_type == 'text'
+
+        diff_lines.find { |line| line.old_line == pos.old_line && line.new_line == pos.new_line }
       end
 
       def position_for_line_code(code)
@@ -88,29 +101,25 @@ module Gitlab
       end
 
       def new_blob
-        return @new_blob if defined?(@new_blob)
+        return unless new_content_sha
 
-        sha = new_content_sha
-        return @new_blob = nil unless sha
-
-        @new_blob = repository.blob_at(sha, file_path)
+        Blob.lazy(repository.project, new_content_sha, file_path)
       end
 
       def old_blob
-        return @old_blob if defined?(@old_blob)
+        return unless old_content_sha
 
-        sha = old_content_sha
-        return @old_blob = nil unless sha
-
-        @old_blob = repository.blob_at(sha, old_path)
+        Blob.lazy(repository.project, old_content_sha, old_path)
       end
 
       def content_sha
         new_content_sha || old_content_sha
       end
 
+      # Use #itself to check the value wrapped by a BatchLoader instance, rather
+      # than if the BatchLoader instance itself is falsey.
       def blob
-        new_blob || old_blob
+        new_blob&.itself || old_blob&.itself
       end
 
       attr_writer :highlighted_diff_lines
@@ -166,7 +175,7 @@ module Gitlab
       end
 
       def binary?
-        old_blob&.binary? || new_blob&.binary?
+        has_binary_notice? || try_blobs(:binary?)
       end
 
       def text?
@@ -174,15 +183,15 @@ module Gitlab
       end
 
       def external_storage_error?
-        old_blob&.external_storage_error? || new_blob&.external_storage_error?
+        try_blobs(:external_storage_error?)
       end
 
       def stored_externally?
-        old_blob&.stored_externally? || new_blob&.stored_externally?
+        try_blobs(:stored_externally?)
       end
 
       def external_storage
-        old_blob&.external_storage || new_blob&.external_storage
+        try_blobs(:external_storage)
       end
 
       def content_changed?
@@ -197,15 +206,15 @@ module Gitlab
       end
 
       def size
-        [old_blob&.size, new_blob&.size].compact.sum
+        valid_blobs.map(&:size).sum
       end
 
       def raw_size
-        [old_blob&.raw_size, new_blob&.raw_size].compact.sum
+        valid_blobs.map(&:raw_size).sum
       end
 
       def raw_binary?
-        old_blob&.raw_binary? || new_blob&.raw_binary?
+        try_blobs(:raw_binary?)
       end
 
       def raw_text?
@@ -227,6 +236,27 @@ module Gitlab
       end
 
       private
+
+      # The blob instances are instances of BatchLoader, which means calling
+      # &. directly on them won't work. Object#try also won't work, because Blob
+      # doesn't inherit from Object, but from BasicObject (via SimpleDelegator).
+      def try_blobs(meth)
+        old_blob&.itself&.public_send(meth) || new_blob&.itself&.public_send(meth)
+      end
+
+      # We can't use #compact for the same reason we can't use &., but calling
+      # #nil? explicitly does work because it is proxied to the blob itself.
+      def valid_blobs
+        [old_blob, new_blob].reject(&:nil?)
+      end
+
+      def text_position_properties(line)
+        { old_line: line.old_line, new_line: line.new_line }
+      end
+
+      def image_position_properties(image_point)
+        image_point.to_h
+      end
 
       def blobs_changed?
         old_blob && new_blob && old_blob.id != new_blob.id

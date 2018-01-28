@@ -18,7 +18,6 @@ describe Environment do
   it { is_expected.to validate_length_of(:slug).is_at_most(24) }
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
-  it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '.order_by_last_deployed_at' do
     let(:project) { create(:project, :repository) }
@@ -328,15 +327,28 @@ describe Environment do
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:kubernetes_project) }
+        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          context 'and a deployment' do
+            let!(:deployment) { create(:deployment, environment: environment) }
+            it { is_expected.to be_truthy }
+          end
 
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
+          context 'but no deployments' do
+            it { is_expected.to be_falsy }
+          end
         end
 
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          let(:project) { create(:kubernetes_project) }
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+          let(:project) { cluster.project }
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
       end
 
@@ -357,7 +369,6 @@ describe Environment do
   end
 
   describe '#terminals' do
-    let(:project) { create(:kubernetes_project) }
     subject { environment.terminals }
 
     context 'when the environment has terminals' do
@@ -365,12 +376,27 @@ describe Environment do
         allow(environment).to receive(:has_terminals?).and_return(true)
       end
 
-      it 'returns the terminals from the deployment service' do
-        expect(project.deployment_service)
-          .to receive(:terminals).with(environment)
-          .and_return(:fake_terminals)
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns the terminals from the deployment service' do
+          expect(project.deployment_platform)
+            .to receive(:terminals).with(environment)
+            .and_return(:fake_terminals)
 
-        is_expected.to eq(:fake_terminals)
+          is_expected.to eq(:fake_terminals)
+        end
+      end
+
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 
@@ -547,6 +573,15 @@ describe Environment do
 
       expect(environment.slug).to eq(original_slug)
     end
+
+    it "regenerates the slug if nil" do
+      environment = build(:environment, slug: nil)
+
+      new_slug = environment.slug
+
+      expect(new_slug).not_to be_nil
+      expect(environment.slug).to eq(new_slug)
+    end
   end
 
   describe '#generate_slug' do
@@ -572,6 +607,22 @@ describe Environment do
 
         expect(slug).to match(/\A#{matcher}\z/)
       end
+    end
+  end
+
+  describe '#ref_path' do
+    subject(:environment) do
+      create(:environment, name: 'staging / review-1')
+    end
+
+    it 'returns a path that uses the slug and does not have spaces' do
+      expect(environment.ref_path).to start_with('refs/environments/staging-review-1-')
+    end
+
+    it "doesn't change when the slug is nil initially" do
+      environment.slug = nil
+
+      expect(environment.ref_path).to eq(environment.ref_path)
     end
   end
 

@@ -12,6 +12,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   def metrics
     return render_404 unless deployment.has_metrics?
+
     @metrics = deployment.metrics
     if @metrics&.any?
       render json: @metrics, status: :ok

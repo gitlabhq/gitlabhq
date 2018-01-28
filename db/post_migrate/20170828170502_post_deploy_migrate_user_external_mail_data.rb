@@ -33,7 +33,7 @@ class PostDeployMigrateUserExternalMailData < ActiveRecord::Migration
           SELECT true
           FROM user_synced_attributes_metadata
           WHERE user_id = users.id
-          AND provider = users.email_provider
+          AND (provider = users.email_provider OR (provider IS NULL AND users.email_provider IS NULL))
         )
         AND id BETWEEN #{start_id} AND #{end_id}
       EOF

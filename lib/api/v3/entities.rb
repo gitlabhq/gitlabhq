@@ -172,8 +172,8 @@ module API
         expose :id
         expose :default_projects_limit
         expose :signup_enabled
-        expose :password_authentication_enabled
-        expose :password_authentication_enabled, as: :signin_enabled
+        expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
+        expose :password_authentication_enabled_for_web, as: :signin_enabled
         expose :gravatar_enabled
         expose :sign_in_text
         expose :after_sign_up_text
@@ -207,7 +207,7 @@ module API
       end
 
       class Trigger < Grape::Entity
-        expose :token, :created_at, :updated_at, :deleted_at, :last_used
+        expose :token, :created_at, :updated_at, :last_used
         expose :owner, using: ::API::Entities::UserBasic
       end
 
@@ -220,7 +220,7 @@ module API
         expose :created_at, :started_at, :finished_at
         expose :user, with: ::API::Entities::User
         expose :artifacts_file, using: ::API::Entities::JobArtifactFile, if: -> (build, opts) { build.artifacts? }
-        expose :commit, with: ::API::Entities::RepoCommit
+        expose :commit, with: ::API::Entities::Commit
         expose :runner, with: ::API::Entities::Runner
         expose :pipeline, with: ::API::Entities::PipelineBasic
       end
@@ -237,7 +237,7 @@ module API
       end
 
       class MergeRequestChanges < MergeRequest
-        expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
+        expose :diffs, as: :changes, using: ::API::Entities::Diff do |compare, _|
           compare.raw_diffs(limits: false).to_a
         end
       end
@@ -257,10 +257,7 @@ module API
         expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
-          field_names = service.fields
-            .select { |field| options[:include_passwords] || field[:type] != 'password' }
-            .map { |field| field[:name] }
-          service.properties.slice(*field_names)
+          service.properties.slice(*service.api_field_names)
         end
       end
 

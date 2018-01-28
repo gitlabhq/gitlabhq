@@ -1,11 +1,10 @@
-/* global Notes */
-
-import 'vendor/autosize';
+import _ from 'underscore';
+import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';
 import '~/render_math';
-import '~/notes';
+import Notes from '~/notes';
 
 const upArrowKeyCode = 38;
 
@@ -23,10 +22,15 @@ describe('Merge request notes', () => {
       loadFixtures(discussionTabFixture);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:merge_requests:show');
+      $('body').attr('data-page', 'projects:merge_requests:show');
       window.gon.current_user_id = $('.note:last').data('author-id');
 
       return new Notes('', []);
+    });
+
+    afterEach(() => {
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
     });
 
     describe('up arrow', () => {
@@ -71,10 +75,15 @@ describe('Merge request notes', () => {
         <textarea class="js-note-text"></textarea>
       </form>`;
       setFixtures(diffsResponse.html + noteFormHtml);
-      $('body').data('page', 'projects:merge_requests:show');
+      $('body').attr('data-page', 'projects:merge_requests:show');
       window.gon.current_user_id = $('.note:last').data('author-id');
 
       return new Notes('', []);
+    });
+
+    afterEach(() => {
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
     });
 
     describe('up arrow', () => {

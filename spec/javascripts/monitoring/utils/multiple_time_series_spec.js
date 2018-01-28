@@ -2,7 +2,7 @@ import createTimeSeries from '~/monitoring/utils/multiple_time_series';
 import { convertDatesMultipleSeries, singleRowMetricsMultipleSeries } from '../mock_data';
 
 const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
-const timeSeries = createTimeSeries(convertedMetrics[0].queries[0], 428, 272, 120);
+const timeSeries = createTimeSeries(convertedMetrics[0].queries, 428, 272, 120);
 const firstTimeSeries = timeSeries[0];
 
 describe('Multiple time series', () => {

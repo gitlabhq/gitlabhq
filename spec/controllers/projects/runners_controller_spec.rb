@@ -29,7 +29,7 @@ describe Projects::RunnersController do
 
       runner.reload
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(runner.description).to eq(new_desc)
     end
   end
@@ -38,7 +38,7 @@ describe Projects::RunnersController do
     it 'destroys the runner' do
       delete :destroy, params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(Ci::Runner.find_by(id: runner.id)).to be_nil
     end
   end
@@ -53,7 +53,7 @@ describe Projects::RunnersController do
 
       runner.reload
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(runner.active).to eq(true)
     end
   end
@@ -68,7 +68,7 @@ describe Projects::RunnersController do
 
       runner.reload
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(runner.active).to eq(false)
     end
   end

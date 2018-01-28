@@ -13,11 +13,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
     if group
       return render_404 unless can?(current_user, :read_group, group)
 
-      project.project_group_links.create(
-        group: group,
-        group_access: params[:link_group_access],
-        expires_at: params[:expires_at]
-      )
+      Projects::GroupLinks::CreateService.new(project, current_user, group_link_create_params).execute(group)
     else
       flash[:alert] = 'Please select a group.'
     end
@@ -32,7 +28,9 @@ class Projects::GroupLinksController < Projects::ApplicationController
   end
 
   def destroy
-    project.project_group_links.find(params[:id]).destroy
+    group_link = project.project_group_links.find(params[:id])
+
+    ::Projects::GroupLinks::DestroyService.new(project, current_user).execute(group_link)
 
     respond_to do |format|
       format.html do
@@ -46,5 +44,9 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   def group_link_params
     params.require(:group_link).permit(:group_access, :expires_at)
+  end
+
+  def group_link_create_params
+    params.permit(:link_group_access, :expires_at)
   end
 end

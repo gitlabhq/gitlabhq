@@ -1,21 +1,33 @@
 import mutations from '~/notes/stores/mutations';
-import { note, discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
+import { note, discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
 describe('Mutation Notes Store', () => {
   describe('ADD_NEW_NOTE', () => {
-    it('should add a new note to an array of notes', () => {
-      const state = { notes: [] };
-      mutations.ADD_NEW_NOTE(state, note);
+    let state;
+    let noteData;
 
+    beforeEach(() => {
+      state = { notes: [] };
+      noteData = {
+        expanded: true,
+        id: note.discussion_id,
+        individual_note: true,
+        notes: [note],
+        reply_id: note.discussion_id,
+      };
+      mutations.ADD_NEW_NOTE(state, note);
+    });
+
+    it('should add a new note to an array of notes', () => {
       expect(state).toEqual({
-        notes: [{
-          expanded: true,
-          id: note.discussion_id,
-          individual_note: true,
-          notes: [note],
-          reply_id: note.discussion_id,
-        }],
+        notes: [noteData],
       });
+      expect(state.notes.length).toBe(1);
+    });
+
+    it('should not add the same note to the notes array', () => {
+      mutations.ADD_NEW_NOTE(state, note);
+      expect(state.notes.length).toBe(1);
     });
   });
 
@@ -62,14 +74,14 @@ describe('Mutation Notes Store', () => {
     });
   });
 
-  describe('SET_ISSUE_DATA', () => {
+  describe('SET_NOTEABLE_DATA', () => {
     it('should set the issue data', () => {
       const state = {
-        issueData: {},
+        noteableData: {},
       };
 
-      mutations.SET_ISSUE_DATA(state, issueDataMock);
-      expect(state.issueData).toEqual(issueDataMock);
+      mutations.SET_NOTEABLE_DATA(state, noteableDataMock);
+      expect(state.noteableData).toEqual(noteableDataMock);
     });
   });
 

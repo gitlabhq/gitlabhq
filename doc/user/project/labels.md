@@ -20,8 +20,6 @@ Head over a single project and navigate to **Issues > Labels**.
 The first time you visit this page, you'll notice that there are no labels
 created yet.
 
-![Generate new labels](img/labels_generate.png)
-
 Creating a new label from scratch is as easy as pressing the **New label**
 button. From there on you can choose the name, give it an optional description,
 a color and you are set.
@@ -32,21 +30,23 @@ When you are ready press the **Create label** button to create the new label.
 
 ---
 
-## Default Labels
+## Default labels
 
-It's possible to populate the labels for your project from a set of predefined labels.
-
-### Generate GitLab's predefined label set
-
-![Generate new labels](img/labels_generate.png)
+The very first time you visit the labels area, it's gonna be empty. In that
+case, it's possible to populate the labels for your project from a set of
+predefined labels.
 
 Click the link to 'Generate a default set of labels' and GitLab will
-generate a set of predefined labels for you. There are 8 default generated labels
-in total and you can see them in the screenshot below.
+generate them for you. There are 8 default generated labels in total:
 
-![Default generated labels](img/labels_default.png)
-
----
+- bug
+- confirmed
+- critical
+- discussion
+- documentation
+- enhancement
+- suggestion
+- support
 
 ## Labels Overview
 
@@ -77,15 +77,32 @@ having their priority set to null.
 
 ![Prioritize labels](img/labels_prioritize.png)
 
-Now that you have labels prioritized, you can use the 'Priority' and 'Label
-priority' filters in the issues or merge requests tracker.
+Now that you have labels prioritized, you can use the 'Label priority' and 'Priority' 
+sort orders in the issues or merge requests tracker.
 
-The 'Label priority' filter puts issues with the highest priority label on top.
+In the following, everything applies to both issues and merge requests, but we'll
+refer to just issues for brevity.
 
-The 'Priority' filter sorts issues by their soonest milestone due date, then by
-label priority.
+The 'Label priority' sort order positions issues with higher priority labels
+toward the top, and issues with lower priority labels toward the bottom. A non-prioritized
+label is considered to have the lowest priority. For a given issue, we _only_ consider the
+highest priority label assigned to it in the comparison. ([We are discussing](https://gitlab.com/gitlab-org/gitlab-ce/issues/18554) 
+including all the labels in a given issue for this comparison.) Given two issues
+are equal according to this sort comparison, their relative order is equal, and 
+therefore it's not guaranteed that one will be always above the other.
 
-![Filter labels by priority](img/labels_filter_by_priority.png)
+![Label priority sort order](img/label_priority_sort_order.png)
+
+The 'Priority' sort order comparison first considers an issue's milestone's due date,
+(if the issue is assigned a milestone and the milestone's due date exists), and then 
+secondarily considers the label priority comparison above. Sooner due dates results
+a higher sort order. If an issue doesn't have a milestone due date, it is equivalent to
+being assigned to a milestone that has a due date in the infinite future. Given two issues
+are equal according to this two-stage sort comparison, their relative order is equal, and 
+therefore it's not guaranteed that one will be always above the other.
+
+![Priority sort order](img/priority_sort_order.png)
+
 
 ## Subscribe to labels
 
@@ -102,30 +119,25 @@ If you work on a large or popular project, try subscribing only to the labels
 that are relevant to you. You’ll notice it’ll be much easier to focus on what’s
 important.
 
-## Create a new label right from the issue tracker
+## Create a new label when inside an issue
 
-> Introduced in GitLab 8.6.
-
-There are times when you are already in the issue tracker searching for a
+There are times when you are already inside an issue searching to assign a
 label, only to realize it doesn't exist. Instead of going to the **Labels**
 page and being distracted from your original purpose, you can create new
 labels on the fly.
 
-Select **Create new** from the labels dropdown list, provide a name, pick a
-color and hit **Create**.
+Expand the issue sidebar and select **Create new label** from the labels dropdown
+list. Provide a name, pick a color and hit **Create**. The new label will be
+ready to used right away!
 
-![Create new label on the fly](img/labels_new_label_on_the_fly_create.png)
 ![New label on the fly](img/labels_new_label_on_the_fly.png)
 
 ## Assigning labels to issues and merge requests
 
 There are generally two ways to assign a label to an issue or merge request.
 
-You can assign a label when you first create or edit an issue or merge request.
-
-![Assign label in new issue](img/labels_assign_label_in_new_issue.png)
-
----
+The first one is to assign a label when you first create or edit an issue or
+merge request.
 
 The second way is by using the right sidebar when inside an issue or merge
 request. Expand it and hit **Edit** in the labels area. Start typing the name

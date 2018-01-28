@@ -73,6 +73,12 @@ describe('Fly out sidebar navigation', () => {
       ).toBe(0);
     });
 
+    it('returns 0 if mousePos is empty', () => {
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(0);
+    });
+
     it('returns 0 when mouse above sub-items', () => {
       showSubLevelItems(el);
       documentMouseMove({
@@ -161,30 +167,26 @@ describe('Fly out sidebar navigation', () => {
 
   describe('mouseEnterTopItems', () => {
     beforeEach(() => {
-      jasmine.clock().install();
-
       el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute; top: 0; left: 100px; height: 200px;"></div>';
     });
 
-    afterEach(() => {
-      jasmine.clock().uninstall();
-    });
-
-    it('shows sub-items after 0ms if no menu is open', () => {
+    it('shows sub-items after 0ms if no menu is open', (done) => {
       mouseEnterTopItems(el);
 
       expect(
         getHideSubItemsInterval(),
       ).toBe(0);
 
-      jasmine.clock().tick(0);
+      setTimeout(() => {
+        expect(
+          el.querySelector('.sidebar-sub-level-items').style.display,
+        ).toBe('block');
 
-      expect(
-        el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('block');
+        done();
+      });
     });
 
-    it('shows sub-items after 300ms if a menu is currently open', () => {
+    it('shows sub-items after 300ms if a menu is currently open', (done) => {
       documentMouseMove({
         clientX: el.getBoundingClientRect().left,
         clientY: el.getBoundingClientRect().top,
@@ -197,17 +199,19 @@ describe('Fly out sidebar navigation', () => {
         clientY: el.getBoundingClientRect().top + 10,
       });
 
-      mouseEnterTopItems(el);
+      mouseEnterTopItems(el, 0);
 
       expect(
         getHideSubItemsInterval(),
       ).toBe(300);
 
-      jasmine.clock().tick(300);
+      setTimeout(() => {
+        expect(
+          el.querySelector('.sidebar-sub-level-items').style.display,
+        ).toBe('block');
 
-      expect(
-        el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('block');
+        done();
+      });
     });
   });
 
@@ -247,7 +251,7 @@ describe('Fly out sidebar navigation', () => {
     it('shows collapsed only sub-items if icon only sidebar', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
       const sidebar = document.createElement('div');
-      sidebar.classList.add('sidebar-icons-only');
+      sidebar.classList.add('sidebar-collapsed-desktop');
       subItems.classList.add('is-fly-out-only');
 
       setSidebar(sidebar);
@@ -271,12 +275,19 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('sets transform of sub-items', () => {
+      const sidebar = document.createElement('div');
       const subItems = el.querySelector('.sidebar-sub-level-items');
+
+      sidebar.style.width = '200px';
+
+      document.body.appendChild(sidebar);
+
+      setSidebar(sidebar);
       showSubLevelItems(el);
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
+      ).toBe(`translate3d(200px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {
@@ -330,7 +341,7 @@ describe('Fly out sidebar navigation', () => {
 
     it('returns true when active & collapsed sidebar', () => {
       const sidebar = document.createElement('div');
-      sidebar.classList.add('sidebar-icons-only');
+      sidebar.classList.add('sidebar-collapsed-desktop');
       el.classList.add('active');
 
       setSidebar(sidebar);

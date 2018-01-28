@@ -1,4 +1,4 @@
-/* global Flash */
+import Flash from '../flash';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
@@ -102,7 +102,7 @@ export default class IntegrationSettingsForm {
     })
     .done((res) => {
       if (res.error) {
-        new Flash(`${res.message} ${res.service_response}`, null, null, {
+        new Flash(`${res.message} ${res.service_response}`, 'alert', document, {
           title: 'Save anyway',
           clickHandler: (e) => {
             e.preventDefault();
