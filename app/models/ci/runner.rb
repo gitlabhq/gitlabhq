@@ -89,7 +89,10 @@ module Ci
     end
 
     def online?
-      contacted_at && contacted_at > self.class.contact_time_deadline
+      Gitlab::Redis::SharedState.with do |redis|
+        last_seen = redis.get("#{self.runner_info_key}:contacted_at") || contacted_at
+        last_seen && last_seen > self.class.contact_time_deadline
+      end
     end
 
     def status
@@ -151,6 +154,10 @@ module Ci
 
     def runner_queue_value_latest?(value)
       ensure_runner_queue_value == value if value.present?
+    end
+
+    def runner_info_key
+      "runner:info:#{self.id}"
     end
 
     private

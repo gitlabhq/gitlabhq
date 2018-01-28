@@ -95,28 +95,58 @@ describe Ci::Runner do
 
     subject { runner.online? }
 
-    context 'never contacted' do
+    context 'no cache value' do
       before do
-        runner.contacted_at = nil
+        stub_redis("#{runner.runner_info_key}:contacted_at", nil)
       end
 
-      it { is_expected.to be_falsey }
+      context 'never contacted' do
+        before do
+          runner.contacted_at = nil
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'contacted long time ago time' do
+        before do
+          runner.contacted_at = 1.year.ago
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'contacted 1s ago' do
+        before do
+          runner.contacted_at = 1.second.ago
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'contacted long time ago time' do
-      before do
-        runner.contacted_at = 1.year.ago
+    context 'with cache value' do
+      context 'contacted long time ago time' do
+        before do
+          stub_redis("#{runner.runner_info_key}:contacted_at", 1.year.ago.to_s)
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
+      context 'contacted 1s ago' do
+        before do
+          stub_redis("#{runner.runner_info_key}:contacted_at", 1.second.ago.to_s)
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'contacted 1s ago' do
-      before do
-        runner.contacted_at = 1.second.ago
-      end
-
-      it { is_expected.to be_truthy }
+    def stub_redis(key, value)
+      redis = double
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
+      allow(redis).to receive(:get).with(key).and_return(value)
     end
   end
 
