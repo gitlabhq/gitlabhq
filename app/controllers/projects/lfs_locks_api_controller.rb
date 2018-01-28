@@ -61,7 +61,7 @@ class Projects::LfsLocksApiController < Projects::GitHttpClientController
   end
 
   def download_request?
-    %w(index).include?(params[:action])
+    params[:action] == 'index'
   end
 
   def upload_request?

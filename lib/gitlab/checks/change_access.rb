@@ -120,48 +120,21 @@ module Gitlab
         end
       end
 
+      def commit_check
+        @commit_check ||= Gitlab::Checks::CommitCheck.new(project, user_access.user, newrev, oldrev)
+      end
+
       def commits_check
         return if deletion? || newrev.nil?
 
         commits.each do |commit|
-          check_commit_diff(commit)
+          commit_check.validate(commit, validations_for_commit(commit))
         end
       end
 
-      def check_commit_diff(commit)
-        validations = validations_for_commit(commit)
-
-        return if validations.empty?
-
-        commit.raw_deltas.each do |diff|
-          validations.each do |validation|
-            if error = validation.call(diff)
-              raise ::Gitlab::GitAccess::UnauthorizedError, error
-            end
-          end
-        end
-
-        nil
-      end
-
-      def validations_for_commit(commit)
-        validate_lfs_file_locks? ? [lfs_file_locks_validation] : []
-      end
-
-      def validate_lfs_file_locks?
-        project.lfs_enabled? && project.lfs_file_locks.any? && newrev && oldrev
-      end
-
-      def lfs_file_locks_validation
-        lambda do |diff|
-          path = diff.new_path || diff.old_path
-
-          lfs_lock = project.lfs_file_locks.find_by(path: path)
-
-          if lfs_lock && lfs_lock.user != user_access.user
-            return "The path '#{lfs_lock.path}' is locked in Git LFS by #{lfs_lock.user.name}"
-          end
-        end
+      # Method overwritten in EE to inject custom validations
+      def validations_for_commit(_)
+        commit_check.validations
       end
 
       private
