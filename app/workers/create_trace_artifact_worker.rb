@@ -4,7 +4,7 @@ class CreateTraceArtifactWorker
 
   def perform(job_id)
     Ci::Build.find_by(id: job_id).try do |job|
-      Ci::CreateTraceArtifactService.new.execute(job)
+      Ci::CreateTraceArtifactService.new(nil, nil).execute(job)
     end
   end
 end
