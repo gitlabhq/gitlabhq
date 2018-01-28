@@ -43,6 +43,7 @@
 - pipeline_creation:run_pipeline_schedule
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
+- pipeline_default:create_trace_artifact
 - pipeline_default:pipeline_metrics
 - pipeline_default:pipeline_notification
 - pipeline_default:update_head_pipeline_for_merge_request

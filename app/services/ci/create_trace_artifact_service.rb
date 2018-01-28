@@ -7,7 +7,7 @@ module Ci
         job.create_job_artifacts_trace!(
           project: job.project,
           file_type: :trace,
-          file: stream.path) if stream.file?
+          file: stream) if stream.file?
       end
     end
   end
