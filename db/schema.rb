@@ -1306,7 +1306,7 @@ ActiveRecord::Schema.define(version: 20180204200836) do
     t.integer "project_id", null: false
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
-    t.string "path", limit: 65500
+    t.string "path", limit: 511
   end
 
   add_index "lfs_file_locks", ["project_id", "path"], name: "index_lfs_file_locks_on_project_id_and_path", unique: true, using: :btree

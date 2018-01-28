@@ -6,7 +6,7 @@ class CreateLfsFileLocks < ActiveRecord::Migration
       t.references :project, null: false, foreign_key: { on_delete: :cascade }
       t.references :user, null: false, index: true, foreign_key: { on_delete: :cascade }
       t.datetime :created_at, null: false
-      t.string :path, limit: 65500
+      t.string :path, limit: 511
     end
 
     add_index :lfs_file_locks, [:project_id, :path], unique: true
