@@ -48,14 +48,14 @@ describe('Multi-file store actions', () => {
 
   describe('discardAllChanges', () => {
     beforeEach(() => {
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('discardAll'));
       store.state.openFiles[0].changed = true;
     });
   });
 
   describe('closeAllFiles', () => {
     beforeEach(() => {
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('closeAll'));
       store.state.openFiles[0].opened = true;
     });
 
@@ -97,7 +97,7 @@ describe('Multi-file store actions', () => {
 
     it('opens discard popup if there are changed files', (done) => {
       store.state.editMode = true;
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('discardChanges'));
       store.state.openFiles[0].changed = true;
 
       store.dispatch('toggleEditMode')
@@ -111,7 +111,7 @@ describe('Multi-file store actions', () => {
     it('can force closed if there are changed files', (done) => {
       store.state.editMode = true;
 
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('forceClose'));
       store.state.openFiles[0].changed = true;
 
       store.dispatch('toggleEditMode', true)
@@ -124,7 +124,7 @@ describe('Multi-file store actions', () => {
     });
 
     it('discards file changes', (done) => {
-      const f = file();
+      const f = file('discard');
       store.state.editMode = true;
       store.state.openFiles.push(f);
       f.changed = true;
@@ -285,8 +285,8 @@ describe('Multi-file store actions', () => {
       });
 
       it('adds commit data to changed files', (done) => {
-        const changedFile = file();
-        const f = file();
+        const changedFile = file('changed');
+        const f = file('newfile');
         changedFile.changed = true;
 
         store.state.openFiles.push(changedFile, f);

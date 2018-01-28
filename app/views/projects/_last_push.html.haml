@@ -1,19 +1,18 @@
 - event = last_push_event
 - if event && show_last_push_widget?(event)
-  %div{ class: container_class }
-    .row-content-block.top-block.hidden-xs.white
-      .event-last-push
-        .event-last-push-text
-          %span= s_("LastPushEvent|You pushed to")
-          %strong
-            = link_to event.ref_name, project_commits_path(event.project, event.ref_name), class: 'ref-name'
+  .row-content-block.top-block.hidden-xs.white
+    .event-last-push
+      .event-last-push-text
+        %span= s_("LastPushEvent|You pushed to")
+        %strong
+          = link_to event.ref_name, project_commits_path(event.project, event.ref_name), class: 'ref-name'
 
-          - if event.project != @project
-            %span= s_("LastPushEvent|at")
-            %strong= link_to_project event.project
+        - if event.project != @project
+          %span= s_("LastPushEvent|at")
+          %strong= link_to_project event.project
 
-          #{time_ago_with_tooltip(event.created_at)}
+        #{time_ago_with_tooltip(event.created_at)}
 
-        .pull-right
-          = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm" do
-            #{ _('Create merge request') }
+      .pull-right
+        = link_to new_mr_path_from_push_event(event), title: _("New merge request"), class: "btn btn-info btn-sm" do
+          #{ _('Create merge request') }

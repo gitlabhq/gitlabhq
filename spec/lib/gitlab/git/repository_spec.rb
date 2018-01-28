@@ -899,6 +899,44 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    context "compare results between log_by_walk and log_by_shell" do
+      let(:options) { { ref: "master" } }
+      let(:commits_by_walk) { repository.log(options).map(&:id) }
+      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
+
+      it { expect(commits_by_walk).to eq(commits_by_shell) }
+
+      context "with limit" do
+        let(:options) { { ref: "master", limit: 1 } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+      end
+
+      context "with offset" do
+        let(:options) { { ref: "master", offset: 1 } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+      end
+
+      context "with skip_merges" do
+        let(:options) { { ref: "master", skip_merges: true } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+      end
+
+      context "with path" do
+        let(:options) { { ref: "master", path: "encoding" } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+
+        context "with follow" do
+          let(:options) { { ref: "master", path: "encoding", follow: true } }
+
+          it { expect(commits_by_walk).to eq(commits_by_shell) }
+        end
+      end
+    end
+
     context "where provides 'after' timestamp" do
       options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
 
@@ -1924,6 +1962,75 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it { expect(subject.shard_path).to eq(storage_path) }
     it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
+  end
+
+  describe '#bundle_to_disk' do
+    shared_examples 'bundling to disk' do
+      let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+
+      after do
+        FileUtils.rm_rf(save_path)
+      end
+
+      it 'saves a bundle to disk' do
+        repository.bundle_to_disk(save_path)
+
+        success = system(
+          *%W(#{Gitlab.config.git.bin_path} -C #{repository.path} bundle verify #{save_path}),
+          [:out, :err] => '/dev/null'
+        )
+        expect(success).to be true
+      end
+    end
+
+    context 'when Gitaly bundle_to_disk feature is enabled' do
+      it_behaves_like 'bundling to disk'
+    end
+
+    context 'when Gitaly bundle_to_disk feature is disabled', :disable_gitaly do
+      it_behaves_like 'bundling to disk'
+    end
+  end
+
+  describe '#create_from_bundle' do
+    shared_examples 'creating repo from bundle' do
+      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+      let(:project) { create(:project) }
+      let(:imported_repo) { project.repository.raw }
+
+      before do
+        expect(repository.bundle_to_disk(bundle_path)).to be true
+      end
+
+      after do
+        FileUtils.rm_rf(bundle_path)
+      end
+
+      it 'creates a repo from a bundle file' do
+        expect(imported_repo).not_to exist
+
+        result = imported_repo.create_from_bundle(bundle_path)
+
+        expect(result).to be true
+        expect(imported_repo).to exist
+        expect { imported_repo.fsck }.not_to raise_exception
+      end
+
+      it 'creates a symlink to the global hooks dir' do
+        imported_repo.create_from_bundle(bundle_path)
+        hooks_path = File.join(imported_repo.path, 'hooks')
+
+        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+      end
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is enabled' do
+      it_behaves_like 'creating repo from bundle'
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
+      it_behaves_like 'creating repo from bundle'
+    end
   end
 
   context 'gitlab_projects commands' do

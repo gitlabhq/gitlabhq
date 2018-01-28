@@ -1,31 +1,16 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import Milestone from './milestone';
-import NotificationsForm from './notifications_form';
-import notificationsDropdown from './notifications_dropdown';
-import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
-import Sidebar from './right_sidebar';
 import Flash from './flash';
-import SecretValues from './behaviors/secret_values';
-import UserCallout from './user_callout';
-import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
-import Star from './star';
-import TreeView from './tree';
 import ZenMode from './zen_mode';
-import initSettingsPanels from './settings_panels';
-import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
-import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
-import GLForm from './gl_form';
 import Shortcuts from './shortcuts';
-import ShortcutsNavigation from './shortcuts_navigation';
 import ShortcutsIssuable from './shortcuts_issuable';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
-import Activities from './activities';
 
 (function() {
   var Dispatcher;
@@ -76,6 +61,11 @@ import Activities from './activities';
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:environments:metrics':
+          import('./pages/projects/environments/metrics')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:index':
           import('./pages/projects/merge_requests/index')
             .then(callDefault)
@@ -99,10 +89,20 @@ import Activities from './activities';
             .then(callDefault)
             .catch(fail);
           break;
+        case 'projects:milestones:index':
+          import('./pages/projects/milestones/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:milestones:show':
+          import('./pages/projects/milestones/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:milestones:show':
-          new Milestone();
-          new Sidebar();
+          import('./pages/groups/milestones/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'dashboard:milestones:show':
           import('./pages/dashboard/milestones/show')
@@ -130,7 +130,9 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'dashboard:todos:index':
-          import('./pages/dashboard/todos/index').then(callDefault).catch(fail);
+          import('./pages/dashboard/todos/index')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:jobs:index':
           import('./pages/admin/jobs/index')
@@ -233,15 +235,21 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:snippets:show':
-          initNotes();
-          new ZenMode();
+          import('./pages/projects/snippets/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:snippets:new':
-        case 'projects:snippets:edit':
         case 'projects:snippets:create':
+          import('./pages/projects/snippets/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:snippets:edit':
         case 'projects:snippets:update':
-          new GLForm($('.snippet-form'), true);
-          new ZenMode();
+          import('./pages/projects/snippets/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'snippets:new':
           import('./pages/snippets/new')
@@ -264,8 +272,9 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:releases:edit':
-          new ZenMode();
-          new GLForm($('.release-form'), true);
+          import('./pages/projects/releases/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:merge_requests:show':
           new Diff();
@@ -309,19 +318,10 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:show':
-          shortcut_handler = new ShortcutsNavigation();
-          new NotificationsForm();
-          new UserCallout({
-            setCalloutPerProject: true,
-            className: 'js-autodevops-banner',
-          });
-
-          if ($('#tree-slider').length) new TreeView();
-          if ($('.blob-viewer').length) new BlobViewer();
-          if ($('.project-show-activity').length) new Activities();
-          $('#tree-slider').waitForImages(function() {
-            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
-          });
+          import('./pages/projects/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'projects:edit':
           import('./pages/projects/edit')
@@ -476,18 +476,15 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'projects:settings:repository:show':
-          // Initialize expandable settings panels
-          initSettingsPanels();
+          import('./pages/projects/settings/repository/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:settings:ci_cd:show':
-          // Initialize expandable settings panels
-          initSettingsPanels();
-
-          const runnerToken = document.querySelector('.js-secret-runner-token');
-          if (runnerToken) {
-            const runnerTokenSecretValue = new SecretValues(runnerToken);
-            runnerTokenSecretValue.init();
-          }
+          import('./pages/projects/settings/ci_cd/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:settings:ci_cd:show':
           import('./pages/groups/settings/ci_cd/show')
             .then(callDefault)
@@ -495,13 +492,19 @@ import Activities from './activities';
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          import('./pages/ci/lints').then(m => m.default()).catch(fail);
+          import('./pages/ci/lints')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'users:show':
-          import('./pages/users/show').then(callDefault).catch(fail);
+          import('./pages/users/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:conversational_development_index:show':
-          import('./pages/admin/conversational_development_index/show').then(m => m.default()).catch(fail);
+          import('./pages/admin/conversational_development_index/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'snippets:show':
           import('./pages/snippets/show')
@@ -509,7 +512,9 @@ import Activities from './activities';
             .catch(fail);
           break;
         case 'import:fogbugz:new_user_map':
-          import('./pages/import/fogbugz/new_user_map').then(m => m.default()).catch(fail);
+          import('./pages/import/fogbugz/new_user_map')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'profiles:personal_access_tokens:index':
           import('./pages/profiles/personal_access_tokens')
@@ -530,6 +535,11 @@ import Activities from './activities';
           break;
         case 'projects:clusters:index':
           import('./pages/projects/clusters/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'dashboard:groups:index':
+          import('./pages/dashboard/groups/index')
             .then(callDefault)
             .catch(fail);
           break;
@@ -616,22 +626,11 @@ import Activities from './activities';
                 .then(callDefault)
                 .catch(fail);
               break;
-            case 'show':
-              new Star();
-              notificationsDropdown();
-              break;
             case 'wikis':
               import('./pages/projects/wikis')
                 .then(callDefault)
                 .catch(fail);
               shortcut_handler = true;
-              break;
-            case 'snippets':
-              if (path[2] === 'show') {
-                new ZenMode();
-                new LineHighlighter();
-                new BlobViewer();
-              }
               break;
           }
           break;
@@ -642,7 +641,9 @@ import Activities from './activities';
       }
 
       if (document.querySelector('#peek')) {
-        new PerformanceBar({ container: '#peek' });
+        import('./performance_bar')
+          .then(m => new m.default({ container: '#peek' })) // eslint-disable-line new-cap
+          .catch(fail);
       }
     };
 

@@ -14,6 +14,7 @@ import {
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import applications from './components/applications.vue';
+import setupToggleButtons from '../toggle_buttons';
 
 /**
  * Cluster page has 2 separate parts:
@@ -48,12 +49,9 @@ export default class Clusters {
       installPrometheusEndpoint: installPrometheusPath,
     });
 
-    this.toggle = this.toggle.bind(this);
     this.installApplication = this.installApplication.bind(this);
     this.showToken = this.showToken.bind(this);
 
-    this.toggleButton = document.querySelector('.js-toggle-cluster');
-    this.toggleInput = document.querySelector('.js-toggle-input');
     this.errorContainer = document.querySelector('.js-cluster-error');
     this.successContainer = document.querySelector('.js-cluster-success');
     this.creatingContainer = document.querySelector('.js-cluster-creating');
@@ -63,6 +61,7 @@ export default class Clusters {
     this.tokenField = document.querySelector('.js-cluster-token');
 
     initSettingsPanels();
+    setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
     this.initApplications();
 
     if (this.store.state.status !== 'created') {
@@ -101,13 +100,11 @@ export default class Clusters {
   }
 
   addListeners() {
-    this.toggleButton.addEventListener('click', this.toggle);
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
   }
 
   removeListeners() {
-    this.toggleButton.removeEventListener('click', this.toggle);
     if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
   }
@@ -149,11 +146,6 @@ export default class Clusters {
 
     this.checkForNewInstalls(prevApplicationMap, this.store.state.applications);
     this.updateContainer(prevStatus, this.store.state.status, this.store.state.statusReason);
-  }
-
-  toggle() {
-    this.toggleButton.classList.toggle('is-checked');
-    this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('is-checked').toString());
   }
 
   showToken() {
