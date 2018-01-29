@@ -128,6 +128,7 @@ describe Ci::Runner do
     context 'with cache value' do
       context 'contacted long time ago time' do
         before do
+          runner.contacted_at = 1.year.ago
           stub_redis_runner_contacted_at(1.year.ago.to_s)
         end
 
@@ -136,6 +137,7 @@ describe Ci::Runner do
 
       context 'contacted 1s ago' do
         before do
+          runner.contacted_at = 50.minutes.ago
           stub_redis_runner_contacted_at(1.second.ago.to_s)
         end
 

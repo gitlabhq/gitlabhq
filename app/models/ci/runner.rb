@@ -97,7 +97,7 @@ module Ci
     end
 
     def online?
-      cached_contacted_at && cached_contacted_at > self.class.contact_time_deadline
+      contacted_at && cached_contacted_at > self.class.contact_time_deadline
     end
 
     def status
