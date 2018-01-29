@@ -14,9 +14,10 @@
       icon,
     },
     props: {
-      namespaces: {
-        type: Array,
-        required: true,
+      selectiveSyncType: {
+        type: String,
+        required: false,
+        default: null,
       },
       lastEvent: {
         type: Object,
@@ -30,7 +31,11 @@
 
     computed: {
       syncType() {
-        return this.namespaces.length > 0 ? s__('GeoNodes|Selective') : s__('GeoNodes|Full');
+        if (this.selectiveSyncType === null || this.selectiveSyncType === '') {
+          return s__('GeoNodes|Full');
+        }
+
+        return s__('GeoNodes|Selective');
       },
       eventTimestampEmpty() {
         return this.lastEvent.timeStamp === 0 || this.cursorLastEvent.timeStamp === 0;

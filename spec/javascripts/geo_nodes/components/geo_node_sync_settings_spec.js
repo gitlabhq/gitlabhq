@@ -6,13 +6,13 @@ import { mockNodeDetails } from '../mock_data';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const createComponent = (
-  namespaces = mockNodeDetails.namespaces,
+  selectiveSyncType = mockNodeDetails.selectiveSyncType,
   lastEvent = mockNodeDetails.lastEvent,
   cursorLastEvent = mockNodeDetails.cursorLastEvent) => {
   const Component = Vue.extend(geoNodeSyncSettingsComponent);
 
   return mountComponent(Component, {
-    namespaces,
+    selectiveSyncType,
     lastEvent,
     cursorLastEvent,
   });

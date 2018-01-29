@@ -19,6 +19,17 @@ module EE
       end
     end
 
+    def selective_sync_type_options_for_select(geo_node)
+      options_for_select(
+        [
+          [s_('Geo|All projects'), ''],
+          [s_('Geo|Projects in certain groups'), 'namespaces'],
+          [s_('Geo|Projects in certain storage shards'), 'shards']
+        ],
+        geo_node.selective_sync_type
+      )
+    end
+
     def status_loading_icon
       icon "spinner spin fw", class: 'js-geo-node-loading'
     end

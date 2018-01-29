@@ -150,7 +150,7 @@
       },
       syncSettings() {
         return {
-          namespaces: this.nodeDetails.namespaces,
+          selectiveSyncType: this.nodeDetails.selectiveSyncType,
           lastEvent: this.nodeDetails.lastEvent,
           cursorLastEvent: this.nodeDetails.cursorLastEvent,
         };
