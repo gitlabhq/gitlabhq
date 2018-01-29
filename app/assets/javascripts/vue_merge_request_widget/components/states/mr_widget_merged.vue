@@ -113,7 +113,7 @@
           :date-title="mr.metrics.mergedAt"
           :date-readable="mr.metrics.readableMergedAt"
         />
-        <button
+        <a
           v-if="mr.canRevertInCurrentMR"
           v-tooltip
           class="btn btn-close btn-xs"
@@ -123,7 +123,7 @@
           :title="revertTitle"
         >
           {{ revertLabel }}
-        </button>
+        </a>
         <a
           v-else-if="mr.revertInForkPath"
           v-tooltip
