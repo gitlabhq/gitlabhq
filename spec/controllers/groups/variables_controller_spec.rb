@@ -16,7 +16,7 @@ describe Groups::VariablesController do
       get :show, group_id: group, format: :json
     end
 
-    it 'renders the ci_variable as json' do
+    it 'renders the ci_group_variable as json' do
       subject
 
       expect(response.body).to include(variable.to_json)
