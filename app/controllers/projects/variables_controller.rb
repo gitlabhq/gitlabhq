@@ -3,7 +3,18 @@ class Projects::VariablesController < Projects::ApplicationController
 
   before_action :authorize_admin_build!
 
-  def save_multiple
+  def show
+    respond_to do |format|
+      format.json do
+        variables = @project.variables
+          .map { |variable| variable.present(current_user: current_user) }
+
+        render status: :ok, json: { variables: variables }
+      end
+    end
+  end
+
+  def update
     respond_to do |format|
       format.json do
         return head :ok if @project.update(variables_params)

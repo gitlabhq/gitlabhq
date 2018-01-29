@@ -11,11 +11,11 @@ module Ci
     end
 
     def edit_path
-      project_variables_save_multiple_path(project)
+      project_variables_path(project)
     end
 
     def delete_path
-      project_variables_save_multiple_path(project)
+      project_variables_path(project)
     end
   end
 end

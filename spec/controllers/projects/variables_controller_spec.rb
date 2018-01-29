@@ -9,7 +9,26 @@ describe Projects::VariablesController do
     project.add_master(user)
   end
 
-  describe 'POST #save_multiple' do
+  describe 'GET #show' do
+    let(:variable) { create(:ci_variable) }
+
+    before do
+      project.variables << variable
+    end
+
+    subject do
+      get :show, namespace_id: project.namespace.to_param, project_id: project,
+                 format: :json
+    end
+
+    it 'renders the ci_variable as json' do
+      subject
+
+      expect(response.body).to include(variable.to_json)
+    end
+  end
+
+  describe 'POST #update' do
     let(:variable) { create(:ci_variable) }
 
     before do
@@ -18,7 +37,7 @@ describe Projects::VariablesController do
 
     context 'with invalid new variable parameters' do
       subject do
-        post :save_multiple,
+        post :update,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -45,7 +64,7 @@ describe Projects::VariablesController do
 
     context 'with valid new variable parameters' do
       subject do
-        post :save_multiple,
+        post :update,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -72,7 +91,7 @@ describe Projects::VariablesController do
 
     context 'with a deleted variable' do
       subject do
-        post :save_multiple,
+        post :update,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: variable.value,
