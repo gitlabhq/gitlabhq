@@ -28,9 +28,7 @@ constraints(GroupUrlConstrainer.new) do
       resource :ci_cd, only: [:show], controller: 'ci_cd'
     end
 
-    namespace :variables do
-      post :save_multiple
-    end
+    resource :variables, only: [:show, :update]
 
     resources :children, only: [:index]
 

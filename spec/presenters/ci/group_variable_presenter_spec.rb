@@ -43,12 +43,12 @@ describe Ci::GroupVariablePresenter do
   describe '#edit_path' do
     subject { described_class.new(variable).edit_path }
 
-    it { is_expected.to eq(group_variables_save_multiple_path(group)) }
+    it { is_expected.to eq(group_variables_path(group)) }
   end
 
   describe '#delete_path' do
     subject { described_class.new(variable).delete_path }
 
-    it { is_expected.to eq(group_variables_save_multiple_path(group)) }
+    it { is_expected.to eq(group_variables_path(group)) }
   end
 end
