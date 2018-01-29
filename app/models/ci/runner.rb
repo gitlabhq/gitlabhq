@@ -193,7 +193,7 @@ module Ci
       Gitlab::Redis::SharedState.with do |redis|
         redis.set("#{runner_info_redis_cache_key}:contacted_at", Time.now)
 
-        params.each do |key, value|
+        params && params.each do |key, value|
           redis_key = "#{runner_info_redis_cache_key}:#{key}"
           redis.set(redis_key, value)
         end
