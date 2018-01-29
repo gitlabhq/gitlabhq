@@ -614,11 +614,11 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.find_ref_name(sha, ref_path)
           else
-            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+            args = %W(for-each-ref --count=1 #{ref_path} --contains #{sha})
 
             # Not found -> ["", 0]
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            popen(args, @path).first.split.last
+            run_git(args).first.split.last
           end
         end
       end
@@ -887,8 +887,7 @@ module Gitlab
           "delete #{ref}\x00\x00"
         end
 
-        command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        message, status = popen(command, path) do |stdin|
+        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
           stdin.write(instructions.join)
         end
 
@@ -1409,6 +1408,11 @@ module Gitlab
         end
       end
 
+      def shell_blame(sha, path)
+        output, _status = run_git(%W(blame -p #{sha} -- #{path}))
+        output
+      end
+
       private
 
       def shell_write_ref(ref_path, ref, old_ref)
@@ -1433,6 +1437,12 @@ module Gitlab
       def run_git(args, chdir: path, env: {}, nice: false, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
+
+        object_directories = alternate_object_directories
+        if object_directories.any?
+          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories.join(File::PATH_SEPARATOR)
+        end
+
         circuit_breaker.perform do
           popen(cmd, chdir, env, &block)
         end
@@ -1624,7 +1634,7 @@ module Gitlab
         offset_in_ruby = use_follow_flag && options[:offset].present?
         limit += offset if offset_in_ruby
 
-        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} log]
+        cmd = %w[log]
         cmd << "--max-count=#{limit}"
         cmd << '--format=%H'
         cmd << "--skip=#{offset}" unless offset_in_ruby
@@ -1640,7 +1650,7 @@ module Gitlab
           cmd += Array(options[:path])
         end
 
-        raw_output = IO.popen(cmd) { |io| io.read }
+        raw_output, _status = run_git(cmd)
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
         lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
@@ -1678,16 +1688,21 @@ module Gitlab
       end
 
       def alternate_object_directories
-        relative_paths = Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+        relative_paths = relative_object_directories
 
         if relative_paths.any?
           relative_paths.map { |d| File.join(path, d) }
         else
-          Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES)
-            .flatten
-            .compact
-            .flat_map { |d| d.split(File::PATH_SEPARATOR) }
+          absolute_object_directories.flat_map { |d| d.split(File::PATH_SEPARATOR) }
         end
+      end
+
+      def relative_object_directories
+        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+      end
+
+      def absolute_object_directories
+        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
@@ -1833,13 +1848,13 @@ module Gitlab
       def count_commits_by_shelling_out(options)
         cmd = count_commits_shelling_command(options)
 
-        raw_output = IO.popen(cmd) { |io| io.read }
+        raw_output, _status = run_git(cmd)
 
         process_count_commits_raw_output(raw_output, options)
       end
 
       def count_commits_shelling_command(options)
-        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
+        cmd = %w[rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
@@ -1884,20 +1899,17 @@ module Gitlab
           return []
         end
 
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-tree)
-        cmd += %w(-r)
-        cmd += %w(--full-tree)
-        cmd += %w(--full-name)
-        cmd += %W(-- #{actual_ref})
+        cmd = %W(ls-tree -r --full-tree --full-name -- #{actual_ref})
+        raw_output, _status = run_git(cmd)
 
-        raw_output = IO.popen(cmd, &:read).split("\n").map do |f|
+        lines = raw_output.split("\n").map do |f|
           stuff, path = f.split("\t")
           _mode, type, _sha = stuff.split(" ")
           path if type == "blob"
           # Contain only blob type
         end
 
-        raw_output.compact
+        lines.compact
       end
 
       # Returns true if the given ref name exists
