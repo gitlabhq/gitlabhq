@@ -1,0 +1,5 @@
+---
+title: 'Fix cache clear bug withg using : on Windows'
+merge_request: 16740
+author:
+type: fixed

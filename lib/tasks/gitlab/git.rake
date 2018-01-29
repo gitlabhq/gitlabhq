@@ -1,7 +1,7 @@
 namespace :gitlab do
   namespace :git do
     desc "GitLab | Git | Repack"
-    task repack: :environment do
+    task repack: :gitlab_environment do
       failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} repack -a --quiet), "Repacking repo")
       if failures.empty?
         puts "Done".color(:green)
@@ -11,7 +11,7 @@ namespace :gitlab do
     end
 
     desc "GitLab | Git | Run garbage collection on all repos"
-    task gc: :environment do
+    task gc: :gitlab_environment do
       failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} gc --auto --quiet), "Garbage Collecting")
       if failures.empty?
         puts "Done".color(:green)
@@ -21,7 +21,7 @@ namespace :gitlab do
     end
 
     desc "GitLab | Git | Prune all repos"
-    task prune: :environment do
+    task prune: :gitlab_environment do
       failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} prune), "Git Prune")
       if failures.empty?
         puts "Done".color(:green)
@@ -31,7 +31,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | Git | Check all repos integrity'
-    task fsck: :environment do
+    task fsck: :gitlab_environment do
       failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} fsck --name-objects --no-progress), "Checking integrity") do |repo|
         check_config_lock(repo)
         check_ref_locks(repo)
