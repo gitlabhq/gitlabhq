@@ -43,12 +43,12 @@ describe Ci::VariablePresenter do
   describe '#edit_path' do
     subject { described_class.new(variable).edit_path }
 
-    it { is_expected.to eq(project_variables_save_multiple_path(project)) }
+    it { is_expected.to eq(project_variables_path(project)) }
   end
 
   describe '#delete_path' do
     subject { described_class.new(variable).delete_path }
 
-    it { is_expected.to eq(project_variables_save_multiple_path(project)) }
+    it { is_expected.to eq(project_variables_path(project)) }
   end
 end
