@@ -34,6 +34,8 @@ module Gitlab
       end
 
       def batch_lfs_pointers(blob_ids)
+        return [] if blob_ids.empty?
+
         request = Gitaly::GetLFSPointersRequest.new(
           repository: @gitaly_repo,
           blob_ids: blob_ids

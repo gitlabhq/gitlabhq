@@ -6,7 +6,10 @@
     %ul.dropdown-menu.dropdown-menu-align-right.project-home-dropdown
       - can_create_issue = can?(current_user, :create_issue, @project)
       - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-      - can_create_snippet = can?(current_user, :create_snippet, @project)
+      - can_create_project_snippet = can?(current_user, :create_project_snippet, @project)
+
+      - if can_create_issue || merge_project || can_create_project_snippet
+        %li.dropdown-header= _('This project')
 
       - if can_create_issue
         %li= link_to _('New issue'), new_project_issue_path(@project)
@@ -14,11 +17,11 @@
       - if merge_project
         %li= link_to _('New merge request'), project_new_merge_request_path(merge_project)
 
-      - if can_create_snippet
+      - if can_create_project_snippet
         %li= link_to _('New snippet'), new_project_snippet_path(@project)
 
-      - if can_create_issue || merge_project || can_create_snippet
-        %li.divider
+      - if can?(current_user, :push_code, @project)
+        %li.dropdown-header= _('This repository')
 
       - if can?(current_user, :push_code, @project)
         %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
@@ -31,5 +34,5 @@
         - continue_params = { to:         project_new_blob_path(@project, @project.default_branch || 'master'),
                               notice:     edit_in_new_fork_notice,
                               notice_now: edit_in_new_fork_notice_now }
-        - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id, continue: continue_params)
+        - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
         %li= link_to _('New file'), fork_path, method: :post

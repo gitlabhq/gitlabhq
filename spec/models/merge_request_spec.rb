@@ -1064,16 +1064,6 @@ describe MergeRequest do
   end
 
   describe '#can_be_reverted?' do
-    context 'when there is no merged_at for the MR' do
-      before do
-        subject.metrics.update!(merged_at: nil)
-      end
-
-      it 'returns false' do
-        expect(subject.can_be_reverted?(nil)).to be_falsey
-      end
-    end
-
     context 'when there is no merge_commit for the MR' do
       before do
         subject.metrics.update!(merged_at: Time.now.utc)
@@ -1092,6 +1082,16 @@ describe MergeRequest do
       end
 
       context 'when there is no revert commit' do
+        it 'returns true' do
+          expect(subject.can_be_reverted?(nil)).to be_truthy
+        end
+      end
+
+      context 'when there is no merged_at for the MR' do
+        before do
+          subject.metrics.update!(merged_at: nil)
+        end
+
         it 'returns true' do
           expect(subject.can_be_reverted?(nil)).to be_truthy
         end
@@ -1127,9 +1127,29 @@ describe MergeRequest do
           end
         end
 
-        context 'when the revert commit is mentioned in a note before the MR was merged' do
+        context 'when there is no merged_at for the MR' do
           before do
-            subject.notes.last.update!(created_at: subject.metrics.merged_at - 1.second)
+            subject.metrics.update!(merged_at: nil)
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when the revert commit is mentioned in a note just before the MR was merged' do
+          before do
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 30.seconds)
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
+        context 'when the revert commit is mentioned in a note long before the MR was merged' do
+          before do
+            subject.notes.last.update!(created_at: subject.metrics.merged_at - 2.minutes)
           end
 
           it 'returns true' do
@@ -1519,7 +1539,7 @@ describe MergeRequest do
       expect { subject.reload_diff }.to change { subject.merge_request_diffs.count }.by(1)
     end
 
-    it "executs diff cache service" do
+    it "executes diff cache service" do
       expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
 
       subject.reload_diff

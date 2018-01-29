@@ -102,7 +102,7 @@ module Gitlab
         )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
-        @attributes = Gitlab::Git::Attributes.new(path)
+        @attributes = Gitlab::Git::InfoAttributes.new(path)
       end
 
       def ==(other)
@@ -133,7 +133,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status:  Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -468,8 +468,12 @@ module Gitlab
         }
 
         options = default_options.merge(options)
-        options[:limit] ||= 0
         options[:offset] ||= 0
+
+        limit = options[:limit]
+        if limit == 0 || !limit.is_a?(Integer)
+          raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
+        end
 
         gitaly_migrate(:find_commits) do |is_enabled|
           if is_enabled
@@ -490,7 +494,11 @@ module Gitlab
           return []
         end
 
-        log_by_shell(sha, options)
+        if log_using_shell?(options)
+          log_by_shell(sha, options)
+        else
+          log_by_walk(sha, options)
+        end
       end
 
       def count_commits(options)
@@ -559,6 +567,8 @@ module Gitlab
         return false if ancestor_id.nil? || descendant_id.nil?
 
         merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      rescue Rugged::OdbError
+        false
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
@@ -608,11 +618,11 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.find_ref_name(sha, ref_path)
           else
-            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+            args = %W(for-each-ref --count=1 #{ref_path} --contains #{sha})
 
             # Not found -> ["", 0]
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            popen(args, @path).first.split.last
+            run_git(args).first.split.last
           end
         end
       end
@@ -881,8 +891,7 @@ module Gitlab
           "delete #{ref}\x00\x00"
         end
 
-        command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        message, status = popen(command, path) do |stdin|
+        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
           stdin.write(instructions.join)
         end
 
@@ -989,6 +998,18 @@ module Gitlab
 
       def gitattribute(path, name)
         attributes(path)[name]
+      end
+
+      # Check .gitattributes for a given ref
+      #
+      # This only checks the root .gitattributes file,
+      # it does not traverse subfolders to find additional .gitattributes files
+      #
+      # This method is around 30 times slower than `attributes`,
+      # which uses `$GIT_DIR/info/attributes`
+      def attributes_at(ref, file_path)
+        parser = AttributesAtRefParser.new(self, ref)
+        parser.attributes(file_path)
       end
 
       def languages(ref = nil)
@@ -1110,23 +1131,6 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, chdir: path, env: {}, nice: false, &block)
-        cmd = [Gitlab.config.git.bin_path, *args]
-        cmd.unshift("nice") if nice
-        circuit_breaker.perform do
-          popen(cmd, chdir, env, &block)
-        end
-      end
-
-      def run_git!(args, chdir: path, env: {}, nice: false, &block)
-        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
-
-        raise GitError, output unless status.zero?
-
-        output
-      end
-
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def run_git_with_timeout(args, timeout, env: {})
         circuit_breaker.perform do
           popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
@@ -1185,6 +1189,19 @@ module Gitlab
 
           raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
         end
+      end
+
+      def create_from_bundle(bundle_path)
+        gitaly_migrate(:create_repo_from_bundle) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.create_from_bundle(bundle_path)
+          else
+            run_git!(%W(clone --bare -- #{bundle_path} #{path}), chdir: nil)
+            self.class.create_hooks(path, File.expand_path(Gitlab.config.gitlab_shell.hooks_path))
+          end
+        end
+
+        true
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
@@ -1349,6 +1366,57 @@ module Gitlab
         raise CommandError.new(e)
       end
 
+      def refs_contains_sha(ref_type, sha)
+        args = %W(#{ref_type} --contains #{sha})
+        names = run_git(args).first
+
+        if names.respond_to?(:split)
+          names = names.split("\n").map(&:strip)
+
+          names.each do |name|
+            name.slice! '* '
+          end
+
+          names
+        else
+          []
+        end
+      end
+
+      def search_files_by_content(query, ref)
+        return [] if empty? || query.blank?
+
+        offset = 2
+        args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+
+        run_git(args).first.scrub.split(/^--$/)
+      end
+
+      def search_files_by_name(query, ref)
+        safe_query = Regexp.escape(query.sub(/^\/*/, ""))
+
+        return [] if empty? || safe_query.blank?
+
+        args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{safe_query})
+
+        run_git(args).first.lines.map(&:strip)
+      end
+
+      def find_commits_by_message(query, ref, path, limit, offset)
+        gitaly_migrate(:commits_by_message) do |is_enabled|
+          if is_enabled
+            find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+          else
+            find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+          end
+        end
+      end
+
+      def shell_blame(sha, path)
+        output, _status = run_git(%W(blame -p #{sha} -- #{path}))
+        output
+      end
+
       private
 
       def shell_write_ref(ref_path, ref, old_ref)
@@ -1368,6 +1436,28 @@ module Gitlab
         raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
 
         Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
+      end
+
+      def run_git(args, chdir: path, env: {}, nice: false, &block)
+        cmd = [Gitlab.config.git.bin_path, *args]
+        cmd.unshift("nice") if nice
+
+        object_directories = alternate_object_directories
+        if object_directories.any?
+          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories.join(File::PATH_SEPARATOR)
+        end
+
+        circuit_breaker.perform do
+          popen(cmd, chdir, env, &block)
+        end
+      end
+
+      def run_git!(args, chdir: path, env: {}, nice: false, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+
+        raise GitError, output unless status.zero?
+
+        output
       end
 
       def fresh_worktree?(path)
@@ -1517,6 +1607,27 @@ module Gitlab
         end
       end
 
+      def log_using_shell?(options)
+        options[:path].present? ||
+          options[:disable_walk] ||
+          options[:skip_merges] ||
+          options[:after] ||
+          options[:before]
+      end
+
+      def log_by_walk(sha, options)
+        walk_options = {
+          show: sha,
+          sort: Rugged::SORT_NONE,
+          limit: options[:limit],
+          offset: options[:offset]
+        }
+        Rugged::Walker.walk(rugged, walk_options).to_a
+      end
+
+      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
+      # complexity is such that we should migrate it as Ruby before trying to
+      # do it in Go.
       def log_by_shell(sha, options)
         limit = options[:limit].to_i
         offset = options[:offset].to_i
@@ -1527,7 +1638,7 @@ module Gitlab
         offset_in_ruby = use_follow_flag && options[:offset].present?
         limit += offset if offset_in_ruby
 
-        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} log]
+        cmd = %w[log]
         cmd << "--max-count=#{limit}"
         cmd << '--format=%H'
         cmd << "--skip=#{offset}" unless offset_in_ruby
@@ -1543,7 +1654,7 @@ module Gitlab
           cmd += Array(options[:path])
         end
 
-        raw_output = IO.popen(cmd) { |io| io.read }
+        raw_output, _status = run_git(cmd)
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
         lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
@@ -1581,16 +1692,21 @@ module Gitlab
       end
 
       def alternate_object_directories
-        relative_paths = Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+        relative_paths = relative_object_directories
 
         if relative_paths.any?
           relative_paths.map { |d| File.join(path, d) }
         else
-          Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES)
-            .flatten
-            .compact
-            .flat_map { |d| d.split(File::PATH_SEPARATOR) }
+          absolute_object_directories.flat_map { |d| d.split(File::PATH_SEPARATOR) }
         end
+      end
+
+      def relative_object_directories
+        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+      end
+
+      def absolute_object_directories
+        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
@@ -1736,13 +1852,13 @@ module Gitlab
       def count_commits_by_shelling_out(options)
         cmd = count_commits_shelling_command(options)
 
-        raw_output = IO.popen(cmd) { |io| io.read }
+        raw_output, _status = run_git(cmd)
 
         process_count_commits_raw_output(raw_output, options)
       end
 
       def count_commits_shelling_command(options)
-        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
+        cmd = %w[rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
@@ -1787,20 +1903,17 @@ module Gitlab
           return []
         end
 
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-tree)
-        cmd += %w(-r)
-        cmd += %w(--full-tree)
-        cmd += %w(--full-name)
-        cmd += %W(-- #{actual_ref})
+        cmd = %W(ls-tree -r --full-tree --full-name -- #{actual_ref})
+        raw_output, _status = run_git(cmd)
 
-        raw_output = IO.popen(cmd, &:read).split("\n").map do |f|
+        lines = raw_output.split("\n").map do |f|
           stuff, path = f.split("\t")
           _mode, type, _sha = stuff.split(" ")
           path if type == "blob"
           # Contain only blob type
         end
 
-        raw_output.compact
+        lines.compact
       end
 
       # Returns true if the given ref name exists
@@ -2123,6 +2236,26 @@ module Gitlab
 
       def gitlab_projects_error
         raise CommandError, @gitlab_projects.output
+      end
+
+      def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+        ref ||= root_ref
+
+        args = %W(
+          log #{ref} --pretty=%H --skip #{offset}
+          --max-count #{limit} --grep=#{query} --regexp-ignore-case
+        )
+        args = args.concat(%W(-- #{path})) if path.present?
+
+        git_log_results = run_git(args).first.lines
+
+        git_log_results.map { |c| commit(c.chomp) }.compact
+      end
+
+      def find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+        gitaly_commit_client
+          .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
+          .map { |c| commit(c) }
       end
     end
   end

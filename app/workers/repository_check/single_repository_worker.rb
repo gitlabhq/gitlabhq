@@ -20,10 +20,7 @@ module RepositoryCheck
         # Historically some projects never had their wiki repos initialized;
         # this happens on project creation now. Let's initialize an empty repo
         # if it is not already there.
-        begin
-          project.create_wiki
-        rescue Rugged::RepositoryError
-        end
+        project.create_wiki
 
         git_fsck(project.wiki.repository)
       else

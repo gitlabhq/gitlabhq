@@ -388,7 +388,6 @@ spinach-mysql 2 3: *spinach-metadata-mysql
 
 # Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
-  <<: *pull-cache
   variables:
     SIMPLECOV: "false"
     SETUP_DB: "false"
@@ -409,6 +408,12 @@ static-analysis:
   stage: test
   script:
     - scripts/static-analysis
+  cache:
+    key: "ruby-2.3.6-with-yarn-and-rubocop"
+    paths:
+      - vendor/ruby
+      - .yarn-cache/
+      - tmp/rubocop_cache
 
 # Documentation checks:
 # - Check validity of relative links
@@ -717,8 +722,6 @@ pages:
 cache gems:
   <<: *dedicated-runner
   <<: *pull-cache
-  only:
-    - tags
   variables:
     SETUP_DB: "false"
   script:
@@ -729,6 +732,7 @@ cache gems:
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+    - tags
 
 gitlab_git_test:
   <<: *dedicated-runner

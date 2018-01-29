@@ -70,11 +70,9 @@ module Gitlab
         # Returns array of Gitlab::Git::Blob
         # Does not guarantee blob data will be set
         def batch_lfs_pointers(repository, blob_ids)
-          return [] if blob_ids.empty?
-
           repository.gitaly_migrate(:batch_lfs_pointers) do |is_enabled|
             if is_enabled
-              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids)
+              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids.to_a)
             else
               blob_ids.lazy
                       .select { |sha| possible_lfs_blob?(repository, sha) }
