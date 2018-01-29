@@ -78,6 +78,12 @@ describe Groups::VariablesController do
 
         expect(response).to have_gitlab_http_status(:ok)
       end
+
+      it 'has all variables in response' do
+        subject
+
+        expect(response.body).to include(group.variables.reload.to_json)
+      end
     end
 
     context 'with a deleted variable' do
@@ -100,6 +106,12 @@ describe Groups::VariablesController do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'has all variables in response' do
+        subject
+
+        expect(response.body).to include(group.variables.reload.to_json)
       end
     end
   end

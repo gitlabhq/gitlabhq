@@ -17,7 +17,12 @@ class Projects::VariablesController < Projects::ApplicationController
   def update
     respond_to do |format|
       format.json do
-        return head :ok if @project.update(variables_params)
+        if @project.update(variables_params)
+          variables = @project.variables
+            .map { |variable| variable.present(current_user: current_user) }
+
+          return render status: :ok, json: { variables: variables }
+        end
 
         render status: :bad_request, json: @project.errors.full_messages
       end
