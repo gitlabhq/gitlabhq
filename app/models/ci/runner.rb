@@ -70,7 +70,11 @@ module Ci
     end
 
     def cached_contacted_at
-      runner_info_cache(:contacted_at) || self.contacted_at
+      if runner_info_cache(:contacted_at)
+        Time.zone.parse(runner_info_cache(:contacted_at))
+      else
+        self.contacted_at
+      end
     end
 
     def set_default_values
