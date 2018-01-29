@@ -1,0 +1,18 @@
+[0KRunning with gitlab-runner 10.0.2 (a9a76a50)
+  on ShinyaMaedas-MacBook-Pro.local (e1e5600d)
+[0;m[0KUsing Docker executor with image ruby:2.1 ...
+[0;m[0KUsing docker image sha256:35c04f14f9926d1c8c68927cb43f69435fda36ecbaa3ca6f92218205363a2b99 for predefined container...
+[0;m[0KPulling docker image ruby:2.1 ...
+[0;m[0KUsing docker image ruby:2.1 ID=sha256:223d1eaa9523fa64e78f5a92b701c9c11cbc507f0ff62246dbbacdae395ffea3 for build container...
+[0;mRunning on runner-e1e5600d-project-12-concurrent-0 via ShinyaMaedas-MacBook-Pro.local...
+[32;1mFetching changes...[0;m
+Removing hoge.txt
+HEAD is now at bc8d55a Update .gitlab-ci.yml
+[32;1mChecking out bc8d55ab as master...[0;m
+[32;1mSkipping Git submodules setup[0;m
+[32;1m$ echo "hoge" >> hoge.txt[0;m
+[32;1mUploading artifacts...[0;m
+hoge.txt: found 1 matching files                  [0;m 
+Uploading artifacts to coordinator... ok          [0;m  id[0;m=1045 responseStatus[0;m=201 Created token[0;m=c1uexKnX
+[32;1mJob succeeded
+[0;m

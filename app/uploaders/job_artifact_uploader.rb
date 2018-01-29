@@ -16,7 +16,13 @@ class JobArtifactUploader < GitlabUploader
   def open
     raise 'Only File System is supported' unless file_storage?
 
-    File.open(path, "rb")
+    File.open(path, "rb") if path
+  end
+
+  def filename
+    return 'trace.log' if model.trace?
+
+    super
   end
 
   private
