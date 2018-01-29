@@ -19,8 +19,13 @@ module Gitlab
       def error(error)
         error_out(error.message, caller[0].dup)
         @errors << error.message
+
         # Debug:
-        Rails.logger.error(error.backtrace.join("\n"))
+        if error.backtrace
+          Rails.logger.error("Import/Export backtrace: #{error.backtrace.join("\n")}")
+        else
+          Rails.logger.error("No backtrace found")
+        end
       end
 
       private
