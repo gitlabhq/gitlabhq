@@ -25,7 +25,12 @@ module QA
 
         def go_to_new_subgroup
           within '.new-project-subgroup' do
-            find('.dropdown-toggle').click
+            # May need to click again because it is possible to click the button quicker than the JS is bound
+            wait(reload: false) do
+              find('.dropdown-toggle').click
+
+              page.has_css?("li[data-value='new-subgroup']")
+            end
             find("li[data-value='new-subgroup']").click
           end
 
@@ -34,7 +39,12 @@ module QA
 
         def go_to_new_project
           within '.new-project-subgroup' do
-            find('.dropdown-toggle').click
+            # May need to click again because it is possible to click the button quicker than the JS is bound
+            wait(reload: false) do
+              find('.dropdown-toggle').click
+
+              page.has_css?("li[data-value='new-project']")
+            end
             find("li[data-value='new-project']").click
           end
 
