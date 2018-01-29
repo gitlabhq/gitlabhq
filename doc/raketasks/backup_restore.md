@@ -169,6 +169,32 @@ For Omnibus GitLab packages:
 
 1. [Reconfigure GitLab] for the changes to take effect
 
+#### Digital Ocean Spaces
+
+This example can be used for a bucket in Amsterdam (AMS3).
+
+1. Add the following to `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      'provider' => 'AWS',
+      'region' => 'ams3',
+      'aws_access_key_id' => 'AKIAKIAKI',
+      'aws_secret_access_key' => 'secret123',
+      'endpoint'              => 'https://ams3.digitaloceanspaces.com'
+    }
+    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect
+
+#### Other S3 Providers
+
+Not all S3 providers are fully-compatible with the Fog library. For example,
+if you see `411 Length Required` errors after attempting to upload, you may
+need to downgrade the `aws_signature_version` value from the default value to
+2 [due to this issue](https://github.com/fog/fog-aws/issues/428).
+
 ---
 
 For installations from source:
@@ -470,7 +496,7 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup` - Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes` - Do not ask if the authorized_keys file should get regenerated.
+- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed.
 
 ### Restore for installation from source
 

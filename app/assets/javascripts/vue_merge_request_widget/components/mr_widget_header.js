@@ -76,6 +76,7 @@ export default {
         <a
           href="#modal_merge_info"
           data-toggle="modal"
+          :disabled="mr.sourceBranchRemoved"
           class="btn btn-sm inline">
           Check out branch
         </a>

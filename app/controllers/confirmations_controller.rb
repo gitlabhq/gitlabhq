@@ -17,7 +17,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     else
       Gitlab::AppLogger.info("Email Confirmed: username=#{resource.username} email=#{resource.email} ip=#{request.remote_ip}")
       flash[:notice] += " Please sign in."
-      new_session_path(:user)
+      new_session_path(:user, anchor: 'login-pane')
     end
   end
 

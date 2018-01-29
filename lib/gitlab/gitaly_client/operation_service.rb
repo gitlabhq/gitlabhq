@@ -3,6 +3,8 @@ module Gitlab
     class OperationService
       include Gitlab::EncodingHelper
 
+      MAX_MSG_SIZE = 128.kilobytes.freeze
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -175,6 +177,49 @@ module Gitlab
         end
       end
 
+      def user_commit_files(
+        user, branch_name, commit_message, actions, author_email, author_name,
+        start_branch_name, start_repository)
+
+        req_enum = Enumerator.new do |y|
+          header = user_commit_files_request_header(user, branch_name,
+          commit_message, actions, author_email, author_name,
+          start_branch_name, start_repository)
+
+          y.yield Gitaly::UserCommitFilesRequest.new(header: header)
+
+          actions.each do |action|
+            action_header = user_commit_files_action_header(action)
+            y.yield Gitaly::UserCommitFilesRequest.new(
+              action: Gitaly::UserCommitFilesAction.new(header: action_header)
+            )
+
+            reader = binary_stringio(action[:content])
+
+            until reader.eof?
+              chunk = reader.read(MAX_MSG_SIZE)
+
+              y.yield Gitaly::UserCommitFilesRequest.new(
+                action: Gitaly::UserCommitFilesAction.new(content: chunk)
+              )
+            end
+          end
+        end
+
+        response = GitalyClient.call(@repository.storage, :operation_service,
+          :user_commit_files, req_enum, remote_storage: start_repository.storage)
+
+        if (pre_receive_error = response.pre_receive_error.presence)
+          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+        end
+
+        if (index_error = response.index_error.presence)
+          raise Gitlab::Git::Index::IndexError, index_error
+        end
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      end
+
       private
 
       def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -211,6 +256,33 @@ module Gitlab
         else
           Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
+      end
+
+      def user_commit_files_request_header(
+        user, branch_name, commit_message, actions, author_email, author_name,
+        start_branch_name, start_repository)
+
+        Gitaly::UserCommitFilesRequestHeader.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          branch_name: encode_binary(branch_name),
+          commit_message: encode_binary(commit_message),
+          commit_author_name: encode_binary(author_name),
+          commit_author_email: encode_binary(author_email),
+          start_branch_name: encode_binary(start_branch_name),
+          start_repository: start_repository.gitaly_repository
+        )
+      end
+
+      def user_commit_files_action_header(action)
+        Gitaly::UserCommitFilesActionHeader.new(
+          action: action[:action].upcase.to_sym,
+          file_path: encode_binary(action[:file_path]),
+          previous_path: encode_binary(action[:previous_path]),
+          base64_content: action[:encoding] == 'base64'
+        )
+      rescue RangeError
+        raise ArgumentError, "Unknown action '#{action[:action]}'"
       end
     end
   end

@@ -1,10 +1,10 @@
 import Mousetrap from 'mousetrap';
 import _ from 'underscore';
 import Sidebar from './right_sidebar';
-import ShortcutsNavigation from './shortcuts_navigation';
+import Shortcuts from './shortcuts';
 import { CopyAsGFM } from './behaviors/copy_as_gfm';
 
-export default class ShortcutsIssuable extends ShortcutsNavigation {
+export default class ShortcutsIssuable extends Shortcuts {
   constructor(isMergeRequest) {
     super();
 

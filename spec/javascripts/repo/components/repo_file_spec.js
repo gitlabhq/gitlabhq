@@ -25,7 +25,7 @@ describe('RepoFile', () => {
     vm = new RepoFile({
       store,
       propsData: {
-        file: file(),
+        file: file('t4'),
       },
     });
     spyOn(vm, 'timeFormated').and.returnValue(updated);
@@ -39,7 +39,7 @@ describe('RepoFile', () => {
 
   it('does render if hasFiles is true and is loading tree', () => {
     vm = createComponent({
-      file: file(),
+      file: file('t1'),
     });
 
     expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
@@ -47,7 +47,7 @@ describe('RepoFile', () => {
 
   it('does not render commit message and datetime if mini', (done) => {
     vm = createComponent({
-      file: file(),
+      file: file('t2'),
     });
     vm.$store.state.openFiles.push(vm.file);
 
@@ -61,7 +61,7 @@ describe('RepoFile', () => {
 
   it('fires clickFile when the link is clicked', () => {
     vm = createComponent({
-      file: file(),
+      file: file('t3'),
     });
 
     spyOn(vm, 'clickFile');

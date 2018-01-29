@@ -17,7 +17,7 @@ export const getBranchData = (
         resolve(data);
       })
       .catch(() => {
-        flash('Error loading branch data. Please try again.');
+        flash('Error loading branch data. Please try again.', 'alert', document, null, false, true);
         reject(new Error(`Branch not loaded - ${projectId}/${branchId}`));
       });
   } else {

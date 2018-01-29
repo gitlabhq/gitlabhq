@@ -239,7 +239,7 @@
       :auto-devops-help-path="autoDevopsHelpPath"
     />
 
-    <div class="table-section section-25">
+    <div class="table-section section-20">
       <div
         class="table-mobile-header"
         role="rowheader">
@@ -258,7 +258,7 @@
       </div>
     </div>
 
-    <div class="table-section section-wrap section-15 stage-cell">
+    <div class="table-section section-wrap section-20 stage-cell">
       <div
         class="table-mobile-header"
         role="rowheader">

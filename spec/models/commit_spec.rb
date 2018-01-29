@@ -228,7 +228,7 @@ eos
     it { expect(data).to be_a(Hash) }
     it { expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method') }
     it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46Z') }
-    it { expect(data[:added]).to eq(["bar/branch-test.txt"]) }
+    it { expect(data[:added]).to contain_exactly("bar/branch-test.txt") }
     it { expect(data[:modified]).to eq([]) }
     it { expect(data[:removed]).to eq([]) }
   end
@@ -532,8 +532,8 @@ eos
     let(:commit2) { merge_request1.merge_request_diff.commits.first }
 
     it 'returns merge_requests that introduced that commit' do
-      expect(commit1.merge_requests).to eq([merge_request1, merge_request2])
-      expect(commit2.merge_requests).to eq([merge_request1])
+      expect(commit1.merge_requests).to contain_exactly(merge_request1, merge_request2)
+      expect(commit2.merge_requests).to contain_exactly(merge_request1)
     end
   end
 end

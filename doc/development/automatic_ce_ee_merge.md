@@ -61,7 +61,7 @@ against EE.
 1. Tries to apply it to current EE `master`
 1. If it applies cleanly, the job succeeds
 
-In the case where the job fails, it means you should create a `ee-<ce_branch>`
+In the case where the job fails, it means you should create an `ee-<ce_branch>`
 or `<ce_branch>-ee` branch, push it to EE and open a merge request against EE
 `master`.
 At this point if you retry the failing job in your CE merge request, it should

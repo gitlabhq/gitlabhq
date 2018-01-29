@@ -2,6 +2,8 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
+  include Importable
+
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
@@ -116,6 +118,11 @@ class Service < ActiveRecord::Base
 
   def event_field(event)
     nil
+  end
+
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key)/ }
   end
 
   def global_fields
@@ -289,5 +296,9 @@ class Service < ActiveRecord::Base
     if project && !project.destroyed?
       project.cache_has_external_wiki
     end
+  end
+
+  def valid_recipients?
+    activated? && !importing?
   end
 end

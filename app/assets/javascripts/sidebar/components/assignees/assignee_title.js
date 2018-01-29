@@ -39,7 +39,7 @@ export default {
         class="js-sidebar-dropdown-toggle edit-link pull-right"
         href="#"
       >
-        Edit
+        {{ __('Edit') }}
       </a>
       <a
         v-if="showToggle"

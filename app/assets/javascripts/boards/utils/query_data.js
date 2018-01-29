@@ -5,7 +5,7 @@ export default (path, extraData) => path.split('&').reduce((dataParam, filterPar
   const paramSplit = filterParam.split('=');
   const paramKeyNormalized = paramSplit[0].replace('[]', '');
   const isArray = paramSplit[0].indexOf('[]');
-  const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
+  const value = decodeURIComponent(paramSplit[1].replace(/\+/g, ' '));
 
   if (isArray !== -1) {
     if (!data[paramKeyNormalized]) {
