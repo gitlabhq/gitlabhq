@@ -16,7 +16,7 @@ export { default as WidgetMergeHelp } from './components/mr_widget_merge_help';
 export { default as WidgetPipeline } from './components/mr_widget_pipeline.vue';
 export { default as WidgetDeployment } from './components/mr_widget_deployment';
 export { default as WidgetRelatedLinks } from './components/mr_widget_related_links';
-export { default as MergedState } from './components/states/mr_widget_merged';
+export { default as MergedState } from './components/states/mr_widget_merged.vue';
 export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge.vue';
 export { default as ClosedState } from './components/states/mr_widget_closed.vue';
 export { default as MergingState } from './components/states/mr_widget_merging.vue';
