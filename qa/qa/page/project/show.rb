@@ -7,6 +7,13 @@ module QA
           element :clone_dropdown
           element :clone_options_dropdown, '.clone-options-dropdown'
           element :project_repository_location, 'text_field_tag :project_clone'
+<<<<<<< HEAD
+=======
+        end
+
+        view 'app/views/projects/_last_push.html.haml' do
+          element :create_merge_request
+>>>>>>> upstream/master
         end
 
         view 'app/views/projects/_home_panel.html.haml' do
@@ -16,11 +23,19 @@ module QA
         def choose_repository_clone_http
           wait(reload: false) do
             click_element :clone_dropdown
+<<<<<<< HEAD
 
             page.within('.clone-options-dropdown') do
               click_link('HTTP')
             end
 
+=======
+
+            page.within('.clone-options-dropdown') do
+              click_link('HTTP')
+            end
+
+>>>>>>> upstream/master
             # Ensure git clone textbox was updated to http URI
             page.has_css?('.git-clone-holder input#project_clone[value*="http"]')
           end
@@ -32,6 +47,10 @@ module QA
 
         def project_name
           find('.qa-project-name').text
+        end
+
+        def new_merge_request
+          click_element :create_merge_request
         end
 
         def wait_for_push

@@ -42,12 +42,16 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
+      def find_element(name)
+        find(element_selector_css(name))
+      end
+
       def click_element(name)
         find_element(name).click
       end
 
-      def find_element(name)
-        find(element_selector_css(name))
+      def fill_element(name, content)
+        find_element(name).set(content)
       end
 
       def within_element(name)

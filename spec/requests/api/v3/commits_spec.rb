@@ -36,7 +36,7 @@ describe API::V3::Commits do
 
     context "since optional parameter" do
       it "returns project commits since provided parameter" do
-        commits = project.repository.commits("master")
+        commits = project.repository.commits("master", limit: 2)
         since = commits.second.created_at
 
         get v3_api("/projects/#{project.id}/repository/commits?since=#{since.utc.iso8601}", user)
@@ -49,12 +49,12 @@ describe API::V3::Commits do
 
     context "until optional parameter" do
       it "returns project commits until provided parameter" do
-        commits = project.repository.commits("master")
+        commits = project.repository.commits("master", limit: 20)
         before = commits.second.created_at
 
         get v3_api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-        if commits.size >= 20
+        if commits.size == 20
           expect(json_response.size).to eq(20)
         else
           expect(json_response.size).to eq(commits.size - 1)
