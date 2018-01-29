@@ -196,15 +196,17 @@ const Api = {
 
   ldap_groups(query, provider, callback) {
     const url = Api.buildUrl(this.ldapGroupsPath).replace(':provider', provider);
-    return Api.wrapAjaxCall({
-      url,
-      data: Object.assign({
+    return axios.get(url, {
+      params: {
         search: query,
         per_page: 20,
         active: true,
-      }),
-      dataType: 'json',
-    }).then(groups => callback(groups));
+      },
+    }).then(({ data }) => {
+      callback(data);
+
+      return data;
+    });
   },
 
   buildUrl(url) {

@@ -145,16 +145,16 @@ describe('Api', () => {
       const expectedData = {
         label: labelData,
       };
-      spyOn(jQuery, 'ajax').and.callFake((request) => {
-        expect(request.url).toEqual(expectedUrl);
-        expect(request.dataType).toEqual('json');
-        expect(request.type).toEqual('POST');
-        expect(request.data).toEqual(expectedData);
-        return sendDummyResponse();
+      mock.onPost(expectedUrl).reply((config) => {
+        expect(config.data).toBe(JSON.stringify(expectedData));
+
+        return [200, {
+          name: 'test',
+        }];
       });
 
       Api.newLabel(namespace, null, labelData, (response) => {
-        expect(response).toBe(dummyResponse);
+        expect(response.name).toBe('test');
         done();
       });
     });
@@ -270,8 +270,11 @@ describe('Api', () => {
       const query = 'query';
       const provider = 'provider';
       const callback = jasmine.createSpy();
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/ldap/${provider}/groups.json`;
 
-      spyOn(jQuery, 'ajax').and.callFake(() => $.Deferred().resolve());
+      mock.onGet(expectedUrl).reply(200, [{
+        name: 'test',
+      }]);
 
       Api.ldap_groups(query, provider, callback)
         .then((response) => {
