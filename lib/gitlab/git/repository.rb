@@ -468,8 +468,12 @@ module Gitlab
         }
 
         options = default_options.merge(options)
-        options[:limit] ||= 0
         options[:offset] ||= 0
+
+        limit = options[:limit]
+        if limit == 0 || !limit.is_a?(Integer)
+          raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
+        end
 
         gitaly_migrate(:find_commits) do |is_enabled|
           if is_enabled

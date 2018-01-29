@@ -62,7 +62,7 @@ describe API::Commits do
 
       context "since optional parameter" do
         it "returns project commits since provided parameter" do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 2)
           after = commits.second.created_at
 
           get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
@@ -73,7 +73,7 @@ describe API::Commits do
         end
 
         it 'include correct pagination headers' do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 2)
           after = commits.second.created_at
           commit_count = project.repository.count_commits(ref: 'master', after: after).to_s
 
@@ -87,12 +87,12 @@ describe API::Commits do
 
       context "until optional parameter" do
         it "returns project commits until provided parameter" do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 20)
           before = commits.second.created_at
 
           get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-          if commits.size >= 20
+          if commits.size == 20
             expect(json_response.size).to eq(20)
           else
             expect(json_response.size).to eq(commits.size - 1)
@@ -103,7 +103,7 @@ describe API::Commits do
         end
 
         it 'include correct pagination headers' do
-          commits = project.repository.commits("master")
+          commits = project.repository.commits("master", limit: 2)
           before = commits.second.created_at
           commit_count = project.repository.count_commits(ref: 'master', before: before).to_s
 
@@ -181,7 +181,7 @@ describe API::Commits do
           let(:page) { 3 }
 
           it 'returns the third 5 commits' do
-            commit = project.repository.commits('HEAD', offset: (page - 1) * per_page).first
+            commit = project.repository.commits('HEAD', limit: per_page, offset: (page - 1) * per_page).first
 
             expect(json_response.size).to eq(per_page)
             expect(json_response.first['id']).to eq(commit.id)
