@@ -1,7 +1,7 @@
 <script>
   import simplePoll from '../../../lib/utils/simple_poll';
   import eventHub from '../../event_hub';
-  import statusIcon from '../mr_widget_status_icon';
+  import statusIcon from '../mr_widget_status_icon.vue';
   import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
   import Flash from '../../../flash';
 
