@@ -40,7 +40,7 @@ describe FileUploader do
   end
 
   describe 'initialize' do
-    let(:uploader) { described_class.new(double, 'secret') }
+    let(:uploader) { described_class.new(double, secret: 'secret') }
 
     it 'accepts a secret parameter' do
       expect(described_class).not_to receive(:generate_secret)
