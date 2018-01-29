@@ -400,7 +400,7 @@ describe Ci::Runner do
 
     context 'when database was updated recently' do
       before do
-        runner.update(contacted_at: Time.now)
+        runner.contacted_at = Time.now
       end
 
       it 'updates cache' do
@@ -412,7 +412,7 @@ describe Ci::Runner do
 
     context 'when database was not updated recently' do
       before do
-        runner.update(contacted_at: 2.hours.ago)
+        runner.contacted_at = 2.hours.ago
       end
 
       it 'updates database' do
