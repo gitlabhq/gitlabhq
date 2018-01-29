@@ -41,5 +41,13 @@ describe CalloutsHelper do
 
       it { is_expected.to be false }
     end
+
+    context 'when the user is not logged in' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.to be_falsey }
+    end
   end
 end
