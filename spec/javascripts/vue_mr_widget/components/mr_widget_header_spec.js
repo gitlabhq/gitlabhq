@@ -48,20 +48,23 @@ describe('MRWidgetHeader', () => {
   describe('template', () => {
     let vm;
     let el;
+    let mr;
     const sourceBranchPath = '/foo/bar/mr-widget-refactor';
-    const mr = {
-      divergedCommitsCount: 12,
-      sourceBranch: 'mr-widget-refactor',
-      sourceBranchLink: `<a href="${sourceBranchPath}">mr-widget-refactor</a>`,
-      targetBranchPath: 'foo/bar/commits-path',
-      targetBranchTreePath: 'foo/bar/tree/path',
-      targetBranch: 'master',
-      isOpen: true,
-      emailPatchesPath: '/mr/email-patches',
-      plainDiffPath: '/mr/plainDiffPath',
-    };
 
     beforeEach(() => {
+      mr = {
+        divergedCommitsCount: 12,
+        sourceBranch: 'mr-widget-refactor',
+        sourceBranchLink: `<a href="${sourceBranchPath}">mr-widget-refactor</a>`,
+        sourceBranchRemoved: false,
+        targetBranchPath: 'foo/bar/commits-path',
+        targetBranchTreePath: 'foo/bar/tree/path',
+        targetBranch: 'master',
+        isOpen: true,
+        emailPatchesPath: '/mr/email-patches',
+        plainDiffPath: '/mr/plainDiffPath',
+      };
+
       vm = createComponent(mr);
       el = vm.$el;
     });
@@ -82,6 +85,8 @@ describe('MRWidgetHeader', () => {
       expect(el.textContent).toContain('Check out branch');
       expect(el.querySelectorAll('.dropdown li a')[0].getAttribute('href')).toEqual(mr.emailPatchesPath);
       expect(el.querySelectorAll('.dropdown li a')[1].getAttribute('href')).toEqual(mr.plainDiffPath);
+
+      expect(el.querySelector('a[href="#modal_merge_info"]').getAttribute('disabled')).toBeNull();
     });
 
     it('should not have right action links if the MR state is not open', (done) => {
@@ -100,6 +105,17 @@ describe('MRWidgetHeader', () => {
         expect(el.querySelectorAll('.diverged-commits-count').length).toEqual(0);
         done();
       });
+    });
+
+    it('should disable check out branch button if source branch has been removed', (done) => {
+      vm.mr.sourceBranchRemoved = true;
+
+      Vue.nextTick()
+        .then(() => {
+          expect(el.querySelector('a[href="#modal_merge_info"]').getAttribute('disabled')).toBe('disabled');
+          done();
+        })
+        .catch(done.fail);
     });
   });
 });
