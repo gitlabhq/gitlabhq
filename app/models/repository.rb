@@ -800,16 +800,6 @@ class Repository
     with_cache_hooks { raw.multi_action(user, **options) }
   end
 
-  def can_be_merged?(source_sha, target_branch)
-    raw_repository.gitaly_migrate(:can_be_merged) do |is_enabled|
-      if is_enabled
-        gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
-      else
-        rugged_can_be_merged?(source_sha, target_branch)
-      end
-    end
-  end
-
   def merge(user, source_sha, merge_request, message)
     with_cache_hooks do
       raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
@@ -876,7 +866,7 @@ class Repository
     @root_ref_sha ||= commit(root_ref).sha
   end
 
-  delegate :merged_branch_names, to: :raw_repository
+  delegate :merged_branch_names, :can_be_merged?, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
@@ -1094,13 +1084,5 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
-  end
-
-  def gitaly_can_be_merged?(their_commit, our_commit)
-    !raw_repository.gitaly_conflicts_client(our_commit, their_commit).conflicts?
-  end
-
-  def rugged_can_be_merged?(their_commit, our_commit)
-    !rugged.merge_commits(our_commit, their_commit).conflicts?
   end
 end
