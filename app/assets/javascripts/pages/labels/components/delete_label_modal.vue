@@ -2,7 +2,9 @@
   import axios from '~/lib/utils/axios_utils';
   import modal from '~/vue_shared/components/modal.vue';
   import { redirectTo } from '~/lib/utils/url_utility';
+  import { s__, sprintf } from '~/locale';
   import Flash from '~/flash';
+  import eventHub from '../event_hub';
 
   export default {
     components: {
@@ -13,11 +15,11 @@
         type: String,
         required: true,
       },
-      labelOpenMergeRequestsCount: {
+      openMergeRequestCount: {
         type: Number,
         required: true,
       },
-      labelOpenIssuesCount: {
+      openIssuesCount: {
         type: Number,
         required: true,
       },
@@ -28,26 +30,37 @@
     },
     computed: {
       modalTitle() {
-        return `Delete label ‘${this.labelTitle}’?`;
+        return sprintf(s__('Labels|Delete label ‘%{labelTitle}’?'), { labelTitle: this.labelTitle });
       },
       modalDescription() {
-        return `You’re about to permanently delete the label ${this.labelTitle} from this project and remove it from 
-        ${this.labelOpenIssuesCount}, ${this.labelOpenMergeRequestsCount} issues and merge requests. 
-        Once deleted, it cannot be undone or recovered.`;
+        return sprintf(s__(`Labels|You’re about to permanently delete the label <strong>%{labelTitle}</strong> 
+        from this project and remove it from %{openIssuesCount} issues and %{openMergeRequestCount} merge requests. 
+        Once deleted, it cannot be undone or recovered.`), {
+          labelTitle: this.labelTitle,
+          openIssuesCount: this.openIssuesCount,
+          openMergeRequestCount: this.openMergeRequestCount,
+        });
       },
       primaryButtonText() {
-        return 'Delete Label';
+        return s__('Labels|Delete Label');
       },
     },
     methods: {
       onSubmit() {
+        eventHub.$emit('deleteLabelModal.requestStarted', this.url);
         return axios.delete(this.url)
-        .then((resp) => {
-          redirectTo(resp.request.responseURL);
-        })
-        .catch((err) => {
-          Flash(err);
-        });
+          .then((response) => {
+            eventHub.$emit('deleteLabelModal.requestFinished', { labelUrl: this.url, successful: true });
+
+            redirectTo(response.request.responseURL);
+          })
+          .catch((error) => {
+            eventHub.$emit('deleteLabelModal.requestFinished', { labelUrl: this.url, successful: false });
+
+            Flash(error);
+
+            throw error;
+          });
       },
     },
   };
@@ -59,6 +72,12 @@
     :text="modalDescription"
     kind="danger"
     :primary-button-label="primaryButtonText"
-    @submit="onSubmit"
-  />
+    @submit="onSubmit">
+
+    <template
+      slot="body"
+      slot-scope="props">
+      <p v-html="props.text"></p>
+    </template>
+  </modal>
 </template>

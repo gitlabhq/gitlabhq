@@ -5,7 +5,7 @@ describe 'Removing labels', :js do
   let(:group)    { create(:group) }
   let(:project)  { create(:project, :public, namespace: group) }
   let!(:bug)     { create(:label, project: project, title: 'bug') }
-  let!(:test)    { create(:label, project: project, title: 'test') }
+  let!(:test_label)    { create(:label, project: project, title: 'test') }
 
   before do
     project.add_master(user)
@@ -15,17 +15,23 @@ describe 'Removing labels', :js do
   context 'with a label list' do
     before do
       visit project_labels_path(project)
-      wait_for_all_requests
     end
 
-    it 'Deletes a label' do
-      page.within '.labels' do
-        first('.remove-row').click
-        sleep 2
-        page.execute_script('document.querySelector(".js-primary-button").click()')
-        wait_for_requests
-        expect(page.all('.remove-row').length).to eq 1
-      end
+    it 'Deletes all labels' do
+      delete_label(bug.title)
+      wait_for_requests
+      delete_label(test_label.title)
+      wait_for_requests
+      expect(find('.empty-state.labels')).not_to be_nil
+    end
+  end
+
+  def delete_label(label_title)
+    find('#delete-label-modal.modal', visible: false) # wait for Vue component to be loaded
+    find(".js-delete-project-label[data-label-title=\"#{label_title}\"]" % { label_title: label_title }).click
+
+    page.within '#delete-label-modal' do
+      click_on 'Delete Label'
     end
   end
 end

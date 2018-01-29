@@ -58,15 +58,16 @@
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = icon('pencil-square-o')
-        %a.js-delete-project-label.btn.btn-transparent.btn-action.remove-row.has-tooltip{ title: _('Delete'),
-          data: { url: destroy_label_path(label),
-                  label_title: label.title,
-                  label_open_merge_requests_count: label.open_merge_requests_count,
-                  label_open_issues_count: label.open_issues_count,
-                  target: '#delete-label-modal',
-                  container: 'body',
-                  toggle: "modal" } }
-          = icon('trash-o')
+      %button.js-delete-project-label.btn.btn-transparent.btn-action.remove-row.has-tooltip{ title: _('Delete'),
+        data: { url: destroy_label_path(label),
+                label_title: label.title,
+                label_open_merge_requests_count: label.open_merge_requests_count,
+                label_open_issues_count: label.open_issues_count,
+                target: '#delete-label-modal',
+                container: 'body',
+                toggle: 'modal' },
+                disabled: true }
+        = sprite_icon('remove')
     - if current_user
       .label-subscription.inline
         - if can_subscribe_to_label_in_different_levels?(label)
