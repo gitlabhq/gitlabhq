@@ -23,7 +23,11 @@ const Api = {
     const url = Api.buildUrl(Api.groupPath)
       .replace(':id', groupId);
     return axios.get(url)
-      .then(({ data }) => callback(data));
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   // Return groups list. Filtered by query
