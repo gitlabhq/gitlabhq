@@ -394,7 +394,7 @@ describe Ci::Runner do
   describe '#update_runner_info' do
     let(:runner) { create(:ci_runner) }
 
-    subject { runner.update_runner_info(contacted_at: Time.now) }
+    subject { runner.update_runner_info(name: 'testing_runner') }
 
     context 'when database was updated recently' do
       before do
@@ -402,7 +402,7 @@ describe Ci::Runner do
       end
 
       it 'updates cache' do
-        expect_redis_update
+        expect_redis_update(:contacted_at, :name)
 
         subject
       end
@@ -414,22 +414,27 @@ describe Ci::Runner do
       end
 
       it 'updates database' do
-        expect_redis_update
+        expect_redis_update(:contacted_at, :name)
 
         expect { subject }.to change { runner.reload.contacted_at }
+          .and change { runner.reload.name }
       end
 
       it 'updates cache' do
-        expect_redis_update
+        expect_redis_update(:contacted_at, :name)
 
         subject
       end
     end
 
-    def expect_redis_update
+    def expect_redis_update(*params)
       redis = double
       expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
-      expect(redis).to receive(:set).with("#{runner.send(:runner_info_redis_cache_key)}:contacted_at", anything)
+
+      params.each do |param|
+        redis_key = "#{runner.send(:runner_info_redis_cache_key)}:#{param}"
+        expect(redis).to receive(:set).with(redis_key, anything)
+      end
     end
   end
 
