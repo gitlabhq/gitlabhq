@@ -23,7 +23,8 @@ import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import Autosave from './autosave';
 import TaskList from './task_list';
-import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import { isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import axios from './lib/utils/axios_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 
@@ -1404,7 +1405,7 @@ export default class Notes {
    * 2) Identify comment type; a) Main thread b) Discussion thread c) Discussion resolve
    * 3) Build temporary placeholder element (using `createPlaceholderNote`)
    * 4) Show placeholder note on UI
-   * 5) Perform network request to submit the note using `ajaxPost`
+   * 5) Perform network request to submit the note using `axios`
    *    a) If request is successfully completed
    *        1. Remove placeholder element
    *        2. Show submitted Note element
@@ -1486,7 +1487,7 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    ajaxPost(formAction, formData)
+    axios.post(formAction, formData)
       .then((note) => {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
@@ -1560,7 +1561,8 @@ export default class Notes {
         }
 
         $form.trigger('ajax:success', [note]);
-      }).fail(() => {
+      })
+      .catch(() => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1599,7 +1601,7 @@ export default class Notes {
    *
    * 1) Get Form metadata
    * 2) Update note element with new content
-   * 3) Perform network request to submit the updated note using `ajaxPost`
+   * 3) Perform network request to submit the updated note using `axios`
    *    a) If request is successfully completed
    *        1. Show submitted Note element
    *    b) If request failed
@@ -1630,12 +1632,12 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
-    ajaxPost(formAction, formData)
+    axios.post(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element
         this.updateNote(note, $editingNote);
       })
-      .fail(() => {
+      .catch(() => {
         // Submission failed, revert back to original note
         $noteBodyText.html(_.escape(cachedNoteBodyText));
         $editingNote.removeClass('being-posted fade-in');

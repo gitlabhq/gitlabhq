@@ -33,12 +33,6 @@ export const ajaxGet = url => $.ajax({
   dataType: 'script',
 });
 
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
-});
-
 export const rstrip = (val) => {
   if (val) {
     return val.replace(/\s+$/, '');
@@ -417,7 +411,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,
