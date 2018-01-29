@@ -1488,7 +1488,8 @@ export default class Notes {
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
     axios.post(formAction, formData)
-      .then((note) => {
+      .then(({ data }) => {
+        const note = data;
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1633,9 +1634,9 @@ export default class Notes {
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
     axios.post(formAction, formData)
-      .then((note) => {
+      .then(({ data }) => {
         // Submission successful! render final note element
-        this.updateNote(note, $editingNote);
+        this.updateNote(data, $editingNote);
       })
       .catch(() => {
         // Submission failed, revert back to original note
