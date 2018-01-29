@@ -20,6 +20,8 @@ module API
 
       def authenticate_runner!
         forbidden! unless current_runner
+
+        update_runner_info
       end
 
       def current_runner
