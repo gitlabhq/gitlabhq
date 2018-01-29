@@ -97,7 +97,7 @@ describe Ci::Runner do
 
     context 'no cache value' do
       before do
-        stub_redis("#{runner.runner_info_key}:contacted_at", nil)
+        stub_redis_runner_contacted_at(nil)
       end
 
       context 'never contacted' do
@@ -128,7 +128,7 @@ describe Ci::Runner do
     context 'with cache value' do
       context 'contacted long time ago time' do
         before do
-          stub_redis("#{runner.runner_info_key}:contacted_at", 1.year.ago.to_s)
+          stub_redis_runner_contacted_at(1.year.ago.to_s)
         end
 
         it { is_expected.to be_falsey }
@@ -136,17 +136,17 @@ describe Ci::Runner do
 
       context 'contacted 1s ago' do
         before do
-          stub_redis("#{runner.runner_info_key}:contacted_at", 1.second.ago.to_s)
+          stub_redis_runner_contacted_at(1.second.ago.to_s)
         end
 
         it { is_expected.to be_truthy }
       end
     end
 
-    def stub_redis(key, value)
+    def stub_redis_runner_contacted_at(value)
       redis = double
       allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
-      allow(redis).to receive(:get).with(key).and_return(value)
+      allow(redis).to receive(:get).with("#{runner.send(:runner_info_redis_cache_key)}:contacted_at").and_return(value)
     end
   end
 
@@ -388,6 +388,48 @@ describe Ci::Runner do
         runner_queue_key = runner.send(:runner_queue_key)
         expect(redis.get(runner_queue_key))
       end
+    end
+  end
+
+  describe '#update_runner_info' do
+    let(:runner) { create(:ci_runner) }
+
+    subject { runner.update_runner_info(contacted_at: Time.now) }
+
+    context 'when database was updated recently' do
+      before do
+        runner.update(contacted_at: Time.now)
+      end
+
+      it 'updates cache' do
+        expect_redis_update
+
+        subject
+      end
+    end
+
+    context 'when database was not updated recently' do
+      before do
+        runner.update(contacted_at: 2.hours.ago)
+      end
+
+      it 'updates database' do
+        expect_redis_update
+
+        expect { subject }.to change { runner.reload.contacted_at }
+      end
+
+      it 'updates cache' do
+        expect_redis_update
+
+        subject
+      end
+    end
+
+    def expect_redis_update
+      redis = double
+      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
+      expect(redis).to receive(:set).with("#{runner.send(:runner_info_redis_cache_key)}:contacted_at", anything)
     end
   end
 

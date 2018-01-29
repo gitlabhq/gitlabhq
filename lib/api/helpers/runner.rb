@@ -5,7 +5,6 @@ module API
 
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'.freeze
       JOB_TOKEN_PARAM = :token
-      UPDATE_RUNNER_EVERY = 10 * 60
 
       def runner_registration_token_valid?
         ActiveSupport::SecurityUtils.variable_size_secure_compare(params[:token],
@@ -21,35 +20,11 @@ module API
       def authenticate_runner!
         forbidden! unless current_runner
 
-        update_runner_info
+        current_runner.update_runner_info(get_runner_version_from_params)
       end
 
       def current_runner
         @runner ||= ::Ci::Runner.find_by_token(params[:token].to_s)
-      end
-
-      def update_runner_info
-        update_runner_info_cache
-
-        return unless update_runner?
-
-        current_runner.contacted_at = Time.now
-        current_runner.assign_attributes(get_runner_version_from_params)
-        current_runner.save if current_runner.changed?
-      end
-
-      def update_runner?
-        # Use a 1h threshold to prevent beating DB updates.
-
-        current_runner.contacted_at.nil? ||
-          (Time.now - current_runner.contacted_at) >= UPDATE_RUNNER_EVERY
-      end
-
-      def update_runner_info_cache
-        Gitlab::Redis::SharedState.with do |redis|
-          redis_key = "#{current_runner.runner_info_key}:contacted_at"
-          redis.set(redis_key, Time.now)
-        end
       end
 
       def validate_job!(job)

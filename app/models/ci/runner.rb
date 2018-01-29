@@ -5,6 +5,7 @@ module Ci
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
+    UPDATE_DB_RUNNER_INFO_EVERY = 1.hour
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
 
@@ -89,7 +90,7 @@ module Ci
 
     def online?
       Gitlab::Redis::SharedState.with do |redis|
-        last_seen = redis.get("#{self.runner_info_key}:contacted_at") || contacted_at
+        last_seen = redis.get("#{runner_info_redis_cache_key}:contacted_at") || contacted_at
         last_seen && last_seen > self.class.contact_time_deadline
       end
     end
@@ -155,8 +156,16 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def runner_info_key
-      "runner:info:#{self.id}"
+    def update_runner_info(params)
+      update_runner_info_cache
+
+      # Use a 1h threshold to prevent beating DB updates.
+      return unless self.contacted_at.nil? ||
+          (Time.now - self.contacted_at) >= UPDATE_DB_RUNNER_INFO_EVERY
+
+      self.contacted_at = Time.now
+      self.assign_attributes(params)
+      self.save if self.changed?
     end
 
     private
@@ -169,6 +178,17 @@ module Ci
 
     def runner_queue_key
       "runner:build_queue:#{self.token}"
+    end
+
+    def runner_info_redis_cache_key
+      "runner:info:#{self.id}"
+    end
+
+    def update_runner_info_cache
+      Gitlab::Redis::SharedState.with do |redis|
+        redis_key = "#{runner_info_redis_cache_key}:contacted_at"
+        redis.set(redis_key, Time.now)
+      end
     end
 
     def tag_constraints
