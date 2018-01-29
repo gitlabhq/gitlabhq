@@ -11,11 +11,11 @@ module Ci
     end
 
     def edit_path
-      group_variables_save_multiple_path(group)
+      group_variables_path(group)
     end
 
     def delete_path
-      group_variables_save_multiple_path(group)
+      group_variables_path(group)
     end
   end
 end
