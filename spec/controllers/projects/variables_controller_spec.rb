@@ -37,7 +37,7 @@ describe Projects::VariablesController do
 
     context 'with invalid new variable parameters' do
       subject do
-        post :update,
+        patch :update,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -64,7 +64,7 @@ describe Projects::VariablesController do
 
     context 'with valid new variable parameters' do
       subject do
-        post :update,
+        patch :update,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -91,7 +91,7 @@ describe Projects::VariablesController do
 
     context 'with a deleted variable' do
       subject do
-        post :update,
+        patch :update,
           namespace_id: project.namespace.to_param, project_id: project,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: variable.value,
