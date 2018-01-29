@@ -18,7 +18,7 @@ function AdminEmailSelect() {
             order_by: 'id',
             membership: false
           });
-          return Promise.all([projectsFetch, groupsFetch]).done(function([projects, groups]) {
+          return Promise.all([projectsFetch, groupsFetch]).then(function([projects, groups]) {
             var all, data;
             all = {
               id: "all"

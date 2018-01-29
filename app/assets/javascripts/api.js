@@ -57,7 +57,7 @@ const Api = {
   },
 
   // Return projects list. Filtered by query
-  projects(query, options, callback) {
+  projects(query, options, callback = $.noop) {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
       search: query,
