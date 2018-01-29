@@ -182,14 +182,16 @@ const Api = {
 
   approverUsers(search, options, callback = $.noop) {
     const url = Api.buildUrl('/autocomplete/users.json');
-    return $.ajax({
-      url,
-      data: $.extend({
+    return axios.get(url, {
+      params: Object.assign({
         search,
         per_page: 20,
       }, options),
-      dataType: 'json',
-    }).done(callback);
+    }).then(({ data }) => {
+      callback(data);
+
+      return data;
+    });
   },
 
   ldap_groups(query, provider, callback) {
