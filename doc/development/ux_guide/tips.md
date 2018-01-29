@@ -46,7 +46,7 @@ Correct file will look like this:
 ## Updating SVGs on [gitlab-svgs](http://gitlab-org.gitlab.io/gitlab-svgs/)
 
 - Exporting the icons or illustrations you created as SVGs.
-- Download [SVGO Compressor Sketch plugin](https://github.com/bohemiancoding/svgo-compressor) or use [SVGO](https://github.com/svg/svgo) to optimize them.
+- Download [SVGO Compressor Sketch plugin](https://github.com/bohemiancoding/svgo-compressor) or use [SVGO](https://github.com/svg/svgo) to optimize them. For powerful users, you can also open the SVGs in a text editor and remove `unneeded <title>` and `color references` manually. 
 - Switch to terminal:
  1. Go to `gitlab-svgs` directory.
  1. Pull latest changes from master.
