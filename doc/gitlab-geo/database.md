@@ -237,7 +237,7 @@ The following guide assumes that:
     cat ~gitlab-psql/data/server.crt
     ```
 
-    Copy the output into a file on your local computer called `server.crt`. You
+    Copy the output into a clipboard or into a local file. You
     will need it when setting up the secondary! The certificate is not sensitive
     data.
 
@@ -267,12 +267,6 @@ because we have not yet configured the secondary server. This is the next step.
 
 ### Step 3. Configure the secondary server
 
-1. From your **local machine**, copy `server.crt` to the secondary:
-
-    ```
-    scp server.crt secondary.geo.example.com:
-    ```
-
 1. SSH into your GitLab **secondary** server and login as root:
 
     ```
@@ -291,6 +285,13 @@ because we have not yet configured the secondary server. This is the next step.
     attention to the difference between public and private addresses and ensure
     that, if a firewall is present, the secondary is permitted to connect to the
     primary on port 5432.
+
+1. Create a file `server.crt` in the secondary server, with the content you got on the last step of the primary setup:
+
+    ```
+    editor server.crt
+    ```
+
 
 1. Set up PostgreSQL TLS verification on the secondary
 
@@ -311,7 +312,7 @@ because we have not yet configured the secondary server. This is the next step.
     ```
 
     When prompted enter the password you set in the first step for the
-    `gitlab_replicator` user. If all worked correctly, you should see the
+    `gitlab_replicator` user. If all worked correctly, you should see
     the list of primary's databases.
 
     A failure to connect here indicates that the TLS configuration is incorrect.
