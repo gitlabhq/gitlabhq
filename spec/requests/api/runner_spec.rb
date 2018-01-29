@@ -8,6 +8,7 @@ describe API::Runner do
   before do
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
+    allow_any_instance_of(Ci::Runner).to receive(:update_runner_info_cache)
   end
 
   describe '/api/v4/runners' do
