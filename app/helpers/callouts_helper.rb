@@ -6,6 +6,6 @@ module CalloutsHelper
   private
 
   def user_dismissed?(feature_name)
-    Callout.find_by(user: current_user, feature_name: feature_name).dismissed_state?
+    Callout.find_by(user: current_user, feature_name: feature_name)&.dismissed_state?
   end
 end
