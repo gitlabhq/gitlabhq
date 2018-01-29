@@ -68,6 +68,10 @@ module Ci
       ONLINE_CONTACT_TIMEOUT.ago
     end
 
+    def cached_contacted_at
+      runner_info_cache(:contacted_at) || self.contacted_at
+    end
+
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
     end
@@ -89,10 +93,7 @@ module Ci
     end
 
     def online?
-      Gitlab::Redis::SharedState.with do |redis|
-        last_seen = redis.get("#{runner_info_redis_cache_key}:contacted_at") || contacted_at
-        last_seen && last_seen > self.class.contact_time_deadline
-      end
+      cached_contacted_at && cached_contacted_at > self.class.contact_time_deadline
     end
 
     def status
@@ -157,7 +158,7 @@ module Ci
     end
 
     def update_runner_info(params)
-      update_runner_info_cache
+      update_runner_info_cache(params)
 
       # Use a 1h threshold to prevent beating DB updates.
       return unless self.contacted_at.nil? ||
@@ -184,10 +185,20 @@ module Ci
       "runner:info:#{self.id}"
     end
 
-    def update_runner_info_cache
+    def update_runner_info_cache(params)
       Gitlab::Redis::SharedState.with do |redis|
-        redis_key = "#{runner_info_redis_cache_key}:contacted_at"
-        redis.set(redis_key, Time.now)
+        redis.set("#{runner_info_redis_cache_key}:contacted_at", Time.now)
+
+        params.each do |key, value|
+          redis_key = "#{runner_info_redis_cache_key}:#{key}"
+          redis.set(redis_key, value)
+        end
+      end
+    end
+
+    def runner_info_cache(attribute)
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.get("#{runner_info_redis_cache_key}:#{attribute}")
       end
     end
 
