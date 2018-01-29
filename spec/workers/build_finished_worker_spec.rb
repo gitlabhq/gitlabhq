@@ -13,6 +13,8 @@ describe BuildFinishedWorker do
 
         expect(BuildTraceSectionsWorker)
           .to receive(:perform_async)
+        expect(CreateTraceArtifactWorker)
+          .to receive(:perform_async)
         expect_any_instance_of(BuildCoverageWorker)
           .to receive(:perform)
         expect_any_instance_of(BuildHooksWorker)

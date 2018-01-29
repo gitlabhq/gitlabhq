@@ -23,6 +23,49 @@ describe JobArtifactUploader do
                     store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z]
   end
 
+  describe '#open' do
+    subject { uploader.open }
+
+    context 'when trace is stored in File storage' do
+      context 'when file exists' do
+        let(:file) do
+          fixture_file_upload(
+            Rails.root.join('spec/fixtures/trace/sample_trace'), 'text/plain')
+        end
+
+        before do
+          uploader.store!(file)
+        end
+
+        it 'returns io stream' do
+          is_expected.to be_a(IO)
+        end
+      end
+
+      context 'when file does not exist' do
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#filename' do
+    subject { uploader.filename }
+
+    context 'when artifact file_type is archive' do
+      let(:job_artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when artifact file_type is trace' do
+      let(:job_artifact) { create(:ci_job_artifact, :trace) }
+
+      it { is_expected.to eq('trace.log') }
+    end
+  end
+
   context 'file is stored in valid local_path' do
     let(:file) do
       fixture_file_upload(
