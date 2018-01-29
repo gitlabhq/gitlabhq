@@ -101,7 +101,7 @@ module API
       end
 
       desc 'Cancel all builds in all pipelines of the project' do
-        detail 'This feature was introduced in GitLab 10.1'
+        detail 'This feature was introduced in GitLab 10.5'
       end
       post ':id/pipelines/:cancel' do
         authorize! :update_pipeline, user_project

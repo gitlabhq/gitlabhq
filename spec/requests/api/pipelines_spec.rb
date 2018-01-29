@@ -412,7 +412,7 @@ describe API::Pipelines do
     let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
     context 'authorized user' do
-      it 'retries failed builds' do
+      it 'cancels builds' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
 
         expect(response).to have_gitlab_http_status(200)
@@ -443,6 +443,12 @@ describe API::Pipelines do
                   ref: project.default_branch, status: :running)
     end
 
+    let!(:finished_pipelines) do
+      create(:ci_empty_pipeline,
+             project: project, sha: project.commit.id,
+             ref: project.default_branch, status: :success)
+    end
+
     let!(:build) { create(:ci_build, :running, pipeline: pipelines[0]) }
     let!(:build2) { create(:ci_build, :running, pipeline: pipelines[1]) }
 
@@ -460,7 +466,7 @@ describe API::Pipelines do
       let!(:reporter) { create(:user) }
 
       before do
-        project.team << [reporter, :reporter]
+        project.team.add_reporter(reporter)
       end
 
       it 'rejects the action' do
