@@ -9,6 +9,7 @@ class Group < Namespace
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
+  include Gitlab::SQL::Pattern
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
