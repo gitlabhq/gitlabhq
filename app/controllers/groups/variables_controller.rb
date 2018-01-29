@@ -16,7 +16,12 @@ module Groups
     def update
       respond_to do |format|
         format.json do
-          return head :ok if @group.update(variables_params)
+          if @group.update(variables_params)
+            variables = @group.variables
+              .map { |variable| variable.present(current_user: current_user) }
+
+            return render status: :ok, json: { variables: variables }
+          end
 
           render status: :bad_request, json: @group.errors.full_messages
         end
