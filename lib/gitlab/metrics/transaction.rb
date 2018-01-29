@@ -2,7 +2,7 @@ module Gitlab
   module Metrics
     # Class for storing metrics information of a single transaction.
     class Transaction
-      include Gitlab::Metrics::Concern
+      include Gitlab::Metrics::Methods
 
       # base labels shared among all transactions
       BASE_LABELS = { controller: nil, action: nil }.freeze

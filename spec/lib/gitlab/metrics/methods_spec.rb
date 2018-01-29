@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::Metrics::Concern do
-  subject { Class.new { include Gitlab::Metrics::Concern } }
+describe Gitlab::Metrics::Methods do
+  subject { Class.new { include Gitlab::Metrics::Methods } }
 
   shared_context 'metric' do |metric_type, *args|
     let(:docstring) { 'description' }

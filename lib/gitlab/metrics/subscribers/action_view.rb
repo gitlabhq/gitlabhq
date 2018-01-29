@@ -3,7 +3,7 @@ module Gitlab
     module Subscribers
       # Class for tracking the rendering timings of views.
       class ActionView < ActiveSupport::Subscriber
-        include Gitlab::Metrics::Concern
+        include Gitlab::Metrics::Methods
         define_histogram :gitlab_view_rendering_duration_seconds do
           docstring 'View rendering time'
           base_labels Transaction::BASE_LABELS.merge({ path: nil })

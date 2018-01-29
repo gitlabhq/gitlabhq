@@ -6,7 +6,7 @@ require 'grpc/health/v1/health_services_pb'
 
 module Gitlab
   module GitalyClient
-    include Gitlab::Metrics::Concern
+    include Gitlab::Metrics::Methods
     module MigrationStatus
       DISABLED = 1
       OPT_IN = 2

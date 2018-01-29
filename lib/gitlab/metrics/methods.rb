@@ -2,7 +2,7 @@
 
 module Gitlab
   module Metrics
-    module Concern
+    module Methods
       extend ActiveSupport::Concern
 
       included do

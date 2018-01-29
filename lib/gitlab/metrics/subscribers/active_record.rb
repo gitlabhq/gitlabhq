@@ -3,7 +3,7 @@ module Gitlab
     module Subscribers
       # Class for tracking the total query duration of a transaction.
       class ActiveRecord < ActiveSupport::Subscriber
-        include Gitlab::Metrics::Concern
+        include Gitlab::Metrics::Methods
         attach_to :active_record
 
         def sql(event)

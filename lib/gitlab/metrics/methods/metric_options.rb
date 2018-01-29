@@ -1,6 +1,6 @@
 module Gitlab
   module Metrics
-    module Concern
+    module Methods
       class MetricOptions
         SMALL_NETWORK_BUCKETS = [0.005, 0.01, 0.1, 1, 10].freeze
 

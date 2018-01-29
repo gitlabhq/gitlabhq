@@ -2,7 +2,7 @@ module Gitlab
   module Metrics
     module InfluxDb
       extend ActiveSupport::Concern
-      include Gitlab::Metrics::Concern
+      include Gitlab::Metrics::Methods
 
       EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
 

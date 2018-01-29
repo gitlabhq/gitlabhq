@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
-      include Gitlab::Metrics::Concern
+      include Gitlab::Metrics::Methods
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
 
