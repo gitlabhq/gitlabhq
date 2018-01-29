@@ -1,3 +1,7 @@
-import initMilestonesShow from '~/pages/init_milestones_show';
+import initMilestonesShow from '~/pages/milestones/shared/init_milestones_show';
+import milestones from '~/pages/milestones/shared';
 
-export default initMilestonesShow;
+export default () => {
+  initMilestonesShow();
+  milestones();
+};

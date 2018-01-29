@@ -57,10 +57,7 @@ module Gitlab
         end
 
         def commit_exists?(sha)
-          project.repository.lookup(sha)
-          true
-        rescue Rugged::Error
-          false
+          project.repository.commit(sha).present?
         end
 
         def collection_method

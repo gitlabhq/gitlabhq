@@ -1,8 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
+import { s__ } from './locale';
 import { isInIssuePage, isInMRPage, updateTooltipTitle } from './lib/utils/common_utils';
-import Flash from './flash';
+import flash from './flash';
+import axios from './lib/utils/axios_utils';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -448,13 +450,15 @@ class AwardsHandler {
     if (this.isUserAuthored($emojiButton)) {
       this.userAuthored($emojiButton);
     } else {
-      $.post(awardUrl, {
+      axios.post(awardUrl, {
         name: emoji,
-      }, (data) => {
+      })
+      .then(({ data }) => {
         if (data.ok) {
           callback();
         }
-      }).fail(() => new Flash('Something went wrong on our end.'));
+      })
+      .catch(() => flash(s__('Something went wrong on our end.')));
     }
   }
 

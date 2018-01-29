@@ -38,19 +38,27 @@ module Gitlab
         from_id = case from
                   when NilClass
                     EMPTY_TREE_ID
-                  when Rugged::Commit
-                    from.oid
                   else
-                    from
+                    if from.respond_to?(:oid)
+                      # This is meant to match a Rugged::Commit. This should be impossible in
+                      # the future.
+                      from.oid
+                    else
+                      from
+                    end
                   end
 
         to_id = case to
                 when NilClass
                   EMPTY_TREE_ID
-                when Rugged::Commit
-                  to.oid
                 else
-                  to
+                  if to.respond_to?(:oid)
+                    # This is meant to match a Rugged::Commit. This should be impossible in
+                    # the future.
+                    to.oid
+                  else
+                    to
+                  end
                 end
 
         request_params = diff_between_commits_request_params(from_id, to_id, options)
@@ -125,11 +133,11 @@ module Gitlab
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: ref
+          revision: encode_binary(ref)
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
-        request.path = options[:path] if options[:path].present?
+        request.path = encode_binary(options[:path]) if options[:path].present?
         request.max_count = options[:max_count] if options[:max_count].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
