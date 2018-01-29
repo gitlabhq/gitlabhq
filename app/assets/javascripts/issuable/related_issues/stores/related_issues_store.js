@@ -16,6 +16,13 @@ class RelatedIssuesStore {
     this.state.relatedIssues = this.state.relatedIssues.filter(issue => issue.id !== idToRemove);
   }
 
+  updateIssueOrder(oldIndex, newIndex) {
+    if (this.state.relatedIssues.length > 0) {
+      const updatedIssue = this.state.relatedIssues.splice(oldIndex, 1)[0];
+      this.state.relatedIssues.splice(newIndex, 0, updatedIssue);
+    }
+  }
+
   setPendingReferences(issues) {
     this.state.pendingReferences = issues;
   }

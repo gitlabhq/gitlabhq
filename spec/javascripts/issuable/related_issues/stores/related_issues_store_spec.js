@@ -1,22 +1,6 @@
 import RelatedIssuesStore from '~/issuable/related_issues/stores/related_issues_store';
 
-const issuable1 = {
-  id: 200,
-  reference: 'foo/bar#123',
-  title: 'issue1',
-  path: '/foo/bar/issues/123',
-  state: 'opened',
-  relation_path: '/foo/bar/issues/123/related_issues/1',
-};
-
-const issuable2 = {
-  id: 201,
-  reference: 'foo/bar#124',
-  title: 'issue1',
-  path: '/foo/bar/issues/124',
-  state: 'opened',
-  relation_path: '/foo/bar/issues/124/related_issues/1',
-};
+import { issuable1, issuable2, issuable3, issuable4, issuable5 } from '../mock_data';
 
 describe('RelatedIssuesStore', () => {
   let store;
@@ -55,6 +39,17 @@ describe('RelatedIssuesStore', () => {
       store.removeRelatedIssue(issuable1.id);
 
       expect(store.state.relatedIssues).toEqual([issuable2]);
+    });
+  });
+
+  describe('updateIssueOrder', () => {
+    it('updates issue order', () => {
+      const relatedIssues = [issuable1, issuable2, issuable3, issuable4, issuable5];
+      store.state.relatedIssues = relatedIssues;
+
+      expect(store.state.relatedIssues[3].id).toBe(issuable4.id);
+      store.updateIssueOrder(3, 0);
+      expect(store.state.relatedIssues[0].id).toBe(issuable4.id);
     });
   });
 

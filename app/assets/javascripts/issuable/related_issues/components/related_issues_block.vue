@@ -115,9 +115,12 @@ export default {
     reordered(event) {
       this.removeDraggingCursor();
       const { beforeId, afterId } = this.getBeforeAfterId(event.item);
+      const { oldIndex, newIndex } = event;
 
       this.$emit('saveReorder', {
         issueId: parseInt(event.item.dataset.key, 10),
+        oldIndex,
+        newIndex,
         afterId,
         beforeId,
       });
