@@ -78,7 +78,6 @@ module API
       post '/request' do
         authenticate_runner!
         no_content! unless current_runner.active?
-        update_runner_info
 
         if current_runner.runner_queue_value_latest?(params[:last_update])
           header 'X-GitLab-Last-Update', params[:last_update]
