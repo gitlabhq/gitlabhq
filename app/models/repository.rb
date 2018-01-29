@@ -949,7 +949,7 @@ class Repository
           end
 
         instance_variable_set(ivar, value)
-      rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
+      rescue Gitlab::Git::Repository::NoRepository
         # Even if the above `#exists?` check passes these errors might still
         # occur (for example because of a non-existing HEAD). We want to
         # gracefully handle this and not cache anything
