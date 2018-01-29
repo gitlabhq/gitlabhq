@@ -1,0 +1,5 @@
+---
+title: Vendor Auto DevOps template with DAST security checks enabled
+merge_request: 16691
+author:
+type: changed
