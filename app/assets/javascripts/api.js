@@ -37,7 +37,11 @@ const Api = {
         per_page: 20,
       }, options),
     })
-      .then(({ data }) => callback(data));
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   // Return namespaces list. Filtered by query
@@ -68,7 +72,11 @@ const Api = {
     return axios.get(url, {
       params: Object.assign(defaults, options),
     })
-      .then(({ data }) => callback(data));
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   // Return single project
