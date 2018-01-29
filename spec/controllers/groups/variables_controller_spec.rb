@@ -28,7 +28,7 @@ describe Groups::VariablesController do
 
     context 'with invalid new variable parameters' do
       subject do
-        post :update,
+        patch :update,
           group_id: group,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -55,7 +55,7 @@ describe Groups::VariablesController do
 
     context 'with valid new variable parameters' do
       subject do
-        post :update,
+        patch :update,
           group_id: group,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -82,7 +82,7 @@ describe Groups::VariablesController do
 
     context 'with a deleted variable' do
       subject do
-        post :update,
+        patch :update,
           group_id: group,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: variable.value,
