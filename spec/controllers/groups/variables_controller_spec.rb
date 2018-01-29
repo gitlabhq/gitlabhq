@@ -9,12 +9,26 @@ describe Groups::VariablesController do
     group.add_master(user)
   end
 
-  describe 'POST #save_multiple' do
+  describe 'GET #show' do
+    let!(:variable) { create(:ci_group_variable, group: group) }
+
+    subject do
+      get :show, group_id: group, format: :json
+    end
+
+    it 'renders the ci_variable as json' do
+      subject
+
+      expect(response.body).to include(variable.to_json)
+    end
+  end
+
+  describe 'POST #update' do
     let!(:variable) { create(:ci_group_variable, group: group) }
 
     context 'with invalid new variable parameters' do
       subject do
-        post :save_multiple,
+        post :update,
           group_id: group,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -41,7 +55,7 @@ describe Groups::VariablesController do
 
     context 'with valid new variable parameters' do
       subject do
-        post :save_multiple,
+        post :update,
           group_id: group,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
@@ -68,7 +82,7 @@ describe Groups::VariablesController do
 
     context 'with a deleted variable' do
       subject do
-        post :save_multiple,
+        post :update,
           group_id: group,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: variable.value,
