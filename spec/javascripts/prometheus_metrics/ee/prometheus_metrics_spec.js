@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import PrometheusMetrics from 'ee/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
-import { metrics } from './mock_data';
+import metrics from './mock_data';
 
 describe('PrometheusMetrics EE', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html.raw';

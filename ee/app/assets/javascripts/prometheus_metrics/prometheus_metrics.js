@@ -9,7 +9,7 @@ function customMetricTemplate(metric) {
   const editIcon = spriteIcon('pencil');
   return `
       <li class="custom-metric">
-        ${metric.title}
+        ${metric.group} / ${metric.title}
         <div
           class="custom-metric-operation">
           <a
