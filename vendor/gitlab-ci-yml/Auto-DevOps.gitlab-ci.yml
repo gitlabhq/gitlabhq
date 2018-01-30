@@ -42,6 +42,7 @@ stages:
   - build
   - test
   - review
+  - dast
   - staging
   - canary
   - production
@@ -129,6 +130,23 @@ sast:container:
     - sast_container
   artifacts:
     paths: [gl-sast-container-report.json]
+
+dast:
+  stage: dast
+  allow_failure: true
+  image: owasp/zap2docker-stable
+  variables:
+    POSTGRES_DB: "false"
+  script:
+    - dast
+  artifacts:
+    paths: [gl-dast-report.json]
+  only:
+    refs:
+      - branches
+    kubernetes: active
+  except:
+    - master
 
 review:
   stage: review
@@ -270,8 +288,8 @@ production:
     docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
     apk add -U wget ca-certificates
     docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
-    wget https://github.com/arminc/clair-scanner/releases/download/v6/clair-scanner_linux_386
-    mv clair-scanner_linux_386 clair-scanner
+    wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+    mv clair-scanner_linux_amd64 clair-scanner
     chmod +x clair-scanner
     touch clair-whitelist.yml
     ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
@@ -471,6 +489,14 @@ production:
       --docker-password="$CI_REGISTRY_PASSWORD" \
       --docker-email="$GITLAB_USER_EMAIL" \
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+  }
+
+  function dast() {
+    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+
+    mkdir /zap/wrk/
+    /zap/zap-baseline.py -J gl-dast-report.json -t "$CI_ENVIRONMENT_URL" || true
+    cp /zap/wrk/gl-dast-report.json .
   }
 
   function performance() {
