@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PrometheusMetric, type: :model do
+describe PrometheusMetric do
   subject { build(:prometheus_metric) }
 
   it { is_expected.to belong_to(:project) }
@@ -9,8 +9,6 @@ describe PrometheusMetric, type: :model do
   it { is_expected.to validate_presence_of(:group) }
 
   describe '#group_text' do
-    let!(:metric) { create(:prometheus_metric) }
-
     shared_examples 'group_title' do |group, text|
       subject { build(:prometheus_metric, group: group).group_title }
 
