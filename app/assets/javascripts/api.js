@@ -1,8 +1,9 @@
+import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',
-  groupPath: '/api/:version/groups/:id.json',
+  groupPath: '/api/:version/groups/:id',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
@@ -59,7 +60,7 @@ const Api = {
   },
 
   // Return projects list. Filtered by query
-  projects(query, options, callback = $.noop) {
+  projects(query, options, callback = _.noop) {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
       search: query,
