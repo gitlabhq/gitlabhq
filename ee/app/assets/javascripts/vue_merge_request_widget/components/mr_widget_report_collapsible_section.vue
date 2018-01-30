@@ -1,8 +1,5 @@
 <script>
-<<<<<<< HEAD
-=======
   import { __ } from '~/locale';
->>>>>>> master
   import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import issuesBlock from './mr_widget_report_issues.vue';
