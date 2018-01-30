@@ -1358,7 +1358,7 @@ module Gitlab
       def branch_names_contains_sha(sha)
         gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
           if is_enabled
-            Gitlab::Git::Branch.names_contains_sha(self, sha)
+            gitaly_ref_client.branch_names_contains_sha(sha)
           else
             refs_contains_sha(:branch, sha)
           end
@@ -1368,7 +1368,7 @@ module Gitlab
       def tag_names_contains_sha(sha)
         gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
           if is_enabled
-            Gitlab::Git::Tag.names_contains_sha(self, sha)
+            gitaly_ref_client.tag_names_contains_sha(sha)
           else
             refs_contains_sha(:tag, sha)
           end

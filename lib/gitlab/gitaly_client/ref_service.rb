@@ -146,7 +146,7 @@ module Gitlab
       end
 
       # Limit: 0 implies no limit, thus all tag names will be returned
-      def tag_names_containing(sha, limit: 0)
+      def tag_names_contains_sha(sha, limit: 0)
         request = Gitaly::ListTagNamesContainingCommitRequest.new(
           repository: @gitaly_repo,
           commit_id: sha,
@@ -155,10 +155,7 @@ module Gitlab
 
         stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request)
 
-        stream.each_with_object([]) do |response, array|
-          encoded_names = response.tag_names.map { |t| Gitlab::Git.ref_name(t) }
-          array.concat(encoded_names)
-        end
+        consume_ref_contains_sha_response(stream, :tag_names)
       end
 
       # Limit: 0 implies no limit, thus all tag names will be returned
@@ -171,10 +168,7 @@ module Gitlab
 
         stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request)
 
-        stream.each_with_object([]) do |response, array|
-          encoded_names = response.branch_names.map { |b| Gitlab::Git.ref_name(b) }
-          array.concat(encoded_names)
-        end
+        consume_ref_contains_sha_response(stream, :branch_names)
       end
 
       private
@@ -245,6 +239,13 @@ module Gitlab
         }
 
         Gitlab::Git::Commit.decorate(@repository, hash)
+      end
+
+      def consume_ref_contains_sha_response(stream, collection_name)
+        stream.each_with_object([]) do |response, array|
+          encoded_names = response.send(collection_name).map { |b| Gitlab::Git.ref_name(b) } # rubocop:disable GitlabSecurity/PublicSend
+          array.concat(encoded_names)
+        end
       end
 
       def invalid_ref!(message)
