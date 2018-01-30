@@ -63,7 +63,8 @@ export default {
       return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
+      const { closing, mentioned, assignToMe } = this.mr.relatedLinks;
+      return (closing || mentioned || assignToMe) && !this.mr.isNothingToMergeState;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
@@ -257,7 +258,8 @@ export default {
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
-          :related-links="mr.relatedLinks" />
+          :related-links="mr.relatedLinks"
+          />
       </div>
       <div
         class="mr-widget-footer"
