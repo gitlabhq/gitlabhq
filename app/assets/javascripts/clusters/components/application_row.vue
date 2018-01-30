@@ -93,6 +93,9 @@
 
         return label;
       },
+      manageButtonLabel() {
+        return s__('ClusterIntegration|Manage');
+      },
       hasError() {
         return this.status === APPLICATION_ERROR ||
         this.requestStatus === REQUEST_FAILURE;
@@ -157,7 +160,7 @@
             class="btn"
             :href="manageLink"
           >
-            Manage
+            {{ manageButtonLabel }}
           </a>
         </div>
         <div class="btn-group table-action-buttons">
