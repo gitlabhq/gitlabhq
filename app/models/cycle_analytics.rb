@@ -6,6 +6,12 @@ class CycleAnalytics
     @options = options
   end
 
+  def self.all_medians_per_stage(projects, options)
+    STAGES.each_with_object({}) do |stage_name, hsh|
+      hsh[stage_name] = Gitlab::CycleAnalytics::Stage[stage_name].new(projects: projects, options: options).medians&.values || []
+    end
+  end
+
   def summary
     @summary ||= ::Gitlab::CycleAnalytics::StageSummary.new(@project,
                                                             from: @options[:from],

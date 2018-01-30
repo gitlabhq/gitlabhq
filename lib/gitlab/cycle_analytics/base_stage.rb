@@ -3,8 +3,8 @@ module Gitlab
     class BaseStage
       include BaseQuery
 
-      def initialize(project:, options:)
-        @project = project
+      def initialize(projects:, options:)
+        @projects = projects
         @options = options
       end
 
@@ -20,7 +20,7 @@ module Gitlab
         raise NotImplementedError.new("Expected #{self.name} to implement title")
       end
 
-      def median
+      def medians
         cte_table = Arel::Table.new("cte_table_for_#{name}")
 
         # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
@@ -31,7 +31,7 @@ module Gitlab
           cte_table,
           subtract_datetimes(base_query.dup, start_time_attrs, end_time_attrs, name.to_s))
 
-        median_datetime(cte_table, interval_query, name)
+        median_datetimes(cte_table, interval_query, name)
       end
 
       def name

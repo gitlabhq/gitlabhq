@@ -9,6 +9,7 @@ module Gitlab
         license_usage_data.merge(system_usage_data)
                           .merge(features_usage_data)
                           .merge(components_usage_data)
+                          .merge(cycle_analytics_usage_data)
       end
 
       def to_json(force_refresh: false)
@@ -69,6 +70,12 @@ module Gitlab
             web_hooks: WebHook.count
           }.merge(services_usage)
         }
+      end
+
+      def cycle_analytics_usage_data
+        projects = Project.sorted_by_activity.limit(Gitlab::CycleAnalytics::UsageData::PROJECTS_LIMIT)
+
+        Gitlab::CycleAnalytics::UsageData.new(projects, { from: 7.days.ago }).to_json
       end
 
       def features_usage_data
