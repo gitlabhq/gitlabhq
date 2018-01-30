@@ -155,7 +155,10 @@ module Gitlab
 
         stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request)
 
-        stream.each_with_object([]) { |response, array| array.concat(response.tag_names) }
+        stream.each_with_object([]) do |response, array|
+          encoded_names = response.tag_names.map { |t| Gitlab::Git.ref_name(t) }
+          array.concat(encoded_names)
+        end
       end
 
       # Limit: 0 implies no limit, thus all tag names will be returned
@@ -168,7 +171,10 @@ module Gitlab
 
         stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request)
 
-        stream.each_with_object([]) { |response, array| array.concat(response.branch_names) }
+        stream.each_with_object([]) do |response, array|
+          encoded_names = response.branch_names.map { |b| Gitlab::Git.ref_name(b) }
+          array.concat(encoded_names)
+        end
       end
 
       private
