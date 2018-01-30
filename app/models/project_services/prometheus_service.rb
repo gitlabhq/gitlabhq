@@ -1,7 +1,3 @@
-module Gitlab
-  PrometheusError = Class.new(StandardError)
-end
-
 class PrometheusService < MonitoringService
   include ReactiveService
 
@@ -47,6 +43,7 @@ class PrometheusService < MonitoringService
     [
       {
         type: 'fieldset',
+        name: 'manual_configuration',
         legend: 'Manual Configuration',
         fields: [
           {
