@@ -9,7 +9,7 @@
    * [Mockup](https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
    */
   import _ from 'underscore';
-  import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
+  import deployBoardSvg from 'ee_empty_states/icons/_deploy_board.svg';
   import { n__ } from '../../locale';
   import instanceComponent from './deploy_board_instance_component.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
