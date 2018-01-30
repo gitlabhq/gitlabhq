@@ -1,0 +1,5 @@
+---
+title: 'Geo: Improve replication status. Using pg_stat_wal_receiver'
+merge_request:
+author:
+type: other

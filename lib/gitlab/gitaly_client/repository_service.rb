@@ -3,6 +3,8 @@ module Gitlab
     class RepositoryService
       include Gitlab::EncodingHelper
 
+      MAX_MSG_SIZE = 128.kilobytes.freeze
+
       def initialize(repository)
         @repository = repository
         @gitaly_repo = repository.gitaly_repository
@@ -100,6 +102,38 @@ module Gitlab
         )
       end
 
+      def import_repository(source)
+        request = Gitaly::CreateRepositoryFromURLRequest.new(
+          repository: @gitaly_repo,
+          url: source
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_url,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
+      def rebase_in_progress?(rebase_id)
+        request = Gitaly::IsRebaseInProgressRequest.new(
+          repository: @gitaly_repo,
+          rebase_id: rebase_id.to_s
+        )
+
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :is_rebase_in_progress,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+
+        response.in_progress
+      end
+
       def fetch_source_branch(source_repository, source_branch, local_ref)
         request = Gitaly::FetchSourceBranchRequest.new(
           repository: @gitaly_repo,
@@ -128,6 +162,46 @@ module Gitlab
         else
           return response.error.b, 1
         end
+      end
+
+      def create_bundle(save_path)
+        request = Gitaly::CreateBundleRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_bundle,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+
+        File.open(save_path, 'wb') do |f|
+          response.each do |message|
+            f.write(message.data)
+          end
+        end
+      end
+
+      def create_from_bundle(bundle_path)
+        request = Gitaly::CreateRepositoryFromBundleRequest.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(bundle_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+
+              request = Gitaly::CreateRepositoryFromBundleRequest.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_bundle,
+          enum,
+          timeout: GitalyClient.default_timeout
+        )
       end
     end
   end

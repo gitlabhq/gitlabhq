@@ -1,5 +1,0 @@
----
-title: Handle node details load failure gracefully on UI
-merge_request: 3992
-author:
-type: fixed

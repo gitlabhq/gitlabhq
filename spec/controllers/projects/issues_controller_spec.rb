@@ -301,6 +301,53 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'GET #realtime_changes' do
+    def go(id:)
+      get :realtime_changes,
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: id
+    end
+
+    context 'when an issue was edited' do
+      before do
+        project.add_developer(user)
+
+        issue.update!(last_edited_by: user, last_edited_at: issue.created_at + 1.minute)
+
+        sign_in(user)
+      end
+
+      it 'returns last edited time' do
+        go(id: issue.iid)
+
+        data = JSON.parse(response.body)
+
+        expect(data).to include('updated_at')
+        expect(data['updated_at']).to eq(issue.last_edited_at.to_time.iso8601)
+      end
+    end
+
+    context 'when an issue was edited by a deleted user' do
+      let(:deleted_user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+
+        issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
+
+        deleted_user.destroy
+        sign_in(user)
+      end
+
+      it 'returns 200' do
+        go(id: issue.iid)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+  end
+
   describe 'Confidential Issues' do
     let(:project) { create(:project_empty_repo, :public) }
     let(:assignee) { create(:assignee) }
@@ -588,25 +635,6 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: id
-      end
-
-      context 'when an issue was edited by a deleted user' do
-        let(:deleted_user) { create(:user) }
-
-        before do
-          project.add_developer(user)
-
-          issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
-
-          deleted_user.destroy
-          sign_in(user)
-        end
-
-        it 'returns 200' do
-          go(id: issue.iid)
-
-          expect(response).to have_gitlab_http_status(200)
-        end
       end
     end
 

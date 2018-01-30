@@ -13,33 +13,35 @@ module Geo
     end
 
     def count_synced_attachments
-      find_synced_attachments.count
+      if aggregate_pushdown_supported?
+        find_synced_attachments.count
+      else
+        legacy_find_synced_attachments.count
+      end
     end
 
     def count_failed_attachments
-      find_failed_attachments.count
+      if aggregate_pushdown_supported?
+        find_failed_attachments.count
+      else
+        legacy_find_failed_attachments.count
+      end
     end
 
     def find_synced_attachments
-      relation =
-        if use_legacy_queries?
-          legacy_find_synced_attachments
-        else
-          fdw_find_synced_attachments
-        end
-
-      relation
+      if use_legacy_queries?
+        legacy_find_synced_attachments
+      else
+        fdw_find_synced_attachments
+      end
     end
 
     def find_failed_attachments
-      relation =
-        if use_legacy_queries?
-          legacy_find_failed_attachments
-        else
-          fdw_find_failed_attachments
-        end
-
-      relation
+      if use_legacy_queries?
+        legacy_find_failed_attachments
+      else
+        fdw_find_failed_attachments
+      end
     end
 
     # Find limited amount of non replicated attachments.

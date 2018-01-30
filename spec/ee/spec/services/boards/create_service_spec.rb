@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 describe Boards::CreateService, services: true do
+  shared_examples 'board with milestone predefined scope' do
+    let(:project) { create(:project) }
+
+    it 'creates board with correct milestone' do
+      stub_licensed_features(scoped_issue_board: true)
+
+      board = described_class
+        .new(project, double, milestone_id: milestone_class.id)
+        .execute
+
+      expect(board.reload.milestone).to eq(milestone_class)
+    end
+  end
+
   shared_examples 'boards create service' do
     context 'With the feature available' do
       before do
@@ -70,6 +84,78 @@ describe Boards::CreateService, services: true do
 
     it_behaves_like 'boards create service' do
       let(:parent) { create(:group) }
+    end
+
+    it_behaves_like 'board with milestone predefined scope' do
+      let(:milestone_class) { ::Milestone::Upcoming }
+    end
+
+    it_behaves_like 'board with milestone predefined scope' do
+      let(:milestone_class) { ::Milestone::Started }
+    end
+
+    context 'group board milestone' do
+      let(:group) { create(:group) }
+      let!(:milestone) { create(:milestone) }
+
+      before do
+        stub_licensed_features(scoped_issue_board: true)
+      end
+
+      it 'is not persisted if it is not within group milestones' do
+        service = described_class.new(group, double, milestone_id: milestone.id)
+
+        group_board = service.execute
+
+        expect(group_board.milestone).to be_nil
+      end
+
+      it 'is persisted if it is within group milestones' do
+        milestone.update!(project: nil, group: group)
+        service = described_class.new(group, double, milestone_id: milestone.id)
+
+        group_board = service.execute
+
+        expect(group_board.reload.milestone).to eq(milestone)
+      end
+    end
+
+    context 'project board milestone' do
+      let(:project) { create(:project, :private) }
+      let!(:milestone) { create(:milestone) }
+
+      before do
+        stub_licensed_features(scoped_issue_board: true)
+      end
+
+      it 'is not persisted if it is not within project milestones' do
+        service = described_class.new(project, double, milestone_id: milestone.id)
+
+        board = service.execute
+
+        expect(board.reload.milestone).to be_nil
+      end
+
+      it 'is persisted if it is within project milestones' do
+        milestone.update!(project: project)
+        service = described_class.new(project, double, milestone_id: milestone.id)
+
+        board = service.execute
+
+        expect(board.reload.milestone).to eq(milestone)
+      end
+
+      it 'is persisted if it is within project group milestones' do
+        project_group = create(:group)
+        project.update(group: project_group)
+        milestone.update!(project: nil, group: project_group)
+
+        service = described_class.new(project_group, double, milestone_id: milestone.id)
+
+        board = service.execute
+
+        expect(board.reload.milestone).to eq(milestone)
+      end
     end
   end
 end

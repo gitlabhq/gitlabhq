@@ -63,6 +63,11 @@ export default {
       updatedAt: lastCommit.commit.authored_date,
     });
   },
+  [types.SET_LAST_COMMIT_MSG](state, lastCommitMsg) {
+    Object.assign(state, {
+      lastCommitMsg,
+    });
+  },
   ...projectMutations,
   ...fileMutations,
   ...treeMutations,

@@ -851,6 +851,15 @@ describe API::Issues, :mailer do
         expect(json_response['assignee']['name']).to eq(user2.name)
         expect(json_response['assignees'].first['name']).to eq(user2.name)
       end
+
+      it 'creates a new project issue when assignee_id is empty' do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', assignee_id: ''
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['assignee']).to be_nil
+      end
     end
 
     context 'single assignee restrictions' do
@@ -1436,7 +1445,7 @@ describe API::Issues, :mailer do
 
     context 'when source project does not exist' do
       it 'returns 404 when trying to move an issue' do
-        post api("/projects/123/issues/#{issue.iid}/move", user),
+        post api("/projects/12345/issues/#{issue.iid}/move", user),
                  to_project_id: target_project.id
 
         expect(response).to have_gitlab_http_status(404)
@@ -1447,7 +1456,7 @@ describe API::Issues, :mailer do
     context 'when target project does not exist' do
       it 'returns 404 when trying to move an issue' do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
-                 to_project_id: 123
+                 to_project_id: 12345
 
         expect(response).to have_gitlab_http_status(404)
       end

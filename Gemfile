@@ -118,7 +118,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
+gem 'seed-fu', '~> 2.3.7'
 
 # Search
 gem 'elasticsearch-model', '~> 0.1.9'
@@ -243,6 +243,9 @@ gem 'charlock_holmes', '~> 0.7.5'
 # Faster JSON
 gem 'oj', '~> 2.17.4'
 
+# Faster blank
+gem 'fast_blank'
+
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
@@ -334,7 +337,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
-  gem 'rspec-parameterized'
+  gem 'rspec-parameterized', require: false
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -350,10 +353,10 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
-  gem 'gitlab-styles', '~> 2.2.0', require: false
+  gem 'gitlab-styles', '~> 2.3', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
-  gem 'rubocop', '~> 0.52.0'
-  gem 'rubocop-rspec', '~> 1.20.1'
+  gem 'rubocop', '~> 0.52.1'
+  gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
@@ -419,7 +422,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.69.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.78.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

@@ -32,7 +32,6 @@ export default {
       default: false,
     },
   },
-
   methods: {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
@@ -88,20 +87,19 @@ export default {
     </div>
     <template
       v-for="(model, i) in environments"
-      :model="model"
-    >
+      :model="model">
       <div
         is="environment-item"
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        :key="i"
+        :key="`environment-item-${i}`"
       />
 
       <div
         v-if="model.hasDeployBoard && model.isDeployBoardVisible"
         class="js-deploy-board-row"
-        :key="i"
+        :key="`deploy-board-row-${i}`"
       >
         <div class="deploy-board-container">
           <deploy-board
@@ -117,8 +115,7 @@ export default {
       >
         <div
           v-if="model.isLoadingFolderContent"
-          :key="i"
-        >
+          :key="`loading-item-${i}`">
           <loading-icon size="2" />
         </div>
 
@@ -129,10 +126,10 @@ export default {
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            :key="index"
+            :key="`env-item-${i}-${index}`"
           />
 
-          <div :key="i">
+          <div :key="`sub-div-${i}`">
             <div class="text-center prepend-top-10">
               <a
                 :href="folderUrl(model)"

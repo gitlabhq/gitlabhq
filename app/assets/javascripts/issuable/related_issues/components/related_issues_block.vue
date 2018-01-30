@@ -103,13 +103,26 @@ export default {
     toggleAddRelatedIssuesForm() {
       eventHub.$emit('toggleAddRelatedIssuesForm');
     },
+    getBeforeAfterId(itemEl) {
+      const prevItemEl = itemEl.previousElementSibling;
+      const nextItemEl = itemEl.nextElementSibling;
+
+      return {
+        beforeId: prevItemEl && parseInt(prevItemEl.dataset.epicIssueId, 0),
+        afterId: nextItemEl && parseInt(nextItemEl.dataset.epicIssueId, 0),
+      };
+    },
     reordered(event) {
       this.removeDraggingCursor();
+      const { beforeId, afterId } = this.getBeforeAfterId(event.item);
+      const { oldIndex, newIndex } = event;
 
       this.$emit('saveReorder', {
         issueId: parseInt(event.item.dataset.key, 10),
-        beforeId: this.relatedIssues[event.newIndex - 1].epic_issue_id,
-        afterId: this.relatedIssues[event.newIndex].epic_issue_id,
+        oldIndex,
+        newIndex,
+        afterId,
+        beforeId,
       });
     },
     addDraggingCursor() {
@@ -215,6 +228,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
               card: canReorder
             }"
             :data-key="issue.id"
+            :data-epic-issue-id="issue.epic_issue_id"
           >
             <issue-item
               event-namespace="relatedIssue"

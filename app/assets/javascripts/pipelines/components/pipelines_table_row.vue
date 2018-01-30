@@ -240,7 +240,7 @@
       :auto-devops-help-path="autoDevopsHelpPath"
     />
 
-    <div class="table-section section-25">
+    <div class="table-section section-20">
       <div
         class="table-mobile-header"
         role="rowheader">
@@ -259,7 +259,7 @@
       </div>
     </div>
 
-    <div class="table-section section-wrap section-15 stage-cell">
+    <div class="table-section section-wrap section-20 stage-cell">
       <div
         class="table-mobile-header"
         role="rowheader">
@@ -313,7 +313,7 @@
           :endpoint="pipeline.cancel_path"
           css-class="js-pipelines-cancel-button btn-remove"
           title="Cancel"
-          icon="remove"
+          icon="close"
           confirm-action-message="Are you sure you want to cancel this pipeline?"
         />
       </div>

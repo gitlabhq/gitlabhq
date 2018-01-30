@@ -40,7 +40,7 @@ constraints(ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template
+      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: /[^\/]+/ }
 
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
@@ -50,6 +50,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :revert
           post :cherry_pick
           get :diff_for_path
+          get :merge_requests
         end
       end
 

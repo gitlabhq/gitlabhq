@@ -1,8 +1,8 @@
 <script>
   /**
-   * Renders a terminal button to open a web terminal.
-   * Used in environments table.
-   */
+  * Renders a terminal button to open a web terminal.
+  * Used in environments table.
+  */
   import terminalIconSvg from 'icons/_icon_terminal.svg';
   import tooltip from '../../vue_shared/directives/tooltip';
 
@@ -10,6 +10,7 @@
     directives: {
       tooltip,
     },
+
     props: {
       terminalPath: {
         type: String,
@@ -17,6 +18,7 @@
         default: '',
       },
     },
+
     data() {
       return {
         terminalIconSvg,

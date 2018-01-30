@@ -222,20 +222,20 @@ describe Repository do
     it 'sets follow when path is a single path' do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
 
-      repository.commits('master', path: 'README.md')
-      repository.commits('master', path: ['README.md'])
+      repository.commits('master', limit: 1, path: 'README.md')
+      repository.commits('master', limit: 1, path: ['README.md'])
     end
 
     it 'does not set follow when path is multiple paths' do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
 
-      repository.commits('master', path: ['README.md', 'CHANGELOG'])
+      repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
     end
 
     it 'does not set follow when there are no paths' do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
 
-      repository.commits('master')
+      repository.commits('master', limit: 1)
     end
   end
 
@@ -358,28 +358,44 @@ describe Repository do
   end
 
   describe '#can_be_merged?' do
-    context 'mergeable branches' do
-      subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
+    shared_examples 'can be merged' do
+      context 'mergeable branches' do
+        subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
 
-      it { is_expected.to be_truthy }
+        it { is_expected.to be_truthy }
+      end
+
+      context 'non-mergeable branches without conflict sides missing' do
+        subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non-mergeable branches with conflict sides missing' do
+        subject { repository.can_be_merged?('conflict-missing-side', 'conflict-start') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non merged branch' do
+        subject { repository.merged_to_root_ref?('fix') }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'non existent branch' do
+        subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+        it { is_expected.to be_nil }
+      end
     end
 
-    context 'non-mergeable branches' do
-      subject { repository.can_be_merged?('bb5206fee213d983da88c47f9cf4cc6caf9c66dc', 'feature') }
-
-      it { is_expected.to be_falsey }
+    context 'when Gitaly can_be_merged feature is enabled' do
+      it_behaves_like 'can be merged'
     end
 
-    context 'non merged branch' do
-      subject { repository.merged_to_root_ref?('fix') }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'non existent branch' do
-      subject { repository.merged_to_root_ref?('non_existent_branch') }
-
-      it { is_expected.to be_nil }
+    context 'when Gitaly can_be_merged feature is disabled', :disable_gitaly do
+      it_behaves_like 'can be merged'
     end
   end
 
@@ -439,7 +455,7 @@ describe Repository do
       expect do
         repository.create_dir(user, 'newdir',
           message: 'Create newdir', branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       newdir = repository.tree('master', 'newdir')
       expect(newdir.path).to eq('newdir')
@@ -453,7 +469,7 @@ describe Repository do
           repository.create_dir(user, 'newdir',
             message: 'Create newdir', branch_name: 'patch',
             start_branch_name: 'master', start_project: forked_project)
-        end.to change { repository.commits('master').count }.by(0)
+        end.to change { repository.count_commits(ref: 'master') }.by(0)
 
         expect(repository.branch_exists?('patch')).to be_truthy
         expect(forked_project.repository.branch_exists?('patch')).to be_falsy
@@ -470,7 +486,7 @@ describe Repository do
             message: 'Add newdir',
             branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -486,7 +502,7 @@ describe Repository do
         repository.create_file(user, 'NEWCHANGELOG', 'Changelog!',
                                message: 'Create changelog',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'NEWCHANGELOG')
 
@@ -498,7 +514,7 @@ describe Repository do
         repository.create_file(user, 'new_dir/new_file.txt', 'File!',
                                message: 'Create new_file with new_dir',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
       expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
@@ -522,7 +538,7 @@ describe Repository do
                                  branch_name: 'master',
                                  author_email: author_email,
                                  author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -538,7 +554,7 @@ describe Repository do
         repository.update_file(user, 'CHANGELOG', 'Changelog!',
                                message: 'Update changelog',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'CHANGELOG')
 
@@ -551,7 +567,7 @@ describe Repository do
                                      branch_name: 'master',
                                      previous_path: 'LICENSE',
                                      message: 'Changes filename')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       files = repository.ls_files('master')
 
@@ -568,7 +584,7 @@ describe Repository do
                                  message: 'Update README',
                                  author_email: author_email,
                                  author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -583,7 +599,7 @@ describe Repository do
       expect do
         repository.delete_file(user, 'README',
           message: 'Remove README', branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.blob_at('master', 'README')).to be_nil
     end
@@ -594,7 +610,7 @@ describe Repository do
           repository.delete_file(user, 'README',
             message: 'Remove README', branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -647,7 +663,7 @@ describe Repository do
       subject { results.first }
 
       it { is_expected.to be_an String }
-      it { expect(subject.lines[2]).to eq("master:CHANGELOG:190:  - Feature: Replace teams with group membership\n") }
+      it { expect(subject.lines[2]).to eq("master:CHANGELOG\x00190\x00  - Feature: Replace teams with group membership\n") }
     end
   end
 
@@ -656,6 +672,18 @@ describe Repository do
 
     it 'returns result' do
       expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'ignores leading slashes' do
+      results = repository.search_files_by_name('/files', 'master')
+
+      expect(results.first).to eq('files/html/500.html')
+    end
+
+    it 'properly handles when query is only slashes' do
+      results = repository.search_files_by_name('//', 'master')
+
+      expect(results).to match_array([])
     end
 
     it 'properly handles when query is not present' do
@@ -675,6 +703,38 @@ describe Repository do
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
+      end
+    end
+  end
+
+  describe '#async_remove_remote' do
+    before do
+      masterrev = repository.find_branch('master').dereferenced_target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+    end
+
+    context 'when worker is scheduled successfully' do
+      before do
+        masterrev = repository.find_branch('master').dereferenced_target
+        create_remote_branch('remote_name', 'remote_branch', masterrev)
+
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
+      end
+
+      it 'returns job_id' do
+        expect(repository.async_remove_remote('joe')).to eq('1234')
+      end
+    end
+
+    context 'when worker does not schedule successfully' do
+      before do
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(Rails.logger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
+
+        expect(repository.async_remove_remote('joe')).to be_nil
       end
     end
   end
@@ -2418,7 +2478,7 @@ describe Repository do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    context 'with Gitaly enabled' do
+    shared_examples '#ancestor?' do
       it 'it is an ancestor' do
         expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
@@ -2431,28 +2491,20 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+
+      it 'returns false for invalid commit IDs' do
+        expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
+        expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
       end
     end
 
-    context 'with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(false)
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(false)
-      end
+    context 'with Gitaly enabled' do
+      it_behaves_like('#ancestor?')
+    end
 
-      it 'it is an ancestor' do
-        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
-      end
-
-      it 'it is not an ancestor' do
-        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
-      end
-
-      it 'returns false on nil-values' do
-        expect(repository.ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.ancestor?(nil, nil)).to eq(false)
-      end
+    context 'with Gitaly disabled', :skip_gitaly_mock do
+      it_behaves_like('#ancestor?')
     end
   end
 

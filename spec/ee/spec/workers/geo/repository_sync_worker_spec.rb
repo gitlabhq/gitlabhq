@@ -48,6 +48,27 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
 
         Sidekiq::Testing.inline! { subject.perform }
       end
+
+      it 'skips backfill for projects with downed Gitaly server' do
+        create(:project, group: synced_group, repository_storage: 'broken')
+        unhealthy_dirty = create(:project, group: synced_group, repository_storage: 'broken')
+        healthy_shard = project_in_synced_group.repository.storage
+
+        create(:geo_project_registry, :synced, :repository_dirty, project: unhealthy_dirty)
+
+        # Report only one healthy shard
+        allow(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness).and_return(
+          [Gitlab::HealthChecks::Result.new(true, nil, { shard: healthy_shard }),
+           Gitlab::HealthChecks::Result.new(true, nil, { shard: 'broken' })])
+        allow(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness).and_return(
+          [Gitlab::HealthChecks::Result.new(true, nil, { shard: healthy_shard }),
+           Gitlab::HealthChecks::Result.new(false, nil, { shard: 'broken' })])
+
+        expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(healthy_shard)
+        expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
+
+        Sidekiq::Testing.inline! { subject.perform }
+      end
     end
   end
 end

@@ -7,6 +7,7 @@
 - Ubuntu
 - Debian
 - CentOS
+- openSUSE
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
@@ -123,7 +124,7 @@ Existing users using GitLab with MySQL/MariaDB are advised to
 
 ### PostgreSQL Requirements
 
-As of GitLab 10.0, PostgreSQL 9.6 or newer (but less than 10) is required, and earlier versions are
+As of GitLab 10.0, PostgreSQL 9.6 or newer is required, and earlier versions are
 not supported. We highly recommend users to use PostgreSQL 9.6 as this
 is the PostgreSQL version used for development and testing.
 

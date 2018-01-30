@@ -67,7 +67,7 @@
 
   %span.append-right-10
     - if issuable.new_record?
-      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create qa-issuable-create-button'
     - else
       = form.submit 'Save changes', class: 'btn btn-save'
 

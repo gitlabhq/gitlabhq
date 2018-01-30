@@ -20,9 +20,11 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
+1. [Auto SAST for Docker images](#auto-sast-for-docker-images)
 1. [Auto Review Apps](#auto-review-apps)
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
 1. [Auto Deploy](#auto-deploy)
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -36,6 +38,8 @@ knowledge of the following:
 
 Auto DevOps provides great defaults for all the stages; you can, however,
 [customize](#customizing) almost everything to your needs.
+
+For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of the Self-Hosted Git Market, to the Next-Generation CI System, to Auto DevOps](https://about.gitlab.com/2017/06/29/whats-next-for-gitlab-ci/).
 
 ## Prerequisites
 
@@ -62,9 +66,8 @@ To make full use of Auto DevOps, you will need:
    a domain configured with wildcard DNS which is gonna be used by all of your
    Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
 1. **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
-   To enable deployments, you will need Kubernetes 1.5+. The [Kubernetes service][kubernetes-service]
-   integration will need to be enabled for the project, or enabled as a
-   [default service template](../../user/project/integrations/services_templates.md)
+   To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
+   for the project, or a Kubernetes [default service template](../../user/project/integrations/services_templates.md)
    for the entire GitLab installation.
     1. **A load balancer** - You can use NGINX ingress by deploying it to your
        Kubernetes cluster using the
@@ -193,8 +196,10 @@ Auto Code Quality uses the open source
 [`codeclimate` image](https://hub.docker.com/r/codeclimate/codeclimate/) to run
 static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
-out. In GitLab Enterprise Edition Starter, differences between the source and
-target branches are
+out.
+
+In GitLab Enterprise Edition Starter, differences between the source and
+target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
 
 ### Auto SAST
@@ -207,33 +212,21 @@ analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also [shown in the merge request widget](../../user/project/merge_requests/sast.md).
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
-### Auto SAST
+### Auto SAST for Docker images
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+> Introduced in GitLab 10.4.
 
-Static Application Security Testing (SAST) uses the
-[gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
-analysis on the current code and checks for potential security issues. Once the
-report is created, it's uploaded as an artifact which you can later download and
+Vulnerability Static Analysis for containers uses
+[Clair](https://github.com/coreos/clair) to run static analysis on a
+Docker image and checks for potential security issues. Once the report is
+created, it's uploaded as an artifact which you can later download and
 check out.
 
-Any security warnings are also [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
-
-### Auto Browser Performance Testing
-
-> Introduced in [GitLab Enterprise Edition Premium][ee] 10.4.
-
-Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) to measure the performance of a web page. A JSON report is created and uploaded as an artifact, which includes the overall performance score for each page. By default, the root page of Review and Production environments will be tested. If you would like to add additional URL's to test, simply add the paths to a file named `.gitlab-urls.txt` in the root directory, one per line. For example:
-
-```
-/
-/features
-/direction
-```
-
-In GitLab Enterprise Edition Premium, performance differences between the source and target branches are [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
 
 ### Auto Review Apps
 
@@ -260,6 +253,34 @@ example, `user-project-branch-1234.example.com`. A link to the Review App shows
 up in the merge request widget for easy discovery. When the branch is deleted,
 for example after the merge request is merged, the Review App will automatically
 be deleted.
+
+### Auto DAST
+
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+
+Dynamic Application Security Testing (DAST) uses the
+popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
+to perform an analysis on the current code and checks for potential security
+issues. Once the report is created, it's uploaded as an artifact which you can
+later download and check out.
+
+In GitLab Enterprise Edition Ultimate, any security warnings are also
+[shown in the merge request widget](../../user/project/merge_requests/dast.md).
+
+### Auto Browser Performance Testing
+
+> Introduced in [GitLab Enterprise Edition Premium][ee] 10.4.
+
+Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) to measure the performance of a web page. A JSON report is created and uploaded as an artifact, which includes the overall performance score for each page. By default, the root page of Review and Production environments will be tested. If you would like to add additional URL's to test, simply add the paths to a file named `.gitlab-urls.txt` in the root directory, one per line. For example:
+
+```
+/
+/features
+/direction
+```
+
+In GitLab Enterprise Edition Premium, performance differences between the source
+and target branches are [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
 
 ### Auto Deploy
 
@@ -566,7 +587,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37115
-[kubernetes-service]: ../../user/project/integrations/kubernetes.md
+[kubernetes-clusters]: ../../user/project/clusters/index.md
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md

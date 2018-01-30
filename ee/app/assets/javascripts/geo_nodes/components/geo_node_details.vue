@@ -2,7 +2,7 @@
   /* eslint-disable vue/no-side-effects-in-computed-properties */
   import { s__, __ } from '~/locale';
   import { parseSeconds, stringifyTime } from '~/lib/utils/pretty_time';
-  import { bytesToMiB } from '~/lib/utils/number_utils';
+  import { numberToHumanSize } from '~/lib/utils/number_utils';
   import icon from '~/vue_shared/components/icon.vue';
 
   import { VALUE_TYPE, CUSTOM_TYPE } from '../constants';
@@ -100,7 +100,7 @@
         return `${this.nodeDetails.version} (${this.nodeDetails.revision})`;
       },
       replicationSlotWAL() {
-        return `${bytesToMiB(this.nodeDetails.replicationSlotWAL)} MB`;
+        return numberToHumanSize(this.nodeDetails.replicationSlotWAL);
       },
       dbReplicationLag() {
         // Replication lag can be nil if the secondary isn't actually streaming
@@ -139,7 +139,7 @@
         return this.nodeDetails.healthy ? this.nodeDetails.health : this.nodeDetails.healthStatus;
       },
       storageShardsStatus() {
-        if (this.nodeDetails.storageShardsMatch === null) {
+        if (this.nodeDetails.storageShardsMatch == null) {
           return __('Unknown');
         }
         return this.nodeDetails.storageShardsMatch ? __('OK') : s__('GeoNodes|Does not match the primary storage configuration');

@@ -1,7 +1,7 @@
 # Writing documentation
 
   - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
-  - **[Technical Articles](#technical-articles)**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
+  - **[Technical articles](#technical-articles)**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
 
 ## Documentation style guidelines
@@ -24,6 +24,26 @@ them to review it for you.
 
 We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
 is documented.
+
+Whenever you submit a merge request for the documentation, use the documentation MR description template.
+
+### Documentation directory structure
+
+The documentation is structured based on the GitLab UI structure itself,
+separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
+[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
+
+To learn where to place a new document, check the [documentation style guide](doc_styleguide.md#location-and-naming-of-documents).
+
+In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
+all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+
+The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
+been deprecated and the majority their docs have been moved to their correct location
+in small iterations. Please don't create new docs in these folders.
+
+To move a document from its location to another directory, read the section
+[changing document location](doc_styleguide.md#changing-document-location) of the doc style guide.
 
 ### Feature overview and use cases
 
@@ -191,15 +211,15 @@ The following GitLab features are used among others:
 - [Artifacts](../ci/yaml/README.md#artifacts)
 - [Specific Runner](../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
 
-## General Documentation vs Technical Articles
+## General documentation vs technical articles
 
 ### General documentation
 
 General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, what it does, and its available settings.
 
-### Technical Articles
+### Technical articles
 
-Technical articles replace technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they got out-of-date and weren't easily found.
+Technical articles replace some technical content that once lived on the [GitLab blog](https://about.gitlab.com/blog/), where they became out of date and weren't easily found.
 
 They are topic-related documentation, written with an user-friendly approach and language, aiming to provide the community with guidance on specific processes to achieve certain objectives.
 
@@ -207,11 +227,11 @@ A technical article guides users and/or admins to achieve certain objectives (wi
 
 They should be placed in a new directory named `/article-title/index.md` under a topic-related folder, and their images should be placed in `/article-title/img/`. For example, a new article on GitLab Pages should be placed in `doc/user/project/pages/article-title/` and a new article on GitLab CI/CD should be placed in `doc/ci/article-title/`.
 
-#### Types of Technical Articles
+#### Types of technical articles
 
 - **User guides**: technical content to guide regular users from point A to point B
 - **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
-- **Technical Overviews**: technical content describing features, solutions, and third-party integrations
+- **Technical overviews**: technical content describing features, solutions, and third-party integrations
 - **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
 
 #### Understanding guides, tutorials, and technical overviews

@@ -8,7 +8,7 @@
 - You should make sure that all nodes run the same GitLab version.
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
-- Using GitLab Geo in combination with High Availability is considered **Beta**
+- Using GitLab Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
 
 >**Note:**
 GitLab Geo changes significantly from release to release. Upgrades **are**
@@ -51,6 +51,7 @@ to reading any data available in the GitLab web interface (see [current limitati
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
+- A Geo secondary can be promoted to become the primary in a [Disaster Recovery](disaster-recovery.md) scenario
 
 ## Architecture
 
@@ -190,17 +191,17 @@ Read through the [Geo High Availability documentation](ha.md).
 When you have object storage enabled, please consult the
 [Geo with Object Storage](object_storage.md) documentation.
 
+## Replicating the Container Registry
+
+Read how to [replicate the Container Registry](docker_registry.md).
+
 ## Current limitations
 
-- You cannot push code to secondary nodes
-- The primary node has to be online for OAuth login to happen (existing
-  sessions and Git are not affected)
-- It works for repos, wikis, issues, and merge requests
-- It does not work for job logs, artifacts, Docker images of the Container
-  Registry, and GitLab Pages
-- It does not work for attachments uploaded before GitLab 9.0 because they will
-  not present in the uploads table, until
-  [#29249](https://gitlab.com/gitlab-org/gitlab-ce/issues/29240) is fixed.
+- You cannot push code to secondary nodes, see [3912](https://gitlab.com/gitlab-org/gitlab-ee/issues/3912) for details.
+- The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
+- It works for repos, wikis, issues, and merge requests, but it does not work for job logs, artifacts, GitLab Pages, and Docker images of the Container
+  Registry (by default, but you can configure it separately, see [replicate the Container Registry](docker_registry.md) for details)
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are working on improving this experience, see [#2978](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978) for details.
 
 ## Frequently Asked Questions
 
@@ -221,7 +222,7 @@ example:
 
 This message shows that Geo detected that a repository update was needed for project 1.
 
-## Security of GitLab Geo  
+## Security of GitLab Geo
 
 Read the [security review](security-review.md) page.
 

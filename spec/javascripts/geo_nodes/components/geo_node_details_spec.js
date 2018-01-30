@@ -85,7 +85,7 @@ describe('GeoNodeDetailsComponent', () => {
 
     describe('replicationSlotWAL', () => {
       it('returns replication slot WAL in Megabytes', () => {
-        expect(vm.replicationSlotWAL).toBe('0 MB');
+        expect(vm.replicationSlotWAL).toBe('479.37 MiB');
       });
     });
 

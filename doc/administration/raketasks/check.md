@@ -76,6 +76,39 @@ Example output:
 
 ![gitlab:user:check_repos output](../img/raketasks/check_repos_output.png)
 
+## Uploaded Files Integrity
+
+The uploads check Rake task will loop through all uploads in the database
+and run two checks to determine the integrity of each file:
+
+1. Check if the file exist on the file system.
+1. Check if the checksum of the file on the file system matches the checksum in the database.
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake gitlab:uploads:check
+```
+
+**Source Installation**
+
+```bash
+sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
+```
+
+This task also accepts some environment variables which you can use to override
+certain values:
+
+Variable | Type | Description
+-------- | ---- | -----------
+`BATCH`   | integer  | Specifies the size of the batch. Defaults to 200.
+`ID_FROM` | integer  | Specifies the ID to start from, inclusive of the value.
+`ID_TO`   | integer  | Specifies the ID value to end at, inclusive of the value.
+
+```bash
+sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
+```
+
 ## LDAP Check
 
 The LDAP check Rake task will test the bind_dn and password credentials

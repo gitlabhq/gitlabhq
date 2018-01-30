@@ -1,5 +1,0 @@
----
-title: Modify `LDAP::Person` to return username value based on attributes
-merge_request:
-author:
-type: fixed

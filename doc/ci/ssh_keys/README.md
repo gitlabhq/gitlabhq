@@ -194,7 +194,7 @@ before_script:
 
   ##
   ## You can optionally disable host key checking. Be aware that by adding that
-  ## you are suspectible to man-in-the-middle attacks.
+  ## you are susceptible to man-in-the-middle attacks.
   ## WARNING: Use this only with the Docker executor, if you use it with shell
   ## you will overwrite your user's SSH config.
   ##

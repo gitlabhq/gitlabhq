@@ -38,8 +38,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User1.signed_commit_signature,
@@ -77,8 +77,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User3.signed_commit_signature,
@@ -116,8 +116,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User1.signed_commit_signature,
@@ -151,8 +151,8 @@ describe Gitlab::Gpg::Commit do
           end
 
           before do
-            allow(Rugged::Commit).to receive(:extract_signature)
-            .with(Rugged::Repository, commit_sha)
+            allow(Gitlab::Git::Commit).to receive(:extract_signature)
+            .with(Gitlab::Git::Repository, commit_sha)
             .and_return(
               [
                 GpgHelpers::User1.signed_commit_signature,
@@ -187,8 +187,8 @@ describe Gitlab::Gpg::Commit do
         end
 
         before do
-          allow(Rugged::Commit).to receive(:extract_signature)
-          .with(Rugged::Repository, commit_sha)
+          allow(Gitlab::Git::Commit).to receive(:extract_signature)
+          .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [
               GpgHelpers::User1.signed_commit_signature,
@@ -217,8 +217,8 @@ describe Gitlab::Gpg::Commit do
       let!(:commit) { create :commit, project: project, sha: commit_sha }
 
       before do
-        allow(Rugged::Commit).to receive(:extract_signature)
-          .with(Rugged::Repository, commit_sha)
+        allow(Gitlab::Git::Commit).to receive(:extract_signature)
+          .with(Gitlab::Git::Repository, commit_sha)
           .and_return(
             [
               GpgHelpers::User1.signed_commit_signature,

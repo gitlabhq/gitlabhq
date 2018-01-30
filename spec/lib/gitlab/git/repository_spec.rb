@@ -981,6 +981,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
     end
+
+    context 'limit validation' do
+      where(:limit) do
+        [0, nil, '', 'foo']
+      end
+
+      with_them do
+        it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
   end
 
   describe "#rugged_commits_between" do
@@ -1102,14 +1112,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     context 'when Gitaly count_commits feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'extended commit counting'
     end
-  end
-
-  describe "branch_names_contains" do
-    subject { repository.branch_names_contains(SeedRepo::LastCommit::ID) }
-
-    it { is_expected.to include('master') }
-    it { is_expected.not_to include('feature') }
-    it { is_expected.not_to include('fix') }
   end
 
   describe '#autocrlf' do
@@ -1283,47 +1285,57 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#merged_branch_names' do
-    context 'when branch names are passed' do
-      it 'only returns the names we are asking' do
-        names = repository.merged_branch_names(%w[merge-test])
+    shared_examples 'finding merged branch names' do
+      context 'when branch names are passed' do
+        it 'only returns the names we are asking' do
+          names = repository.merged_branch_names(%w[merge-test])
 
-        expect(names).to contain_exactly('merge-test')
+          expect(names).to contain_exactly('merge-test')
+        end
+
+        it 'does not return unmerged branch names' do
+          names = repository.merged_branch_names(%w[feature])
+
+          expect(names).to be_empty
+        end
       end
 
-      it 'does not return unmerged branch names' do
-        names = repository.merged_branch_names(%w[feature])
+      context 'when no root ref is available' do
+        it 'returns empty list' do
+          project = create(:project, :empty_repo)
 
-        expect(names).to be_empty
+          names = project.repository.merged_branch_names(%w[feature])
+
+          expect(names).to be_empty
+        end
+      end
+
+      context 'when no branch names are specified' do
+        before do
+          repository.create_branch('identical', 'master')
+        end
+
+        after do
+          ensure_seeds
+        end
+
+        it 'returns all merged branch names except for identical one' do
+          names = repository.merged_branch_names
+
+          expect(names).to include('merge-test')
+          expect(names).to include('fix-mode')
+          expect(names).not_to include('feature')
+          expect(names).not_to include('identical')
+        end
       end
     end
 
-    context 'when no root ref is available' do
-      it 'returns empty list' do
-        project = create(:project, :empty_repo)
-
-        names = project.repository.merged_branch_names(%w[feature])
-
-        expect(names).to be_empty
-      end
+    context 'when Gitaly merged_branch_names feature is enabled' do
+      it_behaves_like 'finding merged branch names'
     end
 
-    context 'when no branch names are specified' do
-      before do
-        repository.create_branch('identical', 'master')
-      end
-
-      after do
-        ensure_seeds
-      end
-
-      it 'returns all merged branch names except for identical one' do
-        names = repository.merged_branch_names
-
-        expect(names).to include('merge-test')
-        expect(names).to include('fix-mode')
-        expect(names).not_to include('feature')
-        expect(names).not_to include('identical')
-      end
+    context 'when Gitaly merged_branch_names feature is disabled', :disable_gitaly do
+      it_behaves_like 'finding merged branch names'
     end
   end
 
@@ -1960,6 +1972,75 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it { expect(subject.shard_path).to eq(storage_path) }
     it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
+  end
+
+  describe '#bundle_to_disk' do
+    shared_examples 'bundling to disk' do
+      let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+
+      after do
+        FileUtils.rm_rf(save_path)
+      end
+
+      it 'saves a bundle to disk' do
+        repository.bundle_to_disk(save_path)
+
+        success = system(
+          *%W(#{Gitlab.config.git.bin_path} -C #{repository.path} bundle verify #{save_path}),
+          [:out, :err] => '/dev/null'
+        )
+        expect(success).to be true
+      end
+    end
+
+    context 'when Gitaly bundle_to_disk feature is enabled' do
+      it_behaves_like 'bundling to disk'
+    end
+
+    context 'when Gitaly bundle_to_disk feature is disabled', :disable_gitaly do
+      it_behaves_like 'bundling to disk'
+    end
+  end
+
+  describe '#create_from_bundle' do
+    shared_examples 'creating repo from bundle' do
+      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+      let(:project) { create(:project) }
+      let(:imported_repo) { project.repository.raw }
+
+      before do
+        expect(repository.bundle_to_disk(bundle_path)).to be true
+      end
+
+      after do
+        FileUtils.rm_rf(bundle_path)
+      end
+
+      it 'creates a repo from a bundle file' do
+        expect(imported_repo).not_to exist
+
+        result = imported_repo.create_from_bundle(bundle_path)
+
+        expect(result).to be true
+        expect(imported_repo).to exist
+        expect { imported_repo.fsck }.not_to raise_exception
+      end
+
+      it 'creates a symlink to the global hooks dir' do
+        imported_repo.create_from_bundle(bundle_path)
+        hooks_path = File.join(imported_repo.path, 'hooks')
+
+        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+      end
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is enabled' do
+      it_behaves_like 'creating repo from bundle'
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
+      it_behaves_like 'creating repo from bundle'
+    end
   end
 
   context 'gitlab_projects commands' do

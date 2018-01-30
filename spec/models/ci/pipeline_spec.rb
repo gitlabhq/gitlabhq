@@ -32,6 +32,13 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:pipelines)
+      expect(Project.reflect_on_association(:pipelines).has_inverse?).to eq(:project)
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do

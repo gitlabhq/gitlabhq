@@ -1,8 +1,8 @@
 import AccessorUtilities from '~/lib/utils/accessor';
 import Flash from '~/flash';
+import CreateItemDropdown from '~/create_item_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
-import ProtectedBranchDropdown from './protected_branch_dropdown';
 
 const PB_LOCAL_STORAGE_KEY = 'protected-branches-defaults';
 
@@ -43,9 +43,12 @@ export default class ProtectedBranchCreate {
       accessLevel: ACCESS_LEVELS.PUSH,
     });
 
-    this.protectedBranchDropdown = new ProtectedBranchDropdown({
+    this.createItemDropdown = new CreateItemDropdown({
       $dropdown: this.$form.find('.js-protected-branch-select'),
+      defaultToggleLabel: 'Protected Branch',
+      fieldName: 'protected_branch[name]',
       onSelect: this.onSelectCallback,
+      getData: ProtectedBranchCreate.getProtectedBranches,
     });
 
     this.loadPreviousSelection();
@@ -63,6 +66,10 @@ export default class ProtectedBranchCreate {
 
     this.savePreviousSelection($allowedToMerge, $allowedToPush);
     this.$form.find('input[type="submit"]').attr('disabled', toggle);
+  }
+
+  static getProtectedBranches(term, callback) {
+    callback(gon.open_branches);
   }
 
   getFormData() {

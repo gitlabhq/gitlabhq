@@ -70,15 +70,6 @@ describe Gitlab::ProjectSearchResults do
 
       subject { described_class.parse_search_result(search_result) }
 
-      it 'can correctly parse filenames including ":"' do
-        special_char_result = "\nmaster:testdata/project::function1.yaml-1----\nmaster:testdata/project::function1.yaml:2:test: data1\n"
-
-        blob = described_class.parse_search_result(special_char_result)
-
-        expect(blob.ref).to eq('master')
-        expect(blob.filename).to eq('testdata/project::function1.yaml')
-      end
-
       it "returns a valid FoundBlob" do
         is_expected.to be_an Gitlab::SearchResults::FoundBlob
         expect(subject.id).to be_nil
@@ -90,8 +81,32 @@ describe Gitlab::ProjectSearchResults do
         expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
       end
 
+      context 'when the matching filename contains a colon' do
+        let(:search_result) { "\nmaster:testdata/project::function1.yaml\x001\x00---\n" }
+
+        it 'returns a valid FoundBlob' do
+          expect(subject.filename).to eq('testdata/project::function1.yaml')
+          expect(subject.basename).to eq('testdata/project::function1')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq('---')
+        end
+      end
+
+      context 'when the matching content contains a number surrounded by colons' do
+        let(:search_result) { "\nmaster:testdata/foo.txt\x001\x00blah:9:blah" }
+
+        it 'returns a valid FoundBlob' do
+          expect(subject.filename).to eq('testdata/foo.txt')
+          expect(subject.basename).to eq('testdata/foo')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq('blah:9:blah')
+        end
+      end
+
       context "when filename has extension" do
-        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
+        let(:search_result) { "master:CONTRIBUTE.md\x005\x00- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
         it { expect(subject.path).to eq('CONTRIBUTE.md') }
         it { expect(subject.filename).to eq('CONTRIBUTE.md') }
@@ -99,7 +114,7 @@ describe Gitlab::ProjectSearchResults do
       end
 
       context "when file under directory" do
-        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
+        let(:search_result) { "master:a/b/c.md\x005\x00a b c\n" }
 
         it { expect(subject.path).to eq('a/b/c.md') }
         it { expect(subject.filename).to eq('a/b/c.md') }
@@ -144,7 +159,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'finds by content' do
-      expect(results).to include("master:Title.md:1:Content\n")
+      expect(results).to include("master:Title.md\x001\x00Content\n")
     end
   end
 

@@ -1,9 +1,10 @@
 module EE
   module Projects
     module UpdateService
-      def execute
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :execute
+      def execute
         unless project.feature_available?(:repository_mirrors)
           params.delete(:mirror)
           params.delete(:mirror_user_id)

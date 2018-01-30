@@ -18,6 +18,8 @@ yourself to have the same sense of progress.
 
 GitLab Enterprise Edition Starter plots it for you and presents it in a clear and beautiful chart.
 
+For an overview, check the video demonstration on [Mapping Work Versus Time, With Burndown Charts](https://about.gitlab.com/2017/04/25/mapping-work-to-do-versus-time-with-burndown-charts/).
+
 ## Use cases
 
 Burndown Charts, in gerenal, are used for tracking and analyzing the completion of

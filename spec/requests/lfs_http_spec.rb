@@ -826,11 +826,11 @@ describe 'Git LFS API and storage' do
         end
 
         context 'when deploy key has project push access' do
-          let(:key) { create(:deploy_key, can_push: true) }
+          let(:key) { create(:deploy_key) }
           let(:authorization) { authorize_deploy_key }
 
           let(:update_user_permissions) do
-            project.deploy_keys << key
+            project.deploy_keys_projects.create(deploy_key: key, can_push: true)
           end
 
           it_behaves_like 'pushes new LFS objects'

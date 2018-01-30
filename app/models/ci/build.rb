@@ -9,6 +9,7 @@ module Ci
 
     MissingDependenciesError = Class.new(StandardError)
 
+    belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
@@ -475,7 +476,7 @@ module Ci
 
       if cache && project.jobs_cache_index
         cache = cache.merge(
-          key: "#{cache[:key]}:#{project.jobs_cache_index}")
+          key: "#{cache[:key]}_#{project.jobs_cache_index}")
       end
 
       [cache]

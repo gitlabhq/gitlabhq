@@ -13,10 +13,24 @@ AllCops:
     - 'db/*'
     - 'db/fixtures/**/*'
     - 'db/geo/*'
+    - 'ee/db/geo/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
     - 'builds/**/*'
+  CacheRootDirectory: tmp
+
+# This cop checks whether some constant value isn't a
+# mutable literal (e.g. array or hash).
+Style/MutableConstant:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/**/*'
+    - 'db/post_migrate/**/*'
+    - 'db/geo/migrate/**/*'
+    - 'ee/db/migrate/**/*'
+    - 'ee/db/post_migrate/**/*'
+    - 'ee/db/geo/migrate/**/*'
 
 # Gitlab ###################################################################
 

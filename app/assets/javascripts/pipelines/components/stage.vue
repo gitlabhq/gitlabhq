@@ -162,7 +162,8 @@
 
     <ul
       class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container"
-      aria-labelledby="stageDropdown">
+      aria-labelledby="stageDropdown"
+    >
 
       <li
         :class="dropdownClass"

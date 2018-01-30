@@ -71,6 +71,7 @@
   # EE-specific queues
   - [ldap_group_sync, 2]
   - [geo, 1]
+  - [repository_remove_remote, 1]
   - [repository_update_mirror, 1]
   - [repository_update_remote_mirror, 1]
   - [project_update_repository_storage, 1]

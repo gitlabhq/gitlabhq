@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+require 'optparse'
+
+options = {}
+
+opt_parser = OptionParser.new do |opt|
+  opt.banner = <<DOCSTRING
+Profile a URL on this GitLab instance.
+
+Usage:
+  #{__FILE__} url --output=<profile-html> --sql=<sql-log> [--user=<user>] [--post=<post-data>]
+
+Example:
+  #{__FILE__} /dashboard/issues --output=dashboard-profile.html --sql=dashboard.log --user=root
+DOCSTRING
+  opt.separator ''
+  opt.separator 'Options:'
+
+  opt.on('-o', '--output=/tmp/profile.html', 'profile output filename') do |output|
+    options[:profile_output] = output
+  end
+
+  opt.on('-s', '--sql=/tmp/profile_sql.txt', 'SQL output filename') do |sql|
+    options[:sql_output] = sql
+  end
+
+  opt.on('-u', '--user=root', 'User to authenticate as') do |username|
+    options[:username] = username
+  end
+
+  opt.on('-p', "--post='user=john&pass=test'", 'Send HTTP POST data') do |post_data|
+    options[:post_data] = post_data
+  end
+end
+
+opt_parser.parse!
+options[:url] = ARGV[0]
+
+if options[:url].nil? ||
+   options[:profile_output].nil? ||
+   options[:sql_output].nil?
+  puts opt_parser
+  exit
+end
+
+require File.expand_path('../config/environment', File.dirname(__FILE__))
+
+result = Gitlab::Profiler.profile(options[:url],
+                                  logger: Logger.new(options[:sql_output]),
+                                  post_data: options[:post_data],
+                                  user: User.find_by_username(options[:username]),
+                                  private_token: ENV['PRIVATE_TOKEN'])
+
+printer = RubyProf::CallStackPrinter.new(result)
+file = File.open(options[:profile_output], 'w')
+printer.print(file)
+file.close

@@ -34,7 +34,10 @@ module Gitlab
 
         feature_enabled = case action.to_s
                           when 'git_receive_pack'
-                            Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                            Gitlab::GitalyClient.feature_enabled?(
+                              :post_receive_pack,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+                            )
                           when 'git_upload_pack'
                             true
                           when 'info_refs'
@@ -97,6 +100,9 @@ module Gitlab
             'GitalyRepository' => repository.gitaly_repository.to_h
           )
         end
+
+        # If present DisableCache must be a Boolean. Otherwise workhorse ignores it.
+        params['DisableCache'] = true if git_archive_cache_disabled?
 
         [
           SEND_DATA_HEADER,
@@ -247,6 +253,10 @@ module Gitlab
           left_commit_id: diff_refs.base_sha,
           right_commit_id: diff_refs.head_sha
         }
+      end
+
+      def git_archive_cache_disabled?
+        ENV['WORKHORSE_ARCHIVE_CACHE_DISABLED'].present? || Feature.enabled?(:workhorse_archive_cache_disabled)
       end
     end
   end

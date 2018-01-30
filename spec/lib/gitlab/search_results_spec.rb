@@ -19,6 +19,12 @@ describe Gitlab::SearchResults do
       project.add_developer(user)
     end
 
+    describe '#objects' do
+      it 'returns without_page collection by default' do
+        expect(results.objects('projects')).to be_kind_of(Kaminari::PaginatableWithoutCount)
+      end
+    end
+
     describe '#projects_count' do
       it 'returns the total amount of projects' do
         expect(results.projects_count).to eq(1)
@@ -40,6 +46,58 @@ describe Gitlab::SearchResults do
     describe '#milestones_count' do
       it 'returns the total amount of milestones' do
         expect(results.milestones_count).to eq(1)
+      end
+    end
+
+    context "when count_limit is lower than total amount" do
+      before do
+        allow(results).to receive(:count_limit).and_return(1)
+      end
+
+      describe '#limited_projects_count' do
+        it 'returns the limited amount of projects' do
+          create(:project, name: 'foo2')
+
+          expect(results.limited_projects_count).to eq(1)
+        end
+      end
+
+      describe '#limited_merge_requests_count' do
+        it 'returns the limited amount of merge requests' do
+          create(:merge_request, :simple, source_project: project, title: 'foo2')
+
+          expect(results.limited_merge_requests_count).to eq(1)
+        end
+      end
+
+      describe '#limited_milestones_count' do
+        it 'returns the limited amount of milestones' do
+          create(:milestone, project: project, title: 'foo2')
+
+          expect(results.limited_milestones_count).to eq(1)
+        end
+      end
+
+      describe '#limited_issues_count' do
+        it 'runs single SQL query to get the limited amount of issues' do
+          create(:milestone, project: project, title: 'foo2')
+
+          expect(results).to receive(:issues).with(public_only: true).and_call_original
+          expect(results).not_to receive(:issues).with(no_args).and_call_original
+
+          expect(results.limited_issues_count).to eq(1)
+        end
+      end
+    end
+
+    context "when count_limit is higher than total amount" do
+      describe '#limited_issues_count' do
+        it 'runs multiple queries to get the limited amount of issues' do
+          expect(results).to receive(:issues).with(public_only: true).and_call_original
+          expect(results).to receive(:issues).with(no_args).and_call_original
+
+          expect(results.limited_issues_count).to eq(1)
+        end
       end
     end
 

@@ -65,6 +65,60 @@ Example response:
 }
 ```
 
+## Edit a Geo node
+
+Updates an existing Geo secondary node. The primary node cannot be edited.
+
+```
+PUT /geo_nodes/:id
+```
+
+| Attribute            | Type    | Required | Description                                                               |
+|----------------------|---------|----------|---------------------------------------------------------------------------|
+| `id`                 | integer | yes      | The ID of the Geo node.                                                   |
+| `enabled`            | boolean | no       | Flag indicating if the Geo node is enabled.                               |
+| `url`                | string  | no       | The URL to connect to the Geo node.                                       |
+| `files_max_capacity` | integer | no       | Control the maximum concurrency of LFS/attachment backfill for this node. |
+| `repos_max_capacity` | integer | no       | Control the maximum concurrency of repository backfill for this node.     |
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "url": "https://primary.example.com/",
+  "primary": true,
+  "enabled": true,
+  "current": true,
+  "files_max_capacity": 10,
+  "repos_max_capacity": 25,
+  "clone_protocol": "http"
+}
+```
+
+## Repair a Geo node
+
+To repair the OAuth authentication of a Geo node.
+
+```
+PUT /geo_nodes/:id/repair
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "url": "https://primary.example.com/",
+  "primary": true,
+  "enabled": true,
+  "current": true,
+  "files_max_capacity": 10,
+  "repos_max_capacity": 25,
+  "clone_protocol": "http"
+}
+```
+
 ## Retrieve status about all secondary Geo nodes
 
 ```

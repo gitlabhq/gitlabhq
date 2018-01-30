@@ -30,12 +30,12 @@ module Geo
       # There is a possibility project does not have repository or wiki
       return true unless gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")
 
-      job_id = ::GeoRepositoryDestroyWorker.perform_async(project.id, project.name, project.full_path)
+      job_id = ::GeoRepositoryDestroyWorker.perform_async(project.id, project.name, project.disk_path, project.repository.storage)
 
       if job_id
-        log_info('Repository cleaned up', project_id: project.id, full_path: project.full_path, job_id: job_id)
+        log_info('Repository cleaned up', project_id: project.id, shard: project.repository.storage, disk_path: project.disk_path, job_id: job_id)
       else
-        log_error('Could not clean up repository', project_id: project.id, full_path: project.full_path)
+        log_error('Could not clean up repository', project_id: project.id, shard: project.repository.storage, disk_path: project.disk_path)
       end
     end
 

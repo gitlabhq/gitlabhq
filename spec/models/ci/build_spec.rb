@@ -26,6 +26,13 @@ describe Ci::Build do
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
+  describe 'associations' do
+    it 'has a bidirectional relationship with projects' do
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
+      expect(Project.reflect_on_association(:builds).has_inverse?).to eq(:project)
+    end
+  end
+
   describe 'callbacks' do
     context 'when running after_create callback' do
       it 'triggers asynchronous build hooks worker' do
@@ -289,7 +296,7 @@ describe Ci::Build do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
-        it { is_expected.to be_an(Array).and all(include(key: "key:1")) }
+        it { is_expected.to be_an(Array).and all(include(key: "key_1")) }
       end
 
       context 'when project does not have jobs_cache_index' do

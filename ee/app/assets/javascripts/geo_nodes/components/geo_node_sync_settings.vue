@@ -32,6 +32,9 @@
       syncType() {
         return this.namespaces.length > 0 ? s__('GeoNodes|Selective') : s__('GeoNodes|Full');
       },
+      eventTimestampEmpty() {
+        return this.lastEvent.timeStamp === 0 || this.cursorLastEvent.timeStamp === 0;
+      },
       syncLagInSeconds() {
         return this.lagInSeconds(this.lastEvent.timeStamp, this.cursorLastEvent.timeStamp);
       },
@@ -79,7 +82,8 @@
         return `${timeAgoStr} (${pendingEvents} events)`;
       },
       statusTooltip(lagInSeconds) {
-        if (lagInSeconds <= TIME_DIFF.FIVE_MINS) {
+        if (this.eventTimestampEmpty ||
+            lagInSeconds <= TIME_DIFF.FIVE_MINS) {
           return '';
         } else if (lagInSeconds > TIME_DIFF.FIVE_MINS &&
                   lagInSeconds <= TIME_DIFF.HOUR) {
@@ -107,6 +111,7 @@
         css-classes="sync-status-icon prepend-left-5"
       />
       <span
+        v-if="!eventTimestampEmpty"
         class="sync-status-event-info prepend-left-5"
       >
         {{ syncStatusEventInfo }}

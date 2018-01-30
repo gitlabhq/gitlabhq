@@ -17,9 +17,9 @@ class RemoteMirror < ActiveRecord::Base
   belongs_to :project, inverse_of: :remote_mirrors
 
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
-
-  validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
   validates :url, addressable_url: true, if: :url_changed?
+
+  before_save :set_new_remote_name, if: :mirror_url_changed?
 
   after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
   after_save :refresh_remote, if: :mirror_url_changed?
@@ -69,8 +69,8 @@ class RemoteMirror < ActiveRecord::Base
     end
   end
 
-  def ref_name
-    "remote_mirror_#{id}"
+  def remote_name
+    super || fallback_remote_name
   end
 
   def update_failed?
@@ -149,7 +149,13 @@ class RemoteMirror < ActiveRecord::Base
   private
 
   def raw
-    @raw ||= Gitlab::Git::RemoteMirror.new(project.repository.raw, ref_name)
+    @raw ||= Gitlab::Git::RemoteMirror.new(project.repository.raw, remote_name)
+  end
+
+  def fallback_remote_name
+    return unless id
+
+    "remote_mirror_#{id}"
   end
 
   def recently_scheduled?
@@ -163,14 +169,6 @@ class RemoteMirror < ActiveRecord::Base
       PROTECTED_BACKOFF_DELAY
     else
       UNPROTECTED_BACKOFF_DELAY
-    end
-  end
-
-  def url_availability
-    return unless project
-
-    if project.import_url == url && project.mirror?
-      errors.add(:url, 'is already in use')
     end
   end
 
@@ -189,16 +187,27 @@ class RemoteMirror < ActiveRecord::Base
     project.update(remote_mirror_available_overridden: enabled)
   end
 
+  def set_new_remote_name
+    self.remote_name = "remote_mirror_#{SecureRandom.hex}"
+  end
+
   def refresh_remote
     return unless project
 
-    project.repository.add_remote(ref_name, url)
+    # Before adding a new remote we have to delete the data from
+    # the previous remote name
+    prev_remote_name = remote_name_was || fallback_remote_name
+    run_after_commit do
+      project.repository.async_remove_remote(prev_remote_name)
+    end
+
+    project.repository.add_remote(remote_name, url)
   end
 
   def remove_remote
-    if project # could be pending to delete so don't need to touch the git repository
-      project.repository.remove_remote(ref_name)
-    end
+    return unless project # could be pending to delete so don't need to touch the git repository
+
+    project.repository.async_remove_remote(remote_name)
   end
 
   def mirror_url_changed?

@@ -26,6 +26,9 @@
         'currentBranchId',
         'rightPanelCollapsed',
       ]),
+      isCommitInfoShown() {
+        return this.rightPanelCollapsed || this.fileList.length;
+      },
     },
     methods: {
       toggleCollapsed() {
@@ -36,7 +39,11 @@
 </script>
 
 <template>
-  <div class="multi-file-commit-list">
+  <div
+    :class="{
+      'multi-file-commit-list': isCommitInfoShown
+    }"
+  >
     <list-collapsed
       v-if="rightPanelCollapsed"
     />
@@ -54,12 +61,6 @@
           />
         </li>
       </ul>
-      <div
-        v-else
-        class="help-block prepend-top-0"
-      >
-        No changes
-      </div>
     </template>
   </div>
 </template>

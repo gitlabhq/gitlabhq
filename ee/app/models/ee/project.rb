@@ -5,6 +5,7 @@ module EE
   # and be prepended in the `Project` model
   module Project
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
 
     prepended do
@@ -267,8 +268,10 @@ module EE
       super
 
       if group && feature_available?(:group_webhooks)
-        group.hooks.__send__(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
-          hook.async_execute(data, hooks_scope.to_s)
+        run_after_commit_or_now do
+          group.hooks.hooks_for(hooks_scope).each do |hook|
+            hook.async_execute(data, hooks_scope.to_s)
+          end
         end
       end
     end
@@ -328,13 +331,7 @@ module EE
     end
 
     def remove_mirror_repository_reference
-      repository.remove_remote(::Repository::MIRROR_REMOTE)
-    end
-
-    def import_url_availability
-      if remote_mirrors.find_by(url: import_url)
-        errors.add(:import_url, 'is already in use by a remote mirror')
-      end
+      repository.async_remove_remote(::Repository::MIRROR_REMOTE)
     end
 
     def username_only_import_url
@@ -415,9 +412,8 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    override :rename_repo
     def rename_repo
-      raise NotImplementedError unless defined?(super)
-
       super
 
       path_was = previous_changes['path'].first

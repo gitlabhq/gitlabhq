@@ -1,5 +1,102 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.4.2 (2018-01-30)
+
+### Fixed (7 changes)
+
+- Fix Epic issue item reordering to handle different scenarios. !4142
+- Fix visually broken admin dashboard until license is added. !4196
+- Handle empty event timestamp and larger memory units. !4206
+- Use a fixed remote name for Geo mirrors. !4249
+- Preserve updated issue order to store when reorder is completed. !4278
+- Geo - Fix OPENSSH_EXPECTED_COMMAND in the geo:check rake task.
+- Execute group hooks after-commit when moving an issue.
+
+
+## 10.4.1 (2018-01-24)
+
+### Fixed (1 change)
+
+- Fix failed LDAP logins when sync_ssh_keys is included in config.
+
+
+## 10.4.0 (2018-01-22)
+
+### Security (2 changes)
+
+- Fix LDAP external user/group bug on first sign in.
+- Deny persisting milestones from outside project/group scope on boards.
+
+### Fixed (19 changes, 1 of them is from the community)
+
+- Issue count now refreshes quicker on geo secondary. !3639
+- Prevent adding same role multiple times on repeated clicks. !3700
+- Geo - Fix difference in FDW / non-FDW queries for Geo::FileRegistry queries. !3714
+- Fix successful rebase throwing flash error message. !3727
+- Fix Merge Rquest widget rebase action in Internet Explorer. !3732
+- Geo - Use relative path for avatar images on a secondary node. !3857
+- Add missing wiki counts to prometheus metrics. !3875
+- Adjust content width for User Settings, Pipeline quota. !3895 (George Tsiolis)
+- Fix a bug where branch could not be delete due to a push rule config. !3900
+- Fix a few doc links to fast ssh key lookup. !3937
+- Handle node details load failure gracefully on UI. !3992
+- Use the fastest available method for various Geo status counts. !4024
+- Fix neutralCount computation to prevent negative values. !4044
+- Fix reordering of items when moved to top or bottom. !4050
+- Geo - Fix repository clean up when selective replication changes with hashed storage enabled. !4059
+- Fix JavaScript bundle running on Cluster update/destroy pages. !4112
+- Record EE instances without a license correctly in usage ping.
+- Fix export to CSV if a filter with multiple labels is used.
+- Stop authorization attempts with instance profile when static credentials are provided for AWS Elasticsearch.
+
+### Changed (6 changes)
+
+- Change MR widget failed icons to warning icons. !3669
+- Show clear message when set-geo-primary-node was successful. !3768
+- More descriptive error when clocks between Geo nodes are out of sync. !3860
+- Allow sidekiq to react to becoming a Geo primary or secondary without a restart. !3878
+- Geo admin screen enhancements. !3902
+- Geo UI polish.
+
+### Added (13 changes)
+
+- Split project repository and wiki repository status in Geo node status. !3560
+- Add reset pipeline minutes button to admin overview of groups and users. !3656
+- Show results from docker image scan in the merge request widget. !3672
+- Geo: Added Authorized Keys specific checks. !3728
+- Add some extra fields to Geo API node and status. !3858
+- Show results from DAST scan in the merge request widget. !3885
+- Add Geo support for CI job artifacts. !3935
+- Make it possible to enable/disable PostgreSQL FDW for Geo. !4020
+- Add support for reordering issues in epics.
+- Check if shard configuration is same across Geo nodes.
+- Add API for epics.
+- Add group boards API endpoint.
+- Add api for epic_issue associations.
+
+### Other (6 changes)
+
+- Document GitLab Geo with Object Storage. !3760
+- Update disaster recovery documentation with detailed steps. !3845
+- Fix broken alignment of database password in geo docs. !3939
+- Remove unnecessary NTP checks now included in gitlab:geo:check. !3940
+- Move geo status check after db replication to avoid anticipated failures. !3941
+- Make scoped issue board specs more reliable.
+
+
+## 10.3.6 (2018-01-22)
+
+### Fixed (3 changes)
+
+- Geo - Fix repository clean up when selective replication changes with hashed storage enabled. !4059
+- Fix JavaScript bundle running on Cluster update/destroy pages. !4112
+- Fix export to CSV if a filter with multiple labels is used.
+
+
+## 10.3.5 (2018-01-18)
+
+- No changes.
+
 ## 10.3.4 (2018-01-10)
 
 ### Security (2 changes)
@@ -87,6 +184,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Document how to set up GitLab Geo for HA. !3468
 - Add border for epic edit button.
 
+
+## 10.2.7 (2018-01-18)
+
+- No changes.
 
 ## 10.2.6 (2018-01-11)
 
@@ -199,6 +300,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Suppress MergeableSelector warning candidates in EE-only files. !3225 (Takuya Noguchi)
 - Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
 
+
+## 10.1.7 (2018-01-18)
+
+- No changes.
 
 ## 10.1.6 (2018-01-11)
 
@@ -343,6 +448,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: When MR approvals are disabled, but approvers were previously assigned, all approvers receive a notification on every MR.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
+
+## 9.5.10 (2017-11-08)
+
+- [SECURITY] Ensure GitLab Geo JSON web tokens expire after 2 minutes.
 
 ## 9.5.9 (2017-10-16)
 

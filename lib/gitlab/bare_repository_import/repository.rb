@@ -1,6 +1,10 @@
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/953
+#
 module Gitlab
   module BareRepositoryImport
     class Repository
+      include ::Gitlab::Utils::StrongMemoize
+
       attr_reader :group_path, :project_name, :repo_path
 
       def initialize(root_path, repo_path)
@@ -41,11 +45,15 @@ module Gitlab
       private
 
       def wiki?
-        @wiki ||= repo_path.end_with?('.wiki.git')
+        strong_memoize(:wiki) do
+          repo_path.end_with?('.wiki.git')
+        end
       end
 
       def hashed?
-        @hashed ||= repo_relative_path.include?('@hashed')
+        strong_memoize(:hashed) do
+          repo_relative_path.include?('@hashed')
+        end
       end
 
       def repo_relative_path

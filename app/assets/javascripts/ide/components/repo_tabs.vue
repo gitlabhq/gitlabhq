@@ -20,7 +20,7 @@
   >
     <repo-tab
       v-for="tab in openFiles"
-      :key="tab.id"
+      :key="tab.key"
       :tab="tab"
     />
   </ul>

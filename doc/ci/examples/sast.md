@@ -1,4 +1,4 @@
-# Static application security testing with GitLab CI/CD
+# Static Application Security Testing with GitLab CI/CD
 
 NOTE: **Note:**
 In order to use this tool, a [GitLab Enterprise Edition Ultimate][ee] license
@@ -36,7 +36,7 @@ The results are sorted by the priority of the vulnerability:
 1. Everything else
 
 TIP: **Tip:**
-Starting with GitLab Enterprise Edition Ultimate 10.3, this information will
+Starting with [GitLab Enterprise Edition Ultimate][ee] 10.3, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI job must be named `sast` and the artifact path must be
 `gl-sast-report.json`.

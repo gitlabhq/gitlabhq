@@ -1,10 +1,14 @@
 <script>
+  import tooltip from '../directives/tooltip';
   /**
    * Falls back to the code used in `copy_to_clipboard.js`
    */
 
   export default {
     name: 'ClipboardButton',
+    directives: {
+      tooltip,
+    },
     props: {
       text: {
         type: String,
@@ -14,6 +18,16 @@
         type: String,
         required: true,
       },
+      tooltipPlacement: {
+        type: String,
+        required: false,
+        default: 'top',
+      },
+      tooltipContainer: {
+        type: [String, Boolean],
+        required: false,
+        default: false,
+      },
     },
   };
 </script>
@@ -22,8 +36,11 @@
   <button
     type="button"
     class="btn btn-transparent btn-clipboard"
-    :data-title="title"
+    :title="title"
     :data-clipboard-text="text"
+    v-tooltip
+    :data-container="tooltipContainer"
+    :data-placement="tooltipPlacement"
   >
     <i
       aria-hidden="true"

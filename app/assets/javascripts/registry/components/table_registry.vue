@@ -96,7 +96,8 @@
             <span
               v-tooltip
               :title="item.revision"
-              data-placement="bottom">
+              data-placement="bottom"
+            >
               {{ item.shortRevision }}
             </span>
           </td>
@@ -121,10 +122,12 @@
               :aria-label="s__('ContainerRegistry|Remove tag')"
               data-container="body"
               v-tooltip
-              @click="handleDeleteRegistry(item)">
+              @click="handleDeleteRegistry(item)"
+            >
               <i
                 class="fa fa-trash"
-                aria-hidden="true">
+                aria-hidden="true"
+              >
               </i>
             </button>
           </td>

@@ -283,9 +283,9 @@ describe('Api', () => {
     it('fetches an issue template', (done) => {
       const namespace = 'some namespace';
       const project = 'some project';
-      const templateKey = 'template key';
+      const templateKey = ' template #%?.key ';
       const templateType = 'template type';
-      const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}/${templateKey}`;
+      const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}/${encodeURIComponent(templateKey)}`;
       spyOn(jQuery, 'ajax').and.callFake((request) => {
         expect(request.url).toEqual(expectedUrl);
         return sendDummyResponse();

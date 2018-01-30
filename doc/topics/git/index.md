@@ -44,7 +44,7 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 
 ## Troubleshooting Git
 
-- [Numerous _undo_ possibilities in Git](../../articles/numerous_undo_possibilities_in_git/index.md)
+- [Numerous _undo_ possibilities in Git](numerous_undo_possibilities_in_git/index.md)
 - Learn a few [Git troubleshooting](troubleshooting_git.md) techniques to help you out.
 
 ## Branching strategies

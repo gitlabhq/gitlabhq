@@ -3,13 +3,12 @@
   import { s__ } from '../../locale';
 
   /**
-   * Renders the external url link in environments table.
-   */
+  * Renders the external url link in environments table.
+  */
   export default {
     directives: {
       tooltip,
     },
-
     props: {
       externalUrl: {
         type: String,

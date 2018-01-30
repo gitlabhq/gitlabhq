@@ -1,7 +1,7 @@
 <script>
-  import playIconSvg from 'icons/_icon_play.svg';
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import icon from '../../vue_shared/components/icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
@@ -10,6 +10,7 @@
     },
     components: {
       loadingIcon,
+      icon,
     },
     props: {
       actions: {
@@ -19,7 +20,6 @@
     },
     data() {
       return {
-        playIconSvg,
         isLoading: false,
       };
     },
@@ -52,7 +52,10 @@
       aria-label="Manual job"
       :disabled="isLoading"
     >
-      <span v-html="playIconSvg"></span>
+      <icon
+        name="play"
+        class="icon-play"
+      />
       <i
         class="fa fa-caret-down"
         aria-hidden="true">

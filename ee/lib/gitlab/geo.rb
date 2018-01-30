@@ -65,12 +65,20 @@ module Gitlab
       ::License.feature_available?(:geo)
     end
 
-    def self.fdw?
-      self.cache_value(:geo_fdw?) do
-        ::Geo::BaseRegistry.connection.execute(
+    def self.fdw_capable?
+      self.cache_value(:geo_fdw_capable?) do
+        ::Geo::TrackingBase.connection.execute(
           "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{FDW_SCHEMA}' AND table_type = 'FOREIGN TABLE'"
         ).first.fetch('count').to_i.positive?
       end
+    end
+
+    def self.fdw?
+      return false unless self.fdw_capable?
+
+      # FDW is enabled by default, disable it by setting `fdw: false` in config/database_geo.yml
+      value = Rails.configuration.geo_database['fdw']
+      value.nil? ? true : value
     end
 
     def self.fdw_table(table_name)

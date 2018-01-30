@@ -37,6 +37,9 @@ export default {
     },
   },
   computed: {
+    neutralCount() {
+      return this.totalCount - this.successCount - this.failureCount;
+    },
     successPercent() {
       return this.getPercent(this.successCount);
     },
@@ -56,14 +59,13 @@ export default {
       return this.getTooltip(this.failureLabel, this.failureCount);
     },
     neutralPercent() {
-      return 100 - this.successPercent - this.failurePercent;
+      return this.getPercent(this.neutralCount);
     },
     neutralBarStyle() {
       return this.barStyle(this.neutralPercent);
     },
     neutralTooltip() {
-      const neutralCount = this.totalCount - this.successCount - this.failureCount;
-      return this.getTooltip(this.neutralLabel, neutralCount);
+      return this.getTooltip(this.neutralLabel, this.neutralCount);
     },
   },
   methods: {

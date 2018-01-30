@@ -70,7 +70,7 @@ POST /projects/:id/milestones
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `title` (required) - The title of an milestone
+- `title` (required) - The title of a milestone
 - `description` (optional) - The description of the milestone
 - `due_date` (optional) - The due date of the milestone
 - `start_date` (optional) - The start date of the milestone
@@ -92,6 +92,19 @@ Parameters:
 - `due_date` (optional) - The due date of the milestone
 - `start_date` (optional) - The start date of the milestone
 - `state_event` (optional) - The state event of the milestone (close|activate)
+
+## Delete project milestone
+
+Only for user with developer access to the project.
+
+```
+DELETE /projects/:id/milestones/:milestone_id
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of the project's milestone
 
 ## Get all issues assigned to a single milestone
 

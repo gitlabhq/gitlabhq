@@ -87,10 +87,11 @@ class NotificationService
     recipients.each do |recipient|
       mailer.send(
         :reassigned_issue_email,
-        recipient.id,
+        recipient.user.id,
         issue.id,
         previous_assignee_ids,
-        current_user.id
+        current_user.id,
+        recipient.reason
       ).deliver_later
     end
   end
@@ -195,7 +196,7 @@ class NotificationService
       action: "resolve_all_discussions")
 
     recipients.each do |recipient|
-      mailer.resolved_all_discussions_email(recipient.id, merge_request.id, current_user.id).deliver_later
+      mailer.resolved_all_discussions_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -222,7 +223,7 @@ class NotificationService
 
     recipients = NotificationRecipientService.build_new_note_recipients(note)
     recipients.each do |recipient|
-      mailer.send(notify_method, recipient.id, note.id).deliver_later
+      mailer.send(notify_method, recipient.user.id, note.id).deliver_later
     end
   end
 
@@ -322,7 +323,7 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(issue, current_user, action: 'moved')
 
     recipients.map do |recipient|
-      email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)
+      email = mailer.issue_moved_email(recipient.user, issue, new_issue, current_user, recipient.reason)
       email.deliver_later
       email
     end
@@ -362,16 +363,16 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(target, target.author, action: "new")
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, recipient.reason).deliver_later
     end
   end
 
   def new_mentions_in_resource_email(target, new_mentioned_users, current_user, method)
     recipients = NotificationRecipientService.build_recipients(target, current_user, action: "new")
-    recipients = recipients & new_mentioned_users
+    recipients = recipients.select {|r| new_mentioned_users.include?(r.user) }
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -386,7 +387,7 @@ class NotificationService
     )
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -404,10 +405,11 @@ class NotificationService
     recipients.each do |recipient|
       mailer.send(
         method,
-        recipient.id,
+        recipient.user.id,
         target.id,
         previous_assignee_id,
-        current_user.id
+        current_user.id,
+        recipient.reason
       ).deliver_later
     end
   end
@@ -431,7 +433,7 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(target, current_user, action: "reopen")
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
+      mailer.send(method, recipient.user.id, target.id, status, current_user.id, recipient.reason).deliver_later
     end
   end
 
@@ -439,7 +441,7 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(merge_request, current_user, action: 'approve')
 
     recipients.each do |recipient|
-      mailer.approved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
+      mailer.approved_merge_request_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
     end
   end
 
@@ -447,7 +449,7 @@ class NotificationService
     recipients = NotificationRecipientService.build_recipients(merge_request, current_user, action: 'unapprove')
 
     recipients.each do |recipient|
-      mailer.unapproved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
+      mailer.unapproved_merge_request_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
     end
   end
 

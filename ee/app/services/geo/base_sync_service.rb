@@ -13,6 +13,7 @@ module Geo
 
     attr_reader :project
 
+    GEO_REMOTE_NAME = 'geo'.freeze
     LEASE_TIMEOUT    = 8.hours.freeze
     LEASE_KEY_PREFIX = 'geo_sync_service'.freeze
     RETRY_BEFORE_REDOWNLOAD = 5
@@ -82,7 +83,9 @@ module Geo
       authorization = ::Gitlab::Geo::BaseRequest.new.authorization
       header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
 
-      repository.with_config(header) { repository.fetch_as_mirror(url, forced: true) }
+      repository.with_config(header) do
+        repository.fetch_as_mirror(url, remote_name: GEO_REMOTE_NAME, forced: true)
+      end
     end
 
     def registry

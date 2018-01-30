@@ -5,12 +5,15 @@ import { mockNodeDetails } from '../mock_data';
 
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-const createComponent = () => {
+const createComponent = (
+  eventId = mockNodeDetails.lastEvent.id,
+  eventTimeStamp = mockNodeDetails.lastEvent.timeStamp,
+) => {
   const Component = Vue.extend(geoNodeEventStatusComponent);
 
   return mountComponent(Component, {
-    eventId: mockNodeDetails.lastEvent.id,
-    eventTimeStamp: mockNodeDetails.lastEvent.timeStamp,
+    eventId,
+    eventTimeStamp,
   });
 };
 
@@ -45,6 +48,14 @@ describe('GeoNodeEventStatus', () => {
       expect(vm.$el.querySelectorAll('strong').length).not.toBe(0);
       expect(vm.$el.querySelector('strong').innerText.trim()).toBe(`${mockNodeDetails.lastEvent.id}`);
       expect(vm.$el.querySelector('.event-status-timestamp').innerText).toContain('ago');
+    });
+
+    it('renders empty state when timestamp is not present', () => {
+      const vmWithoutTimestamp = createComponent(0, 0);
+      expect(vmWithoutTimestamp.$el.querySelectorAll('strong').length).not.toBe(0);
+      expect(vmWithoutTimestamp.$el.querySelectorAll('.event-status-timestamp').length).toBe(0);
+      expect(vmWithoutTimestamp.$el.querySelector('strong').innerText.trim()).toBe('Not available');
+      vmWithoutTimestamp.$destroy();
     });
   });
 });

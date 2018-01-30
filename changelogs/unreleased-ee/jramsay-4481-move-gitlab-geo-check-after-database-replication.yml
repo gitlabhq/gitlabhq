@@ -1,5 +1,0 @@
----
-title: Move geo status check after db replication to avoid anticipated failures
-merge_request: 3941
-author:
-type: other

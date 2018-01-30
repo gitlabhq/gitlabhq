@@ -14,6 +14,33 @@ all you need to do is update GitLab itself:
    the tracking database is enabled.
 1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
 
+## Upgrading to GitLab 10.5
+
+For Geo Disaster Recovery to work with minimum downtime, your Geo secondary
+should use the same set of secrets as the primary. However, setup instructions
+prior to the 10.5 release only synchronized the `db_key_base` secret.
+
+To rectify this error on existing installations, you should **overwrite** the
+contents of `/etc/gitlab/gitlab-secrets.json` on the secondary node with the
+contents of `/etc/gitlab/gitlab-secrets.json` on the primary node, then run the
+following command on the secondary node:
+
+```bash
+sudo gitlab-ctl reconfigure
+```
+
+If you do not perform this step, you may find that two-factor authentication
+[is broken following DR](faq.md#i-followed-the-disaster-recovery-instructions-and-now-two-factor-auth-is-broken).
+
+To prevent SSH requests to the newly promoted primary node from failing
+due to SSH host key mismatch when updating the primary domain's DNS record
+you should perform the step to [Manually replicate primary SSH host keys](configuration.md#step-2-manually-replicate-primary-ssh-host-keys) in each
+secondary node.
+
+## Upgrading to GitLab 10.4
+
+There are no Geo-specific steps to take!
+
 ## Upgrading to GitLab 10.3
 
 ### Support for SSH repository synchronization removed
@@ -22,7 +49,7 @@ In GitLab 10.2, synchronizing secondaries over SSH was deprecated. In 10.3,
 support is removed entirely. All installations will switch to the HTTP/HTTPS
 cloning method instead. Before upgrading, ensure that all your Geo nodes are
 configured to use this method and that it works for your installation. In
-particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-4-enable-git-access-over-http-https).
+particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-5-enable-git-access-over-http-https).
 
 Synchronizing repositories over the public Internet using HTTP is insecure, so
 you should ensure that you have HTTPS configured before upgrading. Note that
@@ -30,7 +57,7 @@ file synchronization is **also** insecure in these cases!
 
 ## Upgrading to GitLab 10.2
 
-### Secure PostgreSQL replication 
+### Secure PostgreSQL replication
 
 Support for TLS-secured PostgreSQL replication has been added. If you are
 currently using PostgreSQL replication across the open internet without an

@@ -1,7 +1,7 @@
 - admin_without_ee_license = !current_license && current_user.admin?
 
 .blank-state-parent-container{ class: ('has-start-trial-container' if admin_without_ee_license) }
-  .section-container.section-welcome{ class: ('col-md-6' if admin_without_ee_license) }
+  .section-container.section-welcome
     .container.section-body
       .row
         .blank-state-welcome

@@ -341,7 +341,7 @@ X-Gitlab-Event: Issue Hook
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
 The note data will be stored in `object_attributes` (e.g. `note`, `noteable_type`). The
 payload will also include information about the target of the comment. For example,
-a comment on a issue will include the specific issue information under the `issue` key.
+a comment on an issue will include the specific issue information under the `issue` key.
 Valid target types:
 
 1. `commit`

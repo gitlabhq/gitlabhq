@@ -1,5 +1,0 @@
----
-title: Upgrade Ruby to 2.3.6 to include security patches
-merge_request: 16016
-author:
-type: security

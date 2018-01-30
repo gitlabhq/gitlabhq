@@ -7,7 +7,7 @@ describe SystemCheck::Geo::AuthorizedKeysCheck do
 
     before do
       allow(File).to receive(:file?).and_call_original # provides a default behavior when mocking
-      allow(File).to receive(:file?).with('/opt/gitlab-shell/authorized_keys') { true }
+      allow(File).to receive(:file?).with('/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check') { true }
     end
 
     context 'OpenSSH config file' do
@@ -106,7 +106,7 @@ describe SystemCheck::Geo::AuthorizedKeysCheck do
     it 'returns correct (uncommented) command' do
       override_sshd_config('system_check/sshd_config')
 
-      expect(subject.extract_authorized_keys_command).to eq('/opt/gitlab-shell/authorized_keys %u %k')
+      expect(subject.extract_authorized_keys_command).to eq('/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k')
     end
 
     it 'returns command without comments and without quotes' do

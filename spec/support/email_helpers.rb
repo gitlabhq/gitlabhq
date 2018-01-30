@@ -30,4 +30,8 @@ module EmailHelpers
   def email_recipients(kind: :to)
     ActionMailer::Base.deliveries.flat_map(&kind)
   end
+
+  def find_email_for(user)
+    ActionMailer::Base.deliveries.find { |d| d.to.include?(user.notification_email) }
+  end
 end

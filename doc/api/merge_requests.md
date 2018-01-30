@@ -474,6 +474,30 @@ Parameters:
 }
 ```
 
+## List MR pipelines
+
+Get a list of merge request pipelines.
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/pipelines
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
+
+```json
+[
+  {
+    "id": 77,
+    "sha": "959e04d7c7a30600c894bd3c0cd0e1ce7f42c11d",
+    "ref": "master",
+    "status": "success"
+  }
+]
+```
+
 ## Create MR
 
 Creates a new merge request.
@@ -586,7 +610,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `title`                | string  | no       | Title of MR                                                                     |
 | `assignee_id`          | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
 | `milestone_id`         | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
-| `labels`               | string  | no       | Comma-separated label names for an merge request. Set to an empty string to unassign all labels.                   |
+| `labels`               | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
 | `description`          | string  | no       | Description of MR                                                               |
 | `state_event`          | string  | no       | New state (close/reopen)                                                        |
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |

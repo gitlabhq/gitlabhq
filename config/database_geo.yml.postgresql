@@ -9,6 +9,7 @@ production:
   username: git
   password: "secure password"
   host: localhost
+  fdw: true
 
 #
 # Development specific
@@ -21,6 +22,7 @@ development:
   username: postgres
   password: "secure password"
   host: localhost
+  fdw: true
 
 #
 # Staging specific
@@ -33,6 +35,7 @@ staging:
   username: git
   password: "secure password"
   host: localhost
+  fdw: true
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -45,3 +48,4 @@ test: &test
   username: postgres
   password:
   host: localhost
+  fdw: true

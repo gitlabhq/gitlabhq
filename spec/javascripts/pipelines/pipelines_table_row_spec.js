@@ -24,9 +24,10 @@ describe('Pipelines Table Row', () => {
 
   beforeEach(() => {
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;
-    pipeline = pipelines.find(p => p.id === 1);
-    pipelineWithoutAuthor = pipelines.find(p => p.id === 2);
-    pipelineWithoutCommit = pipelines.find(p => p.id === 3);
+
+    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
+    pipelineWithoutAuthor = pipelines.find(p => p.user === null && p.commit !== null);
+    pipelineWithoutCommit = pipelines.find(p => p.user === null && p.commit === null);
   });
 
   afterEach(() => {

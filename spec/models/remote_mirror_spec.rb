@@ -68,7 +68,36 @@ describe RemoteMirror do
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
         config = repo.raw_repository.rugged.config
-        expect(config["remote.#{mirror.ref_name}.url"]).to eq('http://foo:baz@test.com')
+        expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
+      end
+    end
+  end
+
+  describe '#remote_name' do
+    context 'when remote name is persisted in the database' do
+      it 'returns remote name with random value' do
+        allow(SecureRandom).to receive(:hex).and_return('secret')
+
+        remote_mirror = create(:remote_mirror)
+
+        expect(remote_mirror.remote_name).to eq("remote_mirror_secret")
+      end
+    end
+
+    context 'when remote name is not persisted in the database' do
+      it 'returns remote name with remote mirror id' do
+        remote_mirror = create(:remote_mirror)
+        remote_mirror.remote_name = nil
+
+        expect(remote_mirror.remote_name).to eq("remote_mirror_#{remote_mirror.id}")
+      end
+    end
+
+    context 'when remote is not persisted in the database' do
+      it 'returns nil' do
+        remote_mirror = build(:remote_mirror, remote_name: nil)
+
+        expect(remote_mirror.remote_name).to be_nil
       end
     end
   end

@@ -132,14 +132,17 @@ $(() => {
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
           newIssue.setFetchingState('weight', true);
+          newIssue.setFetchingState('epic', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
             .then((data) => {
               newIssue.setFetchingState('subscriptions', false);
               newIssue.setFetchingState('weight', false);
+              newIssue.setFetchingState('epic', false);
               newIssue.updateData({
                 subscribed: data.subscribed,
                 weight: data.weight,
+                epic: data.epic,
               });
             })
             .catch(() => {

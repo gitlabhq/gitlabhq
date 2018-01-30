@@ -8,6 +8,10 @@ describe Geo::RenameRepositoryService do
   subject(:service) { described_class.new(project.id, old_path, new_path) }
 
   describe '#execute' do
+    before do
+      TestEnv.clean_test_path
+    end
+
     context 'project backed by legacy storage' do
       it 'moves the project repositories' do
         expect_any_instance_of(Geo::MoveRepositoryService).to receive(:execute)

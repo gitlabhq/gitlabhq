@@ -10,13 +10,15 @@
     %p.light.append-bottom-0
       Paste a machine public key here. Read more about how to generate it
       = link_to "here", help_page_path("ssh/README")
-  .form-group
-    .checkbox
-      = f.label :can_push do
-        = f.check_box :can_push
-        %strong Write access allowed
-  .form-group
-    %p.light.append-bottom-0
-      Allow this key to push to repository as well? (Default only allows pull access.)
+
+  = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
+    .form-group
+      .checkbox
+        = deploy_keys_project_form.label :can_push do
+          = deploy_keys_project_form.check_box :can_push
+          %strong Write access allowed
+    .form-group
+      %p.light.append-bottom-0
+        Allow this key to push to repository as well? (Default only allows pull access.)
 
   = f.submit "Add key", class: "btn-create btn"

@@ -115,6 +115,7 @@ module API
 
     # Keep in alphabetical order
     mount ::API::AccessRequests
+    mount ::API::Applications
     mount ::API::AwardEmoji
     mount ::API::Boards
     mount ::API::Branches
