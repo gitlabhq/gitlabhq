@@ -10,7 +10,7 @@ describe CalloutsHelper do
   describe '.show_gke_cluster_integration_callout?' do
     let(:project) { create(:project) }
 
-    subject { helper.show_gke_cluster_integration_callout?('test_name', project) }
+    subject { helper.show_gke_cluster_integration_callout?(project) }
 
     context 'when user has not dismissed' do
       before do
