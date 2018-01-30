@@ -6,8 +6,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     super(data);
 
     const blobPath = data.blob_path || {};
-    this.headBlobPath = blobPath.head || '';
-    this.baseBlobPath = blobPath.base || '';
+    this.headBlobPath = blobPath.head_path || '';
+    this.baseBlobPath = blobPath.base_path || '';
 
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
