@@ -97,21 +97,6 @@ module QA
         views.map(&:errors).flatten
       end
 
-      # Not tested and not expected to work with multiple dropzones
-      # instantiated on one page because there is no distinguishing
-      # attribute per dropzone file field.
-      def attach_file_to_dropzone(attachment, dropzone_form_container)
-        filename = File.basename(attachment)
-
-        field_style = { visibility: 'visible', height: '', width: '' }
-        attach_file(attachment, class: 'dz-hidden-input', make_visible: field_style)
-
-        # Wait for link to be appended to dropzone text
-        wait(reload: false) do
-          find("#{dropzone_form_container} textarea").value.match(filename)
-        end
-      end
-
       class DSL
         attr_reader :views
 
