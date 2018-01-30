@@ -102,6 +102,18 @@ describe Projects::IssuesController do
 
         expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
+
+      it 'does not use pagination if disabled' do
+        allow(controller).to receive(:pagination_disabled?).and_return(true)
+
+        get :index,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          page: (last_page + 1).to_param
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:issues).size).to eq(2)
+      end
     end
   end
 
