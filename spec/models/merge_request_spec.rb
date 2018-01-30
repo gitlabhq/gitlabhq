@@ -1539,7 +1539,7 @@ describe MergeRequest do
       expect { subject.reload_diff }.to change { subject.merge_request_diffs.count }.by(1)
     end
 
-    it "executs diff cache service" do
+    it "executes diff cache service" do
       expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
 
       subject.reload_diff

@@ -304,7 +304,7 @@ GEM
       mime-types (>= 1.16)
       posix-spawn (~> 0.3)
     gitlab-markup (1.6.3)
-    gitlab-styles (2.3.1)
+    gitlab-styles (2.3.2)
       rubocop (~> 0.51)
       rubocop-gitlab-security (~> 0.1.0)
       rubocop-rspec (~> 1.19)
