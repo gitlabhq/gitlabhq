@@ -119,10 +119,25 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    if build.trace.exist?
-      send_data build.trace.raw, type: 'text/plain; charset=utf-8', :disposition => 'inline'
+    if trace_artifact
+      send_upload(trace_artifact.file,
+        send_params:
+          {
+            type: 'text/plain; charset=utf-8',
+            disposition: 'inline'
+          },
+        redirect_params:
+          {
+            query: { "response-content-disposition" => "inline" }
+          } )
     else
-      render_404
+      build.trace.read do |stream|
+        if stream.file?
+          send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+        else
+          render_404
+        end
+      end
     end
   end
 
