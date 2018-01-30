@@ -6,10 +6,7 @@ class Projects::VariablesController < Projects::ApplicationController
   def show
     respond_to do |format|
       format.json do
-        variables = @project.variables
-          .map { |variable| variable.present(current_user: current_user) }
-
-        render status: :ok, json: { variables: VariableSerializer.new.represent(variables) }
+        render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
       end
     end
   end
@@ -18,10 +15,7 @@ class Projects::VariablesController < Projects::ApplicationController
     respond_to do |format|
       format.json do
         if @project.update(variables_params)
-          variables = @project.variables
-            .map { |variable| variable.present(current_user: current_user) }
-
-          return render status: :ok, json: { variables: VariableSerializer.new.represent(variables) }
+          return render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
         end
 
         render status: :bad_request, json: @project.errors.full_messages
