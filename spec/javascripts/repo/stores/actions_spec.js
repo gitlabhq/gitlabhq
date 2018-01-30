@@ -270,13 +270,10 @@ describe('Multi-file store actions', () => {
           }).catch(done.fail);
       });
 
-      it('shows flash notice', (done) => {
+      it('sets last Commit Msg', (done) => {
         store.dispatch('commitChanges', { payload, newMr: false })
           .then(() => {
-            const alert = document.querySelector('.flash-container');
-
-            expect(alert.querySelector('.flash-notice')).not.toBeNull();
-            expect(alert.textContent.trim()).toBe(
+            expect(store.state.lastCommitMsg).toBe(
               'Your changes have been committed. Commit 123 with 1 additions, 2 deletions.',
             );
 

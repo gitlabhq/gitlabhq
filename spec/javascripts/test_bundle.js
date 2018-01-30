@@ -5,6 +5,8 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
+import { getDefaultAdapter } from '~/lib/utils/axios_utils';
+
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
 Vue.config.productionTip = false;
@@ -58,6 +60,8 @@ beforeEach(() => {
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
 });
 
+const axiosDefaultAdapter = getDefaultAdapter();
+
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function (path) {
@@ -92,6 +96,12 @@ describe('test errors', () => {
 
   it('has no Vue error', () => {
     expect(hasVueErrors).toBe(false);
+  });
+
+  it('restores axios adapter after mocking', () => {
+    if (getDefaultAdapter() !== axiosDefaultAdapter) {
+      fail('axios adapter is not restored! Did you forget a restore() on MockAdapter?');
+    }
   });
 });
 

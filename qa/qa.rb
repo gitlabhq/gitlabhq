@@ -28,6 +28,7 @@ module QA
       autoload :Sandbox, 'qa/factory/resource/sandbox'
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
@@ -107,6 +108,12 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+      autoload :Activity, 'qa/page/project/activity'
+
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
 
       module Pipeline
         autoload :Index, 'qa/page/project/pipeline/index'
@@ -127,6 +134,10 @@ module QA
 
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+    end
+
+    module MergeRequest
+      autoload :New, 'qa/page/merge_request/new'
     end
 
     module Admin

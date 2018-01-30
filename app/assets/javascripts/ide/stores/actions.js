@@ -110,15 +110,7 @@ export const commitChanges = (
       if (data.stats) {
         commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
       }
-
-      flash(
-        commitMsg,
-        'notice',
-        document,
-        null,
-        false,
-        true);
-      window.dispatchEvent(new Event('resize'));
+      commit(types.SET_LAST_COMMIT_MSG, commitMsg);
 
       if (newMr) {
         dispatch('discardAllChanges');
