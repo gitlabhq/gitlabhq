@@ -792,7 +792,7 @@
     margin: $gl-padding -16px -16px;
 
     .mr-widget-code-quality-info {
-      padding-left: 12px;
+      padding-left: 10px;
     }
 
     .mr-widget-dast-code {
@@ -801,7 +801,7 @@
 
     .mr-widget-code-quality-list {
       list-style: none;
-      padding: 0 9px;
+      padding: 0 2px 0 0;
       margin: 0;
       line-height: $code_line_height;
 
@@ -818,11 +818,11 @@
       }
 
       .neutral .mr-widget-code-quality-icon {
-        color: $gl-gray-light;
+        color: $theme-gray-700;
       }
 
       .mr-widget-code-quality-icon {
-        margin: 3px 12px 0 0;
+        margin: -5px 4px 0 0;
         fill: currentColor;
       }
     }

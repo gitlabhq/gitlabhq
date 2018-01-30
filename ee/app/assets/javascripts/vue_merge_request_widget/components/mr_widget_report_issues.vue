@@ -125,6 +125,7 @@
       <icon
         class="mr-widget-code-quality-icon"
         :name="iconName"
+        size="32"
       />
 
       <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
