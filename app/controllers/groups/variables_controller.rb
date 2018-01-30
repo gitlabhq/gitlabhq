@@ -5,10 +5,7 @@ module Groups
     def show
       respond_to do |format|
         format.json do
-          variables = @group.variables
-            .map { |variable| variable.present(current_user: current_user) }
-
-          render status: :ok, json: { variables: GroupVariableSerializer.new.represent(variables) }
+          render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) }
         end
       end
     end
@@ -17,10 +14,7 @@ module Groups
       respond_to do |format|
         format.json do
           if @group.update(variables_params)
-            variables = @group.variables
-              .map { |variable| variable.present(current_user: current_user) }
-
-            return render status: :ok, json: { variables: GroupVariableSerializer.new.represent(variables) }
+            return render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) }
           end
 
           render status: :bad_request, json: @group.errors.full_messages
