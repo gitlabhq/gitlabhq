@@ -215,8 +215,8 @@ export default {
     base_path: "base.json",
   },
   blob_path: {
-    base: 'blob_path',
-    head: 'blob_path',
+    base_path: 'blob_path',
+    head_path: 'blob_path',
   },
 };
 
