@@ -551,29 +551,34 @@ module Gitlab
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
-      def merge_base_commit(from, to)
+      def merge_base(from, to)
         gitaly_migrate(:merge_base) do |is_enabled|
           if is_enabled
             gitaly_repository_client.find_merge_base(from, to)
           else
-            rugged.merge_base(from, to)
+            rugged_merge_base(from, to)
           end
         end
       end
-      alias_method :merge_base, :merge_base_commit
 
       # Gitaly note: JV: check gitlab-ee before removing this method.
       def rugged_is_ancestor?(ancestor_id, descendant_id)
         return false if ancestor_id.nil? || descendant_id.nil?
 
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+        rugged_merge_base(ancestor_id, descendant_id) == ancestor_id
       rescue Rugged::OdbError
         false
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def ancestor?(from, to)
-        gitaly_commit_client.ancestor?(from, to)
+        Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.ancestor?(from, to)
+          else
+            rugged_is_ancestor?(from, to)
+          end
+        end
       end
 
       def merged_branch_names(branch_names = [])
@@ -680,11 +685,7 @@ module Gitlab
           if is_enabled
             gitaly_commit_client.commit_count(ref)
           else
-            walker = Rugged::Walker.new(rugged)
-            walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
-            oid = rugged.rev_parse_oid(ref)
-            walker.push(oid)
-            walker.count
+            rugged_commit_count(ref)
           end
         end
       end
@@ -1131,13 +1132,6 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git_with_timeout(args, timeout, env: {})
-        circuit_breaker.perform do
-          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
-        end
-      end
-
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def commit(ref = 'HEAD')
         Gitlab::Git::Commit.find(self, ref)
       end
@@ -1417,6 +1411,26 @@ module Gitlab
         output
       end
 
+      def can_be_merged?(source_sha, target_branch)
+        gitaly_migrate(:can_be_merged) do |is_enabled|
+          if is_enabled
+            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
+          else
+            rugged_can_be_merged?(source_sha, target_branch)
+          end
+        end
+      end
+
+      def last_commit_id_for_path(sha, path)
+        gitaly_migrate(:last_commit_for_path) do |is_enabled|
+          if is_enabled
+            last_commit_for_path_by_gitaly(sha, path).id
+          else
+            last_commit_id_for_path_by_shelling_out(sha, path)
+          end
+        end
+      end
+
       private
 
       def shell_write_ref(ref_path, ref, old_ref)
@@ -1458,6 +1472,12 @@ module Gitlab
         raise GitError, output unless status.zero?
 
         output
+      end
+
+      def run_git_with_timeout(args, timeout, env: {})
+        circuit_breaker.perform do
+          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
+        end
       end
 
       def fresh_worktree?(path)
@@ -2160,7 +2180,7 @@ module Gitlab
 
           source_sha
         end
-      rescue Rugged::ReferenceError
+      rescue Rugged::ReferenceError, InvalidRef
         raise ArgumentError, 'Invalid merge source'
       end
 
@@ -2256,6 +2276,39 @@ module Gitlab
         gitaly_commit_client
           .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
           .map { |c| commit(c) }
+      end
+
+      def gitaly_can_be_merged?(their_commit, our_commit)
+        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
+      end
+
+      def rugged_can_be_merged?(their_commit, our_commit)
+        !rugged.merge_commits(our_commit, their_commit).conflicts?
+      end
+
+      def last_commit_for_path_by_gitaly(sha, path)
+        gitaly_commit_client.last_commit_for_path(sha, path)
+      end
+
+      def last_commit_id_for_path_by_shelling_out(sha, path)
+        args = %W(rev-list --max-count=1 #{sha} -- #{path})
+        run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
+      end
+
+      def rugged_merge_base(from, to)
+        rugged.merge_base(from, to)
+      rescue Rugged::ReferenceError
+        nil
+      end
+
+      def rugged_commit_count(ref)
+        walker = Rugged::Walker.new(rugged)
+        walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
+        oid = rugged.rev_parse_oid(ref)
+        walker.push(oid)
+        walker.count
+      rescue Rugged::ReferenceError
+        0
       end
     end
   end

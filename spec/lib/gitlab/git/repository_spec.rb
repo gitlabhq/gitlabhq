@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
   include Gitlab::EncodingHelper
+  using RSpec::Parameterized::TableSyntax
 
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
     it 'wraps gRPC not found error' do
@@ -442,6 +443,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'simple commit counting' do
       it { expect(repository.commit_count("master")).to eq(25) }
       it { expect(repository.commit_count("feature")).to eq(9) }
+      it { expect(repository.commit_count("does-not-exist")).to eq(0) }
     end
 
     context 'when Gitaly commit_count feature is enabled' do
@@ -1030,6 +1032,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.count_commits_between('feature', 'master') }
 
     it { is_expected.to eq(17) }
+  end
+
+  describe '#merge_base' do
+    shared_examples '#merge_base' do
+      where(:from, :to, :result) do
+        '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | 'foobar' | nil
+        'foobar' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | nil
+      end
+
+      with_them do
+        it { expect(repository.merge_base(from, to)).to eq(result) }
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like '#merge_base'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge_base'
+    end
   end
 
   describe '#count_commits' do
