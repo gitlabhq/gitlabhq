@@ -9,7 +9,8 @@ module MergeRequests
       Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
-      close_merge_requests
+      close_upon_missing_source_branch_ref
+      post_merge_manually_merged
       reload_merge_requests
       reset_merge_when_pipeline_succeeds
       mark_pending_todos_done
@@ -30,11 +31,22 @@ module MergeRequests
 
     private
 
+    def close_upon_missing_source_branch_ref
+      # MergeRequest#reload_diff ignores not opened MRs. This means it won't
+      # create an `empty` diff for `closed` MRs without a source branch, keeping
+      # the latest diff state as the last _valid_ one.
+      merge_requests_for_source_branch.reject(&:source_branch_exists?).each do |mr|
+        MergeRequests::CloseService
+          .new(mr.target_project, @current_user)
+          .execute(mr)
+      end
+    end
+
     # Collect open merge requests that target same branch we push into
     # and close if push to master include last commit from merge request
     # We need this to close(as merged) merge requests that were merged into
     # target branch manually
-    def close_merge_requests
+    def post_merge_manually_merged
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.preload(:latest_merge_request_diff).opened.where(target_branch: @branch_name).to_a
       merge_requests = merge_requests.select(&:diff_head_commit)

@@ -13,16 +13,18 @@ module QA
         visit current_url
       end
 
-      def wait(css = '.application', time: 60)
-        Time.now.tap do |start|
-          while Time.now - start < time
-            break if page.has_css?(css, wait: 5)
+      def wait(max: 60, time: 1, reload: true)
+        start = Time.now
 
-            refresh
-          end
+        while Time.now - start < max
+          return true if yield
+
+          sleep(time)
+
+          refresh if reload
         end
 
-        yield if block_given?
+        false
       end
 
       def scroll_to(selector, text: nil)
@@ -40,12 +42,16 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
+      def find_element(name)
+        find(element_selector_css(name))
+      end
+
       def click_element(name)
         find_element(name).click
       end
 
-      def find_element(name)
-        find(element_selector_css(name))
+      def fill_element(name, content)
+        find_element(name).set(content)
       end
 
       def within_element(name)

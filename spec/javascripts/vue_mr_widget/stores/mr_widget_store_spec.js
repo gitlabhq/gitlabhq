@@ -158,21 +158,6 @@ describe('MergeRequestStore', () => {
       expect(store.dockerReport.approved).toEqual(dockerReportParsed.approved);
       expect(store.dockerReport.unapproved).toEqual(dockerReportParsed.unapproved);
     });
-
-    it('handles unaproved typo', () => {
-      store.setDockerReport({
-        vulnerabilities: [
-          {
-            vulnerability: 'CVE-2017-12944',
-            namespace: 'debian:8',
-            severity: 'Medium',
-          },
-        ],
-        unaproved: ['CVE-2017-12944'],
-      });
-
-      expect(store.dockerReport.unapproved[0].vulnerability).toEqual('CVE-2017-12944');
-    });
   });
 
   describe('parseDockerVulnerabilities', () => {
