@@ -428,6 +428,7 @@ export default {
         :success-text="securityText"
         :unresolved-issues="mr.securityReport.newIssues"
         :resolved-issues="mr.securityReport.resolvedIssues"
+        :all-issues="mr.securityReport.allIssues"
         :has-priority="true"
         />
       <collapsible-section

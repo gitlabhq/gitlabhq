@@ -9,6 +9,8 @@ import mockData, {
   parsedHeadIssues,
   parsedSecurityIssuesStore,
   parsedSecurityIssuesBaseStore,
+  allIssuesParsed,
+  parsedSecurityIssuesHead,
   dockerReport,
   dockerReportParsed,
   dast,
@@ -108,8 +110,9 @@ describe('MergeRequestStore', () => {
         baseBlobPath: 'path',
       });
 
-      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);
+      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesHead);
       expect(store.securityReport.resolvedIssues).toEqual(parsedSecurityIssuesBaseStore);
+      expect(store.securityReport.allIssues).toEqual(allIssuesParsed);
     });
   });
 

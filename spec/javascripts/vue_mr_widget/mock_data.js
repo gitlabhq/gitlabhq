@@ -381,85 +381,122 @@ export const securityParsedIssues = [
   },
 ];
 
-export const securityIssues = [
-  {
-    tool: 'bundler_audit',
-    message: 'Arbitrary file existence disclosure in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-    cve: 'CVE-2014-7829',
-    file: 'Gemfile.lock',
-    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    priority:'High',
-    line: 12,
-  },
-  {
-    tool: 'bundler_audit',
-    message: 'Possible Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
-    cve: 'CVE-2016-0752',
-    file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    priority: 'Medium',
-  },
-];
+export const securityIssues = [{
+  tool: 'bundler_audit',
+  message: 'Arbitrary file existence disclosure in Action Pack',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+  cve: 'CVE-2014-7829',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8'
+  }, {
+  tool: 'bundler_audit',
+  message: 'Possible Information Leak Vulnerability in Action View',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+  cve: 'CVE-2016-0752',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1'
+  }, {
+  tool: 'bundler_audit',
+  message: 'Possible Object Leak and Denial of Service attack in Action Pack',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+  cve: 'CVE-2016-0751',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1'
+}];
 
-export const securityIssuesBase = [
-  {
-    tool: 'bundler_audit',
-    message: 'Arbitrary file existence disclosure in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-    cve: 'CVE-2014-7855',
-    file: 'Gemfile.lock',
-    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    priority:'High',
-    line: 12,
-  },
-];
+export const securityIssuesBase = [{
+  tool: 'bundler_audit',
+  message: 'Test Information Leak Vulnerability in Action View',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+  cve: 'CVE-2016-9999',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1'
+  }, {
+  tool: 'bundler_audit',
+  message: 'Possible Information Leak Vulnerability in Action View',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+  cve: 'CVE-2016-0752',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1'
+}];
 
-export const parsedSecurityIssuesStore = [
-  {
-    tool: 'bundler_audit',
-    message: 'Arbitrary file existence disclosure in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-    cve: 'CVE-2014-7829',
-    file: 'Gemfile.lock',
-    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    priority:'High',
-    line: 12,
-    name: 'Arbitrary file existence disclosure in Action Pack',
-    path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock#L12'
-  },
-  {
-    tool: 'bundler_audit',
-    message: 'Possible Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
-    cve: 'CVE-2016-0752',
-    file: 'Gemfile.lock',
-    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    priority: 'Medium',
-    name: 'Possible Information Leak Vulnerability in Action View',
-    path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock',
-  },
-];
+export const parsedSecurityIssuesStore = [{
+  tool: 'bundler_audit',
+  message: 'Arbitrary file existence disclosure in Action Pack',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+  cve: 'CVE-2014-7829',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+  name: 'Arbitrary file existence disclosure in Action Pack',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock'
+  }, {
+  tool: 'bundler_audit',
+  message: 'Possible Information Leak Vulnerability in Action View',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+  cve: 'CVE-2016-0752',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+  name: 'Possible Information Leak Vulnerability in Action View',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock'
+  }, {
+  tool: 'bundler_audit',
+  message: 'Possible Object Leak and Denial of Service attack in Action Pack',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+  cve: 'CVE-2016-0751',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+  name: 'Possible Object Leak and Denial of Service attack in Action Pack',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock'
+}];
 
+export const parsedSecurityIssuesHead = [{
+  tool: 'bundler_audit',
+  message: 'Arbitrary file existence disclosure in Action Pack',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+  cve: 'CVE-2014-7829',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+  name: 'Arbitrary file existence disclosure in Action Pack',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock'
+  }, {
+  tool: 'bundler_audit',
+  message: 'Possible Object Leak and Denial of Service attack in Action Pack',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+  cve: 'CVE-2016-0751',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+  name: 'Possible Object Leak and Denial of Service attack in Action Pack',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock'
+}];
 
-export const parsedSecurityIssuesBaseStore = [
-  {
-    tool: 'bundler_audit',
-    message: 'Arbitrary file existence disclosure in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-    cve: 'CVE-2014-7855',
-    file: 'Gemfile.lock',
-    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    priority:'High',
-    line: 12,
-    name: 'Arbitrary file existence disclosure in Action Pack',
-    path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock#L12'
-  },
-];
+export const parsedSecurityIssuesBaseStore = [{
+  name: 'Test Information Leak Vulnerability in Action View',
+  tool: 'bundler_audit',
+  message: 'Test Information Leak Vulnerability in Action View',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+  cve: 'CVE-2016-9999',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock'
+}];
+
+export const allIssuesParsed = [{
+  name: 'Possible Information Leak Vulnerability in Action View',
+  tool: 'bundler_audit',
+  message: 'Possible Information Leak Vulnerability in Action View',
+  url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+  cve: 'CVE-2016-0752',
+  file: 'Gemfile.lock',
+  solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+  path: 'Gemfile.lock',
+  urlPath: 'path/Gemfile.lock',
+}];
 
 export const dockerReport = {
   unapproved: [

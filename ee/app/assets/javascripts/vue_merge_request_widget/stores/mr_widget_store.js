@@ -88,23 +88,47 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.dast = data.dast;
     this.dastReport = [];
   }
+  /**
+   * Security report has 3 types of issues, newIssues, resolvedIssues and allIssues.
+   *
+   * When we have both base and head:
+   * - newIssues = head - base
+   * - resolvedIssues = base - head
+   * - allIssues = head - newIssues - resolvedIssues
+   *
+   * When we only have head
+   * - newIssues = head
+   * - resolvedIssues = 0
+   * - allIssues = 0
+   * @param {*} data
+   */
 
   setSecurityReport(data) {
     if (data.base) {
+      const filterKey = 'cve';
       const parsedHead = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
       const parsedBase = MergeRequestStore.parseIssues(data.base, data.baseBlobPath);
-
-      this.securityReport.allIssues = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
 
       this.securityReport.newIssues = MergeRequestStore.filterByKey(
         parsedHead,
         parsedBase,
-        'cve',
+        filterKey,
       );
       this.securityReport.resolvedIssues = MergeRequestStore.filterByKey(
         parsedBase,
         parsedHead,
-        'cve',
+        filterKey,
+      );
+
+      // Remove the new Issues and the added issues
+      this.securityReport.allIssues = MergeRequestStore.filterByKey(
+        MergeRequestStore.filterByKey(
+          parsedHead,
+          this.securityReport.newIssues,
+          filterKey,
+        ),
+        this.securityReport.resolvedIssues,
+        filterKey,
       );
     } else {
       this.securityReport.newIssues = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
