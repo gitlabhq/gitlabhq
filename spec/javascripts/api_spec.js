@@ -37,7 +37,7 @@ describe('Api', () => {
   describe('group', () => {
     it('fetches a group', (done) => {
       const groupId = '123456';
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}.json`;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}`;
       mock.onGet(expectedUrl).reply(200, {
         name: 'test',
       });
