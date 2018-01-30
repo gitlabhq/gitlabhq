@@ -128,6 +128,8 @@ module Gitlab
           trans.increment("#{name}_real_time", real_time.in_milliseconds, false)
           trans.increment("#{name}_cpu_time", cpu_time.in_milliseconds, false)
           trans.increment("#{name}_call_count", 1, false)
+
+          retval
         end
 
         # Sets the action of the current transaction (if any)
