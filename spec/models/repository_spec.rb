@@ -960,19 +960,19 @@ describe Repository do
   end
 
   describe '#find_branch' do
-    it 'loads a branch with a fresh repo' do
-      expect(Gitlab::Git::Repository).to receive(:new).twice.and_call_original
+    context 'fresh_repo is true' do
+      it 'delegates the call to raw_repository' do
+        expect(repository.raw_repository).to receive(:find_branch).with('master', true)
 
-      2.times do
-        expect(repository.find_branch('feature')).not_to be_nil
+        repository.find_branch('master', fresh_repo: true)
       end
     end
 
-    it 'loads a branch with a cached repo' do
-      expect(Gitlab::Git::Repository).to receive(:new).once.and_call_original
+    context 'fresh_repo is false' do
+      it 'delegates the call to raw_repository' do
+        expect(repository.raw_repository).to receive(:find_branch).with('master', false)
 
-      2.times do
-        expect(repository.find_branch('feature', fresh_repo: false)).not_to be_nil
+        repository.find_branch('master', fresh_repo: false)
       end
     end
   end
