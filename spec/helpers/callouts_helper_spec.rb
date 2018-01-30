@@ -26,11 +26,21 @@ describe CalloutsHelper do
       end
 
       context 'when user is not master' do
-        before do
-          allow(project).to receive_message_chain(:team, :master?).and_return(false)
+        context 'when the user is owner' do
+          before do
+            allow(project).to receive(:owner).and_return(user)
+          end
+
+          it { is_expected.to be true }
         end
 
-        it { is_expected.to be false }
+        context 'when the user is not owner' do
+          before do
+            allow(project).to receive_message_chain(:team, :master?).and_return(false)
+          end
+
+          it { is_expected.to be false }
+        end
       end
     end
 
