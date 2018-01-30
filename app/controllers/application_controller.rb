@@ -1,5 +1,6 @@
 require 'gon'
 require 'fogbugz'
+require 'objspace'
 
 class ApplicationController < ActionController::Base
   include Gitlab::CurrentSettings
@@ -25,6 +26,7 @@ class ApplicationController < ActionController::Base
   around_action :set_locale
 
   after_action :set_page_title_header, if: -> { request.format == :json }
+  after_action :close_project_repository
 
   protect_from_forgery with: :exception
 
@@ -339,5 +341,12 @@ class ApplicationController < ActionController::Base
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+  end
+
+  def close_project_repository
+    return unless @project
+
+    project = @project
+    ObjectSpace.define_finalizer(self, lambda { project.reload_repository! })
   end
 end

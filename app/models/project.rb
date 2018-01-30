@@ -518,6 +518,7 @@ class Project < ActiveRecord::Base
   end
 
   def reload_repository!
+    @repository&.close_rugged
     @repository = nil
   end
 
