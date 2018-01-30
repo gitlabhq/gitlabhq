@@ -21,6 +21,7 @@ ALLOWED = [
 ].freeze
 
 rugged_lines = IO.popen(%w[git grep -i -n rugged -- app config lib], &:read).lines
+rugged_lines = rugged_lines.select { |l| /^[^:]*\.rb:/ =~ l }
 rugged_lines = rugged_lines.reject { |l| l.start_with?(*ALLOWED) }
 rugged_lines = rugged_lines.reject do |line|
   code, _comment = line.split('# ', 2)
