@@ -30,8 +30,7 @@ class Upload < ActiveRecord::Base
   end
 
   def build_uploader
-    uploader_class.new(model, mount_point, **uploader_context)
-      .tap do |uploader|
+    uploader_class.new(model, mount_point, **uploader_context).tap do |uploader|
       uploader.upload = self
       uploader.retrieve_from_store!(identifier)
     end

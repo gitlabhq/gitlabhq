@@ -110,14 +110,16 @@ class FileUploader < GitlabUploader
   end
 
   def upload=(value)
-    unless apply_context!(value.uploader_context)
-      if matches = DYNAMIC_PATH_PATTERN.match(value.path)
-        @secret = matches[:secret]
-        @identifier = matches[:identifier]
-      end
-    end
-
     super
+
+    return unless value
+    return if apply_context!(value.uploader_context)
+
+    # fallback to the regex based extraction
+    if matches = DYNAMIC_PATH_PATTERN.match(value.path)
+      @secret = matches[:secret]
+      @identifier = matches[:identifier]
+    end
   end
 
   def secret
