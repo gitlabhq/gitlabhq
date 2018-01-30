@@ -18,7 +18,7 @@ When you create a new [project](../../index.md), GitLab sets `master` as the def
 branch for your project. You can choose another branch to be your project's
 default under your project's **Settings > General**.
 
-The default branch is the branched affected by the
+The default branch is the branch affected by the
 [issue closing pattern](../../issues/automatic_issue_closing.md),
 which means that _an issue will be closed when a merge request is merged to
 the **default branch**_.

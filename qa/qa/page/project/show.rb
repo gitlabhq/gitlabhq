@@ -17,6 +17,11 @@ module QA
           element :project_name
         end
 
+        view 'app/views/layouts/header/_new_dropdown.haml' do
+          element :new_menu_toggle
+          element :new_issue_link, "link_to 'New issue', new_project_issue_path(@project)"
+        end
+
         def choose_repository_clone_http
           wait(reload: false) do
             click_element :clone_dropdown
@@ -45,6 +50,12 @@ module QA
         def wait_for_push
           sleep 5
           refresh
+        end
+
+        def go_to_new_issue
+          click_element :new_menu_toggle
+
+          click_link 'New issue'
         end
       end
     end
