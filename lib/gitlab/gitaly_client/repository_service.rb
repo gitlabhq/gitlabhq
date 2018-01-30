@@ -203,6 +203,22 @@ module Gitlab
           timeout: GitalyClient.default_timeout
         )
       end
+
+      def write_ref(ref_path, ref, old_ref, shell)
+        request = Gitaly::WriteRefRequest.new(
+          repository: @gitaly_repo,
+          ref: ref_path.b,
+          revision: ref.b,
+          shell: shell
+        )
+        request.old_revision = old_ref.b unless old_ref.nil?
+
+        response = GitalyClient.call(@storage, :repository_service, :write_ref, request)
+
+        raise Gitlab::Git::CommandError, encode!(response.error) if response.error.present?
+
+        true
+      end
     end
   end
 end
