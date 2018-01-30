@@ -5,8 +5,11 @@ describe RecordsUploads do
     class RecordsUploadsExampleUploader < GitlabUploader
       include RecordsUploads::Concern
 
-      storage_options Gitlab.config.uploads
       storage :file
+
+      def dynamic_segment
+        'co/fe/ee'
+      end
     end
 
     RecordsUploadsExampleUploader.new(build_stubbed(:user))

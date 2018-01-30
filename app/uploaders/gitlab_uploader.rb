@@ -47,11 +47,12 @@ class GitlabUploader < CarrierWave::Uploader::Base
     file.present?
   end
 
-  # Override this if you don't want to save files by default to the Rails.root directory
+  def cache_dir
+    File.join(root, base_dir, 'tmp/cache')
+  end
+
   def work_dir
-    # Default path set by CarrierWave:
-    # https://github.com/carrierwaveuploader/carrierwave/blob/v1.0.0/lib/carrierwave/uploader/cache.rb#L182
-    CarrierWave.tmp_path
+    File.join(root, base_dir, 'tmp/work')
   end
 
   def filename
@@ -78,6 +79,6 @@ class GitlabUploader < CarrierWave::Uploader::Base
     # To be safe, keep this directory outside of the the cache directory
     # because calling CarrierWave.clean_cache_files! will remove any files in
     # the cache directory.
-    File.join(work_dir, @cache_id, version_name.to_s, for_file)
+    File.join(work_dir, cache_id, version_name.to_s, for_file)
   end
 end
