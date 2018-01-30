@@ -145,6 +145,32 @@ module Gitlab
         raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
       end
 
+      # Limit: 0 implies no limit, thus all tag names will be returned
+      def tag_names_containing(sha, limit: 0)
+        request = Gitaly::ListTagNamesContainingCommitRequest.new(
+          repository: @gitaly_repo,
+          commit_id: sha,
+          limit: limit
+        )
+
+        stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request)
+
+        stream.each_with_object([]) { |response, array| array.concat(response.tag_names) }
+      end
+
+      # Limit: 0 implies no limit, thus all tag names will be returned
+      def branch_names_contains_sha(sha, limit: 0)
+        request = Gitaly::ListBranchNamesContainingCommitRequest.new(
+          repository: @gitaly_repo,
+          commit_id: sha,
+          limit: limit
+        )
+
+        stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request)
+
+        stream.each_with_object([]) { |response, array| array.concat(response.branch_names) }
+      end
+
       private
 
       def consume_refs_response(response)
