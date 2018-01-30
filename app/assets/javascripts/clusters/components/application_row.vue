@@ -32,6 +32,10 @@
         type: String,
         required: false,
       },
+      manageLink: {
+        type: String,
+        required: false,
+      },
       description: {
         type: String,
         required: true,
@@ -141,9 +145,21 @@
         <div v-html="description"></div>
       </div>
       <div
-        class="table-section table-button-footer section-15 section-align-top"
+        class="table-section table-button-footer section-align-top"
+        :class="{ 'section-20': manageLink, 'section-15': !manageLink }"
         role="gridcell"
       >
+        <div
+          v-if="manageLink"
+          class="btn-group table-action-buttons"
+        >
+          <a
+            class="btn"
+            :href="manageLink"
+          >
+            Manage
+          </a>
+        </div>
         <div class="btn-group table-action-buttons">
           <loading-button
             class="js-cluster-application-install-button"
