@@ -346,7 +346,13 @@ class ApplicationController < ActionController::Base
   def close_project_repository
     return unless @project
 
-    project = @project
-    ObjectSpace.define_finalizer(self, lambda { project.reload_repository! })
+    project = WeakRef.new(@project)
+    ObjectSpace.define_finalizer(self,
+      lambda do
+        begin
+          project.reload_repository! if project.weakref_alive?
+        rescue WeakRef::RefError
+        end
+      end)
   end
 end
