@@ -23,21 +23,23 @@ export default class IssuableIndex {
   }
 
   static resetIncomingEmailToken() {
-    $('.incoming-email-token-reset').on('click', (e) => {
+    const $resetToken = $('.incoming-email-token-reset');
+
+    $resetToken.on('click', (e) => {
       e.preventDefault();
 
-      $('.incoming-email-token-reset').text('resetting...');
+      $resetToken.text('resetting...');
 
-      axios.put($('.incoming-email-token-reset').attr('href'))
+      axios.put($resetToken.attr('href'))
         .then(({ data }) => {
           $('#issuable_email').val(data.new_address).focus();
 
-          $('.incoming-email-token-reset').text('reset it');
+          $resetToken.text('reset it');
         })
         .catch(() => {
           flash(__('There was an error when reseting email token.'));
 
-          $('.incoming-email-token-reset').text('reset it');
+          $resetToken.text('reset it');
         });
     });
   }
