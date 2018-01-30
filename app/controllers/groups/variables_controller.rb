@@ -8,7 +8,7 @@ module Groups
           variables = @group.variables
             .map { |variable| variable.present(current_user: current_user) }
 
-          render status: :ok, json: { variables: variables }
+          render status: :ok, json: { variables: GroupVariableSerializer.new.represent(variables) }
         end
       end
     end
@@ -20,7 +20,7 @@ module Groups
             variables = @group.variables
               .map { |variable| variable.present(current_user: current_user) }
 
-            return render status: :ok, json: { variables: variables }
+            return render status: :ok, json: { variables: GroupVariableSerializer.new.represent(variables) }
           end
 
           render status: :bad_request, json: @group.errors.full_messages
