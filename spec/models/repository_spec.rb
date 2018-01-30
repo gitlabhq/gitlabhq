@@ -36,26 +36,49 @@ describe Repository do
   end
 
   describe '#branch_names_contains' do
-    subject { repository.branch_names_contains(sample_commit.id) }
+    shared_examples '#branch_names_contains' do
+      set(:project) { create(:project, :repository) }
+      let(:repository) { project.repository }
 
-    it { is_expected.to include('master') }
-    it { is_expected.not_to include('feature') }
-    it { is_expected.not_to include('fix') }
+      subject { repository.branch_names_contains(sample_commit.id) }
 
-    describe 'when storage is broken', :broken_storage  do
-      it 'should raise a storage error' do
-        expect_to_raise_storage_error do
-          broken_repository.branch_names_contains(sample_commit.id)
+      it { is_expected.to include('master') }
+      it { is_expected.not_to include('feature') }
+      it { is_expected.not_to include('fix') }
+
+      describe 'when storage is broken', :broken_storage  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.branch_names_contains(sample_commit.id)
+          end
         end
       end
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#branch_names_contains'
+    end
+
+    context 'when gitaly is disabled', :skip_gitaly_mock do
+      it_behaves_like '#branch_names_contains'
     end
   end
 
   describe '#tag_names_contains' do
-    subject { repository.tag_names_contains(sample_commit.id) }
+    shared_examples '#tag_names_contains' do
+      subject { repository.tag_names_contains(sample_commit.id) }
 
-    it { is_expected.to include('v1.1.0') }
-    it { is_expected.not_to include('v1.0.0') }
+      it { is_expected.to include('v1.1.0') }
+      it { is_expected.not_to include('v1.0.0') }
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#tag_names_contains'
+    end
+
+    context 'when gitaly is enabled', :skip_gitaly_mock do
+      it_behaves_like '#tag_names_contains'
+    end
   end
 
   describe 'tags_sorted_by' do
