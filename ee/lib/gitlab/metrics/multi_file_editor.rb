@@ -6,12 +6,12 @@ module Gitlab
       METRIC_NAME = :multi_file_editor_usage
 
       def initialize(project, current_user, commit)
-        @project, @current_user, @commit = project, current_user, @commit = commit
+        @project, @current_user, @commit = project, current_user, commit
       end
 
       def record
         ::Gitlab::Metrics.counter(
-            METRIC_NAME,
+          METRIC_NAME,
             'Total number of commits using the multi-file web editor',
             metric_labels)
       end

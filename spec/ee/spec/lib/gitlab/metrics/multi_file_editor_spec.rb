@@ -23,7 +23,7 @@ describe Gitlab::Metrics::MultiFileEditor do
   end
 
   describe '.record' do
-    it 'records the right number of commit files' do
+    it 'records the right metrics' do
       expect(::Gitlab::Metrics).to receive(:counter).with(*params)
 
       subject.record
