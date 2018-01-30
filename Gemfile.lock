@@ -509,7 +509,7 @@ GEM
     net-ldap (0.16.0)
     net-ssh (4.1.0)
     netrc (0.11.0)
-    nokogiri (1.8.1)
+    nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     numerizer (0.1.1)
     oauth (0.5.1)
@@ -1095,7 +1095,7 @@ DEPENDENCIES
   mysql2 (~> 0.4.10)
   net-ldap
   net-ssh (~> 4.1.0)
-  nokogiri (~> 1.8.1)
+  nokogiri (~> 1.8.2)
   oauth2 (~> 1.4)
   octokit (~> 4.6.2)
   oj (~> 2.17.4)
