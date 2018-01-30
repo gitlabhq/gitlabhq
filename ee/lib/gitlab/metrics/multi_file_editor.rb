@@ -10,6 +10,8 @@ module Gitlab
       end
 
       def record
+        return unless ::License.feature_available?(:ide)
+
         ::Gitlab::Metrics.counter(
           METRIC_NAME,
             'Total number of commits using the multi-file web editor',

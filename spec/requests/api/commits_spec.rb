@@ -246,7 +246,9 @@ describe API::Commits do
       end
 
       it 'does not call the metrics using access token authentication' do
-        post api(url, user), valid_c_params
+        stub_licensed_features(ide: true)
+
+        post api(url, user), valid_c_paramss
 
         expect_any_instance_of(::Gitlab::Metrics::MultiFileEditor).not_to receive(:record)
       end

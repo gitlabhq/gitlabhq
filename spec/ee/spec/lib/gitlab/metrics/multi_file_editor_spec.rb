@@ -24,6 +24,8 @@ describe Gitlab::Metrics::MultiFileEditor do
 
   describe '.record' do
     it 'records the right metrics' do
+      stub_licensed_features(ide: true)
+
       expect(::Gitlab::Metrics).to receive(:counter).with(*params)
 
       subject.record
