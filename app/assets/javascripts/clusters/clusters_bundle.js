@@ -32,6 +32,7 @@ export default class Clusters {
       installIngressPath,
       installRunnerPath,
       installPrometheusPath,
+      managePrometheusPath,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -39,6 +40,7 @@ export default class Clusters {
 
     this.store = new ClustersStore();
     this.store.setHelpPath(helpPath);
+    this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
     this.service = new ClustersService({
@@ -93,6 +95,7 @@ export default class Clusters {
           props: {
             applications: this.state.applications,
             helpPath: this.state.helpPath,
+            managePrometheusPath: this.state.managePrometheusPath,
           },
         });
       },

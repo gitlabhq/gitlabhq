@@ -43,6 +43,10 @@ export default class ClusterStore {
     this.state.helpPath = helpPath;
   }
 
+  setManagePrometheusPath(managePrometheusPath) {
+    this.state.managePrometheusPath = managePrometheusPath;
+  }
+
   updateStatus(status) {
     this.state.status = status;
   }
