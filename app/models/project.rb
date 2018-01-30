@@ -566,6 +566,9 @@ class Project < ActiveRecord::Base
         RepositoryForkWorker.perform_async(id,
                                            forked_from_project.repository_storage_path,
                                            forked_from_project.disk_path)
+      elsif gitlab_project_import?
+        # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
+        RepositoryImportWorker.set(retry: false).perform_async(self.id)
       else
         RepositoryImportWorker.perform_async(self.id)
       end

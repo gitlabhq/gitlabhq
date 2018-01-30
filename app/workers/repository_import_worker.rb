@@ -20,7 +20,11 @@ class RepositoryImportWorker
     # to those importers to mark the import process as complete.
     return if service.async?
 
-    raise result[:message] if result[:status] == :error
+    if result[:status] == :error
+      fail_import(project, result[:message]) if project.gitlab_project_import?
+
+      raise result[:message]
+    end
 
     project.after_import
   end
@@ -32,5 +36,9 @@ class RepositoryImportWorker
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while importing.")
     false
+  end
+
+  def fail_import(project, message)
+    project.mark_import_as_failed(message)
   end
 end
