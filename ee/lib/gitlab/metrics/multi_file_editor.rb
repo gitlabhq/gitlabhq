@@ -14,8 +14,8 @@ module Gitlab
 
         ::Gitlab::Metrics.counter(
           METRIC_NAME,
-            'Total number of commits using the multi-file web editor',
-            metric_labels)
+          'Total number of commits using the multi-file web editor',
+          metric_labels)
       end
 
       private
