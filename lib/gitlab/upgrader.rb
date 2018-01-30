@@ -1,6 +1,3 @@
-require_relative "popen"
-require_relative "version_info"
-
 module Gitlab
   class Upgrader
     def execute
