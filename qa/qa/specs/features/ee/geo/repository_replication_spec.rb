@@ -1,5 +1,5 @@
 module QA
-  feature 'GitLab Geo replication', :geo do
+  feature 'GitLab Geo repository replication', :geo do
     scenario 'users pushes code to the primary node' do
       Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }

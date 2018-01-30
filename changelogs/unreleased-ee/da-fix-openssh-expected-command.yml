@@ -1,5 +1,0 @@
----
-title: Geo - Fix OPENSSH_EXPECTED_COMMAND in the geo:check rake task
-merge_request:
-author:
-type: fixed

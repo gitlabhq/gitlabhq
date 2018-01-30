@@ -176,7 +176,7 @@ export default {
           Flash('An error occurred while fetching issues.');
         });
     },
-    saveIssueOrder({ issueId, beforeId, afterId }) {
+    saveIssueOrder({ issueId, beforeId, afterId, oldIndex, newIndex }) {
       const issueToReorder = _.find(this.state.relatedIssues, issue => issue.id === issueId);
 
       if (issueToReorder) {
@@ -184,7 +184,14 @@ export default {
           endpoint: issueToReorder.relation_path,
           move_before_id: beforeId,
           move_after_id: afterId,
-        }).catch(() => {
+        })
+        .then(res => res.json())
+        .then((res) => {
+          if (!res.message) {
+            this.store.updateIssueOrder(oldIndex, newIndex);
+          }
+        })
+        .catch(() => {
           Flash('An error occurred while reordering issues.');
         });
       }

@@ -3,23 +3,14 @@ module QA
     module Group
       class Show < Page::Base
         view 'app/views/groups/show.html.haml' do
-          element :dropdown_toggle, '.dropdown-toggle'
-          element :new_project_subgroup, '.new-project-subgroup'
+          element :new_project_or_subgroup_dropdown, '.new-project-subgroup'
+          element :new_project_or_subgroup_dropdown_toggle, '.dropdown-toggle'
+          element :new_project_option, /%li.*data:.*value: "new-project"/
+          element :new_project_button, /%input.*data:.*action: "new-project"/
+          element :new_subgroup_option, /%li.*data:.*value: "new-subgroup"/
 
-          element :new_project_toggle,
-            /%li.+ data: { value: "new\-project"/
-          element :new_project_button,
-            /%input.+ data: { action: "new\-project"/
-
-          element :new_subgroup_toggle,
-            /%li.+ data: { value: "new\-subgroup"/
-          # TODO: input[data-action='new-subgroup'] seems to be handled by JS?
-          # See app/assets/javascripts/groups/new_group_child.js
-        end
-
-        view 'app/views/shared/groups/_search_form.html.haml' do
-          element :filter_by_name,
-            "placeholder: s_('GroupsTree|Filter by name...')"
+          # data-value and data-action get modified by JS for subgroup
+          element :new_subgroup_button, /%input.*\.js-new-group-child/
         end
 
         def go_to_subgroup(name)

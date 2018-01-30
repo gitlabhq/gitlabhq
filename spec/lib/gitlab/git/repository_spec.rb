@@ -981,6 +981,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
     end
+
+    context 'limit validation' do
+      where(:limit) do
+        [0, nil, '', 'foo']
+      end
+
+      with_them do
+        it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
   end
 
   describe "#rugged_commits_between" do

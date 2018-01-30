@@ -42,12 +42,33 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
-      def click_element(name)
-        find_element(name).click
+      # Returns true if successfully GETs the given URL
+      # Useful because `page.status_code` is unsupported by our driver, and
+      # we don't have access to the `response` to use `have_http_status`.
+      def asset_exists?(url)
+        page.execute_script <<~JS
+          xhr = new XMLHttpRequest();
+          xhr.open('GET', '#{url}', true);
+          xhr.send();
+        JS
+
+        return false unless wait(time: 0.5, max: 60, reload: false) do
+          page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
+        end
+
+        page.evaluate_script('xhr.status') == 200
       end
 
       def find_element(name)
         find(element_selector_css(name))
+      end
+
+      def click_element(name)
+        find_element(name).click
+      end
+
+      def fill_element(name, content)
+        find_element(name).set(content)
       end
 
       def within_element(name)
@@ -74,6 +95,21 @@ module QA
         end
 
         views.map(&:errors).flatten
+      end
+
+      # Not tested and not expected to work with multiple dropzones
+      # instantiated on one page because there is no distinguishing
+      # attribute per dropzone file field.
+      def attach_file_to_dropzone(attachment, dropzone_form_container)
+        filename = File.basename(attachment)
+
+        field_style = { visibility: 'visible', height: '', width: '' }
+        attach_file(attachment, class: 'dz-hidden-input', make_visible: field_style)
+
+        # Wait for link to be appended to dropzone text
+        wait(reload: false) do
+          find("#{dropzone_form_container} textarea").value.match(filename)
+        end
       end
 
       class DSL
