@@ -1,4 +1,6 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
+import MockAdaptor from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Issue from '~/issue';
 import '~/lib/utils/text_utility';
 
@@ -88,6 +90,7 @@ describe('Issue', function() {
   [true, false].forEach((isIssueInitiallyOpen) => {
     describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, function() {
       const action = isIssueInitiallyOpen ? 'close' : 'reopen';
+      let mock;
 
       function ajaxSpy(req) {
         if (req.url === this.$triggeredButton.attr('href')) {
@@ -102,6 +105,18 @@ describe('Issue', function() {
 
         expect(req.url).toBe('unexpected');
         return null;
+      }
+
+      function mockCloseButtonResponseSuccess(url, response) {
+        mock.onPut(url).reply(() => {
+          expectNewBranchButtonState(true, false);
+
+          return [200, response];
+        });
+      }
+
+      function mockCloseButtonResponseError(url) {
+        mock.onPut(url).networkError();
       }
 
       beforeEach(function() {
@@ -123,68 +138,87 @@ describe('Issue', function() {
         this.issueStateDeferred = new jQuery.Deferred();
         this.canCreateBranchDeferred = new jQuery.Deferred();
 
+        mock = new MockAdaptor(axios);
+
         spyOn(jQuery, 'ajax').and.callFake(ajaxSpy.bind(this));
       });
 
-      it(`${action}s the issue`, function() {
-        this.$triggeredButton.trigger('click');
-        this.issueStateDeferred.resolve({
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it(`${action}s the issue`, function(done) {
+        mockCloseButtonResponseSuccess(this.$triggeredButton.attr('href'), {
           id: 34
         });
+
+        this.$triggeredButton.trigger('click');
         this.canCreateBranchDeferred.resolve({
           can_create_branch: !isIssueInitiallyOpen
         });
 
-        expectIssueState(!isIssueInitiallyOpen);
-        expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
-        expect(this.$projectIssuesCounter.text()).toBe(isIssueInitiallyOpen ? '1,000' : '1,002');
-        expectNewBranchButtonState(false, !isIssueInitiallyOpen);
+        setTimeout(() => {
+          expectIssueState(!isIssueInitiallyOpen);
+          expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
+          expect(this.$projectIssuesCounter.text()).toBe(isIssueInitiallyOpen ? '1,000' : '1,002');
+          expectNewBranchButtonState(false, !isIssueInitiallyOpen);
+
+          done();
+        });
       });
 
-      it(`fails to ${action} the issue if saved:false`, function() {
-        this.$triggeredButton.trigger('click');
-        this.issueStateDeferred.resolve({
+      it(`fails to ${action} the issue if saved:false`, function(done) {
+        mockCloseButtonResponseSuccess(this.$triggeredButton.attr('href'), {
           saved: false
         });
+        this.$triggeredButton.trigger('click');
         this.canCreateBranchDeferred.resolve({
           can_create_branch: isIssueInitiallyOpen
         });
 
-        expectIssueState(isIssueInitiallyOpen);
-        expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
-        expectErrorMessage();
-        expect(this.$projectIssuesCounter.text()).toBe('1,001');
-        expectNewBranchButtonState(false, isIssueInitiallyOpen);
+        setTimeout(() => {
+          expectIssueState(isIssueInitiallyOpen);
+          expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
+          expectErrorMessage();
+          expect(this.$projectIssuesCounter.text()).toBe('1,001');
+          expectNewBranchButtonState(false, isIssueInitiallyOpen);
+
+          done();
+        });
       });
 
-      it(`fails to ${action} the issue if HTTP error occurs`, function() {
+      it(`fails to ${action} the issue if HTTP error occurs`, function(done) {
+        mockCloseButtonResponseError(this.$triggeredButton.attr('href'));
         this.$triggeredButton.trigger('click');
-        this.issueStateDeferred.reject();
         this.canCreateBranchDeferred.resolve({
           can_create_branch: isIssueInitiallyOpen
         });
 
-        expectIssueState(isIssueInitiallyOpen);
-        expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
-        expectErrorMessage();
-        expect(this.$projectIssuesCounter.text()).toBe('1,001');
-        expectNewBranchButtonState(false, isIssueInitiallyOpen);
+        setTimeout(() => {
+          expectIssueState(isIssueInitiallyOpen);
+          expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
+          expectErrorMessage();
+          expect(this.$projectIssuesCounter.text()).toBe('1,001');
+          expectNewBranchButtonState(false, isIssueInitiallyOpen);
+
+          done();
+        });
       });
 
       it('disables the new branch button if Ajax call fails', function() {
+        mockCloseButtonResponseError(this.$triggeredButton.attr('href'));
         this.$triggeredButton.trigger('click');
-        this.issueStateDeferred.reject();
         this.canCreateBranchDeferred.reject();
 
         expectNewBranchButtonState(false, false);
       });
 
       it('does not trigger Ajax call if new branch button is missing', function() {
+        mockCloseButtonResponseError(this.$triggeredButton.attr('href'));
         Issue.$btnNewBranch = $();
         this.canCreateBranchDeferred = null;
 
         this.$triggeredButton.trigger('click');
-        this.issueStateDeferred.reject();
       });
     });
   });
