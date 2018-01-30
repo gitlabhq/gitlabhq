@@ -39,31 +39,39 @@
           %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
             disabled: true,
             title: s_('Branches|The default branch cannot be deleted') }
-            = icon("trash-o")
+            = sprite_icon("remove")
         - elsif protected_branch?(@project, branch)
           - if can?(current_user, :delete_protected_branch, @project)
-            %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
+            %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip js-delete-branch",
               title: s_('Branches|Delete protected branch'),
               data: { toggle: "modal",
-                target: "#modal-delete-branch",
+                target: "#delete-branch-modal",
                 delete_path: project_branch_path(@project, branch.name),
                 branch_name: branch.name,
+                container: 'body',
+                is_protected: "true",
+                redirect_url: project_branches_path(@project),
+                root_ref: @repository.root_ref,
                 is_merged: ("true" if merged) } }
-              = icon("trash-o")
+              = sprite_icon("remove")
           - else
             %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
               disabled: true,
               title: s_('Branches|Only a project master or owner can delete a protected branch') }
-              = icon("trash-o")
+              = sprite_icon("remove")
         - else
-          = link_to project_branch_path(@project, branch.name),
-            class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
-            title: s_('Branches|Delete branch'),
-            method: :delete,
-            data: { confirm: s_("Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?") % { branch_name: branch.name } },
-            remote: true,
-            'aria-label' => s_('Branches|Delete branch') do
-            = icon("trash-o")
+          %button.btn.btn-remove.remove-row.js-ajax-loading-spinner.has-tooltip.js-delete-branch{ title: s_('Branches|Delete branch'),
+            data: { target: "#delete-branch-modal",
+              delete_path: project_branch_path(@project, branch.name),
+              branch_name: branch.name,
+              root_ref: @repository.root_ref,
+              redirect_url: project_branches_path(@project),
+              isProtected: "false",
+              is_merged: ("true" if merged),
+              toggle: "modal",
+              container: 'body' },
+            'aria-label': s_('Branches|Delete branch') }
+            = sprite_icon("remove")
 
     - if branch.name != @repository.root_ref
       .divergence-graph{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),

@@ -1,0 +1,5 @@
+---
+title: Refactor the delete branch and delete protected branches modal to vue
+merge_request: 16809
+author:
+type: changed
