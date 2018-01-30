@@ -13,7 +13,7 @@ describe Groups::VariablesController do
     let!(:variable) { create(:ci_group_variable, group: group) }
 
     subject do
-      get :show, group_id: group, format: :json
+      get :show, group_id: group.id, format: :json
     end
 
     it 'renders the ci_group_variable as json' do
@@ -29,7 +29,7 @@ describe Groups::VariablesController do
     context 'with invalid new variable parameters' do
       subject do
         post :update,
-          group_id: group,
+          group_id: group.id,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
                                    protected: variable.protected?.to_s },
@@ -56,7 +56,7 @@ describe Groups::VariablesController do
     context 'with valid new variable parameters' do
       subject do
         post :update,
-          group_id: group,
+          group_id: group.id,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: 'other_value',
                                    protected: variable.protected?.to_s },
@@ -83,7 +83,7 @@ describe Groups::VariablesController do
     context 'with a deleted variable' do
       subject do
         post :update,
-          group_id: group,
+          group_id: group.id,
           variables_attributes: [{ id: variable.id, key: variable.key,
                                    value: variable.value,
                                    protected: variable.protected?.to_s,
