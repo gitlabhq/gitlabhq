@@ -6,14 +6,14 @@ class PrometheusMetric < ActiveRecord::Base
   validates :query, presence: true
   validates :group, presence: true
 
-  GROUP_NAMES = {
+  GROUP_TITLES = {
     business: 'Business metrics',
     response: 'Response metrics',
     system: 'System metrics'
   }.freeze
 
-  def group_text
-    GROUP_NAMES[group.to_sym]
+  def group_title
+    GROUP_TITLES[group.to_sym]
   end
 
   def to_query_metric

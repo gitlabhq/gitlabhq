@@ -25,6 +25,8 @@ describe Gitlab::Prometheus::Queries::ValidateQuery do
 
     it 'passes query to prometheus' do
       expect(subject.query(query)).to eq(valid: false, error: message)
+
+      expect(client).to have_received(:query).with(query)
     end
   end
 end

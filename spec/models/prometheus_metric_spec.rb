@@ -11,17 +11,17 @@ describe PrometheusMetric, type: :model do
   describe '#group_text' do
     let!(:metric) { create(:prometheus_metric) }
 
-    shared_examples 'group_text' do |group, text|
-      subject { build(:prometheus_metric, group: group) }
+    shared_examples 'group_title' do |group, text|
+      subject { build(:prometheus_metric, group: group).group_title }
 
       it "returns text #{text} for group #{group}" do
-        expect(subject.group_text).to eq(text)
+        expect(subject).to eq(text)
       end
     end
 
-    it_behaves_like 'group_text', :business, 'Business metrics'
-    it_behaves_like 'group_text', :response, 'Response metrics'
-    it_behaves_like 'group_text', :system, 'System metrics'
+    it_behaves_like 'group_title', :business, 'Business metrics'
+    it_behaves_like 'group_title', :response, 'Response metrics'
+    it_behaves_like 'group_title', :system, 'System metrics'
   end
 
   describe '#to_query_metric' do
@@ -39,10 +39,6 @@ describe PrometheusMetric, type: :model do
 
     it 'queryable metric has no required_metric' do
       expect(subject.to_query_metric.required_metrics).to eq([])
-    end
-
-    it 'queryable metric has weight 0' do
-      expect(subject.to_query_metric.weight).to eq(0)
     end
 
     it 'queryable metric has weight 0' do

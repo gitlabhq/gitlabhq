@@ -45,7 +45,6 @@ describe Projects::Prometheus::MetricsController do
   describe 'GET #index' do
     context 'with custom metric present' do
       let!(:prometheus_metric) { create(:prometheus_metric, project: project) }
-      let(:metrics_list_repsonse) {  }
 
       it 'returns a list of metrics' do
         get :index, project_params(format: :json)

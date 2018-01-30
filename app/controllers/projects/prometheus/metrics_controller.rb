@@ -2,11 +2,8 @@ module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
       before_action :authorize_admin_project!
-      before_action :require_prometheus_metrics!
 
       def active_common
-        render_404 unless prometheus_service.present?
-
         respond_to do |format|
           format.json do
             matched_metrics = prometheus_service.matched_metrics || {}
@@ -21,8 +18,6 @@ module Projects
       end
 
       def validate_query
-        render_404 unless prometheus_service.present?
-
         respond_to do |format|
           format.json do
             result = prometheus_service.validate_query(params[:query])
@@ -87,7 +82,7 @@ module Projects
 
         respond_to do |format|
           format.html do
-            redirect_to edit_project_service_path(project, prometheus_service), status: 303
+            redirect_to edit_project_service_path(project, PrometheusService), status: 303
           end
           format.json do
             head :ok
@@ -103,10 +98,6 @@ module Projects
 
       def prometheus_service
         @prometheus_service ||= project.find_or_initialize_service('prometheus')
-      end
-
-      def require_prometheus_metrics!
-        render_404 unless prometheus_service.present?
       end
     end
   end

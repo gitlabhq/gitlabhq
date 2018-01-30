@@ -12,6 +12,12 @@
           "title": {
             "type": "string"
           },
+          "group": {
+            "type": "string"
+          },
+          "group_title": {
+            "type": "string"
+          },
           "edit_path": {
             "type": "string"
           }
