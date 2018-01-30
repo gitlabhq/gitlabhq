@@ -2,12 +2,16 @@ module QA
   module Page
     module Group
       class Show < Page::Base
-        ##
-        # TODO, define all selectors required by this page object
-        #
-        # See gitlab-org/gitlab-qa#154
-        #
-        view 'app/views/groups/show.html.haml'
+        view 'app/views/groups/show.html.haml' do
+          element :new_project_or_subgroup_dropdown, '.new-project-subgroup'
+          element :new_project_or_subgroup_dropdown_toggle, '.dropdown-toggle'
+          element :new_project_option, /%li.*data:.*value: "new-project"/
+          element :new_project_button, /%input.*data:.*action: "new-project"/
+          element :new_subgroup_option, /%li.*data:.*value: "new-subgroup"/
+
+          # data-value and data-action get modified by JS for subgroup
+          element :new_subgroup_button, /%input.*\.js-new-group-child/
+        end
 
         def go_to_subgroup(name)
           click_link name
