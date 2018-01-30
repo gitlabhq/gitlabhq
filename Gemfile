@@ -132,7 +132,7 @@ gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.1'
+gem 'nokogiri', '~> 1.8.2'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
