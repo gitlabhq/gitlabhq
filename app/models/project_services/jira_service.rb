@@ -43,7 +43,7 @@ class JiraService < IssueTrackerService
       username: self.username,
       password: self.password,
       site: URI.join(url, '/').to_s,
-      context_path: url.path,
+      context_path: url.path.chomp('/'),
       auth_type: :basic,
       read_timeout: 120,
       use_cookies: true,
