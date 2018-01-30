@@ -1,5 +1,5 @@
 <script>
-  import arrowSvg from 'icons/_arrow_mini_pipeline_graph.svg';
+  import arrowSvg from 'ee_icons/_arrow_mini_pipeline_graph.svg';
   import icon from './icon.vue';
   import ciStatus from './ci_icon.vue';
   import tooltip from '../directives/tooltip';

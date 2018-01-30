@@ -37,7 +37,7 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
-    # EE specific paths.
+    ## EE-specific paths config START
     ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
       ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
       memo << ee_path.to_s if ee_path.exist?
@@ -47,6 +47,7 @@ module Gitlab
     config.paths['lib/tasks'] << "#{config.root}/ee/lib/tasks"
     config.paths['app/views'] << "#{config.root}/ee/app/views"
     config.helpers_paths << "#{config.root}/ee/app/helpers"
+    ## EE-specific paths config END
 
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly

@@ -307,7 +307,6 @@ var config = {
   resolve: {
     extensions: ['.js'],
     alias: {
-      'ee':             path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
@@ -315,6 +314,11 @@ var config = {
       'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
+
+      'ee':              path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+      'ee_empty_states': path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
+      'ee_icons':        path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
+      'ee_images':       path.join(ROOT_PATH, 'ee/app/assets/images'),
     }
   }
 }
