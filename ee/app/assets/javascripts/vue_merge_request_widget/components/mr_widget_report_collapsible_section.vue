@@ -197,7 +197,7 @@
         v-if="allIssues.length && !isFullReportVisible"
         type="button"
         class="btn-link btn-blank mr-widget-code-quality-list js-expand-full-list"
-        @click="openFullRerpot"
+        @click="openFullReport"
       >
         {{ s__("ciReport|Show complete code vulnerabilities report") }}
       </button>
