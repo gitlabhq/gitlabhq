@@ -44,7 +44,7 @@ describe EpicsFinder do
         end
       end
 
-      context 'wtih correct params' do
+      context 'with correct params' do
         before do
           group.add_developer(search_user)
         end
@@ -79,9 +79,14 @@ describe EpicsFinder do
           end
         end
 
-        context 'by iids' do
-          it 'returns all epics by the given iids' do
-            expect(epics(iids: [epic1.iid, epic3.iid])).to contain_exactly(epic1, epic3)
+        context 'when subgroups are supported', :nested_groups do
+          let(:subgroup) { create(:group, :private, parent: group) }
+          let(:subgroup2) { create(:group, :private, parent: subgroup) }
+          let!(:subepic1) { create(:epic, group: subgroup) }
+          let!(:subepic2) { create(:epic, group: subgroup2) }
+
+          it 'returns all epics that belong to the given group and its subgroups' do
+            expect(epics).to contain_exactly(epic1, epic2, epic3, subepic1, subepic2)
           end
         end
       end
