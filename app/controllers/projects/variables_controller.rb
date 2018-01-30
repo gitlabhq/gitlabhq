@@ -9,7 +9,7 @@ class Projects::VariablesController < Projects::ApplicationController
         variables = @project.variables
           .map { |variable| variable.present(current_user: current_user) }
 
-        render status: :ok, json: { variables: variables }
+        render status: :ok, json: { variables: VariableSerializer.new.represent(variables) }
       end
     end
   end
@@ -21,7 +21,7 @@ class Projects::VariablesController < Projects::ApplicationController
           variables = @project.variables
             .map { |variable| variable.present(current_user: current_user) }
 
-          return render status: :ok, json: { variables: variables }
+          return render status: :ok, json: { variables: VariableSerializer.new.represent(variables) }
         end
 
         render status: :bad_request, json: @project.errors.full_messages
