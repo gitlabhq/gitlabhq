@@ -47,7 +47,7 @@ class Upload < ActiveRecord::Base
   end
 
   def local?
-    return true
+    true
   end
 
   def foreground_checksummable?

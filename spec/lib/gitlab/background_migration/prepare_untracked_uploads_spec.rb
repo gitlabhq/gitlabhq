@@ -132,10 +132,6 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
 
       context 'when there are files in /uploads/tmp' do
         it_behaves_like 'does not add files in /uploads/tmp'
-          described_class.new.perform
-
-          expect(untracked_files_for_uploads.count).to eq(5)
-        end
       end
     end
   end
