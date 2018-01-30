@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
@@ -171,11 +172,12 @@ export default class Job {
   }
 
   getBuildTrace() {
-    return $.ajax({
-      url: `${this.pagePath}/trace.json`,
-      data: { state: this.state },
+    return axios.get(`${this.pagePath}/trace.json`, {
+      params: { state: this.state },
     })
-      .done((log) => {
+      .then((res) => {
+        const log = res.data;
+
         setCiStatusFavicon(`${this.pagePath}/status.json`);
 
         if (log.state) {
@@ -217,7 +219,7 @@ export default class Job {
           visitUrl(this.pagePath);
         }
       })
-      .fail(() => {
+      .catch(() => {
         this.$buildRefreshAnimation.remove();
       })
       .then(() => {
