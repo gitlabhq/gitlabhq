@@ -16,8 +16,8 @@ describe MergeRequestWidgetEntity do
     allow(merge_request).to receive(:head_pipeline).and_return(pipeline)
 
     expect(subject.as_json).to include(:blob_path)
-    expect(subject.as_json[:blob_path]).to include(:base)
-    expect(subject.as_json[:blob_path]).to include(:head)
+    expect(subject.as_json[:blob_path]).to include(:base_path)
+    expect(subject.as_json[:blob_path]).to include(:head_path)
   end
 
   it 'has performance data' do
