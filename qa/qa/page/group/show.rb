@@ -13,6 +13,10 @@ module QA
           element :new_subgroup_button, /%input.*\.js-new-group-child/
         end
 
+        view 'app/assets/javascripts/groups/constants.js' do
+          element :no_result_text, 'Sorry, no groups or projects matched your search'
+        end
+
         def go_to_subgroup(name)
           click_link name
         end
@@ -24,7 +28,11 @@ module QA
         def has_subgroup?(name)
           filter_by_name(name)
 
-          page.has_link?(name)
+          wait(reload: false) do
+            return false if page.has_content?('Sorry, no groups or projects matched your search')
+
+            page.has_link?(name)
+          end
         end
 
         def go_to_new_subgroup
