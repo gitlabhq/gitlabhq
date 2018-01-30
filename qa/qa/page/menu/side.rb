@@ -7,6 +7,8 @@ module QA
           element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: 'Repository'"
           element :pipelines_settings_link, "title: 'CI / CD'"
+          element :issues_link, %r{link_to.*shortcuts-issues}
+          element :issues_link_text, "Issues"
           element :top_level_items, '.sidebar-top-level-items'
           element :activity_link, "title: 'Activity'"
         end
@@ -40,6 +42,12 @@ module QA
         def go_to_settings
           within_sidebar do
             click_on 'Settings'
+          end
+        end
+
+        def click_issues
+          within_sidebar do
+            click_link('Issues')
           end
         end
 
