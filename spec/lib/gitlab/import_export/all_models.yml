@@ -305,6 +305,7 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- prometheus_metrics
 award_emoji:
 - awardable
 - user
