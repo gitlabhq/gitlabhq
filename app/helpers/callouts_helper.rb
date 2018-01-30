@@ -1,6 +1,8 @@
 module CalloutsHelper
-  def show_gke_cluster_integration_callout?(kube_feature_name, project)
-    current_user && !user_dismissed?(kube_feature_name) &&
+  GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'.freeze
+
+  def show_gke_cluster_integration_callout?(project)
+    current_user && !user_dismissed?(GKE_CLUSTER_INTEGRATION) &&
       (project.team.master?(current_user) ||
        current_user == project.owner)
   end
