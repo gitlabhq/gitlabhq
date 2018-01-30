@@ -96,6 +96,7 @@ class Repository
     @raw_repository = nil
   end
 
+  alias_method :close, :close_rugged
   alias_method :raw, :raw_repository
 
   # Return absolute path to repository
