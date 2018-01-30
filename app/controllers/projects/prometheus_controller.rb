@@ -5,7 +5,7 @@ class Projects::PrometheusController < Projects::ApplicationController
   def active_metrics
     respond_to do |format|
       format.json do
-        matched_metrics = project.prometheus_service.matched_metrics || {}
+        matched_metrics = project.query_prometheus.matched_metrics || {}
 
         if matched_metrics.any?
           render json: matched_metrics

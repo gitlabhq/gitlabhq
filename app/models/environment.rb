@@ -159,7 +159,7 @@ class Environment < ActiveRecord::Base
 
   def additional_metrics
     if has_additional_metrics?
-      project.prometheus_service.additional_environment_metrics(self)
+      project.query_prometheus(self).additional_environment_metrics(self)
     end
   end
 

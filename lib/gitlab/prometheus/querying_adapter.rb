@@ -33,7 +33,7 @@ module Gitlab
       end
 
       # Cache metrics for specific environment
-      def calculate_reactive_cache(client, query_class_name, environment_id, *args)
+      def self.calculate_reactive_cache(client, query_class_name, environment_id, *args)
         return unless active? && project && !project.pending_delete?
 
         data = Kernel.const_get(query_class_name).new(client).query(environment_id, *args)

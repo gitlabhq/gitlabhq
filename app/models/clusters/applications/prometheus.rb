@@ -7,6 +7,9 @@ module Clusters
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ReactiveCaching
+
+      self.reactive_cache_key = ->(app) { [app.class.model_name.singular, app.id] }
 
       default_value_for :version, VERSION
 

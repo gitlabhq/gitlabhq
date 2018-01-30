@@ -20,6 +20,7 @@ class Project < ActiveRecord::Base
   include GroupDescendant
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
+  include Gitlab::Prometheus::QueryDispatch
   include ::Gitlab::Utils::StrongMemoize
 
   extend Gitlab::ConfigHelper

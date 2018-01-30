@@ -16,32 +16,6 @@ class PrometheusService < MonitoringService
 
   after_save :clear_reactive_cache!
 
-  def query(environment = nil)
-    cache_source = prometheus_application(environment) || self
-
-    Gitlab::Prometheus::QueryingAdapter.new(cache_source)
-  end
-
-  def environment_metrics(environment)
-    query(environment).environment_metrics(environment)
-  end
-
-  def deployment_metrics(deployment)
-    query(deployment.environment).deployment_metrics(deployment)
-  end
-
-  def additional_environment_metrics(environment)
-    query(environment).additional_environment_metrics(environment)
-  end
-
-  def additional_deployment_metrics(deployment)
-    query(deployment.environment).additional_deployment_metrics(deployment)
-  end
-
-  def matched_metrics
-    query.matched_metrics
-  end
-
   def initialize_properties
     if properties.nil?
       self.properties = {}
@@ -99,22 +73,8 @@ class PrometheusService < MonitoringService
   end
 
   def calculate_reactive_cache(query_class_name, environment_id, *args)
-    client = client(environment_id)
-    query.calculate_reactive_cache(client, query_class_name, environment_id, *args)
-  end
-
-  def client(environment_id = nil)
-    if manual_configuration?
-      Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
-    else
-      cluster = cluster_with_prometheus(environment_id)
-      raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
-
-      rest_client = client_from_cluster(cluster)
-      raise Gitlab::PrometheusError, "couldn't create proxy Prometheus client" unless rest_client
-
-      Gitlab::PrometheusClient.new(rest_client)
-    end
+    client = Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
+    Gitlab::Prometheus::QueryingAdapter.calculate_reactive_cache(client, query_class_name, environment_id, *args)
   end
 
   def prometheus_installed?
@@ -123,19 +83,6 @@ class PrometheusService < MonitoringService
   end
 
   private
-
-  def prometheus_application(environment = nil)
-    clusters = if environment
-                 # sort results by descending order based on environment_scope being longer
-                 # thus more closely matching environment slug
-                 project.clusters.enabled.for_environment(environment).sort_by { |c| c.environment_scope&.length }.reverse!
-               else
-                 project.clusters.enabled.for_all_environments
-               end
-
-    cluster = clusters&.detect { |cluster| cluster.application_prometheus&.installed? }
-    cluster&.application_prometheus
-  end
 
   def synchronize_service_state!
     self.active = prometheus_installed? || self.manual_configuration?
