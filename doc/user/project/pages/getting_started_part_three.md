@@ -155,14 +155,39 @@ Certificates are NOT required to add to your custom
 (sub)domain on your GitLab Pages project, though they are
 highly recommendable.
 
-The importance of having any website securely served under HTTPS
-is explained on the introductory section of the blog post
-[Secure GitLab Pages with StartSSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/#https-a-quick-overview).
+Let's start with an introduction to the importance of HTTPS.
+Alternatively, jump ahead to [adding certificates to your project](#adding-certificates-to-your-project).
 
-The reason why certificates are so important is that they encrypt
+#### Why should I care about HTTPS?
+
+This might be your first question. If our sites are hosted by GitLab Pages,
+they are static, hence we are not dealing with server-side scripts
+nor credit card transactions, then why do we need secure connections?
+
+Back in the 1990s, where HTTPS came out, [SSL](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0.2C_2.0_and_3.0) was considered a "special"
+security measure, necessary just for big companies, like banks and shoppings sites
+with financial transactions.
+Now we have a different picture. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [ISRG](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
+
+> _We’ve since come to realize that HTTPS is important for almost all websites. It’s important for any website that allows people to log in with a password, any website that [tracks its users](https://www.washingtonpost.com/news/the-switch/wp/2013/12/10/nsa-uses-google-cookies-to-pinpoint-targets-for-hacking/) in any way, any website that [doesn’t want its content altered](http://arstechnica.com/tech-policy/2014/09/why-comcasts-javascript-ad-injections-threaten-security-net-neutrality/), and for any site that offers content people might not want others to know they are consuming. We’ve also learned that any site not secured by HTTPS [can be used to attack other sites](http://krebsonsecurity.com/2015/04/dont-be-fodder-for-chinas-great-cannon/)._
+
+Therefore, the reason why certificates are so important is that they encrypt
 the connection between the **client** (you, me, your visitors)
 and the **server** (where you site lives), through a keychain of
 authentications and validations.
+
+How about taking Josh's advice and protecting our sites too? We will be
+well supported, and we'll contribute to a safer internet.
+
+#### Organizations supporting HTTPS
+
+There is a huge movement in favor of securing all the web. W3C fully
+[supports the cause](https://w3ctag.github.io/web-https/) and explains very well
+the reasons for that. Richard Barnes, a writer for Mozilla Security Blog,
+suggested that [Firefox would deprecate HTTP](https://blog.mozilla.org/security/2015/04/30/deprecating-non-secure-http/),
+and would no longer accept unsecured connections. Recently, Mozilla published a
+[communicate](https://blog.mozilla.org/security/2016/03/29/march-2016-ca-communication/)
+reiterating the importance of HTTPS.
 
 ### Issuing Certificates
 
