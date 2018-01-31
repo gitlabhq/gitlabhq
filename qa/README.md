@@ -34,9 +34,6 @@ You can use GitLab QA to exercise tests on any live instance! For example, the
 following call would login to a local [GDK] instance and run all specs in
 `qa/specs/features`:
 
-First, `cd` into the `$gdk/gitlab/qa` directory.
-The `bin/qa` script expects you to be in the `qa` folder of the app.
-
 ```
 bin/qa Test::Instance http://localhost:3000
 ```
