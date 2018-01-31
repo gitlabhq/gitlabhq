@@ -134,6 +134,7 @@ describe('Api', () => {
 
       Api.newLabel(namespace, project, labelData, (response) => {
         expect(response.name).toBe('test');
+<<<<<<< HEAD
         done();
       });
     });
@@ -155,6 +156,8 @@ describe('Api', () => {
 
       Api.newLabel(namespace, null, labelData, (response) => {
         expect(response.name).toBe('test');
+=======
+>>>>>>> upstream/master
         done();
       });
     });
@@ -259,6 +262,7 @@ describe('Api', () => {
         .then(({ data }) => {
           expect(data.length).toBe(1);
           expect(data[0].name).toBe('test');
+<<<<<<< HEAD
         })
         .then(done)
         .catch(done.fail);
@@ -279,6 +283,8 @@ describe('Api', () => {
       Api.ldap_groups(query, provider, callback)
         .then((response) => {
           expect(callback).toHaveBeenCalledWith(response);
+=======
+>>>>>>> upstream/master
         })
         .then(done)
         .catch(done.fail);

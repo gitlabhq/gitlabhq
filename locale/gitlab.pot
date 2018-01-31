@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-01-31 09:31+0100\n"
 "PO-Revision-Date: 2018-01-31 09:31+0100\n"
+=======
+"POT-Creation-Date: 2018-01-30 14:59+0100\n"
+"PO-Revision-Date: 2018-01-30 14:59+0100\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -157,9 +162,12 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "All changes are committed"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -259,6 +267,7 @@ msgstr ""
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -313,6 +322,8 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -507,9 +518,12 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -579,6 +593,7 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Cluster"
 msgstr ""
 
@@ -588,6 +603,11 @@ msgstr ""
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
+=======
+msgid "ClusterIntegration|API URL"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "ClusterIntegration|Add an existing cluster"
 msgstr ""
 
@@ -738,9 +758,12 @@ msgstr ""
 msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ClusterIntegration|Multiple clusters are available in GitLab Enterprise Edition Premium and Ultimate"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "ClusterIntegration|Note:"
 msgstr ""
 
@@ -1231,6 +1254,7 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Epic will be removed! Are you sure?"
 msgstr ""
 
@@ -1246,6 +1270,8 @@ msgstr ""
 msgid "Error fetching contributors data."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Error fetching refs"
 msgstr ""
 
@@ -1345,12 +1371,30 @@ msgid "GPG Keys"
 msgstr ""
 
 msgid "Generate a default set of labels"
+<<<<<<< HEAD
 msgstr ""
 
 msgid "Geo Nodes"
 msgstr ""
 
 msgid "GeoNodeSyncStatus|Node is failing or broken."
+=======
+msgstr ""
+
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "Git version"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
+
+msgid "Gitaly Servers"
+msgstr ""
+
+msgid "Go to your fork"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
@@ -1395,10 +1439,14 @@ msgstr ""
 msgid "GeoNodes|Local LFS objects:"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|Local job artifacts:"
 msgstr ""
 
 msgid "GeoNodes|New node"
+=======
+msgid "GroupsTree|Are you sure you want to leave the \"${group.fullName}\" group?"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Out of sync"
@@ -1446,7 +1494,16 @@ msgstr ""
 msgid "Geo|Repository sync capacity"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Geo|Select groups to replicate."
+=======
+msgid "Hide value"
+msgid_plural "Hide values"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "History"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Git storage health information has been reset"
@@ -1458,7 +1515,14 @@ msgstr ""
 msgid "GitLab Runner section"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Gitaly Servers"
+=======
+msgid "Interested parties can even contribute by pushing commits if they want to."
+msgstr ""
+
+msgid "Internal - The group and any internal projects can be viewed by any logged in user."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Go to your fork"
@@ -1479,6 +1543,7 @@ msgstr ""
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
 msgstr ""
 
@@ -1618,6 +1683,8 @@ msgstr ""
 msgid "Issues"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
@@ -1698,9 +1765,12 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "License"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Loading the GitLab IDE..."
 msgstr ""
 
@@ -1835,9 +1905,12 @@ msgstr ""
 msgid "New tag"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "No changes"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
@@ -1934,9 +2007,12 @@ msgstr ""
 msgid "Number of access attempts"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "OK"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Oct"
 msgstr ""
 
@@ -2213,6 +2289,7 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -2231,6 +2308,8 @@ msgstr ""
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Projects"
 msgstr ""
 
@@ -2318,9 +2397,12 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Registry"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Related Commits"
 msgstr ""
 
@@ -2342,9 +2424,12 @@ msgstr ""
 msgid "Remind later"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Remove"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Remove avatar"
 msgstr ""
 
@@ -2404,9 +2489,12 @@ msgstr ""
 msgid "Search branches and tags"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Seconds before reseting failure information"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
@@ -2490,7 +2578,7 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
-msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName}"
+msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong when toggling the button"
@@ -2729,12 +2817,15 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Thanks! Don't show me this again"
 msgstr ""
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -2813,6 +2904,7 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+<<<<<<< HEAD
 msgid "There was an error when reseting email token."
 msgstr ""
 
@@ -2825,6 +2917,8 @@ msgstr ""
 msgid "This board\\'s scope is reduced"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "This directory"
 msgstr ""
 
@@ -2870,9 +2964,12 @@ msgstr ""
 msgid "This repository"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -3021,9 +3118,12 @@ msgstr[1] ""
 msgid "Time|s"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Title"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
@@ -3039,6 +3139,7 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Track activity with Contribution Analytics."
 msgstr ""
 
@@ -3057,6 +3158,14 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+=======
+msgid "Trigger this manual action"
+msgstr ""
+
+msgid "Unable to reset project cache."
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Unlock"
 msgstr ""
 
@@ -3067,6 +3176,7 @@ msgid "Unstar"
 msgstr ""
 
 msgid "Up to date"
+<<<<<<< HEAD
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."
@@ -3082,6 +3192,8 @@ msgid "Upgrade your plan to activate Issue weight."
 msgstr ""
 
 msgid "Upgrade your plan to improve Issue boards."
+=======
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Upload New File"
@@ -3136,12 +3248,15 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "We want to be sure it is you, please confirm you are not a robot."
+<<<<<<< HEAD
 msgstr ""
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
 msgid "Weight"
+=======
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Wiki"
@@ -3267,15 +3382,21 @@ msgstr ""
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
+msgid "You can also star a label to make it a priority label."
+msgstr ""
+
 msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 

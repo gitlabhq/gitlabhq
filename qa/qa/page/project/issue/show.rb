@@ -23,10 +23,13 @@ module QA
 
           # Adds a comment to an issue
           # attachment option should be an absolute path
-          def comment(text, attachment:)
+          def comment(text, attachment: nil)
             fill_in(with: text, name: 'note[note]')
 
-            attach_file_to_dropzone(attachment, '.new-note') if attachment
+            unless attachment.nil?
+              QA::Page::Component::Dropzone.new(page, '.new-note')
+                .attach_file(attachment)
+            end
 
             click_on 'Comment'
           end

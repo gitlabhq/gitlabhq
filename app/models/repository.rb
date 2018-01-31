@@ -901,7 +901,7 @@ class Repository
     @root_ref_sha ||= commit(root_ref).sha
   end
 
-  delegate :merged_branch_names, to: :raw_repository
+  delegate :merged_branch_names, :can_be_merged?, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
@@ -1020,7 +1020,7 @@ class Repository
           end
 
         instance_variable_set(ivar, value)
-      rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
+      rescue Gitlab::Git::Repository::NoRepository
         # Even if the above `#exists?` check passes these errors might still
         # occur (for example because of a non-existing HEAD). We want to
         # gracefully handle this and not cache anything

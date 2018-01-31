@@ -888,16 +888,12 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        instructions = ref_names.map do |ref|
-          "delete #{ref}\x00\x00"
-        end
-
-        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
-          stdin.write(instructions.join)
-        end
-
-        unless status.zero?
-          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        gitaly_migrate(:delete_refs) do |is_enabled|
+          if is_enabled
+            gitaly_delete_refs(*ref_names)
+          else
+            git_delete_refs(*ref_names)
+          end
         end
       end
 
@@ -1388,6 +1384,16 @@ module Gitlab
         args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
 
         run_git(args).first.scrub.split(/^--$/)
+      end
+
+      def can_be_merged?(source_sha, target_branch)
+        gitaly_migrate(:can_be_merged) do |is_enabled|
+          if is_enabled
+            gitaly_can_be_merged?(source_sha, find_branch(target_branch, true).target)
+          else
+            rugged_can_be_merged?(source_sha, target_branch)
+          end
+        end
       end
 
       def search_files_by_name(query, ref)
@@ -2204,6 +2210,24 @@ module Gitlab
         remote_update(remote_name, url: url)
       end
 
+      def git_delete_refs(*ref_names)
+        instructions = ref_names.map do |ref|
+          "delete #{ref}\x00\x00"
+        end
+
+        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
+          stdin.write(instructions.join)
+        end
+
+        unless status.zero?
+          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        end
+      end
+
+      def gitaly_delete_refs(*ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names)
+      end
+
       def rugged_remove_remote(remote_name)
         # When a remote is deleted all its remote refs are deleted too, but in
         # the case of mirrors we map its refs (that would usualy go under
@@ -2264,6 +2288,14 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitaly_can_be_merged?(their_commit, our_commit)
+        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
+      end
+
+      def rugged_can_be_merged?(their_commit, our_commit)
+        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def gitlab_projects_error
