@@ -1,0 +1,33 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties" : {
+      "id": { "type": "integer" },
+      "project_id": { "type": ["integer", "null"] },
+      "title": { "type": "string" },
+      "file_name": { "type": ["string", "null"] },
+      "description": { "type": ["string", "null"] },
+      "web_url": { "type": "string" },
+      "created_at": { "type": "date" },
+      "updated_at": { "type": "date" },
+      "author": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "id": { "type": "integer" },
+          "state": { "type": "string" },
+          "avatar_url": { "type": "uri" },
+          "web_url": { "type": "uri" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "id", "title", "file_name", "description", "web_url",
+      "created_at", "updated_at", "author"
+    ],
+    "additionalProperties": false
+  }
+}

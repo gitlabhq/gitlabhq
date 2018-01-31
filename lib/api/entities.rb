@@ -314,24 +314,20 @@ module API
       end
     end
 
-    class ProjectSnippet < Grape::Entity
+    class Snippet < Grape::Entity
       expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
-
-      expose :web_url do |snippet, options|
+      expose :project_id
+      expose :web_url do |snippet|
         Gitlab::UrlBuilder.build(snippet)
       end
     end
 
-    class PersonalSnippet < Grape::Entity
-      expose :id, :title, :file_name, :description
-      expose :author, using: Entities::UserBasic
-      expose :updated_at, :created_at
+    class ProjectSnippet < Snippet
+    end
 
-      expose :web_url do |snippet|
-        Gitlab::UrlBuilder.build(snippet)
-      end
+    class PersonalSnippet < Snippet
       expose :raw_url do |snippet|
         Gitlab::UrlBuilder.build(snippet) + "/raw"
       end
@@ -1167,6 +1163,15 @@ module API
     # Use with care, this exposes the secret
     class ApplicationWithSecret < Application
       expose :secret
+    end
+
+    class Blob < Grape::Entity
+      expose :basename
+      expose :data
+      expose :filename
+      expose :id
+      expose :ref
+      expose :startline
     end
   end
 end

@@ -10,6 +10,7 @@ module Gitlab
         @ref = opts.fetch(:ref, nil)
         @startline = opts.fetch(:startline, nil)
         @data = opts.fetch(:data, nil)
+        @per_page = opts.fetch(:per_page, 20)
       end
 
       def path
@@ -21,7 +22,7 @@ module Gitlab
       end
     end
 
-    attr_reader :current_user, :query
+    attr_reader :current_user, :query, :per_page
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
@@ -33,11 +34,12 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, limit_projects, query, default_project_filter: false)
+    def initialize(current_user, limit_projects, query, default_project_filter: false, per_page: 20)
       @current_user = current_user
       @limit_projects = limit_projects || Project.all
       @query = query
       @default_project_filter = default_project_filter
+      @per_page = per_page
     end
 
     def objects(scope, page = nil, without_count = true)
@@ -151,10 +153,6 @@ module Gitlab
 
     def default_scope
       'projects'
-    end
-
-    def per_page
-      20
     end
 
     def project_ids_relation

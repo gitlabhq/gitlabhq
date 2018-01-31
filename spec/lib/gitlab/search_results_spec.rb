@@ -20,8 +20,12 @@ describe Gitlab::SearchResults do
     end
 
     describe '#objects' do
-      it 'returns without_page collection by default' do
+      it 'returns without_counts collection by default' do
         expect(results.objects('projects')).to be_kind_of(Kaminari::PaginatableWithoutCount)
+      end
+
+      it 'returns with counts collection when requested' do
+        expect(results.objects('projects', 1, false)).not_to be_kind_of(Kaminari::PaginatableWithoutCount)
       end
     end
 
