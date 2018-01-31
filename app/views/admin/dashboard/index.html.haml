@@ -153,10 +153,6 @@
               GitLab API
               %span.pull-right
                 = API::API::version
-            %p
-              Gitaly
-              %span.pull-right
-                = Gitlab::GitalyClient.expected_server_version
             - if Gitlab.config.pages.enabled
               %p
                 GitLab Pages
@@ -173,10 +169,6 @@
                     Undefined
 
             %p
-              Git
-              %span.pull-right
-                = Gitlab::Git.version
-            %p
               Ruby
               %span.pull-right
                 #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
@@ -188,6 +180,8 @@
               = Gitlab::Database.adapter_name
               %span.pull-right
                 = Gitlab::Database.version
+            %p
+              = link_to "Gitaly Servers", admin_gitaly_servers_path
     .row
       .col-md-4
         .info-well
