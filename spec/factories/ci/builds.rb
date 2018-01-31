@@ -141,6 +141,12 @@ FactoryBot.define do
       end
     end
 
+    trait :trace_artifact do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :trace, job: build)
+      end
+    end
+
     trait :unicode_trace do
       after(:create) do |build, evaluator|
         trace = File.binread(
