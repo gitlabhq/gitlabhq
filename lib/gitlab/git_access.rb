@@ -2,6 +2,8 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
+    include Gitlab::Utils::StrongMemoize
+
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectCreationError = Class.new(StandardError)
@@ -239,9 +241,11 @@ module Gitlab
     end
 
     def can_create_project_in_namespace?(cmd)
-      return false unless push?(cmd) && target_namespace && project.blank?
+      strong_memoize(:can_create_project_in_namespace) do
+        return false unless push?(cmd) && target_namespace && project.blank?
 
-      user.can?(:create_projects, target_namespace)
+        user.can?(:create_projects, target_namespace)
+      end
     end
 
     def http?
