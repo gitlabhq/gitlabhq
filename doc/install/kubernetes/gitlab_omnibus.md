@@ -12,7 +12,7 @@ This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. Gi
 
 This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned via [Let's Encrypt](https://letsencrypt.org/).
 
-This Helm chart is in beta, and is suited for small to medium deployments. and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the difficulty in supporting upgrades, migrating will require exporting data out of this instance and importing it into the new deployment.
+This Helm chart is in beta, and is suited for small to medium deployments. and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the significant architectural changes, migrating will require backing up data out of this instance and importing it into the new deployment.
 
 The deployment includes:
 
