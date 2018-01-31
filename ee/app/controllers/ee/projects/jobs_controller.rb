@@ -21,7 +21,7 @@ module EE
       end
 
       def raw_redirect_params
-        { query: { "response-content-disposition" => "attachment;filename=#{trace_artifact_file.filename}" } }
+        { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
       end
 
       def trace_artifact_file
