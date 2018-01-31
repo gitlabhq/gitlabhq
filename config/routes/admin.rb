@@ -29,6 +29,8 @@ namespace :admin do
   resource :impersonation, only: :destroy
 
   resources :abuse_reports, only: [:index, :destroy]
+  resources :gitaly_servers, only: [:index]
+
   resources :spam_logs, only: [:index, :destroy] do
     member do
       post :mark_as_ham
