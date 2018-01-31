@@ -129,18 +129,6 @@ module Gitlab
           trans.increment("#{name}_cpu_time", cpu_time.in_milliseconds, false)
           trans.increment("#{name}_call_count", 1, false)
 
-<<<<<<< HEAD
-      # Tracks an event.
-      #
-      # See `Gitlab::Metrics::Transaction#add_event` for more details.
-      def add_event(*args)
-        current_transaction&.add_event(*args)
-      end
-
-      def add_event_with_values(*args)
-        current_transaction&.add_event_with_values(*args)
-      end
-=======
           retval
         end
 
@@ -149,7 +137,6 @@ module Gitlab
         # action - The name of the action.
         def action=(action)
           trans = current_transaction
->>>>>>> upstream/master
 
           trans&.action = action
         end
