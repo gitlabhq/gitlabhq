@@ -245,8 +245,7 @@ class Project < ActiveRecord::Base
   validates :path,
     presence: true,
     project_path: true,
-    length: { maximum: 255 },
-    uniqueness: { scope: :namespace_id }
+    length: { maximum: 255 }
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }

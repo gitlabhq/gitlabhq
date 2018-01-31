@@ -153,10 +153,9 @@ class User < ActiveRecord::Base
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
     user_path: true,
-    presence: true,
-    uniqueness: { case_sensitive: false }
+    presence: true
 
-  validate :namespace_uniq, if: :username_changed?
+  validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
 
   validate :unique_email, if: :email_changed?
@@ -172,6 +171,7 @@ class User < ActiveRecord::Base
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
+  after_validation :set_username_errors
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -502,17 +502,6 @@ class User < ActiveRecord::Base
       u2f_registrations.any?
     else
       u2f_registrations.exists?
-    end
-  end
-
-  def namespace_uniq
-    # Return early if username already failed the first uniqueness validation
-    return if errors.key?(:username) &&
-        errors[:username].include?('has already been taken')
-
-    existing_namespace = Namespace.by_path(username)
-    if existing_namespace && existing_namespace != namespace
-      errors.add(:username, 'has already been taken')
     end
   end
 
@@ -889,6 +878,11 @@ class User < ActiveRecord::Base
     else
       build_namespace(path: username, name: username)
     end
+  end
+
+  def set_username_errors
+    namespace_path_errors = self.errors.delete(:"namespace.path")
+    self.errors[:username].concat(namespace_path_errors) if namespace_path_errors
   end
 
   def username_changed_hook

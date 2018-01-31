@@ -129,7 +129,6 @@ describe Project do
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
