@@ -150,6 +150,13 @@ module QA
       autoload :Main, 'qa/page/mattermost/main'
       autoload :Login, 'qa/page/mattermost/login'
     end
+
+    ##
+    # Classes describing components that are used by several pages.
+    #
+    module Component
+      autoload :Dropzone, 'qa/page/component/dropzone'
+    end
   end
 
   ##
