@@ -1,11 +1,14 @@
 module Geo
   class AttachmentRegistryFinder < FileRegistryFinder
     def attachments
-      if selective_sync?
-        Upload.where(group_uploads.or(project_uploads).or(other_uploads))
-      else
-        Upload.all
-      end
+      relation =
+        if selective_sync?
+          Upload.where(group_uploads.or(project_uploads).or(other_uploads))
+        else
+          Upload.all
+        end
+
+      relation.with_files_stored_locally
     end
 
     def count_attachments
@@ -105,6 +108,7 @@ module Geo
       fdw_table = Geo::Fdw::Upload.table_name
 
       Geo::Fdw::Upload.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
+        .with_files_stored_locally
         .merge(Geo::FileRegistry.attachments)
     end
 
@@ -115,6 +119,7 @@ module Geo
       Geo::Fdw::Upload.joins("LEFT OUTER JOIN file_registry
                                            ON file_registry.file_id = #{fdw_table}.id
                                           AND file_registry.file_type IN (#{upload_types})")
+        .with_files_stored_locally
         .where(file_registry: { id: nil })
         .where.not(id: except_registry_ids)
     end

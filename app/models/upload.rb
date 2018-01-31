@@ -9,6 +9,8 @@ class Upload < ActiveRecord::Base
   validates :model, presence: true
   validates :uploader, presence: true
 
+  scope :with_files_stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
+
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
 
