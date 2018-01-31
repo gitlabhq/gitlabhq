@@ -387,7 +387,8 @@ data before running `pg_basebackup`.
    name as shown in the commands below.
 
 1. Execute the command below to start a backup/restore and begin the replication
-   (various options that can be added to these commands are listed below):
+   >**Warning:** Each Geo secondary must have its own unique replication slot name.
+   Using the same slot name between two secondaries will break PostgreSQL replication.
 
     ```bash
     gitlab-ctl replicate-geo-database --slot-name=secondary_example --host=1.2.3.4
