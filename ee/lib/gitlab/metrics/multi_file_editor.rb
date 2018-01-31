@@ -3,8 +3,6 @@ module Gitlab
     class MultiFileEditor
       delegate :total, to: :commit_stats, prefix: :line_changes
 
-      METRIC_NAME = :multi_file_editor_usage
-
       def initialize(project, current_user, commit)
         @project, @current_user, @commit = project, current_user, commit
       end
@@ -12,10 +10,11 @@ module Gitlab
       def record
         return unless ::License.feature_available?(:ide)
 
-        ::Gitlab::Metrics.counter(
-          METRIC_NAME,
-          'Total number of commits using the multi-file web editor',
-          metric_labels)
+        metric = WebIdeMetric.new(metric_data)
+
+        unless metric.save
+          Rails.logger.error("Error persisting Web IDE metric: #{metric.as_json} - #{metric.errors.full_messages}")
+        end
       end
 
       private
@@ -36,12 +35,12 @@ module Gitlab
         @commit.stats
       end
 
-      def metric_labels
+      def metric_data
         {
-            project: hashed_project,
-            user: hashed_user,
-            line_changes: line_changes_total,
-            files_count: files_total
+          project: hashed_project,
+          user: hashed_user,
+          line_count: line_changes_total,
+          file_count: files_total
         }
       end
     end
