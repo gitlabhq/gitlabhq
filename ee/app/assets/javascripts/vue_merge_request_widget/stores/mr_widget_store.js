@@ -122,12 +122,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
       // Remove the new Issues and the added issues
       this.securityReport.allIssues = MergeRequestStore.filterByKey(
-        MergeRequestStore.filterByKey(
-          parsedHead,
-          this.securityReport.newIssues,
-          filterKey,
-        ),
-        this.securityReport.resolvedIssues,
+        parsedHead,
+        this.securityReport.newIssues.concat(this.securityReport.resolvedIssues),
         filterKey,
       );
     } else {
