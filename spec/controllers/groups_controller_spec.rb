@@ -323,6 +323,13 @@ describe GroupsController do
       expect(controller).to set_flash[:notice]
     end
 
+    it 'updates the project_creation_level successfully' do
+      post :update, id: group.to_param, group: { project_creation_level: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS }
+
+      expect(response).to have_gitlab_http_status(302)
+      expect(group.reload.project_creation_level).to eq(::EE::Gitlab::Access::MASTER_PROJECT_ACCESS)
+    end
+
     it 'does not update the path on error' do
       allow_any_instance_of(Group).to receive(:move_dir).and_raise(Gitlab::UpdatePathError)
       post :update, id: group.to_param, group: { path: 'new_path' }

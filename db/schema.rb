@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "mirror_available", default: true, null: false
+    t.integer "default_project_creation", default: 2, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1546,6 +1547,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
     t.integer "plan_id"
+    t.integer "project_creation_level"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree

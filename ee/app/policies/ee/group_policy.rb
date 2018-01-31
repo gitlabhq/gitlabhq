@@ -7,6 +7,16 @@ module EE
       condition(:ldap_synced) { @subject.ldap_synced? }
       condition(:epics_disabled) { !@subject.feature_available?(:epics) }
 
+      condition(:project_creation_level_enabled) { @subject.feature_available?(:project_creation_level) }
+
+      condition(:create_projects_disabled) do
+        @subject.project_creation_level == ::EE::Gitlab::Access::NO_ONE_PROJECT_ACCESS
+      end
+
+      condition(:developer_master_access) do
+        @subject.project_creation_level == ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS
+      end
+
       rule { reporter }.policy do
         enable :admin_list
         enable :admin_board
@@ -55,6 +65,9 @@ module EE
         prevent :update_epic
         prevent :destroy_epic
       end
+
+      rule { project_creation_level_enabled & developer & developer_master_access }.enable :create_projects
+      rule { project_creation_level_enabled & create_projects_disabled }.prevent :create_projects
     end
   end
 end

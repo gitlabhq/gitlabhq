@@ -12,6 +12,7 @@
           %span.descr This setting can be overridden in each project.
 
 - if can? current_user, :admin_group, @group
+  = render partial: 'groups/ee/project_creation_level', locals: { form: f, group: @group }
   .form-group
     = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
     .col-sm-10
