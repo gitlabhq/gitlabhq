@@ -23,7 +23,7 @@ describe('GeoNodeSyncSettingsComponent', () => {
     describe('syncType', () => {
       it('returns string representing sync type', () => {
         const vm = createComponent();
-        expect(vm.syncType).toBe('Selective');
+        expect(vm.syncType).toBe('Selective (namespaces)');
         vm.$destroy();
       });
     });

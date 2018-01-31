@@ -35,7 +35,7 @@
           return s__('GeoNodes|Full');
         }
 
-        return s__('GeoNodes|Selective');
+        return `${s__('GeoNodes|Selective')} (${this.selectiveSyncType})`;
       },
       eventTimestampEmpty() {
         return this.lastEvent.timeStamp === 0 || this.cursorLastEvent.timeStamp === 0;
