@@ -45,6 +45,7 @@ class PrometheusService < MonitoringService
 
   def fields
     return [] unless editable?
+
     [
       {
         type: 'checkbox',
@@ -124,7 +125,7 @@ class PrometheusService < MonitoringService
   end
 
   def prometheus_installed?
-    return false if template?
+    return false if template? || !project
 
     project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
   end
