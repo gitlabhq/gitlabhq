@@ -1,4 +1,6 @@
 class CreateWebIdeMetrics < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :web_ide_metrics do |t|
       t.string :project, null: false, limit: 64
