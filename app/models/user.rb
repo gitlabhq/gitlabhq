@@ -151,9 +151,7 @@ class User < ActiveRecord::Base
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
-  validates :username,
-    user_path: true,
-    presence: true
+  validates :username, presence: true
 
   validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
