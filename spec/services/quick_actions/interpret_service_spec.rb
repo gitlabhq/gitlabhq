@@ -308,15 +308,15 @@ describe QuickActions::InterpretService do
 
     shared_examples 'copy_metadata command' do
       it 'fetches issue or merge request and copies labels and milestone if content contains /copy_metadata reference' do
-        issueable_father # populate the issue
+        source_issuable # populate the issue
         todo_label # populate this label
         inreview_label # populate this label
         _, updates = service.execute(content, issuable)
 
         expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
 
-        if issueable_father.milestone
-          expect(updates[:milestone_id]).to eq(issueable_father.milestone.id)
+        if source_issuable.milestone
+          expect(updates[:milestone_id]).to eq(source_issuable.milestone.id)
         else
           expect(updates).not_to have_key(:milestone_id)
         end
@@ -768,17 +768,17 @@ describe QuickActions::InterpretService do
       end
 
       it_behaves_like 'copy_metadata command' do
-        let(:issueable_father) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+        let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
 
-        let(:content) { "/copy_metadata #{issueable_father.to_reference}" }
+        let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
         let(:issuable) { issue }
       end
 
-      context 'when the parent issueable has a milestone' do
+      context 'when the parent issuable has a milestone' do
         it_behaves_like 'copy_metadata command' do
-          let(:issueable_father) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
+          let(:source_issuable) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
 
-          let(:content) { "/copy_metadata #{issueable_father.to_reference(project)}" }
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
           let(:issuable) { issue }
         end
       end
@@ -786,8 +786,8 @@ describe QuickActions::InterpretService do
       context 'cross project references' do
         it_behaves_like 'empty command' do
           let(:other_project) { create(:project, :public) }
-          let(:issueable_father) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
-          let(:content) { "/copy_metadata #{issueable_father.to_reference(project)}" }
+          let(:source_issuable) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
           let(:issuable) { issue }
         end
 
@@ -798,9 +798,9 @@ describe QuickActions::InterpretService do
 
         it_behaves_like 'empty command' do
           let(:other_project) { create(:project, :private) }
-          let(:issueable_father) { create(:issue, project: other_project) }
+          let(:source_issuable) { create(:issue, project: other_project) }
 
-          let(:content) { "/copy_metadata #{issueable_father.to_reference(project)}" }
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
           let(:issuable) { issue }
         end
       end
