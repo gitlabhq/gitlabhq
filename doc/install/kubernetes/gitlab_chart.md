@@ -4,7 +4,7 @@
 
 **This chart is deprecated.** For small installations on Kubernetes today, we recommend the beta [`gitlab-omnibus` Helm chart](https://docs.gitlab.com/ee/install/kubernetes/gitlab_omnibus.html).
 
-A new [cloud native GitLab chart](https://docs.gitlab.com/ee/install/kubernetes/#cloud-native-gitlab-chart) is in development with increased scalability, resilience, among other benefits. The cloud native chart will replace both the `gitlab` and `gitlab-omnibus` charts when available later this year.
+A new [cloud native GitLab chart](https://docs.gitlab.com/ee/install/kubernetes/#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. The cloud native chart will replace both the `gitlab` and `gitlab-omnibus` charts when available later this year.
 
 Due to the difficulty in supporting upgrades, migrating will require backing up data out of this instance and restoring it into the new deployment. For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
