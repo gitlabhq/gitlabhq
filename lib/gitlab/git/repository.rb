@@ -1386,6 +1386,16 @@ module Gitlab
         run_git(args).first.scrub.split(/^--$/)
       end
 
+      def can_be_merged?(source_sha, target_branch)
+        gitaly_migrate(:can_be_merged) do |is_enabled|
+          if is_enabled
+            gitaly_can_be_merged?(source_sha, find_branch(target_branch, true).target)
+          else
+            rugged_can_be_merged?(source_sha, target_branch)
+          end
+        end
+      end
+
       def search_files_by_name(query, ref)
         safe_query = Regexp.escape(query.sub(/^\/*/, ""))
 
@@ -2278,6 +2288,14 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitaly_can_be_merged?(their_commit, our_commit)
+        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
+      end
+
+      def rugged_can_be_merged?(their_commit, our_commit)
+        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def gitlab_projects_error
