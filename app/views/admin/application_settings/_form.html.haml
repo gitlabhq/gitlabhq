@@ -7,6 +7,7 @@
       = f.label :default_branch_protection, class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
+    = render partial: 'admin/application_settings/ee/project_creation_level', locals: { form: f, application_setting: @application_setting }
     .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10

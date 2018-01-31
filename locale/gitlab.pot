@@ -157,6 +157,9 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+msgid "Allowed to create projects"
+msgstr ""
+
 msgid "All changes are committed"
 msgstr ""
 
@@ -254,6 +257,9 @@ msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
 msgid "Available"
+msgstr ""
+
+msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -486,6 +492,9 @@ msgstr ""
 msgid "Check interval"
 msgstr ""
 
+msgid "Check interval"
+msgstr ""
+
 msgid "Checking %{text} availability…"
 msgstr ""
 
@@ -496,6 +505,15 @@ msgid "Cherry-pick this commit"
 msgstr ""
 
 msgid "Cherry-pick this merge request"
+msgstr ""
+
+msgid "Choose File ..."
+msgstr ""
+
+msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
+msgstr ""
+
+msgid "Choose file..."
 msgstr ""
 
 msgid "Choose File ..."
@@ -570,6 +588,9 @@ msgstr ""
 msgid "Click to expand text"
 msgstr ""
 
+msgid "Click to expand text"
+msgstr ""
+
 msgid "Clone repository"
 msgstr ""
 
@@ -598,6 +619,9 @@ msgid "ClusterIntegration|Advanced options on this cluster's integration"
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
+msgstr ""
+
+msgid "ClusterIntegration|Are you sure you want to remove this cluster's integration? This will not delete your actual cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Are you sure you want to remove this cluster's integration? This will not delete your actual cluster."
@@ -720,6 +744,9 @@ msgstr ""
 msgid "ClusterIntegration|Integration status"
 msgstr ""
 
+msgid "ClusterIntegration|Integration status"
+msgstr ""
+
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr ""
 
@@ -834,6 +861,9 @@ msgstr ""
 msgid "ClusterIntegration|check the pricing here"
 msgstr ""
 
+msgid "ClusterIntegration|check the pricing here"
+msgstr ""
+
 msgid "ClusterIntegration|cluster"
 msgstr ""
 
@@ -897,6 +927,27 @@ msgid "Committed by"
 msgstr ""
 
 msgid "Compare"
+msgstr ""
+
+msgid "Compare Git revisions"
+msgstr ""
+
+msgid "Compare Revisions"
+msgstr ""
+
+msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
+msgstr ""
+
+msgid "CompareBranches|Compare"
+msgstr ""
+
+msgid "CompareBranches|Source"
+msgstr ""
+
+msgid "CompareBranches|Target"
+msgstr ""
+
+msgid "CompareBranches|There isn't anything to compare."
 msgstr ""
 
 msgid "Compare Git revisions"
@@ -1126,7 +1177,13 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+msgid "Disable"
+msgstr ""
+
 msgid "Discard changes"
+msgstr ""
+
+msgid "Discover GitLab Geo."
 msgstr ""
 
 msgid "Discover GitLab Geo."
@@ -1178,6 +1235,9 @@ msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
 msgid "Emails"
+msgstr ""
+
+msgid "Enable"
 msgstr ""
 
 msgid "Enable"
@@ -1651,6 +1711,9 @@ msgstr ""
 msgid "Labels can be applied to issues and merge requests to categorize them."
 msgstr ""
 
+msgid "Labels can be applied to issues and merge requests to categorize them."
+msgstr ""
+
 msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
@@ -1714,6 +1777,9 @@ msgid "Locked Files"
 msgstr ""
 
 msgid "Login"
+msgstr ""
+
+msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
@@ -1952,6 +2018,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open"
+msgstr ""
+
 msgid "Opened"
 msgstr ""
 
@@ -2096,10 +2165,19 @@ msgstr ""
 msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a cluster</a>, then try again."
 msgstr ""
 
+msgid "Play"
+msgstr ""
+
+msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a cluster</a>, then try again."
+msgstr ""
+
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 
 msgid "Preferences"
+msgstr ""
+
+msgid "Primary"
 msgstr ""
 
 msgid "Primary"
@@ -2174,6 +2252,15 @@ msgstr ""
 msgid "Project cache successfully reset."
 msgstr ""
 
+msgid "Project avatar"
+msgstr ""
+
+msgid "Project avatar in repository: %{link}"
+msgstr ""
+
+msgid "Project cache successfully reset."
+msgstr ""
+
 msgid "Project details"
 msgstr ""
 
@@ -2190,6 +2277,21 @@ msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
+
+msgid "ProjectCreationLevel|Allowed to create projects"
+msgstr ""
+
+msgid "ProjectCreationLevel|Default project creation protection"
+msgstr ""
+
+msgid "ProjectCreationLevel|Developers + Masters"
+msgstr ""
+
+msgid "ProjectCreationLevel|Masters"
+msgstr ""
+
+msgid "ProjectCreationLevel|No one"
 msgstr ""
 
 msgid "ProjectFeature|Disabled"
@@ -2318,6 +2420,9 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
+msgid "Register / Sign In"
+msgstr ""
+
 msgid "Registry"
 msgstr ""
 
@@ -2348,7 +2453,16 @@ msgstr ""
 msgid "Remove avatar"
 msgstr ""
 
+msgid "Remove"
+msgstr ""
+
+msgid "Remove avatar"
+msgstr ""
+
 msgid "Remove project"
+msgstr ""
+
+msgid "Repair authentication"
 msgstr ""
 
 msgid "Repair authentication"
@@ -2414,6 +2528,9 @@ msgid "Select Archive Format"
 msgstr ""
 
 msgid "Select a timezone"
+msgstr ""
+
+msgid "Select branch/tag"
 msgstr ""
 
 msgid "Select branch/tag"
@@ -2810,6 +2927,12 @@ msgstr ""
 msgid "There are no merge requests to show"
 msgstr ""
 
+msgid "There are no issues to show"
+msgstr ""
+
+msgid "There are no merge requests to show"
+msgstr ""
+
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
@@ -3030,6 +3153,12 @@ msgstr ""
 msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
+msgid "ToggleButton|Toggle Status: OFF"
+msgstr ""
+
+msgid "ToggleButton|Toggle Status: ON"
+msgstr ""
+
 msgid "Total Time"
 msgstr ""
 
@@ -3048,7 +3177,16 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
+msgid "Trigger this manual action"
+msgstr ""
+
 msgid "Turn on Service Desk"
+msgstr ""
+
+msgid "Unable to reset project cache."
+msgstr ""
+
+msgid "Unknown"
 msgstr ""
 
 msgid "Unable to reset project cache."
@@ -3093,6 +3231,9 @@ msgstr ""
 msgid "Upload new avatar"
 msgstr ""
 
+msgid "Upload new avatar"
+msgstr ""
+
 msgid "UploadLink|click to upload"
 msgstr ""
 
@@ -3127,6 +3268,9 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
+msgstr ""
+
+msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
 msgstr ""
 
 msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
@@ -3362,6 +3506,11 @@ msgstr ""
 
 msgid "day"
 msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "merge request"
+msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 

@@ -114,4 +114,14 @@ describe Group do
       expect(group.repository_size_limit).to eql(8.exabytes - 1)
     end
   end
+
+  describe 'project_creation_level' do
+    it 'outputs the default one if it is nil' do
+      stub_application_setting(default_project_creation: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS)
+
+      group = create(:group, project_creation_level: nil)
+
+      expect(group.project_creation_level).to eq(current_application_settings.default_project_creation)
+    end
+  end
 end

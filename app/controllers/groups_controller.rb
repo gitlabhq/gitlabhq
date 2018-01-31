@@ -3,6 +3,7 @@ class GroupsController < Groups::ApplicationController
   include MergeRequestsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
+  prepend EE::GroupsController
 
   respond_to :html
 
@@ -118,10 +119,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce << group_params_ee)
+    params.require(:group).permit(group_params_attributes)
   end
 
-  def group_params_ce
+  def group_params_attributes
     [
       :avatar,
       :description,
@@ -137,13 +138,6 @@ class GroupsController < Groups::ApplicationController
       :chat_team_name,
       :require_two_factor_authentication,
       :two_factor_grace_period
-    ]
-  end
-
-  def group_params_ee
-    [
-      :membership_lock,
-      :repository_size_limit
     ]
   end
 
