@@ -2471,6 +2471,7 @@ export const deploymentData = [
 
 export const statePaths = {
   settingsPath: '/root/hello-prometheus/services/prometheus/edit',
+  clustersPath: '/root/hello-prometheus/clusters',
   documentationPath: '/help/administration/monitoring/prometheus/index.md',
 };
 
