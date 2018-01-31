@@ -869,7 +869,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      !rugged_is_ancestor?(branch_commit.id, upstream_commit.id)
+      !raw_repository.ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
@@ -880,7 +880,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
 
     if upstream_commit
-      !rugged_is_ancestor?(upstream_commit.id, branch_commit.id)
+      !raw_repository.ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end
@@ -982,12 +982,6 @@ class Repository
     rescue Gitlab::Git::Repository::InvalidRef
       false
     end
-  end
-
-  def main_language
-    return unless exists?
-
-    Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
   # Caches the supplied block both in a cache and in an instance variable.
