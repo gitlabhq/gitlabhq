@@ -5,7 +5,7 @@
   import issuesBlock from './mr_widget_report_issues.vue';
 
   export default {
-    name: 'MRWidgetCodeQuality',
+    name: 'MRWidgetCodeQualityCollapsible',
     components: {
       issuesBlock,
       loadingIcon,
@@ -49,10 +49,15 @@
         required: false,
         default: () => [],
       },
-      infoText: {
-        type: String,
+      allIssues: {
+        type: Array,
         required: false,
-        default: null,
+        default: () => [],
+      },
+      infoText: {
+        type: [String, Boolean],
+        required: false,
+        default: false,
       },
       hasPriority: {
         type: Boolean,
@@ -65,6 +70,7 @@
       return {
         collapseText: __('Expand'),
         isCollapsed: true,
+        isFullReportVisible: false,
       };
     },
 
@@ -85,7 +91,9 @@
         return 'success';
       },
       hasIssues() {
-        return this.unresolvedIssues.length || this.resolvedIssues.length;
+        return this.unresolvedIssues.length ||
+          this.resolvedIssues.length ||
+          this.allIssues.length;
       },
     },
 
@@ -95,6 +103,9 @@
 
         const text = this.isCollapsed ? __('Expand') : __('Collapse');
         this.collapseText = text;
+      },
+      openFullReport() {
+        this.isFullReportVisible = true;
       },
     },
   };
@@ -169,6 +180,15 @@
       />
 
       <issues-block
+        class="js-mr-code-all-issues"
+        v-if="isFullReportVisible"
+        :type="type"
+        status="failed"
+        :issues="allIssues"
+        :has-priority="hasPriority"
+      />
+
+      <issues-block
         class="js-mr-code-non-issues"
         v-if="neutralIssues.length"
         :type="type"
@@ -185,6 +205,15 @@
         :issues="resolvedIssues"
         :has-priority="hasPriority"
       />
+
+      <button
+        v-if="allIssues.length && !isFullReportVisible"
+        type="button"
+        class="btn-link btn-blank prepend-left-10 js-expand-full-list"
+        @click="openFullReport"
+      >
+        {{ s__("ciReport|Show complete code vulnerabilities report") }}
+      </button>
     </div>
     <div
       v-else-if="loadingFailed"

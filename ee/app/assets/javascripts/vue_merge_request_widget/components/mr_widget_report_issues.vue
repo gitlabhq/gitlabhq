@@ -171,6 +171,7 @@
           :href="issue.urlPath"
           target="_blank"
           rel="noopener noreferrer nofollow"
+          class="prepend-left-5"
         >
           {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
         </a>
