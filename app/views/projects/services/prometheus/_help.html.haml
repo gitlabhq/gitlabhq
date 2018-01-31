@@ -1,10 +1,21 @@
-.row.prepend-top-default.append-bottom-default
-  %p
-    - unless @service.manual_configuration?
-      - if @service.prometheus_installed?
-        = link_to 'Manage installed Prometheus', project_clusters_path(@project), class: 'btn btn-cancel'
-      - else
-        = link_to 'Install Prometheus', project_clusters_path(@project), class: 'btn btn-cancel'
-    - else
-      To automatically install prometheus disable manual configuration
+%h4
+  Auto configuration
 
+.prepend-top-default.append-bottom-default
+  - unless @service.manual_configuration?
+    - if @service.prometheus_installed?
+      = link_to 'Manage clusters', project_clusters_path(@project), class: 'btn'
+    - else
+      = link_to 'Install Prometheus on clusters', project_clusters_path(@project), class: 'btn btn-success'
+  - else
+    .well
+      To enable the installation of Prometheus on your clusters, deactivate the manual configuration below
+
+%hr
+
+%h4.append-bottom-default
+  Manual configuration
+
+- unless @service.editable?
+  .well
+    To enable manual configuration, uninstall Prometheus from your clusters

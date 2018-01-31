@@ -27,6 +27,10 @@ class PrometheusService < MonitoringService
     false
   end
 
+  def editable?
+    !prometheus_installed? || manual_configuration?
+  end
+
   def title
     'Prometheus'
   end
@@ -40,19 +44,13 @@ class PrometheusService < MonitoringService
   end
 
   def fields
+    return [] unless editable?
     [
       {
-        type: 'fieldset',
+        type: 'checkbox',
         name: 'manual_configuration',
-        legend: 'Manual Configuration',
-        fields: [
-          {
-            type: 'checkbox',
-            name: 'manual_configuration',
-            title: s_('PrometheusService|Active'),
-            required: true
-          }
-        ]
+        title: s_('PrometheusService|Active'),
+        required: true
       },
       {
         type: 'text',
