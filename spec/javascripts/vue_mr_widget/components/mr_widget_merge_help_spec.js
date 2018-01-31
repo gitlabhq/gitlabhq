@@ -1,51 +1,38 @@
 import Vue from 'vue';
-import mergeHelpComponent from '~/vue_merge_request_widget/components/mr_widget_merge_help';
+import mergeHelpComponent from '~/vue_merge_request_widget/components/mr_widget_merge_help.vue';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
-const props = {
-  missingBranch: 'this-is-not-the-branch-you-are-looking-for',
-};
+
 const text = `If the ${props.missingBranch} branch exists in your local repository`;
 
-const createComponent = () => {
-  const Component = Vue.extend(mergeHelpComponent);
-  return new Component({
-    el: document.createElement('div'),
-    propsData: props,
-  });
-};
-
 describe('MRWidgetMergeHelp', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { missingBranch } = mergeHelpComponent.props;
-      const MissingBranchTypeClass = missingBranch.type;
+  let vm;
+  let Component;
 
-      expect(new MissingBranchTypeClass() instanceof String).toBeTruthy();
-      expect(missingBranch.required).toBeFalsy();
-      expect(missingBranch.default).toEqual('');
+  beforeEach(() => {
+    Component = Vue.extend(mergeHelpComponent);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  fdescribe('with missing branch', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        missingBranch: 'this-is-not-the-branch-you-are-looking-for',
+      });
+    });
+
+    it('renders missing branch information', () => {
+      console.log('', vm.$el);
+
     });
   });
 
-  describe('template', () => {
-    let vm;
-    let el;
-
+  describe('without missing branch', () => {
     beforeEach(() => {
-      vm = createComponent();
-      el = vm.$el;
-    });
-
-    it('should have the correct elements', () => {
-      expect(el.classList.contains('mr-widget-help')).toBeTruthy();
-      expect(el.textContent).toContain(text);
-    });
-
-    it('should not show missing branch name if missingBranch props is not provided', (done) => {
-      vm.missingBranch = null;
-      Vue.nextTick(() => {
-        expect(el.textContent).not.toContain(text);
-        done();
-      });
+      vm = mountComponent(Component);
     });
   });
 });
