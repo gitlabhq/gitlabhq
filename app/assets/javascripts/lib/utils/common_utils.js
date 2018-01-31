@@ -1,3 +1,4 @@
+import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
@@ -27,17 +28,14 @@ export const isInIssuePage = () => {
   return page === 'issues' && action === 'show';
 };
 
-export const ajaxGet = url => $.ajax({
-  type: 'GET',
-  url,
-  dataType: 'script',
+export const ajaxGet = url => axios.get(url, {
+  params: { format: 'js' },
+  responseType: 'text',
+}).then(({ data }) => {
+  $.globalEval(data);
 });
 
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
-});
+export const ajaxPost = (url, data) => axios.post(url, data);
 
 export const rstrip = (val) => {
   if (val) {

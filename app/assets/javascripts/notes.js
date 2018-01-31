@@ -1487,7 +1487,9 @@ export default class Notes {
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
     ajaxPost(formAction, formData)
-      .then((note) => {
+      .then((res) => {
+        const note = res.data;
+
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1560,7 +1562,7 @@ export default class Notes {
         }
 
         $form.trigger('ajax:success', [note]);
-      }).fail(() => {
+      }).catch(() => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1631,11 +1633,11 @@ export default class Notes {
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
     ajaxPost(formAction, formData)
-      .then((note) => {
+      .then(({ data }) => {
         // Submission successful! render final note element
-        this.updateNote(note, $editingNote);
+        this.updateNote(data, $editingNote);
       })
-      .fail(() => {
+      .catch(() => {
         // Submission failed, revert back to original note
         $noteBodyText.html(_.escape(cachedNoteBodyText));
         $editingNote.removeClass('being-posted fade-in');
