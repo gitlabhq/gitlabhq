@@ -1,15 +1,27 @@
 %h4
   Auto configuration
 
-.prepend-top-default.append-bottom-default
-  - unless @service.manual_configuration?
-    - if @service.prometheus_installed?
-      = link_to 'Manage clusters', project_clusters_path(@project), class: 'btn'
-    - else
-      = link_to 'Install Prometheus on clusters', project_clusters_path(@project), class: 'btn btn-success'
-  - else
-    .well
-      To enable the installation of Prometheus on your clusters, deactivate the manual configuration below
+- unless @service.manual_configuration?
+  .container-fluid
+    .row
+      - if @service.prometheus_installed?
+        .col-sm-2
+          .svg-container
+            = image_tag 'illustrations/monitoring/getting_started.svg'
+        .col-sm-10
+          %p.text-success.prepend-top-default
+            Prometheus is being automatically managed on your clusters
+          = link_to 'Manage clusters', project_clusters_path(@project), class: 'btn'
+      - else
+        .col-sm-2
+          = image_tag 'illustrations/monitoring/loading.svg'
+        .col-sm-10
+          %p.prepend-top-default
+            Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments
+          = link_to 'Install Prometheus on clusters', project_clusters_path(@project), class: 'btn btn-success'
+- else
+  .well
+    To enable the installation of Prometheus on your clusters, deactivate the manual configuration below
 
 %hr
 
