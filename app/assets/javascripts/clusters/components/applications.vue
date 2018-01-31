@@ -22,14 +22,14 @@
         type: String,
         required: false,
         default: '',
-      }
+      },
     },
     computed: {
       generalApplicationDescription() {
         return sprintf(
-          _.escape(s__(`ClusterIntegration|Install applications on your cluster.
-  Read more about %{helpLink}`)),
-          {
+          _.escape(s__(
+            'ClusterIntegration|Install applications on your cluster. Read more about %{helpLink}',
+          )), {
             helpLink: `<a href="${this.helpPath}">
               ${_.escape(s__('ClusterIntegration|installing applications'))}
             </a>`,
