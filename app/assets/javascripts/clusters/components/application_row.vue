@@ -93,6 +93,9 @@
 
         return label;
       },
+      showManageButton() {
+        return this.manageLink && this.status === APPLICATION_INSTALLED;
+      },
       manageButtonLabel() {
         return s__('ClusterIntegration|Manage');
       },
@@ -149,11 +152,11 @@
       </div>
       <div
         class="table-section table-button-footer section-align-top"
-        :class="{ 'section-20': manageLink, 'section-15': !manageLink }"
+        :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
         role="gridcell"
       >
         <div
-          v-if="manageLink"
+          v-if="showManageButton"
           class="btn-group table-action-buttons"
         >
           <a
