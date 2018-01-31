@@ -2,14 +2,15 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, project, query, repository_ref = nil)
+    def initialize(current_user, project, query, repository_ref = nil, per_page: 20)
       @current_user = current_user
       @project = project
       @repository_ref = repository_ref.presence || project.default_branch
       @query = query
+      @per_page = per_page
     end
 
-    def objects(scope, page = nil)
+    def objects(scope, page = nil, without_counts = true)
       case scope
       when 'notes'
         notes.page(page).per(per_page)
@@ -20,7 +21,7 @@ module Gitlab
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       else
-        super(scope, page, false)
+        super(scope, page, without_counts)
       end
     end
 

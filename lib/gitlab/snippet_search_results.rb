@@ -9,14 +9,14 @@ module Gitlab
       @query = query
     end
 
-    def objects(scope, page = nil)
+    def objects(scope, page = nil, without_counts = true)
       case scope
       when 'snippet_titles'
         snippet_titles.page(page).per(per_page)
       when 'snippet_blobs'
         snippet_blobs.page(page).per(per_page)
       else
-        super(scope, nil, false)
+        super(scope, nil, without_counts)
       end
     end
 
