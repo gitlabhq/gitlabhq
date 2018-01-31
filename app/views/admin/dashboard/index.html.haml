@@ -158,7 +158,6 @@
                 GitLab Pages
                 %span.pull-right
                   = Gitlab::Pages::VERSION
-
             - if Gitlab::Geo.enabled?
               %p
                 = link_to 'Geo', admin_geo_nodes_path
@@ -167,7 +166,6 @@
                     = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
                   - else
                     Undefined
-
             %p
               Ruby
               %span.pull-right

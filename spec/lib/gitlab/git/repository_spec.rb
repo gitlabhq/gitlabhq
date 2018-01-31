@@ -562,35 +562,39 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#delete_refs' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    shared_examples 'deleting refs' do
+      let(:repo) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
-    it 'deletes the ref' do
-      @repo.delete_refs('refs/heads/feature')
+      after do
+        ensure_seeds
+      end
 
-      expect(@repo.rugged.references['refs/heads/feature']).to be_nil
-    end
+      it 'deletes the ref' do
+        repo.delete_refs('refs/heads/feature')
 
-    it 'deletes all refs' do
-      refs = %w[refs/heads/wip refs/tags/v1.1.0]
-      @repo.delete_refs(*refs)
+        expect(repo.rugged.references['refs/heads/feature']).to be_nil
+      end
 
-      refs.each do |ref|
-        expect(@repo.rugged.references[ref]).to be_nil
+      it 'deletes all refs' do
+        refs = %w[refs/heads/wip refs/tags/v1.1.0]
+        repo.delete_refs(*refs)
+
+        refs.each do |ref|
+          expect(repo.rugged.references[ref]).to be_nil
+        end
+      end
+
+      it 'raises an error if it failed' do
+        expect { repo.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
       end
     end
 
-    it 'raises an error if it failed' do
-      expect(@repo).to receive(:popen).and_return(['Error', 1])
-
-      expect do
-        @repo.delete_refs('refs/heads/fix')
-      end.to raise_error(Gitlab::Git::Repository::GitError)
+    context 'when Gitaly delete_refs feature is enabled' do
+      it_behaves_like 'deleting refs'
     end
 
-    after(:all) do
-      ensure_seeds
+    context 'when Gitaly delete_refs feature is disabled', :disable_gitaly do
+      it_behaves_like 'deleting refs'
     end
   end
 

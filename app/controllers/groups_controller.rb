@@ -157,7 +157,6 @@ class GroupsController < Groups::ApplicationController
     @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
                   .execute
                   .includes(:namespace)
-                  .page(params[:page])
 
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)
