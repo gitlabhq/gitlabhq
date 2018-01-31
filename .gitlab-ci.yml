@@ -627,6 +627,8 @@ codequality:
 sast:
   <<: *except-docs
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  variables:
+    CONFIDENCE_LEVEL: 2
   before_script: []
   script:
     - /app/bin/run .
