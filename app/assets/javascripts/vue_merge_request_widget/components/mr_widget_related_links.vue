@@ -7,6 +7,7 @@
       relatedLinks: {
         type: Object,
         required: true,
+        default: () => ({}),
       },
       state: {
         type: String,
@@ -33,7 +34,7 @@
       {{ closesText }} <span v-html="relatedLinks.closing"></span>
     </p>
     <p v-if="relatedLinks.mentioned">
-      Mentions <span v-html="relatedLinks.mentioned"></span>
+      {{ s__("mrWidget|Mentions") }} <span v-html="relatedLinks.mentioned"></span>
     </p>
     <p v-if="relatedLinks.assignToMe">
       <span v-html="relatedLinks.assignToMe"></span>

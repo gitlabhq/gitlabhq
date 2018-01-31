@@ -63,8 +63,7 @@ export default {
       return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      const { closing, mentioned, assignToMe } = this.mr.relatedLinks;
-      return (closing || mentioned || assignToMe) && !this.mr.isNothingToMergeState;
+      return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
