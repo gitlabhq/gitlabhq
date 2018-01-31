@@ -37,6 +37,10 @@ describe Gitlab::Metrics::MultiFileEditor do
       it 'has the right file count' do
         expect(WebIdeMetric.first.file_count).to eq(1)
       end
+
+      it 'has the created at timestamp' do
+        expect(WebIdeMetric.first.created_at).to be_a(Time)
+      end
     end
   end
 end
