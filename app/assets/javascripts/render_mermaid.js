@@ -30,6 +30,9 @@ export default function renderMermaid($els) {
     $els.each((i, el) => {
       const source = el.textContent;
 
+      // Remove any extra spans added by the backend syntax highlighting.
+      Object.assign(el, { textContent: source });
+
       mermaid.init(undefined, el, (id) => {
         const svg = document.getElementById(id);
 
