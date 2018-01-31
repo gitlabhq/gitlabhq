@@ -1339,6 +1339,10 @@ describe MergeRequest do
         it 'returns false' do
           expect(subject.mergeable_state?).to be_falsey
         end
+
+        it 'returns true when skipping discussions check' do
+          expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
+        end
       end
     end
   end

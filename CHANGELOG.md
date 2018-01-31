@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.4.2 (2018-01-30)
+
+### Fixed (6 changes)
+
+- Fix copy/paste on iOS devices due to a bug in webkit. !15804
+- Fix missing "allow users to request access" option in public project permissions. !16485
+- Fix encoding issue when counting commit count. !16637
+- Fixes destination already exists, and some particular service errors on Import/Export error. !16714
+- Fix cache clear bug withg using : on Windows. !16740
+- Use has_table_privilege for TRIGGER on PostgreSQL.
+
+### Changed (1 change)
+
+- Vendor Auto DevOps template with DAST security checks enabled. !16691
+
+
 ## 10.4.1 (2018-01-24)
 
 ### Fixed (4 changes)

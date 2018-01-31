@@ -3,6 +3,29 @@ require 'spec_helper'
 describe JiraService do
   include Gitlab::Routing
 
+  describe '#options' do
+    let(:service) do
+      described_class.new(
+        project: build_stubbed(:project),
+        active: true,
+        username: 'username',
+        password: 'test',
+        jira_issue_transition_id: 24,
+        url: 'http://jira.test.com/path/'
+      )
+    end
+
+    it 'sets the URL properly' do
+      # jira-ruby gem parses the URI and handles trailing slashes
+      # fine: https://github.com/sumoheavy/jira-ruby/blob/v1.4.1/lib/jira/http_client.rb#L59
+      expect(service.options[:site]).to eq('http://jira.test.com/')
+    end
+
+    it 'leaves out trailing slashes in context' do
+      expect(service.options[:context_path]).to eq('/path')
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }

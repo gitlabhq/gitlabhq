@@ -92,7 +92,9 @@ describe('UsersCache', () => {
       apiSpy = (query, options) => {
         expect(query).toBe('');
         expect(options).toEqual({ username: dummyUsername });
-        return Promise.resolve([dummyUser]);
+        return Promise.resolve({
+          data: [dummyUser],
+        });
       };
 
       UsersCache.retrieve(dummyUsername)

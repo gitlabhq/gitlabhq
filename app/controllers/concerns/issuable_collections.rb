@@ -12,11 +12,9 @@ module IssuableCollections
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def set_issuables_index
-    @issuables          = issuables_collection
-    @issuables          = @issuables.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
-    @total_pages        = issuable_page_count
+    @issuables = issuables_collection
 
+    set_pagination
     return if redirect_out_of_range(@total_pages)
 
     if params[:label_name].present?
@@ -35,14 +33,26 @@ module IssuableCollections
       @users.push(author) if author
     end
   end
+
+  def set_pagination
+    return if pagination_disabled?
+
+    @issuables          = @issuables.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
+    @total_pages        = issuable_page_count
+  end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def pagination_disabled?
+    false
+  end
 
   def issuables_collection
     finder.execute.preload(preload_for_collection)
   end
 
   def redirect_out_of_range(total_pages)
-    return false if total_pages.zero?
+    return false if total_pages.nil? || total_pages.zero?
 
     out_of_range = @issuables.current_page > total_pages # rubocop:disable Gitlab/ModuleWithInstanceVariables
 

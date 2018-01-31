@@ -1,6 +1,7 @@
 require 'rainbow/ext/string'
 require 'gitlab/utils/strong_memoize'
 
+# rubocop:disable Rails/Output
 module Gitlab
   TaskFailedError = Class.new(StandardError)
   TaskAbortedByUserError = Class.new(StandardError)
@@ -96,11 +97,9 @@ module Gitlab
     end
 
     def gid_for(group_name)
-      begin
-        Etc.getgrnam(group_name).gid
-      rescue ArgumentError # no group
-        "group #{group_name} doesn't exist"
-      end
+      Etc.getgrnam(group_name).gid
+    rescue ArgumentError # no group
+      "group #{group_name} doesn't exist"
     end
 
     def gitlab_user
