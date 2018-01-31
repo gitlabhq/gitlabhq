@@ -26,15 +26,11 @@ const Api = {
     const url = Api.buildUrl(Api.groupPath)
       .replace(':id', groupId);
     return axios.get(url)
-<<<<<<< HEAD
-      .then(({ data }) => callback(data));
-=======
       .then(({ data }) => {
         callback(data);
 
         return data;
       });
->>>>>>> upstream/master
   },
 
   // Return groups list. Filtered by query
@@ -194,7 +190,6 @@ const Api = {
         search: query,
         per_page: 20,
       }, options),
-<<<<<<< HEAD
     });
   },
 
@@ -224,8 +219,6 @@ const Api = {
       callback(data);
 
       return data;
-=======
->>>>>>> upstream/master
     });
   },
 
