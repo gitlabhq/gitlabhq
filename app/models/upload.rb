@@ -14,7 +14,7 @@ class Upload < ActiveRecord::Base
 
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
-  after_commit :delete_file!, on: :destroy, if: -> { uploader_class <= FileUploader }
+  after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
 
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest

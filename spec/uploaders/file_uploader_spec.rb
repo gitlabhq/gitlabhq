@@ -66,7 +66,7 @@ describe FileUploader do
 
       it 'prune the store directory' do
         expect { uploader.remove! }
-          .to change { File.exists?(store_dir) }.from(true).to(false)
+          .to change { File.exist?(store_dir) }.from(true).to(false)
       end
     end
   end
