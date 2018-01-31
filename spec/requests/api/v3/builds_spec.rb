@@ -216,7 +216,6 @@ describe API::V3::Builds do
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
     before do
-      stub_artifacts_object_storage
       get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
     end
 
@@ -235,17 +234,6 @@ describe API::V3::Builds do
             expect(response.headers).to include(download_headers)
             expect(response.body).to match_file(build.artifacts_file.file.file)
           end
-        end
-      end
-
-      context 'when artifacts are stored remotely' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
-        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
-
-        it 'returns location redirect' do
-          get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
-
-          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -268,7 +256,6 @@ describe API::V3::Builds do
     let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
-      stub_artifacts_object_storage
       build.success
     end
 
@@ -333,21 +320,6 @@ describe API::V3::Builds do
 
           it { expect(response).to have_gitlab_http_status(200) }
           it { expect(response.headers).to include(download_headers) }
-        end
-
-        context 'when artifacts are stored remotely' do
-          let(:build) { create(:ci_build, pipeline: pipeline) }
-          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
-
-          before do
-            build.reload
-
-            get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
-          end
-
-          it 'returns location redirect' do
-            expect(response).to have_gitlab_http_status(302)
-          end
         end
       end
 
