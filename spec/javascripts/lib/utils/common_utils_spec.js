@@ -1,7 +1,6 @@
 /* eslint-disable promise/catch-or-return */
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 
 describe('common_utils', () => {

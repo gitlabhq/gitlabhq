@@ -1,6 +1,5 @@
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
-import axios from './axios_utils';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
