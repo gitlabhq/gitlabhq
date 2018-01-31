@@ -13,22 +13,17 @@ function AdminEmailSelect() {
         multiple: $(select).hasClass('multiselect'),
         minimumInputLength: 0,
         query: function(query) {
-          var group_result, project_result;
-          group_result = Api.groups(query.term, {}, function(groups) {
-            return groups;
-          });
-          project_result = Api.projects(query.term, {
+          const groupsFetch = Api.groups(query.term, {});
+          const projectsFetch = Api.projects(query.term, {
             order_by: 'id',
             membership: false
-          }, function(projects) {
-            return projects;
           });
-          return $.when(project_result, group_result).done(function(projects, groups) {
+          return Promise.all([projectsFetch, groupsFetch]).then(function([projects, groups]) {
             var all, data;
             all = {
               id: "all"
             };
-            data = [all].concat(groups[0], projects[0]);
+            data = [all].concat(groups, projects);
             return query.callback({
               results: data
             });
