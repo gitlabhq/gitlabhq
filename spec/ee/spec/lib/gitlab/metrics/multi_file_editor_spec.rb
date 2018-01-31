@@ -3,32 +3,40 @@ require 'spec_helper'
 describe Gitlab::Metrics::MultiFileEditor do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:params) do
-    [
-      :multi_file_editor_usage,
-      'Total number of commits using the multi-file web editor',
-      {
-        project: 'abcd',
-        user: 'abcd',
-        line_changes: 1,
-        files_count: 1
-      }
-    ]
-  end
 
   subject { described_class.new(project, user, project.repository.commit('HEAD')) }
 
   before do
+    stub_licensed_features(ide: true)
+
     allow(Digest::SHA256).to receive(:hexdigest).and_return('abcd')
   end
 
   describe '.record' do
-    it 'records the right metrics' do
-      stub_licensed_features(ide: true)
+    it 'records the metrics' do
+      expect { subject.record }.to change { WebIdeMetric.count }.from(0).to(1)
+    end
 
-      expect(::Gitlab::Metrics).to receive(:counter).with(*params)
+    describe 'metrics' do
+      before do
+        subject.record
+      end
 
-      subject.record
+      it 'has the right project' do
+        expect(WebIdeMetric.first.project).to eq('abcd')
+      end
+
+      it 'has the right user' do
+        expect(WebIdeMetric.first.user).to eq('abcd')
+      end
+
+      it 'has the right line count' do
+        expect(WebIdeMetric.first.line_count).to eq(1)
+      end
+
+      it 'has the right file count' do
+        expect(WebIdeMetric.first.file_count).to eq(1)
+      end
     end
   end
 end
