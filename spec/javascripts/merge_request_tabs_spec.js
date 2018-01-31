@@ -1,5 +1,5 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
-import MockAdaptor from 'axios-mock-adapter';
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import MergeRequestTabs from '~/merge_request_tabs';
@@ -218,7 +218,7 @@ import 'vendor/jquery.scrollTo';
       let mock;
 
       beforeEach(function () {
-        mock = new MockAdaptor(axios);
+        mock = new MockAdapter(axios);
         mock.onGet(/(.*)\/diffs\.json/).reply(200, {
           data: { html: '' },
         });
@@ -344,7 +344,7 @@ import 'vendor/jquery.scrollTo';
             .attr('href')
             .replace('#', '');
 
-          mock = new MockAdaptor(axios);
+          mock = new MockAdapter(axios);
           mock.onGet(/(.*)\/diffs\.json/).reply(200, diffsResponse);
         });
 
@@ -410,7 +410,7 @@ import 'vendor/jquery.scrollTo';
             .attr('href')
             .replace('#', '');
 
-          mock = new MockAdaptor(axios);
+          mock = new MockAdapter(axios);
           mock.onGet(/(.*)\/diffs\.json/).reply(200, diffsResponse);
         });
 

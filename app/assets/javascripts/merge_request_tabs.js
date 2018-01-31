@@ -246,7 +246,7 @@ export default class MergeRequestTabs {
       return;
     }
 
-    this.toggleLoading(true)
+    this.toggleLoading(true);
 
     axios.get(`${source}.json`)
       .then(({ data }) => {

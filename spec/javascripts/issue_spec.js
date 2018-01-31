@@ -1,5 +1,5 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
-import MockAdaptor from 'axios-mock-adapter';
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Issue from '~/issue';
 import '~/lib/utils/text_utility';
@@ -138,7 +138,7 @@ describe('Issue', function() {
         this.issueStateDeferred = new jQuery.Deferred();
         this.canCreateBranchDeferred = new jQuery.Deferred();
 
-        mock = new MockAdaptor(axios);
+        mock = new MockAdapter(axios);
 
         spyOn(jQuery, 'ajax').and.callFake(ajaxSpy.bind(this));
       });

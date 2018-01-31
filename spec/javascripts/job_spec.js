@@ -1,4 +1,4 @@
-import MockAdaptor from 'axios-mock-adapter';
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -22,11 +22,9 @@ describe('Job', () => {
 
     spyOn(urlUtils, 'visitUrl');
 
-    mock = new MockAdaptor(axios);
+    mock = new MockAdapter(axios);
 
-    mock.onGet(new RegExp(`${JOB_URL}/trace.json?(.*)`)).reply(() => {
-      return [200, response];
-    });
+    mock.onGet(new RegExp(`${JOB_URL}/trace.json?(.*)`)).reply(() => [200, response]);
   });
 
   afterEach(() => {

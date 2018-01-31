@@ -102,28 +102,28 @@ export default class LabelsSelect {
             }
             $value.removeAttr('style').html(template);
             $sidebarCollapsedValue.text(labelCount);
-  
+
             if (data.labels.length) {
               labelTitles = data.labels.map(function(label) {
                 return label.title;
               });
-  
+
               if (labelTitles.length > 5) {
                 labelTitles = labelTitles.slice(0, 5);
                 labelTitles.push('and ' + (data.labels.length - 5) + ' more');
               }
-  
+
               labelTooltipTitle = labelTitles.join(', ');
             }
             else {
               labelTooltipTitle = '';
               $sidebarLabelTooltip.tooltip('destroy');
             }
-  
+
             $sidebarLabelTooltip
               .attr('title', labelTooltipTitle)
               .tooltip('fixTitle');
-  
+
             $('.has-tooltip', $value).tooltip({
               container: 'body'
             });
@@ -168,7 +168,7 @@ export default class LabelsSelect {
                   data = extraData.concat(data);
                 }
               }
-  
+
               callback(data);
               if (showMenuAbove) {
                 $dropdown.data('glDropdown').positionMenuAbove();
