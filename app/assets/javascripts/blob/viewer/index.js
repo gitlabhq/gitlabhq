@@ -1,5 +1,6 @@
 import Flash from '../../flash';
 import { handleLocationHash } from '../../lib/utils/common_utils';
+import axios from '../../lib/utils/axios_utils';
 
 export default class BlobViewer {
   constructor() {
@@ -127,25 +128,18 @@ export default class BlobViewer {
     const viewer = viewerParam;
     const url = viewer.getAttribute('data-url');
 
-    return new Promise((resolve, reject) => {
-      if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
-        resolve(viewer);
-        return;
-      }
+    if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
+      return Promise.resolve(viewer);
+    }
 
-      viewer.setAttribute('data-loading', 'true');
+    viewer.setAttribute('data-loading', 'true');
 
-      $.ajax({
-        url,
-        dataType: 'JSON',
-      })
-      .fail(reject)
-      .done((data) => {
+    return axios.get(url)
+      .then(({ data }) => {
         viewer.innerHTML = data.html;
         viewer.setAttribute('data-loaded', 'true');
 
-        resolve(viewer);
+        return viewer;
       });
-    });
   }
 }
