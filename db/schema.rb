@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180115201419) do
+ActiveRecord::Schema.define(version: 20180131101040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1727,7 +1727,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "project_id", null: false
   end
 
-  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", using: :btree
+  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", unique: true, using: :btree
 
   create_table "u2f_registrations", force: :cascade do |t|
     t.text "certificate"
@@ -2038,7 +2038,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
-  add_foreign_key "trending_projects", "projects", on_delete: :cascade
+  add_foreign_key "trending_projects", "projects", name: "fk_09feecd872", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
