@@ -88,8 +88,7 @@ describe('AjaxCache', () => {
     });
   });
 
-  fdescribe('retrieve', () => {
-    let ajaxSpy;
+  describe('retrieve', () => {
     let mock;
 
     beforeEach(() => {
