@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CreateTraceArtifactWorker do
   describe '#perform' do
-    subject { described_class.new.perform(job) }
+    subject { described_class.new.perform(job&.id) }
 
     context 'when job is found' do
       let(:job) { create(:ci_build) }
