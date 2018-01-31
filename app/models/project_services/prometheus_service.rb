@@ -32,7 +32,7 @@ class PrometheusService < MonitoringService
   end
 
   def description
-    s_('PrometheusService|Prometheus monitoring')
+    s_('PrometheusService|Time-series monitoring service')
   end
 
   def self.to_param
