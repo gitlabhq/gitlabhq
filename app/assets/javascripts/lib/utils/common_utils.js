@@ -1,5 +1,6 @@
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
+import axios from './axios_utils';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -380,22 +381,16 @@ export const resetFavicon = () => {
   }
 };
 
-export const setCiStatusFavicon = (pageUrl) => {
-  $.ajax({
-    url: pageUrl,
-    dataType: 'json',
-    success: (data) => {
+export const setCiStatusFavicon = pageUrl =>
+  axios.get(pageUrl)
+    .then(({ data }) => {
       if (data && data.favicon) {
         setFavicon(data.favicon);
       } else {
         resetFavicon();
       }
-    },
-    error: () => {
-      resetFavicon();
-    },
-  });
-};
+    })
+    .catch(resetFavicon);
 
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';

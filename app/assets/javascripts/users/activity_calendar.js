@@ -98,7 +98,7 @@ export default class ActivityCalendar {
     const secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
 
     if (lastColMonth !== secondLastColMonth) {
-      extraWidthPadding = 3;
+      extraWidthPadding = 6;
     }
 
     return extraWidthPadding;

@@ -10,7 +10,7 @@ export const getBranchData = (
         !state.projects[`${projectId}`].branches[branchId])
         || force) {
     service.getBranchData(`${projectId}`, branchId)
-      .then((data) => {
+      .then(({ data }) => {
         const { id } = data.commit;
         commit(types.SET_BRANCH, { projectPath: `${projectId}`, branchName: branchId, branch: data });
         commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
