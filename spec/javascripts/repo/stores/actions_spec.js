@@ -178,7 +178,9 @@ describe('Multi-file store actions', () => {
 
     it('calls service', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '123' },
+        data: {
+          commit: { id: '123' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -192,7 +194,9 @@ describe('Multi-file store actions', () => {
 
     it('returns true if current ref does not equal returned ID', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '123' },
+        data: {
+          commit: { id: '123' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -206,7 +210,9 @@ describe('Multi-file store actions', () => {
 
     it('returns false if current ref equals returned ID', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '1' },
+        data: {
+          commit: { id: '1' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -250,13 +256,15 @@ describe('Multi-file store actions', () => {
     describe('success', () => {
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(Promise.resolve({
-          id: '123456',
-          short_id: '123',
-          message: 'test message',
-          committed_date: 'date',
-          stats: {
-            additions: '1',
-            deletions: '2',
+          data: {
+            id: '123456',
+            short_id: '123',
+            message: 'test message',
+            committed_date: 'date',
+            stats: {
+              additions: '1',
+              deletions: '2',
+            },
           },
         }));
       });
@@ -270,13 +278,10 @@ describe('Multi-file store actions', () => {
           }).catch(done.fail);
       });
 
-      it('shows flash notice', (done) => {
+      it('sets last Commit Msg', (done) => {
         store.dispatch('commitChanges', { payload, newMr: false })
           .then(() => {
-            const alert = document.querySelector('.flash-container');
-
-            expect(alert.querySelector('.flash-notice')).not.toBeNull();
-            expect(alert.textContent.trim()).toBe(
+            expect(store.state.lastCommitMsg).toBe(
               'Your changes have been committed. Commit 123 with 1 additions, 2 deletions.',
             );
 
@@ -324,7 +329,9 @@ describe('Multi-file store actions', () => {
     describe('failed', () => {
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(Promise.resolve({
-          message: 'failed message',
+          data: {
+            message: 'failed message',
+          },
         }));
       });
 

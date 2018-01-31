@@ -15,6 +15,7 @@
 #     label_name: string
 #     sort: string
 #     my_reaction_emoji: string
+#     public_only: boolean
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
@@ -40,7 +41,15 @@ class IssuesFinder < IssuableFinder
   private
 
   def init_collection
-    with_confidentiality_access_check
+    if public_only?
+      Issue.public_only
+    else
+      with_confidentiality_access_check
+    end
+  end
+
+  def public_only?
+    params.fetch(:public_only, false)
   end
 
   def user_can_see_all_confidential_issues?

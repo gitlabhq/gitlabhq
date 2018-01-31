@@ -23,11 +23,11 @@ module QA
       # In case of an address that is a symbol we will try to guess address
       # based on `Runtime::Scenario#something_address`.
       #
-      def visit(address, page, &block)
+      def visit(address, page = nil, &block)
         Browser::Session.new(address, page).perform(&block)
       end
 
-      def self.visit(address, page, &block)
+      def self.visit(address, page = nil, &block)
         new.visit(address, page, &block)
       end
 

@@ -40,7 +40,7 @@ module API
         success Entities::Epic
       end
       get ':id/-/epics' do
-        present user_group.epics, with: Entities::Epic
+        present EpicsFinder.new(current_user, group_id: user_group.id).execute, with: Entities::Epic
       end
 
       desc 'Get details of an epic' do

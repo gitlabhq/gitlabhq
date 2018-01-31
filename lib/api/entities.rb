@@ -575,7 +575,15 @@ module API
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_pipeline_succeeds
-      expose :merge_status
+
+      # Ideally we should deprecate `MergeRequest#merge_status` exposure and
+      # use `MergeRequest#mergeable?` instead (boolean).
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/42344 for more
+      # information.
+      expose :merge_status do |merge_request|
+        merge_request.check_if_can_be_merged
+        merge_request.merge_status
+      end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
@@ -1439,6 +1447,16 @@ module API
         using: PagesDomainCertificate do |pages_domain|
         pages_domain
       end
+    end
+
+    class Application < Grape::Entity
+      expose :uid, as: :application_id
+      expose :redirect_uri, as: :callback_url
+    end
+
+    # Use with care, this exposes the secret
+    class ApplicationWithSecret < Application
+      expose :secret
     end
   end
 end

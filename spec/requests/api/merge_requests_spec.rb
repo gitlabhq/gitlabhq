@@ -198,6 +198,8 @@ describe API::MergeRequests do
 
         create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
 
+        create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+
         expect do
           get api("/projects/#{project.id}/merge_requests", user)
         end.not_to exceed_query_limit(control)

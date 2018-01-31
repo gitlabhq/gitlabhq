@@ -88,7 +88,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_milestones_path, status: 302 }
+      format.html { redirect_to namespace_project_milestones_path, status: 303 }
       format.js { head :ok }
     end
   end

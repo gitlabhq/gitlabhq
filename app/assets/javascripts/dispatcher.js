@@ -1,13 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import notificationsDropdown from './notifications_dropdown';
-import LineHighlighter from './line_highlighter';
 import MergeRequest from './merge_request';
 import Flash from './flash';
-import BlobViewer from './blob/viewer/index';
 import GfmAutoComplete from './gfm_auto_complete';
-import Star from './star';
 import ZenMode from './zen_mode';
-import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initIssuableSidebar from './init_issuable_sidebar';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
@@ -114,6 +109,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           break;
         case 'dashboard:milestones:index':
           import('./pages/dashboard/milestones/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'projects:milestones:index':
+          import('./pages/projects/milestones/index')
             .then(callDefault)
             .catch(fail);
           break;
@@ -700,22 +700,11 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
                 .then(callDefault)
                 .catch(fail);
               break;
-            case 'show':
-              new Star();
-              notificationsDropdown();
-              break;
             case 'wikis':
               import('./pages/projects/wikis')
                 .then(callDefault)
                 .catch(fail);
               shortcut_handler = true;
-              break;
-            case 'snippets':
-              if (path[2] === 'show') {
-                new ZenMode();
-                new LineHighlighter();
-                new BlobViewer();
-              }
               break;
           }
           break;
@@ -726,7 +715,9 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
 
       if (document.querySelector('#peek')) {
-        new PerformanceBar({ container: '#peek' });
+        import('./performance_bar')
+          .then(m => new m.default({ container: '#peek' })) // eslint-disable-line new-cap
+          .catch(fail);
       }
     };
 

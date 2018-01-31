@@ -1,5 +1,25 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.4.2 (2018-01-30)
+
+### Fixed (7 changes)
+
+- Fix Epic issue item reordering to handle different scenarios. !4142
+- Fix visually broken admin dashboard until license is added. !4196
+- Handle empty event timestamp and larger memory units. !4206
+- Use a fixed remote name for Geo mirrors. !4249
+- Preserve updated issue order to store when reorder is completed. !4278
+- Geo - Fix OPENSSH_EXPECTED_COMMAND in the geo:check rake task.
+- Execute group hooks after-commit when moving an issue.
+
+
+## 10.4.1 (2018-01-24)
+
+### Fixed (1 change)
+
+- Fix failed LDAP logins when sync_ssh_keys is included in config.
+
+
 ## 10.4.0 (2018-01-22)
 
 ### Security (2 changes)

@@ -71,7 +71,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 export const checkCommitStatus = ({ state }) =>
   service
     .getBranchData(state.currentProjectId, state.currentBranchId)
-    .then((data) => {
+    .then(({ data }) => {
       const { id } = data.commit;
       const selectedBranch =
         state.projects[state.currentProjectId].branches[state.currentBranchId];
@@ -90,7 +90,7 @@ export const commitChanges = (
 ) =>
   service
     .commit(state.currentProjectId, payload)
-    .then((data) => {
+    .then(({ data }) => {
       const { branch } = payload;
       if (!data.short_id) {
         flash(data.message, 'alert', document, null, false, true);
@@ -110,15 +110,7 @@ export const commitChanges = (
       if (data.stats) {
         commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
       }
-
-      flash(
-        commitMsg,
-        'notice',
-        document,
-        null,
-        false,
-        true);
-      window.dispatchEvent(new Event('resize'));
+      commit(types.SET_LAST_COMMIT_MSG, commitMsg);
 
       if (newMr) {
         dispatch('discardAllChanges');
@@ -147,8 +139,8 @@ export const commitChanges = (
     })
     .catch((err) => {
       let errMsg = 'Error committing changes. Please try again.';
-      if (err.responseJSON && err.responseJSON.message) {
-        errMsg += ` (${stripHtml(err.responseJSON.message)})`;
+      if (err.response.data && err.response.data.message) {
+        errMsg += ` (${stripHtml(err.response.data.message)})`;
       }
       flash(errMsg, 'alert', document, null, false, true);
       window.dispatchEvent(new Event('resize'));

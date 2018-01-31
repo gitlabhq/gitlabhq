@@ -5,7 +5,7 @@ module Gitlab
 
       DATABASE_CONFIG = 'config/database.yml'.freeze
       GEO_DATABASE_CONFIG = 'config/database_geo.yml'.freeze
-      GEO_DB_DIR = 'db/geo'.freeze
+      GEO_DB_DIR = 'ee/db/geo'.freeze
 
       def method_missing(method_name, *args, &block)
         with_geo_db do

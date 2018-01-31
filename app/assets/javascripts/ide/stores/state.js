@@ -8,6 +8,7 @@ export default () => ({
   endpoints: {},
   isRoot: false,
   isInitialRoot: false,
+  lastCommitMsg: '',
   lastCommitPath: '',
   loading: false,
   onTopOfBranch: false,
@@ -18,6 +19,6 @@ export default () => ({
   trees: {},
   projects: {},
   leftPanelCollapsed: false,
-  rightPanelCollapsed: true,
+  rightPanelCollapsed: false,
   panelResizing: false,
 });

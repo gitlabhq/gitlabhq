@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
   include Gitlab::EncodingHelper
+  using RSpec::Parameterized::TableSyntax
 
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
     it 'wraps gRPC not found error' do
@@ -442,6 +443,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'simple commit counting' do
       it { expect(repository.commit_count("master")).to eq(25) }
       it { expect(repository.commit_count("feature")).to eq(9) }
+      it { expect(repository.commit_count("does-not-exist")).to eq(0) }
     end
 
     context 'when Gitaly commit_count feature is enabled' do
@@ -899,6 +901,44 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    context "compare results between log_by_walk and log_by_shell" do
+      let(:options) { { ref: "master" } }
+      let(:commits_by_walk) { repository.log(options).map(&:id) }
+      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
+
+      it { expect(commits_by_walk).to eq(commits_by_shell) }
+
+      context "with limit" do
+        let(:options) { { ref: "master", limit: 1 } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+      end
+
+      context "with offset" do
+        let(:options) { { ref: "master", offset: 1 } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+      end
+
+      context "with skip_merges" do
+        let(:options) { { ref: "master", skip_merges: true } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+      end
+
+      context "with path" do
+        let(:options) { { ref: "master", path: "encoding" } }
+
+        it { expect(commits_by_walk).to eq(commits_by_shell) }
+
+        context "with follow" do
+          let(:options) { { ref: "master", path: "encoding", follow: true } }
+
+          it { expect(commits_by_walk).to eq(commits_by_shell) }
+        end
+      end
+    end
+
     context "where provides 'after' timestamp" do
       options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
 
@@ -943,6 +983,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
     end
+
+    context 'limit validation' do
+      where(:limit) do
+        [0, nil, '', 'foo']
+      end
+
+      with_them do
+        it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
   end
 
   describe "#rugged_commits_between" do
@@ -982,6 +1032,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.count_commits_between('feature', 'master') }
 
     it { is_expected.to eq(17) }
+  end
+
+  describe '#merge_base' do
+    shared_examples '#merge_base' do
+      where(:from, :to, :result) do
+        '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | 'foobar' | nil
+        'foobar' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | nil
+      end
+
+      with_them do
+        it { expect(repository.merge_base(from, to)).to eq(result) }
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like '#merge_base'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge_base'
+    end
   end
 
   describe '#count_commits' do
@@ -1924,6 +1997,75 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it { expect(subject.shard_path).to eq(storage_path) }
     it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
+  end
+
+  describe '#bundle_to_disk' do
+    shared_examples 'bundling to disk' do
+      let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+
+      after do
+        FileUtils.rm_rf(save_path)
+      end
+
+      it 'saves a bundle to disk' do
+        repository.bundle_to_disk(save_path)
+
+        success = system(
+          *%W(#{Gitlab.config.git.bin_path} -C #{repository.path} bundle verify #{save_path}),
+          [:out, :err] => '/dev/null'
+        )
+        expect(success).to be true
+      end
+    end
+
+    context 'when Gitaly bundle_to_disk feature is enabled' do
+      it_behaves_like 'bundling to disk'
+    end
+
+    context 'when Gitaly bundle_to_disk feature is disabled', :disable_gitaly do
+      it_behaves_like 'bundling to disk'
+    end
+  end
+
+  describe '#create_from_bundle' do
+    shared_examples 'creating repo from bundle' do
+      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+      let(:project) { create(:project) }
+      let(:imported_repo) { project.repository.raw }
+
+      before do
+        expect(repository.bundle_to_disk(bundle_path)).to be true
+      end
+
+      after do
+        FileUtils.rm_rf(bundle_path)
+      end
+
+      it 'creates a repo from a bundle file' do
+        expect(imported_repo).not_to exist
+
+        result = imported_repo.create_from_bundle(bundle_path)
+
+        expect(result).to be true
+        expect(imported_repo).to exist
+        expect { imported_repo.fsck }.not_to raise_exception
+      end
+
+      it 'creates a symlink to the global hooks dir' do
+        imported_repo.create_from_bundle(bundle_path)
+        hooks_path = File.join(imported_repo.path, 'hooks')
+
+        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+      end
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is enabled' do
+      it_behaves_like 'creating repo from bundle'
+    end
+
+    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
+      it_behaves_like 'creating repo from bundle'
+    end
   end
 
   context 'gitlab_projects commands' do

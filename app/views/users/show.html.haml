@@ -58,15 +58,15 @@
                 = icon('skype')
           - unless @user.linkedin.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to linkedin_url(@user), title: "LinkedIn" do
+              = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
                 = icon('linkedin-square')
           - unless @user.twitter.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to twitter_url(@user), title: "Twitter" do
+              = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link'
+              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'noopener noreferrer nofollow'
           - unless @user.location.blank?
             .profile-link-holder.middle-dot-divider
               = icon('map-marker')

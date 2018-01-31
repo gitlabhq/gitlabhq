@@ -6,13 +6,17 @@ export default function () {
   initSettingsPanels();
   const runnerToken = document.querySelector('.js-secret-runner-token');
   if (runnerToken) {
-    const runnerTokenSecretValue = new SecretValues(runnerToken);
+    const runnerTokenSecretValue = new SecretValues({
+      container: runnerToken,
+    });
     runnerTokenSecretValue.init();
   }
 
   const secretVariableTable = document.querySelector('.js-secret-variable-table');
   if (secretVariableTable) {
-    const secretVariableTableValues = new SecretValues(secretVariableTable);
+    const secretVariableTableValues = new SecretValues({
+      container: secretVariableTable,
+    });
     secretVariableTableValues.init();
   }
 }

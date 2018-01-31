@@ -51,9 +51,18 @@ describe('AppComponent', () => {
   });
 
   describe('methods', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
     describe('fetchGeoNodes', () => {
       it('calls service.getGeoNodes and sets response to the store on success', (done) => {
-        const mock = new MockAdapter(axios);
         mock.onGet(vm.store.geoNodesPath).reply(200, mockNodes);
         spyOn(vm.store, 'setNodes');
 
@@ -68,7 +77,6 @@ describe('AppComponent', () => {
 
       it('sets error flag and message on failure', (done) => {
         const err = 'Something went wrong';
-        const mock = new MockAdapter(axios);
         mock.onGet(vm.store.geoNodesPath).reply(500, err);
 
         vm.fetchGeoNodes();
@@ -83,7 +91,6 @@ describe('AppComponent', () => {
 
     describe('fetchNodeDetails', () => {
       it('calls service.getGeoNodeDetails and sets response to the store on success', (done) => {
-        const mock = new MockAdapter(axios);
         mock.onGet(`${vm.service.geoNodeDetailsBasePath}/2/status.json`).reply(200, rawMockNodeDetails);
         spyOn(vm.store, 'setNodeDetails');
 
@@ -96,7 +103,6 @@ describe('AppComponent', () => {
 
       it('emits `nodeDetailsLoadFailed` event on failure', (done) => {
         const err = 'Something went wrong';
-        const mock = new MockAdapter(axios);
         spyOn(eventHub, '$emit');
         mock.onGet(`${vm.service.geoNodeDetailsBasePath}/2/status.json`).reply(500, err);
 

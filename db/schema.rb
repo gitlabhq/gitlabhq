@@ -1224,6 +1224,7 @@ ActiveRecord::Schema.define(version: 20180119135717) do
   add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
   add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+  add_index "issues", ["updated_at"], name: "index_issues_on_updated_at", using: :btree
   add_index "issues", ["updated_by_id"], name: "index_issues_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
 
   create_table "keys", force: :cascade do |t|

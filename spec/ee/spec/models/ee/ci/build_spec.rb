@@ -146,7 +146,7 @@ describe Ci::Build do
             pipeline: pipeline,
             options: {
               artifacts: {
-                paths: [filename]
+                paths: [filename, 'some-other-artifact.txt']
               }
             }
           )

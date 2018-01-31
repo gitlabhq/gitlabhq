@@ -9,36 +9,52 @@ fail-over with minimal effort, in a disaster situation.
 
 See [current limitations](README.md#current-limitations) for more information.
 
-### Step 1. Promoting a secondary geo replica
+## Promoting secondary Geo replica in single-secondary configuration
 
-> **Warning:** Disaster Recovery does not yet support systems with multiple
-> secondary geo replicas (e.g. one primary and two or more secondaries).
-
-We don't currently provide an automated way to promote a geo replica and do a
+We don't currently provide an automated way to promote a Geo replica and do a
 fail-over, but you can do it manually if you have `root` access to the machine.
 
-This process promotes a secondary geo replica to a primary in the least steps.
-It does not enable GitLab Geo on the newly promoted primary.
+This process promotes a secondary Geo replica to a primary. To regain
+geographical redundancy as quickly as possible, you should add a new secondary
+immediately after following these instructions.
 
-1. SSH into your **primary** and stop disable GitLab.
+### Step 1. Promoting a secondary Geo replica
 
-    ```
+1. SSH into your **primary** to stop and disable GitLab.
+
+    ```bash
     sudo gitlab-ctl stop
-
     ```
 
-    If you do not have SSH access to your primary take the machine offline.
-    Depending on the nature of your primary this may mean physically
-    disconnecting the machine, stopping a virtual server, reconfiguring load
-    balancers, or changing DNS records (see next step).
+    Prevent GitLab from starting up again if the server unexpectedly reboots:
 
-    Preventing the original primary from coming online during this process is
-    necessary to ensure data isn't added to the original primary that will not
-    be replicated to the newly promoted primary.
+    ```bash
+    sudo systemctl disable gitlab-runsvdir
+    ```
+
+    On some operating systems such as CentOS 6, an easy way to prevent GitLab
+    from being started if the machine reboots isn't available
+    (see [Omnibus issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058)).
+    It may be safest to uninstall the GitLab package completely:
+
+    ```bash
+    yum remove gitlab-ee
+    ```
+
+    Preventing the original primary from coming back online during this process
+    is necessary prevent data from being mistakenly added to it. Any data added
+    after the failover process has begun will **not** be be replicated to the
+    newly promoted primary.
+
+    If you do not have SSH access to your primary, take the machine offline and
+    prevent it from rebooting by any means at your disposal. Depending on the
+    nature of your primary, this may mean physically disconnecting the machine,
+    stopping a virtual server, reconfiguring load balancers, or changing DNS
+    records (see next step).
 
 1. SSH in to your **secondary** and login as root:
 
-    ```
+    ```bash
     sudo -i
     ```
 
@@ -46,7 +62,7 @@ It does not enable GitLab Geo on the newly promoted primary.
 
     Remove the following line:
 
-    ```
+    ```ruby
     ## REMOVE THIS LINE
     geo_secondary_role['enable'] = true
     ```
@@ -57,7 +73,7 @@ It does not enable GitLab Geo on the newly promoted primary.
 
 1. Promote the secondary to primary. Execute:
 
-    ```
+    ```bash
     gitlab-ctl promote-to-primary-node
     ```
 
@@ -107,10 +123,17 @@ secondary domain, like changing Git remotes and API URLs.
     If you updated the DNS records for the primary domain, these changes may
     not have yet propagated depending on the previous DNS records TTL.
 
-### Step 3. (Optional) Add secondary geo replicas to a promoted primary
+### Step 3. (Optional) Add secondary Geo replicas to a promoted primary
 
 Promoting a secondary to primary using the process above does not enable
 GitLab Geo on the new primary.
 
 To bring a new secondary online, follow the [GitLab Geo setup instructions](
 README.md#setup-instructions).
+
+## Promoting secondary Geo replica in multi-secondary configurations
+
+Disaster Recovery does not yet support systems with multiple
+secondary Geo replicas (e.g. one primary and two or more secondaries). We are
+working on it, see [#4284](https://gitlab.com/gitlab-org/gitlab-ee/issues/4284)
+for details.

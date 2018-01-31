@@ -105,8 +105,8 @@
         content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
     - else
       = render 'empty_state',
-        illustration: 'illustrations/job_not_triggered.svg',
-        illustration_size: 'svg-306',
+        illustration: 'illustrations/pending_job_empty.svg',
+        illustration_size: 'svg-430',
         title: _('This job has not started yet'),
         content: _('This job is in pending state and is waiting to be picked by a runner')
   = render "sidebar"

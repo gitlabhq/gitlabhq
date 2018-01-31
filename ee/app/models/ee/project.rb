@@ -334,12 +334,6 @@ module EE
       repository.async_remove_remote(::Repository::MIRROR_REMOTE)
     end
 
-    def import_url_availability
-      if remote_mirrors.find_by(url: import_url)
-        errors.add(:import_url, 'is already in use by a remote mirror')
-      end
-    end
-
     def username_only_import_url
       bare_url = read_attribute(:import_url)
       return bare_url unless ::Gitlab::UrlSanitizer.valid?(bare_url)

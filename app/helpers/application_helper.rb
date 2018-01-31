@@ -89,7 +89,7 @@ module ApplicationHelper
   end
 
   def default_avatar
-    'no_avatar.png'
+    asset_path('no_avatar.png')
   end
 
   def last_commit(project)
@@ -311,7 +311,7 @@ module ApplicationHelper
   end
 
   def show_new_ide?(project)
-    cookies["new_repo"] == "true" && body_data_page != 'projects:show' && project.feature_available?(:ide)
+    cookies["new_repo"] == "true" && project.feature_available?(:ide)
   end
 
   def locale_path
