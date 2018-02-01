@@ -35,7 +35,7 @@ your project public, open to collaboration.
 ### Streamline collaboration
 
 With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
-available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
+available in [GitLab Starter](https://about.gitlab.com/gitlab-ee/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.

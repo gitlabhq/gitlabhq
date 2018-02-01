@@ -198,7 +198,7 @@ static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
 out.
 
-In GitLab Enterprise Edition Starter, differences between the source and
+In GitLab Starter, differences between the source and
 target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
 

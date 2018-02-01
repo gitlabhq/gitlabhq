@@ -283,9 +283,9 @@ request to add new user to project through API will not be possible.
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
 and [push rules](../../push_rules/push_rules.md) to your group
-(Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
+(Push Rules is available in [GitLab Starter][ee].)
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
-for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee])
+for the group (GitLab admins only, available in [GitLab Starter][ee])
 - **Pipelines quota**: keep track of the
 [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
@@ -296,4 +296,4 @@ you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
 [ee]: https://about.gitlab.com/products/
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
+[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Premium"
