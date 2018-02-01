@@ -4,7 +4,7 @@ ALLOWED = [
   # https://gitlab.com/gitlab-org/gitaly/issues/760
   'lib/elasticsearch/git/repository.rb',
 
-  # Can be deleted (?) once rugged is no longer used in production. Doesn't make Rugged calls.
+  # Can be fixed once Rugged is no longer used in production. Doesn't make Rugged calls.
   'config/initializers/8_metrics.rb',
 
   # Can be deleted once wiki's are fully (mandatory) migrated
@@ -15,9 +15,6 @@ ALLOWED = [
 
   # Needs to be migrated, https://gitlab.com/gitlab-org/gitaly/issues/954
   'lib/tasks/gitlab/cleanup.rake',
-
-  # https://gitlab.com/gitlab-org/gitaly/issues/961
-  'app/models/repository.rb',
 
   # The only place where Rugged code is still allowed in production
   'lib/gitlab/git/'
