@@ -363,7 +363,7 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
-msgid "CI configuration"
+msgid "CI/CD configuration"
 msgstr ""
 
 msgid "CICD|Jobs"

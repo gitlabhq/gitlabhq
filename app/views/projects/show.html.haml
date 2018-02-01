@@ -47,7 +47,7 @@
 
       - if @repository.gitlab_ci_yml
         %li
-          = link_to _('CI configuration'), ci_configuration_path(@project)
+          = link_to _('CI/CD configuration'), ci_configuration_path(@project)
 
       - if current_user && can_push_branch?(@project, @project.default_branch)
         - unless @repository.changelog
