@@ -46,7 +46,6 @@ describe IssuesFinder do
 
       it 'returns all issues' do
         expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
-<<<<<<< HEAD
       end
 
       context 'sort by issues with no weight' do
@@ -63,8 +62,6 @@ describe IssuesFinder do
         it 'returns all issues' do
           expect(issues).to be_empty
         end
-=======
->>>>>>> upstream/master
       end
 
       context 'filtering by assignee ID' do
@@ -75,7 +72,6 @@ describe IssuesFinder do
         end
       end
 
-<<<<<<< HEAD
       context 'filtering by assignee IDs' do
         set(:user3) { create(:user) }
         let(:params) { { assignee_ids: [user2.id, user3.id] } }
@@ -106,8 +102,6 @@ describe IssuesFinder do
         end
       end
 
-=======
->>>>>>> upstream/master
       context 'filtering by group_id' do
         let(:params) { { group_id: group.id } }
 
