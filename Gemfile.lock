@@ -340,7 +340,7 @@ GEM
       mime-types (~> 3.0)
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
-    google-protobuf (3.4.1.1)
+    google-protobuf (3.5.1.1)
     googleapis-common-protos-types (1.0.1)
       google-protobuf (~> 3.0)
     googleauth (0.5.3)

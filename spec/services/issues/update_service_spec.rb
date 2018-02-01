@@ -13,7 +13,8 @@ describe Issues::UpdateService, :mailer do
     create(:issue, title: 'Old title',
                    description: "for #{user2.to_reference}",
                    assignee_ids: [user3.id],
-                   project: project)
+                   project: project,
+                   author: create(:user))
   end
 
   before do

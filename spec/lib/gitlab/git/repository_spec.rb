@@ -249,7 +249,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(/tmp\/gitlab-git-test.git\/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}/) }
+    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
     it { expect(metadata['ArchivePath']).to end_with extenstion }
   end
 
@@ -901,44 +901,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         it "should return a list of commits" do
           expect(log_commits.size).to eq(1)
-        end
-      end
-    end
-
-    context "compare results between log_by_walk and log_by_shell" do
-      let(:options) { { ref: "master" } }
-      let(:commits_by_walk) { repository.log(options).map(&:id) }
-      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
-
-      it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-      context "with limit" do
-        let(:options) { { ref: "master", limit: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with offset" do
-        let(:options) { { ref: "master", offset: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with skip_merges" do
-        let(:options) { { ref: "master", skip_merges: true } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with path" do
-        let(:options) { { ref: "master", path: "encoding" } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-        context "with follow" do
-          let(:options) { { ref: "master", path: "encoding", follow: true } }
-
-          it { expect(commits_by_walk).to eq(commits_by_shell) }
         end
       end
     end

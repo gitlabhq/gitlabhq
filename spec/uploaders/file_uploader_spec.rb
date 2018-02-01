@@ -112,7 +112,7 @@ describe FileUploader do
       fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
       uploader.store!(fixture_file_upload(fixture))
 
-      expect(uploader.relative_path).to match(/\A\h{32}\/rails_sample.jpg\z/)
+      expect(uploader.relative_path).to match(%r{\A\h{32}/rails_sample.jpg\z})
     end
   end
 end
