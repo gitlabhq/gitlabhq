@@ -12,13 +12,13 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def update
-    respond_to do |format|
-      format.json do
-        if @project.update(variables_params)
-          return render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
-        end
-
-        render status: :bad_request, json: @project.errors.full_messages
+    if @project.update(variables_params)
+      respond_to do |format|
+        format.json { return render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) } }
+      end
+    else
+      respond_to do |format|
+        format.json { render status: :bad_request, json: @project.errors.full_messages }
       end
     end
   end

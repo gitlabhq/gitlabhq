@@ -11,13 +11,13 @@ module Groups
     end
 
     def update
-      respond_to do |format|
-        format.json do
-          if @group.update(variables_params)
-            return render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) }
-          end
-
-          render status: :bad_request, json: @group.errors.full_messages
+      if @group.update(variables_params)
+        respond_to do |format|
+          format.json { return render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) } }
+        end
+      else
+        respond_to do |format|
+          format.json { render status: :bad_request, json: @group.errors.full_messages }
         end
       end
     end
