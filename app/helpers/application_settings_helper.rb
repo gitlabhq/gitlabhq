@@ -96,12 +96,12 @@ module ApplicationSettingsHelper
     ]
   end
 
-  def repository_storages_options_for_select
+  def repository_storages_options_for_select(selected)
     options = Gitlab.config.repositories.storages.map do |name, storage|
       ["#{name} - #{storage['path']}", name]
     end
 
-    options_for_select(options, @application_setting.repository_storages)
+    options_for_select(options, selected)
   end
 
   def sidekiq_queue_options_for_select
