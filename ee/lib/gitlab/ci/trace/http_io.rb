@@ -7,6 +7,8 @@ module Gitlab
       class HttpIO
         BUFFER_SIZE = 128.kilobytes
 
+        FailedToGetChunkError = Class.new(StandardError)
+
         attr_reader :uri, :size
         attr_reader :tell
         attr_reader :chunk, :chunk_range
@@ -20,10 +22,15 @@ module Gitlab
         end
 
         def close
+          # no-op
         end
 
         def binmode
           # no-op
+        end
+
+        def binmode?
+          true
         end
 
         def path
@@ -53,8 +60,10 @@ module Gitlab
         end
 
         def each_line
-          loop !eof? do
+          until eof?
             line = readline
+            break if line.nil?
+
             yield(line)
           end
         end
@@ -62,7 +71,7 @@ module Gitlab
         def read(length = nil)
           out = ""
 
-          while length.nil? || out.length < length
+          until eof? || (length && out.length >= length)
             data = get_chunk
             break if data.empty?
 
@@ -70,18 +79,17 @@ module Gitlab
             @tell += data.bytesize
           end
 
-          if length && out.length > length
-            extra = out.length - length
-            out = out[0..-extra]
-          end
+          out = out[0, length] if length && out.length > length
 
           out
+        rescue FailedToGetChunkError
+          nil
         end
 
         def readline
           out = ""
 
-          loop !eof? do
+          until eof?
             data = get_chunk
             new_line = data.index("\n")
 
@@ -96,18 +104,20 @@ module Gitlab
           end
 
           out
+        rescue FailedToGetChunkError
+          nil
         end
 
         def write(data)
-          throw NotImplementedException
+          raise NotImplementedError
         end
 
         def truncate(offset)
-          throw NotImplementedException
+          raise NotImplementedError
         end
 
         def flush
-          throw NotImplementedException
+          raise NotImplementedError
         end
 
         def present?
@@ -128,6 +138,8 @@ module Gitlab
             response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
               http.request(request)
             end
+
+            raise FailedToGetChunkError unless response.code == '200'
 
             @chunk = response.body.force_encoding(Encoding::BINARY)
             @chunk_range = response.content_range
