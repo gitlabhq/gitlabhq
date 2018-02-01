@@ -459,19 +459,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('ajaxPost', () => {
-    it('should perform `$.ajax` call and do `POST` request', () => {
-      const requestURL = '/some/random/api';
-      const data = { keyname: 'value' };
-      const ajaxSpy = spyOn(axios, 'post').and.callFake(() => {});
-
-      commonUtils.ajaxPost(requestURL, data);
-
-      expect(ajaxSpy.calls.allArgs()[0][0]).toEqual(requestURL);
-      expect(ajaxSpy.calls.allArgs()[0][1]).toEqual(data);
-    });
-  });
-
   describe('spriteIcon', () => {
     let beforeGon;
 

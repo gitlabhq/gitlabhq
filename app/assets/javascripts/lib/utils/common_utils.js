@@ -35,8 +35,6 @@ export const ajaxGet = url => axios.get(url, {
   $.globalEval(data);
 });
 
-export const ajaxPost = (url, data) => axios.post(url, data);
-
 export const rstrip = (val) => {
   if (val) {
     return val.replace(/\s+$/, '');
@@ -409,7 +407,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,
