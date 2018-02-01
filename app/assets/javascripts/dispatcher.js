@@ -56,12 +56,7 @@ import SearchAutocomplete from './search_autocomplete';
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          shortcut_handler = true;
-          break;
         case 'projects:issues:show':
-          import('./pages/projects/issues/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'dashboard:milestones:index':
