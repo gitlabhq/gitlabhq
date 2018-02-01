@@ -7,14 +7,14 @@
       missingBranch: {
         type: String,
         required: false,
-        default: ''
+        default: '',
       },
     },
     computed: {
       missingBranchInfo() {
         return sprintf(
           s__('mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the'),
-          { branch: this.missingBranch }
+          { branch: this.missingBranch },
         );
       },
     },

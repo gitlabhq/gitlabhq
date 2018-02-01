@@ -11,7 +11,7 @@
 
 export { default as Vue } from 'vue';
 export { default as SmartInterval } from '~/smart_interval';
-export { default as WidgetHeader } from './components/mr_widget_header';
+export { default as WidgetHeader } from './components/mr_widget_header.vue';
 export { default as WidgetMergeHelp } from './components/mr_widget_merge_help.vue';
 export { default as WidgetPipeline } from './components/mr_widget_pipeline.vue';
 export { default as WidgetDeployment } from './components/mr_widget_deployment';

@@ -2,9 +2,6 @@ import Vue from 'vue';
 import mergeHelpComponent from '~/vue_merge_request_widget/components/mr_widget_merge_help.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-
-const text = `If the ${props.missingBranch} branch exists in your local repository`;
-
 describe('MRWidgetMergeHelp', () => {
   let vm;
   let Component;
@@ -17,7 +14,7 @@ describe('MRWidgetMergeHelp', () => {
     vm.$destroy();
   });
 
-  fdescribe('with missing branch', () => {
+  describe('with missing branch', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
         missingBranch: 'this-is-not-the-branch-you-are-looking-for',
@@ -25,14 +22,35 @@ describe('MRWidgetMergeHelp', () => {
     });
 
     it('renders missing branch information', () => {
-      console.log('', vm.$el);
+      expect(
+        vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ').replace(/\s\s+/g, ' '),
+      ).toEqual(
+        'If the this-is-not-the-branch-you-are-looking-for branch exists in your local repository, you can merge this merge request manually using the command line',
+      );
+    });
 
+    it('renders element to open a modal', () => {
+      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('#modal_merge_info');
+      expect(vm.$el.querySelector('a').getAttribute('data-toggle')).toEqual('modal');
     });
   });
 
   describe('without missing branch', () => {
     beforeEach(() => {
       vm = mountComponent(Component);
+    });
+
+    it('renders information about how to merge manually', () => {
+      expect(
+        vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ').replace(/\s\s+/g, ' '),
+      ).toEqual(
+        'You can merge this merge request manually using the command line',
+      );
+    });
+
+    it('renders element to open a modal', () => {
+      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('#modal_merge_info');
+      expect(vm.$el.querySelector('a').getAttribute('data-toggle')).toEqual('modal');
     });
   });
 });
