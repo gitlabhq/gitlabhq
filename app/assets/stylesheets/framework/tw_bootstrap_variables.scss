@@ -29,7 +29,7 @@ $border-radius-small: 3px !default;
 
 //== Scaffolding
 //
-$text-color: $gl-text-color;
+$gl-text-color: $gl-text-color;
 $link-color: $gl-link-color;
 $link-hover-color: $gl-link-hover-color;
 
@@ -56,10 +56,10 @@ $component-active-bg: $brand-info;
 //
 //##
 
-$input-color: $text-color;
+$input-color: $gl-text-color;
 $input-border: $border-color;
 $input-border-focus: $focus-border-color;
-$legend-color: $text-color;
+$legend-color: $gl-text-color;
 
 
 //== Pagination
@@ -116,7 +116,7 @@ $alert-border-radius: 0;
 //##
 
 $panel-border-radius: 2px;
-$panel-default-text: $text-color;
+$panel-default-text: $gl-text-color;
 $panel-default-border: $border-color;
 $panel-default-heading-bg: $gray-light;
 $panel-footer-bg: $gray-light;
