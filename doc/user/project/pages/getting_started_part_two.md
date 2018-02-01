@@ -77,7 +77,7 @@ is useful for submitting merge requests to the upstream.
 >
 > 2. Why do I need to enable Shared Runners?
 >
->     Shared Runners will run the script set by your GitLab CI
+>     Shared Runners will run the script set by your GitLab CI/CD
 configuration file. They're enabled by default to new projects,
 but not to forks.
 
@@ -88,9 +88,9 @@ click **New project**, and name it considering the
 [practical examples](getting_started_part_one.md#practical-examples).
 1. Clone it to your local computer, add your website
 files to your project, add, commit and push to GitLab.
-1. From the your **Project**'s page, click **Set up CI**:
+1. From the your **Project**'s page, click **Set up CI/CD**:
 
-    ![setup GitLab CI](img/setup_ci.png)
+    ![setup GitLab CI/CD](img/setup_ci.png)
 
 1. Choose one of the templates from the dropbox menu.
 Pick up the template corresponding to the SSG you're using (or plain HTML).
@@ -98,7 +98,7 @@ Pick up the template corresponding to the SSG you're using (or plain HTML).
     ![gitlab-ci templates](img/choose_ci_template.png)
 
 Once you have both site files and `.gitlab-ci.yml` in your project's
-root, GitLab CI will build your site and deploy it with Pages.
+root, GitLab CI/CD will build your site and deploy it with Pages.
 Once the first build passes, you see your site is live by
 navigating to your **Project**'s **Settings** > **Pages**,
 where you'll find its default URL.

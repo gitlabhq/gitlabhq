@@ -2087,7 +2087,7 @@ msgstr ""
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
-msgid "Set up CI"
+msgid "Set up CI/CD"
 msgstr ""
 
 msgid "Set up Koding"
