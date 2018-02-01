@@ -33,14 +33,12 @@ class GitlabUploader < CarrierWave::Uploader::Base
     cache_storage.is_a?(CarrierWave::Storage::File)
   end
 
-  # Reduce disk IO
   def move_to_cache
-    super.nil? ? true : super
+    file_storage?
   end
 
-  # Reduce disk IO
   def move_to_store
-    super.nil? ? true : super
+    file_storage?
   end
 
   def exists?

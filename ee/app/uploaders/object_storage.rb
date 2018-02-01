@@ -202,14 +202,6 @@ module ObjectStorage
       false
     end
 
-    def move_to_store
-      false
-    end
-
-    def move_to_cache
-      false
-    end
-
     def delete_migrated_file(migrated_file)
       migrated_file.delete if exists?
     end
