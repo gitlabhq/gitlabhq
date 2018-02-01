@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131104538) do
+ActiveRecord::Schema.define(version: 20180201101405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -992,7 +992,7 @@ ActiveRecord::Schema.define(version: 20180131104538) do
     t.string "status_message"
     t.integer "replication_slots_count"
     t.integer "replication_slots_used_count"
-    t.integer "replication_slots_max_retained_wal_bytes"
+    t.integer "replication_slots_max_retained_wal_bytes", limit: 8
     t.integer "wikis_count"
     t.integer "wikis_synced_count"
     t.integer "wikis_failed_count"
