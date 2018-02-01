@@ -30,6 +30,15 @@ describe Projects::VariablesController do
 
   describe 'POST #update' do
     let(:variable) { create(:ci_variable) }
+    let(:variable_attributes) do
+      { id: variable.id, key: variable.key,
+        value: variable.value,
+        protected: variable.protected?.to_s }
+    end
+    let(:new_variable_attributes) do
+      { key: 'new_key', value: 'dummy_value',
+        protected: 'false' }
+    end
 
     before do
       project.variables << variable
@@ -39,11 +48,8 @@ describe Projects::VariablesController do
       subject do
         patch :update,
           namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: 'other_value',
-                                   protected: variable.protected?.to_s },
-                                 { key: '..?', value: 'dummy_value',
-                                   protected: 'false' }],
+          variables_attributes: [variable_attributes.merge(value: 'other_value'),
+                                 new_variable_attributes.merge(key: '..?')],
           format: :json
       end
 
@@ -66,11 +72,8 @@ describe Projects::VariablesController do
       subject do
         patch :update,
           namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: 'other_value',
-                                   protected: variable.protected?.to_s },
-                                 { key: 'new_key', value: 'dummy_value',
-                                   protected: 'false' }],
+          variables_attributes: [variable_attributes.merge(value: 'other_value'),
+                                 new_variable_attributes],
           format: :json
       end
 
@@ -99,10 +102,7 @@ describe Projects::VariablesController do
       subject do
         patch :update,
           namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: variable.value,
-                                   protected: variable.protected?.to_s,
-                                   _destroy: 'true' }],
+          variables_attributes: [variable_attributes.merge(_destroy: 'true')],
           format: :json
       end
 
