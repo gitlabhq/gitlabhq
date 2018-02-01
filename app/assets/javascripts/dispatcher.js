@@ -49,13 +49,6 @@ import SearchAutocomplete from './search_autocomplete';
       });
 
       switch (page) {
-        case 'projects:boards:show':
-        case 'projects:boards:index':
-          import('./pages/projects/boards')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:environments:metrics':
           import('./pages/projects/environments/metrics')
             .then(callDefault)
