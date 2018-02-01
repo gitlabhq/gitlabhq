@@ -30,21 +30,15 @@ module Banzai
 
     FORMATS = [HEX_FORMAT, RGB_FORMAT, HSL_FORMAT].freeze
 
-    class << self
-      # Public: Analyzes whether the String is a color code.
-      #
-      # text - The String to be parsed.
-      #
-      # Returns the recognized color String or nil if none was found.
-      def parse(text)
-        text if color_format =~ text
-      end
+    COLOR_FORMAT = /\A(#{Regexp.union(FORMATS)})\z/ix
 
-      private
-
-      def color_format
-        @color_format ||= /\A(#{Regexp.union(FORMATS)})\z/ix
-      end
+    # Public: Analyzes whether the String is a color code.
+    #
+    # text - The String to be parsed.
+    #
+    # Returns the recognized color String or nil if none was found.
+    def self.parse(text)
+      text if COLOR_FORMAT =~ text
     end
   end
 end
