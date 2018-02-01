@@ -27,7 +27,7 @@ module QA
             fill_in(with: text, name: 'note[note]')
 
             unless attachment.nil?
-              QA::Page::Component::Dropzone.new(page, '.new-note')
+              QA::Page::Component::Dropzone.new(self, '.new-note')
                 .attach_file(attachment)
             end
 
