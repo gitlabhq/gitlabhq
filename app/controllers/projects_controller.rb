@@ -403,6 +403,6 @@ class ProjectsController < Projects::ApplicationController
     # to
     #   localhost/group/project
     #
-    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
+    redirect_to request.original_url.sub(%r{\.git/?\Z}, '') if params[:format] == 'git'
   end
 end

@@ -1,12 +1,12 @@
 module SidekiqHelper
-  SIDEKIQ_PS_REGEXP = /\A
+  SIDEKIQ_PS_REGEXP = %r{\A
     (?<pid>\d+)\s+
     (?<cpu>[\d\.,]+)\s+
     (?<mem>[\d\.,]+)\s+
-    (?<state>[DIEKNRSTVWXZNLpsl\+<>\/\d]+)\s+
+    (?<state>[DIEKNRSTVWXZNLpsl\+<>/\d]+)\s+
     (?<start>.+?)\s+
     (?<command>(?:ruby\d+:\s+)?sidekiq.*\].*)
-    \z/x
+    \z}x
 
   def parse_sidekiq_ps(line)
     match = line.strip.match(SIDEKIQ_PS_REGEXP)
