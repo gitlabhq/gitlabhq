@@ -25,10 +25,21 @@ var NO_COMPRESSION = process.env.NO_COMPRESSION;
 var autoEntries = {};
 var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
 
+// filter out entries currently imported dynamically in dispatcher.js
+var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
+var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+
 pageEntries.forEach(( path ) => {
-  let chunkName = path.replace(/\/index\.js$/, '').replace(/\//g, '.');
-  autoEntries[chunkName] = './' + path;
+  let chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(chunkPath)) {
+    let chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = './' + path;
+  }
 });
+
+// report our auto-generated bundle count
+var autoEntriesCount = Object.keys(autoEntries).length;
+console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
 
 var config = {
   // because sqljs requires fs.

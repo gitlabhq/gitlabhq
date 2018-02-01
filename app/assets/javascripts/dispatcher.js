@@ -56,7 +56,7 @@ import SearchAutocomplete from './search_autocomplete';
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
-          import('./pages/projects/boards/index')
+          import('./pages/projects/boards')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
@@ -363,7 +363,7 @@ import SearchAutocomplete from './search_autocomplete';
             .catch(fail);
           break;
         case 'projects:project_members:index':
-          import('./pages/projects/project_members/')
+          import('./pages/projects/project_members')
             .then(callDefault)
             .catch(fail);
           break;
@@ -605,7 +605,7 @@ import SearchAutocomplete from './search_autocomplete';
           }
           break;
         case 'profiles':
-          import('./pages/profiles/index/')
+          import('./pages/profiles/index')
             .then(callDefault)
             .catch(fail);
           break;
