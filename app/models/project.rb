@@ -1618,7 +1618,7 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    (auto_devops || ProjectAutoDevops.new)&.variables
+    (auto_devops || build_auto_devops)&.variables
   end
 
   def append_or_update_attribute(name, value)
