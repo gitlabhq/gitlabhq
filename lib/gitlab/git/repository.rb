@@ -462,7 +462,6 @@ module Gitlab
           path: nil,
           follow: false,
           skip_merges: false,
-          disable_walk: false,
           after: nil,
           before: nil
         }
@@ -494,11 +493,7 @@ module Gitlab
           return []
         end
 
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
+        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -1397,7 +1392,7 @@ module Gitlab
       end
 
       def search_files_by_name(query, ref)
-        safe_query = Regexp.escape(query.sub(/^\/*/, ""))
+        safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
 
         return [] if empty? || safe_query.blank?
 
@@ -1643,24 +1638,6 @@ module Gitlab
         else
           options
         end
-      end
-
-      def log_using_shell?(options)
-        options[:path].present? ||
-          options[:disable_walk] ||
-          options[:skip_merges] ||
-          options[:after] ||
-          options[:before]
-      end
-
-      def log_by_walk(sha, options)
-        walk_options = {
-          show: sha,
-          sort: Rugged::SORT_NONE,
-          limit: options[:limit],
-          offset: options[:offset]
-        }
-        Rugged::Walker.walk(rugged, walk_options).to_a
       end
 
       # Gitaly note: JV: although #log_by_shell shells out to Git I think the
@@ -2025,7 +2002,7 @@ module Gitlab
         target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ %r{'refs/heads/#{ref}'}
 
         raise InvalidRef.new("Invalid reference #{start_point}")
       end

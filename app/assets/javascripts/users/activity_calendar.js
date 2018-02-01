@@ -1,7 +1,10 @@
 import _ from 'underscore';
 import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';
-import { getDayName, getDayDifference } from '../lib/utils/datetime_utility';
+import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 
 const d3 = { select, scaleLinear, scaleThreshold };
 
@@ -221,14 +224,16 @@ export default class ActivityCalendar {
         this.currentSelectedDate.getDate(),
       ].join('-');
 
-      $.ajax({
-        url: this.calendarActivitiesPath,
-        data: { date },
-        cache: false,
-        dataType: 'html',
-        beforeSend: () => $('.user-calendar-activities').html(LOADING_HTML),
-        success: data => $('.user-calendar-activities').html(data),
-      });
+      $('.user-calendar-activities').html(LOADING_HTML);
+
+      axios.get(this.calendarActivitiesPath, {
+        params: {
+          date,
+        },
+        responseType: 'text',
+      })
+      .then(({ data }) => $('.user-calendar-activities').html(data))
+      .catch(() => flash(__('An error occurred while retrieving calendar activity')));
     } else {
       this.currentSelectedDate = '';
       $('.user-calendar-activities').html('');

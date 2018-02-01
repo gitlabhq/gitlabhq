@@ -30,7 +30,7 @@ module Gitlab
         raise NotFoundError.new("No known storage path matches #{repo_path.inspect}")
       end
 
-      result.sub(/\A\/*/, '')
+      result.sub(%r{\A/*}, '')
     end
 
     def self.find_project(project_path)

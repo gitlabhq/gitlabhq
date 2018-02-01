@@ -146,7 +146,7 @@ describe Banzai::Filter::UserReferenceFilter do
 
   it 'links with adjacent text' do
     doc = reference_filter("Mention me (#{reference}.)")
-    expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
+    expect(doc.to_html).to match(%r{\(<a.+>#{reference}</a>\.\)})
   end
 
   it 'includes default classes' do
@@ -172,7 +172,7 @@ describe Banzai::Filter::UserReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Mention me (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>User<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>User</a>\.\)})
     end
 
     it 'includes a data-user attribute' do

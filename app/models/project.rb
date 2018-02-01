@@ -234,7 +234,7 @@ class Project < ActiveRecord::Base
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
-    format: { without: /(\.{2}|\A\/)/,
+    format: { without: %r{(\.{2}|\A/)},
               message: 'cannot include leading slash or directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
@@ -1338,7 +1338,7 @@ class Project < ActiveRecord::Base
     host = "#{subdomain}.#{Settings.pages.host}".downcase
 
     # The host in URL always needs to be downcased
-    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+    url = Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
       "#{prefix}#{subdomain}."
     end.downcase
 

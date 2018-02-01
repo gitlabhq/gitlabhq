@@ -205,7 +205,7 @@ describe JiraService do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{custom_base_url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
+        body: %r{#{custom_base_url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}}
       ).once
     end
 
@@ -220,7 +220,7 @@ describe JiraService do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{Gitlab.config.gitlab.url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
+        body: %r{#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}}
       ).once
     end
 
