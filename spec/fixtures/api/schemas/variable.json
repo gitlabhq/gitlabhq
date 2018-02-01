@@ -1,6 +1,24 @@
 {
-  "id": "string",
-  "key": "string",
-  "value": "string",
-  "protected": "boolean"
+  "type": "object",
+  "required": ["variables"],
+  "properties": {
+    "variables": {
+      "type": "array",
+      "items": {
+        "required": [
+          "id",
+          "key",
+          "value",
+          "protected"
+        ],
+        "properties": {
+          "id": { "type": "integer" },
+          "key": { "type": "string" },
+          "value": { "type": "string" },
+          "protected": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
 }
