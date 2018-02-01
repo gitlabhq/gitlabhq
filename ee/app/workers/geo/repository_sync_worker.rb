@@ -12,7 +12,7 @@ module Geo
       return unless Gitlab::Geo.geo_database_configured?
       return unless Gitlab::Geo.secondary?
 
-      shards = healthy_shards
+      shards = selective_sync_filter(healthy_shards)
 
       Gitlab::Geo::ShardHealthCache.update(shards)
 
@@ -31,6 +31,12 @@ module Geo
         .map { |check_result| check_result.labels[:shard] }
         .compact
         .uniq
+    end
+
+    def selective_sync_filter(shards)
+      return shards unless ::Gitlab::Geo.current_node&.selective_sync_by_shards?
+
+      shards & ::Gitlab::Geo.current_node.selective_sync_shards
     end
   end
 end

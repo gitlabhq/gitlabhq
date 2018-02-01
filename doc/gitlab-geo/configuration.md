@@ -216,19 +216,27 @@ Currently, this is what is synced:
 * Issues, merge requests, snippets, and comment attachments
 * Users, groups, and project avatars
 
-## Selective replication
+## Selective synchronization
 
-GitLab Geo supports selective replication, which allows admins to choose which
-groups should be replicated by secondary nodes.
+GitLab Geo supports selective synchronization, which allows admins to choose
+which projects should be synchronized by secondary nodes.
 
-It is important to note that selective replication:
+It is important to note that selective synchronization does not:
 
-1. Does not restrict permissions from secondary nodes.
-1. Does not hide projects metadata from secondary nodes. Since Geo currently
-relies on PostgreSQL replication, all project metadata gets replicated to
-secondary nodes, but repositories that have not been selected will be empty.
-1. Secondary nodes won't pull repositories that do not belong to the selected
-groups to be replicated.
+1. Restrict permissions from secondary nodes.
+1. Hide project metadata from secondary nodes.
+  * Since Geo currently relies on PostgreSQL replication, all project metadata
+    gets replicated to secondary nodes, but repositories that have not been
+    selected will be empty.
+1. Reduce the number of events generated for the Geo event log
+  * The primary generates events as long as any secondaries are present.
+    Selective synchronization restrictions are implemented on the secondaries,
+    not the primary.
+
+A subset of projects can be chosen, either by group or by storage shard. The
+former is ideal for replicating data belonging to a subset of users, while the
+latter is more suited to progressively rolling out Geo to a large GitLab
+instance.
 
 ## Upgrading Geo
 

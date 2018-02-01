@@ -87,6 +87,8 @@ class Admin::GeoNodesController < Admin::ApplicationController
     params.require(:geo_node).permit(
       :url,
       :primary,
+      :selective_sync_type,
+      :selective_sync_shards,
       :namespace_ids,
       :repos_max_capacity,
       :files_max_capacity
