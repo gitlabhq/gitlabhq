@@ -1,5 +1,5 @@
 /** Common mobile (screen XS, SM) styles **/
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .container .content {
     margin-top: 20px;
   }
@@ -94,7 +94,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@media (max-width: map-get($grid-breakpoints, sm)) {
   .issues-filters {
     .milestone-filter {
       display: none;

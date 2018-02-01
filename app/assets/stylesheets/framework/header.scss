@@ -127,7 +127,7 @@
         border-radius: $border-radius-default;
 
         .tanuki-logo {
-          @media (min-width: $screen-sm-min) {
+          @media (min-width: map-get($grid-breakpoints, sm)) {
             margin-right: 8px;
           }
         }
@@ -146,7 +146,7 @@
     }
 
     &.menu-expanded {
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         .title-container {
           display: none;
         }
@@ -169,13 +169,13 @@
     border-top: 0;
     padding: 0;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       flex: 1 1 auto;
     }
 
     .nav {
       > li:not(.hidden-xs) a {
-        @media (max-width: $screen-xs-max) {
+        @media (max-width: map-get($grid-breakpoints, xs)) {
           margin-left: 0;
           min-width: 100%;
         }
@@ -186,7 +186,7 @@
   .container-fluid {
 
     .navbar-nav {
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         display: -webkit-flex;
         display: flex;
         padding-right: 10px;
@@ -202,7 +202,7 @@
 
     .nav > li {
       &.header-user {
-        @media (max-width: $screen-xs-max) {
+        @media (max-width: map-get($grid-breakpoints, xs)) {
           padding-left: 10px;
         }
       }
@@ -213,7 +213,7 @@
         padding: 6px 8px;
         height: 32px;
 
-        @media (max-width: $screen-xs-max) {
+        @media (max-width: map-get($grid-breakpoints, xs)) {
           padding: 0;
         }
 
@@ -383,7 +383,7 @@
   margin-bottom: 0;
   line-height: 16px;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     flex-wrap: wrap;
   }
 
@@ -415,7 +415,7 @@
 .breadcrumb-item-text {
   text-decoration: inherit;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     @include str-truncated(128px);
   }
 }
@@ -483,7 +483,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .navbar-gitlab .container-fluid {
     font-size: 18px;
 

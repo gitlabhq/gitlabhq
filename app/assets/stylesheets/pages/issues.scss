@@ -133,7 +133,7 @@ ul.related-merge-requests > li {
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .detail-page-header {
     .issuable-meta {
       line-height: 18px;
@@ -291,7 +291,7 @@ ul.related-merge-requests > li {
   display: block;
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, sm)) {
   .emoji-block .row {
     display: flex;
 

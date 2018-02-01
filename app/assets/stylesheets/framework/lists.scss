@@ -154,7 +154,7 @@ ul.content-list {
         &:last-child {
           margin-right: 0;
 
-          @media(max-width: $screen-xs-max) {
+          @media(max-width: map-get($grid-breakpoints, xs)) {
             margin: 0 auto;
           }
         }
@@ -168,7 +168,7 @@ ul.content-list {
     .member-controls {
       float: none;
 
-      @media (min-width: $screen-sm-min) {
+      @media (min-width: map-get($grid-breakpoints, sm)) {
         float: right;
       }
     }

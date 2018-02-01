@@ -185,12 +185,12 @@
 }
 
 .notes.notes-form > li.timeline-entry {
-  @include notes-media('max', $screen-sm-max) {
+  @include notes-media('max', map-get($grid-breakpoints, sm)) {
     padding: 0;
   }
 
   .timeline-content {
-    @include notes-media('max', $screen-sm-max) {
+    @include notes-media('max', map-get($grid-breakpoints, sm)) {
       margin: 0;
     }
   }
@@ -326,7 +326,7 @@
     outline: 0;
   }
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: map-get($grid-breakpoints, md)) {
     float: left;
     margin-right: $gl-padding;
 
@@ -350,13 +350,13 @@
   line-height: 16px;
   margin-top: 2px;
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: map-get($grid-breakpoints, md)) {
     float: left;
   }
 }
 
 .note-form-actions {
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     .btn {
       float: none;
       width: 100%;
@@ -375,7 +375,7 @@
   left: 127px;
   top: 2px;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     position: relative;
     top: 0;
     left: 0;
@@ -411,7 +411,7 @@
   }
 
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     display: flex;
     width: 100%;
     margin-bottom: 10px;
@@ -433,7 +433,7 @@
 .uploading-container {
   float: right;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     float: left;
     margin-top: 5px;
   }
@@ -445,7 +445,7 @@
 }
 
 .uploading-error-message {
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     &::after {
       content: "\a";
       white-space: pre;

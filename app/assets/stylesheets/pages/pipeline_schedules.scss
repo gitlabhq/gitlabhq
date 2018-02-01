@@ -69,7 +69,7 @@
 .cron-preset-radio-input {
   display: inline-block;
 
-  @media (max-width: $screen-md-max) {
+  @media (max-width: map-get($grid-breakpoints, md)) {
     display: block;
     margin: 0 0 5px 5px;
   }
@@ -95,7 +95,7 @@
     margin-bottom: $gl-btn-padding;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     padding-right: $gl-col-padding;
   }
 
@@ -104,13 +104,13 @@
       display: none;
     }
 
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: map-get($grid-breakpoints, sm)) {
       .pipeline-variable-value-input {
         margin-right: $pipeline-variable-remove-button-width;
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       .pipeline-variable-row-body {
         margin-right: $pipeline-variable-remove-button-width;
       }
@@ -123,11 +123,11 @@
   width: calc(75% - #{$gl-col-padding});
   padding-left: $gl-col-padding;
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     width: 100%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     display: block;
   }
 }
@@ -135,7 +135,7 @@
 .pipeline-variable-key-input {
   margin-right: $gl-btn-padding;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     margin-bottom: $gl-btn-padding;
   }
 }

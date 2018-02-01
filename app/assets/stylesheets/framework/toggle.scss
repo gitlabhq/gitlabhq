@@ -121,7 +121,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: $screen-xs-min) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     width: 50px;
 
     &::before,

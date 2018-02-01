@@ -55,7 +55,7 @@
 
           &:hover,
           &:focus {
-            @media (min-width: $screen-sm-min) {
+            @media (min-width: map-get($grid-breakpoints, sm)) {
               background-color: rgba($color-200, .2);
             }
 

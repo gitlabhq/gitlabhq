@@ -32,7 +32,7 @@
     margin-left: $grid-size;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     flex-direction: column;
 
     .btn + .btn {
@@ -41,7 +41,7 @@
     }
   }
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     .btn:first-of-type {
       margin-left: auto;
     }
@@ -60,7 +60,7 @@ body.modal-open {
   }
 }
 
-@media (min-width: $screen-lg-min) {
+@media (min-width: map-get($grid-breakpoints, lg)) {
   .modal-full {
     width: 98%;
   }
@@ -70,7 +70,7 @@ body.modal-open {
   background-color: $black-transparent;
   z-index: 2100;
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: map-get($grid-breakpoints, md)) {
     .modal-dialog {
       margin: 30px auto;
     }

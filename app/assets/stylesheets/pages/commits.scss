@@ -28,7 +28,7 @@
 }
 
 .commit-hash-full {
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     width: 80px;
     white-space: nowrap;
     overflow: hidden;
@@ -193,7 +193,7 @@
 }
 
 .commit-actions {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     font-size: 0;
   }
 

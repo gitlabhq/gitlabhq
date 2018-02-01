@@ -195,7 +195,7 @@
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       text-align: center;
 
       .avatar {
@@ -315,7 +315,7 @@
     }
   }
 
-  @media (max-width: $screen-sm-min) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     flex-direction: column;
 
     .inner-content {
@@ -342,7 +342,7 @@
   .btn {
     margin: $btn-side-margin 5px;
 
-    @media(max-width: $screen-xs-max) {
+    @media(max-width: map-get($grid-breakpoints, xs)) {
       width: 100%;
     }
   }

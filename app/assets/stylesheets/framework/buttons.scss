@@ -396,7 +396,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .btn-wide-on-xs {
     width: 100%;
   }

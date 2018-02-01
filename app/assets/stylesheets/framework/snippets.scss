@@ -38,7 +38,7 @@
 }
 
 .snippet-actions {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     float: right;
   }
 }

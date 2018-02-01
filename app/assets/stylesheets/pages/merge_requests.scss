@@ -131,7 +131,7 @@
     color: $gl-text-color;
     display: flex;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       flex-wrap: wrap;
     }
   }
@@ -286,7 +286,7 @@
       display: inline-block;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       p {
         font-size: 13px;
       }
@@ -523,7 +523,7 @@
     }
 
     .item-title {
-      @media (min-width: $screen-sm-min) {
+      @media (min-width: map-get($grid-breakpoints, sm)) {
         width: 45%;
       }
     }
@@ -554,7 +554,7 @@
     margin-bottom: 0;
   }
 
-  @media (min-width: $screen-xs-min) {
+  @media (min-width: map-get($grid-breakpoints, xs)) {
     float: left;
     width: 50%;
     margin-bottom: 0;
@@ -652,7 +652,7 @@
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     position: sticky;
     position: -webkit-sticky;
   }
@@ -661,7 +661,7 @@
     left: 0;
     transition: right .15s;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       right: 0;
     }
 
@@ -704,7 +704,7 @@
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     flex-direction: column-reverse;
   }
 }

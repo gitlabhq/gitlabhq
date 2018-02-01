@@ -15,7 +15,7 @@
         max-width: 480px;
         padding: 0 $gl-padding;
 
-        @media (max-width: $screen-sm-min) {
+        @media (max-width: map-get($grid-breakpoints, sm)) {
           margin: 0 auto;
         }
       }
@@ -81,7 +81,7 @@
       border-bottom: 0;
       position: relative;
 
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         padding: 6px 0 24px;
       }
     }
@@ -89,7 +89,7 @@
     .column {
       text-align: center;
 
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         padding: 15px 0;
       }
 
@@ -106,7 +106,7 @@
       }
 
       &:last-child {
-        @media (max-width: $screen-xs-max) {
+        @media (max-width: map-get($grid-breakpoints, xs)) {
           text-align: center;
         }
       }

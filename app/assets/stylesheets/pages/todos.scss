@@ -163,7 +163,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@media (max-width: map-get($grid-breakpoints, sm)) {
   .todos-filters {
     .dropdown-menu-toggle {
       width: 130px;
@@ -175,7 +175,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .todo {
     .avatar {
       display: none;
@@ -215,7 +215,7 @@
   margin-left: auto;
   margin-right: auto;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     -webkit-flex-direction: row;
     flex-direction: row;
     padding-top: 80px;
@@ -234,7 +234,7 @@
   margin-left: auto;
   margin-right: auto;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     width: 300px;
     margin-right: 0;
     -webkit-order: 2;
@@ -245,7 +245,7 @@
 .todos-all-done {
   padding-top: 20px;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     padding-top: 50px;
   }
 

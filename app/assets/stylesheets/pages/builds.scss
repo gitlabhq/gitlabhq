@@ -198,7 +198,7 @@
   }
 
   .header-action-buttons {
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       .sidebar-toggle-btn {
         margin-top: 0;
         margin-left: 10px;
@@ -303,7 +303,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: map-get($grid-breakpoints, sm)) {
       display: block;
 
       .btn {

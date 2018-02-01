@@ -57,7 +57,7 @@
     display: block;
   }
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     &.has-sidebar-toggle {
       padding-right: 40px;
     }
@@ -73,7 +73,7 @@
     }
   }
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: map-get($grid-breakpoints, md)) {
     &.has-sidebar-toggle {
       padding-right: 0;
     }

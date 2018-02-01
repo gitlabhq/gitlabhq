@@ -581,14 +581,14 @@
   }
 
   .commit-stat-summary {
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       margin-left: -$gl-padding;
       padding-left: $gl-padding;
       background-color: $white-light;
     }
   }
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     position: -webkit-sticky;
     position: sticky;
     top: 24px;
@@ -617,7 +617,7 @@
   }
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, sm)) {
   .with-performance-bar {
     .diff-files-changed.diff-files-changed-merge-request {
       top: 76px + $performance-bar-height;
@@ -630,7 +630,7 @@
   width: 100%;
   z-index: 150;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     left: $gl-padding;
   }
 

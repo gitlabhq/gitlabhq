@@ -82,7 +82,7 @@
   }
 }
 
-@media (max-width: $screen-md-max) {
+@media (max-width: map-get($grid-breakpoints, md)) {
   .content-list {
     &.builds-content-list {
       width: 100%;
@@ -227,7 +227,7 @@
 
 .stage-cell {
   &.table-section {
-    @media (min-width: $screen-md-min) {
+    @media (min-width: map-get($grid-breakpoints, md)) {
       min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
       margin-right: -4px;
     }
@@ -820,7 +820,7 @@ button.mini-pipeline-graph-dropdown-toggle {
           display: block;
         }
 
-        @media (max-width: $screen-xs-max) {
+        @media (max-width: map-get($grid-breakpoints, xs)) {
           max-width: 60%;
         }
       }
@@ -907,7 +907,7 @@ button.mini-pipeline-graph-dropdown-toggle {
     transform: translate(-50%, 0);
     border-width: 0 5px 6px;
 
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: map-get($grid-breakpoints, sm)) {
       left: 100%;
       margin-left: -12px;
     }
@@ -930,7 +930,7 @@ button.mini-pipeline-graph-dropdown-toggle {
     transform: translate(-80%, 0);
     min-width: 150px;
 
-    @media(min-width: $screen-md-min) {
+    @media(min-width: map-get($grid-breakpoints, md)) {
       transform: translate(-50%, 0);
       right: auto;
       left: 50%;

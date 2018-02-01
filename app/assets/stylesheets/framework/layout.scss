@@ -74,7 +74,7 @@ body {
   }
 
   /* Center alert text and alert action links on smaller screens */
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     .alert {
       text-align: center;
     }

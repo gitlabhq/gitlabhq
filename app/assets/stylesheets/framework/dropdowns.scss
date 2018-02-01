@@ -32,7 +32,7 @@
     max-height: $dropdown-max-height;
     overflow-y: auto;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       width: 100%;
     }
   }
@@ -469,7 +469,7 @@
 .dropdown-select {
   width: $dropdown-width;
 
-  @media (max-width: $screen-sm-min) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     width: 100%;
   }
 }
@@ -761,7 +761,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .navbar-gitlab {
     li.header-projects,
     li.header-more,
@@ -816,7 +816,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     width: 70%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     flex-direction: column;
     width: 100%;
     height: auto;
@@ -875,7 +875,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     height: 284px;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     .projects-list-frequent-container {
       width: auto;
       height: auto;
@@ -917,7 +917,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     color: $gl-text-color-secondary;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     .project-item-metadata-container {
       float: none;
     }

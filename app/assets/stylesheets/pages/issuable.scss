@@ -333,7 +333,7 @@
     /* Extra small devices (phones, less than 768px) */
     display: none;
     /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       display: block;
     }
 
@@ -599,7 +599,7 @@
 }
 
 .issuable-form-padding-top {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     padding-top: 7px;
   }
 }
@@ -613,7 +613,7 @@
   padding-left: 9px;
   padding-right: 9px;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     display: inline-block;
     height: auto;
     align-self: center;
@@ -621,7 +621,7 @@
 }
 
 .issuable-gutter-toggle {
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     margin-left: $btn-side-margin;
   }
 }
@@ -639,7 +639,7 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     margin-bottom: $gl-padding;
   }
 }
@@ -680,7 +680,7 @@
         }
       }
 
-      @media(max-width: $screen-xs-max) {
+      @media(max-width: map-get($grid-breakpoints, xs)) {
         .issuable-meta {
           .controls li {
             margin-right: 0;
@@ -715,7 +715,7 @@
       }
     }
 
-    @media(max-width: $screen-md-max) {
+    @media(max-width: map-get($grid-breakpoints, md)) {
       .task-status,
       .issuable-due-date,
       .project-ref-path {

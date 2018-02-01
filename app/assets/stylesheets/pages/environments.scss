@@ -1,4 +1,4 @@
-@media (max-width: $screen-md-max) {
+@media (max-width: map-get($grid-breakpoints, md)) {
   .deployments-container {
     width: 100%;
     overflow: auto;
@@ -134,7 +134,7 @@
   border-left: 0;
   border-right: 0;
 
-  @media (min-width: $screen-sm-max) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     border-top: 0;
   }
 }
@@ -243,7 +243,7 @@
     font-size: 16px;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     min-width: 100%;
   }
 }
@@ -392,7 +392,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: map-get($grid-breakpoints, sm)) {
       .label-axis-text,
       .text-metric-usage,
       .legend-axis-text {

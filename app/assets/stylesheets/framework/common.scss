@@ -304,7 +304,7 @@ img.emoji {
 .btn-sign-in {
   text-shadow: none;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     margin-top: 8px;
   }
 }

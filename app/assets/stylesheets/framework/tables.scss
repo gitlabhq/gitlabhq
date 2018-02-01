@@ -48,7 +48,7 @@ table {
 }
 
 .responsive-table {
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     th {
       width: 100%;
     }

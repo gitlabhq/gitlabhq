@@ -25,7 +25,7 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     .input-group > div {
 
       margin-bottom: 14px;
@@ -69,7 +69,7 @@
   border: 1px solid $border-color;
   padding: 10px 32px;
 
-  @media (max-width: $screen-xs-min) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     padding: 10px 20px;
   }
 }
@@ -121,7 +121,7 @@
     max-width: 400px;
   }
 
-  @media (max-width: $screen-xs-min) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     padding-left: 20px;
   }
 }
@@ -131,7 +131,7 @@
   padding-top: 24px;
   padding-bottom: 24px;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     border-bottom: 1px solid $border-color;
   }
 
@@ -222,7 +222,7 @@
   }
 
   .download-button {
-    @media (max-width: $screen-md-max) {
+    @media (max-width: map-get($grid-breakpoints, md)) {
       margin-left: 0;
     }
   }
@@ -342,7 +342,7 @@
 }
 
 .deploy-key-content {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     float: left;
 
     &:last-child {
@@ -352,7 +352,7 @@
 }
 
 .deploy-key-projects {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     line-height: 42px;
   }
 }
@@ -414,11 +414,11 @@ a.deploy-project-label {
   height: 200px;
   width: calc((100% / 2) - #{$gl-padding * 2});
 
-  @media (min-width: $screen-md-min) {
+  @media (min-width: map-get($grid-breakpoints, md)) {
     width: calc((100% / 4) - #{$gl-padding * 2});
   }
 
-  @media (min-width: $screen-lg-min) {
+  @media (min-width: map-get($grid-breakpoints, lg)) {
     width: calc((100% / 5) - #{$gl-padding * 2});
   }
 
@@ -507,7 +507,7 @@ a.deploy-project-label {
   .template-input-group {
     position: relative;
 
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       display: flex;
     }
 
@@ -571,12 +571,12 @@ a.deploy-project-label {
       margin: 0 auto 4px;
       font-size: 24px;
 
-      @media (min-width: $screen-xs-max) {
+      @media (min-width: map-get($grid-breakpoints, xs)) {
         top: 0;
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       .btn-template-icon {
         display: inline-block;
         height: 14px;
@@ -595,31 +595,31 @@ a.deploy-project-label {
 .create-project-options {
   display: flex;
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     display: block;
   }
 
   .first-column {
-    @media(min-width: $screen-xs-min) {
+    @media(min-width: map-get($grid-breakpoints, xs)) {
       max-width: 50%;
       padding-right: 30px;
     }
 
-    @media(max-width: $screen-xs-max) {
+    @media(max-width: map-get($grid-breakpoints, xs)) {
       max-width: 100%;
       width: 100%;
     }
   }
 
   .second-column {
-    @media(min-width: $screen-xs-min) {
+    @media(min-width: map-get($grid-breakpoints, xs)) {
       width: 50%;
       flex: 1;
       padding-left: 30px;
       position: relative;
     }
 
-    @media(max-width: $screen-xs-max) {
+    @media(max-width: map-get($grid-breakpoints, xs)) {
       max-width: 100%;
       width: 100%;
       padding-left: 0;
@@ -627,7 +627,7 @@ a.deploy-project-label {
     }
 
     // Mobile
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       padding-top: 30px;
     }
 
@@ -647,7 +647,7 @@ a.deploy-project-label {
       line-height: 20px;
 
       // Mobile
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         left: 50%;
         top: 0;
         transform: translateX(-50%);
@@ -667,7 +667,7 @@ a.deploy-project-label {
       top: 0;
 
       // Mobile
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         top: 10px;
         left: 10px;
         right: 10px;
@@ -700,7 +700,7 @@ a.deploy-project-label {
         vertical-align: top;
         margin-top: 0;
 
-        @media (min-width: $screen-lg-min) {
+        @media (min-width: map-get($grid-breakpoints, lg)) {
           float: right;
         }
       }
@@ -949,7 +949,7 @@ pre.light-well {
 .dropdown-menu-projects {
   width: 300px;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     width: 500px;
   }
 
@@ -963,7 +963,7 @@ pre.light-well {
   .inline-input-group {
     width: 100%;
 
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       width: 300px;
     }
   }
@@ -974,7 +974,7 @@ pre.light-well {
     text-align: center;
     margin-top: -20px;
 
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       margin-top: 0;
       width: auto;
     }
@@ -1013,7 +1013,7 @@ pre.light-well {
   }
 
   &.form-group {
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       margin-bottom: 0;
     }
   }
@@ -1041,12 +1041,12 @@ pre.light-well {
 .project-feature {
   padding-top: 10px;
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: map-get($grid-breakpoints, sm)) {
     padding-left: 45px;
   }
 
   &.nested {
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: map-get($grid-breakpoints, sm)) {
       padding-left: 90px;
     }
   }

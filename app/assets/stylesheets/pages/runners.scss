@@ -51,7 +51,7 @@
   }
 }
 
-@media (max-width: $screen-md-max) {
+@media (max-width: map-get($grid-breakpoints, md)) {
   .runners-content {
     width: 100%;
     overflow: auto;

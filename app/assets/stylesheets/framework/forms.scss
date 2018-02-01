@@ -48,21 +48,21 @@ label {
   width: 150px;
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, sm)) {
   .custom-form-control {
     width: 150px;
   }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media (min-width: $screen-md-min) {
+@media (min-width: map-get($grid-breakpoints, md)) {
   .custom-form-control {
     width: 170px;
   }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@media (min-width: $screen-lg-min) {
+@media (min-width: map-get($grid-breakpoints, lg)) {
   .custom-form-control {
     width: 200px;
   }
@@ -102,7 +102,7 @@ label {
     }
   }
 
-  @media(max-width: $screen-xs-max) {
+  @media(max-width: map-get($grid-breakpoints, xs)) {
     padding: 0 $gl-padding;
 
     .control-label,
@@ -220,7 +220,7 @@ label {
   }
 }
 
-@media(max-width: $screen-xs-max) {
+@media(max-width: map-get($grid-breakpoints, xs)) {
   .remember-me {
     .remember-me-checkbox {
       margin-top: 0;

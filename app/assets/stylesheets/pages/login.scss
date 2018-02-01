@@ -207,7 +207,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .login-page {
     .col-sm-5.pull-right {
       float: none !important;
@@ -259,7 +259,7 @@
     .navless-container {
       padding: 65px 15px; // height of footer + bottom padding of email confirmation link
 
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         padding: 0 15px 65px;
       }
     }

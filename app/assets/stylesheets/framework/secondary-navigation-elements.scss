@@ -56,7 +56,7 @@
     white-space: normal;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       width: 100%;
     }
   }
@@ -80,7 +80,7 @@
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       width: 100%;
     }
   }
@@ -120,21 +120,21 @@
       position: relative;
 
       /* Medium devices (desktops, 992px and up) */
-      @media (min-width: $screen-md-min) { width: 200px; }
+      @media (min-width: map-get($grid-breakpoints, md)) { width: 200px; }
 
       /* Large devices (large desktops, 1200px and up) */
-      @media (min-width: $screen-lg-min) { width: 250px; }
+      @media (min-width: map-get($grid-breakpoints, lg)) { width: 250px; }
 
       &.input-short {
         /* Medium devices (desktops, 992px and up) */
-        @media (min-width: $screen-md-min) { width: 170px; }
+        @media (min-width: map-get($grid-breakpoints, md)) { width: 170px; }
 
         /* Large devices (large desktops, 1200px and up) */
-        @media (min-width: $screen-lg-min) { width: 210px; }
+        @media (min-width: map-get($grid-breakpoints, lg)) { width: 210px; }
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, xs)) {
       padding-bottom: 0;
       width: 100%;
 
@@ -180,7 +180,7 @@
     .nav-controls {
       width: auto;
 
-      @media (max-width: $screen-xs-max) {
+      @media (max-width: map-get($grid-breakpoints, xs)) {
         width: 100%;
       }
     }
@@ -200,7 +200,7 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: map-get($grid-breakpoints, xs)) {
     flex-flow: row wrap;
 
     .nav-controls {
@@ -365,7 +365,7 @@
     max-width: 300px;
     width: auto;
 
-    @media(max-width: $screen-xs-max) {
+    @media(max-width: map-get($grid-breakpoints, xs)) {
       max-width: 250px;
     }
   }
