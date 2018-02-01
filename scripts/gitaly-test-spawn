@@ -35,8 +35,7 @@ Dir.chdir(File.join(gitaly_dir, 'ruby')) do
 end
 
 env = {
-  'HOME' => File.expand_path('tmp/tests'),
-  'GEM_PATH' => bundle_path.to_s
+  'HOME' => File.expand_path('tmp/tests')
 }
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
 
