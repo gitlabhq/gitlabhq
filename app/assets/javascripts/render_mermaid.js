@@ -28,6 +28,16 @@ export default function renderMermaid($els) {
     });
 
     $els.each((i, el) => {
+      // Handle a condition that happens in CI and some of the time locally,
+      // where the `textContent` is the content of the styles injected by
+      // Mermaid, as well as any labels.
+      if (el.querySelector('style')) { return; }
+
+      const source = el.textContent;
+
+      // Remove any extra spans added by the backend syntax highlighting.
+      Object.assign(el, { textContent: source });
+
       mermaid.init(undefined, el);
     });
   }).catch((err) => {
