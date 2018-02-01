@@ -190,7 +190,7 @@ The result will then be:
 
 ## Multiple Kubernetes clusters
 
-> Introduced in [GitLab Enterprise Edition Premium][ee] 10.3.
+> Introduced in [GitLab Premium][ee] 10.3.
 
 With GitLab Premium, you can associate more than one Kubernetes clusters to your
 project. That way you can have different clusters for different environments,

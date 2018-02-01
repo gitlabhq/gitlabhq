@@ -154,7 +154,7 @@ Find it under your project's **Repository > Compare**.
 Lock your files to prevent any conflicting changes.
 
 [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/).
+[GitLab Premium](https://about.gitlab.com/gitlab-ee/).
 
 ## Repository's API
 
