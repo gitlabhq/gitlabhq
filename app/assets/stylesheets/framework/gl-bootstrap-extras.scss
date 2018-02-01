@@ -3,10 +3,6 @@
   @include clearfix();
 }
 
-.center-block {
-  @include center-block();
-}
-
 .pull-right {
   float: right !important;
 }
@@ -49,8 +45,6 @@
 summary {
   display: list-item;
 }
-
-@import "bootstrap/responsive-utilities";
 
 // Labels
 .label {

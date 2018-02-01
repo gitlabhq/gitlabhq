@@ -7,7 +7,7 @@
     Group path
   .col-sm-10
     .input-group.gl-field-error-anchor
-      .group-root-path.input-group-addon.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
+      .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
         %span>= root_url
         - if parent
           %strong= parent.full_path + '/'

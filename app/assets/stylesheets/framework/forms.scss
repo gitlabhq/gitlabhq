@@ -83,7 +83,7 @@ label {
     font-family: $monospace_font;
   }
 
-  .input-group-btn .btn {
+  .input-group-append .btn {
     padding: 3px $gl-btn-padding;
     background-color: $gray-light;
     border: 1px solid $border-color;
@@ -170,11 +170,11 @@ label {
     width: 200px !important;
   }
 
-  .input-group-addon {
-    background-color: $input-group-addon-bg;
+  .input-group-prepend {
+    background-color: $input-group-prepend-bg;
   }
 
-  .input-group-addon:not(:first-child):not(:last-child) {
+  .input-group-prepend:not(:first-child):not(:last-child) {
     border-left: 0;
     border-right: 0;
   }

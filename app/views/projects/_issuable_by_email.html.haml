@@ -17,7 +17,7 @@
           You can create a new #{name} inside this project by sending an email to the following email address:
         .email-modal-input-group.input-group
           = text_field_tag :issuable_email, email, class: "monospace js-select-on-focus form-control", readonly: true
-          .input-group-btn
+          .input-group-append
             = clipboard_button(target: '#issuable_email')
         %p
           = render 'by_email_description'

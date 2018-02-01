@@ -54,14 +54,14 @@
           %td.import-target
             %fieldset.row
             .input-group
-              .project-path.input-group-btn
+              .project-path.input-group-append
                 - if current_user.can_select_namespace?
                   - selected = params[:namespace_id] || :current_user
                   - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner, path: repo.owner) } : {}
                   = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'select2 js-select-namespace', tabindex: 1 }
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "input-large form-control", tabindex: 1, disabled: true
-              %span.input-group-addon /
+              %span.input-group-prepend /
               = text_field_tag :path, repo.name, class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
             = button_tag class: 'btn btn-import js-add-to-import' do

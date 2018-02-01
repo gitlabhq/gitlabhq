@@ -15,12 +15,12 @@
       .form-group
         .input-group
           - if current_user.can_select_namespace?
-            .input-group-addon
+            .input-group-prepend
               = root_url
             = select_tag :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), class: 'select2 js-select-namespace', tabindex: 1
 
           - else
-            .input-group-addon.static-namespace
+            .input-group-prepend.static-namespace
               #{root_url}#{current_user.username}/
             = hidden_field_tag :namespace_id, value: current_user.namespace_id
     .form-group.col-xs-12.col-sm-6.project-path

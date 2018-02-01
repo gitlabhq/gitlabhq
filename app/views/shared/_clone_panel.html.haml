@@ -1,7 +1,7 @@
 - project = project || @project
 
 .git-clone-holder.input-group
-  .input-group-btn
+  .input-group-append
     - if allowed_protocols_present?
       .clone-dropdown-btn.btn
         %span
@@ -18,5 +18,5 @@
           = http_clone_button(project)
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
-  .input-group-btn
+  .input-group-append
     = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "btn-default btn-clipboard")

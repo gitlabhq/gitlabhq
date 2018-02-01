@@ -40,7 +40,7 @@
     }
   }
 
-  .input-group-addon {
+  .input-group-prepend {
 
     &.static-namespace {
       height: 35px;
@@ -511,7 +511,7 @@ a.deploy-project-label {
       display: flex;
     }
 
-    .input-group-addon {
+    .input-group-prepend {
       flex: 1;
       text-align: left;
       padding-left: ($gl-padding * 3);

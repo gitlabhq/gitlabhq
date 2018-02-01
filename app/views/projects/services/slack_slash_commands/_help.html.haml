@@ -39,7 +39,7 @@
         = label_tag :url, 'URL', class: 'col-sm-2 col-xs-12 control-label'
         .col-sm-10.col-xs-12.input-group
           = text_field_tag :url, service_trigger_url(subject), class: 'form-control input-sm', readonly: 'readonly'
-          .input-group-btn
+          .input-group-append
             = clipboard_button(target: '#url')
 
       .form-group
@@ -50,7 +50,7 @@
         = label_tag :customize_name, 'Customize name', class: 'col-sm-2 col-xs-12 control-label'
         .col-sm-10.col-xs-12.input-group
           = text_field_tag :customize_name, 'GitLab', class: 'form-control input-sm', readonly: 'readonly'
-          .input-group-btn
+          .input-group-append
             = clipboard_button(target: '#customize_name')
 
       .form-group
@@ -67,21 +67,21 @@
         = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-xs-12 control-label'
         .col-sm-10.col-xs-12.input-group
           = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control input-sm', readonly: 'readonly'
-          .input-group-btn
+          .input-group-append
             = clipboard_button(target: '#autocomplete_description')
 
       .form-group
         = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-xs-12 control-label'
         .col-sm-10.col-xs-12.input-group
           = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control input-sm', readonly: 'readonly'
-          .input-group-btn
+          .input-group-append
             = clipboard_button(target: '#autocomplete_usage_hint')
 
       .form-group
         = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-xs-12 control-label'
         .col-sm-10.col-xs-12.input-group
           = text_field_tag :descriptive_label, 'Perform common operations on GitLab project', class: 'form-control input-sm', readonly: 'readonly'
-          .input-group-btn
+          .input-group-append
             = clipboard_button(target: '#descriptive_label')
 
     %hr

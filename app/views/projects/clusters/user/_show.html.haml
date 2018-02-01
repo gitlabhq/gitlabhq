@@ -17,7 +17,7 @@
       = platform_kubernetes_field.label :token, s_('ClusterIntegration|Token')
       .input-group
         = platform_kubernetes_field.text_field :token, class: 'form-control js-cluster-token', type: 'password', placeholder: s_('ClusterIntegration|Token'), autocomplete: 'off'
-        %span.input-group-addon.clipboard-addon
+        %span.input-group-prepend.clipboard-addon
           %button.js-show-cluster-token.btn-blank{ type: 'button' }
             = s_('ClusterIntegration|Show')
 

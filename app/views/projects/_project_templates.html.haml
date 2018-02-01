@@ -14,7 +14,7 @@
       %label.label-light
         Template
       .input-group.template-input-group
-        .input-group-addon
+        .input-group-prepend
           .selected-icon
             - Gitlab::ProjectTemplate.all.each do |template|
               = custom_icon(template.logo)

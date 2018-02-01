@@ -140,7 +140,7 @@
               %span Path
             .form-group
               .input-group
-                .input-group-addon
+                .input-group-prepend
                   #{URI.join(root_url, @project.namespace.full_path)}/
                 = f.text_field :path, class: 'form-control'
             %ul
