@@ -252,14 +252,17 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock (EES/EEP)
+#### Member Lock
 
-Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
-with **Member Lock** it is possible to lock membership in project to the
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+
+With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
 Member Lock lets a group owner to lock down any new project membership to all the
 projects within the group, allowing tighter control over project membership.
+Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
 
 For instance, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you enable Member Lock to guarantee that any membership is added or changed
