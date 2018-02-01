@@ -379,6 +379,13 @@ describe GeoNodeStatus, :geo do
 
       expect(subject.replication_slots_max_retained_wal_bytes).to eq(2.megabytes)
     end
+
+    it 'handles large values' do
+      stub_current_geo_node(primary)
+      allow(primary).to receive(:replication_slots_max_retained_wal_bytes).and_return(900.gigabytes)
+
+      expect(subject.replication_slots_max_retained_wal_bytes).to eq(900.gigabytes)
+    end
   end
 
   describe '#last_event_id and #last_event_date' do
