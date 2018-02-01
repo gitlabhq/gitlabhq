@@ -2,6 +2,9 @@
 import { visitUrl } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import { isMetaClick } from '~/lib/utils/common_utils';
+import { __ } from '../../../../locale';
+import flash from '../../../../flash';
+import axios from '../../../../lib/utils/axios_utils';
 
 export default class Todos {
   constructor() {
@@ -59,18 +62,12 @@ export default class Todos {
     const target = e.target;
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
-    $.ajax({
-      type: 'POST',
-      url: target.dataset.href,
-      dataType: 'json',
-      data: {
-        '_method': target.dataset.method,
-      },
-      success: (data) => {
+
+    axios[target.dataset.method](target.dataset.href)
+      .then(({ data }) => {
         this.updateRowState(target);
-        return this.updateBadges(data);
-      },
-    });
+        this.updateBadges(data);
+      }).catch(() => flash(__('Error updating todo status.')));
   }
 
   updateRowState(target) {
@@ -98,19 +95,15 @@ export default class Todos {
     e.preventDefault();
 
     const target = e.currentTarget;
-    const requestData = { '_method': target.dataset.method, ids: this.todo_ids };
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
-    $.ajax({
-      type: 'POST',
-      url: target.dataset.href,
-      dataType: 'json',
-      data: requestData,
-      success: (data) => {
-        this.updateAllState(target, data);
-        return this.updateBadges(data);
-      },
-    });
+
+    axios[target.dataset.method](target.dataset.href, {
+      ids: this.todo_ids,
+    }).then(({ data }) => {
+      this.updateAllState(target, data);
+      this.updateBadges(data);
+    }).catch(() => flash(__('Error updating status for all todos.')));
   }
 
   updateAllState(target, data) {
