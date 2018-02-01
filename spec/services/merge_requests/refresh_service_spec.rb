@@ -74,6 +74,14 @@ describe MergeRequests::RefreshService do
         expect(@fork_build_failed_todo).to be_done
       end
 
+      it 'reloads source branch MRs memoization' do
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+        expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }.to change {
+          refresh_service.instance_variable_get("@source_merge_requests").first.merge_request_diff
+        }
+      end
+
       context 'when source branch ref does not exists' do
         before do
           DeleteBranchService.new(@project, @user).execute(@merge_request.source_branch)
