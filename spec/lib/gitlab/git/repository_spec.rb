@@ -249,7 +249,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(/tmp\/gitlab-git-test.git\/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}/) }
+    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
     it { expect(metadata['ArchivePath']).to end_with extenstion }
   end
 
@@ -562,35 +562,39 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#delete_refs' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    shared_examples 'deleting refs' do
+      let(:repo) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
-    it 'deletes the ref' do
-      @repo.delete_refs('refs/heads/feature')
+      after do
+        ensure_seeds
+      end
 
-      expect(@repo.rugged.references['refs/heads/feature']).to be_nil
-    end
+      it 'deletes the ref' do
+        repo.delete_refs('refs/heads/feature')
 
-    it 'deletes all refs' do
-      refs = %w[refs/heads/wip refs/tags/v1.1.0]
-      @repo.delete_refs(*refs)
+        expect(repo.rugged.references['refs/heads/feature']).to be_nil
+      end
 
-      refs.each do |ref|
-        expect(@repo.rugged.references[ref]).to be_nil
+      it 'deletes all refs' do
+        refs = %w[refs/heads/wip refs/tags/v1.1.0]
+        repo.delete_refs(*refs)
+
+        refs.each do |ref|
+          expect(repo.rugged.references[ref]).to be_nil
+        end
+      end
+
+      it 'raises an error if it failed' do
+        expect { repo.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
       end
     end
 
-    it 'raises an error if it failed' do
-      expect(@repo).to receive(:popen).and_return(['Error', 1])
-
-      expect do
-        @repo.delete_refs('refs/heads/fix')
-      end.to raise_error(Gitlab::Git::Repository::GitError)
+    context 'when Gitaly delete_refs feature is enabled' do
+      it_behaves_like 'deleting refs'
     end
 
-    after(:all) do
-      ensure_seeds
+    context 'when Gitaly delete_refs feature is disabled', :disable_gitaly do
+      it_behaves_like 'deleting refs'
     end
   end
 
@@ -897,44 +901,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         it "should return a list of commits" do
           expect(log_commits.size).to eq(1)
-        end
-      end
-    end
-
-    context "compare results between log_by_walk and log_by_shell" do
-      let(:options) { { ref: "master" } }
-      let(:commits_by_walk) { repository.log(options).map(&:id) }
-      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
-
-      it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-      context "with limit" do
-        let(:options) { { ref: "master", limit: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with offset" do
-        let(:options) { { ref: "master", offset: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with skip_merges" do
-        let(:options) { { ref: "master", skip_merges: true } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with path" do
-        let(:options) { { ref: "master", path: "encoding" } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-        context "with follow" do
-          let(:options) { { ref: "master", path: "encoding", follow: true } }
-
-          it { expect(commits_by_walk).to eq(commits_by_shell) }
         end
       end
     end

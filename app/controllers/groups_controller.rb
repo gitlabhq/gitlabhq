@@ -3,6 +3,7 @@ class GroupsController < Groups::ApplicationController
   include MergeRequestsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
+  prepend EE::GroupsController
 
   respond_to :html
 
@@ -118,10 +119,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce << group_params_ee)
+    params.require(:group).permit(group_params_attributes)
   end
 
-  def group_params_ce
+  def group_params_attributes
     [
       :avatar,
       :description,
@@ -140,13 +141,6 @@ class GroupsController < Groups::ApplicationController
     ]
   end
 
-  def group_params_ee
-    [
-      :membership_lock,
-      :repository_size_limit
-    ]
-  end
-
   def load_events
     params[:sort] ||= 'latest_activity_desc'
 
@@ -157,7 +151,6 @@ class GroupsController < Groups::ApplicationController
     @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
                   .execute
                   .includes(:namespace)
-                  .page(params[:page])
 
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)

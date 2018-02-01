@@ -310,7 +310,7 @@ describe SystemNoteService do
     end
 
     it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to match(/enabled an automatic merge when the pipeline for (\w+\/\w+@)?\h{40} succeeds/)
+      expect(subject.note).to match(%r{enabled an automatic merge when the pipeline for (\w+/\w+@)?\h{40} succeeds})
     end
   end
 
@@ -697,7 +697,7 @@ describe SystemNoteService do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
       escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
 
-      expect(described_class.new_commit_summary([commit])).to all(match(%r[- #{escaped}]))
+      expect(described_class.new_commit_summary([commit])).to all(match(/- #{escaped}/))
     end
   end
 

@@ -124,4 +124,238 @@ describe GroupPolicy do
       it { is_expected.to be_allowed(:admin_ldap_group_links) }
     end
   end
+
+  context "create_projects" do
+    context 'project_creation_level enabled' do
+      before do
+        stub_licensed_features(project_creation_level: true)
+      end
+
+      context 'when group has no project creation level set' do
+        let(:group) { create(:group, project_creation_level: nil) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+
+      context 'when group has project creation level set to no one' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+      end
+
+      context 'when group has project creation level set to master only' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+
+      context 'when group has project creation level set to developers + master' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+    end
+
+    context 'project_creation_level disabled' do
+      context 'when group has no project creation level set' do
+        let(:group) { create(:group, project_creation_level: nil) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+
+      context 'when group has project creation level set to no one' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+
+      context 'when group has project creation level set to master only' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+
+      context 'when group has project creation level set to developers + master' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS) }
+
+        context 'reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it { is_expected.to be_disallowed(:create_projects) }
+        end
+
+        context 'master' do
+          let(:current_user) { master }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:create_projects) }
+        end
+      end
+    end
+  end
 end

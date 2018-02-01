@@ -116,9 +116,11 @@
     "approvals_path": { "type": ["string", "null"] },
     "codeclimate": {
       "head_path": { "type": "string" },
-      "head_blob_path": { "type": "string" },
-      "base_path": { "type": "string" },
-      "base_blob_path": { "type": "string" }
+      "base_path": { "type": "string" }
+    },
+    "blob_path": {
+      "head_path": { "type": "string" },
+      "base_path": { "type": "string" }
     }
   },
   "additionalProperties": false

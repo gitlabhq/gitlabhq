@@ -462,7 +462,6 @@ module Gitlab
           path: nil,
           follow: false,
           skip_merges: false,
-          disable_walk: false,
           after: nil,
           before: nil
         }
@@ -494,11 +493,7 @@ module Gitlab
           return []
         end
 
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
+        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -888,16 +883,12 @@ module Gitlab
       end
 
       def delete_refs(*ref_names)
-        instructions = ref_names.map do |ref|
-          "delete #{ref}\x00\x00"
-        end
-
-        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
-          stdin.write(instructions.join)
-        end
-
-        unless status.zero?
-          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        gitaly_migrate(:delete_refs) do |is_enabled|
+          if is_enabled
+            gitaly_delete_refs(*ref_names)
+          else
+            git_delete_refs(*ref_names)
+          end
         end
       end
 
@@ -1390,8 +1381,18 @@ module Gitlab
         run_git(args).first.scrub.split(/^--$/)
       end
 
+      def can_be_merged?(source_sha, target_branch)
+        gitaly_migrate(:can_be_merged) do |is_enabled|
+          if is_enabled
+            gitaly_can_be_merged?(source_sha, find_branch(target_branch, true).target)
+          else
+            rugged_can_be_merged?(source_sha, target_branch)
+          end
+        end
+      end
+
       def search_files_by_name(query, ref)
-        safe_query = Regexp.escape(query.sub(/^\/*/, ""))
+        safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
 
         return [] if empty? || safe_query.blank?
 
@@ -1637,24 +1638,6 @@ module Gitlab
         else
           options
         end
-      end
-
-      def log_using_shell?(options)
-        options[:path].present? ||
-          options[:disable_walk] ||
-          options[:skip_merges] ||
-          options[:after] ||
-          options[:before]
-      end
-
-      def log_by_walk(sha, options)
-        walk_options = {
-          show: sha,
-          sort: Rugged::SORT_NONE,
-          limit: options[:limit],
-          offset: options[:offset]
-        }
-        Rugged::Walker.walk(rugged, walk_options).to_a
       end
 
       # Gitaly note: JV: although #log_by_shell shells out to Git I think the
@@ -2019,7 +2002,7 @@ module Gitlab
         target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ %r{'refs/heads/#{ref}'}
 
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
@@ -2204,6 +2187,24 @@ module Gitlab
         remote_update(remote_name, url: url)
       end
 
+      def git_delete_refs(*ref_names)
+        instructions = ref_names.map do |ref|
+          "delete #{ref}\x00\x00"
+        end
+
+        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
+          stdin.write(instructions.join)
+        end
+
+        unless status.zero?
+          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        end
+      end
+
+      def gitaly_delete_refs(*ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names)
+      end
+
       def rugged_remove_remote(remote_name)
         # When a remote is deleted all its remote refs are deleted too, but in
         # the case of mirrors we map its refs (that would usualy go under
@@ -2264,6 +2265,14 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitaly_can_be_merged?(their_commit, our_commit)
+        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
+      end
+
+      def rugged_can_be_merged?(their_commit, our_commit)
+        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def gitlab_projects_error

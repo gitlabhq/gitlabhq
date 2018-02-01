@@ -58,5 +58,9 @@ module EE
       fail_ldap_sync
       update_column(:ldap_sync_error, ::Gitlab::UrlSanitizer.sanitize(error_message))
     end
+
+    def project_creation_level
+      super || current_application_settings.default_project_creation
+    end
   end
 end

@@ -804,8 +804,7 @@ describe Repository do
         user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
-      allow(repository).to receive(:file_on_head)
-        .and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.license_blob).to be_nil
     end
@@ -917,7 +916,7 @@ describe Repository do
     end
 
     it 'returns nil for empty repository' do
-      allow(repository).to receive(:file_on_head).and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
       expect(repository.gitlab_ci_yml).to be_nil
     end
   end
@@ -2011,8 +2010,7 @@ describe Repository do
 
   describe '#avatar' do
     it 'returns nil if repo does not exist' do
-      expect(repository).to receive(:file_on_head)
-        .and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.avatar).to eq(nil)
     end
