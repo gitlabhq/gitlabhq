@@ -10,6 +10,7 @@ class EpicsFinder < IssuableFinder
     items = by_created_at(items)
     items = by_search(items)
     items = by_author(items)
+    items = by_timeframe(items)
 
     sort(items)
   end
@@ -47,5 +48,14 @@ class EpicsFinder < IssuableFinder
     DeclarativePolicy.user_scope do
       groups.select { |g| Ability.allowed?(current_user, :read_epic, g) }
     end
+  end
+
+  def by_timeframe(items)
+    return items unless params[:start_date] && params[:end_date]
+
+    items
+      .where('epics.start_date is not NULL or epics.end_date is not NULL')
+      .where('epics.start_date is NULL or epics.start_date <= ?', params[:end_date].end_of_day)
+      .where('epics.end_date is NULL or epics.end_date >= ?', params[:start_date].beginning_of_day)
   end
 end
