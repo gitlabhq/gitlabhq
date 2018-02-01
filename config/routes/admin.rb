@@ -1,5 +1,5 @@
 namespace :admin do
-  resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
+  resources :users, constraints: { id: %r{[a-zA-Z./0-9_\-]+} } do
     resources :keys, only: [:show, :destroy]
     resources :identities, except: [:show]
     resources :impersonation_tokens, only: [:index, :create] do
