@@ -4,10 +4,12 @@ module Ci
       return if job.job_artifacts_trace
 
       job.trace.read do |stream|
-        job.create_job_artifacts_trace!(
-          project: job.project,
-          file_type: :trace,
-          file: stream) if stream.file?
+        if stream.file?
+          job.create_job_artifacts_trace!(
+            project: job.project,
+            file_type: :trace,
+            file: stream)
+        end
       end
     end
   end

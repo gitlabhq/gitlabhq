@@ -18,7 +18,7 @@ class JobArtifactUploader < GitlabUploader
     if file_storage?
       File.open(path, "rb") if path
     else
-      Gitlab::Ci::Trace::HTTP_IO.new(url, size)
+      Gitlab::Ci::Trace::HttpIO.new(url, size)
     end
   end
 

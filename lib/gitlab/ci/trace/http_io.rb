@@ -4,7 +4,7 @@
 module Gitlab
   module Ci
     class Trace
-      class HTTP_IO
+      class HttpIO
         BUFFER_SIZE = 128.kilobytes
 
         attr_reader :uri, :size
@@ -30,7 +30,7 @@ module Gitlab
           @uri.to_s
         end
 
-        def seek(pos, where=IO::SEEK_SET)
+        def seek(pos, where = IO::SEEK_SET)
           new_pos =
             case where
             when IO::SEEK_END
@@ -53,7 +53,7 @@ module Gitlab
         end
 
         def each_line
-          while !eof? do
+          loop !eof? do
             line = readline
             yield(line)
           end
@@ -65,6 +65,7 @@ module Gitlab
           while length.nil? || out.length < length
             data = get_chunk
             break if data.empty?
+
             out += data
             @tell += data.bytesize
           end
@@ -80,13 +81,13 @@ module Gitlab
         def readline
           out = ""
 
-          while !eof? do
+          loop !eof? do
             data = get_chunk
             new_line = data.index("\n")
 
             if !new_line.nil?
               out += data[0..new_line]
-              @tell += new_line+1
+              @tell += new_line + 1
               break
             else
               out += data
@@ -132,7 +133,7 @@ module Gitlab
             @chunk_range = response.content_range
           end
 
-          @chunk[chunk_offset .. BUFFER_SIZE]
+          @chunk[chunk_offset..BUFFER_SIZE]
         end
 
         def request
