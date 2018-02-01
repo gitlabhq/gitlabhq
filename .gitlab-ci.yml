@@ -738,8 +738,9 @@ cache gems:
 gitlab_git_test:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
-  <<: *pull-cache
   variables:
     SETUP_DB: "false"
+  before_script: []
+  cache: {}
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
