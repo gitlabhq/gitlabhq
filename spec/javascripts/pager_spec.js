@@ -47,12 +47,12 @@ describe('pager', () => {
   });
 
   describe('getOld', () => {
-    const urlRegex = /\/some_list(.*)$/;
+    const urlRegex = /(.*)some_list(.*)$/;
     let mock;
 
     function mockSuccess() {
       mock.onGet(urlRegex).reply(200, {
-        count: 20,
+        count: 0,
         html: '',
       });
     }
@@ -65,9 +65,9 @@ describe('pager', () => {
       setFixtures('<div class="content_list" data-href="/some_list"></div><div class="loading"></div>');
       spyOn(axios, 'get').and.callThrough();
 
-      Pager.init();
-
       mock = new MockAdapter(axios);
+
+      Pager.init();
     });
 
     afterEach(() => {
@@ -119,10 +119,15 @@ describe('pager', () => {
       Pager.getOld();
 
       setTimeout(() => {
-        const [url, params] = $.ajax.calls.argsFor(0);
-        console.log(url, params);
-        // expect(data).toBe('limit=20&offset=100');
-        // expect(url).toBe('/some_list');
+        const [url, params] = axios.get.calls.argsFor(0);
+
+        expect(params).toEqual({
+          params: {
+            limit: 20,
+            offset: 100,
+          },
+        });
+        expect(url).toBe('/some_list');
 
         done();
       });
