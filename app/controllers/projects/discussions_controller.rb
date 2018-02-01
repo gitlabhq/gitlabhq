@@ -9,7 +9,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def resolve
     Discussions::ResolveService.new(project, current_user, merge_request: merge_request).execute(discussion)
 
-    if cookies[:vue_mr_discussions] == 'true' && !params['html']
+    if has_vue_discussions_cookie? && !params['html']
       prepare_notes_for_rendering(discussion.notes)
       # TODO: We may need to strip when cross_reference_not_visible_for
 
@@ -25,7 +25,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def unresolve
     discussion.unresolve!
 
-    if cookies[:vue_mr_discussions] == 'true' && !params['html']
+    if has_vue_discussions_cookie? && !params['html']
       prepare_notes_for_rendering(discussion.notes)
       # TODO: We may need to strip when cross_reference_not_visible_for
       # TODO: This needs to be refactored to DRY

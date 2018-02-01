@@ -173,4 +173,8 @@ module NotesHelper
   def discussion_resolved_intro(discussion)
     discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
   end
+
+  def has_vue_discussions_cookie?
+    cookies[:vue_mr_discussions] == 'true'
+  end
 end
