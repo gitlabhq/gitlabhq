@@ -29,11 +29,13 @@
       {{ s__("mrWidget|You can merge this merge request manually using the") }}
     </template>
 
-    <a
-      role="button"
+    <button
+      type="button"
+      class="btn-link btn-blank js-open-modal-help"
       data-toggle="modal"
-      href="#modal_merge_info">
+      data-target="#modal_merge_info"
+    >
       {{ s__("mrWidget|command line") }}
-    </a>
+    </button>
   </section>
 </template>

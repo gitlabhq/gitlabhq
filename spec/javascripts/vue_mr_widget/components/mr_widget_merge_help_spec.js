@@ -29,9 +29,9 @@ describe('MRWidgetMergeHelp', () => {
       );
     });
 
-    it('renders element to open a modal', () => {
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('#modal_merge_info');
-      expect(vm.$el.querySelector('a').getAttribute('data-toggle')).toEqual('modal');
+    it('renders button to open help modal', () => {
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual('#modal_merge_info');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual('modal');
     });
   });
 
@@ -49,8 +49,8 @@ describe('MRWidgetMergeHelp', () => {
     });
 
     it('renders element to open a modal', () => {
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('#modal_merge_info');
-      expect(vm.$el.querySelector('a').getAttribute('data-toggle')).toEqual('modal');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual('#modal_merge_info');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual('modal');
     });
   });
 });
