@@ -25,7 +25,7 @@ codequality:
 This will create a `codequality` job in your CI pipeline and will allow you to
 download and analyze the report artifact in JSON format.
 
-For GitLab [Enterprise Edition Starter][ee] users, this information can be automatically
+For [GitLab Starter][ee] users, this information can be automatically
 extracted and shown right in the merge request widget. [Learn more on code quality
 diffs in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
 

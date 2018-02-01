@@ -248,5 +248,5 @@ access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
 and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter](https://about.gitlab.com/products/).)
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
-for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee]).
+for the group (GitLab admins only, available in [GitLab Starter][ee]).
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
