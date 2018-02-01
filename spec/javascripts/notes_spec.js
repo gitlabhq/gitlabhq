@@ -145,6 +145,10 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mock.onPost(/(.*)\/notes$/).reply(200, noteEntity);
       });
 
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('updates note and resets edit form', (done) => {
         spyOn(this.notes, 'revertNoteEditForm');
         spyOn(this.notes, 'setupNewNote');
