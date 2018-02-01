@@ -148,7 +148,7 @@ describe ObjectStorage do
       describe '#use_file' do
         context 'when file is stored locally' do
           it "calls a regular path" do
-            expect { |b| uploader.use_file(&b) }.not_to yield_with_args(/tmp\/cache/)
+            expect { |b| uploader.use_file(&b) }.not_to yield_with_args(%r[tmp/cache])
           end
         end
 
@@ -160,7 +160,7 @@ describe ObjectStorage do
           end
 
           it "calls a cache path" do
-            expect { |b| uploader.use_file(&b) }.to yield_with_args(/tmp\/cache/)
+            expect { |b| uploader.use_file(&b) }.to yield_with_args(%r[tmp/cache])
           end
         end
       end
