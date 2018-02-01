@@ -306,9 +306,6 @@ import SearchAutocomplete from './search_autocomplete';
           shortcut_handler = true;
           break;
         case 'projects:show':
-          import('./pages/projects/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:edit':
