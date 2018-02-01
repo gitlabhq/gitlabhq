@@ -14,6 +14,7 @@ describe JobArtifactUploader do
     context 'when using local storage' do
       it { is_expected.to start_with(local_path) }
       it { is_expected.to match(%r{\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z}) }
+<<<<<<< HEAD
       it { is_expected.to end_with(path) }
     end
 
@@ -25,6 +26,8 @@ describe JobArtifactUploader do
       end
 
       it { is_expected.to match(%r{\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z}) }
+=======
+>>>>>>> upstream/master
       it { is_expected.to end_with(path) }
     end
   end

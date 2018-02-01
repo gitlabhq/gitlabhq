@@ -126,6 +126,7 @@ describe GroupProjectsFinder do
         context 'without subgroups projects' do
           it { is_expected.to eq([public_project]) }
         end
+<<<<<<< HEAD
       end
     end
 
@@ -140,6 +141,8 @@ describe GroupProjectsFinder do
 
       context 'without subgroups projects' do
         it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1, public_project]) }
+=======
+>>>>>>> upstream/master
       end
     end
   end
@@ -158,6 +161,7 @@ describe GroupProjectsFinder do
     end
 
     context "all" do
+<<<<<<< HEAD
       it { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
     end
   end
@@ -178,6 +182,19 @@ describe GroupProjectsFinder do
     context "all" do
       subject { described_class.new(group: group, current_user: current_user).execute }
       it      { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
+=======
+      context 'with subgroups projects', :nested_groups do
+        before do
+          options[:include_subgroups] = true
+        end
+
+        it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1, public_project, subgroup_project]) }
+      end
+
+      context 'without subgroups projects' do
+        it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1, public_project]) }
+      end
+>>>>>>> upstream/master
     end
   end
 
