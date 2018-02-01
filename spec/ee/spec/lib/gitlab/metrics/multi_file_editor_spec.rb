@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::MultiFileEditor do
-  let(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
-  subject { described_class.new(project, user, project.repository.commit('HEAD')) }
+  subject { described_class.new(project, user, project.commit('b83d6e391c22777fca1ed3012fce84f633d7fed0')) }
 
   before do
     stub_licensed_features(ide: true)
