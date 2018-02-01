@@ -361,7 +361,7 @@
   }
 }
 
-@media (max-width: $screen-xs) {
+@media (max-width: map-get($grid-breakpoints, xs)) {
   .filter-dropdown-container {
     .dropdown-toggle,
     .dropdown,
