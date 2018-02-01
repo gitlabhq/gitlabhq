@@ -194,7 +194,11 @@ class Commit
   def description
     return safe_message if full_title.length >= 100
 
-    safe_message.split("\n", 2)[1].try(:chomp)
+    if safe_message.nil?
+      no_commit_message
+    else
+      safe_message.split("\n", 2)[1].try(:chomp)
+    end
   end
 
   def description?
