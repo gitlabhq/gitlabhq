@@ -4,6 +4,8 @@ require 'rubygems'
 require 'bundler'
 
 gitaly_dir = 'tmp/tests/gitaly'
+gitaly_ruby_gem_path = File.expand_path(File.join('..', gitaly_dir, 'ruby/vendor/ruby/2.3.0'), __dir__)
+gitaly_ruby_bundle_path = File.expand_path(File.join('..', gitaly_dir, 'ruby/vendor'), __dir__)
 
 puts "Gem.path: #{Gem.path.inspect}"
 puts "ENV['BUNDLE_GEMFILE']: #{ENV['BUNDLE_GEMFILE'].inspect}"
@@ -35,8 +37,14 @@ Dir.chdir(File.join(gitaly_dir, 'ruby')) do
 end
 
 env = {
-  'HOME' => File.expand_path('tmp/tests')
+  'HOME' => File.expand_path('tmp/tests'),
+  'GEM_PATH' => gitaly_ruby_gem_path,
+  'BUNDLE_PATH' => gitaly_ruby_bundle_path
 }
+
+puts "env:"
+p env
+
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
 
 # Print the PID of the spawned process
