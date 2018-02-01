@@ -130,7 +130,7 @@ The user that locks a file or directory is the only one that can edit and push t
 Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
 
 File Locking is available in
-[GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/) only.
+[GitLab Premium](https://about.gitlab.com/gitlab-ee/) only.
 
 ### Confidential Issues permissions
 
@@ -288,7 +288,7 @@ Read through the documentation on [LDAP users permissions](../administration/aut
 An Auditor user should be able to access all projects and groups of a GitLab instance
 with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
 
-Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
+Auditor users are available in [GitLab Premium](https://about.gitlab.com/gitlab-ee/)
 only.
 
 [^1]: On public and internal projects, all users are able to perform this action
