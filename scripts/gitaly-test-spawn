@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'bundler'
+
 gitaly_dir = 'tmp/tests/gitaly'
 
 puts "Gem.path: #{Gem.path.inspect}"
@@ -14,20 +17,28 @@ puts File.read('../.bundle/config') rescue nil
 puts "Reading ~/.bundle/config"
 puts File.read(File.expand_path('~/.bundle/config')) rescue nil
 
+puts "Bundler.bundle_path in #{Dir.pwd}"
+puts Bundler.with_clean_env { Bundler.bundle_path }
+
+bundle_path = nil
+
 Dir.chdir(File.join(gitaly_dir, 'ruby')) do
   puts "Reading #{File.join(gitaly_dir, 'ruby')}/.bundle/config"
   puts File.read('.bundle/config') rescue nil
   puts "bundle config in #{File.join(gitaly_dir, 'ruby')}"
   puts `bundle config`
+
+  puts "Bundler.bundle_path in #{File.join(gitaly_dir, 'ruby')}"
+  puts Bundler.with_clean_env { Bundler.bundle_path }
+
+  bundle_path = Bundler.with_clean_env { Bundler.bundle_path }
 end
 
 env = {
-  'HOME' => File.expand_path('tmp/tests')
+  'HOME' => File.expand_path('tmp/tests'),
+  'GEM_PATH' => bundle_path.to_s
 }
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
-
-require 'rubygems'
-require 'bundler'
 
 # Print the PID of the spawned process
 puts Bundler.with_clean_env { spawn(env, *args, [:out, :err] => 'log/gitaly-test.log') }
