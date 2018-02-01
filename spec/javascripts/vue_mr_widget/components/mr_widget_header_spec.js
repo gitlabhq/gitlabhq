@@ -47,7 +47,7 @@ describe('MRWidgetHeader', () => {
           targetBranch: 'master',
         } });
 
-        expect(vm.commitsText).toEqual('commit behind');
+        expect(vm.commitsText).toEqual('1 commit behind');
       });
 
       it('returns plural when there is more than one commit', () => {
@@ -58,7 +58,7 @@ describe('MRWidgetHeader', () => {
           targetBranch: 'master',
         } });
 
-        expect(vm.commitsText).toEqual('commits behind');
+        expect(vm.commitsText).toEqual('2 commits behind');
       });
     });
   });

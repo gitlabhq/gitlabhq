@@ -24,7 +24,7 @@
         return this.mr.divergedCommitsCount > 0;
       },
       commitsText() {
-        return n__('commit behind', 'commits behind', this.mr.divergedCommitsCount);
+        return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
       },
       branchNameClipboardData() {
         // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -34,6 +34,12 @@
           text: this.mr.sourceBranch,
           gfm: `\`${this.mr.sourceBranch}\``,
         });
+      },
+      isSourceBranchLong() {
+        return this.isBranchTitleLong(this.mr.sourceBranch);
+      },
+      isTargetBranchLong() {
+        return this.isBranchTitleLong(this.mr.targetBranch);
       },
     },
     methods: {
@@ -50,15 +56,15 @@
         {{ s__("mrWidget|Request to merge") }}
         <span
           class="label-branch js-source-branch"
-          :class="{ 'label-truncated': isBranchTitleLong(mr.sourceBranch) }"
-          :title="isBranchTitleLong(mr.sourceBranch) ? mr.sourceBranch : ''"
+          :class="{ 'label-truncated': isSourceBranchLong }"
+          :title="isSourceBranchLong ? mr.sourceBranch : ''"
           data-placement="bottom"
-          :v-tooltip="isBranchTitleLong(mr.sourceBranch)"
+          :v-tooltip="isSourceBranchLong"
           v-html="mr.sourceBranchLink"
         >
         </span>
 
-        <clipboardButton
+        <clipboard-button
           :text="branchNameClipboardData"
           :title="__('Copy branch name to clipboard')"
         />
@@ -67,9 +73,9 @@
 
         <span
           class="label-branch"
-          :v-tooltip="isBranchTitleLong(mr.sourceBranch)"
-          :class="{ 'label-truncatedtooltip': isBranchTitleLong(mr.targetBranch) }"
-          :title="isBranchTitleLong(mr.targetBranch) ? mr.targetBranch : ''"
+          :v-tooltip="isTargetBranchLong"
+          :class="{ 'label-truncatedtooltip': isTargetBranchLong }"
+          :title="isTargetBranchLong ? mr.targetBranch : ''"
           data-placement="bottom"
         >
           <a
@@ -84,7 +90,7 @@
         v-if="shouldShowCommitsBehindText"
         class="diverged-commits-count"
       >
-        (<a :href="mr.targetBranchPath">{{ mr.divergedCommitsCount }} {{ commitsText }}</a>)
+        (<a :href="mr.targetBranchPath">{{ commitsText }}</a>)
       </span>
     </div>
 
@@ -93,7 +99,7 @@
         data-target="#modal_merge_info"
         data-toggle="modal"
         :disabled="mr.sourceBranchRemoved"
-        class="btn btn-sm inline js-check-out-branch"
+        class="btn btn-sm btn-default inline js-check-out-branch"
         type="button"
       >
         {{ s__("mrWidget|Check out branch") }}
