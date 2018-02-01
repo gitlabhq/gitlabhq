@@ -192,7 +192,7 @@ The result will then be:
 
 > Introduced in [GitLab Enterprise Edition Premium][ee] 10.3.
 
-With GitLab EEP, you can associate more than one Kubernetes clusters to your
+With GitLab Premium, you can associate more than one Kubernetes clusters to your
 project. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
@@ -249,9 +249,9 @@ and [add a cluster](#adding-a-cluster) again.
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards (EEP)
+### Deploy Boards
 
-> Available in [GitLab Enterprise Edition Premium][ee].
+> Available in [GitLab Premium][ee].
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
@@ -261,9 +261,9 @@ workflow they already use without any need to access Kubernetes.
 
 [> Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
 
-### Canary Deployments (EEP)
+### Canary Deployments
 
-> Available in [GitLab Enterprise Edition Premium][ee].
+> Available in [GitLab Premium][ee].
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without

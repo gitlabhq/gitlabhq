@@ -87,10 +87,10 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
-In [GitLab Enterprise Edition Premium][eep] you can use an object storage like
-AWS S3 to store the artifacts.
+> Available in [GitLab Premium](https://about.gitlab.com/products/) and
+[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
 
-[Learn how to use the object storage option.][ee-os]
+Use an [Object storage option][ee-os] like AWS S3 to store job artifacts.
 
 ## Expiring artifacts
 
@@ -198,4 +198,3 @@ memory and disk I/O.
 [restart gitlab]: restart_gitlab.md "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
 [ee-os]: https://docs.gitlab.com/ee/administration/job_artifacts.html#using-object-storage
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"

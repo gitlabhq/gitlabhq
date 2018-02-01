@@ -231,13 +231,15 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock (EES/EEP)
+#### Member Lock
 
-Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
-with **Member Lock** it is possible to lock membership in project to the
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+
+With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
-Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock-ees-eep).
+Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
 
 ### Advanced settings
 

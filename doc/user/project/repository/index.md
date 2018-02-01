@@ -147,7 +147,9 @@ Select branches to compare and view the changes inline:
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files (EEP)
+## Locked files
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 Lock your files to prevent any conflicting changes.
 
