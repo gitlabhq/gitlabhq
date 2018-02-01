@@ -7,7 +7,7 @@ module QA
       extend Forwardable
 
       attr_reader :key
-      def_delegators :@key, :fingerprint
+      def_delegators :@key, :fingerprint, :to_pem
 
       def initialize(bits = 4096)
         @key = OpenSSL::PKey::RSA.new(bits)

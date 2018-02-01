@@ -8,6 +8,12 @@ module QA::Page
       def go_to_latest_pipeline
         first('.js-pipeline-url-link').click
       end
+
+      def wait_for_latest_pipeline
+        wait do
+          first('.js-pipeline-url-link')
+        end
+      end
     end
   end
 end

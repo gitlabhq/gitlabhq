@@ -23,16 +23,11 @@ module QA
         end
 
         def choose_repository_clone_http
-          wait(reload: false) do
-            click_element :clone_dropdown
+          choose_repository_clone('HTTP')
+        end
 
-            page.within('.clone-options-dropdown') do
-              click_link('HTTP')
-            end
-
-            # Ensure git clone textbox was updated to http URI
-            page.has_css?('.git-clone-holder input#project_clone[value*="http"]')
-          end
+        def choose_repository_clone_ssh
+          choose_repository_clone('SSH')
         end
 
         def repository_location
@@ -56,6 +51,22 @@ module QA
           click_element :new_menu_toggle
 
           click_link 'New issue'
+        end
+
+        private
+
+        def choose_repository_clone(kind)
+          wait(reload: false) do
+            click_element :clone_dropdown
+
+            page.within('.clone-options-dropdown') do
+              click_link(kind)
+            end
+
+            # Ensure git clone textbox was updated to http URI
+            page.has_css?(
+              %Q{.git-clone-holder input#project_clone[value*="#{kind}"]})
+          end
         end
       end
     end

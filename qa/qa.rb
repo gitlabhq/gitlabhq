@@ -116,6 +116,10 @@ module QA
         autoload :Show, 'qa/page/project/pipeline/show'
       end
 
+      module Job
+        autoload :Show, 'qa/page/project/job/show'
+      end
+
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
         autoload :Advanced, 'qa/page/project/settings/advanced'

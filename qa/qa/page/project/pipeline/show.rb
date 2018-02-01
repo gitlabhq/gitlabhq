@@ -30,6 +30,16 @@ module QA::Page
           end
         end
       end
+
+      def go_to_first_job
+        css = '.js-pipeline-graph-job-link'
+
+        wait do
+          has_css?(css)
+        end
+
+        first(css).click
+      end
     end
   end
 end
