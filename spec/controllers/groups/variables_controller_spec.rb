@@ -25,16 +25,22 @@ describe Groups::VariablesController do
 
   describe 'POST #update' do
     let!(:variable) { create(:ci_group_variable, group: group) }
+    let(:variable_attributes) do
+      { id: variable.id, key: variable.key,
+        value: variable.value,
+        protected: variable.protected?.to_s }
+    end
+    let(:new_variable_attributes) do
+      { key: 'new_key', value: 'dummy_value',
+        protected: 'false' }
+    end
 
     context 'with invalid new variable parameters' do
       subject do
         patch :update,
           group_id: group,
-          variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: 'other_value',
-                                   protected: variable.protected?.to_s },
-                                 { key: '..?', value: 'dummy_value',
-                                   protected: 'false' }],
+          variables_attributes: [variable_attributes.merge(value: 'other_value'),
+                                 new_variable_attributes.merge(key: '..?')],
           format: :json
       end
 
@@ -57,11 +63,8 @@ describe Groups::VariablesController do
       subject do
         patch :update,
           group_id: group,
-          variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: 'other_value',
-                                   protected: variable.protected?.to_s },
-                                 { key: 'new_key', value: 'dummy_value',
-                                   protected: 'false' }],
+          variables_attributes: [variable_attributes.merge(value: 'other_value'),
+                                 new_variable_attributes],
           format: :json
       end
 
@@ -90,10 +93,7 @@ describe Groups::VariablesController do
       subject do
         patch :update,
           group_id: group,
-          variables_attributes: [{ id: variable.id, key: variable.key,
-                                   value: variable.value,
-                                   protected: variable.protected?.to_s,
-                                   _destroy: 'true' }],
+          variables_attributes: [variable_attributes.merge(_destroy: 'true')],
           format: :json
       end
 
