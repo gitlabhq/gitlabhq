@@ -28,7 +28,7 @@ module Gitlab
           end
         end
 
-        @app.call(env)
+        @app.call(env).tap { @env = nil }
       end
 
       private
