@@ -19,7 +19,7 @@ describe Groups::VariablesController do
     it 'renders the ci_group_variable as json' do
       subject
 
-      expect(response).to match_response_schema('variable')
+      expect(response).to match_response_schema('variables')
     end
   end
 
@@ -85,7 +85,7 @@ describe Groups::VariablesController do
       it 'has all variables in response' do
         subject
 
-        expect(response).to match_response_schema('variable')
+        expect(response).to match_response_schema('variables')
       end
     end
 
@@ -111,7 +111,7 @@ describe Groups::VariablesController do
       it 'has all variables in response' do
         subject
 
-        expect(json_response['variables'].count).to eq(0)
+        expect(response).to match_response_schema('variables')
       end
     end
   end
