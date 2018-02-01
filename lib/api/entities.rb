@@ -1267,14 +1267,6 @@ module API
       def missing_oauth_application
         object.geo_node.missing_oauth_application?
       end
-
-      def version
-        Gitlab::VERSION
-      end
-
-      def revision
-        Gitlab::REVISION
-      end
     end
 
     class PersonalAccessToken < Grape::Entity

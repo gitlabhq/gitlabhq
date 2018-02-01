@@ -69,6 +69,7 @@ describe API::GeoNodes, :geo, api: true do
   describe 'GET /geo_nodes/:id/status' do
     it 'retrieves the Geo nodes status if admin is logged in' do
       stub_current_geo_node(primary)
+      secondary_status.update!(version: 'secondary-version', revision: 'secondary-revision')
 
       expect(GeoNodeStatus).not_to receive(:current_node_status)
 
@@ -77,14 +78,17 @@ describe API::GeoNodes, :geo, api: true do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
 
+      expect(json_response['version']).to eq('secondary-version')
+      expect(json_response['revision']).to eq('secondary-revision')
+
       links = json_response['_links']
+
       expect(links['self']).to end_with("/api/v4/geo_nodes/#{secondary.id}/status")
       expect(links['node']).to end_with("/api/v4/geo_nodes/#{secondary.id}")
     end
 
     it 'fetches the current node status' do
       stub_current_geo_node(secondary)
-
       expect(GeoNode).to receive(:find).and_return(secondary)
       expect(GeoNodeStatus).to receive(:current_node_status).and_call_original
 
