@@ -266,7 +266,9 @@
       &.issue-title,
       &.commit-title,
       &.merge-merquest-title {
-        @include text-overflow();
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         max-width: 100%;
         display: block;
 
