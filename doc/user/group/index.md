@@ -152,7 +152,7 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
-### (EEP) Default project creation level
+### (Premium) Default project creation level
 
 This feature allows groups to define a default project creation level.
     
@@ -289,7 +289,10 @@ for the group (GitLab admins only, available in [GitLab Starter][ee])
 - **Pipelines quota**: keep track of the
 [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
-## User contribution analysis (EES/EEP)
+## User contribution analysis
+
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md)
 you have an overview of the contributions (pushes, merge requests,

@@ -21,7 +21,7 @@ and click a button to begin the upgrade process.
 
 ## Features
 
-The GitLab Pivotal Tile is based on [Enterprise Edition Premium] and includes nearly all of its features. The features in EEP but _not_ supported on the Tile are:
+The GitLab Pivotal Tile is based on [Enterprise Edition Premium] and includes nearly all of its features. The features in Premium but _not_ supported on the Tile are:
 
 * PostgreSQL
 * Pages

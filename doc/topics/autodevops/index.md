@@ -204,7 +204,7 @@ target branches are also
 
 ### Auto SAST
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+> Introduced in [GitLab Ultimate][ee] 10.3.
 
 Static Application Security Testing (SAST) uses the
 [gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
@@ -212,7 +212,7 @@ analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Enterprise Edition Ultimate, any security warnings are also
+In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
 ### Auto SAST for Docker images
@@ -225,7 +225,7 @@ Docker image and checks for potential security issues. Once the report is
 created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Enterprise Edition Ultimate, any security warnings are also
+In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
 
 ### Auto Review Apps
@@ -256,7 +256,7 @@ be deleted.
 
 ### Auto DAST
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> Introduced in [GitLab Ultimate][ee] 10.4.
 
 Dynamic Application Security Testing (DAST) uses the
 popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
@@ -264,7 +264,7 @@ to perform an analysis on the current code and checks for potential security
 issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
-In GitLab Enterprise Edition Ultimate, any security warnings are also
+In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dast.md).
 
 ### Auto Browser Performance Testing
@@ -598,4 +598,4 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

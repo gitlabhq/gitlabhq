@@ -46,10 +46,10 @@ them in a [YAML file](https://github.com/arminc/clair-scanner/blob/master/README
 in our case its named `clair-whitelist.yml`.
 
 TIP: **Tip:**
-Starting with [GitLab Enterprise Edition Ultimate][ee] 10.4, this information will
+Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI/CD job must be named `sast:container` and the artifact path must be
 `gl-sast-container-report.json`.
 [Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast_docker.md).
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
