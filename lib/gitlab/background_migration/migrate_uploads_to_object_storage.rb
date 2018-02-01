@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Style/Documentation
+
 module Gitlab
   module BackgroundMigration
     class MigrateUploadsToObjectStorage
@@ -103,8 +107,8 @@ module Gitlab
         def report(results)
           success, failures = Gitlab::Utils::BisectEnumerable.bisect(results, &:success?)
 
-          puts header(success, failures)
-          puts failures(failures)
+          Rails.logger.info header(success, failures)
+          Rails.logger.warn failures(failures)
         end
 
         def header(success, failures)
@@ -124,7 +128,6 @@ module Gitlab
         sanity_check!(uploads, mounted_as)
 
         BackgroundMigrationWorker.perform_async('MigrateUploadsToObjectStorage', [uploads.ids, mounted_as, to_store])
-        #BackgroundMigration.perform('MigrateUploadsToObjectStorage', [uploads.map(&:id), mounted_as, to_store])
       end
 
       # We need to be sure all the uploads are for the same uploader and model type
@@ -146,7 +149,7 @@ module Gitlab
       end
 
       def perform(ids, mounted_as, to_store)
-        @mounted_as = mounted_as
+        @mounted_as = mounted_as.to_sym
         @to_store = to_store
 
         uploads = Upload.preload(:model).where(id: ids)
@@ -155,9 +158,9 @@ module Gitlab
         results = migrate(uploads)
 
         report(results)
-      rescue SanityCheckError
+      rescue SanityCheckError => e
         # do not retry if the job is insane
-        logger.warn "UploadsToObjectStorage sanity check error: #{e.message}"
+        Rails.logger.warn "UploadsToObjectStorage sanity check error: #{e.message}"
       end
 
       def sanity_check!(uploads)
@@ -166,16 +169,6 @@ module Gitlab
 
       def build_uploaders(uploads)
         uploads.map { |upload| upload.build_uploader(@mounted_as) }
-      end
-
-      def migrate(batch_size, &block)
-        each_upload_batch(batch_size) do |batch|
-          results = build_uploaders(batch).map(&method(:process_uploader))
-
-          yield results # yield processed batch as [MigrationResult]
-
-          @results.concat(results)
-        end
       end
 
       def migrate(uploads)
