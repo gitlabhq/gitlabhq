@@ -10,7 +10,7 @@ module Gitlab
       def record
         return unless ::License.feature_available?(:ide)
 
-        metric = WebIdeMetric.new(metric_data)
+        metric = WebIdeMetric.new(metric_params)
 
         unless metric.save
           Rails.logger.error("Error persisting Web IDE metric: #{metric.as_json} - #{metric.errors.full_messages}")
@@ -35,7 +35,7 @@ module Gitlab
         @commit.stats
       end
 
-      def metric_data
+      def metric_params
         {
           project: hashed_project,
           user: hashed_user,
