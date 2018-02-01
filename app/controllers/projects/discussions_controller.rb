@@ -1,5 +1,6 @@
 class Projects::DiscussionsController < Projects::ApplicationController
   include RendersNotes
+  include NotesHelper
 
   before_action :check_merge_requests_available!
   before_action :merge_request
