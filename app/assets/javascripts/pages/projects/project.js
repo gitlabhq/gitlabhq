@@ -1,7 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
 
 import Cookies from 'js-cookie';
-import { visitUrl } from '../../lib/utils/url_utility';
+import { __ } from '~/locale';
+import { visitUrl } from '~/lib/utils/url_utility';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
 import projectSelect from '../../project_select';
 
 export default class Project {
@@ -67,17 +70,15 @@ export default class Project {
       $dropdown = $(this);
       selected = $dropdown.data('selected');
       return $dropdown.glDropdown({
-        data: function(term, callback) {
-          return $.ajax({
-            url: $dropdown.data('refs-url'),
-            data: {
+        data(term, callback) {
+          axios.get($dropdown.data('refs-url'), {
+            params: {
               ref: $dropdown.data('ref'),
               search: term,
             },
-            dataType: 'json',
-          }).done(function(refs) {
-            return callback(refs);
-          });
+          })
+          .then(({ data }) => callback(data))
+          .catch(() => flash(__('An error occurred while getting projects')));
         },
         selectable: true,
         filterable: true,
