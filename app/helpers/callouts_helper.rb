@@ -8,8 +8,7 @@ module CalloutsHelper
 
   def show_gke_cluster_integration_callout?(project)
     current_user && !user_dismissed?(GKE_CLUSTER_INTEGRATION) &&
-      (project.team.master?(current_user) ||
-       current_user == project.owner)
+      can?(current_user, :create_cluster, project)
   end
 
   private
