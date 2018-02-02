@@ -44,14 +44,7 @@
 
       = render 'group_admin_settings', f: f
 
-      .form-group
-        %hr
-        = f.label :membership_lock, class: 'control-label' do
-          Member lock
-        .col-sm-10
-          .checkbox
-            = f.check_box :membership_lock
-            %span.descr Prevent adding new members to project membership within this group
+      = render 'member_lock_setting', f: f, group: @group
 
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"
