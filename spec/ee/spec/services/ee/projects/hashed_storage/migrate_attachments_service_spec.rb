@@ -15,7 +15,7 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
     context 'on success' do
       before do
         TestEnv.clean_test_path
-        FileUtils.mkdir_p(FileUploader.dynamic_path_builder(old_attachments_path))
+        FileUtils.mkdir_p(File.join(FileUploader.root, old_attachments_path))
       end
 
       it 'returns true' do

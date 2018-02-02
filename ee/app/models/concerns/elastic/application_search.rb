@@ -4,7 +4,6 @@ module Elastic
 
     included do
       include Elasticsearch::Model
-      include Gitlab::CurrentSettings
 
       index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
 
@@ -39,13 +38,13 @@ module Elastic
         }
 
       after_commit on: :create do
-        if current_application_settings.elasticsearch_indexing? && self.searchable?
+        if Gitlab::CurrentSettings.elasticsearch_indexing? && self.searchable?
           ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
         end
       end
 
       after_commit on: :update do
-        if current_application_settings.elasticsearch_indexing? && self.searchable?
+        if Gitlab::CurrentSettings.elasticsearch_indexing? && self.searchable?
           ElasticIndexerWorker.perform_async(
             :update,
             self.class.to_s,
@@ -56,7 +55,7 @@ module Elastic
       end
 
       after_commit on: :destroy do
-        if current_application_settings.elasticsearch_indexing? && self.searchable?
+        if Gitlab::CurrentSettings.elasticsearch_indexing? && self.searchable?
           ElasticIndexerWorker.perform_async(
             :delete,
             self.class.to_s,

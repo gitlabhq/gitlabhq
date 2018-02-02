@@ -98,7 +98,7 @@ describe Geo::FileDownloadService do
     end
 
     context 'with a snippet' do
-      let(:upload) { create(:upload, :personal_snippet) }
+      let(:upload) { create(:upload, :personal_snippet_upload) }
 
       subject(:execute!) { described_class.new(:personal_file, upload.id).execute }
 

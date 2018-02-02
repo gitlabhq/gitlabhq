@@ -7,7 +7,7 @@
         = custom_icon('icon_burndown_charts')
       .user-callout-copy
         %h4
-          - if current_application_settings.should_check_namespace_plan?
+          - if Gitlab::CurrentSettings.should_check_namespace_plan?
             Upgrade your plan to improve milestones with Burndown Charts.
           - else
             Improve milestones with Burndown Charts.

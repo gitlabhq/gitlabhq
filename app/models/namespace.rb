@@ -3,7 +3,6 @@ class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
-  include Gitlab::CurrentSettings
   include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
@@ -162,7 +161,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def actual_size_limit
-    current_application_settings.repository_size_limit
+    Gitlab::CurrentSettings.repository_size_limit
   end
 
   def shared_runners_enabled?

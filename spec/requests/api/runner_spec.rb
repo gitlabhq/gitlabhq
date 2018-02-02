@@ -948,7 +948,7 @@ describe API::Runner do
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
-            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return('/')
           end
 
           context 'when job has been erased' do
@@ -1125,7 +1125,7 @@ describe API::Runner do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
-            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
+            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return(@tmpdir)
           end
 
           after do
@@ -1155,7 +1155,7 @@ describe API::Runner do
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build) }
-          let(:store) { JobArtifactUploader::LOCAL_STORE }
+          let(:store) { JobArtifactUploader::Store::LOCAL }
 
           before do
             create(:ci_job_artifact, :archive, file_store: store, job: job)
@@ -1177,7 +1177,7 @@ describe API::Runner do
             end
 
             context 'when artifacts are stored remotely' do
-              let(:store) { JobArtifactUploader::REMOTE_STORE }
+              let(:store) { JobArtifactUploader::Store::REMOTE }
               let!(:job) { create(:ci_build) }
 
               it 'download artifacts' do

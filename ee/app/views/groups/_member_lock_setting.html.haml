@@ -1,0 +1,10 @@
+- return unless can?(current_user, :admin_group, group) && License.feature_available?(:member_lock)
+
+.form-group
+  %hr
+  = f.label :membership_lock, class: 'control-label' do
+    Member lock
+  .col-sm-10
+    .checkbox
+      = f.check_box :membership_lock
+      %span.descr Prevent adding new members to project membership within this group

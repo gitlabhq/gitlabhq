@@ -16,7 +16,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
   let!(:upload_3) { create(:upload, :issuable_upload, model: synced_project) }
   let!(:upload_4) { create(:upload, model: unsynced_project) }
   let(:upload_5) { create(:upload, model: synced_project) }
-  let(:upload_6) { create(:upload, :personal_snippet) }
+  let(:upload_6) { create(:upload, :personal_snippet_upload) }
   let(:upload_7) { create(:upload, model: synced_subgroup) }
   let(:lfs_object) { create(:lfs_object) }
 

@@ -56,6 +56,8 @@
             return 'file-open file-active';
           }
           return this.file.opened ? 'file-open' : '';
+        } else if (this.file.type === 'tree') {
+          return 'folder';
         }
         return '';
       },
@@ -95,7 +97,7 @@
       :colspan="submoduleColSpan"
     >
       <a
-        class="repo-file-name"
+        class="repo-file-name str-truncated"
       >
         <file-icon
           :file-name="file.name"

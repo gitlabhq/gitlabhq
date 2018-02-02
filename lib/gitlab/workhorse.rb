@@ -55,14 +55,14 @@ module Gitlab
 
       def lfs_upload_ok(oid, size)
         {
-          StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
+          StoreLFSPath: LfsObjectUploader.workhorse_upload_path,
           LfsOid: oid,
           LfsSize: size
         }
       end
 
       def artifact_upload_ok
-        { TempPath: JobArtifactUploader.artifacts_upload_path }
+        { TempPath: JobArtifactUploader.workhorse_upload_path }
       end
 
       def send_git_blob(repository, blob)

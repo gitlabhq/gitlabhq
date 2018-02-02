@@ -4,7 +4,6 @@ class ProjectWiki
 
   # EE only modules
   include Elastic::WikiRepositoriesSearch
-  include Gitlab::CurrentSettings
 
   MARKUPS = {
     'Markdown' => :markdown,
@@ -204,7 +203,7 @@ class ProjectWiki
   # EE only
 
   def update_elastic_index
-    index_blobs if current_application_settings.elasticsearch_indexing?
+    index_blobs if Gitlab::CurrentSettings.elasticsearch_indexing?
   end
 
   def path_to_repo

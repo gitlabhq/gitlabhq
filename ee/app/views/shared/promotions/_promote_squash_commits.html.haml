@@ -4,7 +4,7 @@
       = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
     .user-callout-copy
       %h4
-        - if current_application_settings.should_check_namespace_plan?
+        - if Gitlab::CurrentSettings.should_check_namespace_plan?
           Upgrade your plan to improve Merge Requests with Squash Commit.
         - else
           Improve Merge Requests with Squash Commit and GitLab Enterprise Edition.

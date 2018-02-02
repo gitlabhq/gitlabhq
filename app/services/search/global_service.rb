@@ -1,7 +1,5 @@
 module Search
   class GlobalService
-    include Gitlab::CurrentSettings
-
     attr_accessor :current_user, :params
     attr_reader :default_project_filter
 
@@ -11,7 +9,7 @@ module Search
     end
 
     def execute
-      if current_application_settings.elasticsearch_search?
+      if Gitlab::CurrentSettings.elasticsearch_search?
         Gitlab::Elastic::SearchResults.new(current_user, params[:search], elastic_projects, elastic_global)
       else
         Gitlab::SearchResults.new(current_user, projects, params[:search],
@@ -41,7 +39,7 @@ module Search
     def scope
       @scope ||= begin
         allowed_scopes = %w[issues merge_requests milestones]
-        allowed_scopes += %w[wiki_blobs blobs commits] if current_application_settings.elasticsearch_search?
+        allowed_scopes += %w[wiki_blobs blobs commits] if Gitlab::CurrentSettings.elasticsearch_search?
 
         allowed_scopes.delete(params[:scope]) { 'projects' }
       end

@@ -21,8 +21,8 @@ module Geo
     end
 
     def execute
-      origin = File.join(CarrierWave.root, FileUploader.base_dir, old_attachments_path)
-      target = File.join(CarrierWave.root, FileUploader.base_dir, new_attachments_path)
+      origin = File.join(FileUploader.root, old_attachments_path)
+      target = File.join(FileUploader.root, new_attachments_path)
       move_folder!(origin, target)
     end
 

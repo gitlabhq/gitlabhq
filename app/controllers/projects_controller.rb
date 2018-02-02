@@ -404,7 +404,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_export_enabled
-    render_404 unless current_application_settings.project_export_enabled?
+    render_404 unless Gitlab::CurrentSettings.project_export_enabled?
   end
 
   def redirect_git_extension
