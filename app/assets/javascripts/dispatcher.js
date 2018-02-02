@@ -43,11 +43,6 @@ var Dispatcher;
       });
 
       switch (page) {
-        case 'projects:environments:metrics':
-          import('./pages/projects/environments/metrics')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
         case 'projects:issues:show':
