@@ -1,4 +1,5 @@
 import 'deckar01-task_list';
+import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 
 export default class TaskList {
@@ -38,12 +39,9 @@ export default class TaskList {
     patchData[this.dataType] = {
       [this.fieldName]: $target.val(),
     };
-    return $.ajax({
-      type: 'PATCH',
-      url: $target.data('update-url') || $('form.js-issuable-update').attr('action'),
-      data: patchData,
-      success: this.onSuccess,
-      error: this.onError,
-    });
+
+    return axios.patch($target.data('update-url') || $('form.js-issuable-update').attr('action'), patchData)
+      .then(({ data }) => this.onSuccess(data))
+      .catch(() => this.onError());
   }
 }
