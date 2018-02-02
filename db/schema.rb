@@ -2255,6 +2255,8 @@ ActiveRecord::Schema.define(version: 20180202111106) do
     t.string "uploader", null: false
     t.datetime "created_at", null: false
     t.integer "store"
+    t.string "mount_point"
+    t.string "secret"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree

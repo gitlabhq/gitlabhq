@@ -33,7 +33,7 @@ class Upload < ActiveRecord::Base
   end
 
   def build_uploader
-    uploader_class.new(model).tap do |uploader|
+    uploader_class.new(model, mount_point, **uploader_context).tap do |uploader|
       uploader.upload = self
       uploader.retrieve_from_store!(identifier)
     end
@@ -41,6 +41,13 @@ class Upload < ActiveRecord::Base
 
   def exist?
     File.exist?(absolute_path)
+  end
+
+  def uploader_context
+    {
+      identifier: identifier,
+      secret: secret
+    }.compact
   end
 
   private
@@ -67,11 +74,15 @@ class Upload < ActiveRecord::Base
     !path.start_with?('/')
   end
 
+  def uploader_class
+    Object.const_get(uploader)
+  end
+
   def identifier
     File.basename(path)
   end
 
-  def uploader_class
-    Object.const_get(uploader)
+  def mount_point
+    super&.to_sym
   end
 end
