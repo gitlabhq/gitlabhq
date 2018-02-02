@@ -1,0 +1,5 @@
+- anchors = local_assigns.fetch(:anchors, [])
+
+- if anchors.size > 0
+  %ul.nav
+    = render partial: 'stat_anchor_list_item', collection: anchors, as: :anchor

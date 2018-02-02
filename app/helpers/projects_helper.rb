@@ -604,4 +604,218 @@ module ProjectsHelper
 
     project_find_file_path(@project, ref)
   end
+
+  def can_current_user_push_code?(project)
+    project.empty_repo? ? can?(current_user, :push_code, project) : can_push_branch?(project, project.default_branch)
+  end
+
+  def files_anchor_data(project)
+    {
+      enabled: true,
+      label: _('Files (%{human_size})') % { human_size: storage_counter(@project.statistics.total_repository_size) },
+      link: project_tree_path(@project)
+    }
+  end
+
+  def commits_anchor_data(project)
+    {
+      enabled: true,
+      label: n_('Commit (%{commit_count})', 'Commits (%{commit_count})', @project.statistics.commit_count) % { commit_count: number_with_delimiter(@project.statistics.commit_count) },
+      link: project_commits_path(@project, current_ref)
+    }
+  end
+
+  def branches_anchor_data(project)
+    {
+      enabled: true,
+      label: n_('Branch (%{branch_count})', 'Branches (%{branch_count})', @repository.branch_count) % { branch_count: number_with_delimiter(@repository.branch_count) },
+      link: project_branches_path(@project)
+    }
+  end
+
+  def tags_anchor_data(project)
+    {
+      enabled: true,
+      label: n_('Tag (%{tag_count})', 'Tags (%{tag_count})', @repository.tag_count) % { tag_count: number_with_delimiter(@repository.tag_count) },
+      link: project_tags_path(@project)
+    }
+  end
+
+  def new_file_anchor_data(project)
+    if current_user && can_current_user_push_code?(project)
+      {
+        enabled: false,
+        label: _('New file'),
+        link: project_new_blob_path(project, project.default_branch || 'master'),
+        class_modifier: 'new'
+      }
+    end
+  end
+
+  def readme_anchor_data(project)
+    if current_user && can_current_user_push_code?(project) && project.repository.readme.blank?
+      {
+        enabled: false,
+        label: _('Add Readme'),
+        link: add_special_file_path(project, file_name: 'README.md')
+      }
+    elsif project.repository.readme.present?
+      {
+        enabled: true,
+        label: _('Readme'),
+        link: default_project_view != 'readme' ? readme_path(@project) : '#readme'
+      }
+    end
+  end
+
+  def changelog_anchor_data(project)
+    if current_user && can_current_user_push_code?(project) && project.repository.changelog.blank?
+      {
+        enabled: false,
+        label: _('Add Changelog'),
+        link: add_special_file_path(project, file_name: 'CHANGELOG')
+      }
+    elsif project.repository.changelog.present?
+      {
+        enabled: true,
+        label: _('Changelog'),
+        link: changelog_path(project)
+      }
+    end
+  end
+
+  def license_anchor_data(project)
+    if current_user && can_current_user_push_code?(project) && project.repository.license_blob.blank?
+      {
+        enabled: false,
+        label: _('Add License'),
+        link: add_special_file_path(project, file_name: 'LICENSE')
+      }
+    elsif project.repository.license_blob.present?
+      {
+        enabled: true,
+        label: license_short_name(project),
+        link: license_path(project)
+      }
+    end
+  end
+
+  def contribution_guide_anchor_data(project)
+    if current_user && can_current_user_push_code?(project) && project.repository.contribution_guide.blank?
+      {
+        enabled: false,
+        label: _('Add Contribution guide'),
+        link: add_special_file_path(project, file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide')
+      }
+    elsif project.repository.contribution_guide.present?
+      {
+        enabled: true,
+        label: _('Contribution guide'),
+        link: contribution_guide_path(@project)
+      }
+    end
+  end
+
+  def autodevops_anchor_data(project, ignore_callout: false)
+    if current_user && can?(current_user, :admin_pipeline, project) && project.repository.gitlab_ci_yml.blank? && (ignore_callout || !show_auto_devops_callout?(project))
+      {
+        enabled: project.auto_devops_enabled?,
+        label: project.auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
+        link: project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings')
+      }
+    elsif project.auto_devops_enabled?
+      {
+        enabled: true,
+        label: _('Auto DevOps enabled'),
+        link: nil
+      }
+    end
+  end
+
+  def kubernetes_cluster_anchor_data(project)
+    if current_user && can?(current_user, :create_cluster, project)
+      cluster_link = project.clusters.size == 1 ? project_cluster_path(project, project.clusters.first) : project_clusters_path(project)
+
+      if project.clusters.empty?
+        cluster_link = new_project_cluster_path(project)
+      end
+
+      {
+        enabled: !project.clusters.empty?,
+        label: project.clusters.empty? ? _('Add Kubernetes cluster') : n_('Kubernetes cluster', 'Kubernetes clusters', project.clusters.size),
+        link: cluster_link
+      }
+    end
+  end
+
+  def gitlab_ci_anchor_data(project)
+    if current_user && can_current_user_push_code?(project) && project.repository.gitlab_ci_yml.blank? && !project.auto_devops_enabled?
+      {
+        enabled: false,
+        label: _('Set up CI/CD'),
+        link: add_special_file_path(project, file_name: '.gitlab-ci.yml')
+      }
+    elsif project.repository.gitlab_ci_yml.present?
+      {
+        enabled: true,
+        label: _('CI/CD configuration'),
+        link: ci_configuration_path(@project)
+      }
+    end
+  end
+
+  def koding_anchor_data(project)
+    if current_user && can_current_user_push_code?(project) && koding_enabled? && project.repository.koding_yml.blank?
+      {
+        enabled: false,
+        label: _('Set up Koding'),
+        link: add_koding_stack_path(project)
+      }
+    end
+  end
+
+  def empty_project_stat_anchor_items(project)
+    [
+      autodevops_anchor_data(project, ignore_callout: true),
+      kubernetes_cluster_anchor_data(project)
+    ].compact.reject { |i| !i[:enabled] }
+  end
+
+  def empty_project_stat_button_items(project)
+    [
+      new_file_anchor_data(project),
+      readme_anchor_data(project),
+      license_anchor_data(project),
+      autodevops_anchor_data(project, ignore_callout: true),
+      kubernetes_cluster_anchor_data(project)
+    ].compact.reject { |i| i[:enabled] }
+  end
+
+  def project_stat_anchor_items(project)
+    [
+      files_anchor_data(project),
+      commits_anchor_data(project),
+      branches_anchor_data(project),
+      tags_anchor_data(project),
+      readme_anchor_data(project),
+      changelog_anchor_data(project),
+      license_anchor_data(project),
+      contribution_guide_anchor_data(project),
+      gitlab_ci_anchor_data(project),
+      autodevops_anchor_data(project),
+      kubernetes_cluster_anchor_data(project)
+    ].compact.reject { |i| !i[:enabled] }
+  end
+
+  def project_stat_button_items(project)
+    [
+      changelog_anchor_data(project),
+      license_anchor_data(project),
+      contribution_guide_anchor_data(project),
+      autodevops_anchor_data(project),
+      kubernetes_cluster_anchor_data(project),
+      gitlab_ci_anchor_data(project),
+      koding_anchor_data(project)
+    ].compact.reject { |i| i[:enabled] }
+  end
 end
