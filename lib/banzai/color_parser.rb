@@ -7,7 +7,7 @@ module Banzai
     DEGS = /-?\d+(?:deg)?/i # [-]digits[deg]
     RADS = /-?(?:\d+(?:\.\d+)?|\.\d+)rad/i # [-](digits[.digits] OR .digits)rad
     HEX_FORMAT = /\#(?:\h{3}|\h{4}|\h{6}|\h{8})/
-    RGB_FORMAT = /
+    RGB_FORMAT = %r{
       (?:rgba?
         \(
           (?:
@@ -18,15 +18,15 @@ module Banzai
           #{ALPHA_CHANNEL}
         \)
       )
-    /xi
-    HSL_FORMAT = /
+    }xi
+    HSL_FORMAT = %r{
       (?:hsla?
         \(
           (?:#{DEGS}|#{RADS}),\s*#{PERCENTS},\s*#{PERCENTS}
           #{ALPHA_CHANNEL}
         \)
       )
-    /xi
+    }xi
 
     FORMATS = [HEX_FORMAT, RGB_FORMAT, HSL_FORMAT].freeze
 
