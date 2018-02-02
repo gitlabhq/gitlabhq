@@ -1306,7 +1306,15 @@ module Gitlab
       # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
-        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
+        return unless full_path.present?
+
+        gitaly_migrate(:write_config) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.write_config(full_path: full_path)
+          else
+            rugged_write_config(full_path: full_path)
+          end
+        end
       end
 
       def gitaly_repository
@@ -1446,6 +1454,10 @@ module Gitlab
         end
       end
 
+      def rugged_write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path
+      end
+
       def shell_write_ref(ref_path, ref, old_ref)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
@@ -1507,7 +1519,7 @@ module Gitlab
         if sparse_checkout_files
           # Create worktree without checking out
           run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
 
           configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
 

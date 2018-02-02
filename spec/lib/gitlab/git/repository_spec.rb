@@ -20,6 +20,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:storage_path) { TestEnv.repos_path }
+  let(:user) { build(:user) }
 
   describe '.create_hooks' do
     let(:repo_path) { File.join(storage_path, 'hook-test.git') }
@@ -693,7 +694,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe '#remote_tags' do
     let(:remote_name) { 'upstream' }
     let(:target_commit_id) { SeedRepo::Commit::ID }
-    let(:user) { create(:user) }
     let(:tag_name) { 'v0.0.1' }
     let(:tag_message) { 'My tag' }
     let(:remote_repository) do
@@ -1711,7 +1711,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples "user deleting a branch" do
       let(:project) { create(:project, :repository) }
       let(:repository) { project.repository.raw }
-      let(:user) { create(:user) }
       let(:branch_name) { "to-be-deleted-soon" }
 
       before do
@@ -1752,12 +1751,49 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#write_config' do
+    before do
+      repository.rugged.config["gitlab.fullpath"] = repository.path
+    end
+
+    shared_examples 'writing repo config' do
+      context 'is given a path' do
+        it 'writes it to disk' do
+          repository.write_config(full_path: "not-the/real-path.git")
+
+          config = File.read(File.join(repository.path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = not-the/real-path.git")
+        end
+      end
+
+      context 'it is given an empty path' do
+        it 'does not write it to disk' do
+          repository.write_config(full_path: "")
+
+          config = File.read(File.join(repository.path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = #{repository.path}")
+        end
+      end
+    end
+
+    context "when gitaly_write_config is enabled" do
+      it_behaves_like "writing repo config"
+    end
+
+    context "when gitaly_write_config is disabled", :disable_gitaly do
+      it_behaves_like "writing repo config"
+    end
+  end
+
   describe '#merge' do
     let(:repository) do
       Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
     end
     let(:source_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
-    let(:user) { build(:user) }
     let(:target_branch) { 'test-merge-target-branch' }
 
     before do
@@ -1810,7 +1846,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-    let(:user) { build(:user) }
     let(:target_branch) { 'test-ff-target-branch' }
 
     before do
@@ -2127,6 +2162,47 @@ describe Gitlab::Git::Repository, seed_helper: true do
           .and_return(false)
 
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#squash' do
+      let(:squash_id) { '1' }
+      let(:branch_name) { 'fix' }
+      let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+      let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
+
+      subject do
+        opts = {
+          branch: branch_name,
+          start_sha: start_sha,
+          end_sha: end_sha,
+          author: user,
+          message: 'Squash commit message'
+        }
+
+        repository.squash(user, squash_id, opts)
+      end
+
+      context 'sparse checkout' do
+        let(:expected_files) { %w(files files/js files/js/application.js) }
+
+        before do
+          allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+            m.call(*args) do
+              worktree_path = args[0]
+              files_pattern = File.join(worktree_path, '**', '*')
+              expected = expected_files.map do |path|
+                File.expand_path(path, worktree_path)
+              end
+
+              expect(Dir[files_pattern]).to eq(expected)
+            end
+          end
+        end
+
+        it 'checkouts only the files in the diff' do
+          subject
+        end
       end
     end
   end
