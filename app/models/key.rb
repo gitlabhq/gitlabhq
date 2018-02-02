@@ -1,7 +1,6 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
-  include Gitlab::CurrentSettings
   include AfterCommitQueue
   include Sortable
 
@@ -104,7 +103,7 @@ class Key < ActiveRecord::Base
   end
 
   def key_meets_restrictions
-    restriction = current_application_settings.key_restriction_for(public_key.type)
+    restriction = Gitlab::CurrentSettings.key_restriction_for(public_key.type)
 
     if restriction == ApplicationSetting::FORBIDDEN_KEY_VALUE
       errors.add(:key, forbidden_key_type_message)
@@ -115,7 +114,7 @@ class Key < ActiveRecord::Base
 
   def forbidden_key_type_message
     allowed_types =
-      current_application_settings
+      Gitlab::CurrentSettings
         .allowed_key_types
         .map(&:upcase)
         .to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')

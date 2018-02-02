@@ -119,7 +119,7 @@
           .well-segment.admin-well
             %h4
               Components
-              - if current_application_settings.version_check_enabled
+              - if Gitlab::CurrentSettings.version_check_enabled
                 .pull-right
                   = version_status_badge
             %p

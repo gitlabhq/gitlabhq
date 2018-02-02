@@ -3,7 +3,6 @@
 # A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
-  include Gitlab::CurrentSettings
   include Participable
   include Mentionable
   include Awardable
@@ -196,7 +195,7 @@ class Note < ActiveRecord::Base
   end
 
   def max_attachment_size
-    current_application_settings.max_attachment_size.megabytes.to_i
+    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
   def hook_attrs

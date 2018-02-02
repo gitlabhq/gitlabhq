@@ -117,7 +117,6 @@ describe Project do
     it { is_expected.to include_module(Gitlab::ConfigHelper) }
     it { is_expected.to include_module(Gitlab::ShellAdapter) }
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
   end

@@ -11,8 +11,6 @@ class Snippet < ActiveRecord::Base
   include Editable
   include Gitlab::SQL::Pattern
 
-  extend Gitlab::CurrentSettings
-
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
   cache_markdown_field :content
@@ -28,7 +26,7 @@ class Snippet < ActiveRecord::Base
     default_content_html_invalidator || file_name_changed?
   end
 
-  default_value_for(:visibility_level) { current_application_settings.default_snippet_visibility }
+  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_snippet_visibility }
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
