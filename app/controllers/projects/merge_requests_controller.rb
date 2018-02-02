@@ -84,20 +84,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end
 
-  def discussions
-    notes = @merge_request.notes
-      .inc_relations_for_view
-      .includes(:noteable)
-      .fresh
-
-    notes = prepare_notes_for_rendering(notes)
-    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
-
-    discussions = Discussion.build_collection(notes, @merge_request)
-
-    render json: DiscussionSerializer.new(project: @project, noteable: @merge_request, current_user: current_user).represent(discussions, context: self)
-  end
-
   def pipelines
     @pipelines = @merge_request.all_pipelines
 
