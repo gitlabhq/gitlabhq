@@ -46,18 +46,8 @@ var Dispatcher;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
         case 'projects:issues:show':
-          shortcut_handler = true;
-          break;
         case 'projects:issues:new':
-          import('./pages/projects/issues/new')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:issues:edit':
-          import('./pages/projects/issues/edit')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:creations:new':
