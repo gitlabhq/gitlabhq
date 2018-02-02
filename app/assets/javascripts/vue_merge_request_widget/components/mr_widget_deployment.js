@@ -47,8 +47,8 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-heading deploy-heading">
-      <div v-for="deployment in mr.deployments">
+    <div v-for="deployment in mr.deployments">
+      <div class="mr-widget-heading deploy-heading">
         <div class="ci-widget media">
           <div class="ci-status-icon ci-status-icon-success">
             <span class="js-icon-link icon-link">
