@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe CalloutsHelper do
+describe UserCalloutsHelper do
   let(:user) { create(:user) }
 
   before do

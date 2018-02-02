@@ -203,16 +203,6 @@ ActiveRecord::Schema.define(version: 20180125214301) do
 
   add_index "broadcast_messages", ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id", using: :btree
 
-  create_table "callouts", force: :cascade do |t|
-    t.string "feature_name", null: false
-    t.integer "user_id", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-  end
-
-  add_index "callouts", ["user_id", "feature_name"], name: "index_callouts_on_user_id_and_feature_name", unique: true, using: :btree
-  add_index "callouts", ["user_id"], name: "index_callouts_on_user_id", using: :btree
-
   create_table "chat_names", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "service_id", null: false
@@ -1779,6 +1769,14 @@ ActiveRecord::Schema.define(version: 20180125214301) do
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
+  create_table "user_callouts", force: :cascade do |t|
+    t.string "feature_name", null: false
+    t.integer "user_id", null: false
+  end
+
+  add_index "user_callouts", ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true, using: :btree
+  add_index "user_callouts", ["user_id"], name: "index_user_callouts_on_user_id", using: :btree
+
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -1934,7 +1932,6 @@ ActiveRecord::Schema.define(version: 20180125214301) do
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
-  add_foreign_key "callouts", "users", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_build_trace_section_names", column: "section_name_id", name: "fk_264e112c66", on_delete: :cascade
@@ -2051,6 +2048,7 @@ ActiveRecord::Schema.define(version: 20180125214301) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade

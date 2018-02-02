@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CalloutsController do
+describe UserCalloutsController do
   let(:user) { create(:user) }
 
   before do
@@ -12,7 +12,7 @@ describe CalloutsController do
 
     context 'when callout entry does not exist' do
       it 'should create a callout entry with dismissed state' do
-        expect { subject }.to change { Callout.count }.by(1)
+        expect { subject }.to change { UserCallout.count }.by(1)
       end
 
       it 'should return success' do
@@ -23,7 +23,7 @@ describe CalloutsController do
     end
 
     context 'when callout entry already exists' do
-      let!(:callout) { create(:callout, feature_name: 'feature_name', user: user) }
+      let!(:callout) { create(:user_callout, feature_name: 'feature_name', user: user) }
 
       it 'should return success' do
         subject

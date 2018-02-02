@@ -1,4 +1,4 @@
-class Callout < ActiveRecord::Base
+class UserCallout < ActiveRecord::Base
   belongs_to :user
 
   validates :user, presence: true
