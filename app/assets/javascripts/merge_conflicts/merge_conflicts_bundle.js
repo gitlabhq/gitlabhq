@@ -53,6 +53,7 @@ $(() => {
           });
         })
         .catch(() => {
+          mergeConflictsStore.setLoadingState(false);
           mergeConflictsStore.setFailedRequest();
         });
     },

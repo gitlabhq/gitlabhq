@@ -2,7 +2,7 @@
 
 import Cookies from 'js-cookie';
 import axios from './lib/utils/axios_utils';
-import Flash from './flash';
+import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
@@ -257,7 +257,10 @@ export default class MergeRequestTabs {
 
         this.toggleLoading(false);
       })
-      .catch(() => new Flash('An error occurred while fetching this tab.', 'alert'));
+      .catch(() => {
+        this.toggleLoading(false);
+        flash('An error occurred while fetching this tab.');
+      });
   }
 
   mountPipelinesView() {
@@ -344,7 +347,10 @@ export default class MergeRequestTabs {
 
         this.toggleLoading(false);
       })
-      .catch(() => Flash('An error occurred while fetching this tab.', 'alert'));
+      .catch(() => {
+        this.toggleLoading(false);
+        flash('An error occurred while fetching this tab.');
+      });
   }
 
   // Show or hide the loading spinner
