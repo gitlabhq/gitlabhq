@@ -57,7 +57,7 @@ because this will also affect performance. We recommend that the log files be
 stored on a local volume.
 
 For more details on another person's experience with EFS, see
-[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
+[Amazon's Elastic File System: Burst Credits](https://www.rawkode.com/2017/04/amazons-elastic-file-system-burst-credits/)
 
 ## NFS Client mount options
 
