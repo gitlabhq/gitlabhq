@@ -4,9 +4,13 @@ import mockData, {
   headIssues,
   baseIssues,
   securityIssues,
+  securityIssuesBase,
   parsedBaseIssues,
   parsedHeadIssues,
   parsedSecurityIssuesStore,
+  parsedSecurityIssuesBaseStore,
+  allIssuesParsed,
+  parsedSecurityIssuesHead,
   dockerReport,
   dockerReportParsed,
   dast,
@@ -93,10 +97,22 @@ describe('MergeRequestStore', () => {
   });
 
   describe('setSecurityReport', () => {
-    it('should set security issues', () => {
-      store.setSecurityReport(securityIssues, 'path');
+    it('should set security issues with head', () => {
+      store.setSecurityReport({ head: securityIssues, headBlobPath: 'path' });
+      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);
+    });
 
-      expect(store.securityReport).toEqual(parsedSecurityIssuesStore);
+    it('should set security issues with head and base', () => {
+      store.setSecurityReport({
+        head: securityIssues,
+        headBlobPath: 'path',
+        base: securityIssuesBase,
+        baseBlobPath: 'path',
+      });
+
+      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesHead);
+      expect(store.securityReport.resolvedIssues).toEqual(parsedSecurityIssuesBaseStore);
+      expect(store.securityReport.allIssues).toEqual(allIssuesParsed);
     });
   });
 
@@ -144,21 +160,6 @@ describe('MergeRequestStore', () => {
       expect(store.dockerReport.vulnerabilities).toEqual(dockerReportParsed.vulnerabilities);
       expect(store.dockerReport.approved).toEqual(dockerReportParsed.approved);
       expect(store.dockerReport.unapproved).toEqual(dockerReportParsed.unapproved);
-    });
-
-    it('handles unaproved typo', () => {
-      store.setDockerReport({
-        vulnerabilities: [
-          {
-            vulnerability: 'CVE-2017-12944',
-            namespace: 'debian:8',
-            severity: 'Medium',
-          },
-        ],
-        unaproved: ['CVE-2017-12944'],
-      });
-
-      expect(store.dockerReport.unapproved[0].vulnerability).toEqual('CVE-2017-12944');
     });
   });
 

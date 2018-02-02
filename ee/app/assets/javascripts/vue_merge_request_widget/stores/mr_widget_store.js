@@ -4,6 +4,11 @@ import { stripHtml } from '~/lib/utils/text_utility';
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
     super(data);
+
+    const blobPath = data.blob_path || {};
+    this.headBlobPath = blobPath.head_path || '';
+    this.baseBlobPath = blobPath.base_path || '';
+
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
     this.initSecurityReport(data);
@@ -63,7 +68,11 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   initSecurityReport(data) {
     this.sast = data.sast;
-    this.securityReport = [];
+    this.securityReport = {
+      newIssues: [],
+      resolvedIssues: [],
+      allIssues: [],
+    };
   }
 
   initDockerReport(data) {
@@ -79,9 +88,47 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.dast = data.dast;
     this.dastReport = [];
   }
+  /**
+   * Security report has 3 types of issues, newIssues, resolvedIssues and allIssues.
+   *
+   * When we have both base and head:
+   * - newIssues = head - base
+   * - resolvedIssues = base - head
+   * - allIssues = head - newIssues - resolvedIssues
+   *
+   * When we only have head
+   * - newIssues = head
+   * - resolvedIssues = 0
+   * - allIssues = 0
+   * @param {*} data
+   */
 
-  setSecurityReport(issues, path) {
-    this.securityReport = MergeRequestStore.parseIssues(issues, path);
+  setSecurityReport(data) {
+    if (data.base) {
+      const filterKey = 'cve';
+      const parsedHead = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
+      const parsedBase = MergeRequestStore.parseIssues(data.base, data.baseBlobPath);
+
+      this.securityReport.newIssues = MergeRequestStore.filterByKey(
+        parsedHead,
+        parsedBase,
+        filterKey,
+      );
+      this.securityReport.resolvedIssues = MergeRequestStore.filterByKey(
+        parsedBase,
+        parsedHead,
+        filterKey,
+      );
+
+      // Remove the new Issues and the added issues
+      this.securityReport.allIssues = MergeRequestStore.filterByKey(
+        parsedHead,
+        this.securityReport.newIssues.concat(this.securityReport.resolvedIssues),
+        filterKey,
+      );
+    } else {
+      this.securityReport.newIssues = MergeRequestStore.parseIssues(data.head, data.headBlobPath);
+    }
   }
 
   setDockerReport(data = {}) {
@@ -90,10 +137,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
     this.dockerReport.vulnerabilities = parsedVulnerabilities || [];
 
-    // There is a typo in the original repo:
-    // https://github.com/arminc/clair-scanner/pull/39/files
-    // Fix this when the above PR is accepted
-    const unapproved = data.unapproved || data.unaproved || [];
+    const unapproved = data.unapproved || [];
 
     // Approved can be calculated by subtracting unapproved from vulnerabilities.
     this.dockerReport.approved = parsedVulnerabilities
@@ -133,13 +177,15 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     const parsedHeadIssues = MergeRequestStore.parseIssues(headIssues, headBlobPath);
     const parsedBaseIssues = MergeRequestStore.parseIssues(baseIssues, baseBlobPath);
 
-    this.codeclimateMetrics.newIssues = MergeRequestStore.filterByFingerprint(
+    this.codeclimateMetrics.newIssues = MergeRequestStore.filterByKey(
       parsedHeadIssues,
       parsedBaseIssues,
+      'fingerprint',
     );
-    this.codeclimateMetrics.resolvedIssues = MergeRequestStore.filterByFingerprint(
+    this.codeclimateMetrics.resolvedIssues = MergeRequestStore.filterByKey(
       parsedBaseIssues,
       parsedHeadIssues,
+      'fingerprint',
     );
   }
 
@@ -201,7 +247,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
    * @param {array} issues
    * @return {array}
    */
-  static parseIssues(issues, path) {
+  static parseIssues(issues, path = '') {
     return issues.map((issue) => {
       const parsedIssue = {
         name: issue.check_name || issue.message,
@@ -239,8 +285,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     });
   }
 
-  static filterByFingerprint(firstArray, secondArray) {
-    return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
+  static filterByKey(firstArray, secondArray, key) {
+    return firstArray.filter(item => !secondArray.find(el => el[key] === item[key]));
   }
 
   // normalize performance metrics by indexing on performance subject and metric name

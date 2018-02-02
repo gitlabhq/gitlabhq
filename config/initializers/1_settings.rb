@@ -135,7 +135,7 @@ class Settings < Settingslogic
       url = "http://#{url}" unless url.start_with?('http')
 
       # Get rid of the path so that we don't even have to encode it
-      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+      url_without_path = url.sub(%r{(https?://[^/]+)/?.*}, '\1')
 
       URI.parse(url_without_path).host
     end
@@ -264,6 +264,7 @@ Settings['issues_tracker'] ||= {}
 # GitLab
 #
 Settings['gitlab'] ||= Settingslogic.new({})
+Settings.gitlab['default_project_creation'] ||= ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
@@ -554,10 +555,10 @@ end
 # repository_downloads_path value.
 #
 repositories_storages          = Settings.repositories.storages.values
-repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(/\/$/, '')
+repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(/\/$/, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(%r{/$}, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 

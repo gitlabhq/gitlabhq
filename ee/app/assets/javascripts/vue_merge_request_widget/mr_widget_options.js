@@ -1,4 +1,4 @@
-import { n__, s__, sprintf } from '~/locale';
+import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
@@ -38,7 +38,7 @@ export default {
       return performance && performance.head_path && performance.base_path;
     },
     shouldRenderSecurityReport() {
-      return this.mr.sast;
+      return this.mr.sast && this.mr.sast.head_path;
     },
     shouldRenderDockerReport() {
       return this.mr.sastContainer;
@@ -51,9 +51,9 @@ export default {
       const text = [];
 
       if (!newIssues.length && !resolvedIssues.length) {
-        text.push('No changes to code quality');
+        text.push(s__('ciReport|No changes to code quality'));
       } else if (newIssues.length || resolvedIssues.length) {
-        text.push('Code quality');
+        text.push(s__('ciReport|Code quality'));
 
         if (resolvedIssues.length) {
           text.push(n__(
@@ -64,7 +64,7 @@ export default {
         }
 
         if (newIssues.length > 0 && resolvedIssues.length > 0) {
-          text.push(' and');
+          text.push(__(' and'));
         }
 
         if (newIssues.length) {
@@ -84,9 +84,9 @@ export default {
       const text = [];
 
       if (!improved.length && !degraded.length) {
-        text.push('No changes to performance metrics');
+        text.push(s__('ciReport|No changes to performance metrics'));
       } else if (improved.length || degraded.length) {
-        text.push('Performance metrics');
+        text.push(s__('ciReport|Performance metrics'));
 
         if (improved.length) {
           text.push(n__(
@@ -97,7 +97,7 @@ export default {
         }
 
         if (improved.length > 0 && degraded.length > 0) {
-          text.push(' and');
+          text.push(__(' and'));
         }
 
         if (degraded.length) {
@@ -113,15 +113,36 @@ export default {
     },
 
     securityText() {
-      if (this.mr.securityReport.length) {
-        return n__(
-          'SAST detected %d security vulnerability',
-          'SAST detected %d security vulnerabilities',
-          this.mr.securityReport.length,
-        );
+      const { newIssues, resolvedIssues } = this.mr.securityReport;
+      const text = [];
+
+      if (!newIssues.length && !resolvedIssues.length) {
+        text.push(s__('ciReport|SAST detected no security vulnerabilities'));
+      } else if (newIssues.length || resolvedIssues.length) {
+        text.push(s__('ciReport|SAST'));
       }
 
-      return 'SAST detected no security vulnerabilities';
+      if (resolvedIssues.length) {
+        text.push(n__(
+          ' improved on %d security vulnerability',
+          ' improved on %d security vulnerabilities',
+          resolvedIssues.length,
+        ));
+      }
+
+      if (newIssues.length > 0 && resolvedIssues.length > 0) {
+        text.push(__(' and'));
+      }
+
+      if (newIssues.length) {
+        text.push(n__(
+          ' degraded on %d security vulnerability',
+          ' degraded on %d security vulnerabilities',
+          newIssues.length,
+        ));
+      }
+
+      return text.join('');
     },
 
     dockerText() {
@@ -211,7 +232,7 @@ export default {
     },
 
     fetchCodeQuality() {
-      const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
+      const { head_path, base_path } = this.mr.codeclimate;
 
       this.isLoadingCodequality = true;
 
@@ -220,7 +241,12 @@ export default {
         this.service.fetchReport(base_path),
       ])
         .then((values) => {
-          this.mr.compareCodeclimateMetrics(values[0], values[1], head_blob_path, base_blob_path);
+          this.mr.compareCodeclimateMetrics(
+            values[0],
+            values[1],
+            this.mr.headBlobPath,
+            this.mr.baseBlobPath,
+          );
           this.isLoadingCodequality = false;
         })
         .catch(() => {
@@ -247,20 +273,50 @@ export default {
           this.loadingPerformanceFailed = true;
         });
     },
-
+    /**
+     * Sast report can either have 2 reports or just 1
+     * When it has 2 we need to compare them
+     * When it has 1 we render the output given
+     */
     fetchSecurity() {
-      const { path, blob_path } = this.mr.sast;
+      const { sast } = this.mr;
+
       this.isLoadingSecurity = true;
 
-      this.service.fetchReport(path)
-        .then((data) => {
-          this.mr.setSecurityReport(data, blob_path);
-          this.isLoadingSecurity = false;
-        })
-        .catch(() => {
-          this.isLoadingSecurity = false;
-          this.loadingSecurityFailed = true;
-        });
+      if (sast.base_path && sast.head_path) {
+        Promise.all([
+          this.service.fetchReport(sast.head_path),
+          this.service.fetchReport(sast.base_path),
+        ])
+          .then((values) => {
+            this.handleSecuritySuccess({
+              head: values[0],
+              headBlobPath: this.mr.headBlobPath,
+              base: values[1],
+              baseBlobPath: this.mr.baseBlobPath,
+            });
+          })
+          .catch(() => this.handleSecurityError());
+      } else if (sast.head_path) {
+        this.service.fetchReport(sast.head_path)
+          .then((data) => {
+            this.handleSecuritySuccess({
+              head: data,
+              headBlobPath: this.mr.headBlobPath,
+            });
+          })
+          .catch(() => this.handleSecurityError());
+      }
+    },
+
+    handleSecuritySuccess(data) {
+      this.mr.setSecurityReport(data);
+      this.isLoadingSecurity = false;
+    },
+
+    handleSecurityError() {
+      this.isLoadingSecurity = false;
+      this.loadingSecurityFailed = true;
     },
 
     fetchDockerReport() {
@@ -370,7 +426,9 @@ export default {
         :loading-text="translateText('security').loading"
         :error-text="translateText('security').error"
         :success-text="securityText"
-        :unresolved-issues="mr.securityReport"
+        :unresolved-issues="mr.securityReport.newIssues"
+        :resolved-issues="mr.securityReport.resolvedIssues"
+        :all-issues="mr.securityReport.allIssues"
         :has-priority="true"
         />
       <collapsible-section

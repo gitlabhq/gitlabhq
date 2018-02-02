@@ -68,7 +68,16 @@ module Geo
     private
 
     def group_uploads
-      namespace_ids = Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.select(:id)
+      namespace_ids =
+        if current_node.selective_sync_by_namespaces?
+          Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.select(:id)
+        elsif current_node.selective_sync_by_shards?
+          leaf_groups = Namespace.where(id: current_node.projects.select(:namespace_id))
+          Gitlab::GroupHierarchy.new(leaf_groups).base_and_ancestors.select(:id)
+        else
+          Namespace.none
+        end
+
       arel_namespace_ids = Arel::Nodes::SqlLiteral.new(namespace_ids.to_sql)
 
       upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(arel_namespace_ids))

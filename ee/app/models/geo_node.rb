@@ -1,6 +1,11 @@
 class GeoNode < ActiveRecord::Base
   include Presentable
 
+  SELECTIVE_SYNC_TYPES = %w[namespaces shards].freeze
+
+  # Array of repository storages to synchronize for selective sync by shards
+  serialize :selective_sync_shards, Array # rubocop:disable Cop/ActiveRecordSerialize
+
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
   has_many :geo_node_namespace_links
@@ -17,6 +22,12 @@ class GeoNode < ActiveRecord::Base
 
   validates :access_key, presence: true
   validates :encrypted_secret_access_key, presence: true
+
+  validates :selective_sync_type, inclusion: {
+    in: SELECTIVE_SYNC_TYPES,
+    allow_blank: true,
+    allow_nil: true
+  }
 
   validate :check_not_adding_primary_as_secondary, if: :secondary?
 
@@ -119,11 +130,24 @@ class GeoNode < ActiveRecord::Base
   end
 
   def projects
-    if selective_sync?
-      Project.where(namespace_id: Gitlab::GroupHierarchy.new(namespaces).base_and_descendants.select(:id))
+    return Project.all unless selective_sync?
+
+    if selective_sync_by_namespaces?
+      query = Gitlab::GroupHierarchy.new(namespaces).base_and_descendants
+      Project.where(namespace_id: query.select(:id))
+    elsif selective_sync_by_shards?
+      Project.where(repository_storage: selective_sync_shards)
     else
-      Project.all
+      Project.none
     end
+  end
+
+  def selective_sync_by_namespaces?
+    selective_sync_type == 'namespaces'
+  end
+
+  def selective_sync_by_shards?
+    selective_sync_type == 'shards'
   end
 
   def projects_include?(project_id)
@@ -133,7 +157,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def selective_sync?
-    namespaces.exists?
+    selective_sync_type.present?
   end
 
   def replication_slots_count

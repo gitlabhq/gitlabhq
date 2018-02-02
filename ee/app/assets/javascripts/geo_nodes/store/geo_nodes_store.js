@@ -81,7 +81,7 @@ export default class GeoNodesStore {
         id: rawNodeDetails.cursor_last_event_id || 0,
         timeStamp: rawNodeDetails.cursor_last_event_timestamp,
       },
-      namespaces: rawNodeDetails.namespaces,
+      selectiveSyncType: rawNodeDetails.selective_sync_type,
       dbReplicationLag: rawNodeDetails.db_replication_lag_seconds,
     };
   }

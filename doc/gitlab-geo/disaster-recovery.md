@@ -9,17 +9,16 @@ fail-over with minimal effort, in a disaster situation.
 
 See [current limitations](README.md#current-limitations) for more information.
 
-### Step 1. Promoting a secondary geo replica
+## Promoting secondary Geo replica in single-secondary configuration
 
-> **Warning:** Disaster Recovery does not yet support systems with multiple
-> secondary geo replicas (e.g. one primary and two or more secondaries).
-
-We don't currently provide an automated way to promote a geo replica and do a
+We don't currently provide an automated way to promote a Geo replica and do a
 fail-over, but you can do it manually if you have `root` access to the machine.
 
 This process promotes a secondary Geo replica to a primary. To regain
 geographical redundancy as quickly as possible, you should add a new secondary
 immediately after following these instructions.
+
+### Step 1. Promoting a secondary Geo replica
 
 1. SSH into your **primary** to stop and disable GitLab.
 
@@ -124,10 +123,17 @@ secondary domain, like changing Git remotes and API URLs.
     If you updated the DNS records for the primary domain, these changes may
     not have yet propagated depending on the previous DNS records TTL.
 
-### Step 3. (Optional) Add secondary geo replicas to a promoted primary
+### Step 3. (Optional) Add secondary Geo replicas to a promoted primary
 
 Promoting a secondary to primary using the process above does not enable
 GitLab Geo on the new primary.
 
 To bring a new secondary online, follow the [GitLab Geo setup instructions](
 README.md#setup-instructions).
+
+## Promoting secondary Geo replica in multi-secondary configurations
+
+Disaster Recovery does not yet support systems with multiple
+secondary Geo replicas (e.g. one primary and two or more secondaries). We are
+working on it, see [#4284](https://gitlab.com/gitlab-org/gitlab-ee/issues/4284)
+for details.

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180122162010) do
+ActiveRecord::Schema.define(version: 20180201101405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,7 @@ ActiveRecord::Schema.define(version: 20180122162010) do
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "mirror_available", default: true, null: false
     t.string "auto_devops_domain"
+    t.integer "default_project_creation", default: 2, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -811,9 +812,11 @@ ActiveRecord::Schema.define(version: 20180122162010) do
 
   add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
   add_index "epics", ["author_id"], name: "index_epics_on_author_id", using: :btree
+  add_index "epics", ["end_date"], name: "index_epics_on_end_date", using: :btree
   add_index "epics", ["group_id"], name: "index_epics_on_group_id", using: :btree
   add_index "epics", ["iid"], name: "index_epics_on_iid", using: :btree
   add_index "epics", ["milestone_id"], name: "index_milestone", using: :btree
+  add_index "epics", ["start_date"], name: "index_epics_on_start_date", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer "project_id"
@@ -990,7 +993,7 @@ ActiveRecord::Schema.define(version: 20180122162010) do
     t.string "status_message"
     t.integer "replication_slots_count"
     t.integer "replication_slots_used_count"
-    t.integer "replication_slots_max_retained_wal_bytes"
+    t.integer "replication_slots_max_retained_wal_bytes", limit: 8
     t.integer "wikis_count"
     t.integer "wikis_synced_count"
     t.integer "wikis_failed_count"
@@ -1012,6 +1015,8 @@ ActiveRecord::Schema.define(version: 20180122162010) do
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
     t.string "url", null: false
+    t.string "selective_sync_type"
+    t.text "selective_sync_shards"
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1547,6 +1552,7 @@ ActiveRecord::Schema.define(version: 20180122162010) do
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
     t.integer "plan_id"
+    t.integer "project_creation_level"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree

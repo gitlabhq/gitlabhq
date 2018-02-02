@@ -117,6 +117,20 @@ module Gitlab
         page.url_path
       end
 
+      def page_formatted_data(title:, dir: nil, version: nil)
+        version = version&.id
+
+        @repository.gitaly_migrate(:wiki_page_formatted_data) do |is_enabled|
+          if is_enabled
+            gitaly_wiki_client.get_formatted_data(title: title, dir: dir, version: version)
+          else
+            # We don't use #page because if wiki_find_page feature is enabled, we would
+            # get a page without formatted_data.
+            gollum_find_page(title: title, dir: dir, version: version)&.formatted_data
+          end
+        end
+      end
+
       private
 
       # options:

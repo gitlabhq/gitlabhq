@@ -63,7 +63,7 @@ module EE
       private
 
       def has_artifact?(name)
-        options.dig(:artifacts, :paths) == [name] &&
+        options.dig(:artifacts, :paths)&.include?(name) &&
           artifacts_metadata?
       end
     end

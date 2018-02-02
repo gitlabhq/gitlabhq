@@ -116,7 +116,7 @@ describe ObjectStoreUploader do
         let(:store) { described_class::LOCAL_STORE }
 
         it "calls a regular path" do
-          expect { |b| uploader.use_file(&b) }.not_to yield_with_args(/tmp\/cache/)
+          expect { |b| uploader.use_file(&b) }.not_to yield_with_args(%r{tmp/cache})
         end
       end
 
@@ -128,7 +128,7 @@ describe ObjectStoreUploader do
         end
 
         it "calls a cache path" do
-          expect { |b| uploader.use_file(&b) }.to yield_with_args(/tmp\/cache/)
+          expect { |b| uploader.use_file(&b) }.to yield_with_args(%r{tmp/cache})
         end
       end
     end

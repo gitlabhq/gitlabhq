@@ -8,7 +8,7 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'benchmark'
 
-$: << File.expand_path('../lib', File.dirname(__FILE__))
+$: << File.expand_path('../ee/lib', __dir__)
 
 require 'linguist'
 require 'open3'
@@ -24,7 +24,7 @@ require 'elasticsearch/git/repository'
 
 Thread.abort_on_exception = true
 
-path_to_log_file = File.expand_path('../log/es-indexer.log', File.dirname(__FILE__))
+path_to_log_file = File.expand_path('../log/es-indexer.log', __dir__)
 LOGGER = Logger.new(path_to_log_file)
 
 PROJECT_ID = ARGV.shift

@@ -344,6 +344,7 @@ setup-test-env:
     expire_in: 7d
     paths:
       - tmp/tests
+      - config/secrets.yml
 
 rspec-pg geo: *rspec-metadata-pg-geo
 

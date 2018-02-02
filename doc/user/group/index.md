@@ -152,6 +152,17 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
+### (EEP) Default project creation level
+
+This feature allows groups to define a default project creation level.
+    
+By default, `Developers` and `Masters` are allowed to create projects, but
+this can be changed within the group settings for a group, or the default setting
+changed within the Admin area (`Settings`, `Visibility and Access Controls`). This
+can be `None`, `Masters`, or `Developers + Masters`. 
+
+It is available only in [GitLab Enterprise Edition Premium][eep].
+
 ## Transfer projects into groups
 
 Learn how to [transfer a project into a group](../project/index.md#transfer-an-existing-project-into-a-group).
@@ -282,4 +293,4 @@ you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
 [ee]: https://about.gitlab.com/products/
-
+[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"

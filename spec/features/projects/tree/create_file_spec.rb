@@ -12,7 +12,7 @@ feature 'Multi-file editor new file', :js do
 
     set_cookie('new_repo', 'true')
 
-    visit project_tree_path(project, :master)
+    visit project_path(project)
 
     wait_for_requests
 

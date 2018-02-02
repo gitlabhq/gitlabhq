@@ -1,6 +1,8 @@
 class GeoNodeStatus < ActiveRecord::Base
   belongs_to :geo_node
 
+  delegate :selective_sync_type, to: :geo_node
+
   # Whether we were successful in reaching this node
   attr_accessor :success, :version, :revision
   attr_writer :health_status

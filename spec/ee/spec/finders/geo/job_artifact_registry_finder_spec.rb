@@ -36,7 +36,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #legacy_find_synced_job_artifacts' do
@@ -72,7 +72,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
     context 'with selective sync' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'delegates to #legacy_find_failed_job_artifacts' do

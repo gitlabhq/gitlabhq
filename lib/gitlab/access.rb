@@ -5,6 +5,8 @@
 #
 module Gitlab
   module Access
+    extend ::EE::Gitlab::Access
+
     AccessDeniedError = Class.new(StandardError)
 
     NO_ACCESS = 0

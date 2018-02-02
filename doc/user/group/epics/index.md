@@ -9,7 +9,8 @@ milestones.
 ## Creating an epic
 
 A paginated list of epics is available in each group from where you can create
-a new epic. From your group page:
+a new epic. The list of epics includes also epics from all subgroups of the
+selected group. From your group page:
 
 1. Go to **Epics**
 1. Click the **New epic** button at the top right

@@ -21,6 +21,10 @@ describe GeoNode, type: :model do
     it { is_expected.to have_many(:namespaces).through(:geo_node_namespace_links) }
   end
 
+  context 'validations' do
+    it { is_expected.to validate_inclusion_of(:selective_sync_type).in_array([nil, *GeoNode::SELECTIVE_SYNC_TYPES]) }
+  end
+
   context 'default values' do
     where(:attribute, :value) do
       :url                | Gitlab::Routing.url_helpers.root_url
@@ -254,27 +258,43 @@ describe GeoNode, type: :model do
   end
 
   describe '#projects_include?' do
-    let(:unsynced_project) { create(:project) }
+    let(:unsynced_project) { create(:project, repository_storage: 'broken') }
 
-    it 'returns true without namespace restrictions' do
+    it 'returns true without selective sync' do
       expect(node.projects_include?(unsynced_project.id)).to eq true
     end
 
-    context 'with namespace restrictions' do
+    context 'selective sync by namespaces' do
       let(:synced_group) { create(:group) }
 
       before do
-        node.update_attribute(:namespaces, [synced_group])
+        node.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'returns true when project belongs to one of the namespaces' do
         project_in_synced_group = create(:project, group: synced_group)
 
-        expect(node.projects_include?(project_in_synced_group.id)).to eq true
+        expect(node.projects_include?(project_in_synced_group.id)).to be_truthy
       end
 
       it 'returns false when project does not belong to one of the namespaces' do
-        expect(node.projects_include?(unsynced_project.id)).to eq false
+        expect(node.projects_include?(unsynced_project.id)).to be_falsy
+      end
+    end
+
+    context 'selective sync by shards' do
+      before do
+        node.update!(selective_sync_type: 'shards', selective_sync_shards: ['default'])
+      end
+
+      it 'returns true when project belongs to one of the namespaces' do
+        project_in_synced_shard = create(:project)
+
+        expect(node.projects_include?(project_in_synced_shard.id)).to be_truthy
+      end
+
+      it 'returns false when project does not belong to one of the namespaces' do
+        expect(node.projects_include?(unsynced_project.id)).to be_falsy
       end
     end
   end
@@ -285,28 +305,54 @@ describe GeoNode, type: :model do
     let(:nested_group_1) { create(:group, parent: group_1) }
     let!(:project_1) { create(:project, group: group_1) }
     let!(:project_2) { create(:project, group: nested_group_1) }
-    let!(:project_3) { create(:project, group: group_2) }
+    let!(:project_3) { create(:project, group: group_2, repository_storage: 'broken') }
 
     it 'returns all projects without selective sync' do
       expect(node.projects).to match_array([project_1, project_2, project_3])
     end
 
-    it 'returns projects that belong to the namespaces with selective sync' do
-      node.update_attribute(:namespaces, [group_1, nested_group_1])
+    it 'returns projects that belong to the namespaces with selective sync by namespace' do
+      node.update!(selective_sync_type: 'namespaces', namespaces: [group_1, nested_group_1])
 
       expect(node.projects).to match_array([project_1, project_2])
+    end
+
+    it 'returns projects that belong to the shards with selective sync by shard' do
+      node.update!(selective_sync_type: 'shards', selective_sync_shards: ['default'])
+
+      expect(node.projects).to match_array([project_1, project_2])
+    end
+
+    it 'returns nothing if an unrecognised selective sync type is used' do
+      node.update_attribute(:selective_sync_type, 'unknown')
+
+      expect(node.projects).to be_empty
     end
   end
 
   describe '#selective_sync?' do
-    it 'returns true when Geo node has namespace restrictions' do
-      node.update_attribute(:namespaces, [create(:group)])
+    subject { node.selective_sync? }
 
-      expect(node.selective_sync?).to be true
+    it 'returns true when selective sync is by namespaces' do
+      node.update!(selective_sync_type: 'namespaces')
+
+      is_expected.to be_truthy
     end
 
-    it 'returns false when Geo node does not have namespace restrictions' do
-      expect(node.selective_sync?).to be false
+    it 'returns true when selective sync is by shards' do
+      node.update!(selective_sync_type: 'shards')
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns false when selective sync is disabled' do
+      node.update!(
+        selective_sync_type: '',
+        namespaces: [create(:group)],
+        selective_sync_shards: ['default']
+      )
+
+      is_expected.to be_falsy
     end
   end
 end
