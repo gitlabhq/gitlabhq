@@ -14,6 +14,7 @@ class PersonalFileUploader < FileUploader
     File.join(model.class.to_s.underscore, model.id.to_s)
   end
 
+<<<<<<< HEAD
   def object_store
     return Store::LOCAL unless model
 
@@ -30,6 +31,11 @@ class PersonalFileUploader < FileUploader
       Store::LOCAL => File.join(base_dir, dynamic_segment),
       Store::REMOTE => File.join(model_path_segment, dynamic_segment)
     }
+=======
+  # Revert-Override
+  def store_dir
+    File.join(base_dir, dynamic_segment)
+>>>>>>> upstream/master
   end
 
   private

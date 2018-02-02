@@ -346,6 +346,7 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
+<<<<<<< HEAD
 
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled']           ||= false
@@ -353,6 +354,8 @@ Settings.artifacts['object_store']['remote_directory']  ||= nil
 Settings.artifacts['object_store']['background_upload'] ||= true
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
+=======
+>>>>>>> upstream/master
 
 #
 # Registry
@@ -412,6 +415,13 @@ Settings.uploads['object_store']['remote_directory']  ||= 'uploads'
 Settings.uploads['object_store']['background_upload'] ||= true
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.uploads['object_store']['connection']&.deep_stringify_keys!
+
+#
+# Uploads
+#
+Settings['uploads'] ||= Settingslogic.new({})
+Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
+Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
 
 #
 # Mattermost

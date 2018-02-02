@@ -45,6 +45,13 @@ class GitlabUploader < CarrierWave::Uploader::Base
     file.present?
   end
 
+<<<<<<< HEAD
+=======
+  def store_dir
+    File.join(base_dir, dynamic_segment)
+  end
+
+>>>>>>> upstream/master
   def cache_dir
     File.join(root, base_dir, 'tmp/cache')
   end
@@ -62,10 +69,13 @@ class GitlabUploader < CarrierWave::Uploader::Base
   # Designed to be overridden by child uploaders that have a dynamic path
   # segment -- that is, a path that changes based on mutable attributes of its
   # associated model
+<<<<<<< HEAD
   #
   # For example, `FileUploader` builds the storage path based on the associated
   # project model's `path_with_namespace` value, which can change when the
   # project or its containing namespace is moved or renamed.
+=======
+>>>>>>> upstream/master
   def dynamic_segment
     raise(NotImplementedError)
   end

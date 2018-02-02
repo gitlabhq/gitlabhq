@@ -20,6 +20,7 @@ FactoryBot.define do
 
     trait :with_avatar do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
+<<<<<<< HEAD
     end
 
     factory :group_with_members do
@@ -57,6 +58,8 @@ FactoryBot.define do
           )
         end
       end
+=======
+>>>>>>> upstream/master
     end
 
     trait :access_requestable do

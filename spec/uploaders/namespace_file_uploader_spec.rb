@@ -6,6 +6,7 @@ describe NamespaceFileUploader do
   let(:group) { build_stubbed(:group) }
   let(:uploader) { described_class.new(group) }
   let(:upload) { create(:upload, :namespace_upload, model: group) }
+<<<<<<< HEAD
 
   subject { uploader }
 
@@ -36,4 +37,13 @@ describe NamespaceFileUploader do
     it_behaves_like "migrates", to_store: described_class::Store::REMOTE
     it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
+=======
+
+  subject { uploader }
+
+  it_behaves_like 'builds correct paths',
+                  store_dir: %r[uploads/-/system/namespace/\d+],
+                  upload_path: IDENTIFIER,
+                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/namespace/\d+/#{IDENTIFIER}]
+>>>>>>> upstream/master
 end

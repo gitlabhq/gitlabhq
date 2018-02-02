@@ -9,8 +9,11 @@
 class FileUploader < GitlabUploader
   include UploaderHelper
   include RecordsUploads::Concern
+<<<<<<< HEAD
   include ObjectStorage::Concern
   prepend ObjectStorage::Extension::RecordsUploads
+=======
+>>>>>>> upstream/master
 
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
   DYNAMIC_PATH_PATTERN = %r{(?<secret>\h{32})/(?<identifier>.*)}
@@ -21,6 +24,13 @@ class FileUploader < GitlabUploader
     File.join(options.storage_path, 'uploads')
   end
 
+<<<<<<< HEAD
+=======
+  def self.root
+    File.join(options.storage_path, 'uploads')
+  end
+
+>>>>>>> upstream/master
   def self.absolute_path(upload)
     File.join(
       absolute_base_dir(upload.model),
@@ -56,11 +66,21 @@ class FileUploader < GitlabUploader
 
   def self.upload_path(secret, identifier)
     File.join(secret, identifier)
+<<<<<<< HEAD
   end
 
   def self.generate_secret
     SecureRandom.hex
   end
+=======
+  end
+
+  def self.generate_secret
+    SecureRandom.hex
+  end
+
+  attr_accessor :model
+>>>>>>> upstream/master
 
   def initialize(model, secret = nil)
     @model = model
@@ -84,11 +104,19 @@ class FileUploader < GitlabUploader
   def model_path_segment
     self.class.model_path_segment(@model)
   end
+<<<<<<< HEAD
 
   def store_dir
     File.join(base_dir, dynamic_segment)
   end
 
+=======
+
+  def store_dir
+    File.join(base_dir, dynamic_segment)
+  end
+
+>>>>>>> upstream/master
   def markdown_link
     markdown = "[#{markdown_name}](#{secure_url})"
     markdown.prepend("!") if image_or_video? || dangerous?

@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe AvatarUploader do
+<<<<<<< HEAD
   let(:model) { build_stubbed(:user) }
+=======
+  let(:model) { create(:user, :with_avatar) }
+>>>>>>> upstream/master
   let(:uploader) { described_class.new(model, :avatar) }
   let(:upload) { create(:upload, model: model) }
 

@@ -11,6 +11,7 @@ describe AttachmentUploader do
                   store_dir: %r[uploads/-/system/note/attachment/],
                   upload_path: %r[uploads/-/system/note/attachment/],
                   absolute_path: %r[#{CarrierWave.root}/uploads/-/system/note/attachment/]
+<<<<<<< HEAD
 
   # EE-specific
   context "object_store is REMOTE" do
@@ -34,4 +35,6 @@ describe AttachmentUploader do
     it_behaves_like "migrates", to_store: described_class::Store::REMOTE
     it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
+=======
+>>>>>>> upstream/master
 end

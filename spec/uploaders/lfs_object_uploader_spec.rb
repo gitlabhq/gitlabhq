@@ -6,6 +6,7 @@ describe LfsObjectUploader do
   let(:path) { Gitlab.config.lfs.storage_path }
 
   subject { uploader }
+<<<<<<< HEAD
 
   it_behaves_like "builds correct paths",
                   store_dir: %r[\h{2}/\h{2}],
@@ -91,4 +92,11 @@ describe LfsObjectUploader do
     lfs_object.file = fixture_file_upload(Rails.root.join("spec/fixtures/dk.png"), "`/png")
     lfs_object.save!
   end
+=======
+
+  it_behaves_like "builds correct paths",
+                  store_dir: %r[\h{2}/\h{2}],
+                  cache_dir: %r[/lfs-objects/tmp/cache],
+                  work_dir: %r[/lfs-objects/tmp/work]
+>>>>>>> upstream/master
 end

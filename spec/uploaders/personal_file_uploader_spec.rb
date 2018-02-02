@@ -13,6 +13,7 @@ describe PersonalFileUploader do
                   store_dir: %r[uploads/-/system/personal_snippet/\d+],
                   upload_path: IDENTIFIER,
                   absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/#{IDENTIFIER}]
+<<<<<<< HEAD
 
   # EE-specific
   context "object_store is REMOTE" do
@@ -26,6 +27,8 @@ describe PersonalFileUploader do
                     store_dir: %r[\d+/\h+],
                     upload_path: IDENTIFIER
   end
+=======
+>>>>>>> upstream/master
 
   describe '#to_h' do
     before do

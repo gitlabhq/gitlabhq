@@ -48,7 +48,14 @@ describe Projects::RawController do
 
           it 'serves the file' do
             expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: 'lfs_object.iso', disposition: 'attachment')
+<<<<<<< HEAD
             get_show(public_project, id)
+=======
+            get(:show,
+                namespace_id: public_project.namespace.to_param,
+                project_id: public_project,
+                id: id)
+>>>>>>> upstream/master
 
             expect(response).to have_gitlab_http_status(200)
           end

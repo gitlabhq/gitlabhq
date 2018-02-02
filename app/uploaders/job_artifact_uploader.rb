@@ -1,6 +1,9 @@
 class JobArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
+<<<<<<< HEAD
   include ObjectStorage::Concern
+=======
+>>>>>>> upstream/master
 
   storage_options Gitlab.config.artifacts
 

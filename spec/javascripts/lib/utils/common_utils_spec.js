@@ -1,7 +1,6 @@
 /* eslint-disable promise/catch-or-return */
-
-import * as commonUtils from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
+import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
 
 describe('common_utils', () => {
@@ -457,17 +456,6 @@ describe('common_utils', () => {
           done();
         })
         .catch(done.fail);
-    });
-  });
-
-  describe('ajaxPost', () => {
-    it('should perform `$.ajax` call and do `POST` request', () => {
-      const requestURL = '/some/random/api';
-      const data = { keyname: 'value' };
-      const ajaxSpy = spyOn($, 'ajax').and.callFake(() => {});
-
-      commonUtils.ajaxPost(requestURL, data);
-      expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
     });
   });
 

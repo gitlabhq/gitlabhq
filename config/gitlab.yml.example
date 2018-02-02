@@ -193,6 +193,12 @@ production: &base
         # endpoint: 'http://127.0.0.1:9000' # default: nil
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## Uploads (attachments, avatars, etc...)
+  uploads:
+    # The location where uploads objects are stored (default: public/).
+    # storage_path: public/
+    # base_dir: uploads/-/system
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -787,6 +793,7 @@ test:
         region: eu-central-1
   artifacts:
     path: tmp/tests/artifacts
+<<<<<<< HEAD
     enabled: true
     # The location where build artifacts are stored (default: shared/artifacts).
     # path: shared/artifacts
@@ -809,6 +816,10 @@ test:
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: eu-central-1
+=======
+  uploads:
+    storage_path: tmp/tests/public
+>>>>>>> upstream/master
   gitlab:
     host: localhost
     port: 80
