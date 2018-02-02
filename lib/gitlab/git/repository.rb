@@ -1519,7 +1519,7 @@ module Gitlab
         if sparse_checkout_files
           # Create worktree without checking out
           run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
 
           configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
 
