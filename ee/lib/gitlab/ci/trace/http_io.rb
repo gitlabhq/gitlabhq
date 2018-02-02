@@ -7,6 +7,7 @@ module Gitlab
       class HttpIO
         BUFFER_SIZE = 128.kilobytes
 
+        InvalidURLError = Class.new(StandardError)
         FailedToGetChunkError = Class.new(StandardError)
 
         attr_reader :uri, :size
@@ -16,6 +17,8 @@ module Gitlab
         alias_method :pos, :tell
 
         def initialize(url, size)
+          raise InvalidURLError unless ::Gitlab::UrlSanitizer.valid?(url)
+
           @uri = URI(url)
           @size = size
           @tell = 0
@@ -82,8 +85,6 @@ module Gitlab
           out = out[0, length] if length && out.length > length
 
           out
-        rescue FailedToGetChunkError
-          nil
         end
 
         def readline
@@ -104,8 +105,6 @@ module Gitlab
           end
 
           out
-        rescue FailedToGetChunkError
-          nil
         end
 
         def write(data)

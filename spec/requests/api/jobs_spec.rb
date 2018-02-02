@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe API::Jobs do
+  include HttpIOHelpers
+
   set(:project) do
     create(:project, :repository, public_builds: false)
   end
@@ -451,6 +453,22 @@ describe API::Jobs do
     end
 
     context 'authorized user' do
+      context 'when trace is in ObjectStorage' do
+        let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          stub_remote_trace_ok
+          allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+          allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
+          allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+        end
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
       context 'when trace is artifact' do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
