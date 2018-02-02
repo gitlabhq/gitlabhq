@@ -244,7 +244,7 @@ describe Issues::MoveService do
 
         context 'issue description with uploads' do
           let(:uploader) { build(:file_uploader, project: old_project) }
-          let(:description) { "Text and #{uploader.to_markdown}" }
+          let(:description) { "Text and #{uploader.markdown_link}" }
 
           include_context 'issue move executed'
 

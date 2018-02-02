@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe ObjectStorageUploadWorker do
-  let(:local) { ObjectStoreUploader::LOCAL_STORE }
-  let(:remote) { ObjectStoreUploader::REMOTE_STORE }
+  let(:local) { ObjectStorage::Store::LOCAL }
+  let(:remote) { ObjectStorage::Store::REMOTE }
 
   def perform
     described_class.perform_async(uploader_class.name, subject_class, file_field, subject_id)
