@@ -675,7 +675,7 @@ describe Ci::Build do
 
     context 'build is erasable' do
       context 'new artifacts' do
-        let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+        let!(:build) { create(:ci_build, :trace, :trace_artifact, :success, :artifacts) }
 
         describe '#erase' do
           before do
@@ -709,7 +709,7 @@ describe Ci::Build do
         end
 
         describe '#erased?' do
-          let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+          let!(:build) { create(:ci_build, :trace, :trace_artifact, :success, :artifacts) }
           subject { build.erased? }
 
           context 'job has not been erased' do
