@@ -54,7 +54,7 @@ new groups they might be added to when the user logs in. That way they don't nee
 to wait for the hourly sync to be granted access to the groups that they are in
 in LDAP.
 
-In GitLab Enterprise Edition Premium, we can also add a GitLab group to sync with one or multiple LDAP groups or we can
+In GitLab Premium, we can also add a GitLab group to sync with one or multiple LDAP groups or we can
 also add a filter. The filter must comply with the syntax defined in [RFC 2254](https://tools.ietf.org/search/rfc2254).
 
 A group sync process will run every hour on the hour, and `group_base` must be set

@@ -1,7 +1,7 @@
 # GitLab Geo
 
 > **Notes:**
-- GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
+- GitLab Geo is part of [GitLab Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
   We recommend you use it with at least GitLab Enterprise Edition 10.0 for
   basic Geo features, or latest version for a better experience.
@@ -40,7 +40,7 @@ Keep in mind that:
 
 - Secondaries talk to the primary to get user data for logins (API) and to
   replicate repositories, LFS Objects and Attachments (HTTPS + JWT).
-- Since GitLab Enterprise Edition Premium 10.0, the primary no longer talks to
+- Since GitLab Premium 10.0, the primary no longer talks to
   secondaries to notify for changes (API).
 
 ## Use-cases

@@ -25,7 +25,7 @@ with the [GitLab Container Registry][registry]) in the following cases.
 
 > **Note**:
 The use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced][ee-2017]
-in [GitLab Enterprise Edition Premium][ee] 9.3.
+in [GitLab Premium][ee] 9.3.
 
 This way of triggering can only be used when invoked inside `.gitlab-ci.yml`,
 and it creates a dependent pipeline relation visible on the
@@ -49,7 +49,7 @@ Read more about the [pipelines trigger API][trigapi].
 
 > **Note**:
 The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
-in [GitLab Enterprise Edition Premium][ee] 9.5.
+in [GitLab Premium][ee] 9.5.
 
 With the introduction of dependencies between different projects, one of
 them may need to access artifacts created by a previous one. This process

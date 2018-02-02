@@ -297,7 +297,7 @@ Example of response
 > **Notes**:
 - [Introduced][ce-2893] in GitLab 8.5.
 - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
-  in [GitLab Enterprise Edition Premium][ee] 9.5.
+  in [GitLab Premium][ee] 9.5.
 
 Get job artifacts of a project.
 
@@ -345,7 +345,7 @@ Response:
 > **Notes**:
 - [Introduced][ce-5347] in GitLab 8.10.
 - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
-  in [GitLab Enterprise Edition Premium][ee] 9.5.
+  in [GitLab Premium][ee] 9.5.
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.

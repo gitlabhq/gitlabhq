@@ -75,7 +75,7 @@ From there, you can see the following actions:
 
 ### Instance events
 
-> [Introduced][ee-2336] in [GitLab Enterprise Edition Premium][ee] 9.3.
+> [Introduced][ee-2336] in [GitLab Premium][ee] 9.3.
 Available only for GitLab administrators.
 
 Server-wide audit logging introduces the ability to observe user actions across

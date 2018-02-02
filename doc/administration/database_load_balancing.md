@@ -1,6 +1,6 @@
 # Database Load Balancing
 
-> [Introduced][ee-1283] in [GitLab Enterprise Edition Premium][eep] 9.0.
+> [Introduced][ee-1283] in [GitLab Premium][eep] 9.0.
 
 Distribute read-only queries among multiple database servers.
 
@@ -158,7 +158,7 @@ log entries easier. For example:
 
 ## Handling Stale Reads
 
-> [Introduced][ee-3526] in [GitLab Enterprise Edition Premium][eep] 10.3.
+> [Introduced][ee-3526] in [GitLab Premium][eep] 10.3.
 
 To prevent reading from an outdated secondary the load balancer will check if it
 is in sync with the primary. If the data is determined to be recent enough the

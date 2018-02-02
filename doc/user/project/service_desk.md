@@ -1,6 +1,6 @@
 # Service Desk
 
-> [Introduced][ee-149] in [GitLab Enterprise Edition Premium 9.1][eep-9.1].
+> [Introduced][ee-149] in [GitLab Premium 9.1][eep-9.1].
 
 ## Overview
 
@@ -57,7 +57,7 @@ you can skip the step 1 below; you only need to enable it per project.
      support [email sub-addressing][email-sub-addressing].
 2.   Navigate to your project's **Settings** and scroll down to the **Service Desk**
      section.
-3.   If you have the correct access and an Enterprise Edition Premium license,
+3.   If you have the correct access and an Premium license,
      you will see an option to set up Service Desk:
 
      ![Activate Service Desk option](img/service_desk_disabled.png)

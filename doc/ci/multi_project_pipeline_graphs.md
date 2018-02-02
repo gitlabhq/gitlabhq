@@ -1,7 +1,7 @@
 # Multi-project pipeline graphs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2121) in
-[GitLab Enterprise Edition Premium 9.3](https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
+[GitLab Premium 9.3](https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
 
 When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
 the entire pipeline, including all multi-project stages.

@@ -1,6 +1,6 @@
 # Canary Deployments
 
-> [Introduced][ee-1659] in [GitLab Enterprise Edition Premium][eep] 9.1.
+> [Introduced][ee-1659] in [GitLab Premium][eep] 9.1.
 
 A popular [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration)
 strategy, where a small portion of the fleet is updated to the new version of

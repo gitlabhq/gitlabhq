@@ -280,11 +280,11 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 ```
 
 <<<<<<< HEAD
-In GitLab Enterprise Edition Premium, performance differences between the source
+In GitLab Premium, performance differences between the source
 and target branches are [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
 =======
 In GitLab Premium, performance differences between the source and target branches are [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
->>>>>>> bfab3990f8c... search and replace "Enterprise Edition Premium" => "Premium"
+>>>>>>> bfab3990f8c... search and replace "Premium" => "Premium"
 
 ### Auto Deploy
 

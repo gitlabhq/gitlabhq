@@ -200,7 +200,7 @@ Once you set them, they will be available for all subsequent pipelines.
 ### Limiting environment scopes of secret variables
 
 >**Notes:**
-[Introduced][ee-2112] in [GitLab Enterprise Edition Premium][eep] 9.4.
+[Introduced][ee-2112] in [GitLab Premium][eep] 9.4.
 
 You can limit the environment scope of a secret variable by
 [defining which environments][envs] it can be available for.

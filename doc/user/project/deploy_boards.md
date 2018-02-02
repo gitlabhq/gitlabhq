@@ -1,6 +1,6 @@
 # Deploy Boards
 
-> [Introduced][ee-1589] in [GitLab Enterprise Edition Premium][ee] 9.0.
+> [Introduced][ee-1589] in [GitLab Premium][ee] 9.0.
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment] running on [Kubernetes], displaying the status

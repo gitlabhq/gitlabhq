@@ -161,7 +161,7 @@ this can be changed within the group settings for a group, or the default settin
 changed within the Admin area (`Settings`, `Visibility and Access Controls`). This
 can be `None`, `Masters`, or `Developers + Masters`. 
 
-It is available only in [GitLab Enterprise Edition Premium][eep].
+It is available only in [GitLab Premium][eep].
 
 ## Transfer projects into groups
 

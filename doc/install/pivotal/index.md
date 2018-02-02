@@ -1,6 +1,6 @@
 # GitLab Pivotal Tile
 
-> Introduced in [GitLab Enterprise Edition Premium][eep] 8.2.
+> Introduced in [GitLab Premium][eep] 8.2.
 
 Easily deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for
 [Pivotal Cloud Foundry][pcf].
@@ -21,7 +21,7 @@ and click a button to begin the upgrade process.
 
 ## Features
 
-The GitLab Pivotal Tile is based on [Enterprise Edition Premium] and includes nearly all of its features. The features in Premium but _not_ supported on the Tile are:
+The GitLab Pivotal Tile is based on [Premium] and includes nearly all of its features. The features in Premium but _not_ supported on the Tile are:
 
 * PostgreSQL
 * Pages
