@@ -53,32 +53,6 @@ var Dispatcher;
         case 'projects:issues:show':
           shortcut_handler = true;
           break;
-        case 'admin:jobs:index':
-          import('./pages/admin/jobs/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:projects:index':
-          import('./pages/admin/projects/index/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:users:index':
-          import('./pages/admin/users/shared')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:users:show':
-          import('./pages/admin/users/shared')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:projects:index':
-        case 'dashboard:projects:starred':
-          import('./pages/dashboard/projects')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'explore:projects:index':
         case 'explore:projects:trending':
         case 'explore:projects:starred':
@@ -466,6 +440,26 @@ var Dispatcher;
           break;
         case 'dashboard:groups:index':
           import('./pages/dashboard/groups/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:jobs:index':
+          import('./pages/admin/jobs/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:projects:index':
+          import('./pages/admin/projects/index/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:users:index':
+          import('./pages/admin/users/shared')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:users:show':
+          import('./pages/admin/users/shared')
             .then(callDefault)
             .catch(fail);
           break;
