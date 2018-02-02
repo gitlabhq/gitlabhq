@@ -272,13 +272,13 @@ feature 'Jobs' do
     end
 
     feature 'HTML trace', :js do
-      context 'when job is running' do
-        before do
-          job.run!
+      before do
+        job.run!
 
-          visit project_job_path(project, job)
-        end
+        visit project_job_path(project, job)
+      end
 
+      context 'when job has an initial trace' do
         it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
