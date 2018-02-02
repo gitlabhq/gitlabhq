@@ -653,10 +653,6 @@ module SystemNoteService
     content_tag('li', "#{commit_ids} - #{commits_text} from branch #{branch_name}".html_safe)
   end
 
-  def escape_html(text)
-    Rack::Utils.escape_html(text)
-  end
-
   def url_helpers
     @url_helpers ||= Gitlab::Routing.url_helpers
   end
