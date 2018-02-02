@@ -9,6 +9,7 @@ export default class Job {
   constructor(options) {
     this.timeout = null;
     this.state = null;
+    this.fetchingStatusFavicon = false;
     this.options = options || $('.js-build-options').data();
 
     this.pagePath = this.options.pagePath;
@@ -178,7 +179,17 @@ export default class Job {
       .then((res) => {
         const log = res.data;
 
-        setCiStatusFavicon(`${this.pagePath}/status.json`);
+        if (!this.fetchingStatusFavicon) {
+          this.fetchingStatusFavicon = true;
+
+          setCiStatusFavicon(`${this.pagePath}/status.json`)
+            .then(() => {
+              this.fetchingStatusFavicon = false;
+            })
+            .catch(() => {
+              this.fetchingStatusFavicon = false;
+            });
+        }
 
         if (log.state) {
           this.state = log.state;
