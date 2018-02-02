@@ -133,13 +133,16 @@ module Gitlab
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
-      def delete_refs(except_with_prefixes:)
+      def delete_refs(refs: [], except_with_prefixes: [])
         request = Gitaly::DeleteRefsRequest.new(
           repository: @gitaly_repo,
-          except_with_prefix: except_with_prefixes
+          refs: refs.map { |r| encode_binary(r) },
+          except_with_prefix: except_with_prefixes.map { |r| encode_binary(r) }
         )
 
-        GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+
+        raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
       end
 
       private

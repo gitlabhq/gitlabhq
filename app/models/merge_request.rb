@@ -618,12 +618,12 @@ class MergeRequest < ActiveRecord::Base
     can_be_merged? && !should_be_rebased?
   end
 
-  def mergeable_state?(skip_ci_check: false)
+  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
     return false unless skip_ci_check || mergeable_ci_state?
-    return false unless mergeable_discussions_state?
+    return false unless skip_discussions_check || mergeable_discussions_state?
 
     true
   end

@@ -300,44 +300,53 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
-    before do
-      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-    end
-
-    context 'job with artifacts' do
-      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
-
-      context 'authorized user' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-        end
-
-        it 'returns specific job artifacts' do
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.headers).to include(download_headers)
-          expect(response.body).to match_file(job.artifacts_file.file.file)
-        end
+    shared_examples 'downloads artifact' do
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
       end
 
-      context 'when anonymous user is accessing private artifacts' do
-        let(:api_user) { nil }
+      it 'returns specific job artifacts' do
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.headers).to include(download_headers)
+        expect(response.body).to match_file(job.artifacts_file.file.file)
+      end
+    end
 
-        it 'hides artifacts and rejects request' do
-          expect(project).to be_private
+    context 'normal authentication' do
+      context 'job with artifacts' do
+        context 'when artifacts are stored locally' do
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+          before do
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
+
+          context 'authorized user' do
+            it_behaves_like 'downloads artifact'
+          end
+
+          context 'unauthorized user' do
+            let(:api_user) { nil }
+
+            it 'does not return specific job artifacts' do
+              expect(response).to have_gitlab_http_status(404)
+            end
+          end
+        end
+
+        it 'does not return job artifacts if not uploaded' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+
           expect(response).to have_gitlab_http_status(404)
         end
       end
-    end
-
-    it 'does not return job artifacts if not uploaded' do
-      expect(response).to have_gitlab_http_status(404)
     end
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter }
-    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
       job.success
@@ -396,14 +405,16 @@ describe API::Jobs do
 
     context 'find proper job' do
       shared_examples 'a valid file' do
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' =>
-              "attachment; filename=#{job.artifacts_file.filename}" }
-        end
+        context 'when artifacts are stored locally' do
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' =>
+                "attachment; filename=#{job.artifacts_file.filename}" }
+          end
 
-        it { expect(response).to have_gitlab_http_status(200) }
-        it { expect(response.headers).to include(download_headers) }
+          it { expect(response).to have_gitlab_http_status(200) }
+          it { expect(response.headers).to include(download_headers) }
+        end
       end
 
       context 'with regular branch' do

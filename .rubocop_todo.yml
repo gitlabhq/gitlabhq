@@ -704,7 +704,9 @@ Style/RedundantSelf:
 # Configuration parameters: EnforcedStyle, AllowInnerSlashes.
 # SupportedStyles: slashes, percent_r, mixed
 Style/RegexpLiteral:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: mixed
+  AllowInnerSlashes: false
 
 # Offense count: 36
 # Cop supports --auto-correct.

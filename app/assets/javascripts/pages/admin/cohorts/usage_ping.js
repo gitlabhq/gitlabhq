@@ -1,12 +1,13 @@
-export default function UsagePing() {
-  const usageDataUrl = $('.usage-data').data('endpoint');
+import axios from '../../../lib/utils/axios_utils';
+import { __ } from '../../../locale';
+import flash from '../../../flash';
 
-  $.ajax({
-    type: 'GET',
-    url: usageDataUrl,
-    dataType: 'html',
-    success(html) {
-      $('.usage-data').html(html);
-    },
-  });
+export default function UsagePing() {
+  const el = document.querySelector('.usage-data');
+
+  axios.get(el.dataset.endpoint, {
+    responseType: 'text',
+  }).then(({ data }) => {
+    el.innerHTML = data;
+  }).catch(() => flash(__('Error fetching usage ping data.')));
 }

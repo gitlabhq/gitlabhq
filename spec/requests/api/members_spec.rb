@@ -44,6 +44,21 @@ describe API::Members do
         end
       end
 
+      it 'avoids N+1 queries' do
+        # Establish baseline
+        get api("/#{source_type.pluralize}/#{source.id}/members", master)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/#{source_type.pluralize}/#{source.id}/members", master)
+        end
+
+        project.add_developer(create(:user))
+
+        expect do
+          get api("/#{source_type.pluralize}/#{source.id}/members", master)
+        end.not_to exceed_query_limit(control)
+      end
+
       it 'does not return invitees' do
         create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
 

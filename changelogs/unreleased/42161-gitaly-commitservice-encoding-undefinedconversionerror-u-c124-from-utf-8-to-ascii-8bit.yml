@@ -1,5 +1,0 @@
----
-title: Fix encoding issue when counting commit count
-merge_request: 16637
-author:
-type: fixed
