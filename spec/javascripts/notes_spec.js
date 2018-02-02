@@ -68,7 +68,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       it('submits an ajax request on tasklist:changed', function(done) {
         spyOn(axios, 'patch').and.callFake((url, data) => {
           expect(url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
-          expect(data.note.note).not.toBe(null);
+          expect(data.note).not.toBe(null);
           done();
 
           return Promise.resolve({ data: {} });
