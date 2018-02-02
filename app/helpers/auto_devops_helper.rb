@@ -27,7 +27,7 @@ module AutoDevopsHelper
   private
 
   def missing_auto_devops_domain?(project)
-    !(project.auto_devops&.has_domain? || current_application_settings.auto_devops_domain.present?)
+    !(project.auto_devops || project.build_auto_devops)&.has_domain?
   end
 
   def missing_auto_devops_service?(project)
