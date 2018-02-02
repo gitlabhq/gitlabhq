@@ -2272,7 +2272,7 @@ ActiveRecord::Schema.define(version: 20180201145907) do
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
   create_table "user_callouts", force: :cascade do |t|
-    t.string "feature_name", null: false
+    t.integer "feature_name", null: false
     t.integer "user_id", null: false
   end
 

@@ -7,7 +7,7 @@ class CreateUserCallouts < ActiveRecord::Migration
 
   def change
     create_table :user_callouts do |t|
-      t.string :feature_name, null: false
+      t.integer :feature_name, null: false
       t.references :user, index: true, foreign_key: { on_delete: :cascade }, null: false
     end
 
