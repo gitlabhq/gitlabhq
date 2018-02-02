@@ -53,30 +53,6 @@ var Dispatcher;
         case 'projects:issues:show':
           shortcut_handler = true;
           break;
-        case 'projects:milestones:new':
-        case 'projects:milestones:create':
-          import('./pages/projects/milestones/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:milestones:edit':
-        case 'projects:milestones:update':
-          import('./pages/projects/milestones/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:milestones:new':
-        case 'groups:milestones:create':
-          import('./pages/groups/milestones/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:milestones:edit':
-        case 'groups:milestones:update':
-          import('./pages/groups/milestones/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:compare:show':
           import('./pages/projects/compare/show')
             .then(callDefault)
