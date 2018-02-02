@@ -1,5 +1,6 @@
 class Projects::NotesController < Projects::ApplicationController
   include NotesActions
+  include NotesHelper
   include ToggleAwardEmoji
 
   before_action :authorize_read_note!
