@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe ProjectMirrorData, type: :model do
-  include Gitlab::CurrentSettings
-
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end
@@ -100,7 +98,7 @@ describe ProjectMirrorData, type: :model do
       end
 
       context 'when base delay is higher than mirror_max_delay' do
-        let(:max_timestamp) { timestamp + current_application_settings.mirror_max_delay.minutes }
+        let(:max_timestamp) { timestamp + Gitlab::CurrentSettings.mirror_max_delay.minutes }
 
         before do
           mirror_data.last_update_started_at = timestamp - 1.hour

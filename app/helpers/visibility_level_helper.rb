@@ -151,12 +151,12 @@ module VisibilityLevelHelper
   def restricted_visibility_levels(show_all = false)
     return [] if current_user.admin? && !show_all
 
-    current_application_settings.restricted_visibility_levels || []
+    Gitlab::CurrentSettings.restricted_visibility_levels || []
   end
 
   delegate  :default_project_visibility,
             :default_group_visibility,
-            to: :current_application_settings
+            to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def disallowed_visibility_level?(form_model, level)
     return false unless form_model.respond_to?(:visibility_level_allowed?)

@@ -19,7 +19,7 @@ describe Projects::DestroyService do
 
   context 'when project is a mirror' do
     it 'decrements capacity if mirror was scheduled' do
-      max_capacity = current_application_settings.mirror_max_capacity
+      max_capacity = Gitlab::CurrentSettings.mirror_max_capacity
       project_mirror = create(:project, :mirror, :repository, :import_scheduled)
 
       Gitlab::Mirror.increment_capacity(project_mirror.id)

@@ -2,10 +2,8 @@ require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
 
   include Gitlab::ConfigHelper
-  include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
@@ -32,7 +30,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :rss_token
 
   default_value_for :admin, false
-  default_value_for(:external) { current_application_settings.user_default_external }
+  default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -678,11 +676,11 @@ class User < ActiveRecord::Base
   end
 
   def allow_password_authentication_for_web?
-    current_application_settings.password_authentication_enabled_for_web? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
   end
 
   def allow_password_authentication_for_git?
-    current_application_settings.password_authentication_enabled_for_git? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user?
   end
 
   def can_change_username?
@@ -810,7 +808,7 @@ class User < ActiveRecord::Base
     # without this safeguard!
     return unless has_attribute?(:projects_limit) && projects_limit.nil?
 
-    self.projects_limit = current_application_settings.default_projects_limit
+    self.projects_limit = Gitlab::CurrentSettings.default_projects_limit
   end
 
   def requires_ldap_check?
@@ -1237,7 +1235,7 @@ class User < ActiveRecord::Base
     else
       # Only revert these back to the default if they weren't specifically changed in this update.
       self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
-      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
+      self.projects_limit = Gitlab::CurrentSettings.default_projects_limit unless projects_limit_changed?
     end
   end
 
@@ -1245,15 +1243,15 @@ class User < ActiveRecord::Base
     valid = true
     error = nil
 
-    if current_application_settings.domain_blacklist_enabled?
-      blocked_domains = current_application_settings.domain_blacklist
+    if Gitlab::CurrentSettings.domain_blacklist_enabled?
+      blocked_domains = Gitlab::CurrentSettings.domain_blacklist
       if domain_matches?(blocked_domains, email)
         error = 'is not from an allowed domain.'
         valid = false
       end
     end
 
-    allowed_domains = current_application_settings.domain_whitelist
+    allowed_domains = Gitlab::CurrentSettings.domain_whitelist
     unless allowed_domains.blank?
       if domain_matches?(allowed_domains, email)
         valid = true

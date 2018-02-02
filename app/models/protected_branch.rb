@@ -3,8 +3,6 @@ class ProtectedBranch < ActiveRecord::Base
   include ProtectedRef
   prepend EE::ProtectedRef
 
-  extend Gitlab::CurrentSettings
-
   protected_ref_access_levels :merge, :push
 
   # Check if branch name is marked as protected in the system
@@ -17,7 +15,7 @@ class ProtectedBranch < ActiveRecord::Base
   end
 
   def self.default_branch_protected?
-    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
-      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
+    Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
+      Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 end

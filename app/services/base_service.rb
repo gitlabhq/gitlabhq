@@ -1,6 +1,5 @@
 class BaseService
   include Gitlab::Allowable
-  include Gitlab::CurrentSettings
 
   attr_accessor :project, :current_user, :params
 

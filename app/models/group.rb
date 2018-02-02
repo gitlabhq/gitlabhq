@@ -230,7 +230,7 @@ class Group < Namespace
   end
 
   def actual_size_limit
-    return current_application_settings.repository_size_limit if repository_size_limit.nil?
+    return Gitlab::CurrentSettings.repository_size_limit if repository_size_limit.nil?
 
     repository_size_limit
   end

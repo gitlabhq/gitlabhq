@@ -15,7 +15,7 @@ module EE
 
       before_validation :mark_remote_mirrors_for_removal
 
-      before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.current_application_settings.mirror_available }
+      before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.mirror_available }
       after_save :create_mirror_data, if: ->(project) { project.mirror? && project.mirror_changed? }
       after_save :destroy_mirror_data, if: ->(project) { !project.mirror? && project.mirror_changed? }
 
@@ -449,12 +449,12 @@ module EE
 
     def remote_mirror_available?
       remote_mirror_available_overridden ||
-        current_application_settings.mirror_available
+        ::Gitlab::CurrentSettings.mirror_available
     end
 
     def pull_mirror_available?
       pull_mirror_available_overridden ||
-        current_application_settings.mirror_available
+        ::Gitlab::CurrentSettings.mirror_available
     end
 
     private
@@ -477,7 +477,7 @@ module EE
     def load_licensed_feature_available(feature)
       globally_available = License.feature_available?(feature)
 
-      if namespace && current_application_settings.should_check_namespace_plan?
+      if namespace && ::Gitlab::CurrentSettings.should_check_namespace_plan?
         globally_available &&
           (public? && namespace.public? || namespace.feature_available_in_plan?(feature))
       else

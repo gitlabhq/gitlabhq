@@ -1,6 +1,5 @@
 class GitPushService < BaseService
   attr_accessor :push_data, :push_commits
-  include Gitlab::CurrentSettings
   include Gitlab::Access
 
   # The N most recent commits to process in a single push payload.
@@ -53,7 +52,7 @@ class GitPushService < BaseService
       update_gitattributes if default_branch?
     end
 
-    if current_application_settings.elasticsearch_indexing? && default_branch?
+    if Gitlab::CurrentSettings.elasticsearch_indexing? && default_branch?
       ElasticCommitIndexerWorker.perform_async(@project.id, params[:oldrev], params[:newrev])
     end
 

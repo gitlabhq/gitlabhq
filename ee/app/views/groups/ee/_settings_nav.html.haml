@@ -22,7 +22,7 @@
       %span
         Pipelines quota
 
-- if current_application_settings.should_check_namespace_plan?
+- if Gitlab::CurrentSettings.should_check_namespace_plan?
   = nav_link(path: 'billings#index') do
     = link_to group_billings_path(@group), title: 'Billing' do
       %span

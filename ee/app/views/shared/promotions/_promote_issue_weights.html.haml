@@ -16,7 +16,7 @@
             %i.fa.fa-times.dropdown-menu-close-icon{ "aria-hidden" => "true", "data-hidden" => "true" }
         %div
           %p
-            - if current_application_settings.should_check_namespace_plan?
+            - if Gitlab::CurrentSettings.should_check_namespace_plan?
               = _('Upgrade your plan to activate Issue weight.')
             - else
               = _('Improve issues management with Issue weight and GitLab Enterprise Edition.')

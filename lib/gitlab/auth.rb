@@ -15,7 +15,6 @@ module Gitlab
 
     class << self
       prepend EE::Gitlab::Auth
-      include Gitlab::CurrentSettings
 
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
@@ -58,7 +57,7 @@ module Gitlab
           if user.nil? || user.ldap_user?
             # Second chance - try LDAP authentication
             Gitlab::LDAP::Authentication.login(login, password)
-          elsif current_application_settings.password_authentication_enabled_for_git?
+          elsif Gitlab::CurrentSettings.password_authentication_enabled_for_git?
             user if user.active? && user.valid_password?(password)
           end
         end
@@ -88,7 +87,7 @@ module Gitlab
       private
 
       def authenticate_using_internal_or_ldap_password?
-        current_application_settings.password_authentication_enabled_for_git? || Gitlab::LDAP::Config.enabled?
+        Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::LDAP::Config.enabled?
       end
 
       def service_request_check(login, password, project)

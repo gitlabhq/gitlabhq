@@ -5,7 +5,6 @@
 #
 module Gitlab
   module VisibilityLevel
-    extend CurrentSettings
     extend ActiveSupport::Concern
 
     included do
@@ -58,7 +57,7 @@ module Gitlab
       end
 
       def allowed_levels
-        restricted_levels = current_application_settings.restricted_visibility_levels
+        restricted_levels = Gitlab::CurrentSettings.restricted_visibility_levels
 
         self.values - restricted_levels
       end
@@ -81,7 +80,7 @@ module Gitlab
       end
 
       def non_restricted_level?(level)
-        restricted_levels = current_application_settings.restricted_visibility_levels
+        restricted_levels = Gitlab::CurrentSettings.restricted_visibility_levels
 
         if restricted_levels.nil?
           true
