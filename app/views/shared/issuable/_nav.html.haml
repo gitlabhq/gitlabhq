@@ -1,7 +1,7 @@
 - type = local_assigns.fetch(:type, :issues)
 - page_context_word = type.to_s.humanize(capitalize: false)
 
-%ul.nav-links.issues-state-filters
+%ul.nav-links.issues-state-filters.mobile-separator
   %li{ class: active_when(params[:state] == 'opened') }>
     = link_to page_filter_path(state: 'opened', label: true), id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", data: { state: 'opened' } do
       #{issuables_state_counter_text(type, :opened)}
