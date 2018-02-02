@@ -9,19 +9,19 @@ describe Gitlab::Ci::Trace::HttpIO do
 
   describe 'Interchangeability between IO and HttpIO' do
     EXCEPT_METHODS = %i[read_nonblock raw raw! cooked cooked! getch echo= echo?
-      winsize winsize= iflush oflush ioflush beep goto cursor cursor= pressed?
-      getpass write_nonblock stat pathconf wait_readable wait_writable getbyte <<
-      wait lines bytes chars codepoints getc readpartial set_encoding printf print
-      putc puts readlines gets each each_byte each_char each_codepoint to_io reopen
-      syswrite to_i fileno sysread fdatasync fsync sync= sync lineno= lineno readchar
-      ungetbyte readbyte ungetc nonblock= nread rewind pos= eof close_on_exec?
-      close_on_exec= closed? close_read close_write isatty tty? binmode? sysseek
-      advise ioctl fcntl pid external_encoding internal_encoding autoclose? autoclose=
-      posix_fileno nonblock? ready? noecho nonblock].freeze
+                        winsize winsize= iflush oflush ioflush beep goto cursor cursor= pressed?
+                        getpass write_nonblock stat pathconf wait_readable wait_writable getbyte <<
+                        wait lines bytes chars codepoints getc readpartial set_encoding printf print
+                        putc puts readlines gets each each_byte each_char each_codepoint to_io reopen
+                        syswrite to_i fileno sysread fdatasync fsync sync= sync lineno= lineno readchar
+                        ungetbyte readbyte ungetc nonblock= nread rewind pos= eof close_on_exec?
+                        close_on_exec= closed? close_read close_write isatty tty? binmode? sysseek
+                        advise ioctl fcntl pid external_encoding internal_encoding autoclose? autoclose=
+                        posix_fileno nonblock? ready? noecho nonblock].freeze
 
     it 'HttpIO covers core interfaces in IO' do
       expected_interfaces = ::IO.instance_methods(false)
-      expected_interfaces = expected_interfaces - EXCEPT_METHODS
+      expected_interfaces -= EXCEPT_METHODS
 
       expect(expected_interfaces - described_class.instance_methods).to be_empty
     end
@@ -62,10 +62,10 @@ describe Gitlab::Ci::Trace::HttpIO do
     end
 
     context 'when moves pos to middle of the file' do
-      let(:pos) { size/2 }
+      let(:pos) { size / 2 }
       let(:where) { IO::SEEK_SET }
 
-      it { is_expected.to eq(size/2) }
+      it { is_expected.to eq(size / 2) }
     end
 
     context 'when moves pos around' do
@@ -278,8 +278,8 @@ describe Gitlab::Ci::Trace::HttpIO do
       before do
         set_smaller_buffer_size_than(size)
 
-        http_io.seek(size/2)
-        string_io.seek(size/2)
+        http_io.seek(size / 2)
+        string_io.seek(size / 2)
       end
 
       it 'reads from pos' do

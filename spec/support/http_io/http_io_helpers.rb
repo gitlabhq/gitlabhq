@@ -23,7 +23,7 @@ module HttpIOHelpers
     }
   end
 
-  def range_trace_body(from ,to)
+  def range_trace_body(from, to)
     remote_trace_body[from..to]
   end
 
