@@ -159,6 +159,17 @@ describe Projects::JobsController do
       get_trace
     end
 
+    context 'when job has a trace artifact' do
+      let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      it 'returns a trace' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq job.id
+        expect(json_response['status']).to eq job.status
+        expect(json_response['html']).to eq(job.trace.html)
+      end
+    end
+
     context 'when job has a trace' do
       let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
 
@@ -381,7 +392,7 @@ describe Projects::JobsController do
     end
 
     context 'when job is erasable' do
-      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :erasable, :trace, :trace_artifact, pipeline: pipeline) }
 
       it 'redirects to the erased job page' do
         expect(response).to have_gitlab_http_status(:found)
@@ -437,6 +448,16 @@ describe Projects::JobsController do
   describe 'GET raw' do
     before do
       get_raw
+    end
+
+    context 'when job has a trace artifact' do
+      let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      it 'returns a trace' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eq 'text/plain; charset=utf-8'
+        expect(response.body).to eq job.job_artifacts_trace.open.read
+      end
     end
 
     context 'when job has a trace file' do

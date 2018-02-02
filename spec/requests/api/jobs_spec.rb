@@ -446,16 +446,27 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
-    let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
-
     before do
       get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
     end
 
     context 'authorized user' do
-      it 'returns specific job trace' do
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.body).to eq(job.trace.raw)
+      context 'when trace is artifact' do
+        let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is file' do
+        let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
       end
     end
 
@@ -543,11 +554,11 @@ describe API::Jobs do
     end
 
     context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(201)
-        expect(job).not_to have_trace
+        expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
       end
@@ -570,7 +581,7 @@ describe API::Jobs do
 
     context 'when a developer erases a build' do
       let(:role) { :developer }
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+      let(:job) { create(:ci_build, :trace, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
 
       context 'when the build was created by the developer' do
         let(:owner) { user }
