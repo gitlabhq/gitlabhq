@@ -53,11 +53,6 @@ var Dispatcher;
         case 'projects:issues:show':
           shortcut_handler = true;
           break;
-        case 'dashboard:issues':
-          import('./pages/dashboard/issues')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'dashboard:merge_requests':
           import('./pages/dashboard/merge_requests')
             .then(callDefault)
