@@ -15,10 +15,10 @@
         %span.text
           Checking branch availability…
     .btn-group.available.hide
-      %button.btn.js-create-merge-request.btn-default{ type: 'button', data: { action: data_action } }
+      %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
         = value
 
-      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-default.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' } } }
+      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' } } }
         = icon('caret-down')
 
       %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
