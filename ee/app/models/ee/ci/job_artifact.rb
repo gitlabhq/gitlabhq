@@ -13,7 +13,7 @@ module EE
     end
 
     def local_store?
-      [nil, JobArtifactUploader::Store::LOCAL].include?(self.file_store)
+      [nil, ::JobArtifactUploader::Store::LOCAL].include?(self.file_store)
     end
 
     private
