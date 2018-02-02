@@ -1,6 +1,11 @@
 <script>
+  import tooltip from '../../vue_shared/directives/tooltip';
+
   export default {
     name: 'MRWidgetAuthor',
+    directives: {
+      tooltip,
+    },
     props: {
       author: {
         type: Object,
