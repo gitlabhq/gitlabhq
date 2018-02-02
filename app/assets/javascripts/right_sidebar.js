@@ -75,12 +75,12 @@ Sidebar.prototype.toggleTodo = function(e) {
 
   $('.js-issuable-todo').disable().addClass('is-loading');
 
-  return axios[ajaxType](url, {
+  axios[ajaxType](url, {
     issuable_id: $this.data('issuable-id'),
     issuable_type: $this.data('issuable-type'),
   }).then(({ data }) => {
     this.todoUpdateDone(data);
-  });
+  }).catch(() => flash(`There was an error ${ajaxType === 'post' ? 'adding a' : 'deleting the'} todo.`));
 };
 
 Sidebar.prototype.todoUpdateDone = function(data) {

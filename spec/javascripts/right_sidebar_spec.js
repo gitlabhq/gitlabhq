@@ -74,8 +74,7 @@ import Sidebar from '~/right_sidebar';
 
       it('should broadcast todo:toggle event when add todo clicked', function(done) {
         var todos = getJSONFixture('todos/todos.json');
-        spyOn(axios, 'get').and.callThrough();
-        mock.onAny(`${gl.TEST_HOST}/frontend-fixtures/issues-project/todos`).reply(200, todos);
+        mock.onPost(/(.*)\/todos$/).reply(200, todos);
 
         var todoToggleSpy = spyOnEvent(document, 'todo:toggle');
 
