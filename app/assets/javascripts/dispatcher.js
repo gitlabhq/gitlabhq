@@ -53,13 +53,6 @@ var Dispatcher;
         case 'projects:issues:show':
           shortcut_handler = true;
           break;
-        case 'explore:projects:index':
-        case 'explore:projects:trending':
-        case 'explore:projects:starred':
-          import('./pages/explore/projects')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'explore:groups:index':
           import('./pages/explore/groups')
             .then(callDefault)
