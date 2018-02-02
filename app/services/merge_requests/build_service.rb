@@ -1,9 +1,6 @@
 module MergeRequests
   class BuildService < MergeRequests::BaseService
-<<<<<<< HEAD
     prepend EE::MergeRequests::BuildService
-=======
->>>>>>> upstream/master
     include Gitlab::Utils::StrongMemoize
 
     def execute
