@@ -17,30 +17,22 @@ describe CalloutsHelper do
         allow(helper).to receive(:user_dismissed?).and_return(false)
       end
 
-      context 'when user is master' do
+      context 'when user can create a cluster' do
         before do
-          allow(project).to receive_message_chain(:team, :master?).and_return(true)
+          allow(helper).to receive(:can?).with(anything, :create_cluster, anything)
+            .and_return(true)
         end
 
         it { is_expected.to be true }
       end
 
-      context 'when user is not master' do
-        context 'when the user is owner' do
-          before do
-            allow(project).to receive(:owner).and_return(user)
-          end
-
-          it { is_expected.to be true }
+      context 'when user can not create a cluster' do
+        before do
+          allow(helper).to receive(:can?).with(anything, :create_cluster, anything)
+            .and_return(false)
         end
 
-        context 'when the user is not owner' do
-          before do
-            allow(project).to receive_message_chain(:team, :master?).and_return(false)
-          end
-
-          it { is_expected.to be false }
-        end
+        it { is_expected.to be false }
       end
     end
 
