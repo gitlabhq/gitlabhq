@@ -1,5 +1,5 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
-
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
@@ -8,11 +8,24 @@ import IssuablesHelper from '~/helpers/issuables_helper';
 (function() {
   describe('MergeRequest', function() {
     describe('task lists', function() {
+      let mock;
+
       preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       beforeEach(function() {
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+
+        spyOn(axios, 'patch').and.callThrough();
+        mock = new MockAdapter(axios);
+
+        mock.onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`).reply(200, {});
+
         return this.merge = new MergeRequest();
       });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('modifies the Markdown field', function() {
         spyOn(jQuery, 'ajax').and.stub();
         const changeEvent = document.createEvent('HTMLEvents');
@@ -22,15 +35,14 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       });
 
       it('submits an ajax request on tasklist:changed', (done) => {
-        spyOn(axios, 'patch').and.callFake((url, data) => {
-          expect(url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
-          expect(data.merge_request.description).not.toBe(null);
-          done();
-
-          return Promise.resolve({ data: {} });
-        });
-
         $('.js-task-list-field').trigger('tasklist:changed');
+
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`, {
+            merge_request: { description: '- [ ] Task List Item' },
+          });
+          done();
+        });
       });
     });
 

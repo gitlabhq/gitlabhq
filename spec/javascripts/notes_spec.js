@@ -50,11 +50,22 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
     });
 
     describe('task lists', function() {
+      let mock;
+
       beforeEach(function() {
+        spyOn(axios, 'patch').and.callThrough();
+        mock = new MockAdapter(axios);
+
+        mock.onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`).reply(200, {});
+
         $('.js-comment-button').on('click', function(e) {
           e.preventDefault();
         });
         this.notes = new Notes('', []);
+      });
+
+      afterEach(() => {
+        mock.restore();
       });
 
       it('modifies the Markdown field', function() {
@@ -66,15 +77,14 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('submits an ajax request on tasklist:changed', function(done) {
-        spyOn(axios, 'patch').and.callFake((url, data) => {
-          expect(url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
-          expect(data.note).not.toBe(null);
-          done();
-
-          return Promise.resolve({ data: {} });
-        });
-
         $('.js-task-list-container').trigger('tasklist:changed');
+
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`, {
+            note: { note: '' },
+          });
+          done();
+        });
       });
     });
 
