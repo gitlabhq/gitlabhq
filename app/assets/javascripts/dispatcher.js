@@ -50,10 +50,6 @@ var Dispatcher;
         case 'projects:issues:edit':
           shortcut_handler = true;
           break;
-        case 'projects:merge_requests:creations:new':
-          import('./pages/projects/merge_requests/creations/new')
-            .then(callDefault)
-            .catch(fail);
         case 'projects:merge_requests:creations:diffs':
           import('./pages/projects/merge_requests/creations/diffs')
             .then(callDefault)
