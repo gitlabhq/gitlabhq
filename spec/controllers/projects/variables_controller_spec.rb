@@ -17,8 +17,7 @@ describe Projects::VariablesController do
     end
 
     subject do
-      get :show, namespace_id: project.namespace.to_param, project_id: project,
-                 format: :json
+      get :show, namespace_id: project.namespace.to_param, project_id: project, format: :json
     end
 
     it 'renders the ci_variable as json' do
@@ -30,13 +29,23 @@ describe Projects::VariablesController do
 
   describe 'POST #update' do
     let(:variable) { create(:ci_variable) }
+
+    subject do
+      patch :update,
+        namespace_id: project.namespace.to_param, project_id: project,
+        variables_attributes: variables_attributes,
+        format: :json
+    end
+
     let(:variable_attributes) do
-      { id: variable.id, key: variable.key,
+      { id: variable.id,
+        key: variable.key,
         value: variable.value,
         protected: variable.protected?.to_s }
     end
     let(:new_variable_attributes) do
-      { key: 'new_key', value: 'dummy_value',
+      { key: 'new_key',
+        value: 'dummy_value',
         protected: 'false' }
     end
 
@@ -45,12 +54,11 @@ describe Projects::VariablesController do
     end
 
     context 'with invalid new variable parameters' do
-      subject do
-        patch :update,
-          namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [variable_attributes.merge(value: 'other_value'),
-                                 new_variable_attributes.merge(key: '..?')],
-          format: :json
+      let(:variables_attributes) do
+        [
+          variable_attributes.merge(value: 'other_value'),
+          new_variable_attributes.merge(key: '...?')
+        ]
       end
 
       it 'does not update the existing variable' do
@@ -69,12 +77,11 @@ describe Projects::VariablesController do
     end
 
     context 'with valid new variable parameters' do
-      subject do
-        patch :update,
-          namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [variable_attributes.merge(value: 'other_value'),
-                                 new_variable_attributes],
-          format: :json
+      let(:variables_attributes) do
+        [
+          variable_attributes.merge(value: 'other_value'),
+          new_variable_attributes
+        ]
       end
 
       it 'updates the existing variable' do
@@ -99,12 +106,7 @@ describe Projects::VariablesController do
     end
 
     context 'with a deleted variable' do
-      subject do
-        patch :update,
-          namespace_id: project.namespace.to_param, project_id: project,
-          variables_attributes: [variable_attributes.merge(_destroy: 'true')],
-          format: :json
-      end
+      let(:variables_attributes) { [variable_attributes.merge(_destroy: 'true')] }
 
       it 'destroys the variable' do
         expect { subject }.to change { project.variables.count }.by(-1)
