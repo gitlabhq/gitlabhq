@@ -78,7 +78,7 @@ module Geo
       Geo::Fdw::Ci::JobArtifact.joins("LEFT OUTER JOIN file_registry
                                               ON file_registry.file_id = #{fdw_table}.id
                                              AND file_registry.file_type = 'job_artifact'")
-        .merge(Geo::Fdw::Ci::JobArtifact.with_files_stored_locally)
+        .with_files_stored_locally
         .where(file_registry: { id: nil })
         .where.not(id: except_registry_ids)
     end
