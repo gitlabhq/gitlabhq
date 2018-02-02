@@ -48,12 +48,7 @@ var Dispatcher;
         case 'projects:issues:show':
         case 'projects:issues:new':
         case 'projects:issues:edit':
-          shortcut_handler = true;
-          break;
         case 'projects:merge_requests:creations:diffs':
-          import('./pages/projects/merge_requests/creations/diffs')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:merge_requests:edit':
