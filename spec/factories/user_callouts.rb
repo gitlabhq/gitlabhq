@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :callout do
+  factory :user_callout do
     feature_name 'test_callout'
 
     user

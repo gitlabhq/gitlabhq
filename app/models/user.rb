@@ -139,7 +139,7 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
-  has_many :callouts
+  has_many :callouts, class_name: 'UserCallout'
 
   #
   # Validations

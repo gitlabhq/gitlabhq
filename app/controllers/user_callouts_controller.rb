@@ -1,4 +1,4 @@
-class CalloutsController < ApplicationController
+class UserCalloutsController < ApplicationController
   def create
     if ensure_callout
       respond_to do |format|

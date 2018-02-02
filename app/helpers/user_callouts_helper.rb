@@ -1,4 +1,4 @@
-module CalloutsHelper
+module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'.freeze
 
   # Higher value = higher priority
