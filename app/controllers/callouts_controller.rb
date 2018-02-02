@@ -1,9 +1,13 @@
 class CalloutsController < ApplicationController
-  def dismiss
+  def create
     if ensure_callout
-      respond_to { |format| format.json { head :ok } }
+      respond_to do |format|
+        format.json { head :ok }
+      end
     else
-      respond_to { |format| format.json { head :bad_request } }
+      respond_to do |format|
+        format.json { head :bad_request }
+      end
     end
   end
 
