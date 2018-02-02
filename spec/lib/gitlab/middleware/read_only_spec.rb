@@ -11,8 +11,10 @@ describe Gitlab::Middleware::ReadOnly do
 
   RSpec::Matchers.define :disallow_request do
     match do |middleware|
-      flash = middleware.send(:rack_flash)
-      flash['alert'] && flash['alert'].include?('You cannot do writing operations')
+      alert = middleware.env['rack.session'].to_hash
+        .dig('flash', 'flashes', 'alert')
+
+      alert&.include?('You cannot do writing operations')
     end
   end
 
@@ -34,7 +36,22 @@ describe Gitlab::Middleware::ReadOnly do
     rack.to_app
   end
 
-  subject { described_class.new(fake_app) }
+  let(:observe_env) do
+    Module.new do
+      attr_reader :env
+
+      def call(env)
+        @env = env
+        super
+      end
+    end
+  end
+
+  subject do
+    app = described_class.new(fake_app)
+    app.extend(observe_env)
+    app
+  end
 
   let(:request) { Rack::MockRequest.new(rack_stack) }
 
