@@ -1,8 +1,6 @@
 module Gitlab
   module LegacyGithubImport
     class ProjectCreator
-      include Gitlab::CurrentSettings
-
       attr_reader :repo, :name, :namespace, :current_user, :session_data, :type
 
       def initialize(repo, name, namespace, current_user, session_data, type: 'github')
@@ -36,7 +34,7 @@ module Gitlab
       end
 
       def visibility_level
-        repo.private ? Gitlab::VisibilityLevel::PRIVATE : current_application_settings.default_project_visibility
+        repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.default_project_visibility
       end
 
       #

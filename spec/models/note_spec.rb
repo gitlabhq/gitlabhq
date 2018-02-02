@@ -17,8 +17,6 @@ describe Note do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Mentionable) }
     it { is_expected.to include_module(Awardable) }
-
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
   end
 
   describe 'validation' do

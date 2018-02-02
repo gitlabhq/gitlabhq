@@ -1,7 +1,7 @@
 %p
   Hi #{@user['name']}!
 %p
-  - if current_application_settings.allow_signup?
+  - if Gitlab::CurrentSettings.allow_signup?
     Your account has been created successfully.
   - else
     The Administrator created an account for you. Now you are a member of the company GitLab application.
