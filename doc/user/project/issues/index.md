@@ -35,7 +35,7 @@ your project public, open to collaboration.
 ### Streamline collaboration
 
 With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
-available in [GitLab Starter](https://about.gitlab.com/products/)
+available in [GitLab Starter](https://about.gitlab.com/gitlab-ee/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
@@ -141,7 +141,10 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-### Export Issues to CSV (Starter/Premium)
+### Export Issues to CSV
+
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
 
 Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
 

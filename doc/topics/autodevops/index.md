@@ -279,12 +279,8 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 /direction
 ```
 
-<<<<<<< HEAD
 In GitLab Premium, performance differences between the source
 and target branches are [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
-=======
-In GitLab Premium, performance differences between the source and target branches are [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
->>>>>>> bfab3990f8c... search and replace "Premium" => "Premium"
 
 ### Auto Deploy
 
@@ -598,4 +594,4 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/gitlab-ee/

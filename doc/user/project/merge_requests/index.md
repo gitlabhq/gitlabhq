@@ -201,7 +201,7 @@ can show the Code Climate report right in the merge request widget area.
 
 ## Static Application Security Testing
 
-> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.3.
+> Introduced in [GitLab Ultimate][products] 10.3.
 
 If you are using [GitLab CI/CD][ci], you can analyze your source code for known
 vulnerabilities using Static Application Security Testing (SAST).
@@ -212,7 +212,7 @@ merge request widget area.
 
 ## Static Application Security Testing for Docker containers
 
-> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.4.
+> Introduced in [GitLab Ultimate][products] 10.4.
 
 If you are using [GitLab CI/CD][ci], you can analyze your Docker images for known
 vulnerabilities.
@@ -361,6 +361,6 @@ git checkout origin/merge-requests/1
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
+[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
 [sitespeed]: https://www.sitespeed.io
 [sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"

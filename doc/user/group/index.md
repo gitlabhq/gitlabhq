@@ -152,16 +152,17 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
-### (Premium) Default project creation level
+### Default project creation level
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/) and
+[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
 
 This feature allows groups to define a default project creation level.
-    
+
 By default, `Developers` and `Masters` are allowed to create projects, but
 this can be changed within the group settings for a group, or the default setting
 changed within the Admin area (`Settings`, `Visibility and Access Controls`). This
 can be `None`, `Masters`, or `Developers + Masters`. 
-
-It is available only in [GitLab Premium][eep].
 
 ## Transfer projects into groups
 
@@ -181,7 +182,7 @@ See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for
 
 ## Epics
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
+> Introduced in [GitLab Ultimate][ee] 10.2.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and

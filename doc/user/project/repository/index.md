@@ -66,7 +66,7 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Enterprise Edition](https://about.gitlab.com/products/)
+With [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)
 subscriptions, you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals) from your managers.
 
@@ -154,7 +154,7 @@ Find it under your project's **Repository > Compare**.
 Lock your files to prevent any conflicting changes.
 
 [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/products/).
+[GitLab Premium](https://about.gitlab.com/gitlab-ee/).
 
 ## Repository's API
 

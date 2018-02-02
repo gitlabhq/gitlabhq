@@ -1,6 +1,6 @@
 # Dynamic Application Security Testing (DAST)
 
-> [Introduced][ee-4348] in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> [Introduced][ee-4348] in [GitLab Ultimate][ee] 10.4.
 
 If you are using [GitLab CI/CD][ci], you can analyze your running web application(s)
 for known vulnerabilities using Dynamic Application Security Testing (DAST).

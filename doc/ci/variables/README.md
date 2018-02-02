@@ -200,7 +200,7 @@ Once you set them, they will be available for all subsequent pipelines.
 ### Limiting environment scopes of secret variables
 
 >**Notes:**
-[Introduced][ee-2112] in [GitLab Premium][eep] 9.4.
+[Introduced][ee-2112] in [GitLab Premium][premium] 9.4.
 
 You can limit the environment scope of a secret variable by
 [defining which environments][envs] it can be available for.
@@ -467,7 +467,7 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
-[eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
+[premium]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md

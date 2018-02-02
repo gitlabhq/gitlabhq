@@ -303,4 +303,4 @@ the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
 
 [permissions]: ../../permissions.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/gitlab-ee/

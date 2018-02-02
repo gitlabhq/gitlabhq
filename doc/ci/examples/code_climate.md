@@ -31,4 +31,4 @@ diffs in merge requests](../../user/project/merge_requests/code_quality_diff.md)
 
 [cli]: https://github.com/codeclimate/codeclimate
 [dind]: ../docker/using_docker_build.md#use-docker-in-docker-executor
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/gitlab-ee/

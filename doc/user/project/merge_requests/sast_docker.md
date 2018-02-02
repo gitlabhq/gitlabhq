@@ -1,6 +1,6 @@
 # Static Application Security Testing for Docker containers
 
-> [Introduced][ee-3672] in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> [Introduced][ee-3672] in [GitLab Ultimate][ee] 10.4.
 
 ## Overview
 

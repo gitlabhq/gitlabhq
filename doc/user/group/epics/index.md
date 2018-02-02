@@ -1,6 +1,6 @@
 # Epics
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
+> Introduced in [GitLab Ultimate][ee] 10.2.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
