@@ -7,8 +7,8 @@ describe CalloutsController do
     sign_in(user)
   end
 
-  describe "POST #dismiss" do
-    subject { post :dismiss, feature_name: 'feature_name', format: :json }
+  describe "POST #create" do
+    subject { post :create, feature_name: 'feature_name', format: :json }
 
     context 'when callout entry does not exist' do
       it 'should create a callout entry with dismissed state' do

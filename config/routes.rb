@@ -62,9 +62,7 @@ Rails.application.routes.draw do
     end
 
     # Callouts
-    namespace :callouts do
-      post :dismiss
-    end
+    resources :callouts, only: [:create]
   end
 
   # Koding route
