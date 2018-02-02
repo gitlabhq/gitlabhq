@@ -9,7 +9,7 @@ describe CreateTraceArtifactWorker do
 
       it 'executes service' do
         expect_any_instance_of(Ci::CreateTraceArtifactService)
-          .to receive(:execute)
+          .to receive(:execute).with(job)
 
         subject
       end
