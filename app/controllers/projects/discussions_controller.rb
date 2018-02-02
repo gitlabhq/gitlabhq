@@ -10,36 +10,42 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def resolve
     Discussions::ResolveService.new(project, current_user, merge_request: merge_request).execute(discussion)
 
-    if has_vue_discussions_cookie? && !params['html']
-      prepare_notes_for_rendering(discussion.notes)
-      # TODO: We may need to strip when cross_reference_not_visible_for
-
-      render json: DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user).represent(discussion)
-    else
-      render json: {
-        resolved_by: discussion.resolved_by.try(:name),
-        discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
-      }
-    end
+    render_discussion
   end
 
   def unresolve
     discussion.unresolve!
 
-    if has_vue_discussions_cookie? && !params['html']
-      prepare_notes_for_rendering(discussion.notes)
-      # TODO: We may need to strip when cross_reference_not_visible_for
-      # TODO: This needs to be refactored to DRY
-
-      render json: DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user).represent(discussion)
-    else
-      render json: {
-        discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
-      }
-    end
+    render_discussion
   end
 
   private
+
+  def render_discussion
+    if use_serializer?
+      prepare_notes_for_rendering(discussion.notes)
+      render_json_with_serializer
+    else
+      render_json_with_html
+    end
+  end
+
+  def use_serializer?
+    has_vue_discussions_cookie? && !params['html']
+  end
+
+  def render_json_with_serializer
+    render json:
+      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user).
+        represent(discussion, context: self)
+  end
+
+  # Legacy method used to render discussions notes when not using Vue on views.
+  def render_json_with_html
+      render json: {
+        discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
+      }
+  end
 
   def merge_request
     @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).find_by!(iid: params[:merge_request_id])
