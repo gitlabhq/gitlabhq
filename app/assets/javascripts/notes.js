@@ -18,7 +18,6 @@ import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
-import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';

@@ -1,3 +1,3 @@
 import projectSelect from '~/project_select';
 
-export default projectSelect;
+document.addEventListener('DOMContentLoaded', projectSelect);
