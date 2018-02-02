@@ -426,7 +426,7 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#version' do
-    it {  expect(status.version).to eq(Gitlab::VERSION) }
+    it { expect(status.version).to eq(Gitlab::VERSION) }
   end
 
   describe '#revision' do
