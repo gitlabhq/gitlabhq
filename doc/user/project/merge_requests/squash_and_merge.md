@@ -1,6 +1,6 @@
 # Squash and merge
 
-> [Introduced][ee-1024] in [GitLab Enterprise Edition Starter][ee] 8.17.
+> [Introduced][ee-1024] in [GitLab Starter][ee] 8.17.
 
 Combine all commits of your merge request into one and retain a clean history.
 

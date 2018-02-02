@@ -68,7 +68,7 @@ they are set to "Masters" by default.
 
 ## Restricting push and merge access to certain users
 
-> This feature was [introduced][ce-5081] in [GitLab Enterprise Edition Starter][ee] 8.11.
+> This feature was [introduced][ce-5081] in [GitLab Starter][ee] 8.11.
 
 With GitLab Enterprise Edition you can restrict access to protected branches
 by choosing a role (Masters, Developers) as well as certain users. From the

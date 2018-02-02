@@ -32,9 +32,9 @@ With GitLab merge requests, you can:
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
-- Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
-- [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
-- Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
+- Request [approvals](#merge-request-approvals) from your managers (available in GitLab Starter)
+- [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Starter)
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Enterprise Edition Premium)
 
 ## Use cases
@@ -180,7 +180,7 @@ have been marked as a **Work In Progress**.
 
 ## Merge request approvals
 
-> Included in [GitLab Enterprise Edition Starter][products].
+> Included in [GitLab Starter][products].
 
 If you want to make sure every merge request is approved by one or more people,
 you can enforce this workflow by using merge request approvals. Merge request
@@ -191,7 +191,7 @@ list of approvers that will need to approve every merge request in a project.
 
 ## Code Quality reports
 
-> Introduced in [GitLab Enterprise Edition Starter][products] 9.3.
+> Introduced in [GitLab Starter][products] 9.3.
 
 If you are using [GitLab CI][ci], you can analyze your source code quality using
 the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab

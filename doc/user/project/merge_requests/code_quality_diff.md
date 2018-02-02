@@ -1,6 +1,6 @@
 # Code Quality
 
-> [Introduced][ee-1984] in [GitLab Enterprise Edition Starter][ee] 9.3.
+> [Introduced][ee-1984] in [GitLab Starter][ee] 9.3.
 
 ## Overview
 
@@ -28,7 +28,7 @@ For instance, consider the following workflow:
 ## How it works
 
 >**Note:**
-In [GitLab Enterprise Edition Starter][ee] 10.0, another job name will
+In [GitLab Starter][ee] 10.0, another job name will
 also be supported: `codequality`. This new job name will eventually replace
 `codeclimate` which is scheduled to be removed in GitLab 11.0. You are advised
 to update your current `.gitlab-ci.yml` configuration to reflect that change.

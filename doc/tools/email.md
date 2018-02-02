@@ -1,7 +1,7 @@
 # Email from GitLab
 
 >**Note:**
-Available in [GitLab Enterprise Edition Starter][ee].
+Available in [GitLab Starter][ee].
 
 As a GitLab administrator you can email GitLab users from within GitLab.
 

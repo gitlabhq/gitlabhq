@@ -77,7 +77,7 @@ You can check your regular expressions at <http://rubular.com>.
 
 ## Prevent pushing secrets to the repository
 
-> [Introduced][ee-385] in [GitLab Enterprise Edition Starter][ee] 8.12.
+> [Introduced][ee-385] in [GitLab Starter][ee] 8.12.
 
 You can turn on a predefined blacklist of files which won't be allowed to be
 pushed to a repository.

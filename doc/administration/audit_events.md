@@ -37,7 +37,7 @@ There are two kinds of events logged:
 
 ### Group events
 
-> Available in [GitLab Enterprise Edition Starter][ee].
+> Available in [GitLab Starter][ee].
 
 NOTE: **Note:**
 You need Owner [permissions] to view the group Audit Events page.
@@ -58,7 +58,7 @@ From there, you can see the following actions:
 
 ### Project events
 
-> Available in [GitLab Enterprise Edition Starter][ee].
+> Available in [GitLab Starter][ee].
 
 NOTE: **Note:**
 You need Master [permissions] or higher to view the project Audit Events page.

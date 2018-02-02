@@ -1,7 +1,7 @@
 # Kerberos integration
 
 >**Note:**
-Available in [GitLab Enterprise Edition Starter][ee].
+Available in [GitLab Starter][ee].
 
 GitLab can integrate with [Kerberos][kerb] as an authentication mechanism.
 

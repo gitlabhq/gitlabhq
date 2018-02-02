@@ -7,7 +7,7 @@ Omnibus package to manage your database.
 
 > Important notes:
 - This document will focus only on configuration supported with [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/), using the Omnibus GitLab package.
-- If you are a Community Edition or Enterprise Edition Starter user, consider using a cloud hosted solution.
+- If you are a Community Edition or Starter user, consider using a cloud hosted solution.
 - This document will not cover installations from source.
 
 >
