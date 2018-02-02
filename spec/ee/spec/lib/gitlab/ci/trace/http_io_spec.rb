@@ -224,7 +224,7 @@ describe Gitlab::Ci::Trace::HttpIO do
       end
 
       it 'reads a trace' do
-        is_expected.to be_nil
+        expect { subject }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
       end
     end
   end
@@ -254,7 +254,7 @@ describe Gitlab::Ci::Trace::HttpIO do
       end
 
       it 'reads a trace' do
-        is_expected.to be_nil
+        expect { subject }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
       end
     end
 
