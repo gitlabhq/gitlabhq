@@ -25,23 +25,32 @@ describe Groups::VariablesController do
 
   describe 'POST #update' do
     let!(:variable) { create(:ci_group_variable, group: group) }
+
+    subject do
+      patch :update,
+        group_id: group,
+        variables_attributes: variables_attributes,
+        format: :json
+    end
+
     let(:variable_attributes) do
-      { id: variable.id, key: variable.key,
+      { id: variable.id,
+        key: variable.key,
         value: variable.value,
         protected: variable.protected?.to_s }
     end
     let(:new_variable_attributes) do
-      { key: 'new_key', value: 'dummy_value',
+      { key: 'new_key',
+        value: 'dummy_value',
         protected: 'false' }
     end
 
     context 'with invalid new variable parameters' do
-      subject do
-        patch :update,
-          group_id: group,
-          variables_attributes: [variable_attributes.merge(value: 'other_value'),
-                                 new_variable_attributes.merge(key: '..?')],
-          format: :json
+      let(:variables_attributes) do
+        [
+          variable_attributes.merge(value: 'other_value'),
+          new_variable_attributes.merge(key: '...?')
+        ]
       end
 
       it 'does not update the existing variable' do
@@ -60,12 +69,11 @@ describe Groups::VariablesController do
     end
 
     context 'with valid new variable parameters' do
-      subject do
-        patch :update,
-          group_id: group,
-          variables_attributes: [variable_attributes.merge(value: 'other_value'),
-                                 new_variable_attributes],
-          format: :json
+      let(:variables_attributes) do
+        [
+          variable_attributes.merge(value: 'other_value'),
+          new_variable_attributes
+        ]
       end
 
       it 'updates the existing variable' do
@@ -90,12 +98,7 @@ describe Groups::VariablesController do
     end
 
     context 'with a deleted variable' do
-      subject do
-        patch :update,
-          group_id: group,
-          variables_attributes: [variable_attributes.merge(_destroy: 'true')],
-          format: :json
-      end
+      let(:variables_attributes) { [variable_attributes.merge(_destroy: 'true')] }
 
       it 'destroys the variable' do
         expect { subject }.to change { group.variables.count }.by(-1)
