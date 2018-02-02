@@ -49,6 +49,11 @@ import Sidebar from '~/right_sidebar';
         $toggle = $aside.find('.js-sidebar-toggle');
         return $labelsIcon = $aside.find('.sidebar-collapsed-icon');
       });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('should expand/collapse the sidebar when arrow is clicked', function() {
         assertSidebarState('expanded');
         $toggle.click();

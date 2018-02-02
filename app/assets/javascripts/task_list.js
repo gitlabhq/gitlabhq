@@ -8,11 +8,11 @@ export default class TaskList {
     this.dataType = options.dataType;
     this.fieldName = options.fieldName;
     this.onSuccess = options.onSuccess || (() => {});
-    this.onError = function showFlash(response) {
+    this.onError = function showFlash(e) {
       let errorMessages = '';
 
-      if (response.responseJSON) {
-        errorMessages = response.responseJSON.errors.join(' ');
+      if (e.response.data && typeof e.response.data === 'object') {
+        errorMessages = e.response.data.errors.join(' ');
       }
 
       return new Flash(errorMessages || 'Update failed', 'alert');
@@ -42,6 +42,6 @@ export default class TaskList {
 
     return axios.patch($target.data('update-url') || $('form.js-issuable-update').attr('action'), patchData)
       .then(({ data }) => this.onSuccess(data))
-      .catch(() => this.onError());
+      .catch(err => this.onError(err));
   }
 }

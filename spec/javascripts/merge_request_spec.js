@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
 
+import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import IssuablesHelper from '~/helpers/issuables_helper';
@@ -21,11 +22,12 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       });
 
       it('submits an ajax request on tasklist:changed', (done) => {
-        spyOn(jQuery, 'ajax').and.callFake((req) => {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
-          expect(req.data.merge_request.description).not.toBe(null);
+        spyOn(axios, 'patch').and.callFake((url, data) => {
+          expect(url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
+          expect(data.merge_request.description).not.toBe(null);
           done();
+
+          return Promise.resolve({ data: {} });
         });
 
         $('.js-task-list-field').trigger('tasklist:changed');

@@ -65,14 +65,16 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1.json');
-          return expect(req.data.note).not.toBe(null);
+      it('submits an ajax request on tasklist:changed', function(done) {
+        spyOn(axios, 'patch').and.callFake((url, data) => {
+          expect(url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
+          expect(data.note.note).not.toBe(null);
+          done();
+
+          return Promise.resolve({ data: {} });
         });
 
-        $('.js-task-list-field.js-note-text').trigger('tasklist:changed');
+        $('.js-task-list-container').trigger('tasklist:changed');
       });
     });
 
