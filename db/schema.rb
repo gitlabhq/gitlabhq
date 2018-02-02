@@ -1727,7 +1727,7 @@ ActiveRecord::Schema.define(version: 20180202111106) do
     t.integer "project_id", null: false
   end
 
-  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", using: :btree
+  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", unique: true, using: :btree
 
   create_table "u2f_registrations", force: :cascade do |t|
     t.text "certificate"
