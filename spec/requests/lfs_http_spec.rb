@@ -958,7 +958,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200, location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['StoreLFSPath']).to eq(LfsObjectUploader.workhorse_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end
@@ -1075,7 +1075,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'with location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['StoreLFSPath']).to eq(LfsObjectUploader.workhorse_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end

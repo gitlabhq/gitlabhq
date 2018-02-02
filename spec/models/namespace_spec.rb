@@ -204,7 +204,7 @@ describe Namespace do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
       let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child, skip_disk_validation: true) }
-      let(:uploads_dir) { File.join(CarrierWave.root, FileUploader.base_dir) }
+      let(:uploads_dir) { FileUploader.root }
       let(:pages_dir) { File.join(TestEnv.pages_path) }
 
       before do
