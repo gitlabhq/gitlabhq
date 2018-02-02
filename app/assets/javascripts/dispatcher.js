@@ -22,9 +22,9 @@ import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
-(function() {
-  var Dispatcher;
+var Dispatcher;
 
+(function() {
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -72,45 +72,15 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
       }
 
       switch (page) {
-        case 'sessions:new':
-          import('./pages/sessions/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:boards:show':
-        case 'projects:boards:index':
-          import('./pages/projects/boards/index')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:environments:metrics':
           import('./pages/projects/environments/metrics')
             .then(callDefault)
             .catch(fail);
           break;
         case 'projects:merge_requests:index':
-          import('./pages/projects/merge_requests/index')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:issues:index':
-          import('./pages/projects/issues/index')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:issues:show':
-          import('./pages/projects/issues/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
-          break;
-        case 'dashboard:milestones:index':
-          import('./pages/dashboard/milestones/index')
-            .then(callDefault)
-            .catch(fail);
           break;
         case 'projects:milestones:index':
           import('./pages/projects/milestones/index')
@@ -352,9 +322,6 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           shortcut_handler = true;
           break;
         case 'projects:show':
-          import('./pages/projects/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           // ee-start
           initGeoInfoModal();
@@ -400,7 +367,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
             .catch(fail);
           break;
         case 'projects:project_members:index':
-          import('./pages/projects/project_members/')
+          import('./pages/projects/project_members')
             .then(callDefault)
             .catch(fail);
           break;
@@ -681,7 +648,7 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
           }
           break;
         case 'profiles':
-          import('./pages/profiles/index/')
+          import('./pages/profiles/index')
             .then(callDefault)
             .catch(fail);
           break;
@@ -736,8 +703,8 @@ import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line
 
     return Dispatcher;
   })();
+})();
 
-  $(window).on('load', function() {
-    new Dispatcher();
-  });
-}).call(window);
+export default function initDispatcher() {
+  return new Dispatcher();
+}
