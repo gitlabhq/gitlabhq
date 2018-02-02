@@ -12,9 +12,9 @@ import ShortcutsIssuable from './shortcuts_issuable';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
-(function() {
-  var Dispatcher;
+var Dispatcher;
 
+(function() {
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -629,8 +629,8 @@ import SearchAutocomplete from './search_autocomplete';
 
     return Dispatcher;
   })();
+})();
 
-  $(window).on('load', function() {
-    new Dispatcher();
-  });
-}).call(window);
+export default function initDispatcher() {
+  return new Dispatcher();
+}
