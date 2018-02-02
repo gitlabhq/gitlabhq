@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
+import axios from './lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from './lib/utils/url_utility';
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 
@@ -85,21 +86,21 @@ export default class Shortcuts {
       $modal.modal('toggle');
     }
 
-    $.ajax({
-      url: gon.shortcuts_path,
-      dataType: 'script',
-      success() {
-        if (location && location.length > 0) {
-          const results = [];
-          for (let i = 0, len = location.length; i < len; i += 1) {
-            results.push($(location[i]).show());
-          }
-          return results;
-        }
+    return axios.get(gon.shortcuts_path, {
+      responseType: 'text',
+    }).then(({ data }) => {
+      $.globalEval(data);
 
-        $('.hidden-shortcut').show();
-        return $('.js-more-help-button').remove();
-      },
+      if (location && location.length > 0) {
+        const results = [];
+        for (let i = 0, len = location.length; i < len; i += 1) {
+          results.push($(location[i]).show());
+        }
+        return results;
+      }
+
+      $('.hidden-shortcut').show();
+      return $('.js-more-help-button').remove();
     });
   }
 
