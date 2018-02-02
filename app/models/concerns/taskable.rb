@@ -9,13 +9,13 @@ require 'task_list/filter'
 module Taskable
   COMPLETED    = 'completed'.freeze
   INCOMPLETE   = 'incomplete'.freeze
-  ITEM_PATTERN = /
+  ITEM_PATTERN = %r{
     ^
     \s*(?:[-+*]|(?:\d+\.)) # list prefix required - task item has to be always in a list
     \s+                       # whitespace prefix has to be always presented for a list item
     (\[\s\]|\[[xX]\])         # checkbox
     (\s.+)                    # followed by whitespace and some text.
-  /x
+  }x
 
   def self.get_tasks(content)
     content.to_s.scan(ITEM_PATTERN).map do |checkbox, label|

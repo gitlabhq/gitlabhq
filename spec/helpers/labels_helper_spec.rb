@@ -104,7 +104,7 @@ describe LabelsHelper do
     context 'with a tooltip argument' do
       context 'set to false' do
         it 'does not include the has-tooltip class' do
-          expect(link_to_label(label, tooltip: false)).not_to match %r{has-tooltip}
+          expect(link_to_label(label, tooltip: false)).not_to match /has-tooltip/
         end
       end
     end

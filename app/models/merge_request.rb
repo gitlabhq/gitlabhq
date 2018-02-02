@@ -618,12 +618,12 @@ class MergeRequest < ActiveRecord::Base
     can_be_merged? && !should_be_rebased?
   end
 
-  def mergeable_state?(skip_ci_check: false)
+  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
     return false unless skip_ci_check || mergeable_ci_state?
-    return false unless mergeable_discussions_state?
+    return false unless skip_discussions_check || mergeable_discussions_state?
 
     true
   end
@@ -989,13 +989,13 @@ class MergeRequest < ActiveRecord::Base
     merged_at = metrics&.merged_at
     notes_association = notes_with_associations
 
-    # It is not guaranteed that Note#created_at will be strictly later than
-    # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
-    # comparison, as will a HA environment if clocks are not *precisely*
-    # synchronized. Add a minute's leeway to compensate for both possibilities
-    cutoff = merged_at - 1.minute
-
     if merged_at
+      # It is not guaranteed that Note#created_at will be strictly later than
+      # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
+      # comparison, as will a HA environment if clocks are not *precisely*
+      # synchronized. Add a minute's leeway to compensate for both possibilities
+      cutoff = merged_at - 1.minute
+
       notes_association = notes_association.where('created_at >= ?', cutoff)
     end
 

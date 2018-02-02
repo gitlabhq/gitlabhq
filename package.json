@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev-server": "nodemon --watch config/webpack.config.js -- ./node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
+    "dev-server": "nodemon -w 'config/webpack.config.js' -w 'app/assets/javascripts/dispatcher.js' -w 'app/assets/javascripts/pages/**/index.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
@@ -47,6 +47,7 @@
     "exports-loader": "^0.6.4",
     "file-loader": "^0.11.1",
     "fuzzaldrin-plus": "^0.5.0",
+    "glob": "^7.1.2",
     "imports-loader": "^0.7.1",
     "jed": "^1.1.1",
     "jquery": "^2.2.4",

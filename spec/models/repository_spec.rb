@@ -222,20 +222,20 @@ describe Repository do
     it 'sets follow when path is a single path' do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
 
-      repository.commits('master', path: 'README.md')
-      repository.commits('master', path: ['README.md'])
+      repository.commits('master', limit: 1, path: 'README.md')
+      repository.commits('master', limit: 1, path: ['README.md'])
     end
 
     it 'does not set follow when path is multiple paths' do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
 
-      repository.commits('master', path: ['README.md', 'CHANGELOG'])
+      repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
     end
 
     it 'does not set follow when there are no paths' do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
 
-      repository.commits('master')
+      repository.commits('master', limit: 1)
     end
   end
 
@@ -455,7 +455,7 @@ describe Repository do
       expect do
         repository.create_dir(user, 'newdir',
           message: 'Create newdir', branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       newdir = repository.tree('master', 'newdir')
       expect(newdir.path).to eq('newdir')
@@ -469,7 +469,7 @@ describe Repository do
           repository.create_dir(user, 'newdir',
             message: 'Create newdir', branch_name: 'patch',
             start_branch_name: 'master', start_project: forked_project)
-        end.to change { repository.commits('master').count }.by(0)
+        end.to change { repository.count_commits(ref: 'master') }.by(0)
 
         expect(repository.branch_exists?('patch')).to be_truthy
         expect(forked_project.repository.branch_exists?('patch')).to be_falsy
@@ -486,7 +486,7 @@ describe Repository do
             message: 'Add newdir',
             branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -502,7 +502,7 @@ describe Repository do
         repository.create_file(user, 'NEWCHANGELOG', 'Changelog!',
                                message: 'Create changelog',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'NEWCHANGELOG')
 
@@ -514,7 +514,7 @@ describe Repository do
         repository.create_file(user, 'new_dir/new_file.txt', 'File!',
                                message: 'Create new_file with new_dir',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
       expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
@@ -538,7 +538,7 @@ describe Repository do
                                  branch_name: 'master',
                                  author_email: author_email,
                                  author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -554,7 +554,7 @@ describe Repository do
         repository.update_file(user, 'CHANGELOG', 'Changelog!',
                                message: 'Update changelog',
                                branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'CHANGELOG')
 
@@ -567,7 +567,7 @@ describe Repository do
                                      branch_name: 'master',
                                      previous_path: 'LICENSE',
                                      message: 'Changes filename')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       files = repository.ls_files('master')
 
@@ -584,7 +584,7 @@ describe Repository do
                                  message: 'Update README',
                                  author_email: author_email,
                                  author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -599,7 +599,7 @@ describe Repository do
       expect do
         repository.delete_file(user, 'README',
           message: 'Remove README', branch_name: 'master')
-      end.to change { repository.commits('master').count }.by(1)
+      end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.blob_at('master', 'README')).to be_nil
     end
@@ -610,7 +610,7 @@ describe Repository do
           repository.delete_file(user, 'README',
             message: 'Remove README', branch_name: 'master',
             author_email: author_email, author_name: author_name)
-        end.to change { repository.commits('master').count }.by(1)
+        end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
 
@@ -772,8 +772,7 @@ describe Repository do
         user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
-      allow(repository).to receive(:file_on_head)
-        .and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.license_blob).to be_nil
     end
@@ -885,7 +884,7 @@ describe Repository do
     end
 
     it 'returns nil for empty repository' do
-      allow(repository).to receive(:file_on_head).and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
       expect(repository.gitlab_ci_yml).to be_nil
     end
   end
@@ -1937,8 +1936,7 @@ describe Repository do
 
   describe '#avatar' do
     it 'returns nil if repo does not exist' do
-      expect(repository).to receive(:file_on_head)
-        .and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.avatar).to eq(nil)
     end

@@ -18,8 +18,10 @@ describe('new file modal component', () => {
     }));
 
     spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-      commit: {
-        id: '123branch',
+      data: {
+        commit: {
+          id: '123branch',
+        },
       },
     }));
 

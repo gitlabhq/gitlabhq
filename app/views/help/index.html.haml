@@ -1,8 +1,8 @@
 = webpack_bundle_tag 'docs'
 
 %div
-- if current_application_settings.help_page_text.present?
-  = markdown_field(current_application_settings, :help_page_text)
+- if Gitlab::CurrentSettings.help_page_text.present?
+  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
   %hr
 
 %h1
@@ -14,7 +14,7 @@
     = version_status_badge
   %hr
 
-- unless current_application_settings.help_page_hide_commercial_content?
+- unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
   %p.slead
     GitLab is open source software to collaborate on code.
     %br
@@ -46,6 +46,6 @@
         %li
           %button.btn-blank.btn-link.js-trigger-shortcut{ type: 'button' }
             Use shortcuts
-        - unless current_application_settings.help_page_hide_commercial_content?
+        - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
           %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
           %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'

@@ -6,7 +6,7 @@ FactoryBot.define do
   factory :note do
     project
     note { generate(:title) }
-    author
+    author { project&.creator || create(:user) }
     on_issue
 
     factory :note_on_commit,             traits: [:on_commit]
@@ -122,11 +122,11 @@ FactoryBot.define do
     end
 
     trait :with_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png") }
+      attachment { fixture_file_upload(Rails.root.join( "spec/fixtures/dk.png"), "image/png") }
     end
 
     trait :with_svg_attachment do
-      attachment { fixture_file_upload(Rails.root + "spec/fixtures/unsanitized.svg", "image/svg+xml") }
+      attachment { fixture_file_upload(Rails.root.join("spec/fixtures/unsanitized.svg"), "image/svg+xml") }
     end
 
     transient do

@@ -35,7 +35,7 @@ constraints(GroupUrlConstrainer.new) do
       post :toggle_subscription, on: :member
     end
 
-    resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
+    resources :milestones, constraints: { id: %r{[^/]+} }, only: [:index, :show, :edit, :update, :new, :create] do
       member do
         get :merge_requests
         get :participants
@@ -52,7 +52,7 @@ constraints(GroupUrlConstrainer.new) do
 
     resources :uploads, only: [:create] do
       collection do
-        get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+        get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
       end
     end
   end

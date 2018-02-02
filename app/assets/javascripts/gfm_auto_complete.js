@@ -461,7 +461,7 @@ class GfmAutoComplete {
     const accentAChar = decodeURI('%C3%80');
     const accentYChar = decodeURI('%C3%BF');
 
-    const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
+    const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_\`${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
 
     return regexp.exec(targetSubtext);
   }

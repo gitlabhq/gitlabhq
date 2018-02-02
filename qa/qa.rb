@@ -27,7 +27,9 @@ module QA
     module Resource
       autoload :Sandbox, 'qa/factory/resource/sandbox'
       autoload :Group, 'qa/factory/resource/group'
+      autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
@@ -124,10 +126,20 @@ module QA
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
       end
+
+      module Issue
+        autoload :New, 'qa/page/project/issue/new'
+        autoload :Show, 'qa/page/project/issue/show'
+        autoload :Index, 'qa/page/project/issue/index'
+      end
     end
 
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+    end
+
+    module MergeRequest
+      autoload :New, 'qa/page/merge_request/new'
     end
 
     module Admin
@@ -137,6 +149,13 @@ module QA
     module Mattermost
       autoload :Main, 'qa/page/mattermost/main'
       autoload :Login, 'qa/page/mattermost/login'
+    end
+
+    ##
+    # Classes describing components that are used by several pages.
+    #
+    module Component
+      autoload :Dropzone, 'qa/page/component/dropzone'
     end
   end
 
