@@ -1,13 +1,6 @@
 require 'spec_helper'
 
 describe Key, :mailer do
-  include Gitlab::CurrentSettings
-
-  describe 'modules' do
-    subject { described_class }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end

@@ -4,7 +4,7 @@
       Web IDE (Beta)
     %p
       Enable the new web IDE on this device to make it possible to open and edit multiple files with a single commit.
-      - if current_application_settings.should_check_namespace_plan?
+      - if Gitlab::CurrentSettings.should_check_namespace_plan?
         Available for public GitLab.com projects or those using Gold.
   .col-lg-8.multi-file-editor-options
     = label_tag do

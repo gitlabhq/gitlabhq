@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe User do
-  include Gitlab::CurrentSettings
   include ProjectForksHelper
 
   describe 'modules' do
     subject { described_class }
 
     it { is_expected.to include_module(Gitlab::ConfigHelper) }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
@@ -588,7 +586,7 @@ describe User do
         stub_config_setting(default_can_create_group: true)
 
         expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
-          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+          .and change { user.projects_limit }.to(Gitlab::CurrentSettings.default_projects_limit)
       end
     end
 
@@ -854,7 +852,7 @@ describe User do
       end
     end
 
-    context 'when current_application_settings.user_default_external is true' do
+    context 'when Gitlab::CurrentSettings.user_default_external is true' do
       before do
         stub_application_setting(user_default_external: true)
       end

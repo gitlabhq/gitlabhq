@@ -1,7 +1,5 @@
 module Gitlab
   module Mirror
-    extend Gitlab::CurrentSettings
-
     # Runs scheduler every minute
     SCHEDULER_CRON = '* * * * *'.freeze
     PULL_CAPACITY_KEY = 'MIRROR_PULL_CAPACITY'.freeze
@@ -65,7 +63,7 @@ module Gitlab
       end
 
       def max_delay
-        current_application_settings.mirror_max_delay.minutes + rand(JITTER)
+        Gitlab::CurrentSettings.mirror_max_delay.minutes + rand(JITTER)
       end
 
       def min_delay_upper_bound
@@ -77,11 +75,11 @@ module Gitlab
       end
 
       def max_capacity
-        current_application_settings.mirror_max_capacity
+        Gitlab::CurrentSettings.mirror_max_capacity
       end
 
       def capacity_threshold
-        current_application_settings.mirror_capacity_threshold
+        Gitlab::CurrentSettings.mirror_capacity_threshold
       end
 
       private

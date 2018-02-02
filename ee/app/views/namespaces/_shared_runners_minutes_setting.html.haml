@@ -7,5 +7,5 @@
       %span.help-block#shared_runners_minutes_limit_help_block
         Set the maximum number of pipeline minutes that a group can use on shared Runners per month.
         Set 0 for unlimited.
-        Set empty to inherit the global setting of #{current_application_settings.shared_runners_minutes}.
+        Set empty to inherit the global setting of #{Gitlab::CurrentSettings.shared_runners_minutes}.
         = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'

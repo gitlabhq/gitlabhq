@@ -11,7 +11,7 @@ class Profiles::SlacksController < Profiles::ApplicationController
 
   def slack_link
     project = disabled_projects.find(params[:project_id])
-    link = add_to_slack_link(project, current_application_settings.slack_app_id)
+    link = add_to_slack_link(project, Gitlab::CurrentSettings.slack_app_id)
 
     render json: { add_to_slack_link: link }
   end
