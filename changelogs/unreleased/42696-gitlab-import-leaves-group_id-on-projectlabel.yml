@@ -1,0 +1,5 @@
+---
+title: Fix GitLab import leaving group_id on ProjectLabel
+merge_request: 16877
+author:
+type: fixed
