@@ -78,7 +78,7 @@ module Gitlab
             data = get_chunk
             break if data.empty?
 
-            out += data
+            out << data
             @tell += data.bytesize
           end
 
@@ -95,11 +95,11 @@ module Gitlab
             new_line = data.index("\n")
 
             if !new_line.nil?
-              out += data[0..new_line]
+              out << data[0..new_line]
               @tell += new_line + 1
               break
             else
-              out += data
+              out << data
               @tell += data.bytesize
             end
           end
