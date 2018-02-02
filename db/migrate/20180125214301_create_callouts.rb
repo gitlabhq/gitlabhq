@@ -8,12 +8,11 @@ class CreateCallouts < ActiveRecord::Migration
   def change
     create_table :callouts do |t|
       t.string :feature_name, null: false
-      t.boolean :dismissed_state, null: false
       t.references :user, index: true, foreign_key: { on_delete: :cascade }, null: false
 
       t.timestamps_with_timezone null: false
     end
 
-    add_index :callouts, :feature_name, unique: true
+    add_index :callouts, [:user_id, :feature_name], unique: true
   end
 end
