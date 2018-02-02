@@ -8,6 +8,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
+  before_action :whitelist_query_limiting_ee, only: [:update]
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
@@ -259,5 +260,9 @@ class Projects::IssuesController < Projects::ApplicationController
     # 2. https://gitlab.com/gitlab-org/gitlab-ce/issues/42424
     # 3. https://gitlab.com/gitlab-org/gitlab-ce/issues/42426
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
+  end
+
+  def whitelist_query_limiting_ee
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ee/issues/4794')
   end
 end

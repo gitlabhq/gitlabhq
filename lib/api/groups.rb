@@ -181,6 +181,8 @@ module API
 
       desc 'Remove a group.'
       delete ":id" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ee/issues/4795')
+
         group = find_group!(params[:id])
         authorize! :admin_group, group
 

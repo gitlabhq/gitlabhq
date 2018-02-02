@@ -200,6 +200,8 @@ module API
             optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
           end
           put "#{path}/merge" do
+            Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ee/issues/4796')
+
             merge_request = find_project_merge_request(params[:merge_request_id])
 
             # Merge request can not be merged
