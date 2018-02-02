@@ -1,6 +1,6 @@
 class UserCalloutsController < ApplicationController
   def create
-    if ensure_callout
+    if check_feature_name && ensure_callout
       respond_to do |format|
         format.json { head :ok }
       end
@@ -12,6 +12,10 @@ class UserCalloutsController < ApplicationController
   end
 
   private
+
+  def check_feature_name
+    UserCallout.feature_names.keys.include?(callout_param)
+  end
 
   def ensure_callout
     current_user.callouts.find_or_create_by(feature_name: callout_param)
