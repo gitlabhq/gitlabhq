@@ -319,9 +319,6 @@ var Dispatcher;
             .catch(fail);
           break;
         case 'groups:show':
-          import('./pages/groups/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'groups:group_members:index':
