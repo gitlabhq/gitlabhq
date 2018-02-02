@@ -5,11 +5,19 @@ describe Gitlab::GitAccess do
 
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
+  let(:project_path) { project.path }
+  let(:namespace_path) { project&.namespace&.path }
   let(:protocol) { 'ssh' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
 
-  let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
+  let(:access) do
+    described_class.new(actor, project,
+      protocol, authentication_abilities: authentication_abilities,
+                namespace_path: namespace_path, project_path: project_path,
+                redirected_path: redirected_path)
+  end
+
   let(:push_access_check) { access.check('git-receive-pack', '_any') }
   let(:pull_access_check) { access.check('git-upload-pack', '_any') }
 
@@ -145,6 +153,7 @@ describe Gitlab::GitAccess do
 
     context 'when the project is nil' do
       let(:project) { nil }
+      let(:project_path) { "new-project" }
 
       it 'blocks push and pull with "not found"' do
         aggregate_failures do
@@ -154,7 +163,13 @@ describe Gitlab::GitAccess do
       end
 
       context 'when user is allowed to create project in namespace' do
-        let(:access) { described_class.new(actor, nil, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: user.namespace) }
+        let(:namespace_path) { user.namespace.path }
+        let(:access) do
+          described_class.new(actor, nil,
+            protocol, authentication_abilities: authentication_abilities,
+                      project_path: project_path, namespace_path: namespace_path,
+                      redirected_path: redirected_path)
+        end
 
         it 'blocks pull access with "not found"' do
           expect { pull_access_check }.to raise_not_found
@@ -167,7 +182,13 @@ describe Gitlab::GitAccess do
 
       context 'when user is not allowed to create project in namespace' do
         let(:user2) { create(:user) }
-        let(:access) { described_class.new(actor, nil, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: user2.namespace) }
+        let(:namespace_path) { user2.namespace.path }
+        let(:access) do
+          described_class.new(actor, nil,
+            protocol, authentication_abilities: authentication_abilities,
+                      project_path: project_path, namespace_path: namespace_path,
+                      redirected_path: redirected_path)
+        end
 
         it 'blocks push and pull with "not found"' do
           aggregate_failures do
@@ -297,6 +318,52 @@ describe Gitlab::GitAccess do
     end
   end
 
+  describe '#check_authentication_abilities!' do
+    before do
+      project.add_master(user)
+    end
+
+    context 'when download' do
+      let(:authentication_abilities) { [] }
+
+      it 'raises unauthorized with download error' do
+        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
+      end
+
+      context 'when authentication abilities include download code' do
+        let(:authentication_abilities) { [:download_code] }
+
+        it 'does not raise any errors' do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+
+      context 'when authentication abilities include build download code' do
+        let(:authentication_abilities) { [:build_download_code] }
+
+        it 'does not raise any errors' do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when upload' do
+      let(:authentication_abilities) { [] }
+
+      it 'raises unauthorized with push error' do
+        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+      end
+
+      context 'when authentication abilities include push code' do
+        let(:authentication_abilities) { [:push_code] }
+
+        it 'does not raise any errors' do
+          expect { push_access_check }.not_to raise_error
+        end
+      end
+    end
+  end
+
   describe '#check_command_disabled!' do
     before do
       project.add_master(user)
@@ -335,34 +402,112 @@ describe Gitlab::GitAccess do
     end
   end
 
-  describe '#check_namespace_accessibility!' do
-    context 'when project exists' do
-      context 'when user can pull or push' do
-        before do
-          project.add_master(user)
+  describe '#check_db_accessibility!' do
+    context 'when in a read-only GitLab instance' do
+      before do
+        create(:protected_branch, name: 'feature', project: project)
+        allow(Gitlab::Database).to receive(:read_only?) { true }
+      end
+
+      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:cannot_push_to_read_only]) }
+    end
+  end
+
+  describe '#ensure_project_on_push!' do
+    let(:access) do
+      described_class.new(actor, project,
+        protocol, authentication_abilities: authentication_abilities,
+                  project_path: project_path, namespace_path: namespace_path,
+                  redirected_path: redirected_path)
+    end
+
+    context 'when push' do
+      let(:cmd) { 'git-receive-pack' }
+
+      context 'when project does not exist' do
+        let(:project_path) { "nonexistent" }
+        let(:project) { nil }
+
+        context 'when changes is _any' do
+          let(:changes) { '_any' }
+
+          context 'when authentication abilities include push code' do
+            let(:authentication_abilities) { [:push_code] }
+
+            context 'when user can create project in namespace' do
+              let(:namespace_path) { user.namespace.path }
+
+              it 'creates a new project' do
+                expect { access.send(:ensure_project_on_push!, cmd, changes) }.to change { Project.count }.by(1)
+              end
+            end
+
+            context 'when user cannot create project in namespace' do
+              let(:user2) { create(:user) }
+              let(:namespace_path) { user2.namespace.path }
+
+              it 'does not create a new project' do
+                expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
+              end
+            end
+          end
+
+          context 'when authentication abilities do not include push code' do
+            let(:authentication_abilities) { [] }
+
+            context 'when user can create project in namespace' do
+              let(:namespace_path) { user.namespace.path }
+
+              it 'does not create a new project' do
+                expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
+              end
+            end
+          end
         end
 
-        it 'does not block pull or push' do
-          aggregate_failures do
-            expect { push_access_check }.not_to raise_error
-            expect { pull_access_check }.not_to raise_error
+        context 'when check contains actual changes' do
+          let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch" }
+
+          it 'does not create a new project' do
+            expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
           end
+        end
+      end
+
+      context 'when project exists' do
+        let(:changes) { '_any' }
+        let!(:project) { create(:project) }
+
+        it 'does not create a new project' do
+          expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
+        end
+      end
+
+      context 'when deploy key is used' do
+        let(:key) { create(:deploy_key, user: user) }
+        let(:actor) { key }
+        let(:project_path) { "nonexistent" }
+        let(:project) { nil }
+        let(:namespace_path) { user.namespace.path }
+        let(:changes) { '_any' }
+
+        it 'does not create a new project' do
+          expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
         end
       end
     end
 
-    context 'when project does not exist' do
-      context 'when namespace exists' do
-        context 'when user is unable to push to namespace' do
-          let(:user2) { create(:user) }
-          let(:access) { described_class.new(actor, nil, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: user2.namespace) }
+    context 'when pull' do
+      let(:cmd) { 'git-upload-pack' }
+      let(:changes) { '_any' }
 
-          it 'blocks push and pull' do
-            aggregate_failures do
-              expect { push_access_check }.to raise_not_found
-              expect { pull_access_check }.to raise_not_found
-            end
-          end
+      context 'when project does not exist' do
+        let(:project_path) { "new-project" }
+        let(:namespace_path) { user.namespace.path }
+        let(:project) { nil }
+
+        it 'does not create a new project' do
+          expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
         end
       end
     end
@@ -395,7 +540,9 @@ describe Gitlab::GitAccess do
 
       context 'when project is public' do
         let(:public_project) { create(:project, :public, :repository) }
-        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: []) }
+        let(:project_path) { public_project.path }
+        let(:namespace_path) { public_project.namespace.path }
+        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], project_path: project_path, namespace_path: namespace_path) }
 
         context 'when repository is enabled' do
           it 'give access to download code' do
@@ -558,17 +705,15 @@ describe Gitlab::GitAccess do
           end
 
           aggregate_failures do
-            Gitlab::GitAccess::ALL_COMMANDS.each do |cmd|
-              matrix.each do |action, allowed|
-                check = -> { access.send(:check_push_access!, cmd, changes[action]) }
+            matrix.each do |action, allowed|
+              check = -> { access.send(:check_push_access!, changes[action]) }
 
-                if allowed
-                  expect(&check).not_to raise_error,
-                                        -> { "expected #{action} to be allowed" }
-                else
-                  expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
-                                    -> { "expected #{action} to be disallowed" }
-                end
+              if allowed
+                expect(&check).not_to raise_error,
+                  -> { "expected #{action} to be allowed" }
+              else
+                expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
+                  -> { "expected #{action} to be disallowed" }
               end
             end
           end
@@ -696,19 +841,6 @@ describe Gitlab::GitAccess do
                                                             master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
-    end
-
-    context "when in a read-only GitLab instance" do
-      before do
-        create(:protected_branch, name: 'feature', project: project)
-        allow(Gitlab::Database).to receive(:read_only?) { true }
-      end
-
-      # Only check admin; if an admin can't do it, other roles can't either
-      matrix = permissions_matrix[:admin].dup
-      matrix.each { |key, _| matrix[key] = false }
-
-      run_permission_checks(admin: matrix)
     end
   end
 

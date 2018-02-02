@@ -11,7 +11,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
   def info_refs
     log_user_activity if upload_pack?
-    create_new_project if receive_pack? && project.blank?
 
     render_ok
   end
@@ -36,20 +35,12 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     git_command == 'git-upload-pack'
   end
 
-  def receive_pack?
-    git_command == 'git-receive-pack'
-  end
-
   def git_command
     if action_name == 'info_refs'
       params[:service]
     else
       action_name.dasherize
     end
-  end
-
-  def create_new_project
-    @project = ::Projects::CreateFromPushService.new(user, params[:project_id], namespace, 'http').execute
   end
 
   def render_ok
@@ -70,7 +61,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities, redirected_path: redirected_path, target_namespace: namespace)
+    @access ||= access_klass.new(access_actor, project,
+      'http', authentication_abilities: authentication_abilities,
+              namespace_path: params[:namespace_id], project_path: project_path,
+              redirected_path: redirected_path)
   end
 
   def access_actor
@@ -82,14 +76,15 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     # Use the magic string '_any' to indicate we do not know what the
     # changes are. This is also what gitlab-shell does.
     access.check(git_command, '_any')
+    @project ||= access.project
   end
 
   def access_klass
     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
   end
 
-  def namespace
-    @namespace ||= Namespace.find_by_full_path(params[:namespace_id])
+  def project_path
+    @project_path ||= params[:project_id].sub(/\.git$/, '')
   end
 
   def log_user_activity

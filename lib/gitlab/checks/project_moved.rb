@@ -1,6 +1,6 @@
 module Gitlab
   module Checks
-    class ProjectMoved < BaseProject
+    class ProjectMoved < PostPushMessage
       REDIRECT_NAMESPACE = "redirect_namespace".freeze
 
       def initialize(project, user, protocol, redirected_path)
@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def message(rejected: false)
-        <<~MESSAGE.strip_heredoc
+        <<~MESSAGE
         Project '#{redirected_path}' was moved to '#{project.full_path}'.
 
         Please update your Git remote:

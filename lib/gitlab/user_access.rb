@@ -6,7 +6,8 @@ module Gitlab
       [user&.id, project&.id]
     end
 
-    attr_reader :user, :project
+    attr_reader :user
+    attr_accessor :project
 
     def initialize(user, project: nil)
       @user = user

@@ -188,7 +188,7 @@ module Gitlab
     end
 
     def full_project_git_path_regex
-      @full_project_git_path_regex ||= /\A\/?(?<namespace_path>#{full_namespace_route_regex})\/(?<project_path>#{project_git_route_regex})\z/.freeze
+      @full_project_git_path_regex ||= %r{\A\/?(?<namespace_path>#{full_namespace_route_regex})\/(?<project_path>#{project_route_regex})\.git\z}
     end
 
     def full_namespace_format_regex

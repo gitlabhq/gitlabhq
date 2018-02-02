@@ -386,32 +386,6 @@ describe API::Internal do
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           end
-
-          context 'when project does not exist' do
-            it 'creates a new project' do
-              path = "#{user.namespace.path}/notexist.git"
-
-              expect do
-                push_with_path(key, path)
-              end.to change { Project.count }.by(1)
-
-              expect(response).to have_gitlab_http_status(200)
-              expect(json_response["status"]).to be_truthy
-              expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(path)
-            end
-
-            it 'handles project creation failure' do
-              path = "#{user.namespace.path}/new.git"
-
-              expect do
-                push_with_path(key, path)
-              end.not_to change { Project.count }
-
-              expect(response).to have_gitlab_http_status(200)
-              expect(json_response["status"]).to be_falsey
-              expect(json_response["message"]).to eq("Could not create project: Path new is a reserved name")
-            end
-          end
         end
       end
     end

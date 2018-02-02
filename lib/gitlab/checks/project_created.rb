@@ -1,12 +1,12 @@
 module Gitlab
   module Checks
-    class ProjectCreated < BaseProject
+    class ProjectCreated < PostPushMessage
       PROJECT_CREATED = "project_created".freeze
 
       def message
-        <<~MESSAGE.strip_heredoc
+        <<~MESSAGE
 
-        The private project #{project.full_path} was created.
+        The private project #{project.full_path} was successfully created.
 
         To configure the remote, run:
           git remote add origin #{url_to_repo}
