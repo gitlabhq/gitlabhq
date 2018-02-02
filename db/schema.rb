@@ -280,13 +280,12 @@ ActiveRecord::Schema.define(version: 20180201101405) do
 
   create_table "callouts", force: :cascade do |t|
     t.string "feature_name", null: false
-    t.boolean "dismissed_state", null: false
     t.integer "user_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
   end
 
-  add_index "callouts", ["feature_name"], name: "index_callouts_on_feature_name", unique: true, using: :btree
+  add_index "callouts", ["user_id", "feature_name"], name: "index_callouts_on_user_id_and_feature_name", unique: true, using: :btree
   add_index "callouts", ["user_id"], name: "index_callouts_on_user_id", using: :btree
 
   create_table "chat_names", force: :cascade do |t|

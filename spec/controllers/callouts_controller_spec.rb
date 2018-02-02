@@ -25,10 +25,6 @@ describe CalloutsController do
     context 'when callout entry already exists' do
       let!(:callout) { create(:callout, feature_name: 'feature_name', user: user) }
 
-      it 'should update it with a dismissed state' do
-        expect { subject }.to change { callout.reload.dismissed_state }.from(false).to(true)
-      end
-
       it 'should return success' do
         subject
 
