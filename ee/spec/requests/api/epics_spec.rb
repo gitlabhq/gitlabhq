@@ -60,6 +60,77 @@ describe API::Epics do
         expect(response).to match_response_schema('public_api/v4/epics', dir: 'ee')
       end
     end
+
+    context 'with multiple epics' do
+      let(:user2) { create(:user) }
+      let!(:epic) do
+        create(:epic,
+               group: group,
+               created_at: 3.days.ago,
+               updated_at: 2.days.ago)
+      end
+      let!(:epic2) do
+        create(:epic,
+               author: user2,
+               group: group,
+               title: 'foo',
+               description: 'bar',
+               created_at: 2.days.ago,
+               updated_at: 3.days.ago)
+      end
+
+      before do
+        stub_licensed_features(epics: true)
+      end
+
+      def expect_array_response(expected)
+        items = json_response.map { |i| i['id'] }
+
+        expect(items).to eq(expected)
+      end
+
+      it 'returns epics authored by the given author id' do
+        get api(url, user), author_id: user2.id
+
+        expect_array_response([epic2.id])
+      end
+
+      it 'returns epics matching given search string for title' do
+        get api(url, user), search: epic2.title
+
+        expect_array_response([epic2.id])
+      end
+
+      it 'returns epics matching given search string for description' do
+        get api(url, user), search: epic2.description
+
+        expect_array_response([epic2.id])
+      end
+
+      it 'sorts by created_at descending by default' do
+        get api(url, user)
+
+        expect_array_response([epic2.id, epic.id])
+      end
+
+      it 'sorts ascending when requested' do
+        get api(url, user), sort: :asc
+
+        expect_array_response([epic.id, epic2.id])
+      end
+
+      it 'sorts by updated_at descending when requested' do
+        get api(url, user), order_by: :updated_at
+
+        expect_array_response([epic.id, epic2.id])
+      end
+
+      it 'sorts by updated_at ascending when requested' do
+        get api(url, user), order_by: :updated_at, sort: :asc
+
+        expect_array_response([epic2.id, epic.id])
+      end
+    end
   end
 
   describe 'GET /groups/:id/-/epics/:epic_iid' do

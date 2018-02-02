@@ -506,6 +506,8 @@ module API
       expose :author, using: Entities::UserBasic
       expose :start_date
       expose :end_date
+      expose :created_at
+      expose :updated_at
     end
 
     class EpicIssue < Issue
