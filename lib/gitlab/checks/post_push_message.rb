@@ -1,6 +1,6 @@
 module Gitlab
   module Checks
-    class BaseProject
+    class PostPushMessage
       def initialize(project, user, protocol)
         @project = project
         @user = user

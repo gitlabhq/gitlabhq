@@ -28,32 +28,37 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :redirected_path, :target_namespace
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path
 
-    def initialize(actor, project, protocol, authentication_abilities:, redirected_path: nil, target_namespace: nil)
+    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil)
       @actor    = actor
       @project  = project
       @protocol = protocol
-      @redirected_path = redirected_path
       @authentication_abilities = authentication_abilities
-      @target_namespace = target_namespace
+      @namespace_path = namespace_path
+      @project_path = project_path
+      @redirected_path = redirected_path
     end
 
     def check(cmd, changes)
       check_protocol!
       check_valid_actor!
       check_active_user!
-      check_project_accessibility!(cmd)
-      check_project_moved!
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
-      check_repository_existence!(cmd)
+      check_db_accessibility!(cmd)
+
+      ensure_project!(cmd, changes)
+
+      check_project_accessibility!
+      check_project_moved!
+      check_repository_existence!
 
       case cmd
       when *DOWNLOAD_COMMANDS
         check_download_access!
       when *PUSH_COMMANDS
-        check_push_access!(cmd, changes)
+        check_push_access!(changes)
       end
 
       true
@@ -99,8 +104,8 @@ module Gitlab
       end
     end
 
-    def check_project_accessibility!(cmd)
-      unless can_create_project_in_namespace?(cmd) || can_read_project?
+    def check_project_accessibility!
+      if project.blank? || !can_read_project?
         raise NotFoundError, ERROR_MESSAGES[:project_not_found]
       end
     end
@@ -143,8 +148,23 @@ module Gitlab
       end
     end
 
-    def check_repository_existence!(cmd)
-      unless can_create_project_in_namespace?(cmd) || project.repository.exists?
+    def check_db_accessibility!(cmd)
+      return unless receive_pack?(cmd)
+
+      if Gitlab::Database.read_only?
+        raise UnauthorizedError, push_to_read_only_message
+      end
+    end
+
+    def ensure_project!(cmd, changes)
+      if can_create_project_in_namespace?(cmd, changes)
+        @project = ::Projects::CreateFromPushService.new(user, project_path, namespace, protocol).execute
+        user_access.project = @project
+      end
+    end
+
+    def check_repository_existence!
+      unless project.repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
       end
     end
@@ -161,13 +181,7 @@ module Gitlab
       end
     end
 
-    def check_push_access!(cmd, changes)
-      if Gitlab::Database.read_only?
-        raise UnauthorizedError, push_to_read_only_message
-      end
-
-      return if can_create_project_in_namespace?(cmd)
-
+    def check_push_access!(changes)
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
@@ -179,8 +193,6 @@ module Gitlab
       else
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
-
-      return if changes.blank? # Allow access.
 
       check_change_access!(changes)
     end
@@ -198,6 +210,8 @@ module Gitlab
     end
 
     def check_change_access!(changes)
+      return if changes.blank? # Allow access.
+
       changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
@@ -240,11 +254,11 @@ module Gitlab
       end || Guest.can?(:read_project, project)
     end
 
-    def can_create_project_in_namespace?(cmd)
+    def can_create_project_in_namespace?(cmd, changes)
       strong_memoize(:can_create_project_in_namespace) do
-        return false unless push?(cmd) && target_namespace && project.blank?
+        return false unless !project && receive_pack?(cmd) && changes == '_any'
 
-        user.can?(:create_projects, target_namespace)
+        user&.can?(:create_projects, namespace)
       end
     end
 
@@ -258,10 +272,6 @@ module Gitlab
 
     def receive_pack?(command)
       command == 'git-receive-pack'
-    end
-
-    def push?(cmd)
-      PUSH_COMMANDS.include?(cmd)
     end
 
     def upload_pack_disabled_over_http?
@@ -286,6 +296,12 @@ module Gitlab
         when :ci
           nil
         end
+    end
+
+    def namespace
+      return unless namespace_path
+
+      @namespace ||= Namespace.find_by_full_path(namespace_path)
     end
 
     def user_access

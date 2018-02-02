@@ -1,6 +1,6 @@
 module Gitlab
   module Checks
-    class ProjectMoved < BaseProject
+    class ProjectMoved < PostPushMessage
       REDIRECT_NAMESPACE = "redirect_namespace".freeze
 
       def initialize(project, user, protocol, redirected_path)

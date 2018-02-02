@@ -66,16 +66,18 @@ module API
         false
       end
 
-      def project_namespace
-        strong_memoize(:project_namespace) do
-          project&.namespace || Namespace.find_by_full_path(project_match[:namespace_path])
-        end
+      def project_path
+        project&.path || project_path_match[:project_path]
+      end
+
+      def namespace_path
+        project&.namespace&.path || project_path_match[:namespace_path]
       end
 
       private
 
-      def project_match
-        @project_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex) || {}
+      def project_path_match
+        @project_path_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex) || {}
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables

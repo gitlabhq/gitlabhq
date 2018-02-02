@@ -42,21 +42,16 @@ module API
           end
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
-        access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path, target_namespace: project_namespace)
+        access_checker = access_checker_klass.new(actor, project,
+          protocol, authentication_abilities: ssh_authentication_abilities,
+                    namespace_path: namespace_path, project_path: project_path,
+                    redirected_path: redirected_path)
 
         begin
           access_checker.check(params[:action], params[:changes])
+          @project ||= access_checker.project
         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
           return { status: false, message: e.message }
-        end
-
-        if receive_pack? && project.blank?
-          begin
-            @project = ::Projects::CreateFromPushService.new(user, project_match[:project_path], project_namespace, protocol).execute
-          rescue Gitlab::GitAccess::ProjectCreationError => e
-            return { status: false, message: e.message }
-          end
         end
 
         log_user_activity(actor)

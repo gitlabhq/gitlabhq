@@ -1,6 +1,6 @@
 module Gitlab
   module Checks
-    class ProjectCreated < BaseProject
+    class ProjectCreated < PostPushMessage
       PROJECT_CREATED = "project_created".freeze
 
       def message

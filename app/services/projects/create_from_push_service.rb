@@ -27,10 +27,9 @@ module Projects
 
     def project_params
       {
-        description: "",
-        path: project_path.gsub(/\.git$/, ''),
+        path: project_path,
         namespace_id: namespace&.id,
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s
+        visibility_level: Gitlab::VisibilityLevel::PRIVATE
       }
     end
   end
