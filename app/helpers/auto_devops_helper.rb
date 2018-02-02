@@ -9,28 +9,28 @@ module AutoDevopsHelper
   end
 
   def auto_devops_warning_message(project)
-    if missing_service?(project)
+    if missing_auto_devops_service?(project)
       params = {
         kubernetes: link_to('Kubernetes cluster', project_clusters_path(project))
       }
 
-      if missing_domain?(project)
+      if missing_auto_devops_domain?(project)
         _('Auto Review Apps and Auto Deploy need a domain name and a %{kubernetes} to work correctly.') % params
       else
         _('Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly.') % params
       end
-    elsif missing_domain?(project)
+    elsif missing_auto_devops_domain?(project)
       _('Auto Review Apps and Auto Deploy need a domain name to work correctly.')
     end
   end
 
   private
 
-  def missing_domain?(project)
+  def missing_auto_devops_domain?(project)
     !(project.auto_devops&.has_domain? || current_application_settings.auto_devops_domain.present?)
   end
 
-  def missing_service?(project)
+  def missing_auto_devops_service?(project)
     !project.deployment_platform&.active?
   end
 end
