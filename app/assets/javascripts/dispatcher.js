@@ -48,16 +48,6 @@ var Dispatcher;
         case 'projects:issues:show':
           shortcut_handler = true;
           break;
-        case 'projects:branches:new':
-          import('./pages/projects/branches/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:branches:create':
-          import('./pages/projects/branches/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:branches:index':
           import('./pages/projects/branches/index')
             .then(callDefault)
