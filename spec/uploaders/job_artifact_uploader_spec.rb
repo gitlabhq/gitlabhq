@@ -11,7 +11,6 @@ describe JobArtifactUploader do
                   store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z],
                   cache_dir: %r[artifacts/tmp/cache],
                   work_dir: %r[artifacts/tmp/work]
-<<<<<<< HEAD
 
   context "object store is REMOTE" do
     before do
@@ -23,8 +22,6 @@ describe JobArtifactUploader do
     it_behaves_like "builds correct paths",
                     store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z]
   end
-=======
->>>>>>> upstream/master
 
   context 'file is stored in valid local_path' do
     let(:file) do
