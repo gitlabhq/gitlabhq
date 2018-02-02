@@ -438,9 +438,6 @@ export default class Notes {
     var discussionContainer, form, row, lineType, diffAvatarContainer;
 
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
-      const $formEl = $form || $(`.diffs .note-row-${noteEntity.id}`);
-      this.updateNote(noteEntity, $formEl);
-
       return;
     }
     this.note_ids.push(noteEntity.id);
