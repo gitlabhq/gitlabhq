@@ -11,7 +11,7 @@ describe RemoveProjectLabelsGroupId, :delete do
 
   describe '#up' do
     it 'updates the project labels group ID' do
-      expect { migration.up }.to change { project_label.reload.group_id }.from(1).to(nil)
+      expect { migration.up }.to change { project_label.reload.group_id }.to(nil)
     end
 
     it 'keeps the group labels group ID' do
