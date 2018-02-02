@@ -49,12 +49,7 @@ var Dispatcher;
         case 'projects:issues:new':
         case 'projects:issues:edit':
         case 'projects:merge_requests:creations:diffs':
-          shortcut_handler = true;
-          break;
         case 'projects:merge_requests:edit':
-          import('./pages/projects/merge_requests/edit')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:tags:new':
