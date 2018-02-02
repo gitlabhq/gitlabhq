@@ -6,6 +6,16 @@
         type: Object,
         required: true,
       },
+      showAuthorName: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      showAuthorTooltip: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
     computed: {
       authorUrl() {
@@ -21,12 +31,17 @@
   <a
     :href="authorUrl"
     class="author-link inline"
+    :v-tooltip="showAuthorTooltip"
+    :title="author.name"
   >
     <img
       :src="avatarUrl"
       class="avatar avatar-inline s16"
     />
-    <span class="author">
+    <span
+      class="author"
+      v-if="showAuthorName"
+    >
       {{ author.name }}
     </span>
   </a>
