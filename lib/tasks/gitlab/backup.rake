@@ -4,7 +4,7 @@ namespace :gitlab do
   namespace :backup do
     # Create backup of GitLab system
     desc "GitLab | Create a backup of the GitLab system"
-    task create: :environment do
+    task create: :gitlab_environment do
       warn_user_is_not_gitlab
       configure_cron_mode
 
@@ -25,7 +25,7 @@ namespace :gitlab do
 
     # Restore backup of GitLab system
     desc 'GitLab | Restore a previously created backup'
-    task restore: :environment do
+    task restore: :gitlab_environment do
       warn_user_is_not_gitlab
       configure_cron_mode
 
@@ -73,7 +73,7 @@ namespace :gitlab do
     end
 
     namespace :repo do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping repositories ...".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("repositories")
@@ -84,7 +84,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring repositories ...".color(:blue)
         Backup::Repository.new.restore
         $progress.puts "done".color(:green)
@@ -92,7 +92,7 @@ namespace :gitlab do
     end
 
     namespace :db do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping database ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("db")
@@ -103,7 +103,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring database ... ".color(:blue)
         Backup::Database.new.restore
         $progress.puts "done".color(:green)
@@ -111,7 +111,7 @@ namespace :gitlab do
     end
 
     namespace :builds do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping builds ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("builds")
@@ -122,7 +122,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring builds ... ".color(:blue)
         Backup::Builds.new.restore
         $progress.puts "done".color(:green)
@@ -130,7 +130,7 @@ namespace :gitlab do
     end
 
     namespace :uploads do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping uploads ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("uploads")
@@ -141,7 +141,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring uploads ... ".color(:blue)
         Backup::Uploads.new.restore
         $progress.puts "done".color(:green)
@@ -149,7 +149,7 @@ namespace :gitlab do
     end
 
     namespace :artifacts do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping artifacts ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("artifacts")
@@ -160,7 +160,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring artifacts ... ".color(:blue)
         Backup::Artifacts.new.restore
         $progress.puts "done".color(:green)
@@ -168,7 +168,7 @@ namespace :gitlab do
     end
 
     namespace :pages do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping pages ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("pages")
@@ -179,7 +179,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring pages ... ".color(:blue)
         Backup::Pages.new.restore
         $progress.puts "done".color(:green)
@@ -187,7 +187,7 @@ namespace :gitlab do
     end
 
     namespace :lfs do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping lfs objects ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("lfs")
@@ -198,7 +198,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring lfs objects ... ".color(:blue)
         Backup::Lfs.new.restore
         $progress.puts "done".color(:green)
@@ -206,7 +206,7 @@ namespace :gitlab do
     end
 
     namespace :registry do
-      task create: :environment do
+      task create: :gitlab_environment do
         $progress.puts "Dumping container registry images ... ".color(:blue)
 
         if Gitlab.config.registry.enabled
@@ -221,7 +221,7 @@ namespace :gitlab do
         end
       end
 
-      task restore: :environment do
+      task restore: :gitlab_environment do
         $progress.puts "Restoring container registry images ... ".color(:blue)
 
         if Gitlab.config.registry.enabled

@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
   include Gitlab::EncodingHelper
+  using RSpec::Parameterized::TableSyntax
 
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
     it 'wraps gRPC not found error' do
@@ -19,6 +20,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:storage_path) { TestEnv.repos_path }
+  let(:user) { build(:user) }
 
   describe '.create_hooks' do
     let(:repo_path) { File.join(storage_path, 'hook-test.git') }
@@ -248,7 +250,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(/tmp\/gitlab-git-test.git\/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}/) }
+    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
     it { expect(metadata['ArchivePath']).to end_with extenstion }
   end
 
@@ -442,6 +444,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'simple commit counting' do
       it { expect(repository.commit_count("master")).to eq(25) }
       it { expect(repository.commit_count("feature")).to eq(9) }
+      it { expect(repository.commit_count("does-not-exist")).to eq(0) }
     end
 
     context 'when Gitaly commit_count feature is enabled' do
@@ -560,35 +563,39 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#delete_refs' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    shared_examples 'deleting refs' do
+      let(:repo) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
-    it 'deletes the ref' do
-      @repo.delete_refs('refs/heads/feature')
+      after do
+        ensure_seeds
+      end
 
-      expect(@repo.rugged.references['refs/heads/feature']).to be_nil
-    end
+      it 'deletes the ref' do
+        repo.delete_refs('refs/heads/feature')
 
-    it 'deletes all refs' do
-      refs = %w[refs/heads/wip refs/tags/v1.1.0]
-      @repo.delete_refs(*refs)
+        expect(repo.rugged.references['refs/heads/feature']).to be_nil
+      end
 
-      refs.each do |ref|
-        expect(@repo.rugged.references[ref]).to be_nil
+      it 'deletes all refs' do
+        refs = %w[refs/heads/wip refs/tags/v1.1.0]
+        repo.delete_refs(*refs)
+
+        refs.each do |ref|
+          expect(repo.rugged.references[ref]).to be_nil
+        end
+      end
+
+      it 'raises an error if it failed' do
+        expect { repo.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
       end
     end
 
-    it 'raises an error if it failed' do
-      expect(@repo).to receive(:popen).and_return(['Error', 1])
-
-      expect do
-        @repo.delete_refs('refs/heads/fix')
-      end.to raise_error(Gitlab::Git::Repository::GitError)
+    context 'when Gitaly delete_refs feature is enabled' do
+      it_behaves_like 'deleting refs'
     end
 
-    after(:all) do
-      ensure_seeds
+    context 'when Gitaly delete_refs feature is disabled', :disable_gitaly do
+      it_behaves_like 'deleting refs'
     end
   end
 
@@ -687,7 +694,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe '#remote_tags' do
     let(:remote_name) { 'upstream' }
     let(:target_commit_id) { SeedRepo::Commit::ID }
-    let(:user) { create(:user) }
     let(:tag_name) { 'v0.0.1' }
     let(:tag_message) { 'My tag' }
     let(:remote_repository) do
@@ -899,44 +905,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context "compare results between log_by_walk and log_by_shell" do
-      let(:options) { { ref: "master" } }
-      let(:commits_by_walk) { repository.log(options).map(&:id) }
-      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
-
-      it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-      context "with limit" do
-        let(:options) { { ref: "master", limit: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with offset" do
-        let(:options) { { ref: "master", offset: 1 } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with skip_merges" do
-        let(:options) { { ref: "master", skip_merges: true } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-      end
-
-      context "with path" do
-        let(:options) { { ref: "master", path: "encoding" } }
-
-        it { expect(commits_by_walk).to eq(commits_by_shell) }
-
-        context "with follow" do
-          let(:options) { { ref: "master", path: "encoding", follow: true } }
-
-          it { expect(commits_by_walk).to eq(commits_by_shell) }
-        end
-      end
-    end
-
     context "where provides 'after' timestamp" do
       options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
 
@@ -981,6 +949,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
     end
+
+    context 'limit validation' do
+      where(:limit) do
+        [0, nil, '', 'foo']
+      end
+
+      with_them do
+        it { expect { repository.log(limit: limit) }.to raise_error(ArgumentError) }
+      end
+    end
   end
 
   describe "#rugged_commits_between" do
@@ -1020,6 +998,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.count_commits_between('feature', 'master') }
 
     it { is_expected.to eq(17) }
+  end
+
+  describe '#merge_base' do
+    shared_examples '#merge_base' do
+      where(:from, :to, :result) do
+        '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | 'foobar' | nil
+        'foobar' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | nil
+      end
+
+      with_them do
+        it { expect(repository.merge_base(from, to)).to eq(result) }
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like '#merge_base'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge_base'
+    end
   end
 
   describe '#count_commits' do
@@ -1710,7 +1711,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples "user deleting a branch" do
       let(:project) { create(:project, :repository) }
       let(:repository) { project.repository.raw }
-      let(:user) { create(:user) }
       let(:branch_name) { "to-be-deleted-soon" }
 
       before do
@@ -1751,12 +1751,49 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#write_config' do
+    before do
+      repository.rugged.config["gitlab.fullpath"] = repository.path
+    end
+
+    shared_examples 'writing repo config' do
+      context 'is given a path' do
+        it 'writes it to disk' do
+          repository.write_config(full_path: "not-the/real-path.git")
+
+          config = File.read(File.join(repository.path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = not-the/real-path.git")
+        end
+      end
+
+      context 'it is given an empty path' do
+        it 'does not write it to disk' do
+          repository.write_config(full_path: "")
+
+          config = File.read(File.join(repository.path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = #{repository.path}")
+        end
+      end
+    end
+
+    context "when gitaly_write_config is enabled" do
+      it_behaves_like "writing repo config"
+    end
+
+    context "when gitaly_write_config is disabled", :disable_gitaly do
+      it_behaves_like "writing repo config"
+    end
+  end
+
   describe '#merge' do
     let(:repository) do
       Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
     end
     let(:source_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
-    let(:user) { build(:user) }
     let(:target_branch) { 'test-merge-target-branch' }
 
     before do
@@ -1809,7 +1846,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-    let(:user) { build(:user) }
     let(:target_branch) { 'test-ff-target-branch' }
 
     before do
@@ -2126,6 +2162,47 @@ describe Gitlab::Git::Repository, seed_helper: true do
           .and_return(false)
 
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#squash' do
+      let(:squash_id) { '1' }
+      let(:branch_name) { 'fix' }
+      let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+      let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
+
+      subject do
+        opts = {
+          branch: branch_name,
+          start_sha: start_sha,
+          end_sha: end_sha,
+          author: user,
+          message: 'Squash commit message'
+        }
+
+        repository.squash(user, squash_id, opts)
+      end
+
+      context 'sparse checkout' do
+        let(:expected_files) { %w(files files/js files/js/application.js) }
+
+        before do
+          allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+            m.call(*args) do
+              worktree_path = args[0]
+              files_pattern = File.join(worktree_path, '**', '*')
+              expected = expected_files.map do |path|
+                File.expand_path(path, worktree_path)
+              end
+
+              expect(Dir[files_pattern]).to eq(expected)
+            end
+          end
+        end
+
+        it 'checkouts only the files in the diff' do
+          subject
+        end
       end
     end
   end

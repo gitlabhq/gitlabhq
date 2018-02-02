@@ -34,15 +34,22 @@
             svgUrl: this.emptyGettingStartedSvgPath,
             title: 'Get started with performance monitoring',
             description: `Stay updated about the performance and health
-of your environment by configuring Prometheus to monitor your deployments.`,
+              of your environment by configuring Prometheus to monitor your deployments.`,
             buttonText: 'Configure Prometheus',
           },
           loading: {
             svgUrl: this.emptyLoadingSvgPath,
             title: 'Waiting for performance data',
             description: `Creating graphs uses the data from the Prometheus server.
-If this takes a long time, ensure that data is available.`,
+              If this takes a long time, ensure that data is available.`,
             buttonText: 'View documentation',
+          },
+          noData: {
+            svgUrl: this.emptyUnableToConnectSvgPath,
+            title: 'No data found',
+            description: `You are connected to the Prometheus server, but there is currently
+              no data to display.`,
+            buttonText: 'Configure Prometheus',
           },
           unableToConnect: {
             svgUrl: this.emptyUnableToConnectSvgPath,

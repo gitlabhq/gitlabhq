@@ -144,7 +144,10 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
     end
 
     context 'with a transaction' do
+      let(:metric_cache_misses_total) { double('metric_cache_misses_total', increment: nil) }
+
       before do
+        allow(subscriber).to receive(:metric_cache_misses_total).and_return(metric_cache_misses_total)
         allow(subscriber).to receive(:current_transaction)
                                .and_return(transaction)
       end
@@ -157,9 +160,9 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
       end
 
       it 'increments the cache_read_miss total' do
-        expect(subscriber.send(:metric_cache_misses_total)).to receive(:increment).with({})
-
         subscriber.cache_generate(event)
+
+        expect(metric_cache_misses_total).to have_received(:increment).with({})
       end
     end
   end

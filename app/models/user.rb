@@ -137,6 +137,7 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   #
   # Validations
@@ -159,12 +160,10 @@ class User < ActiveRecord::Base
   validate :namespace_uniq, if: :username_changed?
   validate :namespace_move_dir_allowed, if: :username_changed?
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: :email_changed?
   validate :owns_notification_email, if: :notification_email_changed?
   validate :owns_public_email, if: :public_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
@@ -224,9 +223,6 @@ class User < ActiveRecord::Base
       end
     end
   end
-
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :admins, -> { where(admin: true) }
@@ -524,12 +520,6 @@ class User < ActiveRecord::Base
   def namespace_move_dir_allowed
     if namespace&.any_project_has_container_registry_tags?
       errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
-    end
-  end
-
-  def avatar_type
-    unless avatar.image?
-      errors.add :avatar, "only images allowed"
     end
   end
 
@@ -842,13 +832,13 @@ class User < ActiveRecord::Base
   end
 
   def full_website_url
-    return "http://#{website_url}" if website_url !~ /\Ahttps?:\/\//
+    return "http://#{website_url}" if website_url !~ %r{\Ahttps?://}
 
     website_url
   end
 
   def short_website_url
-    website_url.sub(/\Ahttps?:\/\//, '')
+    website_url.sub(%r{\Ahttps?://}, '')
   end
 
   def all_ssh_keys
@@ -860,9 +850,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_url(size: nil, scale: 2, **args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
+    GravatarService.new.execute(email, size, scale, username: username)
   end
 
   def primary_email_verified?

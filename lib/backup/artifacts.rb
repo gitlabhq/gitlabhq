@@ -3,7 +3,7 @@ require 'backup/files'
 module Backup
   class Artifacts < Files
     def initialize
-      super('artifacts', LegacyArtifactUploader.local_store_path)
+      super('artifacts', JobArtifactUploader.root)
     end
 
     def create_files_dir
