@@ -4,13 +4,14 @@ export SETUP_DB=${SETUP_DB:-true}
 export CREATE_DB_USER=${CREATE_DB_USER:-$SETUP_DB}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 export BUNDLE_INSTALL_FLAGS="--without=production --jobs=$(nproc) --path=vendor --retry=3 --quiet"
+export GEM_PATH=/usr/local/bundle
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-    # if there's a comma (,), then we have multiple bundlers
-    if gem list -qe bundler | grep -q ,; then
-        # Uninstall non-default bundler to make sure we're using the one
-        gem uninstall -i /usr/local/lib/ruby/gems/2.3.0 bundler
-    fi
+    # # if there's a comma (,), then we have multiple bundlers
+    # if gem list -qe bundler | grep -q ,; then
+    #     # Uninstall non-default bundler to make sure we're using the one
+    #     gem uninstall -i /usr/local/lib/ruby/gems/2.3.0 bundler
+    # fi
     retry gem install bundler -v 1.13.7
     bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
 fi

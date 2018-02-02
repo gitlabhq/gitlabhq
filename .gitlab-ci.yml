@@ -34,9 +34,9 @@ variables:
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
 
 before_script:
-  - bundle --version
   - source scripts/utils.sh
   - source scripts/prepare_build.sh
+  - bundle --version
 
 stages:
   - build
