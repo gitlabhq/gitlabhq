@@ -261,9 +261,6 @@ class Project < ActiveRecord::Base
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :avatar_type,
-    if: ->(project) { project.avatar.present? && project.avatar_changed? }
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
   validate :check_wiki_path_conflict
@@ -271,7 +268,6 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
-  mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
@@ -933,20 +929,12 @@ class Project < ActiveRecord::Base
     issues_tracker.to_param == 'jira'
   end
 
-  def avatar_type
-    unless self.avatar.image?
-      self.errors.add :avatar, 'only images allowed'
-    end
-  end
-
   def avatar_in_git
     repository.avatar
   end
 
   def avatar_url(**args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || (Gitlab::Routing.url_helpers.project_avatar_url(self) if avatar_in_git)
+    Gitlab::Routing.url_helpers.project_avatar_url(self) if avatar_in_git
   end
 
   # For compatibility with old code
