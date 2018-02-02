@@ -32,7 +32,6 @@ class Group < Namespace
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
-<<<<<<< HEAD
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -41,22 +40,15 @@ class Group < Namespace
   # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
   has_many :audit_events, -> { where(entity_type: Group) }, foreign_key: 'entity_id'
 
-=======
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
->>>>>>> upstream/master
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-<<<<<<< HEAD
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
-=======
->>>>>>> upstream/master
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
