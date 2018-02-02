@@ -62,8 +62,7 @@
         return `${gon.sprite_file_icons}#${iconName}`;
       },
       folderIconName() {
-        // We don't have a open folder icon yet
-        return this.opened ? 'folder' : 'folder';
+        return this.opened ? 'folder-open' : 'folder';
       },
       iconSizeClass() {
         return this.size ? `s${this.size}` : '';
