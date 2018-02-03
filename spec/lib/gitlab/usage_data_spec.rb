@@ -121,9 +121,9 @@ describe Gitlab::UsageData do
     subject { described_class.features_usage_data_ce }
 
     it 'gathers feature usage data' do
-      expect(subject[:signup]).to eq(current_application_settings.allow_signup?)
+      expect(subject[:signup]).to eq(Gitlab::CurrentSettings.allow_signup?)
       expect(subject[:ldap]).to eq(Gitlab.config.ldap.enabled)
-      expect(subject[:gravatar]).to eq(current_application_settings.gravatar_enabled?)
+      expect(subject[:gravatar]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
       expect(subject[:omniauth]).to eq(Gitlab.config.omniauth.enabled)
       expect(subject[:reply_by_email]).to eq(Gitlab::IncomingEmail.enabled?)
       expect(subject[:container_registry]).to eq(Gitlab.config.registry.enabled)
@@ -135,7 +135,7 @@ describe Gitlab::UsageData do
     subject { described_class.features_usage_data_ee }
 
     it 'gathers feature usage data of EE' do
-      expect(subject[:elasticsearch]).to eq(current_application_settings.elasticsearch_search?)
+      expect(subject[:elasticsearch]).to eq(Gitlab::CurrentSettings.elasticsearch_search?)
       expect(subject[:geo]).to eq(Gitlab::Geo.enabled?)
     end
   end
@@ -158,7 +158,7 @@ describe Gitlab::UsageData do
     it "gathers license data" do
       license = ::License.current
 
-      expect(subject[:uuid]).to eq(current_application_settings.uuid)
+      expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:license_md5]).to eq(Digest::MD5.hexdigest(license.data))
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:licensee]).to eq(license.licensee)

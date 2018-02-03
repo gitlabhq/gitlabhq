@@ -101,7 +101,7 @@ module LicenseHelper
   end
 
   def show_advanced_search_promotion?
-    !current_application_settings.should_check_namespace_plan? && show_promotions? && show_callout?('promote_advanced_search_dismissed') && !License.feature_available?(:elastic_search)
+    !Gitlab::CurrentSettings.should_check_namespace_plan? && show_promotions? && show_callout?('promote_advanced_search_dismissed') && !License.feature_available?(:elastic_search)
   end
 
   extend self

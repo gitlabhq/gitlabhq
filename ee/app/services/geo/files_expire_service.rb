@@ -34,7 +34,7 @@ module Geo
     #
     # @return base directory where all uploads for the project are stored
     def base_dir
-      @base_dir ||= File.join(CarrierWave.root, FileUploader.base_dir, old_full_path)
+      @base_dir ||= File.join(FileUploader.root, old_full_path)
     end
 
     private

@@ -7,10 +7,10 @@ import initFilteredSearch from '~/pages/search/init_filtered_search';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch(FILTERED_SEARCH.ISSUES);
   new IssuableIndex(ISSUABLE_INDEX.ISSUE);
 
   new ShortcutsNavigation();
   new UsersSelect();
-};
+});

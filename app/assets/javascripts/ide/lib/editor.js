@@ -5,6 +5,8 @@ import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
 import editorOptions from './editor_options';
 
+import gitlabTheme from './themes/gl_theme';
+
 export default class Editor {
   static create(monaco) {
     this.editorInstance = new Editor(monaco);
@@ -23,6 +25,8 @@ export default class Editor {
       this.modelManager = new ModelManager(this.monaco),
       this.decorationsController = new DecorationsController(this),
     );
+
+    this.setupMonacoTheme();
 
     this.debouncedUpdate = _.debounce(() => {
       this.updateDimensions();
@@ -69,6 +73,12 @@ export default class Editor {
     }, {}));
 
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
+  }
+
+  setupMonacoTheme() {
+    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
+
+    this.monaco.editor.setTheme('gitlab');
   }
 
   clearEditor() {

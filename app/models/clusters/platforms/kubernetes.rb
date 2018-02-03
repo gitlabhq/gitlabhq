@@ -1,7 +1,6 @@
 module Clusters
   module Platforms
     class Kubernetes < ActiveRecord::Base
-      include Gitlab::CurrentSettings
       include Gitlab::Kubernetes
       include ReactiveCaching
 
@@ -171,7 +170,7 @@ module Clusters
         {
           token: token,
           ca_pem: ca_pem,
-          max_session_time: current_application_settings.terminal_max_session_time
+          max_session_time: Gitlab::CurrentSettings.terminal_max_session_time
         }
       end
 

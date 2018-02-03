@@ -18,6 +18,7 @@ class License < ActiveRecord::Base
     issue_weights
     jenkins_integration
     ldap_group_sync
+    member_lock
     merge_request_approvers
     merge_request_squash
     multiple_ldap_servers

@@ -1,6 +1,4 @@
 class Geo::DeletedProject
-  include Gitlab::CurrentSettings
-
   attr_reader :id, :name, :disk_path
 
   def initialize(id:, name:, disk_path:, repository_storage:)
@@ -17,7 +15,7 @@ class Geo::DeletedProject
   end
 
   def repository_storage
-    @repository_storage ||= current_application_settings.pick_repository_storage
+    @repository_storage ||= Gitlab::CurrentSettings.pick_repository_storage
   end
 
   def repository_storage_path

@@ -18,7 +18,7 @@ describe 'gitlab:artifacts namespace rake task' do
       let!(:build) { create(:ci_build, :legacy_artifacts, artifacts_file_store: store, artifacts_metadata_store: store) }
 
       context 'when local storage is used' do
-        let(:store) { ObjectStoreUploader::LOCAL_STORE }
+        let(:store) { ObjectStorage::Store::LOCAL }
 
         context 'and job does not have file store defined' do
           let(:object_storage_enabled) { true }
@@ -27,8 +27,8 @@ describe 'gitlab:artifacts namespace rake task' do
           it "migrates file to remote storage" do
             subject
 
-            expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
-            expect(build.reload.artifacts_metadata_store).to eq(ObjectStoreUploader::REMOTE_STORE)
+            expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::REMOTE)
+            expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::REMOTE)
           end
         end
 
@@ -38,8 +38,8 @@ describe 'gitlab:artifacts namespace rake task' do
           it "migrates file to remote storage" do
             subject
 
-            expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
-            expect(build.reload.artifacts_metadata_store).to eq(ObjectStoreUploader::REMOTE_STORE)
+            expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::REMOTE)
+            expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::REMOTE)
           end
         end
 
@@ -47,8 +47,8 @@ describe 'gitlab:artifacts namespace rake task' do
           it "fails to migrate to remote storage" do
             subject
 
-            expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::LOCAL_STORE)
-            expect(build.reload.artifacts_metadata_store).to eq(ObjectStoreUploader::LOCAL_STORE)
+            expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::LOCAL)
+            expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::LOCAL)
           end
         end
       end
@@ -56,13 +56,13 @@ describe 'gitlab:artifacts namespace rake task' do
       context 'when remote storage is used' do
         let(:object_storage_enabled) { true }
 
-        let(:store) { ObjectStoreUploader::REMOTE_STORE }
+        let(:store) { ObjectStorage::Store::REMOTE }
 
         it "file stays on remote storage" do
           subject
 
-          expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
-          expect(build.reload.artifacts_metadata_store).to eq(ObjectStoreUploader::REMOTE_STORE)
+          expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::REMOTE)
+          expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::REMOTE)
         end
       end
     end
@@ -72,7 +72,7 @@ describe 'gitlab:artifacts namespace rake task' do
     let!(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
 
     context 'when local storage is used' do
-      let(:store) { ObjectStoreUploader::LOCAL_STORE }
+      let(:store) { ObjectStorage::Store::LOCAL }
 
       context 'and job does not have file store defined' do
         let(:object_storage_enabled) { true }
@@ -81,7 +81,7 @@ describe 'gitlab:artifacts namespace rake task' do
         it "migrates file to remote storage" do
           subject
 
-          expect(artifact.reload.file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
+          expect(artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
         end
       end
 
@@ -91,7 +91,7 @@ describe 'gitlab:artifacts namespace rake task' do
         it "migrates file to remote storage" do
           subject
 
-          expect(artifact.reload.file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
+          expect(artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
         end
       end
 
@@ -99,19 +99,19 @@ describe 'gitlab:artifacts namespace rake task' do
         it "fails to migrate to remote storage" do
           subject
 
-          expect(artifact.reload.file_store).to eq(ObjectStoreUploader::LOCAL_STORE)
+          expect(artifact.reload.file_store).to eq(ObjectStorage::Store::LOCAL)
         end
       end
     end
 
     context 'when remote storage is used' do
       let(:object_storage_enabled) { true }
-      let(:store) { ObjectStoreUploader::REMOTE_STORE }
+      let(:store) { ObjectStorage::Store::REMOTE }
 
       it "file stays on remote storage" do
         subject
 
-        expect(artifact.reload.file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
+        expect(artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
       end
     end
   end

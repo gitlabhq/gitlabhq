@@ -2,6 +2,8 @@ shared_examples 'handle uploads' do
   let(:user)  { create(:user) }
   let(:jpg)   { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)   { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+  let(:secret) { FileUploader.generate_secret }
+  let(:uploader_class) { FileUploader }
 
   describe "POST #create" do
     context 'when a user is not authorized to upload a file' do
@@ -65,7 +67,12 @@ shared_examples 'handle uploads' do
 
   describe "GET #show" do
     let(:show_upload) do
-      get :show, params.merge(secret: "123456", filename: "image.jpg")
+      get :show, params.merge(secret: secret, filename: "rails_sample.jpg")
+    end
+
+    before do
+      expect(FileUploader).to receive(:generate_secret).and_return(secret)
+      UploadService.new(model, jpg, uploader_class).execute
     end
 
     context "when the model is public" do
@@ -75,11 +82,6 @@ shared_examples 'handle uploads' do
 
       context "when not signed in" do
         context "when the file exists" do
-          before do
-            allow_any_instance_of(FileUploader).to receive(:file).and_return(jpg)
-            allow(jpg).to receive(:exists?).and_return(true)
-          end
-
           it "responds with status 200" do
             show_upload
 
@@ -88,6 +90,10 @@ shared_examples 'handle uploads' do
         end
 
         context "when the file doesn't exist" do
+          before do
+            allow_any_instance_of(FileUploader).to receive(:exists?).and_return(false)
+          end
+
           it "responds with status 404" do
             show_upload
 
@@ -102,11 +108,6 @@ shared_examples 'handle uploads' do
         end
 
         context "when the file exists" do
-          before do
-            allow_any_instance_of(FileUploader).to receive(:file).and_return(jpg)
-            allow(jpg).to receive(:exists?).and_return(true)
-          end
-
           it "responds with status 200" do
             show_upload
 
@@ -115,6 +116,10 @@ shared_examples 'handle uploads' do
         end
 
         context "when the file doesn't exist" do
+          before do
+            allow_any_instance_of(FileUploader).to receive(:exists?).and_return(false)
+          end
+
           it "responds with status 404" do
             show_upload
 
@@ -131,11 +136,6 @@ shared_examples 'handle uploads' do
 
       context "when not signed in" do
         context "when the file exists" do
-          before do
-            allow_any_instance_of(FileUploader).to receive(:file).and_return(jpg)
-            allow(jpg).to receive(:exists?).and_return(true)
-          end
-
           context "when the file is an image" do
             before do
               allow_any_instance_of(FileUploader).to receive(:image?).and_return(true)
@@ -149,6 +149,10 @@ shared_examples 'handle uploads' do
           end
 
           context "when the file is not an image" do
+            before do
+              allow_any_instance_of(FileUploader).to receive(:image?).and_return(false)
+            end
+
             it "redirects to the sign in page" do
               show_upload
 
@@ -158,6 +162,10 @@ shared_examples 'handle uploads' do
         end
 
         context "when the file doesn't exist" do
+          before do
+            allow_any_instance_of(FileUploader).to receive(:exists?).and_return(false)
+          end
+
           it "redirects to the sign in page" do
             show_upload
 
@@ -177,11 +185,6 @@ shared_examples 'handle uploads' do
           end
 
           context "when the file exists" do
-            before do
-              allow_any_instance_of(FileUploader).to receive(:file).and_return(jpg)
-              allow(jpg).to receive(:exists?).and_return(true)
-            end
-
             it "responds with status 200" do
               show_upload
 
@@ -190,6 +193,10 @@ shared_examples 'handle uploads' do
           end
 
           context "when the file doesn't exist" do
+            before do
+              allow_any_instance_of(FileUploader).to receive(:exists?).and_return(false)
+            end
+
             it "responds with status 404" do
               show_upload
 
@@ -200,11 +207,6 @@ shared_examples 'handle uploads' do
 
         context "when the user doesn't have access to the model" do
           context "when the file exists" do
-            before do
-              allow_any_instance_of(FileUploader).to receive(:file).and_return(jpg)
-              allow(jpg).to receive(:exists?).and_return(true)
-            end
-
             context "when the file is an image" do
               before do
                 allow_any_instance_of(FileUploader).to receive(:image?).and_return(true)
@@ -218,6 +220,10 @@ shared_examples 'handle uploads' do
             end
 
             context "when the file is not an image" do
+              before do
+                allow_any_instance_of(FileUploader).to receive(:image?).and_return(false)
+              end
+
               it "responds with status 404" do
                 show_upload
 
@@ -227,6 +233,10 @@ shared_examples 'handle uploads' do
           end
 
           context "when the file doesn't exist" do
+            before do
+              allow_any_instance_of(FileUploader).to receive(:exists?).and_return(false)
+            end
+
             it "responds with status 404" do
               show_upload
 

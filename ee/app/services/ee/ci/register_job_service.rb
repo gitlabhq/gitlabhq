@@ -36,7 +36,7 @@ module EE
       end
 
       def application_shared_runners_minutes
-        current_application_settings.shared_runners_minutes
+        ::Gitlab::CurrentSettings.shared_runners_minutes
       end
 
       def shared_runner_build_limits_feature_enabled?

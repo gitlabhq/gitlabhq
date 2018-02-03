@@ -13,7 +13,7 @@ import { convertPermissionToBoolean } from './lib/utils/common_utils';
   ```
 */
 
-function updatetoggle(toggle, isOn) {
+function updateToggle(toggle, isOn) {
   toggle.classList.toggle('is-checked', isOn);
 }
 
@@ -21,7 +21,7 @@ function onToggleClicked(toggle, input, clickCallback) {
   const previousIsOn = convertPermissionToBoolean(input.value);
 
   // Visually change the toggle and start loading
-  updatetoggle(toggle, !previousIsOn);
+  updateToggle(toggle, !previousIsOn);
   toggle.setAttribute('disabled', true);
   toggle.classList.toggle('is-loading', true);
 
@@ -32,7 +32,7 @@ function onToggleClicked(toggle, input, clickCallback) {
     })
     .catch(() => {
       // Revert the visuals if something goes wrong
-      updatetoggle(toggle, previousIsOn);
+      updateToggle(toggle, previousIsOn);
     })
     .then(() => {
       // Remove the loading indicator in any case
@@ -54,7 +54,7 @@ export default function setupToggleButtons(container, clickCallback = () => {}) 
     const isOn = convertPermissionToBoolean(input.value);
 
     // Get the visible toggle in sync with the hidden input
-    updatetoggle(toggle, isOn);
+    updateToggle(toggle, isOn);
 
     toggle.addEventListener('click', onToggleClicked.bind(null, toggle, input, clickCallback));
   });

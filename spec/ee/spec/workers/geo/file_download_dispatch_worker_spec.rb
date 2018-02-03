@@ -52,7 +52,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
 
       before do
         stub_lfs_object_storage
-        lfs_object_remote_store.file.migrate!(LfsObjectUploader::REMOTE_STORE)
+        lfs_object_remote_store.file.migrate!(LfsObjectUploader::Store::REMOTE)
       end
 
       it 'filters S3-backed files' do
@@ -118,7 +118,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       create_list(:lfs_object, 2, :with_file)
       create_list(:user, 2, avatar: avatar)
       create_list(:note, 2, :with_attachment)
-      create_list(:upload, 1, :personal_snippet)
+      create_list(:upload, 1, :personal_snippet_upload)
       create_list(:ci_job_artifact, 1)
       create(:appearance, logo: avatar, header_logo: avatar)
 
