@@ -20,7 +20,7 @@ describe ProjectAutoDevops do
 
       context 'when there is an instance domain specified' do
         before do
-          stub_application_setting(auto_devops_domain: 'example.com')
+          allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return('example.com')
         end
 
         it { expect(auto_devops).to have_domain }
@@ -28,7 +28,7 @@ describe ProjectAutoDevops do
 
       context 'when there is no instance domain specified' do
         before do
-          stub_application_setting(auto_devops_domain: nil)
+          allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return(nil)
         end
 
         it { expect(auto_devops).not_to have_domain }
@@ -52,7 +52,7 @@ describe ProjectAutoDevops do
 
       context 'when there is an instance domain specified' do
         before do
-          stub_application_setting(auto_devops_domain: 'example.com')
+          allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return('example.com')
         end
 
         it { expect(auto_devops.variables).to include(domain_variable) }
@@ -60,7 +60,7 @@ describe ProjectAutoDevops do
 
       context 'when there is no instance domain specified' do
         before do
-          stub_application_setting(auto_devops_domain: nil)
+          allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return(nil)
         end
 
         it { expect(auto_devops.variables).not_to include(domain_variable) }

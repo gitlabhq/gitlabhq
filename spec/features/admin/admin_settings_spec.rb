@@ -52,8 +52,8 @@ feature 'Admin updates settings' do
     fill_in 'Auto devops domain', with: 'domain.com'
     click_button 'Save'
 
-    expect(current_application_settings.auto_devops_enabled?).to be true
-    expect(current_application_settings.auto_devops_domain).to eq('domain.com')
+    expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
+    expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
     expect(page).to have_content "Application settings saved successfully"
   end
 
