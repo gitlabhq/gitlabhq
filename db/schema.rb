@@ -1214,7 +1214,7 @@ ActiveRecord::Schema.define(version: 20180201145907) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.boolean "discussion_locked"
-    t.datetime "closed_at"
+    t.datetime_with_timezone "closed_at"
   end
 
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
