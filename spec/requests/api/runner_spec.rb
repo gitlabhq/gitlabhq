@@ -1159,8 +1159,6 @@ describe API::Runner do
 
           before do
             create(:ci_job_artifact, :archive, file_store: store, job: job)
-
-            download_artifact
           end
 
           context 'when using job token' do
@@ -1168,6 +1166,10 @@ describe API::Runner do
               let(:download_headers) do
                 { 'Content-Transfer-Encoding' => 'binary',
                   'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+              end
+
+              before do
+                download_artifact
               end
 
               it 'download artifacts' do
@@ -1180,14 +1182,37 @@ describe API::Runner do
               let(:store) { JobArtifactUploader::Store::REMOTE }
               let!(:job) { create(:ci_build) }
 
-              it 'download artifacts' do
-                expect(response).to have_gitlab_http_status(302)
+              context 'when proxy download is being used' do
+                before do
+                  download_artifact(direct_download: false)
+                end
+
+                it 'uses workhorse send-url' do
+                  expect(response).to have_gitlab_http_status(200)
+                  expect(response.headers).to include(
+                    'Gitlab-Workhorse-Send-Data' => /send-url:/)
+                end
+              end
+
+              context 'when direct download is being used' do
+                before do
+                  download_artifact(direct_download: true)
+                end
+
+                it 'receive redirect for downloading artifacts' do
+                  expect(response).to have_gitlab_http_status(302)
+                  expect(response.headers).to include('Location')
+                end
               end
             end
           end
 
           context 'when using runnners token' do
             let(:token) { job.project.runners_token }
+
+            before do
+              download_artifact
+            end
 
             it 'responds with forbidden' do
               expect(response).to have_gitlab_http_status(403)

@@ -161,6 +161,18 @@ module Gitlab
         ]
       end
 
+      def send_url(url, allow_redirects: false)
+        params = {
+          'URL' => url,
+          'AllowRedirects' => allow_redirects
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "send-url:#{encode(params)}"
+        ]
+      end
+
       def terminal_websocket(terminal)
         details = {
           'Terminal' => {
