@@ -11,7 +11,6 @@ class NamespaceFileUploader < FileUploader
   def self.model_path_segment(model)
     File.join(model.id.to_s)
   end
-<<<<<<< HEAD
 
   # Re-Override
   def store_dir
@@ -23,11 +22,5 @@ class NamespaceFileUploader < FileUploader
       Store::LOCAL => File.join(base_dir, dynamic_segment),
       Store::REMOTE => File.join('namespace', model_path_segment, dynamic_segment)
     }
-=======
-
-  # Re-Override
-  def store_dir
-    File.join(base_dir, dynamic_segment)
->>>>>>> upstream/master
   end
 end

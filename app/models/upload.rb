@@ -48,13 +48,9 @@ class Upload < ActiveRecord::Base
   end
 
   def local?
-<<<<<<< HEAD
     return true if store.nil?
 
     store == ObjectStorage::Store::LOCAL
-=======
-    true
->>>>>>> upstream/master
   end
 
   def foreground_checksummable?

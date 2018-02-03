@@ -15,7 +15,6 @@ describe LegacyArtifactUploader do
     it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('tmp/uploads') }
   end
-<<<<<<< HEAD
 
   it_behaves_like "builds correct paths",
                   store_dir: %r[\d{4}_\d{1,2}/\d+/\d+\z],
@@ -32,13 +31,6 @@ describe LegacyArtifactUploader do
     it_behaves_like "builds correct paths",
                     store_dir: %r[\d{4}_\d{1,2}/\d+/\d+\z]
   end
-=======
-
-  it_behaves_like "builds correct paths",
-                  store_dir: %r[\d{4}_\d{1,2}/\d+/\d+\z],
-                  cache_dir: %r[artifacts/tmp/cache],
-                  work_dir: %r[artifacts/tmp/work]
->>>>>>> upstream/master
 
   describe '#filename' do
     # we need to use uploader, as this makes to use mounter
