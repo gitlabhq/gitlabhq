@@ -9,9 +9,11 @@ class RemoveProjectLabelsGroupIdCopy < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/UpdateColumnInBatches
     update_column_in_batches(:labels, :group_id, nil) do |table, query|
       query.where(table[:type].eq('ProjectLabel').and(table[:group_id].not_eq(nil)))
     end
+    # rubocop:enable Migration/UpdateColumnInBatches
   end
 
   def down
