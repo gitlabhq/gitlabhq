@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ObjectStorageUploadWorker do
+describe ObjectStorage::BackgroundUploadWorker do
   let(:local) { ObjectStorage::Store::LOCAL }
   let(:remote) { ObjectStorage::Store::REMOTE }
 

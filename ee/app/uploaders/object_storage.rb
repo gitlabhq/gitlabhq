@@ -50,6 +50,15 @@ module ObjectStorage
         super
       end
 
+      def schedule_background_upload(*args)
+        return unless schedule_background_upload?
+
+        ObjectStorage::BackgroundUploadWorker.perform_async(self.class.name,
+                                                upload.class.to_s,
+                                                mounted_as,
+                                                upload.id)
+      end
+
       private
 
       def current_upload_satisfies?(paths, model)
@@ -59,6 +68,23 @@ module ObjectStorage
         paths.include?(upload.path) &&
           upload.model_id == model.id &&
           upload.model_type == model.class.base_class.sti_name
+      end
+    end
+  end
+
+  module BackgroundUpload
+    extend ActiveSupport::Concern
+
+    def background_upload(mount_point)
+      run_after_commit { send(mount_point).schedule_background_upload }
+    end
+
+    included do
+      after_save on: [:create, :update] do
+        self.class.uploaders.each do |mount, uploader_class|
+          mounted_as = uploader_class.serialization_column(self.class, mount)
+          background_upload(mount) if send(:"#{mounted_as}_changed?")
+        end
       end
     end
   end
@@ -96,6 +122,10 @@ module ObjectStorage
 
       def licensed?
         License.feature_available?(:object_storage)
+      end
+
+      def serialization_column(model_class, mount_point)
+        model_class.uploader_options.dig(mount_point, :mount_on) || mount_point
       end
     end
 
@@ -183,13 +213,13 @@ module ObjectStorage
       raise e
     end
 
-    def schedule_migration_to_object_storage(*args)
-      return unless self.class.object_store_enabled?
-      return unless self.class.background_upload_enabled?
-      return unless self.class.licensed?
-      return unless self.file_storage?
+    def schedule_background_upload(*args)
+      return unless schedule_background_upload?
 
-      ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
+      ObjectStorage::BackgroundUploadWorker.perform_async(self.class.name,
+                                                          model.class.name,
+                                                          mounted_as,
+                                                          model.id)
     end
 
     def fog_directory
@@ -231,6 +261,13 @@ module ObjectStorage
 
     private
 
+    def schedule_background_upload?
+      self.class.object_store_enabled? &&
+        self.class.background_upload_enabled? &&
+        self.class.licensed? &&
+        self.file_storage?
+    end
+
     # this is a hack around CarrierWave. The #migrate method needs to be
     # able to force the current file to the migrated file upon success.
     def file=(file)
@@ -238,7 +275,7 @@ module ObjectStorage
     end
 
     def serialization_column
-      model.class.uploader_options.dig(mounted_as, :mount_on) || mounted_as
+      self.class.serialization_column(model.class, mounted_as)
     end
 
     # Returns the column where the 'store' is saved

@@ -84,4 +84,4 @@
   - [elastic_indexer, 1]
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
-  - [object_storage_upload, 1]
+  - [object_storage, 1]

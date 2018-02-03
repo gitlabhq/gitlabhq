@@ -121,6 +121,11 @@
 - geo:geo_repositories_clean_up
 - geo:geo_repository_destroy
 
+- object_storage:object_storage_background_upload
+- object_storage:object_storage_migrate_for_artifacts
+- object_storage:object_storage_migrate_for_lfs_objects
+- object_storage:object_storage_migrate_for_uploads
+
 - admin_emails
 - elastic_batch_project_indexer
 - elastic_commit_indexer
@@ -131,7 +136,6 @@
 - geo_project_sync
 - geo_repository_shard_sync
 - ldap_group_sync
-- object_storage_upload
 - project_update_repository_storage
 - rebase
 - repository_update_mirror

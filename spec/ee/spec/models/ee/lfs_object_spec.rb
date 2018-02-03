@@ -34,7 +34,7 @@ describe LfsObject do
     end
   end
 
-  describe '#schedule_migration_to_object_storage' do
+  describe '#schedule_background_upload' do
     before do
       stub_lfs_setting(enabled: true)
     end
@@ -47,7 +47,7 @@ describe LfsObject do
       end
 
       it 'does not schedule the migration' do
-        expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+        expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
 
         subject
       end
@@ -61,7 +61,7 @@ describe LfsObject do
           end
 
           it 'schedules the model for migration' do
-            expect(ObjectStorageUploadWorker).to receive(:perform_async).with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
+            expect(ObjectStorage::BackgroundUploadWorker).to receive(:perform_async).with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
 
             subject
           end
@@ -73,7 +73,7 @@ describe LfsObject do
           end
 
           it 'does not schedule the migration' do
-            expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+            expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
 
             subject
           end
@@ -86,7 +86,7 @@ describe LfsObject do
         end
 
         it 'schedules the model for migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
 
           subject
         end

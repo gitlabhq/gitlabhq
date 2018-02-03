@@ -18,14 +18,14 @@ describe Ci::JobArtifact do
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 
-    describe '#schedule_migration_to_object_storage' do
+    describe '#schedule_background_upload' do
       context 'when object storage is disabled' do
         before do
           stub_artifacts_object_storage(enabled: false)
         end
 
         it 'does not schedule the migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
 
           subject
         end
@@ -39,7 +39,7 @@ describe Ci::JobArtifact do
             end
 
             it 'schedules the model for migration' do
-              expect(ObjectStorageUploadWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
+              expect(ObjectStorage::BackgroundUploadWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
 
               subject
             end
@@ -51,7 +51,7 @@ describe Ci::JobArtifact do
             end
 
             it 'does not schedule the migration' do
-              expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+              expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
 
               subject
             end
@@ -64,7 +64,7 @@ describe Ci::JobArtifact do
           end
 
           it 'schedules the model for migration' do
-            expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+            expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
 
             subject
           end
