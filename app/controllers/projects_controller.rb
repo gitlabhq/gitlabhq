@@ -394,7 +394,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_export_enabled
-    render_404 unless current_application_settings.project_export_enabled?
+    render_404 unless Gitlab::CurrentSettings.project_export_enabled?
   end
 
   def redirect_git_extension
@@ -403,6 +403,6 @@ class ProjectsController < Projects::ApplicationController
     # to
     #   localhost/group/project
     #
-    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
+    redirect_to request.original_url.sub(%r{\.git/?\Z}, '') if params[:format] == 'git'
   end
 end

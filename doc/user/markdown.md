@@ -253,7 +253,7 @@ GFM will recognize the following:
 | `@user_name`               | specific user                   |
 | `@group_name`              | specific group                  |
 | `@all`                     | entire team                     |
-| `#123`                     | issue                           |
+| `#12345`                   | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
 | `~123`                     | label by ID                     |
@@ -378,6 +378,45 @@ _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
 >**Note:**
 This also works for the asciidoctor `:stem: latexmath`. For details see the [asciidoctor user manual][asciidoctor-manual].
+
+### Colors
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#colors
+
+It is possible to have color written in HEX, RGB or HSL format rendered with a color indicator.
+
+Color written inside backticks will be followed by a color "chip".
+
+Examples:
+
+    `#F00`
+    `#F00A`
+    `#FF0000`
+    `#FF0000AA`
+    `RGB(0,255,0)`
+    `RGB(0%,100%,0%)`
+    `RGBA(0,255,0,0.7)`
+    `HSL(540,70%,50%)`
+    `HSLA(540,70%,50%,0.7)`
+
+Becomes:
+
+`#F00`  
+`#F00A`  
+`#FF0000`  
+`#FF0000AA`  
+`RGB(0,255,0)`  
+`RGB(0%,100%,0%)`  
+`RGBA(0,255,0,0.7)`  
+`HSL(540,70%,50%)`  
+`HSLA(540,70%,50%,0.7)`  
+
+#### Supported formats:
+
+* HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+* RGB: `` `RGB[A](R, G, B[, A])` ``
+* HSL: `` `HSL[A](H, S, L[, A])` ``
 
 ### Mermaid
 

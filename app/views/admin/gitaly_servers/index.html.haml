@@ -1,0 +1,31 @@
+- breadcrumb_title _("Gitaly Servers")
+
+%h3.page-title= _("Gitaly Servers")
+%hr
+.gitaly_servers
+  - if @gitaly_servers.any?
+    .table-holder
+      %table.table.responsive-table
+        %thead.hidden-sm.hidden-xs
+          %tr
+            %th= _("Storage")
+            %th= n_("Gitaly|Address")
+            %th= _("Server version")
+            %th= _("Git version")
+            %th= _("Up to date")
+        - @gitaly_servers.each do |server|
+          %tr
+            %td
+              = server.storage
+            %td
+              = server.address
+            %td
+              = server.server_version
+            %td
+              = server.git_binary_version
+            %td
+              = boolean_to_icon(server.up_to_date?)
+  - else
+    .empty-state
+      .text-center
+        %h4= _("No connection could be made to a Gitaly Server, please check your logs!")

@@ -7,8 +7,6 @@
 #
 module Projects
   class HousekeepingService < BaseService
-    include Gitlab::CurrentSettings
-
     # Timeout set to 24h
     LEASE_TIMEOUT = 86400
 
@@ -83,19 +81,19 @@ module Projects
     end
 
     def housekeeping_enabled?
-      current_application_settings.housekeeping_enabled
+      Gitlab::CurrentSettings.housekeeping_enabled
     end
 
     def gc_period
-      current_application_settings.housekeeping_gc_period
+      Gitlab::CurrentSettings.housekeeping_gc_period
     end
 
     def full_repack_period
-      current_application_settings.housekeeping_full_repack_period
+      Gitlab::CurrentSettings.housekeeping_full_repack_period
     end
 
     def repack_period
-      current_application_settings.housekeeping_incremental_repack_period
+      Gitlab::CurrentSettings.housekeeping_incremental_repack_period
     end
   end
 end

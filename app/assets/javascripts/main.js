@@ -33,7 +33,7 @@ import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
-import './dispatcher';
+import initDispatcher from './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -265,4 +265,6 @@ $(() => {
       removeFlashClickListener(flashEl);
     });
   }
+
+  initDispatcher();
 });

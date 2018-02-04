@@ -76,7 +76,13 @@
             .then(data => this.store.storeDeploymentData(data))
             .catch(() => new Flash('Error getting deployment information.')),
         ])
-          .then(() => { this.showEmptyState = false; })
+          .then(() => {
+            if (this.store.groups.length < 1) {
+              this.state = 'noData';
+              return;
+            }
+            this.showEmptyState = false;
+          })
           .catch(() => { this.state = 'unableToConnect'; });
       },
 

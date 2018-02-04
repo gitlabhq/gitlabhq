@@ -12,9 +12,9 @@ import ShortcutsIssuable from './shortcuts_issuable';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
-(function() {
-  var Dispatcher;
+var Dispatcher;
 
+(function() {
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -49,45 +49,15 @@ import SearchAutocomplete from './search_autocomplete';
       });
 
       switch (page) {
-        case 'sessions:new':
-          import('./pages/sessions/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:boards:show':
-        case 'projects:boards:index':
-          import('./pages/projects/boards/index')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:environments:metrics':
           import('./pages/projects/environments/metrics')
             .then(callDefault)
             .catch(fail);
           break;
         case 'projects:merge_requests:index':
-          import('./pages/projects/merge_requests/index')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:issues:index':
-          import('./pages/projects/issues/index')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:issues:show':
-          import('./pages/projects/issues/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
-          break;
-        case 'dashboard:milestones:index':
-          import('./pages/dashboard/milestones/index')
-            .then(callDefault)
-            .catch(fail);
           break;
         case 'projects:milestones:index':
           import('./pages/projects/milestones/index')
@@ -318,9 +288,6 @@ import SearchAutocomplete from './search_autocomplete';
           shortcut_handler = true;
           break;
         case 'projects:show':
-          import('./pages/projects/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'projects:edit':
@@ -352,9 +319,6 @@ import SearchAutocomplete from './search_autocomplete';
             .catch(fail);
           break;
         case 'groups:show':
-          import('./pages/groups/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'groups:group_members:index':
@@ -363,7 +327,7 @@ import SearchAutocomplete from './search_autocomplete';
             .catch(fail);
           break;
         case 'projects:project_members:index':
-          import('./pages/projects/project_members/')
+          import('./pages/projects/project_members')
             .then(callDefault)
             .catch(fail);
           break;
@@ -605,7 +569,7 @@ import SearchAutocomplete from './search_autocomplete';
           }
           break;
         case 'profiles':
-          import('./pages/profiles/index/')
+          import('./pages/profiles/index')
             .then(callDefault)
             .catch(fail);
           break;
@@ -662,8 +626,8 @@ import SearchAutocomplete from './search_autocomplete';
 
     return Dispatcher;
   })();
+})();
 
-  $(window).on('load', function() {
-    new Dispatcher();
-  });
-}).call(window);
+export default function initDispatcher() {
+  return new Dispatcher();
+}

@@ -152,6 +152,12 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
+  ## Uploads (attachments, avatars, etc...)
+  uploads:
+    # The location where uploads objects are stored (default: public/).
+    # storage_path: public/
+    # base_dir: uploads/-/system
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -644,6 +650,8 @@ test:
     enabled: false
   artifacts:
     path: tmp/tests/artifacts
+  uploads:
+    storage_path: tmp/tests/public
   gitlab:
     host: localhost
     port: 80
