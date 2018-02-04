@@ -2,6 +2,7 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
+    include AttributeCacheable
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
@@ -43,6 +44,8 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
+    redis_cached_attributes :name, :version, :revision, :platform, :architecture, :contacted_at
+
     enum access_level: {
       not_protected: 0,
       ref_protected: 1
@@ -66,30 +69,6 @@ module Ci
 
     def self.contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
-    end
-
-    def name
-      cached_attribute(:name) || read_attribute(:name)
-    end
-
-    def version
-      cached_attribute(:version) || read_attribute(:version)
-    end
-
-    def revision
-      cached_attribute(:revision) || read_attribute(:revision)
-    end
-
-    def platform
-      cached_attribute(:platform) || read_attribute(:platform)
-    end
-
-    def architecture
-      cached_attribute(:architecture) || read_attribute(:architecture)
-    end
-
-    def contacted_at
-      cached_attribute(:contacted_at) || read_attribute(:contacted_at)
     end
 
     def set_default_values
@@ -201,10 +180,6 @@ module Ci
       "runner:build_queue:#{self.token}"
     end
 
-    def cache_attribute_key(key)
-      "runner:info:#{self.id}:#{key}"
-    end
-
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.
       # It generates a distribution between [40m, 80m].
@@ -214,21 +189,6 @@ module Ci
       real_contacted_at = read_attribute(:contacted_at)
       real_contacted_at.nil? ||
         (Time.now - real_contacted_at) >= contacted_at_max_age
-    end
-
-    def cached_attribute(key)
-      @cached_attributes = {}
-      @cached_attributes[key] ||= Gitlab::Redis::SharedState.with do |redis|
-        redis.get(cache_attribute_key(key))
-      end
-    end
-
-    def cache_attributes(values)
-      Gitlab::Redis::SharedState.with do |redis|
-        values.each do |key, value|
-          redis.set(cache_attribute_key(key), value, ex: 24.hours)
-        end
-      end
     end
 
     def tag_constraints
