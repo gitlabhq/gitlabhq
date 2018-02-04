@@ -148,7 +148,7 @@ describe Ci::Runner do
     def stub_redis_runner_contacted_at(value)
       Gitlab::Redis::SharedState.with do |redis|
         cache_key = runner.send(:cache_attribute_key, :contacted_at)
-        allow(redis).to receive(:get).with(cache_key).and_return(value)
+        expect(redis).to receive(:get).with(cache_key).and_return(value).at_least(:once)
       end
     end
   end
