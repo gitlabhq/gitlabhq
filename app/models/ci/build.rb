@@ -518,6 +518,10 @@ module Ci
       super(options).merge(when: read_attribute(:when))
     end
 
+    def gitlab_edition_variable
+      'libre'
+    end
+
     private
 
     def update_artifacts_size
@@ -542,6 +546,7 @@ module Ci
       variables = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'GITLAB_EDITION', value: gitlab_edition_variable, public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
