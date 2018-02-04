@@ -68,8 +68,8 @@ module Ci
       ONLINE_CONTACT_TIMEOUT.ago
     end
 
-    def contacted_at
-      cached_attribute(:contacted_at) || read_attribute(:contacted_at)
+    def name
+      cached_attribute(:name) || read_attribute(:name)
     end
 
     def version
@@ -80,8 +80,16 @@ module Ci
       cached_attribute(:revision) || read_attribute(:revision)
     end
 
+    def platform
+      cached_attribute(:platform) || read_attribute(:platform)
+    end
+
     def architecture
       cached_attribute(:architecture) || read_attribute(:architecture)
+    end
+
+    def contacted_at
+      cached_attribute(:contacted_at) || read_attribute(:contacted_at)
     end
 
     def set_default_values
@@ -170,7 +178,7 @@ module Ci
     end
 
     def update_cached_info(values)
-      values = values.slice(:version, :revision, :platform, :architecture)
+      values = values&.slice(:name, :version, :revision, :platform, :architecture) || {}
       values[:contacted_at] = Time.now
 
       cache_attributes(values)
