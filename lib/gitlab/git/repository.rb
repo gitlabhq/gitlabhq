@@ -1363,20 +1363,23 @@ module Gitlab
         raise CommandError.new(e)
       end
 
-      def refs_contains_sha(ref_type, sha)
-        args = %W(#{ref_type} --contains #{sha})
-        names = run_git(args).first
-
-        if names.respond_to?(:split)
-          names = names.split("\n").map(&:strip)
-
-          names.each do |name|
-            name.slice! '* '
+      def branch_names_contains_sha(sha)
+        gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branch_names_contains_sha(sha)
+          else
+            refs_contains_sha(:branch, sha)
           end
+        end
+      end
 
-          names
-        else
-          []
+      def tag_names_contains_sha(sha)
+        gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.tag_names_contains_sha(sha)
+          else
+            refs_contains_sha(:tag, sha)
+          end
         end
       end
 
@@ -1452,6 +1455,21 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
+      end
+
+      def refs_contains_sha(ref_type, sha)
+        args = %W(#{ref_type} --contains #{sha})
+        names = run_git(args).first
+
+        return [] unless names.respond_to?(:split)
+
+        names = names.split("\n").map(&:strip)
+
+        names.each do |name|
+          name.slice! '* '
+        end
+
+        names
       end
 
       def rugged_write_config(full_path:)
