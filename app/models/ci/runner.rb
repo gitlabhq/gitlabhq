@@ -5,7 +5,7 @@ module Ci
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
-    UPDATE_DB_RUNNER_INFO_EVERY = 1.hour
+    UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
 
@@ -68,12 +68,20 @@ module Ci
       ONLINE_CONTACT_TIMEOUT.ago
     end
 
-    def cached_contacted_at
-      if runner_info_cache(:contacted_at)
-        Time.zone.parse(runner_info_cache(:contacted_at))
-      else
-        self.contacted_at
-      end
+    def contacted_at
+      cached_attribute(:contacted_at) || read_attribute(:contacted_at)
+    end
+
+    def version
+      cached_attribute(:version) || read_attribute(:version)
+    end
+
+    def revision
+      cached_attribute(:revision) || read_attribute(:revision)
+    end
+
+    def architecture
+      cached_attribute(:architecture) || read_attribute(:architecture)
     end
 
     def set_default_values
@@ -97,7 +105,7 @@ module Ci
     end
 
     def online?
-      contacted_at && cached_contacted_at > self.class.contact_time_deadline
+      contacted_at && contacted_at > self.class.contact_time_deadline
     end
 
     def status
@@ -161,16 +169,16 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def update_runner_info(params)
-      update_runner_info_cache(params)
+    def update_cached_info(values)
+      values = values.slice(:version, :revision, :platform, :architecture)
+      values[:contacted_at] = Time.now
 
-      # Use a 1h threshold to prevent beating DB updates.
-      return unless self.contacted_at.nil? ||
-          (Time.now - self.contacted_at) >= UPDATE_DB_RUNNER_INFO_EVERY
+      cache_attributes(values)
 
-      self.contacted_at = Time.now
-      self.assign_attributes(params)
-      self.save if self.changed?
+      if persist_cached_data?
+        self.assign_attributes(values)
+        self.save
+      end
     end
 
     private
@@ -185,24 +193,33 @@ module Ci
       "runner:build_queue:#{self.token}"
     end
 
-    def runner_info_redis_cache_key
-      "runner:info:#{self.id}"
+    def cache_attribute_key(key)
+      "runner:info:#{self.id}:#{key}"
     end
 
-    def update_runner_info_cache(params)
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set("#{runner_info_redis_cache_key}:contacted_at", Time.now)
+    def persist_cached_data?
+      # Use a random threshold to prevent beating DB updates.
+      # It generates a distribution between [40m, 80m].
 
-        params && params.each do |key, value|
-          redis_key = "#{runner_info_redis_cache_key}:#{key}"
-          redis.set(redis_key, value)
-        end
+      contacted_at_max_age = UPDATE_DB_RUNNER_INFO_EVERY + Random.rand(UPDATE_DB_RUNNER_INFO_EVERY)
+
+      real_contacted_at = read_attribute(:contacted_at)
+      real_contacted_at.nil? ||
+        (Time.now - real_contacted_at) >= contacted_at_max_age
+    end
+
+    def cached_attribute(key)
+      @cached_attributes = {}
+      @cached_attributes[key] ||= Gitlab::Redis::SharedState.with do |redis|
+        redis.get(cache_attribute_key(key))
       end
     end
 
-    def runner_info_cache(attribute)
+    def cache_attributes(values)
       Gitlab::Redis::SharedState.with do |redis|
-        redis.get("#{runner_info_redis_cache_key}:#{attribute}")
+        values.each do |key, value|
+          redis.set(cache_attribute_key(key), value, ex: 24.hours)
+        end
       end
     end
 
