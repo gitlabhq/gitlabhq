@@ -18,7 +18,7 @@ documentation.
 
 > **Important:**
 For security reasons, when using the command line, we strongly recommend
-you to [connect with GitLab via SSH](../../../ssh/README.md).
+that you [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
