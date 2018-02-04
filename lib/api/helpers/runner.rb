@@ -20,7 +20,7 @@ module API
       def authenticate_runner!
         forbidden! unless current_runner
 
-        current_runner.update_runner_info(get_runner_version_from_params)
+        current_runner.update_cached_info(get_runner_version_from_params)
       end
 
       def current_runner

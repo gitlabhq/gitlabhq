@@ -146,9 +146,10 @@ describe Ci::Runner do
     end
 
     def stub_redis_runner_contacted_at(value)
-      redis = double
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
-      allow(redis).to receive(:get).with("#{runner.send(:runner_info_redis_cache_key)}:contacted_at").and_return(value)
+      Gitlab::Redis::SharedState.with do |redis|
+        cache_key = runner.send(:cache_attribute_key, :contacted_at)
+        allow(redis).to receive(:get).with(cache_key).and_return(value)
+      end
     end
   end
 
@@ -393,10 +394,10 @@ describe Ci::Runner do
     end
   end
 
-  describe '#update_runner_info' do
+  describe '#update_cached_info' do
     let(:runner) { create(:ci_runner) }
 
-    subject { runner.update_runner_info(name: 'testing_runner') }
+    subject { runner.update_cached_info(architecture: '18-bit') }
 
     context 'when database was updated recently' do
       before do
@@ -404,7 +405,7 @@ describe Ci::Runner do
       end
 
       it 'updates cache' do
-        expect_redis_update(:contacted_at, :name)
+        expect_redis_update(:architecture, :contacted_at)
 
         subject
       end
@@ -416,26 +417,25 @@ describe Ci::Runner do
       end
 
       it 'updates database' do
-        expect_redis_update(:contacted_at, :name)
+        expect_redis_update(:architecture, :contacted_at)
 
-        expect { subject }.to change { runner.reload.contacted_at }
-          .and change { runner.reload.name }
+        expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
+          .and change { runner.reload.read_attribute(:architecture) }
       end
 
       it 'updates cache' do
-        expect_redis_update(:contacted_at, :name)
+        expect_redis_update(:architecture, :contacted_at)
 
         subject
       end
     end
 
     def expect_redis_update(*params)
-      redis = double
-      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
-
-      params.each do |param|
-        redis_key = "#{runner.send(:runner_info_redis_cache_key)}:#{param}"
-        expect(redis).to receive(:set).with(redis_key, anything)
+      Gitlab::Redis::SharedState.with do |redis|
+        params.each do |param|
+          redis_key = runner.send(:cache_attribute_key, param)
+          expect(redis).to receive(:set).with(redis_key, anything, any_args)
+        end
       end
     end
   end
