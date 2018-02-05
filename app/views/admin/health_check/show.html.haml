@@ -23,13 +23,9 @@
         %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
       %li
         %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
-<<<<<<< HEAD
       - if Gitlab::Geo.secondary?
         %li
           %code= health_check_url(token: Gitlab::CurrentSettings.health_check_access_token, checks: :geo)
-=======
-
->>>>>>> upstream/master
   %hr
   .panel.panel-default
     .panel-heading
