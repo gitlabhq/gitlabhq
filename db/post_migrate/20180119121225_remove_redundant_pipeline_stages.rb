@@ -3,12 +3,15 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def up
-    remove_concurrent_index :ci_stages, [:pipeline_id, :name]
+  disable_ddl_transaction!
 
+  def up(attempts: 100)
+    remove_outdated_index!
     remove_redundant_pipeline_stages!
-
-    add_concurrent_index :ci_stages, [:pipeline_id, :name], unique: true
+    add_unique_index!
+  rescue ActiveRecord::RecordNotUnique
+    retry if (attempts -= 1) > 0
+    raise
   end
 
   def down
@@ -17,6 +20,16 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
   end
 
   private
+
+  def remove_outdated_index!
+    return unless index_exists?(:ci_stages, [:pipeline_id, :name])
+
+    remove_concurrent_index :ci_stages, [:pipeline_id, :name]
+  end
+
+  def add_unique_index!
+    add_concurrent_index :ci_stages, [:pipeline_id, :name], unique: true
+  end
 
   def remove_redundant_pipeline_stages!
     redundant_stages_ids = <<~SQL

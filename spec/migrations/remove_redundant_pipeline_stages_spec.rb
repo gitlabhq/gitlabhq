@@ -36,4 +36,13 @@ describe RemoveRedundantPipelineStages, :migration do
     expect(builds.all.count).to eq 6
     expect(builds.all.pluck(:stage_id).compact).to eq [102]
   end
+
+  it 'retries when duplicated stages are being created during migration' do
+    allow(subject).to receive(:remove_outdated_index!)
+    expect(subject).to receive(:remove_redundant_pipeline_stages!).exactly(3).times
+    allow(subject).to receive(:add_unique_index!)
+      .and_raise(ActiveRecord::RecordNotUnique.new('Duplicated stages present!'))
+
+    expect { subject.up(attempts: 3) }.to raise_error ActiveRecord::RecordNotUnique
+  end
 end
