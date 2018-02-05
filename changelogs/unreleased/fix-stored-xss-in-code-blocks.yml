@@ -1,5 +1,0 @@
----
-title: Fix stored XSS in code blocks that ignore highlighting
-merge_request:
-author:
-type: security
