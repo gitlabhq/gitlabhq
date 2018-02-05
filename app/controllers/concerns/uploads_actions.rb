@@ -70,7 +70,7 @@ module UploadsActions
   end
 
   def build_uploader_from_params
-    uploader = uploader_class.new(model, params[:secret])
+    uploader = uploader_class.new(model, secret: params[:secret])
     uploader.retrieve_from_store!(params[:filename])
     uploader
   end

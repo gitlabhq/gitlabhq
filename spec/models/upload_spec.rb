@@ -103,4 +103,10 @@ describe Upload do
       expect(upload).not_to exist
     end
   end
+
+  describe "#uploader_context" do
+    subject { create(:upload, :issuable_upload, secret: 'secret', filename: 'file.txt') }
+
+    it { expect(subject.uploader_context).to match(a_hash_including(secret: 'secret', identifier: 'file.txt')) }
+  end
 end
