@@ -183,6 +183,32 @@ module Gitlab
         end
       end
 
+      def user_squash(user, squash_id, branch, start_sha, end_sha, author, message)
+        request = Gitaly::UserSquashRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          squash_id: squash_id.to_s,
+          branch: encode_binary(branch),
+          start_sha: start_sha,
+          end_sha: end_sha,
+          author: Gitlab::Git::User.from_gitlab(author).to_gitaly,
+          commit_message: encode_binary(message)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_squash,
+          request
+        )
+
+        if response.git_error.presence
+          raise Gitlab::Git::Repository::GitError, response.git_error
+        end
+
+        response.squash_sha
+      end
+
       def user_commit_files(
         user, branch_name, commit_message, actions, author_email, author_name,
         start_branch_name, start_repository)

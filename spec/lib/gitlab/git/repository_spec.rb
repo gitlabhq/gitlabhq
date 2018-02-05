@@ -2196,7 +2196,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         repository.squash(user, squash_id, opts)
       end
 
-      context 'sparse checkout' do
+      context 'sparse checkout', :skip_gitaly_mock do
         let(:expected_files) { %w(files files/js files/js/application.js) }
 
         before do
