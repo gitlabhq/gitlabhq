@@ -7,7 +7,7 @@ feature 'Jobs' do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+  let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do

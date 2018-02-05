@@ -171,7 +171,7 @@ describe Projects::JobsController do
     end
 
     context 'when job has a trace' do
-      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'returns a trace' do
         expect(response).to have_gitlab_http_status(:ok)
@@ -193,7 +193,7 @@ describe Projects::JobsController do
     end
 
     context 'when job has a trace with ANSI sequence and Unicode' do
-      let(:job) { create(:ci_build, :unicode_trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :unicode_trace_live, pipeline: pipeline) }
 
       it 'returns a trace with Unicode' do
         expect(response).to have_gitlab_http_status(:ok)
@@ -392,7 +392,7 @@ describe Projects::JobsController do
     end
 
     context 'when job is erasable' do
-      let(:job) { create(:ci_build, :erasable, :trace, :trace_artifact, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
 
       it 'redirects to the erased job page' do
         expect(response).to have_gitlab_http_status(:found)
@@ -419,7 +419,7 @@ describe Projects::JobsController do
 
     context 'when user is developer' do
       let(:role) { :developer }
-      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline, user: triggered_by) }
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline, user: triggered_by) }
 
       context 'when triggered by same user' do
         let(:triggered_by) { user }
@@ -461,7 +461,7 @@ describe Projects::JobsController do
     end
 
     context 'when job has a trace file' do
-      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
       it 'send a trace file' do
         expect(response).to have_gitlab_http_status(:ok)
