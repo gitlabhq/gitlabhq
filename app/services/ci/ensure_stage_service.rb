@@ -7,6 +7,8 @@ module Ci
   # stage.
   #
   class EnsureStageService < BaseService
+    PipelineStageError = Class.new(StandardError)
+
     def execute(build)
       @build = build
 
@@ -22,8 +24,11 @@ module Ci
 
     private
 
-    def ensure_stage
+    def ensure_stage(attempts: 2)
       find_stage || create_stage
+    rescue ActiveRecord::RecordNotUnique
+      retry if (attempts -= 1) > 0
+      raise PipelineStageError, 'Fix me!'
     end
 
     def find_stage
