@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::AuthHash do
+  include LdapHelpers
+
   let(:auth_hash) do
     described_class.new(
       OmniAuth::AuthHash.new(
@@ -80,6 +82,28 @@ describe Gitlab::LDAP::AuthHash do
 
       it 'downcases' do
         expect(auth_hash.uid).to eq('uid=john smith,ou=people,dc=example,dc=com')
+      end
+    end
+  end
+
+  describe '#username' do
+    context 'if lowercase_usernames setting is' do
+      let(:given_uid) { 'uid=John Smith,ou=People,dc=example,dc=com' }
+
+      before do
+        raw_info[:uid] = ['JOHN']
+      end
+
+      it 'enabled the username attribute is lower cased' do
+        stub_ldap_config(lowercase_usernames: true)
+
+        expect(auth_hash.username).to eq 'john'
+      end
+
+      it 'disabled the username attribute is not lower cased' do
+        stub_ldap_config(lowercase_usernames: false)
+
+        expect(auth_hash.username).to eq 'JOHN'
       end
     end
   end
