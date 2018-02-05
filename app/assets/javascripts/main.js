@@ -33,12 +33,9 @@ import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
-<<<<<<< HEAD
 // EE-only scripts
 import 'ee/main';
 
-=======
->>>>>>> upstream/master
 import initDispatcher from './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
