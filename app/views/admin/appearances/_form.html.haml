@@ -64,12 +64,7 @@
     = f.label :favicon, 'Favicon', class: 'control-label'
     .col-sm-10
       - if @appearance.favicon?
-        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview js-main-favicon'
-    - if @appearance.favicon?
-      = f.label :favicon, 'Status icons preview', class: 'control-label'
-    .col-sm-10
-      - if @appearance.favicon?
-        .js-favicons{ data: { favicon: @appearance.favicon.favicon_main.url, status_overlays: Gitlab::Favicon.available_status_overlays } }
+        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"

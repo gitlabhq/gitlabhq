@@ -18,12 +18,6 @@ module Gitlab
         ActionController::Base.helpers.image_path(path)
       end
 
-      def available_status_overlays
-        available_status_names.map do |status_name|
-          status_overlay(status_name)
-        end
-      end
-
       def available_status_names
         @available_status_names ||= begin
           Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', '*.png'))
