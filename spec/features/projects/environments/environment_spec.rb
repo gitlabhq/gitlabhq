@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environment' do
+feature 'Environment', :js do
   given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
@@ -237,7 +237,7 @@ feature 'Environment' do
       visit project_branches_path(project, search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
-        page.within('.js-branch-feature') { find('a.btn-remove').click }
+        page.within('.js-branch-feature') { find('button.btn-remove').click }
       end
 
       visit_environment(environment)

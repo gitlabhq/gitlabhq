@@ -64,21 +64,6 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
     expect(page).to have_content 'Branch already exists'
   end
 
-  step 'I filter for branch improve/awesome' do
-    fill_in 'branch-search', with: 'improve/awesome'
-    find('#branch-search').native.send_keys(:enter)
-  end
-
-  step "I click branch 'improve/awesome' delete link" do
-    page.within '.js-branch-improve\/awesome' do
-      accept_alert { find('.btn-remove').click }
-    end
-  end
-
-  step "I should not see branch 'improve/awesome'" do
-    expect(page).to have_css('.js-branch-improve\\/awesome', visible: :hidden)
-  end
-
   def select_branch(branch_name)
     find('.git-revision-dropdown-toggle').click
 

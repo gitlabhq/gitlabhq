@@ -48,11 +48,8 @@ feature 'Protected Branches', :js do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        page.find('[data-target="#modal-delete-branch"]').click
-
-        expect(page).to have_css('.js-delete-branch[disabled]')
-        fill_in 'delete_branch_input', with: 'fix'
-        click_link 'Delete protected branch'
+        delete_protected_branch
+        wait_for_requests
 
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
@@ -174,5 +171,15 @@ feature 'Protected Branches', :js do
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
+  end
+
+  def delete_protected_branch
+    find('#delete-branch-modal.modal', visible: false) # wait for Vue component to be loaded
+    find(".js-delete-branch").click
+
+    page.within '#delete-branch-modal' do
+      fill_in 'delete-branch-modal-input', with: 'fix'
+      click_on 'Delete protected branch'
+    end
   end
 end

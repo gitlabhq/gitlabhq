@@ -67,10 +67,11 @@ describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        accept_confirm { find('.js-branch-fix .btn-remove').click }
 
-        expect(page).not_to have_content('fix')
-        expect(find('.all-branches')).to have_selector('li', count: 0)
+        delete_branch
+        wait_for_requests
+
+        expect(all('li .ref-name', text: 'fix').count).to eq 0
       end
     end
   end
@@ -109,5 +110,14 @@ describe 'Branches' do
       end
 
     Regexp.new(sorted_branches.join('.*'))
+  end
+
+  def delete_branch
+    find('#delete-branch-modal.modal', visible: false) # wait for Vue component to be loaded
+    find(".js-delete-branch").click
+
+    page.within '#delete-branch-modal' do
+      click_on 'Delete branch'
+    end
   end
 end
