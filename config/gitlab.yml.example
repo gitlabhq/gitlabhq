@@ -193,6 +193,12 @@ production: &base
         # endpoint: 'http://127.0.0.1:9000' # default: nil
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## Uploads (attachments, avatars, etc...)
+  uploads:
+    # The location where uploads objects are stored (default: public/).
+    # storage_path: public/
+    # base_dir: uploads/-/system
+
   ## GitLab Pages
   pages:
     enabled: false

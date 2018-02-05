@@ -236,12 +236,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       labels = project.issues.first.labels
 
       expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
+      expect(labels.where(type: "ProjectLabel").where.not(group_id: nil).count).to eq(0)
     end
   end
 
   shared_examples 'restores group correctly' do |**results|
     it 'has group label' do
       expect(project.group.labels.size).to eq(results.fetch(:labels, 0))
+      expect(project.group.labels.where(type: "GroupLabel").where.not(project_id: nil).count).to eq(0)
     end
 
     it 'has group milestone' do
