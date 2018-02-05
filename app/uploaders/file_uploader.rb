@@ -15,8 +15,6 @@ class FileUploader < GitlabUploader
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
   DYNAMIC_PATH_PATTERN = %r{(?<secret>\h{32})/(?<identifier>.*)}
 
-  attr_accessor :model
-
   def self.root
     File.join(options.storage_path, 'uploads')
   end
@@ -61,6 +59,8 @@ class FileUploader < GitlabUploader
   def self.generate_secret
     SecureRandom.hex
   end
+
+  attr_accessor :model
 
   def initialize(model, secret = nil)
     @model = model

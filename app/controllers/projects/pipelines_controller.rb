@@ -1,4 +1,5 @@
 class Projects::PipelinesController < Projects::ApplicationController
+  before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
@@ -165,5 +166,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def commit
     @commit ||= @pipeline.commit
+  end
+
+  def whitelist_query_limiting
+    # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42339')
   end
 end

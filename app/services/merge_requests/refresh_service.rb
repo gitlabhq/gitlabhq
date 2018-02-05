@@ -91,6 +91,10 @@ module MergeRequests
         merge_request.mark_as_unchecked
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
+
+      # Upcoming method calls need the refreshed version of
+      # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
+      merge_requests_for_source_branch(reload: true)
     end
 
     # Note: Closed merge requests also need approvals reset.
@@ -212,7 +216,8 @@ module MergeRequests
       merge_requests.uniq.select(&:source_project)
     end
 
-    def merge_requests_for_source_branch
+    def merge_requests_for_source_branch(reload: false)
+      @source_merge_requests = nil if reload
       @source_merge_requests ||= merge_requests_for(@branch_name)
     end
 

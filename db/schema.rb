@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201145907) do
+ActiveRecord::Schema.define(version: 20180202111106) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1215,7 +1215,7 @@ ActiveRecord::Schema.define(version: 20180201145907) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.boolean "discussion_locked"
-    t.datetime "closed_at"
+    t.datetime_with_timezone "closed_at"
   end
 
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
@@ -2229,7 +2229,7 @@ ActiveRecord::Schema.define(version: 20180201145907) do
     t.integer "project_id", null: false
   end
 
-  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", using: :btree
+  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", unique: true, using: :btree
 
   create_table "u2f_registrations", force: :cascade do |t|
     t.text "certificate"

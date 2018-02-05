@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
@@ -8,6 +9,7 @@ export default class Job {
   constructor(options) {
     this.timeout = null;
     this.state = null;
+    this.fetchingStatusFavicon = false;
     this.options = options || $('.js-build-options').data();
 
     this.pagePath = this.options.pagePath;
@@ -171,12 +173,23 @@ export default class Job {
   }
 
   getBuildTrace() {
-    return $.ajax({
-      url: `${this.pagePath}/trace.json`,
-      data: { state: this.state },
+    return axios.get(`${this.pagePath}/trace.json`, {
+      params: { state: this.state },
     })
-      .done((log) => {
-        setCiStatusFavicon(`${this.pagePath}/status.json`);
+      .then((res) => {
+        const log = res.data;
+
+        if (!this.fetchingStatusFavicon) {
+          this.fetchingStatusFavicon = true;
+
+          setCiStatusFavicon(`${this.pagePath}/status.json`)
+            .then(() => {
+              this.fetchingStatusFavicon = false;
+            })
+            .catch(() => {
+              this.fetchingStatusFavicon = false;
+            });
+        }
 
         if (log.state) {
           this.state = log.state;
@@ -217,7 +230,7 @@ export default class Job {
           visitUrl(this.pagePath);
         }
       })
-      .fail(() => {
+      .catch(() => {
         this.$buildRefreshAnimation.remove();
       })
       .then(() => {

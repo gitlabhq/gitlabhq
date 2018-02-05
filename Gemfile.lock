@@ -235,7 +235,7 @@ GEM
     fast_gettext (1.4.0)
     ffaker (2.4.0)
     ffi (1.9.18)
-    flay (2.8.1)
+    flay (2.10.0)
       erubis (~> 2.7.0)
       path_expander (~> 1.0)
       ruby_parser (~> 3.0)
@@ -617,7 +617,7 @@ GEM
       ast (~> 2.3)
     parslet (1.5.0)
       blankslate (~> 2.0)
-    path_expander (1.0.1)
+    path_expander (1.0.2)
     peek (1.0.1)
       concurrent-ruby (>= 0.9.0)
       concurrent-ruby-ext (>= 0.9.0)
@@ -1072,7 +1072,7 @@ DEPENDENCIES
   faraday_middleware-aws-signers-v4
   fast_blank
   ffaker (~> 2.4)
-  flay (~> 2.8.0)
+  flay (~> 2.10.0)
   flipper (~> 0.11.0)
   flipper-active_record (~> 0.11.0)
   flipper-active_support_cache_store (~> 0.11.0)

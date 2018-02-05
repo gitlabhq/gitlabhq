@@ -2,6 +2,7 @@ class Projects::NotesController < Projects::ApplicationController
   include NotesActions
   include ToggleAwardEmoji
 
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
@@ -78,5 +79,9 @@ class Projects::NotesController < Projects::ApplicationController
     return unless noteable.lockable?
 
     access_denied! unless can?(current_user, :create_note, noteable)
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42383')
   end
 end

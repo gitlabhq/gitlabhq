@@ -15,6 +15,8 @@ module API
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
       post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42283')
+
         # validate variables
         params[:variables] = params[:variables].to_h
         unless params[:variables].all? { |key, value| key.is_a?(String) && value.is_a?(String) }

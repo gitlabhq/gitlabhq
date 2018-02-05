@@ -93,6 +93,8 @@ module API
           use :optional_params
         end
         post ":id/merge_requests" do
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42126')
+
           authorize! :create_merge_request, user_project
 
           mr_params = declared_params(include_missing: false)
@@ -169,6 +171,8 @@ module API
                             :remove_source_branch, :squash
           end
           put path do
+            Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42127')
+
             merge_request = find_merge_request_with_access(params.delete(:merge_request_id), :update_merge_request)
 
             mr_params = declared_params(include_missing: false)
@@ -196,6 +200,8 @@ module API
             optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
           end
           put "#{path}/merge" do
+            Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ee/issues/4796')
+
             merge_request = find_project_merge_request(params[:merge_request_id])
 
             # Merge request can not be merged

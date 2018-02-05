@@ -2,6 +2,8 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   prepend EE::RegistrationsController
 
+  before_action :whitelist_query_limiting, only: [:destroy]
+
   def new
     redirect_to(new_user_session_path)
   end
@@ -83,5 +85,9 @@ class RegistrationsController < Devise::RegistrationsController
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42380')
   end
 end
