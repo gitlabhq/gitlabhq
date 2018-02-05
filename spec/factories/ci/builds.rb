@@ -135,7 +135,7 @@ FactoryBot.define do
       coverage_regex '/(d+)/'
     end
 
-    trait :trace do
+    trait :trace_live do
       after(:create) do |build, evaluator|
         build.trace.set('BUILD TRACE')
       end
@@ -147,7 +147,7 @@ FactoryBot.define do
       end
     end
 
-    trait :unicode_trace do
+    trait :unicode_trace_live do
       after(:create) do |build, evaluator|
         trace = File.binread(
           File.expand_path(
