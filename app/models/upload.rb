@@ -14,6 +14,10 @@ class Upload < ActiveRecord::Base
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
 
+  # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
+  # hooks are not executed and the file will not be deleted
+  after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
+
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest
   end
@@ -51,6 +55,10 @@ class Upload < ActiveRecord::Base
   end
 
   private
+
+  def delete_file!
+    build_uploader.remove!
+  end
 
   def checksummable?
     checksum.nil? && local? && exist?
