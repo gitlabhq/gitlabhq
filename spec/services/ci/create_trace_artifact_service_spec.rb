@@ -19,7 +19,7 @@ describe Ci::CreateTraceArtifactService do
         it 'creates trace artifact' do
           expect { subject }.to change { Ci::JobArtifact.count }.by(1)
 
-          expect(job.job_artifacts_trace.read_attribute(:file)).to eq('trace.log')
+          expect(job.job_artifacts_trace.read_attribute(:file)).to eq('sample_trace')
         end
 
         context 'when the job has already had trace artifact' do
