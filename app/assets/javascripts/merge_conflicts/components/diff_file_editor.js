@@ -49,29 +49,29 @@ import Flash from '../../flash';
       loadEditor() {
         this.loading = true;
 
-        $.get(this.file.content_path)
-          .done((file) => {
-            const content = this.$el.querySelector('pre');
-            const fileContent = document.createTextNode(file.content);
+        // $.get(this.file.content_path)
+        //   .done((file) => {
+        //     const content = this.$el.querySelector('pre');
+        //     const fileContent = document.createTextNode(file.content);
 
-            content.textContent = fileContent.textContent;
+        //     content.textContent = fileContent.textContent;
 
-            this.originalContent = file.content;
-            this.fileLoaded = true;
-            this.editor = ace.edit(content);
-            this.editor.$blockScrolling = Infinity; // Turn off annoying warning
-            this.editor.getSession().setMode(`ace/mode/${file.blob_ace_mode}`);
-            this.editor.on('change', () => {
-              this.saveDiffResolution();
-            });
-            this.saveDiffResolution();
-          })
-          .fail(() => {
-            new Flash('Failed to load the file, please try again.');
-          })
-          .always(() => {
-            this.loading = false;
-          });
+        //     this.originalContent = file.content;
+        //     this.fileLoaded = true;
+        //     this.editor = ace.edit(content);
+        //     this.editor.$blockScrolling = Infinity; // Turn off annoying warning
+        //     this.editor.getSession().setMode(`ace/mode/${file.blob_ace_mode}`);
+        //     this.editor.on('change', () => {
+        //       this.saveDiffResolution();
+        //     });
+        //     this.saveDiffResolution();
+        //   })
+        //   .fail(() => {
+        //     new Flash('Failed to load the file, please try again.');
+        //   })
+        //   .always(() => {
+        //     this.loading = false;
+        //   });
       },
       saveDiffResolution() {
         this.saved = true;
