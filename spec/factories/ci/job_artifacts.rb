@@ -1,4 +1,7 @@
+require "#{Rails.root}/spec/support/fixture_helpers.rb"
+
 include ActionDispatch::TestProcess
+include FixtureHelpers
 
 FactoryBot.define do
   factory :ci_job_artifact, class: Ci::JobArtifact do
