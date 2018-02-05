@@ -138,10 +138,23 @@ module Gitlab
               http.request(request)
             end
 
-            raise FailedToGetChunkError unless response.code == '200'
+            raise FailedToGetChunkError unless response.code == '200' || response.code == '206'
 
             @chunk = response.body.force_encoding(Encoding::BINARY)
             @chunk_range = response.content_range
+
+            ##
+            # Note: If provider doesn’t return content_range, then we set it as we requested
+            # Provider: minio
+            # - When the file size is larger than Content-range in responce header, it returns content_range in responce header. Status: Net::HTTPPartialContent 206
+            # - When the file size is smaller than Content-range in responce header, it returns content_range in responce header. Status: Net::HTTPPartialContent 206
+            # Provider: AWS
+            # - TBD
+            # - TBD
+            # Provider: GCS
+            # - When the file size is larger than Content-range, it returns content_range in responce header. Status: Net::HTTPPartialContent 206
+            # - When the file size is smaller than Content-range, it does not return content_range in responce header. Status: Net::HTTPOK 200
+            @chunk_range = (chunk_start...chunk_start+@chunk.length) unless @chunk_range
           end
 
           @chunk[chunk_offset..BUFFER_SIZE]
