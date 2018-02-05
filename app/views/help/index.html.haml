@@ -2,11 +2,7 @@
 
 %div
 - if Gitlab::CurrentSettings.help_page_text.present?
-<<<<<<< HEAD
   = markdown(Gitlab::CurrentSettings.help_page_text)
-=======
-  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
->>>>>>> upstream/master
   %hr
 
 %h1
