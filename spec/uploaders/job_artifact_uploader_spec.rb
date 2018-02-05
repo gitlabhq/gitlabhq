@@ -38,22 +38,6 @@ describe JobArtifactUploader do
     end
   end
 
-  describe '#filename' do
-    subject { uploader.filename }
-
-    context 'when artifact file_type is archive' do
-      let(:job_artifact) { create(:ci_job_artifact, :archive) }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when artifact file_type is trace' do
-      let(:job_artifact) { create(:ci_job_artifact, :trace) }
-
-      it { is_expected.to eq('trace.log') }
-    end
-  end
-
   context 'file is stored in valid local_path' do
     let(:file) do
       fixture_file_upload(
