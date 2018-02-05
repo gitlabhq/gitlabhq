@@ -1,11 +1,8 @@
-require_relative 'helpers'
-
 namespace :gitlab do
   namespace :uploads do
     desc 'GitLab | Uploads | Migrate the uploaded files to object storage'
     task :migrate, [:uploader_class, :model_class, :mounted_as] => :environment do |task, args|
-      include UploadTaskHelpers
-
+      batch_size     = ENV.fetch('BATCH', 200)
       @to_store      = ObjectStorage::Store::REMOTE
       @mounted_as    = args.mounted_as&.gsub(':', '')&.to_sym
       uploader_class = args.uploader_class.constantize
