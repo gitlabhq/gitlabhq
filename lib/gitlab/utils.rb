@@ -1,7 +1,5 @@
 module Gitlab
   module Utils
-    include BisectEnumerable
-
     extend self
 
     # Run system command without outputting to stdout.

@@ -105,7 +105,7 @@ module Gitlab
 
       module Report
         def report(results)
-          success, failures = Gitlab::Utils::BisectEnumerable.bisect(results, &:success?)
+          success, failures = results.partition(&:success?)
 
           Rails.logger.info header(success, failures)
           Rails.logger.warn failures(failures)
