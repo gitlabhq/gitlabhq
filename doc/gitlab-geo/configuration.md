@@ -109,7 +109,7 @@ keys must be manually replicated to the secondary node.
 1. Make a backup of any existing SSH host keys:
 
     ```bash
-    find /etc/ssh -iname ssh_host_* -exec mv {} {}.backup.`date +%F` \;
+    find /etc/ssh -iname ssh_host_* -exec cp {} {}.backup.`date +%F` \;
     ```
 
 1. SSH into the **primary** node, and execute the command below:
@@ -118,7 +118,7 @@ keys must be manually replicated to the secondary node.
     sudo find /etc/ssh -iname ssh_host_* -not -iname '*.pub'
     ```
 
-1. For each file in that list copy the file from the primary node to
+1. For each file in that list replace the file from the primary node to
    the **same** location on your **secondary** node.
 
 1. On your **secondary** node, ensure the file permissions are correct:
