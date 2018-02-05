@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131083552) do
+ActiveRecord::Schema.define(version: 20180115201419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2429,14 +2429,6 @@ ActiveRecord::Schema.define(version: 20180131083552) do
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
-
-  create_table "web_ide_metrics", force: :cascade do |t|
-    t.string "project", limit: 64, null: false
-    t.string "user", limit: 64, null: false
-    t.integer "line_count", null: false
-    t.integer "file_count", null: false
-    t.datetime_with_timezone "created_at"
-  end
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
