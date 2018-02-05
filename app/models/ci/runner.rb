@@ -2,7 +2,7 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
-    include Gitlab::Utils::StrongMemoize
+    include RedisCacheable
     prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
@@ -10,7 +10,6 @@ module Ci
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
-    CACHED_ATTRIBUTES_EXPIRY_TIME = 24.hours
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -51,6 +50,8 @@ module Ci
       ref_protected: 1
     }
 
+    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at
+
     # Searches for runners matching the given query.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
@@ -70,16 +71,6 @@ module Ci
     def self.contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
     end
-
-    def self.cached_attr_reader(*attributes)
-      attributes.each do |attribute|
-        define_method("#{attribute}") do
-          cached_attribute(attribute) || read_attribute(attribute)
-        end
-      end
-    end
-
-    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
@@ -190,10 +181,6 @@ module Ci
       "runner:build_queue:#{self.token}"
     end
 
-    def cache_attribute_key
-      "runner:info:#{self.id}"
-    end
-
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.
       # It generates a distribution between [40m, 80m].
@@ -203,25 +190,6 @@ module Ci
       real_contacted_at = read_attribute(:contacted_at)
       real_contacted_at.nil? ||
         (Time.now - real_contacted_at) >= contacted_at_max_age
-    end
-
-    def cached_attribute(key)
-      (cached_attributes || {})[key]
-    end
-
-    def cached_attributes
-      strong_memoize(:cached_attributes) do
-        Gitlab::Redis::SharedState.with do |redis|
-          data = redis.get(cache_attribute_key)
-          JSON.parse(data, symbolize_names: true) if data
-        end
-      end
-    end
-
-    def cache_attributes(values)
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(cache_attribute_key, values.to_json, ex: CACHED_ATTRIBUTES_EXPIRY_TIME)
-      end
     end
 
     def tag_constraints
