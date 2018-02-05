@@ -4,6 +4,21 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    remove_concurrent_index :ci_stages, [:pipeline_id, :name]
+
+    remove_redundant_pipeline_stages!
+
+    add_concurrent_index :ci_stages, [:pipeline_id, :name], unique: true
+  end
+
+  def down
+    remove_concurrent_index :ci_stages, [:pipeline_id, :name], unique: true
+    add_concurrent_index :ci_stages, [:pipeline_id, :name]
+  end
+
+  private
+
+  def remove_redundant_pipeline_stages!
     redundant_stages_ids = <<~SQL
       SELECT id FROM ci_stages WHERE (pipeline_id, name) IN (
         SELECT pipeline_id, name FROM ci_stages
@@ -26,9 +41,5 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
             AND a.id <> b.id
       SQL
     end
-  end
-
-  def down
-    # noop
   end
 end

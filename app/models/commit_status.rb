@@ -50,9 +50,7 @@ class CommitStatus < ActiveRecord::Base
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.
   #
-  # These are pages deployments and external statuses. We now handle these
-  # jobs using CreateJobService, but we still need to ensure that a job has
-  # a stage assigned. TODO, In future releases we will add model validation.
+  # These are pages deployments and external statuses.
   #
   before_create unless: :importing? do
     Ci::EnsureStageService.new(project, user).execute(self) do |stage|
