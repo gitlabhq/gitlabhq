@@ -95,6 +95,12 @@ describe Ci::Runner do
 
     subject { runner.online? }
 
+    before do
+      allow_any_instance_of(described_class).to receive(:cached_attribute).and_call_original
+      allow_any_instance_of(described_class).to receive(:cached_attribute)
+        .with(:platform).and_return("darwin")
+    end
+
     context 'no cache value' do
       before do
         stub_redis_runner_contacted_at(nil)
@@ -147,8 +153,9 @@ describe Ci::Runner do
 
     def stub_redis_runner_contacted_at(value)
       Gitlab::Redis::SharedState.with do |redis|
-        cache_key = runner.send(:cache_attribute_key, :contacted_at)
-        expect(redis).to receive(:get).with(cache_key).and_return(value).at_least(:once)
+        cache_key = runner.send(:cache_attribute_key)
+        expect(redis).to receive(:get).with(cache_key)
+          .and_return({ contacted_at: value }.to_json).at_least(:once)
       end
     end
   end
@@ -405,7 +412,7 @@ describe Ci::Runner do
       end
 
       it 'updates cache' do
-        expect_redis_update(:architecture, :contacted_at)
+        expect_redis_update
 
         subject
       end
@@ -417,25 +424,23 @@ describe Ci::Runner do
       end
 
       it 'updates database' do
-        expect_redis_update(:architecture, :contacted_at)
+        expect_redis_update
 
         expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
           .and change { runner.reload.read_attribute(:architecture) }
       end
 
       it 'updates cache' do
-        expect_redis_update(:architecture, :contacted_at)
+        expect_redis_update
 
         subject
       end
     end
 
-    def expect_redis_update(*params)
+    def expect_redis_update
       Gitlab::Redis::SharedState.with do |redis|
-        params.each do |param|
-          redis_key = runner.send(:cache_attribute_key, param)
-          expect(redis).to receive(:set).with(redis_key, anything, any_args)
-        end
+        redis_key = runner.send(:cache_attribute_key)
+        expect(redis).to receive(:set).with(redis_key, anything, any_args)
       end
     end
   end
