@@ -1,5 +1,4 @@
 class Projects::DiscussionsController < Projects::ApplicationController
-  include RendersNotes
   include NotesHelper
 
   before_action :check_merge_requests_available!
@@ -23,7 +22,6 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_discussion
     if use_serializer?
-      prepare_notes_for_rendering(discussion.notes)
       render_json_with_serializer
     else
       render_json_with_html
@@ -37,7 +35,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def render_json_with_serializer
     render json:
       DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user).
-        represent(discussion, context: self)
+        represent(discussion, context: self, skip_notes_rendering: true)
   end
 
   # Legacy method used to render discussions notes when not using Vue on views.
