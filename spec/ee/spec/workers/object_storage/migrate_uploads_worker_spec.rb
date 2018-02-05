@@ -44,7 +44,8 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
       let(:mount_point) { nil }
 
       it do
-        expect { described_class.sanity_check!(uploads, mount_point) }.to raise_error(described_class::SanityCheckError)
+        expect { described_class.sanity_check!(uploads, mount_point) }
+          .to raise_error(described_class::SanityCheckError)
       end
     end
 
@@ -69,7 +70,9 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
   describe '#perform' do
     def perform
-      described_class.enqueue!(uploads, mounted_as, to_store)
+      described_class.new.perform(uploads.ids, mounted_as, to_store)
+    rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
+      # swallow
     end
 
     # rubocop:disable Style/MultilineIfModifier
@@ -104,7 +107,6 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
     context 'migration is unsuccessful' do
       before do
-        expect { described_class.perform }.to raise_error(described_class::Report::MigrationFailures)
         allow_any_instance_of(ObjectStorage::Concern).to receive(:migrate!).and_raise(CarrierWave::UploadError, "I am a teapot.")
       end
 

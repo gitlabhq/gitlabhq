@@ -12,10 +12,10 @@ namespace :gitlab do
         .where.not(store: @to_store)
         .where(uploader: uploader_class.to_s,
                model_type: model_class.base_class.sti_name)
-        .in_batches(of: batch_size, &method(:process)) # rubocop: disable Cop/InBatches
+        .in_batches(of: batch_size, &method(:enqueue_batch)) # rubocop: disable Cop/InBatches
     end
 
-    def process(batch)
+    def enqueue_batch(batch)
       job = ObjectStorage::MigrateUploadsWorker.enqueue!(batch,
                                                          @mounted_as,
                                                          @to_store)

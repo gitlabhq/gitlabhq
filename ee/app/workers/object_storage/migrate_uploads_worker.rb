@@ -124,7 +124,7 @@ module ObjectStorage
         Rails.logger.info header(success, failures)
         Rails.logger.warn failures(failures)
 
-        raise MigrationFailures.new(failures.map(&:error))
+        raise MigrationFailures.new(failures.map(&:error)) if failures.any?
       end
 
       def header(success, failures)

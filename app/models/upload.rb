@@ -54,16 +54,6 @@ class Upload < ActiveRecord::Base
     }.compact
   end
 
-  private
-
-  def delete_file!
-    build_uploader.remove!
-  end
-
-  def checksummable?
-    checksum.nil? && local? && exist?
-  end
-
   def local?
     return true if store.nil?
 
@@ -71,6 +61,10 @@ class Upload < ActiveRecord::Base
   end
 
   private
+
+  def delete_file!
+    build_uploader.remove!
+  end
 
   def checksummable?
     checksum.nil? && local? && exist?

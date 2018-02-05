@@ -72,19 +72,29 @@ module ObjectStorage
     end
   end
 
+  # Add support for automatic background uploading after the file is stored.
+  #
   module BackgroundUpload
     extend ActiveSupport::Concern
 
-    def background_upload(mount_point)
-      run_after_commit { send(mount_point).schedule_background_upload }
+    def background_upload(mount_points = [])
+      return unless mount_points.any?
+
+      run_after_commit do
+        mount_points.each { |mount| send(mount).schedule_background_upload } # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
+
+    def changed_mounts
+      self.class.uploaders.select do |mount, uploader_class|
+        mounted_as = uploader_class.serialization_column(self.class, mount)
+        mount if send(:"#{mounted_as}_changed?") # rubocop:disable GitlabSecurity/PublicSend
+      end.keys
     end
 
     included do
       after_save on: [:create, :update] do
-        self.class.uploaders.each do |mount, uploader_class|
-          mounted_as = uploader_class.serialization_column(self.class, mount)
-          background_upload(mount) if send(:"#{mounted_as}_changed?")
-        end
+        background_upload(changed_mounts)
       end
     end
   end
