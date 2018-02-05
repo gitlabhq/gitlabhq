@@ -1,6 +1,8 @@
 /* global BoardService */
 
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import '~/labels_select';
 import LabelsSelect from '~/boards/components/labels_select.vue';
 import IssuableContext from '~/issuable_context';
@@ -32,14 +34,16 @@ const label2 = {
 };
 
 describe('LabelsSelect', () => {
+  let mock;
+
   beforeEach((done) => {
     setFixtures('<div class="test-container"></div>');
 
-    const deferred = new jQuery.Deferred();
-    spyOn($, 'ajax').and.returnValue(deferred.resolve([
+    mock = new MockAdapter(axios);
+    mock.onGet('/some/path').reply(200, [
       label,
       label2,
-    ]));
+    ]);
 
     // eslint-disable-next-line no-new
     new IssuableContext();
@@ -58,6 +62,10 @@ describe('LabelsSelect', () => {
     }).$mount('.test-container');
 
     Vue.nextTick(done);
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   describe('canEdit', () => {
