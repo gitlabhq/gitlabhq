@@ -87,20 +87,10 @@ module Storage
       remove_exports!
     end
 
-    def remove_exports!
-      Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
-    end
+    def remove_legacy_exports!
+      legacy_export_path = File.join(Gitlab::ImportExport.storage_path, full_path_was)
 
-    def export_path
-      File.join(Gitlab::ImportExport.storage_path, full_path_was)
-    end
-
-    def full_path_was
-      if parent
-        parent.full_path + '/' + path_was
-      else
-        path_was
-      end
+      FileUtils.rm_rf(legacy_export_path)
     end
   end
 end
