@@ -733,4 +733,24 @@ describe Namespace do
       end
     end
   end
+
+  describe '#remove_exports' do
+    let(:legacy_project) { create(:project, :with_export, namespace: namespace) }
+    let(:hashed_project) { create(:project, :with_export, :hashed, namespace: namespace) }
+    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
+    let(:legacy_export) { legacy_project.export_project_path }
+    let(:hashed_export) { hashed_project.export_project_path }
+
+    it 'removes exports for legacy and hashed projects' do
+      allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
+
+      expect(File.exist?(legacy_export)).to be_truthy
+      expect(File.exist?(hashed_export)).to be_truthy
+
+      namespace.remove_exports!
+
+      expect(File.exist?(legacy_export)).to be_falsy
+      expect(File.exist?(hashed_export)).to be_falsy
+    end
+  end
 end
