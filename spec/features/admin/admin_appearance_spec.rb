@@ -76,15 +76,14 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(header_logo_selector)
   end
 
-  scenario 'Favicon', :js do
+  scenario 'Favicon' do
     sign_in(create(:admin))
     visit admin_appearances_path
 
     attach_file(:appearance_favicon, logo_fixture)
     click_button 'Save'
 
-    # 11 = 1 original + 10 overlay variations
-    expect(page).to have_css('.appearance-light-logo-preview', count: 11)
+    expect(page).to have_css('.appearance-light-logo-preview')
 
     click_link 'Remove favicon'
 
