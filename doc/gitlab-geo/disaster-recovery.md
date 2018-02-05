@@ -18,9 +18,20 @@ This process promotes a secondary Geo replica to a primary. To regain
 geographical redundancy as quickly as possible, you should add a new secondary
 immediately after following these instructions.
 
-### Step 1. Promoting a secondary Geo replica
+### Step 1. Allow replication to finish if possible
 
-1. SSH into your **primary** to stop and disable GitLab.
+If the secondary is still replicating data from the primary, follow
+[the Planned Failover doc](planned-failover.md) as closely as possible in
+order to avoid unnecessary data loss.
+
+### Step 2. Permanently disable the primary
+
+If an outage on your primary happens, you should do everything possible to
+avoid a split-brain situation where writes can occur to two different GitLab
+instances, complicating recovery efforts. So to prepare for the failover, we
+must disable the primary.
+
+1. SSH into your **primary** to stop and disable GitLab, if possible.
 
     ```bash
     sudo gitlab-ctl stop
@@ -41,16 +52,20 @@ immediately after following these instructions.
     yum remove gitlab-ee
     ```
 
-    Preventing the original primary from coming back online during this process
-    is necessary to prevent data from being mistakenly added to it. Any data added
-    after the failover process has begun will **not** be replicated to the
-    newly promoted primary.
+1. If you do not have SSH access to your primary, take the machine offline and
+    prevent it from rebooting by any means at your disposal.
 
-    If you do not have SSH access to your primary, take the machine offline and
-    prevent it from rebooting by any means at your disposal. Depending on the
-    nature of your primary, this may mean physically disconnecting the machine,
-    stopping a virtual server, reconfiguring load balancers, or changing DNS
-    records (see next step).
+    Since there are many ways you may prefer to accomplish this, we will avoid a
+    single recommendation. You may need to:
+
+    * Reconfigure load balancers
+    * Change DNS records (e.g. point the primary DNS record to the secondary node in order to stop usage of the primary)
+    * Stop virtual servers
+    * Block traffic through a firewall
+    * Revoke object storage permissions from the primary
+    * Physically disconnect a machine
+
+### Step 3. Promoting a secondary Geo replica
 
 1. SSH in to your **secondary** and login as root:
 
@@ -81,7 +96,7 @@ immediately after following these instructions.
    previously for the secondary.
 1. Success! The secondary has now been promoted to primary.
 
-### Step 2. (Optional) Updating the primary domain's DNS record
+### Step 4. (Optional) Updating the primary domain's DNS record
 
 Updating the DNS records for the primary domain to point to the secondary
 will prevent the need to update all references to the primary domain to the
@@ -123,7 +138,7 @@ secondary domain, like changing Git remotes and API URLs.
     If you updated the DNS records for the primary domain, these changes may
     not have yet propagated depending on the previous DNS records TTL.
 
-### Step 3. (Optional) Add secondary Geo replicas to a promoted primary
+### Step 5. (Optional) Add secondary Geo replicas to a promoted primary
 
 Promoting a secondary to primary using the process above does not enable
 GitLab Geo on the new primary.
