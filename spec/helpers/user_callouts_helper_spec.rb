@@ -12,44 +12,36 @@ describe UserCalloutsHelper do
 
     subject { helper.show_gke_cluster_integration_callout?(project) }
 
-    context 'when user has not dismissed' do
+    context 'when user can create a cluster' do
       before do
-        allow(helper).to receive(:user_dismissed?).and_return(false)
+        allow(helper).to receive(:can?).with(anything, :create_cluster, anything)
+          .and_return(true)
       end
 
-      context 'when user can create a cluster' do
+      context 'when user has not dismissed' do
         before do
-          allow(helper).to receive(:can?).with(anything, :create_cluster, anything)
-            .and_return(true)
+          allow(helper).to receive(:user_dismissed?).and_return(false)
         end
 
         it { is_expected.to be true }
       end
 
-      context 'when user can not create a cluster' do
+      context 'when user dismissed' do
         before do
-          allow(helper).to receive(:can?).with(anything, :create_cluster, anything)
-            .and_return(false)
+          allow(helper).to receive(:user_dismissed?).and_return(true)
         end
 
         it { is_expected.to be false }
       end
     end
 
-    context 'when user dismissed' do
+    context 'when user can not create a cluster' do
       before do
-        allow(helper).to receive(:user_dismissed?).and_return(true)
+        allow(helper).to receive(:can?).with(anything, :create_cluster, anything)
+          .and_return(false)
       end
 
       it { is_expected.to be false }
-    end
-
-    context 'when the user is not logged in' do
-      before do
-        allow(helper).to receive(:current_user).and_return(nil)
-      end
-
-      it { is_expected.to be_falsey }
     end
   end
 end
