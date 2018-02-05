@@ -8,38 +8,16 @@ describe Gitlab::Metrics::MultiFileEditor do
 
   before do
     stub_licensed_features(ide: true)
-
-    allow(Digest::SHA256).to receive(:hexdigest).and_return('abcd')
   end
 
   describe '.record' do
-    it 'records the metrics' do
-      expect { subject.record }.to change { WebIdeMetric.count }.from(0).to(1)
-    end
-
     describe 'metrics' do
-      before do
-        subject.record
-      end
+      it 'has the right log info' do
+        info = "Web editor usage - ide_usage_project_id: #{project.id}, ide_usage_user: #{user.id}, ide_usage_line_count: 1, ide_usage_file_count: 1"
 
-      it 'has the right project' do
-        expect(WebIdeMetric.first.project).to eq('abcd')
-      end
+        expect(Rails.logger).to receive(:info).with(info)
 
-      it 'has the right user' do
-        expect(WebIdeMetric.first.user).to eq('abcd')
-      end
-
-      it 'has the right line count' do
-        expect(WebIdeMetric.first.line_count).to eq(1)
-      end
-
-      it 'has the right file count' do
-        expect(WebIdeMetric.first.file_count).to eq(1)
-      end
-
-      it 'has the created at timestamp' do
-        expect(WebIdeMetric.first.created_at).to be_a(Time)
+        subject.log
       end
     end
   end
