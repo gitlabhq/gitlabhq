@@ -171,7 +171,7 @@ export default class UserTabs {
         // eslint-disable-next-line no-new
         new ActivityCalendar('.js-contrib-calendar', data, calendarActivitiesPath, utcOffset);
       })
-      .catch(() => flash(__('There was ane error loaing users activity calendar.')));
+      .catch(() => flash(__('There was an error loading users activity calendar.')));
 
     // eslint-disable-next-line no-new
     new Activities();
