@@ -207,7 +207,7 @@ module API
       end
 
       class Trigger < Grape::Entity
-        expose :token, :created_at, :updated_at, :deleted_at, :last_used
+        expose :token, :created_at, :updated_at, :last_used
         expose :owner, using: ::API::Entities::UserBasic
       end
 
@@ -257,10 +257,7 @@ module API
         expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
-          field_names = service.fields
-            .select { |field| options[:include_passwords] || field[:type] != 'password' }
-            .map { |field| field[:name] }
-          service.properties.slice(*field_names)
+          service.properties.slice(*service.api_field_names)
         end
       end
 

@@ -2,20 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   include TrackUntrackedUploadsHelpers
+  include MigrationsHelpers
 
   let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
-
-  matcher :be_scheduled_migration do |*expected|
-    match do |migration|
-      BackgroundMigrationWorker.jobs.any? do |job|
-        job['args'] == [migration, expected]
-      end
-    end
-
-    failure_message do |migration|
-      "Migration `#{migration}` with args `#{expected.inspect}` not scheduled!"
-    end
-  end
 
   before do
     DatabaseCleaner.clean
@@ -31,6 +20,27 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
     # Especially important so the follow-up migration does not get run
     Sidekiq::Testing.fake! do
       example.run
+    end
+  end
+
+  # E.g. The installation is in use at the time of migration, and someone has
+  # just uploaded a file
+  shared_examples 'does not add files in /uploads/tmp' do
+    let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+
+    before do
+      FileUtils.mkdir(File.dirname(tmp_file))
+      FileUtils.touch(tmp_file)
+    end
+
+    after do
+      FileUtils.rm(tmp_file)
+    end
+
+    it 'does not add files from /uploads/tmp' do
+      described_class.new.perform
+
+      expect(untracked_files_for_uploads.count).to eq(5)
     end
   end
 
@@ -120,24 +130,8 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
         end
       end
 
-      # E.g. The installation is in use at the time of migration, and someone has
-      # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-        let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
-
-        before do
-          FileUtils.touch(tmp_file)
-        end
-
-        after do
-          FileUtils.rm(tmp_file)
-        end
-
-        it 'does not add files from /uploads/tmp' do
-          described_class.new.perform
-
-          expect(untracked_files_for_uploads.count).to eq(5)
-        end
+        it_behaves_like 'does not add files in /uploads/tmp'
       end
     end
   end
@@ -208,24 +202,8 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
         end
       end
 
-      # E.g. The installation is in use at the time of migration, and someone has
-      # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-        let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
-
-        before do
-          FileUtils.touch(tmp_file)
-        end
-
-        after do
-          FileUtils.rm(tmp_file)
-        end
-
-        it 'does not add files from /uploads/tmp' do
-          described_class.new.perform
-
-          expect(untracked_files_for_uploads.count).to eq(5)
-        end
+        it_behaves_like 'does not add files in /uploads/tmp'
       end
     end
   end

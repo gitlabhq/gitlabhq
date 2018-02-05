@@ -203,8 +203,8 @@ describe Namespace do
     context 'with subgroups' do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
-      let(:uploads_dir) { File.join(CarrierWave.root, FileUploader.base_dir) }
+      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child, skip_disk_validation: true) }
+      let(:uploads_dir) { FileUploader.root }
       let(:pages_dir) { File.join(TestEnv.pages_path) }
 
       before do
@@ -239,6 +239,24 @@ describe Namespace do
           expect(File.directory?(expected_pages_path)).to be(true)
         end
       end
+    end
+
+    it 'updates project full path in .git/config for each project inside namespace' do
+      parent = create(:group, name: 'mygroup', path: 'mygroup')
+      subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
+      project_in_parent_group = create(:project, :repository, namespace: parent, name: 'foo1')
+      hashed_project_in_subgroup = create(:project, :repository, :hashed, namespace: subgroup, name: 'foo2')
+      legacy_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo3')
+
+      parent.update(path: 'mygroup_new')
+
+      expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
+      expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+      expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+    end
+
+    def project_rugged(project)
+      project.repository.rugged
     end
   end
 
@@ -389,17 +407,6 @@ describe Namespace do
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
-    end
-  end
-
-  describe '#soft_delete_without_removing_associations' do
-    let(:project1) { create(:project_empty_repo, namespace: namespace) }
-
-    it 'updates the deleted_at timestamp but preserves projects' do
-      namespace.soft_delete_without_removing_associations
-
-      expect(Project.all).to include(project1)
-      expect(namespace.deleted_at).not_to be_nil
     end
   end
 
@@ -587,6 +594,26 @@ describe Namespace do
         namespace = build(:namespace)
         expect(namespace).to be_valid
       end
+    end
+  end
+
+  describe '#remove_exports' do
+    let(:legacy_project) { create(:project, :with_export, namespace: namespace) }
+    let(:hashed_project) { create(:project, :with_export, :hashed, namespace: namespace) }
+    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
+    let(:legacy_export) { legacy_project.export_project_path }
+    let(:hashed_export) { hashed_project.export_project_path }
+
+    it 'removes exports for legacy and hashed projects' do
+      allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
+
+      expect(File.exist?(legacy_export)).to be_truthy
+      expect(File.exist?(hashed_export)).to be_truthy
+
+      namespace.remove_exports!
+
+      expect(File.exist?(legacy_export)).to be_falsy
+      expect(File.exist?(hashed_export)).to be_falsy
     end
   end
 end

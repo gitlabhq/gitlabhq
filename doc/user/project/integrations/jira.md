@@ -173,6 +173,7 @@ where `PROJECT-1` is the issue ID of the JIRA project.
 - Only commits and merges into the project's default branch (usually **master**) will
   close an issue in Jira. You can change your projects default branch under
   [project settings](img/jira_project_settings.png).
+- The JIRA issue will not be transitioned if it has a resolution.
 
 ### JIRA issue closing example
 
@@ -221,6 +222,10 @@ JIRA issue references and update comments will not work if the GitLab issue trac
 
 Make sure the `Transition ID` you set within the JIRA settings matches the one
 your project needs to close a ticket.
+
+Make sure that the JIRA issue is not already marked as resolved, in other words that
+the JIRA issue resolution field is not set. (It should not be struck through in
+JIRA lists.)
 
 [services-templates]: services_templates.md
 [jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/project_services/jira.md

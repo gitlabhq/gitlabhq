@@ -16,8 +16,10 @@ module Gitlab
     def can_do_action?(action)
       return false unless can_access_git?
 
-      @permission_cache ||= {}
-      @permission_cache[action] ||= user.can?(action, project)
+      permission_cache[action] =
+        permission_cache.fetch(action) do
+          user.can?(action, project)
+        end
     end
 
     def cannot_do_action?(action)
@@ -87,6 +89,10 @@ module Gitlab
     end
 
     private
+
+    def permission_cache
+      @permission_cache ||= {}
+    end
 
     def can_access_git?
       user && user.can?(:access_git)

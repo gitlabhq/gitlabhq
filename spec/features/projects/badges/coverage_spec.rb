@@ -6,7 +6,7 @@ feature 'test coverage badge' do
 
   context 'when user has access to view badge' do
     background do
-      project.team << [user, :developer]
+      project.add_developer(user)
       sign_in(user)
     end
 
@@ -18,7 +18,7 @@ feature 'test coverage badge' do
 
       show_test_coverage_badge
 
-      expect_coverage_badge('95%')
+      expect_coverage_badge('95.00%')
     end
 
     scenario 'user requests coverage badge for specific job' do
@@ -30,7 +30,7 @@ feature 'test coverage badge' do
 
       show_test_coverage_badge(job: 'coverage')
 
-      expect_coverage_badge('85%')
+      expect_coverage_badge('85.00%')
     end
 
     scenario 'user requests coverage badge for pipeline without coverage' do

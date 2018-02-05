@@ -1,6 +1,3 @@
-require_relative "popen"
-require_relative "version_info"
-
 module Gitlab
   class Upgrader
     def execute
@@ -12,6 +9,7 @@ module Gitlab
         puts "You are using the latest GitLab version"
       else
         puts "Newer GitLab version is available"
+
         answer = if ARGV.first == "-y"
                    "yes"
                  else
@@ -51,7 +49,7 @@ module Gitlab
 
     def fetch_git_tags
       remote_tags, _ = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
-      remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
+      remote_tags.split("\n").grep(%r{tags/v#{current_version.major}})
     end
 
     def update_commands
@@ -77,6 +75,7 @@ module Gitlab
       update_commands.each do |title, cmd|
         puts title
         puts " -> #{cmd.join(' ')}"
+
         if system(env, *cmd)
           puts " -> OK"
         else

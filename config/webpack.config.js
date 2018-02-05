@@ -1,7 +1,9 @@
 'use strict';
 
+var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
+var glob = require('glob');
 var webpack = require('webpack');
 var StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -18,6 +20,26 @@ var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
+
+// generate automatic entry points
+var autoEntries = {};
+var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+
+// filter out entries currently imported dynamically in dispatcher.js
+var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
+var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+
+pageEntries.forEach(( path ) => {
+  let chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(chunkPath)) {
+    let chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = './' + path;
+  }
+});
+
+// report our auto-generated bundle count
+var autoEntriesCount = Object.keys(autoEntries).length;
+console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
 
 var config = {
   // because sqljs requires fs.
@@ -43,9 +65,6 @@ var config = {
     graphs:               './graphs/graphs_bundle.js',
     graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',
-    group:                './group.js',
-    groups:               './groups/index.js',
-    groups_list:          './groups_list.js',
     help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
@@ -65,7 +84,6 @@ var config = {
     pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    project_new:          './projects/project_new.js',
     prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
@@ -85,7 +103,6 @@ var config = {
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
     users:                './users/index.js',
-    performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
 
@@ -118,7 +135,15 @@ var config = {
       },
       {
         test: /\_worker\.js$/,
-        loader: 'worker-loader',
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              inline: true
+            }
+          },
+          { loader: 'babel-loader' },
+        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
@@ -161,6 +186,7 @@ var config = {
     ],
 
     noParse: [/monaco-editor\/\w+\/vs\//],
+    strictExportPresence: true,
   },
 
   plugins: [
@@ -198,15 +224,34 @@ var config = {
       if (chunk.name) {
         return chunk.name;
       }
-      return chunk.mapModules((m) => {
-        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
-        if (m.resource.indexOf(pagesBase) === 0) {
-          return path.relative(pagesBase, m.resource)
-            .replace(/\/index\.[a-z]+$/, '')
-            .replace(/\//g, '__');
+
+      const moduleNames = [];
+
+      function collectModuleNames(m) {
+        // handle ConcatenatedModule which does not have resource nor context set
+        if (m.modules) {
+          m.modules.forEach(collectModuleNames);
+          return;
         }
-        return path.relative(m.context, m.resource);
-      }).join('_');
+
+        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
+
+        if (m.resource.indexOf(pagesBase) === 0) {
+          moduleNames.push(path.relative(pagesBase, m.resource)
+            .replace(/\/index\.[a-z]+$/, '')
+            .replace(/\//g, '__'));
+        } else {
+          moduleNames.push(path.relative(m.context, m.resource));
+        }
+      }
+
+      chunk.forEachModule(collectModuleNames);
+
+      const hash = crypto.createHash('sha256')
+        .update(moduleNames.join('_'))
+        .digest('hex');
+
+      return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
     // create cacheable common library bundle for all vue chunks
@@ -299,6 +344,8 @@ var config = {
     }
   }
 }
+
+config.entry = Object.assign({}, autoEntries, config.entry);
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';

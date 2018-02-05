@@ -391,10 +391,16 @@
   .dropdown-toggle {
     float: right;
 
-    .toggle-icon {
+    i {
       color: $white-light;
       padding-right: 2px;
       margin-top: 2px;
+    }
+
+    &[disabled] {
+      i {
+        color: $gl-text-color-disabled;
+      }
     }
   }
 
@@ -403,7 +409,6 @@
     bottom: 100%;
     width: 298px;
   }
-
 
   @media (max-width: $screen-xs-max) {
     display: flex;

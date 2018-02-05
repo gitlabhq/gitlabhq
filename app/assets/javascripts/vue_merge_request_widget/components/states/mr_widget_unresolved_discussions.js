@@ -1,4 +1,4 @@
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetUnresolvedDiscussions',
@@ -10,7 +10,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="failed" :show-disabled-button="true" />
+      <status-icon status="warning" :show-disabled-button="true" />
       <div class="media-body space-children">
         <span class="bold">
           There are unresolved discussions. Please resolve these discussions

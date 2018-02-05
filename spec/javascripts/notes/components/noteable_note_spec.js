@@ -1,4 +1,4 @@
-
+import _ from 'underscore';
 import Vue from 'vue';
 import store from '~/notes/stores';
 import issueNote from '~/notes/components/noteable_note.vue';

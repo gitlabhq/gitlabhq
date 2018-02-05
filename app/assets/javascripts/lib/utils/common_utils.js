@@ -1,3 +1,4 @@
+import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
@@ -27,16 +28,11 @@ export const isInIssuePage = () => {
   return page === 'issues' && action === 'show';
 };
 
-export const ajaxGet = url => $.ajax({
-  type: 'GET',
-  url,
-  dataType: 'script',
-});
-
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
+export const ajaxGet = url => axios.get(url, {
+  params: { format: 'js' },
+  responseType: 'text',
+}).then(({ data }) => {
+  $.globalEval(data);
 });
 
 export const rstrip = (val) => {
@@ -232,7 +228,7 @@ export const nodeMatchesSelector = (node, selector) => {
 export const normalizeHeaders = (headers) => {
   const upperCaseHeaders = {};
 
-  Object.keys(headers).forEach((e) => {
+  Object.keys(headers || {}).forEach((e) => {
     upperCaseHeaders[e.toUpperCase()] = headers[e];
   });
 
@@ -382,22 +378,16 @@ export const resetFavicon = () => {
   }
 };
 
-export const setCiStatusFavicon = (pageUrl) => {
-  $.ajax({
-    url: pageUrl,
-    dataType: 'json',
-    success: (data) => {
+export const setCiStatusFavicon = pageUrl =>
+  axios.get(pageUrl)
+    .then(({ data }) => {
       if (data && data.favicon) {
         setFavicon(data.favicon);
       } else {
         resetFavicon();
       }
-    },
-    error: () => {
-      resetFavicon();
-    },
-  });
-};
+    })
+    .catch(resetFavicon);
 
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
@@ -417,7 +407,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,

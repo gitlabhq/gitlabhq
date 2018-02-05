@@ -1,15 +1,15 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid without_default_scope: true
-
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
-  include Gitlab::CurrentSettings
   include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
+  include IgnorableColumn
+
+  ignore_column :deleted_at
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -221,10 +221,22 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
-  def soft_delete_without_removing_associations
-    # We can't use paranoia's `#destroy` since this will hard-delete projects.
-    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
-    self.deleted_at = Time.now
+  def full_path_was
+    return path_was unless has_parent?
+
+    "#{parent.full_path}/#{path_was}"
+  end
+
+  # Exports belonging to projects with legacy storage are placed in a common
+  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
+  # them.
+  #
+  # Exports of projects using hashed storage are placed in a location defined
+  # only by the project ID, so each must be removed individually.
+  def remove_exports!
+    remove_legacy_exports!
+
+    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
   private
@@ -267,5 +279,12 @@ class Namespace < ActiveRecord::Base
 
   def namespace_previously_created_with_same_path?
     RedirectRoute.permanent.exists?(path: path)
+  end
+
+  def write_projects_repository_config
+    all_projects.find_each do |project|
+      project.expires_full_path_cache # we need to clear cache to validate renames correctly
+      project.write_repository_config
+    end
   end
 end

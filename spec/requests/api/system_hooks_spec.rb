@@ -36,6 +36,7 @@ describe API::SystemHooks do
         expect(json_response.first['url']).to eq(hook.url)
         expect(json_response.first['push_events']).to be false
         expect(json_response.first['tag_push_events']).to be false
+        expect(json_response.first['merge_requests_events']).to be false
         expect(json_response.first['repository_update_events']).to be true
       end
     end
@@ -67,11 +68,28 @@ describe API::SystemHooks do
     end
 
     it 'sets default values for events' do
-      post api('/hooks', admin), url: 'http://mep.mep', enable_ssl_verification: true
+      post api('/hooks', admin), url: 'http://mep.mep'
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['enable_ssl_verification']).to be true
+      expect(json_response['push_events']).to be false
       expect(json_response['tag_push_events']).to be false
+      expect(json_response['merge_requests_events']).to be false
+    end
+
+    it 'sets explicit values for events' do
+      post api('/hooks', admin),
+        url: 'http://mep.mep',
+        enable_ssl_verification: false,
+        push_events: true,
+        tag_push_events: true,
+        merge_requests_events: true
+
+      expect(response).to have_http_status(201)
+      expect(json_response['enable_ssl_verification']).to be false
+      expect(json_response['push_events']).to be true
+      expect(json_response['tag_push_events']).to be true
+      expect(json_response['merge_requests_events']).to be true
     end
   end
 

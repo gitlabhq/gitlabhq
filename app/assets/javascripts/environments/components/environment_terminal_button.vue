@@ -1,36 +1,36 @@
 <script>
-/**
- * Renders a terminal button to open a web terminal.
- * Used in environments table.
- */
-import terminalIconSvg from 'icons/_icon_terminal.svg';
-import tooltip from '../../vue_shared/directives/tooltip';
+  /**
+  * Renders a terminal button to open a web terminal.
+  * Used in environments table.
+  */
+  import terminalIconSvg from 'icons/_icon_terminal.svg';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
-export default {
-  props: {
-    terminalPath: {
-      type: String,
-      required: false,
-      default: '',
+  export default {
+    directives: {
+      tooltip,
     },
-  },
 
-  directives: {
-    tooltip,
-  },
-
-  data() {
-    return {
-      terminalIconSvg,
-    };
-  },
-
-  computed: {
-    title() {
-      return 'Terminal';
+    props: {
+      terminalPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
-  },
-};
+
+    data() {
+      return {
+        terminalIconSvg,
+      };
+    },
+
+    computed: {
+      title() {
+        return 'Terminal';
+      },
+    },
+  };
 </script>
 <template>
   <a
@@ -40,6 +40,7 @@ export default {
     :title="title"
     :aria-label="title"
     :href="terminalPath"
-    v-html="terminalIconSvg">
+    v-html="terminalIconSvg"
+  >
   </a>
 </template>

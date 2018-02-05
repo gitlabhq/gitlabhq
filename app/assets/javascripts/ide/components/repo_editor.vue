@@ -6,6 +6,38 @@ import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 
 export default {
+  computed: {
+    ...mapGetters([
+      'activeFile',
+      'activeFileExtension',
+    ]),
+    ...mapState([
+      'leftPanelCollapsed',
+      'rightPanelCollapsed',
+      'panelResizing',
+    ]),
+    shouldHideEditor() {
+      return this.activeFile.binary && !this.activeFile.raw;
+    },
+  },
+  watch: {
+    activeFile(oldVal, newVal) {
+      if (newVal && !newVal.active) {
+        this.initMonaco();
+      }
+    },
+    leftPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    rightPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    panelResizing(isResizing) {
+      if (isResizing === false) {
+        this.editor.updateDimensions();
+      }
+    },
+  },
   beforeDestroy() {
     this.editor.dispose();
   },
@@ -38,7 +70,10 @@ export default {
           this.editor.createInstance(this.$refs.editor);
         })
         .then(() => this.setupEditor())
-        .catch(() => flash('Error setting up monaco. Please try again.'));
+        .catch((err) => {
+          flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
+          throw err;
+        });
     },
     setupEditor() {
       if (!this.activeFile) return;
@@ -76,32 +111,6 @@ export default {
       this.setFileEOL({
         eol: model.eol,
       });
-    },
-  },
-  watch: {
-    activeFile(oldVal, newVal) {
-      if (newVal && !newVal.active) {
-        this.initMonaco();
-      }
-    },
-    leftPanelCollapsed() {
-      this.editor.updateDimensions();
-    },
-    rightPanelCollapsed() {
-      this.editor.updateDimensions();
-    },
-  },
-  computed: {
-    ...mapGetters([
-      'activeFile',
-      'activeFileExtension',
-    ]),
-    ...mapState([
-      'leftPanelCollapsed',
-      'rightPanelCollapsed',
-    ]),
-    shouldHideEditor() {
-      return this.activeFile.binary && !this.activeFile.raw;
     },
   },
 };

@@ -28,7 +28,7 @@ describe MergeRequests::BuildService do
   end
 
   before do
-    project.team << [user, :guest]
+    project.add_guest(user)
   end
 
   def stub_compare
@@ -171,6 +171,45 @@ describe MergeRequests::BuildService do
           end
         end
       end
+
+      context 'branch starts with numeric characters followed by a hyphen with no issue tracker' do
+        let(:source_branch) { '12345-fix-issue' }
+
+        before do
+          allow(project).to receive(:external_issue_tracker).and_return(false)
+          allow(project).to receive(:issues_enabled?).and_return(false)
+        end
+
+        it 'uses the title of the commit as the title of the merge request' do
+          expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
+        end
+
+        it 'uses the description of the commit as the description of the merge request' do
+          commit_description = commit_1.safe_message.split(/\n+/, 2).last
+
+          expect(merge_request.description).to eq("#{commit_description}")
+        end
+      end
+
+      context 'branch starts with JIRA-formatted external issue IID followed by a hyphen' do
+        let(:source_branch) { 'EXMPL-12345-fix-issue' }
+
+        before do
+          allow(project).to receive(:external_issue_tracker).and_return(true)
+          allow(project).to receive(:issues_enabled?).and_return(false)
+          allow(project).to receive(:external_issue_reference_pattern).and_return(IssueTrackerService.reference_pattern)
+        end
+
+        it 'uses the title of the commit as the title of the merge request' do
+          expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
+        end
+
+        it 'uses the description of the commit as the description of the merge request and appends the closes text' do
+          commit_description = commit_1.safe_message.split(/\n+/, 2).last
+
+          expect(merge_request.description).to eq("#{commit_description}\n\nCloses EXMPL-12345")
+        end
+      end
     end
 
     context 'more than one commit in the diff' do
@@ -234,15 +273,46 @@ describe MergeRequests::BuildService do
         end
       end
 
-      context 'branch starts with external issue IID followed by a hyphen' do
+      context 'branch starts with numeric characters followed by a hyphen with no issue tracker' do
         let(:source_branch) { '12345-fix-issue' }
 
         before do
-          allow(project).to receive(:external_issue_tracker).and_return(true)
+          allow(project).to receive(:external_issue_tracker).and_return(false)
+          allow(project).to receive(:issues_enabled?).and_return(false)
         end
 
-        it 'sets the title to: Resolves External Issue $issue-iid' do
-          expect(merge_request.title).to eq('Resolve External Issue 12345')
+        it 'sets the title to the humanized branch title' do
+          expect(merge_request.title).to eq('12345 fix issue')
+        end
+      end
+
+      context 'branch starts with JIRA-formatted external issue IID' do
+        let(:source_branch) { 'EXMPL-12345' }
+
+        before do
+          allow(project).to receive(:external_issue_tracker).and_return(true)
+          allow(project).to receive(:issues_enabled?).and_return(false)
+          allow(project).to receive(:external_issue_reference_pattern).and_return(IssueTrackerService.reference_pattern)
+        end
+
+        it 'sets the title to the humanized branch title' do
+          expect(merge_request.title).to eq('Resolve EXMPL-12345')
+        end
+
+        it 'appends the closes text' do
+          expect(merge_request.description).to eq('Closes EXMPL-12345')
+        end
+
+        context 'followed by hyphenated text' do
+          let(:source_branch) { 'EXMPL-12345-fix-issue' }
+
+          it 'sets the title to the humanized branch title' do
+            expect(merge_request.title).to eq('Resolve EXMPL-12345 "Fix issue"')
+          end
+
+          it 'appends the closes text' do
+            expect(merge_request.description).to eq('Closes EXMPL-12345')
+          end
         end
       end
     end

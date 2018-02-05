@@ -17,11 +17,11 @@ describe TodoService do
   let(:service) { described_class.new }
 
   before do
-    project.team << [guest, :guest]
-    project.team << [author, :developer]
-    project.team << [member, :developer]
-    project.team << [john_doe, :developer]
-    project.team << [skipped, :developer]
+    project.add_guest(guest)
+    project.add_developer(author)
+    project.add_developer(member)
+    project.add_developer(john_doe)
+    project.add_developer(skipped)
   end
 
   describe 'Issues' do

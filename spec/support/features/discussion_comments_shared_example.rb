@@ -113,6 +113,7 @@ shared_examples 'discussion comments' do |resource_name|
         else
           expect(find(submit_selector).value).to eq 'Start discussion'
         end
+
         expect(page).not_to have_selector menu_selector
       end
 
@@ -142,15 +143,17 @@ shared_examples 'discussion comments' do |resource_name|
         end
 
         if resource_name == 'merge request'
+          let(:note_id) { find("#{comments_selector} .note", match: :first)['data-note-id'] }
+
           it 'shows resolved discussion when toggled' do
             click_button "Resolve discussion"
 
-            expect(page).to have_selector('.note-row-1', visible: true)
+            expect(page).to have_selector(".note-row-#{note_id}", visible: true)
 
             refresh
             click_button "Toggle discussion"
 
-            expect(page).to have_selector('.note-row-1', visible: true)
+            expect(page).to have_selector(".note-row-#{note_id}", visible: true)
           end
         end
       end
@@ -200,6 +203,7 @@ shared_examples 'discussion comments' do |resource_name|
             else
               expect(find(submit_selector).value).to eq 'Comment'
             end
+
             expect(page).not_to have_selector menu_selector
           end
 

@@ -1,4 +1,5 @@
-import Flash from './flash';
+import { __ } from './locale';
+import flash from './flash';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
@@ -16,7 +17,7 @@ function renderWithKaTeX(elements, katex) {
 
     const display = $this.attr('data-math-style') === 'display';
     try {
-      katex.render($this.text(), mathNode.get(0), { displayMode: display });
+      katex.render($this.text(), mathNode.get(0), { displayMode: display, throwOnError: false });
       mathNode.insertAfter($this);
       $this.remove();
     } catch (err) {
@@ -33,9 +34,7 @@ export default function renderMath($els) {
       renderWithKaTeX($els, katex);
     })
     .catch((err) => {
-      Flash(`Can't load katex css ${err}`);
+      flash(`Can't load katex css ${err}`);
     });
-  }).catch((err) => {
-    Flash(`Can't load katex module: ${err}`);
-  });
+  }).catch(() => flash(__('An error occurred while rendering KaTeX')));
 }

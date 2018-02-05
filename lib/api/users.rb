@@ -383,6 +383,8 @@ module API
         optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
       end
       delete ":id" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42279')
+
         authenticated_as_admin!
 
         user = User.find_by(id: params[:id])

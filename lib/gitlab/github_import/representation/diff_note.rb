@@ -13,7 +13,7 @@ module Gitlab
                          :diff_hunk, :author, :note, :created_at, :updated_at,
                          :github_id
 
-        NOTEABLE_ID_REGEX = /\/pull\/(?<iid>\d+)/i
+        NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i
 
         # Builds a diff note from a GitHub API response.
         #

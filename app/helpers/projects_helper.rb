@@ -1,6 +1,4 @@
 module ProjectsHelper
-  include Gitlab::CurrentSettings
-
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -214,7 +212,7 @@ module ProjectsHelper
       project.cache_key,
       controller.controller_name,
       controller.action_name,
-      current_application_settings.cache_key,
+      Gitlab::CurrentSettings.cache_key,
       'v2.5'
     ]
 
@@ -389,7 +387,7 @@ module ProjectsHelper
   end
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
-    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
     project_new_blob_path(
       project,
       project.default_branch || 'master',
@@ -447,10 +445,10 @@ module ProjectsHelper
 
       path = "#{import_path}?repo=#{repo}&branch=#{branch}&sha=#{sha}"
 
-      return URI.join(current_application_settings.koding_url, path).to_s
+      return URI.join(Gitlab::CurrentSettings.koding_url, path).to_s
     end
 
-    current_application_settings.koding_url
+    Gitlab::CurrentSettings.koding_url
   end
 
   def contribution_guide_path(project)
@@ -559,7 +557,7 @@ module ProjectsHelper
   def restricted_levels
     return [] if current_user.admin?
 
-    current_application_settings.restricted_visibility_levels || []
+    Gitlab::CurrentSettings.restricted_visibility_levels || []
   end
 
   def project_permissions_settings(project)

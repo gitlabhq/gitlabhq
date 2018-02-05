@@ -330,7 +330,7 @@ describe API::V3::Groups do
       end
 
       it "only returns projects to which user has access" do
-        project3.team << [user3, :developer]
+        project3.add_developer(user3)
 
         get v3_api("/groups/#{group1.id}/projects", user3)
 

@@ -39,6 +39,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 
   .next-run-cell {
@@ -72,86 +76,5 @@
 
   input {
     margin-right: 3px;
-  }
-}
-
-.pipeline-variable-list {
-  margin-left: 0;
-  margin-bottom: 0;
-  padding-left: 0;
-  list-style: none;
-  clear: both;
-}
-
-.pipeline-variable-row {
-  display: flex;
-  align-items: flex-end;
-
-  &:not(:last-child) {
-    margin-bottom: $gl-btn-padding;
-  }
-
-  @media (max-width: $screen-sm-max) {
-    padding-right: $gl-col-padding;
-  }
-
-  &:last-child {
-    .pipeline-variable-row-remove-button {
-      display: none;
-    }
-
-    @media (max-width: $screen-sm-max) {
-      .pipeline-variable-value-input {
-        margin-right: $pipeline-variable-remove-button-width;
-      }
-    }
-
-    @media (max-width: $screen-xs-max) {
-      .pipeline-variable-row-body {
-        margin-right: $pipeline-variable-remove-button-width;
-      }
-    }
-  }
-}
-
-.pipeline-variable-row-body {
-  display: flex;
-  width: calc(75% - #{$gl-col-padding});
-  padding-left: $gl-col-padding;
-
-  @media (max-width: $screen-sm-max) {
-    width: 100%;
-  }
-
-  @media (max-width: $screen-xs-max) {
-    display: block;
-  }
-}
-
-.pipeline-variable-key-input {
-  margin-right: $gl-btn-padding;
-
-  @media (max-width: $screen-xs-max) {
-    margin-bottom: $gl-btn-padding;
-  }
-}
-
-.pipeline-variable-row-remove-button {
-  @include transition(color);
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: $pipeline-variable-remove-button-width;
-  height: $input-height;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  color: $gl-text-color-secondary;
-
-  &:hover,
-  &:focus {
-    outline: none;
-    color: $gl-text-color;
   }
 }

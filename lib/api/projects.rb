@@ -76,9 +76,9 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_statistics if params[:statistics]
-        projects = projects.with_issues_enabled if params[:with_issues_enabled]
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
         projects = paginate(projects)
 
         if current_user
@@ -154,6 +154,7 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
           render_validation_error!(project)
         end
       end
@@ -209,6 +210,8 @@ module API
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
       end
       post ':id/fork' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
+
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
 

@@ -54,7 +54,7 @@ elsif Gitlab::Database.mysql?
     def initialize_type_map(mapping)
       super mapping
 
-      mapping.register_type(%r(timestamp)i) do |sql_type|
+      mapping.register_type(/timestamp/i) do |sql_type|
         precision = extract_precision(sql_type)
         ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::MysqlDateTimeWithTimeZone.new(precision: precision)
       end
@@ -78,4 +78,9 @@ elsif Gitlab::Database.mysql?
     #
     NATIVE_DATABASE_TYPES[:datetime_with_timezone] = { name: 'timestamp' }
   end
+end
+
+# Ensure `datetime_with_timezone` columns are correctly written to schema.rb
+if (ActiveRecord::Base.connection.active? rescue false)
+  ActiveRecord::Base.connection.send :reload_type_map
 end

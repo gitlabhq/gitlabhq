@@ -34,13 +34,19 @@ variables:
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
+  KUBERNETES_VERSION: 1.8.6
+  HELM_VERSION: 2.6.1
+  CODECLIMATE_VERSION: 0.69.0
+
 stages:
   - build
   - test
   - review
+  - dast
   - staging
   - canary
   - production
+  - performance
   - cleanup
 
 build:
@@ -83,6 +89,25 @@ codequality:
   artifacts:
     paths: [codeclimate.json]
 
+performance:
+  stage: performance
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - performance
+  artifacts:
+    paths:
+    - performance.json
+  only:
+    refs:
+      - branches
+    kubernetes: active
+
 sast:
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
   variables:
@@ -92,6 +117,36 @@ sast:
     - sast .
   artifacts:
     paths: [gl-sast-report.json]
+
+sast:container:
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:dind
+  script:
+    - setup_docker
+    - sast_container
+  artifacts:
+    paths: [gl-sast-container-report.json]
+
+dast:
+  stage: dast
+  allow_failure: true
+  image: owasp/zap2docker-stable
+  variables:
+    POSTGRES_DB: "false"
+  script:
+    - dast
+  artifacts:
+    paths: [gl-dast-report.json]
+  only:
+    refs:
+      - branches
+    kubernetes: active
+  except:
+    - master
 
 review:
   stage: review
@@ -103,10 +158,13 @@ review:
     - install_tiller
     - create_secret
     - deploy
+    - persist_environment_url
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: http://$CI_PROJECT_PATH_SLUG-$CI_ENVIRONMENT_SLUG.$AUTO_DEVOPS_DOMAIN
     on_stop: stop_review
+  artifacts:
+    paths: [environment_url.txt]
   only:
     refs:
       - branches
@@ -201,9 +259,12 @@ production:
     - create_secret
     - deploy
     - delete canary
+    - persist_environment_url
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
 #  when: manual
   only:
     refs:
@@ -222,14 +283,26 @@ production:
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
 
+  function sast_container() {
+    docker run -d --name db arminc/clair-db:latest
+    docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
+    apk add -U wget ca-certificates
+    docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+    mv clair-scanner_linux_amd64 clair-scanner
+    chmod +x clair-scanner
+    touch clair-whitelist.yml
+    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+  }
+
   function codeclimate() {
     cc_opts="--env CODECLIMATE_CODE="$PWD" \
              --volume "$PWD":/code \
              --volume /var/run/docker.sock:/var/run/docker.sock \
              --volume /tmp/cc:/tmp/cc"
 
-    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 init
-    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json
+    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" init
+    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" analyze -f json > codeclimate.json
   }
 
   function sast() {
@@ -301,11 +374,11 @@ production:
     apk add glibc-2.23-r3.apk
     rm glibc-2.23-r3.apk
 
-    curl https://kubernetes-helm.storage.googleapis.com/helm-v2.6.1-linux-amd64.tar.gz | tar zx
+    curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
     helm version --client
 
-    curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
     kubectl version --client
   }
@@ -407,6 +480,8 @@ production:
   }
 
   function create_secret() {
+    echo "Create secret..."
+
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \
       --docker-server="$CI_REGISTRY" \
@@ -414,6 +489,37 @@ production:
       --docker-password="$CI_REGISTRY_PASSWORD" \
       --docker-email="$GITLAB_USER_EMAIL" \
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+  }
+
+  function dast() {
+    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+
+    mkdir /zap/wrk/
+    /zap/zap-baseline.py -J gl-dast-report.json -t "$CI_ENVIRONMENT_URL" || true
+    cp /zap/wrk/gl-dast-report.json .
+  }
+
+  function performance() {
+    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+
+    mkdir gitlab-exporter
+    wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-3/index.js
+
+    mkdir sitespeed-results
+
+    if [ -f .gitlab-urls.txt ]
+    then
+      sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
+      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.0.3 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
+    else
+      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.0.3 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+    fi
+
+    mv sitespeed-results/data/performance.json performance.json
+  }
+
+  function persist_environment_url() {
+      echo $CI_ENVIRONMENT_URL > environment_url.txt
   }
 
   function delete() {

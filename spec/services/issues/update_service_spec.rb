@@ -13,13 +13,14 @@ describe Issues::UpdateService, :mailer do
     create(:issue, title: 'Old title',
                    description: "for #{user2.to_reference}",
                    assignee_ids: [user3.id],
-                   project: project)
+                   project: project,
+                   author: create(:user))
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -99,7 +100,7 @@ describe Issues::UpdateService, :mailer do
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
@@ -318,7 +319,7 @@ describe Issues::UpdateService, :mailer do
       let!(:subscriber) do
         create(:user).tap do |u|
           label.toggle_subscription(u, project)
-          project.team << [u, :developer]
+          project.add_developer(u)
         end
       end
 
@@ -556,7 +557,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
         end
 
         it 'calls the move service with the proper issue and project' do

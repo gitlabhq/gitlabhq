@@ -48,14 +48,14 @@ describe('Multi-file store actions', () => {
 
   describe('discardAllChanges', () => {
     beforeEach(() => {
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('discardAll'));
       store.state.openFiles[0].changed = true;
     });
   });
 
   describe('closeAllFiles', () => {
     beforeEach(() => {
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('closeAll'));
       store.state.openFiles[0].opened = true;
     });
 
@@ -97,7 +97,7 @@ describe('Multi-file store actions', () => {
 
     it('opens discard popup if there are changed files', (done) => {
       store.state.editMode = true;
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('discardChanges'));
       store.state.openFiles[0].changed = true;
 
       store.dispatch('toggleEditMode')
@@ -111,7 +111,7 @@ describe('Multi-file store actions', () => {
     it('can force closed if there are changed files', (done) => {
       store.state.editMode = true;
 
-      store.state.openFiles.push(file());
+      store.state.openFiles.push(file('forceClose'));
       store.state.openFiles[0].changed = true;
 
       store.dispatch('toggleEditMode', true)
@@ -124,7 +124,7 @@ describe('Multi-file store actions', () => {
     });
 
     it('discards file changes', (done) => {
-      const f = file();
+      const f = file('discard');
       store.state.editMode = true;
       store.state.openFiles.push(f);
       f.changed = true;
@@ -178,7 +178,9 @@ describe('Multi-file store actions', () => {
 
     it('calls service', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '123' },
+        data: {
+          commit: { id: '123' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -192,7 +194,9 @@ describe('Multi-file store actions', () => {
 
     it('returns true if current ref does not equal returned ID', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '123' },
+        data: {
+          commit: { id: '123' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -206,7 +210,9 @@ describe('Multi-file store actions', () => {
 
     it('returns false if current ref equals returned ID', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
-        commit: { id: '1' },
+        data: {
+          commit: { id: '1' },
+        },
       }));
 
       store.dispatch('checkCommitStatus')
@@ -250,13 +256,15 @@ describe('Multi-file store actions', () => {
     describe('success', () => {
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(Promise.resolve({
-          id: '123456',
-          short_id: '123',
-          message: 'test message',
-          committed_date: 'date',
-          stats: {
-            additions: '1',
-            deletions: '2',
+          data: {
+            id: '123456',
+            short_id: '123',
+            message: 'test message',
+            committed_date: 'date',
+            stats: {
+              additions: '1',
+              deletions: '2',
+            },
           },
         }));
       });
@@ -285,8 +293,8 @@ describe('Multi-file store actions', () => {
       });
 
       it('adds commit data to changed files', (done) => {
-        const changedFile = file();
-        const f = file();
+        const changedFile = file('changed');
+        const f = file('newfile');
         changedFile.changed = true;
 
         store.state.openFiles.push(changedFile, f);
@@ -295,19 +303,6 @@ describe('Multi-file store actions', () => {
           .then(() => {
             expect(changedFile.lastCommit.message).toBe('test message');
             expect(f.lastCommit.message).not.toBe('test message');
-
-            done();
-          }).catch(done.fail);
-      });
-
-      it('closes all files', (done) => {
-        store.state.openFiles.push(file());
-        store.state.openFiles[0].opened = true;
-
-        store.dispatch('commitChanges', { payload, newMr: false })
-          .then(Vue.nextTick)
-          .then(() => {
-            expect(store.state.openFiles.length).toBe(0);
 
             done();
           }).catch(done.fail);
@@ -337,7 +332,9 @@ describe('Multi-file store actions', () => {
     describe('failed', () => {
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(Promise.resolve({
-          message: 'failed message',
+          data: {
+            message: 'failed message',
+          },
         }));
       });
 

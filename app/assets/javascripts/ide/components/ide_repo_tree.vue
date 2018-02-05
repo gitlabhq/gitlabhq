@@ -1,15 +1,15 @@
 <script>
 import { mapState } from 'vuex';
-import RepoPreviousDirectory from './repo_prev_directory.vue';
-import RepoFile from './repo_file.vue';
-import RepoLoadingFile from './repo_loading_file.vue';
+import repoPreviousDirectory from './repo_prev_directory.vue';
+import repoFile from './repo_file.vue';
+import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 import { treeList } from '../stores/utils';
 
 export default {
   components: {
-    'repo-previous-directory': RepoPreviousDirectory,
-    'repo-file': RepoFile,
-    'repo-loading-file': RepoLoadingFile,
+    repoPreviousDirectory,
+    repoFile,
+    skeletonLoadingContainer,
   },
   props: {
     treeId: {
@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     ...mapState([
-      'loading',
+      'trees',
       'isRoot',
     ]),
     ...mapState({
@@ -34,33 +34,41 @@ export default {
       return !this.isRoot && this.fetchedList.length;
     },
     showLoading() {
-      return this.loading;
+      if (this.trees[this.treeId]) {
+        return this.trees[this.treeId].loading;
+      }
+      return true;
     },
   },
 };
 </script>
 
 <template>
-<div>
-  <div class="ide-file-list">
-    <table class="table">
-      <tbody
-        v-if="treeId">
-        <repo-previous-directory
-          v-if="hasPreviousDirectory"
-        />
-        <repo-loading-file
-          v-if="showLoading"
-          v-for="n in 5"
-          :key="n"
-        />
-        <repo-file
-          v-for="file in fetchedList"
-          :key="file.key"
-          :file="file"
-        />
-      </tbody>
-    </table>
+  <div>
+    <div class="ide-file-list">
+      <table class="table">
+        <tbody
+          v-if="treeId"
+        >
+          <repo-previous-directory
+            v-if="hasPreviousDirectory"
+          />
+          <template v-if="showLoading">
+            <div
+              class="multi-file-loading-container"
+              v-for="n in 3"
+              :key="n"
+            >
+              <skeleton-loading-container />
+            </div>
+          </template>
+          <repo-file
+            v-for="file in fetchedList"
+            :key="file.key"
+            :file="file"
+          />
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 </template>

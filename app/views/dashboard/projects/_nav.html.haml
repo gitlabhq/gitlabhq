@@ -1,5 +1,5 @@
-.top-area
-  %ul.nav-links
+.nav-block
+  %ul.nav-links.mobile-separator
     = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
       = link_to s_('DashboardProjects|All'), dashboard_projects_path
     = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do

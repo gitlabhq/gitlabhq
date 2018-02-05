@@ -6,8 +6,12 @@ describe('New Project', () => {
 
   beforeEach(() => {
     setFixtures(`
-      <input id="project_import_url" />
-      <input id="project_path" />
+      <div class='toggle-import-form'>
+        <div class='import-url-data'>
+          <input id="project_import_url" />
+          <input id="project_path" />
+        </div>
+      </div>
     `);
 
     $projectImportUrl = $('#project_import_url');
@@ -25,7 +29,7 @@ describe('New Project', () => {
     it('does not change project path for disabled $projectImportUrl', () => {
       $projectImportUrl.attr('disabled', true);
 
-      projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+      projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
       expect($projectPath.val()).toEqual(dummyImportUrl);
     });
@@ -38,7 +42,7 @@ describe('New Project', () => {
       it('does not change project path if it is set by user', () => {
         $projectPath.keyup();
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual(dummyImportUrl);
       });
@@ -46,7 +50,7 @@ describe('New Project', () => {
       it('does not change project path for empty $projectImportUrl', () => {
         $projectImportUrl.val('');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual(dummyImportUrl);
       });
@@ -54,7 +58,7 @@ describe('New Project', () => {
       it('does not change project path for whitespace $projectImportUrl', () => {
         $projectImportUrl.val('   ');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual(dummyImportUrl);
       });
@@ -62,7 +66,7 @@ describe('New Project', () => {
       it('does not change project path for $projectImportUrl without slashes', () => {
         $projectImportUrl.val('has-no-slash');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual(dummyImportUrl);
       });
@@ -70,7 +74,7 @@ describe('New Project', () => {
       it('changes project path to last $projectImportUrl component', () => {
         $projectImportUrl.val('/this/is/last');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('last');
       });
@@ -78,7 +82,7 @@ describe('New Project', () => {
       it('ignores trailing slashes in $projectImportUrl', () => {
         $projectImportUrl.val('/has/trailing/slash/');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('slash');
       });
@@ -86,7 +90,7 @@ describe('New Project', () => {
       it('ignores fragment identifier in $projectImportUrl', () => {
         $projectImportUrl.val('/this/has/a#fragment-identifier/');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('a');
       });
@@ -94,7 +98,7 @@ describe('New Project', () => {
       it('ignores query string in $projectImportUrl', () => {
         $projectImportUrl.val('/url/with?query=string');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('with');
       });
@@ -102,7 +106,7 @@ describe('New Project', () => {
       it('ignores trailing .git in $projectImportUrl', () => {
         $projectImportUrl.val('/repository.git');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('repository');
       });
@@ -110,7 +114,7 @@ describe('New Project', () => {
       it('changes project path for HTTPS URL in $projectImportUrl', () => {
         $projectImportUrl.val('https://username:password@gitlab.company.com/group/project.git');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('project');
       });
@@ -118,7 +122,7 @@ describe('New Project', () => {
       it('changes project path for SSH URL in $projectImportUrl', () => {
         $projectImportUrl.val('git@gitlab.com:gitlab-org/gitlab-ce.git');
 
-        projectNew.deriveProjectPathFromUrl($projectImportUrl, $projectPath);
+        projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
         expect($projectPath.val()).toEqual('gitlab-ce');
       });

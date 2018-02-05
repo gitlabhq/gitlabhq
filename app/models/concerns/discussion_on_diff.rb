@@ -9,7 +9,6 @@ module DiscussionOnDiff
               :original_line_code,
               :diff_file,
               :diff_line,
-              :for_line?,
               :active?,
               :created_at_diff?,
 
@@ -38,18 +37,19 @@ module DiscussionOnDiff
 
   # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines(highlight: true)
+    return [] if diff_line.nil? && first_note.is_a?(LegacyDiffNote)
+
     lines = highlight ? highlighted_diff_lines : diff_lines
+
+    initial_line_index = [diff_line.index - NUMBER_OF_TRUNCATED_DIFF_LINES + 1, 0].max
+
     prev_lines = []
 
-    lines.each do |line|
+    lines[initial_line_index..diff_line.index].each do |line|
       if line.meta?
         prev_lines.clear
       else
         prev_lines << line
-
-        break if for_line?(line)
-
-        prev_lines.shift if prev_lines.length >= NUMBER_OF_TRUNCATED_DIFF_LINES
       end
     end
 

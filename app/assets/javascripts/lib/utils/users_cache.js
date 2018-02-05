@@ -8,16 +8,16 @@ class UsersCache extends Cache {
     }
 
     return Api.users('', { username })
-      .then((users) => {
-        if (!users.length) {
+      .then(({ data }) => {
+        if (!data.length) {
           throw new Error(`User "${username}" could not be found!`);
         }
 
-        if (users.length > 1) {
+        if (data.length > 1) {
           throw new Error(`Expected username "${username}" to be unique!`);
         }
 
-        const user = users[0];
+        const user = data[0];
         this.internalStorage[username] = user;
         return user;
       });

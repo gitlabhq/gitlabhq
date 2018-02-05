@@ -33,14 +33,23 @@
           gettingStarted: {
             svgUrl: this.emptyGettingStartedSvgPath,
             title: 'Get started with performance monitoring',
-            description: 'Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments.',
+            description: `Stay updated about the performance and health
+              of your environment by configuring Prometheus to monitor your deployments.`,
             buttonText: 'Configure Prometheus',
           },
           loading: {
             svgUrl: this.emptyLoadingSvgPath,
             title: 'Waiting for performance data',
-            description: 'Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available.',
+            description: `Creating graphs uses the data from the Prometheus server.
+              If this takes a long time, ensure that data is available.`,
             buttonText: 'View documentation',
+          },
+          noData: {
+            svgUrl: this.emptyUnableToConnectSvgPath,
+            title: 'No data found',
+            description: `You are connected to the Prometheus server, but there is currently
+              no data to display.`,
+            buttonText: 'Configure Prometheus',
           },
           unableToConnect: {
             svgUrl: this.emptyUnableToConnectSvgPath,
@@ -74,20 +83,26 @@
 <template>
   <div class="prometheus-state">
     <div class="state-svg svg-content">
-      <img :src="currentState.svgUrl"/>
+      <img :src="currentState.svgUrl" />
     </div>
     <h4 class="state-title">
-      {{currentState.title}}
+      {{ currentState.title }}
     </h4>
     <p class="state-description">
-      {{currentState.description}}
-      <a v-if="showButtonDescription" :href="settingsPath">
+      {{ currentState.description }}
+      <a
+        v-if="showButtonDescription"
+        :href="settingsPath"
+      >
         Prometheus server
       </a>
     </p>
     <div class="state-button">
-      <a class="btn btn-success" :href="buttonPath">
-        {{currentState.buttonText}}
+      <a
+        class="btn btn-success"
+        :href="buttonPath"
+      >
+        {{ currentState.buttonText }}
       </a>
     </div>
   </div>

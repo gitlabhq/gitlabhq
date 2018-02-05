@@ -64,6 +64,12 @@
     .commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
+  .well-segment.merge-request-info
+    .icon-container
+      = custom_icon('mr_bold')
+    %span.commit-info.merge-requests{ 'data-project-commit-path' => merge_requests_project_commit_path(@project, @commit.id, format: :json) }
+      = icon('spinner spin')
+
   - if @commit.last_pipeline
     - last_pipeline = @commit.last_pipeline
     .well-segment.pipeline-info

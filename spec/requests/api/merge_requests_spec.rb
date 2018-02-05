@@ -25,7 +25,7 @@ describe API::MergeRequests do
   let!(:upvote) { create(:award_emoji, :upvote, awardable: merge_request) }
 
   before do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe 'GET /merge_requests' do
@@ -197,6 +197,8 @@ describe API::MergeRequests do
         end
 
         create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+
+        create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
 
         expect do
           get api("/projects/#{project.id}/merge_requests", user)
@@ -500,6 +502,12 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/participants' do
+    it_behaves_like 'issuable participants endpoint' do
+      let(:entity) { merge_request }
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
     it 'returns a 200 when merge request is valid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
@@ -542,6 +550,49 @@ describe API::MergeRequests do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
+    context 'when authorized' do
+      let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
+      let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+
+      it 'returns a paginated array of corresponding pipelines' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['id']).to eq(pipeline.id)
+      end
+
+      it 'exposes basic attributes' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pipelines')
+      end
+
+      it 'returns 404 if MR does not exist' do
+        get api("/projects/#{project.id}/merge_requests/777/pipelines")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when unauthorized' do
+      it 'returns 403' do
+        project = create(:project, public_builds: false)
+        merge_request = create(:merge_request, :simple, source_project: project)
+        guest = create(:user)
+        project.add_guest(guest)
+
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", guest)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
     end
   end
 
@@ -705,15 +756,27 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(400)
       end
 
-      context 'when target_branch is specified' do
+      context 'when target_branch and target_project_id is specified' do
+        let(:params) do
+          { title: 'Test merge_request',
+            target_branch: 'master',
+            source_branch: 'markdown',
+            author: user2,
+            target_project_id: unrelated_project.id }
+        end
+
         it 'returns 422 if targeting a different fork' do
-          post api("/projects/#{forked_project.id}/merge_requests", user2),
-               title: 'Test merge_request',
-               target_branch: 'master',
-               source_branch: 'markdown',
-               author: user2,
-               target_project_id: unrelated_project.id
+          unrelated_project.add_developer(user2)
+
+          post api("/projects/#{forked_project.id}/merge_requests", user2), params
+
           expect(response).to have_gitlab_http_status(422)
+        end
+
+        it 'returns 403 if targeting a different fork which user can not access' do
+          post api("/projects/#{forked_project.id}/merge_requests", user2), params
+
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -730,7 +793,7 @@ describe API::MergeRequests do
       let(:developer) { create(:user) }
 
       before do
-        project.team << [developer, :developer]
+        project.add_developer(developer)
       end
 
       it "denies the deletion of the merge request" do
@@ -808,7 +871,7 @@ describe API::MergeRequests do
 
     it "returns 401 if user has no permissions to merge" do
       user2 = create(:user)
-      project.team << [user2, :reporter]
+      project.add_reporter(user2)
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user2)
       expect(response).to have_gitlab_http_status(401)
       expect(json_response['message']).to eq('401 Unauthorized')
@@ -997,7 +1060,7 @@ describe API::MergeRequests do
       project = create(:project, :private)
       merge_request = create(:merge_request, :simple, source_project: project)
       guest = create(:user)
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/closes_issues", guest)
 
@@ -1045,7 +1108,7 @@ describe API::MergeRequests do
 
     it 'returns 403 if user has no access to read code' do
       guest = create(:user)
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", guest)
 
@@ -1081,7 +1144,7 @@ describe API::MergeRequests do
 
     it 'returns 403 if user has no access to read code' do
       guest = create(:user)
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", guest)
 

@@ -137,8 +137,8 @@ describe Projects::JobsController do
 
       it 'exposes needed information' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['raw_path']).to match(/jobs\/\d+\/raw\z/)
-        expect(json_response.dig('merge_request', 'path')).to match(/merge_requests\/\d+\z/)
+        expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
+        expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
         expect(json_response['new_issue_path'])
           .to include('/issues/new')
       end
@@ -374,7 +374,7 @@ describe Projects::JobsController do
     let(:role) { :master }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
       sign_in(user)
 
       post_erase

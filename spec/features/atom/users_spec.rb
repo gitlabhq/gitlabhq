@@ -47,7 +47,7 @@ describe "User Feed"  do
       let!(:push_event_payload) { create(:push_event_payload, event: push_event) }
 
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         issue_event(issue, user)
         note_event(note, user)
         merge_request_event(merge_request, user)
@@ -64,7 +64,7 @@ describe "User Feed"  do
       end
 
       it 'has XHTML summaries in issue descriptions' do
-        expect(body).to match /<hr ?\/>/
+        expect(body).to match %r{<hr ?/>}
       end
 
       it 'has XHTML summaries in notes' do
@@ -72,7 +72,7 @@ describe "User Feed"  do
       end
 
       it 'has XHTML summaries in merge request descriptions' do
-        expect(body).to match /Here is the fix: <a[^>]*><img[^>]*\/><\/a>/
+        expect(body).to match %r{Here is the fix: <a[^>]*><img[^>]*/></a>}
       end
 
       it 'has push event commit ID' do

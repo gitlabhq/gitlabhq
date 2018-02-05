@@ -8,8 +8,8 @@ describe API::Members do
 
   let(:project) do
     create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
-      project.team << [developer, :developer]
-      project.team << [master, :master]
+      project.add_developer(developer)
+      project.add_master(master)
       project.request_access(access_requester)
     end
   end
@@ -44,6 +44,21 @@ describe API::Members do
         end
       end
 
+      it 'avoids N+1 queries' do
+        # Establish baseline
+        get api("/#{source_type.pluralize}/#{source.id}/members", master)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/#{source_type.pluralize}/#{source.id}/members", master)
+        end
+
+        project.add_developer(create(:user))
+
+        expect do
+          get api("/#{source_type.pluralize}/#{source.id}/members", master)
+        end.not_to exceed_query_limit(control)
+      end
+
       it 'does not return invitees' do
         create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
 
@@ -64,6 +79,16 @@ describe API::Members do
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['username']).to eq(master.username)
+      end
+
+      it 'finds all members with no query specified' do
+        get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: ''
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.count).to eq(2)
+        expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
       end
     end
   end

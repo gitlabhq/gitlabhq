@@ -1,7 +1,7 @@
 !!! 5
 %html.devise-layout-html
   = render "layouts/head"
-  %body.ui_charcoal.login-page.application.navless{ data: { page: body_data_page } }
+  %body.ui_indigo.login-page.application.navless{ data: { page: body_data_page } }
     .page-wrap
       = render "layouts/header/empty"
       .login-page-broadcast
@@ -15,7 +15,7 @@
             .col-sm-7.brand-holder.pull-left
               %h1
                 = brand_title
-                = brand_image
+              = brand_image
               - if brand_item&.description?
                 = brand_text
               - else
@@ -26,8 +26,8 @@
                   Perform code reviews and enhance collaboration with merge requests.
                   Each project can also have an issue tracker and a wiki.
 
-              - if current_application_settings.sign_in_text.present?
-                = markdown_field(current_application_settings, :sign_in_text)
+              - if Gitlab::CurrentSettings.sign_in_text.present?
+                = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
 
       %hr.footer-fixed
       .container.footer-container

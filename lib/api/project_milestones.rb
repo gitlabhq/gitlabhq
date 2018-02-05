@@ -60,6 +60,15 @@ module API
         update_milestone_for(user_project)
       end
 
+      desc 'Remove a project milestone'
+      delete ":id/milestones/:milestone_id" do
+        authorize! :admin_milestone, user_project
+
+        user_project.milestones.find(params[:milestone_id]).destroy
+
+        status(204)
+      end
+
       desc 'Get all issues for a single project milestone' do
         success Entities::IssueBasic
       end

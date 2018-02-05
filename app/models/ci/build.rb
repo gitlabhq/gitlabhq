@@ -8,6 +8,7 @@ module Ci
 
     MissingDependenciesError = Class.new(StandardError)
 
+    belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
@@ -79,7 +80,7 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create do |build|
+    after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
@@ -291,7 +292,7 @@ module Ci
 
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"
-      project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
+      project.http_url_to_repo.sub(%r{^https?://}) do |prefix|
         prefix + auth
       end
     end
@@ -461,7 +462,14 @@ module Ci
     end
 
     def cache
-      [options[:cache]]
+      cache = options[:cache]
+
+      if cache && project.jobs_cache_index
+        cache = cache.merge(
+          key: "#{cache[:key]}_#{project.jobs_cache_index}")
+      end
+
+      [cache]
     end
 
     def credentials

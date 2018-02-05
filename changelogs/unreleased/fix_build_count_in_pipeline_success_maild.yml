@@ -1,5 +1,0 @@
----
-title: fix build count in pipeline success mail
-merge_request: 15827
-author: Christiaan Van den Poel
-type: fixed

@@ -2,8 +2,6 @@
 require 'spec_helper'
 
 describe API::Projects do
-  include Gitlab::CurrentSettings
-
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -148,6 +146,19 @@ describe API::Projects do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
+      end
+
+      context 'and with_issues_enabled=true' do
+        it 'only returns projects with issues enabled' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get api('/projects?with_issues_enabled=true', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
       end
 
       it "does not include statistics by default" do
@@ -351,6 +362,19 @@ describe API::Projects do
         let(:filter) { {} }
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
+      end
+
+      context 'and with_issues_enabled=true' do
+        it 'does not return private issue projects' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+
+          get api('/projects?with_issues_enabled=true', user2)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
       end
     end
 
@@ -908,7 +932,7 @@ describe API::Projects do
       describe 'permissions' do
         context 'all projects' do
           before do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'contains permission information' do
@@ -923,7 +947,7 @@ describe API::Projects do
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.team << [user, :master]
+            project.add_master(user)
             get api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
@@ -1539,7 +1563,7 @@ describe API::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1575,7 +1599,7 @@ describe API::Projects do
 
     context 'user without archiving rights to the project' do
       before do
-        project.team << [user3, :developer]
+        project.add_developer(user3)
       end
 
       it 'rejects the action' do
@@ -1650,7 +1674,7 @@ describe API::Projects do
 
       it 'does not remove a project if not an owner' do
         user3 = create(:user)
-        project.team << [user3, :developer]
+        project.add_developer(user3)
         delete api("/projects/#{project.id}", user3)
         expect(response).to have_gitlab_http_status(403)
       end

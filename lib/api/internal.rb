@@ -82,6 +82,18 @@ module API
       end
 
       #
+      # Get a ssh key using the fingerprint
+      #
+      get "/authorized_keys" do
+        fingerprint = params.fetch(:fingerprint) do
+          Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
+        end
+        key = Key.find_by(fingerprint: fingerprint)
+        not_found!("Key") if key.nil?
+        present key, with: Entities::SSHKey
+      end
+
+      #
       # Discover user by ssh key or user id
       #
       get "/discover" do
@@ -91,6 +103,7 @@ module API
         elsif params[:user_id]
           user = User.find_by(id: params[:user_id])
         end
+
         present user, with: Entities::UserSafe
       end
 
@@ -190,9 +203,12 @@ module API
 
         project = Gitlab::GlRepository.parse(params[:gl_repository]).first
         user = identify(params[:identifier])
-        redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
-        if redirect_message
-          output[:redirected_message] = redirect_message
+
+        # A user is not guaranteed to be returned; an orphaned write deploy
+        # key could be used
+        if user
+          redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
+          output[:redirected_message] = redirect_message if redirect_message
         end
 
         output

@@ -43,6 +43,7 @@ class IssuableFinder
     search
     sort
     state
+    include_subgroups
   ].freeze
   ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
 
@@ -148,7 +149,8 @@ class IssuableFinder
       if current_user && params[:authorized_only].presence && !current_user_related?
         current_user.authorized_projects
       elsif group
-        GroupProjectsFinder.new(group: group, current_user: current_user).execute
+        finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
+        GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
       else
         ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
       end
@@ -374,19 +376,14 @@ class IssuableFinder
   end
 
   def by_label(items)
-    if labels?
-      if filter_by_no_label?
-        items = items.without_label
-      else
-        items = items.with_label(label_names, params[:sort])
-        items_projects = projects(items)
+    return items unless labels?
 
-        if items_projects
-          label_ids = LabelsFinder.new(current_user, project_ids: items_projects).execute(skip_authorization: true).select(:id)
-          items = items.where(labels: { id: label_ids })
-        end
+    items =
+      if filter_by_no_label?
+        items.without_label
+      else
+        items.with_label(label_names, params[:sort])
       end
-    end
 
     items
   end

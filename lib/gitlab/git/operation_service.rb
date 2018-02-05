@@ -97,6 +97,11 @@ module Gitlab
         end
       end
 
+      def update_branch(branch_name, newrev, oldrev)
+        ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+        update_ref_in_hooks(ref, newrev, oldrev)
+      end
+
       private
 
       # Returns [newrev, should_run_after_create, should_run_after_create_branch]
@@ -126,7 +131,10 @@ module Gitlab
 
         oldrev = branch.target
 
-        if oldrev == repository.merge_base(newrev, branch.target)
+        merge_base = repository.merge_base(newrev, branch.target)
+        raise Gitlab::Git::Repository::InvalidRef unless merge_base
+
+        if oldrev == merge_base
           oldrev
         else
           raise Gitlab::Git::CommitError.new('Branch diverged')
