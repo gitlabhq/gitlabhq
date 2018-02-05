@@ -27,7 +27,7 @@ module RedisCacheable
   private
 
   def cache_attribute_key
-    "#{self.class.name}:attributes:#{self.id}"
+    "cache:#{self.class.name}:#{self.id}:attributes"
   end
 
   def cached_attributes
