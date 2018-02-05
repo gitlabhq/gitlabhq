@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateUploadsToObjectStorage, :sidekiq do
+describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   shared_context 'sanity_check! fails' do
     before do
       expect(described_class).to receive(:sanity_check!).and_raise(described_class::SanityCheckError)
@@ -22,7 +22,7 @@ describe Gitlab::BackgroundMigration::MigrateUploadsToObjectStorage, :sidekiq do
     end
 
     it 'is guarded by .sanity_check!' do
-      expect(BackgroundMigrationWorker).to receive(:perform_async)
+      expect(described_class).to receive(:perform_async)
       expect(described_class).to receive(:sanity_check!)
 
       enqueue!
@@ -32,7 +32,7 @@ describe Gitlab::BackgroundMigration::MigrateUploadsToObjectStorage, :sidekiq do
       include_context 'sanity_check! fails'
 
       it 'does not enqueue a job' do
-        expect(BackgroundMigrationWorker).not_to receive(:perform_async)
+        expect(described_class).not_to receive(:perform_async)
 
         expect { enqueue! }.to raise_error(described_class::SanityCheckError)
       end
@@ -104,6 +104,7 @@ describe Gitlab::BackgroundMigration::MigrateUploadsToObjectStorage, :sidekiq do
 
     context 'migration is unsuccessful' do
       before do
+        expect { described_class.perform }.to raise_error(described_class::Report::MigrationFailures)
         allow_any_instance_of(ObjectStorage::Concern).to receive(:migrate!).and_raise(CarrierWave::UploadError, "I am a teapot.")
       end
 

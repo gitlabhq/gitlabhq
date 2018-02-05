@@ -121,10 +121,9 @@
 - geo:geo_repositories_clean_up
 - geo:geo_repository_destroy
 
+- object_storage_upload
 - object_storage:object_storage_background_upload
-- object_storage:object_storage_migrate_for_artifacts
-- object_storage:object_storage_migrate_for_lfs_objects
-- object_storage:object_storage_migrate_for_uploads
+- object_storage:object_storage_migrate_uploads
 
 - admin_emails
 - elastic_batch_project_indexer

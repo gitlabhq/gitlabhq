@@ -8,7 +8,7 @@ require 'carrierwave/storage/fog'
 module ObjectStorage
   RemoteStoreError = Class.new(StandardError)
   UnknownStoreError = Class.new(StandardError)
-  ObjectStoreUnavailable = Class.new(StandardError)
+  ObjectStorageUnavailable = Class.new(StandardError)
 
   module Store
     LOCAL = 1
@@ -21,7 +21,7 @@ module ObjectStorage
       extend ActiveSupport::Concern
 
       prepended do |base|
-        raise ObjectStoreUnavailable, "#{base} must include ObjectStorage::Concern to use extensions."  unless base < Concern
+        raise "#{base} must include ObjectStorage::Concern to use extensions." unless base < Concern
 
         base.include(::RecordsUploads::Concern)
       end
@@ -241,7 +241,7 @@ module ObjectStorage
     def verify_license!(_file)
       return if file_storage?
 
-      raise 'Object Storage feature is missing' unless self.class.licensed?
+      raise(ObjectStorageUnavailable, 'Object Storage feature is missing') unless self.class.licensed?
     end
 
     def exists?

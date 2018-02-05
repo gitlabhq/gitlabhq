@@ -12,7 +12,7 @@ describe 'gitlab:uploads:migrate rake tasks' do
     stub_uploads_object_storage(uploader_class)
     Rake.application.rake_require 'tasks/gitlab/uploads/migrate'
 
-    allow(BackgroundMigrationWorker).to receive(:perform_async)
+    allow(ObjectStorage::MigrateUploadsWorker).to receive(:perform_async)
   end
 
   def run
@@ -21,7 +21,7 @@ describe 'gitlab:uploads:migrate rake tasks' do
   end
 
   it 'enqueue jobs in batch' do
-    expect(BackgroundMigrationWorker).to receive(:perform_async).exactly(4).times
+    expect(ObjectStorage::MigrateUploadsWorker).to receive(:enqueue!).exactly(4).times
 
     run
   end
