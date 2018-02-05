@@ -2,12 +2,14 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
+    include Gitlab::Utils::StrongMemoize
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
+    CACHED_ATTRIBUTES_EXPIRY_TIME = 24.hours
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -68,29 +70,15 @@ module Ci
       ONLINE_CONTACT_TIMEOUT.ago
     end
 
-    def name
-      cached_attribute(:name) || read_attribute(:name)
+    def self.cached_attr_reader(*attributes)
+      attributes.each do |attribute|
+        define_method("#{attribute}") do
+          cached_attribute(attribute) || read_attribute(attribute)
+        end
+      end
     end
 
-    def version
-      cached_attribute(:version) || read_attribute(:version)
-    end
-
-    def revision
-      cached_attribute(:revision) || read_attribute(:revision)
-    end
-
-    def platform
-      cached_attribute(:platform) || read_attribute(:platform)
-    end
-
-    def architecture
-      cached_attribute(:architecture) || read_attribute(:architecture)
-    end
-
-    def contacted_at
-      cached_attribute(:contacted_at) || read_attribute(:contacted_at)
-    end
+    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
@@ -178,7 +166,7 @@ module Ci
     end
 
     def update_cached_info(values)
-      values = values&.slice(:name, :version, :revision, :platform, :architecture) || {}
+      values = values&.slice(:version, :revision, :platform, :architecture) || {}
       values[:contacted_at] = Time.now
 
       cache_attributes(values)
@@ -201,8 +189,8 @@ module Ci
       "runner:build_queue:#{self.token}"
     end
 
-    def cache_attribute_key(key)
-      "runner:info:#{self.id}:#{key}"
+    def cache_attribute_key
+      "runner:info:#{self.id}"
     end
 
     def persist_cached_data?
@@ -217,17 +205,21 @@ module Ci
     end
 
     def cached_attribute(key)
-      @cached_attributes = {}
-      @cached_attributes[key] ||= Gitlab::Redis::SharedState.with do |redis|
-        redis.get(cache_attribute_key(key))
+      (cached_attributes || {})[key]
+    end
+
+    def cached_attributes
+      strong_memoize(:cached_attributes) do
+        Gitlab::Redis::SharedState.with do |redis|
+          data = redis.get(cache_attribute_key)
+          JSON.parse(data, symbolize_names: true) if data
+        end
       end
     end
 
     def cache_attributes(values)
       Gitlab::Redis::SharedState.with do |redis|
-        values.each do |key, value|
-          redis.set(cache_attribute_key(key), value, ex: 24.hours)
-        end
+        redis.set(cache_attribute_key, values.to_json, ex: CACHED_ATTRIBUTES_EXPIRY_TIME)
       end
     end
 
