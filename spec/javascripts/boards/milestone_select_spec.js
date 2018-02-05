@@ -1,6 +1,8 @@
 /* global BoardService */
 
 import Vue from 'vue';
+import MockAdapater from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import MilestoneSelect from '~/boards/components/milestone_select.vue';
 import IssuableContext from '~/issuable_context';
 import { boardObj } from './mock_data';
@@ -92,12 +94,18 @@ describe('Milestone select component', () => {
     });
 
     describe('clicking dropdown items', () => {
+      let mock;
+
       beforeEach(() => {
-        const deferred = new jQuery.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.resolve([
+        mock = new MockAdapater(axios);
+        mock.onGet('/test/issue-boards/milestones.json').reply(200, [
           milestone,
           milestone2,
-        ]));
+        ]);
+      });
+
+      afterEach(() => {
+        mock.restore();
       });
 
       it('sets Any Milestone', (done) => {

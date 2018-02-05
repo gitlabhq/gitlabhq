@@ -164,6 +164,8 @@ module API
         use :optional_params
       end
       post ":id/merge_requests" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42316')
+
         authorize! :create_merge_request, user_project
 
         mr_params = declared_params(include_missing: false)
@@ -273,6 +275,8 @@ module API
         at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
       end
       put ':id/merge_requests/:merge_request_iid' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42318')
+
         merge_request = find_merge_request_with_access(params.delete(:merge_request_iid), :update_merge_request)
 
         mr_params = declared_params(include_missing: false)
@@ -303,6 +307,8 @@ module API
         optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42317')
+
         merge_request = find_project_merge_request(params[:merge_request_iid])
         merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
 

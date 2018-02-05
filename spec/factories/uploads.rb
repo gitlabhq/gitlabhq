@@ -25,6 +25,10 @@ FactoryBot.define do
       uploader "FileUploader"
     end
 
+    trait :object_storage do
+      store ObjectStorage::Store::REMOTE
+    end
+
     trait :namespace_upload do
       model { build(:group) }
       path { File.join(secret, 'myfile.jpg') }

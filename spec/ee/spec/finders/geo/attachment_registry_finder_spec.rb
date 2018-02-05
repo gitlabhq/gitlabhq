@@ -18,6 +18,8 @@ describe Geo::AttachmentRegistryFinder, :geo do
   let(:upload_5) { create(:upload, model: synced_project) }
   let(:upload_6) { create(:upload, :personal_snippet_upload) }
   let(:upload_7) { create(:upload, model: synced_subgroup) }
+  let(:upload_8) { create(:upload, :object_storage, model: unsynced_project) }
+  let(:upload_9) { create(:upload, :object_storage, model: unsynced_group) }
   let(:lfs_object) { create(:lfs_object) }
 
   subject { described_class.new(current_node: secondary) }
@@ -116,6 +118,14 @@ describe Geo::AttachmentRegistryFinder, :geo do
         uploads = subject.find_unsynced_attachments(batch_size: 10, except_registry_ids: [upload_2.id])
 
         expect(uploads.map(&:id)).to match_array([upload_3.id, upload_4.id])
+      end
+
+      it 'excludes remote uploads without an entry on the tracking database' do
+        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+
+        uploads = subject.find_unsynced_attachments(batch_size: 10)
+
+        expect(uploads).not_to include(upload_8, upload_9)
       end
     end
   end
@@ -250,7 +260,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
         subject.find_unsynced_attachments(batch_size: 10)
       end
 
-      it 'returns LFS objects without an entry on the tracking database' do
+      it 'returns uploads without an entry on the tracking database' do
         create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
 
         uploads = subject.find_unsynced_attachments(batch_size: 10)
@@ -264,6 +274,14 @@ describe Geo::AttachmentRegistryFinder, :geo do
         uploads = subject.find_unsynced_attachments(batch_size: 10, except_registry_ids: [upload_2.id])
 
         expect(uploads).to match_array([upload_3, upload_4])
+      end
+
+      it 'excludes remote uploads without an entry on the tracking database' do
+        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+
+        uploads = subject.find_unsynced_attachments(batch_size: 10)
+
+        expect(uploads).not_to include(upload_8, upload_9)
       end
     end
   end

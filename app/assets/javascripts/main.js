@@ -36,7 +36,7 @@ import initBreadcrumbs from './breadcrumb';
 // EE-only scripts
 import 'ee/main';
 
-import './dispatcher';
+import initDispatcher from './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -268,4 +268,6 @@ $(() => {
       removeFlashClickListener(flashEl);
     });
   }
+
+  initDispatcher();
 });
