@@ -91,6 +91,17 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Make scoped issue board specs more reliable.
 
 
+## 10.3.7 (2018-02-05)
+
+### Security (1 change)
+
+- Restrict LDAP API to admins only.
+
+### Fixed (1 change)
+
+- Fix JavaScript bundle running on Cluster update/destroy pages.
+
+
 ## 10.3.6 (2018-01-22)
 
 ### Fixed (3 changes)
