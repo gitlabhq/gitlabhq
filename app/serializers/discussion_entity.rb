@@ -4,9 +4,7 @@ class DiscussionEntity < Grape::Entity
   expose :id, :reply_id
   expose :expanded?, as: :expanded
 
-  expose :notes, using: NoteEntity do
-    opts[:skip_notes_rendering] ? [] : notes
-  end
+  expose :notes, using: NoteEntity
 
   expose :individual_note?, as: :individual_note
   expose :resolvable?, as: :resolvable

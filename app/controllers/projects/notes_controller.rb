@@ -38,10 +38,8 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    if has_vue_discussions_cookie? && !params['html']
-      Notes::RenderService.new(current_user).execute([note], project)
-
-      render json: note_serializer.represent(note)
+    if use_serializer?
+      render_json_with_notes_serializer
     else
       render json: {
         resolved_by: note.resolved_by.try(:name),
@@ -57,10 +55,8 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    if has_vue_discussions_cookie? && !params['html']
-      Notes::RenderService.new(current_user).execute([note], project)
-
-      render json: note_serializer.represent(note)
+    if use_serializer?
+      render_json_with_notes_serializer
     else
       render json: {
         discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
@@ -70,9 +66,16 @@ class Projects::NotesController < Projects::ApplicationController
 
   private
 
+  def render_json_with_notes_serializer
+    Notes::RenderService.new(current_user).execute([note], project)
+
+    render json: note_serializer.represent(note)
+  end
+
   def note
     @note ||= @project.notes.find(params[:id])
   end
+
   alias_method :awardable, :note
 
   def finder_params

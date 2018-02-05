@@ -152,12 +152,13 @@ module NotesHelper
   end
 
   def notes_data(issuable)
-    discussions_path = case issuable
-                       when Issue
-                         discussions_project_issue_path(@project, issuable, format: :json)
-                       when MergeRequest
-                         discussions_project_merge_request_path(@project, issuable, format: :json)
-                       end
+    discussions_path =
+      if issuable.is_a?(Issue)
+        discussions_project_issue_path(@project, issuable, format: :json)
+      else
+        discussions_project_merge_request_path(@project, issuable, format: :json)
+      end
+
     {
       discussionsPath: discussions_path,
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
@@ -167,7 +168,7 @@ module NotesHelper
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
       lastFetchedAt: Time.now
-  }.to_json
+    }.to_json
   end
 
   def discussion_resolved_intro(discussion)
@@ -176,5 +177,9 @@ module NotesHelper
 
   def has_vue_discussions_cookie?
     cookies[:vue_mr_discussions] == 'true'
+  end
+
+  def use_serializer?
+    has_vue_discussions_cookie? && !params['html']
   end
 end

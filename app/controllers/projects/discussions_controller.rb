@@ -1,5 +1,6 @@
 class Projects::DiscussionsController < Projects::ApplicationController
   include NotesHelper
+  include RendersNotes
 
   before_action :check_merge_requests_available!
   before_action :merge_request
@@ -22,27 +23,26 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_discussion
     if use_serializer?
-      render_json_with_serializer
+      # TODO - It is not needed to serialize notes when resolving
+      # or unresolving discussions. We should remove this behavior.
+      prepare_notes_for_rendering(discussion.notes, merge_request)
+      render_json_with_discussions_serializer
     else
       render_json_with_html
     end
   end
 
-  def use_serializer?
-    has_vue_discussions_cookie? && !params['html']
-  end
-
-  def render_json_with_serializer
+  def render_json_with_discussions_serializer
     render json:
-      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user).
-        represent(discussion, context: self, skip_notes_rendering: true)
+      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user)
+      .represent(discussion, context: self, skip_notes_rendering: true)
   end
 
   # Legacy method used to render discussions notes when not using Vue on views.
   def render_json_with_html
-      render json: {
-        discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
-      }
+    render json: {
+      discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
+    }
   end
 
   def merge_request
@@ -50,7 +50,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def discussion
-    @discussion ||= @merge_request.find_discussion(params[:id]) || render_404
+    @discussion ||= @merge_request.find_discussion(params[:id], current_user) || render_404
   end
 
   def authorize_resolve_discussion!

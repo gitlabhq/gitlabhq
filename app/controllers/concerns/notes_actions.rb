@@ -238,7 +238,7 @@ module NotesActions
     return false if params['html']
 
     if noteable.is_a?(MergeRequest)
-      cookies[:vue_mr_discussions] == 'true'
+      cookies[:vue_mr_discussions].present?
     else
       noteable.discussions_rendered_on_frontend?
     end

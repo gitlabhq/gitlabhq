@@ -88,7 +88,7 @@ module IssuableActions
 
     discussions = Discussion.build_collection(notes, issuable)
 
-    render json: DiscussionSerializer.new(project: @project, noteable: issuable, current_user: current_user).represent(discussions, context: self)
+    render json: DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user).represent(discussions, context: self)
   end
 
   private
