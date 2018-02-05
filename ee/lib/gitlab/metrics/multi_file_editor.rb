@@ -7,14 +7,10 @@ module Gitlab
         @project, @current_user, @commit = project, current_user, commit
       end
 
-      def record
+      def log
         return unless ::License.feature_available?(:ide)
 
-        metric = WebIdeMetric.new(metric_params)
-
-        unless metric.save
-          Rails.logger.error("Error persisting Web IDE metric: #{metric.as_json} - #{metric.errors.full_messages}")
-        end
+        Rails.logger.info("Web editor usage - #{metric_info}")
       end
 
       private
@@ -23,25 +19,12 @@ module Gitlab
         @commit.diffs.size
       end
 
-      def hashed_project
-        Digest::SHA256.hexdigest("#{@project.id}-#{Rails.application.secrets.secret_key_base}")
-      end
-
-      def hashed_user
-        Digest::SHA256.hexdigest("#{@current_user.id}-#{Rails.application.secrets.secret_key_base}")
-      end
-
       def commit_stats
         @commit.stats
       end
 
-      def metric_params
-        {
-          project: hashed_project,
-          user: hashed_user,
-          line_count: line_changes_total,
-          file_count: files_total
-        }
+      def metric_info
+        "ide_usage_project_id: #{@project.id}, ide_usage_user: #{@current_user.id}, ide_usage_line_count: #{line_changes_total}, ide_usage_file_count: #{files_total}"
       end
     end
   end
