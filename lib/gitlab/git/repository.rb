@@ -1222,33 +1222,13 @@ module Gitlab
       end
 
       def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
-        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
-        env = git_env_for_user(user).merge(
-          'GIT_AUTHOR_NAME' => author.name,
-          'GIT_AUTHOR_EMAIL' => author.email
-        )
-        diff_range = "#{start_sha}...#{end_sha}"
-        diff_files = run_git!(
-          %W(diff --name-only --diff-filter=a --binary #{diff_range})
-        ).chomp
-
-        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
-          # Apply diff of the `diff_range` to the worktree
-          diff = run_git!(%W(diff --binary #{diff_range}))
-          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
-            stdin.write(diff)
+        gitaly_migrate(:squash) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_squash(user, squash_id, branch,
+              start_sha, end_sha, author, message)
+          else
+            git_squash(user, squash_id, branch, start_sha, end_sha, author, message)
           end
-
-          # Commit the `diff_range` diff
-          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
-
-          # Return the squash sha. May print a warning for ambiguous refs, but
-          # we can ignore that with `--quiet` and just take the SHA, if present.
-          # HEAD here always refers to the current HEAD commit, even if there is
-          # another ref called HEAD.
-          run_git!(
-            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
-          ).chomp
         end
       end
 
@@ -1474,6 +1454,21 @@ module Gitlab
 
       def rugged_write_config(full_path:)
         rugged.config['gitlab.fullpath'] = full_path
+      end
+
+      def refs_contains_sha(ref_type, sha)
+        args = %W(#{ref_type} --contains #{sha})
+        names = run_git(args).first
+
+        return [] unless names.respond_to?(:split)
+
+        names = names.split("\n").map(&:strip)
+
+        names.each do |name|
+          name.slice! '* '
+        end
+
+        names
       end
 
       def shell_write_ref(ref_path, ref, old_ref)
@@ -2179,6 +2174,37 @@ module Gitlab
             .update_branch(branch, rebase_sha, branch_sha)
 
           rebase_sha
+        end
+      end
+
+      def git_squash(user, squash_id, branch, start_sha, end_sha, author, message)
+        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
+        env = git_env_for_user(user).merge(
+          'GIT_AUTHOR_NAME' => author.name,
+          'GIT_AUTHOR_EMAIL' => author.email
+        )
+        diff_range = "#{start_sha}...#{end_sha}"
+        diff_files = run_git!(
+          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+        ).chomp
+
+        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
+          # Apply diff of the `diff_range` to the worktree
+          diff = run_git!(%W(diff --binary #{diff_range}))
+          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+            stdin.write(diff)
+          end
+
+          # Commit the `diff_range` diff
+          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
+
+          # Return the squash sha. May print a warning for ambiguous refs, but
+          # we can ignore that with `--quiet` and just take the SHA, if present.
+          # HEAD here always refers to the current HEAD commit, even if there is
+          # another ref called HEAD.
+          run_git!(
+            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
+          ).chomp
         end
       end
 
