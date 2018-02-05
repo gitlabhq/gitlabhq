@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.7 (2018-02-05)
+
+### Security (4 changes)
+
+- Fix namespace access issue for GitHub, BitBucket, and GitLab.com project importers.
+- Fix stored XSS in code blocks that ignore highlighting.
+- Fix wilcard protected tags protecting all branches.
+- Restrict Todo API mark_as_done endpoint to the user's todos only.
+
+
 ## 10.3.6 (2018-01-22)
 
 ### Fixed (17 changes, 2 of them are from the community)
