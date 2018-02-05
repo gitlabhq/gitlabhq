@@ -165,7 +165,7 @@ module Ci
 
       if persist_cached_data?
         self.assign_attributes(values)
-        self.save
+        self.save if self.changed?
       end
     end
 
