@@ -10,20 +10,20 @@ module API
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get related issues' do
-        success Entities::RelatedIssue
+        success EE::API::Entities::RelatedIssue
       end
       get ':id/issues/:issue_iid/links' do
         source_issue = find_project_issue(params[:issue_iid])
         related_issues = source_issue.related_issues(current_user)
 
         present related_issues,
-                with: Entities::RelatedIssue,
+                with: EE::API::Entities::RelatedIssue,
                 current_user: current_user,
                 project: user_project
       end
 
       desc 'Relate issues' do
-        success Entities::IssueLink
+        success EE::API::Entities::IssueLink
       end
       params do
         requires :target_project_id, type: String, desc: 'The ID of the target project'
@@ -43,14 +43,14 @@ module API
         if result[:status] == :success
           issue_link = IssueLink.find_by!(source: source_issue, target: target_issue)
 
-          present issue_link, with: Entities::IssueLink
+          present issue_link, with: EE::API::Entities::IssueLink
         else
           render_api_error!(result[:message], result[:http_status])
         end
       end
 
       desc 'Remove issues relation' do
-        success Entities::IssueLink
+        success EE::API::Entities::IssueLink
       end
       params do
         requires :issue_link_id, type: Integer, desc: 'The ID of an issue link'
@@ -66,7 +66,7 @@ module API
                    .execute
 
         if result[:status] == :success
-          present issue_link, with: Entities::IssueLink
+          present issue_link, with: EE::API::Entities::IssueLink
         else
           render_api_error!(result[:message], result[:http_status])
         end

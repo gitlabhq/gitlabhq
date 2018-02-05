@@ -368,12 +368,12 @@ module API
       #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
       #
       desc "List a merge request's approvals" do
-        success Entities::MergeRequestApprovals
+        success EE::API::Entities::MergeRequestApprovals
       end
       get ':id/merge_requests/:merge_request_iid/approvals' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
       end
 
       # Approve a merge request
@@ -385,7 +385,7 @@ module API
       #   POST /projects/:id/merge_requests/:merge_request_iid/approve
       #
       desc 'Approve a merge request' do
-        success Entities::MergeRequestApprovals
+        success EE::API::Entities::MergeRequestApprovals
       end
       params do
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
@@ -401,11 +401,11 @@ module API
           .new(user_project, current_user)
           .execute(merge_request)
 
-        present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
       end
 
       desc 'Remove an approval from a merge request' do
-        success Entities::MergeRequestApprovals
+        success EE::API::Entities::MergeRequestApprovals
       end
       post ':id/merge_requests/:merge_request_iid/unapprove' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
@@ -416,7 +416,7 @@ module API
           .new(user_project, current_user)
           .execute(merge_request)
 
-        present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        present merge_request, with: EE::API::Entities::MergeRequestApprovals, current_user: current_user
       end
 
       desc 'List issues that will be closed on merge' do

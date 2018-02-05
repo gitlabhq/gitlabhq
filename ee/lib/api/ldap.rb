@@ -15,7 +15,7 @@ module API
       end
 
       desc 'Get a LDAP groups list. Limit size to 20 of them.' do
-        success Entities::LdapGroup
+        success EE::API::Entities::LdapGroup
       end
       params do
         use :search_params
@@ -23,18 +23,18 @@ module API
       get 'groups' do
         provider = Gitlab::LDAP::Config.available_servers.first['provider_name']
         groups = get_group_list(provider, params[:search])
-        present groups, with: Entities::LdapGroup
+        present groups, with: EE::API::Entities::LdapGroup
       end
 
       desc 'Get a LDAP groups list by the requested provider. Limit size to 20 of them.' do
-        success Entities::LdapGroup
+        success EE::API::Entities::LdapGroup
       end
       params do
         use :search_params
       end
       get ':provider/groups' do
         groups = get_group_list(params[:provider], params[:search])
-        present groups, with: Entities::LdapGroup
+        present groups, with: EE::API::Entities::LdapGroup
       end
     end
   end

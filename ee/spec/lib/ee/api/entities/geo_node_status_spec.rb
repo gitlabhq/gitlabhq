@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Entities::GeoNodeStatus, :postgresql do
+describe EE::API::Entities::GeoNodeStatus, :postgresql do
   include ::EE::GeoHelpers
 
   let(:geo_node_status) { build(:geo_node_status) }
