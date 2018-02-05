@@ -59,7 +59,7 @@ module Gitlab
       def allowed_levels
         restricted_levels = Gitlab::CurrentSettings.restricted_visibility_levels
 
-        self.values - restricted_levels
+        self.values - Array(restricted_levels)
       end
 
       def closest_allowed_level(target_level)

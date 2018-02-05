@@ -28,11 +28,14 @@
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
+<<<<<<< HEAD
               - if Gitlab::CurrentSettings.help_text.present?
                 %h3 Need help?
                 %hr
                 %p.slead
                   = markdown(Gitlab::CurrentSettings.help_text)
+=======
+>>>>>>> upstream/master
 
       %hr.footer-fixed
       .container.footer-container

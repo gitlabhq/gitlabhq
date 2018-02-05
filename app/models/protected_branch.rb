@@ -1,7 +1,10 @@
 class ProtectedBranch < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include ProtectedRef
+<<<<<<< HEAD
   prepend EE::ProtectedRef
+=======
+>>>>>>> upstream/master
 
   protected_ref_access_levels :merge, :push
 

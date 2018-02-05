@@ -26,6 +26,7 @@ describe Gitlab::CurrentSettings do
         allow(ActiveRecord::Base.connection).to receive(:active?).and_return(true)
         allow(ActiveRecord::Base.connection).to receive(:table_exists?).and_call_original
         allow(ActiveRecord::Base.connection).to receive(:table_exists?).with('application_settings').and_return(true)
+<<<<<<< HEAD
       end
 
       # This method returns the ::ApplicationSetting.defaults hash
@@ -34,6 +35,8 @@ describe Gitlab::CurrentSettings do
         defaults = ::ApplicationSetting.defaults
         ar_wrapped_defaults = ::ApplicationSetting.new(defaults).attributes
         ar_wrapped_defaults.slice(*defaults.keys)
+=======
+>>>>>>> upstream/master
       end
 
       it 'attempts to use cached values first' do

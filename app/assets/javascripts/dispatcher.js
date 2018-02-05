@@ -12,6 +12,7 @@ import ShortcutsIssuable from './shortcuts_issuable';
 import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
+<<<<<<< HEAD
 // EE-only
 import UsersSelect from './users_select';
 import UserCallout from './user_callout';
@@ -22,6 +23,8 @@ import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
 import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
+=======
+>>>>>>> upstream/master
 var Dispatcher;
 
 (function() {
