@@ -21,11 +21,13 @@ describe('Confirmation input component', () => {
     });
 
     it('sets id of the input field to inputId', () => {
-      expect(vm.$refs.enteredValue.id).toBe(props.inputId);
+      const inputField = vm.$el.querySelector('input');
+      expect(inputField.id).toBe(props.inputId);
     });
 
     it('sets name of the input field to confirmationKey', () => {
-      expect(vm.$refs.enteredValue.name).toBe(props.confirmationKey);
+      const inputField = vm.$el.querySelector('input');
+      expect(inputField.name).toBe(props.confirmationKey);
     });
   });
 
@@ -50,12 +52,12 @@ describe('Confirmation input component', () => {
       });
 
       it('returns false if entered value is incorrect', () => {
-        vm.$refs.enteredValue.value = 'incorrect';
+        vm.enteredValue = 'incorrect';
         expect(vm.hasCorrectValue()).toBe(false);
       });
 
       it('returns true if entered value is correct', () => {
-        vm.$refs.enteredValue.value = props.confirmationValue;
+        vm.enteredValue = props.confirmationValue;
         expect(vm.hasCorrectValue()).toBe(true);
       });
     });

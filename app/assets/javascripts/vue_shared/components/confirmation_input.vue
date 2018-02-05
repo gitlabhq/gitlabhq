@@ -22,6 +22,11 @@
         default: true,
       },
     },
+    data() {
+      return {
+        enteredValue: '',
+      };
+    },
     computed: {
       inputLabel() {
         let value = this.confirmationValue;
@@ -38,7 +43,7 @@
     },
     methods: {
       hasCorrectValue() {
-        return this.$refs.enteredValue.value === this.confirmationValue;
+        return this.enteredValue === this.confirmationValue;
       },
     },
   };
@@ -55,7 +60,7 @@
       :id="inputId"
       :name="confirmationKey"
       type="text"
-      ref="enteredValue"
+      v-model="enteredValue"
       class="form-control"
     />
   </div>
