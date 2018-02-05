@@ -103,11 +103,26 @@ describe Gitlab::Ci::Trace::HttpIO do
     let(:string_io) { StringIO.new(remote_trace_body) }
 
     before do
-      stub_remote_trace_ok
+      stub_remote_trace_206
     end
 
     it 'yields lines' do
       expect { |b| http_io.each_line(&b) }.to yield_successive_args(*string_io.each_line.to_a)
+    end
+
+    context 'when buckets on GCS' do
+      context 'when BUFFER_SIZE is larger than file size' do
+        before do
+          stub_remote_trace_200
+          set_larger_buffer_size_than(size)
+        end
+
+        it 'calls get_chunk only once' do
+          expect_any_instance_of(Net::HTTP).to receive(:request).once.and_call_original
+
+          http_io.each_line { |line| }
+        end
+      end
     end
   end
 
@@ -116,7 +131,7 @@ describe Gitlab::Ci::Trace::HttpIO do
 
     context 'when there are no network issue' do
       before do
-        stub_remote_trace_ok
+        stub_remote_trace_206
       end
 
       context 'when read whole size' do
@@ -220,7 +235,7 @@ describe Gitlab::Ci::Trace::HttpIO do
       let(:length) { nil }
 
       before do
-        stub_remote_trace_ng
+        stub_remote_trace_500
       end
 
       it 'reads a trace' do
@@ -235,7 +250,7 @@ describe Gitlab::Ci::Trace::HttpIO do
     let(:string_io) { StringIO.new(remote_trace_body) }
 
     before do
-      stub_remote_trace_ok
+      stub_remote_trace_206
     end
 
     shared_examples 'all line matching' do
@@ -250,7 +265,7 @@ describe Gitlab::Ci::Trace::HttpIO do
       let(:length) { nil }
 
       before do
-        stub_remote_trace_ng
+        stub_remote_trace_500
       end
 
       it 'reads a trace' do

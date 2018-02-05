@@ -146,14 +146,14 @@ module Gitlab
             ##
             # Note: If provider does not return content_range, then we set it as we requested
             # Provider: minio
-            # - When the file size is larger than Content-range in responce header, it returns content_range in responce header. Status: Net::HTTPPartialContent 206
-            # - When the file size is smaller than Content-range in responce header, it returns content_range in responce header. Status: Net::HTTPPartialContent 206
+            # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
+            # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
             # Provider: AWS
-            # - TBD
-            # - TBD
+            # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
+            # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
             # Provider: GCS
-            # - When the file size is larger than Content-range, it returns content_range in responce header. Status: Net::HTTPPartialContent 206
-            # - When the file size is smaller than Content-range, it does not return content_range in responce header. Status: Net::HTTPOK 200
+            # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
+            # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPOK 200
             @chunk_range ||= (chunk_start...(chunk_start + @chunk.length))
           end
 
