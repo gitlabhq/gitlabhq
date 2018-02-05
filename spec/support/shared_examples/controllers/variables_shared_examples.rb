@@ -48,6 +48,29 @@ shared_examples 'PATCH #update updates variables' do
     end
   end
 
+  context 'with duplicate new variable parameters' do
+    let(:variables_attributes) do
+      [
+        new_variable_attributes,
+        new_variable_attributes.merge(value: 'other_value')
+      ]
+    end
+
+    it 'does not update the existing variable' do
+      expect { subject }.not_to change { variable.reload.value }
+    end
+
+    it 'does not create the new variable' do
+      expect { subject }.not_to change { owner.variables.count }
+    end
+
+    it 'returns a bad request response' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+  end
+
   context 'with valid new variable parameters' do
     let(:variables_attributes) do
       [
