@@ -17,8 +17,12 @@ module Clusters
         'stable/nginx-ingress'
       end
 
+      def chart_values_file
+        "#{Rails.root}/vendor/#{name}/values.yaml"
+      end
+
       def install_command
-        Gitlab::Kubernetes::Helm::InstallCommand.new(name, chart: chart)
+        Gitlab::Kubernetes::Helm::InstallCommand.new(name, chart: chart, chart_values_file: chart_values_file)
       end
     end
   end
