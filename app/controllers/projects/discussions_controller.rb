@@ -35,12 +35,13 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def render_json_with_discussions_serializer
     render json:
       DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user)
-      .represent(discussion, context: self, skip_notes_rendering: true)
+      .represent(discussion, context: self)
   end
 
   # Legacy method used to render discussions notes when not using Vue on views.
   def render_json_with_html
     render json: {
+      resolved_by: discussion.resolved_by.try(:name),
       discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
     }
   end
@@ -50,7 +51,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def discussion
-    @discussion ||= @merge_request.find_discussion(params[:id], current_user) || render_404
+    @discussion ||= @merge_request.find_discussion(params[:id]) || render_404
   end
 
   def authorize_resolve_discussion!
