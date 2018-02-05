@@ -42,8 +42,8 @@ immediately after following these instructions.
     ```
 
     Preventing the original primary from coming back online during this process
-    is necessary prevent data from being mistakenly added to it. Any data added
-    after the failover process has begun will **not** be be replicated to the
+    is necessary to prevent data from being mistakenly added to it. Any data added
+    after the failover process has begun will **not** be replicated to the
     newly promoted primary.
 
     If you do not have SSH access to your primary, take the machine offline and
@@ -69,7 +69,7 @@ immediately after following these instructions.
 
     A new secondary should not be added at this time. If you want to add a new
     secondary, do this after you have completed the entire process of promoting
-    the secondary to the primary .
+    the secondary to the primary.
 
 1. Promote the secondary to primary. Execute:
 
