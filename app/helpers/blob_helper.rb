@@ -17,10 +17,7 @@ module BlobHelper
   end
 
   def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    blob = options.delete(:blob)
-    blob ||= project.repository.blob_at(ref, path) rescue nil
-
-    return unless blob && blob.readable_text?
+    return unless readable_blob?(options, path, project, ref)
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
@@ -30,16 +27,7 @@ module BlobHelper
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       link_to 'Edit', edit_blob_path(project, ref, path, options), class: "#{common_classes} btn-sm"
     elsif current_user && can?(current_user, :fork_project, project)
-      continue_params = {
-        to: edit_blob_path(project, ref, path, options),
-        notice: edit_in_new_fork_notice,
-        notice_now: edit_in_new_fork_notice_now
-      }
-      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
-
-      button_tag 'Edit',
-        class: "#{common_classes} js-edit-blob-link-fork-toggler",
-        data: { action: 'edit', fork_path: fork_path }
+      edit_blob_fork(common_classes, options, path, project, ref)
     end
   end
 
@@ -331,5 +319,25 @@ module BlobHelper
     end
 
     options
+  end
+
+  def readable_blob?(options, path, project, ref)
+    blob = options.delete(:blob)
+    blob ||= project.repository.blob_at(ref, path) rescue nil
+
+    blob && blob.readable_text?
+  end
+
+  def edit_blob_fork(common_classes, options, path, project, ref)
+    continue_params = {
+        to: edit_blob_path(project, ref, path, options),
+        notice: edit_in_new_fork_notice,
+        notice_now: edit_in_new_fork_notice_now
+    }
+    fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
+
+    button_tag 'Edit',
+               class: "#{common_classes} js-edit-blob-link-fork-toggler",
+               data: { action: 'edit', fork_path: fork_path }
   end
 end
