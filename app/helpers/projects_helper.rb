@@ -1,9 +1,6 @@
 module ProjectsHelper
-<<<<<<< HEAD
   prepend ::EE::ProjectsHelper
 
-=======
->>>>>>> upstream/master
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')

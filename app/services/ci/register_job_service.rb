@@ -2,11 +2,8 @@ module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
   class RegisterJobService
-<<<<<<< HEAD
     prepend EE::Ci::RegisterJobService
 
-=======
->>>>>>> upstream/master
     attr_reader :runner
 
     Result = Struct.new(:build, :valid?)

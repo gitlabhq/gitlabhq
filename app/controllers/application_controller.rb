@@ -123,15 +123,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-<<<<<<< HEAD
     if Gitlab::Geo.secondary?
       Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
     else
       Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
     end
-=======
-    Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
->>>>>>> upstream/master
   end
 
   def can?(object, action, subject = :global)

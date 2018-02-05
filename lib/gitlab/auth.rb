@@ -14,11 +14,8 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
-<<<<<<< HEAD
       prepend EE::Gitlab::Auth
 
-=======
->>>>>>> upstream/master
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 

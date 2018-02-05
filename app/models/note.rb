@@ -3,11 +3,8 @@
 # A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
-<<<<<<< HEAD
   prepend EE::Note
 
-=======
->>>>>>> upstream/master
   include Participable
   include Mentionable
   include Elastic::NotesSearch
