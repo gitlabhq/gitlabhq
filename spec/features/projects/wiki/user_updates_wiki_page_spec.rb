@@ -1,6 +1,7 @@
 require 'spec_helper'
 
-describe 'User updates wiki page' do
+# Remove skip_gitaly_mock flag when gitaly_update_page implements moving pages
+describe 'User updates wiki page', :skip_gitaly_mock do
   let(:user) { create(:user) }
 
   before do
@@ -143,12 +144,83 @@ describe 'User updates wiki page' do
         expect(page).to have_field('wiki[message]', with: 'Update home')
 
         fill_in(:wiki_content, with: 'My awesome wiki!')
+
         click_button('Save changes')
 
         expect(page).to have_content('Home')
         expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
       end
+    end
+  end
+
+  context 'when the page is in a subdir' do
+    let!(:project) { create(:project, namespace: user.namespace) }
+    let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
+    let(:page_name) { 'page_name' }
+    let(:page_dir) { "foo/bar/#{page_name}" }
+    let!(:wiki_page) { create(:wiki_page, wiki: project_wiki, attrs: { title: page_dir, content: 'Home page' }) }
+
+    before do
+      visit(project_wiki_edit_path(project, wiki_page))
+    end
+
+    it 'moves the page to the root folder' do
+      fill_in(:wiki_title, with: "/#{page_name}")
+
+      click_button('Save changes')
+
+      expect(current_path).to eq(project_wiki_path(project, page_name))
+    end
+
+    it 'moves the page to other dir' do
+      new_page_dir = "foo1/bar1/#{page_name}"
+
+      fill_in(:wiki_title, with: new_page_dir)
+
+      click_button('Save changes')
+
+      expect(current_path).to eq(project_wiki_path(project, new_page_dir))
+    end
+
+    it 'remains in the same place if title has not changed' do
+      original_path = project_wiki_path(project, wiki_page)
+
+      fill_in(:wiki_title, with: page_name)
+
+      click_button('Save changes')
+
+      expect(current_path).to eq(original_path)
+    end
+
+    it 'can be moved to a different dir with a different name' do
+      new_page_dir = "foo1/bar1/new_page_name"
+
+      fill_in(:wiki_title, with: new_page_dir)
+
+      click_button('Save changes')
+
+      expect(current_path).to eq(project_wiki_path(project, new_page_dir))
+    end
+
+    it 'can be renamed and moved to the root folder' do
+      new_name = 'new_page_name'
+
+      fill_in(:wiki_title, with: "/#{new_name}")
+
+      click_button('Save changes')
+
+      expect(current_path).to eq(project_wiki_path(project, new_name))
+    end
+
+    it 'squishes the title before creating the page' do
+      new_page_dir = "  foo1 /  bar1  /  #{page_name}  "
+
+      fill_in(:wiki_title, with: new_page_dir)
+
+      click_button('Save changes')
+
+      expect(current_path).to eq(project_wiki_path(project, "foo1/bar1/#{page_name}"))
     end
   end
 end
