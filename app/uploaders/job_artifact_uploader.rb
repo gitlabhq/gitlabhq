@@ -21,12 +21,6 @@ class JobArtifactUploader < GitlabUploader
     File.open(path, "rb") if path
   end
 
-  def filename
-    return 'trace.log' if model.trace?
-
-    super
-  end
-
   private
 
   def dynamic_segment
