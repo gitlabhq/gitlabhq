@@ -368,7 +368,7 @@ class NotificationService
       issue,
       issue.author,
       action: "due_date",
-      skip_current_user: false,
+      skip_current_user: false
     )
 
     recipients.each do |recipient|
