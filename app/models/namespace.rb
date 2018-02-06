@@ -40,7 +40,6 @@ class Namespace < ActiveRecord::Base
     namespace_path: true
 
   validate :nesting_level_allowed
-  validate :allowed_path_by_redirects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -52,7 +51,7 @@ class Namespace < ActiveRecord::Base
 
   # Legacy Storage specific hooks
 
-  after_update :move_dir, if: :path_changed?
+  after_update :move_dir, if: :path_or_parent_changed?
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
@@ -222,9 +221,12 @@ class Namespace < ActiveRecord::Base
   end
 
   def full_path_was
-    return path_was unless has_parent?
-
-    "#{parent.full_path}/#{path_was}"
+    if parent_id_was.nil?
+      path_was
+    else
+      previous_parent = Group.find_by(id: parent_id_was)
+      previous_parent.full_path + '/' + path_was
+    end
   end
 
   # Exports belonging to projects with legacy storage are placed in a common
@@ -240,6 +242,10 @@ class Namespace < ActiveRecord::Base
   end
 
   private
+
+  def path_or_parent_changed?
+    path_changed? || parent_changed?
+  end
 
   def refresh_access_of_projects_invited_groups
     Group
@@ -269,16 +275,6 @@ class Namespace < ActiveRecord::Base
     # maximum of 20 nested groups this should be fine.
     Namespace.where(id: descendants.select(:id))
       .update_all(share_with_group_lock: true)
-  end
-
-  def allowed_path_by_redirects
-    return if path.nil?
-
-    errors.add(:path, "#{path} has been taken before. Please use another one") if namespace_previously_created_with_same_path?
-  end
-
-  def namespace_previously_created_with_same_path?
-    RedirectRoute.permanent.exists?(path: path)
   end
 
   def write_projects_repository_config
