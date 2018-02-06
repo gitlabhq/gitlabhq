@@ -51,6 +51,7 @@ describe Project do
     it { is_expected.to have_one(:external_wiki_service) }
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
+    it { is_expected.to have_one(:state).class_name('ProjectState') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
