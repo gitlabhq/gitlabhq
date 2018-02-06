@@ -101,7 +101,7 @@ describe User do
         user = build(:user, username: 'dashboard')
 
         expect(user).not_to be_valid
-        expect(user.errors.values).to eq [['dashboard is a reserved name']]
+        expect(user.errors.messages[:username]).to eq ['dashboard is a reserved name']
       end
 
       it 'allows child names' do
@@ -130,6 +130,23 @@ describe User do
           user.username = 'new_path'
           expect(user).to be_invalid
           expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
+        end
+      end
+
+      context 'when the username was used by another user before' do
+        let(:username) { 'foo' }
+        let!(:other_user) { create(:user, username: username) }
+
+        before do
+          other_user.username = 'bar'
+          other_user.save!
+        end
+
+        it 'is invalid' do
+          user = build(:user, username: username)
+
+          expect(user).not_to be_valid
+          expect(user.errors.messages[:"namespace.route.path"].first).to eq('foo has been taken before. Please use another one')
         end
       end
     end
@@ -2623,7 +2640,7 @@ describe User do
 
       it 'should raise an ActiveRecord::RecordInvalid exception' do
         user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Route path foo has been taken before. Please use another one, Route is invalid/)
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Namespace route path foo has been taken before/)
       end
     end
 
