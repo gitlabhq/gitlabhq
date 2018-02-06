@@ -137,6 +137,7 @@ module API
         optional :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
         optional :skip_reconfirmation, type: Boolean, desc: 'Flag indicating the account skips the confirmation by email'
+        optional :skip_password_expiration, type: Boolean, default: false, desc: 'Flag indicating the account skips the password change at next login'
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
@@ -169,9 +170,11 @@ module API
           end
         end
 
-        user_params[:password_expires_at] = Time.now if user_params[:password].present?
+        if !user_params[:skip_password_expiration]
+          user_params[:password_expires_at] = Time.now if user_params[:password].present?
+        end
 
-        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
+        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider, :skip_password_expiration).merge(user: user)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic

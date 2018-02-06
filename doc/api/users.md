@@ -298,6 +298,7 @@ Parameters:
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
+- `skip_password_expiration` (optional) - Do not ask user to change his password at next login - true or false (default)
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `avatar` (optional)           - Image file for user's avatar
 
