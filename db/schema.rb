@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180204200836) do
+ActiveRecord::Schema.define(version: 20180206184810) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1386,6 +1386,18 @@ ActiveRecord::Schema.define(version: 20180204200836) do
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
+  create_table "project_states", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "repository_checksum", limit: 64
+    t.string "wiki_checksum", limit: 64
+    t.datetime_with_timezone "last_repository_check_at"
+    t.datetime_with_timezone "last_wiki_check_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "project_states", ["project_id"], name: "index_project_states_on_project_id", using: :btree
+
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -2031,6 +2043,7 @@ ActiveRecord::Schema.define(version: 20180204200836) do
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+  add_foreign_key "project_states", "projects"
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
