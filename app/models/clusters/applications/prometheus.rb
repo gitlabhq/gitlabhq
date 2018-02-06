@@ -13,7 +13,7 @@ module Clusters
       state_machine :status do
         after_transition any => [:installed] do |application|
           application.cluster.projects.each do |project|
-            project.prometheus_service&.update(active: true)
+            project.find_or_initialize_service('prometheus').update(active: true)
           end
         end
       end
