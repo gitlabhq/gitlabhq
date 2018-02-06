@@ -162,4 +162,11 @@ describe IconsHelper do
       expect(file_type_icon_class('file', 0, 'CHANGELOG')).to eq 'file-text-o'
     end
   end
+
+  describe '#external_snippet_icon' do
+    it 'returns external snippet icon' do
+      expect(external_snippet_icon('download').to_s)
+        .to eq("<img src=\"#{asset_url('/assets/ext_snippet_icons/download.png')}\" width=\"16px\" height=\"16px\"></img>")
+    end
+  end
 end

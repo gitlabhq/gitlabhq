@@ -114,6 +114,7 @@ module Gitlab
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
+    config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"
 
     # Version of your assets, change this if you want to expire all your assets
