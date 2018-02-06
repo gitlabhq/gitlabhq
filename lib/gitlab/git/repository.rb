@@ -1456,21 +1456,6 @@ module Gitlab
         rugged.config['gitlab.fullpath'] = full_path
       end
 
-      def refs_contains_sha(ref_type, sha)
-        args = %W(#{ref_type} --contains #{sha})
-        names = run_git(args).first
-
-        return [] unless names.respond_to?(:split)
-
-        names = names.split("\n").map(&:strip)
-
-        names.each do |name|
-          name.slice! '* '
-        end
-
-        names
-      end
-
       def shell_write_ref(ref_path, ref, old_ref)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
