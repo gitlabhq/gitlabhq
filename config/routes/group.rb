@@ -15,6 +15,7 @@ constraints(GroupUrlConstrainer.new) do
       get :projects, as: :projects_group
       get :activity, as: :activity_group
       get :subgroups, as: :subgroups_group ## EE-specific
+      put :transfer, as: :transfer_group
     end
 
     get '/', action: :show, as: :group_canonical

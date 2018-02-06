@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180202111106) do
+ActiveRecord::Schema.define(version: 20180204200836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2210,7 +2210,7 @@ ActiveRecord::Schema.define(version: 20180202111106) do
     t.integer "project_id", null: false
     t.integer "target_id"
     t.string "target_type", null: false
-    t.integer "author_id"
+    t.integer "author_id", null: false
     t.integer "action", null: false
     t.string "state", null: false
     t.datetime "created_at"
@@ -2613,7 +2613,10 @@ ActiveRecord::Schema.define(version: 20180202111106) do
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
+  add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
+  add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade
+  add_foreign_key "todos", "users", name: "fk_d94154aa95", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_callouts", "users", on_delete: :cascade
