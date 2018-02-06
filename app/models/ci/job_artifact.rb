@@ -11,6 +11,8 @@ module Ci
 
     mount_uploader :file, JobArtifactUploader
 
+    delegate :exists?, :open, to: :file
+
     enum file_type: {
       archive: 1,
       metadata: 2,
