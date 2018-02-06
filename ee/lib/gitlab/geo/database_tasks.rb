@@ -185,7 +185,7 @@ module Gitlab
 
       class SeedLoader
         def load_seed
-          load('db/geo/seeds.rb')
+          load(File.join(GEO_DB_DIR, 'seeds.rb'))
         end
       end
     end
