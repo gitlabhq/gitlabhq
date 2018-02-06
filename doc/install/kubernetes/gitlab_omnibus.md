@@ -2,7 +2,7 @@
 > **Note:**.
 * This chart has been tested on Google Kubernetes Engine and Azure Container Service.
 
-**[This chart is beta](#limitations).** A new [cloud native GitLab chart](https://docs.gitlab.com/ee/install/kubernetes/#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. Once available, the cloud native chart will be the recommended installation method for Kubernetes, and this chart will be deprecated.
+**[This chart is beta](#limitations), and is the best way to install GitLab on Kubernetes today.** A new [cloud native GitLab chart](https://docs.gitlab.com/ee/install/kubernetes/#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. Once available, the cloud native chart will be the recommended installation method for Kubernetes, and this chart will be deprecated.
 
 For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
