@@ -96,11 +96,23 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def page_versions(page_path, options = {})
-        current_page = gollum_page_by_path(page_path)
+        @repository.gitaly_migrate(:wiki_page_versions) do |is_enabled|
+          if is_enabled
+            versions = gitaly_wiki_client.page_versions(page_path, options)
 
-        commits_from_page(current_page, options).map do |gitlab_git_commit|
-          gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
-          Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
+            # Gitaly uses gollum-lib to get the versions. Gollum defaults to 20
+            # per page, but also fetches 20 if `limit` or `per_page` < 20.
+            # Slicing returns an array with the expected number of items.
+            slice_bound = options[:limit] || options[:per_page] || Gollum::Page.per_page
+            versions[0..slice_bound]
+          else
+            current_page = gollum_page_by_path(page_path)
+
+            commits_from_page(current_page, options).map do |gitlab_git_commit|
+              gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
+              Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
+            end
+          end
         end
       end
 
