@@ -1,0 +1,5 @@
+%li.commit
+  .commit-row-title
+    = link_to truncate_sha(event.commit_id), project_commit_path(project, event.commit_id), class: "commit-sha", alt: '', title: truncate_sha(event.commit_id)
+    &middot;
+    = markdown event_commit_title(event.commit_title), project: project, pipeline: :single_line, author: event.author

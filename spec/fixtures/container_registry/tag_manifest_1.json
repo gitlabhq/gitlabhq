@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "name": "library/alpine",
+  "tag": "2.6",
+  "architecture": "amd64",
+  "fsLayers": [
+    {
+      "blobSum": "sha256:2a3ebcb7fbcc29bf40c4f62863008bb573acdea963454834d9483b3e5300c45d"
+    }
+  ],
+  "history": [
+    {
+      "v1Compatibility": "{\"id\":\"dd807873c9a21bcc82e30317c283e6601d7e19f5cf7867eec34cdd1aeb3f099e\",\"created\":\"2016-01-18T18:32:39.162138276Z\",\"container\":\"556a728876db7b0e621adc029c87c649d32520804f8f15defd67bb070dc1a88d\",\"container_config\":{\"Hostname\":\"556a728876db\",\"Domainname\":\"\",\"User\":\"\",\"AttachStdin\":false,\"AttachStdout\":false,\"AttachStderr\":false,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":null,\"Cmd\":[\"/bin/sh\",\"-c\",\"#(nop) ADD file:7dee8a455bcc39013aa168d27ece9227aad155adbaacbd153d94ca60113f59fc in /\"],\"Image\":\"\",\"Volumes\":null,\"WorkingDir\":\"\",\"Entrypoint\":null,\"OnBuild\":null,\"Labels\":null},\"docker_version\":\"1.8.3\",\"config\":{\"Hostname\":\"556a728876db\",\"Domainname\":\"\",\"User\":\"\",\"AttachStdin\":false,\"AttachStdout\":false,\"AttachStderr\":false,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":null,\"Cmd\":null,\"Image\":\"\",\"Volumes\":null,\"WorkingDir\":\"\",\"Entrypoint\":null,\"OnBuild\":null,\"Labels\":null},\"architecture\":\"amd64\",\"os\":\"linux\",\"Size\":4501436}"
+    }
+  ],
+  "signatures": [
+    {
+      "header": {
+        "jwk": {
+          "crv": "P-256",
+          "kid": "4MZL:Z5ZP:2RPA:Q3TD:QOHA:743L:EM2G:QY6Q:ZJCX:BSD7:CRYC:LQ6T",
+          "kty": "EC",
+          "x": "qmWOaxPUk7QsE5iTPdeG1e9yNE-wranvQEnWzz9FhWM",
+          "y": "WeeBpjTOYnTNrfCIxtFY5qMrJNNk9C1vc5ryxbbMD_M"
+        },
+        "alg": "ES256"
+      },
+      "signature": "0zmjTJ4m21yVwAeteLc3SsQ0miScViCDktFPR67W-ozGjjI3iBjlDjwOl6o2sds5ZI9U6bSIKOeLDinGOhHoOQ",
+      "protected": "eyJmb3JtYXRMZW5ndGgiOjEzNzIsImZvcm1hdFRhaWwiOiJDbjAiLCJ0aW1lIjoiMjAxNi0wNi0xNVQxMDo0NDoxNFoifQ"
+    }
+  ]
+}

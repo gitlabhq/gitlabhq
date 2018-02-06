@@ -1,0 +1,329 @@
+#modal-shortcuts.modal{ tabindex: -1 }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %h4
+          Keyboard Shortcuts
+          %small
+            = link_to '(Show all)', '#', class: 'js-more-help-button'
+      .modal-body
+        .row
+          .col-lg-4
+            %table.shortcut-mappings
+              %tbody
+                %tr
+                  %th
+                  %th Global Shortcuts
+                %tr
+                  %td.shortcut
+                    .key s
+                  %td Focus Search
+                %tr
+                  %td.shortcut
+                    .key f
+                  %td Focus Filter
+                - if performance_bar_enabled?
+                  %tr
+                    %td.shortcut
+                      .key p b
+                    %td Show/hide the Performance Bar
+                %tr
+                  %td.shortcut
+                    .key ?
+                  %td Show/hide this dialog
+                %tr
+                  %td.shortcut
+                    - if browser.platform.mac?
+                      .key &#8984; shift p
+                    - else
+                      .key ctrl shift p
+                  %td Toggle Markdown preview
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-up
+                  %td Edit last comment (when focused on an empty textarea)
+                %tr
+                  %td.shortcut
+                    .key shift t
+                  %td
+                    Go to todos
+                %tr
+                  %td.shortcut
+                    .key shift a
+                  %td
+                    Go to the activity feed
+                %tr
+                  %td.shortcut
+                    .key shift p
+                  %td
+                    Go to projects
+                %tr
+                  %td.shortcut
+                    .key shift i
+                  %td
+                    Go to issues
+                %tr
+                  %td.shortcut
+                    .key shift m
+                  %td
+                    Go to merge requests
+                %tr
+                  %td.shortcut
+                    .key shift g
+                  %td
+                    Go to groups
+                %tr
+                  %td.shortcut
+                    .key shift l
+                  %td
+                    Go to milestones
+                %tr
+                  %td.shortcut
+                    .key shift s
+                  %td
+                    Go to snippets
+              %tbody
+                %tr
+                  %th
+                  %th Finding Project File
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-up
+                  %td Move selection up
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-down
+                  %td Move selection down
+                %tr
+                  %td.shortcut
+                    .key enter
+                  %td Open Selection
+                %tr
+                  %td.shortcut
+                    .key esc
+                  %td Go back
+          .col-lg-4
+            %table.shortcut-mappings
+              %tbody
+                %tr
+                  %th
+                  %th Project
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key p
+                  %td
+                    Go to the project's overview page
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key e
+                  %td
+                    Go to the project's activity feed
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key f
+                  %td
+                    Go to files
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key c
+                  %td
+                    Go to commits
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key j
+                  %td
+                    Go to jobs
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key n
+                  %td
+                    Go to network graph
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key d
+                  %td
+                    Go to repository charts
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key i
+                  %td
+                    Go to issues
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key b
+                  %td
+                    Go to issue boards
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key m
+                  %td
+                    Go to merge requests
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key s
+                  %td
+                    Go to snippets
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key w
+                  %td
+                    Go to wiki
+                %tr
+                  %td.shortcut
+                    .key t
+                  %td Go to finding file
+                %tr
+                  %td.shortcut
+                    .key i
+                  %td New issue
+
+              %tbody
+                %tr
+                  %th
+                  %th Project Files browsing
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-up
+                  %td Move selection up
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-down
+                  %td Move selection down
+                %tr
+                  %td.shortcut
+                    .key enter
+                  %td Open Selection
+              %tbody
+                %tr
+                  %th
+                  %th Project File
+                %tr
+                  %td.shortcut
+                    .key y
+                  %td Go to file permalink
+          .col-lg-4
+            %table.shortcut-mappings
+              %tbody.hidden-shortcut.network{ style: 'display:none' }
+                %tr
+                  %th
+                  %th Network Graph
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-left
+                    \/
+                    .key h
+                  %td Scroll left
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-right
+                    \/
+                    .key l
+                  %td Scroll right
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-up
+                    \/
+                    .key k
+                  %td Scroll up
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-down
+                    \/
+                    .key j
+                  %td Scroll down
+                %tr
+                  %td.shortcut
+                    .key
+                      shift
+                      %i.fa.fa-arrow-up
+                    \/
+                    .key
+                      shift k
+                  %td Scroll to top
+                %tr
+                  %td.shortcut
+                    .key
+                      shift
+                      %i.fa.fa-arrow-down
+                    \/
+                    .key
+                      shift j
+                  %td Scroll to bottom
+              %tbody.hidden-shortcut.issues{ style: 'display:none' }
+                %tr
+                  %th
+                  %th Issues
+                %tr
+                  %td.shortcut
+                    .key a
+                  %td Change assignee
+                %tr
+                  %td.shortcut
+                    .key m
+                  %td Change milestone
+                %tr
+                  %td.shortcut
+                    .key r
+                  %td Reply (quoting selected text)
+                %tr
+                  %td.shortcut
+                    .key e
+                  %td Edit issue
+                %tr
+                  %td.shortcut
+                    .key l
+                  %td Change Label
+              %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
+                %tr
+                  %th
+                  %th Merge Requests
+                %tr
+                  %td.shortcut
+                    .key a
+                  %td Change assignee
+                %tr
+                  %td.shortcut
+                    .key m
+                  %td Change milestone
+                %tr
+                  %td.shortcut
+                    .key r
+                  %td Reply (quoting selected text)
+                %tr
+                  %td.shortcut
+                    .key e
+                  %td Edit merge request
+                %tr
+                  %td.shortcut
+                    .key l
+                  %td Change Label
+              %tbody.hidden-shortcut.wiki{ style: 'display:none' }
+                %tr
+                  %th
+                  %th Wiki pages
+                %tr
+                  %td.shortcut
+                    .key e
+                  %td Edit wiki page

@@ -1,0 +1,45 @@
+- if @status
+  %p
+    %b Status:
+    syntax is correct
+    %i.fa.fa-ok.correct-syntax
+
+  .table-holder
+    %table.table.table-bordered
+      %thead
+        %tr
+          %th Parameter
+          %th Value
+      %tbody
+        - @stages.each do |stage|
+          - @builds.select { |build| build[:stage] == stage }.each do |build|
+            %tr
+              %td #{stage.capitalize} Job - #{build[:name]}
+              %td
+                %pre= build[:commands]
+
+                %br
+                %b Tag list:
+                = build[:tag_list].to_a.join(", ")
+                %br
+                %b Only policy:
+                = @jobs[build[:name].to_sym][:only].to_a.join(", ")
+                %br
+                %b Except policy:
+                = @jobs[build[:name].to_sym][:except].to_a.join(", ")
+                %br
+                %b Environment:
+                = build[:environment]
+                %br
+                %b When:
+                = build[:when]
+                - if build[:allow_failure]
+                  %b Allowed to fail
+
+- else
+  %p
+    %b Status:
+    syntax is incorrect
+    %i.fa.fa-remove.incorrect-syntax
+  %b Error:
+  = @error

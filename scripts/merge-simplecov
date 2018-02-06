@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require_relative '../spec/simplecov_env'
+SimpleCovEnv.configure_profile
+
+module SimpleCov
+  module ResultMerger
+    class << self
+      def resultset_files
+        Dir.glob(File.join(SimpleCov.coverage_path, '*', '.resultset.json'))
+      end
+
+      def resultset_hashes
+        resultset_files.map do |path|
+          begin
+            JSON.parse(File.read(path))
+          rescue
+            {}
+          end
+        end
+      end
+
+      def resultset
+        resultset_hashes.reduce({}, :merge)
+      end
+    end
+  end
+end
+
+SimpleCov::ResultMerger.merged_result.format!

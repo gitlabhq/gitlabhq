@@ -1,0 +1,121 @@
+# Whether to ignore frontmatter at the beginning of HAML documents for
+# frameworks such as Jekyll/Middleman
+skip_frontmatter: false
+exclude:
+  - 'vendor/**/*'
+  - 'spec/**/*'
+
+linters:
+  AltText:
+    enabled: true
+
+  ClassAttributeWithStaticValue:
+    enabled: true
+
+  ClassesBeforeIds:
+    enabled: false
+
+  ConsecutiveComments:
+    enabled: false
+
+  ConsecutiveSilentScripts:
+    enabled: false
+    max_consecutive: 2
+
+  EmptyObjectReference:
+    enabled: true
+
+  EmptyScript:
+    enabled: true
+
+  FinalNewline:
+    enabled: true
+    present: true
+
+  HtmlAttributes:
+    enabled: true
+
+  IdNames:
+    enabled: false
+
+  ImplicitDiv:
+    enabled: true
+
+  InlineJavaScript:
+    enabled: true
+
+  InlineStyles:
+    enabled: false
+
+  InstanceVariables:
+    enabled: false
+
+  LeadingCommentSpace:
+    enabled: false
+
+  LineLength:
+    enabled: false
+    max: 80
+
+  MultilinePipe:
+    enabled: true
+
+  MultilineScript:
+    enabled: true
+
+  ObjectReferenceAttributes:
+    enabled: true
+
+  RepeatedId:
+    enabled: false
+
+  RuboCop:
+    enabled: false
+    # These cops are incredibly noisy when it comes to HAML templates, so we
+    # ignore them.
+    ignored_cops:
+      - Lint/BlockAlignment
+      - Lint/EndAlignment
+      - Lint/Void
+      - Metrics/LineLength
+      - Style/AlignParameters
+      - Style/BlockNesting
+      - Style/ElseAlignment
+      - Style/FileName
+      - Style/FinalNewline
+      - Style/FrozenStringLiteralComment
+      - Style/IfUnlessModifier
+      - Style/IndentationWidth
+      - Style/Next
+      - Style/TrailingBlankLines
+      - Style/TrailingWhitespace
+      - Style/WhileUntilModifier
+
+  RubyComments:
+    enabled: true
+
+  SpaceBeforeScript:
+    enabled: true
+
+  SpaceInsideHashAttributes:
+    enabled: true
+    style: space
+
+  Indentation:
+    enabled: true
+    character: space # or tab
+
+  TagName:
+    enabled: true
+
+  TrailingWhitespace:
+    enabled: true
+
+  UnnecessaryInterpolation:
+    enabled: true
+
+  UnnecessaryStringOutput:
+    enabled: true
+
+  ViewLength:
+    enabled: false

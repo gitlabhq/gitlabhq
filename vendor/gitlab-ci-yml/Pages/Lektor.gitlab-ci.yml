@@ -1,0 +1,12 @@
+# Full project: https://gitlab.com/pages/hyde
+image: python:2.7
+
+pages:
+  script:
+  - pip install lektor
+  - lektor build --output-path public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+main_report_file = ARGV.shift
+unless main_report_file
+  puts 'usage: merge-reports <main-report> [extra reports...]'
+  exit 1
+end
+
+puts "Loading #{main_report_file}..."
+main_report = JSON.parse(File.read(main_report_file))
+new_report = main_report.dup
+
+ARGV.each do |report_file|
+  report = JSON.parse(File.read(report_file))
+
+  # Remove existing values
+  updates = report.delete_if do |key, value|
+    main_report[key] && main_report[key] == value
+  end
+  new_report.merge!(updates)
+
+  puts "Merged #{report_file} adding #{updates.size} results."
+end
+
+File.write(main_report_file, JSON.pretty_generate(new_report))
+puts "Saved #{main_report_file}."

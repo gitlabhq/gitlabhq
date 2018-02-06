@@ -1,0 +1,16 @@
+- hidden = local_assigns.fetch(:hidden, false)
+
+.diff-viewer{ data: { type: viewer.type }, class: ('hidden' if hidden) }
+  - if viewer.render_error
+    = render 'projects/diffs/render_error', viewer: viewer
+  - elsif viewer.collapsed?
+    = render 'projects/diffs/collapsed', viewer: viewer
+  - else
+    - viewer.prepare!
+
+    -# In the rare case where the first kilobyte of the file looks like text,
+    -# but the file turns out to actually be binary after loading all data,
+    -# we fall back on the binary No Preview viewer.
+    - viewer = DiffViewer::NoPreview.new(viewer.diff_file) if viewer.binary_detected_after_load?
+
+    = render viewer.partial_path, viewer: viewer

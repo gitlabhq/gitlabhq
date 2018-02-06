@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "username",
+    "email",
+    "name",
+    "state",
+    "avatar_url",
+    "web_url",
+    "created_at",
+    "bio",
+    "location",
+    "skype",
+    "linkedin",
+    "twitter",
+    "website_url",
+    "organization",
+    "last_sign_in_at",
+    "confirmed_at",
+    "color_scheme_id",
+    "projects_limit",
+    "current_sign_in_at",
+    "identities",
+    "can_create_group",
+    "can_create_project",
+    "two_factor_enabled",
+    "external"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "username": { "type": "string" },
+    "email": {
+      "type": "string",
+      "pattern": "^[^@]+@[^@]+$"
+    },
+    "name": { "type": "string" },
+    "state": {
+      "type": "string",
+      "enum": ["active", "blocked"]
+    },
+    "avatar_url": { "type": "string" },
+    "web_url": { "type": "string" },
+    "created_at": { "type": "date" },
+    "bio": { "type": ["string", "null"] },
+    "location": { "type": ["string", "null"] },
+    "skype": { "type": "string" },
+    "linkedin": { "type": "string" },
+    "twitter": { "type": "string "},
+    "website_url": { "type": "string" },
+    "organization": { "type": ["string", "null"] },
+    "last_sign_in_at": { "type": "date" },
+    "confirmed_at": { "type": ["date", "null"] },
+    "color_scheme_id": { "type": "integer" },
+    "projects_limit": { "type": "integer" },
+    "current_sign_in_at": { "type": "date" },
+    "identities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": ["github", "bitbucket", "google_oauth2"]
+          },
+          "extern_uid": { "type": ["number", "string"] }
+        }
+      }
+    },
+    "can_create_group": { "type": "boolean" },
+    "can_create_project": { "type": "boolean" },
+    "two_factor_enabled": { "type": "boolean" },
+    "external": { "type": "boolean" }
+  }
+}

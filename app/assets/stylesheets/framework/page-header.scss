@@ -1,0 +1,66 @@
+.page-content-header {
+  line-height: 34px;
+  padding: 10px 0;
+  margin-bottom: 0;
+
+  @media (min-width: $screen-sm-min) {
+    display: flex;
+    align-items: center;
+
+    .header-main-content {
+      flex: 1;
+    }
+  }
+
+  .header-action-buttons {
+    i {
+      color: $gl-text-color-secondary;
+      font-size: 13px;
+      margin-right: 3px;
+    }
+
+    @media (max-width: $screen-xs-max) {
+      .btn {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .dropdown {
+        width: 100%;
+      }
+    }
+  }
+
+  .avatar {
+    @extend .avatar-inline;
+    margin-left: 0;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: 4px;
+    }
+  }
+
+  .commit-committer-link,
+  .commit-author-link {
+    color: $gl-text-color;
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .commit-info {
+    &.branches {
+      margin-left: 8px;
+    }
+  }
+
+  .ci-status-link {
+    svg {
+      position: relative;
+      top: 2px;
+      margin: 0 2px 0 3px;
+    }
+  }
+
+  .ci-status {
+    margin-right: 10px;
+  }
+}

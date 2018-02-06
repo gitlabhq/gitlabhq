@@ -1,0 +1,26 @@
+image:
+  name: hashicorp/packer:1.0.4
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+before_script:
+  - packer --version
+
+stages:
+  - validate
+  - deploy
+
+validate:
+  stage: validate
+  script:
+    - find . -maxdepth 1 -name '*.json' -print0 | xargs -t0n1 packer validate
+
+build:
+  stage: deploy
+  environment: production
+  script:
+    - find . -maxdepth 1 -name '*.json' -print0 | xargs -t0n1 packer build
+  when: manual
+  only:
+    - master

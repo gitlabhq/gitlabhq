@@ -1,0 +1,27 @@
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('integrations')
+
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      = @service.title
+      = boolean_to_icon @service.activated?
+
+    %p= @service.description
+  .col-lg-9
+    = form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'gl-show-field-errors form-horizontal js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
+      = render 'shared/service_settings', form: form, subject: @service
+      - if @service.editable?
+        .footer-block.row-content-block
+          = service_save_button(@service)
+          &nbsp;
+          - if @service.valid? && @service.activated?
+            - unless @service.can_test?
+              - disabled_class = 'disabled'
+              - disabled_title = @service.disabled_title
+
+          = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
+
+- if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
+  %hr
+  = render "projects/services/#{@service.to_param}/show"

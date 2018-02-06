@@ -1,0 +1,7 @@
+- title = capture do
+  This commit was signed with a <strong>verified</strong> signature and the
+  committer email is verified to belong to the same user.
+
+- locals = { signature: signature, title: title, label: 'Verified', css_class: 'valid', icon: 'status_success_borderless', show_user: true }
+
+= render partial: 'projects/commit/signature_badge', locals: locals

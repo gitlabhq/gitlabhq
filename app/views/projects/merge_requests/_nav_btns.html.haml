@@ -1,0 +1,5 @@
+- if @can_bulk_update
+  = button_tag "Edit merge requests", class: "btn append-right-10 js-bulk-update-toggle"
+- if merge_project
+  = link_to new_merge_request_path, class: "btn btn-new", title: "New merge request" do
+    New merge request

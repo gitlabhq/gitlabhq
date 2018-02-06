@@ -1,0 +1,23 @@
+<% self.formats = ["html"] %>
+
+<%= raw(
+  {
+    days: @graph.days.compact.map { |d| [d.day, d.strftime("%b")] },
+    commits: @graph.commits.map do |c|
+      {
+        parents: parents_zip_spaces(c.parents(@graph.map), c.parent_spaces),
+        author: {
+          name: c.author_name,
+          email: c.author_email,
+          icon: image_path(avatar_icon(c.author_email, 20))
+        },
+        time: c.time,
+        space: c.spaces.first,
+        refs: get_refs(@graph.repo, c),
+        id: c.sha,
+        date: c.date,
+        message: c.message,
+      }
+    end
+  }.to_json
+) %>

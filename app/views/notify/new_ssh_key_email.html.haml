@@ -1,0 +1,10 @@
+%p
+  Hi #{@user.name}!
+%p
+  A new public key was added to your account:
+%p
+  title:
+  %code= @key.title
+%p
+  If this key was added in error, you can remove it under
+  = link_to "SSH Keys", profile_keys_url

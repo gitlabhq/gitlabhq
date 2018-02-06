@@ -1,0 +1,34 @@
+- breadcrumb_title "Edit Password"
+- page_title "Password"
+- @content_class = "limit-container-width" unless fluid_layout
+
+.row.prepend-top-default
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      After a successful password update, you will be redirected to the login page where you can log in with your new password.
+  .col-lg-8
+    %h5.prepend-top-0
+      Change your password
+      - unless @user.password_automatically_set?
+        or recover your current one
+    = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
+      = form_errors(@user)
+
+      - unless @user.password_automatically_set?
+        .form-group
+          = f.label :current_password, class: 'label-light'
+          = f.password_field :current_password, required: true, class: 'form-control'
+          %p.help-block
+            You must provide your current password in order to change it.
+      .form-group
+        = f.label :password, 'New password', class: 'label-light'
+        = f.password_field :password, required: true, class: 'form-control'
+      .form-group
+        = f.label :password_confirmation, class: 'label-light'
+        = f.password_field :password_confirmation, required: true, class: 'form-control'
+      .prepend-top-default.append-bottom-default
+        = f.submit 'Save password', class: "btn btn-create append-right-10"
+        - unless @user.password_automatically_set?
+          = link_to "I forgot my password", reset_profile_password_path, method: :put, class: "account-btn-link"

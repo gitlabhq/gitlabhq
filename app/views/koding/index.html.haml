@@ -1,0 +1,6 @@
+.row-content-block.second-block.center
+  %p
+    = icon('circle', class: 'cgreen')
+    Integration is active for
+    = link_to koding_project_url, target: '_blank', rel: 'noopener noreferrer' do
+      #{Gitlab::CurrentSettings.koding_url}

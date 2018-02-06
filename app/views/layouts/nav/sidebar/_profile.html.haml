@@ -1,0 +1,144 @@
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+  .nav-sidebar-inner-scroll
+    .context-header
+      = link_to profile_path, title: 'Profile Settings' do
+        .avatar-container.s40.settings-avatar
+          = sprite_icon('user', size: 24)
+        .sidebar-context-title User Settings
+    %ul.sidebar-top-level-items
+      = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
+        = link_to profile_path do
+          .nav-icon-container
+            = sprite_icon('profile')
+          %span.nav-item-name
+            Profile
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: 'profiles#show', html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_path do
+              %strong.fly-out-top-item-name
+                #{ _('Profile') }
+      = nav_link(controller: [:accounts, :two_factor_auths]) do
+        = link_to profile_account_path do
+          .nav-icon-container
+            = sprite_icon('account')
+          %span.nav-item-name
+            Account
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: [:accounts, :two_factor_auths], html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_account_path do
+              %strong.fly-out-top-item-name
+                #{ _('Account') }
+      - if Gitlab::CurrentSettings.user_oauth_applications?
+        = nav_link(controller: 'oauth/applications') do
+          = link_to applications_profile_path do
+            .nav-icon-container
+              = sprite_icon('applications')
+            %span.nav-item-name
+              Applications
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: 'oauth/applications', html_options: { class: "fly-out-top-item" } ) do
+              = link_to applications_profile_path do
+                %strong.fly-out-top-item-name
+                  #{ _('Applications') }
+      = nav_link(controller: :chat_names) do
+        = link_to profile_chat_names_path do
+          .nav-icon-container
+            = sprite_icon('comment')
+          %span.nav-item-name
+            Chat
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :chat_names, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_chat_names_path do
+              %strong.fly-out-top-item-name
+                #{ _('Chat') }
+      = nav_link(controller: :personal_access_tokens) do
+        = link_to profile_personal_access_tokens_path do
+          .nav-icon-container
+            = sprite_icon('token')
+          %span.nav-item-name
+            Access Tokens
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :personal_access_tokens, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_personal_access_tokens_path do
+              %strong.fly-out-top-item-name
+                #{ _('Access Tokens') }
+      = nav_link(controller: :emails) do
+        = link_to profile_emails_path do
+          .nav-icon-container
+            = sprite_icon('mail')
+          %span.nav-item-name
+            Emails
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :emails, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_emails_path do
+              %strong.fly-out-top-item-name
+                #{ _('Emails') }
+      - if current_user.allow_password_authentication?
+        = nav_link(controller: :passwords) do
+          = link_to edit_profile_password_path do
+            .nav-icon-container
+              = sprite_icon('lock')
+            %span.nav-item-name
+              Password
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :passwords, html_options: { class: "fly-out-top-item" } ) do
+              = link_to edit_profile_password_path do
+                %strong.fly-out-top-item-name
+                  #{ _('Password') }
+      = nav_link(controller: :notifications) do
+        = link_to profile_notifications_path do
+          .nav-icon-container
+            = sprite_icon('notifications')
+          %span.nav-item-name
+            Notifications
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :notifications, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_notifications_path do
+              %strong.fly-out-top-item-name
+                #{ _('Notifications') }
+      = nav_link(controller: :keys) do
+        = link_to profile_keys_path do
+          .nav-icon-container
+            = sprite_icon('key')
+          %span.nav-item-name
+            SSH Keys
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :keys, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_keys_path do
+              %strong.fly-out-top-item-name
+                #{ _('SSH Keys') }
+      = nav_link(controller: :gpg_keys) do
+        = link_to profile_gpg_keys_path do
+          .nav-icon-container
+            = sprite_icon('key-2')
+          %span.nav-item-name
+            GPG Keys
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :gpg_keys, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_gpg_keys_path do
+              %strong.fly-out-top-item-name
+                #{ _('GPG Keys') }
+      = nav_link(controller: :preferences) do
+        = link_to profile_preferences_path do
+          .nav-icon-container
+            = sprite_icon('preferences')
+          %span.nav-item-name
+            Preferences
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :preferences, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_preferences_path do
+              %strong.fly-out-top-item-name
+                #{ _('Preferences') }
+      = nav_link(path: 'profiles#audit_log') do
+        = link_to audit_log_profile_path do
+          .nav-icon-container
+            = sprite_icon('log')
+          %span.nav-item-name
+            Authentication log
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: 'profiles#audit_log', html_options: { class: "fly-out-top-item" } ) do
+            = link_to audit_log_profile_path do
+              %strong.fly-out-top-item-name
+                #{ _('Authentication Log') }
+
+    = render 'shared/sidebar_toggle_button'

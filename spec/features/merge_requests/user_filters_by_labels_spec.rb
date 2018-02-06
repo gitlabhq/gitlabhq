@@ -1,0 +1,49 @@
+require 'rails_helper'
+
+describe 'Merge Requests > User filters by labels', :js do
+  include FilteredSearchHelpers
+
+  let(:project) { create(:project, :public, :repository) }
+  let(:user)    { project.creator }
+  let(:mr1) { create(:merge_request, title: 'Bugfix1', source_project: project, target_project: project, source_branch: 'bugfix1') }
+  let(:mr2) { create(:merge_request, title: 'Bugfix2', source_project: project, target_project: project, source_branch: 'bugfix2') }
+
+  before do
+    bug_label = create(:label, project: project, title: 'bug')
+    enhancement_label = create(:label, project: project, title: 'enhancement')
+    mr1.labels << bug_label
+    mr2.labels << bug_label << enhancement_label
+
+    sign_in(user)
+    visit project_merge_requests_path(project)
+  end
+
+  context 'filtering by label:none' do
+    it 'applies the filter' do
+      input_filtered_search('label:none')
+
+      expect(page).to have_issuable_counts(open: 0, closed: 0, all: 0)
+      expect(page).not_to have_content 'Bugfix1'
+      expect(page).not_to have_content 'Bugfix2'
+    end
+  end
+
+  context 'filtering by label:~enhancement' do
+    it 'applies the filter' do
+      input_filtered_search('label:~enhancement')
+
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
+      expect(page).to have_content 'Bugfix2'
+      expect(page).not_to have_content 'Bugfix1'
+    end
+  end
+
+  context 'filtering by label:~enhancement and label:~bug' do
+    it 'applies the filters' do
+      input_filtered_search('label:~bug label:~enhancement')
+
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
+      expect(page).to have_content 'Bugfix2'
+    end
+  end
+end

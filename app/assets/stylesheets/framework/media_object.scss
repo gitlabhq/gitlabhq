@@ -1,0 +1,12 @@
+.media {
+  display: flex;
+  align-items: flex-start;
+}
+
+.media-body {
+  flex: 1;
+}
+
+.media-body-wrap {
+  flex-grow: 1;
+}

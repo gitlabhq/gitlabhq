@@ -1,0 +1,52 @@
+# For background migrations we define a custom set of rules to make it less
+# difficult to review these migrations. To reduce the complexity of these
+# migrations some rules may be stricter than the defaults set in the root
+# .rubocop.yml file.
+---
+inherit_from: ../../../.rubocop.yml
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 30
+  Details: >
+    Code that involves a lot of branches can be very hard to wrap your head
+    around.
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+
+Metrics/LineLength:
+  Enabled: true
+  Details: >
+    Long lines are very hard to read and make it more difficult to review
+    changes.
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 30
+  Details: >
+    Long methods can be very hard to review. Consider splitting this method up
+    into separate methods.
+
+Metrics/ClassLength:
+  Enabled: true
+  Details: >
+    Long classes can be very hard to review. Consider splitting this class up
+    into multiple classes.
+
+Metrics/BlockLength:
+  Enabled: true
+  Details: >
+    Long blocks can be hard to read. Consider splitting the code into separate
+    methods.
+
+Style/Documentation:
+  Enabled: true
+  Details: >
+    Adding documentation makes it easier to figure out what a migration is
+    supposed to do.
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Details: >-
+    This removes the need for calling "freeze", reducing noise in the code.

@@ -1,0 +1,16 @@
+%div
+  .dropdown.inline
+    %button#js-project-dropdown.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+      Projects
+      %i.fa.fa-chevron-down.dropdown-toggle-caret.js-projects-dropdown-toggle
+    .dropdown-menu.dropdown-select.dropdown-menu-selectable
+      .dropdown-title
+        %span Go to project
+        %button.dropdown-title-button.dropdown-menu-close{aria: {label: 'Close'}}
+          %i.fa.fa-times.dropdown-menu-close-icon
+      .dropdown-input
+        %input.dropdown-input-field{type: 'search', placeholder: 'Filter results'}
+        %i.fa.fa-search.dropdown-input-search
+      .dropdown-content
+      .dropdown-loading
+        %i.fa.fa-spinner.fa-spin

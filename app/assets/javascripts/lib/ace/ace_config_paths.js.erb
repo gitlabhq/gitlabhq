@@ -1,0 +1,34 @@
+<%
+ace_gem_path = Bundler.rubygems.find_name('ace-rails-ap').first.full_gem_path
+ace_workers = Dir[ace_gem_path + '/vendor/assets/javascripts/ace/worker-*.js'].sort.map do |file|
+  File.basename(file, '.js').sub(/^worker-/, '')
+end
+ace_modes = Dir[ace_gem_path + '/vendor/assets/javascripts/ace/mode-*.js'].sort.map do |file|
+  File.basename(file, '.js').sub(/^mode-/, '')
+end
+%>
+// Lazy-load configuration when ace.edit is called
+(function() {
+  var basePath;
+  var ace = window.ace;
+  var edit = ace.edit;
+  ace.edit = function() {
+    window.gon = window.gon || {};
+    basePath = (window.gon.relative_url_root || '').replace(/\/$/, '') + '/assets/ace';
+    ace.config.set('basePath', basePath);
+
+    // configure paths for all worker modules
+<% ace_workers.each do |worker| %>
+    ace.config.setModuleUrl('ace/mode/<%= worker %>_worker', basePath + '/<%= File.basename(asset_path("ace/worker-#{worker}.js")) %>');
+<% end %>
+
+    // configure paths for all mode modules
+<% ace_modes.each do |mode| %>
+    ace.config.setModuleUrl('ace/mode/<%= mode %>', basePath + '/<%= File.basename(asset_path("ace/mode-#{mode}.js")) %>');
+<% end %>
+
+    // restore original method
+    ace.edit = edit;
+    return ace.edit.apply(ace, arguments);
+  };
+})();

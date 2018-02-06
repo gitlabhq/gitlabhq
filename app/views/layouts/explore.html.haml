@@ -1,0 +1,5 @@
+- page_title    "Explore"
+- unless current_user
+  - header_title  "Explore GitLab", explore_root_path
+
+= render template: "layouts/application"

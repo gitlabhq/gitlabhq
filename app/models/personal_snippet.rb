@@ -1,0 +1,2 @@
+class PersonalSnippet < Snippet
+end

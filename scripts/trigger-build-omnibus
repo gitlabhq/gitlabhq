@@ -1,0 +1,107 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'json'
+require 'cgi'
+
+module Omnibus
+  PROJECT_PATH = 'gitlab-org/omnibus-gitlab'.freeze
+
+  class Trigger
+    TOKEN = ENV['BUILD_TRIGGER_TOKEN']
+
+    def initialize
+      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Omnibus::PROJECT_PATH)}/trigger/pipeline")
+      @params = env_params.merge(file_params).merge(token: TOKEN)
+    end
+
+    def invoke!
+      res = Net::HTTP.post_form(@uri, @params)
+      id = JSON.parse(res.body)['id']
+
+      if id
+        puts "Triggered https://gitlab.com/#{Omnibus::PROJECT_PATH}/pipelines/#{id}"
+        puts "Waiting for downstream pipeline status"
+      else
+        raise "Trigger failed! The response from the trigger is: #{res.body}"
+      end
+
+      Omnibus::Pipeline.new(id)
+    end
+
+    private
+
+    def ee?
+      File.exist?('CHANGELOG-EE.md')
+    end
+
+    def env_params
+      {
+        "ref" => ENV["OMNIBUS_BRANCH"] || "master",
+        "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
+        "variables[ALTERNATIVE_SOURCES]" => true,
+        "variables[ee]" => ee? ? 'true' : 'false',
+        "variables[TRIGGERED_USER]" => ENV["GITLAB_USER_NAME"],
+        "variables[TRIGGER_SOURCE]" => "https://gitlab.com/gitlab-org/#{ENV['CI_PROJECT_NAME']}/-/jobs/#{ENV['CI_JOB_ID']}"
+      }
+    end
+
+    def file_params
+      Hash.new.tap do |params|
+        Dir.glob("*_VERSION").each do |version_file|
+          params["variables[#{version_file}]"] = File.read(version_file).strip
+        end
+      end
+    end
+  end
+
+  class Pipeline
+    INTERVAL = 60 # seconds
+    MAX_DURATION = 3600 * 3 # 3 hours
+
+    def initialize(id)
+      @start = Time.now.to_i
+      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Omnibus::PROJECT_PATH)}/pipelines/#{id}")
+    end
+
+    def wait!
+      loop do
+        raise "Pipeline timed out after waiting for #{duration} minutes!" if timeout?
+
+        case status
+        when :created, :pending, :running
+          print "."
+          sleep INTERVAL
+        when :success
+          puts "Omnibus pipeline succeeded in #{duration} minutes!"
+          break
+        else
+          raise "Omnibus pipeline did not succeed!"
+        end
+
+        STDOUT.flush
+      end
+    end
+
+    def timeout?
+      Time.now.to_i > (@start + MAX_DURATION)
+    end
+
+    def duration
+      (Time.now.to_i - @start) / 60
+    end
+
+    def status
+      req = Net::HTTP::Get.new(@uri)
+      req['PRIVATE-TOKEN'] = ENV['GITLAB_QA_ACCESS_TOKEN']
+
+      res = Net::HTTP.start(@uri.hostname, @uri.port, use_ssl: true) do |http|
+        http.request(req)
+      end
+
+      JSON.parse(res.body)['status'].to_s.to_sym
+    end
+  end
+end
+
+Omnibus::Trigger.new.invoke!.wait!

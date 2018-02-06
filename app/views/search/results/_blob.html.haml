@@ -1,0 +1,13 @@
+- file_name, blob = blob
+.blob-result
+  .file-holder
+    .js-file-title.file-title
+      - ref = @search_results.repository_ref
+      - blob_link = project_blob_path(@project, tree_join(ref, file_name))
+      = link_to blob_link do
+        %i.fa.fa-file
+        %strong
+          = file_name
+    - if blob
+      .file-content.code.term
+        = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link

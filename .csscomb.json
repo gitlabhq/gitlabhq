@@ -1,0 +1,20 @@
+{
+  "exclude": [
+    "app/assets/stylesheets/framework/tw_bootstrap_variables.scss",
+    "app/assets/stylesheets/framework/fonts.scss"
+  ],
+  "always-semicolon": true,
+  "color-case": "lower",
+  "block-indent": "  ",
+  "color-shorthand": false,
+  "element-case": "lower",
+  "space-before-colon": "",
+  "space-after-colon": " ",
+  "space-before-combinator": " ",
+  "space-after-combinator": " ",
+  "space-between-declarations": "\n",
+  "space-before-opening-brace": " ",
+  "space-after-opening-brace": "\n",
+  "space-before-closing-brace": "\n",
+  "unitless-zero": true
+}

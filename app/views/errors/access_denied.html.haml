@@ -1,0 +1,9 @@
+- content_for(:title, 'Access Denied')
+%img{ :alt => "GitLab Logo", :src => image_path('logo.svg') }
+  %h1
+    403
+.container
+  %h3 Access Denied
+  %hr
+  %p You are not allowed to access this page.
+  %p Read more about project permissions #{link_to "here", help_page_path("user/permissions"), class: "vlink"}

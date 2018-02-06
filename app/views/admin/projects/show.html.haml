@@ -1,0 +1,182 @@
+- add_to_breadcrumbs "Projects", admin_projects_path
+- breadcrumb_title @project.name_with_namespace
+- page_title @project.name_with_namespace, "Projects"
+%h3.page-title
+  Project: #{@project.name_with_namespace}
+  = link_to edit_project_path(@project), class: "btn btn-nr pull-right" do
+    %i.fa.fa-pencil-square-o
+    Edit
+%hr
+- if @project.last_repository_check_failed?
+  .row
+    .col-md-12
+      .panel
+        .panel-heading.alert.alert-danger
+          Last repository check
+          = "(#{time_ago_in_words(@project.last_repository_check_at)} ago)"
+          failed. See
+          = link_to 'repocheck.log', admin_logs_path
+          for error messages.
+.row
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        Project info:
+      %ul.well-list
+        %li
+          %span.light Name:
+          %strong
+            = link_to @project.name, project_path(@project)
+        %li
+          %span.light Namespace:
+          %strong
+            - if @project.namespace
+              = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
+            - else
+              Global
+        %li
+          %span.light Owned by:
+          %strong
+            - if @project.owner
+              = link_to @project.owner_name, [:admin, @project.owner]
+            - else
+              (deleted)
+
+        %li
+          %span.light Created by:
+          %strong
+            = @project.creator.try(:name) || '(deleted)'
+
+        %li
+          %span.light Created on:
+          %strong
+            = @project.created_at.to_s(:medium)
+
+        %li
+          %span.light http:
+          %strong
+            = link_to @project.http_url_to_repo, project_path(@project)
+        %li
+          %span.light ssh:
+          %strong
+            = link_to @project.ssh_url_to_repo, project_path(@project)
+        - if @project.repository.exists?
+          %li
+            %span.light fs:
+            %strong
+              = @project.repository.path_to_repo
+
+          %li
+            %span.light Storage:
+            %strong= storage_counter(@project.statistics.storage_size)
+            (
+            = storage_counter(@project.statistics.repository_size)
+            repository,
+            = storage_counter(@project.statistics.build_artifacts_size)
+            build artifacts,
+            = storage_counter(@project.statistics.lfs_objects_size)
+            LFS
+            )
+
+          %li
+            %span.light last commit:
+            %strong
+              = last_commit(@project)
+
+          %li
+            %span.light Git LFS status:
+            %strong
+              = project_lfs_status(@project)
+              = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+        - else
+          %li
+            %span.light repository:
+            %strong.cred
+              does not exist
+
+        - if @project.archived?
+          %li
+            %span.light archived:
+            %strong repository is read-only
+
+        %li
+          %span.light access:
+          %strong
+            %span{ class: visibility_level_color(@project.visibility_level) }
+              = visibility_level_icon(@project.visibility_level)
+              = visibility_level_label(@project.visibility_level)
+
+    .panel.panel-default
+      .panel-heading
+        Transfer project
+      .panel-body
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
+          .form-group
+            = f.label :new_namespace_id, "Namespace", class: 'control-label'
+            .col-sm-10
+              .dropdown
+                = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
+                .dropdown-menu.dropdown-select
+                  = dropdown_title('Namespaces')
+                  = dropdown_filter("Search for Namespace")
+                  = dropdown_content
+                  = dropdown_loading
+
+          .form-group
+            .col-sm-offset-2.col-sm-10
+              = f.submit 'Transfer', class: 'btn btn-primary'
+
+    .panel.panel-default.repository-check
+      .panel-heading
+        Repository check
+      .panel-body
+        = form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
+          .form-group
+            - if @project.last_repository_check_at.nil?
+              This repository has never been checked.
+            - else
+              This repository was last checked
+              = @project.last_repository_check_at.to_s(:medium) + '.'
+              The check
+              - if @project.last_repository_check_failed?
+                = succeed '.' do
+                  %strong.cred failed
+                See
+                = link_to 'repocheck.log', admin_logs_path
+                for error messages.
+              - else
+                passed.
+
+            = link_to icon('question-circle'), help_page_path('administration/repository_checks')
+
+          .form-group
+            = f.submit 'Trigger repository check', class: 'btn btn-primary'
+
+  .col-md-6
+    - if @group
+      .panel.panel-default
+        .panel-heading
+          %strong= @group.name
+          group members
+          %span.badge= @group_members.size
+          .pull-right
+            = link_to admin_group_path(@group), class: 'btn btn-xs' do
+              = icon('pencil-square-o', text: 'Manage access')
+        %ul.well-list.content-list.members-list
+          = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
+        .panel-footer
+          = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
+
+    = render 'shared/members/requests', membership_source: @project, requesters: @requesters, force_mobile_view: true
+
+    .panel.panel-default
+      .panel-heading
+        %strong= @project.name
+        project members
+        %span.badge= @project.users.size
+        .pull-right
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
+      %ul.well-list.project_members.content-list.members-list
+        = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
+      .panel-footer
+        = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

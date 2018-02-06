@@ -1,0 +1,6 @@
+- project = local_assigns.fetch(:project)
+- return unless project.delete_error.present?
+
+.project-deletion-failed-message.alert.alert-warning
+  This project was scheduled for deletion, but failed with the following message:
+  = project.delete_error

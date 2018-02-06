@@ -1,0 +1,11 @@
+- if @merge_request_diff && different_base?(@start_version, @merge_request_diff)
+  .mr-version-controls
+    .content-block
+      = icon('info-circle')
+      Selected versions have different base commits.
+      Changes will include
+      = link_to project_compare_path(@project, from: @start_version.base_commit_sha, to: @merge_request_diff.base_commit_sha) do
+        new commits
+      from
+      = succeed '.' do
+        %code.ref-name= @merge_request.target_branch

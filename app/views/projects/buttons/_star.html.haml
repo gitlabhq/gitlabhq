@@ -1,0 +1,21 @@
+- if current_user
+  = link_to toggle_star_project_path(@project), { class: 'btn star-btn toggle-star', method: :post, remote: true } do
+    - if current_user.starred?(@project)
+      = sprite_icon('star')
+      %span.starred= _('Unstar')
+    - else
+      = sprite_icon('star-o')
+      %span= s_('StarProject|Star')
+  .count-with-arrow
+    %span.arrow
+    %span.count.star-count
+      = @project.star_count
+
+- else
+  = link_to new_user_session_path, class: 'btn has-tooltip star-btn', title: _('You must sign in to star a project') do
+    = sprite_icon('star')
+    #{ s_('StarProject|Star') }
+  .count-with-arrow
+    %span.arrow
+    %span.count
+      = @project.star_count

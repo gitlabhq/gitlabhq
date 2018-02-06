@@ -1,0 +1,27 @@
+%board-sidebar{ "inline-template" => true,  ":current-user" => (UserSerializer.new.represent(current_user) || {}).to_json }
+  %transition{ name: "boards-sidebar-slide" }
+    %aside.right-sidebar.right-sidebar-expanded.issue-boards-sidebar{ "v-show" => "showSidebar" }
+      .issuable-sidebar
+        .block.issuable-sidebar-header
+          %span.issuable-header-text.hide-collapsed.pull-left
+            %strong
+              {{ issue.title }}
+            %br/
+            %span
+              = precede "#" do
+                {{ issue.iid }}
+          %a.gutter-toggle.pull-right{ role: "button",
+            href: "#",
+            "@click.prevent" => "closeSidebar",
+            "aria-label" => "Toggle sidebar" }
+            = custom_icon("icon_close", size: 15)
+        .js-issuable-update
+          = render "shared/boards/components/sidebar/assignee"
+          = render "shared/boards/components/sidebar/milestone"
+          = render "shared/boards/components/sidebar/due_date"
+          = render "shared/boards/components/sidebar/labels"
+          = render "shared/boards/components/sidebar/notifications"
+          %remove-btn{ ":issue" => "issue",
+            ":issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'",
+            ":list" => "list",
+            "v-if" => "canRemove" }

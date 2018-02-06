@@ -1,0 +1,37 @@
+.block.labels
+  .title
+    Labels
+    - if can_admin_issue?
+      = icon("spinner spin", class: "block-loading")
+      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link pull-right"
+  .value.issuable-show-labels
+    %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
+      None
+    %a{ href: "#",
+      "v-for" => "label in issue.labels" }
+      %span.label.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+        {{ label.title }}
+  - if can_admin_issue?
+    .selectbox
+      %input{ type: "hidden",
+        name: "issue[label_names][]",
+        "v-for" => "label in issue.labels",
+        ":value" => "label.id" }
+      .dropdown
+        %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-issue-board-sidebar{ type: "button",
+          data: { toggle: "dropdown",
+            field_name: "issue[label_names][]",
+            show_no: "true",
+            show_any: "true",
+            project_id: @project&.try(:id),
+            labels: labels_filter_path(false),
+            namespace_path: @namespace_path,
+            project_path: @project.try(:path) },
+          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
+          %span.dropdown-toggle-text
+            Label
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+          = render partial: "shared/issuable/label_page_default"
+          - if can?(current_user, :admin_label, current_board_parent)
+            = render partial: "shared/issuable/label_page_create"

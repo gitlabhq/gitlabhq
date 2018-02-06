@@ -1,0 +1,26 @@
+<%  discussion = @note.discussion if @note.part_of_discussion? -%>
+<%  if discussion && !discussion.individual_note? -%>
+<%=   @note.author_name -%>
+<%    if discussion.new_discussion? -%>
+<%=     " started a new discussion" -%>
+<%    else -%>
+<%=     " commented on a discussion" -%>
+<%    end -%>
+<%    if discussion.diff_discussion? -%>
+<%=     " on #{discussion.file_path}" -%>
+<%    end -%>
+<%=   ":" -%>
+
+
+<%  elsif Gitlab::CurrentSettings.email_author_in_body -%>
+<%=     "#{@note.author_name} commented:" -%>
+
+
+<%  end -%>
+<%  if discussion&.diff_discussion? -%>
+<%    discussion.truncated_diff_lines(highlight: false).each do |line| -%>
+<%=     "> #{line.text}\n" -%>
+<%    end -%>
+
+<%  end -%>
+<%= @note.note -%>

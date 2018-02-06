@@ -1,0 +1,14 @@
+%h4= s_('ClusterIntegration|Kubernetes cluster integration')
+
+.settings-content
+  .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
+    = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine')
+    %p.js-error-reason
+
+  .hidden.js-cluster-creating.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
+    = s_('ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine...')
+
+  .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
+    = s_("ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine. Refresh the page to see Kubernetes cluster's details")
+
+  %p= s_('ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab')

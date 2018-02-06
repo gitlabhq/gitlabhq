@@ -1,0 +1,5 @@
+---
+title: Add foreign key and NOT NULL constraints to todos table.
+merge_request: 16849
+author:
+type: other

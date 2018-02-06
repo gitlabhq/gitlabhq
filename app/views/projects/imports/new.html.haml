@@ -1,0 +1,19 @@
+- page_title "Import repository"
+%h3.page-title
+  Import repository
+
+%hr
+
+- if @project.import_failed?
+  .panel.panel-danger
+    .panel-heading The repository could not be imported.
+    .panel-body
+      %pre
+        :preserve
+          #{h(sanitize_repo_path(@project, @project.import_error))}
+
+= form_for @project, url: project_import_path(@project), method: :post, html: { class: 'form-horizontal' } do |f|
+  = render "shared/import_form", f: f
+
+  .form-actions
+    = f.submit 'Start import', class: "btn btn-create", tabindex: 4

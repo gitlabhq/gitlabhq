@@ -1,0 +1,27 @@
+= form_for [@group, @milestone], html: { class: 'form-horizontal milestone-form common-note-form js-quick-submit js-requires-input' }  do |f|
+  .row
+    = form_errors(@milestone)
+
+    .col-md-6
+      .form-group
+        = f.label :title, "Title", class: "control-label"
+        .col-sm-10
+          = f.text_field :title, maxlength: 255, class: "form-control", required: true, autofocus: true
+      .form-group.milestone-description
+        = f.label :description, "Description", class: "control-label"
+        .col-sm-10
+          = render layout: 'projects/md_preview', locals: { url: group_preview_markdown_path } do
+            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...', supports_autocomplete: false
+            .clearfix
+            .error-alert
+
+    = render "shared/milestones/form_dates", f: f
+
+  .form-actions
+    - if @milestone.new_record?
+      = f.submit 'Create milestone', class: "btn-create btn"
+      = link_to "Cancel", group_milestones_path(@group), class: "btn btn-cancel"
+    - else
+      = f.submit 'Update milestone', class: "btn-create btn"
+      = link_to "Cancel", group_milestone_path(@group, @milestone), class: "btn btn-cancel"
+

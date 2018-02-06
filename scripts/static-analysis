@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+
+# We don't have auto-loading here
+require_relative '../lib/gitlab/popen'
+require_relative '../lib/gitlab/popen/runner'
+
+def emit_warnings(static_analysis)
+  static_analysis.warned_results.each do |result|
+    puts
+    puts "**** #{result.cmd.join(' ')} had the following warnings:"
+    puts
+    puts result.stderr
+    puts
+  end
+end
+
+def emit_errors(static_analysis)
+  static_analysis.failed_results.each do |result|
+    puts
+    puts "**** #{result.cmd.join(' ')} failed with the following error:"
+    puts
+    puts result.stdout
+    puts result.stderr
+    puts
+  end
+end
+
+tasks = [
+  %w[bundle exec rake config_lint],
+  %w[bundle exec rake flay],
+  %w[bundle exec rake haml_lint],
+  %w[bundle exec rake scss_lint],
+  %w[bundle exec license_finder],
+  %w[yarn run eslint],
+  %w[bundle exec rubocop --parallel],
+  %w[bundle exec rake gettext:lint],
+  %w[bundle exec rake lint:static_verification],
+  %w[scripts/lint-conflicts.sh],
+  %w[scripts/lint-rugged]
+]
+
+static_analysis = Gitlab::Popen::Runner.new
+
+static_analysis.run(tasks) do |cmd, &run|
+  puts
+  puts "$ #{cmd.join(' ')}"
+
+  result = run.call
+
+  puts "==> Finished in #{result.duration} seconds"
+  puts
+end
+
+puts
+puts '==================================================='
+puts
+puts
+
+if static_analysis.all_success_and_clean?
+  puts 'All static analyses passed successfully.'
+elsif static_analysis.all_success?
+  puts 'All static analyses passed successfully, but we have warnings:'
+  puts
+
+  emit_warnings(static_analysis)
+
+  exit 2
+else
+  puts 'Some static analyses failed:'
+
+  emit_warnings(static_analysis)
+  emit_errors(static_analysis)
+
+  exit 1
+end

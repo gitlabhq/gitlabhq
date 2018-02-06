@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="<%= badge.width %>" height="20">
+  <linearGradient id="b" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+
+  <mask id="a">
+    <rect width="<%= badge.width %>" height="20" rx="3" fill="#fff"/>
+  </mask>
+
+  <g mask="url(#a)">
+    <path fill="<%= badge.key_color %>"
+          d="M0 0 h<%= badge.key_width %> v20 H0 z"/>
+    <path fill="<%= badge.value_color %>"
+          d="M<%= badge.key_width %> 0 h<%= badge.value_width %> v20 H<%= badge.key_width %> z"/>
+    <path fill="url(#b)"
+          d="M0 0 h<%= badge.width %> v20 H0 z"/>
+  </g>
+
+  <g fill="#fff" text-anchor="middle">
+    <g font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+      <text x="<%= badge.key_text_anchor %>" y="15" fill="#010101" fill-opacity=".3">
+        <%= badge.key_text %>
+      </text>
+      <text x="<%= badge.key_text_anchor %>" y="14">
+        <%= badge.key_text %>
+      </text>
+      <text x="<%= badge.value_text_anchor %>" y="15" fill="#010101" fill-opacity=".3">
+        <%= badge.value_text %>
+      </text>
+      <text x="<%= badge.value_text_anchor %>" y="14">
+        <%= badge.value_text %>
+      </text>
+    </g>
+  </g>
+</svg>

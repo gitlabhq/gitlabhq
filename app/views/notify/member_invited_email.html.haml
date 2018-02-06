@@ -1,0 +1,13 @@
+%p
+  You have been invited
+  - if member.created_by
+    by
+    = link_to member.created_by.name, user_url(member.created_by)
+  to join the
+  = link_to member_source.human_name, member_source.web_url
+  #{member_source.model_name.singular} as #{member.human_access}.
+
+%p
+  = link_to 'Accept invitation', invite_url(@token)
+  or
+  = link_to 'decline', decline_invite_url(@token)

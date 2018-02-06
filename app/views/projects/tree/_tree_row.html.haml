@@ -1,0 +1,6 @@
+- if tree_row.type == :tree
+  = render partial: 'projects/tree/tree_item', object: tree_row, as: 'tree_item', locals: { type: 'folder' }
+- elsif tree_row.type == :blob
+  = render partial: 'projects/tree/blob_item', object: tree_row, as: 'blob_item', locals: { type: 'file' }
+- elsif tree_row.type == :commit
+  = render partial: 'projects/tree/submodule_item', object: tree_row, as: 'submodule_item'

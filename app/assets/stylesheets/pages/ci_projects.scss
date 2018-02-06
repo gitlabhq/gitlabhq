@@ -1,0 +1,54 @@
+.ci-body {
+  .project-title {
+    margin: 0;
+    color: $common-gray-dark;
+    font-size: 20px;
+    line-height: 1.5;
+  }
+
+  .builds,
+  .projects-table {
+    .light {
+      border-color: $border-color;
+    }
+
+    th,
+    td {
+      padding: 10px $gl-padding;
+    }
+
+    td {
+      color: $gl-text-color;
+      vertical-align: middle !important;
+
+      a {
+        font-weight: $gl-font-weight-normal;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .commit-info {
+    .attr-name {
+      margin-right: 5px;
+    }
+
+    pre.commit-message {
+      background: none;
+      padding: 0;
+      border: 0;
+      margin: 20px 0;
+      border-radius: 0;
+    }
+  }
+
+  .loading {
+    font-size: 20px;
+  }
+
+  .ci-charts {
+    fieldset {
+      margin-bottom: 16px;
+    }
+  }
+}

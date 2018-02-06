@@ -1,0 +1,5 @@
+---
+title: Fix default avatar icon missing when Gravatar is disabled
+merge_request: 16681
+author: Felix Geyer
+type: fixed

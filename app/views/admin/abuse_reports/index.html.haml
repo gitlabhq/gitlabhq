@@ -1,0 +1,19 @@
+- page_title 'Abuse Reports'
+%h3.page-title Abuse Reports
+%hr
+.abuse-reports
+  - if @abuse_reports.present?
+    .table-holder
+      %table.table.responsive-table
+        %thead.hidden-sm.hidden-xs
+          %tr
+            %th User
+            %th Reported by
+            %th.wide Message
+            %th Action
+        = render @abuse_reports
+    = paginate @abuse_reports, theme: 'gitlab'
+  - else
+    .empty-state
+      .text-center
+        %h4 There are no abuse reports! #{emoji_icon('tada')}

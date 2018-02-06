@@ -1,0 +1,16 @@
+# Full project: https://gitlab.com/pages/hexo
+image: node:6.10.0
+
+pages:
+  script:
+  - npm install
+  - ./node_modules/hexo/bin/hexo generate
+  artifacts:
+    paths:
+    - public
+  cache:
+    paths:
+      - node_modules
+    key: project
+  only:
+  - master

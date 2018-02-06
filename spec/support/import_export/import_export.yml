@@ -1,0 +1,24 @@
+# Class relationships to be included in the project import/export
+project_tree:
+  - :issues
+  - :labels
+  - merge_requests:
+    - :merge_request_diff
+    - :merge_request_test
+  - commit_statuses:
+    - :commit
+  - project_members:
+    - :user
+
+included_attributes:
+  merge_requests:
+    - :id
+  user:
+    - :email
+
+excluded_attributes:
+  merge_requests:
+    - :iid
+  project:
+    - :id
+    - :created_at

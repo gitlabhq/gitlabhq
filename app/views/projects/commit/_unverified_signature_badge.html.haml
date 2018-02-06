@@ -1,0 +1,6 @@
+- title = capture do
+  This commit was signed with an <strong>unverified</strong> signature.
+
+- locals = { signature: signature, title: title, label: 'Unverified', css_class: 'invalid', icon: 'status_notfound_borderless' }
+
+= render partial: 'projects/commit/signature_badge', locals: locals

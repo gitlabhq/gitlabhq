@@ -1,0 +1,412 @@
+{
+  "kind" : "projecthosting#user",
+  "id" : "@WRRVSlFXARlCVgB6",
+  "projects" : [ {
+    "kind" : "projecthosting#project",
+    "name" : "pmn",
+    "externalId" : "pmn",
+    "htmlLink" : "/p/pmn/",
+    "summary" : "Shows an icon in the system tray when you have new emails",
+    "description" : "IMAP client that shows an icon in the system tray when you have new emails.",
+    "labels" : [ "Mail" ],
+    "versionControlSystem" : "svn",
+    "repositoryUrls" : [ "https://pmn.googlecode.com/svn/" ],
+    "issuesConfig" : {
+      "kind" : "projecthosting#projectIssueConfig",
+      "statuses" : [ {
+        "status" : "New",
+        "meansOpen" : true,
+        "description" : "Issue has not had initial review yet"
+      }, {
+        "status" : "Accepted",
+        "meansOpen" : true,
+        "description" : "Problem reproduced / Need acknowledged"
+      }, {
+        "status" : "Started",
+        "meansOpen" : true,
+        "description" : "Work on this issue has begun"
+      }, {
+        "status" : "Fixed",
+        "meansOpen" : false,
+        "description" : "Developer made source code changes, QA should verify"
+      }, {
+        "status" : "Verified",
+        "meansOpen" : false,
+        "description" : "QA has verified that the fix worked"
+      }, {
+        "status" : "Invalid",
+        "meansOpen" : false,
+        "description" : "This was not a valid issue report"
+      }, {
+        "status" : "Duplicate",
+        "meansOpen" : false,
+        "description" : "This report duplicates an existing issue"
+      }, {
+        "status" : "WontFix",
+        "meansOpen" : false,
+        "description" : "We decided to not take action on this issue"
+      }, {
+        "status" : "Done",
+        "meansOpen" : false,
+        "description" : "The requested non-coding task was completed"
+      } ],
+      "labels" : [ {
+        "label" : "Type-Defect",
+        "description" : "Report of a software defect"
+      }, {
+        "label" : "Type-Enhancement",
+        "description" : "Request for enhancement"
+      }, {
+        "label" : "Type-Task",
+        "description" : "Work item that doesn't change the code or docs"
+      }, {
+        "label" : "Type-Review",
+        "description" : "Request for a source code review"
+      }, {
+        "label" : "Type-Other",
+        "description" : "Some other kind of issue"
+      }, {
+        "label" : "Priority-Critical",
+        "description" : "Must resolve in the specified milestone"
+      }, {
+        "label" : "Priority-High",
+        "description" : "Strongly want to resolve in the specified milestone"
+      }, {
+        "label" : "Priority-Medium",
+        "description" : "Normal priority"
+      }, {
+        "label" : "Priority-Low",
+        "description" : "Might slip to later milestone"
+      }, {
+        "label" : "OpSys-All",
+        "description" : "Affects all operating systems"
+      }, {
+        "label" : "OpSys-Windows",
+        "description" : "Affects Windows users"
+      }, {
+        "label" : "OpSys-Linux",
+        "description" : "Affects Linux users"
+      }, {
+        "label" : "OpSys-OSX",
+        "description" : "Affects Mac OS X users"
+      }, {
+        "label" : "Milestone-Release1.0",
+        "description" : "All essential functionality working"
+      }, {
+        "label" : "Component-UI",
+        "description" : "Issue relates to program UI"
+      }, {
+        "label" : "Component-Logic",
+        "description" : "Issue relates to application logic"
+      }, {
+        "label" : "Component-Persistence",
+        "description" : "Issue relates to data storage components"
+      }, {
+        "label" : "Component-Scripts",
+        "description" : "Utility and installation scripts"
+      }, {
+        "label" : "Component-Docs",
+        "description" : "Issue relates to end-user documentation"
+      }, {
+        "label" : "Security",
+        "description" : "Security risk to users"
+      }, {
+        "label" : "Performance",
+        "description" : "Performance issue"
+      }, {
+        "label" : "Usability",
+        "description" : "Affects program usability"
+      }, {
+        "label" : "Maintainability",
+        "description" : "Hinders future changes"
+      } ],
+      "prompts" : [ {
+        "name" : "Defect report from user",
+        "title" : "Enter one-line summary",
+        "description" : "What steps will reproduce the problem?\n1. \n2. \n3. \n\nWhat is the expected output? What do you see instead?\n\n\nWhat version of the product are you using? On what operating system?\n\n\nPlease provide any additional information below.\n",
+        "titleMustBeEdited" : true,
+        "status" : "New",
+        "labels" : [ "Type-Defect", "Priority-Medium" ]
+      }, {
+        "name" : "Defect report from developer",
+        "title" : "Enter one-line summary",
+        "description" : "What steps will reproduce the problem?\n1. \n2. \n3. \n\nWhat is the expected output? What do you see instead?\n\n\nPlease use labels and text to provide additional information.\n",
+        "titleMustBeEdited" : true,
+        "status" : "Accepted",
+        "labels" : [ "Type-Defect", "Priority-Medium" ],
+        "membersOnly" : true
+      }, {
+        "name" : "Review request",
+        "title" : "Code review request",
+        "description" : "Branch name:\n\nPurpose of code changes on this branch:\n\n\nWhen reviewing my code changes, please focus on:\n\n\nAfter the review, I'll merge this branch into:\n/trunk\n",
+        "status" : "New",
+        "labels" : [ "Type-Review", "Priority-Medium" ],
+        "membersOnly" : true,
+        "defaultToMember" : false
+      } ],
+      "defaultPromptForMembers" : 1,
+      "defaultPromptForNonMembers" : 0
+    },
+    "role" : "owner",
+    "members" : [ {
+      "kind" : "projecthosting#issuePerson",
+      "name" : "mrovi9000",
+      "htmlLink" : "https://code.google.com/u/106736353629303906862/"
+    } ],
+    "issues" : {
+      "kind" : "projecthosting#issueList",
+      "totalResults" : 0,
+      "items" : [  ]
+    }
+  }, {
+    "kind" : "projecthosting#project",
+    "name" : "tint2",
+    "externalId" : "tint2",
+    "htmlLink" : "/p/tint2/",
+    "summary" : "tint2 is a lightweight panel/taskbar.",
+    "description" : "tint2 is a simple _*panel/taskbar*_ unintrusive and light (memory / cpu / aestetic). <br>We follow freedesktop specifications.\r\n \r\n=== 0.11 features ===\r\n * panel with taskbar, systray, clock and battery status\r\n * easy to customize : color/transparency on font, icon, border and background\r\n * pager like capability : send task from one workspace to another, switch workspace\r\n * multi-monitor capability : one panel per monitor, show task from current monitor\r\n * customize mouse event\r\n * window manager's menu\r\n * tooltip\r\n * autohide\r\n * clock timezones\r\n * real & fake transparency with autodetection of composite manager\r\n * panel's theme switcher 'tint2conf' \r\n\r\n=== Other project ===\r\n * Lightweight volume control http://softwarebakery.com/maato/volumeicon.html\r\n * Lightweight calendar http://code.google.com/p/gsimplecal/\r\n * Graphical config tool http://code.google.com/p/tintwizard/\r\n * Command line theme switcher http://github.com/dbbolton/scripts/blob/master/tint2theme\r\n\r\n\r\n=== Snapshot SVN ===\r\n\r\nhttp://img252.imageshack.us/img252/1433/wallpaper2td.jpg\r\n\r\n\r\n",
+    "labels" : [ "taskbar", "panel", "lightweight", "desktop", "openbox", "pager", "tint2" ],
+    "versionControlSystem" : "git",
+    "repositoryUrls" : [ "https://tint2.googlecode.com/git/" ],
+    "issuesConfig" : {
+      "kind" : "projecthosting#projectIssueConfig",
+      "defaultColumns" : [ "ID", "Status", "Type", "Milestone", "Priority", "Component", "Owner", "Summary", "Modified", "Stars" ],
+      "defaultSorting" : [ "-ID" ],
+      "statuses" : [ {
+        "status" : "New",
+        "meansOpen" : true,
+        "description" : "Issue has not had initial review yet"
+      }, {
+        "status" : "NeedInfo",
+        "meansOpen" : true,
+        "description" : "More information is needed before deciding what action should be taken"
+      }, {
+        "status" : "Accepted",
+        "meansOpen" : true,
+        "description" : "A Defect that a developer has reproduced or an Enhancement that a developer has committed to addressing"
+      }, {
+        "status" : "Wishlist",
+        "meansOpen" : true,
+        "description" : "An Enhancement which is valid, but no developers have committed to addressing"
+      }, {
+        "status" : "Started",
+        "meansOpen" : true,
+        "description" : "Work on this issue has begun"
+      }, {
+        "status" : "Fixed",
+        "meansOpen" : false,
+        "description" : "Work has completed"
+      }, {
+        "status" : "Invalid",
+        "meansOpen" : false,
+        "description" : "This was not a valid issue report"
+      }, {
+        "status" : "Duplicate",
+        "meansOpen" : false,
+        "description" : "This report duplicates an existing issue"
+      }, {
+        "status" : "WontFix",
+        "meansOpen" : false,
+        "description" : "We decided to not take action on this issue"
+      }, {
+        "status" : "Incomplete",
+        "meansOpen" : false,
+        "description" : "Not enough information and no activity for a long period of time"
+      } ],
+      "labels" : [ {
+        "label" : "Type-Defect",
+        "description" : "Report of a software defect"
+      }, {
+        "label" : "Type-Enhancement",
+        "description" : "Request for enhancement"
+      }, {
+        "label" : "Type-Task",
+        "description" : "Work item that does not change the code"
+      }, {
+        "label" : "Type-Review",
+        "description" : "Request for a source code review"
+      }, {
+        "label" : "Type-Other",
+        "description" : "Some other kind of issue"
+      }, {
+        "label" : "Milestone-0.12",
+        "description" : "Fix should be included in release 0.12"
+      }, {
+        "label" : "Priority-Critical",
+        "description" : "Must resolve in the specified milestone"
+      }, {
+        "label" : "Priority-High",
+        "description" : "Strongly want to resolve in the specified milestone"
+      }, {
+        "label" : "Priority-Medium",
+        "description" : "Normal priority"
+      }, {
+        "label" : "Priority-Low",
+        "description" : "Might slip to later milestone"
+      }, {
+        "label" : "OpSys-All",
+        "description" : "Affects all operating systems"
+      }, {
+        "label" : "OpSys-Windows",
+        "description" : "Affects Windows users"
+      }, {
+        "label" : "OpSys-Linux",
+        "description" : "Affects Linux users"
+      }, {
+        "label" : "OpSys-OSX",
+        "description" : "Affects Mac OS X users"
+      }, {
+        "label" : "Security",
+        "description" : "Security risk to users"
+      }, {
+        "label" : "Performance",
+        "description" : "Performance issue"
+      }, {
+        "label" : "Usability",
+        "description" : "Affects program usability"
+      }, {
+        "label" : "Maintainability",
+        "description" : "Hinders future changes"
+      }, {
+        "label" : "Component-Panel",
+        "description" : "Issue relates to the panel (e.g. positioning, hiding, transparency)"
+      }, {
+        "label" : "Component-Taskbar",
+        "description" : "Issue relates to the taskbar (e.g. tasks, multiple desktops)"
+      }, {
+        "label" : "Component-Battery",
+        "description" : "Issue relates to the battery"
+      }, {
+        "label" : "Component-Systray",
+        "description" : "Issue relates to the system tray"
+      }, {
+        "label" : "Component-Clock",
+        "description" : "Issue relates to the clock"
+      }, {
+        "label" : "Component-Launcher",
+        "description" : "Issue relates to the launcher"
+      }, {
+        "label" : "Component-Tint2conf",
+        "description" : "Issue relates to the configuration GUI (tint2conf)"
+      }, {
+        "label" : "Component-Docs",
+        "description" : "Issue relates to end-user documentation"
+      }, {
+        "label" : "Component-New",
+        "description" : "Issue describes a new component proposal"
+      } ],
+      "prompts" : [ {
+        "name" : "Defect report from user",
+        "title" : "Enter one-line summary",
+        "description" : "What steps will reproduce the problem?\n1.\n2.\n3.\n\nWhat is the expected output? What do you see instead?\n\n\nWhat version of the product are you using? On what operating system?\n\n\nWhich window manager (e.g. openbox, xfwm, metacity, mutter, kwin) or\nwhich desktop environment (e.g. Gnome 2, Gnome 3, LXDE, XFCE, KDE)\nare you using?\n\n\nPlease provide any additional information below. It might be helpful\nto attach your tint2rc file (usually located at ~/.config/tint2/tint2rc).",
+        "titleMustBeEdited" : true,
+        "status" : "New",
+        "labels" : [ "Priority-Medium" ],
+        "defaultToMember" : true
+      }, {
+        "name" : "Defect report from developer",
+        "title" : "Enter one-line summary",
+        "description" : "What steps will reproduce the problem?\n1.\n2.\n3.\n\nWhat is the expected output? What do you see instead?\n\n\nPlease use labels and text to provide additional information.",
+        "titleMustBeEdited" : true,
+        "status" : "Accepted",
+        "labels" : [ "Type-Defect", "Priority-Medium" ],
+        "membersOnly" : true,
+        "defaultToMember" : true
+      }, {
+        "name" : "Review request",
+        "title" : "Code review request",
+        "description" : "Purpose of code changes on this branch:\n\n\nWhen reviewing my code changes, please focus on:\n\n\nAfter the review, I'll merge this branch into:\n/trunk",
+        "status" : "New",
+        "labels" : [ "Type-Review", "Priority-Medium" ],
+        "membersOnly" : true,
+        "defaultToMember" : true
+      } ],
+      "defaultPromptForMembers" : 1,
+      "defaultPromptForNonMembers" : 0,
+      "usersCanSetLabels" : false
+    },
+    "role" : "owner",
+    "issues" : {
+      "kind" : "projecthosting#issueList",
+      "totalResults" : 473,
+      "items" : [ {
+        "kind" : "projecthosting#issue",
+        "id" : 169,
+        "title" : "Scrolling through tasks",
+        "summary" : "Scrolling through tasks",
+        "stars" : 1,
+        "starred" : false,
+        "status" : "Fixed",
+        "state" : "closed",
+        "labels" : [ "Type-Enhancement", "Priority-Medium" ],
+        "author" : {
+          "kind" : "projecthosting#issuePerson",
+          "name" : "schattenpr...",
+          "htmlLink" : "https://code.google.com/u/106498139506637530000/"
+        },
+        "owner" : {
+          "kind" : "projecthosting#issuePerson",
+          "name" : "thilo...",
+          "htmlLink" : "https://code.google.com/u/104224918623172014000/"
+        },
+        "updated" : "2009-11-18T05:14:58.000Z",
+        "published" : "2009-11-18T00:20:19.000Z",
+        "closed" : "2009-11-18T05:14:58.000Z",
+        "projectId" : "tint2",
+        "canComment" : true,
+        "canEdit" : true,
+        "comments" : {
+          "kind" : "projecthosting#issueCommentList",
+          "totalResults" : 2,
+          "items" : [ {
+            "id" : 0,
+            "kind" : "projecthosting#issueComment",
+            "author" : {
+              "kind" : "projecthosting#issuePerson",
+              "name" : "schattenpr...",
+              "htmlLink" : "https://code.google.com/u/10649813950663753000/"
+            },
+            "content" : "I like to scroll through the tasks with my scrollwheel (like in fluxbox). \r\n\r\nPatch is attached that adds two new mouse-actions (next_task+prev_task) \r\nthat can be used for exactly that purpose. \r\n\r\nall the best!",
+            "published" : "2009-11-18T00:20:19.000Z",
+            "updates" : {
+              "kind" : "projecthosting#issueCommentUpdate"
+            },
+            "canDelete" : true,
+            "attachments" : [ {
+              "attachmentId" : "8901002890399325565",
+              "fileName" : "tint2_task_scrolling.diff",
+              "fileSize" : 3059,
+              "mimetype" : "text/x-c++; charset=us-ascii"
+            }, {
+              "attachmentId" : "000",
+              "fileName" : "screenshot.png",
+              "fileSize" : 0,
+              "mimetype" : "image/png"
+            }, {
+              "attachmentId" : "001",
+              "fileName" : "screenshot1.PNG",
+              "fileSize" : 0,
+              "mimetype" : "image/x-png"
+            } ]
+          }, {
+            "id" : 1,
+            "kind" : "projecthosting#issueComment",
+            "author" : {
+              "kind" : "projecthosting#issuePerson",
+              "name" : "thilo...",
+              "htmlLink" : "https://code.google.com/u/104224918623172014000/"
+            },
+            "content" : "applied, thanks.\r\n",
+            "published" : "2009-11-18T05:14:58.000Z",
+            "updates" : {
+              "kind" : "projecthosting#issueCommentUpdate",
+              "status" : "Fixed",
+              "labels" : [ "-Type-Defect", "Type-Enhancement" ]
+            },
+            "canDelete" : true
+          } ]
+        }
+      } ]
+    }
+  } ]
+}

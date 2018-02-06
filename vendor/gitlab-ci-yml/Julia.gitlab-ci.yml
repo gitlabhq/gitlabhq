@@ -1,0 +1,54 @@
+# An example .gitlab-ci.yml file to test (and optionally report the coverage
+# results of) your [Julia][1] packages. Please refer to the [documentation][2]
+# for more information about package development in Julia.
+#
+# Here, it is assumed that your Julia package is named `MyPackage`. Change it to
+# whatever name you have given to your package.
+#
+# [1]: http://julialang.org/
+# [2]: http://julia.readthedocs.org/
+
+# Below is the template to run your tests in Julia
+.test_template: &test_definition
+  # Uncomment below if you would like to run the tests on specific references
+  # only, such as the branches `master`, `development`, etc.
+  # only:
+  #   - master
+  #   - development
+  script:
+    # Let's run the tests. Substitute `coverage = false` below, if you do not
+    # want coverage results.
+    - /opt/julia/bin/julia -e 'Pkg.clone(pwd()); Pkg.test("MyPackage",
+      coverage = true)'
+    # Comment out below if you do not want coverage results.
+    - /opt/julia/bin/julia -e 'Pkg.add("Coverage"); cd(Pkg.dir("MyPackage"));
+      using Coverage; cl, tl = get_summary(process_folder());
+      println("(", cl/tl*100, "%) covered")'
+
+# Name a test and select an appropriate image.
+test:0.4.6:
+  image: julialang/julia:v0.4.6
+  <<: *test_definition
+
+# Maybe you would like to test your package against the development branch:
+test:0.5.0-dev:
+  image: julialang/julia:v0.5.0-dev
+  # ... allowing for failures, since we are testing against the development
+  # branch:
+  allow_failure: true
+  <<: *test_definition
+
+# REMARK: Do not forget to enable the coverage feature for your project, if you
+# are using code coverage reporting above. This can be done by
+#
+# - Navigating to the `CI/CD Pipelines` settings of your project,
+# - Copying and pasting the default `Simplecov` regex example provided, i.e.,
+#   `\(\d+.\d+\%\) covered` in the `test coverage parsing` textfield.
+#
+# WARNING: This template is using the `julialang/julia` images from [Docker
+# Hub][3]. One can use custom Julia images and/or the official ones found
+# in the same place. However, care must be taken to correctly locate the binary
+# file (`/opt/julia/bin/julia` above), which is usually given on the image's
+# description page.
+#
+# [3]: http://hub.docker.com/

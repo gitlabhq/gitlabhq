@@ -1,0 +1,25 @@
+- page_title    "New Password"
+- header_title  "New Password"
+%h3.page-title Setup new password
+%hr
+= form_for @user, url: profile_password_path, method: :post, html: { class: 'form-horizontal '} do |f|
+  %p.slead
+    Please set a new password before proceeding.
+    %br
+    After a successful password update you will be redirected to login screen.
+
+  = form_errors(@user)
+
+  - unless @user.password_automatically_set?
+    .form-group
+      = f.label :current_password, class: 'control-label'
+      .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
+  .form-group
+    = f.label :password, class: 'control-label'
+    .col-sm-10= f.password_field :password, required: true, class: 'form-control'
+  .form-group
+    = f.label :password_confirmation, class: 'control-label'
+    .col-sm-10
+      = f.password_field :password_confirmation, required: true, class: 'form-control'
+  .form-actions
+    = f.submit 'Set new password', class: "btn btn-create"

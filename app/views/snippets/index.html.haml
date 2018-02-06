@@ -1,0 +1,13 @@
+- page_title "By #{@user.name}", "Snippets"
+
+%ol.breadcrumb
+  %li
+    = link_to snippets_path do
+      Snippets
+  %li
+    = @user.name
+  .pull-right.hidden-xs
+    = link_to user_path(@user) do
+      #{@user.name} profile page
+
+= render 'snippets'

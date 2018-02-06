@@ -1,0 +1,55 @@
+.divergence-graph {
+  padding: 12px 12px 0 0;
+  float: right;
+
+  .graph-side {
+    position: relative;
+    width: 80px;
+    height: 22px;
+    padding: 5px 0 13px;
+    float: left;
+
+    .bar {
+      position: absolute;
+      height: 4px;
+      background-color: $divergence-graph-bar-bg;
+    }
+
+    .bar-behind {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .bar-ahead {
+      left: 0;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .count {
+      padding-top: 6px;
+      padding-bottom: 0;
+      font-size: 12px;
+      color: $gl-text-color;
+      display: block;
+    }
+
+    .count-behind {
+      padding-right: 4px;
+      text-align: right;
+    }
+
+    .count-ahead {
+      padding-left: 4px;
+      text-align: left;
+    }
+  }
+
+  .graph-separator {
+    position: relative;
+    width: 1px;
+    height: 18px;
+    margin: 5px 0 0;
+    float: left;
+    background-color: $divergence-graph-separator-bg;
+  }
+}

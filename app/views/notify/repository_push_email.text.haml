@@ -1,0 +1,53 @@
+#{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name} at #{@message.project_name_with_namespace}
+- if @message.compare
+  \
+  \
+  - if @message.reverse_compare?
+    WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
+    \
+    \
+  = @message.reverse_compare? ? "Deleted commits:" : "Commits:"
+  - @message.commits.each do |commit|
+    #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.to_s(:iso8601)}
+    #{commit.safe_message}
+    \- - - - -
+  \
+  \
+  #{pluralize @message.diffs_count, "changed file"}:
+  \
+  - @message.diffs.each do |diff_file|
+    - if diff_file.deleted_file?
+      \- − #{diff_file.old_path}
+    - elsif diff_file.renamed_file?
+      \- #{diff_file.old_path} → #{diff_file.new_path}
+    - elsif diff_file.new_file?
+      \- + #{diff_file.new_path}
+    - else
+      \- #{diff_file.new_path}
+  - unless @message.disable_diffs?
+    - if @message.compare_timeout
+      \
+      \
+      The diff was not included because it is too large.
+    - else
+      \
+      \
+      Changes:
+      - @message.diffs.each do |diff_file|
+        \
+        \=====================================
+        - if diff_file.deleted_file?
+          #{diff_file.old_path} deleted
+        - elsif diff_file.renamed_file?
+          #{diff_file.old_path} → #{diff_file.new_path}
+        - else
+          = diff_file.new_path
+        \=====================================
+        - if diff_file.too_large?
+          The diff for this file was not included because it is too large.
+        - else
+          != diff_file.diff.diff
+  - if @message.target_url
+    \
+    \
+    View it on GitLab: #{@message.target_url}

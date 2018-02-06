@@ -1,0 +1,33 @@
+.project-network {
+  border: 1px solid $border-color;
+
+  .controls {
+    color: $project-network-controls-color;
+    font-size: 14px;
+    padding: 5px;
+    border-bottom: 1px solid $border-color;
+    background: $gray-darker;
+  }
+
+  .network-graph {
+    background: $white-light;
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+}
+
+.graphs {
+  .graph-author-email {
+    float: right;
+    color: $graph-author-email-color;
+  }
+
+  .graph-additions {
+    color: $gl-text-green;
+  }
+
+  .graph-deletions {
+    color: $gl-text-red;
+  }
+}

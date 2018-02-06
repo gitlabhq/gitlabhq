@@ -1,0 +1,23 @@
+- page_title "Gitea Import"
+- header_title "Projects", root_path
+
+%h3.page-title
+  = custom_icon('go_logo')
+  Import Projects from Gitea
+
+%p
+  To get started, please enter your Gitea Host URL and a
+  = succeed '.' do
+    = link_to 'Personal Access Token', 'https://github.com/gogits/go-gogs-client/wiki#access-token'
+
+= form_tag personal_access_token_import_gitea_path, class: 'form-horizontal' do
+  .form-group
+    = label_tag :gitea_host_url, 'Gitea Host URL', class: 'control-label'
+    .col-sm-4
+      = text_field_tag :gitea_host_url, nil, placeholder: 'https://try.gitea.io', class: 'form-control'
+  .form-group
+    = label_tag :personal_access_token, 'Personal Access Token', class: 'control-label'
+    .col-sm-4
+      = text_field_tag :personal_access_token, nil, class: 'form-control'
+  .form-actions
+    = submit_tag 'List Your Gitea Repositories', class: 'btn btn-create'

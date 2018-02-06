@@ -1,0 +1,16 @@
+- if discussion.resolved?
+  .discussion-headline-light.js-discussion-headline
+    = discussion_resolved_intro(discussion)
+    - if discussion.resolved_by
+      by
+      = link_to_member(@project, discussion.resolved_by, avatar: false)
+    - if discussion.resolved_by_push?
+      with a push
+    = time_ago_with_tooltip(discussion.resolved_at, placement: "bottom")
+- elsif discussion.updated?
+  .discussion-headline-light.js-discussion-headline
+    Last updated
+    - if discussion.last_updated_by
+      by
+      = link_to_member(@project, discussion.last_updated_by, avatar: false)
+    = time_ago_with_tooltip(discussion.last_updated_at, placement: "bottom")

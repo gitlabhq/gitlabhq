@@ -1,0 +1,19 @@
+- breadcrumb_title 'Kubernetes'
+- page_title _("Login")
+
+.row.prepend-top-default
+  .col-sm-4
+    = render 'projects/clusters/sidebar'
+  .col-sm-8
+    = render 'projects/clusters/dropdown', dropdown_text: s_('ClusterIntegration|Create Kubernetes cluster on Google Kubernetes Engine')
+    = render 'header'
+.row
+  .col-sm-8.col-sm-offset-4.signin-with-google
+    - if @authorize_url
+      = link_to @authorize_url do
+        = image_tag('auth_buttons/signin_with_google.png', width: '191px')
+      = _('or')
+      = link_to('create a new Google account', 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral', target: '_blank', rel: 'noopener noreferrer')
+    - else
+      - link = link_to(s_('ClusterIntegration|properly configured'), help_page_path("integration/google"), target: '_blank', rel: 'noopener noreferrer')
+      = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }

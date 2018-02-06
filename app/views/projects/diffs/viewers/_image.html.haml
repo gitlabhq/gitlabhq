@@ -1,0 +1,13 @@
+- diff_file = viewer.diff_file
+- image_point = Gitlab::Diff::ImagePoint.new(nil, nil, nil, nil)
+- discussions = @grouped_diff_discussions[diff_file.new_path] if @grouped_diff_discussions
+
+- locals = { diff_file: diff_file, position: diff_file.position(image_point, position_type: :image).to_json, click_to_comment: true, diff_view_data: diff_view_data }
+
+- if diff_file.new_file? || diff_file.deleted_file?
+  = render partial: "projects/diffs/single_image_diff", locals: locals
+- else
+  = render partial: "projects/diffs/replaced_image_diff", locals: locals
+
+.note-container
+  = render partial: "discussions/notes", collection: discussions, as: :discussion

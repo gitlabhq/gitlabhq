@@ -1,0 +1,379 @@
+// For tabbed navigation links, scrolling tabs, etc. For all top/main navigation,
+// please check nav.scss
+.nav-links {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  height: auto;
+  border-bottom: 1px solid $border-color;
+
+  li {
+    display: flex;
+
+    a {
+      padding: $gl-btn-padding;
+      padding-bottom: 11px;
+      font-size: 14px;
+      line-height: 28px;
+      color: $gl-text-color-secondary;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+
+      &:hover,
+      &:active,
+      &:focus {
+        text-decoration: none;
+        color: $black;
+        border-bottom: 2px solid $gray-darkest;
+
+        .badge {
+          color: $black;
+        }
+      }
+    }
+
+    &.active a {
+      color: $black;
+      font-weight: $gl-font-weight-bold;
+
+      .badge {
+        color: $black;
+      }
+    }
+  }
+}
+
+.top-area {
+  @include clearfix;
+  border-bottom: 1px solid $border-color;
+
+  .nav-text {
+    padding-top: 16px;
+    padding-bottom: 11px;
+    display: inline-block;
+    line-height: 28px;
+    white-space: normal;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
+  }
+
+  .nav-links {
+    margin-bottom: 0;
+    border-bottom: 0;
+    float: left;
+
+    &.wide {
+      width: 100%;
+      display: block;
+    }
+
+    &.scrolling-tabs {
+      float: left;
+    }
+
+    li a {
+      padding: 16px 15px 11px;
+    }
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+
+      &.mobile-separator {
+        border-bottom: 1px solid $border-color;
+      }
+    }
+  }
+
+  .nav-controls {
+    display: inline-block;
+    float: right;
+    text-align: right;
+    padding: 11px 0;
+    margin-bottom: 0;
+
+    > .btn,
+    > .btn-container,
+    > .dropdown,
+    > input,
+    > form {
+      margin-right: $gl-padding-top;
+      display: inline-block;
+      vertical-align: top;
+
+      &:last-child {
+        margin-right: 0;
+        float: right;
+      }
+    }
+
+    > .btn-grouped {
+      float: none;
+    }
+
+    .icon-label {
+      display: none;
+    }
+
+    input {
+      display: inline-block;
+      position: relative;
+
+      /* Medium devices (desktops, 992px and up) */
+      @media (min-width: $screen-md-min) { width: 200px; }
+
+      /* Large devices (large desktops, 1200px and up) */
+      @media (min-width: $screen-lg-min) { width: 250px; }
+
+      &.input-short {
+        /* Medium devices (desktops, 992px and up) */
+        @media (min-width: $screen-md-min) { width: 170px; }
+
+        /* Large devices (large desktops, 1200px and up) */
+        @media (min-width: $screen-lg-min) { width: 210px; }
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      padding-bottom: 0;
+      width: 100%;
+
+      .btn,
+      form,
+      .dropdown,
+      .dropdown-toggle,
+      .dropdown-menu-toggle,
+      .form-control {
+        margin: 0 0 10px;
+        display: block;
+        width: 100%;
+      }
+
+      form {
+        display: block;
+        height: auto;
+        margin-bottom: 14px;
+
+        input {
+          width: 100%;
+          margin: 0 0 10px;
+        }
+      }
+
+      .input-short {
+        width: 100%;
+      }
+
+      .icon-label {
+        display: inline-block;
+      }
+
+      .project-item-select-holder {
+        margin: 0;
+        width: 100%;
+      }
+    }
+  }
+
+  &.adjust {
+    .nav-text,
+    .nav-controls {
+      width: auto;
+
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
+    }
+  }
+
+  &.multi-line {
+    .nav-text {
+      line-height: 20px;
+    }
+
+    .nav-controls {
+      padding: 17px 0;
+    }
+  }
+
+  pre {
+    width: 100%;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-flow: row wrap;
+
+    .nav-controls {
+      $controls-margin: $btn-xs-side-margin - 2px;
+      flex: 0 0 100%;
+
+      &.controls-flex {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0 $gl-padding-top;
+      }
+
+      .controls-item,
+      .controls-item-full,
+      .controls-item:last-child {
+        flex: 1 1 35%;
+        display: block;
+        width: 100%;
+        margin: $controls-margin;
+
+        .btn,
+        .dropdown {
+          margin: 0;
+        }
+      }
+
+      .controls-item-full {
+        flex: 1 1 100%;
+      }
+    }
+  }
+}
+
+.scrolling-tabs-container {
+  position: relative;
+
+  .merge-request-tabs-container & {
+    overflow: hidden;
+  }
+
+  .nav-links {
+    @include scrolling-links();
+  }
+
+  .fade-right {
+    @include fade(left, $gray-light);
+    right: -5px;
+
+    .fa {
+      right: -7px;
+    }
+  }
+
+  .fade-left {
+    @include fade(right, $gray-light);
+    left: -5px;
+    text-align: center;
+
+    .fa {
+      left: -7px;
+    }
+  }
+}
+
+.inner-page-scroll-tabs {
+  position: relative;
+
+  .fade-right {
+    @include fade(left, $white-light);
+    right: 0;
+    text-align: right;
+
+    .fa {
+      right: 5px;
+    }
+  }
+
+  .fade-left {
+    @include fade(right, $white-light);
+    left: 0;
+    text-align: left;
+
+    .fa {
+      left: 5px;
+    }
+  }
+
+  .fade-right,
+  .fade-left {
+    top: 16px;
+    bottom: auto;
+  }
+
+  &.is-smaller {
+    .fade-right,
+    .fade-left {
+      top: 11px;
+    }
+  }
+}
+
+.nav-block {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, $white-light);
+      right: -5px;
+
+      .fa {
+        right: -7px;
+      }
+    }
+
+    .fade-left {
+      @include fade(right, $white-light);
+      left: -5px;
+
+      .fa {
+        left: -7px;
+      }
+    }
+  }
+
+  &.activities {
+    border-bottom: 1px solid $border-color;
+
+    .nav-links {
+      border-bottom: 0;
+    }
+  }
+}
+
+.project-item-select-holder.btn-group {
+  display: flex;
+  overflow: hidden;
+  float: right;
+
+  .new-project-item-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-project-item-select-button {
+    width: 32px;
+  }
+}
+
+.empty-state .project-item-select-holder.btn-group {
+  float: none;
+  display: inline-block;
+
+  .btn {
+    // overrides styles applied to plain `.empty-state .btn`
+    margin: 10px 0;
+    max-width: 300px;
+    width: auto;
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 250px;
+    }
+  }
+}
+
+.new-project-item-select-button .fa-caret-down {
+  margin-left: 2px;
+}

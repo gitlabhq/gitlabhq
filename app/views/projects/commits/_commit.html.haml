@@ -1,0 +1,60 @@
+- view_details  = local_assigns.fetch(:view_details, false)
+- merge_request = local_assigns.fetch(:merge_request, nil)
+- project       = local_assigns.fetch(:project) { merge_request&.project }
+- ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
+
+- link = commit_path(project, commit, merge_request: merge_request)
+- cache_key = [project.full_path,
+               commit.id,
+               Gitlab::CurrentSettings.current_application_settings,
+               @path.presence,
+               current_controller?(:commits),
+               merge_request&.iid,
+               view_details,
+               commit.status(ref),
+               I18n.locale].compact
+
+= cache(cache_key, expires_in: 1.day) do
+  %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
+
+    .avatar-cell.hidden-xs
+      = author_avatar(commit, size: 36)
+
+    .commit-detail
+      .commit-content
+        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
+        %span.commit-row-message.visible-xs-inline
+          &middot;
+          = commit.short_id
+        - if commit.status(ref)
+          .visible-xs-inline
+            = render_commit_status(commit, ref: ref)
+        - if commit.description?
+          %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
+
+        - if commit.description?
+          %pre.commit-row-description.js-toggle-content
+            = preserve(markdown_field(commit, :description))
+
+        .commiter
+          - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
+          - commit_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
+          - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
+          #{ commit_text.html_safe }
+
+      .commit-actions.flex-row.hidden-xs
+        - if request.xhr?
+          = render partial: 'projects/commit/signature', object: commit.signature
+        - else
+          = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
+
+        - if commit.status(ref)
+          = render_commit_status(commit, ref: ref)
+
+        #commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id) } }
+        = link_to commit.short_id, link, class: "commit-sha btn btn-transparent btn-link"
+        = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
+        = link_to_browse_code(project, commit)
+
+        - if view_details && merge_request
+          = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"

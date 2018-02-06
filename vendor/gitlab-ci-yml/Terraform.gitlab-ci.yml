@@ -1,0 +1,55 @@
+# Official image for Hashicorp's Terraform. It uses light image which is Alpine
+# based as it is much lighter.
+#
+# Entrypoint is also needed as image by default set `terraform` binary as an
+# entrypoint.
+image:
+  name: hashicorp/terraform:light
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+# Default output file for Terraform plan
+variables:
+  PLAN: plan.tfplan
+
+cache:
+  paths:
+    - .terraform
+
+before_script:
+  - terraform --version
+  - terraform init
+
+stages:
+  - validate
+  - build
+  - deploy
+
+validate:
+  stage: validate
+  script:
+    - terraform validate
+
+plan:
+  stage: build
+  script:
+    - terraform plan -out=$PLAN
+  artifacts:
+    name: plan
+    paths:
+      - $PLAN
+
+# Separate apply job for manual launching Terraform as it can be destructive
+# action.
+apply:
+  stage: deploy
+  environment:
+    name: production
+  script:
+    - terraform apply -input=false $PLAN
+  dependencies:
+    - plan
+  when: manual
+  only:
+    - master

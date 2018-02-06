@@ -1,0 +1,8 @@
+- simple_viewer = blob.simple_viewer
+- rich_viewer = blob.rich_viewer
+- rich_viewer_active = rich_viewer && params[:viewer] != 'simple'
+
+= render 'projects/blob/viewer', viewer: simple_viewer, hidden: rich_viewer_active
+
+- if rich_viewer
+  = render 'projects/blob/viewer', viewer: rich_viewer, hidden: !rich_viewer_active

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# this script should run as the 'git' user, not root, because 'root' should not
+# own intermediate directories created by rsync.
+#
+# Example invocation:
+# find /var/opt/gitlab/git-data/repositories -maxdepth 2 | \
+#   parallel-rsync-repos transfer-success.log /var/opt/gitlab/git-data/repositories /mnt/gitlab/repositories
+#
+# You can also rsync to a remote destination.
+#
+# parallel-rsync-repos transfer-success.log /var/opt/gitlab/git-data/repositories user@host:/mnt/gitlab/repositories
+#
+# If you need to pass extra options to rsync, set the RSYNC variable
+#
+# env RSYNC='rsync --rsh="foo bar"' parallel-rsync-repos transfer-success.log /src dest
+#
+
+LOGFILE=$1
+SRC=$2
+DEST=$3
+
+if [ -z "$LOGFILE" ] || [ -z "$SRC" ] || [ -z "$DEST" ] ; then
+  echo "Usage: $0 LOGFILE SRC DEST"
+  exit 1
+fi
+
+if [ -z "$JOBS" ] ; then
+  JOBS=10
+fi
+
+if [ -z "$RSYNC" ] ; then
+  RSYNC=rsync
+fi
+
+if ! cd $SRC ; then
+  echo "cd $SRC failed"
+  exit 1
+fi
+
+rsyncjob() {
+  relative_dir="./${1#$SRC}"
+
+  if ! $RSYNC --delete --relative -a "$relative_dir" "$DEST" ; then
+    echo "rsync $1 failed"
+    return 1
+  fi
+
+  echo "$1" >> $LOGFILE
+}
+
+export LOGFILE SRC DEST RSYNC
+export -f rsyncjob
+
+parallel -j$JOBS --progress rsyncjob
