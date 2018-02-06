@@ -445,7 +445,7 @@ namespace :gitlab do
 
   namespace :geo do
     desc 'GitLab | Check Geo configuration and dependencies'
-    task check: :environment do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
 
       checks = [

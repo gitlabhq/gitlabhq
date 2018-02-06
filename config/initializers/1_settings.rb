@@ -180,6 +180,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['attributes'] = {} if server['attributes'].nil?
+    server['lowercase_usernames'] = false if server['lowercase_usernames'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
     server['external_groups'] = [] if server['external_groups'].nil?
@@ -346,7 +347,6 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
-
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled']           ||= false
 Settings.artifacts['object_store']['remote_directory']  ||= nil
@@ -412,6 +412,13 @@ Settings.uploads['object_store']['remote_directory']  ||= 'uploads'
 Settings.uploads['object_store']['background_upload'] ||= true
 # Convert upload connection settings to use string keys, to make Fog happy
 Settings.uploads['object_store']['connection']&.deep_stringify_keys!
+
+#
+# Uploads
+#
+Settings['uploads'] ||= Settingslogic.new({})
+Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
+Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
 
 #
 # Mattermost

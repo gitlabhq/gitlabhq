@@ -4,6 +4,7 @@ module Boards
     prepend EE::Boards::IssuesController
     include BoardsResponses
 
+    before_action :whitelist_query_limiting, only: [:index, :update]
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
     before_action :authorize_update_issue, only: [:update]
@@ -93,6 +94,11 @@ module Boards
           milestone: { only: [:id, :title] }
         }
       )
+    end
+
+    def whitelist_query_limiting
+      # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42439
+      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42428')
     end
   end
 end

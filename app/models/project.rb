@@ -73,6 +73,7 @@ class Project < ActiveRecord::Base
 
   before_destroy :remove_private_deploy_keys
   after_destroy -> { run_after_commit { remove_pages } }
+  after_destroy :remove_exports
 
   after_validation :check_pending_delete
 
@@ -1537,6 +1538,8 @@ class Project < ActiveRecord::Base
   end
 
   def export_path
+    return nil unless namespace.present? || hashed_storage?(:repository)
+
     File.join(Gitlab::ImportExport.storage_path, disk_path)
   end
 
@@ -1545,8 +1548,9 @@ class Project < ActiveRecord::Base
   end
 
   def remove_exports
-    _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
-    status.zero?
+    return nil unless export_path.present?
+
+    FileUtils.rm_rf(export_path)
   end
 
   def full_path_slug

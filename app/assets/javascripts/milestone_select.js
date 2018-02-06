@@ -2,6 +2,7 @@
 /* global Issuable */
 /* global ListMilestone */
 import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 
 export default class MilestoneSelect {
@@ -52,48 +53,47 @@ export default class MilestoneSelect {
       }
       return $dropdown.glDropdown({
         showMenuAbove: showMenuAbove,
-        data: (term, callback) => $.ajax({
-          url: milestonesUrl
-        }).done((data) => {
-          const extraOptions = [];
-          if (showAny) {
-            extraOptions.push({
-              id: 0,
-              name: '',
-              title: 'Any Milestone'
-            });
-          }
-          if (showNo) {
-            extraOptions.push({
-              id: -1,
-              name: 'No Milestone',
-              title: 'No Milestone'
-            });
-          }
-          if (showUpcoming) {
-            extraOptions.push({
-              id: -2,
-              name: '#upcoming',
-              title: 'Upcoming'
-            });
-          }
-          if (showStarted) {
-            extraOptions.push({
-              id: -3,
-              name: '#started',
-              title: 'Started'
-            });
-          }
-          if (extraOptions.length) {
-            extraOptions.push('divider');
-          }
+        data: (term, callback) => axios.get(milestonesUrl)
+          .then(({ data }) => {
+            const extraOptions = [];
+            if (showAny) {
+              extraOptions.push({
+                id: 0,
+                name: '',
+                title: 'Any Milestone'
+              });
+            }
+            if (showNo) {
+              extraOptions.push({
+                id: -1,
+                name: 'No Milestone',
+                title: 'No Milestone'
+              });
+            }
+            if (showUpcoming) {
+              extraOptions.push({
+                id: -2,
+                name: '#upcoming',
+                title: 'Upcoming'
+              });
+            }
+            if (showStarted) {
+              extraOptions.push({
+                id: -3,
+                name: '#started',
+                title: 'Started'
+              });
+            }
+            if (extraOptions.length) {
+              extraOptions.push('divider');
+            }
 
-          callback(extraOptions.concat(data));
-          if (showMenuAbove) {
-            $dropdown.data('glDropdown').positionMenuAbove();
-          }
-          $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
-        }),
+            callback(extraOptions.concat(data));
+            if (showMenuAbove) {
+              $dropdown.data('glDropdown').positionMenuAbove();
+            }
+            $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
+          }),
         renderRow: milestone => `
           <li data-milestone-id="${milestone.name}">
             <a href='#' class='dropdown-menu-milestone-link'>
@@ -200,26 +200,23 @@ export default class MilestoneSelect {
             data[abilityName].milestone_id = selected != null ? selected : null;
             $loading.removeClass('hidden').fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
-            return $.ajax({
-              type: 'PUT',
-              url: issueUpdateURL,
-              data: data
-            }).done((data) => {
-              $dropdown.trigger('loaded.gl.dropdown');
-              $loading.fadeOut();
-              $selectBox.hide();
-              $value.css('display', '');
-              if (data.milestone != null) {
-                data.milestone.full_path = this.currentProject.full_path;
-                data.milestone.remaining = timeFor(data.milestone.due_date);
-                data.milestone.name = data.milestone.title;
-                $value.html(milestoneLinkTemplate(data.milestone));
-                return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
-              } else {
-                $value.html(milestoneLinkNoneTemplate);
-                return $sidebarCollapsedValue.find('span').text('No');
-              }
-            });
+            return axios.put(issueUpdateURL, data)
+              .then(({ data }) => {
+                $dropdown.trigger('loaded.gl.dropdown');
+                $loading.fadeOut();
+                $selectBox.hide();
+                $value.css('display', '');
+                if (data.milestone != null) {
+                  data.milestone.full_path = this.currentProject.full_path;
+                  data.milestone.remaining = timeFor(data.milestone.due_date);
+                  data.milestone.name = data.milestone.title;
+                  $value.html(milestoneLinkTemplate(data.milestone));
+                  return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
+                } else {
+                  $value.html(milestoneLinkNoneTemplate);
+                  return $sidebarCollapsedValue.find('span').text('No');
+                }
+              });
           }
         }
       });

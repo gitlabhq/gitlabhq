@@ -43,6 +43,7 @@
 - pipeline_creation:run_pipeline_schedule
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
+- pipeline_default:create_trace_artifact
 - pipeline_default:pipeline_metrics
 - pipeline_default:pipeline_notification
 - pipeline_default:update_head_pipeline_for_merge_request
@@ -120,6 +121,10 @@
 - geo:geo_repositories_clean_up
 - geo:geo_repository_destroy
 
+- object_storage_upload
+- object_storage:object_storage_background_move
+- object_storage:object_storage_migrate_uploads
+
 - admin_emails
 - elastic_batch_project_indexer
 - elastic_commit_indexer
@@ -130,7 +135,6 @@
 - geo_project_sync
 - geo_repository_shard_sync
 - ldap_group_sync
-- object_storage_upload
 - project_update_repository_storage
 - rebase
 - repository_update_mirror

@@ -16,8 +16,8 @@ feature 'User Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Add cluster'
-      click_link 'Add an existing cluster'
+      click_link 'Add Kubernetes cluster'
+      click_link 'Add an existing Kubernetes cluster'
     end
 
     context 'when user filled form with valid parameters' do
@@ -25,11 +25,11 @@ feature 'User Cluster', :js do
         fill_in 'cluster_name', with: 'dev-cluster'
         fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'http://example.com'
         fill_in 'cluster_platform_kubernetes_attributes_token', with: 'my-token'
-        click_button 'Add cluster'
+        click_button 'Add Kubernetes cluster'
       end
 
       it 'user sees a cluster details page' do
-        expect(page).to have_content('Cluster integration')
+        expect(page).to have_content('Kubernetes cluster integration')
         expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
         expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
           .to have_content('http://example.com')
@@ -40,7 +40,7 @@ feature 'User Cluster', :js do
 
     context 'when user filled form with invalid parameters' do
       before do
-        click_button 'Add cluster'
+        click_button 'Add Kubernetes cluster'
       end
 
       it 'user sees a validation error' do
@@ -68,7 +68,7 @@ feature 'User Cluster', :js do
       end
 
       it 'user sees the successful message' do
-        expect(page).to have_content('Cluster was successfully updated.')
+        expect(page).to have_content('Kubernetes cluster was successfully updated.')
       end
     end
 
@@ -80,7 +80,7 @@ feature 'User Cluster', :js do
       end
 
       it 'user sees the successful message' do
-        expect(page).to have_content('Cluster was successfully updated.')
+        expect(page).to have_content('Kubernetes cluster was successfully updated.')
         expect(cluster.reload.name).to eq('my-dev-cluster')
         expect(cluster.reload.platform_kubernetes.namespace).to eq('my-namespace')
       end
@@ -94,8 +94,8 @@ feature 'User Cluster', :js do
       end
 
       it 'user sees creation form with the successful message' do
-        expect(page).to have_content('Cluster integration was successfully removed.')
-        expect(page).to have_link('Add cluster')
+        expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
+        expect(page).to have_link('Add Kubernetes cluster')
       end
     end
   end

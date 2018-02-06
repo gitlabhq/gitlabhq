@@ -43,6 +43,18 @@ describe Upload do
           .to(a_string_matching(/\A\h{64}\z/))
       end
     end
+
+    describe 'after_destroy' do
+      context 'uploader is FileUploader-based' do
+        subject { create(:upload, :issuable_upload) }
+
+        it 'calls delete_file!' do
+          is_expected.to receive(:delete_file!)
+
+          subject.destroy
+        end
+      end
+    end
   end
 
   describe '#absolute_path' do
@@ -102,5 +114,11 @@ describe Upload do
 
       expect(upload).not_to exist
     end
+  end
+
+  describe "#uploader_context" do
+    subject { create(:upload, :issuable_upload, secret: 'secret', filename: 'file.txt') }
+
+    it { expect(subject.uploader_context).to match(a_hash_including(secret: 'secret', identifier: 'file.txt')) }
   end
 end

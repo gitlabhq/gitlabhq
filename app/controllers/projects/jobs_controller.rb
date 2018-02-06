@@ -1,4 +1,6 @@
 class Projects::JobsController < Projects::ApplicationController
+  prepend EE::Projects::JobsController
+
   before_action :build, except: [:index, :cancel_all]
 
   before_action :authorize_read_build!,

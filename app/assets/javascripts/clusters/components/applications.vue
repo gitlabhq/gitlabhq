@@ -22,7 +22,7 @@
     computed: {
       generalApplicationDescription() {
         return sprintf(
-          _.escape(s__(`ClusterIntegration|Install applications on your cluster.
+          _.escape(s__(`ClusterIntegration|Install applications on your Kubernetes cluster.
   Read more about %{helpLink}`)),
           {
             helpLink: `<a href="${this.helpPath}">
@@ -34,7 +34,7 @@
       },
       helmTillerDescription() {
         return _.escape(s__(
-          `ClusterIntegration|Helm streamlines installing and managing Kubernets applications.
+          `ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
           Tiller runs inside of your Kubernetes Cluster, and manages
           releases of your charts.`,
         ));
@@ -49,7 +49,7 @@
           _.escape(s__(
             `ClusterIntegration|%{boldNotice} This will add some extra resources
             like a load balancer, which may incur additional costs depending on
-            the hosting provider Kubernetes is installed on. If you are using GKE,
+            the hosting provider your Kubernetes cluster is installed on. If you are using GKE,
             you can %{pricingLink}.`,
           )), {
             boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,

@@ -29,6 +29,8 @@ module API
         use :pagination
       end
       get ':id/repository/branches' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42329')
+
         repository = user_project.repository
         branches = ::Kaminari.paginate_array(repository.branches.sort_by(&:name))
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
