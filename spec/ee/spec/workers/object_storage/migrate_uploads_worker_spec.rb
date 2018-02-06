@@ -78,7 +78,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     shared_examples 'outputs correctly' do |success: 0, failures: 0|
       total = success + failures
 
-      if success
+      if success > 0
         it 'outputs the reports' do
           expect(Rails.logger).to receive(:info).with(%r{Migrated #{success}/#{total} files})
 
@@ -86,7 +86,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
         end
       end
 
-      if failures
+      if failures > 0
         it 'outputs upload failures' do
           expect(Rails.logger).to receive(:warn).with(/Error .* I am a teapot/)
 

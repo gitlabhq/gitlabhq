@@ -99,6 +99,10 @@ module ObjectStorage
       def success?
         error.nil?
       end
+
+      def to_s
+        success? ? "Migration successful." : "Error while migrating #{upload.id}: #{error.message}"
+      end
     end
 
     module Report
@@ -124,13 +128,11 @@ module ObjectStorage
       end
 
       def header(success, failures)
-        color = failures.count == 0 ? :green : :red
-
-        "Migrated #{success.count}/#{success.count + failures.count} files.".color(color)
+        "Migrated #{success.count}/#{success.count + failures.count} files."
       end
 
       def failures(failures)
-        failures.map { |f| "\t#{f}".color(:red) }.join('\n')
+        failures.map { |f| "\t#{f}" }.join('\n')
       end
     end
 
