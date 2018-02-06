@@ -439,13 +439,17 @@ module API
       end
     end
 
-    def present_artifacts!(artifacts_file)
+    def present_artifacts!(artifacts_file, direct_download: true)
       return not_found! unless artifacts_file.exists?
 
       if artifacts_file.file_storage?
         present_file!(artifacts_file.path, artifacts_file.filename)
-      else
+      elsif direct_download
         redirect(artifacts_file.url)
+      else
+        header(*Gitlab::Workhorse.send_url(artifacts_file.url))
+        status :ok
+        body
       end
     end
 
