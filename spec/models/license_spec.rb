@@ -349,6 +349,22 @@ describe License do
         end
       end
     end
+
+    describe '.global_feature?' do
+      subject { described_class.global_feature?(feature) }
+
+      context 'when it is a global feature' do
+        let(:feature) { :geo }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when it is not a global feature' do
+        let(:feature) { :sast }
+
+        it { is_expected.to be(false) }
+      end
+    end
   end
 
   describe "#md5" do
