@@ -691,7 +691,6 @@ describe Namespace do
     end
   end
 
-<<<<<<< HEAD
   describe '#root_ancestor' do
     it 'returns the top most ancestor', :nested_groups do
       root_group = create(:group)
@@ -712,15 +711,6 @@ describe Namespace do
     let(:legacy_export) { legacy_project.export_project_path }
     let(:hashed_export) { hashed_project.export_project_path }
 
-=======
-  describe '#remove_exports' do
-    let(:legacy_project) { create(:project, :with_export, namespace: namespace) }
-    let(:hashed_project) { create(:project, :with_export, :hashed, namespace: namespace) }
-    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
-    let(:legacy_export) { legacy_project.export_project_path }
-    let(:hashed_export) { hashed_project.export_project_path }
-
->>>>>>> upstream/master
     it 'removes exports for legacy and hashed projects' do
       allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
 
@@ -745,17 +735,10 @@ describe Namespace do
     context 'when a parent is assigned to a group with no previous parent' do
       it 'should return the path was' do
         group = create(:group, parent: nil)
-<<<<<<< HEAD
 
         parent = create(:group)
         group.parent = parent
 
-=======
-
-        parent = create(:group)
-        group.parent = parent
-
->>>>>>> upstream/master
         expect(group.full_path_was).to eq("#{group.path_was}")
       end
     end
