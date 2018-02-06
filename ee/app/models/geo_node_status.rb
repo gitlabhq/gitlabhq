@@ -8,6 +8,13 @@ class GeoNodeStatus < ActiveRecord::Base
   attr_writer :health_status
   attr_accessor :storage_shards
 
+  # Prometheus metrics, no need to store them in the database
+  attr_accessor :event_log_count, :event_log_max_id,
+                :repository_created_max_id, :repository_updated_max_id,
+                :repository_deleted_max_id, :repository_renamed_max_id, :repositories_changed_max_id,
+                :lfs_object_deleted_max_id, :job_artifact_deleted_max_id,
+                :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id
+
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
     db_replication_lag_seconds: 'Database replication lag (seconds)',
@@ -34,7 +41,18 @@ class GeoNodeStatus < ActiveRecord::Base
     cursor_last_event_id: 'Last database ID of the event log processed by the secondary',
     cursor_last_event_timestamp: 'Time of the event log processed by the secondary',
     last_successful_status_check_timestamp: 'Time when Geo node status was updated internally',
-    status_message: 'Summary of health status'
+    status_message: 'Summary of health status',
+    event_log_count: 'Number of entries in the Geo event log',
+    event_log_max_id: 'Highest ID present in the Geo event log',
+    repository_created_max_id: 'Highest ID present in repositories created',
+    repository_updated_max_id: 'Highest ID present in repositories updated',
+    repository_deleted_max_id: 'Highest ID present in repositories deleted',
+    repository_renamed_max_id: 'Highest ID present in repositories renamed',
+    repositories_changed_max_id: 'Highest ID present in repositories changed',
+    lfs_object_deleted_max_id: 'Highest ID present in LFS objects deleted',
+    job_artifact_deleted_max_id: 'Highest ID present in job artifacts deleted',
+    hashed_storage_migrated_max_id: 'Highest ID present in projects migrated to hashed storage',
+    hashed_storage_attachments_max_id: 'Highest ID present in attachments migrated to hashed storage'
   }.freeze
 
   def self.current_node_status
@@ -93,6 +111,19 @@ class GeoNodeStatus < ActiveRecord::Base
 
     self.version = Gitlab::VERSION
     self.revision = Gitlab::REVISION
+
+    self.event_log_count = Geo::EventLog.count
+    # Geo::PruneEventLogWorker might remove old events, so log maximum id
+    self.event_log_max_id = Geo::EventLog.maximum(:id)
+    self.repository_created_max_id = Geo::RepositoryCreatedEvent.maximum(:id)
+    self.repository_updated_max_id = Geo::RepositoryUpdatedEvent.maximum(:id)
+    self.repository_deleted_max_id = Geo::RepositoryDeletedEvent.maximum(:id)
+    self.repository_renamed_max_id = Geo::RepositoryRenamedEvent.maximum(:id)
+    self.repositories_changed_max_id = Geo::RepositoriesChangedEvent.maximum(:id)
+    self.lfs_object_deleted_max_id = Geo::LfsObjectDeletedEvent.maximum(:id)
+    self.job_artifact_deleted_max_id = Geo::JobArtifactDeletedEvent.maximum(:id)
+    self.hashed_storage_migrated_max_id = Geo::HashedStorageMigratedEvent.maximum(:id)
+    self.hashed_storage_attachments_max_id = Geo::HashedStorageAttachmentsEvent.maximum(:id)
 
     load_primary_data
     load_secondary_data
