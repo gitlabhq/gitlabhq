@@ -19,7 +19,7 @@ describe Projects::JobsController do
 
       context 'when there are no network issues' do
         before do
-          stub_remote_trace_ok
+          stub_remote_trace_206
 
           get_trace
         end
@@ -34,7 +34,7 @@ describe Projects::JobsController do
 
       context 'when there is a network issue' do
         before do
-          stub_remote_trace_ng
+          stub_remote_trace_500
         end
 
         it 'returns a trace' do

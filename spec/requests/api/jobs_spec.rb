@@ -457,7 +457,7 @@ describe API::Jobs do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
         before do
-          stub_remote_trace_ok
+          stub_remote_trace_206
           allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
           allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
           allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
