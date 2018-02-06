@@ -704,36 +704,6 @@ describe Namespace do
     end
   end
 
-  describe "#allowed_path_by_redirects" do
-    let(:namespace1) { create(:namespace, path: 'foo') }
-
-    context "when the path has been taken before" do
-      before do
-        namespace1.path = 'bar'
-        namespace1.save!
-      end
-
-      it 'should be invalid' do
-        namespace2 = build(:group, path: 'foo')
-        expect(namespace2).to be_invalid
-      end
-
-      it 'should return an error on path' do
-        namespace2 = build(:group, path: 'foo')
-        namespace2.valid?
-        expect(namespace2.errors.messages[:path].first).to eq('foo has been taken before. Please use another one')
-      end
-    end
-
-    context "when the path has not been taken before" do
-      it 'should be valid' do
-        expect(RedirectRoute.count).to eq(0)
-        namespace = build(:namespace)
-        expect(namespace).to be_valid
-      end
-    end
-  end
-
   describe '#remove_exports' do
     let(:legacy_project) { create(:project, :with_export, namespace: namespace) }
     let(:hashed_project) { create(:project, :with_export, :hashed, namespace: namespace) }
@@ -751,6 +721,46 @@ describe Namespace do
 
       expect(File.exist?(legacy_export)).to be_falsy
       expect(File.exist?(hashed_export)).to be_falsy
+    end
+  end
+
+  describe '#full_path_was' do
+    context 'when the group has no parent' do
+      it 'should return the path was' do
+        group = create(:group, parent: nil)
+        expect(group.full_path_was).to eq(group.path_was)
+      end
+    end
+
+    context 'when a parent is assigned to a group with no previous parent' do
+      it 'should return the path was' do
+        group = create(:group, parent: nil)
+
+        parent = create(:group)
+        group.parent = parent
+
+        expect(group.full_path_was).to eq("#{group.path_was}")
+      end
+    end
+
+    context 'when a parent is removed from the group' do
+      it 'should return the parent full path' do
+        parent = create(:group)
+        group = create(:group, parent: parent)
+        group.parent = nil
+
+        expect(group.full_path_was).to eq("#{parent.full_path}/#{group.path}")
+      end
+    end
+
+    context 'when changing parents' do
+      it 'should return the previous parent full path' do
+        parent = create(:group)
+        group = create(:group, parent: parent)
+        new_parent = create(:group)
+        group.parent = new_parent
+        expect(group.full_path_was).to eq("#{parent.full_path}/#{group.path}")
+      end
     end
   end
 end

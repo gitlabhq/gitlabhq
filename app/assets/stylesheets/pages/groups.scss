@@ -273,3 +273,16 @@ table.pipeline-project-metrics tr td {
   border-radius: $label-border-radius;
   font-weight: $gl-font-weight-normal;
 }
+
+.js-groups-dropdown {
+  width: 100%;
+}
+
+.dropdown-group-transfer {
+  bottom: 100%;
+  top: initial;
+
+  .dropdown-content {
+    overflow-y: unset;
+  }
+}
