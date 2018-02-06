@@ -1,16 +1,16 @@
 # GitLab Helm Chart
-> **Note**:
-* This chart is deprecated, and is being replaced by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). For more information on available charts, please see our [overview](index.md#chart-overview).
-* These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
+> **Note:**
+* This chart has been tested on Google Kubernetes Engine and Azure Container Service.
 
+**This chart is deprecated.** For small installations on Kubernetes today, we recommend the beta [`gitlab-omnibus` Helm chart](gitlab_omnibus.md).
 
-For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+A new [cloud native GitLab chart](index.md#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. The cloud native chart will replace both the `gitlab` and `gitlab-omnibus` charts when available later this year.
+
+Due to the significant architectural changes, migrating will require backing up data out of this instance and restoring it into the new deployment. For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
 ## Introduction
 
 The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. This chart requires advanced knowledge of Kubernetes to successfully use. We **strongly recommend** the [gitlab-omnibus](gitlab_omnibus.md) chart.
-
-This chart is deprecated, and will be replaced by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). Due to the difficulty in supporting upgrades, migrating will require exporting data out of this instance and importing it into the new deployment.
 
 This chart includes the following:
 
