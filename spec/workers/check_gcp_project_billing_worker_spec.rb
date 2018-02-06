@@ -70,6 +70,7 @@ describe CheckGcpProjectBillingWorker do
     before do
       allow(described_class).to receive(:get_session_token).and_return('bogustoken')
       allow_any_instance_of(described_class).to receive(:try_obtain_lease_for).and_return('randomuuid')
+
       Gitlab::Redis::SharedState.with do |redis|
         allow(redis).to receive(:set)
       end
