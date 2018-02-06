@@ -9,7 +9,7 @@ describe 'New issue', :js do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-    current_application_settings.update!(
+    Gitlab::CurrentSettings.update!(
       akismet_enabled: true,
       akismet_api_key: 'testkey',
       recaptcha_enabled: true,

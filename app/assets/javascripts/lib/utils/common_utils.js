@@ -1,5 +1,5 @@
-import { getLocationHash } from './url_utility';
 import axios from './axios_utils';
+import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -32,16 +32,11 @@ export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
 
-export const ajaxGet = url => $.ajax({
-  type: 'GET',
-  url,
-  dataType: 'script',
-});
-
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
+export const ajaxGet = url => axios.get(url, {
+  params: { format: 'js' },
+  responseType: 'text',
+}).then(({ data }) => {
+  $.globalEval(data);
 });
 
 export const rstrip = (val) => {
@@ -416,7 +411,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,

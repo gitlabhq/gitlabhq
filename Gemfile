@@ -69,6 +69,10 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
+# Before updating this gem, check if
+# https://github.com/gollum/gollum-lib/pull/292 has been merged.
+# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
+# in config/initializers/gollum.rb
 gem 'gollum-lib', '~> 4.2', require: false
 
 # Before updating this gem, check if
@@ -349,7 +353,7 @@ group :development, :test do
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
-  gem 'flay', '~> 2.8.0', require: false
+  gem 'flay', '~> 2.10.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false

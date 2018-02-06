@@ -151,6 +151,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['attributes'] = {} if server['attributes'].nil?
+    server['lowercase_usernames'] = false if server['lowercase_usernames'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
 
@@ -300,8 +301,10 @@ Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled']
 #
 Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
-Settings.artifacts['path']         = Settings.absolute(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"))
-Settings.artifacts['max_size']   ||= 100 # in megabytes
+Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values_at('path', 'storage_path').compact.first || File.join(Settings.shared['path'], "artifacts"))
+# Settings.artifact['path'] is deprecated, use `storage_path` instead
+Settings.artifacts['path']         = Settings.artifacts['storage_path']
+Settings.artifacts['max_size'] ||= 100 # in megabytes
 
 #
 # Registry
@@ -337,6 +340,13 @@ Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pa
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
+
+#
+# Uploads
+#
+Settings['uploads'] ||= Settingslogic.new({})
+Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
+Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
 
 #
 # Mattermost

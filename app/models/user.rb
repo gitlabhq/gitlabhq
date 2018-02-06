@@ -2,10 +2,8 @@ require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
 
   include Gitlab::ConfigHelper
-  include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
@@ -30,7 +28,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :rss_token
 
   default_value_for :admin, false
-  default_value_for(:external) { current_application_settings.user_default_external }
+  default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -127,7 +125,7 @@ class User < ActiveRecord::Base
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build' # rubocop:disable Cop/ActiveRecordDependent
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :todos
   has_many :notification_settings,    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
@@ -137,6 +135,8 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
+  has_many :callouts, class_name: 'UserCallout'
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   #
   # Validations
@@ -159,12 +159,10 @@ class User < ActiveRecord::Base
   validate :namespace_uniq, if: :username_changed?
   validate :namespace_move_dir_allowed, if: :username_changed?
 
-  validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: :email_changed?
   validate :owns_notification_email, if: :notification_email_changed?
   validate :owns_public_email, if: :public_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
-  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
@@ -225,9 +223,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
   # Scopes
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
@@ -235,8 +230,8 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active).non_internal }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
-  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
@@ -527,12 +522,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def avatar_type
-    unless avatar.image?
-      errors.add :avatar, "only images allowed"
-    end
-  end
-
   def unique_email
     if !emails.exists?(email: email) && Email.exists?(email: email)
       errors.add(:email, 'has already been taken')
@@ -670,11 +659,11 @@ class User < ActiveRecord::Base
   end
 
   def allow_password_authentication_for_web?
-    current_application_settings.password_authentication_enabled_for_web? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
   end
 
   def allow_password_authentication_for_git?
-    current_application_settings.password_authentication_enabled_for_git? && !ldap_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user?
   end
 
   def can_change_username?
@@ -802,7 +791,7 @@ class User < ActiveRecord::Base
     # without this safeguard!
     return unless has_attribute?(:projects_limit) && projects_limit.nil?
 
-    self.projects_limit = current_application_settings.default_projects_limit
+    self.projects_limit = Gitlab::CurrentSettings.default_projects_limit
   end
 
   def requires_ldap_check?
@@ -860,9 +849,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_url(size: nil, scale: 2, **args)
-    # We use avatar_path instead of overriding avatar_url because of carrierwave.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
+    GravatarService.new.execute(email, size, scale, username: username)
   end
 
   def primary_email_verified?
@@ -1227,7 +1214,7 @@ class User < ActiveRecord::Base
     else
       # Only revert these back to the default if they weren't specifically changed in this update.
       self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
-      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
+      self.projects_limit = Gitlab::CurrentSettings.default_projects_limit unless projects_limit_changed?
     end
   end
 
@@ -1235,15 +1222,15 @@ class User < ActiveRecord::Base
     valid = true
     error = nil
 
-    if current_application_settings.domain_blacklist_enabled?
-      blocked_domains = current_application_settings.domain_blacklist
+    if Gitlab::CurrentSettings.domain_blacklist_enabled?
+      blocked_domains = Gitlab::CurrentSettings.domain_blacklist
       if domain_matches?(blocked_domains, email)
         error = 'is not from an allowed domain.'
         valid = false
       end
     end
 
-    allowed_domains = current_application_settings.domain_whitelist
+    allowed_domains = Gitlab::CurrentSettings.domain_whitelist
     unless allowed_domains.blank?
       if domain_matches?(allowed_domains, email)
         valid = true

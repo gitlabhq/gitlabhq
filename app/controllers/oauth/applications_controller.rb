@@ -1,5 +1,4 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
-  include Gitlab::CurrentSettings
   include Gitlab::GonHelper
   include PageLayoutHelper
   include OauthApplications
@@ -31,7 +30,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   private
 
   def verify_user_oauth_applications_enabled
-    return if current_application_settings.user_oauth_applications?
+    return if Gitlab::CurrentSettings.user_oauth_applications?
 
     redirect_to profile_path
   end

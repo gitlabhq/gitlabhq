@@ -25,8 +25,9 @@ module Gitlab
         @repository.exists?
       end
 
+      # Disabled because of https://gitlab.com/gitlab-org/gitaly/merge_requests/539
       def write_page(name, format, content, commit_details)
-        @repository.gitaly_migrate(:wiki_write_page) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_write_page, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
           if is_enabled
             gitaly_write_page(name, format, content, commit_details)
             gollum_wiki.clear_cache
@@ -47,8 +48,9 @@ module Gitlab
         end
       end
 
+      # Disable because of https://gitlab.com/gitlab-org/gitlab-ce/issues/42094
       def update_page(page_path, title, format, content, commit_details)
-        @repository.gitaly_migrate(:wiki_update_page) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_update_page, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
           if is_enabled
             gitaly_update_page(page_path, title, format, content, commit_details)
             gollum_wiki.clear_cache
@@ -68,8 +70,9 @@ module Gitlab
         end
       end
 
+      # Disable because of https://gitlab.com/gitlab-org/gitlab-ce/issues/42039
       def page(title:, version: nil, dir: nil)
-        @repository.gitaly_migrate(:wiki_find_page) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_find_page, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
           if is_enabled
             gitaly_find_page(title: title, version: version, dir: dir)
           else
@@ -192,7 +195,10 @@ module Gitlab
         assert_type!(format, Symbol)
         assert_type!(commit_details, CommitDetails)
 
-        gollum_wiki.write_page(name, format, content, commit_details.to_h)
+        filename = File.basename(name)
+        dir = (tmp_dir = File.dirname(name)) == '.' ? '' : tmp_dir
+
+        gollum_wiki.write_page(filename, format, content, commit_details.to_h, dir)
 
         nil
       rescue Gollum::DuplicatePageError => e
@@ -210,7 +216,15 @@ module Gitlab
         assert_type!(format, Symbol)
         assert_type!(commit_details, CommitDetails)
 
-        gollum_wiki.update_page(gollum_page_by_path(page_path), title, format, content, commit_details.to_h)
+        page = gollum_page_by_path(page_path)
+        committer = Gollum::Committer.new(page.wiki, commit_details.to_h)
+
+        # Instead of performing two renames if the title has changed,
+        # the update_page will only update the format and content and
+        # the rename_page will do anything related to moving/renaming
+        gollum_wiki.update_page(page, page.name, format, content, committer: committer)
+        gollum_wiki.rename_page(page, title, committer: committer)
+        committer.commit
         nil
       end
 

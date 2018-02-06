@@ -1,6 +1,9 @@
 /* eslint-disable comma-dangle, consistent-return, class-methods-use-this, arrow-parens, no-param-reassign, max-len */
 
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 
 const debounceTimeoutDuration = 1000;
 const invalidInputClass = 'gl-field-error-outline';
@@ -77,12 +80,9 @@ export default class UsernameValidator {
       this.state.pending = true;
       this.state.available = false;
       this.renderState();
-      return $.ajax({
-        type: 'GET',
-        url: `${gon.relative_url_root}/users/${username}/exists`,
-        dataType: 'json',
-        success: (res) => this.setAvailabilityState(res.exists)
-      });
+      axios.get(`${gon.relative_url_root}/users/${username}/exists`)
+        .then(({ data }) => this.setAvailabilityState(data.exists))
+        .catch(() => flash(__('An error occurred while validating username')));
     }
   }
 

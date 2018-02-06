@@ -48,7 +48,7 @@
   };
 </script>
 <template>
-  <ul class="nav-links scrolling-tabs">
+  <ul class="nav-links scrolling-tabs separator">
     <li
       v-for="(tab, i) in tabs"
       :key="i"

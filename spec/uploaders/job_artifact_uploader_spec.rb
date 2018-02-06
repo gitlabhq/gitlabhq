@@ -3,33 +3,13 @@ require 'spec_helper'
 describe JobArtifactUploader do
   let(:job_artifact) { create(:ci_job_artifact) }
   let(:uploader) { described_class.new(job_artifact, :file) }
-  let(:local_path) { Gitlab.config.artifacts.path }
 
-  describe '#store_dir' do
-    subject { uploader.store_dir }
+  subject { uploader }
 
-    let(:path) { "#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/#{job_artifact.job_id}/#{job_artifact.id}" }
-
-    context 'when using local storage' do
-      it { is_expected.to start_with(local_path) }
-      it { is_expected.to match(%r{\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z}) }
-      it { is_expected.to end_with(path) }
-    end
-  end
-
-  describe '#cache_dir' do
-    subject { uploader.cache_dir }
-
-    it { is_expected.to start_with(local_path) }
-    it { is_expected.to end_with('/tmp/cache') }
-  end
-
-  describe '#work_dir' do
-    subject { uploader.work_dir }
-
-    it { is_expected.to start_with(local_path) }
-    it { is_expected.to end_with('/tmp/work') }
-  end
+  it_behaves_like "builds correct paths",
+                  store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z],
+                  cache_dir: %r[artifacts/tmp/cache],
+                  work_dir: %r[artifacts/tmp/work]
 
   context 'file is stored in valid local_path' do
     let(:file) do
@@ -43,7 +23,7 @@ describe JobArtifactUploader do
 
     subject { uploader.file.path }
 
-    it { is_expected.to start_with(local_path) }
+    it { is_expected.to start_with("#{uploader.root}/#{uploader.class.base_dir}") }
     it { is_expected.to include("/#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/") }
     it { is_expected.to include("/#{job_artifact.job_id}/#{job_artifact.id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
