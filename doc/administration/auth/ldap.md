@@ -335,7 +335,6 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
-<<<<<<< HEAD
 ## Adjusting LDAP user and group sync schedules
 
 You can manually configure LDAP user and group sync times by setting the
@@ -404,8 +403,6 @@ your installation compares before proceeding.
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-=======
->>>>>>> upstream/master
 ## Enabling LDAP username lowercase
 
 Some LDAP servers, depending on their configurations, can return uppercase usernames. This can lead to several confusing issues like, for example, creating links or namespaces with uppercase names.
