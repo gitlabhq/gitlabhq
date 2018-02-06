@@ -1,0 +1,14 @@
+- if Gitlab::CurrentSettings.email_author_in_body
+  %p.details
+    #{link_to @issue.author_name, user_url(@issue.author)} updated the issue's due date:
+
+- if @issue.assignees.any?
+  %p
+    Assignee: #{@issue.assignee_list}
+
+%p
+  This Issue has a new due date: #{ @issue.due_date }
+
+- if @issue.description
+  %div
+  = markdown(@issue.description, pipeline: :email, author: @issue.author)

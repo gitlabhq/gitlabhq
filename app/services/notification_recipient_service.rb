@@ -230,14 +230,20 @@ module NotificationRecipientService
 
         add_subscribed_users
 
-        if [:new_issue, :new_merge_request].include?(custom_action)
+        if [:new_issue, :new_merge_request, :due_date_issue].include?(custom_action)
           # These will all be participants as well, but adding with the :mention
           # type ensures that users with the mention notification level will
           # receive them, too.
           add_mentions(current_user, target: target)
 
           # Add the assigned users, if any
-          assignees = custom_action == :new_issue ? target.assignees : target.assignee
+          assignees = case custom_action
+                      when :new_issue, :due_date_issue
+                        target.assignees
+                      else
+                        target.assignee
+                      end
+
           # We use the `:participating` notification level in order to match existing legacy behavior as captured
           # in existing specs (notification_service_spec.rb ~ line 507)
           add_recipients(assignees, :participating, NotificationReason::ASSIGNED) if assignees
