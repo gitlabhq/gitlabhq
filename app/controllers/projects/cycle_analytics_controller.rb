@@ -3,6 +3,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::TextHelper
   include CycleAnalyticsParams
 
+  before_action :whitelist_query_limiting, only: [:show]
   before_action :authorize_read_cycle_analytics!
 
   def show
@@ -30,5 +31,9 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
       stats: @cycle_analytics.stats,
       permissions: @cycle_analytics.permissions(user: current_user)
     }
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42671')
   end
 end

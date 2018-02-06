@@ -1,6 +1,7 @@
 class DiffFileEntity < Grape::Entity
   include RequestAwareEntity
   include DiffHelper
+  include SubmoduleHelper
   include BlobHelper
   include IconsHelper
   include ActionView::Helpers::TagHelper
@@ -8,8 +9,7 @@ class DiffFileEntity < Grape::Entity
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file|
-    # ActionController::Base.helpers.submodule_link(diff_file.blob, diff_file.content_sha, diff_file.repository)
-    'TODO'
+    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first
   end
 
   expose :blob_path do |diff_file|

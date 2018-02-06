@@ -8,7 +8,7 @@ import { ajaxGet } from '~/lib/utils/common_utils';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new Star(); // eslint-disable-line no-new
   notificationsDropdown();
   new ShortcutsNavigation(); // eslint-disable-line no-new
@@ -24,4 +24,4 @@ export default () => {
   $('#tree-slider').waitForImages(() => {
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
   });
-};
+});

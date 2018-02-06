@@ -3,7 +3,6 @@
 # A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
-  include Gitlab::CurrentSettings
   include Participable
   include Mentionable
   include Awardable
@@ -61,7 +60,7 @@ class Note < ActiveRecord::Base
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
 
-  has_many :todos, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :todos
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
 
@@ -88,6 +87,7 @@ class Note < ActiveRecord::Base
     end
   end
 
+  # @deprecated attachments are handler by the MarkdownUploader
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
@@ -131,8 +131,13 @@ class Note < ActiveRecord::Base
       Discussion.build_collection(all.includes(:noteable).fresh, context_noteable)
     end
 
-    def find_discussion(discussion_id)
+    def find_discussion(discussion_id, user = nil)
       notes = where(discussion_id: discussion_id).fresh.to_a
+
+      if user
+        notes = notes.reject { |n| n.cross_reference_not_visible_for?(user) }
+      end
+
       return if notes.empty?
 
       Discussion.build(notes)
@@ -195,7 +200,7 @@ class Note < ActiveRecord::Base
   end
 
   def max_attachment_size
-    current_application_settings.max_attachment_size.megabytes.to_i
+    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
   def hook_attrs

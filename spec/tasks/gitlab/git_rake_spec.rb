@@ -19,7 +19,7 @@ describe 'gitlab:git rake tasks' do
 
   describe 'fsck' do
     it 'outputs the integrity check for a repo' do
-      expect { run_rake_task('gitlab:git:fsck') }.to output(/Performed Checking integrity at .*@hashed\/1\/2\/test.git/).to_stdout
+      expect { run_rake_task('gitlab:git:fsck') }.to output(%r{Performed Checking integrity at .*@hashed/1/2/test.git}).to_stdout
     end
 
     it 'errors out about config.lock issues' do

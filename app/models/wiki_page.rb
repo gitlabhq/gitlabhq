@@ -1,5 +1,6 @@
 class WikiPage
   PageChangedError = Class.new(StandardError)
+  PageRenameError = Class.new(StandardError)
 
   include ActiveModel::Validations
   include ActiveModel::Conversion
@@ -102,12 +103,15 @@ class WikiPage
 
   # The hierarchy of the directory this page is contained in.
   def directory
-    wiki.page_title_and_dir(slug).last
+    wiki.page_title_and_dir(slug)&.last.to_s
   end
 
   # The processed/formatted content of this page.
   def formatted_content
-    @attributes[:formatted_content] ||= @page&.formatted_data
+    # Assuming @page exists, nil formatted_data means we didn't load it
+    # before hand (i.e. page was fetched by Gitaly), so we fetch it separately.
+    # If the page was fetched by Gollum, formatted_data would've been a String.
+    @attributes[:formatted_content] ||= @page&.formatted_data || @wiki.page_formatted_data(@page)
   end
 
   # The markup format for the page.
@@ -174,7 +178,7 @@ class WikiPage
   # Creates a new Wiki Page.
   #
   # attr - Hash of attributes to set on the new page.
-  #       :title   - The title for the new page.
+  #       :title   - The title (optionally including dir) for the new page.
   #       :content - The raw markup content.
   #       :format  - Optional symbol representing the
   #                  content format. Can be any type
@@ -186,7 +190,7 @@ class WikiPage
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
   def create(attrs = {})
-    @attributes.merge!(attrs)
+    update_attributes(attrs)
 
     save(page_details: title) do
       wiki.create_page(title, content, format, message)
@@ -201,24 +205,29 @@ class WikiPage
   #                           See ProjectWiki::MARKUPS Hash for available formats.
   #        :message         - Optional commit message to set on the new version.
   #        :last_commit_sha - Optional last commit sha to validate the page unchanged.
-  #        :title           - The Title to replace existing title
+  #        :title           - The Title (optionally including dir) to replace existing title
   #
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
   def update(attrs = {})
     last_commit_sha = attrs.delete(:last_commit_sha)
+
     if last_commit_sha && last_commit_sha != self.last_commit_sha
-      raise PageChangedError.new("You are attempting to update a page that has changed since you started editing it.")
+      raise PageChangedError
     end
 
-    attrs.slice!(:content, :format, :message, :title)
-    @attributes.merge!(attrs)
-    page_details =
-      if title.present? && @page.title != title
-        title
-      else
-        @page.url_path
+    update_attributes(attrs)
+
+    if title_changed?
+      page_details = title
+
+      if wiki.find_page(page_details).present?
+        @attributes[:title] = @page.url_path
+        raise PageRenameError
       end
+    else
+      page_details = @page.url_path
+    end
 
     save(page_details: page_details) do
       wiki.update_page(
@@ -252,7 +261,43 @@ class WikiPage
     page.version.to_s
   end
 
+  def title_changed?
+    title.present? && self.class.unhyphenize(@page.url_path) != title
+  end
+
   private
+
+  # Process and format the title based on the user input.
+  def process_title(title)
+    return if title.blank?
+
+    title = deep_title_squish(title)
+    current_dirname = File.dirname(title)
+
+    if @page.present?
+      return title[1..-1] if current_dirname == '/'
+      return File.join([directory.presence, title].compact) if current_dirname == '.'
+    end
+
+    title
+  end
+
+  # This method squishes all the filename
+  # i.e: '   foo   /  bar  / page_name' => 'foo/bar/page_name'
+  def deep_title_squish(title)
+    components = title.split(File::SEPARATOR).map(&:squish)
+
+    File.join(components)
+  end
+
+  # Updates the current @attributes hash by merging a hash of params
+  def update_attributes(attrs)
+    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
+
+    attrs.slice!(:content, :format, :message, :title)
+
+    @attributes.merge!(attrs)
+  end
 
   def set_attributes
     attributes[:slug] = @page.url_path

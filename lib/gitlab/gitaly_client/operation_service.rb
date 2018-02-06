@@ -103,7 +103,13 @@ module Gitlab
 
         request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
 
-        branch_update = response_enum.next.branch_update
+        second_response = response_enum.next
+
+        if second_response.pre_receive_error.present?
+          raise Gitlab::Git::HooksService::PreReceiveError, second_response.pre_receive_error
+        end
+
+        branch_update = second_response.branch_update
         return if branch_update.nil?
         raise Gitlab::Git::CommitError.new('failed to apply merge to branch') unless branch_update.commit_id.present?
 
@@ -175,6 +181,32 @@ module Gitlab
         else
           response.rebase_sha
         end
+      end
+
+      def user_squash(user, squash_id, branch, start_sha, end_sha, author, message)
+        request = Gitaly::UserSquashRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          squash_id: squash_id.to_s,
+          branch: encode_binary(branch),
+          start_sha: start_sha,
+          end_sha: end_sha,
+          author: Gitlab::Git::User.from_gitlab(author).to_gitaly,
+          commit_message: encode_binary(message)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_squash,
+          request
+        )
+
+        if response.git_error.presence
+          raise Gitlab::Git::Repository::GitError, response.git_error
+        end
+
+        response.squash_sha
       end
 
       def user_commit_files(

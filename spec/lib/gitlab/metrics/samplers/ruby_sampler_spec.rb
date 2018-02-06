@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Samplers::RubySampler do
   let(:sampler) { described_class.new(5) }
+  let(:null_metric) { double('null_metric', set: nil, observe: nil) }
+
+  before do
+    allow(Gitlab::Metrics::NullMetric).to receive(:instance).and_return(null_metric)
+  end
 
   after do
     Allocations.stop if Gitlab::Metrics.mri?
@@ -17,12 +22,9 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     end
 
     it 'adds a metric containing the memory usage' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage)
-                                           .and_return(9000)
+      expect(Gitlab::Metrics::System).to receive(:memory_usage).and_return(9000)
 
-      expect(sampler.metrics[:memory_usage]).to receive(:set)
-                                                  .with({}, 9000)
-                                                  .and_call_original
+      expect(sampler.metrics[:memory_usage]).to receive(:set).with({}, 9000)
 
       sampler.sample
     end
@@ -31,9 +33,7 @@ describe Gitlab::Metrics::Samplers::RubySampler do
       expect(Gitlab::Metrics::System).to receive(:file_descriptor_count)
                                            .and_return(4)
 
-      expect(sampler.metrics[:file_descriptors]).to receive(:set)
-                                                      .with({}, 4)
-                                                      .and_call_original
+      expect(sampler.metrics[:file_descriptors]).to receive(:set).with({}, 4)
 
       sampler.sample
     end
@@ -49,16 +49,14 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     it 'adds a metric containing garbage collection time statistics' do
       expect(GC::Profiler).to receive(:total_time).and_return(0.24)
 
-      expect(sampler.metrics[:total_time]).to receive(:set)
-                                                .with({}, 240)
-                                                .and_call_original
+      expect(sampler.metrics[:total_time]).to receive(:set).with({}, 240)
 
       sampler.sample
     end
 
     it 'adds a metric containing garbage collection statistics' do
       GC.stat.keys.each do |key|
-        expect(sampler.metrics[key]).to receive(:set).with({}, anything).and_call_original
+        expect(sampler.metrics[key]).to receive(:set).with({}, anything)
       end
 
       sampler.sample

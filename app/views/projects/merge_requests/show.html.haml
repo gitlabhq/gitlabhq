@@ -1,6 +1,5 @@
 - @gfm_form = true
 - @content_class = "limit-container-width" unless fluid_layout
-- has_vue_discussions_cookie = cookies[:vue_mr_discussions] == 'true'
 - add_to_breadcrumbs "Merge Requests", project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
@@ -10,7 +9,7 @@
   = webpack_bundle_tag('common_vue')
   = webpack_bundle_tag('diff_notes')
 
-  - if has_vue_discussions_cookie
+  - if has_vue_discussions_cookie?
     = webpack_bundle_tag('mr_notes')
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
@@ -61,7 +60,7 @@
                   Changes
                   %span.badge= @merge_request.diff_size
 
-        - if has_vue_discussions_cookie
+        - if has_vue_discussions_cookie?
           #js-vue-discussion-counter
         - else
           #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
@@ -87,7 +86,7 @@
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
               = render "projects/merge_requests/discussion"
-              - if has_vue_discussions_cookie
+              - if has_vue_discussions_cookie?
                 #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
                   noteable_data: serialize_issuable(@merge_request),
                   current_user_data: UserSerializer.new.represent(current_user).to_json} }

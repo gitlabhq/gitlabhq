@@ -210,6 +210,8 @@ module API
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
       end
       post ':id/fork' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
+
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
 

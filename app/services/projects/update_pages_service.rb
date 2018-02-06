@@ -1,7 +1,5 @@
 module Projects
   class UpdatePagesService < BaseService
-    include Gitlab::CurrentSettings
-
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
@@ -134,7 +132,7 @@ module Projects
     end
 
     def max_size
-      max_pages_size = current_application_settings.max_pages_size.megabytes
+      max_pages_size = Gitlab::CurrentSettings.max_pages_size.megabytes
 
       return MAX_SIZE if max_pages_size.zero?
 

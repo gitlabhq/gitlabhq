@@ -69,6 +69,10 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
+# Before updating this gem, check if
+# https://github.com/gollum/gollum-lib/pull/292 has been merged.
+# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
+# in config/initializers/gollum.rb
 gem 'gollum-lib', '~> 4.2', require: false
 
 # Before updating this gem, check if
@@ -132,7 +136,7 @@ gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.1'
+gem 'nokogiri', '~> 1.8.2'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -325,7 +329,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
-  gem 'rspec-parameterized'
+  gem 'rspec-parameterized', require: false
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -349,7 +353,7 @@ group :development, :test do
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
-  gem 'flay', '~> 2.8.0', require: false
+  gem 'flay', '~> 2.10.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -406,7 +410,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.78.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.83.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

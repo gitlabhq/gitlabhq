@@ -8,6 +8,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:new]
 
+  before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update]
   before_action :set_issuables_index, only: [:index]
@@ -57,20 +58,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def edit
     respond_with(@issue)
-  end
-
-  def discussions
-    notes = @issue.notes
-      .inc_relations_for_view
-      .includes(:noteable)
-      .fresh
-
-    notes = prepare_notes_for_rendering(notes)
-    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
-
-    discussions = Discussion.build_collection(notes, @issue)
-
-    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
   end
 
   def create
@@ -246,5 +233,14 @@ class Projects::IssuesController < Projects::ApplicationController
   def set_issuables_index
     @finder_type = IssuesFinder
     super
+  end
+
+  def whitelist_query_limiting
+    # Also see the following issues:
+    #
+    # 1. https://gitlab.com/gitlab-org/gitlab-ce/issues/42423
+    # 2. https://gitlab.com/gitlab-org/gitlab-ce/issues/42424
+    # 3. https://gitlab.com/gitlab-org/gitlab-ce/issues/42426
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
   end
 end

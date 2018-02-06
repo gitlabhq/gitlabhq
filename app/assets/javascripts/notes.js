@@ -16,6 +16,7 @@ import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
@@ -23,7 +24,7 @@ import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import Autosave from './autosave';
 import TaskList from './task_list';
-import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import { isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 
@@ -267,26 +268,21 @@ export default class Notes {
     }
 
     this.refreshing = true;
-    return $.ajax({
-      url: `${this.notes_url}?html=true`,
-      headers: { 'X-Last-Fetched-At': this.last_fetched_at },
-      dataType: 'json',
-      success: (function(_this) {
-        return function(data) {
-          var notes;
-          notes = data.notes;
-          _this.last_fetched_at = data.last_fetched_at;
-          _this.setPollingInterval(data.notes.length);
-          return $.each(notes, function(i, note) {
-            _this.renderNote(note);
-          });
-        };
-      })(this)
-    }).always((function(_this) {
-      return function() {
-        return _this.refreshing = false;
-      };
-    })(this));
+
+    axios.get(`${this.notes_url}?html=true`, {
+      headers: {
+        'X-Last-Fetched-At': this.last_fetched_at,
+      },
+    }).then(({ data }) => {
+      const notes = data.notes;
+      this.last_fetched_at = data.last_fetched_at;
+      this.setPollingInterval(data.notes.length);
+      $.each(notes, (i, note) => this.renderNote(note));
+
+      this.refreshing = false;
+    }).catch(() => {
+      this.refreshing = false;
+    });
   }
 
   /**
@@ -438,9 +434,6 @@ export default class Notes {
     var discussionContainer, form, row, lineType, diffAvatarContainer;
 
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
-      const $formEl = $form || $(`.diffs .note-row-${noteEntity.id}`);
-      this.updateNote(noteEntity, $formEl);
-
       return;
     }
     this.note_ids.push(noteEntity.id);
@@ -1435,7 +1428,7 @@ export default class Notes {
    * 2) Identify comment type; a) Main thread b) Discussion thread c) Discussion resolve
    * 3) Build temporary placeholder element (using `createPlaceholderNote`)
    * 4) Show placeholder note on UI
-   * 5) Perform network request to submit the note using `ajaxPost`
+   * 5) Perform network request to submit the note using `axios.post`
    *    a) If request is successfully completed
    *        1. Remove placeholder element
    *        2. Show submitted Note element
@@ -1517,9 +1510,10 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    const endpoint = `${formAction}?html=true`;
-    ajaxPost(endpoint, formData)
-      .then((note) => {
+    axios.post(`${formAction}?html=true`, formData)
+      .then((res) => {
+        const note = res.data;
+
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1594,7 +1588,7 @@ export default class Notes {
         }
 
         $form.trigger('ajax:success', [note]);
-      }).fail(() => {
+      }).catch(() => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
@@ -1633,7 +1627,7 @@ export default class Notes {
    *
    * 1) Get Form metadata
    * 2) Update note element with new content
-   * 3) Perform network request to submit the updated note using `ajaxPost`
+   * 3) Perform network request to submit the updated note using `axios.post`
    *    a) If request is successfully completed
    *        1. Show submitted Note element
    *    b) If request failed
@@ -1664,13 +1658,12 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
-    const endpoint = `${formAction}?html=true`;
-    ajaxPost(formAction, formData)
-      .then((note) => {
+    axios.post(`${formAction}?html=true`, formData)
+      .then(({ data }) => {
         // Submission successful! render final note element
-        this.updateNote(note, $editingNote);
+        this.updateNote(data, $editingNote);
       })
-      .fail(() => {
+      .catch(() => {
         // Submission failed, revert back to original note
         $noteBodyText.html(_.escape(cachedNoteBodyText));
         $editingNote.removeClass('being-posted fade-in');

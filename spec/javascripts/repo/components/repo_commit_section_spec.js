@@ -87,8 +87,10 @@ describe('RepoCommitSection', () => {
       changedFiles = JSON.parse(JSON.stringify(vm.$store.getters.changedFiles));
 
       spyOn(service, 'commit').and.returnValue(Promise.resolve({
-        short_id: '1',
-        stats: {},
+        data: {
+          short_id: '1',
+          stats: {},
+        },
       }));
     });
 

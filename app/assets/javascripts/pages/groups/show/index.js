@@ -7,7 +7,7 @@ import ProjectsList from '~/projects_list';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import initGroupsList from '../../../groups';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
   new ShortcutsNavigation();
   new NotificationsForm();
@@ -19,4 +19,4 @@ export default () => {
   }
 
   initGroupsList();
-};
+});
