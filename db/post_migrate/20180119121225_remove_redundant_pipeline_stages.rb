@@ -11,7 +11,10 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
     add_unique_index!
   rescue ActiveRecord::RecordNotUnique
     retry if (attempts -= 1) > 0
-    raise
+    raise StandardError, <<~EOS
+      Failed to add an unique index to ci_stages, despite retrying the
+      migration 100 times. See gitlab-org/gitlab-ce!16580.
+    EOS
   end
 
   def down
