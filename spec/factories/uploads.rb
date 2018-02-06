@@ -27,7 +27,7 @@ FactoryBot.define do
       path { File.join(secret, filename) }
       secret SecureRandom.hex
     end
-    
+
     trait :object_storage do
       store ObjectStorage::Store::REMOTE
     end
