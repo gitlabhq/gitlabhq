@@ -24,8 +24,7 @@ module API
           search: params[:search],
           snippets: snippets?,
           page: params[:page],
-          per_page: params[:per_page],
-          without_counts: false
+          per_page: params[:per_page]
         }.merge(additional_params)
 
         results = SearchService.new(current_user, search_params).search_objects

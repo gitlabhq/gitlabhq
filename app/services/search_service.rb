@@ -43,7 +43,7 @@ class SearchService
   end
 
   def search_objects
-    @search_objects ||= search_results.objects(scope, params[:page], params[:without_counts])
+    @search_objects ||= search_results.objects(scope, params[:page])
   end
 
   private
