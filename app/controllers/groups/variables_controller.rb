@@ -11,20 +11,28 @@ module Groups
     end
 
     def update
-      if @group.update(variables_params)
+      if @group.update(group_variables_params)
         respond_to do |format|
-          format.json { return render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) } }
+          format.json { return render_group_variables }
         end
       else
         respond_to do |format|
-          format.json { render status: :bad_request, json: @group.errors.full_messages }
+          format.json { render_error }
         end
       end
     end
 
     private
 
-    def variables_params
+    def render_group_variables
+      render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) }
+    end
+
+    def render_error
+      render status: :bad_request, json: @group.errors.full_messages
+    end
+
+    def group_variables_params
       params.permit(variables_attributes: [*variable_params_attributes])
     end
 

@@ -14,16 +14,24 @@ class Projects::VariablesController < Projects::ApplicationController
   def update
     if @project.update(variables_params)
       respond_to do |format|
-        format.json { return render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) } }
+        format.json { return render_variables }
       end
     else
       respond_to do |format|
-        format.json { render status: :bad_request, json: @project.errors.full_messages }
+        format.json { render_error }
       end
     end
   end
 
   private
+
+  def render_variables
+    render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+  end
+
+  def render_error
+    render status: :bad_request, json: @project.errors.full_messages
+  end
 
   def variables_params
     params.permit(variables_attributes: [*variable_params_attributes])
