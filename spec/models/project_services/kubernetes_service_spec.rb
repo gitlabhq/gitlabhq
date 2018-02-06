@@ -411,7 +411,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
     context 'if the services is active' do
       it 'should return a message' do
-        expect(kubernetes_service.deprecation_message).to match(/Your cluster information on this page is still editable/)
+        expect(kubernetes_service.deprecation_message).to match(/Your Kubernetes cluster information on this page is still editable/)
       end
     end
 
@@ -449,7 +449,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
     context 'if the services is active' do
       it 'should return a message' do
-        expect(kubernetes_service.deprecation_message).to match(/Your cluster information on this page is still editable/)
+        expect(kubernetes_service.deprecation_message).to match(/Your Kubernetes cluster information on this page is still editable/)
       end
     end
 

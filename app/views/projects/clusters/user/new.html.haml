@@ -1,11 +1,11 @@
-- breadcrumb_title "Cluster"
-- page_title _("New Cluster")
+- breadcrumb_title 'Kubernetes'
+- page_title _("New Kubernetes cluster")
 
 .row.prepend-top-default
   .col-sm-4
     = render 'projects/clusters/sidebar'
   .col-sm-8
-    = render 'projects/clusters/dropdown', dropdown_text: s_('ClusterIntegration|Add an existing cluster')
+    = render 'projects/clusters/dropdown', dropdown_text: s_('ClusterIntegration|Add an existing Kubernetes cluster')
     = render 'header'
     .prepend-top-20
       = render 'form'

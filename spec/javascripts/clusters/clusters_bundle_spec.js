@@ -84,7 +84,7 @@ describe('Clusters', () => {
       });
 
       expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller was successfully installed on your cluster');
+      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller was successfully installed on your Kubernetes cluster');
     });
 
     it('shows an alert when multiple things gets newly installed', () => {
@@ -99,7 +99,7 @@ describe('Clusters', () => {
       });
 
       expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your cluster');
+      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your Kubernetes cluster');
     });
   });
 
