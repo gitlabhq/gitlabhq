@@ -2254,10 +2254,7 @@ ActiveRecord::Schema.define(version: 20180204200836) do
     t.string "model_type"
     t.string "uploader", null: false
     t.datetime "created_at", null: false
-<<<<<<< HEAD
     t.integer "store"
-=======
->>>>>>> upstream/master
     t.string "mount_point"
     t.string "secret"
   end
