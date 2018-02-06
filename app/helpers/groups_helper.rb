@@ -1,4 +1,6 @@
 module GroupsHelper
+  prepend EE::GroupsHelper
+
   def group_nav_link_paths
     %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
   end
