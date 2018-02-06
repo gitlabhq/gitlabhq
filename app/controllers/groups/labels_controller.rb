@@ -54,7 +54,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to group_labels_path(@group), status: 302, notice: 'Label was removed'
+        redirect_to group_labels_path(@group), status: 302, notice: "#{@label.name} deleted permanently"
       end
       format.js
     end
