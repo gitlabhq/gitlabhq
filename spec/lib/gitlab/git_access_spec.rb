@@ -119,7 +119,7 @@ describe Gitlab::GitAccess do
           end
 
           it 'does not block pushes with "not found"' do
-            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
       end
@@ -327,7 +327,7 @@ describe Gitlab::GitAccess do
       let(:authentication_abilities) { [] }
 
       it 'raises unauthorized with download error' do
-        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
+        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_download])
       end
 
       context 'when authentication abilities include download code' do
@@ -351,7 +351,7 @@ describe Gitlab::GitAccess do
       let(:authentication_abilities) { [] }
 
       it 'raises unauthorized with push error' do
-        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
       end
 
       context 'when authentication abilities include push code' do
@@ -852,26 +852,26 @@ describe Gitlab::GitAccess do
         project.add_reporter(user)
       end
 
-      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
     end
 
     context 'when unauthorized' do
       context 'to public project' do
         let(:project) { create(:project, :public, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
 
       context 'to internal project' do
         let(:project) { create(:project, :internal, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
 
       context 'to private project' do
         let(:project) { create(:project, :private, :repository) }
 
-        it { expect { push_access_check }.to raise_not_found }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
     end
   end

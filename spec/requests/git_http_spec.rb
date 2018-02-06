@@ -620,7 +620,7 @@ describe 'Git HTTP requests' do
               push_get(path, env)
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(response.body).to eq(git_access_error(:upload))
+              expect(response.body).to eq(git_access_error(:auth_upload))
             end
 
             # We are "authenticated" as CI using a valid token here. But we are
@@ -660,7 +660,7 @@ describe 'Git HTTP requests' do
                 push_get path, env
 
                 expect(response).to have_gitlab_http_status(:forbidden)
-                expect(response.body).to eq(git_access_error(:upload))
+                expect(response.body).to eq(git_access_error(:auth_upload))
               end
             end
 

@@ -12,8 +12,9 @@ module Gitlab
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
       download: 'You are not allowed to download code from this project.',
-      deploy_key_upload:
-        'This deploy key does not have write access to this project.',
+      auth_upload: 'You are not allowed to upload code.',
+      auth_download: 'You are not allowed to download code.',
+      deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
       account_blocked: 'Your account has been blocked.',
@@ -44,6 +45,7 @@ module Gitlab
       check_protocol!
       check_valid_actor!
       check_active_user!
+      check_authentication_abilities!(cmd)
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
       check_db_accessibility!(cmd)
@@ -101,6 +103,19 @@ module Gitlab
 
       if user && !user_access.allowed?
         raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
+      end
+    end
+
+    def check_authentication_abilities!(cmd)
+      case cmd
+      when *DOWNLOAD_COMMANDS
+        unless authentication_abilities.include?(:download_code) || authentication_abilities.include?(:build_download_code)
+          raise UnauthorizedError, ERROR_MESSAGES[:auth_download]
+        end
+      when *PUSH_COMMANDS
+        unless authentication_abilities.include?(:push_code)
+          raise UnauthorizedError, ERROR_MESSAGES[:auth_upload]
+        end
       end
     end
 
@@ -205,31 +220,21 @@ module Gitlab
       end
 
       if deploy_key
-        check_deploy_key_push_access!
+        unless deploy_key.can_push_to?(project)
+          raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
+        end
       elsif user
-        check_user_push_access!
+        # User access is verified in check_change_access!
       else
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
 
+      return if changes.blank? # Allow access this is needed for EE.
+
       check_change_access!(changes)
     end
 
-    def check_user_push_access!
-      unless authentication_abilities.include?(:push_code)
-        raise UnauthorizedError, ERROR_MESSAGES[:upload]
-      end
-    end
-
-    def check_deploy_key_push_access!
-      unless deploy_key.can_push_to?(project)
-        raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
-      end
-    end
-
     def check_change_access!(changes)
-      return if changes.blank? # Allow access.
-
       changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
