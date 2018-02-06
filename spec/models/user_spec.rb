@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe User do
-  include Gitlab::CurrentSettings
   include ProjectForksHelper
 
   describe 'modules' do
     subject { described_class }
 
     it { is_expected.to include_module(Gitlab::ConfigHelper) }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
@@ -35,7 +33,7 @@ describe User do
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:triggers).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
@@ -560,7 +558,7 @@ describe User do
         stub_config_setting(default_can_create_group: true)
 
         expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
-          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+          .and change { user.projects_limit }.to(Gitlab::CurrentSettings.default_projects_limit)
       end
     end
 
@@ -826,7 +824,7 @@ describe User do
       end
     end
 
-    context 'when current_application_settings.user_default_external is true' do
+    context 'when Gitlab::CurrentSettings.user_default_external is true' do
       before do
         stub_application_setting(user_default_external: true)
       end
@@ -966,6 +964,14 @@ describe User do
         expect(described_class.search(user3.username.upcase)).to eq([user3])
       end
     end
+
+    it 'returns no matches for an empty string' do
+      expect(described_class.search('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(described_class.search(nil)).to be_empty
+    end
   end
 
   describe '.search_with_secondary_emails' do
@@ -1019,6 +1025,14 @@ describe User do
 
     it 'does not return users with a matching part of secondary email' do
       expect(search_with_secondary_emails(email.email[1..4])).not_to include([email.user])
+    end
+
+    it 'returns no matches for an empty string' do
+      expect(search_with_secondary_emails('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(search_with_secondary_emails(nil)).to be_empty
     end
   end
 
@@ -1419,28 +1433,34 @@ describe User do
   describe '#sort' do
     before do
       described_class.delete_all
-      @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
-      @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
-      @user2 = create :user, created_at: Date.today - 2, last_sign_in_at: nil, name: 'Beta'
+      @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
+      @user1 = create :user, created_at: Date.today - 1, current_sign_in_at: Date.today - 1, name: 'Omega'
+      @user2 = create :user, created_at: Date.today - 2, name: 'Beta'
     end
 
     context 'when sort by recent_sign_in' do
-      it 'sorts users by the recent sign-in time' do
-        expect(described_class.sort('recent_sign_in').first).to eq(@user)
+      let(:users) { described_class.sort('recent_sign_in') }
+
+      it 'sorts users by recent sign-in time' do
+        expect(users.first).to eq(@user)
+        expect(users.second).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('recent_sign_in').third).to eq(@user2)
+        expect(users.third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
+      let(:users) { described_class.sort('oldest_sign_in') }
+
       it 'sorts users by the oldest sign-in time' do
-        expect(described_class.sort('oldest_sign_in').first).to eq(@user1)
+        expect(users.first).to eq(@user1)
+        expect(users.second).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('oldest_sign_in').third).to eq(@user2)
+        expect(users.third).to eq(@user2)
       end
     end
 
@@ -1553,7 +1573,7 @@ describe User do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects', :truncate do
+  describe '#authorized_projects', :delete do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -2603,7 +2623,7 @@ describe User do
 
       it 'should raise an ActiveRecord::RecordInvalid exception' do
         user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Path foo has been taken before/)
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Route path foo has been taken before. Please use another one, Route is invalid/)
       end
     end
 

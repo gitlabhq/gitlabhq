@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def relative_path
-        @relative_path ||= @file.gsub(/^#{Rails.root.to_s}\/?/, '')
+        @relative_path ||= @file.gsub(%r{^#{Rails.root.to_s}/?}, '')
       end
 
       def to_param

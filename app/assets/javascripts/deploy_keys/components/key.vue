@@ -53,10 +53,10 @@
       </i>
     </div>
     <div class="deploy-key-content key-list-item-info">
-      <strong class="title">
+      <strong class="title qa-key-title">
         {{ deployKey.title }}
       </strong>
-      <div class="description">
+      <div class="description qa-key-fingerprint">
         {{ deployKey.fingerprint }}
       </div>
     </div>

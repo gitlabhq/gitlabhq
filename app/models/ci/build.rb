@@ -21,6 +21,7 @@ module Ci
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -292,7 +293,7 @@ module Ci
 
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"
-      project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
+      project.http_url_to_repo.sub(%r{^https?://}) do |prefix|
         prefix + auth
       end
     end
@@ -466,7 +467,7 @@ module Ci
 
       if cache && project.jobs_cache_index
         cache = cache.merge(
-          key: "#{cache[:key]}:#{project.jobs_cache_index}")
+          key: "#{cache[:key]}_#{project.jobs_cache_index}")
       end
 
       [cache]

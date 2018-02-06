@@ -1,11 +1,13 @@
+import flash from '../flash';
+import { __ } from '../locale';
+import axios from '../lib/utils/axios_utils';
 import ContributorsStatGraph from './stat_graph_contributors';
 
 document.addEventListener('DOMContentLoaded', () => {
-  $.ajax({
-    type: 'GET',
-    url: document.querySelector('.js-graphs-show').dataset.projectGraphPath,
-    dataType: 'json',
-    success(data) {
+  const url = document.querySelector('.js-graphs-show').dataset.projectGraphPath;
+
+  axios.get(url)
+    .then(({ data }) => {
       const graph = new ContributorsStatGraph();
       graph.init(data);
 
@@ -16,6 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       $('.stat-graph').fadeIn();
       $('.loading-graph').hide();
-    },
-  });
+    })
+    .catch(() => flash(__('Error fetching contributors data.')));
 });

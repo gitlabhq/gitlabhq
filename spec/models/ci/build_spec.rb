@@ -277,7 +277,7 @@ describe Ci::Build do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
 
-        it { is_expected.to be_an(Array).and all(include(key: "key:1")) }
+        it { is_expected.to be_an(Array).and all(include(key: "key_1")) }
       end
 
       context 'when project does not have jobs_cache_index' do
@@ -675,7 +675,7 @@ describe Ci::Build do
 
     context 'build is erasable' do
       context 'new artifacts' do
-        let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+        let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
 
         describe '#erase' do
           before do
@@ -709,7 +709,7 @@ describe Ci::Build do
         end
 
         describe '#erased?' do
-          let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+          let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
           subject { build.erased? }
 
           context 'job has not been erased' do
@@ -744,7 +744,7 @@ describe Ci::Build do
     context 'old artifacts' do
       context 'build is erasable' do
         context 'new artifacts' do
-          let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+          let!(:build) { create(:ci_build, :trace_artifact, :success, :legacy_artifacts) }
 
           describe '#erase' do
             before do
@@ -778,7 +778,7 @@ describe Ci::Build do
           end
 
           describe '#erased?' do
-            let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+            let!(:build) { create(:ci_build, :trace_artifact, :success, :legacy_artifacts) }
             subject { build.erased? }
 
             context 'job has not been erased' do

@@ -5,6 +5,7 @@
 import { pluralize } from './lib/utils/text_utility';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
+import axios from './lib/utils/axios_utils';
 
 export default (function () {
   const CommitsList = {};
@@ -43,29 +44,30 @@ export default (function () {
   CommitsList.filterResults = function () {
     const form = $('.commits-search-form');
     const search = CommitsList.searchField.val();
-    if (search === CommitsList.lastSearch) return;
+    if (search === CommitsList.lastSearch) return Promise.resolve();
     const commitsUrl = form.attr('action') + '?' + form.serialize();
     CommitsList.content.fadeTo('fast', 0.5);
-    return $.ajax({
-      type: 'GET',
-      url: form.attr('action'),
-      data: form.serialize(),
-      complete: function () {
-        return CommitsList.content.fadeTo('fast', 1.0);
-      },
-      success: function (data) {
+    const params = form.serializeArray().reduce((acc, obj) => Object.assign(acc, {
+      [obj.name]: obj.value,
+    }), {});
+
+    return axios.get(form.attr('action'), {
+      params,
+    })
+      .then(({ data }) => {
         CommitsList.lastSearch = search;
         CommitsList.content.html(data.html);
-        return history.replaceState({
-          page: commitsUrl,
+        CommitsList.content.fadeTo('fast', 1.0);
+
         // Change url so if user reload a page - search results are saved
+        history.replaceState({
+          page: commitsUrl,
         }, document.title, commitsUrl);
-      },
-      error: function () {
+      })
+      .catch(() => {
+        CommitsList.content.fadeTo('fast', 1.0);
         CommitsList.lastSearch = null;
-      },
-      dataType: 'json',
-    });
+      });
   };
 
   // Prepare loaded data.

@@ -28,7 +28,7 @@ describe Banzai::Filter::SnippetReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Snippet (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(reference)}</a>\.\)})
     end
 
     it 'ignores invalid snippet IDs' do
@@ -192,13 +192,13 @@ describe Banzai::Filter::SnippetReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("See (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(snippet.to_reference(project))}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(snippet.to_reference(project))}</a>\.\)})
     end
 
     it 'ignores invalid snippet IDs on the referenced project' do
       act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
+      expect(reference_filter(act).to_html).to match(%r{<a.+>#{Regexp.escape(invalidate_reference(reference))}</a>})
     end
   end
 

@@ -1,6 +1,0 @@
----
-title: Fix missing references to pipeline objects when restoring project with import/export
-  feature
-merge_request: 16221
-author:
-type: fixed

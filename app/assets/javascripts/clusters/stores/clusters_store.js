@@ -4,6 +4,7 @@ export default class ClusterStore {
   constructor() {
     this.state = {
       helpPath: null,
+      ingressHelpPath: null,
       status: null,
       statusReason: null,
       applications: {
@@ -39,8 +40,9 @@ export default class ClusterStore {
     };
   }
 
-  setHelpPath(helpPath) {
+  setHelpPaths(helpPath, ingressHelpPath) {
     this.state.helpPath = helpPath;
+    this.state.ingressHelpPath = ingressHelpPath;
   }
 
   updateStatus(status) {

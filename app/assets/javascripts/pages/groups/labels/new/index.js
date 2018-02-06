@@ -1,3 +1,3 @@
 import Labels from '~/labels';
 
-export default new Labels();
+export default () => new Labels();

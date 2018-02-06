@@ -7,6 +7,7 @@ module QA
           element :user_avatar
           element :user_menu, '.dropdown-menu-nav'
           element :user_sign_out_link, 'link_to "Sign out"'
+          element :settings_link, 'link_to "Settings"'
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -40,7 +41,13 @@ module QA
 
         def sign_out
           within_user_menu do
-            click_link('Sign out')
+            click_link 'Sign out'
+          end
+        end
+
+        def go_to_profile_settings
+          within_user_menu do
+            click_link 'Settings'
           end
         end
 

@@ -257,7 +257,8 @@ export default {
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
-          :related-links="mr.relatedLinks" />
+          :related-links="mr.relatedLinks"
+          />
       </div>
       <div
         class="mr-widget-footer"

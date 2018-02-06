@@ -1,6 +1,6 @@
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
-import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
+import mrWidgetMergeHelp from '../../components/mr_widget_merge_help.vue';
 
 export default {
   name: 'MRWidgetMissingBranch',

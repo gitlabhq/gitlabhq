@@ -127,7 +127,7 @@ describe ProjectWiki do
       end
 
       after do
-        destroy_page(subject.pages.first.page)
+        subject.pages.each { |page| destroy_page(page.page) }
       end
 
       it "returns the latest version of the page if it exists" do
@@ -147,6 +147,17 @@ describe ProjectWiki do
       it "returns a WikiPage instance" do
         page = subject.find_page("index page")
         expect(page).to be_a WikiPage
+      end
+
+      context 'pages with multibyte-character title' do
+        before do
+          create_page("autre pagé", "C'est un génial Gollum Wiki")
+        end
+
+        it "can find a page by slug" do
+          page = subject.find_page("autre pagé")
+          expect(page.title).to eq("autre pagé")
+        end
       end
     end
 

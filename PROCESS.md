@@ -85,7 +85,8 @@ These types of merge requests for the upcoming release need special consideratio
   and a dedicated team with front-end, back-end, and UX.
 * **Small features**: any other feature request.
 
-**Large features** must be with a maintainer **by the 1st**. This means that:
+It is strongly recommended that **large features** be with a maintainer **by the
+1st**. This means that:
 
 * There is a merge request (even if it's WIP).
 * The person (or people, if it needs a frontend and backend maintainer) who will
@@ -100,13 +101,36 @@ The maintainer can also choose to assign a reviewer to perform an initial
 review, but this way the maintainer is unlikely to be surprised by receiving an
 MR later in the cycle.
 
-**Small features** must be with a reviewer (not necessarily maintainer) **by the
-3rd**.
+It is strongly recommended that **small features** be with a reviewer (not
+necessarily a maintainer) **by the 3rd**.
 
 Most merge requests from the community do not have a specific release
 target. However, if one does and falls into either of the above categories, it's
 the reviewer's responsibility to manage the above communication and assignment
 on behalf of the community member.
+
+#### What happens if these deadlines are missed?
+
+If a small or large feature is _not_ with a maintainer or reviewer by the
+recommended date, this does _not_ mean that maintainers or reviewers will refuse
+to review or merge it, or that the feature will definitely not make it in before
+the feature freeze.
+
+However, with every day that passes without review, it will become more likely
+that the feature will slip, because maintainers and reviewers may not have
+enough time to do a thorough review, and developers may not have enough time to
+adequately address any feedback that may come back.
+
+A maintainer or reviewer may also determine that it will not be possible to
+finish the current scope of the feature in time, but that it is possible to
+reduce the scope so that something can still ship this month, with the remaining
+scope moving to the next release. The sooner this decision is made, in
+conversation with the Product Manager and developer, the more time there is to
+extract that which is now out of scope, and to finish that which remains in scope.
+
+For these reasons, it is strongly recommended to follow the guidelines above,
+to maximize the chances of your feature making it in before the feature freeze,
+and to prevent any last minute surprises.
 
 ### On the 7th
 

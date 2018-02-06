@@ -44,36 +44,38 @@ feature 'Dashboard Merge Requests' do
 
   context 'merge requests exist' do
     let!(:assigned_merge_request) do
-      create(:merge_request, assignee: current_user, target_project: project, source_project: project)
+      create(:merge_request,
+        assignee: current_user,
+        source_project: project,
+        author: create(:user))
     end
 
     let!(:assigned_merge_request_from_fork) do
       create(:merge_request,
               source_branch: 'markdown', assignee: current_user,
-              target_project: public_project, source_project: forked_project
-            )
+              target_project: public_project, source_project: forked_project,
+              author: create(:user))
     end
 
     let!(:authored_merge_request) do
       create(:merge_request,
-              source_branch: 'markdown', author: current_user,
-              target_project: project, source_project: project
-            )
+              source_branch: 'markdown',
+              source_project: project,
+              author: current_user)
     end
 
     let!(:authored_merge_request_from_fork) do
       create(:merge_request,
               source_branch: 'feature_conflict',
               author: current_user,
-              target_project: public_project, source_project: forked_project
-            )
+              target_project: public_project, source_project: forked_project)
     end
 
     let!(:other_merge_request) do
       create(:merge_request,
               source_branch: 'fix',
-              target_project: project, source_project: project
-            )
+              source_project: project,
+              author: create(:user))
     end
 
     before do

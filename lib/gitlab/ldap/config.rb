@@ -139,6 +139,10 @@ module Gitlab
         options['allow_username_or_email_login']
       end
 
+      def lowercase_usernames
+        options['lowercase_usernames']
+      end
+
       def name_proc
         if allow_username_or_email_login
           proc { |name| name.gsub(/@.*\z/, '') }

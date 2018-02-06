@@ -11,6 +11,9 @@ module QA
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
+    autoload :RSAKey, 'qa/runtime/rsa_key'
+    autoload :Address, 'qa/runtime/address'
+    autoload :API, 'qa/runtime/api'
   end
 
   ##
@@ -24,8 +27,13 @@ module QA
     module Resource
       autoload :Sandbox, 'qa/factory/resource/sandbox'
       autoload :Group, 'qa/factory/resource/group'
+      autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :SecretVariable, 'qa/factory/resource/secret_variable'
+      autoload :Runner, 'qa/factory/resource/runner'
+      autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
     end
 
     module Repository
@@ -46,7 +54,7 @@ module QA
     #
     autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
-    autoload :Entrypoint, 'qa/scenario/entrypoint'
+    autoload :Taggable, 'qa/scenario/taggable'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -85,6 +93,7 @@ module QA
       autoload :Main, 'qa/page/menu/main'
       autoload :Side, 'qa/page/menu/side'
       autoload :Admin, 'qa/page/menu/admin'
+      autoload :Profile, 'qa/page/menu/profile'
     end
 
     module Dashboard
@@ -100,12 +109,37 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+      autoload :Activity, 'qa/page/project/activity'
+
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
 
       module Settings
         autoload :Common, 'qa/page/project/settings/common'
+        autoload :Advanced, 'qa/page/project/settings/advanced'
+        autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
+        autoload :Runners, 'qa/page/project/settings/runners'
       end
+
+      module Issue
+        autoload :New, 'qa/page/project/issue/new'
+        autoload :Show, 'qa/page/project/issue/show'
+        autoload :Index, 'qa/page/project/issue/index'
+      end
+    end
+
+    module Profile
+      autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+    end
+
+    module MergeRequest
+      autoload :New, 'qa/page/merge_request/new'
     end
 
     module Admin
@@ -115,6 +149,13 @@ module QA
     module Mattermost
       autoload :Main, 'qa/page/mattermost/main'
       autoload :Login, 'qa/page/mattermost/login'
+    end
+
+    ##
+    # Classes describing components that are used by several pages.
+    #
+    module Component
+      autoload :Dropzone, 'qa/page/component/dropzone'
     end
   end
 
@@ -126,10 +167,13 @@ module QA
   end
 
   ##
-  # Classes describing shell interaction with GitLab
+  # Classes describing services being part of GitLab and how we can interact
+  # with these services, like through the shell.
   #
-  module Shell
-    autoload :Omnibus, 'qa/shell/omnibus'
+  module Service
+    autoload :Shellout, 'qa/service/shellout'
+    autoload :Omnibus, 'qa/service/omnibus'
+    autoload :Runner, 'qa/service/runner'
   end
 
   ##
