@@ -2,7 +2,7 @@
 > **Note:**.
 * This chart has been tested on Google Kubernetes Engine and Azure Container Service.
 
-**[This chart is beta](#limitations), and is the best way to install GitLab on Kubernetes today.** A new [cloud native GitLab chart](https://docs.gitlab.com/ee/install/kubernetes/#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. Once available, the cloud native chart will be the recommended installation method for Kubernetes, and this chart will be deprecated.
+**[This chart is beta](#limitations), and is the best way to install GitLab on Kubernetes today.** A new [cloud native GitLab chart](index.md#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. Once available, the cloud native chart will be the recommended installation method for Kubernetes, and this chart will be deprecated.
 
 For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
@@ -12,7 +12,7 @@ This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. Gi
 
 This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned via [Let's Encrypt](https://letsencrypt.org/).
 
-This Helm chart is in beta, and is suited for small to medium deployments. and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the significant architectural changes, migrating will require backing up data out of this instance and importing it into the new deployment.
+This Helm chart is in beta, and is suited for small to medium deployments. It will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the significant architectural changes, migrating will require backing up data out of this instance and importing it into the new deployment.
 
 The deployment includes:
 
