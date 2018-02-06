@@ -1,6 +1,6 @@
 - type = local_assigns.fetch(:type, :epics)
 - page_context_word = type.to_s.humanize(capitalize: false)
 
-%ul.nav-links.issues-state-filters
+%ul.nav-links.epics-state-filters
   = render 'shared/issuable/nav_links/all', page_context_word: page_context_word, counter: issuables_state_counter_text(type, :all)
 

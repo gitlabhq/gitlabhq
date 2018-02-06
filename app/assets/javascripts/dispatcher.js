@@ -178,6 +178,11 @@ var Dispatcher;
         case 'groups:epics:show':
           new ZenMode();
           break;
+        case 'groups:epics:index':
+          import(/* webpackChunkName: "ee_epics_show" */ 'ee/pages/epics')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:compare:show':
           import('./pages/projects/compare/show')
             .then(callDefault)
