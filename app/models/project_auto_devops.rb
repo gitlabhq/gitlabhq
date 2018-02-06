@@ -16,7 +16,7 @@ class ProjectAutoDevops < ActiveRecord::Base
 
   def variables
     variables = []
-    variables << { key: 'AUTO_DEVOPS_DOMAIN', value: domain || instance_domain, public: true } if has_domain?
+    variables << { key: 'AUTO_DEVOPS_DOMAIN', value: domain.presence || instance_domain, public: true } if has_domain?
     variables
   end
 end
