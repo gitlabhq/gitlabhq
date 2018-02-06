@@ -128,6 +128,10 @@ module Gitlab
         raise NoRepository.new('no repository for such path')
       end
 
+      def cleanup
+        @rugged&.close
+      end
+
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
