@@ -52,12 +52,14 @@ module Gitlab
       end
 
       def exist?
-        current_path.present? || old_trace.present?
+        trace_artifact&.exists? || current_path.present? || old_trace.present?
       end
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
+          if trace_artifact
+            trace_artifact.open
+          elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
             StringIO.new(old_trace)
@@ -82,6 +84,8 @@ module Gitlab
       end
 
       def erase!
+        trace_artifact&.destroy
+
         paths.each do |trace_path|
           FileUtils.rm(trace_path, force: true)
         end
@@ -136,6 +140,10 @@ module Gitlab
           job.project.ci_id.to_s,
           "#{job.id}.log"
         ) if job.project&.ci_id
+      end
+
+      def trace_artifact
+        job.job_artifacts_trace
       end
     end
   end

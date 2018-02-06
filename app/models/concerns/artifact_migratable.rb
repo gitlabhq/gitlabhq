@@ -39,7 +39,6 @@ module ArtifactMigratable
   end
 
   def artifacts_size
-    read_attribute(:artifacts_size).to_i +
-      job_artifacts_archive&.size.to_i + job_artifacts_metadata&.size.to_i
+    read_attribute(:artifacts_size).to_i + job_artifacts.sum(:size).to_i
   end
 end

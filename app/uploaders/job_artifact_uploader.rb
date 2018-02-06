@@ -1,4 +1,5 @@
 class JobArtifactUploader < GitlabUploader
+  prepend EE::JobArtifactUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
 
@@ -12,6 +13,12 @@ class JobArtifactUploader < GitlabUploader
 
   def store_dir
     dynamic_segment
+  end
+
+  def open
+    raise 'Only File System is supported' unless file_storage?
+
+    File.open(path, "rb") if path
   end
 
   private
