@@ -28,9 +28,11 @@ module Ci
       find_stage || create_stage
     rescue ActiveRecord::RecordNotUnique
       retry if (attempts -= 1) > 0
+
       raise EnsureStageError, <<~EOS
-        Possible bug in the database load balancing detected!
-        Please fix me!
+        We failed to find or create a unique pipeline stage after 2 retries.
+        This should never happen and is most likely the result of a bug in
+        the database load balancing code.
       EOS
     end
 
