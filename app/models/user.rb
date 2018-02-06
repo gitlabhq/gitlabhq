@@ -76,7 +76,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> do
@@ -170,7 +170,7 @@ class User < ActiveRecord::Base
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
-  after_save :ensure_namespace_correct
+  before_validation :ensure_namespace_correct
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -891,16 +891,10 @@ class User < ActiveRecord::Base
   end
 
   def ensure_namespace_correct
-    # Ensure user has namespace
-    create_namespace!(path: username, name: username) unless namespace
-
-    if username_changed?
-      unless namespace.update_attributes(path: username, name: username)
-        namespace.errors.each do |attribute, message|
-          self.errors.add(:"namespace_#{attribute}", message)
-        end
-        raise ActiveRecord::RecordInvalid.new(namespace)
-      end
+    if namespace
+      namespace.path = namespace.name = username if username_changed?
+    else
+      build_namespace(path: username, name: username)
     end
   end
 

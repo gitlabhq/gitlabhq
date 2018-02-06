@@ -21,6 +21,9 @@ class Namespace < ActiveRecord::Base
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
+
+  # This should _not_ be `inverse_of: :namespace`, because that would also set
+  # `user.namespace` when this user creates a group with themselves as `owner`.
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"

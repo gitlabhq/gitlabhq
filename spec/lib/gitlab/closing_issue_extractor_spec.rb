@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ClosingIssueExtractor do
   let(:project) { create(:project) }
   let(:project2) { create(:project) }
-  let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
+  let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }
   let(:issue) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
@@ -14,6 +14,7 @@ describe Gitlab::ClosingIssueExtractor do
 
   before do
     project.add_developer(project.creator)
+    project.add_developer(project2.creator)
     project2.add_master(project.creator)
   end
 
