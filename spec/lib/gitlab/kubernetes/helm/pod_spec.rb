@@ -63,14 +63,14 @@ describe Gitlab::Kubernetes::Helm::Pod do
 
       it 'should mount configMap specification in the volume' do
         spec = subject.generate.spec
-        expect(spec.volumes.first.configMap['name']).to eq('values-content-configuration')
+        expect(spec.volumes.first.configMap['name']).to eq("values-content-configuration-#{app.name}")
         expect(spec.volumes.first.configMap['items'].first['key']).to eq('values')
         expect(spec.volumes.first.configMap['items'].first['path']).to eq('values.yaml')
       end
     end
 
     context 'without a configuration file' do
-      let(:app) { create(:clusters_applications_ingress, cluster: cluster) }
+      let(:app) { create(:clusters_applications_helm, cluster: cluster) }
 
       it_behaves_like 'helm pod'
 

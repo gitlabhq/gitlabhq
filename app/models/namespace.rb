@@ -230,6 +230,7 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
+  ## EE only
   def multiple_issue_boards_available?(user = nil)
     feature_available?(:multiple_issue_boards)
   end

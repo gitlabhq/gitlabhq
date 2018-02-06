@@ -1,6 +1,7 @@
 /* global BoardService */
-
+import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import AssigneeSelect from '~/boards/components/assignee_select.vue';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
@@ -86,12 +87,18 @@ describe('Assignee select component', () => {
     });
 
     describe('clicking dropdown items', () => {
+      let mock;
+
       beforeEach(() => {
-        const deferred = new jQuery.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.resolve([
+        mock = new MockAdapter(axios);
+        mock.onGet('/autocomplete/users.json').reply(200, [
           assignee,
           assignee2,
-        ]));
+        ]);
+      });
+
+      afterEach(() => {
+        mock.restore();
       });
 
       it('sets assignee', (done) => {
@@ -99,12 +106,12 @@ describe('Assignee select component', () => {
 
         setTimeout(() => {
           vm.$el.querySelectorAll('li a')[2].click();
-        });
 
-        setTimeout(() => {
-          expect(activeDropdownItem(0)).toEqual('second assignee');
-          expect(vm.board.assignee).toEqual(assignee2);
-          done();
+          setTimeout(() => {
+            expect(activeDropdownItem(0)).toEqual('second assignee');
+            expect(vm.board.assignee).toEqual(assignee2);
+            done();
+          });
         });
       });
     });

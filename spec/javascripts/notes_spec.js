@@ -50,11 +50,22 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
     });
 
     describe('task lists', function() {
+      let mock;
+
       beforeEach(function() {
+        spyOn(axios, 'patch').and.callThrough();
+        mock = new MockAdapter(axios);
+
+        mock.onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`).reply(200, {});
+
         $('.js-comment-button').on('click', function(e) {
           e.preventDefault();
         });
         this.notes = new Notes('', []);
+      });
+
+      afterEach(() => {
+        mock.restore();
       });
 
       it('modifies the Markdown field', function() {
@@ -65,14 +76,15 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1.json');
-          return expect(req.data.note).not.toBe(null);
-        });
+      it('submits an ajax request on tasklist:changed', function(done) {
+        $('.js-task-list-container').trigger('tasklist:changed');
 
-        $('.js-task-list-field.js-note-text').trigger('tasklist:changed');
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`, {
+            note: { note: '' },
+          });
+          done();
+        });
       });
     });
 

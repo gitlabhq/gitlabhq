@@ -16,15 +16,15 @@ FactoryBot.define do
     path { File.join("uploads/-/system", model.class.to_s.underscore, mount_point.to_s, 'avatar.jpg') }
 
     trait :personal_snippet_upload do
-      model { build(:personal_snippet) }
-      path { File.join(secret, filename) }
       uploader "PersonalFileUploader"
+      path { File.join(secret, filename) }
+      model { build(:personal_snippet) }
       secret SecureRandom.hex
     end
 
     trait :issuable_upload do
-      path { File.join(secret, filename) }
       uploader "FileUploader"
+      path { File.join(secret, filename) }
       secret SecureRandom.hex
     end
 
