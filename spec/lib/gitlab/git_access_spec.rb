@@ -119,7 +119,7 @@ describe Gitlab::GitAccess do
           end
 
           it 'does not block pushes with "not found"' do
-            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
       end
@@ -327,7 +327,7 @@ describe Gitlab::GitAccess do
       let(:authentication_abilities) { [] }
 
       it 'raises unauthorized with download error' do
-        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
+        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_download])
       end
 
       context 'when authentication abilities include download code' do
@@ -351,7 +351,7 @@ describe Gitlab::GitAccess do
       let(:authentication_abilities) { [] }
 
       it 'raises unauthorized with push error' do
-        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
       end
 
       context 'when authentication abilities include push code' do
@@ -977,19 +977,6 @@ describe Gitlab::GitAccess do
       run_permission_checks(admin: matrix)
     end
 
-    context "when in a read-only GitLab instance" do
-      before do
-        create(:protected_branch, name: 'feature', project: project)
-        allow(Gitlab::Database).to receive(:read_only?) { true }
-      end
-
-      # Only check admin; if an admin can't do it, other roles can't either
-      matrix = permissions_matrix[:admin].dup
-      matrix.each { |key, _| matrix[key] = false }
-
-      run_permission_checks(admin: matrix)
-    end
-
     describe "push_rule_check" do
       let(:start_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
       let(:end_sha)   { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
@@ -1151,26 +1138,26 @@ describe Gitlab::GitAccess do
         project.add_reporter(user)
       end
 
-      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
     end
 
     context 'when unauthorized' do
       context 'to public project' do
         let(:project) { create(:project, :public, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
 
       context 'to internal project' do
         let(:project) { create(:project, :internal, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
 
       context 'to private project' do
         let(:project) { create(:project, :private, :repository) }
 
-        it { expect { push_access_check }.to raise_not_found }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
     end
   end
