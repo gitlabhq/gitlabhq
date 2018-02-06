@@ -78,6 +78,7 @@
 - group_destroy
 - invalid_gpg_signature_update
 - irker
+- issue_due
 - merge
 - namespaceless_project_destroy
 - new_issue

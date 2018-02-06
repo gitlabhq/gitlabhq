@@ -27,6 +27,8 @@ module Issues
       todo_service.new_issue(issuable, current_user)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
+      # TODO: Create the scheduled due date email
+      schedule_due_date_email(issuable)
 
       super
     end
