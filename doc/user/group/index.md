@@ -155,11 +155,11 @@ There are two different ways to add a new project to a group:
 ### (EEP) Default project creation level
 
 This feature allows groups to define a default project creation level.
-    
+
 By default, `Developers` and `Masters` are allowed to create projects, but
 this can be changed within the group settings for a group, or the default setting
 changed within the Admin area (`Settings`, `Visibility and Access Controls`). This
-can be `None`, `Masters`, or `Developers + Masters`. 
+can be `None`, `Masters`, or `Developers + Masters`.
 
 It is available only in [GitLab Enterprise Edition Premium][eep].
 
@@ -179,7 +179,6 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
 
-<<<<<<< HEAD
 ## Epics
 
 > Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
@@ -190,8 +189,6 @@ milestones.
 
 [Learn more about Epics.](epics/index.md)
 
-=======
->>>>>>> upstream/master
 ## Transfer groups to another group
 
 From 10.5 there are two different ways to transfer a group:
