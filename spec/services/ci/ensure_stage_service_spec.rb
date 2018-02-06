@@ -45,7 +45,7 @@ describe Ci::EnsureStageService, '#execute' do
       expect(service).to receive(:find_stage).exactly(2).times
 
       expect { service.execute(job) }
-        .to raise_error(Ci::EnsureStageService::PipelineStageError)
+        .to raise_error(Ci::EnsureStageService::EnsureStageError)
     end
   end
 end

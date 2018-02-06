@@ -7,7 +7,7 @@ module Ci
   # stage.
   #
   class EnsureStageService < BaseService
-    PipelineStageError = Class.new(StandardError)
+    EnsureStageError = Class.new(StandardError)
 
     def execute(build)
       @build = build
@@ -28,7 +28,10 @@ module Ci
       find_stage || create_stage
     rescue ActiveRecord::RecordNotUnique
       retry if (attempts -= 1) > 0
-      raise PipelineStageError, 'Fix me!'
+      raise EnsureStageError, <<~EOS
+        Possible bug in the database load balancing detected!
+        Please fix me!
+      EOS
     end
 
     def find_stage
