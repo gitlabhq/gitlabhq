@@ -7,7 +7,7 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include ObjectStorage::BackgroundUpload
+      include ObjectStorage::BackgroundMove
 
       after_destroy :log_geo_event
 

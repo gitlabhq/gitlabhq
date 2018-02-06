@@ -3,7 +3,7 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include ObjectStorage::BackgroundUpload
+      include ObjectStorage::BackgroundMove
     end
 
     def for_epic?

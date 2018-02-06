@@ -14,7 +14,7 @@ module EE
       DAST_FILE = 'gl-dast-report.json'.freeze
 
       included do
-        include ObjectStorage::BackgroundUpload
+        include ObjectStorage::BackgroundMove
 
         scope :codequality, -> { where(name: %w[codequality codeclimate]) }
         scope :performance, -> { where(name: %w[performance deploy]) }

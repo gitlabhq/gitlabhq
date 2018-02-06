@@ -1030,7 +1030,7 @@ describe 'Git LFS API and storage' do
 
             context 'with object storage disabled' do
               it "doesn't attempt to migrate file to object storage" do
-                expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
+                expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
                 put_finalize(with_tempfile: true)
               end
@@ -1042,7 +1042,7 @@ describe 'Git LFS API and storage' do
               end
 
               it 'schedules migration of file to object storage' do
-                expect(ObjectStorage::BackgroundUploadWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
+                expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
 
                 put_finalize(with_tempfile: true)
               end

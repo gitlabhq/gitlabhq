@@ -99,10 +99,6 @@ module ObjectStorage
       def success?
         error.nil?
       end
-
-      def to_s
-        success? ? "Migration sucessful." : "Error while migrating #{upload.id}: #{error.message}"
-      end
     end
 
     module Report
@@ -176,7 +172,7 @@ module ObjectStorage
       report!(results)
     rescue SanityCheckError => e
       # do not retry: the job is insane
-      Rails.logger.warn "UploadsToObjectStorage sanity check error: #{e.message}"
+      Rails.logger.warn "#{self.class}: Sanity check error (#{e.message})"
     end
 
     def sanity_check!(uploads)
@@ -192,13 +188,12 @@ module ObjectStorage
     end
 
     def process_uploader(uploader)
-      result = MigrationResult.new(uploader.upload)
-      begin
-        uploader.migrate!(@to_store)
-        result
-      rescue => e
-        result.error = e
-        result
+      MigrationResult.new(uploader.upload).tap do |result|
+        begin
+          uploader.migrate!(@to_store)
+        rescue => e
+          result.error = e
+        end
       end
     end
   end

@@ -75,23 +75,25 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
       # swallow
     end
 
-    # rubocop:disable Style/MultilineIfModifier
     shared_examples 'outputs correctly' do |success: 0, failures: 0|
       total = success + failures
 
-      it 'outputs the reports' do
-        expect(Rails.logger).to receive(:info).with(%r{Migrated #{success}/#{total} files})
+      if success
+        it 'outputs the reports' do
+          expect(Rails.logger).to receive(:info).with(%r{Migrated #{success}/#{total} files})
 
-        perform
-      end if success > 0
+          perform
+        end
+      end
 
-      it 'outputs upload failures' do
-        expect(Rails.logger).to receive(:warn).with(/Error .* I am a teapot/)
+      if failures
+        it 'outputs upload failures' do
+          expect(Rails.logger).to receive(:warn).with(/Error .* I am a teapot/)
 
-        perform
-      end if failures > 0
+          perform
+        end
+      end
     end
-    # rubocop:enable Style/MultilineIfModifier
 
     it_behaves_like 'outputs correctly', success: 10
 

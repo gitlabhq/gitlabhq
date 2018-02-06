@@ -1,5 +1,5 @@
 module ObjectStorage
-  class BackgroundUploadWorker
+  class BackgroundMoveWorker
     include ApplicationWorker
     include ObjectStorageQueue
 
@@ -10,13 +10,13 @@ module ObjectStorage
       subject_class = subject_class_name.constantize
 
       return unless uploader_class < ObjectStorage::Concern
+      return unless uploader_class.object_store_enabled?
+      return unless uploader_class.licensed?
+      return unless uploader_class.background_upload_enabled?
 
       subject = subject_class.find(subject_id)
       uploader = build_uploader(subject, file_field&.to_sym)
       uploader.migrate!(ObjectStorage::Store::REMOTE)
-    rescue RecordNotFound
-      # does not retry when the record do not exists
-      Rails.logger.warn("Cannot find subject #{subject_class} with id=#{subject_id}.")
     end
 
     def build_uploader(subject, mount_point)

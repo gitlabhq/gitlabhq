@@ -53,7 +53,7 @@ module ObjectStorage
       def schedule_background_upload(*args)
         return unless schedule_background_upload?
 
-        ObjectStorage::BackgroundUploadWorker.perform_async(self.class.name,
+        ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
                                                 upload.class.to_s,
                                                 mounted_as,
                                                 upload.id)
@@ -74,7 +74,7 @@ module ObjectStorage
 
   # Add support for automatic background uploading after the file is stored.
   #
-  module BackgroundUpload
+  module BackgroundMove
     extend ActiveSupport::Concern
 
     def background_upload(mount_points = [])
@@ -226,7 +226,7 @@ module ObjectStorage
     def schedule_background_upload(*args)
       return unless schedule_background_upload?
 
-      ObjectStorage::BackgroundUploadWorker.perform_async(self.class.name,
+      ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
                                                           model.class.name,
                                                           mounted_as,
                                                           model.id)

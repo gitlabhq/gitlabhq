@@ -26,7 +26,7 @@ describe LfsObjectUploader do
   describe 'migration to object storage' do
     context 'with object storage disabled' do
       it "is skipped" do
-        expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
+        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
         lfs_object
       end
@@ -38,7 +38,7 @@ describe LfsObjectUploader do
       end
 
       it 'is scheduled to run after creation' do
-        expect(ObjectStorage::BackgroundUploadWorker).to receive(:perform_async).with(described_class.name, 'LfsObject', :file, kind_of(Numeric))
+        expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with(described_class.name, 'LfsObject', :file, kind_of(Numeric))
 
         lfs_object
       end
@@ -50,7 +50,7 @@ describe LfsObjectUploader do
       end
 
       it 'is skipped' do
-        expect(ObjectStorage::BackgroundUploadWorker).not_to receive(:perform_async)
+        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
         lfs_object
       end
@@ -67,7 +67,7 @@ describe LfsObjectUploader do
       end
 
       it 'can store file remotely' do
-        allow(ObjectStorage::BackgroundUploadWorker).to receive(:perform_async)
+        allow(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async)
 
         store_file(lfs_object)
 

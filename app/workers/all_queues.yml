@@ -122,7 +122,7 @@
 - geo:geo_repository_destroy
 
 - object_storage_upload
-- object_storage:object_storage_background_upload
+- object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
 - admin_emails
