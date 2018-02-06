@@ -34,6 +34,9 @@ class CheckGcpProjectBillingWorker
     return unless try_obtain_lease_for(token)
 
     billing_enabled_projects = CheckGcpProjectBillingService.new.execute(token)
+
+    update_billing_change_counter(check_previous_state(token), !billing_enabled_projects.empty?)
+
     Gitlab::Redis::SharedState.with do |redis|
       redis.set(self.class.redis_shared_state_key_for(token),
         !billing_enabled_projects.empty?,
@@ -51,9 +54,27 @@ class CheckGcpProjectBillingWorker
     "gitlab:gcp:session:#{token_key}"
   end
 
+  def self.redis_billing_change_key
+    "gitlab:gcp:billing_enabled_changes"
+  end
+
   def try_obtain_lease_for(token)
     Gitlab::ExclusiveLease
       .new("check_gcp_project_billing_worker:#{token.hash}", timeout: LEASE_TIMEOUT)
       .try_obtain
+  end
+
+  def check_previous_state(token)
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.get(self.class.redis_shared_state_key_for(token))
+    end
+  end
+
+  def update_billing_change_counter(previous_state, current_state)
+    return unless previous_state == 'false' && current_state
+
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.incr(self.class.redis_billing_change_key)
+    end
   end
 end
