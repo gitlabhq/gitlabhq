@@ -45,7 +45,7 @@ module Gitlab
       private
 
       def get_rss
-        output, status = Gitlab::Popen.popen(%W(ps -o rss= -p #{pid}))
+        output, status = Gitlab::Popen.popen(%W(ps -o rss= -p #{pid}), Rails.root.to_s)
         return 0 unless status.zero?
 
         output.to_i
