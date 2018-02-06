@@ -213,11 +213,7 @@ class WikiPage
     last_commit_sha = attrs.delete(:last_commit_sha)
 
     if last_commit_sha && last_commit_sha != self.last_commit_sha
-<<<<<<< HEAD
-      raise PageChangedError.new("WikiEdit|You are attempting to update a page that has changed since you started editing it.")
-=======
       raise PageChangedError
->>>>>>> upstream/master
     end
 
     update_attributes(attrs)
@@ -227,11 +223,7 @@ class WikiPage
 
       if wiki.find_page(page_details).present?
         @attributes[:title] = @page.url_path
-<<<<<<< HEAD
-        raise PageRenameError.new("WikiEdit|There is already a page with the same title in that path.")
-=======
         raise PageRenameError
->>>>>>> upstream/master
       end
     else
       page_details = @page.url_path
