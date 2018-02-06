@@ -71,14 +71,11 @@ module API
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         all_or_none_of :extern_uid, :provider
 
-<<<<<<< HEAD
+        use :sort_params
+        use :pagination
+
         # EE
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
-
-=======
-        use :sort_params
->>>>>>> upstream/master
-        use :pagination
       end
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
