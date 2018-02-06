@@ -9,7 +9,7 @@ describe API::Search do
   shared_examples 'response is correct' do |schema:, size: 1|
     it { expect(response).to have_gitlab_http_status(200) }
     it { expect(response).to match_response_schema(schema) }
-    it { expect(response).to include_pagination_headers }
+    it { expect(response).to include_limited_pagination_headers }
     it { expect(json_response.size).to eq(size) }
   end
 

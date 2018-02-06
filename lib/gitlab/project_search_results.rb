@@ -10,7 +10,7 @@ module Gitlab
       @per_page = per_page
     end
 
-    def objects(scope, page = nil, without_counts = true)
+    def objects(scope, page = nil)
       case scope
       when 'notes'
         notes.page(page).per(per_page)
@@ -21,7 +21,7 @@ module Gitlab
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       else
-        super(scope, page, without_counts)
+        super(scope, page, false)
       end
     end
 
