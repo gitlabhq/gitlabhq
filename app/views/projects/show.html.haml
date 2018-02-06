@@ -47,7 +47,7 @@
 
       - if @repository.gitlab_ci_yml
         %li
-          = link_to _('CI configuration'), ci_configuration_path(@project)
+          = link_to _('CI/CD configuration'), ci_configuration_path(@project)
 
       - if current_user && can_push_branch?(@project, @project.default_branch)
         - unless @repository.changelog
@@ -65,7 +65,7 @@
         - unless @repository.gitlab_ci_yml
           %li.missing
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
-              #{ _('Set up CI') }
+              #{ _('Set up CI/CD') }
         - if koding_enabled? && @repository.koding_yml.blank?
           %li.missing
             = link_to  _('Set up Koding'), add_koding_stack_path(@project)

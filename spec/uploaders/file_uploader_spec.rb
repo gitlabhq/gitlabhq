@@ -66,6 +66,7 @@ describe FileUploader do
     end
   end
 
+<<<<<<< HEAD
   describe "#migrate!" do
     before do
       uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
@@ -76,6 +77,8 @@ describe FileUploader do
     it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
   end
 
+=======
+>>>>>>> upstream/master
   describe '#upload=' do
     let(:secret) { SecureRandom.hex }
     let(:upload) { create(:upload, :issuable_upload, secret: secret, filename: 'file.txt') }

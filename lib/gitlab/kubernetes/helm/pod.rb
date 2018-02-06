@@ -64,7 +64,7 @@ module Gitlab
             {
               name: 'configuration-volume',
               configMap: {
-                name: 'values-content-configuration',
+                name: "values-content-configuration-#{command.name}",
                 items: [{ key: 'values', path: 'values.yaml' }]
               }
             }
@@ -81,7 +81,11 @@ module Gitlab
 
         def create_config_map
           resource = ::Kubeclient::Resource.new
-          resource.metadata = { name: 'values-content-configuration', namespace: namespace_name, labels: { name: 'values-content-configuration' } }
+          resource.metadata = {
+            name: "values-content-configuration-#{command.name}",
+            namespace: namespace_name,
+            labels: { name: "values-content-configuration-#{command.name}" }
+          }
           resource.data = { values: File.read(command.chart_values_file) }
           kubeclient.create_config_map(resource)
         end

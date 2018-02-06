@@ -230,10 +230,13 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
+<<<<<<< HEAD
   def multiple_issue_boards_available?(user = nil)
     feature_available?(:multiple_issue_boards)
   end
 
+=======
+>>>>>>> upstream/master
   def full_path_was
     if parent_id_was.nil?
       path_was

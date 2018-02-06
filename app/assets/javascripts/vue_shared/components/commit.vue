@@ -118,7 +118,7 @@
 <template>
   <div class="branch-commit">
     <template v-if="hasCommitRef && showBranch">
-      <div class="icon-container hidden-xs">
+      <div class="icon-container">
         <i
           v-if="tag"
           class="fa fa-tag"
@@ -132,7 +132,7 @@
       </div>
 
       <a
-        class="ref-name hidden-xs"
+        class="ref-name"
         :href="commitRef.ref_url"
         v-tooltip
         data-container="body"

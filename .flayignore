@@ -11,7 +11,10 @@ app/models/concerns/relative_positioning.rb
 app/workers/stuck_merge_jobs_worker.rb
 lib/gitlab/redis/*.rb
 lib/gitlab/gitaly_client/operation_service.rb
+<<<<<<< HEAD
 app/models/project_services/packagist_service.rb
 lib/gitlab/background_migration/normalize_ldap_extern_uids_range.rb
+=======
+>>>>>>> upstream/master
 lib/gitlab/background_migration/*
 app/models/project_services/kubernetes_service.rb
