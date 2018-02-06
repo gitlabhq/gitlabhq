@@ -189,6 +189,20 @@ milestones.
 
 [Learn more about Epics.](epics/index.md)
 
+## Transfer groups to another group
+
+From 10.5 there are two different ways to transfer a group:
+
+- Either by transferring a group into another group (making it a subgroup of that group).
+- Or by converting a subgroup into a root group (a group with no parent).
+
+Please make sure to understand that:
+
+- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths)
+- You can only transfer the group to a group you manage.
+- You will need to update your local repositories to point to the new location.
+- If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+
 ## Group settings
 
 Once you have created a group, you can manage its settings by navigating to
