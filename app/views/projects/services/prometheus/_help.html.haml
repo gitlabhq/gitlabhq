@@ -1,5 +1,5 @@
 %h4
-  Auto configuration
+  = s_('PrometheusService|Auto configuration')
 
 - unless @service.manual_configuration?
   .container-fluid
@@ -10,24 +10,24 @@
             = image_tag 'illustrations/monitoring/getting_started.svg'
         .col-sm-10
           %p.text-success.prepend-top-default
-            Prometheus is being automatically managed on your clusters
-          = link_to 'Manage clusters', project_clusters_path(@project), class: 'btn'
+            = s_('PrometheusService|Prometheus is being automatically managed on your clusters')
+          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(@project), class: 'btn'
       - else
         .col-sm-2
           = image_tag 'illustrations/monitoring/loading.svg'
         .col-sm-10
           %p.prepend-top-default
-            Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments
-          = link_to 'Install Prometheus on clusters', project_clusters_path(@project), class: 'btn btn-success'
+            = s_('PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments')
+          = link_to s_('PrometheusService|Install Prometheus on clusters'), project_clusters_path(@project), class: 'btn btn-success'
 - else
   .well
-    To enable the installation of Prometheus on your clusters, deactivate the manual configuration below
+    = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below')
 
 %hr
 
 %h4.append-bottom-default
-  Manual configuration
+  = s_('PrometheusService|Manual configuration')
 
 - unless @service.editable?
   .well
-    To enable manual configuration, uninstall Prometheus from your clusters
+    = s_('PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters')
