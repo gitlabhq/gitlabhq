@@ -21,13 +21,13 @@ describe Users::UpdateService do
     end
 
     it 'includes namespace error messages' do
-      create(:group, name: 'taken', path: 'something_else')
+      create(:group, path: 'taken')
       result = {}
       expect do
         result = update_user(user, { username: 'taken' })
       end.not_to change { user.reload.username }
       expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq('Namespace name has already been taken')
+      expect(result[:message]).to eq('Username has already been taken')
     end
 
     def update_user(user, opts)

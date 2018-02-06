@@ -35,10 +35,11 @@ export default class Clusters {
       clusterStatus,
       clusterStatusReason,
       helpPath,
+      ingressHelpPath,
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.store = new ClustersStore();
-    this.store.setHelpPath(helpPath);
+    this.store.setHelpPaths(helpPath, ingressHelpPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
     this.service = new ClustersService({
@@ -93,6 +94,7 @@ export default class Clusters {
           props: {
             applications: this.state.applications,
             helpPath: this.state.helpPath,
+            ingressHelpPath: this.state.ingressHelpPath,
           },
         });
       },
@@ -172,7 +174,7 @@ export default class Clusters {
       .map(appId => newApplicationMap[appId].title);
 
     if (appTitles.length > 0) {
-      const text = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your cluster'), {
+      const text = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster'), {
         appList: appTitles.join(', '),
       });
       Flash(text, 'notice', this.successApplicationContainer);

@@ -364,18 +364,34 @@ describe WikiPage do
   end
 
   describe "#versions" do
-    before do
-      create_page("Update", "content")
-      @page = wiki.find_page("Update")
+    shared_examples 'wiki page versions' do
+      let(:page) { wiki.find_page("Update") }
+
+      before do
+        create_page("Update", "content")
+      end
+
+      after do
+        destroy_page("Update")
+      end
+
+      it "returns an array of all commits for the page" do
+        3.times { |i| page.update(content: "content #{i}") }
+
+        expect(page.versions.count).to eq(4)
+      end
+
+      it 'returns instances of WikiPageVersion' do
+        expect(page.versions).to all( be_a(Gitlab::Git::WikiPageVersion) )
+      end
     end
 
-    after do
-      destroy_page("Update")
+    context 'when Gitaly is enabled' do
+      it_behaves_like 'wiki page versions'
     end
 
-    it "returns an array of all commits for the page" do
-      3.times { |i| @page.update(content: "content #{i}") }
-      expect(@page.versions.count).to eq(4)
+    context 'when Gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'wiki page versions'
     end
   end
 

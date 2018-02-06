@@ -1,17 +1,18 @@
 # GitLab-Omnibus Helm Chart
-> **Note:**
-* This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
-* These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
+> **Note:**.
+* This chart has been tested on Google Kubernetes Engine and Azure Container Service.
 
-This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
+**[This chart is beta](#limitations), and is the best way to install GitLab on Kubernetes today.** A new [cloud native GitLab chart](index.md#cloud-native-gitlab-chart) is in development with increased scalability and resilience, among other benefits. Once available, the cloud native chart will be the recommended installation method for Kubernetes, and this chart will be deprecated.
 
 For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
+This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
 
 ## Introduction
 
 This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned via [Let's Encrypt](https://letsencrypt.org/).
 
-This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the difficulty in supporting upgrades, migrating will require exporting data out of this instance and importing it into the new deployment.
+This Helm chart is in beta, and is suited for small to medium deployments. It will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the significant architectural changes, migrating will require backing up data out of this instance and importing it into the new deployment.
 
 The deployment includes:
 

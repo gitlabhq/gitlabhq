@@ -101,6 +101,30 @@ module Gitlab
         pages
       end
 
+      # options:
+      #  :page     - The Integer page number.
+      #  :per_page - The number of items per page.
+      #  :limit    - Total number of items to return.
+      def page_versions(page_path, options)
+        request = Gitaly::WikiGetPageVersionsRequest.new(
+          repository: @gitaly_repo,
+          page_path: encode_binary(page_path),
+          page: options[:page] || 1,
+          per_page: options[:per_page] || Gollum::Page.per_page
+        )
+
+        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request)
+
+        versions = []
+        stream.each do |message|
+          message.versions.each do |version|
+            versions << new_wiki_page_version(version)
+          end
+        end
+
+        versions
+      end
+
       def find_file(name, revision)
         request = Gitaly::WikiFindFileRequest.new(
           repository: @gitaly_repo,
@@ -141,7 +165,7 @@ module Gitlab
 
       private
 
-      # If a block is given and the yielded value is true, iteration will be
+      # If a block is given and the yielded value is truthy, iteration will be
       # stopped early at that point; else the iterator is consumed entirely.
       # The iterator is traversed with `next` to allow resuming the iteration.
       def wiki_page_from_iterator(iterator)
@@ -158,16 +182,20 @@ module Gitlab
           else
             wiki_page = GitalyClient::WikiPage.new(page.to_h)
 
-            version = Gitlab::Git::WikiPageVersion.new(
-              Gitlab::Git::Commit.decorate(@repository, page.version.commit),
-              page.version.format
-            )
+            version = new_wiki_page_version(page.version)
           end
         end
 
         [wiki_page, version]
       rescue StopIteration
         [wiki_page, version]
+      end
+
+      def new_wiki_page_version(version)
+        Gitlab::Git::WikiPageVersion.new(
+          Gitlab::Git::Commit.decorate(@repository, version.commit),
+          version.format
+        )
       end
 
       def gitaly_commit_details(commit_details)

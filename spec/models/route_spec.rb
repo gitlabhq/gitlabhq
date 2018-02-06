@@ -27,7 +27,7 @@ describe Route do
             redirect.save!(validate: false)
 
             expect(new_route.valid?).to be_falsey
-            expect(new_route.errors.first[1]).to eq('foo has been taken before. Please use another one')
+            expect(new_route.errors.first[1]).to eq('has been taken before')
           end
         end
 
@@ -49,7 +49,7 @@ describe Route do
             redirect.save!(validate: false)
 
             expect(route.valid?).to be_falsey
-            expect(route.errors.first[1]).to eq('foo has been taken before. Please use another one')
+            expect(route.errors.first[1]).to eq('has been taken before')
           end
         end
 
@@ -368,7 +368,7 @@ describe Route do
 
         group2.path = 'foo'
         group2.valid?
-        expect(group2.errors["route.path"].first).to eq('foo has been taken before. Please use another one')
+        expect(group2.errors[:path]).to eq(['has been taken before'])
       end
     end
 

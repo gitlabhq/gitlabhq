@@ -186,9 +186,9 @@
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
               = nav_link(controller: [:clusters, :user, :gcp]) do
-                = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
+                = link_to project_clusters_path(@project), title: _('Kubernetes'), class: 'shortcuts-cluster' do
                   %span
-                    Clusters
+                    = _('Kubernetes')
                   - if show_cluster_hint
                     .feature-highlight.js-feature-highlight{ disabled: true,
                       data: { trigger: 'manual',
@@ -206,12 +206,11 @@
                       %p
                         = _('Protip:')
                         = link_to 'Auto DevOps', help_page_path('topics/autodevops/index.md')
-                        %span= _('uses clusters to deploy your code!')
+                        %span= _('uses Kubernetes clusters to deploy your code!')
                       %hr
                       %button.btn.btn-create.btn-xs.dismiss-feature-highlight{ type: 'button' }
                         %span= _("Got it!")
                         = sprite_icon('thumb-up')
-
 
             - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
               = nav_link(path: 'pipelines#charts') do
