@@ -5,6 +5,7 @@ describe RedisCacheable do
 
   before do
     model.extend(described_class)
+    allow(model).to receive(:cache_attribute_key).and_return('key')
   end
 
   describe '#cached_attribute' do
@@ -13,8 +14,6 @@ describe RedisCacheable do
     subject { model.cached_attribute(payload.keys.first) }
 
     it 'gets the cache attribute' do
-      expect(model).to receive(:cache_attribute_key).and_return('key')
-
       Gitlab::Redis::SharedState.with do |redis|
         expect(redis).to receive(:get).with('key')
           .and_return(payload.to_json)
@@ -31,10 +30,7 @@ describe RedisCacheable do
 
     it 'sets the cache attributes' do
       Gitlab::Redis::SharedState.with do |redis|
-        values.each do |key, value|
-          redis_key = model.send(:cache_attribute_key)
-          expect(redis).to receive(:set).with(redis_key, values.to_json, anything)
-        end
+        expect(redis).to receive(:set).with('key', values.to_json, anything)
       end
 
       subject
