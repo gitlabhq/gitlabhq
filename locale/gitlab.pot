@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
 "POT-Creation-Date: 2018-02-05 16:08+0100\n"
 "PO-Revision-Date: 2018-02-05 16:08+0100\n"
-=======
-"POT-Creation-Date: 2018-02-05 16:03+0100\n"
-"PO-Revision-Date: 2018-02-05 16:03+0100\n"
->>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -185,12 +180,9 @@ msgstr ""
 msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "An error occurred while getting projects"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "An error occurred while loading filenames"
 msgstr ""
 
@@ -607,7 +599,6 @@ msgstr ""
 msgid "CiVariable|All environments"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "CiVariable|Create wildcard"
 msgstr ""
 
@@ -620,11 +611,6 @@ msgstr ""
 msgid "CiVariable|Search environments"
 msgstr ""
 
-=======
-msgid "CiVariable|Protected"
-msgstr ""
-
->>>>>>> upstream/master
 msgid "CiVariable|Toggle protected"
 msgstr ""
 
@@ -1301,7 +1287,6 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Epic will be removed! Are you sure?"
 msgstr ""
 
@@ -1315,12 +1300,9 @@ msgid "Error creating epic"
 msgstr ""
 
 msgid "Error fetching contributors data."
-=======
-msgid "Error fetching contributors data."
 msgstr ""
 
 msgid "Error fetching labels."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Error fetching network graph."
@@ -1335,12 +1317,9 @@ msgstr ""
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "Error saving label update."
 msgstr ""
 
->>>>>>> upstream/master
 msgid "Error updating status for all todos."
 msgstr ""
 
@@ -2944,12 +2923,9 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "This board\\'s scope is reduced"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "This directory"
 msgstr ""
 
@@ -3173,12 +3149,9 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Turn on Service Desk"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Type %{value} to confirm:"
 msgstr ""
 
