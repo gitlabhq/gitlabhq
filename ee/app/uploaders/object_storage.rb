@@ -37,8 +37,10 @@ module ObjectStorage
         super
       end
 
-      def build_upload_from_uploader(uploader)
-        super.tap { |upload| upload.store = object_store }
+      def build_upload
+        super.tap do |upload|
+          upload.store = object_store
+        end
       end
 
       def upload=(upload)

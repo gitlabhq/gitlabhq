@@ -1,5 +1,24 @@
 module EE
   module GeoHelper
+    def node_vue_list_properties
+      version, revision =
+        if ::Gitlab::Geo.primary?
+          [::Gitlab::VERSION, ::Gitlab::REVISION]
+        else
+          status = ::Gitlab::Geo.primary_node&.status
+
+          [status&.version, status&.revision]
+        end
+
+      {
+        primary_version: version.to_s,
+        primary_revision: revision.to_s,
+        node_details_path: admin_geo_nodes_path.to_s,
+        node_actions_allowed: ::Gitlab::Database.read_write?.to_s,
+        node_edit_allowed: ::Gitlab::Geo.license_allows?.to_s
+      }
+    end
+
     def node_namespaces_options(namespaces)
       namespaces.map { |g| { id: g.id, text: g.full_name } }
     end

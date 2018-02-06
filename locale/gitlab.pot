@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-31 17:04+0100\n"
-"PO-Revision-Date: 2018-01-31 17:04+0100\n"
+"POT-Creation-Date: 2018-02-05 16:08+0100\n"
+"PO-Revision-Date: 2018-02-05 16:08+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,8 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " and"
+msgstr ""
+
 msgid "%d commit"
 msgid_plural "%d commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d commit behind"
+msgid_plural "%d commits behind"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -157,9 +165,6 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-msgid "Allowed to create projects"
-msgstr ""
-
 msgid "All changes are committed"
 msgstr ""
 
@@ -173,6 +178,15 @@ msgid "An error occurred when updating the issue weight"
 msgstr ""
 
 msgid "An error occurred while fetching sidebar data"
+msgstr ""
+
+msgid "An error occurred while loading filenames"
+msgstr ""
+
+msgid "An error occurred while rendering KaTeX"
+msgstr ""
+
+msgid "An error occurred while retrieving calendar activity"
 msgstr ""
 
 msgid "An error occurred while retrieving diff"
@@ -257,9 +271,6 @@ msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
 msgid "Available"
-msgstr ""
-
-msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -492,9 +503,6 @@ msgstr ""
 msgid "Check interval"
 msgstr ""
 
-msgid "Check interval"
-msgstr ""
-
 msgid "Checking %{text} availability…"
 msgstr ""
 
@@ -516,16 +524,10 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
-msgid "Choose File ..."
+msgid "Choose which groups you wish to synchronize to this secondary node."
 msgstr ""
 
-msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
-msgstr ""
-
-msgid "Choose file..."
-msgstr ""
-
-msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
+msgid "Choose which shards you wish to synchronize to this secondary node."
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -582,10 +584,34 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
-msgid "CircuitBreakerApiLink|circuitbreaker api"
+msgid "CiVariables|Input variable key"
 msgstr ""
 
-msgid "Click to expand text"
+msgid "CiVariables|Input variable value"
+msgstr ""
+
+msgid "CiVariables|Remove variable row"
+msgstr ""
+
+msgid "CiVariable|All environments"
+msgstr ""
+
+msgid "CiVariable|Create wildcard"
+msgstr ""
+
+msgid "CiVariable|New environment"
+msgstr ""
+
+msgid "CiVariable|Protected"
+msgstr ""
+
+msgid "CiVariable|Search environments"
+msgstr ""
+
+msgid "CiVariable|Toggle protected"
+msgstr ""
+
+msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
 msgid "Click to expand text"
@@ -619,9 +645,6 @@ msgid "ClusterIntegration|Advanced options on this cluster's integration"
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
-msgstr ""
-
-msgid "ClusterIntegration|Are you sure you want to remove this cluster's integration? This will not delete your actual cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Are you sure you want to remove this cluster's integration? This will not delete your actual cluster."
@@ -744,9 +767,6 @@ msgstr ""
 msgid "ClusterIntegration|Integration status"
 msgstr ""
 
-msgid "ClusterIntegration|Integration status"
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr ""
 
@@ -861,9 +881,6 @@ msgstr ""
 msgid "ClusterIntegration|check the pricing here"
 msgstr ""
 
-msgid "ClusterIntegration|check the pricing here"
-msgstr ""
-
 msgid "ClusterIntegration|cluster"
 msgstr ""
 
@@ -917,6 +934,9 @@ msgstr ""
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr ""
 
+msgid "Commits|Commit: %{commitText}"
+msgstr ""
+
 msgid "Commits|History"
 msgstr ""
 
@@ -927,27 +947,6 @@ msgid "Committed by"
 msgstr ""
 
 msgid "Compare"
-msgstr ""
-
-msgid "Compare Git revisions"
-msgstr ""
-
-msgid "Compare Revisions"
-msgstr ""
-
-msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
-msgstr ""
-
-msgid "CompareBranches|Compare"
-msgstr ""
-
-msgid "CompareBranches|Source"
-msgstr ""
-
-msgid "CompareBranches|Target"
-msgstr ""
-
-msgid "CompareBranches|There isn't anything to compare."
 msgstr ""
 
 msgid "Compare Git revisions"
@@ -1044,6 +1043,9 @@ msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
+msgstr ""
+
+msgid "Copy branch name to clipboard"
 msgstr ""
 
 msgid "Copy commit SHA to clipboard"
@@ -1177,13 +1179,7 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-msgid "Disable"
-msgstr ""
-
 msgid "Discard changes"
-msgstr ""
-
-msgid "Discover GitLab Geo."
 msgstr ""
 
 msgid "Discover GitLab Geo."
@@ -1235,9 +1231,6 @@ msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
 msgid "Emails"
-msgstr ""
-
-msgid "Enable"
 msgstr ""
 
 msgid "Enable"
@@ -1306,10 +1299,22 @@ msgstr ""
 msgid "Error fetching contributors data."
 msgstr ""
 
+msgid "Error fetching network graph."
+msgstr ""
+
 msgid "Error fetching refs"
 msgstr ""
 
+msgid "Error fetching usage ping data."
+msgstr ""
+
 msgid "Error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "Error updating status for all todos."
+msgstr ""
+
+msgid "Error updating todo status."
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -1497,16 +1502,28 @@ msgstr ""
 msgid "GeoNodes|You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS."
 msgstr ""
 
+msgid "Geo|All projects"
+msgstr ""
+
 msgid "Geo|File sync capacity"
 msgstr ""
 
-msgid "Geo|Groups to replicate"
+msgid "Geo|Groups to synchronize"
+msgstr ""
+
+msgid "Geo|Projects in certain groups"
+msgstr ""
+
+msgid "Geo|Projects in certain storage shards"
 msgstr ""
 
 msgid "Geo|Repository sync capacity"
 msgstr ""
 
 msgid "Geo|Select groups to replicate."
+msgstr ""
+
+msgid "Geo|Shards to synchronize"
 msgstr ""
 
 msgid "Git storage health information has been reset"
@@ -1711,9 +1728,6 @@ msgstr ""
 msgid "Labels can be applied to issues and merge requests to categorize them."
 msgstr ""
 
-msgid "Labels can be applied to issues and merge requests to categorize them."
-msgstr ""
-
 msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
@@ -1777,9 +1791,6 @@ msgid "Locked Files"
 msgstr ""
 
 msgid "Login"
-msgstr ""
-
-msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
@@ -2018,9 +2029,6 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-msgid "Open"
-msgstr ""
-
 msgid "Opened"
 msgstr ""
 
@@ -2096,12 +2104,6 @@ msgstr ""
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
-msgid "PipelineSchedules|Input variable key"
-msgstr ""
-
-msgid "PipelineSchedules|Input variable value"
-msgstr ""
-
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
@@ -2109,9 +2111,6 @@ msgid "PipelineSchedules|None"
 msgstr ""
 
 msgid "PipelineSchedules|Provide a short description for this pipeline"
-msgstr ""
-
-msgid "PipelineSchedules|Remove variable row"
 msgstr ""
 
 msgid "PipelineSchedules|Take ownership"
@@ -2165,19 +2164,10 @@ msgstr ""
 msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a cluster</a>, then try again."
 msgstr ""
 
-msgid "Play"
-msgstr ""
-
-msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a cluster</a>, then try again."
-msgstr ""
-
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 
 msgid "Preferences"
-msgstr ""
-
-msgid "Primary"
 msgstr ""
 
 msgid "Primary"
@@ -2241,15 +2231,6 @@ msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
-msgstr ""
-
-msgid "Project avatar"
-msgstr ""
-
-msgid "Project avatar in repository: %{link}"
-msgstr ""
-
-msgid "Project cache successfully reset."
 msgstr ""
 
 msgid "Project avatar"
@@ -2420,9 +2401,6 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
-msgid "Register / Sign In"
-msgstr ""
-
 msgid "Registry"
 msgstr ""
 
@@ -2453,16 +2431,7 @@ msgstr ""
 msgid "Remove avatar"
 msgstr ""
 
-msgid "Remove"
-msgstr ""
-
-msgid "Remove avatar"
-msgstr ""
-
 msgid "Remove project"
-msgstr ""
-
-msgid "Repair authentication"
 msgstr ""
 
 msgid "Repair authentication"
@@ -2533,10 +2502,10 @@ msgstr ""
 msgid "Select branch/tag"
 msgstr ""
 
-msgid "Select branch/tag"
+msgid "Select target branch"
 msgstr ""
 
-msgid "Select target branch"
+msgid "Selective synchronization"
 msgstr ""
 
 msgid "Sep"
@@ -2602,6 +2571,9 @@ msgid "Sidebar|Weight"
 msgstr ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "Something went wrong on our end"
 msgstr ""
 
 msgid "Something went wrong on our end."
@@ -2927,13 +2899,10 @@ msgstr ""
 msgid "There are no merge requests to show"
 msgstr ""
 
-msgid "There are no issues to show"
-msgstr ""
-
-msgid "There are no merge requests to show"
-msgstr ""
-
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "There was an error saving your notification settings."
 msgstr ""
 
 msgid "There was an error when reseting email token."
@@ -3153,12 +3122,6 @@ msgstr ""
 msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
-msgid "ToggleButton|Toggle Status: OFF"
-msgstr ""
-
-msgid "ToggleButton|Toggle Status: ON"
-msgstr ""
-
 msgid "Total Time"
 msgstr ""
 
@@ -3177,16 +3140,10 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
-msgid "Trigger this manual action"
-msgstr ""
-
 msgid "Turn on Service Desk"
 msgstr ""
 
-msgid "Unable to reset project cache."
-msgstr ""
-
-msgid "Unknown"
+msgid "Type %{value} to confirm:"
 msgstr ""
 
 msgid "Unable to reset project cache."
@@ -3231,9 +3188,6 @@ msgstr ""
 msgid "Upload new avatar"
 msgstr ""
 
-msgid "Upload new avatar"
-msgstr ""
-
 msgid "UploadLink|click to upload"
 msgstr ""
 
@@ -3273,9 +3227,6 @@ msgstr ""
 msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
 msgstr ""
 
-msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
-msgstr ""
-
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
@@ -3304,6 +3255,12 @@ msgid "WikiClone|It is recommended to install %{markdown} so that GFM features r
 msgstr ""
 
 msgid "WikiClone|Start Gollum and edit locally"
+msgstr ""
+
+msgid "WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title."
+msgstr ""
+
+msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
 msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
@@ -3477,6 +3434,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "ciReport|Code quality"
+msgstr ""
+
 msgid "ciReport|DAST detected no alerts by analyzing the review app"
 msgstr ""
 
@@ -3495,7 +3455,25 @@ msgstr ""
 msgid "ciReport|Loading ${type} report"
 msgstr ""
 
+msgid "ciReport|No changes to code quality"
+msgstr ""
+
+msgid "ciReport|No changes to performance metrics"
+msgstr ""
+
+msgid "ciReport|Performance metrics"
+msgstr ""
+
+msgid "ciReport|SAST"
+msgstr ""
+
+msgid "ciReport|SAST detected no security vulnerabilities"
+msgstr ""
+
 msgid "ciReport|SAST:container no vulnerabilities were found"
+msgstr ""
+
+msgid "ciReport|Show complete code vulnerabilities report"
 msgstr ""
 
 msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}"
@@ -3514,12 +3492,10 @@ msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "merge request"
-msgid_plural "merge requests"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "mrWidget|Cancel automatic merge"
+msgstr ""
+
+msgid "mrWidget|Check out branch"
 msgstr ""
 
 msgid "mrWidget|Checking ability to merge automatically"
@@ -3531,7 +3507,25 @@ msgstr ""
 msgid "mrWidget|Cherry-pick this merge request in a new merge request"
 msgstr ""
 
+msgid "mrWidget|Closed"
+msgstr ""
+
 msgid "mrWidget|Closed by"
+msgstr ""
+
+msgid "mrWidget|Closes"
+msgstr ""
+
+msgid "mrWidget|Did not close"
+msgstr ""
+
+msgid "mrWidget|Email patches"
+msgstr ""
+
+msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
+msgstr ""
+
+msgid "mrWidget|Mentions"
 msgstr ""
 
 msgid "mrWidget|Merge"
@@ -3544,6 +3538,9 @@ msgid "mrWidget|Merge locally"
 msgstr ""
 
 msgid "mrWidget|Merged by"
+msgstr ""
+
+msgid "mrWidget|Plain diff"
 msgstr ""
 
 msgid "mrWidget|Refresh"
@@ -3559,6 +3556,9 @@ msgid "mrWidget|Remove Source Branch"
 msgstr ""
 
 msgid "mrWidget|Remove source branch"
+msgstr ""
+
+msgid "mrWidget|Request to merge"
 msgstr ""
 
 msgid "mrWidget|Resolve conflicts"
@@ -3606,7 +3606,16 @@ msgstr ""
 msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr ""
 
+msgid "mrWidget|You can merge this merge request manually using the"
+msgstr ""
+
 msgid "mrWidget|You can remove source branch now"
+msgstr ""
+
+msgid "mrWidget|command line"
+msgstr ""
+
+msgid "mrWidget|into"
 msgstr ""
 
 msgid "mrWidget|to be merged automatically when the pipeline succeeds"

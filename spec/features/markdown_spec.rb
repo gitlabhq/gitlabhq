@@ -261,6 +261,10 @@ describe 'GitLab Markdown' do
     it 'includes VideoLinkFilter' do
       expect(doc).to parse_video_links
     end
+
+    it 'includes ColorFilter' do
+      expect(doc).to parse_colors
+    end
   end
 
   context 'wiki pipeline' do
@@ -322,6 +326,10 @@ describe 'GitLab Markdown' do
 
     it 'includes VideoLinkFilter' do
       expect(doc).to parse_video_links
+    end
+
+    it 'includes ColorFilter' do
+      expect(doc).to parse_colors
     end
   end
 
