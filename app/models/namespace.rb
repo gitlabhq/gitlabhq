@@ -32,7 +32,6 @@ class Namespace < ActiveRecord::Base
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
-    uniqueness: { scope: :parent_id },
     length: { maximum: 255 },
     namespace_name: true
 

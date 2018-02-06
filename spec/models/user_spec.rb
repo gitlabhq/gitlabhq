@@ -116,12 +116,6 @@ describe User do
         expect(user).to be_valid
       end
 
-      it 'validates uniqueness' do
-        user = build(:user)
-
-        expect(user).to validate_uniqueness_of(:username).case_insensitive
-      end
-
       context 'when username is changed' do
         let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:namespace)) }
 
@@ -146,7 +140,19 @@ describe User do
           user = build(:user, username: username)
 
           expect(user).not_to be_valid
-          expect(user.errors.messages[:"namespace.route.path"].first).to eq('foo has been taken before. Please use another one')
+          expect(user.errors.full_messages).to eq(['Username has been taken before'])
+        end
+      end
+
+      context 'when the username is in use by another user' do
+        let(:username) { 'foo' }
+        let!(:other_user) { create(:user, username: username) }
+
+        it 'is invalid' do
+          user = build(:user, username: username)
+
+          expect(user).not_to be_valid
+          expect(user.errors.full_messages).to eq(['Username has already been taken'])
         end
       end
     end
@@ -2287,17 +2293,17 @@ describe User do
           end
 
           context 'when there is a validation error (namespace name taken) while updating namespace' do
-            let!(:conflicting_namespace) { create(:group, name: new_username, path: 'quz') }
+            let!(:conflicting_namespace) { create(:group, path: new_username) }
 
             it 'causes the user save to fail' do
               expect(user.update_attributes(username: new_username)).to be_falsey
-              expect(user.namespace.errors.messages[:name].first).to eq('has already been taken')
+              expect(user.namespace.errors.messages[:path].first).to eq('has already been taken')
             end
 
             it 'adds the namespace errors to the user' do
               user.update_attributes(username: new_username)
 
-              expect(user.errors.full_messages.first).to eq('Namespace name has already been taken')
+              expect(user.errors.full_messages.first).to eq('Username has already been taken')
             end
           end
         end
@@ -2640,7 +2646,7 @@ describe User do
 
       it 'should raise an ActiveRecord::RecordInvalid exception' do
         user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Namespace route path foo has been taken before/)
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Username has been taken before/)
       end
     end
 

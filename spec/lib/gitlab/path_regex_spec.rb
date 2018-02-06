@@ -194,8 +194,8 @@ describe Gitlab::PathRegex do
     end
   end
 
-  describe '.root_namespace_path_regex' do
-    subject { described_class.root_namespace_path_regex }
+  describe '.root_namespace_route_regex' do
+    subject { %r{\A#{described_class.root_namespace_route_regex}/\z} }
 
     it 'rejects top level routes' do
       expect(subject).not_to match('admin/')
@@ -318,8 +318,8 @@ describe Gitlab::PathRegex do
     end
   end
 
-  describe '.project_path_regex' do
-    subject { described_class.project_path_regex }
+  describe '.project_route_regex' do
+    subject { %r{\A#{described_class.project_route_regex}/\z} }
 
     it 'accepts top level routes' do
       expect(subject).to match('admin/')
