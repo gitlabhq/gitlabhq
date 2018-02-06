@@ -14,10 +14,7 @@ constraints(GroupUrlConstrainer.new) do
       get :merge_requests, as: :merge_requests_group
       get :projects, as: :projects_group
       get :activity, as: :activity_group
-<<<<<<< HEAD
       get :subgroups, as: :subgroups_group ## EE-specific
-=======
->>>>>>> upstream/master
       put :transfer, as: :transfer_group
     end
 
