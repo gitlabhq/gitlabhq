@@ -4,6 +4,8 @@ module QA
       class Dropzone
         attr_reader :page, :container
 
+        # page      - A QA::Page::Base object
+        # container - CSS selector of the comment textarea's container
         def initialize(page, container)
           @page = page
           @container = container

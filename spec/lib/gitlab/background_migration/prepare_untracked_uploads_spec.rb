@@ -23,6 +23,27 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
     end
   end
 
+  # E.g. The installation is in use at the time of migration, and someone has
+  # just uploaded a file
+  shared_examples 'does not add files in /uploads/tmp' do
+    let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+
+    before do
+      FileUtils.mkdir(File.dirname(tmp_file))
+      FileUtils.touch(tmp_file)
+    end
+
+    after do
+      FileUtils.rm(tmp_file)
+    end
+
+    it 'does not add files from /uploads/tmp' do
+      described_class.new.perform
+
+      expect(untracked_files_for_uploads.count).to eq(5)
+    end
+  end
+
   it 'ensures the untracked_files_for_uploads table exists' do
     expect do
       described_class.new.perform
@@ -109,24 +130,8 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
         end
       end
 
-      # E.g. The installation is in use at the time of migration, and someone has
-      # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-        let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
-
-        before do
-          FileUtils.touch(tmp_file)
-        end
-
-        after do
-          FileUtils.rm(tmp_file)
-        end
-
-        it 'does not add files from /uploads/tmp' do
-          described_class.new.perform
-
-          expect(untracked_files_for_uploads.count).to eq(5)
-        end
+        it_behaves_like 'does not add files in /uploads/tmp'
       end
     end
   end
@@ -197,24 +202,8 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
         end
       end
 
-      # E.g. The installation is in use at the time of migration, and someone has
-      # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-        let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
-
-        before do
-          FileUtils.touch(tmp_file)
-        end
-
-        after do
-          FileUtils.rm(tmp_file)
-        end
-
-        it 'does not add files from /uploads/tmp' do
-          described_class.new.perform
-
-          expect(untracked_files_for_uploads.count).to eq(5)
-        end
+        it_behaves_like 'does not add files in /uploads/tmp'
       end
     end
   end

@@ -1,6 +1,5 @@
 class GitGarbageCollectWorker
   include ApplicationWorker
-  include Gitlab::CurrentSettings
 
   sidekiq_options retry: false
 
@@ -102,7 +101,7 @@ class GitGarbageCollectWorker
   end
 
   def bitmaps_enabled?
-    current_application_settings.housekeeping_bitmaps_enabled
+    Gitlab::CurrentSettings.housekeeping_bitmaps_enabled
   end
 
   def git(write_bitmaps:)

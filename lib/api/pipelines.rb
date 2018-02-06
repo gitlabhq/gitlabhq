@@ -42,6 +42,8 @@ module API
         requires :ref, type: String,  desc: 'Reference'
       end
       post ':id/pipeline' do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42124')
+
         authorize! :create_pipeline, user_project
 
         new_pipeline = Ci::CreatePipelineService.new(user_project,

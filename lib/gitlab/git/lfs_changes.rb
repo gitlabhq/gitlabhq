@@ -25,8 +25,7 @@ module Gitlab
       private
 
       def rev_list
-        ::Gitlab::Git::RevList.new(path_to_repo: @repository.path_to_repo,
-                                   newrev: @newrev)
+        Gitlab::Git::RevList.new(@repository, newrev: @newrev)
       end
     end
   end

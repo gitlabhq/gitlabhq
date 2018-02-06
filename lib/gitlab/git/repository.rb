@@ -128,6 +128,10 @@ module Gitlab
         raise NoRepository.new('no repository for such path')
       end
 
+      def cleanup
+        @rugged&.close
+      end
+
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
@@ -462,7 +466,6 @@ module Gitlab
           path: nil,
           follow: false,
           skip_merges: false,
-          disable_walk: false,
           after: nil,
           before: nil
         }
@@ -494,11 +497,7 @@ module Gitlab
           return []
         end
 
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
+        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -1227,33 +1226,13 @@ module Gitlab
       end
 
       def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
-        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
-        env = git_env_for_user(user).merge(
-          'GIT_AUTHOR_NAME' => author.name,
-          'GIT_AUTHOR_EMAIL' => author.email
-        )
-        diff_range = "#{start_sha}...#{end_sha}"
-        diff_files = run_git!(
-          %W(diff --name-only --diff-filter=a --binary #{diff_range})
-        ).chomp
-
-        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
-          # Apply diff of the `diff_range` to the worktree
-          diff = run_git!(%W(diff --binary #{diff_range}))
-          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
-            stdin.write(diff)
+        gitaly_migrate(:squash) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_squash(user, squash_id, branch,
+              start_sha, end_sha, author, message)
+          else
+            git_squash(user, squash_id, branch, start_sha, end_sha, author, message)
           end
-
-          # Commit the `diff_range` diff
-          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
-
-          # Return the squash sha. May print a warning for ambiguous refs, but
-          # we can ignore that with `--quiet` and just take the SHA, if present.
-          # HEAD here always refers to the current HEAD commit, even if there is
-          # another ref called HEAD.
-          run_git!(
-            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
-          ).chomp
         end
       end
 
@@ -1311,7 +1290,15 @@ module Gitlab
       # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
-        rugged.config['gitlab.fullpath'] = full_path if full_path.present?
+        return unless full_path.present?
+
+        gitaly_migrate(:write_config) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.write_config(full_path: full_path)
+          else
+            rugged_write_config(full_path: full_path)
+          end
+        end
       end
 
       def gitaly_repository
@@ -1360,20 +1347,23 @@ module Gitlab
         raise CommandError.new(e)
       end
 
-      def refs_contains_sha(ref_type, sha)
-        args = %W(#{ref_type} --contains #{sha})
-        names = run_git(args).first
-
-        if names.respond_to?(:split)
-          names = names.split("\n").map(&:strip)
-
-          names.each do |name|
-            name.slice! '* '
+      def branch_names_contains_sha(sha)
+        gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branch_names_contains_sha(sha)
+          else
+            refs_contains_sha(:branch, sha)
           end
+        end
+      end
 
-          names
-        else
-          []
+      def tag_names_contains_sha(sha)
+        gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.tag_names_contains_sha(sha)
+          else
+            refs_contains_sha(:tag, sha)
+          end
         end
       end
 
@@ -1397,7 +1387,7 @@ module Gitlab
       end
 
       def search_files_by_name(query, ref)
-        safe_query = Regexp.escape(query.sub(/^\/*/, ""))
+        safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
 
         return [] if empty? || safe_query.blank?
 
@@ -1441,6 +1431,26 @@ module Gitlab
         end
       end
 
+      def rev_list(including: [], excluding: [], objects: false, &block)
+        args = ['rev-list']
+
+        args.push(*rev_list_param(including))
+
+        exclude_param = *rev_list_param(excluding)
+        if exclude_param.any?
+          args.push('--not')
+          args.push(*exclude_param)
+        end
+
+        args.push('--objects') if objects
+
+        run_git!(args, lazy_block: block)
+      end
+
+      def missed_ref(oldrev, newrev)
+        run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
+      end
+
       private
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
@@ -1449,6 +1459,25 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
+      end
+
+      def refs_contains_sha(ref_type, sha)
+        args = %W(#{ref_type} --contains #{sha})
+        names = run_git(args).first
+
+        return [] unless names.respond_to?(:split)
+
+        names = names.split("\n").map(&:strip)
+
+        names.each do |name|
+          name.slice! '* '
+        end
+
+        names
+      end
+
+      def rugged_write_config(full_path:)
+        rugged.config['gitlab.fullpath'] = full_path
       end
 
       def shell_write_ref(ref_path, ref, old_ref)
@@ -1470,7 +1499,7 @@ module Gitlab
         Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
       end
 
-      def run_git(args, chdir: path, env: {}, nice: false, &block)
+      def run_git(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
 
@@ -1480,12 +1509,12 @@ module Gitlab
         end
 
         circuit_breaker.perform do
-          popen(cmd, chdir, env, &block)
+          popen(cmd, chdir, env, lazy_block: lazy_block, &block)
         end
       end
 
-      def run_git!(args, chdir: path, env: {}, nice: false, &block)
-        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+      def run_git!(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, lazy_block: lazy_block, &block)
 
         raise GitError, output unless status.zero?
 
@@ -1512,7 +1541,7 @@ module Gitlab
         if sparse_checkout_files
           # Create worktree without checking out
           run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
 
           configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
 
@@ -1643,24 +1672,6 @@ module Gitlab
         else
           options
         end
-      end
-
-      def log_using_shell?(options)
-        options[:path].present? ||
-          options[:disable_walk] ||
-          options[:skip_merges] ||
-          options[:after] ||
-          options[:before]
-      end
-
-      def log_by_walk(sha, options)
-        walk_options = {
-          show: sha,
-          sort: Rugged::SORT_NONE,
-          limit: options[:limit],
-          offset: options[:offset]
-        }
-        Rugged::Walker.walk(rugged, walk_options).to_a
       end
 
       # Gitaly note: JV: although #log_by_shell shells out to Git I think the
@@ -2025,7 +2036,7 @@ module Gitlab
         target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ %r{'refs/heads/#{ref}'}
 
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
@@ -2172,6 +2183,37 @@ module Gitlab
             .update_branch(branch, rebase_sha, branch_sha)
 
           rebase_sha
+        end
+      end
+
+      def git_squash(user, squash_id, branch, start_sha, end_sha, author, message)
+        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
+        env = git_env_for_user(user).merge(
+          'GIT_AUTHOR_NAME' => author.name,
+          'GIT_AUTHOR_EMAIL' => author.email
+        )
+        diff_range = "#{start_sha}...#{end_sha}"
+        diff_files = run_git!(
+          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+        ).chomp
+
+        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
+          # Apply diff of the `diff_range` to the worktree
+          diff = run_git!(%W(diff --binary #{diff_range}))
+          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+            stdin.write(diff)
+          end
+
+          # Commit the `diff_range` diff
+          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
+
+          # Return the squash sha. May print a warning for ambiguous refs, but
+          # we can ignore that with `--quiet` and just take the SHA, if present.
+          # HEAD here always refers to the current HEAD commit, even if there is
+          # another ref called HEAD.
+          run_git!(
+            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
+          ).chomp
         end
       end
 
@@ -2353,6 +2395,10 @@ module Gitlab
         walker.count
       rescue Rugged::ReferenceError
         0
+      end
+
+      def rev_list_param(spec)
+        spec == :all ? ['--all'] : spec
       end
     end
   end

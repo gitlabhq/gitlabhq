@@ -108,7 +108,7 @@ describe MergeRequests::RebaseService do
       context 'git commands', :disable_gitaly do
         it 'sets GL_REPOSITORY env variable when calling git commands' do
           expect(repository).to receive(:popen).exactly(3)
-            .with(anything, anything, hash_including('GL_REPOSITORY'))
+            .with(anything, anything, hash_including('GL_REPOSITORY'), anything)
             .and_return(['', 0])
 
           service.execute(merge_request)

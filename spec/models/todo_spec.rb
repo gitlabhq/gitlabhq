@@ -20,6 +20,7 @@ describe Todo do
     it { is_expected.to validate_presence_of(:action) }
     it { is_expected.to validate_presence_of(:target_type) }
     it { is_expected.to validate_presence_of(:user) }
+    it { is_expected.to validate_presence_of(:author) }
 
     context 'for commits' do
       subject { described_class.new(target_type: 'Commit') }

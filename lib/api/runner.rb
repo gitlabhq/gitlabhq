@@ -215,9 +215,9 @@ module API
         job = authenticate_job!
         forbidden!('Job is not running!') unless job.running?
 
-        artifacts_upload_path = JobArtifactUploader.artifacts_upload_path
-        artifacts = uploaded_file(:file, artifacts_upload_path)
-        metadata = uploaded_file(:metadata, artifacts_upload_path)
+        workhorse_upload_path = JobArtifactUploader.workhorse_upload_path
+        artifacts = uploaded_file(:file, workhorse_upload_path)
+        metadata = uploaded_file(:metadata, workhorse_upload_path)
 
         bad_request!('Missing artifacts file!') unless artifacts
         file_to_large! unless artifacts.size < max_artifacts_size

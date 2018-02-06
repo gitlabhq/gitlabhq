@@ -18,6 +18,11 @@
         required: false,
         default: '',
       },
+      ingressHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
       managePrometheusPath: {
         type: String,
         required: false,
@@ -28,7 +33,8 @@
       generalApplicationDescription() {
         return sprintf(
           _.escape(s__(
-            'ClusterIntegration|Install applications on your cluster. Read more about %{helpLink}',
+            `ClusterIntegration|Install applications on your Kubernetes cluster.
+            Read more about %{helpLink}`,
           )), {
             helpLink: `<a href="${this.helpPath}">
               ${_.escape(s__('ClusterIntegration|installing applications'))}
@@ -39,7 +45,7 @@
       },
       helmTillerDescription() {
         return _.escape(s__(
-          `ClusterIntegration|Helm streamlines installing and managing Kubernets applications.
+          `ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
           Tiller runs inside of your Kubernetes Cluster, and manages
           releases of your charts.`,
         ));
@@ -54,7 +60,7 @@
           _.escape(s__(
             `ClusterIntegration|%{boldNotice} This will add some extra resources
             like a load balancer, which may incur additional costs depending on
-            the hosting provider Kubernetes is installed on. If you are using GKE,
+            the hosting provider your Kubernetes cluster is installed on. If you are using GKE,
             you can %{pricingLink}.`,
           )), {
             boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
@@ -64,12 +70,27 @@
           false,
         );
 
+        const externalIpParagraph = sprintf(
+          _.escape(s__(
+            `ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS
+            at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`,
+          )), {
+            ingressHelpLink: `<a href="${this.ingressHelpPath}">
+              ${_.escape(s__('ClusterIntegration|More information'))}
+            </a>`,
+          },
+          false,
+        );
+
         return `
           <p>
             ${descriptionParagraph}
           </p>
-          <p class="append-bottom-0">
+          <p>
             ${extraCostParagraph}
+          </p>
+          <p class="settings-message append-bottom-0">
+            ${externalIpParagraph}
           </p>
         `;
       },

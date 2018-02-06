@@ -1357,7 +1357,7 @@ describe Notify do
 
     matcher :have_part_with do |expected|
       match do |actual|
-        actual.body.parts.any? { |part| part.content_type.try(:match, %r(#{expected})) }
+        actual.body.parts.any? { |part| part.content_type.try(:match, /#{expected}/) }
       end
     end
   end

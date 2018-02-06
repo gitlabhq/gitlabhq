@@ -1,15 +1,13 @@
 module API
   module Helpers
     module Runner
-      include Gitlab::CurrentSettings
-
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'.freeze
       JOB_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
 
       def runner_registration_token_valid?
         ActiveSupport::SecurityUtils.variable_size_secure_compare(params[:token],
-                                                                  current_application_settings.runners_registration_token)
+                                                                  Gitlab::CurrentSettings.runners_registration_token)
       end
 
       def get_runner_version_from_params
@@ -70,7 +68,7 @@ module API
       end
 
       def max_artifacts_size
-        current_application_settings.max_artifacts_size.megabytes.to_i
+        Gitlab::CurrentSettings.max_artifacts_size.megabytes.to_i
       end
     end
   end

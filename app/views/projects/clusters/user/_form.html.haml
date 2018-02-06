@@ -1,8 +1,8 @@
 = form_for @cluster, url: user_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
   = form_errors(@cluster)
   .form-group
-    = field.label :name, s_('ClusterIntegration|Cluster name')
-    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Cluster name')
+    = field.label :name, s_('ClusterIntegration|Kubernetes cluster name')
+    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Kubernetes cluster name')
   .form-group
     = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
     = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
@@ -25,4 +25,4 @@
       = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
 
     .form-group
-      = field.submit s_('ClusterIntegration|Add cluster'), class: 'btn btn-success'
+      = field.submit s_('ClusterIntegration|Add Kubernetes cluster'), class: 'btn btn-success'

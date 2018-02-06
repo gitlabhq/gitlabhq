@@ -17,15 +17,15 @@ module API
       }
     }.freeze
     PROJECT_TEMPLATE_REGEX =
-      /[\<\{\[]
+      %r{[\<\{\[]
         (project|description|
         one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
-      [\>\}\]]/xi.freeze
+      [\>\}\]]}xi.freeze
     YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i.freeze
     FULLNAME_TEMPLATE_REGEX =
-      /[\<\{\[]
+      %r{[\<\{\[]
         (fullname|name\sof\s(author|copyright\sowner))
-      [\>\}\]]/xi.freeze
+      [\>\}\]]}xi.freeze
 
     helpers do
       def parsed_license_template

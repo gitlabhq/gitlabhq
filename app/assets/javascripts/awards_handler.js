@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import { s__ } from './locale';
+import { __ } from './locale';
 import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -451,7 +451,7 @@ class AwardsHandler {
           callback();
         }
       })
-      .catch(() => flash(s__('Something went wrong on our end.')));
+      .catch(() => flash(__('Something went wrong on our end.')));
     }
   }
 

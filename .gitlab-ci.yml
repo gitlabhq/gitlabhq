@@ -627,6 +627,8 @@ codequality:
 sast:
   <<: *except-docs
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  variables:
+    CONFIDENCE_LEVEL: 2
   before_script: []
   script:
     - /app/bin/run .
@@ -738,8 +740,9 @@ cache gems:
 gitlab_git_test:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
-  <<: *pull-cache
   variables:
     SETUP_DB: "false"
+  before_script: []
+  cache: {}
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes

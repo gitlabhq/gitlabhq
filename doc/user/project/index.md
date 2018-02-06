@@ -128,8 +128,7 @@ and Git push/pull redirects.
 
 Depending on the situation, different things apply.
 
-When [transferring a project](settings/index.md#transferring-an-existing-project-into-another-namespace),
-or [renaming a user](../profile/index.md#changing-your-username) or
+When [renaming a user](../profile/index.md#changing-your-username) or
 [changing a group path](../group/index.md#changing-a-group-s-path):
 
 - **The redirect to the new URL is permanent**, which means that the original

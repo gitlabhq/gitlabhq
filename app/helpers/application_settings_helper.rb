@@ -1,25 +1,23 @@
 module ApplicationSettingsHelper
   extend self
 
-  include Gitlab::CurrentSettings
-
   delegate  :allow_signup?,
             :gravatar_enabled?,
             :password_authentication_enabled_for_web?,
             :akismet_enabled?,
             :koding_enabled?,
-            to: :current_application_settings
+            to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
-    current_application_settings.user_oauth_applications
+    Gitlab::CurrentSettings.user_oauth_applications
   end
 
   def allowed_protocols_present?
-    current_application_settings.enabled_git_access_protocol.present?
+    Gitlab::CurrentSettings.enabled_git_access_protocol.present?
   end
 
   def enabled_protocol
-    case current_application_settings.enabled_git_access_protocol
+    case Gitlab::CurrentSettings.enabled_git_access_protocol
     when 'http'
       gitlab_config.protocol
     when 'ssh'
@@ -57,7 +55,7 @@ module ApplicationSettingsHelper
   # toggle button effect.
   def import_sources_checkboxes(help_block_id)
     Gitlab::ImportSources.options.map do |name, source|
-      checked = current_application_settings.import_sources.include?(source)
+      checked = Gitlab::CurrentSettings.import_sources.include?(source)
       css_class = checked ? 'active' : ''
       checkbox_name = 'application_setting[import_sources][]'
 
@@ -72,7 +70,7 @@ module ApplicationSettingsHelper
 
   def oauth_providers_checkboxes
     button_based_providers.map do |source|
-      disabled = current_application_settings.disabled_oauth_sign_in_sources.include?(source.to_s)
+      disabled = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources.include?(source.to_s)
       css_class = 'btn'
       css_class << ' active' unless disabled
       checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
@@ -96,12 +94,12 @@ module ApplicationSettingsHelper
     ]
   end
 
-  def repository_storages_options_for_select
+  def repository_storages_options_for_select(selected)
     options = Gitlab.config.repositories.storages.map do |name, storage|
       ["#{name} - #{storage['path']}", name]
     end
 
-    options_for_select(options, @application_setting.repository_storages)
+    options_for_select(options, selected)
   end
 
   def sidekiq_queue_options_for_select

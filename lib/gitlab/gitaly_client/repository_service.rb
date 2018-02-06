@@ -219,6 +219,19 @@ module Gitlab
 
         true
       end
+
+      def write_config(full_path:)
+        request = Gitaly::WriteConfigRequest.new(repository: @gitaly_repo, full_path: full_path)
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :write_config,
+          request,
+          timeout: GitalyClient.fast_timeout
+        )
+
+        raise Gitlab::Git::OSError.new(response.error) unless response.error.empty?
+      end
     end
   end
 end
