@@ -120,21 +120,22 @@ module Gitlab
         end
       end
 
-      def commit_check
-        @commit_check ||= Gitlab::Checks::CommitCheck.new(project, user_access.user, newrev, oldrev)
-      end
-
       def commits_check
         return if deletion? || newrev.nil?
 
-        commits.each do |commit|
-          commit_check.validate(commit, validations_for_commit(commit))
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+        ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+          commits.each do |commit|
+            commit_check.validate(commit, validations_for_commit(commit))
+          end
         end
+
+        commit_check.validate_file_paths
       end
 
       # Method overwritten in EE to inject custom validations
       def validations_for_commit(_)
-        commit_check.validations
+        []
       end
 
       private
@@ -169,6 +170,10 @@ module Gitlab
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
         end
+      end
+
+      def commit_check
+        @commit_check ||= Gitlab::Checks::CommitCheck.new(project, user_access.user, newrev, oldrev)
       end
 
       def commits

@@ -1,6 +1,8 @@
 module Gitlab
   module Checks
     class CommitCheck
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :project, :user, :newrev, :oldrev
 
       def initialize(project, user, newrev, oldrev)
@@ -8,42 +10,51 @@ module Gitlab
         @user = user
         @newrev = user
         @oldrev = user
+        @file_paths = []
       end
 
       def validate(commit, validations)
-        return if validations.empty?
+        return if validations.empty? && path_validations.empty?
 
         commit.raw_deltas.each do |diff|
+          @file_paths << (diff.new_path || diff.old_path)
+
           validations.each do |validation|
             if error = validation.call(diff)
               raise ::Gitlab::GitAccess::UnauthorizedError, error
             end
           end
         end
-
-        nil
       end
 
-      def validations
-        validate_lfs_file_locks? ? [lfs_file_locks_validation] : []
+      def validate_file_paths
+        path_validations.each do |validation|
+          if error = validation.call(@file_paths)
+            raise ::Gitlab::GitAccess::UnauthorizedError, error
+          end
+        end
       end
 
       private
 
       def validate_lfs_file_locks?
-        project.lfs_enabled? && project.lfs_file_locks.any? && newrev && oldrev
+        strong_memoize(:validate_lfs_file_locks) do
+          project.lfs_enabled? && project.lfs_file_locks.any? && newrev && oldrev
+        end
       end
 
       def lfs_file_locks_validation
-        lambda do |diff|
-          path = diff.new_path || diff.old_path
+        lambda do |paths|
+          lfs_lock = project.lfs_file_locks.where(path: paths).where.not(user_id: user.id).first
 
-          lfs_lock = project.lfs_file_locks.find_by(path: path)
-
-          if lfs_lock && lfs_lock.user != user
+          if lfs_lock
             return "The path '#{lfs_lock.path}' is locked in Git LFS by #{lfs_lock.user.name}"
           end
         end
+      end
+
+      def path_validations
+        validate_lfs_file_locks? ? [lfs_file_locks_validation] : []
       end
     end
   end

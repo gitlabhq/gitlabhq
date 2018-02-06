@@ -100,8 +100,9 @@ created or updated with the following content:
 *.png filter=lfs diff=lfs merge=lfs -text lockable
 ```
 
-You can also register a file type as lockable without using LFS, in
-order to do that you can edit the `.gitattributes` file manually:
+You can also register a file type as lockable without using LFS
+(In order to be able to lock/unlock a file you need a remote server that implements the  LFS File Locking API),
+in order to do that you can edit the `.gitattributes` file manually:
 
 ```bash
 *.pdf lockable

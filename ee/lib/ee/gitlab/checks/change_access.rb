@@ -59,11 +59,8 @@ module EE
           # if newrev is blank, the branch was deleted
           return if deletion? || !(commit_validation || validate_path_locks?)
 
-          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
-          ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-            commits.each do |commit|
-              push_rule_commit_check(commit)
-            end
+          commits.each do |commit|
+            push_rule_commit_check(commit)
           end
         rescue ::PushRule::MatchError => e
           raise ::Gitlab::GitAccess::UnauthorizedError, e.message

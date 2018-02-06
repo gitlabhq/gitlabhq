@@ -57,6 +57,26 @@ describe Lfs::LockFileService do
           expect(subject.execute[:status]).to eq(:error)
         end
       end
+
+      context 'when File Locking is available' do
+        before do
+          stub_licensed_features(file_locks: true)
+        end
+
+        it 'creates the Path Lock' do
+          expect { subject.execute }.to change { PathLock.count }.to(1)
+        end
+      end
+
+      context 'when File Locking is not available' do
+        before do
+          stub_licensed_features(file_locks: false)
+        end
+
+        it 'creates the Path Lock' do
+          expect { subject.execute }.not_to change { PathLock.count }
+        end
+      end
     end
   end
 end
