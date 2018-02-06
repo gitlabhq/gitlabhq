@@ -24,7 +24,9 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def render_discussion
     if use_serializer?
       # TODO - It is not needed to serialize notes when resolving
-      # or unresolving discussions. We should remove this behavior.
+      # or unresolving discussions. We should remove this behavior
+      # passing a parameter to DiscussionEntity to return an empty array
+      # for notes.
       prepare_notes_for_rendering(discussion.notes, merge_request)
       render_json_with_discussions_serializer
     else
