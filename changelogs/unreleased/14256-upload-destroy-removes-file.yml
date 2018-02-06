@@ -1,0 +1,5 @@
+---
+title: Deleting an upload will correctly clean up the filesystem.
+merge_request: 16799
+author:
+type: fixed

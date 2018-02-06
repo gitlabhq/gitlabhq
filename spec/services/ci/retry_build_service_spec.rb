@@ -17,7 +17,8 @@ describe Ci::RetryBuildService do
     %i[id status user token coverage trace runner artifacts_expire_at
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
-       erased_at auto_canceled_by job_artifacts job_artifacts_archive job_artifacts_metadata].freeze
+       erased_at auto_canceled_by job_artifacts job_artifacts_archive
+       job_artifacts_metadata job_artifacts_trace].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
@@ -37,7 +38,7 @@ describe Ci::RetryBuildService do
     let(:build) do
       create(:ci_build, :failed, :artifacts, :expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
-             :triggered, :trace, :teardown_environment,
+             :triggered, :trace_artifact, :teardown_environment,
              description: 'my-job', stage: 'test',  pipeline: pipeline,
              auto_canceled_by: create(:ci_empty_pipeline, project: project)) do |build|
                ##

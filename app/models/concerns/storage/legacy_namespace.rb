@@ -14,7 +14,11 @@ module Storage
         # Ensure old directory exists before moving it
         gitlab_shell.add_namespace(repository_storage_path, full_path_was)
 
+        # Ensure new directory exists before moving it (if there's a parent)
+        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
+
         unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+
           Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
 
           # if we cannot move namespace directory we should rollback

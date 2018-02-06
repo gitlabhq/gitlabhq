@@ -396,7 +396,7 @@ If you want to modify the CI/CD pipeline used by Auto DevOps, you can copy the
 Assuming that your project is new or it doesn't have a `.gitlab-ci.yml` file
 present:
 
-1. From your project home page, either click on the "Set up CI" button, or click
+1. From your project home page, either click on the "Set up CI/CD" button, or click
    on the plus button and (`+`), then "New file"
 1. Pick `.gitlab-ci.yml` as the template type
 1. Select "Auto-DevOps" from the template dropdown

@@ -8,7 +8,7 @@ require 'carrierwave/storage/fog'
 module ObjectStorage
   RemoteStoreError = Class.new(StandardError)
   UnknownStoreError = Class.new(StandardError)
-  ObjectStoreUnavailable = Class.new(StandardError)
+  ObjectStorageUnavailable = Class.new(StandardError)
 
   module Store
     LOCAL = 1
@@ -21,7 +21,7 @@ module ObjectStorage
       extend ActiveSupport::Concern
 
       prepended do |base|
-        raise ObjectStoreUnavailable, "#{base} must include ObjectStorage::Concern to use extensions."  unless base < Concern
+        raise "#{base} must include ObjectStorage::Concern to use extensions." unless base < Concern
 
         base.include(::RecordsUploads::Concern)
       end
@@ -37,8 +37,10 @@ module ObjectStorage
         super
       end
 
-      def build_upload_from_uploader(uploader)
-        super.tap { |upload| upload.store = object_store }
+      def build_upload
+        super.tap do |upload|
+          upload.store = object_store
+        end
       end
 
       def upload=(upload)
@@ -46,6 +48,15 @@ module ObjectStorage
 
         self.object_store = upload.store
         super
+      end
+
+      def schedule_background_upload(*args)
+        return unless schedule_background_upload?
+
+        ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
+                                                upload.class.to_s,
+                                                mounted_as,
+                                                upload.id)
       end
 
       private
@@ -57,6 +68,33 @@ module ObjectStorage
         paths.include?(upload.path) &&
           upload.model_id == model.id &&
           upload.model_type == model.class.base_class.sti_name
+      end
+    end
+  end
+
+  # Add support for automatic background uploading after the file is stored.
+  #
+  module BackgroundMove
+    extend ActiveSupport::Concern
+
+    def background_upload(mount_points = [])
+      return unless mount_points.any?
+
+      run_after_commit do
+        mount_points.each { |mount| send(mount).schedule_background_upload } # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
+
+    def changed_mounts
+      self.class.uploaders.select do |mount, uploader_class|
+        mounted_as = uploader_class.serialization_column(self.class, mount)
+        mount if send(:"#{mounted_as}_changed?") # rubocop:disable GitlabSecurity/PublicSend
+      end.keys
+    end
+
+    included do
+      after_save on: [:create, :update] do
+        background_upload(changed_mounts)
       end
     end
   end
@@ -94,6 +132,10 @@ module ObjectStorage
 
       def licensed?
         License.feature_available?(:object_storage)
+      end
+
+      def serialization_column(model_class, mount_point)
+        model_class.uploader_options.dig(mount_point, :mount_on) || mount_point
       end
     end
 
@@ -181,13 +223,13 @@ module ObjectStorage
       raise e
     end
 
-    def schedule_migration_to_object_storage(*args)
-      return unless self.class.object_store_enabled?
-      return unless self.class.background_upload_enabled?
-      return unless self.class.licensed?
-      return unless self.file_storage?
+    def schedule_background_upload(*args)
+      return unless schedule_background_upload?
 
-      ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
+      ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
+                                                          model.class.name,
+                                                          mounted_as,
+                                                          model.id)
     end
 
     def fog_directory
@@ -209,7 +251,7 @@ module ObjectStorage
     def verify_license!(_file)
       return if file_storage?
 
-      raise 'Object Storage feature is missing' unless self.class.licensed?
+      raise(ObjectStorageUnavailable, 'Object Storage feature is missing') unless self.class.licensed?
     end
 
     def exists?
@@ -229,6 +271,13 @@ module ObjectStorage
 
     private
 
+    def schedule_background_upload?
+      self.class.object_store_enabled? &&
+        self.class.background_upload_enabled? &&
+        self.class.licensed? &&
+        self.file_storage?
+    end
+
     # this is a hack around CarrierWave. The #migrate method needs to be
     # able to force the current file to the migrated file upon success.
     def file=(file)
@@ -236,7 +285,7 @@ module ObjectStorage
     end
 
     def serialization_column
-      model.class.uploader_options.dig(mounted_as, :mount_on) || mounted_as
+      self.class.serialization_column(model.class, mounted_as)
     end
 
     # Returns the column where the 'store' is saved

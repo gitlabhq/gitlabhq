@@ -1162,14 +1162,27 @@ describe Gitlab::Git::Repository, seed_helper: true do
     context 'when Gitaly find_branch feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding a branch'
 
-      it 'should reload Rugged::Repository and return master' do
-        expect(Rugged::Repository).to receive(:new).twice.and_call_original
+      context 'force_reload is true' do
+        it 'should reload Rugged::Repository' do
+          expect(Rugged::Repository).to receive(:new).twice.and_call_original
 
-        repository.find_branch('master')
-        branch = repository.find_branch('master', force_reload: true)
+          repository.find_branch('master')
+          branch = repository.find_branch('master', force_reload: true)
 
-        expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
-        expect(branch.name).to eq('master')
+          expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
+          expect(branch.name).to eq('master')
+        end
+      end
+
+      context 'force_reload is false' do
+        it 'should not reload Rugged::Repository' do
+          expect(Rugged::Repository).to receive(:new).once.and_call_original
+
+          branch = repository.find_branch('master', force_reload: false)
+
+          expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
+          expect(branch.name).to eq('master')
+        end
       end
     end
   end

@@ -94,6 +94,19 @@ module GroupsHelper
     end
   end
 
+  def parent_group_options(current_group)
+    groups = current_user.owned_groups.sort_by(&:human_name).map do |group|
+      { id: group.id, text: group.human_name }
+    end
+
+    groups.delete_if { |group| group[:id] == current_group.id }
+    groups.to_json
+  end
+
+  def supports_nested_groups?
+    Group.supports_nested_groups?
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

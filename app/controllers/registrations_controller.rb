@@ -4,6 +4,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   before_action :whitelist_query_limiting, only: [:destroy]
 
+  before_action :whitelist_query_limiting, only: [:destroy]
+
   def new
     redirect_to(new_user_session_path)
   end

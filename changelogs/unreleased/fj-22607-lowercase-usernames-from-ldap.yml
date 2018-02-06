@@ -1,0 +1,5 @@
+---
+title: Added ldap config setting to lower case the username
+merge_request: 16791
+author:
+type: added
