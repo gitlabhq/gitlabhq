@@ -174,7 +174,7 @@ export default class Clusters {
       .map(appId => newApplicationMap[appId].title);
 
     if (appTitles.length > 0) {
-      const text = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your cluster'), {
+      const text = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster'), {
         appList: appTitles.join(', '),
       });
       Flash(text, 'notice', this.successApplicationContainer);

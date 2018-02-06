@@ -8,7 +8,7 @@ import { convertPermissionToBoolean } from './lib/utils/common_utils';
  ```
   %button.js-project-feature-toggle.project-feature-toggle{ type: "button",
     class: "#{'is-checked' if enabled?}",
-    'aria-label': _('Toggle Cluster') }
+    'aria-label': _('Toggle Kubernetes Cluster') }
     %input{ type: "hidden", class: 'js-project-feature-toggle-input', value: enabled? }
   ```
 */

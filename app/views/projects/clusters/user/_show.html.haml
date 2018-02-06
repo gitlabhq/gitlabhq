@@ -1,8 +1,8 @@
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
   .form-group
-    = field.label :name, s_('ClusterIntegration|Cluster name')
-    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Cluster name')
+    = field.label :name, s_('ClusterIntegration|Kubernetes cluster name')
+    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Kubernetes cluster name')
 
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group

@@ -1,4 +1,4 @@
-%h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up cluster integration')
+%h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up Kubernetes cluster integration')
 
 .dropdown.clusters-dropdown
   %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', data: { toggle: 'dropdown' }, 'aria-haspopup': true, 'aria-expanded': false }
@@ -7,6 +7,6 @@
     = icon('chevron-down')
   %ul.dropdown-menu.clusters-dropdown-menu.dropdown-menu-full-width
     %li
-      = link_to(s_('ClusterIntegration|Create cluster on Google Kubernetes Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project))
+      = link_to(s_('ClusterIntegration|Create Kubernetes cluster on Google Kubernetes Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project))
     %li
-      = link_to(s_('ClusterIntegration|Add an existing cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project))
+      = link_to(s_('ClusterIntegration|Add an existing Kubernetes cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project))
