@@ -3,6 +3,7 @@ module Avatarable
 
   included do
     prepend ShadowMethods
+    include ObjectStorage::BackgroundMove
 
     validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
     validates :avatar, file_size: { maximum: 200.kilobytes.to_i }

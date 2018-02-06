@@ -2,6 +2,10 @@ module EE
   module Note
     extend ActiveSupport::Concern
 
+    prepended do
+      include ObjectStorage::BackgroundMove
+    end
+
     def for_epic?
       noteable.is_a?(Epic)
     end

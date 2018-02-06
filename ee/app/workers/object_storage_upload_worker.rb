@@ -1,3 +1,6 @@
+# @Deprecated - remove once the `object_storage_upload` queue is empty
+# The queue has been renamed `object_storage:object_storage_background_upload`
+#
 class ObjectStorageUploadWorker
   include ApplicationWorker
 
@@ -15,8 +18,5 @@ class ObjectStorageUploadWorker
     subject = subject_class.find(subject_id)
     uploader = subject.public_send(file_field) # rubocop:disable GitlabSecurity/PublicSend
     uploader.migrate!(ObjectStorage::Store::REMOTE)
-  rescue RecordNotFound
-    # does not retry when the record do not exists
-    Rails.logger.warn("Cannot find subject #{subject_class} with id=#{subject_id}.")
   end
 end
