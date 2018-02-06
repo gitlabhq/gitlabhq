@@ -2,7 +2,25 @@ require 'webpack/rails/manifest'
 
 module WebpackHelper
   def webpack_bundle_tag(bundle, force_same_domain: false)
-    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: true))
+    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: force_same_domain))
+  end
+
+  def webpack_controller_bundle_tags
+    bundles = []
+    segments = [*controller.controller_path.split('/'), controller.action_name].compact
+
+    until segments.empty?
+      begin
+        asset_paths = gitlab_webpack_asset_paths("pages.#{segments.join('.')}", extension: 'js')
+        bundles.unshift(*asset_paths)
+      rescue Webpack::Rails::Manifest::EntryPointMissingError
+        # no bundle exists for this path
+      end
+
+      segments.pop
+    end
+
+    javascript_include_tag(*bundles)
   end
 
   # override webpack-rails gem helper until changes can make it upstream

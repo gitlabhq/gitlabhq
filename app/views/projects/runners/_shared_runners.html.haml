@@ -1,8 +1,8 @@
 %h3 Shared Runners
 
 .bs-callout.bs-callout-warning.shared-runners-description
-  - if current_application_settings.shared_runners_text.present?
-    = markdown_field(current_application_settings, :shared_runners_text)
+  - if Gitlab::CurrentSettings.shared_runners_text.present?
+    = markdown_field(Gitlab::CurrentSettings.current_application_settings, :shared_runners_text)
   - else
     GitLab Shared Runners execute code of different projects on the same Runner
     unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is

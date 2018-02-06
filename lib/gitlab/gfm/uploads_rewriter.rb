@@ -27,7 +27,7 @@ module Gitlab
           with_link_in_tmp_dir(file.file) do |open_tmp_file|
             new_uploader.store!(open_tmp_file)
           end
-          new_uploader.to_markdown
+          new_uploader.markdown_link
         end
       end
 
@@ -46,7 +46,7 @@ module Gitlab
       private
 
       def find_file(project, secret, file)
-        uploader = FileUploader.new(project, secret)
+        uploader = FileUploader.new(project, secret: secret)
         uploader.retrieve_from_store!(file)
         uploader.file
       end

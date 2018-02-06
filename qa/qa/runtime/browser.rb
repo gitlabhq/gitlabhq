@@ -23,11 +23,11 @@ module QA
       # In case of an address that is a symbol we will try to guess address
       # based on `Runtime::Scenario#something_address`.
       #
-      def visit(address, page, &block)
+      def visit(address, page = nil, &block)
         Browser::Session.new(address, page).perform(&block)
       end
 
-      def self.visit(address, page, &block)
+      def self.visit(address, page = nil, &block)
         new.visit(address, page, &block)
       end
 
@@ -84,7 +84,7 @@ module QA
           config.javascript_driver = :chrome
           config.default_max_wait_time = 10
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
-          config.save_path = 'tmp'
+          config.save_path = File.expand_path('../../tmp', __dir__)
         end
       end
 

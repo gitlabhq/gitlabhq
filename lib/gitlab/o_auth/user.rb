@@ -55,7 +55,7 @@ module Gitlab
         user ||= find_or_build_ldap_user if auto_link_ldap_user?
         user ||= build_new_user if signup_enabled?
 
-        user.external = true if external_provider? && user
+        user.external = true if external_provider? && user&.new_record?
 
         user
       end

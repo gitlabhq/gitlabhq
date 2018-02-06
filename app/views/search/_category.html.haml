@@ -57,25 +57,24 @@
           Titles and Filenames
           %span.badge
             = @search_results.snippet_titles_count
-
     - else
       %li{ class: active_when(@scope == 'projects') }
         = link_to search_filter_path(scope: 'projects') do
           Projects
           %span.badge
-            = @search_results.projects_count
+            = limited_count(@search_results.limited_projects_count)
       %li{ class: active_when(@scope == 'issues') }
         = link_to search_filter_path(scope: 'issues') do
           Issues
           %span.badge
-            = @search_results.issues_count
+            = limited_count(@search_results.limited_issues_count)
       %li{ class: active_when(@scope == 'merge_requests') }
         = link_to search_filter_path(scope: 'merge_requests') do
           Merge requests
           %span.badge
-            = @search_results.merge_requests_count
+            = limited_count(@search_results.limited_merge_requests_count)
       %li{ class: active_when(@scope == 'milestones') }
         = link_to search_filter_path(scope: 'milestones') do
           Milestones
           %span.badge
-            = @search_results.milestones_count
+            = limited_count(@search_results.limited_milestones_count)

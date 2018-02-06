@@ -1,9 +1,9 @@
-import $ from 'jquery';
+import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',
-  groupPath: '/api/:version/groups/:id.json',
+  groupPath: '/api/:version/groups/:id',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
@@ -23,42 +23,44 @@ const Api = {
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)
       .replace(':id', groupId);
-    return $.ajax({
-      url,
-      dataType: 'json',
-    })
-      .done(group => callback(group));
+    return axios.get(url)
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   // Return groups list. Filtered by query
   groups(query, options, callback) {
     const url = Api.buildUrl(Api.groupsPath);
-    return $.ajax({
-      url,
-      data: Object.assign({
+    return axios.get(url, {
+      params: Object.assign({
         search: query,
         per_page: 20,
       }, options),
-      dataType: 'json',
     })
-      .done(groups => callback(groups));
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   // Return namespaces list. Filtered by query
   namespaces(query, callback) {
     const url = Api.buildUrl(Api.namespacesPath);
-    return $.ajax({
-      url,
-      data: {
+    return axios.get(url, {
+      params: {
         search: query,
         per_page: 20,
       },
-      dataType: 'json',
-    }).done(namespaces => callback(namespaces));
+    })
+      .then(({ data }) => callback(data));
   },
 
   // Return projects list. Filtered by query
-  projects(query, options, callback) {
+  projects(query, options, callback = _.noop) {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
       search: query,
@@ -70,12 +72,14 @@ const Api = {
       defaults.membership = true;
     }
 
-    return $.ajax({
-      url,
-      data: Object.assign(defaults, options),
-      dataType: 'json',
+    return axios.get(url, {
+      params: Object.assign(defaults, options),
     })
-      .done(projects => callback(projects));
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   // Return single project
@@ -97,41 +101,34 @@ const Api = {
       url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath);
     }
 
-    return $.ajax({
-      url,
-      type: 'POST',
-      data: { label: data },
-      dataType: 'json',
+    return axios.post(url, {
+      label: data,
     })
-      .done(label => callback(label))
-      .fail(message => callback(message.responseJSON));
+      .then(res => callback(res.data))
+      .catch(e => callback(e.response.data));
   },
 
   // Return group projects list. Filtered by query
   groupProjects(groupId, query, callback) {
     const url = Api.buildUrl(Api.groupProjectsPath)
       .replace(':id', groupId);
-    return $.ajax({
-      url,
-      data: {
+    return axios.get(url, {
+      params: {
         search: query,
         per_page: 20,
       },
-      dataType: 'json',
     })
-      .done(projects => callback(projects));
+      .then(({ data }) => callback(data));
   },
 
   commitMultiple(id, data) {
     // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
       .replace(':id', encodeURIComponent(id));
-    return this.wrapAjaxCall({
-      url,
-      type: 'POST',
-      contentType: 'application/json; charset=utf-8',
-      data: JSON.stringify(data),
-      dataType: 'json',
+    return axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
     });
   },
 
@@ -140,65 +137,57 @@ const Api = {
       .replace(':id', encodeURIComponent(id))
       .replace(':branch', branch);
 
-    return this.wrapAjaxCall({
-      url,
-      type: 'GET',
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-    });
+    return axios.get(url);
   },
 
   // Return text for a specific license
   licenseText(key, data, callback) {
     const url = Api.buildUrl(Api.licensePath)
       .replace(':key', key);
-    return $.ajax({
-      url,
-      data,
+    return axios.get(url, {
+      params: data,
     })
-      .done(license => callback(license));
+      .then(res => callback(res.data));
   },
 
   gitignoreText(key, callback) {
     const url = Api.buildUrl(Api.gitignorePath)
       .replace(':key', key);
-    return $.get(url, gitignore => callback(gitignore));
+    return axios.get(url)
+      .then(({ data }) => callback(data));
   },
 
   gitlabCiYml(key, callback) {
     const url = Api.buildUrl(Api.gitlabCiYmlPath)
       .replace(':key', key);
-    return $.get(url, file => callback(file));
+    return axios.get(url)
+      .then(({ data }) => callback(data));
   },
 
   dockerfileYml(key, callback) {
     const url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
-    $.get(url, callback);
+    return axios.get(url)
+      .then(({ data }) => callback(data));
   },
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {
     const url = Api.buildUrl(Api.issuableTemplatePath)
-      .replace(':key', key)
+      .replace(':key', encodeURIComponent(key))
       .replace(':type', type)
       .replace(':project_path', projectPath)
       .replace(':namespace_path', namespacePath);
-    $.ajax({
-      url,
-      dataType: 'json',
-    })
-      .done(file => callback(null, file))
-      .fail(callback);
+    return axios.get(url)
+      .then(({ data }) => callback(null, data))
+      .catch(callback);
   },
 
   users(query, options) {
     const url = Api.buildUrl(this.usersPath);
-    return Api.wrapAjaxCall({
-      url,
-      data: Object.assign({
+    return axios.get(url, {
+      params: Object.assign({
         search: query,
         per_page: 20,
       }, options),
-      dataType: 'json',
     });
   },
 
@@ -208,21 +197,6 @@ const Api = {
       urlRoot = gon.relative_url_root;
     }
     return urlRoot + url.replace(':version', gon.api_version);
-  },
-
-  wrapAjaxCall(options) {
-    return new Promise((resolve, reject) => {
-      // jQuery 2 is not Promises/A+ compatible (missing catch)
-      $.ajax(options) // eslint-disable-line promise/catch-or-return
-      .then(data => resolve(data),
-        (jqXHR, textStatus, errorThrown) => {
-          const error = new Error(`${options.url}: ${errorThrown}`);
-          error.textStatus = textStatus;
-          if (jqXHR && jqXHR.responseJSON) error.responseJSON = jqXHR.responseJSON;
-          reject(error);
-        },
-      );
-    });
   },
 };
 

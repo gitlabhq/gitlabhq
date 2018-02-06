@@ -13,16 +13,18 @@ module QA
         visit current_url
       end
 
-      def wait(css = '.application', time: 60)
-        Time.now.tap do |start|
-          while Time.now - start < time
-            break if page.has_css?(css, wait: 5)
+      def wait(max: 60, time: 1, reload: true)
+        start = Time.now
 
-            refresh
-          end
+        while Time.now - start < max
+          return true if yield
+
+          sleep(time)
+
+          refresh if reload
         end
 
-        yield if block_given?
+        false
       end
 
       def scroll_to(selector, text: nil)
@@ -40,8 +42,43 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
+      # Returns true if successfully GETs the given URL
+      # Useful because `page.status_code` is unsupported by our driver, and
+      # we don't have access to the `response` to use `have_http_status`.
+      def asset_exists?(url)
+        page.execute_script <<~JS
+          xhr = new XMLHttpRequest();
+          xhr.open('GET', '#{url}', true);
+          xhr.send();
+        JS
+
+        return false unless wait(time: 0.5, max: 60, reload: false) do
+          page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
+        end
+
+        page.evaluate_script('xhr.status') == 200
+      end
+
+      def find_element(name)
+        find(element_selector_css(name))
+      end
+
       def click_element(name)
-        find(Page::Element.new(name).selector_css).click
+        find_element(name).click
+      end
+
+      def fill_element(name, content)
+        find_element(name).set(content)
+      end
+
+      def within_element(name)
+        page.within(element_selector_css(name)) do
+          yield
+        end
+      end
+
+      def element_selector_css(name)
+        Page::Element.new(name).selector_css
       end
 
       def self.path

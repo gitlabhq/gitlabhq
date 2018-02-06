@@ -15,7 +15,7 @@
 
     = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
       = render 'projects/zen', f: form, attr: :description,
-                               classes: 'note-textarea',
+                               classes: 'note-textarea qa-issuable-form-description',
                                placeholder: "Write a comment or drag your files here...",
                                supports_quick_actions: supports_quick_actions
       = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions

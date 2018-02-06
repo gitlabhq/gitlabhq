@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign, comma-dangle */
+import axios from '../lib/utils/axios_utils';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
@@ -10,20 +11,11 @@
     }
 
     fetchConflictsData() {
-      return $.ajax({
-        dataType: 'json',
-        url: this.conflictsPath
-      });
+      return axios.get(this.conflictsPath);
     }
 
     submitResolveConflicts(data) {
-      return $.ajax({
-        url: this.resolveConflictsPath,
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        dataType: 'json',
-        method: 'POST'
-      });
+      return axios.post(this.resolveConflictsPath, data);
     }
   }
 

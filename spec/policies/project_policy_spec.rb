@@ -92,7 +92,7 @@ describe ProjectPolicy do
 
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
     project = create(:project, :private)
-    issue   = create(:issue, project: project)
+    issue   = create(:issue, project: project, author: create(:user))
     user    = issue.author
 
     expect(project.team.member?(issue.author)).to be false

@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+ALLOWED = [
+  # Can be fixed once Rugged is no longer used in production. Doesn't make Rugged calls.
+  'config/initializers/8_metrics.rb',
+
+  # Can be deleted once wiki's are fully (mandatory) migrated
+  'config/initializers/gollum.rb',
+
+  # Needs to be migrated, https://gitlab.com/gitlab-org/gitaly/issues/953
+  'lib/gitlab/bare_repository_import/repository.rb',
+
+  # Needs to be migrated, https://gitlab.com/gitlab-org/gitaly/issues/954
+  'lib/tasks/gitlab/cleanup.rake',
+
+  # The only place where Rugged code is still allowed in production
+  'lib/gitlab/git/'
+].freeze
+
+rugged_lines = IO.popen(%w[git grep -i -n rugged -- app config lib], &:read).lines
+rugged_lines = rugged_lines.select { |l| /^[^:]*\.rb:/ =~ l }
+rugged_lines = rugged_lines.reject { |l| l.start_with?(*ALLOWED) }
+rugged_lines = rugged_lines.reject do |line|
+  code, _comment = line.split('# ', 2)
+  code !~ /rugged/i
+end
+
+exit if rugged_lines.empty?
+
+puts "Using Rugged is only allowed in test and #{ALLOWED}\n\n"
+
+puts rugged_lines
+
+exit(false)

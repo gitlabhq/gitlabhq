@@ -1,7 +1,8 @@
 /* eslint-disable no-new, class-methods-use-this */
 
 import Cookies from 'js-cookie';
-import Flash from './flash';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
@@ -244,15 +245,22 @@ export default class MergeRequestTabs {
     if (this.commitsLoaded) {
       return;
     }
-    this.ajaxGet({
-      url: `${source}.json`,
-      success: (data) => {
+
+    this.toggleLoading(true);
+
+    axios.get(`${source}.json`)
+      .then(({ data }) => {
         document.querySelector('div#commits').innerHTML = data.html;
         localTimeAgo($('.js-timeago', 'div#commits'));
         this.commitsLoaded = true;
         this.scrollToElement('#commits');
-      },
-    });
+
+        this.toggleLoading(false);
+      })
+      .catch(() => {
+        this.toggleLoading(false);
+        flash('An error occurred while fetching this tab.');
+      });
   }
 
   mountPipelinesView() {
@@ -283,9 +291,10 @@ export default class MergeRequestTabs {
     // some pages like MergeRequestsController#new has query parameters on that anchor
     const urlPathname = parseUrlPathname(source);
 
-    this.ajaxGet({
-      url: `${urlPathname}.json${location.search}`,
-      success: (data) => {
+    this.toggleLoading(true);
+
+    axios.get(`${urlPathname}.json${location.search}`)
+      .then(({ data }) => {
         const $container = $('#diffs');
         $container.html(data.html);
 
@@ -335,8 +344,13 @@ export default class MergeRequestTabs {
           // (discussion and diff tabs) and `:target` only applies to the first
           anchor.addClass('target');
         }
-      },
-    });
+
+        this.toggleLoading(false);
+      })
+      .catch(() => {
+        this.toggleLoading(false);
+        flash('An error occurred while fetching this tab.');
+      });
   }
 
   // Show or hide the loading spinner
@@ -344,17 +358,6 @@ export default class MergeRequestTabs {
   // status - Boolean, true to show, false to hide
   toggleLoading(status) {
     $('.mr-loading-status .loading').toggle(status);
-  }
-
-  ajaxGet(options) {
-    const defaults = {
-      beforeSend: () => this.toggleLoading(true),
-      error: () => new Flash('An error occurred while fetching this tab.', 'alert'),
-      complete: () => this.toggleLoading(false),
-      dataType: 'json',
-      type: 'GET',
-    };
-    $.ajax($.extend({}, defaults, options));
   }
 
   diffViewType() {

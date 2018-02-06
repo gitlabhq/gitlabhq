@@ -82,7 +82,9 @@ module Gitlab
         # be returned. We need only one for username.
         # Ex. `uid` returns only one value but `mail` may
         # return an array of multiple email addresses.
-        [username].flatten.first
+        [username].flatten.first.tap do |username|
+          username.downcase! if config.lowercase_usernames
+        end
       end
 
       def email

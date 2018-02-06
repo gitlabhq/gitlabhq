@@ -2,6 +2,7 @@
 /* global Issuable */
 /* global emitSidebarEvent */
 import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -177,32 +178,28 @@ function UsersSelect(currentUser, els, options = {}) {
         $loading.removeClass('hidden').fadeIn();
         $dropdown.trigger('loading.gl.dropdown');
 
-        return $.ajax({
-          type: 'PUT',
-          dataType: 'json',
-          url: issueURL,
-          data: data
-        }).done(function(data) {
-          var user;
-          $dropdown.trigger('loaded.gl.dropdown');
-          $loading.fadeOut();
-          if (data.assignee) {
-            user = {
-              name: data.assignee.name,
-              username: data.assignee.username,
-              avatar: data.assignee.avatar_url
-            };
-          } else {
-            user = {
-              name: 'Unassigned',
-              username: '',
-              avatar: ''
-            };
-          }
-          $value.html(assigneeTemplate(user));
-          $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('fixTitle');
-          return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
-        });
+        return axios.put(issueURL, data)
+          .then(({ data }) => {
+            var user;
+            $dropdown.trigger('loaded.gl.dropdown');
+            $loading.fadeOut();
+            if (data.assignee) {
+              user = {
+                name: data.assignee.name,
+                username: data.assignee.username,
+                avatar: data.assignee.avatar_url
+              };
+            } else {
+              user = {
+                name: 'Unassigned',
+                username: '',
+                avatar: ''
+              };
+            }
+            $value.html(assigneeTemplate(user));
+            $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('fixTitle');
+            return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
+          });
       };
       collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
       assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
@@ -492,7 +489,7 @@ function UsersSelect(currentUser, els, options = {}) {
         renderRow: function(user) {
           var avatar, img, listClosingTags, listWithName, listWithUserName, username;
           username = user.username ? "@" + user.username : "";
-          avatar = user.avatar_url ? user.avatar_url : false;
+          avatar = user.avatar_url ? user.avatar_url : gon.default_avatar_url;
 
           let selected = false;
 
@@ -513,9 +510,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if (user.beforeDivider != null) {
             `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${_.escape(user.name)}</a></li>`;
           } else {
-            if (avatar) {
-              img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
-            }
+            img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
           }
 
           return `
@@ -662,38 +657,33 @@ UsersSelect.prototype.user = function(user_id, callback) {
   var url;
   url = this.buildUrl(this.userPath);
   url = url.replace(':id', user_id);
-  return $.ajax({
-    url: url,
-    dataType: "json"
-  }).done(function(user) {
-    return callback(user);
-  });
+  return axios.get(url)
+    .then(({ data }) => {
+      callback(data);
+    });
 };
 
 // Return users list. Filtered by query
 // Only active users retrieved
 UsersSelect.prototype.users = function(query, options, callback) {
-  var url;
-  url = this.buildUrl(this.usersPath);
-  return $.ajax({
-    url: url,
-    data: {
-      search: query,
-      per_page: options.perPage || 20,
-      active: true,
-      project_id: options.projectId || null,
-      group_id: options.groupId || null,
-      skip_ldap: options.skipLdap || null,
-      todo_filter: options.todoFilter || null,
-      todo_state_filter: options.todoStateFilter || null,
-      current_user: options.showCurrentUser || null,
-      author_id: options.authorId || null,
-      skip_users: options.skipUsers || null
-    },
-    dataType: "json"
-  }).done(function(users) {
-    return callback(users);
-  });
+  const url = this.buildUrl(this.usersPath);
+  const params = {
+    search: query,
+    per_page: options.perPage || 20,
+    active: true,
+    project_id: options.projectId || null,
+    group_id: options.groupId || null,
+    skip_ldap: options.skipLdap || null,
+    todo_filter: options.todoFilter || null,
+    todo_state_filter: options.todoStateFilter || null,
+    current_user: options.showCurrentUser || null,
+    author_id: options.authorId || null,
+    skip_users: options.skipUsers || null
+  };
+  return axios.get(url, { params })
+    .then(({ data }) => {
+      callback(data);
+    });
 };
 
 UsersSelect.prototype.buildUrl = function(url) {

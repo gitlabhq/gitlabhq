@@ -24,7 +24,7 @@
         .wiki
           = markdown_field(release, :description)
 
-  .row-fixed-content.controls
+  .row-fixed-content.controls.flex-row
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :push_code, @project)
@@ -32,5 +32,5 @@
         = icon("pencil")
 
     - if can?(current_user, :admin_project, @project)
-      = link_to project_tag_path(@project, tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: tag.name }, container: 'body' }, remote: true do
+      = link_to project_tag_path(@project, tag.name), class: "btn btn-remove remove-row has-tooltip prepend-left-10 #{protected_tag?(@project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: tag.name }, container: 'body' }, remote: true do
         = icon("trash-o")

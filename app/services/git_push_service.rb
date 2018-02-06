@@ -1,6 +1,5 @@
 class GitPushService < BaseService
   attr_accessor :push_data, :push_commits
-  include Gitlab::CurrentSettings
   include Gitlab::Access
 
   # The N most recent commits to process in a single push payload.

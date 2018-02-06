@@ -6,6 +6,7 @@ Bundler.require(:default, Rails.env)
 
 module Gitlab
   class Application < Rails::Application
+    require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
@@ -98,10 +99,11 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
-    config.assets.paths << "vendor/assets/fonts"
-    config.assets.precompile << "*.png"
+    config.assets.paths << "#{config.root}/vendor/assets/fonts"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
@@ -110,7 +112,6 @@ module Gitlab
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
     config.assets.precompile << "locale/**/app.js"
 

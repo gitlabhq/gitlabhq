@@ -4,7 +4,6 @@
 # After we've migrated data, we'll remove KubernetesService. This would happen in a few months.
 # If you're modyfiyng this class, please note that you should update the same change in Clusters::Platforms::Kubernetes.
 class KubernetesService < DeploymentService
-  include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
   include ReactiveCaching
 
@@ -231,7 +230,7 @@ class KubernetesService < DeploymentService
     {
       token: token,
       ca_pem: ca_pem,
-      max_session_time: current_application_settings.terminal_max_session_time
+      max_session_time: Gitlab::CurrentSettings.terminal_max_session_time
     }
   end
 

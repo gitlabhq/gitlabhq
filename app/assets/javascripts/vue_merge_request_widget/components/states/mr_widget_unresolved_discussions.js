@@ -1,4 +1,4 @@
-import statusIcon from '../mr_widget_status_icon';
+import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetUnresolvedDiscussions',
