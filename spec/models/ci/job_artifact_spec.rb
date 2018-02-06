@@ -12,6 +12,9 @@ describe Ci::JobArtifact do
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
 
+  it { is_expected.to delegate_method(:open).to(:file) }
+  it { is_expected.to delegate_method(:exists?).to(:file) }
+
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 

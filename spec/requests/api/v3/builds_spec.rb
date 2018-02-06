@@ -356,7 +356,7 @@ describe API::V3::Builds do
   end
 
   describe 'GET /projects/:id/builds/:build_id/trace' do
-    let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+    let(:build) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
     before do
       get v3_api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
@@ -451,7 +451,7 @@ describe API::V3::Builds do
     end
 
     context 'job is erasable' do
-      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response.status).to eq 201
@@ -467,7 +467,7 @@ describe API::V3::Builds do
     end
 
     context 'job is not erasable' do
-      let(:build) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
         expect(response.status).to eq 403
@@ -482,7 +482,7 @@ describe API::V3::Builds do
 
     context 'artifacts did not expire' do
       let(:build) do
-        create(:ci_build, :trace, :artifacts, :success,
+        create(:ci_build, :trace_artifact, :artifacts, :success,
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 

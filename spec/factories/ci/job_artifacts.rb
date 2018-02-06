@@ -30,5 +30,14 @@ FactoryBot.define do
           Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
       end
     end
+
+    trait :trace do
+      file_type :trace
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/trace/sample_trace'), 'text/plain')
+      end
+    end
   end
 end
