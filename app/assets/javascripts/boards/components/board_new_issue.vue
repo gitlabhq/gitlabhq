@@ -1,11 +1,15 @@
-/* global ListIssue */
+<script>
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
+import ListIssue from '../models/issue';
 
 const Store = gl.issueBoards.BoardsStore;
 
 export default {
   name: 'BoardNewIssue',
+  components: {
+    ProjectSelect,
+  },
   props: {
     groupId: {
       type: Number,
@@ -24,9 +28,6 @@ export default {
       selectedProject: {},
     };
   },
-  components: {
-    'project-select': ProjectSelect,
-  },
   computed: {
     disabled() {
       if (this.groupId) {
@@ -34,6 +35,10 @@ export default {
       }
       return this.title === '';
     },
+  },
+  mounted() {
+    this.$refs.input.focus();
+    eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   methods: {
     submit(e) {
@@ -81,49 +86,57 @@ export default {
       this.selectedProject = selectedProject;
     },
   },
-  mounted() {
-    this.$refs.input.focus();
-    eventHub.$on('setSelectedProject', this.setSelectedProject);
-  },
-  template: `
-    <div class="board-new-issue-form">
-      <div class="card">
-        <form @submit="submit($event)">
-          <div class="flash-container"
-            v-if="error">
-            <div class="flash-alert">
-              An error occurred. Please try again.
-            </div>
-          </div>
-          <label class="label-light"
-            :for="list.id + '-title'">
-            Title
-          </label>
-          <input class="form-control"
-            type="text"
-            v-model="title"
-            ref="input"
-            autocomplete="off"
-            :id="list.id + '-title'" />
-          <project-select
-            v-if="groupId"
-            :groupId="groupId"
-          />
-          <div class="clearfix prepend-top-10">
-            <button class="btn btn-success pull-left"
-              type="submit"
-              :disabled="disabled"
-              ref="submit-button">
-              Submit issue
-            </button>
-            <button class="btn btn-default pull-right"
-              type="button"
-              @click="cancel">
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  `,
 };
+</script>
+
+<template>
+  <div class="board-new-issue-form">
+    <div class="card">
+      <form @submit="submit($event)">
+        <div
+          class="flash-container"
+          v-if="error"
+        >
+          <div class="flash-alert">
+            An error occurred. Please try again.
+          </div>
+        </div>
+        <label
+          class="label-light"
+          :for="list.id + '-title'"
+        >
+          Title
+        </label>
+        <input
+          class="form-control"
+          type="text"
+          v-model="title"
+          ref="input"
+          autocomplete="off"
+          :id="list.id + '-title'"
+        />
+        <project-select
+          v-if="groupId"
+          :group-id="groupId"
+        />
+        <div class="clearfix prepend-top-10">
+          <button
+            class="btn btn-success pull-left"
+            type="submit"
+            :disabled="disabled"
+            ref="submit-button"
+          >
+            Submit issue
+          </button>
+          <button
+            class="btn btn-default pull-right"
+            type="button"
+            @click="cancel"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
