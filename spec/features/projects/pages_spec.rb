@@ -60,7 +60,6 @@ feature 'Pages' do
             fill_in 'Domain', with: 'my.test.domain.com'
             click_button 'Create New Domain'
 
-            expect(page).to have_content('Domains (1)')
             expect(page).to have_content('my.test.domain.com')
           end
         end
@@ -159,7 +158,6 @@ feature 'Pages' do
           fill_in 'Key (PEM)', with: certificate_key
           click_button 'Create New Domain'
 
-          expect(page).to have_content('Domains (1)')
           expect(page).to have_content('my.test.domain.com')
         end
       end
