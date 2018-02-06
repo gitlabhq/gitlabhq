@@ -36,8 +36,8 @@ class Upload < ActiveRecord::Base
     self.checksum = self.class.hexdigest(absolute_path)
   end
 
-  def build_uploader
-    uploader_class.new(model, mount_point, **uploader_context).tap do |uploader|
+  def build_uploader(mounted_as = nil)
+    uploader_class.new(model, mounted_as || mount_point).tap do |uploader|
       uploader.upload = self
       uploader.retrieve_from_store!(identifier)
     end
@@ -54,6 +54,12 @@ class Upload < ActiveRecord::Base
     }.compact
   end
 
+  def local?
+    return true if store.nil?
+
+    store == ObjectStorage::Store::LOCAL
+  end
+
   private
 
   def delete_file!
@@ -62,12 +68,6 @@ class Upload < ActiveRecord::Base
 
   def checksummable?
     checksum.nil? && local? && exist?
-  end
-
-  def local?
-    return true if store.nil?
-
-    store == ObjectStorage::Store::LOCAL
   end
 
   def foreground_checksummable?

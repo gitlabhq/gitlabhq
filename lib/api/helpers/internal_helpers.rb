@@ -60,7 +60,19 @@ module API
         false
       end
 
+      def project_path
+        project&.path || project_path_match[:project_path]
+      end
+
+      def namespace_path
+        project&.namespace&.full_path || project_path_match[:namespace_path]
+      end
+
       private
+
+      def project_path_match
+        @project_path_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex) || {}
+      end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
