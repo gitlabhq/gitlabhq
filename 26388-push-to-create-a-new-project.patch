@@ -1,0 +1,1069 @@
+diff --git a/app/controllers/projects/git_http_controller.rb b/app/controllers/projects/git_http_controller.rb
+index 71ae60cb..45910a9b 100644
+--- a/app/controllers/projects/git_http_controller.rb
++++ b/app/controllers/projects/git_http_controller.rb
+@@ -5,6 +5,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
+ 
+   rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
+   rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
++  rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422
+ 
+   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
+   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
+@@ -55,8 +56,15 @@ class Projects::GitHttpController < Projects::GitHttpClientController
+     render plain: exception.message, status: :not_found
+   end
+ 
++  def render_422(exception)
++    render plain: exception.message, status: :unprocessable_entity
++  end
++
+   def access
+-    @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities, redirected_path: redirected_path)
++    @access ||= access_klass.new(access_actor, project,
++      'http', authentication_abilities: authentication_abilities,
++              namespace_path: params[:namespace_id], project_path: project_path,
++              redirected_path: redirected_path)
+   end
+ 
+   def access_actor
+@@ -68,12 +76,17 @@ class Projects::GitHttpController < Projects::GitHttpClientController
+     # Use the magic string '_any' to indicate we do not know what the
+     # changes are. This is also what gitlab-shell does.
+     access.check(git_command, '_any')
++    @project ||= access.project
+   end
+ 
+   def access_klass
+     @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+   end
+ 
++  def project_path
++    @project_path ||= params[:project_id].sub(/\.git$/, '')
++  end
++
+   def log_user_activity
+     Users::ActivityService.new(user, 'pull').execute
+   end
+diff --git a/changelogs/unreleased/26388-push-to-create-a-new-project.yml b/changelogs/unreleased/26388-push-to-create-a-new-project.yml
+new file mode 100644
+index 00000000..f641fcce
+--- /dev/null
++++ b/changelogs/unreleased/26388-push-to-create-a-new-project.yml
+@@ -0,0 +1,5 @@
++---
++title: User can now git push to create a new project
++merge_request: 16547
++author:
++type: added
+diff --git a/doc/gitlab-basics/create-project.md b/doc/gitlab-basics/create-project.md
+index e18711f3..7b87039d 100644
+--- a/doc/gitlab-basics/create-project.md
++++ b/doc/gitlab-basics/create-project.md
+@@ -33,5 +33,40 @@
+ 
+ 1. Click **Create project**.
+ 
++## Push to create a new project
++
++> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26388) in GitLab 10.5.
++
++When you create a new repo locally, instead of going to GitLab to manually
++create a new project and then push the repo, you can directly push it to
++GitLab to create the new project, all without leaving your terminal. If you have access to that
++namespace, we will automatically create a new project under that GitLab namespace with its 
++visibility set to private by default (you can later change it in the UI).
++
++This can be done by using either SSH or HTTP:
++
++```
++## Git push using SSH
++git push git@gitlab.example.com:namespace/nonexistent-project.git
++
++## Git push using HTTP
++git push https://gitlab.example.com/namespace/nonexistent-project.git
++```
++
++Once the push finishes successfully, a remote message will indicate
++the command to set the remote and the URL to the new project:
++
++```
++remote:
++remote: The private project namespace/nonexistent-project was created.
++remote:
++remote: To configure the remote, run:
++remote:   git remote add origin https://gitlab.example.com/namespace/nonexistent-project.git
++remote:
++remote: To view the project, visit:
++remote:   https://gitlab.example.com/namespace/nonexistent-project
++remote:
++```
++
+ [import it]: ../workflow/importing/README.md
+ [reserved]:  ../user/reserved_names.md
+diff --git a/lib/api/helpers/internal_helpers.rb b/lib/api/helpers/internal_helpers.rb
+index eb67de81..cd59da6f 100644
+--- a/lib/api/helpers/internal_helpers.rb
++++ b/lib/api/helpers/internal_helpers.rb
+@@ -60,8 +60,20 @@ module API
+         false
+       end
+ 
++      def project_path
++        project&.path || project_path_match[:project_path]
++      end
++
++      def namespace_path
++        project&.namespace&.full_path || project_path_match[:namespace_path]
++      end
++
+       private
+ 
++      def project_path_match
++        @project_path_match ||= params[:project].match(Gitlab::PathRegex.full_project_git_path_regex) || {}
++      end
++
+       # rubocop:disable Gitlab/ModuleWithInstanceVariables
+       def set_project
+         if params[:gl_repository]
+diff --git a/lib/api/internal.rb b/lib/api/internal.rb
+index 063f0d65..9285fb90 100644
+--- a/lib/api/internal.rb
++++ b/lib/api/internal.rb
+@@ -42,11 +42,14 @@ module API
+           end
+ 
+         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+-        access_checker = access_checker_klass
+-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
++        access_checker = access_checker_klass.new(actor, project,
++          protocol, authentication_abilities: ssh_authentication_abilities,
++                    namespace_path: namespace_path, project_path: project_path,
++                    redirected_path: redirected_path)
+ 
+         begin
+           access_checker.check(params[:action], params[:changes])
++          @project ||= access_checker.project
+         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
+           return { status: false, message: e.message }
+         end
+@@ -207,8 +210,11 @@ module API
+         # A user is not guaranteed to be returned; an orphaned write deploy
+         # key could be used
+         if user
+-          redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
++          redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
++          project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
++
+           output[:redirected_message] = redirect_message if redirect_message
++          output[:project_created_message] = project_created_message if project_created_message
+         end
+ 
+         output
+diff --git a/lib/gitlab/checks/post_push_message.rb b/lib/gitlab/checks/post_push_message.rb
+new file mode 100644
+index 00000000..473c0385
+--- /dev/null
++++ b/lib/gitlab/checks/post_push_message.rb
+@@ -0,0 +1,46 @@
++module Gitlab
++  module Checks
++    class PostPushMessage
++      def initialize(project, user, protocol)
++        @project = project
++        @user = user
++        @protocol = protocol
++      end
++
++      def self.fetch_message(user_id, project_id)
++        key = message_key(user_id, project_id)
++
++        Gitlab::Redis::SharedState.with do |redis|
++          message = redis.get(key)
++          redis.del(key)
++          message
++        end
++      end
++
++      def add_message
++        return unless user.present? && project.present?
++
++        Gitlab::Redis::SharedState.with do |redis|
++          key = self.class.message_key(user.id, project.id)
++          redis.setex(key, 5.minutes, message)
++        end
++      end
++
++      def message
++        raise NotImplementedError
++      end
++
++      protected
++
++      attr_reader :project, :user, :protocol
++
++      def self.message_key(user_id, project_id)
++        raise NotImplementedError
++      end
++
++      def url_to_repo
++        protocol == 'ssh' ? project.ssh_url_to_repo : project.http_url_to_repo
++      end
++    end
++  end
++end
+diff --git a/lib/gitlab/checks/project_created.rb b/lib/gitlab/checks/project_created.rb
+new file mode 100644
+index 00000000..cec270d6
+--- /dev/null
++++ b/lib/gitlab/checks/project_created.rb
+@@ -0,0 +1,31 @@
++module Gitlab
++  module Checks
++    class ProjectCreated < PostPushMessage
++      PROJECT_CREATED = "project_created".freeze
++
++      def message
++        <<~MESSAGE
++
++        The private project #{project.full_path} was successfully created.
++
++        To configure the remote, run:
++          git remote add origin #{url_to_repo}
++
++        To view the project, visit:
++          #{project_url}
++
++        MESSAGE
++      end
++
++      private
++
++      def self.message_key(user_id, project_id)
++        "#{PROJECT_CREATED}:#{user_id}:#{project_id}"
++      end
++
++      def project_url
++        Gitlab::Routing.url_helpers.project_url(project)
++      end
++    end
++  end
++end
+diff --git a/lib/gitlab/checks/project_moved.rb b/lib/gitlab/checks/project_moved.rb
+index dfb2f4d4..3263790a 100644
+--- a/lib/gitlab/checks/project_moved.rb
++++ b/lib/gitlab/checks/project_moved.rb
+@@ -1,38 +1,16 @@
+ module Gitlab
+   module Checks
+-    class ProjectMoved
++    class ProjectMoved < PostPushMessage
+       REDIRECT_NAMESPACE = "redirect_namespace".freeze
+ 
+-      def initialize(project, user, redirected_path, protocol)
+-        @project = project
+-        @user = user
++      def initialize(project, user, protocol, redirected_path)
+         @redirected_path = redirected_path
+-        @protocol = protocol
+-      end
+-
+-      def self.fetch_redirect_message(user_id, project_id)
+-        redirect_key = redirect_message_key(user_id, project_id)
+ 
+-        Gitlab::Redis::SharedState.with do |redis|
+-          message = redis.get(redirect_key)
+-          redis.del(redirect_key)
+-          message
+-        end
+-      end
+-
+-      def add_redirect_message
+-        # Don't bother with sending a redirect message for anonymous clones
+-        # because they never see it via the `/internal/post_receive` endpoint
+-        return unless user.present? && project.present?
+-
+-        Gitlab::Redis::SharedState.with do |redis|
+-          key = self.class.redirect_message_key(user.id, project.id)
+-          redis.setex(key, 5.minutes, redirect_message)
+-        end
++        super(project, user, protocol)
+       end
+ 
+-      def redirect_message(rejected: false)
+-        <<~MESSAGE.strip_heredoc
++      def message(rejected: false)
++        <<~MESSAGE
+         Project '#{redirected_path}' was moved to '#{project.full_path}'.
+ 
+         Please update your Git remote:
+@@ -47,17 +25,17 @@ module Gitlab
+ 
+       private
+ 
+-      attr_reader :project, :redirected_path, :protocol, :user
++      attr_reader :redirected_path
+ 
+-      def self.redirect_message_key(user_id, project_id)
++      def self.message_key(user_id, project_id)
+         "#{REDIRECT_NAMESPACE}:#{user_id}:#{project_id}"
+       end
+ 
+       def remote_url_message(rejected)
+         if rejected
+-          "git remote set-url origin #{url} and try again."
++          "git remote set-url origin #{url_to_repo} and try again."
+         else
+-          "git remote set-url origin #{url}"
++          "git remote set-url origin #{url_to_repo}"
+         end
+       end
+ 
+diff --git a/lib/gitlab/git_access.rb b/lib/gitlab/git_access.rb
+index 56f6febe..bc1e83f7 100644
+--- a/lib/gitlab/git_access.rb
++++ b/lib/gitlab/git_access.rb
+@@ -2,8 +2,11 @@
+ # class return an instance of `GitlabAccessStatus`
+ module Gitlab
+   class GitAccess
++    include Gitlab::Utils::StrongMemoize
++
+     UnauthorizedError = Class.new(StandardError)
+     NotFoundError = Class.new(StandardError)
++    ProjectCreationError = Class.new(StandardError)
+     ProjectMovedError = Class.new(NotFoundError)
+ 
+     ERROR_MESSAGES = {
+@@ -25,24 +28,30 @@ module Gitlab
+     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
+     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
+ 
+-    attr_reader :actor, :project, :protocol, :authentication_abilities, :redirected_path
++    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path
+ 
+-    def initialize(actor, project, protocol, authentication_abilities:, redirected_path: nil)
++    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil)
+       @actor    = actor
+       @project  = project
+       @protocol = protocol
+-      @redirected_path = redirected_path
+       @authentication_abilities = authentication_abilities
++      @namespace_path = namespace_path
++      @project_path = project_path
++      @redirected_path = redirected_path
+     end
+ 
+     def check(cmd, changes)
+       check_protocol!
+       check_valid_actor!
+       check_active_user!
+-      check_project_accessibility!
+-      check_project_moved!
+       check_command_disabled!(cmd)
+       check_command_existence!(cmd)
++      check_db_accessibility!(cmd)
++
++      ensure_project_on_push!(cmd, changes)
++
++      check_project_accessibility!
++      check_project_moved!
+       check_repository_existence!
+ 
+       case cmd
+@@ -104,12 +113,12 @@ module Gitlab
+     def check_project_moved!
+       return if redirected_path.nil?
+ 
+-      project_moved = Checks::ProjectMoved.new(project, user, redirected_path, protocol)
++      project_moved = Checks::ProjectMoved.new(project, user, protocol, redirected_path)
+ 
+       if project_moved.permanent_redirect?
+-        project_moved.add_redirect_message
++        project_moved.add_message
+       else
+-        raise ProjectMovedError, project_moved.redirect_message(rejected: true)
++        raise ProjectMovedError, project_moved.message(rejected: true)
+       end
+     end
+ 
+@@ -139,6 +148,40 @@ module Gitlab
+       end
+     end
+ 
++    def check_db_accessibility!(cmd)
++      return unless receive_pack?(cmd)
++
++      if Gitlab::Database.read_only?
++        raise UnauthorizedError, push_to_read_only_message
++      end
++    end
++
++    def ensure_project_on_push!(cmd, changes)
++      return if project || deploy_key?
++      return unless receive_pack?(cmd) && changes == '_any' && authentication_abilities.include?(:push_code)
++
++      namespace = Namespace.find_by_full_path(namespace_path)
++
++      return unless user&.can?(:create_projects, namespace)
++
++      project_params = {
++        path: project_path,
++        namespace_id: namespace.id,
++        visibility_level: Gitlab::VisibilityLevel::PRIVATE
++      }
++
++      project = Projects::CreateService.new(user, project_params).execute
++
++      unless project.saved?
++        raise ProjectCreationError, "Could not create project: #{project.errors.full_messages.join(', ')}"
++      end
++
++      @project = project
++      user_access.project = @project
++
++      Checks::ProjectCreated.new(project, user, protocol).add_message
++    end
++
+     def check_repository_existence!
+       unless project.repository.exists?
+         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
+@@ -146,9 +189,8 @@ module Gitlab
+     end
+ 
+     def check_download_access!
+-      return if deploy_key?
+-
+-      passed = user_can_download_code? ||
++      passed = deploy_key? ||
++        user_can_download_code? ||
+         build_can_download_code? ||
+         guest_can_download_code?
+ 
+@@ -162,10 +204,6 @@ module Gitlab
+         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
+       end
+ 
+-      if Gitlab::Database.read_only?
+-        raise UnauthorizedError, push_to_read_only_message
+-      end
+-
+       if deploy_key
+         check_deploy_key_push_access!
+       elsif user
+@@ -174,8 +212,6 @@ module Gitlab
+         raise UnauthorizedError, ERROR_MESSAGES[:upload]
+       end
+ 
+-      return if changes.blank? # Allow access.
+-
+       check_change_access!(changes)
+     end
+ 
+@@ -192,6 +228,8 @@ module Gitlab
+     end
+ 
+     def check_change_access!(changes)
++      return if changes.blank? # Allow access.
++
+       changes_list = Gitlab::ChangesList.new(changes)
+ 
+       # Iterate over all changes to find if user allowed all of them to be applied
+diff --git a/lib/gitlab/path_regex.rb b/lib/gitlab/path_regex.rb
+index 7e5dfd33..1fc03639 100644
+--- a/lib/gitlab/path_regex.rb
++++ b/lib/gitlab/path_regex.rb
+@@ -187,6 +187,10 @@ module Gitlab
+       @full_project_path_regex ||= %r{\A#{full_namespace_route_regex}/#{project_route_regex}/\z}
+     end
+ 
++    def full_project_git_path_regex
++      @full_project_git_path_regex ||= %r{\A\/?(?<namespace_path>#{full_namespace_route_regex})\/(?<project_path>#{project_route_regex})\.git\z}
++    end
++
+     def full_namespace_format_regex
+       @namespace_format_regex ||= /A#{FULL_NAMESPACE_FORMAT_REGEX}\z/.freeze
+     end
+diff --git a/lib/gitlab/user_access.rb b/lib/gitlab/user_access.rb
+index f357488a..15eb1c41 100644
+--- a/lib/gitlab/user_access.rb
++++ b/lib/gitlab/user_access.rb
+@@ -6,7 +6,8 @@ module Gitlab
+       [user&.id, project&.id]
+     end
+ 
+-    attr_reader :user, :project
++    attr_reader :user
++    attr_accessor :project
+ 
+     def initialize(user, project: nil)
+       @user = user
+diff --git a/spec/lib/gitlab/checks/project_created_spec.rb b/spec/lib/gitlab/checks/project_created_spec.rb
+new file mode 100644
+index 00000000..ac02007e
+--- /dev/null
++++ b/spec/lib/gitlab/checks/project_created_spec.rb
+@@ -0,0 +1,46 @@
++require 'rails_helper'
++
++describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state do
++  let(:user) { create(:user) }
++  let(:project) { create(:project) }
++
++  describe '.fetch_message' do
++    context 'with a project created message queue' do
++      let(:project_created) { described_class.new(project, user, 'http') }
++
++      before do
++        project_created.add_message
++      end
++
++      it 'returns project created message' do
++        expect(described_class.fetch_message(user.id, project.id)).to eq(project_created.message)
++      end
++
++      it 'deletes the project created message from redis' do
++        expect(Gitlab::Redis::SharedState.with { |redis| redis.get("project_created:#{user.id}:#{project.id}") }).not_to be_nil
++        described_class.fetch_message(user.id, project.id)
++        expect(Gitlab::Redis::SharedState.with { |redis| redis.get("project_created:#{user.id}:#{project.id}") }).to be_nil
++      end
++    end
++
++    context 'with no project created message queue' do
++      it 'returns nil' do
++        expect(described_class.fetch_message(1, 2)).to be_nil
++      end
++    end
++  end
++
++  describe '#add_message' do
++    it 'queues a project created message' do
++      project_created = described_class.new(project, user, 'http')
++
++      expect(project_created.add_message).to eq('OK')
++    end
++
++    it 'handles anonymous push' do
++      project_created = described_class.new(nil, user, 'http')
++
++      expect(project_created.add_message).to be_nil
++    end
++  end
++end
+diff --git a/spec/lib/gitlab/checks/project_moved_spec.rb b/spec/lib/gitlab/checks/project_moved_spec.rb
+index f90c2d6a..e263d296 100644
+--- a/spec/lib/gitlab/checks/project_moved_spec.rb
++++ b/spec/lib/gitlab/checks/project_moved_spec.rb
+@@ -4,82 +4,82 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
+   let(:user) { create(:user) }
+   let(:project) { create(:project) }
+ 
+-  describe '.fetch_redirct_message' do
++  describe '.fetch_message' do
+     context 'with a redirect message queue' do
+-      it 'should return the redirect message' do
+-        project_moved = described_class.new(project, user, 'foo/bar', 'http')
+-        project_moved.add_redirect_message
++      it 'returns the redirect message' do
++        project_moved = described_class.new(project, user, 'http', 'foo/bar')
++        project_moved.add_message
+ 
+-        expect(described_class.fetch_redirect_message(user.id, project.id)).to eq(project_moved.redirect_message)
++        expect(described_class.fetch_message(user.id, project.id)).to eq(project_moved.message)
+       end
+ 
+-      it 'should delete the redirect message from redis' do
+-        project_moved = described_class.new(project, user, 'foo/bar', 'http')
+-        project_moved.add_redirect_message
++      it 'deletes the redirect message from redis' do
++        project_moved = described_class.new(project, user, 'http', 'foo/bar')
++        project_moved.add_message
+ 
+         expect(Gitlab::Redis::SharedState.with { |redis| redis.get("redirect_namespace:#{user.id}:#{project.id}") }).not_to be_nil
+-        described_class.fetch_redirect_message(user.id, project.id)
++        described_class.fetch_message(user.id, project.id)
+         expect(Gitlab::Redis::SharedState.with { |redis| redis.get("redirect_namespace:#{user.id}:#{project.id}") }).to be_nil
+       end
+     end
+ 
+     context 'with no redirect message queue' do
+-      it 'should return nil' do
+-        expect(described_class.fetch_redirect_message(1, 2)).to be_nil
++      it 'returns nil' do
++        expect(described_class.fetch_message(1, 2)).to be_nil
+       end
+     end
+   end
+ 
+-  describe '#add_redirect_message' do
+-    it 'should queue a redirect message' do
+-      project_moved = described_class.new(project, user, 'foo/bar', 'http')
+-      expect(project_moved.add_redirect_message).to eq("OK")
++  describe '#add_message' do
++    it 'queues a redirect message' do
++      project_moved = described_class.new(project, user, 'http', 'foo/bar')
++      expect(project_moved.add_message).to eq("OK")
+     end
+ 
+-    it 'should handle anonymous clones' do
+-      project_moved = described_class.new(project, nil, 'foo/bar', 'http')
++    it 'handles anonymous clones' do
++      project_moved = described_class.new(project, nil, 'http', 'foo/bar')
+ 
+-      expect(project_moved.add_redirect_message).to eq(nil)
++      expect(project_moved.add_message).to eq(nil)
+     end
+   end
+ 
+-  describe '#redirect_message' do
++  describe '#message' do
+     context 'when the push is rejected' do
+-      it 'should return a redirect message telling the user to try again' do
+-        project_moved = described_class.new(project, user, 'foo/bar', 'http')
++      it 'returns a redirect message telling the user to try again' do
++        project_moved = described_class.new(project, user, 'http', 'foo/bar')
+         message = "Project 'foo/bar' was moved to '#{project.full_path}'." +
+           "\n\nPlease update your Git remote:" +
+           "\n\n  git remote set-url origin #{project.http_url_to_repo} and try again.\n"
+ 
+-        expect(project_moved.redirect_message(rejected: true)).to eq(message)
++        expect(project_moved.message(rejected: true)).to eq(message)
+       end
+     end
+ 
+     context 'when the push is not rejected' do
+-      it 'should return a redirect message' do
+-        project_moved = described_class.new(project, user, 'foo/bar', 'http')
++      it 'returns a redirect message' do
++        project_moved = described_class.new(project, user, 'http', 'foo/bar')
+         message = "Project 'foo/bar' was moved to '#{project.full_path}'." +
+           "\n\nPlease update your Git remote:" +
+           "\n\n  git remote set-url origin #{project.http_url_to_repo}\n"
+ 
+-        expect(project_moved.redirect_message).to eq(message)
++        expect(project_moved.message).to eq(message)
+       end
+     end
+   end
+ 
+   describe '#permanent_redirect?' do
+     context 'with a permanent RedirectRoute' do
+-      it 'should return true' do
++      it 'returns true' do
+         project.route.create_redirect('foo/bar', permanent: true)
+-        project_moved = described_class.new(project, user, 'foo/bar', 'http')
++        project_moved = described_class.new(project, user, 'http', 'foo/bar')
+         expect(project_moved.permanent_redirect?).to be_truthy
+       end
+     end
+ 
+     context 'without a permanent RedirectRoute' do
+-      it 'should return false' do
++      it 'returns false' do
+         project.route.create_redirect('foo/bar')
+-        project_moved = described_class.new(project, user, 'foo/bar', 'http')
++        project_moved = described_class.new(project, user, 'http', 'foo/bar')
+         expect(project_moved.permanent_redirect?).to be_falsy
+       end
+     end
+diff --git a/spec/lib/gitlab/git_access_spec.rb b/spec/lib/gitlab/git_access_spec.rb
+index 2009a8ac..cc48373a 100644
+--- a/spec/lib/gitlab/git_access_spec.rb
++++ b/spec/lib/gitlab/git_access_spec.rb
+@@ -5,11 +5,19 @@ describe Gitlab::GitAccess do
+ 
+   let(:actor) { user }
+   let(:project) { create(:project, :repository) }
++  let(:project_path) { project.path }
++  let(:namespace_path) { project&.namespace&.path }
+   let(:protocol) { 'ssh' }
+   let(:authentication_abilities) { %i[read_project download_code push_code] }
+   let(:redirected_path) { nil }
+ 
+-  let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
++  let(:access) do
++    described_class.new(actor, project,
++      protocol, authentication_abilities: authentication_abilities,
++                namespace_path: namespace_path, project_path: project_path,
++                redirected_path: redirected_path)
++  end
++
+   let(:push_access_check) { access.check('git-receive-pack', '_any') }
+   let(:pull_access_check) { access.check('git-upload-pack', '_any') }
+ 
+@@ -145,6 +153,7 @@ describe Gitlab::GitAccess do
+ 
+     context 'when the project is nil' do
+       let(:project) { nil }
++      let(:project_path) { "new-project" }
+ 
+       it 'blocks push and pull with "not found"' do
+         aggregate_failures do
+@@ -152,6 +161,42 @@ describe Gitlab::GitAccess do
+           expect { push_access_check }.to raise_not_found
+         end
+       end
++
++      context 'when user is allowed to create project in namespace' do
++        let(:namespace_path) { user.namespace.path }
++        let(:access) do
++          described_class.new(actor, nil,
++            protocol, authentication_abilities: authentication_abilities,
++                      project_path: project_path, namespace_path: namespace_path,
++                      redirected_path: redirected_path)
++        end
++
++        it 'blocks pull access with "not found"' do
++          expect { pull_access_check }.to raise_not_found
++        end
++
++        it 'allows push access' do
++          expect { push_access_check }.not_to raise_error
++        end
++      end
++
++      context 'when user is not allowed to create project in namespace' do
++        let(:user2) { create(:user) }
++        let(:namespace_path) { user2.namespace.path }
++        let(:access) do
++          described_class.new(actor, nil,
++            protocol, authentication_abilities: authentication_abilities,
++                      project_path: project_path, namespace_path: namespace_path,
++                      redirected_path: redirected_path)
++        end
++
++        it 'blocks push and pull with "not found"' do
++          aggregate_failures do
++            expect { pull_access_check }.to raise_not_found
++            expect { push_access_check }.to raise_not_found
++          end
++        end
++      end
+     end
+   end
+ 
+@@ -197,7 +242,7 @@ describe Gitlab::GitAccess do
+     it 'enqueues a redirected message' do
+       push_access_check
+ 
+-      expect(Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)).not_to be_nil
++      expect(Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)).not_to be_nil
+     end
+   end
+ 
+@@ -273,6 +318,52 @@ describe Gitlab::GitAccess do
+     end
+   end
+ 
++  describe '#check_authentication_abilities!' do
++    before do
++      project.add_master(user)
++    end
++
++    context 'when download' do
++      let(:authentication_abilities) { [] }
++
++      it 'raises unauthorized with download error' do
++        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
++      end
++
++      context 'when authentication abilities include download code' do
++        let(:authentication_abilities) { [:download_code] }
++
++        it 'does not raise any errors' do
++          expect { pull_access_check }.not_to raise_error
++        end
++      end
++
++      context 'when authentication abilities include build download code' do
++        let(:authentication_abilities) { [:build_download_code] }
++
++        it 'does not raise any errors' do
++          expect { pull_access_check }.not_to raise_error
++        end
++      end
++    end
++
++    context 'when upload' do
++      let(:authentication_abilities) { [] }
++
++      it 'raises unauthorized with push error' do
++        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
++      end
++
++      context 'when authentication abilities include push code' do
++        let(:authentication_abilities) { [:push_code] }
++
++        it 'does not raise any errors' do
++          expect { push_access_check }.not_to raise_error
++        end
++      end
++    end
++  end
++
+   describe '#check_command_disabled!' do
+     before do
+       project.add_master(user)
+@@ -311,6 +402,117 @@ describe Gitlab::GitAccess do
+     end
+   end
+ 
++  describe '#check_db_accessibility!' do
++    context 'when in a read-only GitLab instance' do
++      before do
++        create(:protected_branch, name: 'feature', project: project)
++        allow(Gitlab::Database).to receive(:read_only?) { true }
++      end
++
++      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:cannot_push_to_read_only]) }
++    end
++  end
++
++  describe '#ensure_project_on_push!' do
++    let(:access) do
++      described_class.new(actor, project,
++        protocol, authentication_abilities: authentication_abilities,
++                  project_path: project_path, namespace_path: namespace_path,
++                  redirected_path: redirected_path)
++    end
++
++    context 'when push' do
++      let(:cmd) { 'git-receive-pack' }
++
++      context 'when project does not exist' do
++        let(:project_path) { "nonexistent" }
++        let(:project) { nil }
++
++        context 'when changes is _any' do
++          let(:changes) { '_any' }
++
++          context 'when authentication abilities include push code' do
++            let(:authentication_abilities) { [:push_code] }
++
++            context 'when user can create project in namespace' do
++              let(:namespace_path) { user.namespace.path }
++
++              it 'creates a new project' do
++                expect { access.send(:ensure_project_on_push!, cmd, changes) }.to change { Project.count }.by(1)
++              end
++            end
++
++            context 'when user cannot create project in namespace' do
++              let(:user2) { create(:user) }
++              let(:namespace_path) { user2.namespace.path }
++
++              it 'does not create a new project' do
++                expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
++              end
++            end
++          end
++
++          context 'when authentication abilities do not include push code' do
++            let(:authentication_abilities) { [] }
++
++            context 'when user can create project in namespace' do
++              let(:namespace_path) { user.namespace.path }
++
++              it 'does not create a new project' do
++                expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
++              end
++            end
++          end
++        end
++
++        context 'when check contains actual changes' do
++          let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch" }
++
++          it 'does not create a new project' do
++            expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
++          end
++        end
++      end
++
++      context 'when project exists' do
++        let(:changes) { '_any' }
++        let!(:project) { create(:project) }
++
++        it 'does not create a new project' do
++          expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
++        end
++      end
++
++      context 'when deploy key is used' do
++        let(:key) { create(:deploy_key, user: user) }
++        let(:actor) { key }
++        let(:project_path) { "nonexistent" }
++        let(:project) { nil }
++        let(:namespace_path) { user.namespace.path }
++        let(:changes) { '_any' }
++
++        it 'does not create a new project' do
++          expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
++        end
++      end
++    end
++
++    context 'when pull' do
++      let(:cmd) { 'git-upload-pack' }
++      let(:changes) { '_any' }
++
++      context 'when project does not exist' do
++        let(:project_path) { "new-project" }
++        let(:namespace_path) { user.namespace.path }
++        let(:project) { nil }
++
++        it 'does not create a new project' do
++          expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
++        end
++      end
++    end
++  end
++
+   describe '#check_download_access!' do
+     it 'allows masters to pull' do
+       project.add_master(user)
+@@ -338,7 +540,9 @@ describe Gitlab::GitAccess do
+ 
+       context 'when project is public' do
+         let(:public_project) { create(:project, :public, :repository) }
+-        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: []) }
++        let(:project_path) { public_project.path }
++        let(:namespace_path) { public_project.namespace.path }
++        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], project_path: project_path, namespace_path: namespace_path) }
+ 
+         context 'when repository is enabled' do
+           it 'give access to download code' do
+@@ -638,19 +842,6 @@ describe Gitlab::GitAccess do
+                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+       end
+     end
+-
+-    context "when in a read-only GitLab instance" do
+-      before do
+-        create(:protected_branch, name: 'feature', project: project)
+-        allow(Gitlab::Database).to receive(:read_only?) { true }
+-      end
+-
+-      # Only check admin; if an admin can't do it, other roles can't either
+-      matrix = permissions_matrix[:admin].dup
+-      matrix.each { |key, _| matrix[key] = false }
+-
+-      run_permission_checks(admin: matrix)
+-    end
+   end
+ 
+   describe 'build authentication abilities' do
+@@ -767,8 +958,7 @@ describe Gitlab::GitAccess do
+   end
+ 
+   def raise_not_found
+-    raise_error(Gitlab::GitAccess::NotFoundError,
+-                Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
++    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
+   end
+ 
+   def build_authentication_abilities
+diff --git a/spec/requests/api/internal_spec.rb b/spec/requests/api/internal_spec.rb
+index 884a258f..ea6b0a71 100644
+--- a/spec/requests/api/internal_spec.rb
++++ b/spec/requests/api/internal_spec.rb
+@@ -368,7 +368,7 @@ describe API::Internal do
+ 
+         context 'project as /namespace/project' do
+           it do
+-            pull(key, project_with_repo_path('/' + project.full_path))
++            push(key, project_with_repo_path('/' + project.full_path))
+ 
+             expect(response).to have_gitlab_http_status(200)
+             expect(json_response["status"]).to be_truthy
+@@ -379,7 +379,7 @@ describe API::Internal do
+ 
+         context 'project as namespace/project' do
+           it do
+-            pull(key, project_with_repo_path(project.full_path))
++            push(key, project_with_repo_path(project.full_path))
+ 
+             expect(response).to have_gitlab_http_status(200)
+             expect(json_response["status"]).to be_truthy
+@@ -807,14 +807,27 @@ describe API::Internal do
+ 
+     context 'with a redirected data' do
+       it 'returns redirected message on the response' do
+-        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'foo/baz', 'http')
+-        project_moved.add_redirect_message
++        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
++        project_moved.add_message
+ 
+         post api("/internal/post_receive"), valid_params
+ 
+         expect(response).to have_gitlab_http_status(200)
+         expect(json_response["redirected_message"]).to be_present
+-        expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
++        expect(json_response["redirected_message"]).to eq(project_moved.message)
++      end
++    end
++
++    context 'with new project data' do
++      it 'returns new project message on the response' do
++        project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
++        project_created.add_message
++
++        post api("/internal/post_receive"), valid_params
++
++        expect(response).to have_gitlab_http_status(200)
++        expect(json_response["project_created_message"]).to be_present
++        expect(json_response["project_created_message"]).to eq(project_created.message)
+       end
+     end
+ 
+diff --git a/spec/requests/git_http_spec.rb b/spec/requests/git_http_spec.rb
+index 27bd22d6..8be94459 100644
+--- a/spec/requests/git_http_spec.rb
++++ b/spec/requests/git_http_spec.rb
+@@ -107,15 +107,39 @@ describe 'Git HTTP requests' do
+     let(:user) { create(:user) }
+ 
+     context "when the project doesn't exist" do
+-      let(:path) { 'doesnt/exist.git' }
++      context "when namespace doesn't exist" do
++        let(:path) { 'doesnt/exist.git' }
+ 
+-      it_behaves_like 'pulls require Basic HTTP Authentication'
+-      it_behaves_like 'pushes require Basic HTTP Authentication'
++        it_behaves_like 'pulls require Basic HTTP Authentication'
++        it_behaves_like 'pushes require Basic HTTP Authentication'
+ 
+-      context 'when authenticated' do
+-        it 'rejects downloads and uploads with 404 Not Found' do
+-          download_or_upload(path, user: user.username, password: user.password) do |response|
+-            expect(response).to have_gitlab_http_status(:not_found)
++        context 'when authenticated' do
++          it 'rejects downloads and uploads with 404 Not Found' do
++            download_or_upload(path, user: user.username, password: user.password) do |response|
++              expect(response).to have_gitlab_http_status(:not_found)
++            end
++          end
++        end
++      end
++
++      context 'when namespace exists' do
++        let(:path) { "#{user.namespace.path}/new-project.git"}
++
++        context 'when authenticated' do
++          it 'creates a new project under the existing namespace' do
++            expect do
++              upload(path, user: user.username, password: user.password) do |response|
++                expect(response).to have_gitlab_http_status(:ok)
++              end
++            end.to change { user.projects.count }.by(1)
++          end
++
++          it 'rejects push with 422 Unprocessable Entity when project is invalid' do
++            path = "#{user.namespace.path}/new.git"
++
++            push_get(path, user: user.username, password: user.password)
++
++            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+           end
+         end
+       end
