@@ -152,9 +152,10 @@ class KubernetesService < DeploymentService
   end
 
   def deprecation_message
-    content = <<-MESSAGE.strip_heredoc
-    Kubernetes service integration has been deprecated. #{deprecated_message_content} your clusters using the new <a href=\'#{Gitlab::Routing.url_helpers.project_clusters_path(project)}'/>Clusters</a> page
-      MESSAGE
+    content = _("Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page") % {
+      deprecated_message_content: deprecated_message_content,
+      url: Gitlab::Routing.url_helpers.project_clusters_path(project)
+    }
     content.html_safe
   end
 
@@ -250,9 +251,9 @@ class KubernetesService < DeploymentService
 
   def deprecated_message_content
     if active?
-      "Your cluster information on this page is still editable, but you are advised to disable and reconfigure"
+      _("Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure")
     else
-      "Fields on this page are now uneditable, you can configure"
+      _("Fields on this page are now uneditable, you can configure")
     end
   end
 end

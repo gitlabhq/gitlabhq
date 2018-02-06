@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-05 16:08+0100\n"
-"PO-Revision-Date: 2018-02-05 16:08+0100\n"
+"POT-Creation-Date: 2018-02-06 12:32+0100\n"
+"PO-Revision-Date: 2018-02-06 12:32+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -168,6 +168,9 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
+msgid "Allows you to add and manage Kubernetes clusters."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -177,7 +180,13 @@ msgstr ""
 msgid "An error occurred when updating the issue weight"
 msgstr ""
 
+msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
+msgstr ""
+
 msgid "An error occurred while fetching sidebar data"
+msgstr ""
+
+msgid "An error occurred while getting projects"
 msgstr ""
 
 msgid "An error occurred while loading filenames"
@@ -470,6 +479,9 @@ msgstr ""
 msgid "Cancel edit"
 msgstr ""
 
+msgid "Cannot modify managed Kubernetes cluster"
+msgstr ""
+
 msgid "Change Weight"
 msgstr ""
 
@@ -626,28 +638,25 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "Cluster"
-msgstr ""
-
-msgid "ClusterIntegration|%{appList} was successfully installed on your cluster"
+msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
-msgid "ClusterIntegration|Add an existing cluster"
+msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Add cluster"
+msgid "ClusterIntegration|Add an existing Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Advanced options on this cluster's integration"
+msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
 msgstr ""
 
-msgid "ClusterIntegration|Are you sure you want to remove this cluster's integration? This will not delete your actual cluster."
+msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
 msgstr ""
 
 msgid "ClusterIntegration|CA Certificate"
@@ -656,46 +665,13 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
-msgid "ClusterIntegration|Choose how to set up cluster integration"
+msgid "ClusterIntegration|Choose how to set up Kubernetes cluster integration"
 msgstr ""
 
-msgid "ClusterIntegration|Choose which of your project's environments will use this cluster."
+msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
 msgstr ""
 
-msgid "ClusterIntegration|Cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Cluster details"
-msgstr ""
-
-msgid "ClusterIntegration|Cluster integration"
-msgstr ""
-
-msgid "ClusterIntegration|Cluster integration is disabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Cluster integration is enabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
-msgstr ""
-
-msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
-msgstr ""
-
-msgid "ClusterIntegration|Cluster name"
-msgstr ""
-
-msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine. Refresh the page to see cluster's details"
-msgstr ""
-
-msgid "ClusterIntegration|Clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}"
-msgstr ""
-
-msgid "ClusterIntegration|Clusters can be used to deploy applications and to provide Review Apps for this project"
-msgstr ""
-
-msgid "ClusterIntegration|Control how your cluster integrates with GitLab"
+msgid "ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab"
 msgstr ""
 
 msgid "ClusterIntegration|Copy API URL"
@@ -704,19 +680,19 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Kubernetes cluster name"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Token"
 msgstr ""
 
-msgid "ClusterIntegration|Copy cluster name"
+msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Create a new cluster on Google Kubernetes Engine right from GitLab"
+msgid "ClusterIntegration|Create Kubernetes cluster on Google Kubernetes Engine"
 msgstr ""
 
-msgid "ClusterIntegration|Create cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Create cluster on Google Kubernetes Engine"
+msgid "ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab"
 msgstr ""
 
 msgid "ClusterIntegration|Create on GKE"
@@ -725,7 +701,7 @@ msgstr ""
 msgid "ClusterIntegration|Enter the details for an existing Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Enter the details for your cluster"
+msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Environment scope"
@@ -761,16 +737,49 @@ msgstr ""
 msgid "ClusterIntegration|Installing"
 msgstr ""
 
-msgid "ClusterIntegration|Integrate cluster automation"
+msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
 msgstr ""
 
 msgid "ClusterIntegration|Integration status"
 msgstr ""
 
+msgid "ClusterIntegration|Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster details"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster integration is disabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project. Disabling this integration will not affect your Kubernetes cluster, it will only temporarily turn off GitLab's connection to it."
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine. Refresh the page to see Kubernetes cluster's details"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project"
+msgstr ""
+
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about Clusters"
+msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -779,13 +788,13 @@ msgstr ""
 msgid "ClusterIntegration|Machine type"
 msgstr ""
 
-msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
+msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
-msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
+msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
 msgstr ""
 
-msgid "ClusterIntegration|Multiple clusters are available in GitLab Enterprise Edition Premium and Ultimate"
+msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
 msgstr ""
 
 msgid "ClusterIntegration|Note:"
@@ -794,7 +803,7 @@ msgstr ""
 msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
-msgid "ClusterIntegration|Please enter access information for your cluster. If you need help, you can read our %{link_to_help_page} on clusters"
+msgid "ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{link_to_help_page} on Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
@@ -812,16 +821,16 @@ msgstr ""
 msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
-msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
+msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr ""
 
-msgid "ClusterIntegration|Remove cluster integration"
+msgid "ClusterIntegration|Remove Kubernetes cluster integration"
 msgstr ""
 
 msgid "ClusterIntegration|Remove integration"
 msgstr ""
 
-msgid "ClusterIntegration|Remove this cluster's configuration from this project. This will not delete your actual cluster."
+msgid "ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Request to begin installing failed"
@@ -830,7 +839,7 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
-msgid "ClusterIntegration|See and edit the details for your cluster"
+msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|See machine types"
@@ -851,22 +860,25 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr ""
 
-msgid "ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below"
+msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
-msgid "ClusterIntegration|Toggle Cluster"
+msgid "ClusterIntegration|Toggle Kubernetes Cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
 msgstr ""
 
-msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
@@ -879,9 +891,6 @@ msgid "ClusterIntegration|access to Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|check the pricing here"
-msgstr ""
-
-msgid "ClusterIntegration|cluster"
 msgstr ""
 
 msgid "ClusterIntegration|documentation"
@@ -1299,6 +1308,9 @@ msgstr ""
 msgid "Error fetching contributors data."
 msgstr ""
 
+msgid "Error fetching labels."
+msgstr ""
+
 msgid "Error fetching network graph."
 msgstr ""
 
@@ -1309,6 +1321,9 @@ msgid "Error fetching usage ping data."
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "Error saving label update."
 msgstr ""
 
 msgid "Error updating status for all todos."
@@ -1363,6 +1378,9 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Fields on this page are now uneditable, you can configure"
 msgstr ""
 
 msgid "File name"
@@ -1547,6 +1565,9 @@ msgstr ""
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
+msgid "Got it!"
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -1665,6 +1686,9 @@ msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Instance does not support multiple Kubernetes clusters"
+msgstr ""
+
 msgid "Interested parties can even contribute by pushing commits if they want to."
 msgstr ""
 
@@ -1714,6 +1738,27 @@ msgid "Jun"
 msgstr ""
 
 msgid "June"
+msgstr ""
+
+msgid "Kubernetes"
+msgstr ""
+
+msgid "Kubernetes Cluster"
+msgstr ""
+
+msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
+msgstr ""
+
+msgid "Kubernetes cluster integration was not removed."
+msgstr ""
+
+msgid "Kubernetes cluster integration was successfully removed."
+msgstr ""
+
+msgid "Kubernetes cluster was successfully updated."
+msgstr ""
+
+msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -1859,13 +1904,16 @@ msgstr ""
 msgid "Multiple issue boards"
 msgstr ""
 
-msgid "New Cluster"
-msgstr ""
-
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "New Kubernetes Cluster"
+msgstr ""
+
+msgid "New Kubernetes cluster"
+msgstr ""
 
 msgid "New Pipeline Schedule"
 msgstr ""
@@ -2161,7 +2209,7 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a cluster</a>, then try again."
+msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again."
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
@@ -2369,6 +2417,9 @@ msgid "PrometheusService|Prometheus monitoring"
 msgstr ""
 
 msgid "PrometheusService|View environments"
+msgstr ""
+
+msgid "Protip:"
 msgstr ""
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
@@ -3416,6 +3467,9 @@ msgstr ""
 msgid "You'll need to use different branch names to get a valid comparison."
 msgstr ""
 
+msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
+msgstr ""
+
 msgid "Your comment will not be visible to the public."
 msgstr ""
 
@@ -3648,4 +3702,7 @@ msgid "to help your contributors communicate effectively!"
 msgstr ""
 
 msgid "username"
+msgstr ""
+
+msgid "uses clusters to deploy your code!"
 msgstr ""

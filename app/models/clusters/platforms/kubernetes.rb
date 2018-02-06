@@ -182,7 +182,7 @@ module Clusters
         return unless managed?
 
         if api_url_changed? || token_changed? || ca_pem_changed?
-          errors.add(:base, "cannot modify managed cluster")
+          errors.add(:base, _('Cannot modify managed Kubernetes cluster'))
           return false
         end
 
