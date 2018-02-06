@@ -9,10 +9,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   prepend ::EE::Projects::MergeRequestsController
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
-<<<<<<< HEAD
   before_action :whitelist_query_limiting_ee, only: [:merge, :show]
-=======
->>>>>>> upstream/master
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :set_issuables_index, only: [:index]
@@ -358,12 +355,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42441
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42438')
   end
-<<<<<<< HEAD
 
   def whitelist_query_limiting_ee
     # Also see https://gitlab.com/gitlab-org/gitlab-ee/issues/4793
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ee/issues/4792')
   end
-=======
->>>>>>> upstream/master
 end
