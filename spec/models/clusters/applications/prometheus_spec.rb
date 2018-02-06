@@ -14,7 +14,7 @@ describe Clusters::Applications::Prometheus do
     subject { create(:clusters_applications_prometheus, :installing, cluster: cluster) }
 
     before do
-      allow(project).to receive(:prometheus_service).and_return prometheus_service
+      allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
     end
 
     it 'ensures Prometheus service is activated' do
