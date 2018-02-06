@@ -12,6 +12,7 @@ describe JobArtifactUploader do
                   cache_dir: %r[artifacts/tmp/cache],
                   work_dir: %r[artifacts/tmp/work]
 
+<<<<<<< HEAD
   context "object store is REMOTE" do
     before do
       stub_artifacts_object_storage
@@ -23,6 +24,8 @@ describe JobArtifactUploader do
                     store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z]
   end
 
+=======
+>>>>>>> upstream/master
   describe '#open' do
     subject { uploader.open }
 

@@ -6,8 +6,11 @@ class BuildFinishedWorker
 
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
+<<<<<<< HEAD
       UpdateBuildMinutesService.new(build.project, nil).execute(build)
 
+=======
+>>>>>>> upstream/master
       # We execute that in sync as this access the files in order to access local file, and reduce IO
       BuildTraceSectionsWorker.new.perform(build.id)
       BuildCoverageWorker.new.perform(build.id)

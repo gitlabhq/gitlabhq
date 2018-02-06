@@ -13,7 +13,8 @@
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
-  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
+  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
+  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address') } }
 
   .js-cluster-application-notice
     .flash-container

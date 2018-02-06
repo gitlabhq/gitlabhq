@@ -11,12 +11,15 @@ module Ci
 
     mount_uploader :file, JobArtifactUploader
 
+<<<<<<< HEAD
     after_save if: :file_changed?, on: [:create, :update] do
       run_after_commit do
         file.schedule_migration_to_object_storage
       end
     end
 
+=======
+>>>>>>> upstream/master
     delegate :open, :exists?, to: :file
 
     enum file_type: {

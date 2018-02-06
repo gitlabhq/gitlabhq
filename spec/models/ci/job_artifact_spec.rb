@@ -15,6 +15,7 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
+<<<<<<< HEAD
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 
@@ -73,6 +74,8 @@ describe Ci::JobArtifact do
     end
   end
 
+=======
+>>>>>>> upstream/master
   describe '#set_size' do
     it 'sets the size' do
       expect(artifact.size).to eq(106365)

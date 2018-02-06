@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-02-06 12:32+0100\n"
 "PO-Revision-Date: 2018-02-06 12:32+0100\n"
+=======
+"POT-Creation-Date: 2018-02-06 10:02+0100\n"
+"PO-Revision-Date: 2018-02-06 10:02+0100\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -165,9 +170,12 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "All changes are committed"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
@@ -177,10 +185,17 @@ msgstr ""
 msgid "An error occurred when toggling the notification subscription"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred when updating the issue weight"
 msgstr ""
 
 msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
+=======
+msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
+msgstr ""
+
+msgid "An error occurred while fetching markdown preview"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "An error occurred while fetching sidebar data"
@@ -195,10 +210,16 @@ msgstr ""
 msgid "An error occurred while rendering KaTeX"
 msgstr ""
 
+msgid "An error occurred while rendering preview broadcast message"
+msgstr ""
+
 msgid "An error occurred while retrieving calendar activity"
 msgstr ""
 
 msgid "An error occurred while retrieving diff"
+msgstr ""
+
+msgid "An error occurred while validating username"
 msgstr ""
 
 msgid "An error occurred. Please try again."
@@ -482,9 +503,12 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Change Weight"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr ""
 
@@ -632,12 +656,15 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Close"
 msgstr ""
 
 msgid "Closed"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
@@ -792,9 +819,12 @@ msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to crea
 msgstr ""
 
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
+<<<<<<< HEAD
 msgstr ""
 
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
+=======
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "ClusterIntegration|Note:"
@@ -1681,11 +1711,14 @@ msgstr ""
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Instance"
 msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
 
+=======
+>>>>>>> upstream/master
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
@@ -1901,9 +1934,12 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Multiple issue boards"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -2953,7 +2989,13 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "There was an error loading users activity calendar."
+msgstr ""
+
 msgid "There was an error saving your notification settings."
+msgstr ""
+
+msgid "There was an error subscribing to this label."
 msgstr ""
 
 msgid "There was an error when reseting email token."
@@ -3704,5 +3746,9 @@ msgstr ""
 msgid "username"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "uses clusters to deploy your code!"
+=======
+msgid "uses Kubernetes clusters to deploy your code!"
+>>>>>>> upstream/master
 msgstr ""

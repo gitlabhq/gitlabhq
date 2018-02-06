@@ -18,6 +18,14 @@ module API
           User.find_by(id: id) || not_found!('User')
         end
 
+        def reorder_users(users)
+          if params[:order_by] && params[:sort]
+            users.reorder(params[:order_by] => params[:sort])
+          else
+            users
+          end
+        end
+
         params :optional_attributes do
           optional :skype, type: String, desc: 'The Skype username'
           optional :linkedin, type: String, desc: 'The LinkedIn username'
@@ -38,6 +46,13 @@ module API
           # EE
           optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
         end
+
+        params :sort_params do
+          optional :order_by, type: String, values: %w[id name username created_at updated_at],
+                              default: 'id', desc: 'Return users ordered by a field'
+          optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                          desc: 'Return users sorted in ascending and descending order'
+        end
       end
 
       desc 'Get the list of users' do
@@ -56,19 +71,24 @@ module API
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         all_or_none_of :extern_uid, :provider
 
+<<<<<<< HEAD
         # EE
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
 
+=======
+        use :sort_params
+>>>>>>> upstream/master
         use :pagination
       end
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         unless current_user&.admin?
-          params.except!(:created_after, :created_before)
+          params.except!(:created_after, :created_before, :order_by, :sort)
         end
 
         users = UsersFinder.new(current_user, params).execute
+        users = reorder_users(users)
 
         authorized = can?(current_user, :read_users_list)
 

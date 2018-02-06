@@ -453,6 +453,7 @@ describe API::Jobs do
     end
 
     context 'authorized user' do
+<<<<<<< HEAD
       context 'when trace is in ObjectStorage' do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
@@ -469,6 +470,8 @@ describe API::Jobs do
         end
       end
 
+=======
+>>>>>>> upstream/master
       context 'when trace is artifact' do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
