@@ -13,7 +13,7 @@ module TraceHelpers
   end
 
   def artifacts_path?(path)
-    %r{.{2}\/.{2}\/.{64}\/\d{4}_\d{2}_\d{2}\/\d{1,}\/\d{1,}\/\d{1,}.log} =~ path
+    %r{.{2}/.{2}/.{64}/\d{4}_\d{2}_\d{2}/\d{1,}/\d{1,}/\d{1,}.log} =~ path
   end
 
   def simulate_backup_path(path, status)

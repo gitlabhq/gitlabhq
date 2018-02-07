@@ -45,7 +45,7 @@ module Gitlab
         end
 
         def sanitized_path(path)
-          path.sub(/^\./, '').sub(%/^\//, '')
+          path.sub(/^\./, '').sub(%{^/}, '')
         end
       end
     end

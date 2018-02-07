@@ -24,7 +24,7 @@ module Gitlab
         private
 
         def trace_path?
-          %r{#{Settings.gitlab_ci.builds_path}\/\d{4}_\d{2}\/\d{1,}\/\d{1,}.log} =~ path
+          %r{#{Settings.gitlab_ci.builds_path}/\d{4}_\d{2}/\d{1,}/\d{1,}.log} =~ path
         end
 
         def status
