@@ -1,12 +1,13 @@
 module Gitlab
   module Ci
-    ##
+    #
     # Base GitLab CI Configuration facade
     #
     class Config
-      def initialize(config)
-        @config = Loader.new(config).load!
+      prepend EE::Gitlab::Ci::Config
 
+      def initialize(config, opts = {})
+        @config = build_config(config, opts)
         @global = Entry::Global.new(@config)
         @global.compose!
       end
@@ -56,6 +57,13 @@ module Gitlab
 
       def jobs
         @global.jobs_value
+      end
+
+      private
+
+      # 'Opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
+      def build_config(config, opts = {})
+        Loader.new(config).load!
       end
     end
   end

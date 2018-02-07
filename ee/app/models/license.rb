@@ -39,6 +39,7 @@ class License < ActiveRecord::Base
     db_load_balancing
     deploy_board
     extended_audit_events
+    external_files_in_gitlab_ci
     file_locks
     geo
     group_issue_boards

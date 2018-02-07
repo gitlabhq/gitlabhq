@@ -361,6 +361,152 @@ Additionally, if you have a job that unconditionally recreates the cache without
 reference to its previous contents, you can use `policy: push` in that job to
 skip the download step.
 
+### include (EEP)
+
+> Introduced in [GitLab Enterprise Edition Premium][ee] 10.5.
+
+From 10.5 we can use `include` keyword to allow the inclusion of external YAML files.
+
+```yaml
+# Content of https://gitlab.com/awesome-project/raw/master/.before-script-template.yml
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - ruby -v
+  - which ruby
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+
+rspec:
+  script:
+    - bundle exec rspec
+
+rubocop:
+  script:
+    - bundle exec rubocop
+```
+
+In the above example `.before-script-template.yml` content will be automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
+
+`include` supports two types of files:
+
+- **local** to the same repository, referenced using the paths in the same the repository, i.e:
+
+```yaml
+# Within the repository
+include: '/templates/.gitlab-ci-template.yml'
+```
+
+- **remote** in a different location, accessed using HTTP/HTTPS protocol, referenced using the full URL, i.e:
+
+```yaml
+include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+```
+
+Also, `include` supports a single string or an array composed by different values, so
+
+```yaml
+include: '/templates/.gitlab-ci-template.yml'
+```
+
+and
+
+```yaml
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+  - '/templates/.gitlab-ci-template.yml'
+```
+
+are both valid use cases.
+
+#### Restrictions
+
+- We can only use files that are currently tracked by Git on the same branch your configuration file is. In other words, when using a **local file** make sure that both, `.gitlab-ci.yml` and the local file are on the same branch.
+- Since external files defined on `include` are evaluated first, the content on `.gitlab-ci.yml` **will always take precedence over the content of the external files, no matters of the position of the `include` keyword, allowing to override values and functions with local definitions**, for example:
+
+```yaml
+# Content of https://company.com/autodevops-template.yml
+
+variables:
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: testing_password
+  POSTGRES_ENABLED: "true"
+  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+
+  KUBERNETES_VERSION: 1.8.6
+  HELM_VERSION: 2.6.1
+  CODECLIMATE_VERSION: 0.69.0
+
+production:
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+    - delete canary
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  only:
+    refs:
+      - master
+    kubernetes: active
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://company.com/autodevops-template.yml'
+
+image: alpine:latest
+
+variables:
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: secure_password
+  POSTGRES_DB: company_database
+
+stages:
+  - build
+  - test
+  - review
+  - dast
+  - staging
+  - canary
+  - production
+  - performance
+  - cleanup
+
+production:
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+  environment:
+    name: production
+    url: http://auto_devops_domain.com
+  only:
+    refs:
+      - master
+
+# ....
+```
+
+In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB` along with the `production` job defined on `autodevops-template.yml` will be overridden by the ones defined on `.gitlab-ci.yml`.
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -1615,3 +1761,4 @@ CI with various languages.
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
 [schedules]: ../../user/project/pipelines/schedules.md
+[ee]: https://about.gitlab.com/gitlab-ee/
