@@ -166,6 +166,32 @@ describe Gitlab::GitalyClient::CommitService do
 
       described_class.new(repository).find_commit(revision)
     end
+
+    describe 'caching', :request_store do
+      let(:commit_dbl) { double(id: 'f01b' * 10) }
+
+      context 'when passed revision is a branch name' do
+        it 'calls Gitaly' do
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).twice.and_return(double(commit: commit_dbl))
+
+          commit = nil
+          2.times { commit = described_class.new(repository).find_commit('master') }
+
+          expect(commit).to eq(commit_dbl)
+        end
+      end
+
+      context 'when passed revision is a commit ID' do
+        it 'returns a cached commit' do
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(double(commit: commit_dbl))
+
+          commit = nil
+          2.times { commit = described_class.new(repository).find_commit('f01b' * 10) }
+
+          expect(commit).to eq(commit_dbl)
+        end
+      end
+    end
   end
 
   describe '#patch' do
