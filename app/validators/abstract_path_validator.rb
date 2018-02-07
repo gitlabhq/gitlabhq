@@ -13,10 +13,6 @@ class AbstractPathValidator < ActiveModel::EachValidator
     raise NotImplementedError
   end
 
-  def self.full_path(record, value)
-    value
-  end
-
   def self.valid_path?(path)
     encode!(path)
     "#{path}/" =~ path_regex
@@ -28,7 +24,7 @@ class AbstractPathValidator < ActiveModel::EachValidator
       return
     end
 
-    full_path = self.class.full_path(record, value)
+    full_path = record.build_full_path
     return unless full_path
 
     unless self.class.valid_path?(full_path)

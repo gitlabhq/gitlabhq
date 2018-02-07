@@ -180,7 +180,7 @@ module Gitlab
         valid_username = ::Namespace.clean_path(username)
 
         uniquify = Uniquify.new
-        valid_username = uniquify.string(valid_username) { |s| !UserPathValidator.valid_path?(s) }
+        valid_username = uniquify.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
 
         name = auth_hash.name
         name = valid_username if name.strip.empty?

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::GitlabProjectsImportService do
-  set(:namespace) { build(:namespace) }
+  set(:namespace) { create(:namespace) }
   let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
   subject { described_class.new(namespace.owner, { namespace_id: namespace.id, path: path, file: file }) }
 
