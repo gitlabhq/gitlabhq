@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::ReleaseController do
+describe Gitlab::Middleware::ReleaseEnv do
   let(:inner_app) { double(:app) }
   let(:app) { described_class.new(inner_app) }
   let(:env) { { 'action_controller.instance' => 'something' } }
