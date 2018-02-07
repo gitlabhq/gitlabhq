@@ -1,14 +1,14 @@
 # Uploads administration
 
 >**Notes:**
-Uploads represent all user-data that may be sent to GitLab as a single file. As an example, avatars and notes' attachments are uploads. Uploads are integral to GitLab functionality, and therefore cannot be disabled.
+Uploads represent all user data that may be sent to GitLab as a single file. As an example, avatars and notes' attachments are uploads. Uploads are integral to GitLab functionality, and therefore cannot be disabled.
 
 ### Using local storage
 
 >**Notes:**
 This is the default configuration
 
-To change the location where the artifacts are stored locally, follow the steps
+To change the location where the uploads are stored locally, follow the steps
 below.
 
 ---
@@ -34,7 +34,7 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/public/uploa
 
 **In installations from source:**
 
-_The artifacts are stored by default in
+_The uploads are stored by default in
 `/home/git/gitlab/public/uploads/-/system`._
 
 1. To change the storage path for example to `/mnt/storage/uploads`, edit
@@ -54,7 +54,7 @@ _The artifacts are stored by default in
 - [Introduced][ee-3867] in [GitLab Enterprise Edition Premium][eep] 10.5.
 
 If you don't want to use the local disk where GitLab is installed to store the
-uploads, you can use an object storage like AWS S3 instead.
+uploads, you can use an object storage provider like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
 
 **In Omnibus installations:**
@@ -91,7 +91,7 @@ If you are using AWS IAM profiles, be sure to omit the AWS access key and secret
 1. Migrate any existing local uploads to the object storage:
 
 >**Notes:**
-These task comply with the `BATCH` environment variable to process uploads in batch (200 by default). All of the processing will be done in a background worker and requires **no downtime**.
+These task complies with the `BATCH` environment variable to process uploads in batch (200 by default). All of the processing will be done in a background worker and requires **no downtime**.
 
       ```bash
       # gitlab-rake gitlab:uploads:migrate[uploader_class, model_class, mount_point]
@@ -123,7 +123,7 @@ These task comply with the `BATCH` environment variable to process uploads in ba
 
 **In installations from source:**
 
-_The artifacts are stored by default in
+_The uploads are stored by default in
 `/home/git/gitlab/public/uploads/-/system`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
@@ -142,7 +142,7 @@ _The artifacts are stored by default in
     ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
-1. Migrate any existing local artifacts to the object storage:
+1. Migrate any existing local uploads to the object storage:
 
 >**Notes:**
 
