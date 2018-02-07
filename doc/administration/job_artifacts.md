@@ -92,6 +92,17 @@ AWS S3 to store the artifacts.
 
 [Learn how to use the object storage option.][ee-os]
 
+### Migrate legacy traces
+
+> Introduced in GitLab 10.5.
+
+From 10.5, each job trace is stored as an artifact. This gives us a lot of
+flexibility, such as uploading traces to ObjectStorage.
+
+Although, legacy traces which had been generated before 10.5 are still
+stored as non-artifact files. To turn those legacy trace files into artifacts,
+run `gitlab-rake gitlab:artifacts:migrate['.']`.
+
 ## Expiring artifacts
 
 If an expiry date is used for the artifacts, they are marked for deletion
