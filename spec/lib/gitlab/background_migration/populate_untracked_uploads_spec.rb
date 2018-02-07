@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
+describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq, :delete_no_cache do
   include TrackUntrackedUploadsHelpers
 
   subject { described_class.new }
