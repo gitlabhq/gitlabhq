@@ -6,8 +6,8 @@ describe EpicsFinder do
   let(:group) { create(:group, :private) }
   let(:another_group) { create(:group) }
   let!(:epic1) { create(:epic, group: group, title: 'This is awesome epic', created_at: 1.week.ago) }
-  let!(:epic2) { create(:epic, group: group, created_at: 4.days.ago, author: user) }
-  let!(:epic3) { create(:epic, group: group, description: 'not so awesome') }
+  let!(:epic2) { create(:epic, group: group, created_at: 4.days.ago, author: user, start_date: 2.days.ago) }
+  let!(:epic3) { create(:epic, group: group, description: 'not so awesome', start_date: 5.days.ago, end_date: 3.days.ago) }
   let!(:epic4) { create(:epic, group: another_group) }
 
   describe '#execute' do
@@ -44,7 +44,7 @@ describe EpicsFinder do
         end
       end
 
-      context 'wtih correct params' do
+      context 'with correct params' do
         before do
           group.add_developer(search_user)
         end
@@ -79,9 +79,32 @@ describe EpicsFinder do
           end
         end
 
-        context 'by iids' do
-          it 'returns all epics by the given iids' do
-            expect(epics(iids: [epic1.iid, epic3.iid])).to contain_exactly(epic1, epic3)
+        context 'when subgroups are supported', :nested_groups do
+          let(:subgroup) { create(:group, :private, parent: group) }
+          let(:subgroup2) { create(:group, :private, parent: subgroup) }
+          let!(:subepic1) { create(:epic, group: subgroup) }
+          let!(:subepic2) { create(:epic, group: subgroup2) }
+
+          it 'returns all epics that belong to the given group and its subgroups' do
+            expect(epics).to contain_exactly(epic1, epic2, epic3, subepic1, subepic2)
+          end
+        end
+
+        context 'by timeframe' do
+          it 'returns epics which start in the timeframe' do
+            expect(epics(start_date: 2.days.ago, end_date: 1.day.ago)).to contain_exactly(epic2)
+          end
+
+          it 'returns epics which end in the timeframe' do
+            expect(epics(start_date: 4.days.ago, end_date: 3.days.ago)).to contain_exactly(epic3)
+          end
+
+          it 'returns epics which start before and end after the timeframe' do
+            expect(epics(start_date: 4.days.ago, end_date: 4.days.ago)).to contain_exactly(epic3)
+          end
+
+          it 'ignores epics which do not have start and end date set' do
+            expect(epics(start_date: 2.days.ago, end_date: 1.day.ago)).not_to include(epic1)
           end
         end
       end

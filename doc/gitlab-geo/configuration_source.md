@@ -121,9 +121,9 @@ method to be enabled. Navigate to **Admin Area ➔ Settings**
 Read [Verify proper functioning of the secondary node](configuration.md#step-6-verify-proper-functioning-of-the-secondary-node).
 
 
-## Selective replication
+## Selective synchronization
 
-Read [Selective replication](configuration.md#selective-replication).
+Read [Selective synchronization](configuration.md#selective-synchronization).
 
 ## Troubleshooting
 

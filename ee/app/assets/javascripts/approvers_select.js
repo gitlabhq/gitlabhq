@@ -79,9 +79,9 @@ export default class ApproversSelect {
       query: (query) => {
         const fetchGroups = this.fetchGroups(query.term);
         const fetchUsers = this.fetchUsers(query.term);
-        return $.when(fetchGroups, fetchUsers).then((groups, users) => {
+        return Promise.all([fetchGroups, fetchUsers]).then(([groups, users]) => {
           const data = {
-            results: groups[0].concat(users[0]),
+            results: groups.concat(users),
           };
           return query.callback(data);
         });

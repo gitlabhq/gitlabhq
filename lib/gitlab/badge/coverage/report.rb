@@ -23,7 +23,7 @@ module Gitlab
           @coverage ||= raw_coverage
           return unless @coverage
 
-          @coverage.to_i
+          @coverage.to_f.round(2)
         end
 
         def metadata

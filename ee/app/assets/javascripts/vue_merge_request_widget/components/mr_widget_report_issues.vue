@@ -1,6 +1,6 @@
 <script>
   import { s__ } from '~/locale';
-  import { spriteIcon } from '~/lib/utils/common_utils';
+  import icon from '~/vue_shared/components/icon.vue';
   import modal from './mr_widget_dast_modal.vue';
 
   const modalDefaultData = {
@@ -15,6 +15,7 @@
     name: 'MrWidgetReportIssues',
     components: {
       modal,
+      icon,
     },
     props: {
       issues: {
@@ -41,14 +42,17 @@
       return modalDefaultData;
     },
     computed: {
-      icon() {
-        return this.isStatusSuccess ? spriteIcon('plus') : this.cutIcon;
-      },
-      cutIcon() {
-        return spriteIcon('cut');
-      },
       fixedLabel() {
         return s__('ciReport|Fixed:');
+      },
+      iconName() {
+        if (this.isStatusFailed) {
+          return 'status_failed_borderless';
+        } else if (this.isStatusSuccess) {
+          return 'status_success_borderless';
+        }
+
+        return 'status_created_borderless';
       },
       isStatusFailed() {
         return this.status === 'failed';
@@ -114,15 +118,15 @@
         success: isStatusSuccess,
         neutral: isStatusNeutral
       }"
+      class="mr-widget-code-quality-list-item"
       v-for="(issue, index) in issues"
       :key="index"
     >
-
-      <span
+      <icon
         class="mr-widget-code-quality-icon"
-        v-html="icon"
-      >
-      </span>
+        :name="iconName"
+        :size="32"
+      />
 
       <template v-if="isStatusSuccess && isTypeQuality">{{ fixedLabel }}</template>
       <template v-if="shouldRenderPriority(issue)">{{ issue.priority }}:</template>
@@ -167,6 +171,7 @@
           :href="issue.urlPath"
           target="_blank"
           rel="noopener noreferrer nofollow"
+          class="prepend-left-5"
         >
           {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
         </a>

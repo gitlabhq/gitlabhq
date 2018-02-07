@@ -17,9 +17,7 @@ class Groups::EpicsController < Groups::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: {
-          html: view_to_html_string("groups/epics/_epics")
-        }
+        render json: serializer.represent(@epics)
       end
     end
   end
@@ -37,6 +35,10 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   private
+
+  def pagination_disabled?
+    request.format.json?
+  end
 
   def epic
     @issuable = @epic ||= @group.epics.find_by(iid: params[:epic_id] || params[:id])

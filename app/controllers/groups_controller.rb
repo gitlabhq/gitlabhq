@@ -3,6 +3,7 @@ class GroupsController < Groups::ApplicationController
   include MergeRequestsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
+  prepend EE::GroupsController
 
   respond_to :html
 
@@ -10,7 +11,7 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
+  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer]
   before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
@@ -94,6 +95,19 @@ class GroupsController < Groups::ApplicationController
     redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
+  def transfer
+    parent_group = Group.find_by(id: params[:new_parent_group_id])
+    service = ::Groups::TransferService.new(@group, current_user)
+
+    if service.execute(parent_group)
+      flash[:notice] = "Group '#{@group.name}' was successfully transferred."
+      redirect_to group_path(@group)
+    else
+      flash.now[:alert] = service.error
+      render :edit
+    end
+  end
+
   protected
 
   def authorize_create_group!
@@ -118,10 +132,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce << group_params_ee)
+    params.require(:group).permit(group_params_attributes)
   end
 
-  def group_params_ce
+  def group_params_attributes
     [
       :avatar,
       :description,
@@ -140,13 +154,6 @@ class GroupsController < Groups::ApplicationController
     ]
   end
 
-  def group_params_ee
-    [
-      :membership_lock,
-      :repository_size_limit
-    ]
-  end
-
   def load_events
     params[:sort] ||= 'latest_activity_desc'
 
@@ -157,7 +164,6 @@ class GroupsController < Groups::ApplicationController
     @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
                   .execute
                   .includes(:namespace)
-                  .page(params[:page])
 
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)

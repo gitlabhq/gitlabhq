@@ -7,8 +7,7 @@
             = link_to epic.title, epic_path(epic)
         .issuable-info
           %span.issuable-reference
-            -# TODO: Use to_reference
-            = "&#{epic.iid}"
+            = epic.to_reference(@group)
           %span.issuable-authored.hidden-xs
             &middot;
             opened #{time_ago_with_tooltip(epic.created_at, placement: 'bottom')}

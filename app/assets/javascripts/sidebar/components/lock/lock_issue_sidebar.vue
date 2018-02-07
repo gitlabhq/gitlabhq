@@ -69,7 +69,7 @@
     </div>
 
     <div class="title hide-collapsed">
-      Lock {{ issuableDisplayName }}
+      {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
         class="pull-right lock-edit btn btn-blank"

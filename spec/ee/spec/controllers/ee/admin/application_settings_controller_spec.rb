@@ -80,5 +80,13 @@ describe Admin::ApplicationSettingsController do
         expect(ApplicationSetting.current.public_send(setting)).to eq(value)
       end
     end
+
+    it 'updates the default_project_creation for string value' do
+      stub_licensed_features(project_creation_level: true)
+      put :update, application_setting: { default_project_creation: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.default_project_creation).to eq(::EE::Gitlab::Access::MASTER_PROJECT_ACCESS)
+    end
   end
 end

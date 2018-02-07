@@ -70,6 +70,11 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
+
+          if find_user_from_warden
+            ::Gitlab::Metrics::MultiFileEditor.new(user_project, current_user, commit_detail).log
+          end
+
           present commit_detail, with: Entities::CommitDetail
         else
           render_api_error!(result[:message], 400)

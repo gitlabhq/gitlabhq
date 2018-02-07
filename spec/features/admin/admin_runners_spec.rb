@@ -156,7 +156,7 @@ describe "Admin Runners" do
   end
 
   describe 'runners registration token' do
-    let!(:token) { current_application_settings.runners_registration_token }
+    let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
 
     before do
       visit admin_runners_path

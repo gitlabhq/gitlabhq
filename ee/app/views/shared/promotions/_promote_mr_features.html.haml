@@ -5,7 +5,7 @@
         = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
       .user-callout-copy
         %h4
-          - if current_application_settings.should_check_namespace_plan?
+          - if Gitlab::CurrentSettings.should_check_namespace_plan?
             Upgrade your plan to improve Merge Requests.
           - else
             Improve Merge Requests and customer support with GitLab Enterprise Edition.

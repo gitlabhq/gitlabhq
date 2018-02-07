@@ -31,10 +31,10 @@ own) and finally write the results in the `gl-dast-report.json` file. You can
 then download and analyze the report artifact in JSON format.
 
 TIP: **Tip:**
-Starting with [GitLab Enterprise Edition Ultimate][ee] 10.4, this information will
+Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI job must be named `dast` and the artifact path must be
 `gl-dast-report.json`.
 [Learn more about DAST results shown in merge requests](../../user/project/merge_requests/dast.md).
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

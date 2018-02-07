@@ -1,7 +1,7 @@
 # Static Application Security Testing with GitLab CI/CD
 
 NOTE: **Note:**
-In order to use this tool, a [GitLab Enterprise Edition Ultimate][ee] license
+In order to use this tool, a [GitLab Ultimate][ee] license
 is needed.
 
 This example shows how to run
@@ -36,7 +36,7 @@ The results are sorted by the priority of the vulnerability:
 1. Everything else
 
 TIP: **Tip:**
-Starting with [GitLab Enterprise Edition Ultimate][ee] 10.3, this information will
+Starting with [GitLab Ultimate][ee] 10.3, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI job must be named `sast` and the artifact path must be
 `gl-sast-report.json`.
@@ -53,4 +53,4 @@ The following languages and frameworks are supported.
 | Ruby          | [bundler-audit](https://github.com/rubysec/bundler-audit) |
 | Ruby on Rails | [brakeman](https://brakemanscanner.org) |
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

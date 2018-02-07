@@ -44,6 +44,18 @@ describe Gitlab::OAuth::User do
 
     let(:provider) { 'twitter' }
 
+    describe 'when account exists on server' do
+      it 'does not mark the user as external' do
+        create(:omniauth_user, extern_uid: 'my-uid', provider: provider)
+        stub_omniauth_config(allow_single_sign_on: [provider], external_providers: [provider])
+
+        oauth_user.save
+
+        expect(gl_user).to be_valid
+        expect(gl_user.external).to be_falsey
+      end
+    end
+
     describe 'signup' do
       context 'when signup is disabled' do
         before do
@@ -51,7 +63,7 @@ describe Gitlab::OAuth::User do
         end
 
         it 'creates the user' do
-          stub_omniauth_config(allow_single_sign_on: ['twitter'])
+          stub_omniauth_config(allow_single_sign_on: [provider])
 
           oauth_user.save
 
@@ -65,7 +77,7 @@ describe Gitlab::OAuth::User do
         end
 
         it 'creates and confirms the user anyway' do
-          stub_omniauth_config(allow_single_sign_on: ['twitter'])
+          stub_omniauth_config(allow_single_sign_on: [provider])
 
           oauth_user.save
 
@@ -75,7 +87,7 @@ describe Gitlab::OAuth::User do
       end
 
       it 'marks user as having password_automatically_set' do
-        stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['twitter'])
+        stub_omniauth_config(allow_single_sign_on: [provider], external_providers: [provider])
 
         oauth_user.save
 
@@ -86,7 +98,7 @@ describe Gitlab::OAuth::User do
       shared_examples 'to verify compliance with allow_single_sign_on' do
         context 'provider is marked as external' do
           it 'marks user as external' do
-            stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['twitter'])
+            stub_omniauth_config(allow_single_sign_on: [provider], external_providers: [provider])
             oauth_user.save
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
@@ -95,8 +107,8 @@ describe Gitlab::OAuth::User do
 
         context 'provider was external, now has been removed' do
           it 'does not mark external user as internal' do
-            create(:omniauth_user, extern_uid: 'my-uid', provider: 'twitter', external: true)
-            stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['facebook'])
+            create(:omniauth_user, extern_uid: 'my-uid', provider: provider, external: true)
+            stub_omniauth_config(allow_single_sign_on: [provider], external_providers: ['facebook'])
             oauth_user.save
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
@@ -118,7 +130,7 @@ describe Gitlab::OAuth::User do
 
         context 'with new allow_single_sign_on enabled syntax' do
           before do
-            stub_omniauth_config(allow_single_sign_on: ['twitter'])
+            stub_omniauth_config(allow_single_sign_on: [provider])
           end
 
           it "creates a user from Omniauth" do
@@ -127,7 +139,7 @@ describe Gitlab::OAuth::User do
             expect(gl_user).to be_valid
             identity = gl_user.identities.first
             expect(identity.extern_uid).to eql uid
-            expect(identity.provider).to eql 'twitter'
+            expect(identity.provider).to eql provider
           end
         end
 
@@ -142,7 +154,7 @@ describe Gitlab::OAuth::User do
             expect(gl_user).to be_valid
             identity = gl_user.identities.first
             expect(identity.extern_uid).to eql uid
-            expect(identity.provider).to eql 'twitter'
+            expect(identity.provider).to eql provider
           end
         end
 

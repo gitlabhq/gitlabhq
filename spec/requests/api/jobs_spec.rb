@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe API::Jobs do
+  include HttpIOHelpers
+
   set(:project) do
     create(:project, :repository, public_builds: false)
   end
@@ -17,12 +19,8 @@ describe API::Jobs do
   let(:api_user) { user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
-  let(:cross_project_pipeline_enabled) { true }
-  let(:object_storage_enabled) { true }
 
   before do
-    stub_licensed_features(cross_project_pipelines: cross_project_pipeline_enabled,
-                           object_storage: object_storage_enabled)
     project.add_developer(user)
   end
 
@@ -30,8 +28,6 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do |example|
-      job
-
       unless example.metadata[:skip_before_request]
         get api("/projects/#{project.id}/jobs", api_user), query
       end
@@ -118,7 +114,6 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do
-      job
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -321,10 +316,6 @@ describe API::Jobs do
     end
 
     context 'normal authentication' do
-      before do
-        stub_artifacts_object_storage
-      end
-
       context 'job with artifacts' do
         context 'when artifacts are stored locally' do
           let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -346,56 +337,9 @@ describe API::Jobs do
           end
         end
 
-        context 'when artifacts are stored remotely' do
-          let(:job) { create(:ci_build, pipeline: pipeline) }
-          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
-
-          before do
-            job.reload
-
-            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-          end
-
-          it 'returns location redirect' do
-            expect(response).to have_gitlab_http_status(302)
-          end
-        end
-
         it 'does not return job artifacts if not uploaded' do
           get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
 
-          expect(response).to have_gitlab_http_status(404)
-        end
-      end
-    end
-
-    context 'authorized by job_token' do
-      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
-
-      before do
-        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), job_token: job.token
-      end
-
-      context 'user is developer' do
-        let(:api_user) { user }
-
-        it_behaves_like 'downloads artifact'
-      end
-
-      context 'when anonymous user is accessing private artifacts' do
-        let(:api_user) { nil }
-
-        it 'hides artifacts and rejects request' do
-          expect(project).to be_private
-          expect(response).to have_gitlab_http_status(404)
-        end
-      end
-
-      context 'feature is disabled for EES' do
-        let(:api_user) { user }
-        let(:cross_project_pipeline_enabled) { false }
-
-        it 'disallows access to the artifacts' do
           expect(response).to have_gitlab_http_status(404)
         end
       end
@@ -407,7 +351,6 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
-      stub_artifacts_object_storage(licensed: :skip)
       job.success
     end
 
@@ -474,21 +417,6 @@ describe API::Jobs do
           it { expect(response).to have_gitlab_http_status(200) }
           it { expect(response.headers).to include(download_headers) }
         end
-
-        context 'when artifacts are stored remotely' do
-          let(:job) { create(:ci_build, pipeline: pipeline, user: api_user) }
-          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
-
-          before do
-            job.reload
-
-            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-          end
-
-          it 'returns location redirect' do
-            expect(response).to have_gitlab_http_status(302)
-          end
-        end
       end
 
       context 'with regular branch' do
@@ -516,43 +444,47 @@ describe API::Jobs do
 
         it_behaves_like 'a valid file'
       end
-
-      context 'when using job_token to authenticate' do
-        before do
-          pipeline.reload
-          pipeline.update(ref: 'master',
-                          sha: project.commit('master').sha)
-
-          get api("/projects/#{project.id}/jobs/artifacts/master/download"), job: job.name, job_token: job.token
-        end
-
-        context 'when user is reporter' do
-          it_behaves_like 'a valid file'
-        end
-
-        context 'when user is admin, but not member' do
-          let(:api_user) { create(:admin) }
-          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
-
-          it 'does not allow to see that artfiact is present' do
-            expect(response).to have_gitlab_http_status(404)
-          end
-        end
-      end
     end
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
-    let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
-
     before do
       get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
     end
 
     context 'authorized user' do
-      it 'returns specific job trace' do
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.body).to eq(job.trace.raw)
+      context 'when trace is in ObjectStorage' do
+        let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          stub_remote_trace_206
+          allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+          allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
+          allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+        end
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is artifact' do
+        let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is file' do
+        let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
       end
     end
 
@@ -640,11 +572,11 @@ describe API::Jobs do
     end
 
     context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(201)
-        expect(job).not_to have_trace
+        expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
       end
@@ -658,7 +590,7 @@ describe API::Jobs do
     end
 
     context 'job is not erasable' do
-      let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
         expect(response).to have_gitlab_http_status(403)
@@ -667,7 +599,7 @@ describe API::Jobs do
 
     context 'when a developer erases a build' do
       let(:role) { :developer }
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
 
       context 'when the build was created by the developer' do
         let(:owner) { user }
@@ -690,7 +622,7 @@ describe API::Jobs do
 
     context 'artifacts did not expire' do
       let(:job) do
-        create(:ci_build, :trace, :artifacts, :success,
+        create(:ci_build, :trace_artifact, :artifacts, :success,
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 

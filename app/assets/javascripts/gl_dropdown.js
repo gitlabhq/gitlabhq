@@ -2,6 +2,7 @@
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 
@@ -212,25 +213,17 @@ GitLabDropdownRemote = (function() {
   };
 
   GitLabDropdownRemote.prototype.fetchData = function() {
-    return $.ajax({
-      url: this.dataEndpoint,
-      dataType: this.options.dataType,
-      beforeSend: (function(_this) {
-        return function() {
-          if (_this.options.beforeSend) {
-            return _this.options.beforeSend();
-          }
-        };
-      })(this),
-      success: (function(_this) {
-        return function(data) {
-          if (_this.options.success) {
-            return _this.options.success(data);
-          }
-        };
-      })(this)
-    });
-  // Fetch the data through ajax if the data is a string
+    if (this.options.beforeSend) {
+      this.options.beforeSend();
+    }
+
+    // Fetch the data through ajax if the data is a string
+    return axios.get(this.dataEndpoint)
+      .then(({ data }) => {
+        if (this.options.success) {
+          return this.options.success(data);
+        }
+      });
   };
 
   return GitLabDropdownRemote;

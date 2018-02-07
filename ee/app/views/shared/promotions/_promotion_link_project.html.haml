@@ -1,5 +1,5 @@
 - short_form = local_assigns.fetch :short_form, false
-- if current_application_settings.should_check_namespace_plan?
+- if Gitlab::CurrentSettings.should_check_namespace_plan?
   - namespace = @project&.namespace || @group
   - if can?(current_user, :admin_namespace, namespace)
     = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'

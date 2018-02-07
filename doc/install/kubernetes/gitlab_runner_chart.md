@@ -31,7 +31,7 @@ The default configuration can always be found in the [values.yaml](https://gitla
 
 In order for GitLab Runner to function, your config file **must** specify the following:
 
- - `gitlabURL`  - the GitLab Server URL (with protocol) to register the runner against
+ - `gitlabUrl`  - the GitLab Server URL (with protocol) to register the runner against
  - `runnerRegistrationToken` - The Registration Token for adding new Runners to the GitLab Server. This must be
     retrieved from your GitLab Instance. See the [GitLab Runner Documentation](../../ci/runners/README.md#creating-and-registering-a-runner) for more information.
 
@@ -47,7 +47,7 @@ Here is a snippet of the important settings:
 ## The GitLab Server URL (with protocol) that want to register the runner against
 ## ref: https://docs.gitlab.com/runner/commands/README.html#gitlab-runner-register
 ##
-gitlabURL: http://gitlab.your-domain.com/
+gitlabUrl: http://gitlab.your-domain.com/
 
 ## The Registration Token for adding new Runners to the GitLab Server. This must
 ## be retreived from your GitLab Instance.

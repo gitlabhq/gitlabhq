@@ -7,7 +7,12 @@
 //
 //   <code class="js-render-math"></div>
 //
-  // Only load once
+
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+
+// Only load once
 let katexLoaded = false;
 
 // Loop over all math elements and render math
@@ -33,19 +38,26 @@ export default function renderMath($els) {
   if (katexLoaded) {
     renderWithKaTeX($els);
   } else {
-    $.get(gon.katex_css_url, () => {
-      const css = $('<link>', {
-        rel: 'stylesheet',
-        type: 'text/css',
-        href: gon.katex_css_url,
-      });
-      css.appendTo('head');
-
-      // Load KaTeX js
-      $.getScript(gon.katex_js_url, () => {
+    axios.get(gon.katex_css_url)
+      .then(() => {
+        const css = $('<link>', {
+          rel: 'stylesheet',
+          type: 'text/css',
+          href: gon.katex_css_url,
+        });
+        css.appendTo('head');
+      })
+      .then(() => axios.get(gon.katex_js_url, {
+        responseType: 'text',
+      }))
+      .then(({ data }) => {
+        // Add katex js to our document
+        $.globalEval(data);
+      })
+      .then(() => {
         katexLoaded = true;
         renderWithKaTeX($els); // Run KaTeX
-      });
-    });
+      })
+      .catch(() => flash(__('An error occurred while rendering KaTeX')));
   }
 }

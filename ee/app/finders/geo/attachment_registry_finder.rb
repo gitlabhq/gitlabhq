@@ -1,11 +1,14 @@
 module Geo
   class AttachmentRegistryFinder < FileRegistryFinder
     def attachments
-      if selective_sync?
-        Upload.where(group_uploads.or(project_uploads).or(other_uploads))
-      else
-        Upload.all
-      end
+      relation =
+        if selective_sync?
+          Upload.where(group_uploads.or(project_uploads).or(other_uploads))
+        else
+          Upload.all
+        end
+
+      relation.with_files_stored_locally
     end
 
     def count_attachments
@@ -68,7 +71,16 @@ module Geo
     private
 
     def group_uploads
-      namespace_ids = Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.select(:id)
+      namespace_ids =
+        if current_node.selective_sync_by_namespaces?
+          Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.select(:id)
+        elsif current_node.selective_sync_by_shards?
+          leaf_groups = Namespace.where(id: current_node.projects.select(:namespace_id))
+          Gitlab::GroupHierarchy.new(leaf_groups).base_and_ancestors.select(:id)
+        else
+          Namespace.none
+        end
+
       arel_namespace_ids = Arel::Nodes::SqlLiteral.new(namespace_ids.to_sql)
 
       upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(arel_namespace_ids))
@@ -105,6 +117,7 @@ module Geo
       fdw_table = Geo::Fdw::Upload.table_name
 
       Geo::Fdw::Upload.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
+        .with_files_stored_locally
         .merge(Geo::FileRegistry.attachments)
     end
 
@@ -115,6 +128,7 @@ module Geo
       Geo::Fdw::Upload.joins("LEFT OUTER JOIN file_registry
                                            ON file_registry.file_id = #{fdw_table}.id
                                           AND file_registry.file_type IN (#{upload_types})")
+        .with_files_stored_locally
         .where(file_registry: { id: nil })
         .where.not(id: except_registry_ids)
     end

@@ -19,6 +19,8 @@ module API
                               desc: 'Either running, branches, or tags'
         end
         get ':id/pipelines' do
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42123')
+
           authorize! :read_pipeline, user_project
 
           pipelines = PipelinesFinder.new(user_project, scope: params[:scope]).execute

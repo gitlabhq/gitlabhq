@@ -36,7 +36,7 @@
           data: { confirm: _("Are you sure you want to reset registration token?") }
 
   = render partial: 'ci/runner/how_to_setup_runner',
-           locals: { registration_token: current_application_settings.runners_registration_token,
+           locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token,
                      type: 'shared' }
 
   .append-bottom-20.clearfix

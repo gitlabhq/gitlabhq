@@ -51,7 +51,7 @@ describe Gitlab::Elastic::Indexer do
         ],
         nil,
         hash_including(
-          'ELASTIC_CONNECTION_INFO' => current_application_settings.elasticsearch_config.to_json,
+          'ELASTIC_CONNECTION_INFO' => Gitlab::CurrentSettings.elasticsearch_config.to_json,
           'RAILS_ENV'               => Rails.env,
           'FROM_SHA'                => from_sha,
           'TO_SHA'                  => to_sha

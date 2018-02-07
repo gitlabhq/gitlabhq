@@ -32,6 +32,7 @@ module EE
     module ClassMethods
       def defaults
         super.merge(
+          default_project_creation: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS,
           elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
           elasticsearch_aws: false,
           elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',

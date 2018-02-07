@@ -173,18 +173,32 @@ describe MergeRequest do
     end
   end
 
-  describe '#sast_artifact' do
-    it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline) }
+  describe '#head_sast_artifact' do
+    it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline).with_prefix(:head) }
+  end
+
+  describe '#base_sast_artifact' do
+    it { is_expected.to delegate_method(:sast_artifact).to(:base_pipeline).with_prefix(:base) }
   end
 
   describe '#has_sast_data?' do
     let(:artifact) { double(success?: true) }
 
     before do
-      allow(merge_request).to receive(:sast_artifact).and_return(artifact)
+      allow(merge_request).to receive(:head_sast_artifact).and_return(artifact)
     end
 
     it { expect(merge_request.has_sast_data?).to be_truthy }
+  end
+
+  describe '#has_base_sast_data?' do
+    let(:artifact) { double(success?: true) }
+
+    before do
+      allow(merge_request).to receive(:base_sast_artifact).and_return(artifact)
+    end
+
+    it { expect(merge_request.has_base_sast_data?).to be_truthy }
   end
 
   describe '#sast_container_artifact' do

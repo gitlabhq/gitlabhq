@@ -1,11 +1,14 @@
-%ul.nav-links.event-filter.scrolling-tabs
-  = event_filter_link EventFilter.all, _('All'), s_('EventFilterBy|Filter by all')
-  - if event_filter_visible(:repository)
-    = event_filter_link EventFilter.push, _('Push events'), s_('EventFilterBy|Filter by push events')
-  - if event_filter_visible(:merge_requests)
-    = event_filter_link EventFilter.merged, _('Merge events'), s_('EventFilterBy|Filter by merge events')
-  - if event_filter_visible(:issues)
-    = event_filter_link EventFilter.issue, _('Issue events'), s_('EventFilterBy|Filter by issue events')
-  - if comments_visible?
-    = event_filter_link EventFilter.comments, _('Comments'), s_('EventFilterBy|Filter by comments')
-  = event_filter_link EventFilter.team, _('Team'), s_('EventFilterBy|Filter by team')
+.scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+  .fade-left= icon('angle-left')
+  .fade-right= icon('angle-right')
+  %ul.nav-links.event-filter.scrolling-tabs
+    = event_filter_link EventFilter.all, _('All'), s_('EventFilterBy|Filter by all')
+    - if event_filter_visible(:repository)
+      = event_filter_link EventFilter.push, _('Push events'), s_('EventFilterBy|Filter by push events')
+    - if event_filter_visible(:merge_requests)
+      = event_filter_link EventFilter.merged, _('Merge events'), s_('EventFilterBy|Filter by merge events')
+    - if event_filter_visible(:issues)
+      = event_filter_link EventFilter.issue, _('Issue events'), s_('EventFilterBy|Filter by issue events')
+    - if comments_visible?
+      = event_filter_link EventFilter.comments, _('Comments'), s_('EventFilterBy|Filter by comments')
+    = event_filter_link EventFilter.team, _('Team'), s_('EventFilterBy|Filter by team')

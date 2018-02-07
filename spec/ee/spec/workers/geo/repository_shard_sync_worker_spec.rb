@@ -104,7 +104,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
 
     context 'when node has namespace restrictions' do
       before do
-        secondary.update_attribute(:namespaces, [synced_group])
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
       end
 
       it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected namespaces to replicate' do

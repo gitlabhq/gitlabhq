@@ -33,13 +33,14 @@ module Gitlab
         @protocol = protocol
       end
 
-      def exec
+      def exec(skip_commits_check: false)
         return true if skip_authorization
 
         push_checks
         branch_checks
         tag_checks
         lfs_objects_exist_check
+        commits_check unless skip_commits_check
 
         true
       end
@@ -119,6 +120,24 @@ module Gitlab
         end
       end
 
+      def commits_check
+        return if deletion? || newrev.nil?
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+        ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+          commits.each do |commit|
+            commit_check.validate(commit, validations_for_commit(commit))
+          end
+        end
+
+        commit_check.validate_file_paths
+      end
+
+      # Method overwritten in EE to inject custom validations
+      def validations_for_commit(_)
+        []
+      end
+
       private
 
       def updated_from_web?
@@ -151,6 +170,14 @@ module Gitlab
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
         end
+      end
+
+      def commit_check
+        @commit_check ||= Gitlab::Checks::CommitCheck.new(project, user_access.user, newrev, oldrev)
+      end
+
+      def commits
+        project.repository.new_commits(newrev)
       end
     end
   end

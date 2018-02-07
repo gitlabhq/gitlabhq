@@ -83,6 +83,8 @@ module Gitlab
               commit_id: sha
             )
           end
+        rescue Rugged::ReferenceError
+          []
         end
       end
 

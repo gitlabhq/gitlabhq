@@ -4,6 +4,7 @@ FactoryBot.define do
     path { name.downcase.gsub(/\s/, '_') }
     type 'Group'
     owner nil
+    project_creation_level ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS
 
     trait :public do
       visibility_level Gitlab::VisibilityLevel::PUBLIC
@@ -18,7 +19,7 @@ FactoryBot.define do
     end
 
     trait :with_avatar do
-      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+      avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
     factory :group_with_members do

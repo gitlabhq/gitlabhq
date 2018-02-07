@@ -18,54 +18,67 @@ describe('CreateItemDropdown', () => {
   preloadFixtures('static/create_item_dropdown.html.raw');
 
   let $wrapperEl;
+  let createItemDropdown;
+
+  function createItemAndClearInput(text) {
+    // Filter for the new item
+    $wrapperEl.find('.dropdown-input-field')
+      .val(text)
+      .trigger('input');
+
+    // Create the new item
+    const $createButton = $wrapperEl.find('.js-dropdown-create-new-item');
+    $createButton.click();
+
+    // Clear out the filter
+    $wrapperEl.find('.dropdown-input-field')
+      .val('')
+      .trigger('input');
+  }
 
   beforeEach(() => {
     loadFixtures('static/create_item_dropdown.html.raw');
     $wrapperEl = $('.js-create-item-dropdown-fixture-root');
-
-    // eslint-disable-next-line no-new
-    new CreateItemDropdown({
-      $dropdown: $wrapperEl.find('.js-dropdown-menu-toggle'),
-      defaultToggleLabel: 'All variables',
-      fieldName: 'variable[environment]',
-      getData: (term, callback) => {
-        callback(DROPDOWN_ITEM_DATA);
-      },
-    });
   });
 
   afterEach(() => {
     $wrapperEl.remove();
   });
 
-  it('should have a dropdown item for each piece of data', () => {
-    // Get the data in the dropdown
-    $('.js-dropdown-menu-toggle').click();
+  describe('items', () => {
+    beforeEach(() => {
+      createItemDropdown = new CreateItemDropdown({
+        $dropdown: $wrapperEl.find('.js-dropdown-menu-toggle'),
+        defaultToggleLabel: 'All variables',
+        fieldName: 'variable[environment]',
+        getData: (term, callback) => {
+          callback(DROPDOWN_ITEM_DATA);
+        },
+      });
+    });
 
-    const $itemEls = $wrapperEl.find('.js-dropdown-content a');
-    expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
+    it('should have a dropdown item for each piece of data', () => {
+      // Get the data in the dropdown
+      $('.js-dropdown-menu-toggle').click();
+
+      const $itemEls = $wrapperEl.find('.js-dropdown-content a');
+      expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
+    });
   });
 
   describe('created items', () => {
     const NEW_ITEM_TEXT = 'foobarbaz';
 
-    function createItemAndClearInput(text) {
-      // Filter for the new item
-      $wrapperEl.find('.dropdown-input-field')
-        .val(text)
-        .trigger('input');
-
-      // Create the new item
-      const $createButton = $wrapperEl.find('.js-dropdown-create-new-item');
-      $createButton.click();
-
-      // Clear out the filter
-      $wrapperEl.find('.dropdown-input-field')
-        .val('')
-        .trigger('input');
-    }
-
     beforeEach(() => {
+      createItemDropdown = new CreateItemDropdown({
+        $dropdown: $wrapperEl.find('.js-dropdown-menu-toggle'),
+        defaultToggleLabel: 'All variables',
+        fieldName: 'variable[environment]',
+        getData: (term, callback) => {
+          callback(DROPDOWN_ITEM_DATA);
+        },
+      });
+
       // Open the dropdown
       $('.js-dropdown-menu-toggle').click();
 
@@ -101,6 +114,70 @@ describe('CreateItemDropdown', () => {
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
       expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
+    });
+  });
+
+  describe('clearDropdown()', () => {
+    beforeEach(() => {
+      createItemDropdown = new CreateItemDropdown({
+        $dropdown: $wrapperEl.find('.js-dropdown-menu-toggle'),
+        defaultToggleLabel: 'All variables',
+        fieldName: 'variable[environment]',
+        getData: (term, callback) => {
+          callback(DROPDOWN_ITEM_DATA);
+        },
+      });
+    });
+
+    it('should clear all data and filter input', () => {
+      const filterInput = $wrapperEl.find('.dropdown-input-field');
+
+      // Get the data in the dropdown
+      $('.js-dropdown-menu-toggle').click();
+
+      // Filter for an item
+      filterInput
+        .val('one')
+        .trigger('input');
+
+      const $itemElsAfterFilter = $wrapperEl.find('.js-dropdown-content a');
+      expect($itemElsAfterFilter.length).toEqual(1);
+
+      createItemDropdown.clearDropdown();
+
+      const $itemElsAfterClear = $wrapperEl.find('.js-dropdown-content a');
+      expect($itemElsAfterClear.length).toEqual(0);
+      expect(filterInput.val()).toEqual('');
+    });
+  });
+
+  describe('createNewItemFromValue option', () => {
+    beforeEach(() => {
+      createItemDropdown = new CreateItemDropdown({
+        $dropdown: $wrapperEl.find('.js-dropdown-menu-toggle'),
+        defaultToggleLabel: 'All variables',
+        fieldName: 'variable[environment]',
+        getData: (term, callback) => {
+          callback(DROPDOWN_ITEM_DATA);
+        },
+        createNewItemFromValue: newValue => ({
+          title: `${newValue}-title`,
+          id: `${newValue}-id`,
+          text: `${newValue}-text`,
+        }),
+      });
+    });
+
+    it('all items go through createNewItemFromValue', () => {
+      // Get the data in the dropdown
+      $('.js-dropdown-menu-toggle').click();
+
+      createItemAndClearInput('new-item');
+
+      const $itemEls = $wrapperEl.find('.js-dropdown-content a');
+      expect($itemEls.length).toEqual(1 + DROPDOWN_ITEM_DATA.length);
+      expect($($itemEls[3]).text()).toEqual('new-item-text');
+      expect($wrapperEl.find('.dropdown-toggle-text').text()).toEqual('new-item-title');
     });
   });
 });

@@ -80,13 +80,12 @@ module Gitlab
       def self.streaming_active?
         # Get a streaming status
         # This only works for Postgresql 9.6 and greater
-        status =
-          ActiveRecord::Base.connection.execute('
-          SELECT * FROM pg_stat_wal_receiver;')
+        pid =
+          ActiveRecord::Base.connection.select_values('
+          SELECT pid FROM pg_stat_wal_receiver;')
           .first
-          .fetch('status')
 
-        status == 'streaming'
+        pid.to_i > 0
       end
     end
   end

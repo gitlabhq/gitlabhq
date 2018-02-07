@@ -12,7 +12,8 @@ describe MergeRequests::UpdateService, :mailer do
     create(:merge_request, :simple, title: 'Old title',
                                     description: "FYI #{user2.to_reference}",
                                     assignee_id: user3.id,
-                                    source_project: project)
+                                    source_project: project,
+                                    author: create(:user))
   end
 
   before do

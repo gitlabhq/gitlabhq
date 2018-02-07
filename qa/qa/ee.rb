@@ -4,6 +4,10 @@ module QA
   #
   module EE
     module Page
+      module Menu
+        autoload :Admin, 'qa/ee/page/menu/admin'
+      end
+
       module Admin
         autoload :License, 'qa/ee/page/admin/license'
 

@@ -1,9 +1,9 @@
 # Elasticsearch integration
 
 >
-[Introduced][ee-109] in GitLab [Enterprise Edition Starter][ee] 8.4. Support
+[Introduced][ee-109] in GitLab [Starter][ee] 8.4. Support
 for [Amazon Elasticsearch][aws-elastic] was [introduced][ee-1305] in GitLab
-[Enterprise Edition Starter][ee] 9.0.
+[Starter][ee] 9.0.
 
 This document describes how to set up Elasticsearch with GitLab. Once enabled,
 you'll have the benefit of fast search response times and the advantage of two
@@ -306,4 +306,4 @@ Here are some common pitfalls and how to overcome them:
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
 [pkg]: https://about.gitlab.com/downloads/ "Download Omnibus GitLab"
 [elastic-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration.html#settings "Elasticsearch configuration settings"
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

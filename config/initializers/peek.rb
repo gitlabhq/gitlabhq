@@ -7,10 +7,12 @@ if Gitlab::Database.mysql?
   require 'peek-mysql2'
   PEEK_DB_CLIENT = ::Mysql2::Client
   PEEK_DB_VIEW = Peek::Views::Mysql2
-else
+elsif Gitlab::Database.postgresql?
   require 'peek-pg'
   PEEK_DB_CLIENT = ::PG::Connection
   PEEK_DB_VIEW = Peek::Views::PG
+else
+  raise "Unsupported database adapter for peek!"
 end
 
 Peek.into PEEK_DB_VIEW

@@ -16,7 +16,7 @@ Milestones are a valuable tool to track the development of the process of achiev
 From a milestone, you view the status of issues and merge requests, its contributors,
 and opened and closed issues for each label.
 
-With [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
+With [GitLab Starter](https://about.gitlab.com/products/),
 you will also see a [Burndown Chart](#burndown-charts) for your milestone, which
 gives a visual insight over the progress of the conclusion of that milestone:
 
@@ -90,7 +90,7 @@ total merge requests and issues.
 ## Burndown Charts
 
 [Burndown Charts](burndown_charts.md), available in
-[GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee),
+[GitLab Starter](https://about.gitlab.com/products),
 are visual representations of the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)

@@ -1,7 +1,7 @@
 # Burndown Charts
 
 >**Notes:**
-- [Introduced][ee-1540] in [GitLab Enterprise Edition Starter 9.1][ee-9.1].
+- [Introduced][ee-1540] in [GitLab Starter 9.1][ee-9.1].
 - Closed or reopened issues prior to GitLab 9.1 won't have a `closed_at`
   value, so the burndown chart considers them as closed on the milestone
   `start_date`. In that case, a warning will be displayed.
@@ -16,7 +16,7 @@ At a glance, you see the current state for the completion a given milestone.
 Without them, you would have to organize the data from the milestone and plot it
 yourself to have the same sense of progress.
 
-GitLab Enterprise Edition Starter plots it for you and presents it in a clear and beautiful chart.
+GitLab Starter plots it for you and presents it in a clear and beautiful chart.
 
 For an overview, check the video demonstration on [Mapping Work Versus Time, With Burndown Charts](https://about.gitlab.com/2017/04/25/mapping-work-to-do-versus-time-with-burndown-charts/).
 

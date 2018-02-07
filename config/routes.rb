@@ -75,6 +75,9 @@ Rails.application.routes.draw do
 
       resources :issues, module: :boards, only: [:index, :update]
     end
+
+    # UserCallouts
+    resources :user_callouts, only: [:create]
   end
 
   # Koding route

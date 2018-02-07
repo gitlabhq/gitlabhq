@@ -257,7 +257,7 @@ module Gitlab
           offset:       options[:offset],
           follow:       options[:follow],
           skip_merges:  options[:skip_merges],
-          disable_walk: options[:disable_walk]
+          disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]

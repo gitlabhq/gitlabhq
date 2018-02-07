@@ -10,7 +10,7 @@ namespace :gitlab do
       LfsObject.with_files_stored_locally
         .find_each(batch_size: 10) do |lfs_object|
           begin
-            lfs_object.file.migrate!(LfsObjectUploader::REMOTE_STORE)
+            lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
 
             logger.info("Transferred LFS object #{lfs_object.oid} of size #{lfs_object.size.to_i.bytes} to object storage")
           rescue => e

@@ -147,7 +147,7 @@ you started editing. Would you like to create a new branch?`)"
       >
         <div class="multi-file-commit-fieldset">
           <textarea
-            class="form-control multi-file-commit-message"
+            class="form-control multi-file-commit-message ref-name"
             name="commit-message"
             v-model="commitMessage"
             placeholder="Commit message"

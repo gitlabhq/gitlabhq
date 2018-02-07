@@ -115,7 +115,7 @@ class Environment < ActiveRecord::Base
   def formatted_external_url
     return nil unless external_url
 
-    external_url.gsub(/\A.*?:\/\//, '')
+    external_url.gsub(%r{\A.*?://}, '')
   end
 
   def stop_action?

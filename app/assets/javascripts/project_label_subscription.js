@@ -1,3 +1,7 @@
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
+import flash from './flash';
+
 export default class ProjectLabelSubscription {
   constructor(container) {
     this.$container = $(container);
@@ -17,10 +21,7 @@ export default class ProjectLabelSubscription {
     $btn.addClass('disabled');
     $span.toggleClass('hidden');
 
-    $.ajax({
-      type: 'POST',
-      url,
-    }).done(() => {
+    axios.post(url).then(() => {
       let newStatus;
       let newAction;
 
@@ -45,6 +46,6 @@ export default class ProjectLabelSubscription {
 
         return button;
       });
-    });
+    }).catch(() => flash(__('There was an error subscribing to this label.')));
   }
 }

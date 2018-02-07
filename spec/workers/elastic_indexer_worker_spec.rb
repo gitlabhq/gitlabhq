@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe ElasticIndexerWorker, elastic: true do
-  include Gitlab::CurrentSettings
   subject { described_class.new }
 
   before do
     stub_application_setting(elasticsearch_indexing: true)
 
     Elasticsearch::Model.client =
-      Gitlab::Elastic::Client.build(current_application_settings.elasticsearch_config)
+      Gitlab::Elastic::Client.build(Gitlab::CurrentSettings.elasticsearch_config)
 
     Gitlab::Elastic::Helper.create_empty_index
   end

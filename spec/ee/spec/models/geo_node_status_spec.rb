@@ -12,7 +12,7 @@ describe GeoNodeStatus, :geo do
   let!(:project_3) { create(:project) }
   let!(:project_4) { create(:project) }
 
-  subject { described_class.current_node_status }
+  subject(:status) { described_class.current_node_status }
 
   before do
     stub_current_geo_node(secondary)
@@ -132,7 +132,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right percentage with group restrictions' do
-      secondary.update_attribute(:namespaces, [group])
+      secondary.update!(selective_sync_type: 'namespaces', namespaces: [group])
       create(:geo_file_registry, :avatar, file_id: upload_1.id)
       create(:geo_file_registry, :avatar, file_id: upload_2.id)
 
@@ -191,7 +191,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right percentage with group restrictions' do
-      secondary.update_attribute(:namespaces, [group])
+      secondary.update!(selective_sync_type: 'namespaces', namespaces: [group])
       create(:geo_file_registry, :lfs, file_id: lfs_object_project.lfs_object_id, success: true)
 
       expect(subject.lfs_objects_synced_in_percentage).to be_within(0.0001).of(50)
@@ -266,7 +266,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of failed repos with group restrictions' do
-      secondary.update_attribute(:namespaces, [group])
+      secondary.update!(selective_sync_type: 'namespaces', namespaces: [group])
 
       expect(subject.repositories_failed_count).to eq(1)
     end
@@ -285,7 +285,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of failed repos with group restrictions' do
-      secondary.update_attribute(:namespaces, [group])
+      secondary.update!(selective_sync_type: 'namespaces', namespaces: [group])
 
       expect(subject.wikis_failed_count).to eq(1)
     end
@@ -309,7 +309,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right percentage with group restrictions' do
-      secondary.update_attribute(:namespaces, [group])
+      secondary.update!(selective_sync_type: 'namespaces', namespaces: [group])
       create(:geo_project_registry, :synced, project: project_1)
 
       expect(subject.repositories_synced_in_percentage).to be_within(0.0001).of(50)
@@ -336,7 +336,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right percentage with group restrictions' do
-      secondary.update_attribute(:namespaces, [group])
+      secondary.update!(selective_sync_type: 'namespaces', namespaces: [group])
       create(:geo_project_registry, :synced, project: project_1)
 
       expect(subject.wikis_synced_in_percentage).to be_within(0.0001).of(50)
@@ -379,6 +379,13 @@ describe GeoNodeStatus, :geo do
 
       expect(subject.replication_slots_max_retained_wal_bytes).to eq(2.megabytes)
     end
+
+    it 'handles large values' do
+      stub_current_geo_node(primary)
+      allow(primary).to receive(:replication_slots_max_retained_wal_bytes).and_return(900.gigabytes)
+
+      expect(subject.replication_slots_max_retained_wal_bytes).to eq(900.gigabytes)
+    end
   end
 
   describe '#last_event_id and #last_event_date' do
@@ -416,6 +423,14 @@ describe GeoNodeStatus, :geo do
       expect(subject.cursor_last_event_date).to eq(nil)
       expect(subject.cursor_last_event_id).to eq(nil)
     end
+  end
+
+  describe '#version' do
+    it { expect(status.version).to eq(Gitlab::VERSION) }
+  end
+
+  describe '#revision' do
+    it {  expect(status.revision).to eq(Gitlab::REVISION) }
   end
 
   describe '#[]' do

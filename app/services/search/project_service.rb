@@ -1,7 +1,5 @@
 module Search
   class ProjectService
-    include Gitlab::CurrentSettings
-
     attr_accessor :project, :current_user, :params
 
     def initialize(project, user, params)
@@ -9,7 +7,7 @@ module Search
     end
 
     def execute
-      if current_application_settings.elasticsearch_search?
+      if Gitlab::CurrentSettings.elasticsearch_search?
         Gitlab::Elastic::ProjectSearchResults.new(current_user,
                                                   params[:search],
                                                   project.id,

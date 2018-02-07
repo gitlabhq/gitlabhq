@@ -85,6 +85,30 @@ describe GroupsController do
     end
   end
 
+  describe 'GET #activity' do
+    render_views
+
+    before do
+      sign_in(user)
+      project
+    end
+
+    context 'as json' do
+      it 'includes all projects in event feed' do
+        3.times do
+          project = create(:project, group: group)
+          create(:event, project: project)
+        end
+
+        get :activity, id: group.to_param, format: :json
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['count']).to eq(3)
+        expect(assigns(:projects).limit_value).to be_nil
+      end
+    end
+  end
+
   describe 'POST #create' do
     it 'allows creating a group' do
       sign_in(user)
@@ -299,6 +323,13 @@ describe GroupsController do
       expect(controller).to set_flash[:notice]
     end
 
+    it 'updates the project_creation_level successfully' do
+      post :update, id: group.to_param, group: { project_creation_level: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS }
+
+      expect(response).to have_gitlab_http_status(302)
+      expect(group.reload.project_creation_level).to eq(::EE::Gitlab::Access::MASTER_PROJECT_ACCESS)
+    end
+
     it 'does not update the path on error' do
       allow_any_instance_of(Group).to receive(:move_dir).and_raise(Gitlab::UpdatePathError)
       post :update, id: group.to_param, group: { path: 'new_path' }
@@ -502,6 +533,89 @@ describe GroupsController do
 
     def group_moved_message(redirect_route, group)
       "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
+    end
+  end
+
+  describe 'PUT transfer', :postgresql do
+    before do
+      sign_in(user)
+    end
+
+    context 'when transfering to a subgroup goes right' do
+      let(:new_parent_group) { create(:group, :public) }
+      let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
+      let!(:new_parent_group_member) { create(:group_member, :owner, group: new_parent_group, user: user) }
+
+      before do
+        put :transfer,
+          id: group.to_param,
+          new_parent_group_id: new_parent_group.id
+      end
+
+      it 'should return a notice' do
+        expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
+      end
+
+      it 'should redirect to the new path' do
+        expect(response).to redirect_to("/#{new_parent_group.path}/#{group.path}")
+      end
+    end
+
+    context 'when converting to a root group goes right' do
+      let(:group) { create(:group, :public, :nested) }
+      let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
+
+      before do
+        put :transfer,
+          id: group.to_param,
+          new_parent_group_id: ''
+      end
+
+      it 'should return a notice' do
+        expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
+      end
+
+      it 'should redirect to the new path' do
+        expect(response).to redirect_to("/#{group.path}")
+      end
+    end
+
+    context 'When the transfer goes wrong' do
+      let(:new_parent_group) { create(:group, :public) }
+      let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
+      let!(:new_parent_group_member) { create(:group_member, :owner, group: new_parent_group, user: user) }
+
+      before do
+        allow_any_instance_of(::Groups::TransferService).to receive(:proceed_to_transfer).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
+
+        put :transfer,
+          id: group.to_param,
+          new_parent_group_id: new_parent_group.id
+      end
+
+      it 'should return an alert' do
+        expect(flash[:alert]).to eq "Transfer failed: namespace directory cannot be moved"
+      end
+
+      it 'should redirect to the current path' do
+        expect(response).to render_template(:edit)
+      end
+    end
+
+    context 'when the user is not allowed to transfer the group' do
+      let(:new_parent_group) { create(:group, :public) }
+      let!(:group_member) { create(:group_member, :guest, group: group, user: user) }
+      let!(:new_parent_group_member) { create(:group_member, :guest, group: new_parent_group, user: user) }
+
+      before do
+        put :transfer,
+          id: group.to_param,
+          new_parent_group_id: new_parent_group.id
+      end
+
+      it 'should be denied' do
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
   end
 end

@@ -1,4 +1,4 @@
-- if current_application_settings.email_author_in_body
+- if Gitlab::CurrentSettings.email_author_in_body
   %div
     #{link_to @updated_by.name, user_url(@updated_by)} added you as an approver for:
 %p.details

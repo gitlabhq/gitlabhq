@@ -54,7 +54,7 @@ elsif Gitlab::Database.mysql?
     def initialize_type_map(mapping)
       super mapping
 
-      mapping.register_type(%r(timestamp)i) do |sql_type|
+      mapping.register_type(/timestamp/i) do |sql_type|
         precision = extract_precision(sql_type)
         ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::MysqlDateTimeWithTimeZone.new(precision: precision)
       end

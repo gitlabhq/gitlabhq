@@ -12,13 +12,24 @@ const onPrimaryCheckboxChange = function onPrimaryCheckboxChange(e, $namespaces)
   $namespaces.toggleClass('hidden', e.currentTarget.checked);
 };
 
+const onSelectiveSyncTypeChange = function onSelectiveSyncTypeChange(e, $byNamespaces, $byShards) {
+  $byNamespaces.toggleClass('hidden', e.target.value !== 'namespaces');
+  $byShards.toggleClass('hidden', e.target.value !== 'shards');
+};
+
 export default function geoNodeForm($container) {
   const $namespaces = $('.js-hide-if-geo-primary', $container);
   const $primaryCheckbox = $('input[type="checkbox"]', $container);
+  const $selectiveSyncTypeSelect = $('.js-geo-node-selective-sync-type', $container);
   const $select2Dropdown = $('.js-geo-node-namespaces', $container);
+  const $syncByNamespaces = $('.js-sync-by-namespace', $container);
+  const $syncByShards = $('.js-sync-by-shard', $container);
 
   $primaryCheckbox.on('change', e =>
     onPrimaryCheckboxChange(e, $namespaces));
+
+  $selectiveSyncTypeSelect.on('change', e =>
+    onSelectiveSyncTypeChange(e, $syncByNamespaces, $syncByShards));
 
   $select2Dropdown.select2({
     placeholder: s__('Geo|Select groups to replicate.'),

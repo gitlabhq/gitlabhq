@@ -47,7 +47,7 @@ In `config/gitlab.yml`:
 
 ## Setting up S3 compatible object storage
 
-> **Note:** [Introduced][ee-2760] in [GitLab Enterprise Edition Premium][eep] 10.0.
+> **Note:** [Introduced][ee-2760] in [GitLab Premium][eep] 10.0.
 
 It is possible to store LFS objects on remote object storage instead of on a local disk.
 
@@ -161,5 +161,5 @@ and [projects APIs](../../api/projects.md).
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
+[eep]: https://about.gitlab.com/products/ "GitLab Premium"
 [ee-2760]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2760

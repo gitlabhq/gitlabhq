@@ -40,7 +40,7 @@ constraints(ProjectUrlConstrainer.new) do
       #
       # Templates
       #
-      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: /[^\/]+/ }
+      get '/templates/:template_type/:key' => 'templates#show', as: :template, constraints: { key: %r{[^/]+} }
 
       resource  :avatar, only: [:show, :destroy]
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
@@ -55,7 +55,7 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resource :pages, only: [:show, :destroy] do
-        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: %r{[^/]+} }
       end
 
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
@@ -65,7 +65,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+      resources :services, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
         member do
           put :test
         end
@@ -184,7 +184,8 @@ constraints(ProjectUrlConstrainer.new) do
       get '/service_desk' => 'service_desk#show', as: :service_desk
       put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
 
-      resources :variables, only: [:index, :show, :update, :create, :destroy]
+      resource :variables, only: [:show, :update]
+
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
         member do
           post :take_ownership
@@ -389,7 +390,7 @@ constraints(ProjectUrlConstrainer.new) do
         resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
       end
 
-      resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
+      resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
         collection do
           delete :leave
 
@@ -422,7 +423,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :uploads, only: [:create] do
         collection do
-          get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+          get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
         end
       end
 

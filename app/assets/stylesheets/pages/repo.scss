@@ -72,6 +72,13 @@
         display: none;
       }
     }
+
+    &.folder {
+      svg {
+        fill: $gl-text-color-secondary;
+      }
+    }
+
   }
 
   a {
@@ -522,36 +529,42 @@ table.table tr td.multi-file-table-name {
   }
 }
 
-.ide.nav-only {
-  .flash-container {
-    margin-top: $header-height;
-    margin-bottom: 0;
-  }
+.ide {
+  overflow: hidden;
 
-  .alert-wrapper .flash-container .flash-alert:last-child,
-  .alert-wrapper .flash-container .flash-notice:last-child {
-    margin-bottom: 0;
-  }
-
-  .content {
-    margin-top: $header-height;
-  }
-
-  .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-    max-height: calc(100vh - #{$header-height + $context-header-height});
-  }
-
-  &.flash-shown {
-    .content {
-      margin-top: 0;
+  .nav-only {
+    .flash-container {
+      margin-top: $header-height;
+      margin-bottom: 0;
     }
 
-    .ide-view {
-      height: calc(100vh - #{$header-height + $flash-height});
+    .alert-wrapper .flash-container .flash-alert:last-child,
+    .alert-wrapper .flash-container .flash-notice:last-child {
+      margin-bottom: 0;
+    }
+
+    .content {
+      margin-top: $header-height;
     }
 
     .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
-      max-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
+      max-height: calc(100vh - #{$header-height + $context-header-height});
+      min-height: calc(100vh - #{$header-height + $context-header-height});
+    }
+
+    &.flash-shown {
+      .content {
+        margin-top: 0;
+      }
+
+      .ide-view {
+        height: calc(100vh - #{$header-height + $flash-height});
+      }
+
+      .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
+        max-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
+        min-height: calc(100vh - #{$header-height + $flash-height + $context-header-height});
+      }
     }
   }
 }
@@ -571,6 +584,7 @@ table.table tr td.multi-file-table-name {
 
   .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
     max-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
+    min-height: calc(100vh - #{$header-height + $performance-bar-height + 60});
   }
 
   &.flash-shown {
@@ -584,6 +598,7 @@ table.table tr td.multi-file-table-name {
 
     .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
       max-height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height + $context-header-height});
+      min-height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height + $context-header-height});
     }
   }
 }

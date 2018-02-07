@@ -14,6 +14,13 @@ module EE
       has_many :epic_issues
 
       validates :group, presence: true
+
+      scope :order_start_or_end_date_asc, -> do
+        # mysql returns null values first in opposite to postgres which
+        # returns them last by default
+        nulls_first = ::Gitlab::Database.postgresql? ? 'NULLS FIRST' : ''
+        reorder("COALESCE(start_date, end_date) ASC #{nulls_first}")
+      end
     end
 
     module ClassMethods
@@ -53,6 +60,14 @@ module EE
             (?<anchor>\#[a-z0-9_-]+)?
           )
         }x
+      end
+
+      def order_by(method)
+        if method.to_s == 'start_or_end_date'
+          order_start_or_end_date_asc
+        else
+          super
+        end
       end
     end
 

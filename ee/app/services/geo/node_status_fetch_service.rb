@@ -1,6 +1,5 @@
 module Geo
   class NodeStatusFetchService
-    include Gitlab::CurrentSettings
     include HTTParty
 
     def call(geo_node)
@@ -48,7 +47,7 @@ module Geo
     end
 
     def timeout
-      current_application_settings.geo_status_timeout
+      Gitlab::CurrentSettings.geo_status_timeout
     end
   end
 end

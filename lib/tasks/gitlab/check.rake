@@ -445,13 +445,12 @@ namespace :gitlab do
 
   namespace :geo do
     desc 'GitLab | Check Geo configuration and dependencies'
-    task check: :environment do
+    task check: :gitlab_environment do
       warn_user_is_not_gitlab
 
       checks = [
         SystemCheck::Geo::LicenseCheck,
         SystemCheck::Geo::EnabledCheck,
-        SystemCheck::Geo::GitVersionCheck,
         SystemCheck::Geo::GeoDatabaseConfiguredCheck,
         SystemCheck::Geo::DatabaseReplicationCheck,
         SystemCheck::Geo::HttpConnectionCheck,

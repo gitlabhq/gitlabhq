@@ -219,22 +219,15 @@ module API
       expose :build_artifacts_size, as: :job_artifacts_size
     end
 
-    class Member < UserBasic
-      expose :access_level do |user, options|
-        member = options[:member] || options[:source].members.find_by(user_id: user.id)
-        member.access_level
-      end
-      expose :expires_at do |user, options|
-        member = options[:member] || options[:source].members.find_by(user_id: user.id)
-        member.expires_at
-      end
+    class Member < Grape::Entity
+      expose :user, merge: true, using: UserBasic
+      expose :access_level
+      expose :expires_at
     end
 
-    class AccessRequester < UserBasic
-      expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:source].requesters.find_by(user_id: user.id)
-        access_requester.requested_at
-      end
+    class AccessRequester < Grape::Entity
+      expose :user, merge: true, using: UserBasic
+      expose :requested_at
     end
 
     class LdapGroupLink < Grape::Entity
@@ -350,24 +343,20 @@ module API
       end
     end
 
-    class ProjectSnippet < Grape::Entity
+    class Snippet < Grape::Entity
       expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
-
-      expose :web_url do |snippet, options|
+      expose :project_id
+      expose :web_url do |snippet|
         Gitlab::UrlBuilder.build(snippet)
       end
     end
 
-    class PersonalSnippet < Grape::Entity
-      expose :id, :title, :file_name, :description
-      expose :author, using: Entities::UserBasic
-      expose :updated_at, :created_at
+    class ProjectSnippet < Snippet
+    end
 
-      expose :web_url do |snippet|
-        Gitlab::UrlBuilder.build(snippet)
-      end
+    class PersonalSnippet < Snippet
       expose :raw_url do |snippet|
         Gitlab::UrlBuilder.build(snippet) + "/raw"
       end
@@ -1233,6 +1222,9 @@ module API
       expose :version
       expose :revision
 
+      expose :selective_sync_type
+
+      # Deprecated: remove in API v5. We use selective_sync_type instead now.
       expose :namespaces, using: NamespaceBasic
 
       expose :updated_at
@@ -1270,14 +1262,6 @@ module API
 
       def missing_oauth_application
         object.geo_node.missing_oauth_application?
-      end
-
-      def version
-        Gitlab::VERSION
-      end
-
-      def revision
-        Gitlab::REVISION
       end
     end
 
@@ -1457,6 +1441,15 @@ module API
     # Use with care, this exposes the secret
     class ApplicationWithSecret < Application
       expose :secret
+    end
+
+    class Blob < Grape::Entity
+      expose :basename
+      expose :data
+      expose :filename
+      expose :id
+      expose :ref
+      expose :startline
     end
   end
 end

@@ -82,6 +82,10 @@
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-xs-max) {
       width: 100%;
+
+      &.mobile-separator {
+        border-bottom: 1px solid $border-color;
+      }
     }
   }
 
@@ -168,9 +172,9 @@
         display: inline-block;
       }
 
-      // Applies on /dashboard/issues
       .project-item-select-holder {
         margin: 0;
+        width: 100%;
       }
 
       &.inline {
@@ -367,7 +371,6 @@
 
 .project-item-select-holder.btn-group {
   display: flex;
-  max-width: 350px;
   overflow: hidden;
   float: right;
 

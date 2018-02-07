@@ -1,7 +1,7 @@
 # Administrator documentation
 
 Learn how to administer your GitLab instance (Community Edition and
-[Enterprise Editions](https://about.gitlab.com/gitlab-ee/)).
+[Enterprise Editions](https://about.gitlab.com/products/)).
 Regular users don't have access to GitLab administration tools and settings.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
@@ -15,13 +15,13 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ### Installing GitLab
 
 - [Install](../install/README.md): Requirements, directory structures, and installation methods.
-  - **(EES/EEP)** [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
-  - **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
-  - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
+  - **(Starter/Premium)** [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
+  - **(Starter/Premium)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
+  - **(Starter/Premium)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
   - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
-- **(EEP)** [GitLab Geo](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
-- **(EEP)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
+- **(Premium)** [GitLab Geo](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
+- **(Premium)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
 
 ### Configuring GitLab
 
@@ -32,9 +32,10 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
+- [Uploads configuration](uploads.md): Configure GitLab uploads storage.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
-- **(EES/EEP)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
+- **(Starter/Premium)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
 
 #### Customizing GitLab's appearance
 
@@ -75,15 +76,15 @@ created in snippets, wikis, and repos.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-  - **(EES/EEP)** [Sync LDAP](auth/ldap-ee.md)
-  - **(EES/EEP)** [Kerberos authentication](../integration/kerberos.md)
+  - **(Starter/Premium)** [Sync LDAP](auth/ldap-ee.md)
+  - **(Starter/Premium)** [Kerberos authentication](../integration/kerberos.md)
 - [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
   - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with Reply by email.
-- **(EES/EEP)** [Email users](../tools/email.md): Email GitLab users from within GitLab.
+- **(Starter/Premium)** [Email users](../tools/email.md): Email GitLab users from within GitLab.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
-- **(EES/EEP)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
-- **(EEP)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
+- **(Starter/Premium)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
+- **(Premium)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
 - [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
   - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with Reply by email.
@@ -102,7 +103,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Repository checks](repository_checks.md): Periodic Git repository checks.
 - [Repository storage paths](repository_storage_paths.md): Manage the paths used to store repositories.
 - [Repository storage rake tasks](raketasks/storage.md): A collection of rake tasks to list and migrate existing projects and attachments associated with it from Legacy storage to Hashed storage.
-- **(EES/EEP)** [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
+- **(Starter/Premium)** [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 
 ## Continuous Integration settings
 

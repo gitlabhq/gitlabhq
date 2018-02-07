@@ -297,7 +297,7 @@ Example of response
 > **Notes**:
 - [Introduced][ce-2893] in GitLab 8.5.
 - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
-  in [GitLab Enterprise Edition Premium][ee] 9.5.
+  in [GitLab Premium][ee] 9.5.
 
 Get job artifacts of a project.
 
@@ -345,7 +345,7 @@ Response:
 > **Notes**:
 - [Introduced][ce-5347] in GitLab 8.10.
 - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
-  in [GitLab Enterprise Edition Premium][ee] 9.5.
+  in [GitLab Premium][ee] 9.5.
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.
@@ -688,6 +688,6 @@ Example of response
 }
 ```
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346
 [triggers]: ../ci/triggers/README.md#when-a-pipeline-depends-on-the-artifacts-of-another-pipeline

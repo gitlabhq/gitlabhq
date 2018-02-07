@@ -76,6 +76,39 @@ describe Groups::EpicsController do
           expect(response).to have_gitlab_http_status(200)
         end
       end
+
+      context 'when format is JSON' do
+        before do
+          allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+        end
+
+        def list_epics
+          get :index, group_id: group, format: :json
+        end
+
+        it 'returns a list of epics' do
+          list_epics
+
+          expect(json_response).to be_an Array
+        end
+
+        it 'does not use pagination' do
+          list_epics
+
+          expect(json_response.size).to eq(2)
+        end
+
+        it 'returns correct epic attributes' do
+          list_epics
+          item = json_response.first
+          epic = Epic.find(item['id'])
+
+          expect(item['group_id']).to eq(group.id)
+          expect(item['start_date']).to eq(epic.start_date)
+          expect(item['end_date']).to eq(epic.end_date)
+          expect(item['web_url']).to eq(group_epic_path(group, epic))
+        end
+      end
     end
 
     describe 'GET #show' do

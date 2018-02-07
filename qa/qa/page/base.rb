@@ -42,6 +42,23 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
+      # Returns true if successfully GETs the given URL
+      # Useful because `page.status_code` is unsupported by our driver, and
+      # we don't have access to the `response` to use `have_http_status`.
+      def asset_exists?(url)
+        page.execute_script <<~JS
+          xhr = new XMLHttpRequest();
+          xhr.open('GET', '#{url}', true);
+          xhr.send();
+        JS
+
+        return false unless wait(time: 0.5, max: 60, reload: false) do
+          page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
+        end
+
+        page.evaluate_script('xhr.status') == 200
+      end
+
       def find_element(name)
         find(element_selector_css(name))
       end

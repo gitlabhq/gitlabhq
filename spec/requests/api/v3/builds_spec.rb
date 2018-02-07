@@ -216,7 +216,6 @@ describe API::V3::Builds do
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
     before do
-      stub_artifacts_object_storage
       get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
     end
 
@@ -235,17 +234,6 @@ describe API::V3::Builds do
             expect(response.headers).to include(download_headers)
             expect(response.body).to match_file(build.artifacts_file.file.file)
           end
-        end
-      end
-
-      context 'when artifacts are stored remotely' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
-        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
-
-        it 'returns location redirect' do
-          get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
-
-          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -268,7 +256,6 @@ describe API::V3::Builds do
     let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
-      stub_artifacts_object_storage
       build.success
     end
 
@@ -334,21 +321,6 @@ describe API::V3::Builds do
           it { expect(response).to have_gitlab_http_status(200) }
           it { expect(response.headers).to include(download_headers) }
         end
-
-        context 'when artifacts are stored remotely' do
-          let(:build) { create(:ci_build, pipeline: pipeline) }
-          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
-
-          before do
-            build.reload
-
-            get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
-          end
-
-          it 'returns location redirect' do
-            expect(response).to have_gitlab_http_status(302)
-          end
-        end
       end
 
       context 'with regular branch' do
@@ -380,7 +352,7 @@ describe API::V3::Builds do
   end
 
   describe 'GET /projects/:id/builds/:build_id/trace' do
-    let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+    let(:build) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
     before do
       get v3_api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
@@ -475,7 +447,7 @@ describe API::V3::Builds do
     end
 
     context 'job is erasable' do
-      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response.status).to eq 201
@@ -491,7 +463,7 @@ describe API::V3::Builds do
     end
 
     context 'job is not erasable' do
-      let(:build) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
         expect(response.status).to eq 403
@@ -506,7 +478,7 @@ describe API::V3::Builds do
 
     context 'artifacts did not expire' do
       let(:build) do
-        create(:ci_build, :trace, :artifacts, :success,
+        create(:ci_build, :trace_artifact, :artifacts, :success,
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 

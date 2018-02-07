@@ -31,11 +31,11 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
-- Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
-- [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
-- Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
-- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Enterprise Edition Premium)
+- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Premium)
+- Request [approvals](#merge-request-approvals) from your managers (available in GitLab Starter)
+- [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Starter)
+- Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Starter)
+- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Premium)
 
 ## Use cases
 
@@ -180,7 +180,7 @@ have been marked as a **Work In Progress**.
 
 ## Merge request approvals
 
-> Included in [GitLab Enterprise Edition Starter][products].
+> Included in [GitLab Starter][products].
 
 If you want to make sure every merge request is approved by one or more people,
 you can enforce this workflow by using merge request approvals. Merge request
@@ -191,7 +191,7 @@ list of approvers that will need to approve every merge request in a project.
 
 ## Code Quality reports
 
-> Introduced in [GitLab Enterprise Edition Starter][products] 9.3.
+> Introduced in [GitLab Starter][products] 9.3.
 
 If you are using [GitLab CI][ci], you can analyze your source code quality using
 the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
@@ -201,7 +201,7 @@ can show the Code Climate report right in the merge request widget area.
 
 ## Static Application Security Testing
 
-> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.3.
+> Introduced in [GitLab Ultimate][products] 10.3.
 
 If you are using [GitLab CI/CD][ci], you can analyze your source code for known
 vulnerabilities using Static Application Security Testing (SAST).
@@ -212,7 +212,7 @@ merge request widget area.
 
 ## Static Application Security Testing for Docker containers
 
-> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.4.
+> Introduced in [GitLab Ultimate][products] 10.4.
 
 If you are using [GitLab CI/CD][ci], you can analyze your Docker images for known
 vulnerabilities.
@@ -223,7 +223,7 @@ merge request widget area.
 
 ## Browser Performance Testing
 
-> Introduced in [GitLab Enterprise Edition Premium][products] 10.3.
+> Introduced in [GitLab Premium][products] 10.3.
 
 If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
 
@@ -361,6 +361,6 @@ git checkout origin/merge-requests/1
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
-[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
+[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"
 [sitespeed]: https://www.sitespeed.io
 [sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/

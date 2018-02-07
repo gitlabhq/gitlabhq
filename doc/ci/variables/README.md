@@ -57,7 +57,7 @@ future GitLab releases.**
 | **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
 | **CI_RUNNER_TAGS**              | 8.10   | 0.5    | The defined runner tags |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
-| **CI_PIPELINE_SOURCE**          | 9.3    | all    | ([EEP]) The variable indicates how the pipeline was triggered, possible options are: push, web, trigger, schedule, api, pipeline |
+| **CI_PIPELINE_SOURCE**          | 9.3    | all    | ([Premium]) The variable indicates how the pipeline was triggered, possible options are: push, web, trigger, schedule, api, pipeline |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
 | **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
@@ -200,7 +200,7 @@ Once you set them, they will be available for all subsequent pipelines.
 ### Limiting environment scopes of secret variables
 
 >**Notes:**
-[Introduced][ee-2112] in [GitLab Enterprise Edition Premium][eep] 9.4.
+[Introduced][ee-2112] in [GitLab Premium][premium] 9.4.
 
 You can limit the environment scope of a secret variable by
 [defining which environments][envs] it can be available for.
@@ -467,7 +467,7 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
-[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[premium]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md

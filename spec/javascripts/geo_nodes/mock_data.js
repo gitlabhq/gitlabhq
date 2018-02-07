@@ -66,6 +66,7 @@ export const rawMockNodeDetails = {
   last_successful_status_check_timestamp: 1515142330,
   version: '10.4.0-pre',
   revision: 'b93c51849b',
+  selective_sync_type: 'namespaces',
   namespaces: [
     {
       id: 54,
@@ -151,31 +152,6 @@ export const mockNodeDetails = {
     id: 3,
     timeStamp: 1511255200,
   },
-  namespaces: [
-    {
-      id: 54,
-      name: 'platform',
-      path: 'platform',
-      kind: 'group',
-      full_path: 'platform',
-      parent_id: null,
-    },
-    {
-      id: 4,
-      name: 'Twitter',
-      path: 'twitter',
-      kind: 'group',
-      full_path: 'twitter',
-      parent_id: null,
-    },
-    {
-      id: 3,
-      name: 'Documentcloud',
-      path: 'documentcloud',
-      kind: 'group',
-      full_path: 'documentcloud',
-      parent_id: null,
-    },
-  ],
+  selectiveSyncType: 'namespaces',
   dbReplicationLag: 0,
 };

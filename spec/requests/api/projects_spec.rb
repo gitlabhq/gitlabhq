@@ -2,8 +2,6 @@
 require 'spec_helper'
 
 describe API::Projects do
-  include Gitlab::CurrentSettings
-
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }

@@ -7,7 +7,7 @@ describe Gitlab::Geo::GeoTasks do
     end
 
     it 'sets the primary node' do
-      expect { subject.set_primary_geo_node }.to output(/https:\/\/primary.geo.example.com\/ is now the primary Geo node/).to_stdout
+      expect { subject.set_primary_geo_node }.to output(%r{https://primary.geo.example.com/ is now the primary Geo node}).to_stdout
     end
 
     it 'returns error when there is already a Primary node' do

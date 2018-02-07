@@ -17,7 +17,7 @@ module EE
           message: ::Gitlab::RepositorySizeError.new(project).push_error(@exceeded_limit), # rubocop:disable Gitlab/ModuleWithInstanceVariables
           documentation_url: help_url
         },
-        content_type: "application/vnd.git-lfs+json",
+        content_type: ::LfsRequest::CONTENT_TYPE,
         status: 406
       )
     end

@@ -13,8 +13,6 @@ module Elasticsearch
       cattr_accessor :cached_config
 
       module ClassMethods
-        include Gitlab::CurrentSettings
-
         # Override the default ::Elasticsearch::Model::Client implementation to
         # return a client configured from application settings. All including
         # classes will use the same instance, which is refreshed automatically
@@ -28,7 +26,7 @@ module Elasticsearch
           store = ::Elasticsearch::Model::Client
 
           store::CLIENT_MUTEX.synchronize do
-            config = current_application_settings.elasticsearch_config
+            config = Gitlab::CurrentSettings.elasticsearch_config
 
             if store.cached_client.nil? || config != store.cached_config
               store.cached_client = ::Gitlab::Elastic::Client.build(config)

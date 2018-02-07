@@ -1,11 +1,11 @@
 <script>
-  /* eslint-disable vue/require-default-prop */
+  import { __ } from '~/locale';
   import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import issuesBlock from './mr_widget_report_issues.vue';
 
   export default {
-    name: 'MRWidgetCodeQuality',
+    name: 'MRWidgetCodeQualityCollapsible',
     components: {
       issuesBlock,
       loadingIcon,
@@ -49,9 +49,15 @@
         required: false,
         default: () => [],
       },
-      infoText: {
-        type: String,
+      allIssues: {
+        type: Array,
         required: false,
+        default: () => [],
+      },
+      infoText: {
+        type: [String, Boolean],
+        required: false,
+        default: false,
       },
       hasPriority: {
         type: Boolean,
@@ -62,8 +68,9 @@
 
     data() {
       return {
-        collapseText: 'Expand',
+        collapseText: __('Expand'),
         isCollapsed: true,
+        isFullReportVisible: false,
       };
     },
 
@@ -84,7 +91,9 @@
         return 'success';
       },
       hasIssues() {
-        return this.unresolvedIssues.length || this.resolvedIssues.length;
+        return this.unresolvedIssues.length ||
+          this.resolvedIssues.length ||
+          this.allIssues.length;
       },
     },
 
@@ -92,8 +101,11 @@
       toggleCollapsed() {
         this.isCollapsed = !this.isCollapsed;
 
-        const text = this.isCollapsed ? 'Expand' : 'Collapse';
+        const text = this.isCollapsed ? __('Expand') : __('Collapse');
         this.collapseText = text;
+      },
+      openFullReport() {
+        this.isFullReportVisible = true;
       },
     },
   };
@@ -103,28 +115,40 @@
 
     <div
       v-if="isLoading"
-      class="media">
-      <div class="mr-widget-icon">
+      class="media"
+    >
+      <div
+        class="mr-widget-icon"
+      >
         <loading-icon />
       </div>
-      <div class="media-body">
+      <div
+        class="media-body"
+      >
         {{ loadingText }}
       </div>
     </div>
 
     <div
       v-else-if="isSuccess"
-      class="media">
-      <status-icon :status="statusIconName" />
+      class="media"
+    >
+      <status-icon
+        :status="statusIconName"
+      />
 
-      <div class="media-body space-children">
-        <span class="js-code-text">
+      <div
+        class="media-body space-children"
+      >
+        <span
+          class="js-code-text"
+        >
           {{ successText }}
         </span>
 
         <button
           type="button"
-          class="btn-link btn-blank"
+          class="btn pull-right btn-sm"
           v-if="hasIssues"
           @click="toggleCollapsed"
         >
@@ -156,6 +180,15 @@
       />
 
       <issues-block
+        class="js-mr-code-all-issues"
+        v-if="isFullReportVisible"
+        :type="type"
+        status="failed"
+        :issues="allIssues"
+        :has-priority="hasPriority"
+      />
+
+      <issues-block
         class="js-mr-code-non-issues"
         v-if="neutralIssues.length"
         :type="type"
@@ -172,6 +205,15 @@
         :issues="resolvedIssues"
         :has-priority="hasPriority"
       />
+
+      <button
+        v-if="allIssues.length && !isFullReportVisible"
+        type="button"
+        class="btn-link btn-blank prepend-left-10 js-expand-full-list"
+        @click="openFullReport"
+      >
+        {{ s__("ciReport|Show complete code vulnerabilities report") }}
+      </button>
     </div>
     <div
       v-else-if="loadingFailed"

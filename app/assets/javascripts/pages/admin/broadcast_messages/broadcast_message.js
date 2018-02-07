@@ -1,4 +1,7 @@
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 
 export default function initBroadcastMessagesForm() {
   $('input#broadcast_message_color').on('input', function onMessageColorInput() {
@@ -18,13 +21,15 @@ export default function initBroadcastMessagesForm() {
     if (message === '') {
       $('.js-broadcast-message-preview').text('Your message here');
     } else {
-      $.ajax({
-        url: previewPath,
-        type: 'POST',
-        data: {
-          broadcast_message: { message },
+      axios.post(previewPath, {
+        broadcast_message: {
+          message,
         },
-      });
+      })
+      .then(({ data }) => {
+        $('.js-broadcast-message-preview').html(data.message);
+      })
+      .catch(() => flash(__('An error occurred while rendering preview broadcast message')));
     }
   }, 250));
 }

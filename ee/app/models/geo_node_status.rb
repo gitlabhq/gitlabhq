@@ -1,8 +1,10 @@
 class GeoNodeStatus < ActiveRecord::Base
   belongs_to :geo_node
 
+  delegate :selective_sync_type, to: :geo_node
+
   # Whether we were successful in reaching this node
-  attr_accessor :success, :version, :revision
+  attr_accessor :success
   attr_writer :health_status
   attr_accessor :storage_shards
 
@@ -56,10 +58,18 @@ class GeoNodeStatus < ActiveRecord::Base
     GeoNodeStatus.new(HashWithIndifferentAccess.new(json_data))
   end
 
+  EXCLUDED_PARAMS = %w[id created_at].freeze
+  EXTRA_PARAMS = %w[
+    success
+    health
+    health_status
+    last_event_timestamp
+    cursor_last_event_timestamp
+    storage_shards
+  ].freeze
+
   def self.allowed_params
-    excluded_params = %w(id created_at updated_at).freeze
-    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision storage_shards updated_at).freeze
-    self.column_names - excluded_params + extra_params
+    self.column_names - EXCLUDED_PARAMS + EXTRA_PARAMS
   end
 
   def load_data_from_current_node
@@ -80,6 +90,9 @@ class GeoNodeStatus < ActiveRecord::Base
     self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
+
+    self.version = Gitlab::VERSION
+    self.revision = Gitlab::REVISION
 
     load_primary_data
     load_secondary_data

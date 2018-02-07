@@ -4,7 +4,7 @@ Every API call to epic must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
 
-Epics are available only in EEU. If epics feature is not available a `403` status code will be returned.
+Epics are available only in Ultimate. If epics feature is not available a `403` status code will be returned.
 
 ## Epic issues API
 
@@ -12,7 +12,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 ## List epics for a group
 
-Gets all epics of the requested group.
+Gets all epics of the requested group and its subgroups.
 
 ```
 GET /groups/:id/-/epics

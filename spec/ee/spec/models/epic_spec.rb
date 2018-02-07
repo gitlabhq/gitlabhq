@@ -23,6 +23,19 @@ describe Epic do
     it { is_expected.to include_module(InternalId) }
   end
 
+  describe '.order_start_or_end_date_asc' do
+    let(:group) { create(:group) }
+
+    it 'returns epics sorted by start or end date' do
+      epic1 = create(:epic, group: group, start_date: 7.days.ago, end_date: 3.days.ago)
+      epic2 = create(:epic, group: group, start_date: 3.days.ago)
+      epic3 = create(:epic, group: group, end_date: 5.days.ago)
+      epic4 = create(:epic, group: group)
+
+      expect(described_class.order_start_or_end_date_asc).to eq([epic4, epic1, epic3, epic2])
+    end
+  end
+
   describe '#issues' do
     let(:user) { create(:user) }
     let(:group) { create(:group, :private) }

@@ -31,11 +31,11 @@ feature 'EE Clusters' do
 
         context 'when user filled form with environment scope' do
           before do
-            click_link 'Add cluster'
-            click_link 'Add an existing cluster'
+            click_link 'Add Kubernetes cluster'
+            click_link 'Add an existing Kubernetes cluster'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: 'staging/*'
-            click_button 'Add cluster'
+            click_button 'Add Kubernetes cluster'
           end
 
           it 'user sees a cluster details page' do
@@ -60,11 +60,11 @@ feature 'EE Clusters' do
 
         context 'when user updates duplicated environment scope' do
           before do
-            click_link 'Add cluster'
-            click_link 'Add an existing cluster'
+            click_link 'Add Kubernetes cluster'
+            click_link 'Add an existing Kubernetes cluster'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: '*'
-            click_button 'Add cluster'
+            click_button 'Add Kubernetes cluster'
           end
 
           it 'users sees an environment scope validation error' do
@@ -104,16 +104,16 @@ feature 'EE Clusters' do
 
         context 'when user filled form with environment scope' do
           before do
-            click_link 'Add cluster'
+            click_link 'Add Kubernetes cluster'
             click_link 'Create on GKE'
             fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: 'staging/*'
-            click_button 'Create cluster'
+            click_button 'Create Kubernetes cluster'
           end
 
           it 'user sees a cluster details page' do
-            expect(page).to have_content('Cluster integration is enabled for this project')
+            expect(page).to have_content('Kubernetes cluster integration is enabled for this project')
             expect(page.find_field('cluster[environment_scope]').value).to eq('staging/*')
           end
         end
@@ -134,12 +134,12 @@ feature 'EE Clusters' do
 
         context 'when user updates duplicated environment scope' do
           before do
-            click_link 'Add cluster'
+            click_link 'Add Kubernetes cluster'
             click_link 'Create on GKE'
             fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: '*'
-            click_button 'Create cluster'
+            click_button 'Create Kubernetes cluster'
           end
 
           it 'users sees an environment scope validation error' do

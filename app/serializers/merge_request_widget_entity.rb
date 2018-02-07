@@ -67,7 +67,18 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_ongoing?, as: :merge_ongoing
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
-  expose :mergeable_discussions_state?, as: :mergeable_discussions_state
+
+  expose :mergeable_discussions_state?, as: :mergeable_discussions_state do |merge_request|
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
   expose :branch_missing?, as: :branch_missing
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts

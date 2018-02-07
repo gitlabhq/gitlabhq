@@ -4,7 +4,7 @@
   .svg-container.center
     = custom_icon('icon_issue_board')
   %p
-    - if current_application_settings.should_check_namespace_plan?
+    - if Gitlab::CurrentSettings.should_check_namespace_plan?
       = _('Upgrade your plan to improve Issue boards.')
     - else
       = _('Improve Issue boards with GitLab Enterprise Edition.')
