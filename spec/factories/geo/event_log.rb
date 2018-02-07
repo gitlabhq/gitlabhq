@@ -31,6 +31,10 @@ FactoryBot.define do
     trait :job_artifact_deleted_event do
       job_artifact_deleted_event factory: :geo_job_artifact_deleted_event
     end
+
+    trait :upload_deleted_event do
+      upload_deleted_event factory: :geo_upload_deleted_event
+    end
   end
 
   factory :geo_repository_created_event, class: Geo::RepositoryCreatedEvent do
@@ -116,6 +120,26 @@ FactoryBot.define do
       relative_path = Pathname.new(event.job_artifact.file.path).relative_path_from(local_store_path)
 
       event.file_path = relative_path
+    end
+  end
+
+  factory :geo_upload_deleted_event, class: Geo::UploadDeletedEvent do
+    upload { create(:upload) }
+    file_path { upload.path }
+    model_id { upload.model_id }
+    model_type { upload.model_type }
+    uploader { upload.uploader }
+
+    trait :issuable_upload do
+      upload { create(:upload, :issuable_upload) }
+    end
+
+    trait :personal_snippet do
+      upload { create(:upload, :personal_snippet) }
+    end
+
+    trait :namespace_upload do
+      upload { create(:upload, :namespace_upload) }
     end
   end
 end
