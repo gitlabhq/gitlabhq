@@ -5,7 +5,7 @@ feature 'Global elastic search' do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
-    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
 
     project.add_master(user)
@@ -14,7 +14,7 @@ feature 'Global elastic search' do
 
   after do
     Gitlab::Elastic::Helper.delete_index
-    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   describe 'I search through the issues and I see pagination' do

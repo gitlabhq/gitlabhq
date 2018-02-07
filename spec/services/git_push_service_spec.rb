@@ -205,11 +205,11 @@ describe GitPushService do
 
   describe "ES indexing" do
     before do
-      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     end
 
     after do
-      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+      stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
     it "does not trigger indexer when push to non-default branch" do

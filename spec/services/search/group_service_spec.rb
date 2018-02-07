@@ -40,7 +40,7 @@ describe Search::GroupService do
 
   describe 'elasticsearch' do
     before do
-      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       Gitlab::Elastic::Helper.create_empty_index
 
       # Ensure these are present when the index is refreshed
