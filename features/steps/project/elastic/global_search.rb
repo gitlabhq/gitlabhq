@@ -1,4 +1,4 @@
-require Rails.root.join('spec', 'support', 'stub_configuration')
+require_dependency Rails.root.join('spec', 'support', 'stub_configuration')
 
 class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
   include SharedAuthentication
