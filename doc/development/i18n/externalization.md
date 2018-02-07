@@ -110,6 +110,8 @@ You can mark that content for translation with:
 In JavaScript we added the `__()` (double underscore parenthesis) function
 for translations.
 
+In order to test JavaScript translations you have to change the GitLab localization to other language than English and you have to generate JSON files using `bundle exec rake gettext:po_to_json` or `bundle exec rake gettext:compile`.
+
 ## Updating the PO files with the new content
 
 Now that the new content is marked for translation, we need to update the PO
