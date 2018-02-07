@@ -1,32 +1,40 @@
 module Gitlab
   module Ci
     class Trace
-      class Migrater
+      class Migrator
         include Gitlab::Utils::StrongMemoize
+
+        JobNotCompletedError = Class.new(StandardError)
+        TraceArtifactDuplicateError = Class.new(StandardError)
 
         attr_reader :path
 
-        def initialize(path)
-          raise "File not found: #{path}" unless File.exists?(path)
-
-          @path = path
+        def initialize(relative_path)
+          @path = File.join(Settings.gitlab_ci.builds_path, relative_path)
         end
 
         def perform
+          raise ArgumentError, "Trace file not found" unless File.exists?(path)
+          raise ArgumentError, "Invalid trace path format" unless trace_path?
+
           backup!
           migrate!
         end
 
         private
 
+        def trace_path?
+          /#{Settings.gitlab_ci.builds_path}\/\d{4}_\d{2}\/\d{1,}\/\d{1,}.log/ =~ path
+        end
+
         def status
           strong_memoize(:status) do
-            if !job
+            if !job || !job.project
               :not_found
             elsif !job.complete?
-              :not_completed
+              raise JobNotCompletedError
             elsif job.job_artifacts_trace
-              :duplicate
+              raise TraceArtifactDuplicateError
             else
               :migratable
             end
@@ -46,10 +54,6 @@ module Gitlab
             case status
             when :not_found
               path.gsub(/(\d{4}_\d{2})/, '\1_not_found')
-            when :not_completed
-              path.gsub(/(\d{4}_\d{2})/, '\1_not_completed')
-            when :duplicate
-              path.gsub(/(\d{4}_\d{2})/, '\1_duplicate')
             when :migratable
               path.gsub(/(\d{4}_\d{2})/, '\1_migrated')
             end
@@ -79,6 +83,8 @@ module Gitlab
               file_type: :trace,
               file: stream)
           end
+        rescue
+          FileUtils.rm(backup_path)
         end
       end
     end

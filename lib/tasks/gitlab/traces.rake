@@ -8,11 +8,9 @@ namespace :gitlab do
       logger = Logger.new(STDOUT)
       logger.info('Starting migration for trace files')
 
-      trace_path = File.join(Settings.gitlab_ci.builds_path, args.relative_path)
+      logger.info("args.relative_path: #{args.relative_path}")
 
-      logger.info("trace_path: #{trace_path}")
-
-      Gitlab::Ci::Trace::Migrater.new(trace_path).perform
+      Gitlab::Ci::Trace::Migrater.new(args.relative_path).perform
     end
   end
 end
