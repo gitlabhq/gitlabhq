@@ -10,6 +10,8 @@
 module LfsRequest
   extend ActiveSupport::Concern
 
+  CONTENT_TYPE = 'application/vnd.git-lfs+json'.freeze
+
   included do
     prepend EE::LfsRequest
     before_action :require_lfs_enabled!
@@ -51,7 +53,7 @@ module LfsRequest
         message: 'Access forbidden. Check your access level.',
         documentation_url: help_url
       },
-      content_type: "application/vnd.git-lfs+json",
+      content_type: CONTENT_TYPE,
       status: 403
     )
   end
@@ -62,7 +64,7 @@ module LfsRequest
         message: 'Not found.',
         documentation_url: help_url
       },
-      content_type: "application/vnd.git-lfs+json",
+      content_type: CONTENT_TYPE,
       status: 404
     )
   end

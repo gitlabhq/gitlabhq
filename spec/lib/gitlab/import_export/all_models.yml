@@ -305,6 +305,7 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- lfs_file_locks
 award_emoji:
 - awardable
 - user
@@ -322,3 +323,5 @@ issue_assignees:
 epic_issues:
 - issue
 - epic
+lfs_file_locks:
+- user

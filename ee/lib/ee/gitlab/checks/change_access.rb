@@ -17,35 +17,40 @@ module EE
         def exec
           return true if skip_authorization
 
-          super
+          super(skip_commits_check: true)
 
           push_rule_check
+          # Check of commits should happen as the last step
+          # given they're expensive in terms of performance
+          commits_check
 
           true
         end
 
         private
 
+        def push_rule
+          project.push_rule
+        end
+
         def push_rule_check
           return unless newrev && oldrev && project.feature_available?(:push_rules)
 
-          push_rule = project.push_rule
-
           if tag_name
-            push_rule_tag_check(push_rule)
+            push_rule_tag_check
           else
-            push_rule_branch_check(push_rule)
+            push_rule_branch_check
           end
         end
 
-        def push_rule_tag_check(push_rule)
-          if tag_deletion_denied_by_push_rule?(push_rule)
+        def push_rule_tag_check
+          if tag_deletion_denied_by_push_rule?
             raise ::Gitlab::GitAccess::UnauthorizedError, 'You cannot delete a tag'
           end
         end
 
-        def push_rule_branch_check(push_rule)
-          unless branch_name_allowed_by_push_rule?(push_rule)
+        def push_rule_branch_check
+          unless branch_name_allowed_by_push_rule?
             message = ERROR_MESSAGES[:push_rule_branch_name] % { branch_name_regex: push_rule.branch_name_regex }
             raise ::Gitlab::GitAccess::UnauthorizedError.new(message)
           end
@@ -54,51 +59,44 @@ module EE
           # if newrev is blank, the branch was deleted
           return if deletion? || !(commit_validation || validate_path_locks?)
 
-          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
-          ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-            commits.each do |commit|
-              push_rule_commit_check(commit, push_rule)
-            end
+          commits.each do |commit|
+            push_rule_commit_check(commit)
           end
         rescue ::PushRule::MatchError => e
           raise ::Gitlab::GitAccess::UnauthorizedError, e.message
         end
 
-        def branch_name_allowed_by_push_rule?(push_rule)
-          return true if skip_branch_name_push_rule?(push_rule)
+        def branch_name_allowed_by_push_rule?
+          return true if skip_branch_name_push_rule?
 
           push_rule.branch_name_allowed?(branch_name)
         end
 
-        def skip_branch_name_push_rule?(push_rule)
+        def skip_branch_name_push_rule?
           push_rule.nil? ||
             deletion? ||
             branch_name.blank? ||
             branch_name == project.default_branch
         end
 
-        def tag_deletion_denied_by_push_rule?(push_rule)
+        def tag_deletion_denied_by_push_rule?
           push_rule.try(:deny_delete_tag) &&
             !updated_from_web? &&
             deletion? &&
             tag_exists?
         end
 
-        def push_rule_commit_check(commit, push_rule)
+        def push_rule_commit_check(commit)
           if push_rule.try(:commit_validation?)
-            error = check_commit(commit, push_rule)
+            error = check_commit(commit)
             raise ::Gitlab::GitAccess::UnauthorizedError, error if error
-          end
-
-          if error = check_commit_diff(commit, push_rule)
-            raise ::Gitlab::GitAccess::UnauthorizedError, error
           end
         end
 
         # If commit does not pass push rule validation the whole push should be rejected.
         # This method should return nil if no error found or a string if error.
         # In case of errors - all other checks will be canceled and push will be rejected.
-        def check_commit(commit, push_rule)
+        def check_commit(commit)
           unless push_rule.commit_message_allowed?(commit.safe_message)
             return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
           end
@@ -111,7 +109,7 @@ module EE
             return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
           end
 
-          committer_error_message = committer_check(commit, push_rule)
+          committer_error_message = committer_check(commit)
           return committer_error_message if committer_error_message
 
           if !updated_from_web? && !push_rule.commit_signature_allowed?(commit)
@@ -134,7 +132,7 @@ module EE
           nil
         end
 
-        def committer_check(commit, push_rule)
+        def committer_check(commit)
           unless push_rule.committer_allowed?(commit.committer_email, user_access.user)
             committer_is_current_user = commit.committer == user_access.user
 
@@ -146,38 +144,22 @@ module EE
           end
         end
 
-        def check_commit_diff(commit, push_rule)
-          validations = validations_for_commit(commit, push_rule)
+        override :validations_for_commit
+        def validations_for_commit(commit)
+          validations = super
 
-          return if validations.empty?
+          validations.push(path_locks_validation) if validate_path_locks?
+          validations.concat(push_rule_commit_validations(commit))
+        end
 
-          commit.raw_deltas.each do |diff|
-            validations.each do |validation|
-              if error = validation.call(diff)
-                return error
-              end
+        def push_rule_commit_validations(commit)
+          return [] unless push_rule
+
+          [file_name_validation].tap do |validations|
+            if push_rule.max_file_size > 0
+              validations << file_size_validation(commit, push_rule.max_file_size)
             end
           end
-
-          nil
-        end
-
-        def validations_for_commit(commit, push_rule)
-          validations = base_validations
-
-          return validations unless push_rule
-
-          validations << file_name_validation(push_rule)
-
-          if push_rule.max_file_size > 0
-            validations << file_size_validation(commit, push_rule.max_file_size)
-          end
-
-          validations
-        end
-
-        def base_validations
-          validate_path_locks? ? [path_locks_validation] : []
         end
 
         def validate_path_locks?
@@ -200,12 +182,16 @@ module EE
           end
         end
 
-        def file_name_validation(push_rule)
+        def file_name_validation
           lambda do |diff|
-            if (diff.renamed_file || diff.new_file) && blacklisted_regex = push_rule.filename_blacklisted?(diff.new_path)
-              return nil unless blacklisted_regex.present?
+            begin
+              if (diff.renamed_file || diff.new_file) && blacklisted_regex = push_rule.filename_blacklisted?(diff.new_path)
+                return nil unless blacklisted_regex.present?
 
-              "File name #{diff.new_path} was blacklisted by the pattern #{blacklisted_regex}."
+                "File name #{diff.new_path} was blacklisted by the pattern #{blacklisted_regex}."
+              end
+            rescue ::PushRule::MatchError => e
+              raise ::Gitlab::GitAccess::UnauthorizedError, e.message
             end
           end
         end
@@ -219,10 +205,6 @@ module EE
               return "File #{diff.new_path.inspect} is larger than the allowed size of #{max_file_size} MB"
             end
           end
-        end
-
-        def commits
-          project.repository.new_commits(newrev)
         end
       end
     end
