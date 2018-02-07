@@ -131,12 +131,8 @@ class Note < ActiveRecord::Base
       Discussion.build_collection(all.includes(:noteable).fresh, context_noteable)
     end
 
-    def find_discussion(discussion_id, user = nil)
+    def find_discussion(discussion_id)
       notes = where(discussion_id: discussion_id).fresh.to_a
-
-      if user
-        notes = notes.reject { |n| n.cross_reference_not_visible_for?(user) }
-      end
 
       return if notes.empty?
 

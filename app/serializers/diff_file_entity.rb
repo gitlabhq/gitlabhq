@@ -1,5 +1,4 @@
 class DiffFileEntity < Grape::Entity
-  include RequestAwareEntity
   include DiffHelper
   include SubmoduleHelper
   include BlobHelper
