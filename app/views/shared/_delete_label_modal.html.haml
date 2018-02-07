@@ -1,0 +1,20 @@
+.modal{ id: "modal-delete-label-#{label.id}", tabindex: -1 }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ data: {dismiss: 'modal' } } &times;
+        %h3.page-title Delete #{render_colored_label(label, tooltip: false)} ?
+
+      .modal-body
+        %p
+          %strong= label.name
+          %span will be permanently deleted from #{label.is_a?(ProjectLabel)? label.project.name : label.group.name}. This cannot be undone.
+
+      .modal-footer
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+
+        = link_to 'Delete label',
+          destroy_label_path(label),
+          title: 'Delete',
+          method: :delete,
+          class: 'btn btn-remove'

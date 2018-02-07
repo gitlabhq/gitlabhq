@@ -520,9 +520,12 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(full_path, self, disk_path: disk_path)
   end
 
-  def reload_repository!
+  def cleanup
+    @repository&.cleanup
     @repository = nil
   end
+
+  alias_method :reload_repository!, :cleanup
 
   def container_registry_url
     if Gitlab.config.registry.enabled

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-06 12:32+0100\n"
-"PO-Revision-Date: 2018-02-06 12:32+0100\n"
+"POT-Creation-Date: 2018-02-06 10:02+0100\n"
+"PO-Revision-Date: 2018-02-06 10:02+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -183,6 +183,9 @@ msgstr ""
 msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
 msgstr ""
 
+msgid "An error occurred while fetching markdown preview"
+msgstr ""
+
 msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
@@ -195,10 +198,16 @@ msgstr ""
 msgid "An error occurred while rendering KaTeX"
 msgstr ""
 
+msgid "An error occurred while rendering preview broadcast message"
+msgstr ""
+
 msgid "An error occurred while retrieving calendar activity"
 msgstr ""
 
 msgid "An error occurred while retrieving diff"
+msgstr ""
+
+msgid "An error occurred while validating username"
 msgstr ""
 
 msgid "An error occurred. Please try again."
@@ -2953,7 +2962,13 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "There was an error loading users activity calendar."
+msgstr ""
+
 msgid "There was an error saving your notification settings."
+msgstr ""
+
+msgid "There was an error subscribing to this label."
 msgstr ""
 
 msgid "There was an error when reseting email token."
@@ -3704,5 +3719,5 @@ msgstr ""
 msgid "username"
 msgstr ""
 
-msgid "uses clusters to deploy your code!"
+msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""

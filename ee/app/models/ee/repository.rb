@@ -24,9 +24,7 @@ module EE
 
     # Returns a list of commits that are not present in any reference
     def new_commits(newrev)
-      refs = ::Gitlab::Git::RevList.new(
-        path_to_repo: path_to_repo,
-        newrev: newrev).new_refs
+      refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
 
       refs.map { |sha| commit(sha.strip) }
     end

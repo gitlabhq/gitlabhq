@@ -100,6 +100,10 @@ class Repository
 
   alias_method :raw, :raw_repository
 
+  def cleanup
+    @raw_repository&.cleanup
+  end
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
