@@ -5,7 +5,7 @@ module Clusters
     def execute(access_token = nil)
       @access_token = access_token
 
-      raise ArgumentError.new('Instance does not support multiple clusters') unless can_create_cluster?
+      raise ArgumentError.new(_('Instance does not support multiple Kubernetes clusters')) unless can_create_cluster?
 
       create_cluster.tap do |cluster|
         ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?

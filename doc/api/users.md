@@ -53,6 +53,11 @@ GET /users?blocked=true
 GET /users
 ```
 
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+
 ```json
 [
   {

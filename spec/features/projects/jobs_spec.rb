@@ -7,7 +7,7 @@ feature 'Jobs' do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
+  let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do
@@ -501,18 +501,34 @@ feature 'Jobs' do
   describe 'GET /:project/jobs/:id/raw', :js do
     context 'access source' do
       context 'job from project' do
-        before do
-          job.run!
-        end
-
-        it 'sends the right headers' do
-          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
-            visit raw_project_job_path(project, job)
+        context 'when job is running' do
+          before do
+            job.run!
           end
 
-          expect(requests.first.status_code).to eq(200)
-          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          it 'sends the right headers' do
+            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+              visit raw_project_job_path(project, job)
+            end
+
+            expect(requests.first.status_code).to eq(200)
+            expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          end
+        end
+
+        context 'when job is complete' do
+          let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+
+          it 'sends the right headers' do
+            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+              visit raw_project_job_path(project, job)
+            end
+
+            expect(requests.first.status_code).to eq(200)
+            expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(requests.first.response_headers['X-Sendfile']).to eq(job.job_artifacts_trace.file.path)
+          end
         end
       end
 

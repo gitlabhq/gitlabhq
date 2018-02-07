@@ -7,6 +7,7 @@ module Banzai
           Filter::SanitizationFilter,
 
           Filter::EmojiFilter,
+          Filter::ColorFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter
         ]

@@ -131,6 +131,8 @@ class ProjectWiki
   end
 
   def delete_page(page, message = nil)
+    return unless page
+
     wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
 
     update_elastic_index
@@ -145,6 +147,8 @@ class ProjectWiki
   end
 
   def page_title_and_dir(title)
+    return unless title
+
     title_array = title.split("/")
     title = title_array.pop
     [title, title_array.join("/")]

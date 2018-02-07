@@ -14,6 +14,10 @@ class Upload < ActiveRecord::Base
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
 
+  # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
+  # hooks are not executed and the file will not be deleted
+  after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
+
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest
   end
@@ -32,8 +36,8 @@ class Upload < ActiveRecord::Base
     self.checksum = self.class.hexdigest(absolute_path)
   end
 
-  def build_uploader
-    uploader_class.new(model).tap do |uploader|
+  def build_uploader(mounted_as = nil)
+    uploader_class.new(model, mounted_as || mount_point).tap do |uploader|
       uploader.upload = self
       uploader.retrieve_from_store!(identifier)
     end
@@ -43,16 +47,27 @@ class Upload < ActiveRecord::Base
     File.exist?(absolute_path)
   end
 
-  private
-
-  def checksummable?
-    checksum.nil? && local? && exist?
+  def uploader_context
+    {
+      identifier: identifier,
+      secret: secret
+    }.compact
   end
 
   def local?
     return true if store.nil?
 
     store == ObjectStorage::Store::LOCAL
+  end
+
+  private
+
+  def delete_file!
+    build_uploader.remove!
+  end
+
+  def checksummable?
+    checksum.nil? && local? && exist?
   end
 
   def foreground_checksummable?
@@ -67,11 +82,15 @@ class Upload < ActiveRecord::Base
     !path.start_with?('/')
   end
 
+  def uploader_class
+    Object.const_get(uploader)
+  end
+
   def identifier
     File.basename(path)
   end
 
-  def uploader_class
-    Object.const_get(uploader)
+  def mount_point
+    super&.to_sym
   end
 end

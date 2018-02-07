@@ -14,7 +14,7 @@ describe EE::Repository do
 
     it 'delegates to Gitlab::Git::RevList' do
       expect(Gitlab::Git::RevList).to receive(:new).with(
-        path_to_repo: repository.path_to_repo,
+        repository.raw,
         newrev: 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj').and_return(new_refs)
 
       commits = repository.new_commits('aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj')

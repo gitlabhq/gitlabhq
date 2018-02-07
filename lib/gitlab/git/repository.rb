@@ -128,6 +128,10 @@ module Gitlab
         raise NoRepository.new('no repository for such path')
       end
 
+      def cleanup
+        @rugged&.close
+      end
+
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
@@ -1343,20 +1347,23 @@ module Gitlab
         raise CommandError.new(e)
       end
 
-      def refs_contains_sha(ref_type, sha)
-        args = %W(#{ref_type} --contains #{sha})
-        names = run_git(args).first
-
-        if names.respond_to?(:split)
-          names = names.split("\n").map(&:strip)
-
-          names.each do |name|
-            name.slice! '* '
+      def branch_names_contains_sha(sha)
+        gitaly_migrate(:branch_names_contains_sha) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branch_names_contains_sha(sha)
+          else
+            refs_contains_sha(:branch, sha)
           end
+        end
+      end
 
-          names
-        else
-          []
+      def tag_names_contains_sha(sha)
+        gitaly_migrate(:tag_names_contains_sha) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.tag_names_contains_sha(sha)
+          else
+            refs_contains_sha(:tag, sha)
+          end
         end
       end
 
@@ -1424,6 +1431,26 @@ module Gitlab
         end
       end
 
+      def rev_list(including: [], excluding: [], objects: false, &block)
+        args = ['rev-list']
+
+        args.push(*rev_list_param(including))
+
+        exclude_param = *rev_list_param(excluding)
+        if exclude_param.any?
+          args.push('--not')
+          args.push(*exclude_param)
+        end
+
+        args.push('--objects') if objects
+
+        run_git!(args, lazy_block: block)
+      end
+
+      def missed_ref(oldrev, newrev)
+        run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
+      end
+
       private
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
@@ -1432,6 +1459,21 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
+      end
+
+      def refs_contains_sha(ref_type, sha)
+        args = %W(#{ref_type} --contains #{sha})
+        names = run_git(args).first
+
+        return [] unless names.respond_to?(:split)
+
+        names = names.split("\n").map(&:strip)
+
+        names.each do |name|
+          name.slice! '* '
+        end
+
+        names
       end
 
       def rugged_write_config(full_path:)
@@ -1457,7 +1499,7 @@ module Gitlab
         Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
       end
 
-      def run_git(args, chdir: path, env: {}, nice: false, &block)
+      def run_git(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
 
@@ -1467,12 +1509,12 @@ module Gitlab
         end
 
         circuit_breaker.perform do
-          popen(cmd, chdir, env, &block)
+          popen(cmd, chdir, env, lazy_block: lazy_block, &block)
         end
       end
 
-      def run_git!(args, chdir: path, env: {}, nice: false, &block)
-        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+      def run_git!(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, lazy_block: lazy_block, &block)
 
         raise GitError, output unless status.zero?
 
@@ -2353,6 +2395,10 @@ module Gitlab
         walker.count
       rescue Rugged::ReferenceError
         0
+      end
+
+      def rev_list_param(spec)
+        spec == :all ? ['--all'] : spec
       end
     end
   end

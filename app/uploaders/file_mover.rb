@@ -46,11 +46,11 @@ class FileMover
   end
 
   def uploader
-    @uploader ||= PersonalFileUploader.new(model, secret)
+    @uploader ||= PersonalFileUploader.new(model, secret: secret)
   end
 
   def temp_file_uploader
-    @temp_file_uploader ||= PersonalFileUploader.new(nil, secret)
+    @temp_file_uploader ||= PersonalFileUploader.new(nil, secret: secret)
   end
 
   def revert

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe API::Jobs do
+  include HttpIOHelpers
+
   set(:project) do
     create(:project, :repository, public_builds: false)
   end
@@ -446,16 +448,43 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
-    let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
-
     before do
       get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
     end
 
     context 'authorized user' do
-      it 'returns specific job trace' do
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.body).to eq(job.trace.raw)
+      context 'when trace is in ObjectStorage' do
+        let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          stub_remote_trace_206
+          allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+          allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
+          allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+        end
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is artifact' do
+        let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is file' do
+        let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to eq(job.trace.raw)
+        end
       end
     end
 
@@ -543,11 +572,11 @@ describe API::Jobs do
     end
 
     context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(201)
-        expect(job).not_to have_trace
+        expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
       end
@@ -561,7 +590,7 @@ describe API::Jobs do
     end
 
     context 'job is not erasable' do
-      let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
         expect(response).to have_gitlab_http_status(403)
@@ -570,7 +599,7 @@ describe API::Jobs do
 
     context 'when a developer erases a build' do
       let(:role) { :developer }
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
 
       context 'when the build was created by the developer' do
         let(:owner) { user }
@@ -593,7 +622,7 @@ describe API::Jobs do
 
     context 'artifacts did not expire' do
       let(:job) do
-        create(:ci_build, :trace, :artifacts, :success,
+        create(:ci_build, :trace_artifact, :artifacts, :success,
                project: project, pipeline: pipeline, artifacts_expire_at: Time.now + 7.days)
       end
 

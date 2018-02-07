@@ -58,6 +58,7 @@ describe('Clusters Store', () => {
 
       expect(store.state).toEqual({
         helpPath: null,
+        ingressHelpPath: null,
         status: mockResponseData.status,
         statusReason: mockResponseData.status_reason,
         applications: {
