@@ -45,5 +45,5 @@ do.
 | `/tableflip`	             | Append the comment with `(╯°□°)╯︵ ┻━┻` |
 | `/shrug`	                 | Append the comment with `¯\＿(ツ)＿/¯` |
 
-Note: In GitLab EES every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
+Note: In GitLab Starter every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
 support multiple assignees.

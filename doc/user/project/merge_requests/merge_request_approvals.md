@@ -1,6 +1,6 @@
 # Merge request approvals
 
-> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only), available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/).
+> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only), available in [GitLab Starter](https://about.gitlab.com/products/).
 
 ## Overview
 

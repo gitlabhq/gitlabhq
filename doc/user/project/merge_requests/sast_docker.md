@@ -1,6 +1,6 @@
 # Static Application Security Testing for Docker containers
 
-> [Introduced][ee-3672] in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> [Introduced][ee-3672] in [GitLab Ultimate][ee] 10.4.
 
 ## Overview
 
@@ -38,6 +38,6 @@ For more information on how the `sast:container` job should look like, check the
 example on [analyzing a Docker image for vulnerabilities][cc-docs].
 
 [ee-3672]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/sast_docker.md

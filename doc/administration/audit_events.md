@@ -37,7 +37,7 @@ There are two kinds of events logged:
 
 ### Group events
 
-> Available in [GitLab Enterprise Edition Starter][ee].
+> Available in [GitLab Starter][ee].
 
 NOTE: **Note:**
 You need Owner [permissions] to view the group Audit Events page.
@@ -58,7 +58,7 @@ From there, you can see the following actions:
 
 ### Project events
 
-> Available in [GitLab Enterprise Edition Starter][ee].
+> Available in [GitLab Starter][ee].
 
 NOTE: **Note:**
 You need Master [permissions] or higher to view the project Audit Events page.
@@ -75,7 +75,7 @@ From there, you can see the following actions:
 
 ### Instance events
 
-> [Introduced][ee-2336] in [GitLab Enterprise Edition Premium][ee] 9.3.
+> [Introduced][ee-2336] in [GitLab Premium][ee] 9.3.
 Available only for GitLab administrators.
 
 Server-wide audit logging introduces the ability to observe user actions across
@@ -102,5 +102,5 @@ the filter drop-down. You can further filter by specific group, project or user
 ![audit log](audit_log.png)
 
 [ee-2336]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [permissions]: ../user/permissions.md

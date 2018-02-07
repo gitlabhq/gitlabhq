@@ -154,7 +154,7 @@ describe MergeRequests::SquashService do
               )
 
               allow(repository).to receive(:popen).and_return(['', 0])
-              allow(repository).to receive(:popen).with(git_command, anything, anything).and_return([error, 1])
+              allow(repository).to receive(:popen).with(git_command, anything, anything, anything).and_return([error, 1])
             end
 
             it 'logs the stage and output' do

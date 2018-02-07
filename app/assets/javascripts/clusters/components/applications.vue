@@ -18,6 +18,11 @@
         required: false,
         default: '',
       },
+      ingressHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
       generalApplicationDescription() {
@@ -59,12 +64,27 @@
           false,
         );
 
+        const externalIpParagraph = sprintf(
+          _.escape(s__(
+            `ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS
+            at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`,
+          )), {
+            ingressHelpLink: `<a href="${this.ingressHelpPath}">
+              ${_.escape(s__('ClusterIntegration|More information'))}
+            </a>`,
+          },
+          false,
+        );
+
         return `
           <p>
             ${descriptionParagraph}
           </p>
-          <p class="append-bottom-0">
+          <p>
             ${extraCostParagraph}
+          </p>
+          <p class="settings-message append-bottom-0">
+            ${externalIpParagraph}
           </p>
         `;
       },

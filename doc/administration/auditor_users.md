@@ -1,6 +1,6 @@
 # Auditor users
 
->[Introduced][ee-998] in [GitLab Enterprise Edition Premium][eep] 8.17.
+>[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
@@ -84,5 +84,5 @@ instance, with the following permissions/restrictions:
   - Cannot create project snippets
 
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
-[eep]: https://about.gitlab.com/gitlab-ee/
+[eep]: https://about.gitlab.com/products/
 [permissions]: ../user/permissions.md

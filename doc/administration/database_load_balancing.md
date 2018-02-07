@@ -1,6 +1,6 @@
 # Database Load Balancing
 
-> [Introduced][ee-1283] in [GitLab Enterprise Edition Premium][eep] 9.0.
+> [Introduced][ee-1283] in [GitLab Premium][eep] 9.0.
 
 Distribute read-only queries among multiple database servers.
 
@@ -158,7 +158,7 @@ log entries easier. For example:
 
 ## Handling Stale Reads
 
-> [Introduced][ee-3526] in [GitLab Enterprise Edition Premium][eep] 10.3.
+> [Introduced][ee-3526] in [GitLab Premium][eep] 10.3.
 
 To prevent reading from an outdated secondary the load balancer will check if it
 is in sync with the primary. If the data is determined to be recent enough the
@@ -192,7 +192,7 @@ production:
 
 [hot-standby]: https://www.postgresql.org/docs/9.6/static/hot-standby.html
 [ee-1283]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1283
-[eep]: https://about.gitlab.com/gitlab-ee/
+[eep]: https://about.gitlab.com/products/
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [wikipedia]: https://en.wikipedia.org/wiki/Load_balancing_(computing)

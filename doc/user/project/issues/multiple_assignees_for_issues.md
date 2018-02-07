@@ -2,7 +2,7 @@
 
 > **Note:**
 [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)
-in [GitLab Enterprise Edition Starter 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
+in [GitLab Starter 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
 
 ## Overview
 
@@ -10,7 +10,7 @@ In large teams, where there is shared ownership of an issue, it can be difficult
 to track who is working on it, who already completed their contributions, who
 didn't even start yet.
 
-In [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+In [GitLab Enterprise Edition](https://about.gitlab.com/products/),
 you can also select multiple assignees to an issue, making it easier to
 track, and making clearer who is accountable for it.
 

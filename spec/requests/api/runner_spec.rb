@@ -8,6 +8,7 @@ describe API::Runner do
   before do
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
+    allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)
   end
 
   describe '/api/v4/runners' do
@@ -410,7 +411,7 @@ describe API::Runner do
             expect { request_job }.to change { runner.reload.contacted_at }
           end
 
-          %w(name version revision platform architecture).each do |param|
+          %w(version revision platform architecture).each do |param|
             context "when info parameter '#{param}' is present" do
               let(:value) { "#{param}_value" }
 

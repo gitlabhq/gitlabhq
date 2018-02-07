@@ -266,6 +266,7 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+  validates :variables, variable_duplicates: true
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -520,9 +521,12 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(full_path, self, disk_path: disk_path)
   end
 
-  def reload_repository!
+  def cleanup
+    @repository&.cleanup
     @repository = nil
   end
+
+  alias_method :reload_repository!, :cleanup
 
   def container_registry_url
     if Gitlab.config.registry.enabled
@@ -1608,7 +1612,7 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    auto_devops&.variables || []
+    (auto_devops || build_auto_devops)&.variables
   end
 
   def append_or_update_attribute(name, value)

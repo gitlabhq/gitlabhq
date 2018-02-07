@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
@@ -49,30 +50,20 @@ export default class ProtectedTagEdit {
       return acc;
     }, {});
 
-    return $.ajax({
-      type: 'POST',
-      url: this.$wrap.data('url'),
-      dataType: 'json',
-      data: {
-        _method: 'PATCH',
-        protected_tag: formData,
-      },
-      success: (response) => {
-        this.hasChanges = false;
+    axios.patch(this.$wrap.data('url'), {
+      protected_tag: formData,
+    }).then(({ data }) => {
+      this.hasChanges = false;
 
-        Object.keys(ACCESS_LEVELS).forEach((level) => {
-          const accessLevelName = ACCESS_LEVELS[level];
+      Object.keys(ACCESS_LEVELS).forEach((level) => {
+        const accessLevelName = ACCESS_LEVELS[level];
 
-          // The data coming from server will be the new persisted *state* for each dropdown
-          this.setSelectedItemsToDropdown(response[accessLevelName], `${accessLevelName}_dropdown`);
-        });
-      },
-      error() {
-        $.scrollTo(0);
-        new Flash('Failed to update tag!');
-      },
-    }).always(() => {
-      this.$allowedToCreateDropdownButton.enable();
+        // The data coming from server will be the new persisted *state* for each dropdown
+        this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
+      });
+    }).catch(() => {
+      $.scrollTo(0);
+      Flash('Failed to update tag!');
     });
   }
 

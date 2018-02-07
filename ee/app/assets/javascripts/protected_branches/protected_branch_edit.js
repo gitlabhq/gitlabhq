@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
@@ -61,30 +62,23 @@ export default class ProtectedBranchEdit {
       return acc;
     }, {});
 
-    return $.ajax({
-      type: 'POST',
-      url: this.$wrap.data('url'),
-      dataType: 'json',
-      data: {
-        _method: 'PATCH',
-        protected_branch: formData,
-      },
-      success: (response) => {
-        this.hasChanges = false;
+    axios.patch(this.$wrap.data('url'), {
+      protected_branch: formData,
+    }).then(({ data }) => {
+      this.hasChanges = false;
 
-        Object.keys(ACCESS_LEVELS).forEach((level) => {
-          const accessLevelName = ACCESS_LEVELS[level];
+      Object.keys(ACCESS_LEVELS).forEach((level) => {
+        const accessLevelName = ACCESS_LEVELS[level];
 
-          // The data coming from server will be the new persisted *state* for each dropdown
-          this.setSelectedItemsToDropdown(response[accessLevelName], `${accessLevelName}_dropdown`);
-        });
-      },
-      error() {
-        new Flash('Failed to update branch!', null, $('.js-protected-branches-list'));
-      },
-    }).always(() => {
+        // The data coming from server will be the new persisted *state* for each dropdown
+        this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
+      });
       this.$allowedToMergeDropdown.enable();
       this.$allowedToPushDropdown.enable();
+    }).catch(() => {
+      this.$allowedToMergeDropdown.enable();
+      this.$allowedToPushDropdown.enable();
+      Flash('Failed to update branch!', null, $('.js-protected-branches-list'));
     });
   }
 

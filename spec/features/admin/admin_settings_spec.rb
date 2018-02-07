@@ -70,6 +70,16 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  scenario 'Change AutoDevOps settings' do
+    check 'Enabled Auto DevOps (Beta) for projects by default'
+    fill_in 'Auto devops domain', with: 'domain.com'
+    click_button 'Save'
+
+    expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
+    expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
   scenario 'Change Slack Notifications Service template settings' do
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'

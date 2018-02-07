@@ -43,7 +43,7 @@ Enable [Service Desk](../service_desk.md) to your project and offer email suppor
 By doing so, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.
 
-_Service Desk is available only for [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
+_Service Desk is available only for [GitLab Premium](https://about.gitlab.com/products/)
 and [GitLab.com Silver](https://about.gitlab.com/gitlab-com/) subscribers._
 
 ## New issue from the group-level Issue Tracker

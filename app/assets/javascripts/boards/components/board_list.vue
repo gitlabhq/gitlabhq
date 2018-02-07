@@ -1,3 +1,4 @@
+<script>
 import Sortable from 'vendor/Sortable';
 import boardNewIssue from './board_new_issue';
 import boardCard from './board_card.vue';
@@ -8,6 +9,11 @@ const Store = gl.issueBoards.BoardsStore;
 
 export default {
   name: 'BoardList',
+  components: {
+    boardCard,
+    boardNewIssue,
+    loadingIcon,
+  },
   props: {
     groupId: {
       type: Number,
@@ -46,46 +52,6 @@ export default {
       showCount: false,
       showIssueForm: false,
     };
-  },
-  components: {
-    boardCard,
-    boardNewIssue,
-    loadingIcon,
-  },
-  methods: {
-    listHeight() {
-      return this.$refs.list.getBoundingClientRect().height;
-    },
-    scrollHeight() {
-      return this.$refs.list.scrollHeight;
-    },
-    scrollTop() {
-      return this.$refs.list.scrollTop + this.listHeight();
-    },
-    scrollToTop() {
-      this.$refs.list.scrollTop = 0;
-    },
-    loadNextPage() {
-      const getIssues = this.list.nextPage();
-      const loadingDone = () => {
-        this.list.loadingMore = false;
-      };
-
-      if (getIssues) {
-        this.list.loadingMore = true;
-        getIssues
-          .then(loadingDone)
-          .catch(loadingDone);
-      }
-    },
-    toggleForm() {
-      this.showIssueForm = !this.showIssueForm;
-    },
-    onScroll() {
-      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
-        this.loadNextPage();
-      }
-    },
   },
   watch: {
     filters: {
@@ -143,7 +109,8 @@ export default {
         });
       },
       onUpdate: (e) => {
-        const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+        const sortedArray = this.sortable.toArray()
+          .filter(id => id !== '-1');
         gl.issueBoards.BoardsStore
           .moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
       },
@@ -162,56 +129,90 @@ export default {
     eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
     this.$refs.list.removeEventListener('scroll', this.onScroll);
   },
-  template: `
-    <div class="board-list-component">
-      <div
-        key="loading"
-        class="board-list-loading text-center"
-        aria-label="Loading issues"
-        v-if="loading">
-        <loading-icon />
-      </div>
-      <board-new-issue
-        key="newIssue"
-        :group-id="groupId"
-        :list="list"
-        v-if="list.type !== 'closed' && showIssueForm"/>
-      <ul
-        key="list"
-        class="board-list"
-        v-show="!loading"
-        ref="list"
-        :data-board="list.id"
-        :class="{ 'is-smaller': showIssueForm }">
-        <board-card
-          v-for="(issue, index) in issues"
-          ref="issue"
-          :index="index"
-          :list="list"
-          :issue="issue"
-          :issue-link-base="issueLinkBase"
-          :group-id="groupId"
-          :root-path="rootPath"
-          :disabled="disabled"
-          :key="issue.id" />
-        <li
-          class="board-list-count text-center"
-          v-if="showCount"
-          data-issue-id="-1">
+  methods: {
+    listHeight() {
+      return this.$refs.list.getBoundingClientRect().height;
+    },
+    scrollHeight() {
+      return this.$refs.list.scrollHeight;
+    },
+    scrollTop() {
+      return this.$refs.list.scrollTop + this.listHeight();
+    },
+    scrollToTop() {
+      this.$refs.list.scrollTop = 0;
+    },
+    loadNextPage() {
+      const getIssues = this.list.nextPage();
+      const loadingDone = () => {
+        this.list.loadingMore = false;
+      };
 
-          <loading-icon
-            v-show="list.loadingMore"
-            label="Loading more issues"
-            />
-
-          <span v-if="list.issues.length === list.issuesSize">
-            Showing all issues
-          </span>
-          <span v-else>
-            Showing {{ list.issues.length }} of {{ list.issuesSize }} issues
-          </span>
-        </li>
-      </ul>
-    </div>
-  `,
+      if (getIssues) {
+        this.list.loadingMore = true;
+        getIssues
+          .then(loadingDone)
+          .catch(loadingDone);
+      }
+    },
+    toggleForm() {
+      this.showIssueForm = !this.showIssueForm;
+    },
+    onScroll() {
+      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+        this.loadNextPage();
+      }
+    },
+  },
 };
+</script>
+
+<template>
+  <div class="board-list-component">
+    <div
+      class="board-list-loading text-center"
+      aria-label="Loading issues"
+      v-if="loading">
+      <loading-icon />
+    </div>
+    <board-new-issue
+      :list="list"
+      v-if="list.type !== 'closed' && showIssueForm"/>
+    <ul
+      class="board-list"
+      v-show="!loading"
+      ref="list"
+      :data-board="list.id"
+      :class="{ 'is-smaller': showIssueForm }">
+      <board-card
+        v-for="(issue, index) in issues"
+        ref="issue"
+        :index="index"
+        :list="list"
+        :issue="issue"
+        :issue-link-base="issueLinkBase"
+        :root-path="rootPath"
+        :disabled="disabled"
+        :key="issue.id" />
+      <li
+        class="board-list-count text-center"
+        v-if="showCount"
+        data-issue-id="-1">
+        <loading-icon
+          v-show="list.loadingMore"
+          label="Loading more issues"
+        />
+        <span
+          v-if="list.issues.length === list.issuesSize"
+        >
+          Showing all issues
+        </span>
+        <span
+          v-else
+        >
+          Showing {{ list.issues.length }} of {{ list.issuesSize }} issues
+        </span>
+      </li>
+    </ul>
+  </div>
+</template>

@@ -3,7 +3,7 @@ import Sortable from 'vendor/Sortable';
 import Vue from 'vue';
 import boardPromotionState from 'ee/boards/components/board_promotion_state';
 import AccessorUtilities from '../../lib/utils/accessor';
-import boardList from './board_list';
+import boardList from './board_list.vue';
 import boardBlankState from './board_blank_state';
 import './board_delete';
 

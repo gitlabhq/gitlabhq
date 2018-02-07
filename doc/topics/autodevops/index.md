@@ -198,13 +198,13 @@ static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
 out.
 
-In GitLab Enterprise Edition Starter, differences between the source and
+In GitLab Starter, differences between the source and
 target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
 
 ### Auto SAST
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+> Introduced in [GitLab Ultimate][ee] 10.3.
 
 Static Application Security Testing (SAST) uses the
 [gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
@@ -212,7 +212,7 @@ analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Enterprise Edition Ultimate, any security warnings are also
+In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
 ### Auto SAST for Docker images
@@ -225,7 +225,7 @@ Docker image and checks for potential security issues. Once the report is
 created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Enterprise Edition Ultimate, any security warnings are also
+In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
 
 ### Auto Review Apps
@@ -256,7 +256,7 @@ be deleted.
 
 ### Auto DAST
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> Introduced in [GitLab Ultimate][ee] 10.4.
 
 Dynamic Application Security Testing (DAST) uses the
 popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
@@ -264,12 +264,12 @@ to perform an analysis on the current code and checks for potential security
 issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
-In GitLab Enterprise Edition Ultimate, any security warnings are also
+In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dast.md).
 
 ### Auto Browser Performance Testing
 
-> Introduced in [GitLab Enterprise Edition Premium][ee] 10.4.
+> Introduced in [GitLab Premium][ee] 10.4.
 
 Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) to measure the performance of a web page. A JSON report is created and uploaded as an artifact, which includes the overall performance score for each page. By default, the root page of Review and Production environments will be tested. If you would like to add additional URL's to test, simply add the paths to a file named `.gitlab-urls.txt` in the root directory, one per line. For example:
 
@@ -279,7 +279,7 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 /direction
 ```
 
-In GitLab Enterprise Edition Premium, performance differences between the source
+In GitLab Premium, performance differences between the source
 and target branches are [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
 
 ### Auto Deploy
@@ -594,4 +594,4 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

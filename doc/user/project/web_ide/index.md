@@ -1,6 +1,6 @@
 # Web IDE
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.4.
+> Introduced in [GitLab Ultimate][ee] 10.4.
 
 > **Warning:** Web IDE is in **Beta**. For the latest updates, check the
 > associated [epic](https://gitlab.com/groups/gitlab-org/-/epics/26).
@@ -32,4 +32,4 @@ the 'Commit Button'.
 
 ![Commit changes](img/commit_changes.png)
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

@@ -1,7 +1,7 @@
 # Email from GitLab
 
 >**Note:**
-Available in [GitLab Enterprise Edition Starter][ee].
+Available in [GitLab Starter][ee].
 
 As a GitLab administrator you can email GitLab users from within GitLab.
 
@@ -38,4 +38,4 @@ to keep the simplicity of this feature.
 On unsubscribe, user will receive an email notifying that unsubscribe happened.
 The endpoint that provides the unsubscribe option is rate-limited.
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

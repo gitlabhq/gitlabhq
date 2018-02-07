@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20180204200836) do
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "mirror_available", default: true, null: false
+    t.string "auto_devops_domain"
     t.integer "default_project_creation", default: 2, null: false
   end
 
