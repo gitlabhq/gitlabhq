@@ -44,7 +44,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def revert_in_fork_path
-    if user_can_fork_project? && _can_be_reverted?
+    if user_can_fork_project? && cached_can_be_reverted?
       continue_params = {
         to: merge_request_path(merge_request),
         notice: "#{edit_in_new_fork_notice} Try to cherry-pick this commit again.",
@@ -152,7 +152,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_revert_on_current_merge_request?
-    user_can_collaborate_with_project? && _can_be_reverted?
+    user_can_collaborate_with_project? && cached_can_be_reverted?
   end
 
   def can_cherry_pick_on_current_merge_request?
@@ -165,8 +165,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
-  # Method overrides doesn't work for Gitlab::View::Presenter::Delegated
-  def _can_be_reverted?
+  def cached_can_be_reverted?
     strong_memoize(:can_be_reverted) do
       can_be_reverted?(current_user)
     end
