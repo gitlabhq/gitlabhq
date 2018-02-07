@@ -1873,6 +1873,20 @@ ActiveRecord::Schema.define(version: 20180306074045) do
   add_index "project_mirror_data", ["next_execution_timestamp", "retry_count"], name: "index_mirror_data_on_next_execution_and_retry_count", using: :btree
   add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
 
+  create_table "project_repository_states", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.binary "repository_verification_checksum"
+    t.binary "wiki_verification_checksum"
+    t.boolean "last_repository_verification_failed", default: false, null: false
+    t.boolean "last_wiki_verification_failed", default: false, null: false
+    t.datetime_with_timezone "last_repository_verification_at"
+    t.datetime_with_timezone "last_wiki_verification_at"
+    t.string "last_repository_verification_failure"
+    t.string "last_wiki_verification_failure"
+  end
+
+  add_index "project_repository_states", ["project_id"], name: "index_project_repository_states_on_project_id", unique: true, using: :btree
+
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -2664,6 +2678,7 @@ ActiveRecord::Schema.define(version: 20180306074045) do
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
+  add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade

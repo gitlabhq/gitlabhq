@@ -112,13 +112,16 @@
 - cronjob:geo_metrics_update
 - cronjob:geo_prune_event_log
 - cronjob:geo_repository_sync
+- cronjob:geo_repository_verification_primary_batch
 - cronjob:geo_sidekiq_cron_config
 - cronjob:historical_data
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync
 - cronjob:update_all_mirrors
 
-- geo:geo_base_scheduler
+- geo:geo_scheduler_base
+- geo:geo_scheduler_primary
+- geo:geo_scheduler_secondary
 - geo:geo_file_download
 - geo:geo_file_removal
 - geo:geo_hashed_storage_attachments_migration
@@ -128,6 +131,8 @@
 - geo:geo_repositories_clean_up
 - geo:geo_repository_destroy
 - geo:geo_repository_shard_sync
+- geo:geo_repository_verification_primary_shard
+- geo:geo_repository_verification_primary_single
 
 - object_storage_upload
 - object_storage:object_storage_background_move

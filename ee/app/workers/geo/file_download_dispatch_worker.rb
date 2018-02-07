@@ -1,5 +1,5 @@
 module Geo
-  class FileDownloadDispatchWorker < Geo::BaseSchedulerWorker
+  class FileDownloadDispatchWorker < Geo::Scheduler::SecondaryWorker
     include CronjobQueue
 
     private

@@ -23,7 +23,13 @@ describe Gitlab::Geo::CronManager, :geo do
       job.enable!
     end
 
-    JOBS = %w(ldap_test geo_repository_sync_worker geo_file_download_dispatch_worker geo_metrics_update_worker).freeze
+    JOBS = %w[
+      ldap_test
+      geo_repository_verification_primary_batch_worker
+      geo_repository_sync_worker
+      geo_file_download_dispatch_worker
+      geo_metrics_update_worker
+    ].freeze
 
     before(:all) do
       JOBS.each { |name| init_cron_job(name, name.camelize) }
@@ -35,6 +41,7 @@ describe Gitlab::Geo::CronManager, :geo do
 
     let(:common_jobs) { [job('geo_metrics_update_worker')] }
     let(:ldap_test_job) { job('ldap_test') }
+    let(:primary_jobs) { [job('geo_repository_verification_primary_batch_worker')] }
 
     let(:secondary_jobs) do
       [
@@ -58,6 +65,10 @@ describe Gitlab::Geo::CronManager, :geo do
         expect(common_jobs).to all(be_enabled)
       end
 
+      it 'enables primary-only jobs' do
+        expect(primary_jobs).to all(be_enabled)
+      end
+
       it 'enables non-geo jobs' do
         expect(ldap_test_job).to be_enabled
       end
@@ -78,6 +89,10 @@ describe Gitlab::Geo::CronManager, :geo do
         expect(common_jobs).to all(be_enabled)
       end
 
+      it 'disables primary-only jobs' do
+        primary_jobs.each { |job| expect(job).not_to be_enabled }
+      end
+
       it 'disables non-geo jobs' do
         expect(ldap_test_job).not_to be_enabled
       end
@@ -88,6 +103,10 @@ describe Gitlab::Geo::CronManager, :geo do
         stub_current_geo_node(nil)
 
         manager.execute
+      end
+
+      it 'disables primary-only jobs' do
+        primary_jobs.each { |job| expect(job).not_to be_enabled }
       end
 
       it 'disables secondary-only jobs' do
