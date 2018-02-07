@@ -87,9 +87,7 @@ describe CheckGcpProjectBillingWorker do
         end
 
         it 'does not increment the billing change counter' do
-          Gitlab::Redis::SharedState.with do |redis|
-            expect(redis).not_to receive(:incr)
-          end
+          expect_any_instance_of(described_class).not_to receive(:billing_changed_counter)
 
           subject
         end
@@ -101,9 +99,7 @@ describe CheckGcpProjectBillingWorker do
         end
 
         it 'increments the billing change counter' do
-          Gitlab::Redis::SharedState.with do |redis|
-            expect(redis).to receive(:incr)
-          end
+          expect_any_instance_of(described_class).to receive_message_chain(:billing_changed_counter, :increment)
 
           subject
         end
@@ -117,9 +113,7 @@ describe CheckGcpProjectBillingWorker do
       end
 
       it 'does not increment the billing change counter' do
-        Gitlab::Redis::SharedState.with do |redis|
-          expect(redis).not_to receive(:incr)
-        end
+        expect_any_instance_of(described_class).not_to receive(:billing_changed_counter)
 
         subject
       end

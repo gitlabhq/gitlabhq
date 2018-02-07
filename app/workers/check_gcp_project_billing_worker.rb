@@ -54,8 +54,11 @@ class CheckGcpProjectBillingWorker
     "gitlab:gcp:session:#{token_key}"
   end
 
-  def self.redis_billing_change_key
-    "gitlab:gcp:billing_enabled_changes"
+  def billing_changed_counter
+    @billing_changed_counter ||= Gitlab::Metrics.counter(
+      :gcp_billing_change_count,
+      "Counts the number of times a GCP project changed billing_enabled state from false to true"
+    )
   end
 
   def try_obtain_lease_for(token)
@@ -73,8 +76,6 @@ class CheckGcpProjectBillingWorker
   def update_billing_change_counter(previous_state, current_state)
     return unless previous_state == 'false' && current_state
 
-    Gitlab::Redis::SharedState.with do |redis|
-      redis.incr(self.class.redis_billing_change_key)
-    end
+    billing_changed_counter.increment
   end
 end
