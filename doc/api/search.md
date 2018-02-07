@@ -1,5 +1,7 @@
 # Search API
 
+[Introduced][ce-41763] in GitLab 10.5
+
 Every API call to search must be authenticated.
 
 ## Global Search API
@@ -15,7 +17,9 @@ GET /search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs
+Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs.
+
+If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md).
 
 The response depends on the requested scope.
 
@@ -279,6 +283,86 @@ Example response:
 ]
 ```
 
+### Scope: wiki_blobs
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye
+```
+
+Example response:
+
+```json
+
+[
+  {
+    "basename": "home",
+    "data": "hello\n\nand bye\n\nend",
+    "filename": "home.md",
+    "id": null,
+    "ref": "master",
+    "startline": 5
+  }
+]
+```
+
+### Scope: commits
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/search?scope=commits&search=bye
+```
+
+Example response:
+
+```json
+
+[
+  {
+  "id": "4109c2d872d5fdb1ed057400d103766aaea97f98",
+  "short_id": "4109c2d8",
+  "title": "goodbye $.browser",
+  "created_at": "2013-02-18T22:02:54.000Z",
+  "parent_ids": [
+    "59d05353ab575bcc2aa958fe1782e93297de64c9"
+  ],
+  "message": "goodbye $.browser\n",
+  "author_name": "angus croll",
+  "author_email": "anguscroll@gmail.com",
+  "authored_date": "2013-02-18T22:02:54.000Z",
+  "committer_name": "angus croll",
+  "committer_email": "anguscroll@gmail.com",
+  "committed_date": "2013-02-18T22:02:54.000Z"
+  }
+]
+```
+
+### Scope: blobs
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/search?scope=blobs&search=installation
+```
+
+Example response:
+
+```json
+
+[
+  {
+    "basename": "README",
+    "data": "```\n\n## Installation\n\nQuick start using the [pre-built",
+    "filename": "README.md",
+    "id": null,
+    "ref": "master",
+    "startline": 46
+  }
+]
+```
+
 
 ## Group Search API
 
@@ -296,7 +380,9 @@ GET /groups/:id/-/search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones
+Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones.
+
+If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md).
 
 The response depends on the requested scope.
 
@@ -498,6 +584,87 @@ Example response:
 ]
 ```
 
+### Scope: wiki_blobs
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/-/search?scope=wiki_blobs&search=bye
+```
+
+Example response:
+
+```json
+
+[
+  {
+    "basename": "home",
+    "data": "hello\n\nand bye\n\nend",
+    "filename": "home.md",
+    "id": null,
+    "ref": "master",
+    "startline": 5
+  }
+]
+```
+
+### Scope: commits
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/-/search?scope=commits&search=bye
+```
+
+Example response:
+
+```json
+
+[
+  {
+  "id": "4109c2d872d5fdb1ed057400d103766aaea97f98",
+  "short_id": "4109c2d8",
+  "title": "goodbye $.browser",
+  "created_at": "2013-02-18T22:02:54.000Z",
+  "parent_ids": [
+    "59d05353ab575bcc2aa958fe1782e93297de64c9"
+  ],
+  "message": "goodbye $.browser\n",
+  "author_name": "angus croll",
+  "author_email": "anguscroll@gmail.com",
+  "authored_date": "2013-02-18T22:02:54.000Z",
+  "committer_name": "angus croll",
+  "committer_email": "anguscroll@gmail.com",
+  "committed_date": "2013-02-18T22:02:54.000Z"
+  }
+]
+```
+
+### Scope: blobs
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/-/search?scope=blobs&search=installation
+```
+
+Example response:
+
+```json
+
+[
+  {
+    "basename": "README",
+    "data": "```\n\n## Installation\n\nQuick start using the [pre-built",
+    "filename": "README.md",
+    "id": null,
+    "ref": "master",
+    "startline": 46
+  }
+]
+```
+
+
 ## Project Search API
 
 Search within the specified project.
@@ -514,7 +681,7 @@ GET /projects/:id/-/search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs
+Search the expression within the specified scope. Currentyly these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs.
 
 The response depends on the requested scope.
 
@@ -791,3 +958,5 @@ Example response:
   }
 ]
 ```
+
+[ce-41763]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41763

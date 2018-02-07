@@ -18,6 +18,8 @@ module API
         snippet_blobs: Entities::Snippet
       }.freeze
 
+      ELASTICSEARCH_SCOPES = %w(wiki_blobs blobs commits).freeze
+
       def search(additional_params = {})
         search_params = {
           scope: params[:scope],
@@ -33,6 +35,12 @@ module API
       end
 
       def process_results(results)
+        return [] if results.empty?
+
+        if results.is_a?(Elasticsearch::Model::Response::Response)
+          return paginate(results).map { |blob| Gitlab::Elastic::SearchResults.parse_search_result(blob) }
+        end
+
         case params[:scope]
         when 'wiki_blobs'
           paginate(results).map { |blob| Gitlab::ProjectSearchResults.parse_search_result(blob) }
@@ -50,6 +58,16 @@ module API
       def entity
         SCOPE_ENTITY[params[:scope].to_sym]
       end
+
+      def check_elasticsearch_scope!
+        if ELASTICSEARCH_SCOPES.include?(params[:scope]) && !elasticsearch?
+          render_api_error!({ error: 'Scope not supported without Elasticsearch!' }, 400)
+        end
+      end
+
+      def elasticsearch?
+        Gitlab::CurrentSettings.current_application_settings.elasticsearch_search?
+      end
     end
 
     resource :search do
@@ -58,12 +76,18 @@ module API
       end
       params do
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of search, available scopes:
-          projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs',
-          values: %w(projects issues merge_requests milestones snippet_titles snippet_blobs)
+        requires :scope,
+          type: String,
+          desc: 'The scope of search, available scopes:
+            projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs,
+            if Elasticsearch enabled: wiki_blobs, blobs, commits',
+          values: %w(projects issues merge_requests milestones snippet_titles snippet_blobs
+                     wiki_blobs blobs commits)
         use :pagination
       end
       get do
+        check_elasticsearch_scope!
+
         present search, with: entity
       end
     end
@@ -75,12 +99,16 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of search, available scopes:
-          projects, issues, merge_requests, milestones',
-          values: %w(projects issues merge_requests milestones)
+        requires :scope,
+          type: String,
+          desc: 'The scope of search, available scopes:
+            projects, issues, merge_requests, milestones,
+            if Elasticsearch enabled: wiki_blobs, blobs, commits',
+          values: %w(projects issues merge_requests milestones wiki_blobs blobs commits)
         use :pagination
       end
       get ':id/-/search' do
+        check_elasticsearch_scope!
         find_group!(params[:id])
 
         present search(group_id: params[:id]), with: entity
@@ -94,8 +122,10 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of search, available scopes:
-          issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs',
+        requires :scope,
+          type: String,
+          desc: 'The scope of search, available scopes:
+            issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs',
           values: %w(issues merge_requests milestones notes wiki_blobs commits blobs)
         use :pagination
       end
