@@ -1394,11 +1394,15 @@ EOT
 
       describe "Error handling" do
         it "fails to parse YAML" do
-          expect {Gitlab::Ci::YamlProcessor.new("invalid: yaml: test")}.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
+          expect do
+            Gitlab::Ci::YamlProcessor.new("invalid: yaml: test")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
         end
 
         it "indicates that object is invalid" do
-          expect {Gitlab::Ci::YamlProcessor.new("invalid_yaml")}.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
+          expect do
+            Gitlab::Ci::YamlProcessor.new("invalid_yaml")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
         end
 
         it "returns errors if tags parameter is invalid" do
@@ -1704,6 +1708,7 @@ EOT
 
         context "when YAML content is empty" do
           let(:content) { '' }
+
           it { is_expected.to eq "Please provide content of .gitlab-ci.yml" }
         end
 
