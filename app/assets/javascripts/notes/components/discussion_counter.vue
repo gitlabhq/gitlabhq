@@ -35,9 +35,9 @@
         return this.getNoteableData.create_issue_to_resolve_discussions_path;
       },
       firstUnresolvedDiscussionId() {
-        const item = this.unresolvedDiscussions[0];
+        const item = this.unresolvedDiscussions[0] || {};
 
-        return item ? item.id : null;
+        return item.id;
       },
     },
     created() {

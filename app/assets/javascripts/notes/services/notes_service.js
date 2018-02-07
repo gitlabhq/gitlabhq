@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import * as constants from '../constants';
 
 Vue.use(VueResource);
 
@@ -20,7 +21,8 @@ export default {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
   },
   toggleResolveNote(endpoint, isResolved) {
-    const method = isResolved ? 'delete' : 'post';
+    const { RESOLVE_NOTE_METHOD_NAME, UNRESOLVE_NOTE_METHOD_NAME } = constants;
+    const method = isResolved ? UNRESOLVE_NOTE_METHOD_NAME : RESOLVE_NOTE_METHOD_NAME;
 
     return Vue.http[method](endpoint);
   },

@@ -60,6 +60,7 @@
       allNotes() {
         if (this.isLoading) {
           const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
+
           return new Array(totalNotes).fill({
             isSkeletonNote: true,
           });
@@ -157,19 +158,17 @@
 
 <template>
   <div id="notes">
-    <template>
-      <ul
-        id="notes-list"
-        class="notes main-notes-list timeline">
+    <ul
+      id="notes-list"
+      class="notes main-notes-list timeline">
 
-        <component
-          v-for="note in allNotes"
-          :is="getComponentName(note)"
-          :note="getComponentData(note)"
-          :key="note.id"
-        />
-      </ul>
-    </template>
+      <component
+        v-for="note in allNotes"
+        :is="getComponentName(note)"
+        :note="getComponentData(note)"
+        :key="note.id"
+      />
+    </ul>
 
     <comment-form
       :noteable-type="noteableType"

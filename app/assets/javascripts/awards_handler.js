@@ -243,8 +243,7 @@ class AwardsHandler {
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
-    const vueDiscussions = isInIssuePage() || this.isVueMRDiscussions();
-    if (vueDiscussions && !isMainAwardsBlock) {
+    if (this.isInVueNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       this.hideMenuElement($('.emoji-menu'));
@@ -297,13 +296,15 @@ class AwardsHandler {
   }
 
   isVueMRDiscussions() {
-    return isInMRPage() && Cookies.get('vue_mr_discussions') && !$('#diffs:visible').length;
+    return isInMRPage() && Cookies.get('vue_mr_discussions') && !$('#diffs').is(':visible');
+  }
+
+  isInVueNoteablePage() {
+    return isInIssuePage() || this.isVueMRDiscussions();
   }
 
   getVotesBlock() {
-    const vueDiscussions = isInIssuePage() || this.isVueMRDiscussions();
-
-    if (vueDiscussions) {
+    if (this.isInVueNoteablePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {

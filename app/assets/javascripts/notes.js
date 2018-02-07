@@ -45,7 +45,7 @@ export default class Notes {
   }
 
   static getInstance() {
-    return this.instance || null;
+    return this.instance;
   }
 
   constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
@@ -657,7 +657,6 @@ export default class Notes {
     var $noteEntityEl, $note_li;
     // Convert returned HTML to a jQuery object so we can modify it further
     $noteEntityEl = $(noteEntity.html);
-    // $noteEntityEl.addClass('fade-in-full'); // disabled for MR discussions refactor
     this.revertNoteEditForm($targetNote);
     $noteEntityEl.renderGFM();
     // Find the note's `li` element by ID and replace it with the updated HTML

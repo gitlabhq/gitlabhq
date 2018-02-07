@@ -1,3 +1,5 @@
+import * as constants from '../constants';
+
 export default {
   props: {
     note: {
@@ -9,9 +11,9 @@ export default {
     noteableType() {
       switch (this.note.noteable_type) {
         case 'MergeRequest':
-          return 'merge_request';
+          return constants.MERGE_REQUEST_NOTEABLE_TYPE;
         case 'Issue':
-          return 'issue';
+          return constants.ISSUE_NOTEABLE_TYPE;
         default:
           return '';
       }
