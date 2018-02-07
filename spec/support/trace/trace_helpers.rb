@@ -5,15 +5,15 @@ module TraceHelpers
 
     FileUtils.mkdir_p(trace_dir)
 
-    File.open(File.join(trace_dir, "#{job_id}.log"), 'w') do
-      |file| file.write(trace_content)
+    File.open(File.join(trace_dir, "#{job_id}.log"), 'w') do |file|
+      file.write(trace_content)
     end
 
-    yield trace_path
+    yield trace_path if block_given?
   end
 
   def artifacts_path?(path)
-    /.{2}\/.{2}\/.{64}\/\d{4}_\d{2}_\d{2}\/\d{1,}\/\d{1,}\/\d{1,}.log/ =~ path
+    %r{.{2}\/.{2}\/.{64}\/\d{4}_\d{2}_\d{2}\/\d{1,}\/\d{1,}\/\d{1,}.log} =~ path
   end
 
   def simulate_backup_path(path, status)

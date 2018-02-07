@@ -14,7 +14,7 @@ module Gitlab
         end
 
         def perform
-          raise ArgumentError, "Trace file not found" unless File.exists?(path)
+          raise ArgumentError, "Trace file not found" unless File.exist?(path)
           raise ArgumentError, "Invalid trace path format" unless trace_path?
 
           backup!
@@ -24,7 +24,7 @@ module Gitlab
         private
 
         def trace_path?
-          /#{Settings.gitlab_ci.builds_path}\/\d{4}_\d{2}\/\d{1,}\/\d{1,}.log/ =~ path
+          %r{#{Settings.gitlab_ci.builds_path}\/\d{4}_\d{2}\/\d{1,}\/\d{1,}.log} =~ path
         end
 
         def status

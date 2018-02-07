@@ -60,8 +60,8 @@ describe Gitlab::Ci::Trace::Migrator do
             create_trace_file(builds_path, yyyy_mm, project_id, job_id, trace_content) do |path|
               described_class.new(path.remove(builds_path)).perform
 
-              expect(File.exists?(path)).to be_falsy
-              expect(File.exists?(simulate_backup_path(path, :not_found))).to be_truthy
+              expect(File.exist?(path)).to be_falsy
+              expect(File.exist?(simulate_backup_path(path, :not_found))).to be_truthy
             end
           end
         end
@@ -78,8 +78,8 @@ describe Gitlab::Ci::Trace::Migrator do
           create_trace_file(builds_path, yyyy_mm, project_id, job_id, trace_content) do |path|
             described_class.new(path.remove(builds_path)).perform
 
-            expect(File.exists?(path)).to be_falsy
-            expect(File.exists?(simulate_backup_path(path, :not_found))).to be_truthy
+            expect(File.exist?(path)).to be_falsy
+            expect(File.exist?(simulate_backup_path(path, :not_found))).to be_truthy
           end
         end
       end
