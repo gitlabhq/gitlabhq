@@ -7,10 +7,6 @@ describe Gitlab::BackgroundMigration::PopulateMergeRequestMetricsWithEventsData,
       .to receive(:commits_count=).and_return(nil)
   end
 
-  after do
-    [Project, MergeRequest, MergeRequestDiff].each(&:reset_column_information)
-  end
-
   describe '#perform' do
     let(:mr_with_event) { create(:merge_request) }
     let!(:merged_event) { create(:event, :merged, target: mr_with_event) }
