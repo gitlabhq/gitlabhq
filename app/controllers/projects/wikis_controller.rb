@@ -54,8 +54,8 @@ class Projects::WikisController < Projects::ApplicationController
     else
       render 'edit'
     end
-  rescue WikiPage::PageChangedError
-    @conflict = true
+  rescue WikiPage::PageChangedError, WikiPage::PageRenameError => e
+    @error = e
     render 'edit'
   end
 

@@ -235,7 +235,7 @@ export default class FileTemplateMediator {
   }
 
   setFilename(name) {
-    this.$filenameInput.val(name);
+    this.$filenameInput.val(name).trigger('change');
   }
 
   getSelected() {

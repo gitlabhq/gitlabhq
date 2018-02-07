@@ -24,7 +24,7 @@
         .wiki
           = markdown_field(release, :description)
 
-  .row-fixed-content.controls
+  .row-fixed-content.controls.flex-row
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :push_code, @project)

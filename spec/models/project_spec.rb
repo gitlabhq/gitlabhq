@@ -2503,6 +2503,37 @@ describe Project do
     end
   end
 
+  describe '#remove_exports' do
+    let(:project) { create(:project, :with_export) }
+
+    it 'removes the exports directory for the project' do
+      expect(File.exist?(project.export_path)).to be_truthy
+
+      allow(FileUtils).to receive(:rm_rf).and_call_original
+      expect(FileUtils).to receive(:rm_rf).with(project.export_path).and_call_original
+      project.remove_exports
+
+      expect(File.exist?(project.export_path)).to be_falsy
+    end
+
+    it 'is a no-op when there is no namespace' do
+      export_path = project.export_path
+      project.update_column(:namespace_id, nil)
+
+      expect(FileUtils).not_to receive(:rm_rf).with(export_path)
+
+      project.remove_exports
+
+      expect(File.exist?(export_path)).to be_truthy
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_exports).and_call_original
+
+      project.destroy
+    end
+  end
+
   describe '#forks_count' do
     it 'returns the number of forks' do
       project = build(:project)

@@ -28,6 +28,7 @@ class Todo < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :action, :project, :target_type, :user, presence: true
+  validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
 

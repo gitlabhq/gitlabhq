@@ -40,7 +40,7 @@ describe FileUploader do
   end
 
   describe 'initialize' do
-    let(:uploader) { described_class.new(double, 'secret') }
+    let(:uploader) { described_class.new(double, secret: 'secret') }
 
     it 'accepts a secret parameter' do
       expect(described_class).not_to receive(:generate_secret)
@@ -52,6 +52,33 @@ describe FileUploader do
     it 'generates a secret if none is provided' do
       expect(described_class).to receive(:generate_secret).and_return('secret')
       expect(uploader.secret).to eq('secret')
+    end
+  end
+
+  describe '#upload=' do
+    let(:secret) { SecureRandom.hex }
+    let(:upload) { create(:upload, :issuable_upload, secret: secret, filename: 'file.txt') }
+
+    it 'handles nil' do
+      expect(uploader).not_to receive(:apply_context!)
+
+      uploader.upload = nil
+    end
+
+    it 'extract the uploader context from it' do
+      expect(uploader).to receive(:apply_context!).with(a_hash_including(secret: secret, identifier: 'file.txt'))
+
+      uploader.upload = upload
+    end
+
+    context 'uploader_context is empty' do
+      it 'fallbacks to regex based extraction' do
+        expect(upload).to receive(:uploader_context).and_return({})
+
+        uploader.upload = upload
+        expect(uploader.secret).to eq(secret)
+        expect(uploader.instance_variable_get(:@identifier)).to eq('file.txt')
+      end
     end
   end
 end

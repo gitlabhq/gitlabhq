@@ -7,6 +7,10 @@
 // more than `x` users are referenced.
 //
 
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
+
 var lastTextareaPreviewed;
 var lastTextareaHeight = null;
 var markdownPreview;
@@ -62,21 +66,17 @@ MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
     success(this.ajaxCache.response);
     return;
   }
-  $.ajax({
-    type: 'POST',
-    url: url,
-    data: {
-      text: text
-    },
-    dataType: 'json',
-    success: (function (response) {
-      this.ajaxCache = {
-        text: text,
-        response: response
-      };
-      success(response);
-    }).bind(this)
-  });
+  axios.post(url, {
+    text,
+  })
+  .then(({ data }) => {
+    this.ajaxCache = {
+      text: text,
+      response: data,
+    };
+    success(data);
+  })
+  .catch(() => flash(__('An error occurred while fetching markdown preview')));
 };
 
 MarkdownPreview.prototype.hideReferencedUsers = function ($form) {

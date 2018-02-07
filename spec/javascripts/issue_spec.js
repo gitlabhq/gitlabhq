@@ -70,23 +70,6 @@ describe('Issue', function() {
     expect($btn).toHaveText(isIssueInitiallyOpen ? 'Close issue' : 'Reopen issue');
   }
 
-  describe('task lists', function() {
-    beforeEach(function() {
-      loadFixtures('issues/issue-with-task-list.html.raw');
-      this.issue = new Issue();
-    });
-
-    it('submits an ajax request on tasklist:changed', function() {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PATCH');
-        expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
-        expect(req.data.issue.description).not.toBe(null);
-      });
-
-      $('.js-task-list-field').trigger('tasklist:changed');
-    });
-  });
-
   [true, false].forEach((isIssueInitiallyOpen) => {
     describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, function() {
       const action = isIssueInitiallyOpen ? 'close' : 'reopen';

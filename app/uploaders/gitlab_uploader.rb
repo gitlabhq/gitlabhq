@@ -29,6 +29,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   delegate :base_dir, :file_storage?, to: :class
 
+  def initialize(model, mounted_as = nil, **uploader_context)
+    super(model, mounted_as)
+  end
+
   def file_cache_storage?
     cache_storage.is_a?(CarrierWave::Storage::File)
   end

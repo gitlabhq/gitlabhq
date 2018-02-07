@@ -713,11 +713,11 @@ class Repository
   end
 
   def branch_names_contains(sha)
-    refs_contains_sha('branch', sha)
+    raw_repository.branch_names_contains_sha(sha)
   end
 
   def tag_names_contains(sha)
-    refs_contains_sha('tag', sha)
+    raw_repository.tag_names_contains_sha(sha)
   end
 
   def local_branches

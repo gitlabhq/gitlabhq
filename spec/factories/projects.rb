@@ -93,6 +93,12 @@ FactoryBot.define do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
+    trait :with_export do
+      after(:create) do |project, evaluator|
+        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      end
+    end
+
     trait :broken_storage do
       after(:create) do |project|
         project.update_column(:repository_storage, 'broken')

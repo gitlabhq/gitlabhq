@@ -54,10 +54,11 @@ describe SystemNoteService do
           expect(note_lines[0]).to eq "added #{new_commits.size} commits"
         end
 
-        it 'adds a message line for each commit' do
-          new_commits.each_with_index do |commit, i|
-            # Skip the header
-            expect(HTMLEntities.new.decode(note_lines[i + 1])).to eq "* #{commit.short_id} - #{commit.title}"
+        it 'adds a message for each commit' do
+          decoded_note_content = HTMLEntities.new.decode(subject.note)
+
+          new_commits.each do |commit|
+            expect(decoded_note_content).to include("<li>#{commit.short_id} - #{commit.title}</li>")
           end
         end
       end
@@ -69,7 +70,7 @@ describe SystemNoteService do
           let(:old_commits) { [noteable.commits.last] }
 
           it 'includes the existing commit' do
-            expect(summary_line).to eq "* #{old_commits.first.short_id} - 1 commit from branch `feature`"
+            expect(summary_line).to start_with("<ul><li>#{old_commits.first.short_id} - 1 commit from branch <code>feature</code>")
           end
         end
 
@@ -79,22 +80,16 @@ describe SystemNoteService do
           context 'with oldrev' do
             let(:oldrev) { noteable.commits[2].id }
 
-            it 'includes a commit range' do
-              expect(summary_line).to start_with "* #{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id}"
-            end
-
-            it 'includes a commit count' do
-              expect(summary_line).to end_with " - 26 commits from branch `feature`"
+            it 'includes a commit range and count' do
+              expect(summary_line)
+                .to start_with("<ul><li>#{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id} - 26 commits from branch <code>feature</code>")
             end
           end
 
           context 'without oldrev' do
-            it 'includes a commit range' do
-              expect(summary_line).to start_with "* #{old_commits[0].short_id}..#{old_commits[-1].short_id}"
-            end
-
-            it 'includes a commit count' do
-              expect(summary_line).to end_with " - 26 commits from branch `feature`"
+            it 'includes a commit range and count' do
+              expect(summary_line)
+                .to start_with("<ul><li>#{old_commits[0].short_id}..#{old_commits[-1].short_id} - 26 commits from branch <code>feature</code>")
             end
           end
 
@@ -104,7 +99,7 @@ describe SystemNoteService do
             end
 
             it 'includes the project namespace' do
-              expect(summary_line).to end_with "`#{noteable.target_project_namespace}:feature`"
+              expect(summary_line).to include("<code>#{noteable.target_project_namespace}:feature</code>")
             end
           end
         end
@@ -693,7 +688,7 @@ describe SystemNoteService do
   describe '.new_commit_summary' do
     it 'escapes HTML titles' do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
-      escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
+      escaped = '&lt;pre&gt;This is a test&lt;/pre&gt;'
 
       expect(described_class.new_commit_summary([commit])).to all(match(/- #{escaped}/))
     end
