@@ -10,7 +10,7 @@ In large teams, where there is shared ownership of an issue, it can be difficult
 to track who is working on it, who already completed their contributions, who
 didn't even start yet.
 
-In [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+In [GitLab Enterprise Edition](https://about.gitlab.com/products/),
 you can also select multiple assignees to an issue, making it easier to
 track, and making clearer who is accountable for it.
 

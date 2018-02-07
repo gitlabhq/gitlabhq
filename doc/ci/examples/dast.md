@@ -37,4 +37,4 @@ so, the CI job must be named `dast` and the artifact path must be
 `gl-dast-report.json`.
 [Learn more about DAST results shown in merge requests](../../user/project/merge_requests/dast.md).
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

@@ -35,7 +35,7 @@ your project public, open to collaboration.
 ### Streamline collaboration
 
 With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
-available in [GitLab Starter](https://about.gitlab.com/gitlab-ee/)
+available in [GitLab Starter](https://about.gitlab.com/products/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
@@ -148,7 +148,7 @@ to find out more about this feature.
 
 Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
 
-_Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+_Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/products/)._
 
 ## Related Issues
 

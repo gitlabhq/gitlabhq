@@ -84,5 +84,5 @@ instance, with the following permissions/restrictions:
   - Cannot create project snippets
 
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
-[eep]: https://about.gitlab.com/gitlab-ee/
+[eep]: https://about.gitlab.com/products/
 [permissions]: ../user/permissions.md

@@ -154,4 +154,4 @@ bash_history
 [ee-385]: https://gitlab.com/gitlab-org/gitlab-ee/issues/385
 [list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/checks/files_blacklist.yml
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

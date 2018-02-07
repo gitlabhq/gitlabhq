@@ -266,5 +266,5 @@ runners will not use regular runners, they must be tagged accordingly.
 [ce-7931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7931
 [ce-9760]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9760
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Premium"
+[eep]: https://about.gitlab.com/products/ "GitLab Premium"
 [ee-2121]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2121

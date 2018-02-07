@@ -161,5 +161,5 @@ and [projects APIs](../../api/projects.md).
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Premium"
+[eep]: https://about.gitlab.com/products/ "GitLab Premium"
 [ee-2760]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2760

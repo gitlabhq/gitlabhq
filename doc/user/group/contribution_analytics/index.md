@@ -54,4 +54,4 @@ which are depicted in a table that can be sorted by:
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

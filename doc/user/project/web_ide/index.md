@@ -32,4 +32,4 @@ the 'Commit Button'.
 
 ![Commit changes](img/commit_changes.png)
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

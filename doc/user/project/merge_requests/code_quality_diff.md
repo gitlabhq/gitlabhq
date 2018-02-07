@@ -49,7 +49,7 @@ For more information on how the `codequality` job should look like, check the
 example on [analyzing a project's code quality with Code Climate CLI][cc-docs].
 
 [ee-1984]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1984
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/

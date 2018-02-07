@@ -361,6 +361,6 @@ git checkout origin/merge-requests/1
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
-[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
+[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"
 [sitespeed]: https://www.sitespeed.io
 [sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/

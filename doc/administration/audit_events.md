@@ -102,5 +102,5 @@ the filter drop-down. You can further filter by specific group, project or user
 ![audit log](audit_log.png)
 
 [ee-2336]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [permissions]: ../user/permissions.md

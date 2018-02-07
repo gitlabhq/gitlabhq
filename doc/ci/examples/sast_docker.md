@@ -52,4 +52,4 @@ so, the CI/CD job must be named `sast:container` and the artifact path must be
 `gl-sast-container-report.json`.
 [Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast_docker.md).
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

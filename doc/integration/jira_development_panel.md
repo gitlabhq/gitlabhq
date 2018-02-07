@@ -99,6 +99,6 @@ Click these links to see your GitLab repository data.
 
 [existing-jira]: ../user/project/integrations/jira.md
 [jira-development-panel]: https://confluence.atlassian.com/adminjiraserver070/integrating-with-development-tools-776637096.html#Integratingwithdevelopmenttools-Developmentpanelonissues
-[eep]: https://about.gitlab.com/gitlab-ee/
+[eep]: https://about.gitlab.com/products/
 [ee-2786]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2786
 [relative-url]: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab

@@ -53,4 +53,4 @@ The following languages and frameworks are supported.
 | Ruby          | [bundler-audit](https://github.com/rubysec/bundler-audit) |
 | Ruby on Rails | [brakeman](https://brakemanscanner.org) |
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

@@ -316,4 +316,4 @@ See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Docum
 [kerb]: https://web.mit.edu/kerberos/
 [mit]: http://web.mit.edu/
 [why-kerb]: http://web.mit.edu/sipb/doc/working/guide/guide/node20.html
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/

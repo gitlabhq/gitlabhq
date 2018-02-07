@@ -71,5 +71,5 @@ then you already have access to its projects' issues.
 
 You may also consult the [group permissions table][permissions].
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [permissions]: ../../permissions.md#group-members-permissions
