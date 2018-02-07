@@ -32,6 +32,10 @@ module EE
       def dast_artifact
         artifacts.dast.find(&:has_dast_json?)
       end
+
+      def initialize_yaml_processor
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
+      end
     end
   end
 end

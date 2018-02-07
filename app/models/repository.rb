@@ -1061,6 +1061,14 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!
+    blob.data
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid
@@ -1073,14 +1081,6 @@ class Repository
              end
 
     ::Commit.new(commit, @project) if commit
-  end
-
-  def blob_data_at(sha, path)
-    blob = blob_at(sha, path)
-    return unless blob
-
-    blob.load_all_data!
-    blob.data
   end
 
   def cache
