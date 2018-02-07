@@ -87,7 +87,6 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
-<<<<<<< HEAD
 >**Notes:**
 - [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
 - Since version 9.5, artifacts are [browsable], when object storage is enabled. 
@@ -179,12 +178,6 @@ _The artifacts are stored by default in
       artifacts will still be stored on the local disk. In the future
       you will be given an option to define a default storage artifacts for all
       new files.
-=======
-> Available in [GitLab Premium](https://about.gitlab.com/products/) and
-[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
-
-Use an [Object storage option][ee-os] like AWS S3 to store job artifacts.
->>>>>>> upstream/master
 
 ## Expiring artifacts
 
