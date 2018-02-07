@@ -6,8 +6,8 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up(attempts: 100)
-    remove_outdated_index!
     remove_redundant_pipeline_stages!
+    remove_outdated_index!
     add_unique_index!
   rescue ActiveRecord::RecordNotUnique
     retry if (attempts -= 1) > 0
