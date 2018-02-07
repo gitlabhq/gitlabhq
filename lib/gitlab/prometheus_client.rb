@@ -42,6 +42,8 @@ module Gitlab
     def json_api_get(type, args = {})
       path = ['api', 'v1', type].join('/')
       get(path, args)
+    rescue JSON::ParserError
+      raise PrometheusError, 'Parsing response failed'
     rescue Errno::ECONNREFUSED
       raise PrometheusError, 'Connection refused'
     end

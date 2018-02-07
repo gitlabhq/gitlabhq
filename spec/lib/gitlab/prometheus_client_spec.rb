@@ -47,6 +47,16 @@ describe Gitlab::PrometheusClient do
         expect(req_stub).to have_been_requested
       end
     end
+
+    context 'when request returns non json data' do
+      it 'raises a Gitlab::PrometheusError error' do
+        req_stub = stub_prometheus_request(query_url, status: 200, body: 'not json')
+
+        expect { execute_query }
+          .to raise_error(Gitlab::PrometheusError, 'Parsing response failed')
+        expect(req_stub).to have_been_requested
+      end
+    end
   end
 
   describe 'failure to reach a provided prometheus url' do
