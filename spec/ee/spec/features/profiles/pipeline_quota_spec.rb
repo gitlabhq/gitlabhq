@@ -2,8 +2,6 @@ require 'spec_helper'
 
 feature 'Profile > Pipeline Quota' do
   before do
-    # This would make sure that the user won't try to create another namespace
-    allow_any_instance_of(User).to receive(:ensure_namespace_correct)
     gitlab_sign_in(user)
   end
 
