@@ -12,13 +12,16 @@ module API
       private
 
       def add_pagination_headers(paginated_data)
-        header 'X-Total',       paginated_data.total_count.to_s
-        header 'X-Total-Pages', total_pages(paginated_data).to_s
         header 'X-Per-Page',    paginated_data.limit_value.to_s
         header 'X-Page',        paginated_data.current_page.to_s
         header 'X-Next-Page',   paginated_data.next_page.to_s
         header 'X-Prev-Page',   paginated_data.prev_page.to_s
         header 'Link',          pagination_links(paginated_data)
+
+        return if data_without_counts?(paginated_data)
+
+        header 'X-Total',       paginated_data.total_count.to_s
+        header 'X-Total-Pages', total_pages(paginated_data).to_s
       end
 
       def pagination_links(paginated_data)
@@ -37,8 +40,10 @@ module API
         request_params[:page] = 1
         links << %(<#{request_url}?#{request_params.to_query}>; rel="first")
 
-        request_params[:page] = total_pages(paginated_data)
-        links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
+        unless data_without_counts?(paginated_data)
+          request_params[:page] = total_pages(paginated_data)
+          links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
+        end
 
         links.join(', ')
       end
@@ -54,6 +59,10 @@ module API
         end
 
         relation
+      end
+
+      def data_without_counts?(paginated_data)
+        paginated_data.is_a?(Kaminari::PaginatableWithoutCount)
       end
     end
   end

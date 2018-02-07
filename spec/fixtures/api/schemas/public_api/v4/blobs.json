@@ -1,0 +1,18 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties" : {
+      "basename": { "type": "string" },
+      "data": { "type": "string" },
+      "filename": { "type": ["string"] },
+      "id": { "type": ["string", "null"] },
+      "ref": { "type": "string" },
+      "startline": { "type": "integer" }
+    },
+    "required": [
+      "basename", "data", "filename", "id", "ref", "startline"
+    ],
+    "additionalProperties": false
+  }
+}

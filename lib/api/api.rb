@@ -164,6 +164,7 @@ module API
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
+    mount ::API::Search
     mount ::API::Services
     mount ::API::Settings
     mount ::API::SidekiqMetrics
