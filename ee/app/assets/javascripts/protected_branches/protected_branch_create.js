@@ -1,3 +1,4 @@
+import axios from '~/lib/utils/axios_utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import Flash from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';
@@ -124,15 +125,11 @@ export default class ProtectedBranchCreate {
   onFormSubmit(e) {
     e.preventDefault();
 
-    $.ajax({
-      url: this.$form.attr('action'),
-      method: this.$form.attr('method'),
-      data: this.getFormData(),
-    })
-    .success(() => {
-      location.reload();
-    })
-    .fail(() => new Flash('Failed to protect the branch'));
+    axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
+      .then(() => {
+        location.reload();
+      })
+      .catch(() => Flash('Failed to protect the branch'));
   }
 
   savePreviousSelection(mergeSelection, pushSelection) {
