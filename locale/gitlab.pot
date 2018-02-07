@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-02-07 14:09+0100\n"
-"PO-Revision-Date: 2018-02-07 14:09+0100\n"
-=======
 "POT-Creation-Date: 2018-02-07 13:35+0100\n"
 "PO-Revision-Date: 2018-02-07 13:35+0100\n"
->>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -643,7 +638,6 @@ msgstr ""
 msgid "CiVariable|All environments"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "CiVariable|Create wildcard"
 msgstr ""
 
@@ -653,11 +647,6 @@ msgstr ""
 msgid "CiVariable|New environment"
 msgstr ""
 
-=======
-msgid "CiVariable|Error occured while saving variables"
-msgstr ""
-
->>>>>>> upstream/master
 msgid "CiVariable|Protected"
 msgstr ""
 
@@ -844,12 +833,9 @@ msgstr ""
 msgid "ClusterIntegration|More information"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "ClusterIntegration|Note:"
 msgstr ""
 
@@ -1915,12 +1901,9 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Manage labels"
 msgstr ""
 
@@ -1996,12 +1979,9 @@ msgstr ""
 msgid "Move issue"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Multiple issue boards"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Name new label"
 msgstr ""
 
@@ -2064,12 +2044,9 @@ msgstr ""
 msgid "No assignee"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "No changes"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
@@ -2553,12 +2530,9 @@ msgstr ""
 msgid "Push events"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "PushRule|Committer restriction"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
@@ -2779,12 +2753,9 @@ msgstr ""
 msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName}"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
@@ -3337,12 +3308,9 @@ msgstr[1] ""
 msgid "Time|s"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Title"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Todo"
 msgstr ""
 
@@ -3364,15 +3332,12 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Track activity with Contribution Analytics."
 msgstr ""
 
 msgid "Track groups of issues that share a theme, across projects and milestones"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Track time with quick actions"
 msgstr ""
 
@@ -3685,7 +3650,6 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "by"
 msgstr ""
 
@@ -3737,8 +3701,6 @@ msgstr ""
 msgid "commit"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
 msgstr ""
 
@@ -3916,12 +3878,9 @@ msgstr ""
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "to help your contributors communicate effectively!"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "username"
 msgstr ""
 
