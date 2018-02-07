@@ -42,6 +42,7 @@ module Gitlab
         else
           self.class.invalid_provider(provider)
         end
+
         @options = config_for(@provider) # Use @provider, not provider
       end
 
@@ -136,6 +137,10 @@ module Gitlab
 
       def allow_username_or_email_login
         options['allow_username_or_email_login']
+      end
+
+      def lowercase_usernames
+        options['lowercase_usernames']
       end
 
       def name_proc

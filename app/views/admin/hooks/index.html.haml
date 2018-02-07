@@ -22,12 +22,12 @@
       - @hooks.each do |hook|
         %li
           .controls
-            = render 'shared/web_hooks/test_button', triggers: SystemHook::TRIGGERS, hook: hook, button_class: 'btn-sm'
+            = render 'shared/web_hooks/test_button', triggers: SystemHook.triggers, hook: hook, button_class: 'btn-sm'
             = link_to 'Edit', edit_admin_hook_path(hook), class: 'btn btn-sm'
             = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'
           .monospace= hook.url
           %div
-            - SystemHook::TRIGGERS.each_value do |event|
+            - SystemHook.triggers.each_value do |event|
               - if hook.public_send(event)
                 %span.label.label-gray= event.to_s.titleize
             %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}

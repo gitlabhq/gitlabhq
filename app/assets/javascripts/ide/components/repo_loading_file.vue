@@ -25,15 +25,13 @@
       />
     </td>
     <template v-if="!leftPanelCollapsed">
-      <td
-        class="hidden-sm hidden-xs">
+      <td class="hidden-sm hidden-xs">
         <skeleton-loading-container
           :small="true"
         />
       </td>
 
-      <td
-        class="hidden-xs">
+      <td class="hidden-xs">
         <skeleton-loading-container
           class="animation-container-right"
           :small="true"

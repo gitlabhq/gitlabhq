@@ -50,10 +50,10 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def create_params
-    params.require(:deploy_key).permit(:key, :title, :can_push)
+    params.require(:deploy_key).permit(:key, :title)
   end
 
   def update_params
-    params.require(:deploy_key).permit(:title, :can_push)
+    params.require(:deploy_key).permit(:title)
   end
 end

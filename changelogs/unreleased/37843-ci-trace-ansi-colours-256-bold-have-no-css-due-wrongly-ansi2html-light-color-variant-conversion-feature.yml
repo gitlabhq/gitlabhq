@@ -1,5 +1,0 @@
----
-title: Fix ANSI 256 bold colors in pipelines job output
-merge_request:
-author:
-type: fixed

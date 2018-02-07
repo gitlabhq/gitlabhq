@@ -316,6 +316,47 @@ or various static site generators. Contributions are very welcome.
 Visit the GitLab Pages group for a full list of example projects:
 <https://gitlab.com/groups/pages>.
 
+### Serving compressed assets
+
+Most modern browsers support downloading files in a compressed format. This
+speeds up downloads by reducing the size of files.
+
+Before serving an uncompressed file, Pages will check whether the same file
+exists with a `.gz` extension. If it does, and the browser supports receiving
+compressed files, it will serve that version instead of the uncompressed one.
+
+To take advantage of this feature, the artifact you upload to the Pages should
+have this structure:
+
+```
+public/
+├─┬ index.html
+│ └ index.html.gz
+│
+├── css/
+│   └─┬ main.css
+│     └ main.css.gz
+│
+└── js/
+    └─┬ main.js
+      └ main.js.gz
+```
+
+This can be achieved by including a `script:` command like this in your
+`.gitlab-ci.yml` pages job:
+
+```yaml
+pages:
+  # Other directives
+  script:
+    - # build the public/ directory first
+    - find public -type f -iregex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -execdir gzip -f --keep {} \;
+```
+
+By pre-compressing the files and including both versions in the artifact, Pages
+can serve requests for both compressed and uncompressed content without
+needing to compress files on-demand.
+
 ### Add a custom domain to your Pages website
 
 For a complete guide on Pages domains, read through the article
@@ -373,7 +414,7 @@ configuration.
 If the case of `404.html`, there are different scenarios. For example:
 
 - If you use project Pages (served under `/projectname/`) and try to access
-  `/projectname/non/exsiting_file`, GitLab Pages will try to serve first
+  `/projectname/non/existing_file`, GitLab Pages will try to serve first
   `/projectname/404.html`, and then `/404.html`.
 - If you use user/group Pages (served under `/`) and try to access
   `/non/existing_file` GitLab Pages will try to serve `/404.html`.

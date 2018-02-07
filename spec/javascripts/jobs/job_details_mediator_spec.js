@@ -12,6 +12,10 @@ describe('JobMediator', () => {
     mock = new MockAdapter(axios);
   });
 
+  afterEach(() => {
+    mock.restore();
+  });
+
   it('should set defaults', () => {
     expect(mediator.store).toBeDefined();
     expect(mediator.service).toBeDefined();
@@ -22,10 +26,6 @@ describe('JobMediator', () => {
   describe('request and store data', () => {
     beforeEach(() => {
       mock.onGet().reply(200, job, {});
-    });
-
-    afterEach(() => {
-      mock.restore();
     });
 
     it('should store received data', (done) => {

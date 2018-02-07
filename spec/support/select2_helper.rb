@@ -17,6 +17,7 @@ module Select2Helper
     selector = options.fetch(:from)
 
     first(selector, visible: false)
+
     if options[:multiple]
       execute_script("$('#{selector}').select2('val', ['#{value}']).trigger('change');")
     else

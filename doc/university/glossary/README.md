@@ -229,7 +229,7 @@ Our free on Premise solution with >100,000 users
 
 ### GitLab CI
 
-Our own Continuos Integration [feature](https://about.gitlab.com/gitlab-ci/) that is shipped with each instance
+Our own Continuous Integration [feature](https://about.gitlab.com/gitlab-ci/) that is shipped with each instance
 
 ### GitLab EE
 

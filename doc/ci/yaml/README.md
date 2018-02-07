@@ -93,7 +93,7 @@ be an array or a multi-line string.
 > Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
-jobs. This has to be an array or a multi-line string.
+jobs, including failed ones. This has to be an array or a multi-line string.
 
 > **Note:**
 The `before_script` and the main `script` are concatenated and run in a single context/container.
@@ -258,7 +258,7 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
->**Note:** The `cache:key` variable cannot contain the `/` character.
+>**Note:** The `cache:key` variable cannot contain the `/` character, or the equivalent URI encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
 
 ---
 
@@ -1293,7 +1293,7 @@ to the CI pipeline:
 ```yaml
 variables:
   GIT_STRATEGY: clone
-  GIT_CHECKOUT: false
+  GIT_CHECKOUT: "false"
 script:
   - git checkout master
   - git merge $CI_BUILD_REF_NAME

@@ -1,7 +1,7 @@
 - link_project = local_assigns.fetch(:link_project, false)
 
 %li.snippet-row
-  = image_tag avatar_icon(snippet.author_email), class: "avatar s40 hidden-xs", alt: ''
+  = image_tag avatar_icon(snippet.author), class: "avatar s40 hidden-xs", alt: ''
 
   .title
     = link_to reliable_snippet_path(snippet) do

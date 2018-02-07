@@ -1,4 +1,8 @@
 module GroupsHelper
+  def group_nav_link_paths
+    %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
+  end
+
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
@@ -86,6 +90,19 @@ module GroupsHelper
     else
       ancestor_locked_and_has_been_overridden(group)
     end
+  end
+
+  def parent_group_options(current_group)
+    groups = current_user.owned_groups.sort_by(&:human_name).map do |group|
+      { id: group.id, text: group.human_name }
+    end
+
+    groups.delete_if { |group| group[:id] == current_group.id }
+    groups.to_json
+  end
+
+  def supports_nested_groups?
+    Group.supports_nested_groups?
   end
 
   private

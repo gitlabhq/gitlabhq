@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 

@@ -5,6 +5,7 @@ module API
 
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
+    API_USER_ENV = 'gitlab.api.user'.freeze
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -25,6 +26,7 @@ module API
       check_unmodified_since!(last_updated)
 
       status 204
+
       if block_given?
         yield resource
       else
@@ -48,9 +50,15 @@ module API
 
       validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
 
+      save_current_user_in_env(@current_user) if @current_user
+
       @current_user
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+    def save_current_user_in_env(user)
+      env[API_USER_ENV] = { user_id: user.id, username: user.username }
+    end
 
     def sudo?
       initial_current_user != current_user

@@ -2,11 +2,12 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, project, query, repository_ref = nil)
+    def initialize(current_user, project, query, repository_ref = nil, per_page: 20)
       @current_user = current_user
       @project = project
       @repository_ref = repository_ref.presence || project.default_branch
       @query = query
+      @per_page = per_page
     end
 
     def objects(scope, page = nil)
@@ -20,7 +21,7 @@ module Gitlab
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       else
-        super
+        super(scope, page, false)
       end
     end
 
@@ -44,25 +45,20 @@ module Gitlab
       ref = nil
       filename = nil
       basename = nil
+      data = ""
       startline = 0
 
-      result.each_line.each_with_index do |line, index|
-        matches = line.match(/^(?<ref>[^:]*):(?<filename>.*):(?<startline>\d+):/)
-        if matches
+      result.strip.each_line.each_with_index do |line, index|
+        prefix ||= line.match(/^(?<ref>[^:]*):(?<filename>.*)\x00(?<startline>\d+)\x00/)&.tap do |matches|
           ref = matches[:ref]
           filename = matches[:filename]
           startline = matches[:startline]
           startline = startline.to_i - index
           extname = Regexp.escape(File.extname(filename))
           basename = filename.sub(/#{extname}$/, '')
-          break
         end
-      end
 
-      data = ""
-
-      result.each_line do |line|
-        data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+        data << line.sub(prefix.to_s, '')
       end
 
       FoundBlob.new(

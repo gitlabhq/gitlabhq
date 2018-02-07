@@ -84,7 +84,7 @@ export default {
       return !this.showLess || (index < this.defaultRenderCount && this.showLess);
     },
     avatarUrl(user) {
-      return user.avatar || user.avatar_url;
+      return user.avatar || user.avatar_url || gon.default_avatar_url;
     },
     assigneeUrl(user) {
       return `${this.rootPath}${user.username}`;

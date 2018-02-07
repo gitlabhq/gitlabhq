@@ -95,28 +95,68 @@ describe Ci::Runner do
 
     subject { runner.online? }
 
-    context 'never contacted' do
-      before do
-        runner.contacted_at = nil
-      end
-
-      it { is_expected.to be_falsey }
+    before do
+      allow_any_instance_of(described_class).to receive(:cached_attribute).and_call_original
+      allow_any_instance_of(described_class).to receive(:cached_attribute)
+        .with(:platform).and_return("darwin")
     end
 
-    context 'contacted long time ago time' do
+    context 'no cache value' do
       before do
-        runner.contacted_at = 1.year.ago
+        stub_redis_runner_contacted_at(nil)
       end
 
-      it { is_expected.to be_falsey }
+      context 'never contacted' do
+        before do
+          runner.contacted_at = nil
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'contacted long time ago time' do
+        before do
+          runner.contacted_at = 1.year.ago
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'contacted 1s ago' do
+        before do
+          runner.contacted_at = 1.second.ago
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'contacted 1s ago' do
-      before do
-        runner.contacted_at = 1.second.ago
+    context 'with cache value' do
+      context 'contacted long time ago time' do
+        before do
+          runner.contacted_at = 1.year.ago
+          stub_redis_runner_contacted_at(1.year.ago.to_s)
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_truthy }
+      context 'contacted 1s ago' do
+        before do
+          runner.contacted_at = 50.minutes.ago
+          stub_redis_runner_contacted_at(1.second.ago.to_s)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    def stub_redis_runner_contacted_at(value)
+      Gitlab::Redis::SharedState.with do |redis|
+        cache_key = runner.send(:cache_attribute_key)
+        expect(redis).to receive(:get).with(cache_key)
+          .and_return({ contacted_at: value }.to_json).at_least(:once)
+      end
     end
   end
 
@@ -357,6 +397,50 @@ describe Ci::Runner do
       Gitlab::Redis::Queues.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
         expect(redis.get(runner_queue_key))
+      end
+    end
+  end
+
+  describe '#update_cached_info' do
+    let(:runner) { create(:ci_runner) }
+
+    subject { runner.update_cached_info(architecture: '18-bit') }
+
+    context 'when database was updated recently' do
+      before do
+        runner.contacted_at = Time.now
+      end
+
+      it 'updates cache' do
+        expect_redis_update
+
+        subject
+      end
+    end
+
+    context 'when database was not updated recently' do
+      before do
+        runner.contacted_at = 2.hours.ago
+      end
+
+      it 'updates database' do
+        expect_redis_update
+
+        expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
+          .and change { runner.reload.read_attribute(:architecture) }
+      end
+
+      it 'updates cache' do
+        expect_redis_update
+
+        subject
+      end
+    end
+
+    def expect_redis_update
+      Gitlab::Redis::SharedState.with do |redis|
+        redis_key = runner.send(:cache_attribute_key)
+        expect(redis).to receive(:set).with(redis_key, anything, any_args)
       end
     end
   end

@@ -141,7 +141,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.to_s.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
+    name.to_s.gsub(%r{\d+[\s:/\\]+\d+\s*}, '').strip
   end
 
   def failed_but_allowed?

@@ -226,4 +226,12 @@ module DiffHelper
 
     diffs.overflow?
   end
+
+  def diff_file_path_text(diff_file, max: 60)
+    path = diff_file.new_path
+
+    return path unless path.size > max && max > 3
+
+    "...#{path[-(max - 3)..-1]}"
+  end
 end

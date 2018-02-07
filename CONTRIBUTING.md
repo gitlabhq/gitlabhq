@@ -50,6 +50,9 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ## Contribute to GitLab
 
+For a first-time step-by-step guide to the contribution process, see
+["Contributing to GitLab"](https://about.gitlab.com/contributing/).
+
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
 
@@ -171,7 +174,7 @@ Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
-~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+~Geo, ~Gitaly, ~Platform, ~Monitoring, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.

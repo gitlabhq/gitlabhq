@@ -13,6 +13,8 @@ feature 'Gcp Cluster', :js do
   end
 
   context 'when user has signed with Google' do
+    let(:project_id) { 'test-project-1234' }
+
     before do
       allow_any_instance_of(Projects::Clusters::GcpController)
         .to receive(:token_in_session).and_return('token')
@@ -23,14 +25,14 @@ feature 'Gcp Cluster', :js do
     context 'when user has a GCP project with billing enabled' do
       before do
         allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
-        stub_google_project_billing_status
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return('true')
       end
 
       context 'when user does not have a cluster and visits cluster index page' do
         before do
           visit project_clusters_path(project)
 
-          click_link 'Add cluster'
+          click_link 'Add Kubernetes cluster'
           click_link 'Create on GKE'
         end
 
@@ -48,19 +50,19 @@ feature 'Gcp Cluster', :js do
 
             fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
             fill_in 'cluster_name', with: 'dev-cluster'
-            click_button 'Create cluster'
+            click_button 'Create Kubernetes cluster'
           end
 
           it 'user sees a cluster details page and creation status' do
-            expect(page).to have_content('Cluster is being created on Google Kubernetes Engine...')
+            expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
             Clusters::Cluster.last.provider.make_created!
 
-            expect(page).to have_content('Cluster was successfully created on Google Kubernetes Engine')
+            expect(page).to have_content('Kubernetes cluster was successfully created on Google Kubernetes Engine')
           end
 
           it 'user sees a error if something worng during creation' do
-            expect(page).to have_content('Cluster is being created on Google Kubernetes Engine...')
+            expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
             Clusters::Cluster.last.provider.make_errored!('Something wrong!')
 
@@ -70,7 +72,7 @@ feature 'Gcp Cluster', :js do
 
         context 'when user filled form with invalid parameters' do
           before do
-            click_button 'Create cluster'
+            click_button 'Create Kubernetes cluster'
           end
 
           it 'user sees a validation error' do
@@ -93,12 +95,12 @@ feature 'Gcp Cluster', :js do
 
         context 'when user disables the cluster' do
           before do
-            page.find(:css, '.js-toggle-cluster').click
+            page.find(:css, '.js-cluster-enable-toggle-area .js-project-feature-toggle').click
             page.within('#cluster-integration') { click_button 'Save changes' }
           end
 
           it 'user sees the successful message' do
-            expect(page).to have_content('Cluster was successfully updated.')
+            expect(page).to have_content('Kubernetes cluster was successfully updated.')
           end
         end
 
@@ -109,7 +111,7 @@ feature 'Gcp Cluster', :js do
           end
 
           it 'user sees the successful message' do
-            expect(page).to have_content('Cluster was successfully updated.')
+            expect(page).to have_content('Kubernetes cluster was successfully updated.')
             expect(cluster.reload.platform_kubernetes.namespace).to eq('my-namespace')
           end
         end
@@ -122,8 +124,8 @@ feature 'Gcp Cluster', :js do
           end
 
           it 'user sees creation form with the successful message' do
-            expect(page).to have_content('Cluster integration was successfully removed.')
-            expect(page).to have_link('Add cluster')
+            expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
+            expect(page).to have_link('Add Kubernetes cluster')
           end
         end
       end
@@ -131,15 +133,41 @@ feature 'Gcp Cluster', :js do
 
     context 'when user does not have a GCP project with billing enabled' do
       before do
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return('false')
+
         visit project_clusters_path(project)
 
-        click_link 'Add cluster'
+        click_link 'Add Kubernetes cluster'
         click_link 'Create on GKE'
+
+        fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+        fill_in 'cluster_name', with: 'dev-cluster'
+        click_button 'Create Kubernetes cluster'
       end
 
-      it 'user sees a check page' do
-        pending 'the frontend still has not been implemented'
-        expect(page).to have_link('Continue')
+      it 'user sees form with error' do
+        expect(page).to have_content('Please enable billing for one of your projects to be able to create a Kubernetes cluster, then try again.')
+      end
+    end
+
+    context 'when gcp billing status is not in redis' do
+      before do
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return(nil)
+
+        visit project_clusters_path(project)
+
+        click_link 'Add Kubernetes cluster'
+        click_link 'Create on GKE'
+
+        fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+        fill_in 'cluster_name', with: 'dev-cluster'
+        click_button 'Create Kubernetes cluster'
+      end
+
+      it 'user sees form with error' do
+        expect(page).to have_content('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
       end
     end
   end
@@ -148,7 +176,7 @@ feature 'Gcp Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Add cluster'
+      click_link 'Add Kubernetes cluster'
       click_link 'Create on GKE'
     end
 

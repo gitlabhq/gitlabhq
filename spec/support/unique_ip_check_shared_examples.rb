@@ -9,7 +9,7 @@ shared_context 'unique ips sign in limit' do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-    current_application_settings.update!(
+    Gitlab::CurrentSettings.update!(
       unique_ips_limit_enabled: true,
       unique_ips_limit_time_window: 10000
     )
@@ -34,7 +34,7 @@ end
 shared_examples 'user login operation with unique ip limit' do
   include_context 'unique ips sign in limit' do
     before do
-      current_application_settings.update!(unique_ips_limit_per_user: 1)
+      Gitlab::CurrentSettings.update!(unique_ips_limit_per_user: 1)
     end
 
     it 'allows user authenticating from the same ip' do
@@ -52,7 +52,7 @@ end
 shared_examples 'user login request with unique ip limit' do |success_status = 200|
   include_context 'unique ips sign in limit' do
     before do
-      current_application_settings.update!(unique_ips_limit_per_user: 1)
+      Gitlab::CurrentSettings.update!(unique_ips_limit_per_user: 1)
     end
 
     it 'allows user authenticating from the same ip' do

@@ -1,0 +1,5 @@
+---
+title: Fix error on empty query for Members API
+merge_request: 16235
+author:
+type: fixed

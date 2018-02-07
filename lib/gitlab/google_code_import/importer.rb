@@ -302,6 +302,7 @@ module Gitlab
           else
             "#{project.namespace.full_path}/#{name}##{id}"
           end
+
         text = "~~#{text}~~" if deleted
         text
       end
@@ -329,6 +330,7 @@ module Gitlab
         if content.blank?
           content = "*(No comment has been entered for this change)*"
         end
+
         body << content
 
         if updates.any?
@@ -352,6 +354,7 @@ module Gitlab
         if content.blank?
           content = "*(No description has been entered for this issue)*"
         end
+
         body << content
 
         if attachments.any?

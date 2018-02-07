@@ -1,6 +1,9 @@
+import axios from '../lib/utils/axios_utils';
 import Activities from '../activities';
 import ActivityCalendar from './activity_calendar';
 import { localTimeAgo } from '../lib/utils/datetime_utility';
+import { __ } from '../locale';
+import flash from '../flash';
 
 /**
  * UserTabs
@@ -131,18 +134,20 @@ export default class UserTabs {
   }
 
   loadTab(action, endpoint) {
-    return $.ajax({
-      beforeSend: () => this.toggleLoading(true),
-      complete: () => this.toggleLoading(false),
-      dataType: 'json',
-      url: endpoint,
-      success: (data) => {
+    this.toggleLoading(true);
+
+    return axios.get(endpoint)
+      .then(({ data }) => {
         const tabSelector = `div#${action}`;
         this.$parentEl.find(tabSelector).html(data.html);
         this.loaded[action] = true;
         localTimeAgo($('.js-timeago', tabSelector));
-      },
-    });
+
+        this.toggleLoading(false);
+      })
+      .catch(() => {
+        this.toggleLoading(false);
+      });
   }
 
   loadActivities() {
@@ -158,17 +163,15 @@ export default class UserTabs {
       utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${(utcOffset / 3600)}`;
     }
 
-    $.ajax({
-      dataType: 'json',
-      url: calendarPath,
-      success: (activityData) => {
+    axios.get(calendarPath)
+      .then(({ data }) => {
         $calendarWrap.html(CALENDAR_TEMPLATE);
         $calendarWrap.find('.calendar-hint').append(`(Timezone: ${utcFormatted})`);
 
         // eslint-disable-next-line no-new
-        new ActivityCalendar('.js-contrib-calendar', activityData, calendarActivitiesPath, utcOffset);
-      },
-    });
+        new ActivityCalendar('.js-contrib-calendar', data, calendarActivitiesPath, utcOffset);
+      })
+      .catch(() => flash(__('There was an error loading users activity calendar.')));
 
     // eslint-disable-next-line no-new
     new Activities();

@@ -32,18 +32,6 @@ describe 'User visits the profile preferences page' do
     end
   end
 
-  describe 'User changes their multi file editor preferences', :js do
-    it 'set the new_repo cookie when the option is ON' do
-      choose 'user_multi_file_on'
-      expect(get_cookie('new_repo')).not_to be_nil
-    end
-
-    it 'deletes the new_repo cookie when the option is OFF' do
-      choose 'user_multi_file_off'
-      expect(get_cookie('new_repo')).to be_nil
-    end
-  end
-
   describe 'User changes their default dashboard', :js do
     it 'creates a flash message' do
       select 'Starred Projects', from: 'user_dashboard'

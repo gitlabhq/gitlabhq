@@ -42,6 +42,18 @@ describe('Markdown component', () => {
     expect(vm.$el.querySelector('.markdown h1')).not.toBeNull();
   });
 
+  it('sanitizes output', (done) => {
+    Object.assign(cell, {
+      source: ['[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n'],
+    });
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('a')).toBeNull();
+
+      done();
+    });
+  });
+
   describe('katex', () => {
     beforeEach(() => {
       json = getJSONFixture('blob/notebook/math.json');

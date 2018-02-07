@@ -30,7 +30,7 @@ describe ProjectGroupLink do
     end
   end
 
-  describe "destroying a record", :truncate do
+  describe "destroying a record", :delete do
     it "refreshes group users' authorized projects" do
       project     = create(:project, :private)
       group       = create(:group)

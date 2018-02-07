@@ -45,6 +45,51 @@ We developed a number of utilities to ease development.
     [:hello, "world", :this, :crushes, "an entire", "hash"]
     ```
 
+## [`Override`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/override.rb)
+
+* This utility could help us check if a particular method would override
+  another method or not. It has the same idea of Java's `@Override` annotation
+  or Scala's `override` keyword. However we only do this check when
+  `ENV['STATIC_VERIFICATION']` is set to avoid production runtime overhead.
+  This is useful to check:
+
+    * If we have typos in overriding methods.
+    * If we renamed the overridden methods, making original overriding methods
+      overrides nothing.
+
+    Here's a simple example:
+
+    ``` ruby
+    class Base
+      def execute
+      end
+    end
+
+    class Derived < Base
+      extend ::Gitlab::Utils::Override
+
+      override :execute # Override check happens here
+      def execute
+      end
+    end
+    ```
+
+    This also works on modules:
+
+    ``` ruby
+    module Extension
+      extend ::Gitlab::Utils::Override
+
+      override :execute # Modules do not check this immediately
+      def execute
+      end
+    end
+
+    class Derived < Base
+      prepend Extension # Override check happens here, not in the module
+    end
+    ```
+
 ## [`StrongMemoize`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/strong_memoize.rb)
 
 * Memoize the value even if it is `nil` or `false`.

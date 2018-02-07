@@ -4,7 +4,7 @@ describe Issues::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:issue) { create(:issue, assignees: [user2]) }
+  let(:issue) { create(:issue, assignees: [user2], author: create(:user)) }
   let(:project) { issue.project }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 

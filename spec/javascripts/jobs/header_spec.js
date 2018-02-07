@@ -31,6 +31,7 @@ describe('Job details header', () => {
           email: 'foo@bar.com',
           avatar_url: 'link',
         },
+        started: '2018-01-08T09:48:27.319Z',
         new_issue_path: 'path',
       },
       isLoading: false,
@@ -43,15 +44,32 @@ describe('Job details header', () => {
     vm.$destroy();
   });
 
-  it('should render provided job information', () => {
-    expect(
-      vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
-    ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
+  describe('triggered job', () => {
+    beforeEach(() => {
+      vm = mountComponent(HeaderComponent, props);
+    });
+
+    it('should render provided job information', () => {
+      expect(
+        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+      ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
+    });
+
+    it('should render new issue link', () => {
+      expect(
+        vm.$el.querySelector('.js-new-issue').getAttribute('href'),
+      ).toEqual(props.job.new_issue_path);
+    });
   });
 
-  it('should render new issue link', () => {
-    expect(
-      vm.$el.querySelector('.js-new-issue').getAttribute('href'),
-    ).toEqual(props.job.new_issue_path);
+  describe('created job', () => {
+    it('should render created key', () => {
+      props.job.started = false;
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(
+        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+      ).toEqual('failed Job #123 created 3 weeks ago by Foo');
+    });
   });
 });

@@ -167,30 +167,26 @@ describe('Fly out sidebar navigation', () => {
 
   describe('mouseEnterTopItems', () => {
     beforeEach(() => {
-      jasmine.clock().install();
-
       el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute; top: 0; left: 100px; height: 200px;"></div>';
     });
 
-    afterEach(() => {
-      jasmine.clock().uninstall();
-    });
-
-    it('shows sub-items after 0ms if no menu is open', () => {
+    it('shows sub-items after 0ms if no menu is open', (done) => {
       mouseEnterTopItems(el);
 
       expect(
         getHideSubItemsInterval(),
       ).toBe(0);
 
-      jasmine.clock().tick(0);
+      setTimeout(() => {
+        expect(
+          el.querySelector('.sidebar-sub-level-items').style.display,
+        ).toBe('block');
 
-      expect(
-        el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('block');
+        done();
+      });
     });
 
-    it('shows sub-items after 300ms if a menu is currently open', () => {
+    it('shows sub-items after 300ms if a menu is currently open', (done) => {
       documentMouseMove({
         clientX: el.getBoundingClientRect().left,
         clientY: el.getBoundingClientRect().top,
@@ -203,17 +199,19 @@ describe('Fly out sidebar navigation', () => {
         clientY: el.getBoundingClientRect().top + 10,
       });
 
-      mouseEnterTopItems(el);
+      mouseEnterTopItems(el, 0);
 
       expect(
         getHideSubItemsInterval(),
       ).toBe(300);
 
-      jasmine.clock().tick(300);
+      setTimeout(() => {
+        expect(
+          el.querySelector('.sidebar-sub-level-items').style.display,
+        ).toBe('block');
 
-      expect(
-        el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('block');
+        done();
+      });
     });
   });
 

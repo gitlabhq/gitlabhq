@@ -44,7 +44,7 @@ module Gitlab
                             # branch1...branch2) From the git documentation:
                             # "git diff A...B" is equivalent to "git diff
                             # $(git-merge-base A B) B"
-                            repo.merge_base_commit(head, base)
+                            repo.merge_base(head, base)
                           end
 
           options ||= {}

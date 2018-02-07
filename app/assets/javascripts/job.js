@@ -1,14 +1,15 @@
 import _ from 'underscore';
+import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
-import { timeFor } from './lib/utils/datetime_utility';
 
 export default class Job {
   constructor(options) {
     this.timeout = null;
     this.state = null;
+    this.fetchingStatusFavicon = false;
     this.options = options || $('.js-build-options').data();
 
     this.pagePath = this.options.pagePath;
@@ -71,7 +72,6 @@ export default class Job {
       .off('resize.build')
       .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
 
-    this.updateArtifactRemoveDate();
     this.initAffixTopArea();
 
     this.getBuildTrace();
@@ -173,12 +173,23 @@ export default class Job {
   }
 
   getBuildTrace() {
-    return $.ajax({
-      url: `${this.pagePath}/trace.json`,
-      data: { state: this.state },
+    return axios.get(`${this.pagePath}/trace.json`, {
+      params: { state: this.state },
     })
-      .done((log) => {
-        setCiStatusFavicon(`${this.pagePath}/status.json`);
+      .then((res) => {
+        const log = res.data;
+
+        if (!this.fetchingStatusFavicon) {
+          this.fetchingStatusFavicon = true;
+
+          setCiStatusFavicon(`${this.pagePath}/status.json`)
+            .then(() => {
+              this.fetchingStatusFavicon = false;
+            })
+            .catch(() => {
+              this.fetchingStatusFavicon = false;
+            });
+        }
 
         if (log.state) {
           this.state = log.state;
@@ -206,7 +217,7 @@ export default class Job {
         }
         this.isLogComplete = log.complete;
 
-        if (!log.complete) {
+        if (log.complete === false) {
           this.timeout = setTimeout(() => {
             this.getBuildTrace();
           }, 4000);
@@ -219,7 +230,7 @@ export default class Job {
           visitUrl(this.pagePath);
         }
       })
-      .fail(() => {
+      .catch(() => {
         this.$buildRefreshAnimation.remove();
       })
       .then(() => {
@@ -261,16 +272,7 @@ export default class Job {
   sidebarOnClick() {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
-  // eslint-disable-next-line class-methods-use-this, consistent-return
-  updateArtifactRemoveDate() {
-    const $date = $('.js-artifacts-remove');
-    if ($date.length) {
-      const date = $date.text();
-      return $date.text(
-        timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3'))),
-      );
-    }
-  }
+
   // eslint-disable-next-line class-methods-use-this
   populateJobs(stage) {
     $('.build-job').hide();

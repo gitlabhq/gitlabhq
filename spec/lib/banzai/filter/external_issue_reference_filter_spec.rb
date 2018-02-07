@@ -49,7 +49,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter do
     it 'links with adjacent text' do
       doc = filter("Issue (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{reference}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{reference}</a>\.\)})
     end
 
     it 'includes a title attribute' do

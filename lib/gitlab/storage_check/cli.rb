@@ -59,9 +59,11 @@ module Gitlab
         if response.skipped_shards.any?
           warnings << "Skipped shards: #{response.skipped_shards.join(', ')}"
         end
+
         if response.failing_shards.any?
           warnings << "Failing shards: #{response.failing_shards.join(', ')}"
         end
+
         logger.warn(warnings.join(' - ')) if warnings.any?
       end
     end

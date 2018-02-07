@@ -1,5 +1,0 @@
----
-title: Expose project_id on /api/v4/pages/domains
-merge_request: 16200
-author: Luc Didry
-type: changed

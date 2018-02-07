@@ -16,6 +16,10 @@
 
   */
   export default {
+    components: {
+      loadingIcon,
+      icon,
+    },
     props: {
       fileName: {
         type: String,
@@ -52,10 +56,6 @@
         default: '',
       },
     },
-    components: {
-      loadingIcon,
-      icon,
-    },
     computed: {
       spriteHref() {
         const iconName = getIconForFile(this.fileName) || 'file';
@@ -75,9 +75,9 @@
   <span>
     <svg
       :class="[iconSizeClass, cssClasses]"
-      v-if="!loading && !folder">
-      <use 
-        v-bind="{'xlink:href':spriteHref}"/>
+      v-if="!loading && !folder"
+    >
+      <use v-bind="{ 'xlink:href':spriteHref }" />
     </svg>
     <icon
       v-if="!loading && folder"

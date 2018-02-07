@@ -1,6 +1,7 @@
 /* global dateFormat */
 
 import Pikaday from 'pikaday';
+import axios from './lib/utils/axios_utils';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 
 class DueDateSelect {
@@ -125,37 +126,30 @@ class DueDateSelect {
   }
 
   submitSelectedDate(isDropdown) {
-    return $.ajax({
-      type: 'PUT',
-      url: this.issueUpdateURL,
-      data: this.datePayload,
-      dataType: 'json',
-      beforeSend: () => {
-        const selectedDateValue = this.datePayload[this.abilityName].due_date;
-        const displayedDateStyle = this.displayedDate !== 'No due date' ? 'bold' : 'no-value';
+    const selectedDateValue = this.datePayload[this.abilityName].due_date;
+    const displayedDateStyle = this.displayedDate !== 'No due date' ? 'bold' : 'no-value';
 
-        this.$loading.removeClass('hidden').fadeIn();
+    this.$loading.removeClass('hidden').fadeIn();
 
+    if (isDropdown) {
+      this.$dropdown.trigger('loading.gl.dropdown');
+      this.$selectbox.hide();
+    }
+
+    this.$value.css('display', '');
+    this.$valueContent.html(`<span class='${displayedDateStyle}'>${this.displayedDate}</span>`);
+    this.$sidebarValue.html(this.displayedDate);
+
+    $('.js-remove-due-date-holder').toggleClass('hidden', selectedDateValue.length);
+
+    return axios.put(this.issueUpdateURL, this.datePayload)
+      .then(() => {
         if (isDropdown) {
-          this.$dropdown.trigger('loading.gl.dropdown');
-          this.$selectbox.hide();
+          this.$dropdown.trigger('loaded.gl.dropdown');
+          this.$dropdown.dropdown('toggle');
         }
-
-        this.$value.css('display', '');
-        this.$valueContent.html(`<span class='${displayedDateStyle}'>${this.displayedDate}</span>`);
-        this.$sidebarValue.html(this.displayedDate);
-
-        return selectedDateValue.length ?
-          $('.js-remove-due-date-holder').removeClass('hidden') :
-          $('.js-remove-due-date-holder').addClass('hidden');
-      },
-    }).done(() => {
-      if (isDropdown) {
-        this.$dropdown.trigger('loaded.gl.dropdown');
-        this.$dropdown.dropdown('toggle');
-      }
-      return this.$loading.fadeOut();
-    });
+        return this.$loading.fadeOut();
+      });
   }
 }
 

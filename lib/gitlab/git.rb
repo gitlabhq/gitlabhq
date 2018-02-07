@@ -6,12 +6,13 @@ module Gitlab
 
     CommandError = Class.new(StandardError)
     CommitError = Class.new(StandardError)
+    OSError = Class.new(StandardError)
 
     class << self
       include Gitlab::EncodingHelper
 
       def ref_name(ref)
-        encode!(ref).sub(/\Arefs\/(tags|heads|remotes)\//, '')
+        encode!(ref).sub(%r{\Arefs/(tags|heads|remotes)/}, '')
       end
 
       def branch_name(ref)

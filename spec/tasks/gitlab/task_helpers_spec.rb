@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'tasks/gitlab/task_helpers'
 
 class TestHelpersTest
   include Gitlab::TaskHelpers

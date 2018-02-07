@@ -123,7 +123,7 @@ roughly be as follows:
      scheduling jobs for newly created data.
   1. In a post-deployment migration you'll need to ensure no jobs remain. To do
      so you can use `Gitlab::BackgroundMigration.steal` to process any remaining
-     jobs before continueing.
+     jobs before continuing.
   1. Remove the old column.
 
 ## Example

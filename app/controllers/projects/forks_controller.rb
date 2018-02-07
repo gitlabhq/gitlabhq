@@ -2,6 +2,7 @@ class Projects::ForksController < Projects::ApplicationController
   include ContinueParams
 
   # Authorize
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
@@ -53,5 +54,9 @@ class Projects::ForksController < Projects::ApplicationController
     else
       render :error
     end
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42335')
   end
 end

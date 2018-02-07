@@ -47,6 +47,7 @@ module Backup
 
         if File.exist?(path_to_wiki_repo)
           progress.print " * #{display_repo_path(wiki)} ... "
+
           if empty_repo?(wiki)
             progress.puts " [SKIPPED]".color(:cyan)
           else

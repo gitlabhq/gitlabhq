@@ -151,11 +151,11 @@ describe CommitRange do
         .with(commit1, user)
         .and_return(true)
 
-      expect(commit1.has_been_reverted?(user, issue)).to eq(true)
+      expect(commit1.has_been_reverted?(user, issue.notes_with_associations)).to eq(true)
     end
 
-    it 'returns false a commit has not been reverted' do
-      expect(commit1.has_been_reverted?(user, issue)).to eq(false)
+    it 'returns false if the commit has not been reverted' do
+      expect(commit1.has_been_reverted?(user, issue.notes_with_associations)).to eq(false)
     end
   end
 end

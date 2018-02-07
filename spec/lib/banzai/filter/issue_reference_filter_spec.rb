@@ -288,7 +288,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)</a>\.\)})
     end
 
     it 'includes default classes' do
@@ -317,7 +317,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference_link}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>Reference</a>\.\)})
     end
 
     it 'includes default classes' do
@@ -346,7 +346,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference_link}.)")
 
-      expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>Reference</a>\.\)})
     end
 
     it 'includes default classes' do

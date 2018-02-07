@@ -100,8 +100,6 @@ const bindEvents = () => {
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 };
 
-document.addEventListener('DOMContentLoaded', bindEvents);
-
 export default {
   bindEvents,
   deriveProjectPathFromUrl,

@@ -6,16 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {
       labels: chartScope.labels,
       datasets: [{
-        fillColor: '#7f8fa4',
-        strokeColor: '#7f8fa4',
-        pointColor: '#7f8fa4',
+        fillColor: '#707070',
+        strokeColor: '#707070',
+        pointColor: '#707070',
         pointStrokeColor: '#EEE',
         data: chartScope.totalValues,
       },
       {
-        fillColor: '#44aa22',
-        strokeColor: '#44aa22',
-        pointColor: '#44aa22',
+        fillColor: '#1aaa55',
+        strokeColor: '#1aaa55',
+        pointColor: '#1aaa55',
         pointStrokeColor: '#fff',
         data: chartScope.successValues,
       },

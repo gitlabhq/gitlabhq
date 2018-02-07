@@ -13,20 +13,18 @@ describe 'User manages subscription', :js do
   end
 
   it 'toggles subscription' do
-    subscribe_button = find('.js-issuable-subscribe-button')
+    page.within('.js-issuable-subscribe-button') do
+      expect(page).to have_css 'button:not(.is-checked)'
+      find('button:not(.is-checked)').click
 
-    expect(subscribe_button).to have_content('Subscribe')
+      wait_for_requests
 
-    click_on('Subscribe')
+      expect(page).to have_css 'button.is-checked'
+      find('button.is-checked').click
 
-    wait_for_requests
+      wait_for_requests
 
-    expect(subscribe_button).to have_content('Unsubscribe')
-
-    click_on('Unsubscribe')
-
-    wait_for_requests
-
-    expect(subscribe_button).to have_content('Subscribe')
+      expect(page).to have_css 'button:not(.is-checked)'
+    end
   end
 end

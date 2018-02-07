@@ -17,7 +17,7 @@ describe Gitlab::Gfm::UploadsRewriter do
     end
 
     let(:text) do
-      "Text and #{image_uploader.to_markdown} and #{zip_uploader.to_markdown}"
+      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}"
     end
 
     describe '#rewrite' do

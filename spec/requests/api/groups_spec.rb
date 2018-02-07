@@ -30,6 +30,21 @@ describe API::Groups do
         expect(json_response)
           .to satisfy_one { |group| group['name'] == group1.name }
       end
+
+      it 'avoids N+1 queries' do
+        # Establish baseline
+        get api("/groups", admin)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/groups", admin)
+        end
+
+        create(:group)
+
+        expect do
+          get api("/groups", admin)
+        end.not_to exceed_query_limit(control)
+      end
     end
 
     context "when authenticated as user" do

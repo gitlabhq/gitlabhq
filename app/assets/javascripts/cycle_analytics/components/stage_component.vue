@@ -4,14 +4,20 @@
   import totalTime from './total_time_component.vue';
 
   export default {
-    props: {
-      items: Array,
-      stage: Object,
-    },
     components: {
       userAvatarImage,
       limitWarning,
       totalTime,
+    },
+    props: {
+      items: {
+        type: Array,
+        default: () => [],
+      },
+      stage: {
+        type: Object,
+        default: () => ({}),
+      },
     },
   };
 </script>
@@ -25,30 +31,43 @@
       <li
         v-for="(issue, i) in items"
         :key="i"
-        class="stage-event-item">
+        class="stage-event-item"
+      >
         <div class="item-details">
           <!-- FIXME: Pass an alt attribute here for accessibility -->
           <user-avatar-image :img-src="issue.author.avatarUrl"/>
           <h5 class="item-title issue-title">
-            <a class="issue-title" :href="issue.url">
+            <a
+              class="issue-title"
+              :href="issue.url"
+            >
               {{ issue.title }}
             </a>
           </h5>
-          <a :href="issue.url" class="issue-link">#{{ issue.iid }}</a>
+          <a
+            :href="issue.url"
+            class="issue-link"
+          >#{{ issue.iid }}</a>
           &middot;
           <span>
             {{ s__('OpenedNDaysAgo|Opened') }}
-            <a :href="issue.url" class="issue-date">{{ issue.createdAt }}</a>
+            <a
+              :href="issue.url"
+              class="issue-date"
+            >{{ issue.createdAt }}</a>
           </span>
           <span>
             {{ s__('ByAuthor|by') }}
-            <a :href="issue.author.webUrl" class="issue-author-link">
+            <a
+              :href="issue.author.webUrl"
+              class="issue-author-link"
+            >
               {{ issue.author.name }}
             </a>
           </span>
         </div>
         <div class="item-time">
-          <total-time :time="issue.totalTime"/>
+          <total-time :time="issue.totalTime" />
         </div>
       </li>
     </ul>

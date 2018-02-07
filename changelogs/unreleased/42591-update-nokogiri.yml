@@ -1,0 +1,5 @@
+---
+title: Update nokogiri to 1.8.2
+merge_request: 16807
+author:
+type: security

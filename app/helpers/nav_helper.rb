@@ -12,6 +12,7 @@ module NavHelper
         current_path?('projects/merge_requests/conflicts#show') ||
         current_path?('issues#show') ||
         current_path?('milestones#show')
+
       if cookies[:collapsed_gutter] == 'true'
         %w[page-gutter right-sidebar-collapsed]
       else

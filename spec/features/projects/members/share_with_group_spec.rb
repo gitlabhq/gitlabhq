@@ -122,7 +122,7 @@ feature 'Project > Members > Share with Group', :js do
       select2 group.id, from: '#link_group_id'
 
       fill_in 'expires_at_groups', with: (Time.now + 4.5.days).strftime('%Y-%m-%d')
-      page.find('body').click
+      click_on 'share-with-group-tab'
       find('.btn-create').click
     end
 

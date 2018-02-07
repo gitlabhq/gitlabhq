@@ -456,7 +456,7 @@ describe('Todos App', () => {
 });
 ```
 #### `mountComponent` helper
-There is an helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
+There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
 
 ```javascript
 import Vue from 'vue';

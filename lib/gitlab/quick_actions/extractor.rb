@@ -126,6 +126,7 @@ module Gitlab
             command << match_data[1] unless match_data[1].empty?
             commands << command
           end
+
           content = substitution.perform_substitution(self, content)
         end
 

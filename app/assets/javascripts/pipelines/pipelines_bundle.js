@@ -7,15 +7,15 @@ Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '#pipelines-list-vue',
+  components: {
+    pipelinesComponent,
+  },
   data() {
     const store = new PipelinesStore();
 
     return {
       store,
     };
-  },
-  components: {
-    pipelinesComponent,
   },
   render(createElement) {
     return createElement('pipelines-component', {

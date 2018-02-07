@@ -35,6 +35,15 @@ describe GroupDescendantsFinder do
       expect(finder.execute).to contain_exactly(project)
     end
 
+    it 'does not include projects shared with the group' do
+      project = create(:project, namespace: group)
+      other_project = create(:project)
+      other_project.project_group_links.create(group: group,
+                                               group_access: ProjectGroupLink::MASTER)
+
+      expect(finder.execute).to contain_exactly(project)
+    end
+
     context 'when archived is `true`' do
       let(:params) { { archived: 'true' } }
 
@@ -187,6 +196,17 @@ describe GroupDescendantsFinder do
             matching_project = create(:project, namespace: subgroup, name: 'Testproject')
 
             expect(finder.execute).to contain_exactly(subgroup, matching_project)
+          end
+
+          context 'with a small page size' do
+            let(:params) { { filter: 'test', per_page: 1 } }
+
+            it 'contains all the ancestors of a matching subgroup regardless the page size' do
+              subgroup = create(:group, :private, parent: group)
+              matching = create(:group, :private, name: 'testgroup', parent: subgroup)
+
+              expect(finder.execute).to contain_exactly(subgroup, matching)
+            end
           end
 
           it 'does not include the parent itself' do

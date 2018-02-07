@@ -2,7 +2,6 @@ require 'gon'
 require 'fogbugz'
 
 class ApplicationController < ActionController::Base
-  include Gitlab::CurrentSettings
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
@@ -28,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :can?, :current_application_settings
+  helper_method :can?
   helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
@@ -120,7 +119,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path.presence || new_user_session_path
+    Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
   end
 
   def can?(object, action, subject = :global)
@@ -147,6 +146,8 @@ class ApplicationController < ActionController::Base
       format.html do
         render file: Rails.root.join("public", "404"), layout: false, status: "404"
       end
+      # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
+      format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
     end
   end
@@ -266,15 +267,15 @@ class ApplicationController < ActionController::Base
   end
 
   def import_sources_enabled?
-    !current_application_settings.import_sources.empty?
+    !Gitlab::CurrentSettings.import_sources.empty?
   end
 
   def github_import_enabled?
-    current_application_settings.import_sources.include?('github')
+    Gitlab::CurrentSettings.import_sources.include?('github')
   end
 
   def gitea_import_enabled?
-    current_application_settings.import_sources.include?('gitea')
+    Gitlab::CurrentSettings.import_sources.include?('gitea')
   end
 
   def github_import_configured?
@@ -282,7 +283,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_import_enabled?
-    request.host != 'gitlab.com' && current_application_settings.import_sources.include?('gitlab')
+    request.host != 'gitlab.com' && Gitlab::CurrentSettings.import_sources.include?('gitlab')
   end
 
   def gitlab_import_configured?
@@ -290,7 +291,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bitbucket_import_enabled?
-    current_application_settings.import_sources.include?('bitbucket')
+    Gitlab::CurrentSettings.import_sources.include?('bitbucket')
   end
 
   def bitbucket_import_configured?
@@ -298,19 +299,19 @@ class ApplicationController < ActionController::Base
   end
 
   def google_code_import_enabled?
-    current_application_settings.import_sources.include?('google_code')
+    Gitlab::CurrentSettings.import_sources.include?('google_code')
   end
 
   def fogbugz_import_enabled?
-    current_application_settings.import_sources.include?('fogbugz')
+    Gitlab::CurrentSettings.import_sources.include?('fogbugz')
   end
 
   def git_import_enabled?
-    current_application_settings.import_sources.include?('git')
+    Gitlab::CurrentSettings.import_sources.include?('git')
   end
 
   def gitlab_project_import_enabled?
-    current_application_settings.import_sources.include?('gitlab_project')
+    Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

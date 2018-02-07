@@ -1,0 +1,5 @@
+---
+title: Makes forking protect default branch on completion
+merge_request:
+author:
+type: fixed

@@ -21,7 +21,8 @@ class FileMover
   end
 
   def update_markdown
-    updated_text = model.read_attribute(update_field).gsub(temp_file_uploader.to_markdown, uploader.to_markdown)
+    updated_text = model.read_attribute(update_field)
+                        .gsub(temp_file_uploader.markdown_link, uploader.markdown_link)
     model.update_attribute(update_field, updated_text)
 
     true
@@ -48,11 +49,11 @@ class FileMover
   end
 
   def uploader
-    @uploader ||= PersonalFileUploader.new(model, secret)
+    @uploader ||= PersonalFileUploader.new(model, secret: secret)
   end
 
   def temp_file_uploader
-    @temp_file_uploader ||= PersonalFileUploader.new(nil, secret)
+    @temp_file_uploader ||= PersonalFileUploader.new(nil, secret: secret)
   end
 
   def revert

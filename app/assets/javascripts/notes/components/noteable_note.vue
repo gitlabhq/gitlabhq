@@ -9,6 +9,12 @@
   import eventHub from '../event_hub';
 
   export default {
+    components: {
+      userAvatarLink,
+      noteHeader,
+      noteActions,
+      noteBody,
+    },
     props: {
       note: {
         type: Object,
@@ -21,12 +27,6 @@
         isDeleting: false,
         isRequesting: false,
       };
-    },
-    components: {
-      userAvatarLink,
-      noteHeader,
-      noteActions,
-      noteBody,
     },
     computed: {
       ...mapGetters([
@@ -51,6 +51,16 @@
         return `note_${this.note.id}`;
       },
     },
+
+    created() {
+      eventHub.$on('enterEditMode', ({ noteId }) => {
+        if (noteId === this.note.id) {
+          this.isEditing = true;
+          this.scrollToNoteIfNeeded($(this.$el));
+        }
+      });
+    },
+
     methods: {
       ...mapActions([
         'deleteNote',
@@ -126,14 +136,6 @@
         this.$refs.noteBody.$refs.noteForm.note = noteText;
       },
     },
-    created() {
-      eventHub.$on('enterEditMode', ({ noteId }) => {
-        if (noteId === this.note.id) {
-          this.isEditing = true;
-          this.scrollToNoteIfNeeded($(this.$el));
-        }
-      });
-    },
   };
 </script>
 
@@ -150,7 +152,7 @@
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
-          />
+        />
       </div>
       <div class="timeline-content">
         <div class="note-header">
@@ -159,7 +161,7 @@
             :created-at="note.created_at"
             :note-id="note.id"
             action-text="commented"
-            />
+          />
           <note-actions
             :author-id="author.id"
             :note-id="note.id"
@@ -170,7 +172,7 @@
             :report-abuse-path="note.report_abuse_path"
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
-            />
+          />
         </div>
         <note-body
           :note="note"
@@ -179,7 +181,7 @@
           @handleFormUpdate="formUpdateHandler"
           @cancelFormEdition="formCancelHandler"
           ref="noteBody"
-          />
+        />
       </div>
     </div>
   </li>

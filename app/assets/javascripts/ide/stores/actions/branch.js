@@ -10,14 +10,14 @@ export const getBranchData = (
         !state.projects[`${projectId}`].branches[branchId])
         || force) {
     service.getBranchData(`${projectId}`, branchId)
-      .then((data) => {
+      .then(({ data }) => {
         const { id } = data.commit;
         commit(types.SET_BRANCH, { projectPath: `${projectId}`, branchName: branchId, branch: data });
         commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
         resolve(data);
       })
       .catch(() => {
-        flash('Error loading branch data. Please try again.');
+        flash('Error loading branch data. Please try again.', 'alert', document, null, false, true);
         reject(new Error(`Branch not loaded - ${projectId}/${branchId}`));
       });
   } else {

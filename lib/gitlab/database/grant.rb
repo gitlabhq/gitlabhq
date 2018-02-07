@@ -12,30 +12,40 @@ module Gitlab
       # Returns true if the current user can create and execute triggers on the
       # given table.
       def self.create_and_execute_trigger?(table)
-        priv =
-          if Database.postgresql?
-            where(privilege_type: 'TRIGGER', table_name: table)
-              .where('grantee = user')
-          else
-            queries = [
-              Grant.select(1)
-                .from('information_schema.user_privileges')
-                .where("PRIVILEGE_TYPE = 'SUPER'")
-                .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')"),
+        if Database.postgresql?
+          # We _must not_ use quote_table_name as this will produce double
+          # quotes on PostgreSQL and for "has_table_privilege" we need single
+          # quotes.
+          quoted_table = connection.quote(table)
 
-              Grant.select(1)
-                .from('information_schema.schema_privileges')
-                .where("PRIVILEGE_TYPE = 'TRIGGER'")
-                .where('TABLE_SCHEMA = ?', Gitlab::Database.database_name)
-                .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')")
-            ]
-
-            union = SQL::Union.new(queries).to_sql
-
-            Grant.from("(#{union}) privs")
+          begin
+            from(nil)
+              .pluck("has_table_privilege(#{quoted_table}, 'TRIGGER')")
+              .first
+          rescue ActiveRecord::StatementInvalid
+            # This error is raised when using a non-existing table name. In this
+            # case we just want to return false as a user technically can't
+            # create triggers for such a table.
+            false
           end
+        else
+          queries = [
+            Grant.select(1)
+              .from('information_schema.user_privileges')
+              .where("PRIVILEGE_TYPE = 'SUPER'")
+              .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')"),
 
-        priv.any?
+            Grant.select(1)
+              .from('information_schema.schema_privileges')
+              .where("PRIVILEGE_TYPE = 'TRIGGER'")
+              .where('TABLE_SCHEMA = ?', Gitlab::Database.database_name)
+              .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')")
+          ]
+
+          union = SQL::Union.new(queries).to_sql
+
+          Grant.from("(#{union}) privs").any?
+        end
       end
     end
   end

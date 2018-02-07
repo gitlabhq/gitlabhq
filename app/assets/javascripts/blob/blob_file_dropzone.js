@@ -4,6 +4,8 @@ import { visitUrl } from '../lib/utils/url_utility';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
 import csrf from '../lib/utils/csrf';
 
+Dropzone.autoDiscover = false;
+
 function toggleLoading($el, $icon, loading) {
   if (loading) {
     $el.disable();

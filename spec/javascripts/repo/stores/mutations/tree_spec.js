@@ -57,7 +57,7 @@ describe('Multi-file store tree mutations', () => {
 
   describe('CREATE_TMP_TREE', () => {
     it('adds tree into parent tree', () => {
-      const tmpEntry = file();
+      const tmpEntry = file('tmpTree');
 
       mutations.CREATE_TMP_TREE(localState, {
         tmpEntry,

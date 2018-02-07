@@ -139,13 +139,12 @@ module Gitlab
       end
 
       def setup_label
-        return unless @relation_hash['type'] == 'GroupLabel'
-
         # If there's no group, move the label to a project label
-        if @relation_hash['group_id']
+        if @relation_hash['type'] == 'GroupLabel' && @relation_hash['group_id']
           @relation_hash['project_id'] = nil
           @relation_name = :group_label
         else
+          @relation_hash['group_id'] = nil
           @relation_hash['type'] = 'ProjectLabel'
         end
       end
@@ -267,6 +266,7 @@ module Gitlab
                             else
                               %w[title group_id]
                             end
+
         finder_hash = parsed_relation_hash.slice(*finder_attributes)
 
         if label?

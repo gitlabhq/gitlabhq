@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import environmentsComponent from '~/environments/components/environments_app.vue';
 import { environment, folder } from './mock_data';

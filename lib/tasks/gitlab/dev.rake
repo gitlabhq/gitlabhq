@@ -14,6 +14,7 @@ namespace :gitlab do
             puts "Must specify a branch as an argument".color(:red)
             exit 1
           end
+
           args
         end
 

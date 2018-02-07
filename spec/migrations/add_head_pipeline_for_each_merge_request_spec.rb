@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170508170547_add_head_pipeline_for_each_merge_request.rb')
 
-describe AddHeadPipelineForEachMergeRequest, :truncate do
+describe AddHeadPipelineForEachMergeRequest, :delete do
   include ProjectForksHelper
 
   let(:migration) { described_class.new }

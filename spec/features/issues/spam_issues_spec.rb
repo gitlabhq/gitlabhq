@@ -9,7 +9,7 @@ describe 'New issue', :js do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-    current_application_settings.update!(
+    Gitlab::CurrentSettings.update!(
       akismet_enabled: true,
       akismet_api_key: 'testkey',
       recaptcha_enabled: true,
@@ -33,6 +33,9 @@ describe 'New issue', :js do
       fill_in 'issue_description', with: 'issue description'
 
       click_button 'Submit issue'
+
+      # reCAPTCHA alerts when it can't contact the server, so just accept it and move on
+      page.driver.browser.switch_to.alert.accept
 
       # it is impossible to test recaptcha automatically and there is no possibility to fill in recaptcha
       # recaptcha verification is skipped in test environment and it always returns true

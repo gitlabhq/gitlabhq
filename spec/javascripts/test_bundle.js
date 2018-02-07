@@ -1,11 +1,12 @@
 /* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
-import _ from 'underscore';
 import 'jasmine-jquery';
 import '~/commons';
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+
+import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
@@ -31,7 +32,6 @@ jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
 
 // globalize common libraries
 window.$ = window.jQuery = $;
-window._ = _;
 
 // stub expected globals
 window.gl = window.gl || {};
@@ -60,6 +60,8 @@ beforeEach(() => {
   // restore interceptors so we have no remaining ones from previous tests
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
 });
+
+const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
@@ -95,6 +97,12 @@ describe('test errors', () => {
 
   it('has no Vue error', () => {
     expect(hasVueErrors).toBe(false);
+  });
+
+  it('restores axios adapter after mocking', () => {
+    if (getDefaultAdapter() !== axiosDefaultAdapter) {
+      fail('axios adapter is not restored! Did you forget a restore() on MockAdapter?');
+    }
   });
 });
 

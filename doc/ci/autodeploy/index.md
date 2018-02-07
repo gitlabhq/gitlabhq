@@ -37,6 +37,8 @@ during the deployment.
 
 We made a [simple guide](quick_start_guide.md) to using Auto Deploy with GitLab.com.
 
+For a demonstration of GitLab Auto Deploy, read the blog post [Auto Deploy from GitLab to an OpenShift Container Cluster](https://about.gitlab.com/2017/05/16/devops-containers-gitlab-openshift/)
+
 ## Supported templates
 
 The list of supported auto deploy templates is available in the

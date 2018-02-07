@@ -8,6 +8,7 @@ describe API::Runner do
   before do
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
+    allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)
   end
 
   describe '/api/v4/runners' do
@@ -408,7 +409,7 @@ describe API::Runner do
             expect { request_job }.to change { runner.reload.contacted_at }
           end
 
-          %w(name version revision platform architecture).each do |param|
+          %w(version revision platform architecture).each do |param|
             context "when info parameter '#{param}' is present" do
               let(:value) { "#{param}_value" }
 
@@ -638,7 +639,7 @@ describe API::Runner do
     end
 
     describe 'PUT /api/v4/jobs/:id' do
-      let(:job) { create(:ci_build, :pending, :trace, pipeline: pipeline, runner_id: runner.id) }
+      let(:job) { create(:ci_build, :pending, :trace_live, pipeline: pipeline, runner_id: runner.id) }
 
       before do
         job.run!
@@ -680,11 +681,17 @@ describe API::Runner do
       end
 
       context 'when tace is given' do
-        it 'updates a running build' do
-          update_job(trace: 'BUILD TRACE UPDATED')
+        it 'creates a trace artifact' do
+          allow_any_instance_of(BuildFinishedWorker).to receive(:perform).with(job.id) do
+            CreateTraceArtifactWorker.new.perform(job.id)
+          end
 
+          update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
+
+          job.reload
           expect(response).to have_gitlab_http_status(200)
-          expect(job.reload.trace.raw).to eq 'BUILD TRACE UPDATED'
+          expect(job.trace.raw).to eq 'BUILD TRACE UPDATED'
+          expect(job.job_artifacts_trace.open.read).to eq 'BUILD TRACE UPDATED'
         end
       end
 
@@ -713,7 +720,7 @@ describe API::Runner do
     end
 
     describe 'PATCH /api/v4/jobs/:id/trace' do
-      let(:job) { create(:ci_build, :running, :trace, runner_id: runner.id, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) }
       let(:headers) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
       let(:update_interval) { 10.seconds.to_i }
@@ -774,7 +781,7 @@ describe API::Runner do
 
         context 'when project for the build has been deleted' do
           let(:job) do
-            create(:ci_build, :running, :trace, runner_id: runner.id, pipeline: pipeline) do |job|
+            create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) do |job|
               job.project.update(pending_delete: true)
             end
           end
@@ -945,7 +952,7 @@ describe API::Runner do
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
-            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return('/')
           end
 
           context 'when job has been erased' do
@@ -1122,7 +1129,7 @@ describe API::Runner do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
-            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
+            allow(JobArtifactUploader).to receive(:workhorse_upload_path).and_return(@tmpdir)
           end
 
           after do
@@ -1142,6 +1149,7 @@ describe API::Runner do
                    else
                      { 'file' => file }
                    end
+
           post api("/jobs/#{job.id}/artifacts"), params, headers
         end
       end

@@ -25,7 +25,7 @@ It is possible to run end-to-end tests (eventually being run within a
 the `package-qa` manual action, that should be present in a merge request
 widget.
 
-Mmanual action that starts end-to-end tests is also available in merge requests
+Manual action that starts end-to-end tests is also available in merge requests
 in Omnibus GitLab project.
 
 Below you can read more about how to use it and how does it work.

@@ -238,6 +238,10 @@ class Commit
     notes.includes(:author)
   end
 
+  def merge_requests
+    @merge_requests ||= project.merge_requests.by_commit_sha(sha)
+  end
+
   def method_missing(method, *args, &block)
     @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
@@ -342,10 +346,11 @@ class Commit
     @merged_merge_request_hash[current_user]
   end
 
-  def has_been_reverted?(current_user, noteable = self)
+  def has_been_reverted?(current_user, notes_association = nil)
     ext = all_references(current_user)
+    notes_association ||= notes_with_associations
 
-    noteable.notes_with_associations.system.each do |note|
+    notes_association.system.each do |note|
       note.all_references(current_user, extractor: ext)
     end
 
@@ -367,19 +372,19 @@ class Commit
   #   uri_type('doc/README.md') # => :blob
   #   uri_type('doc/logo.png')  # => :raw
   #   uri_type('doc/api')       # => :tree
-  #   uri_type('not/found')     # => :nil
+  #   uri_type('not/found')     # => nil
   #
   # Returns a symbol
   def uri_type(path)
-    entry = @raw.rugged_tree_entry(path)
+    entry = @raw.tree_entry(path)
+    return unless entry
+
     if entry[:type] == :blob
       blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
       blob.image? || blob.video? ? :raw : :blob
     else
       entry[:type]
     end
-  rescue Rugged::TreeError
-    nil
   end
 
   def raw_diffs(*args)

@@ -135,9 +135,9 @@ Clicking on it you will be directed to the jobs page for that specific commit.
 
 ![Single commit jobs page](img/single_commit_status_pending.png)
 
-Notice that there are two jobs pending which are named after what we wrote in
-`.gitlab-ci.yml`. The red triangle indicates that there is no Runner configured
-yet for these jobs.
+Notice that there is a pending job which is named after what we wrote in
+`.gitlab-ci.yml`. "stuck" indicates that there is no Runner configured
+yet for this job.
 
 The next step is to configure a Runner so that it picks the pending jobs.
 

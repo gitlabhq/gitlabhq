@@ -1,0 +1,5 @@
+---
+title: Set timezone for karma to UTC
+merge_request: 16602
+author: Takuya Noguchi
+type: other

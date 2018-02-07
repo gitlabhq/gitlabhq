@@ -18,6 +18,12 @@
         'currentProjectId',
       ]),
     },
+    mounted() {
+      this.$refs.fileUpload.addEventListener('change', this.openFile);
+    },
+    beforeDestroy() {
+      this.$refs.fileUpload.removeEventListener('change', this.openFile);
+    },
     methods: {
       ...mapActions([
         'createTempEntry',
@@ -58,12 +64,6 @@
       startFileUpload() {
         this.$refs.fileUpload.click();
       },
-    },
-    mounted() {
-      this.$refs.fileUpload.addEventListener('change', this.openFile);
-    },
-    beforeDestroy() {
-      this.$refs.fileUpload.removeEventListener('change', this.openFile);
     },
   };
 </script>

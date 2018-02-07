@@ -1,5 +1,0 @@
----
-title: Gracefully handle garbled URIs in Markdown
-merge_request:
-author:
-type: fixed
