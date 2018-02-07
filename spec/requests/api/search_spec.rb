@@ -3,8 +3,13 @@ require 'spec_helper'
 describe API::Search do
   set(:user) { create(:user) }
   set(:group) { create(:group) }
+<<<<<<< HEAD
   let(:project) { create(:project, :public, name: 'awesome project', group: group) }
   let(:repo_project) { create(:project, :public, :repository, group: group) }
+=======
+  set(:project) { create(:project, :public, name: 'awesome project', group: group) }
+  set(:repo_project) { create(:project, :public, :repository, group: group) }
+>>>>>>> upstream/master
 
   shared_examples 'response is correct' do |schema:, size: 1|
     it { expect(response).to have_gitlab_http_status(200) }
@@ -13,6 +18,7 @@ describe API::Search do
     it { expect(json_response.size).to eq(size) }
   end
 
+<<<<<<< HEAD
   shared_examples 'elasticsearch disabled' do
     it 'returns 400 error for wiki_blobs scope' do
       get api(endpoint, user), scope: 'wiki_blobs', search: 'awesome'
@@ -81,6 +87,8 @@ describe API::Search do
     end
   end
 
+=======
+>>>>>>> upstream/master
   describe 'GET /search'  do
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -109,8 +117,11 @@ describe API::Search do
     context 'with correct params' do
       context 'for projects scope' do
         before do
+<<<<<<< HEAD
           project
 
+=======
+>>>>>>> upstream/master
           get api('/search', user), scope: 'projects', search: 'awesome'
         end
 
@@ -166,6 +177,7 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/snippets'
       end
+<<<<<<< HEAD
 
       context 'when elasticsearch is enabled' do
         it_behaves_like 'elasticsearch disabled' do
@@ -178,6 +190,8 @@ describe API::Search do
           let(:endpoint) { '/search' }
         end
       end
+=======
+>>>>>>> upstream/master
     end
   end
 
@@ -227,8 +241,11 @@ describe API::Search do
     context 'with correct params' do
       context 'for projects scope' do
         before do
+<<<<<<< HEAD
           project
 
+=======
+>>>>>>> upstream/master
           get api("/groups/#{group.id}/-/search", user), scope: 'projects', search: 'awesome'
         end
 
@@ -264,6 +281,7 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
+<<<<<<< HEAD
 
       context 'when elasticsearch is enabled' do
         it_behaves_like 'elasticsearch disabled' do
@@ -276,6 +294,8 @@ describe API::Search do
           let(:endpoint) { "/groups/#{group.id}/-/search" }
         end
       end
+=======
+>>>>>>> upstream/master
     end
   end
 

@@ -1,7 +1,10 @@
 module Lfs
   class UnlockFileService < BaseService
+<<<<<<< HEAD
     prepend EE::Lfs::UnlockFileService
 
+=======
+>>>>>>> upstream/master
     def execute
       unless can?(current_user, :push_code, project)
         raise Gitlab::GitAccess::UnauthorizedError, 'You have no permissions'

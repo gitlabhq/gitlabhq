@@ -365,13 +365,17 @@
 }
 
 .prometheus-state {
-  max-width: 430px;
+  max-width: 460px;
   margin: 10px auto;
   text-align: center;
 
   .state-svg {
     max-width: 80vw;
     margin: 0 auto;
+  }
+
+  .state-button {
+    padding: $gl-padding / 2;
   }
 }
 

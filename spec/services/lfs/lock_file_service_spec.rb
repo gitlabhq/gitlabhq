@@ -57,6 +57,7 @@ describe Lfs::LockFileService do
           expect(subject.execute[:status]).to eq(:error)
         end
       end
+<<<<<<< HEAD
 
       context 'when File Locking is available' do
         before do
@@ -77,6 +78,8 @@ describe Lfs::LockFileService do
           expect { subject.execute }.not_to change { PathLock.count }
         end
       end
+=======
+>>>>>>> upstream/master
     end
   end
 end

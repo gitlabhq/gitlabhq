@@ -600,12 +600,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#refs_hash" do
-    let(:refs) { repository.refs_hash }
+    subject { repository.refs_hash }
 
     it "should have as many entries as branches and tags" do
       expected_refs = SeedRepo::Repo::BRANCHES + SeedRepo::Repo::TAGS
       # We flatten in case a commit is pointed at by more than one branch and/or tag
-      expect(refs.values.flatten.size).to eq(expected_refs.size)
+      expect(subject.values.flatten.size).to eq(expected_refs.size)
+    end
+
+    it 'has valid commit ids as keys' do
+      expect(subject.keys).to all( match(Commit::COMMIT_SHA_PATTERN) )
     end
   end
 

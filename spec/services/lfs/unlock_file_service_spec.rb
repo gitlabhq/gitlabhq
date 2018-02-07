@@ -100,6 +100,7 @@ describe Lfs::UnlockFileService do
           end
         end
       end
+<<<<<<< HEAD
 
       describe 'File Locking integraction' do
         let(:params) { { id: lock.id } }
@@ -128,6 +129,8 @@ describe Lfs::UnlockFileService do
           end
         end
       end
+=======
+>>>>>>> upstream/master
     end
   end
 end

@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 20180206200543) do
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
+<<<<<<< HEAD
     t.boolean "mirror_available", default: true, null: false
     t.string "auto_devops_domain"
     t.integer "default_project_creation", default: 2, null: false
@@ -187,6 +188,10 @@ ActiveRecord::Schema.define(version: 20180206200543) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.boolean "authorized_keys_enabled", default: true, null: false
+    t.string "auto_devops_domain"
+>>>>>>> upstream/master
   end
 
   add_index "approvals", ["merge_request_id"], name: "index_approvals_on_merge_request_id", using: :btree
@@ -543,7 +548,7 @@ ActiveRecord::Schema.define(version: 20180206200543) do
     t.integer "lock_version"
   end
 
-  add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", using: :btree
+  add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
   add_index "ci_stages", ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
   add_index "ci_stages", ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
 
@@ -1303,6 +1308,7 @@ ActiveRecord::Schema.define(version: 20180206200543) do
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
+<<<<<<< HEAD
   create_table "ldap_group_links", force: :cascade do |t|
     t.string "cn"
     t.integer "group_access", null: false
@@ -1313,6 +1319,8 @@ ActiveRecord::Schema.define(version: 20180206200543) do
     t.string "filter"
   end
 
+=======
+>>>>>>> upstream/master
   create_table "lfs_file_locks", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "user_id", null: false

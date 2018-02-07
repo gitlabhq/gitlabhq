@@ -18,8 +18,11 @@ module API
         snippet_blobs: Entities::Snippet
       }.freeze
 
+<<<<<<< HEAD
       ELASTICSEARCH_SCOPES = %w(wiki_blobs blobs commits).freeze
 
+=======
+>>>>>>> upstream/master
       def search(additional_params = {})
         search_params = {
           scope: params[:scope],
@@ -35,12 +38,15 @@ module API
       end
 
       def process_results(results)
+<<<<<<< HEAD
         return [] if results.empty?
 
         if results.is_a?(Elasticsearch::Model::Response::Response)
           return paginate(results).map { |blob| Gitlab::Elastic::SearchResults.parse_search_result(blob) }
         end
 
+=======
+>>>>>>> upstream/master
         case params[:scope]
         when 'wiki_blobs'
           paginate(results).map { |blob| Gitlab::ProjectSearchResults.parse_search_result(blob) }
@@ -58,6 +64,7 @@ module API
       def entity
         SCOPE_ENTITY[params[:scope].to_sym]
       end
+<<<<<<< HEAD
 
       def check_elasticsearch_scope!
         if ELASTICSEARCH_SCOPES.include?(params[:scope]) && !elasticsearch?
@@ -68,6 +75,8 @@ module API
       def elasticsearch?
         Gitlab::CurrentSettings.elasticsearch_search?
       end
+=======
+>>>>>>> upstream/master
     end
 
     resource :search do
@@ -79,6 +88,7 @@ module API
         requires :scope,
           type: String,
           desc: 'The scope of search, available scopes:
+<<<<<<< HEAD
             projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs,
             if Elasticsearch enabled: wiki_blobs, blobs, commits',
           values: %w(projects issues merge_requests milestones snippet_titles snippet_blobs
@@ -88,6 +98,13 @@ module API
       get do
         check_elasticsearch_scope!
 
+=======
+            projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs',
+          values: %w(projects issues merge_requests milestones snippet_titles snippet_blobs)
+        use :pagination
+      end
+      get do
+>>>>>>> upstream/master
         present search, with: entity
       end
     end
@@ -102,6 +119,7 @@ module API
         requires :scope,
           type: String,
           desc: 'The scope of search, available scopes:
+<<<<<<< HEAD
             projects, issues, merge_requests, milestones,
             if Elasticsearch enabled: wiki_blobs, blobs, commits',
           values: %w(projects issues merge_requests milestones wiki_blobs blobs commits)
@@ -109,6 +127,13 @@ module API
       end
       get ':id/-/search' do
         check_elasticsearch_scope!
+=======
+            projects, issues, merge_requests, milestones',
+          values: %w(projects issues merge_requests milestones)
+        use :pagination
+      end
+      get ':id/-/search' do
+>>>>>>> upstream/master
         find_group!(params[:id])
 
         present search(group_id: params[:id]), with: entity

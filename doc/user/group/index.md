@@ -268,6 +268,7 @@ To enable this feature, navigate to the group settings page. Select
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
 #### Member Lock
+<<<<<<< HEAD
 
 > Available in [GitLab Starter](https://about.gitlab.com/products/) and
 [GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
@@ -291,12 +292,23 @@ and **Save group**.
 This will disable the option for all users who previously had permissions to
 operate project memberships so no new users can be added. Furthermore, any
 request to add new user to project through API will not be possible.
+=======
+
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+
+With **Member Lock** it is possible to lock membership in project to the
+level of members in group.
+
+Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
+>>>>>>> upstream/master
 
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
+<<<<<<< HEAD
 and [push rules](../../push_rules/push_rules.md) to your group
 (Push Rules is available in [GitLab Starter][ee].)
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
@@ -314,3 +326,9 @@ you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
 [ee]: https://about.gitlab.com/products/
+=======
+and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Starter](https://about.gitlab.com/products/).)
+- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
+for the group (GitLab admins only, available in [GitLab Starter][ee]).
+- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+>>>>>>> upstream/master

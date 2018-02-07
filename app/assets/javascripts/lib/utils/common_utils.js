@@ -1,5 +1,6 @@
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
+import { convertToCamelCase } from './text_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -393,6 +394,26 @@ export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
 
   return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+};
+
+/**
+ * This method takes in object with snake_case property names
+ * and returns new object with camelCase property names
+ *
+ * Reasoning for this method is to ensure consistent property
+ * naming conventions across JS code.
+ */
+export const convertObjectPropsToCamelCase = (obj = {}) => {
+  if (obj === null) {
+    return {};
+  }
+
+  return Object.keys(obj).reduce((acc, prop) => {
+    const result = acc;
+
+    result[convertToCamelCase(prop)] = obj[prop];
+    return acc;
+  }, {});
 };
 
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;

@@ -2,7 +2,7 @@ module Gitlab
   module Prometheus
     module Queries
       class DeploymentQuery < BaseQuery
-        def query(deployment_id)
+        def query(environment_id, deployment_id)
           Deployment.find_by(id: deployment_id).try do |deployment|
             environment_slug = deployment.environment.slug
 

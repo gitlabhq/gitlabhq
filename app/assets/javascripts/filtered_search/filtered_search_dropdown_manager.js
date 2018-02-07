@@ -73,11 +73,14 @@ class FilteredSearchDropdownManager {
         gl: 'DropdownEmoji',
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
+<<<<<<< HEAD
       weight: {
         reference: null,
         gl: 'DropdownNonUser',
         element: this.container.querySelector('#js-dropdown-weight'),
       },
+=======
+>>>>>>> upstream/master
     };
 
     supportedTokens.forEach((type) => {

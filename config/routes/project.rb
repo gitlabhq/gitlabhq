@@ -170,6 +170,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+<<<<<<< HEAD
       ## EE-specific
       resources :path_locks, only: [:index, :destroy] do
         collection do
@@ -181,6 +182,8 @@ constraints(ProjectUrlConstrainer.new) do
       get '/service_desk' => 'service_desk#show', as: :service_desk
       put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
 
+=======
+>>>>>>> upstream/master
       resource :variables, only: [:show, :update]
 
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do

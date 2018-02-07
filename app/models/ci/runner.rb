@@ -3,7 +3,10 @@ module Ci
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
     include RedisCacheable
+<<<<<<< HEAD
     prepend EE::Ci::Runner
+=======
+>>>>>>> upstream/master
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour

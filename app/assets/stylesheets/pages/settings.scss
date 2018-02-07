@@ -135,6 +135,17 @@
   padding-top: 0;
 }
 
+.integration-settings-form {
+  .well {
+    padding: $gl-padding / 2;
+    box-shadow: none;
+  }
+
+  .svg-container {
+    max-width: 150px;
+  }
+}
+
 .token-token-container {
   #impersonation-token-token {
     width: 80%;

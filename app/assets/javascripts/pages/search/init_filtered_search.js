@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export default ({ page, filteredSearchTokenKeys, stateFiltersSelector }) => {
   const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
   if (filteredSearchEnabled) {
@@ -6,6 +7,12 @@ export default ({ page, filteredSearchTokenKeys, stateFiltersSelector }) => {
       filteredSearchTokenKeys,
       stateFiltersSelector,
     });
+=======
+export default ({ page }) => {
+  const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
+  if (filteredSearchEnabled) {
+    const filteredSearchManager = new gl.FilteredSearchManager({ page });
+>>>>>>> upstream/master
     filteredSearchManager.setup();
   }
 };

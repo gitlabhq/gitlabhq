@@ -134,6 +134,41 @@ added directly to your configured cluster. Those applications are needed for
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications |
 
+## Getting the external IP address
+
+NOTE: **Note:**
+You need a load balancer installed in your cluster in order to obtain the
+external IP address with the following procedure. It can be deployed using the
+**Ingress** application described in the previous section.
+
+In order to publish your web application, you first need to find the external IP
+address associated to your load balancer.
+
+If the cluster is on GKE, click on the **Google Kubernetes Engine** link in the
+**Advanced settings**, or go directly to the
+[Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
+and select the proper project and cluster. Then click on **Connect** and execute
+the `gcloud` command in a local terminal or using the **Cloud Shell**.
+
+If the cluster is not on GKE, follow the specific instructions for your
+Kubernetes provider to configure `kubectl` with the right credentials.
+
+If you installed the Ingress using the **Applications** section, run the following command:
+
+```bash
+kubectl get svc --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+```
+
+Otherwise, you can list the IP addresses of all load balancers:
+
+```bash
+kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
+```
+
+The output is the external IP address of your cluster. This information can then
+be used to set up DNS entries and forwarding rules that allow external access to
+your deployed applications.
+
 ## Setting the environment scope
 
 When adding more than one clusters, you need to differentiate them with an

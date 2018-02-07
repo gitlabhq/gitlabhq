@@ -1,6 +1,9 @@
 class Projects::VariablesController < Projects::ApplicationController
+<<<<<<< HEAD
   prepend ::EE::Projects::VariablesController
 
+=======
+>>>>>>> upstream/master
   before_action :authorize_admin_build!
 
   def show

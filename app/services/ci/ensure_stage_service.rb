@@ -7,6 +7,8 @@ module Ci
   # stage.
   #
   class EnsureStageService < BaseService
+    EnsureStageError = Class.new(StandardError)
+
     def execute(build)
       @build = build
 
@@ -22,8 +24,16 @@ module Ci
 
     private
 
-    def ensure_stage
+    def ensure_stage(attempts: 2)
       find_stage || create_stage
+    rescue ActiveRecord::RecordNotUnique
+      retry if (attempts -= 1) > 0
+
+      raise EnsureStageError, <<~EOS
+        We failed to find or create a unique pipeline stage after 2 retries.
+        This should never happen and is most likely the result of a bug in
+        the database load balancing code.
+      EOS
     end
 
     def find_stage

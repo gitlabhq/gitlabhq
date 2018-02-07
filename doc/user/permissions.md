@@ -123,7 +123,11 @@ to learn more.
 
 ### File Locking permissions
 
+<<<<<<< HEAD
 > Available in [GitLab Premium](https://about.gitlab.com/products/) and [GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
+=======
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
+>>>>>>> upstream/master
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
@@ -283,6 +287,11 @@ Read through the documentation on [LDAP users permissions](../administration/aut
 
 ## Auditor users permissions
 
+<<<<<<< HEAD
+=======
+## Auditor users permissions
+
+>>>>>>> upstream/master
 > Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 An Auditor user should be able to access all projects and groups of a GitLab instance

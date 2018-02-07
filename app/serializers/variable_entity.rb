@@ -1,6 +1,9 @@
 class VariableEntity < Grape::Entity
+<<<<<<< HEAD
   prepend ::EE::VariableEntity
 
+=======
+>>>>>>> upstream/master
   expose :id
   expose :key
   expose :value

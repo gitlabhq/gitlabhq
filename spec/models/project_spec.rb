@@ -2471,7 +2471,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for(ref: 'ref') }
+    subject { project.reload.secret_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(
