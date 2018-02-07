@@ -320,11 +320,8 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
-<<<<<<< HEAD
 epic_issues:
 - issue
 - epic
-=======
->>>>>>> upstream/master
 lfs_file_locks:
 - user
