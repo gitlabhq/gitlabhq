@@ -284,7 +284,12 @@
         .help-block
           It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
           = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
-
+    .form-group
+      = f.label :auto_devops_domain, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
+        .help-block
+          = s_("AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.")
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox

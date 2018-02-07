@@ -147,6 +147,7 @@ module ApplicationSettingsHelper
       :akismet_enabled,
       :authorized_keys_enabled,
       :auto_devops_enabled,
+      :auto_devops_domain,
       :circuitbreaker_access_retries,
       :circuitbreaker_check_interval,
       :circuitbreaker_failure_count_threshold,
