@@ -140,7 +140,7 @@
         return noteableNote;
       },
       componentData(note) {
-        return note.isPlaceholderNote ? this.notes[0] : note;
+        return note.isPlaceholderNote ? this.note.notes[0] : note;
       },
       toggleDiscussionHandler() {
         this.toggleDiscussion({ discussionId: this.note.id });
