@@ -39,7 +39,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    if use_serializer?
+    if serialize_notes?
       render_json_with_notes_serializer
     else
       render json: {
@@ -56,7 +56,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    if use_serializer?
+    if serialize_notes?
       render_json_with_notes_serializer
     else
       render json: {
