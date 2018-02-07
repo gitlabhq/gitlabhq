@@ -19,11 +19,8 @@ GET /search
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs.
 
-<<<<<<< HEAD
 If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md).
 
-=======
->>>>>>> upstream/master
 The response depends on the requested scope.
 
 ### Scope: projects
