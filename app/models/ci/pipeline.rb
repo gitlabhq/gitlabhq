@@ -406,7 +406,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+        initialize_yaml_processor
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
