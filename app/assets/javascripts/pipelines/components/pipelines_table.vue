@@ -1,5 +1,7 @@
 <script>
   import pipelinesTableRowComponent from './pipelines_table_row.vue';
+  import stopConfirmationModal from './stop_confirmation_modal.vue';
+  import retryConfirmationModal from './retry_confirmation_modal.vue';
 
   /**
    * Pipelines Table Component.
@@ -9,6 +11,8 @@
   export default {
     components: {
       pipelinesTableRowComponent,
+      stopConfirmationModal,
+      retryConfirmationModal,
     },
     props: {
       pipelines: {
@@ -70,5 +74,7 @@
       :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"
     />
+    <stop-confirmation-modal />
+    <retry-confirmation-modal />
   </div>
 </template>
