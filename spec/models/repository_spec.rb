@@ -1777,13 +1777,13 @@ describe Repository do
 
   describe "Elastic search", :elastic do
     before do
-      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       Gitlab::Elastic::Helper.create_empty_index
     end
 
     after do
       Gitlab::Elastic::Helper.delete_index
-      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+      stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
     describe "class method find_commits_by_message_with_elastic" do

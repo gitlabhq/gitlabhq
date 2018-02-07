@@ -15,7 +15,7 @@ feature 'Group elastic search', :js do
   end
 
   before do
-    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
 
     project.add_master(user)
@@ -26,7 +26,7 @@ feature 'Group elastic search', :js do
 
   after do
     Gitlab::Elastic::Helper.delete_index
-    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   describe 'issue search' do

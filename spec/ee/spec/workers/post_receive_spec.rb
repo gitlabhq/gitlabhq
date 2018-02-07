@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe PostReceive do
@@ -46,7 +47,7 @@ describe PostReceive do
     end
 
     it 'triggers wiki index update when ElasticSearch is enabled' do
-      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
 
       expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
 

@@ -105,10 +105,6 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
-  validates :repository_size_limit,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
   validates :max_artifacts_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -118,14 +114,6 @@ class ApplicationSetting < ActiveRecord::Base
   validates :container_registry_token_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
-
-  validates :elasticsearch_url,
-            presence: { message: "can't be blank when indexing is enabled" },
-            if: :elasticsearch_indexing?
-
-  validates :elasticsearch_aws_region,
-            presence: { message: "can't be blank when using aws hosted elasticsearch" },
-            if: ->(setting) { setting.elasticsearch_indexing? && setting.elasticsearch_aws? }
 
   validates :repository_storages, presence: true
   validate :check_repository_storages
@@ -343,11 +331,7 @@ class ApplicationSetting < ActiveRecord::Base
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55,
-      slack_app_enabled: false,
-      slack_app_id: nil,
-      slack_app_secret: nil,
-      slack_app_verification_token: nil
+      gitaly_timeout_default: 55
     }
   end
 
@@ -361,36 +345,6 @@ class ApplicationSetting < ActiveRecord::Base
     else
       super
     end
-  end
-
-  def elasticsearch_indexing
-    License.feature_available?(:elastic_search) && super
-  end
-  alias_method :elasticsearch_indexing?, :elasticsearch_indexing
-
-  def elasticsearch_search
-    License.feature_available?(:elastic_search) && super
-  end
-  alias_method :elasticsearch_search?, :elasticsearch_search
-
-  def elasticsearch_url
-    read_attribute(:elasticsearch_url).split(',').map(&:strip)
-  end
-
-  def elasticsearch_url=(values)
-    cleaned = values.split(',').map {|url| url.strip.gsub(%r{/*\z}, '') }
-
-    write_attribute(:elasticsearch_url, cleaned.join(','))
-  end
-
-  def elasticsearch_config
-    {
-      url:                   elasticsearch_url,
-      aws:                   elasticsearch_aws,
-      aws_access_key:        elasticsearch_aws_access_key,
-      aws_secret_access_key: elasticsearch_aws_secret_access_key,
-      aws_region:            elasticsearch_aws_region
-    }
   end
 
   def home_page_url_column_exists?

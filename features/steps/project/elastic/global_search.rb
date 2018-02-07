@@ -1,4 +1,4 @@
-require Rails.root.join('spec', 'support', 'stub_configuration')
+require_dependency Rails.root.join('spec', 'support', 'stub_configuration')
 
 class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
   include SharedAuthentication
@@ -8,7 +8,7 @@ class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
   include StubConfiguration
 
   before do
-    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
 
     Gitlab::Elastic::Helper.create_empty_index
   end
@@ -16,7 +16,7 @@ class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
   after do
     Gitlab::Elastic::Helper.delete_index
 
-    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   step 'project has all data available for the search' do

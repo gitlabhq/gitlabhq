@@ -1825,7 +1825,7 @@ describe Project do
 
       context 'elasticsearch indexing disabled' do
         before do
-          stub_application_setting(elasticsearch_indexing: false)
+          stub_ee_application_setting(elasticsearch_indexing: false)
         end
 
         it 'does not index the repository' do
@@ -1841,7 +1841,7 @@ describe Project do
         let(:project) { create(:project, :import_started, import_type: :github) }
 
         before do
-          stub_application_setting(elasticsearch_indexing: true)
+          stub_ee_application_setting(elasticsearch_indexing: true)
         end
 
         context 'no index status' do
