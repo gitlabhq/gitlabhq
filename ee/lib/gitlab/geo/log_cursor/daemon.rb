@@ -236,6 +236,19 @@ module Gitlab
           file_registry_job_artifacts.delete_all
         end
 
+        def handle_upload_deleted_event(event, created_at)
+          logger.event_info(
+            created_at,
+            message: 'Deleted upload file',
+            upload_id: event.upload_id,
+            upload_type: event.upload_type,
+            file_path: event.file_path,
+            model_id: event.model_id,
+            model_type: event.model_type)
+
+          ::Geo::FileRegistry.where(file_id: event.upload_id, file_type: event.upload_type).delete_all
+        end
+
         def find_or_initialize_registry(project_id, attrs)
           registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
           registry.assign_attributes(attrs)
