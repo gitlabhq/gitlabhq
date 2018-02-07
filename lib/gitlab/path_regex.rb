@@ -183,13 +183,10 @@ module Gitlab
 
     def full_project_git_path_regex
       @full_project_git_path_regex ||= %r{\A\/?(?<namespace_path>#{full_namespace_route_regex})\/(?<project_path>#{project_route_regex})\.git\z}
-<<<<<<< HEAD
     end
 
     def full_namespace_format_regex
       @namespace_format_regex ||= /A#{FULL_NAMESPACE_FORMAT_REGEX}\z/.freeze
-=======
->>>>>>> upstream/master
     end
 
     def namespace_format_regex
