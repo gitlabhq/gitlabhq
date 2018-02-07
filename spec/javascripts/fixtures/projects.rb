@@ -18,10 +18,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
 
   before do
     # EE-specific start
-<<<<<<< HEAD
     stub_licensed_features(variable_environment_scope: true)
-=======
->>>>>>> upstream/master
     # EE specific end
     project.add_master(admin)
     sign_in(admin)
