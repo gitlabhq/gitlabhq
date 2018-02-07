@@ -22,7 +22,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   private
 
   def render_discussion
-    if use_serializer?
+    if serialize_notes?
       # TODO - It is not needed to serialize notes when resolving
       # or unresolving discussions. We should remove this behavior
       # passing a parameter to DiscussionEntity to return an empty array

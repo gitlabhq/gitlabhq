@@ -21,11 +21,10 @@ export default {
       if (isDiscussion && isInMRPage()) {
         noteData.resolvable = note.resolvable;
         noteData.resolved = false;
-        noteData.resolve_path = `${document.location.pathname}/discussions/${note.discussion_id}/resolve`;
-        noteData.resolve_with_issue_path = `${window.gl.mrWidgetData.create_issue_to_resolve_discussions_path}&discussion_to_resolve=${note.discussion_id}`;
+        noteData.resolve_path = note.resolve_path;
+        noteData.resolve_with_issue_path = note.resolve_with_issue_path;
       }
 
-      state.notes.push(noteData);
       document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },

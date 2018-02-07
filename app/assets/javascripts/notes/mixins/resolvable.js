@@ -1,4 +1,5 @@
-/* global Flash */
+import Flash from '~/flash';
+import { __ } from '~/locale';
 
 export default {
   props: {
@@ -12,7 +13,7 @@ export default {
       const { notes, resolved } = this.note;
 
       if (notes) { // Decide resolved state using store. Only valid for discussions.
-        return notes.reduce((state, note) => state && note.resolved && !note.system, true);
+        return notes.every(note => note.resolved && !note.system);
       }
 
       return resolved;
@@ -20,12 +21,12 @@ export default {
     resolveButtonTitle() {
       if (this.updatedNoteBody) {
         if (this.discussionResolved) {
-          return 'Comment and unresolve discussion';
+          return __('Comment and unresolve discussion');
         }
 
-        return 'Comment and resolve discussion';
+        return __('Comment and resolve discussion');
       }
-      return this.discussionResolved ? 'Unresolve discussion' : 'Resolve discussion';
+      return this.discussionResolved ? __('Unresolve discussion') : __('Resolve discussion');
     },
   },
   methods: {
@@ -40,7 +41,8 @@ export default {
           this.isResolving = false;
         })
         .catch(() => {
-          const msg = 'Something went wrong while resolving this discussion. Please try again.';
+          this.isResolving = false;
+          const msg = __('Something went wrong while resolving this discussion. Please try again.');
           Flash(msg, 'alert', this.$el);
         });
     },

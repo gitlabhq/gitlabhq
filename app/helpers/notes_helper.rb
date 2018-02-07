@@ -179,7 +179,7 @@ module NotesHelper
     cookies[:vue_mr_discussions] == 'true'
   end
 
-  def use_serializer?
+  def serialize_notes?
     has_vue_discussions_cookie? && !params['html']
   end
 end
