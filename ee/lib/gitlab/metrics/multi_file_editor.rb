@@ -9,7 +9,7 @@ module Gitlab
 
       def log
         return unless ::License.feature_available?(:ide)
-
+        ::Gitlab::AppLogger.info({test: 1})
         Rails.logger.info("Web editor usage - #{metric_info}")
       end
 
