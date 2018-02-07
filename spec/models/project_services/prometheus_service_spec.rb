@@ -75,6 +75,25 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#matched_metrics' do
+    let(:matched_metrics_query) { Gitlab::Prometheus::Queries::MatchedMetricsQuery }
+    let(:client) { double(:client, label_values: nil) }
+
+    context 'with valid data' do
+      subject { service.matched_metrics }
+
+      before do
+        allow(service).to receive(:client).and_return(client)
+        synchronous_reactive_cache(service)
+      end
+
+      it 'returns reactive data' do
+        expect(subject[:success]).to be_truthy
+        expect(subject[:data]).to eq([])
+      end
+    end
+  end
+
   describe '#deployment_metrics' do
     let(:deployment) { build_stubbed(:deployment) }
     let(:deployment_query) { Gitlab::Prometheus::Queries::DeploymentQuery }

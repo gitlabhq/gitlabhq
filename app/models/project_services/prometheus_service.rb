@@ -91,16 +91,17 @@ class PrometheusService < MonitoringService
   end
 
   def matched_metrics
-    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, nil, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
   end
 
   # Cache metrics for specific environment
-  def calculate_reactive_cache(query_class_name, environment_id, *args)
+  def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
 
+    environment_id = args.first
     client = client(environment_id)
 
-    data = Kernel.const_get(query_class_name).new(client).query(environment_id, *args)
+    data = Kernel.const_get(query_class_name).new(client).query(*args)
     {
       success: true,
       data: data,
