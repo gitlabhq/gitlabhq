@@ -96,7 +96,9 @@ constraints(GroupUrlConstrainer.new) do
       path
     end
     get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
+
     ## EE-specific
+    resource :roadmap, only: [:show], controller: 'roadmap'
   end
 
   scope(path: '*id',
