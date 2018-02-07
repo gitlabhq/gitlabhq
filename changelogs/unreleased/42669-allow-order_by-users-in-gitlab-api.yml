@@ -1,0 +1,5 @@
+---
+title: Add sorting options for /users API (admin only)
+merge_request: 16945
+author:
+type: added

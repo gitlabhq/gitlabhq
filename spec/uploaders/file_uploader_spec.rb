@@ -40,7 +40,7 @@ describe FileUploader do
   end
 
   describe 'initialize' do
-    let(:uploader) { described_class.new(double, 'secret') }
+    let(:uploader) { described_class.new(double, secret: 'secret') }
 
     it 'accepts a secret parameter' do
       expect(described_class).not_to receive(:generate_secret)
@@ -48,10 +48,60 @@ describe FileUploader do
     end
   end
 
+  describe 'callbacks' do
+    describe '#prune_store_dir after :remove' do
+      before do
+        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
+      end
+
+      def store_dir
+        File.expand_path(uploader.store_dir, uploader.root)
+      end
+
+      it 'is called' do
+        expect(uploader).to receive(:prune_store_dir).once
+
+        uploader.remove!
+      end
+
+      it 'prune the store directory' do
+        expect { uploader.remove! }
+          .to change { File.exist?(store_dir) }.from(true).to(false)
+      end
+    end
+  end
+
   describe '#secret' do
     it 'generates a secret if none is provided' do
       expect(described_class).to receive(:generate_secret).and_return('secret')
       expect(uploader.secret).to eq('secret')
+    end
+  end
+
+  describe '#upload=' do
+    let(:secret) { SecureRandom.hex }
+    let(:upload) { create(:upload, :issuable_upload, secret: secret, filename: 'file.txt') }
+
+    it 'handles nil' do
+      expect(uploader).not_to receive(:apply_context!)
+
+      uploader.upload = nil
+    end
+
+    it 'extract the uploader context from it' do
+      expect(uploader).to receive(:apply_context!).with(a_hash_including(secret: secret, identifier: 'file.txt'))
+
+      uploader.upload = upload
+    end
+
+    context 'uploader_context is empty' do
+      it 'fallbacks to regex based extraction' do
+        expect(upload).to receive(:uploader_context).and_return({})
+
+        uploader.upload = upload
+        expect(uploader.secret).to eq(secret)
+        expect(uploader.instance_variable_get(:@identifier)).to eq('file.txt')
+      end
     end
   end
 end

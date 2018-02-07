@@ -16,7 +16,7 @@ There are many places where file uploading is used, according to contexts:
   - Project avatars
   - Issues/MR/Notes Markdown attachments
   - Issues/MR/Notes Legacy Markdown attachments
-  - CI Build Artifacts
+  - CI Artifacts (archive, metadata, trace)
   - LFS Objects
 
 
@@ -35,7 +35,7 @@ they are still not 100% standardized. You can see them below:
 | Project avatars                       | yes    | uploads/-/system/project/avatar/:id/:filename               | `AvatarUploader`       | Project    |
 | Issues/MR/Notes Markdown attachments        | yes    | uploads/:project_path_with_namespace/:random_hex/:filename  | `FileUploader`         | Project    |
 | Issues/MR/Notes Legacy Markdown attachments | no     | uploads/-/system/note/attachment/:id/:filename              | `AttachmentUploader`   | Note       |
-| CI Artifacts (CE)                     | yes    | shared/artifacts/:year_:month/:project_id/:id               | `ArtifactUploader`     | Ci::Build  |
+| CI Artifacts (CE)                     | yes    | shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id (:disk_hash is SHA256 digest of project_id) | `JobArtifactUploader`  | Ci::JobArtifact  |
 | LFS Objects  (CE)                     | yes    | shared/lfs-objects/:hex/:hex/:object_hash                   | `LfsObjectUploader`    | LfsObject  |
 
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`

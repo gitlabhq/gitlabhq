@@ -41,7 +41,7 @@ class Projects::ClustersController < Projects::ApplicationController
           head :no_content
         end
         format.html do
-          flash[:notice] = "Cluster was successfully updated."
+          flash[:notice] = _('Kubernetes cluster was successfully updated.')
           redirect_to project_cluster_path(project, cluster)
         end
       end
@@ -55,10 +55,10 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def destroy
     if cluster.destroy
-      flash[:notice] = "Cluster integration was successfully removed."
+      flash[:notice] = _('Kubernetes cluster integration was successfully removed.')
       redirect_to project_clusters_path(project), status: 302
     else
-      flash[:notice] = "Cluster integration was not removed."
+      flash[:notice] = _('Kubernetes cluster integration was not removed.')
       render :show
     end
   end

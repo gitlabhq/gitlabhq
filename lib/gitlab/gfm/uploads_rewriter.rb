@@ -46,7 +46,7 @@ module Gitlab
       private
 
       def find_file(project, secret, file)
-        uploader = FileUploader.new(project, secret)
+        uploader = FileUploader.new(project, secret: secret)
         uploader.retrieve_from_store!(file)
         uploader.file
       end

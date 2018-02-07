@@ -69,6 +69,10 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
+# Before updating this gem, check if
+# https://github.com/gollum/gollum-lib/pull/292 has been merged.
+# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
+# in config/initializers/gollum.rb
 gem 'gollum-lib', '~> 4.2', require: false
 
 # Before updating this gem, check if
@@ -407,6 +411,8 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.83.0', require: 'gitaly'
+# Locked until https://github.com/google/protobuf/issues/4210 is closed
+gem 'google-protobuf', '= 3.5.1'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

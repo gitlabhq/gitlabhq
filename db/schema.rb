@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180202111106) do
+ActiveRecord::Schema.define(version: 20180206200543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1707,7 +1707,7 @@ ActiveRecord::Schema.define(version: 20180202111106) do
     t.integer "project_id", null: false
     t.integer "target_id"
     t.string "target_type", null: false
-    t.integer "author_id"
+    t.integer "author_id", null: false
     t.integer "action", null: false
     t.string "state", null: false
     t.datetime "created_at"
@@ -1751,6 +1751,8 @@ ActiveRecord::Schema.define(version: 20180202111106) do
     t.string "model_type"
     t.string "uploader", null: false
     t.datetime "created_at", null: false
+    t.string "mount_point"
+    t.string "secret"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
@@ -1768,6 +1770,14 @@ ActiveRecord::Schema.define(version: 20180202111106) do
   end
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
+
+  create_table "user_callouts", force: :cascade do |t|
+    t.integer "feature_name", null: false
+    t.integer "user_id", null: false
+  end
+
+  add_index "user_callouts", ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true, using: :btree
+  add_index "user_callouts", ["user_id"], name: "index_user_callouts_on_user_id", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -2037,9 +2047,13 @@ ActiveRecord::Schema.define(version: 20180202111106) do
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
+  add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
+  add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade
+  add_foreign_key "todos", "users", name: "fk_d94154aa95", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade

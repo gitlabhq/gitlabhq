@@ -24,7 +24,7 @@ module RecordsUploads
         uploads.where(path: upload_path).delete_all
         upload.destroy! if upload
 
-        self.upload = build_upload_from_uploader(self)
+        self.upload = build_upload
         upload.save!
       end
     end
@@ -39,12 +39,13 @@ module RecordsUploads
       Upload.order(id: :desc).where(uploader: self.class.to_s)
     end
 
-    def build_upload_from_uploader(uploader)
+    def build_upload
       Upload.new(
-        size: uploader.file.size,
-        path: uploader.upload_path,
-        model: uploader.model,
-        uploader: uploader.class.to_s
+        uploader: self.class.to_s,
+        size: file.size,
+        path: upload_path,
+        model: model,
+        mount_point: mounted_as
       )
     end
 
