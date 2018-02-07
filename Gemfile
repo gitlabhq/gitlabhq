@@ -411,6 +411,8 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.83.0', require: 'gitaly'
+# Locked until https://github.com/google/protobuf/issues/4210 is closed
+gem 'google-protobuf', '= 3.5.1'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

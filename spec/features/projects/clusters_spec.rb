@@ -17,7 +17,7 @@ feature 'Clusters', :js do
     end
 
     it 'sees empty state' do
-      expect(page).to have_link('Add cluster')
+      expect(page).to have_link('Add Kubernetes cluster')
       expect(page).to have_selector('.empty-state')
     end
   end
@@ -82,7 +82,7 @@ feature 'Clusters', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Add cluster'
+      click_link 'Add Kubernetes cluster'
       click_link 'Create on GKE'
     end
 

@@ -15,6 +15,8 @@ class FileUploader < GitlabUploader
 
   storage :file
 
+  after :remove, :prune_store_dir
+
   def self.root
     File.join(options.storage_path, 'uploads')
   end
@@ -138,6 +140,10 @@ class FileUploader < GitlabUploader
     super.tap do |upload|
       upload.secret = secret
     end
+  end
+
+  def prune_store_dir
+    storage.delete_dir!(store_dir) # only remove when empty
   end
 
   def markdown_name
