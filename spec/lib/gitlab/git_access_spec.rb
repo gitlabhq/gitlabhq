@@ -963,20 +963,6 @@ describe Gitlab::GitAccess do
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
-<<<<<<< HEAD
-
-    context "when license blocks changes" do
-      before do
-        create(:protected_branch, name: 'feature', project: project)
-        allow(License).to receive(:block_changes?).and_return(true)
-      end
-
-      # Only check admin; if an admin can't do it, other roles can't either
-      matrix = permissions_matrix[:admin].dup
-      matrix.each { |key, _| matrix[key] = false }
-
-      run_permission_checks(admin: matrix)
-    end
 
     describe "push_rule_check" do
       let(:start_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
@@ -1129,8 +1115,6 @@ describe Gitlab::GitAccess do
         end
       end
     end
-=======
->>>>>>> upstream/master
   end
 
   describe 'build authentication abilities' do
