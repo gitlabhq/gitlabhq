@@ -30,12 +30,9 @@ class FilteredSearchManager {
       issues: 'issue-recent-searches',
       merge_requests: 'merge-request-recent-searches',
     };
-<<<<<<< HEAD
 
     // EE specific setup
     this.initEE();
-=======
->>>>>>> upstream/master
 
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
