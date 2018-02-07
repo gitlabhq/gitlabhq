@@ -249,7 +249,7 @@ FactoryBot.define do
       project.create_prometheus_service(
         active: true,
         properties: {
-          api_url: 'https://prometheus.example.com',
+          api_url: 'https://prometheus.example.com/',
           manual_configuration: true
         }
       )

@@ -28,7 +28,7 @@ class PrometheusService < MonitoringService
   end
 
   def editable?
-    !prometheus_installed? || manual_configuration?
+    manual_configuration? || !prometheus_installed?
   end
 
   def title
@@ -126,7 +126,8 @@ class PrometheusService < MonitoringService
   end
 
   def prometheus_installed?
-    return false if template? || !project
+    return false if template?
+    return false unless project
 
     project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
   end
@@ -157,7 +158,7 @@ class PrometheusService < MonitoringService
   end
 
   def synchronize_service_state!
-    self.active = prometheus_installed? || self.manual_configuration?
+    self.active = prometheus_installed? || manual_configuration?
 
     true
   end
