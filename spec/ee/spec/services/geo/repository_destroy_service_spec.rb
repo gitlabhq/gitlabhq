@@ -28,6 +28,8 @@ describe Geo::RepositoryDestroyService do
     end
 
     context 'legacy storage project' do
+      let(:project) { create(:project_empty_repo, :legacy_storage) }
+
       it 'removes the repository from disk' do
         project.delete
 
@@ -50,8 +52,6 @@ describe Geo::RepositoryDestroyService do
     end
 
     context 'hashed storage project' do
-      let(:project) { create(:project_empty_repo, :hashed) }
-
       it 'removes the repository from disk' do
         project.delete
 

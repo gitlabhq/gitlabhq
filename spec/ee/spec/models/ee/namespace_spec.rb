@@ -102,9 +102,9 @@ describe Namespace do
       it 'logs the Geo::RepositoryRenamedEvent for each project inside namespace' do
         parent = create(:namespace)
         child = create(:group, name: 'child', path: 'child', parent: parent)
-        project_legacy_storage = create(:project_empty_repo, namespace: parent)
-        create(:project, :hashed, namespace: child)
-        create(:project_empty_repo, namespace: child)
+        project_legacy_storage = create(:project_empty_repo, :legacy_storage, namespace: parent)
+        create(:project, namespace: child)
+        create(:project_empty_repo, :legacy_storage, namespace: child)
         full_path_was = "#{parent.full_path}_old"
         new_path = parent.full_path
 

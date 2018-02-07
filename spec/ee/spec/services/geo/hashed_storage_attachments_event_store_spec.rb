@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::HashedStorageAttachmentsEventStore do
-  let(:project) { create(:project, :hashed, path: 'bar') }
+  let(:project) { create(:project, path: 'bar') }
   let(:attachments_event) { build(:geo_hashed_storage_attachments_event, project: project) }
   set(:secondary_node) { create(:geo_node) }
   let(:old_attachments_path) { attachments_event.old_attachments_path }

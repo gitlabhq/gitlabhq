@@ -936,11 +936,11 @@ describe Project do
     context 'when running on a primary node' do
       set(:primary) { create(:geo_node, :primary) }
       set(:secondary) { create(:geo_node) }
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :repository, :legacy_storage) }
       let(:gitlab_shell) { Gitlab::Shell.new }
 
       it 'logs the Geo::RepositoryRenamedEvent for project backed by hashed storage' do
-        project_hashed_storage = create(:project, :hashed)
+        project_hashed_storage = create(:project)
 
         allow(project_hashed_storage).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project_hashed_storage).to receive(:previous_changes).and_return('path' => ['foo'])
