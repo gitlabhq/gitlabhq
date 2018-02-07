@@ -29,34 +29,6 @@ describe('EmptyState', () => {
       expect(component.currentState).toBe(component.states.gettingStarted);
     });
 
-    it('buttonPath returns settings path for the state "gettingStarted"', () => {
-      const component = createComponent({
-        selectedState: 'gettingStarted',
-        settingsPath: statePaths.settingsPath,
-        documentationPath: statePaths.documentationPath,
-        emptyGettingStartedSvgPath: 'foo',
-        emptyLoadingSvgPath: 'foo',
-        emptyUnableToConnectSvgPath: 'foo',
-      });
-
-      expect(component.buttonPath).toEqual(statePaths.settingsPath);
-      expect(component.buttonPath).not.toEqual(statePaths.documentationPath);
-    });
-
-    it('buttonPath returns documentation path for any of the other states', () => {
-      const component = createComponent({
-        selectedState: 'loading',
-        settingsPath: statePaths.settingsPath,
-        documentationPath: statePaths.documentationPath,
-        emptyGettingStartedSvgPath: 'foo',
-        emptyLoadingSvgPath: 'foo',
-        emptyUnableToConnectSvgPath: 'foo',
-      });
-
-      expect(component.buttonPath).toEqual(statePaths.documentationPath);
-      expect(component.buttonPath).not.toEqual(statePaths.settingsPath);
-    });
-
     it('showButtonDescription returns a description with a link for the unableToConnect state', () => {
       const component = createComponent({
         selectedState: 'unableToConnect',
@@ -88,6 +60,7 @@ describe('EmptyState', () => {
     const component = createComponent({
       selectedState: 'gettingStarted',
       settingsPath: statePaths.settingsPath,
+      clustersPath: statePaths.clustersPath,
       documentationPath: statePaths.documentationPath,
       emptyGettingStartedSvgPath: 'foo',
       emptyLoadingSvgPath: 'foo',
