@@ -1,6 +1,6 @@
 # Canary Deployments
 
-> [Introduced][ee-1659] in [GitLab Enterprise Edition Premium][eep] 9.1.
+> [Introduced][ee-1659] in [GitLab Premium][eep] 9.1.
 
 A popular [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration)
 strategy, where a small portion of the fleet is updated to the new version of
@@ -63,7 +63,7 @@ can easily notice them.
 ![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
 
 [autodeploy]: ../../ci/autodeploy/index.md "GitLab Autodeploy"
-[eep]: https://about.gitlab.com/gitlab-ee/
+[eep]: https://about.gitlab.com/products/
 [ee-1659]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1659
 [kube-canary]: https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments
 [deploy board]: deploy_boards.md

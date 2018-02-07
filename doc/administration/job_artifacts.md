@@ -88,13 +88,16 @@ _The artifacts are stored by default in
 ### Using object storage
 
 >**Notes:**
-- [Introduced][ee-1762] in [GitLab Enterprise Edition Premium][eep] 9.4.
+- [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
 - Since version 9.5, artifacts are [browsable], when object storage is enabled. 
   9.4 lacks this feature.
+> Available in [GitLab Premium](https://about.gitlab.com/products/) and
+[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
+Use an [Object storage option][ee-os] like AWS S3 to store job artifacts.
 
 **In Omnibus installations:**
 
@@ -281,6 +284,7 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
+[eep]: https://about.gitlab.com/products/ "GitLab Premium"
 [ee-1762]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762
 [browsable]: ../user/project/pipelines/job_artifacts.md#browsing-job-artifacts
+[ee-os]: https://docs.gitlab.com/ee/administration/job_artifacts.html#using-object-storage

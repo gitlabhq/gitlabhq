@@ -1,9 +1,9 @@
 # File Locking
 
 >**Notes:**
-- [Introduced][ee-440] in [GitLab Enterprise Edition Premium][ee] 8.9.
+- [Introduced][ee-440] in [GitLab Premium][ee] 8.9.
 - This feature needs to have a license with the "File Lock" option enabled. If
-  you are using Enterprise Edition Premium but you don't see the "Lock" button,
+  you are using Premium but you don't see the "Lock" button,
   ask your GitLab administrator.
 
 File Locking helps you avoid merge conflicts and better manage your binary files.
@@ -14,7 +14,7 @@ member of the team can edit it.
 
 Working with multiple people on the same file can be a risk. Conflicts
 when merging a non-text file are hard to overcome and will require a lot
-of manual work to resolve. With GitLab Enterprise Edition Premium, File
+of manual work to resolve. With GitLab Premium, File
 Locking helps you avoid merge conflicts and better manage your binary
 files by preventing everyone, except you, from modifying a specific file
 or entire directory.
@@ -103,5 +103,5 @@ locks and [remove the ones you have permission for](#permissions-on-file-locking
 ![Locked Files](img/file_lock_list.png)
 
 [ee-440]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440 "File Lock"
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [push access]: ../../user/permissions.md

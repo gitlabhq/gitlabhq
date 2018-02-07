@@ -1,7 +1,7 @@
 # Issue Weight
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/76)
-in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/) 8.3.
+in [GitLab Starter](https://about.gitlab.com/products/) 8.3.
 
 When you have a lot of issues, it can be hard to get an overview.
 By adding a weight to each issue, you can get a better idea of how much time,

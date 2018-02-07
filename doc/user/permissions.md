@@ -121,14 +121,16 @@ and drag issues around. Read though the
 [documentation on Issue Boards permissions](project/issue_board.md#permissions)
 to learn more.
 
-### File Locking permissions (EEP)
+### File Locking permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/) and [GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
 Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
 
 File Locking is available in
-[GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/) only.
+[GitLab Premium](https://about.gitlab.com/products/) only.
 
 ### Confidential Issues permissions
 
@@ -194,7 +196,7 @@ by an administrator under **Admin > Application Settings**.
 
 ## Auditor users
 
->[Introduced][ee-998] in [GitLab Enterprise Edition Premium][eep] 8.17.
+>[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
@@ -279,12 +281,14 @@ for details about the pipelines security model.
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) to learn more.
 
-## Auditor users permissions (EEP)
+## Auditor users permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
 with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
 
-Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
+Auditor users are available in [GitLab Premium](https://about.gitlab.com/products/)
 only.
 
 [^1]: On public and internal projects, all users are able to perform this action
@@ -298,4 +302,4 @@ only.
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
-[eep]: https://about.gitlab.com/gitlab-ee/
+[eep]: https://about.gitlab.com/products/

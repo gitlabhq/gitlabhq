@@ -1335,7 +1335,7 @@ POST /projects/:id/housekeeping
 ## Push Rules
 
 >**Note:**
-Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee).
+Available in [GitLab Starter](https://about.gitlab.com/products).
 
 ### Get project push rules
 
@@ -1430,7 +1430,7 @@ Read more in the [Project members](members.md) documentation.
 
 ## Start the pull mirroring process for a Project
 
-> Introduced in GitLab 10.3. **Note:** Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee).
+> Introduced in GitLab 10.3. **Note:** Available in [GitLab Starter](https://about.gitlab.com/products).
 
 ```
 POST /projects/:id/mirror/pull

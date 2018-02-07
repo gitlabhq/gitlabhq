@@ -152,7 +152,10 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
-### (EEP) Default project creation level
+### Default project creation level
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/) and
+[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
 
 This feature allows groups to define a default project creation level.
 
@@ -160,8 +163,6 @@ By default, `Developers` and `Masters` are allowed to create projects, but
 this can be changed within the group settings for a group, or the default setting
 changed within the Admin area (`Settings`, `Visibility and Access Controls`). This
 can be `None`, `Masters`, or `Developers + Masters`.
-
-It is available only in [GitLab Enterprise Edition Premium][eep].
 
 ## Transfer projects into groups
 
@@ -181,7 +182,7 @@ See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for
 
 ## Epics
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
+> Introduced in [GitLab Ultimate][ee] 10.2.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -266,14 +267,17 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock (EES/EEP)
+#### Member Lock
 
-Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
-with **Member Lock** it is possible to lock membership in project to the
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+
+With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
 Member Lock lets a group owner to lock down any new project membership to all the
 projects within the group, allowing tighter control over project membership.
+Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
 
 For instance, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you enable Member Lock to guarantee that any membership is added or changed
@@ -294,17 +298,19 @@ request to add new user to project through API will not be possible.
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
 and [push rules](../../push_rules/push_rules.md) to your group
-(Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
+(Push Rules is available in [GitLab Starter][ee].)
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
-for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee])
+for the group (GitLab admins only, available in [GitLab Starter][ee])
 - **Pipelines quota**: keep track of the
 [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
-## User contribution analysis (EES/EEP)
+## User contribution analysis
+
+> Available in [GitLab Starter](https://about.gitlab.com/products/) and
+[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md)
 you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
 [ee]: https://about.gitlab.com/products/
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"

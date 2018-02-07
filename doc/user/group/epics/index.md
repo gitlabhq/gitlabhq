@@ -1,6 +1,6 @@
 # Epics
 
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
+> Introduced in [GitLab Ultimate][ee] 10.2.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -71,5 +71,5 @@ then you already have access to its projects' issues.
 
 You may also consult the [group permissions table][permissions].
 
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [permissions]: ../../permissions.md#group-members-permissions

@@ -1,6 +1,6 @@
 # Static Application Security Testing (SAST)
 
-> [Introduced][ee-3775] in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+> [Introduced][ee-3775] in [GitLab Ultimate][ee] 10.3.
 
 ## Overview
 
@@ -38,6 +38,6 @@ For more information on how the `sast` job should look like, check the
 [example on analyzing a project's code for vulnerabilities][cc-docs].
 
 [ee-3775]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3775
-[ee]: https://about.gitlab.com/gitlab-ee/
+[ee]: https://about.gitlab.com/products/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/sast.md
