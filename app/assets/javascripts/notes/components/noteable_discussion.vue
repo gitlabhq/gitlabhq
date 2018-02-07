@@ -17,6 +17,7 @@
   import noteable from '../mixins/noteable';
   import resolvable from '../mixins/resolvable';
   import tooltip from '../../vue_shared/directives/tooltip';
+  import { scrollToElement } from '../../lib/utils/common_utils';
 
   export default {
     components: {
@@ -198,9 +199,7 @@ Please check your network connection and try again.`;
           const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
 
           if (el) {
-            $.scrollTo(el, {
-              offset: -125, // navbar and MR tabs height
-            });
+            scrollToElement(el);
           }
         }
       },

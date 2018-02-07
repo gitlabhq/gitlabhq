@@ -5,6 +5,7 @@
   import mrIssueSvg from 'icons/_icon_mr_issue.svg';
   import nextDiscussionSvg from 'icons/_next_discussion.svg';
   import { pluralize } from '../../lib/utils/text_utility';
+  import { scrollToElement } from '../../lib/utils/common_utils';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
@@ -56,9 +57,7 @@
         }
 
         if (el) {
-          $.scrollTo(el, {
-            offset: -125, // navbar and MR tabs height
-          });
+          scrollToElement(el);
         }
       },
     },
