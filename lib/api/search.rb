@@ -58,8 +58,10 @@ module API
       end
       params do
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of search, available scopes:
-          projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs',
+        requires :scope,
+          type: String,
+          desc: 'The scope of search, available scopes:
+            projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs',
           values: %w(projects issues merge_requests milestones snippet_titles snippet_blobs)
         use :pagination
       end
@@ -75,8 +77,10 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of search, available scopes:
-          projects, issues, merge_requests, milestones',
+        requires :scope,
+          type: String,
+          desc: 'The scope of search, available scopes:
+            projects, issues, merge_requests, milestones',
           values: %w(projects issues merge_requests milestones)
         use :pagination
       end
@@ -94,8 +98,10 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of search, available scopes:
-          issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs',
+        requires :scope,
+          type: String,
+          desc: 'The scope of search, available scopes:
+            issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs',
           values: %w(issues merge_requests milestones notes wiki_blobs commits blobs)
         use :pagination
       end

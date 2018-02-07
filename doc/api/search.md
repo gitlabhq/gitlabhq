@@ -17,7 +17,7 @@ GET /search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs.
+Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs.
 
 The response depends on the requested scope.
 
@@ -298,7 +298,7 @@ GET /groups/:id/-/search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones.
+Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones.
 
 The response depends on the requested scope.
 
@@ -512,11 +512,11 @@ GET /projects/:id/-/search
 
 | Attribute     | Type     | Required   | Description            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs.
+Search the expression within the specified scope. Currently these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs.
 
 The response depends on the requested scope.
 
