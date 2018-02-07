@@ -8,7 +8,9 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initFilteredSearch(FILTERED_SEARCH.ISSUES);
+  initFilteredSearch({
+    page: FILTERED_SEARCH.ISSUES,
+  });
   new IssuableIndex(ISSUABLE_INDEX.ISSUE);
 
   new ShortcutsNavigation();
