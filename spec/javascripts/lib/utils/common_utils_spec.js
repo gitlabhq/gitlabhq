@@ -480,4 +480,33 @@ describe('common_utils', () => {
       expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
     });
   });
+
+  describe('convertObjectPropsToCamelCase', () => {
+    it('returns new object with camelCase property names by converting object with snake_case names', () => {
+      const snakeRegEx = /(_\w)/g;
+      const mockObj = {
+        id: 1,
+        group_name: 'GitLab.org',
+        absolute_web_url: 'https://gitlab.com/gitlab-org/',
+      };
+      const mappings = {
+        id: 'id',
+        groupName: 'group_name',
+        absoluteWebUrl: 'absolute_web_url',
+      };
+
+      const convertedObj = commonUtils.convertObjectPropsToCamelCase(mockObj);
+
+      Object.keys(convertedObj).forEach((prop) => {
+        expect(snakeRegEx.test(prop)).toBeFalsy();
+        expect(convertedObj[prop]).toBe(mockObj[mappings[prop]]);
+      });
+    });
+
+    it('return empty object if method is called with null or undefined', () => {
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase(null)).length).toBe(0);
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase()).length).toBe(0);
+      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase({})).length).toBe(0);
+    });
+  });
 });
