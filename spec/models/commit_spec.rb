@@ -225,6 +225,11 @@ eos
   end
 
   describe 'description' do
+    it "returns no_commit_message when safe_message is blank" do
+      allow(commit).to receive(:safe_message).and_return('')
+      expect(commit.description).to eq("--no commit message")
+    end
+  
     it 'returns description of commit message if title less than 100 characters' do
       message = <<eos
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
