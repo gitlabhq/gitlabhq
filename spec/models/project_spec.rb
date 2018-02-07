@@ -80,6 +80,7 @@ describe Project do
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
+    it { is_expected.to have_many(:lfs_file_locks) }
 
     context 'after initialized' do
       it "has a project_feature" do
