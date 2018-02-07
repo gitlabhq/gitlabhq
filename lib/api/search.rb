@@ -66,7 +66,7 @@ module API
       end
 
       def elasticsearch?
-        Gitlab::CurrentSettings.current_application_settings.elasticsearch_search?
+        Gitlab::CurrentSettings.elasticsearch_search?
       end
     end
 
