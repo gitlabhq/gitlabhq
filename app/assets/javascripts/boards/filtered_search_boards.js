@@ -1,9 +1,14 @@
 /* eslint-disable class-methods-use-this */
+import FilteredSearchTokenKeysIssues from 'ee/filtered_search/filtered_search_token_keys_issues';
 import FilteredSearchContainer from '../filtered_search/container';
 
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
-    super('boards');
+    super({
+      page: 'boards',
+      filteredSearchTokenKeys: FilteredSearchTokenKeysIssues,
+      stateFiltersSelector: '.issues-state-filters',
+    });
 
     this.store = store;
     this.updateUrl = updateUrl;

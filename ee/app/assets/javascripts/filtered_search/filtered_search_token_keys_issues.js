@@ -1,4 +1,4 @@
-import './filtered_search_token_keys';
+import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 
 const weightTokenKey = {
   key: 'weight',
@@ -26,7 +26,7 @@ const alternativeTokenKeys = [{
   symbol: '@',
 }];
 
-class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
+export default class FilteredSearchTokenKeysIssues extends FilteredSearchTokenKeys {
   static init(availableFeatures) {
     this.availableFeatures = availableFeatures;
   }
@@ -46,7 +46,7 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
   }
 
   static getKeys() {
-    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
+    const tokenKeys = FilteredSearchTokenKeysIssues.get();
     return tokenKeys.map(i => i.key);
   }
 
@@ -60,18 +60,18 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
   }
 
   static searchByKey(key) {
-    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
+    const tokenKeys = FilteredSearchTokenKeysIssues.get();
     return tokenKeys.find(tokenKey => tokenKey.key === key) || null;
   }
 
   static searchBySymbol(symbol) {
-    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
+    const tokenKeys = FilteredSearchTokenKeysIssues.get();
     return tokenKeys.find(tokenKey => tokenKey.symbol === symbol) || null;
   }
 
   static searchByKeyParam(keyParam) {
-    const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
-    const alternatives = FilteredSearchTokenKeysIssuesEE.getAlternatives();
+    const tokenKeys = FilteredSearchTokenKeysIssues.get();
+    const alternatives = FilteredSearchTokenKeysIssues.getAlternatives();
     const tokenKeysWithAlternative = tokenKeys.concat(alternatives);
 
     return tokenKeysWithAlternative.find((tokenKey) => {
@@ -90,16 +90,13 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
   }
 
   static searchByConditionUrl(url) {
-    const conditions = FilteredSearchTokenKeysIssuesEE.getConditions();
+    const conditions = FilteredSearchTokenKeysIssues.getConditions();
     return conditions.find(condition => condition.url === url) || null;
   }
 
   static searchByConditionKeyValue(key, value) {
-    const conditions = FilteredSearchTokenKeysIssuesEE.getConditions();
+    const conditions = FilteredSearchTokenKeysIssues.getConditions();
     return conditions
       .find(condition => condition.tokenKey === key && condition.value === value) || null;
   }
 }
-
-window.gl = window.gl || {};
-gl.FilteredSearchTokenKeysIssuesEE = FilteredSearchTokenKeysIssuesEE;
