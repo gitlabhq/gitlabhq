@@ -1,5 +1,7 @@
 # Search API
 
+[Introduced][ce-41763] in GitLab 10.5
+
 Every API call to search must be authenticated.
 
 ## Global Search API
@@ -15,7 +17,7 @@ GET /search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs
+Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs.
 
 The response depends on the requested scope.
 
@@ -296,7 +298,7 @@ GET /groups/:id/-/search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones
+Search the expression within the specified scope. Currentyly these scopes are supported: projects, issues, merge_requests, milestones.
 
 The response depends on the requested scope.
 
@@ -514,7 +516,7 @@ GET /projects/:id/-/search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currentyly these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs
+Search the expression within the specified scope. Currentyly these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs.
 
 The response depends on the requested scope.
 
@@ -791,3 +793,5 @@ Example response:
   }
 ]
 ```
+
+[ce-41763]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41763
