@@ -35,10 +35,6 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :deletion
   end
 
-  config.before(:each, :delete_no_cache) do
-    DatabaseCleaner.strategy = :deletion, { cache_tables: false }
-  end
-
   config.before(:each, :migration) do
     DatabaseCleaner.strategy = :deletion, { cache_tables: false }
   end
