@@ -8,7 +8,7 @@ describe PrometheusMetric do
   it { is_expected.to validate_presence_of(:query) }
   it { is_expected.to validate_presence_of(:group) }
 
-  describe '#group_text' do
+  describe '#group_title' do
     shared_examples 'group_title' do |group, text|
       subject { build(:prometheus_metric, group: group).group_title }
 
