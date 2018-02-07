@@ -5,6 +5,7 @@ describe 'User approves a merge request', :js do
   let(:project) { create(:project, :repository, approvals_before_merge: 1) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
+  let(:user3) { create(:user) }
 
   before do
     project.add_developer(user)
@@ -24,6 +25,34 @@ describe 'User approves a merge request', :js do
 
         expect(page).to have_button('Merge', disabled: false)
       end
+    end
+  end
+
+  context 'when a merge request is approved additionally' do
+    before do
+      project.add_developer(user2)
+      project.add_developer(user3)
+      visit(merge_request_path(merge_request))
+    end
+
+    it 'shows multiple approvers beyond the needed count' do
+      click_button('Approve')
+      wait_for_requests
+
+      sign_out(user)
+
+      sign_in_visit_merge_request(user2)
+      sign_in_visit_merge_request(user3)
+
+      expect(all('.js-approver-list-member').count).to eq(3)
+    end
+
+    def sign_in_visit_merge_request(user)
+      sign_in(user)
+      visit(merge_request_path(merge_request))
+      click_button('Approve')
+      wait_for_requests
+      sign_out(user)
     end
   end
 

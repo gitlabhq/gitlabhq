@@ -1,5 +1,6 @@
 import Flash from '~/flash';
 import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+import { s__ } from '~/locale';
 import ApprovalsBody from './approvals_body';
 import ApprovalsFooter from './approvals_footer';
 
@@ -34,7 +35,7 @@ export default {
     },
   },
   created() {
-    const flashErrorMessage = 'An error occured while retrieving approval data for this merge request.';
+    const flashErrorMessage = s__('mrWidget|An error occured while retrieving approval data for this merge request.');
 
     this.service.fetchApprovals()
       .then((data) => {

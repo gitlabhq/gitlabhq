@@ -1,3 +1,4 @@
+import { n__, s__, sprintf } from '~/locale';
 import Flash from '~/flash';
 import MRWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -44,8 +45,24 @@ export default {
   },
   computed: {
     approvalsRequiredStringified() {
-      const baseString = `${this.approvalsLeft} more approval`;
-      return this.approvalsLeft === 1 ? baseString : `${baseString}s`;
+      let approvedString = s__('MergeRequest|Approved');
+      if (this.approvalsLeft >= 1) {
+        approvedString = sprintf(n__('mrWidget|Requires 1 more approval by',
+          'MergeRequest|Requires %d more approvals by', this.approvalsLeft));
+      }
+      return approvedString;
+    },
+    approveButtonText() {
+      let approveButtonText = s__('mrWidget|Approve');
+      if (this.approvalsLeft <= 0) {
+        approveButtonText = s__('mrWidget|Approve additionally');
+      }
+      return approveButtonText;
+    },
+    approveButtonClass() {
+      return {
+        'btn-inverted': this.showApproveButton && this.approvalsLeft <= 0,
+      };
     },
     showApproveButton() {
       return this.userCanApprove && !this.userHasApproved;
@@ -65,7 +82,7 @@ export default {
         })
         .catch(() => {
           this.approving = false;
-          new Flash('An error occured while submitting your approval.'); // eslint-disable-line
+          Flash(s__('mrWidget|An error occured while submitting your approval.'));
         });
     },
   },
@@ -75,18 +92,18 @@ export default {
         <button
           :disabled="approving"
           @click="approveMergeRequest"
-          class="btn btn-primary btn-sm approve-btn">
+          class="btn btn-primary btn-sm approve-btn"
+          :class="approveButtonClass">
           <i
             v-if="approving"
             class="fa fa-spinner fa-spin"
             aria-hidden="true" />
-          Approve
+          {{approveButtonText}}
         </button>
       </span>
       <span class="approvals-required-text bold">
-        Requires {{approvalsRequiredStringified}}
+        {{approvalsRequiredStringified}}
         <span v-if="showSuggestedApprovers">
-          <span class="dash">&mdash;</span>
           <mr-widget-author
             v-for="approver in suggestedApprovers"
             :key="approver.username"

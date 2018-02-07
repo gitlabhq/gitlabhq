@@ -1,5 +1,6 @@
 import Flash from '~/flash';
 import LinkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
+import { s__ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
 export default {
@@ -47,6 +48,12 @@ export default {
       const isMerged = this.mr.state === 'merged';
       return this.userHasApproved && !this.userCanApprove && !isMerged;
     },
+    approvedByText() {
+      return s__('mrWidget|Approved by');
+    },
+    removeApprovalText() {
+      return s__('mrWidget|Remove your approval');
+    },
   },
   methods: {
     unapproveMergeRequest() {
@@ -59,7 +66,7 @@ export default {
         })
         .catch(() => {
           this.unapproving = false;
-          Flash('An error occured while removing your approval.');
+          Flash(s__('mrWidget|An error occured while removing your approval.'));
         });
     },
   },
@@ -68,14 +75,14 @@ export default {
       v-if="approvedBy.length"
       class="approved-by-users approvals-footer clearfix mr-info-list">
       <div class="approvers-prefix">
-        <p>Approved by</p>
+        <p>{{approvedByText}}</p>
         <div class="approvers-list">
           <link-to-member-avatar
             v-for="(approver, index) in approvedBy"
             :key="index"
             :avatar-size="20"
             :avatar-url="approver.user.avatar_url"
-            extra-link-class="approver-avatar"
+            extra-link-class="approver-avatar js-approver-list-member"
             :display-name="approver.user.name"
             :profile-url="approver.user.web_url"
             :show-tooltip="true"
@@ -99,7 +106,7 @@ export default {
             class="fa fa-spinner fa-spin"
             aria-hidden="true">
           </i>
-          Remove your approval
+          {{removeApprovalText}}
         </button>
       </div>
     </div>

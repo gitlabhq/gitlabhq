@@ -134,11 +134,14 @@ module Approvable
     approved_by_users.include?(user)
   end
 
-  # Once there are fewer approvers left in the list than approvals required, allow other
-  # project members to approve the MR.
+  # Once there are fewer approvers left in the list than approvals required or
+  # there are no more approvals required
+  # allow other project members to approve the MR.
   #
   def any_approver_allowed?
-    approvals_left > approvers_left.count
+    remaining_approvals = approvals_left
+
+    remaining_approvals.zero? || remaining_approvals > approvers_left.count
   end
 
   def approved_by_users
