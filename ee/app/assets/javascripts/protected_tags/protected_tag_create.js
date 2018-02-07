@@ -1,3 +1,4 @@
+import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
 import CreateItemDropdown from '~/create_item_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
@@ -89,14 +90,9 @@ export default class ProtectedTagCreate {
   onFormSubmit(e) {
     e.preventDefault();
 
-    $.ajax({
-      url: this.$form.attr('action'),
-      method: this.$form.attr('method'),
-      data: this.getFormData(),
-    })
-    .success(() => {
-      location.reload();
-    })
-    .fail(() => new Flash('Failed to protect the tag'));
+    axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
+      .then(() => {
+        location.reload();
+      }).catch(() => Flash('Failed to protect the tag'));
   }
 }

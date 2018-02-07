@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import _ from 'underscore';
+import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 
@@ -274,20 +275,13 @@ export default class ProtectedBranchAccessDropdown {
   }
 
   getData(query, callback) {
-    this.getUsers(query)
-      .done((usersResponse) => {
-        if (this.groups.length) {
-          callback(this.consolidateData(usersResponse, this.groups));
-        } else {
-          this.getGroups(query)
-            .done((groupsResponse) => {
-              // Cache groups to avoid multiple requests
-              this.groups = groupsResponse;
-              callback(this.consolidateData(usersResponse, groupsResponse));
-            })
-            .error(() => new Flash('Failed to load groups.'));
-        }
-      }).error(() => new Flash('Failed to load users.'));
+    Promise.all([
+      this.getUsers(query),
+      this.groupsData ? Promise.resolve(this.groupsData) : this.getGroups(),
+    ]).then(([usersResponse, groupsResponse]) => {
+      this.groupsData = groupsResponse;
+      callback(this.consolidateData(usersResponse.data, groupsResponse.data));
+    }).catch(() => Flash('Failed to load groups & users.'));
   }
 
   consolidateData(usersResponse, groupsResponse) {
@@ -375,10 +369,8 @@ export default class ProtectedBranchAccessDropdown {
   }
 
   getUsers(query) {
-    return $.ajax({
-      dataType: 'json',
-      url: this.buildUrl(gon.relative_url_root, this.usersPath),
-      data: {
+    return axios.get(this.buildUrl(gon.relative_url_root, this.usersPath), {
+      params: {
         search: query,
         per_page: 20,
         active: true,
@@ -389,10 +381,8 @@ export default class ProtectedBranchAccessDropdown {
   }
 
   getGroups() {
-    return $.ajax({
-      dataType: 'json',
-      url: this.buildUrl(gon.relative_url_root, this.groupsPath),
-      data: {
+    return axios.get(this.buildUrl(gon.relative_url_root, this.groupsPath), {
+      params: {
         project_id: gon.current_project_id,
       },
     });
