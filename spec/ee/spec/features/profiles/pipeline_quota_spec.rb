@@ -6,7 +6,7 @@ feature 'Profile > Pipeline Quota' do
   end
 
   let(:user) { create(:user) }
-  let(:namespace) { create(:namespace, owner: user) }
+  let!(:namespace) { create(:namespace, owner: user, path: 'foo') }
   let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: true) }
 
   it 'is linked within the profile page' do
@@ -18,7 +18,7 @@ feature 'Profile > Pipeline Quota' do
   end
 
   context 'with no quota' do
-    let(:namespace) { create(:namespace, :with_build_minutes, owner: user) }
+    let!(:namespace) { create(:namespace, :with_build_minutes, owner: user, path: 'foo') }
 
     it 'shows correct group quota info' do
       visit profile_pipeline_quota_path
@@ -31,7 +31,7 @@ feature 'Profile > Pipeline Quota' do
   end
 
   context 'with no projects using shared runners' do
-    let(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user) }
+    let!(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user, path: 'foo') }
     let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
 
     it 'shows correct group quota info' do
@@ -49,7 +49,7 @@ feature 'Profile > Pipeline Quota' do
   end
 
   context 'minutes under quota' do
-    let(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user) }
+    let!(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user, path: 'foo') }
 
     it 'shows correct group quota info' do
       visit profile_pipeline_quota_path
@@ -63,7 +63,7 @@ feature 'Profile > Pipeline Quota' do
   end
 
   context 'minutes over quota' do
-    let(:namespace) { create(:namespace, :with_used_build_minutes_limit, owner: user) }
+    let!(:namespace) { create(:namespace, :with_used_build_minutes_limit, owner: user, path: 'foo') }
     let!(:other_project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
 
     it 'shows correct group quota and projects info' do
