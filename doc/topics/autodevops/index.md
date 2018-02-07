@@ -213,11 +213,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
->>>>>>> upstream/master
 
 ### Auto SAST for Docker images
 
@@ -230,11 +226,7 @@ created, it's uploaded as an artifact which you can later download and
 check out.
 
 In GitLab Ultimate, any security warnings are also
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/sast_docker.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast_docker.html).
->>>>>>> upstream/master
 
 ### Auto Review Apps
 
@@ -273,11 +265,7 @@ issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
 In GitLab Ultimate, any security warnings are also
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/dast.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/dast.html).
->>>>>>> upstream/master
 
 ### Auto Browser Performance Testing
 
@@ -291,12 +279,8 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 /direction
 ```
 
-<<<<<<< HEAD
 In GitLab Premium, performance differences between the source
 and target branches are [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
-=======
-In GitLab Premium, performance differences between the source and target branches are [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
->>>>>>> upstream/master
 
 ### Auto Deploy
 
