@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 
@@ -31,6 +32,7 @@ export const checkPageAndAction = (page, action) => {
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
+export const hasVueMRDiscussionsCookie = () => Cookies.get('vue_mr_discussions');
 
 export const ajaxGet = url => axios.get(url, {
   params: { format: 'js' },

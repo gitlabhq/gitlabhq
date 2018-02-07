@@ -2,7 +2,6 @@
 /* global ResolveCount */
 
 import Vue from 'vue';
-import Cookies from 'js-cookie';
 import './models/discussion';
 import './models/note';
 import './stores/comments';
@@ -15,6 +14,7 @@ import './components/resolve_count';
 import './components/resolve_discussion_btn';
 import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
+import { hasVueMRDiscussionsCookie } from '../lib/utils/common_utils';
 
 $(() => {
   const projectPathHolder = document.querySelector('.merge-request') || document.querySelector('.commit-box');
@@ -68,7 +68,7 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  if (!Cookies.get('vue_mr_discussions')) {
+  if (!hasVueMRDiscussionsCookie()) {
     new Vue({
       el: '#resolve-count-app',
       components: {

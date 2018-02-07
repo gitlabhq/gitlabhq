@@ -24,7 +24,7 @@ import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import Autosave from './autosave';
 import TaskList from './task_list';
-import { isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import { isInViewport, getPagePath, scrollToElement, isMetaKey, hasVueMRDiscussionsCookie } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 
@@ -106,7 +106,7 @@ export default class Notes {
   }
 
   addBinding() {
-    this.$wrapperEl = Cookies.get('vue_mr_discussions') ? $(document).find('.diffs') : $(document);
+    this.$wrapperEl = hasVueMRDiscussionsCookie() ? $(document).find('.diffs') : $(document);
 
     // Edit note link
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
@@ -379,7 +379,7 @@ export default class Notes {
 
     const $note = $notesList.find(`#note_${noteEntity.id}`);
     if (Notes.isNewNote(noteEntity, this.note_ids)) {
-      if (Cookies.get('vue_mr_discussions')) {
+      if (hasVueMRDiscussionsCookie()) {
         return;
       }
 
@@ -473,7 +473,7 @@ export default class Notes {
       // Init discussion on 'Discussion' page if it is merge request page
       const page = $('body').attr('data-page');
       if ((page && page.indexOf('projects:merge_request') !== -1) || !noteEntity.diff_discussion_html) {
-        if (!Cookies.get('vue_mr_discussions')) {
+        if (!hasVueMRDiscussionsCookie()) {
           Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
         }
       }

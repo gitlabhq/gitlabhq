@@ -2,7 +2,7 @@
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import { __ } from './locale';
-import { isInIssuePage, isInMRPage, updateTooltipTitle } from './lib/utils/common_utils';
+import { isInIssuePage, isInMRPage, hasVueMRDiscussionsCookie, updateTooltipTitle } from './lib/utils/common_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
 
@@ -296,7 +296,7 @@ class AwardsHandler {
   }
 
   isVueMRDiscussions() {
-    return isInMRPage() && Cookies.get('vue_mr_discussions') && !$('#diffs').is(':visible');
+    return isInMRPage() && hasVueMRDiscussionsCookie() && !$('#diffs').is(':visible');
   }
 
   isInVueNoteablePage() {
