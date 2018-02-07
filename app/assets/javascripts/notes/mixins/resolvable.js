@@ -13,7 +13,7 @@ export default {
       const { notes, resolved } = this.note;
 
       if (notes) { // Decide resolved state using store. Only valid for discussions.
-        return notes.reduce((state, note) => state && note.resolved && !note.system, true);
+        return notes.every(note => note.resolved && !note.system);
       }
 
       return resolved;

@@ -47,7 +47,7 @@ export const resolvedDiscussionsById = (state) => {
 
   state.notes.forEach((n) => {
     if (n.notes) {
-      const resolved = n.notes.reduce((flag, note) => flag && note.resolved && !note.system, true);
+      const resolved = n.notes.every(note => note.resolved && !note.system);
 
       if (resolved) {
         map[n.id] = n;
