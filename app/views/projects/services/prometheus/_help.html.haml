@@ -1,7 +1,10 @@
 %h4
   = s_('PrometheusService|Auto configuration')
 
-- unless @service.manual_configuration?
+- if @service.manual_configuration?
+  .well
+    = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below')
+- else
   .container-fluid
     .row
       - if @service.prometheus_installed?
@@ -19,9 +22,6 @@
           %p.prepend-top-default
             = s_('PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments')
           = link_to s_('PrometheusService|Install Prometheus on clusters'), project_clusters_path(@project), class: 'btn btn-success'
-- else
-  .well
-    = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below')
 
 %hr
 
