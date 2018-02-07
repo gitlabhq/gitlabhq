@@ -159,7 +159,11 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
+<<<<<<< HEAD:app/assets/javascripts/boards/components/board_list.vue
       if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+=======
+      if (!this.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+>>>>>>> upstream/master:app/assets/javascripts/boards/components/board_list.vue
         this.loadNextPage();
       }
     },

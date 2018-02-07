@@ -1,0 +1,5 @@
+---
+title: Validate user, group and project paths consistently, and only once
+merge_request:
+author:
+type: fixed

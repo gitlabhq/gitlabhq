@@ -963,6 +963,7 @@ describe Gitlab::GitAccess do
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
+<<<<<<< HEAD
 
     context "when license blocks changes" do
       before do
@@ -1128,6 +1129,8 @@ describe Gitlab::GitAccess do
         end
       end
     end
+=======
+>>>>>>> upstream/master
   end
 
   describe 'build authentication abilities' do

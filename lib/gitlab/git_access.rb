@@ -2,9 +2,12 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
+<<<<<<< HEAD
     prepend ::EE::Gitlab::GitAccess
     include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
+=======
+>>>>>>> upstream/master
     include Gitlab::Utils::StrongMemoize
 
     UnauthorizedError = Class.new(StandardError)
@@ -234,6 +237,7 @@ module Gitlab
       end
 
       return if changes.blank? # Allow access this is needed for EE.
+<<<<<<< HEAD
 
       if project.above_size_limit?
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).push_error
@@ -247,6 +251,12 @@ module Gitlab
       check_change_access!(changes)
     end
 
+=======
+
+      check_change_access!(changes)
+    end
+
+>>>>>>> upstream/master
     def check_change_access!(changes)
       changes_list = Gitlab::ChangesList.new(changes)
 
