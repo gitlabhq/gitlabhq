@@ -20,6 +20,11 @@ module QA
           element :sign_in_button, 'submit_tag "Sign in"'
         end
 
+        view 'app/views/devise/shared/_tabs_ldap.html.haml' do
+          element :ldap_tab, "link_to server['label']"
+          element :standard_tab, "link_to 'Standard'"
+        end
+
         def initialize
           wait(max: 500) do
             page.has_css?('.application')

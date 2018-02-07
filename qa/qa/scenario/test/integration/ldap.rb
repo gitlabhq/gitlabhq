@@ -2,7 +2,7 @@ module QA
   module Scenario
     module Test
       module Integration
-        class Ldap < Test::Instance
+        class LDAP < Test::Instance
           tags :ldap
         end
       end
