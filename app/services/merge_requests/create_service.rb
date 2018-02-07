@@ -1,6 +1,7 @@
 module MergeRequests
   class CreateService < MergeRequests::BaseService
     def execute
+      RequestStore.begin!
       set_projects!
 
       merge_request = MergeRequest.new
@@ -9,10 +10,10 @@ module MergeRequests
       merge_request.source_branch = params[:source_branch]
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
 
-      # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37439
-      Gitlab::GitalyClient.allow_n_plus_1_calls do
-        create(merge_request)
-      end
+      a = create(merge_request)
+      RequestStore.end!
+      RequestStore.clear!
+      a
     end
 
     def before_create(merge_request)
