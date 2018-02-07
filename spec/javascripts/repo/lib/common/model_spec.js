@@ -41,6 +41,14 @@ describe('Multi-file editor library model', () => {
     });
   });
 
+  describe('setValue', () => {
+    it('updates models value', () => {
+      model.setValue('testing 123');
+
+      expect(model.getModel().getValue()).toBe('testing 123');
+    });
+  });
+
   describe('onChange', () => {
     it('caches event by path', () => {
       model.onChange(() => {});

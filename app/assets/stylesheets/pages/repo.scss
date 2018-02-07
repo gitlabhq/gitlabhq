@@ -172,20 +172,32 @@ table.table tr td.multi-file-table-name {
   position: absolute;
   right: 8px;
   top: 50%;
+  width: 16px;
+  height: 16px;
   padding: 0;
   background: none;
   border: 0;
-  font-size: $gl-font-size;
-  color: $gray-darkest;
+  border-radius: $border-radius-default;
+  color: $theme-gray-900;
   transform: translateY(-50%);
 
-  &:not(.modified):hover,
-  &:not(.modified):focus {
-    color: $hint-color;
+  svg {
+    position: relative;
+    top: -1px;
   }
 
-  &.modified {
-    color: $indigo-700;
+  &:hover {
+    background-color: $theme-gray-200;
+  }
+
+  &:focus {
+    background-color: $blue-500;
+    color: $white-light;
+    outline: 0;
+
+    svg {
+      fill: currentColor;
+    }
   }
 }
 
@@ -412,7 +424,24 @@ table.table tr td.multi-file-table-name {
 
 .multi-file-commit-list-item {
   display: flex;
+  margin-bottom: $grid-size;
   align-items: center;
+
+  > svg {
+    min-width: 16px;
+  }
+
+  .multi-file-discard-btn {
+    display: none;
+    margin-left: auto;
+    color: $gl-link-color;
+  }
+
+  &:hover {
+    .multi-file-discard-btn {
+      display: block;
+    }
+  }
 }
 
 .multi-file-addition {
