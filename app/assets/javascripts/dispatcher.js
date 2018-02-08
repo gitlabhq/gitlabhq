@@ -1,20 +1,15 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import MergeRequest from './merge_request';
 import Flash from './flash';
 import GfmAutoComplete from './gfm_auto_complete';
-import ZenMode from './zen_mode';
-import initNotes from './init_notes';
-import initIssuableSidebar from './init_issuable_sidebar';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
-import ShortcutsIssuable from './shortcuts_issuable';
-import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
 // EE-only
 import UsersSelect from './users_select';
 import UserCallout from './user_callout';
+import ZenMode from './zen_mode';
 import initCompareAutocomplete from './compare_autocomplete';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
@@ -301,17 +296,10 @@ var Dispatcher;
             .catch(fail);
           break;
         case 'projects:merge_requests:show':
-          new Diff();
-          new ZenMode();
-
-          initIssuableSidebar();
-          initNotes();
-
-          const mrShowNode = document.querySelector('.merge-request');
-          window.mergeRequest = new MergeRequest({
-            action: mrShowNode.dataset.mrAction,
-          });
-          shortcut_handler = new ShortcutsIssuable(true);
+          import('./pages/projects/merge_requests/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'dashboard:activity':
           import('./pages/dashboard/activity')
