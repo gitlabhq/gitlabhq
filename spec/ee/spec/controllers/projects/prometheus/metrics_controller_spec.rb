@@ -66,7 +66,7 @@ describe Projects::Prometheus::MetricsController do
 
   describe 'POST #create' do
     context 'metric is valid' do
-      let(:valid_metric) { { prometheus_metric: { title: 'title', query: 'query', group: 'business' } } }
+      let(:valid_metric) { { prometheus_metric: { title: 'title', query: 'query', group: 'business', y_label: 'label', unit: 'u', legend: 'legend' } } }
 
       it 'shows a success flash message' do
         post :create, project_params(valid_metric)
