@@ -1303,7 +1303,6 @@ ActiveRecord::Schema.define(version: 20180206200543) do
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
-<<<<<<< HEAD
   create_table "ldap_group_links", force: :cascade do |t|
     t.string "cn"
     t.integer "group_access", null: false
@@ -1314,8 +1313,6 @@ ActiveRecord::Schema.define(version: 20180206200543) do
     t.string "filter"
   end
 
-=======
->>>>>>> upstream/master
   create_table "lfs_file_locks", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "user_id", null: false
