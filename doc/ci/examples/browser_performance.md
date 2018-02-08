@@ -26,7 +26,7 @@ Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `performan
 This will create a `performance` job in your CI/CD pipeline and will run Sitespeed.io against the webpage you define. The GitLab plugin for Sitespeed.io downloaded in order to export the results to JSON. For further customization options of Sitespeed.io, including the ability to provide a list of URLs to test, please consult their [documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/).
 
 For [GitLab Premium](https://about.gitlab.com/products/) users, a performance score can be automatically
-extracted and shown right in the merge request widget. [Learn more on performance diffs in merge requests](../../user/project/merge_requests/browser_performance_testing.md).
+extracted and shown right in the merge request widget. Learn more about [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md).
 
 ## Performance testing on Review Apps
 

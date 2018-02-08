@@ -14,7 +14,8 @@
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
-  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address') } }
+  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address'),
+  manage_prometheus_path: edit_project_service_path(@cluster.project, 'prometheus') } }
 
   .js-cluster-application-notice
     .flash-container

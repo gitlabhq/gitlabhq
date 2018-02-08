@@ -664,7 +664,6 @@ Example response:
 ]
 ```
 
-
 ## Project Search API
 
 Search within the specified project.

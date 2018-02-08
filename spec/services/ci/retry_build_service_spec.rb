@@ -5,7 +5,11 @@ describe Ci::RetryBuildService do
   set(:project) { create(:project) }
   set(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:stage) do
+    Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
+  end
+
+  let(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
 
   let(:service) do
     described_class.new(project, user)
@@ -28,29 +32,27 @@ describe Ci::RetryBuildService do
        sourced_pipelines artifacts_file_store artifacts_metadata_store].freeze # EE
 
   shared_examples 'build duplication' do
-    let(:stage) do
-      # TODO, we still do not have factory for new stages, we will need to
-      # switch existing factory to persist stages, instead of using LegacyStage
-      #
-      Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
-    end
+    let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let(:build) do
       create(:ci_build, :failed, :artifacts, :expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
              :triggered, :trace_artifact, :teardown_environment,
-             description: 'my-job', stage: 'test',  pipeline: pipeline,
-             auto_canceled_by: create(:ci_empty_pipeline, project: project)) do |build|
-               ##
-               # TODO, workaround for FactoryBot limitation when having both
-               # stage (text) and stage_id (integer) columns in the table.
-               build.stage_id = stage.id
-             end
+             description: 'my-job', stage: 'test', stage_id: stage.id,
+             pipeline: pipeline, auto_canceled_by: another_pipeline)
+    end
+
+    before do
+      # Make sure that build has both `stage_id` and `stage` because FactoryBot
+      # can reset one of the fields when assigning another. We plan to deprecate
+      # and remove legacy `stage` column in the future.
+      build.update_attributes(stage: 'test', stage_id: stage.id)
     end
 
     describe 'clone accessors' do
       CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
+          expect(build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
@@ -123,10 +125,12 @@ describe Ci::RetryBuildService do
 
       context 'when there are subsequent builds that are skipped' do
         let!(:subsequent_build) do
-          create(:ci_build, :skipped, stage_idx: 1, pipeline: pipeline)
+          create(:ci_build, :skipped, stage_idx: 2,
+                                      pipeline: pipeline,
+                                      stage: 'deploy')
         end
 
-        it 'resumes pipeline processing in subsequent stages' do
+        it 'resumes pipeline processing in a subsequent stage' do
           service.execute(build)
 
           expect(subsequent_build.reload).to be_created

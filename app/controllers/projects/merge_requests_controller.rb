@@ -53,10 +53,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         set_pipeline_variables
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37432
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render
-        end
+        render
       end
 
       format.json do

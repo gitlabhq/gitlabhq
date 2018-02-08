@@ -247,5 +247,44 @@ describe Gitlab::Checks::ChangeAccess do
         end
       end
     end
+
+    context 'LFS file lock check' do
+      let(:owner) { create(:user) }
+      let!(:lock) { create(:lfs_file_lock, user: owner, project: project, path: 'README') }
+
+      before do
+        allow(project.repository).to receive(:new_commits).and_return(
+          project.repository.commits_between('be93687618e4b132087f430a4d8fc3a609c9b77c', '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
+        )
+      end
+
+      context 'with LFS not enabled' do
+        it 'skips the validation' do
+          expect_any_instance_of(described_class).not_to receive(:lfs_file_locks_validation)
+
+          subject.exec
+        end
+      end
+
+      context 'with LFS enabled' do
+        before do
+          allow(project).to receive(:lfs_enabled?).and_return(true)
+        end
+
+        context 'when change is sent by a different user' do
+          it 'raises an error if the user is not allowed to update the file' do
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked in Git LFS by #{lock.user.name}")
+          end
+        end
+
+        context 'when change is sent by the author od the lock' do
+          let(:user) { owner }
+
+          it "doesn't raise any error" do
+            expect { subject.exec }.not_to raise_error
+          end
+        end
+      end
+    end
   end
 end
