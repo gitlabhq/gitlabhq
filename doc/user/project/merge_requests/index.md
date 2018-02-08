@@ -146,6 +146,19 @@ administrator to do so.
 
 ![Create new merge requests by email](img/create_from_email.png)
 
+## Find the merge request that introduced a change
+
+> **Note**: this feature was [implemented in GitLab 10.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383).
+
+When viewing the commit details page, GitLab will link to the merge request (or
+merge requests, if it's in more than one) containing that commit.
+
+This only applies to commits that are in the most recent version of a merge
+request - if a commit was in a merge request, then rebased out of that merge
+request, they will not be linked.
+
+[Read more about merge request versions](versions.md)
+
 ## Revert changes
 
 GitLab implements Git's powerful feature to revert any commit with introducing
@@ -160,7 +173,7 @@ of merge request diff is created. When you visit a merge request that contains
 more than one pushes, you can select and compare the versions of those merge
 request diffs.
 
-[Read more about the merge requests versions.](versions.md)
+[Read more about merge request versions](versions.md)
 
 ## Work In Progress merge requests
 
