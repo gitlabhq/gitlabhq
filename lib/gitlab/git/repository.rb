@@ -1614,17 +1614,14 @@ module Gitlab
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
       def branches_filter(filter: nil, sort_by: nil)
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37464
-        branches = Gitlab::GitalyClient.allow_n_plus_1_calls do
-          rugged.branches.each(filter).map do |rugged_ref|
-            begin
-              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-            rescue Rugged::ReferenceError
-              # Omit invalid branch
-            end
-          end.compact
-        end
+        branches = rugged.branches.each(filter).map do |rugged_ref|
+          begin
+            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+          rescue Rugged::ReferenceError
+            # Omit invalid branch
+          end
+        end.compact
 
         sort_branches(branches, sort_by)
       end
