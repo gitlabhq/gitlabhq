@@ -24,7 +24,7 @@ import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import Autosave from './autosave';
 import TaskList from './task_list';
-import { isInViewport, getPagePath, scrollToElement, isMetaKey, hasVueMRDiscussionsCookie } from './lib/utils/common_utils';
+import { isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 
@@ -106,7 +106,7 @@ export default class Notes {
   }
 
   addBinding() {
-    this.$wrapperEl = hasVueMRDiscussionsCookie() ? $(document).find('.diffs') : $(document);
+    this.$wrapperEl = $(document).find('.diffs');
 
     // Edit note link
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
@@ -379,20 +379,7 @@ export default class Notes {
 
     const $note = $notesList.find(`#note_${noteEntity.id}`);
     if (Notes.isNewNote(noteEntity, this.note_ids)) {
-      if (hasVueMRDiscussionsCookie()) {
-        return;
-      }
-
-      this.note_ids.push(noteEntity.id);
-
-      if ($notesList.length) {
-        $notesList.find('.system-note.being-posted').remove();
-      }
-      const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
-
-      this.setupNewNote($newNote);
-      this.refresh();
-      return this.updateNotesCount(1);
+      return;
     }
     // The server can send the same update multiple times so we need to make sure to only update once per actual update.
     else if (Notes.isUpdatedNote(noteEntity, $note)) {
@@ -472,11 +459,6 @@ export default class Notes {
       }
       // Init discussion on 'Discussion' page if it is merge request page
       const page = $('body').attr('data-page');
-      if ((page && page.indexOf('projects:merge_request') !== -1) || !noteEntity.diff_discussion_html) {
-        if (!hasVueMRDiscussionsCookie()) {
-          Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
-        }
-      }
     } else {
       // append new note to all matching discussions
       Notes.animateAppendNote(noteEntity.html, discussionContainer);

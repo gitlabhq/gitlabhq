@@ -14,7 +14,6 @@ import './components/resolve_count';
 import './components/resolve_discussion_btn';
 import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
-import { hasVueMRDiscussionsCookie } from '../lib/utils/common_utils';
 
 $(() => {
   const projectPathHolder = document.querySelector('.merge-request') || document.querySelector('.commit-box');
@@ -68,14 +67,12 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  if (!hasVueMRDiscussionsCookie()) {
-    new Vue({
-      el: '#resolve-count-app',
-      components: {
-        'resolve-count': ResolveCount
-      }
-    });
-  }
+  new Vue({
+    el: '#resolve-count-app',
+    components: {
+      'resolve-count': ResolveCount
+    }
+  });
 
   $(window).trigger('resize.nav');
 });
