@@ -102,12 +102,11 @@
 
 .issuable-show-labels {
   a {
-    margin-right: 5px;
     margin-bottom: 5px;
     display: inline-block;
 
     .color-label {
-      padding: 6px 10px;
+      padding: 4px $grid-size;
       border-radius: $label-border-radius;
     }
 
