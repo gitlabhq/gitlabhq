@@ -283,7 +283,6 @@ Example response:
 ]
 ```
 
-<<<<<<< HEAD
 ### Scope: wiki_blobs
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
@@ -364,8 +363,6 @@ Example response:
 ]
 ```
 
-=======
->>>>>>> upstream/master
 
 ## Group Search API
 
@@ -385,11 +382,8 @@ GET /groups/:id/-/search
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones.
 
-<<<<<<< HEAD
 If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md).
 
-=======
->>>>>>> upstream/master
 The response depends on the requested scope.
 
 ### Scope: projects
@@ -590,7 +584,6 @@ Example response:
 ]
 ```
 
-<<<<<<< HEAD
 ### Scope: wiki_blobs
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
@@ -671,9 +664,6 @@ Example response:
 ]
 ```
 
-
-=======
->>>>>>> upstream/master
 ## Project Search API
 
 Search within the specified project.
