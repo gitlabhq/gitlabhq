@@ -1,7 +1,7 @@
 import mutations from '~/notes/stores/mutations';
 import { note, discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
-describe('Mutation Notes Store', () => {
+describe('Notes Store mutations', () => {
   describe('ADD_NEW_NOTE', () => {
     let state;
     let noteData;

@@ -25,6 +25,7 @@ export default {
         noteData.resolve_with_issue_path = note.resolve_with_issue_path;
       }
 
+      state.notes.push(noteData);
       document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
