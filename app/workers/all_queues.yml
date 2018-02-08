@@ -114,12 +114,16 @@
 - cronjob:ldap_sync
 - cronjob:update_all_mirrors
 
+- geo:geo_base_scheduler
+- geo:geo_file_download
 - geo:geo_file_removal
 - geo:geo_hashed_storage_attachments_migration
 - geo:geo_hashed_storage_migration
+- geo:geo_project_sync
 - geo:geo_rename_repository
 - geo:geo_repositories_clean_up
 - geo:geo_repository_destroy
+- geo:geo_repository_shard_sync
 
 - object_storage_upload
 - object_storage:object_storage_background_move
@@ -130,10 +134,6 @@
 - elastic_commit_indexer
 - elastic_indexer
 - export_csv
-- geo_base_scheduler
-- geo_file_download
-- geo_project_sync
-- geo_repository_shard_sync
 - ldap_group_sync
 - project_update_repository_storage
 - rebase
