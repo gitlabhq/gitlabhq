@@ -17,7 +17,7 @@ module BlobHelper
   end
 
   def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    return unless readable_blob?(options, path, project, ref)
+    return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
@@ -45,7 +45,7 @@ module BlobHelper
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
     return unless show_new_ide?
-    return unless readable_blob?(options, path, project, ref)
+    return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
@@ -304,11 +304,11 @@ module BlobHelper
     options
   end
 
-  def readable_blob?(options, path, project, ref)
+  def readable_blob(options, path, project, ref)
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil
 
-    blob && blob.readable_text?
+    blob if blob&.readable_text?
   end
 
   def edit_blob_fork(common_classes, options, path, project, ref)
