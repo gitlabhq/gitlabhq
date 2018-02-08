@@ -120,10 +120,10 @@ class PrometheusService < MonitoringService
       Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
     else
       cluster = cluster_with_prometheus(environment_id)
-      raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
+      raise Gitlab::PrometheusClient::Error, "couldn't find cluster with Prometheus installed" unless cluster
 
       rest_client = client_from_cluster(cluster)
-      raise Gitlab::PrometheusError, "couldn't create proxy Prometheus client" unless rest_client
+      raise Gitlab::PrometheusClient::Error, "couldn't create proxy Prometheus client" unless rest_client
 
       Gitlab::PrometheusClient.new(rest_client)
     end

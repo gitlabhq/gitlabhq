@@ -23,7 +23,7 @@ describe Gitlab::PrometheusClient do
         req_stub = stub_prometheus_request(query_url, status: 400, body: { error: 'bar!' })
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusClient::Error, 'bar!')
+          .to raise_error(Gitlab::PrometheusClient::QueryError, 'bar!')
         expect(req_stub).to have_been_requested
       end
     end
@@ -33,7 +33,7 @@ describe Gitlab::PrometheusClient do
         req_stub = stub_prometheus_request(query_url, status: 400)
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusClient::Error, 'Bad data received')
+          .to raise_error(Gitlab::PrometheusClient::QueryError, 'Bad data received')
         expect(req_stub).to have_been_requested
       end
     end
@@ -49,11 +49,11 @@ describe Gitlab::PrometheusClient do
     end
 
     context 'when request returns non json data' do
-      it 'raises a Gitlab::PrometheusError error' do
+      it 'raises a Gitlab::PrometheusClient::Error error' do
         req_stub = stub_prometheus_request(query_url, status: 200, body: 'not json')
 
         expect { execute_query }
-          .to raise_error(Gitlab::PrometheusError, 'Parsing response failed')
+          .to raise_error(Gitlab::PrometheusClient::Error, 'Parsing response failed')
         expect(req_stub).to have_been_requested
       end
     end
