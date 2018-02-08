@@ -186,7 +186,7 @@ There is a huge movement in favor of securing all the web. W3C fully
 the reasons for that. Richard Barnes, a writer for Mozilla Security Blog,
 suggested that [Firefox would deprecate HTTP](https://blog.mozilla.org/security/2015/04/30/deprecating-non-secure-http/),
 and would no longer accept unsecured connections. Recently, Mozilla published a
-[communicate](https://blog.mozilla.org/security/2016/03/29/march-2016-ca-communication/)
+[communication](https://blog.mozilla.org/security/2016/03/29/march-2016-ca-communication/)
 reiterating the importance of HTTPS.
 
 ### Issuing Certificates
