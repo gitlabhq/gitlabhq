@@ -1,5 +1,4 @@
 import jQuery from 'jquery';
-import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 

@@ -67,12 +67,5 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
-    el: '#resolve-count-app',
-    components: {
-      'resolve-count': ResolveCount
-    }
-  });
-
   $(window).trigger('resize.nav');
 });
