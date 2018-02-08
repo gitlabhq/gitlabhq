@@ -1,5 +1,3 @@
-require 'securerandom'
-
 module QA
   module Factory
     module Resource

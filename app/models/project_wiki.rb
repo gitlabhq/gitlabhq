@@ -4,7 +4,6 @@ class ProjectWiki
 
   # EE only modules
   include Elastic::WikiRepositoriesSearch
-  include Gitlab::CurrentSettings
 
   MARKUPS = {
     'Markdown' => :markdown,
@@ -132,6 +131,8 @@ class ProjectWiki
   end
 
   def delete_page(page, message = nil)
+    return unless page
+
     wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
 
     update_elastic_index
@@ -146,6 +147,8 @@ class ProjectWiki
   end
 
   def page_title_and_dir(title)
+    return unless title
+
     title_array = title.split("/")
     title = title_array.pop
     [title, title_array.join("/")]
@@ -204,7 +207,7 @@ class ProjectWiki
   # EE only
 
   def update_elastic_index
-    index_blobs if current_application_settings.elasticsearch_indexing?
+    index_blobs if Gitlab::CurrentSettings.elasticsearch_indexing?
   end
 
   def path_to_repo

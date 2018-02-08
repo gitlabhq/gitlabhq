@@ -24,6 +24,7 @@ module Ci
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -49,7 +50,7 @@ module Ci
     end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
-    scope :with_artifacts_stored_locally, ->() { with_artifacts.where(artifacts_file_store: [nil, LegacyArtifactUploader::LOCAL_STORE]) }
+    scope :with_artifacts_stored_locally, ->() { with_artifacts.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
@@ -296,7 +297,7 @@ module Ci
 
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"
-      project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
+      project.http_url_to_repo.sub(%r{^https?://}) do |prefix|
         prefix + auth
       end
     end

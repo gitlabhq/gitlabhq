@@ -25,7 +25,7 @@ export default {
 <template>
   <div class="branch-container">
     <div class="branch-header">
-      <div class="branch-header-title">
+      <div class="branch-header-title str-truncated ref-name">
         <icon
           name="branch"
           :size="12"

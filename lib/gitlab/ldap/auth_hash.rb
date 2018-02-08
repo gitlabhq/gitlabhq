@@ -7,6 +7,12 @@ module Gitlab
         @uid ||= Gitlab::LDAP::Person.normalize_dn(super)
       end
 
+      def username
+        super.tap do |username|
+          username.downcase! if ldap_config.lowercase_usernames
+        end
+      end
+
       private
 
       def get_info(key)

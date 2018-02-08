@@ -675,9 +675,9 @@ $pipeline-dropdown-line-height: 20px;
 $pipeline-dropdown-status-icon-size: 18px;
 
 /*
-Pipeline Schedules
+CI variable lists
 */
-$pipeline-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
+$ci-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
 
 
 /*

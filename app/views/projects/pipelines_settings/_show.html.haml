@@ -31,7 +31,7 @@
             .radio
               = form.label :enabled_ do
                 = form.radio_button :enabled, ''
-                %strong Instance default (#{current_application_settings.auto_devops_enabled? ? 'enabled' : 'disabled'})
+                %strong Instance default (#{Gitlab::CurrentSettings.auto_devops_enabled? ? 'enabled' : 'disabled'})
                 %br
                 %span.descr
                   Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific <code>.gitlab-ci.yml</code>.

@@ -84,7 +84,7 @@ module QA
           config.javascript_driver = :chrome
           config.default_max_wait_time = 10
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
-          config.save_path = 'tmp'
+          config.save_path = File.expand_path('../../tmp', __dir__)
         end
       end
 

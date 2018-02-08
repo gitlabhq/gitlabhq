@@ -199,6 +199,18 @@
 .commit-actions {
   @media (min-width: $screen-sm-min) {
     font-size: 0;
+
+    div {
+      display: inline;
+    }
+
+    .fa-spinner {
+      font-size: 12px;
+    }
+
+    span {
+      font-size: 6px;
+    }
   }
 
   .ci-status-link {
@@ -222,6 +234,11 @@
   .commit-sha {
     font-size: 14px;
     font-weight: $gl-font-weight-bold;
+  }
+
+  .ci-status-icon {
+    position: relative;
+    top: 1px;
   }
 }
 

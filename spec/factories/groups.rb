@@ -19,7 +19,7 @@ FactoryBot.define do
     end
 
     trait :with_avatar do
-      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+      avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
     factory :group_with_members do

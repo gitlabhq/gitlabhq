@@ -180,15 +180,7 @@ class Repository
   end
 
   def find_branch(name, fresh_repo: true)
-    # Since the Repository object may have in-memory index changes, invalidating the memoized Repository object may
-    # cause unintended side effects. Because finding a branch is a read-only operation, we can safely instantiate
-    # a new repo here to ensure a consistent state to avoid a libgit2 bug where concurrent access (e.g. via git gc)
-    # may cause the branch to "disappear" erroneously or have the wrong SHA.
-    #
-    # See: https://github.com/libgit2/libgit2/issues/1534 and https://gitlab.com/gitlab-org/gitlab-ce/issues/15392
-    raw_repo = fresh_repo ? initialize_raw_repository : raw_repository
-
-    raw_repo.find_branch(name)
+    raw_repository.find_branch(name, fresh_repo)
   end
 
   def find_tag(name)
@@ -728,11 +720,11 @@ class Repository
   end
 
   def branch_names_contains(sha)
-    refs_contains_sha('branch', sha)
+    raw_repository.branch_names_contains_sha(sha)
   end
 
   def tag_names_contains(sha)
-    refs_contains_sha('tag', sha)
+    raw_repository.tag_names_contains_sha(sha)
   end
 
   def local_branches
@@ -869,7 +861,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      !rugged_is_ancestor?(branch_commit.id, upstream_commit.id)
+      !raw_repository.ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
@@ -880,7 +872,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
 
     if upstream_commit
-      !rugged_is_ancestor?(upstream_commit.id, branch_commit.id)
+      !raw_repository.ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end
@@ -982,12 +974,6 @@ class Repository
     rescue Gitlab::Git::Repository::InvalidRef
       false
     end
-  end
-
-  def main_language
-    return unless exists?
-
-    Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
   # Caches the supplied block both in a cache and in an instance variable.

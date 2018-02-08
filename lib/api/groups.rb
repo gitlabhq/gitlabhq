@@ -54,6 +54,8 @@ module API
         find_params[:parent] = find_group!(params[:id]) if params[:id]
 
         groups = GroupsFinder.new(current_user, find_params).execute
+        # EE-only
+        groups = groups.preload(:ldap_group_links)
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
@@ -181,6 +183,8 @@ module API
 
       desc 'Remove a group.'
       delete ":id" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ee/issues/4795')
+
         group = find_group!(params[:id])
         authorize! :admin_group, group
 

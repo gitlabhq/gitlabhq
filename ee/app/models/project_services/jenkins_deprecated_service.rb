@@ -13,7 +13,7 @@ class JenkinsDeprecatedService < CiService
 
   def compose_service_hook
     hook = service_hook || build_service_hook
-    jenkins_url = project_url.sub(/job\/.*/, '')
+    jenkins_url = project_url.sub(%r{job/.*}, '')
     hook.url = jenkins_url + "gitlab/build_now"
     hook.save
   end

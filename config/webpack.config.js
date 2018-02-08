@@ -3,6 +3,7 @@
 var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
+var glob = require('glob');
 var webpack = require('webpack');
 var StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -19,6 +20,26 @@ var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
+
+// generate automatic entry points
+var autoEntries = {};
+var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'app/assets/javascripts') });
+
+// filter out entries currently imported dynamically in dispatcher.js
+var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
+var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+
+pageEntries.forEach(( path ) => {
+  let chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(chunkPath)) {
+    let chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = './' + path;
+  }
+});
+
+// report our auto-generated bundle count
+var autoEntriesCount = Object.keys(autoEntries).length;
+console.log(`${autoEntriesCount} entries from '/pages' automatically added to webpack output.`);
 
 var config = {
   // because sqljs requires fs.
@@ -322,6 +343,8 @@ var config = {
     }
   }
 }
+
+config.entry = Object.assign({}, autoEntries, config.entry);
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';

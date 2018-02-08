@@ -57,6 +57,15 @@ describe Gitlab::VisibilityLevel do
       expect(described_class.allowed_levels)
         .to contain_exactly(described_class::PRIVATE, described_class::PUBLIC)
     end
+
+    it 'returns all levels when no visibility level was set' do
+      allow(described_class)
+        .to receive_message_chain('current_application_settings.restricted_visibility_levels')
+              .and_return(nil)
+
+      expect(described_class.allowed_levels)
+        .to contain_exactly(described_class::PRIVATE, described_class::INTERNAL, described_class::PUBLIC)
+    end
   end
 
   describe '.closest_allowed_level' do

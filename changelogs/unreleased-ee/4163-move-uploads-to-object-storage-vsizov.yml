@@ -1,0 +1,5 @@
+---
+title: "[Geo] Skip attachments that is stored in the object storage"
+merge_request:
+author:
+type: fixed

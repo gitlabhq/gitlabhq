@@ -1,5 +1,5 @@
 - namespace = local_assigns[:namespace]
-- if current_application_settings.should_check_namespace_plan? && namespace
+- if Gitlab::CurrentSettings.should_check_namespace_plan? && namespace
   %li
     %span.light Plan:
     - if namespace.plan.present?

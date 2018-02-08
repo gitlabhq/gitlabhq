@@ -42,7 +42,7 @@
 
     = render partial: 'access_levels', locals: { f: f }
 
-    - if current_application_settings.should_check_namespace_plan?
+    - if Gitlab::CurrentSettings.should_check_namespace_plan?
       = f.fields_for :namespace do |namespace_form|
         %fieldset
           %legend Licensed Features

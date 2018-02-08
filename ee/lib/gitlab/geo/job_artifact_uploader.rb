@@ -1,6 +1,6 @@
 module Gitlab
   module Geo
-    class JobArtifactUploader < FileUploader
+    class JobArtifactUploader < ::Gitlab::Geo::FileUploader
       def execute
         job_artifact = ::Ci::JobArtifact.find_by(id: object_db_id)
 

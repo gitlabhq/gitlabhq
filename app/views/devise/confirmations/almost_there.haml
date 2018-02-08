@@ -4,9 +4,9 @@
   %p.lead.append-bottom-20
     Please check your email to confirm your account
   %hr
-- if current_application_settings.after_sign_up_text.present?
+- if Gitlab::CurrentSettings.after_sign_up_text.present?
   .well-confirmation.text-center
-    = markdown_field(current_application_settings, :after_sign_up_text)
+    = markdown_field(Gitlab::CurrentSettings, :after_sign_up_text)
 %p.text-center
   No confirmation email received? Please check your spam folder or
 .append-bottom-20.prepend-top-20.text-center

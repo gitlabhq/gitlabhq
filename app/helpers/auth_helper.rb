@@ -1,10 +1,8 @@
 module AuthHelper
-  include Gitlab::CurrentSettings
-
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq).freeze
   FORM_BASED_PROVIDERS = [/\Aldap/, 'kerberos', 'crowd'].freeze
 
-  delegate :slack_app_id, to: :current_application_settings
+  delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def ldap_enabled?
     Gitlab::LDAP::Config.enabled?
@@ -47,7 +45,7 @@ module AuthHelper
   end
 
   def enabled_button_based_providers
-    disabled_providers = current_application_settings.disabled_oauth_sign_in_sources || []
+    disabled_providers = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources || []
 
     button_based_providers.map(&:to_s) - disabled_providers
   end

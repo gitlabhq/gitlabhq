@@ -177,7 +177,7 @@ module API
           use :sort_params
           use :pagination
         end
-        get "/search/:query", requirements: { query: /[^\/]+/ } do
+        get "/search/:query", requirements: { query: %r{[^/]+} } do
           search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
           projects = search_service.objects('projects', params[:page], false)
           projects = projects.reorder(params[:order_by] => params[:sort])

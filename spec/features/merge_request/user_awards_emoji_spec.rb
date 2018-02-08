@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Merge request > User awards emoji', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
-  let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:merge_request) { create(:merge_request, source_project: project, author: create(:user)) }
 
   describe 'logged in' do
     before do

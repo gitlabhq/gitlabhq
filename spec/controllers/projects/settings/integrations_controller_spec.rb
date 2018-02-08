@@ -69,7 +69,7 @@ describe Projects::Settings::IntegrationsController do
 
       context 'when checking of namespace plan is enabled' do
         before do
-          allow_any_instance_of(Project).to receive_message_chain(:current_application_settings, :should_check_namespace_plan?) { true }
+          allow(Gitlab::CurrentSettings.current_application_settings).to receive(:should_check_namespace_plan?) { true }
         end
 
         context 'and namespace does not have a plan' do
@@ -85,7 +85,7 @@ describe Projects::Settings::IntegrationsController do
 
       context 'when checking of namespace plan is not enabled' do
         before do
-          allow_any_instance_of(Project).to receive_message_chain(:current_application_settings, :should_check_namespace_plan?) { false }
+          allow(Gitlab::CurrentSettings.current_application_settings).to receive(:should_check_namespace_plan?) { false }
         end
 
         it_behaves_like 'endpoint without disabled services'

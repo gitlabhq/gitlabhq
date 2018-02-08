@@ -1,5 +1,7 @@
 class Appearance < ActiveRecord::Base
   include CacheMarkdownField
+  include AfterCommitQueue
+  include ObjectStorage::BackgroundMove
 
   cache_markdown_field :description
   cache_markdown_field :new_project_guidelines
@@ -11,6 +13,7 @@ class Appearance < ActiveRecord::Base
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
+
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   CACHE_KEY = 'current_appearance'.freeze

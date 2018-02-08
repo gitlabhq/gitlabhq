@@ -1,4 +1,6 @@
 import initPathLocks from 'ee/path_locks';
+import Vue from 'vue';
+import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import TreeView from '../../../../tree';
 import ShortcutsNavigation from '../../../../shortcuts_navigation';
 import BlobViewer from '../../../../blob/viewer';
@@ -12,6 +14,26 @@ export default () => {
   new NewCommitForm($('.js-create-dir-form')); // eslint-disable-line no-new
   $('#tree-slider').waitForImages(() =>
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
+
+  const commitPipelineStatusEl = document.getElementById('commit-pipeline-status');
+  const statusLink = document.querySelector('.commit-actions .ci-status-link');
+  if (statusLink != null) {
+    statusLink.remove();
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: commitPipelineStatusEl,
+      components: {
+        commitPipelineStatus,
+      },
+      render(createElement) {
+        return createElement('commit-pipeline-status', {
+          props: {
+            endpoint: commitPipelineStatusEl.dataset.endpoint,
+          },
+        });
+      },
+    });
+  }
 
   if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
     initPathLocks(

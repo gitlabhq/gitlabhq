@@ -4,8 +4,6 @@
 module Gitlab
   module Elastic
     class Indexer
-      include Gitlab::CurrentSettings
-
       EXPERIMENTAL_INDEXER = 'gitlab-elasticsearch-indexer'.freeze
 
       Error = Class.new(StandardError)
@@ -22,7 +20,7 @@ module Gitlab
         # We accept any form of settings, including string and array
         # This is why JSON is needed
         @vars = {
-          'ELASTIC_CONNECTION_INFO' => current_application_settings.elasticsearch_config.to_json,
+          'ELASTIC_CONNECTION_INFO' => Gitlab::CurrentSettings.elasticsearch_config.to_json,
           'RAILS_ENV'               => Rails.env
         }
       end
@@ -50,7 +48,7 @@ module Gitlab
       end
 
       def path_to_indexer
-        if current_application_settings.elasticsearch_experimental_indexer? && self.class.experimental_indexer_present?
+        if Gitlab::CurrentSettings.elasticsearch_experimental_indexer? && self.class.experimental_indexer_present?
           EXPERIMENTAL_INDEXER
         else
           Rails.root.join('bin', 'elastic_repo_indexer').to_s

@@ -215,9 +215,9 @@ module API
         job = authenticate_job!
         forbidden!('Job is not running!') unless job.running?
 
-        artifacts_upload_path = JobArtifactUploader.artifacts_upload_path
-        artifacts = uploaded_file(:file, artifacts_upload_path)
-        metadata = uploaded_file(:metadata, artifacts_upload_path)
+        workhorse_upload_path = JobArtifactUploader.workhorse_upload_path
+        artifacts = uploaded_file(:file, workhorse_upload_path)
+        metadata = uploaded_file(:metadata, workhorse_upload_path)
 
         bad_request!('Missing artifacts file!') unless artifacts
         file_to_large! unless artifacts.size < max_artifacts_size
@@ -244,11 +244,12 @@ module API
       params do
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
+        optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
       end
       get '/:id/artifacts' do
         job = authenticate_job!
 
-        present_artifacts!(job.artifacts_file)
+        present_artifacts!(job.artifacts_file, direct_download: params[:direct_download])
       end
     end
   end

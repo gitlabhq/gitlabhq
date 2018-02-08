@@ -6,8 +6,8 @@ describe 'gitlab:lfs namespace rake task' do
   end
 
   describe 'migrate' do
-    let(:local) { ObjectStoreUploader::LOCAL_STORE }
-    let(:remote) { ObjectStoreUploader::REMOTE_STORE }
+    let(:local) { ObjectStorage::Store::LOCAL }
+    let(:remote) { ObjectStorage::Store::REMOTE }
     let!(:lfs_object) { create(:lfs_object, :with_file, file_store: local) }
 
     def lfs_migrate

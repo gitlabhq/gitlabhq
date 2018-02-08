@@ -100,12 +100,12 @@ describe 'Merge request > User resolves conflicts', :js do
       end
 
       it 'shows a link to the conflict resolution page' do
-        expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
+        expect(page).to have_link('conflicts', href: %r{/conflicts\Z})
       end
 
       context 'in Inline view mode' do
         before do
-          click_link('conflicts', href: /\/conflicts\Z/)
+          click_link('conflicts', href: %r{/conflicts\Z})
         end
 
         include_examples "conflicts are resolved in Interactive mode"
@@ -114,7 +114,7 @@ describe 'Merge request > User resolves conflicts', :js do
 
       context 'in Parallel view mode' do
         before do
-          click_link('conflicts', href: /\/conflicts\Z/)
+          click_link('conflicts', href: %r{/conflicts\Z})
           click_button 'Side-by-side'
         end
 
@@ -128,7 +128,7 @@ describe 'Merge request > User resolves conflicts', :js do
 
       before do
         visit project_merge_request_path(project, merge_request)
-        click_link('conflicts', href: /\/conflicts\Z/)
+        click_link('conflicts', href: %r{/conflicts\Z})
       end
 
       it 'conflicts can not be resolved in Interactive mode' do
@@ -181,7 +181,7 @@ describe 'Merge request > User resolves conflicts', :js do
       end
 
       it 'does not show a link to the conflict resolution page' do
-        expect(page).not_to have_link('conflicts', href: /\/conflicts\Z/)
+        expect(page).not_to have_link('conflicts', href: %r{/conflicts\Z})
       end
 
       it 'shows an error if the conflicts page is visited directly' do

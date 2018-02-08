@@ -4,7 +4,7 @@
 
   = render 'shared/repository_size_limit_setting', form: f, type: :group
 
-  - if current_application_settings.should_check_namespace_plan?
+  - if Gitlab::CurrentSettings.should_check_namespace_plan?
     = render 'admin/namespace_plan', f: f
 
   .form-group.group-description-holder

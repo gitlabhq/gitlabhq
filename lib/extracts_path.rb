@@ -56,7 +56,7 @@ module ExtractsPath
 
       if valid_refs.length == 0
         # No exact ref match, so just try our best
-        pair = id.match(/([^\/]+)(.*)/).captures
+        pair = id.match(%r{([^/]+)(.*)}).captures
       else
         # There is a distinct possibility that multiple refs prefix the ID.
         # Use the longest match to maximize the chance that we have the
@@ -68,7 +68,7 @@ module ExtractsPath
     end
 
     # Remove ending slashes from path
-    pair[1].gsub!(/^\/|\/$/, '')
+    pair[1].gsub!(%r{^/|/$}, '')
 
     pair
   end

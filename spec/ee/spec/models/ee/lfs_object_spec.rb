@@ -8,14 +8,14 @@ describe LfsObject do
       expect(subject.local_store?).to eq true
     end
 
-    it 'returns true when file_store is equal to LfsObjectUploader::LOCAL_STORE' do
-      subject.file_store = LfsObjectUploader::LOCAL_STORE
+    it 'returns true when file_store is equal to LfsObjectUploader::Store::LOCAL' do
+      subject.file_store = LfsObjectUploader::Store::LOCAL
 
       expect(subject.local_store?).to eq true
     end
 
-    it 'returns false whe file_store is equal to LfsObjectUploader::REMOTE_STORE' do
-      subject.file_store = LfsObjectUploader::REMOTE_STORE
+    it 'returns false whe file_store is equal to LfsObjectUploader::Store::REMOTE' do
+      subject.file_store = LfsObjectUploader::Store::REMOTE
 
       expect(subject.local_store?).to eq false
     end
@@ -34,7 +34,7 @@ describe LfsObject do
     end
   end
 
-  describe '#schedule_migration_to_object_storage' do
+  describe '#schedule_background_upload' do
     before do
       stub_lfs_setting(enabled: true)
     end
@@ -47,7 +47,7 @@ describe LfsObject do
       end
 
       it 'does not schedule the migration' do
-        expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
         subject
       end
@@ -61,7 +61,7 @@ describe LfsObject do
           end
 
           it 'schedules the model for migration' do
-            expect(ObjectStorageUploadWorker).to receive(:perform_async).with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
+            expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
 
             subject
           end
@@ -73,7 +73,7 @@ describe LfsObject do
           end
 
           it 'does not schedule the migration' do
-            expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+            expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
             subject
           end
@@ -86,7 +86,7 @@ describe LfsObject do
         end
 
         it 'schedules the model for migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
           subject
         end

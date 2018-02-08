@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::Mirror do
-  include Gitlab::CurrentSettings
-
   before do
     Sidekiq::Logging.logger = nil
   end
@@ -66,7 +64,7 @@ describe Gitlab::Mirror do
   end
 
   describe '#reschedule_immediately?' do
-    let(:mirror_capacity_threshold) { current_application_settings.mirror_capacity_threshold }
+    let(:mirror_capacity_threshold) { Gitlab::CurrentSettings.mirror_capacity_threshold }
 
     context 'with number of mirrors to sync equal to the available capacity' do
       it 'returns true if available capacity surpassed defined threshold' do
@@ -128,7 +126,7 @@ describe Gitlab::Mirror do
   describe '#available_capacity' do
     context 'when redis key does not exist' do
       it 'returns mirror_max_capacity' do
-        expect(described_class.available_capacity).to eq(current_application_settings.mirror_max_capacity)
+        expect(described_class.available_capacity).to eq(Gitlab::CurrentSettings.mirror_max_capacity)
       end
     end
 
@@ -142,7 +140,7 @@ describe Gitlab::Mirror do
           end
         end
 
-        expect(described_class.available_capacity).to eq(current_application_settings.mirror_max_capacity - current_capacity)
+        expect(described_class.available_capacity).to eq(Gitlab::CurrentSettings.mirror_max_capacity - current_capacity)
       end
     end
 
@@ -153,7 +151,7 @@ describe Gitlab::Mirror do
 
   describe '#increment_capacity' do
     it 'increments capacity' do
-      max_capacity = current_application_settings.mirror_max_capacity
+      max_capacity = Gitlab::CurrentSettings.mirror_max_capacity
 
       expect { described_class.increment_capacity(1) }.to change { described_class.available_capacity }.from(max_capacity).to(max_capacity - 1)
     end
@@ -168,7 +166,7 @@ describe Gitlab::Mirror do
 
     context 'with capacity above 0' do
       it 'decrements capacity' do
-        max_capacity = current_application_settings.mirror_max_capacity
+        max_capacity = Gitlab::CurrentSettings.mirror_max_capacity
 
         described_class.increment_capacity(id)
 

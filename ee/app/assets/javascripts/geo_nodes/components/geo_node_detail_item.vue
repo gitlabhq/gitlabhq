@@ -106,7 +106,7 @@
       />
       <geo-node-sync-settings
         v-else-if="isCustomTypeSync"
-        :namespaces="itemValue.namespaces"
+        :selective-sync-type="itemValue.selectiveSyncType"
         :last-event="itemValue.lastEvent"
         :cursor-last-event="itemValue.cursorLastEvent"
       />

@@ -87,7 +87,7 @@ end
 
 describe Projects::MergeRequestsController do
   let(:project)       { create(:project, :repository) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: create(:user)) }
   let(:user)          { project.owner }
   let(:viewer)        { user }
 

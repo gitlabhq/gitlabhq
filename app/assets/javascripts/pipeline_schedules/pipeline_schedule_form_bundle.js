@@ -4,7 +4,7 @@ import GlFieldErrors from '../gl_field_errors';
 import intervalPatternInput from './components/interval_pattern_input.vue';
 import TimezoneDropdown from './components/timezone_dropdown';
 import TargetBranchDropdown from './components/target_branch_dropdown';
-import { setupPipelineVariableList } from './setup_pipeline_variable_list';
+import setupNativeFormVariableList from '../ci_variable_list/native_form_variable_list';
 
 Vue.use(Translate);
 
@@ -42,5 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   gl.targetBranchDropdown = new TargetBranchDropdown();
   gl.pipelineScheduleFieldErrors = new GlFieldErrors(formElement);
 
-  setupPipelineVariableList($('.js-pipeline-variable-list'));
+  setupNativeFormVariableList({
+    container: $('.js-ci-variable-list-section'),
+    formField: 'schedule',
+  });
 });

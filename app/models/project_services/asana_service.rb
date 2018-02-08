@@ -84,7 +84,7 @@ http://app.asana.com/-/account_api'
     # - fix/ed/es/ing
     # - close/s/d
     # - closing
-    issue_finder = /(fix\w*|clos[ei]\w*+)?\W*(?:https:\/\/app\.asana\.com\/\d+\/\d+\/(\d+)|#(\d+))/i
+    issue_finder = %r{(fix\w*|clos[ei]\w*+)?\W*(?:https://app\.asana\.com/\d+/\d+/(\d+)|#(\d+))}i
 
     message.scan(issue_finder).each do |tuple|
       # tuple will be

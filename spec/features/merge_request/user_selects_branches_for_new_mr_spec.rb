@@ -61,7 +61,7 @@ describe 'Merge request > User selects branches for new MR', :js do
     fill_in "merge_request_title", with: "Orphaned MR test"
     click_button "Submit merge request"
 
-    click_link "Check out branch"
+    click_button "Check out branch"
 
     expect(page).to have_content 'git checkout -b orphaned-branch origin/orphaned-branch'
   end

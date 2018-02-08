@@ -1,4 +1,4 @@
-- return unless current_application_settings.project_export_enabled?
+- return unless Gitlab::CurrentSettings.project_export_enabled?
 
 - project = local_assigns.fetch(:project)
 - expanded = Rails.env.test?

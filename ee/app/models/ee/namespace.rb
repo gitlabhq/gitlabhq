@@ -108,7 +108,7 @@ module EE
 
     def actual_shared_runners_minutes_limit
       shared_runners_minutes_limit ||
-        current_application_settings.shared_runners_minutes
+        ::Gitlab::CurrentSettings.shared_runners_minutes
     end
 
     def shared_runners_minutes_limit_enabled?
@@ -170,7 +170,7 @@ module EE
     def load_feature_available(feature)
       globally_available = License.feature_available?(feature)
 
-      if current_application_settings.should_check_namespace_plan?
+      if ::Gitlab::CurrentSettings.should_check_namespace_plan?
         globally_available && feature_available_in_plan?(feature)
       else
         globally_available

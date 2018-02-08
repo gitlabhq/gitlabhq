@@ -7,7 +7,8 @@ describe MergeRequests::FfMergeService do
     create(:merge_request,
            source_branch: 'flatten-dir',
            target_branch: 'improve/awesome',
-           assignee: user2)
+           assignee: user2,
+           author: create(:user))
   end
   let(:project) { merge_request.project }
 

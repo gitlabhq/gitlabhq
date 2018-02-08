@@ -121,7 +121,7 @@ describe Group do
 
       group = create(:group, project_creation_level: nil)
 
-      expect(group.project_creation_level).to eq(current_application_settings.default_project_creation)
+      expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
     end
   end
 end

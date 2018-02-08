@@ -78,7 +78,7 @@
           Milestones
           %span.badge
             = limited_count(@search_results.limited_milestones_count)
-      - if current_application_settings.elasticsearch_search?
+      - if Gitlab::CurrentSettings.elasticsearch_search?
         %li{ class: active_when(@scope == 'blobs') }
           = link_to search_filter_path(scope: 'blobs') do
             Code

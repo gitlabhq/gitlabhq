@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180115201419) do
+ActiveRecord::Schema.define(version: 20180204200836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -811,9 +811,11 @@ ActiveRecord::Schema.define(version: 20180115201419) do
 
   add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
   add_index "epics", ["author_id"], name: "index_epics_on_author_id", using: :btree
+  add_index "epics", ["end_date"], name: "index_epics_on_end_date", using: :btree
   add_index "epics", ["group_id"], name: "index_epics_on_group_id", using: :btree
   add_index "epics", ["iid"], name: "index_epics_on_iid", using: :btree
   add_index "epics", ["milestone_id"], name: "index_milestone", using: :btree
+  add_index "epics", ["start_date"], name: "index_epics_on_start_date", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer "project_id"
@@ -990,13 +992,15 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.string "status_message"
     t.integer "replication_slots_count"
     t.integer "replication_slots_used_count"
-    t.integer "replication_slots_max_retained_wal_bytes"
+    t.integer "replication_slots_max_retained_wal_bytes", limit: 8
     t.integer "wikis_count"
     t.integer "wikis_synced_count"
     t.integer "wikis_failed_count"
     t.integer "job_artifacts_count"
     t.integer "job_artifacts_synced_count"
     t.integer "job_artifacts_failed_count"
+    t.string "version"
+    t.string "revision"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
@@ -1012,6 +1016,8 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
     t.string "url", null: false
+    t.string "selective_sync_type"
+    t.text "selective_sync_shards"
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1210,7 +1216,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.boolean "discussion_locked"
-    t.datetime "closed_at"
+    t.datetime_with_timezone "closed_at"
   end
 
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
@@ -2204,7 +2210,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "project_id", null: false
     t.integer "target_id"
     t.string "target_type", null: false
-    t.integer "author_id"
+    t.integer "author_id", null: false
     t.integer "action", null: false
     t.string "state", null: false
     t.datetime "created_at"
@@ -2224,7 +2230,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "project_id", null: false
   end
 
-  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", using: :btree
+  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", unique: true, using: :btree
 
   create_table "u2f_registrations", force: :cascade do |t|
     t.text "certificate"
@@ -2248,11 +2254,14 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.string "model_type"
     t.string "uploader", null: false
     t.datetime "created_at", null: false
+    t.integer "store"
+    t.string "mount_point"
+    t.string "secret"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
   add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
-  add_index "uploads", ["path"], name: "index_uploads_on_path", using: :btree
+  add_index "uploads", ["uploader", "path"], name: "index_uploads_on_uploader_and_path", using: :btree
 
   create_table "user_agent_details", force: :cascade do |t|
     t.string "user_agent", null: false
@@ -2265,6 +2274,14 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   end
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
+
+  create_table "user_callouts", force: :cascade do |t|
+    t.integer "feature_name", null: false
+    t.integer "user_id", null: false
+  end
+
+  add_index "user_callouts", ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true, using: :btree
+  add_index "user_callouts", ["user_id"], name: "index_user_callouts_on_user_id", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -2596,9 +2613,13 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
+  add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
+  add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade
+  add_foreign_key "todos", "users", name: "fk_d94154aa95", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade

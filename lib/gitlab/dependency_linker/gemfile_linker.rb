@@ -15,7 +15,7 @@ module Gitlab
         link_regex(/(github:|:github\s*=>)\s*['"](?<name>[^'"]+)['"]/, &method(:github_url))
 
         # Link `git: "https://gitlab.example.com/user/repo"` to https://gitlab.example.com/user/repo
-        link_regex(%r{(git:|:git\s*=>)\s*['"](?<name>#{URL_REGEX})['"]}, &:itself)
+        link_regex(/(git:|:git\s*=>)\s*['"](?<name>#{URL_REGEX})['"]/, &:itself)
 
         # Link `source "https://rubygems.org"` to https://rubygems.org
         link_method_call('source', URL_REGEX, &:itself)

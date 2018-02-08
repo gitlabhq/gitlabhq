@@ -30,7 +30,7 @@
 
 <template>
   <div class="ide-status-bar">
-    <div>
+    <div class="ref-name">
       <icon
         name="branch"
         :size="12"

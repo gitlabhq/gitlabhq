@@ -79,7 +79,7 @@ module Geo
       Geo::Fdw::LfsObject.joins("LEFT OUTER JOIN file_registry
                                               ON file_registry.file_id = #{fdw_table}.id
                                              AND file_registry.file_type = 'lfs'")
-        .merge(Geo::Fdw::LfsObject.with_files_stored_locally)
+        .with_files_stored_locally
         .where(file_registry: { id: nil })
         .where.not(id: except_registry_ids)
     end

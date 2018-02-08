@@ -24,7 +24,7 @@ module Projects
       end
 
       def slack_service
-        if current_application_settings.slack_app_enabled
+        if Gitlab::CurrentSettings.slack_app_enabled
           'slack_slash_commands'
         else
           'gitlab_slack_application'

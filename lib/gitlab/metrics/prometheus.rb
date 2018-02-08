@@ -71,8 +71,7 @@ module Gitlab
         end
 
         def prometheus_metrics_enabled_unmemoized
-          metrics_folder_present? &&
-            Gitlab::CurrentSettings.current_application_settings[:prometheus_metrics_enabled] || false
+          metrics_folder_present? && Gitlab::CurrentSettings.prometheus_metrics_enabled || false
         end
       end
     end

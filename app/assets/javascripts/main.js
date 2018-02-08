@@ -26,6 +26,7 @@ import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
 import initLayoutNav from './layout_nav';
+import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
@@ -36,7 +37,7 @@ import initBreadcrumbs from './breadcrumb';
 // EE-only scripts
 import 'ee/main';
 
-import './dispatcher';
+import initDispatcher from './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -268,4 +269,6 @@ $(() => {
       removeFlashClickListener(flashEl);
     });
   }
+
+  initDispatcher();
 });

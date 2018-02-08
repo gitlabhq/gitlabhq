@@ -6,7 +6,7 @@ FactoryBot.define do
     file_type :archive
 
     trait :remote_store do
-      file_store JobArtifactUploader::REMOTE_STORE
+      file_store JobArtifactUploader::Store::REMOTE
     end
 
     after :build do |artifact|
@@ -28,6 +28,15 @@ FactoryBot.define do
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :trace do
+      file_type :trace
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/trace/sample_trace'), 'text/plain')
       end
     end
   end

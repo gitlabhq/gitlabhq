@@ -1,6 +1,5 @@
 class ElasticBatchProjectIndexerWorker
   include ApplicationWorker
-  include Gitlab::CurrentSettings
 
   # Batch indexing is a generally a onetime option, so give finer control over
   # queuing and concurrency
