@@ -22,7 +22,12 @@ module QA
           Specs::Runner.perform do |specs|
             specs.tty = true
             specs.tags = self.class.focus
-            specs.files = files.any? ? files : 'qa/specs/features'
+            specs.files =
+              if files.any?
+                files
+              else
+                File.expand_path('../../specs/features', __dir__)
+              end
           end
         end
       end

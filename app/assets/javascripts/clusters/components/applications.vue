@@ -23,13 +23,19 @@
         required: false,
         default: '',
       },
+      managePrometheusPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
       generalApplicationDescription() {
         return sprintf(
-          _.escape(s__(`ClusterIntegration|Install applications on your Kubernetes cluster.
-  Read more about %{helpLink}`)),
-          {
+          _.escape(s__(
+            `ClusterIntegration|Install applications on your Kubernetes cluster.
+            Read more about %{helpLink}`,
+          )), {
             helpLink: `<a href="${this.helpPath}">
               ${_.escape(s__('ClusterIntegration|installing applications'))}
             </a>`,
@@ -96,11 +102,12 @@
       },
       prometheusDescription() {
         return sprintf(
-          _.escape(s__(`ClusterIntegration|Prometheus is an open-source monitoring system
-  with %{gitlabIntegrationLink} to monitor deployed applications.`)),
-          {
+          _.escape(s__(
+            `ClusterIntegration|Prometheus is an open-source monitoring system
+            with %{gitlabIntegrationLink} to monitor deployed applications.`,
+          )), {
             gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
-target="_blank" rel="noopener noreferrer">
+              target="_blank" rel="noopener noreferrer">
               ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
           },
           false,
@@ -149,6 +156,7 @@ target="_blank" rel="noopener noreferrer">
           id="prometheus"
           :title="applications.prometheus.title"
           title-link="https://prometheus.io/docs/introduction/overview/"
+          :manage-link="managePrometheusPath"
           :description="prometheusDescription"
           :status="applications.prometheus.status"
           :status-reason="applications.prometheus.statusReason"

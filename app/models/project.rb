@@ -179,6 +179,7 @@ class Project < ActiveRecord::Base
   has_many :releases
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :lfs_file_locks
   has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains
@@ -245,8 +246,7 @@ class Project < ActiveRecord::Base
   validates :path,
     presence: true,
     project_path: true,
-    length: { maximum: 255 },
-    uniqueness: { scope: :namespace_id }
+    length: { maximum: 255 }
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
@@ -261,6 +261,7 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+  validates :variables, variable_duplicates: true
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -1601,7 +1602,7 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    auto_devops&.variables || []
+    (auto_devops || build_auto_devops)&.variables
   end
 
   def append_or_update_attribute(name, value)

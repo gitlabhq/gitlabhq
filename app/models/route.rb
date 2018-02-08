@@ -75,7 +75,7 @@ class Route < ActiveRecord::Base
   def ensure_permanent_paths
     return if path.nil?
 
-    errors.add(:path, "#{path} has been taken before. Please use another one") if conflicting_redirect_exists?
+    errors.add(:path, "has been taken before") if conflicting_redirect_exists?
   end
 
   def conflicting_redirect_exists?

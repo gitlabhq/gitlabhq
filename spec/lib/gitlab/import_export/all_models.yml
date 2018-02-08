@@ -276,6 +276,7 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- lfs_file_locks
 award_emoji:
 - awardable
 - user
@@ -290,3 +291,5 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
+lfs_file_locks:
+- user

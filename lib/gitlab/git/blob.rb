@@ -53,11 +53,7 @@ module Gitlab
         def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
           Gitlab::GitalyClient.migrate(:list_blobs_by_sha_path) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient.allow_n_plus_1_calls do
-                blob_references.map do |sha, path|
-                  find_by_gitaly(repository, sha, path, limit: blob_size_limit)
-                end
-              end
+              repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
             else
               blob_references.map do |sha, path|
                 find_by_rugged(repository, sha, path, limit: blob_size_limit)
