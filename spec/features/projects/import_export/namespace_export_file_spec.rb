@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import/Export - Namespace export file cleanup', :js do
+describe 'Import/Export - Namespace export file cleanup', :js do
   let(:export_path) { Dir.mktmpdir('namespace_export_file_spec') }
 
   before do
@@ -42,13 +42,13 @@ feature 'Import/Export - Namespace export file cleanup', :js do
   end
 
   describe 'legacy storage' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :legacy_storage) }
 
     it_behaves_like 'handling project exports on namespace change'
   end
 
   describe 'hashed storage' do
-    let(:project) { create(:project, :hashed) }
+    let(:project) { create(:project) }
 
     it_behaves_like 'handling project exports on namespace change'
   end
