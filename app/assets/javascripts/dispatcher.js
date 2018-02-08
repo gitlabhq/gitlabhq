@@ -9,6 +9,7 @@ import SearchAutocomplete from './search_autocomplete';
 // EE-only
 import UsersSelect from './users_select';
 import UserCallout from './user_callout';
+import ZenMode from './zen_mode';
 import initCompareAutocomplete from './compare_autocomplete';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
 import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
