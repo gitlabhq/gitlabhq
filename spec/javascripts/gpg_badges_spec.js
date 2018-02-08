@@ -40,7 +40,7 @@ describe('GpgBadges', () => {
       const spinners = document.querySelectorAll('.js-loading-gpg-badge i.fa.fa-spinner.fa-spin');
       expect(spinners.length).toBe(1);
       done();
-    }).catch(err => done(err));
+    }).catch(done.fail);
   });
 
   it('replaces the loading spinner', (done) => {
@@ -51,6 +51,6 @@ describe('GpgBadges', () => {
       const parentContainer = document.querySelector('.parent-container');
       expect(parentContainer.innerHTML.trim()).toEqual(dummyBadgeHtml);
       done();
-    }).catch(err => done(err));
+    }).catch(done.fail);
   });
 });

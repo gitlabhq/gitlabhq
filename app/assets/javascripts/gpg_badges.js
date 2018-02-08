@@ -16,6 +16,6 @@ export default class GpgBadges {
         badges.filter(`[data-commit-sha="${signature.commit_sha}"]`).replaceWith(signature.html);
       });
     })
-    .catch(() => flash(__('An error occurred while loading comm')));
+    .catch(() => flash(__('An error occurred while loading commits')));
   }
 }

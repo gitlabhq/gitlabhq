@@ -72,7 +72,6 @@ export default class Diff {
     const view = file.data('view');
 
     const params = { since, to, bottom, offset, unfold, view };
-    // $.get(link, params, response => $target.parent().replaceWith(response));
     axios.get(link, { params })
     .then(({ data }) => $target.parent().replaceWith(data))
     .catch(() => flash(__('An error occurred while loading diff')));
