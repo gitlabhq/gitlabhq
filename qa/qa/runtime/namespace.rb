@@ -16,7 +16,7 @@ module QA
       end
 
       def sandbox_name
-        'gitlab-qa-sandbox'
+        ENV['GITLAB_SANDBOX_NAME'] || 'gitlab-qa-sandbox'
       end
     end
   end
