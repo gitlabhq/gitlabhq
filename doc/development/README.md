@@ -33,6 +33,7 @@ comments: false
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Manage feature flags](feature_flags.md)
+- [Licensed feature availability](licensed_feature_availability.md)
 - [View sent emails or preview mailers](emails.md)
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [`Gemfile` guidelines](gemfile.md)
