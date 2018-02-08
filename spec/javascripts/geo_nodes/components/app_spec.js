@@ -25,13 +25,23 @@ const createComponent = () => {
 
 describe('AppComponent', () => {
   let vm;
+  let mock;
+  let statusCode;
+  let response;
 
   beforeEach(() => {
+    statusCode = 200;
+    response = mockNodes;
+
+    mock = new MockAdapter(axios);
+
+    mock.onGet(/(.*)\/geo_nodes$/).reply(() => [statusCode, response]);
     vm = createComponent();
   });
 
   afterEach(() => {
     vm.$destroy();
+    mock.restore();
   });
 
   describe('data', () => {
@@ -51,19 +61,8 @@ describe('AppComponent', () => {
   });
 
   describe('methods', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
     describe('fetchGeoNodes', () => {
       it('calls service.getGeoNodes and sets response to the store on success', (done) => {
-        mock.onGet(vm.store.geoNodesPath).reply(200, mockNodes);
         spyOn(vm.store, 'setNodes');
 
         vm.fetchGeoNodes();
@@ -76,14 +75,14 @@ describe('AppComponent', () => {
       });
 
       it('sets error flag and message on failure', (done) => {
-        const err = 'Something went wrong';
-        mock.onGet(vm.store.geoNodesPath).reply(500, err);
+        response = 'Something went wrong';
+        statusCode = 500;
 
         vm.fetchGeoNodes();
         expect(vm.hasError).toBeFalsy();
         setTimeout(() => {
           expect(vm.hasError).toBeTruthy();
-          expect(vm.errorMessage.response.data).toBe(err);
+          expect(vm.errorMessage.response.data).toBe(response);
           done();
         }, 0);
       });
@@ -92,11 +91,13 @@ describe('AppComponent', () => {
     describe('fetchNodeDetails', () => {
       it('calls service.getGeoNodeDetails and sets response to the store on success', (done) => {
         mock.onGet(`${vm.service.geoNodeDetailsBasePath}/2/status.json`).reply(200, rawMockNodeDetails);
-        spyOn(vm.store, 'setNodeDetails');
+        spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
         vm.fetchNodeDetails(2);
         setTimeout(() => {
-          expect(vm.store.setNodeDetails).toHaveBeenCalled();
+          expect(vm.service.getGeoNodeDetails).toHaveBeenCalled();
+          expect(Object.keys(vm.store.state.nodeDetails).length).toBe(1);
+          expect(vm.store.state.nodeDetails['2']).toBeDefined();
           done();
         }, 0);
       });
