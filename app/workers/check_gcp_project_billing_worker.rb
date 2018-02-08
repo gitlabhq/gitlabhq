@@ -74,7 +74,20 @@ class CheckGcpProjectBillingWorker
     )
   end
 
+  def log_transition(previous_state, current_state)
+    state_message = if previous_state.nil? && !current_state
+                      "no_billing"
+                    elsif previous_state.nil? && current_state
+                      "with_billing"
+                    elsif !previous_state && current_state
+                      "billing_configured"
+                    end
+
+    Rails.logger.info "#{self.class}: state: #{state_message}"
+  end
+
   def update_billing_change_counter(previous_state, current_state)
+    log_transition(previous_state, current_state)
     return unless !previous_state && current_state
 
     billing_changed_counter.increment
