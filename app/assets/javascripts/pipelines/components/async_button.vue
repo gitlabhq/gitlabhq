@@ -32,15 +32,9 @@
         type: String,
         required: true,
       },
-<<<<<<< HEAD
-      confirmActionMessage: {
-        type: String,
-        required: false,
-=======
       id: {
         type: Number,
         required: true,
->>>>>>> upstream/master
       },
     },
 
@@ -56,18 +50,10 @@
     },
     methods: {
       onClick() {
-<<<<<<< HEAD
-        if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
-          this.makeRequest();
-        } else if (!this.confirmActionMessage) {
-          this.makeRequest();
-        }
-=======
         eventHub.$emit('actionConfirmationModal', {
           id: this.id,
           callback: this.makeRequest,
         });
->>>>>>> upstream/master
       },
       makeRequest() {
         this.isLoading = true;
