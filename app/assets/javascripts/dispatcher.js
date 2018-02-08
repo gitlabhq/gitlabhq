@@ -109,6 +109,11 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
+        case 'admin:projects:index':
+          import('./pages/admin/projects/index/index')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
           import('./pages/dashboard/projects')
