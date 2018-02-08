@@ -14,7 +14,7 @@ module QA
       end
 
       scenario 'submit request with a valid user name' do
-        get request.url, { params: { username: 'root' } }
+        get request.url, { params: { username: Runtime::User.name } }
 
         expect_status(200)
         expect(json_body).to be_an Array
@@ -23,7 +23,7 @@ module QA
       end
 
       scenario 'submit request with an invalid user name' do
-        get request.url, { params: { username: 'invalid' } }
+        get request.url, { params: { username: SecureRandom.hex(10) } }
 
         expect_status(200)
         expect(json_body).to be_an Array
