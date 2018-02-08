@@ -133,6 +133,18 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
       context 'when there are files in /uploads/tmp' do
         it_behaves_like 'does not add files in /uploads/tmp'
       end
+
+      context 'when the last batch size exactly matches the max batch size' do
+        it 'does not raise error' do
+          stub_const("#{described_class}::FIND_BATCH_SIZE", 5)
+
+          expect do
+            described_class.new.perform
+          end.not_to raise_error
+
+          expect(untracked_files_for_uploads.count).to eq(5)
+        end
+      end
     end
   end
 
@@ -204,6 +216,18 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
 
       context 'when there are files in /uploads/tmp' do
         it_behaves_like 'does not add files in /uploads/tmp'
+      end
+
+      context 'when the last batch size exactly matches the max batch size' do
+        it 'does not raise error' do
+          stub_const("#{described_class}::FIND_BATCH_SIZE", 5)
+
+          expect do
+            described_class.new.perform
+          end.not_to raise_error
+
+          expect(untracked_files_for_uploads.count).to eq(5)
+        end
       end
     end
   end
