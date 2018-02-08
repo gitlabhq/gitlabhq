@@ -33,7 +33,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
       $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
     });
 
-    this.editor.on('input', () => {
+    $(this.editor).on('input', () => {
       this.dirty = true;
     });
   }

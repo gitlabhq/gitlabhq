@@ -60,6 +60,15 @@ feature 'issuable templates', :js do
       assert_template(page_part: issue_form_location)
       save_changes
     end
+
+    scenario 'user selects "bug" template, edits description and then selects "no template"' do
+      select_template 'bug'
+      wait_for_requests
+      find_field('issue-description').send_keys(description_addition)
+      assert_template(expected_content: template_content + description_addition, page_part: issue_form_location)
+      select_option 'No template'
+      assert_template(expected_content: template_content + description_addition, page_part: issue_form_location)
+    end
   end
 
   context 'user creates an issue using templates, with a prior description' do
