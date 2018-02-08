@@ -11,6 +11,15 @@ class SystemHooksService
     SystemHook.hooks_for(hooks_scope).find_each do |hook|
       hook.async_execute(data, 'system_hooks')
     end
+
+    # Execute external plugins
+    PLUGINS.each do |plugin|
+      begin
+        plugin.new.execute(data)
+      rescue => e
+        Rails.logger.warn("GitLab -> Plugins -> #{plugin.class.name} raised an axception during execution. #{e}")
+      end
+    end
   end
 
   private
