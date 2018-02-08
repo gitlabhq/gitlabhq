@@ -1,4 +1,6 @@
 module MigrationsHelpers
+  prepend EE::MigrationsHelpers
+
   def table(name)
     Class.new(ActiveRecord::Base) { self.table_name = name }
   end
@@ -25,12 +27,17 @@ module MigrationsHelpers
     clear_schema_cache!
 
     # Reset column information for the most offending classes **after** we
-    # migrated the schema up, otherwise, column information could be outdated
-    ActiveRecord::Base.descendants.each { |klass| klass.reset_column_information }
+    # migrated the schema up, otherwise, column information could be
+    # outdated. We have a separate method for this so we can override it in EE.
+    ActiveRecord::Base.descendants.each(&method(:reset_column_information))
 
     # Without that, we get errors because of missing attributes, e.g.
     # super: no superclass method `elasticsearch_indexing' for #<ApplicationSetting:0x00007f85628508d8>
     ApplicationSetting.define_attribute_methods
+  end
+
+  def reset_column_information(klass)
+    klass.reset_column_information
   end
 
   def previous_migration
