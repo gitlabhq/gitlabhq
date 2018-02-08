@@ -4203,6 +4203,10 @@ jquery-ujs@1.2.2:
   dependencies:
     jquery ">=1.8.0"
 
+jquery.waitforimages@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/jquery.waitforimages/-/jquery.waitforimages-2.2.0.tgz#63f23131055a1b060dc913e6d874bcc9b9e6b16b"
+
 "jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
