@@ -291,7 +291,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
-          ).toEqual('Performance metrics improved on 1 point and degraded on 1 point');
+          ).toEqual('Performance metrics improved on 2 points and degraded on 1 point');
           done();
         }, 0);
       });
@@ -304,7 +304,7 @@ describe('ee merge request widget options', () => {
             Vue.nextTick(() => {
               expect(
                 vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
-              ).toEqual('Performance metrics improved on 1 point');
+              ).toEqual('Performance metrics improved on 2 points');
               done();
             });
           }, 0);

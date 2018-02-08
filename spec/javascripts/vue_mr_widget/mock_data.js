@@ -326,6 +326,12 @@ export const headPerformance = [
       {
         name: 'Sitespeed Score',
         value: 79,
+        desiredSize: 'larger',
+      },
+      {
+        name: 'Requests',
+        value: 3,
+        desiredSize: 'smaller',
       },
     ],
   },
@@ -338,6 +344,7 @@ export const headPerformance = [
       },
     ],
   },
+
 ];
 
 export const basePerformance = [
@@ -356,6 +363,12 @@ export const basePerformance = [
       {
         name: 'Sitespeed Score',
         value: 80,
+        desiredSize: 'larger',
+      },
+      {
+        name: 'Requests',
+        value: 4,
+        desiredSize: 'smaller',
       },
     ],
   },
