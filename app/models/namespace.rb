@@ -243,6 +243,10 @@ class Namespace < ActiveRecord::Base
     all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
+  def features
+    []
+  end
+
   private
 
   def path_or_parent_changed?
