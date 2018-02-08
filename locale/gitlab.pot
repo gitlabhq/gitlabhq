@@ -366,6 +366,9 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
+msgid "Begin with the selected commit"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -1599,6 +1602,9 @@ msgid "Geo|Select groups to replicate."
 msgstr ""
 
 msgid "Geo|Shards to synchronize"
+msgstr ""
+
+msgid "Git revision"
 msgstr ""
 
 msgid "Git storage health information has been reset"
@@ -3579,6 +3585,9 @@ msgid "You are going to transfer %{project_name_with_namespace} to another owner
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can move around the graph by using the arrow keys."
 msgstr ""
 
 msgid "You can only add files when you are on a branch"
