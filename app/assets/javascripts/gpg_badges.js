@@ -1,3 +1,7 @@
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
+
 export default class GpgBadges {
   static fetch() {
     const badges = $('.js-loading-gpg-badge');
@@ -5,13 +9,13 @@ export default class GpgBadges {
 
     badges.html('<i class="fa fa-spinner fa-spin"></i>');
 
-    $.get({
-      url: form.data('signatures-path'),
-      data: form.serialize(),
-    }).done((response) => {
-      response.signatures.forEach((signature) => {
+    const params = form.serialize();
+    return axios.get(form.data('signatures-path'), { params })
+    .then(({ data }) => {
+      data.signatures.forEach((signature) => {
         badges.filter(`[data-commit-sha="${signature.commit_sha}"]`).replaceWith(signature.html);
       });
-    });
+    })
+    .catch(() => flash(__('An error occurred while loading comm')));
   }
 }
