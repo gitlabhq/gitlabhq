@@ -1,7 +1,7 @@
 # Licensed feature availability
 
 As of GitLab 9.4, we've been supporting a simplified version of licensed 
-feature availability checks via `lib/license.rb`, both for 
+feature availability checks via `ee/app/models/license.rb`, both for 
 on-premise or GitLab.com plans and features.
 
 ## Restricting features scoped by namespaces or projects
@@ -12,7 +12,7 @@ feature such as [Related issues](../user/project/issues/related_issues.md) or
 it should be restricted on namespace scope.
 
 1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in 
-  `lib/license.rb`. Note on `ee/app/models/ee/namespace.rb` that _Bronze_ GitLab.com 
+  `ee/app/models/license.rb`. Note on `ee/app/models/ee/namespace.rb` that _Bronze_ GitLab.com 
   features maps to on-premise _EES_, _Silver_ to _EEP_ and _Gold_ to _EEU_.
 2. Check using:
 
@@ -28,7 +28,7 @@ to only a subset of projects or namespaces, the check will be made directly in
 the instance license.
 
 1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in 
-  `lib/license.rb`.
+  `ee/app/models/license.rb`.
 2. Add the same feature symbol to `GLOBAL_FEATURES`
 3. Check using:
 
