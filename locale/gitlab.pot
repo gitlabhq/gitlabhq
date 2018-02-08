@@ -261,6 +261,9 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+msgid "Authors: %{authors}"
+msgstr ""
+
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
 msgstr ""
 
@@ -292,6 +295,9 @@ msgid "Available"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
+msgstr ""
+
+msgid "Average per day: %{average}"
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -725,6 +731,9 @@ msgstr ""
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
+msgid "ClusterIntegration|Manage"
+msgstr ""
+
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
 msgstr ""
 
@@ -859,6 +868,9 @@ msgstr ""
 msgid "Commit message"
 msgstr ""
 
+msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
+msgstr ""
+
 msgid "CommitBoxTitle|Commit"
 msgstr ""
 
@@ -869,6 +881,15 @@ msgid "Commits"
 msgstr ""
 
 msgid "Commits feed"
+msgstr ""
+
+msgid "Commits per day hour (UTC)"
+msgstr ""
+
+msgid "Commits per day of month"
+msgstr ""
+
+msgid "Commits per weekday"
 msgstr ""
 
 msgid "Commits|An error occurred while fetching merge requests data."
@@ -2033,6 +2054,9 @@ msgstr ""
 msgid "Profiles|your account"
 msgstr ""
 
+msgid "Programming languages used in this repository"
+msgstr ""
+
 msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
@@ -2899,6 +2923,9 @@ msgid "Total issue time spent"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
+msgstr ""
+
+msgid "Total: %{total}"
 msgstr ""
 
 msgid "Track time with quick actions"
