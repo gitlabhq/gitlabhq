@@ -31,10 +31,9 @@
         type: String,
         required: true,
       },
-      confirmActionMessage: {
-        type: String,
-        required: false,
-        default: '',
+      id: {
+        type: Number,
+        required: true,
       },
     },
     data() {
@@ -49,11 +48,10 @@
     },
     methods: {
       onClick() {
-        if (this.confirmActionMessage !== '' && confirm(this.confirmActionMessage)) {
-          this.makeRequest();
-        } else if (this.confirmActionMessage === '') {
-          this.makeRequest();
-        }
+        eventHub.$emit('actionConfirmationModal', {
+          id: this.id,
+          callback: this.makeRequest,
+        });
       },
       makeRequest() {
         this.isLoading = true;
