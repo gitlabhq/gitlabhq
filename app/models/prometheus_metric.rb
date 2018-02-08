@@ -5,11 +5,14 @@ class PrometheusMetric < ActiveRecord::Base
   validates :title, presence: true
   validates :query, presence: true
   validates :group, presence: true
+  validates :y_label, presence: true
+  validates :unit, presence: true
+  validates :legend, presence: true
 
   GROUP_TITLES = {
-    business: 'Business metrics',
-    response: 'Response metrics',
-    system: 'System metrics'
+    business: _('Business metrics'),
+    response: _('Response metrics'),
+    system: _('System metrics')
   }.freeze
 
   def group_title
