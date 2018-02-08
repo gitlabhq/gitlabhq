@@ -1,8 +1,8 @@
-import '~/filtered_search/filtered_search_token_keys';
+import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 import '~/filtered_search/filtered_search_tokenizer';
 
 describe('Filtered Search Tokenizer', () => {
-  const allowedKeys = gl.FilteredSearchTokenKeys.getKeys();
+  const allowedKeys = FilteredSearchTokenKeys.getKeys();
 
   describe('processTokens', () => {
     it('returns for input containing only search value', () => {

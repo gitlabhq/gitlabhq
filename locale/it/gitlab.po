@@ -2018,7 +2018,7 @@ msgstr "Nessuna metrica è stata monitorata. Per iniziare a monitorare, rilascia
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
 msgstr ""
 
-msgid "PrometheusService|Prometheus monitoring"
+msgid "PrometheusService|Time-series monitoring service"
 msgstr ""
 
 msgid "PrometheusService|View environments"

@@ -38,6 +38,16 @@ describe Gitlab::Ci::Config::Loader do
     end
   end
 
+  context 'when there is an unknown alias' do
+    let(:yml) { 'steps: *bad_alias' }
+
+    describe '#initialize' do
+      it 'raises FormatError' do
+        expect { loader }.to raise_error(Gitlab::Ci::Config::Loader::FormatError, 'Unknown alias: bad_alias')
+      end
+    end
+  end
+
   context 'when yaml config is empty' do
     let(:yml) { '' }
 

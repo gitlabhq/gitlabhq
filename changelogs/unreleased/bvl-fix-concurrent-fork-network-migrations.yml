@@ -1,0 +1,5 @@
+---
+title: Avoid running `PopulateForkNetworksRange`-migration multiple times
+merge_request: 16988
+author:
+type: fixed

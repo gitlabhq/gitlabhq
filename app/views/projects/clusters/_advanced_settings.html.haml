@@ -5,11 +5,11 @@
         = s_('ClusterIntegration|Google Kubernetes Engine')
       %p
         - link_gke = link_to(s_('ClusterIntegration|Google Kubernetes Engine'), @cluster.gke_cluster_url, target: '_blank', rel: 'noopener noreferrer')
-        = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
+        = s_('ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
   .well.form-group
     %label.text-danger
-      = s_('ClusterIntegration|Remove cluster integration')
+      = s_('ClusterIntegration|Remove Kubernetes cluster integration')
     %p
-      = s_("ClusterIntegration|Remove this cluster's configuration from this project. This will not delete your actual cluster.")
-    = link_to(s_('ClusterIntegration|Remove integration'), namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete, class: 'btn btn-danger', data: { confirm: s_("ClusterIntegration|Are you sure you want to remove this cluster's integration? This will not delete your actual cluster.")})
+      = s_("ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster.")
+    = link_to(s_('ClusterIntegration|Remove integration'), namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete, class: 'btn btn-danger', data: { confirm: s_("ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster.")})

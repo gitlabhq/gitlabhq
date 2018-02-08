@@ -28,7 +28,7 @@ class SnippetsFinder < UnionFinder
     segments << items.public_to_user(current_user)
     segments << authorized_to_user(items)  if current_user
 
-    find_union(segments, Snippet)
+    find_union(segments, Snippet.includes(:author))
   end
 
   def authorized_to_user(items)

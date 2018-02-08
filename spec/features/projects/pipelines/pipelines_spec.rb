@@ -109,7 +109,8 @@ describe 'Pipelines', :js do
 
         context 'when canceling' do
           before do
-            accept_confirm { find('.js-pipelines-cancel-button').click }
+            find('.js-pipelines-cancel-button').click
+            find('.js-primary-button').click
             wait_for_requests
           end
 
@@ -140,6 +141,7 @@ describe 'Pipelines', :js do
         context 'when retrying' do
           before do
             find('.js-pipelines-retry-button').click
+            find('.js-primary-button').click
             wait_for_requests
           end
 
@@ -238,7 +240,8 @@ describe 'Pipelines', :js do
 
           context 'when canceling' do
             before do
-              accept_alert { find('.js-pipelines-cancel-button').click }
+              find('.js-pipelines-cancel-button').click
+              find('.js-primary-button').click
             end
 
             it 'indicates that pipeline was canceled' do

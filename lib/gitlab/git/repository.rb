@@ -128,6 +128,10 @@ module Gitlab
         raise NoRepository.new('no repository for such path')
       end
 
+      def cleanup
+        @rugged&.close
+      end
+
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
@@ -627,21 +631,18 @@ module Gitlab
         end
       end
 
-      # Get refs hash which key is SHA1
-      # and value is a Rugged::Reference
+      # Get refs hash which key is is the commit id
+      # and value is a Gitlab::Git::Tag or Gitlab::Git::Branch
+      # Note that both inherit from Gitlab::Git::Ref
       def refs_hash
-        # Initialize only when first call
-        if @refs_hash.nil?
-          @refs_hash = Hash.new { |h, k| h[k] = [] }
+        return @refs_hash if @refs_hash
 
-          rugged.references.each do |r|
-            # Symbolic/remote references may not have an OID; skip over them
-            target_oid = r.target.try(:oid)
-            if target_oid
-              sha = rev_parse_target(target_oid).oid
-              @refs_hash[sha] << r
-            end
-          end
+        @refs_hash = Hash.new { |h, k| h[k] = [] }
+
+        (tags + branches).each do |ref|
+          next unless ref.target && ref.name
+
+          @refs_hash[ref.dereferenced_target.id] << ref.name
         end
 
         @refs_hash
@@ -1427,6 +1428,26 @@ module Gitlab
         end
       end
 
+      def rev_list(including: [], excluding: [], objects: false, &block)
+        args = ['rev-list']
+
+        args.push(*rev_list_param(including))
+
+        exclude_param = *rev_list_param(excluding)
+        if exclude_param.any?
+          args.push('--not')
+          args.push(*exclude_param)
+        end
+
+        args.push('--objects') if objects
+
+        run_git!(args, lazy_block: block)
+      end
+
+      def missed_ref(oldrev, newrev)
+        run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
+      end
+
       private
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
@@ -1475,7 +1496,7 @@ module Gitlab
         Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
       end
 
-      def run_git(args, chdir: path, env: {}, nice: false, &block)
+      def run_git(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
 
@@ -1485,12 +1506,12 @@ module Gitlab
         end
 
         circuit_breaker.perform do
-          popen(cmd, chdir, env, &block)
+          popen(cmd, chdir, env, lazy_block: lazy_block, &block)
         end
       end
 
-      def run_git!(args, chdir: path, env: {}, nice: false, &block)
-        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+      def run_git!(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, lazy_block: lazy_block, &block)
 
         raise GitError, output unless status.zero?
 
@@ -2371,6 +2392,10 @@ module Gitlab
         walker.count
       rescue Rugged::ReferenceError
         0
+      end
+
+      def rev_list_param(spec)
+        spec == :all ? ['--all'] : spec
       end
     end
   end

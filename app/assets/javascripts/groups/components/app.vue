@@ -152,14 +152,14 @@ export default {
     showLeaveGroupModal(group, parentGroup) {
       this.targetGroup = group;
       this.targetParentGroup = parentGroup;
-      this.showModal = true;
+      this.updateModal = true;
       this.groupLeaveConfirmationMessage = s__(`GroupsTree|Are you sure you want to leave the "${group.fullName}" group?`);
     },
     hideLeaveGroupModal() {
-      this.showModal = false;
+      this.updateModal = false;
     },
     leaveGroup() {
-      this.showModal = false;
+      this.updateModal = false;
       this.targetGroup.isBeingRemoved = true;
       this.service.leaveGroup(this.targetGroup.leavePath)
         .then(res => res.json())
