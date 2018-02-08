@@ -26,6 +26,10 @@ order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the primary
 
+**Warning: If a primary goes offline, there may be data saved on the primary
+  that has not been replicated to the secondary. This data should be treated
+  as lost if you proceed.**
+
 If an outage on your primary happens, you should do everything possible to
 avoid a split-brain situation where writes can occur to two different GitLab
 instances, complicating recovery efforts. So to prepare for the failover, we
