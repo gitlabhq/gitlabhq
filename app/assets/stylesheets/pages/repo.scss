@@ -50,13 +50,6 @@
       text-overflow: ellipsis;
     }
 
-    .unsaved-icon {
-      color: $indigo-700;
-      float: right;
-      font-size: smaller;
-      line-height: 20px;
-    }
-
     .repo-new-btn {
       display: none;
       margin-top: -4px;
@@ -66,10 +59,6 @@
     &:hover {
       .repo-new-btn {
         display: block;
-      }
-
-      .unsaved-icon {
-        display: none;
       }
     }
 
