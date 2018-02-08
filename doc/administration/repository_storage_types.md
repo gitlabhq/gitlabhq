@@ -41,7 +41,7 @@ Registry, etc.
 
 ## Hashed Storage
 
-> **Warning:** Hashed storage is in **Alpha**. For the latest updates, check the
+> **Warning:** Hashed storage is in **Beta**. For the latest updates, check the
 > associated [issue](https://gitlab.com/gitlab-com/infrastructure/issues/2821)
 > and please report any problems you encounter.
 
