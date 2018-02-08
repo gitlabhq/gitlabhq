@@ -1,0 +1,286 @@
+$item-height: 50px;
+$column-shadow: 15px 0 15px -15px rgba(0, 0, 0, 0.12) inset;
+$scroll-top-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.12);
+$border-style: 1px solid $border-gray-normal;
+$details-cell-width: 320px;
+
+.group-epics-roadmap-wrapper {
+  padding-bottom: 0;
+}
+
+.breadcrumbs.group-epics-roadmap {
+  border-bottom: $border-style;
+
+  .breadcrumbs-container {
+    border-bottom: none;
+  }
+}
+
+.roadmap-shell {
+  width: 100%;
+  overflow: hidden;
+
+  &,
+  .roadmap-timeline-section,
+  .epics-list-section {
+    display: block;
+    position: relative;
+  }
+
+  .epics-list-section .epic-details-cell:after,
+  .roadmap-timeline-section .timeline-header-blank:after,
+  .roadmap-timeline-section.scrolled-ahead .timeline-header-blank:before {
+    content: '';
+    position: absolute;
+  }
+
+  .epics-list-section .epic-details-cell:after,
+  .roadmap-timeline-section .timeline-header-blank:after {
+    top: 0;
+    right: -15px;
+    height: 100%;
+    width: 14px;
+    box-shadow: $column-shadow;
+    pointer-events: none;
+  }
+
+  .roadmap-timeline-section .timeline-header-blank:after {
+    top: -2px;
+    height: 60px;
+  }
+
+  .roadmap-timeline-section.scrolled-ahead .timeline-header-blank:before {
+    bottom: -1px;
+    left: 0;
+    height: 15px;
+    width: 100%;
+    box-shadow: $scroll-top-shadow;
+  }
+
+  .roadmap-timeline-section {
+    overflow: visible;
+  }
+
+  .epics-list-section {
+    overflow: auto;
+
+    .epics-list-item-empty {
+      .epic-details-cell {
+        border-bottom: none;
+      }
+    }
+
+    tr:not(.epics-list-item-empty):hover {
+      &,
+      .epic-details-cell {
+        background-color: $theme-gray-100;
+      }
+    }
+  }
+}
+
+
+.roadmap-timeline-section {
+  .timeline-header-blank {
+    position: relative;
+    display: block;
+    top: 2px;
+    height: 60px;
+    width: $details-cell-width;
+    background-color: $white-light;
+    border-right: $border-style;
+    z-index: 3;
+  }
+
+  .timeline-header-blank,
+  .timeline-header-item {
+    border-bottom: $border-style;
+  }
+
+  .timeline-header-item {
+    &:last-of-type .item-label {
+      border-right: none;
+    }
+
+    .item-label,
+    .item-sublabel {
+      color: $theme-gray-600;
+      font-weight: 400;
+
+      &.label-dark {
+        color: $theme-gray-900;
+
+        .value-light {
+          color: $theme-gray-600;
+        }
+      }
+    }
+
+    .item-label {
+      padding: $gl-padding-8 $gl-padding;
+      border-right: $border-style;
+      border-bottom: $border-style;
+
+      &.label-bold {
+        font-weight: 700;
+      }
+    }
+
+    .item-sublabel {
+      position: relative;
+      display: flex;
+
+      .sublabel-value {
+        flex: 1;
+        text-align: center;
+        font-size: $code_font_size;
+        padding: 2px 0;
+      }
+
+      .today-bar {
+        position: absolute;
+        top: 20px;
+        width: 2px;
+        background-color: $red-500;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .today-bar:before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        height: $grid-size;
+        width: $grid-size;
+        background-color: inherit;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.epics-list-section {
+  .epics-list-item {
+    &.epics-list-item-empty {
+      .epic-details-cell,
+      .epic-timeline-cell {
+        padding: 0;
+      }
+    }
+
+    .epic-details-cell,
+    .epic-timeline-cell {
+      border-right: $border-style;
+      border-bottom: $border-style;
+    }
+
+    .epic-details-cell {
+      position: relative;
+      display: block;
+      top: 1px; /* Remove cell spacing */
+      width: $details-cell-width;
+      padding: $gl-padding-8 $gl-padding;
+      font-size: $code_font_size;
+      background-color: $white-light;
+      z-index: 2;
+
+      .epic-title {
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+      }
+
+      .epic-title .epic-url {
+        display: table-cell;
+        color: $theme-gray-900;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .epic-group-timeframe {
+        color: $theme-gray-700;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .epic-group:hover {
+        cursor: pointer;
+      }
+    }
+
+    .epic-timeline-cell {
+      .timeline-bar-wrapper {
+        position: relative;
+      }
+
+      .timeline-bar {
+        position: absolute;
+        top: -12px;
+        height: 24px;
+        background-color: $blue-500;
+        border-radius: $border-radius-default;
+        opacity: 0.75;
+
+        &:hover {
+          opacity: 1;
+        }
+
+        &.start-date-outside:before,
+        &.end-date-outside:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          height: 100%;
+        }
+
+        &.start-date-outside:before,
+        &.end-date-outside:after {
+          border-top: 12px solid transparent;
+          border-bottom: 12px solid transparent;
+        }
+
+        &.start-date-undefined {
+          background: linear-gradient(to right, transparent 0%, $blue-200 50%, $blue-500 100%);
+        }
+
+        &.end-date-undefined {
+          background: linear-gradient(to right, $blue-500 0%, $blue-200 50%, transparent 100%);
+        }
+
+        &.start-date-outside {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+
+          &:before {
+            left: -8px;
+            border-right: 8px solid $blue-500;
+          }
+        }
+
+        &.end-date-outside {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+
+          &:after {
+            right: -8px;
+            border-left: 8px solid $blue-500;
+          }
+        }
+
+        &.start-date-outside,
+        &.start-date-undefined.end-date-outside {
+          left: 8px;
+        }
+      }
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}

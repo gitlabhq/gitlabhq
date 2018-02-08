@@ -14,6 +14,14 @@ module Gitlab
       def perform(start_id, end_id)
         log("Creating memberships for forks: #{start_id} - #{end_id}")
 
+        insert_members(start_id, end_id)
+
+        if missing_members?(start_id, end_id)
+          BackgroundMigrationWorker.perform_in(RESCHEDULE_DELAY, "CreateForkNetworkMembershipsRange", [start_id, end_id])
+        end
+      end
+
+      def insert_members(start_id, end_id)
         ActiveRecord::Base.connection.execute <<~INSERT_MEMBERS
           INSERT INTO fork_network_members (fork_network_id, project_id, forked_from_project_id)
 
@@ -33,10 +41,9 @@ module Gitlab
             WHERE existing_members.project_id = forked_project_links.forked_to_project_id
           )
         INSERT_MEMBERS
-
-        if missing_members?(start_id, end_id)
-          BackgroundMigrationWorker.perform_in(RESCHEDULE_DELAY, "CreateForkNetworkMembershipsRange", [start_id, end_id])
-        end
+      rescue ActiveRecord::RecordNotUnique => e
+        # `fork_network_member` was created concurrently in another migration
+        log(e.message)
       end
 
       def missing_members?(start_id, end_id)

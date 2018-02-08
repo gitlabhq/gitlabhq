@@ -15,7 +15,7 @@ describe Gitlab::ImportExport::UploadsSaver do
     end
 
     describe 'legacy storage' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :legacy_storage) }
 
       subject(:saver) { described_class.new(shared: shared, project: project) }
 
@@ -37,7 +37,7 @@ describe Gitlab::ImportExport::UploadsSaver do
     end
 
     describe 'hashed storage' do
-      let(:project) { create(:project, :hashed) }
+      let(:project) { create(:project) }
 
       subject(:saver) { described_class.new(shared: shared, project: project) }
 

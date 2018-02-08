@@ -151,6 +151,8 @@ describe Projects::UpdateService, '#execute' do
       let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
       context 'with legacy storage' do
+        let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
+
         before do
           gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end

@@ -83,9 +83,9 @@ From the group issue list page and the group merge request list page, you can [f
 ### Filtering in issue boards
 
 - From [project boards](issue_board.md), you can filter by both group labels and project labels in the [search and filter bar](../search/index.md#issue-boards).
-- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards).
-- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#board-with-configuration).
-- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [issue board configuration](issue_board.md#board-with-configuration).
+- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards) (available in GitLab Premium).
+- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#board-with-configuration) (available in GitLab Premium).
+- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [issue board configuration](issue_board.md#board-with-configuration) (available in GitLab Premium).
 
 ## Subscribing to labels
 

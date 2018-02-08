@@ -55,8 +55,8 @@
     to-fast-properties "^2.0.0"
 
 "@gitlab-org/gitlab-svgs@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.8.0.tgz#95d6afa94395860699ddad60a82bd1bbbc2ba89f"
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.9.0.tgz#0ca4a901b30dc9b4c5ac839a26535940c0e42fdc"
 
 "@types/jquery@^2.0.40":
   version "2.0.48"
@@ -7100,6 +7100,12 @@ supports-color@^4.0.0, supports-color@^4.2.1:
 supports-color@^4.4.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.5.0.tgz#be7a0de484dec5c5cddf8b3d59125044912f635b"
+  dependencies:
+    has-flag "^2.0.0"
+
+supports-color@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.1.0.tgz#058a021d1b619f7ddf3980d712ea3590ce7de3d5"
   dependencies:
     has-flag "^2.0.0"
 

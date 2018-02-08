@@ -86,7 +86,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Repository created',
+            'Repository created',
             project_id: event.project_id,
             repo_path: event.repo_path,
             wiki_path: event.wiki_path,
@@ -103,7 +103,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Repository update',
+            'Repository update',
             project_id: event.project_id,
             source: event.source,
             resync_repository: registry.resync_repository,
@@ -121,7 +121,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Deleted project',
+            'Deleted project',
             project_id: event.project_id,
             repository_storage_name: event.repository_storage_name,
             disk_path: event.deleted_path,
@@ -155,7 +155,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Renaming project',
+            'Renaming project',
             project_id: event.project_id,
             old_path: old_path,
             new_path: new_path,
@@ -174,7 +174,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Migrating project to hashed storage',
+            'Migrating project to hashed storage',
             project_id: event.project_id,
             old_storage_version: event.old_storage_version,
             new_storage_version: event.new_storage_version,
@@ -192,7 +192,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Migrating attachments to hashed storage',
+            'Migrating attachments to hashed storage',
             project_id: event.project_id,
             old_attachments_path: event.old_attachments_path,
             new_attachments_path: event.new_attachments_path,
@@ -207,7 +207,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Deleted LFS object',
+            'Deleted LFS object',
             oid: event.oid,
             file_id: event.lfs_object_id,
             file_path: file_path,
@@ -229,7 +229,7 @@ module Gitlab
 
           logger.event_info(
             created_at,
-            message: 'Deleted job artifact',
+            'Deleted job artifact',
             file_id: event.job_artifact_id,
             file_path: file_path)
 
@@ -239,7 +239,7 @@ module Gitlab
         def handle_upload_deleted_event(event, created_at)
           logger.event_info(
             created_at,
-            message: 'Deleted upload file',
+            'Deleted upload file',
             upload_id: event.upload_id,
             upload_type: event.upload_type,
             file_path: event.file_path,

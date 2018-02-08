@@ -5,7 +5,7 @@ def base_path(storage)
 end
 
 describe Geo::HashedStorageAttachmentsMigrationService do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :legacy_storage) }
 
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }

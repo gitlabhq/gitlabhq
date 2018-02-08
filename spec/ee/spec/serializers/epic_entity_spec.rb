@@ -14,6 +14,6 @@ describe EpicEntity do
   end
 
   it 'has epic specific attributes' do
-    expect(subject).to include(:start_date, :end_date, :group_id, :web_url)
+    expect(subject).to include(:start_date, :end_date, :group_id, :group_name, :group_full_name, :web_url)
   end
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::HashedStorageMigratedEventStore do
-  let(:project) { create(:project, :hashed, path: 'bar') }
+  let(:project) { create(:project, path: 'bar') }
   set(:secondary_node) { create(:geo_node) }
   let(:old_disk_path) { "#{project.namespace.full_path}/foo" }
   let(:old_wiki_disk_path) { "#{old_disk_path}.wiki" }

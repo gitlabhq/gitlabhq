@@ -77,7 +77,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
     context 'when files were uploaded before and after hashed storage was enabled' do
       let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
       let!(:user) { create(:user, :with_avatar) }
-      let!(:project1) { create(:project, :with_avatar) }
+      let!(:project1) { create(:project, :with_avatar, :legacy_storage) }
       let(:project2) { create(:project) } # instantiate after enabling hashed_storage
 
       before do
@@ -149,7 +149,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
     context 'when files were uploaded before and after hashed storage was enabled' do
       let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
       let!(:user) { create(:user, :with_avatar) }
-      let!(:project1) { create(:project, :with_avatar) }
+      let!(:project1) { create(:project, :with_avatar, :legacy_storage) }
       let(:project2) { create(:project) } # instantiate after enabling hashed_storage
 
       before do

@@ -168,84 +168,105 @@ describe Namespace do
   end
 
   describe '#move_dir', :request_store do
-    let(:namespace) { create(:namespace) }
-    let!(:project) { create(:project_empty_repo, namespace: namespace) }
+    shared_examples "namespace restrictions" do
+      context "when any project has container images" do
+        let(:container_repository) { create(:container_repository) }
 
-    it "raises error when directory exists" do
-      expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
-    end
+        before do
+          stub_container_registry_config(enabled: true)
+          stub_container_registry_tags(repository: :any, tags: ['tag'])
 
-    it "moves dir if path changed" do
-      namespace.update_attributes(path: namespace.full_path + '_new')
+          create(:project, namespace: namespace, container_repositories: [container_repository])
 
-      expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
-    end
+          allow(namespace).to receive(:path_was).and_return(namespace.path)
+          allow(namespace).to receive(:path).and_return('new_path')
+        end
 
-    context "when any project has container images" do
-      let(:container_repository) { create(:container_repository) }
-
-      before do
-        stub_container_registry_config(enabled: true)
-        stub_container_registry_tags(repository: :any, tags: ['tag'])
-
-        create(:project, namespace: namespace, container_repositories: [container_repository])
-
-        allow(namespace).to receive(:path_was).and_return(namespace.path)
-        allow(namespace).to receive(:path).and_return('new_path')
-      end
-
-      it 'raises an error about not movable project' do
-        expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
-      end
-    end
-
-    context 'with subgroups' do
-      let(:parent) { create(:group, name: 'parent', path: 'parent') }
-      let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child, skip_disk_validation: true) }
-      let(:uploads_dir) { FileUploader.root }
-      let(:pages_dir) { File.join(TestEnv.pages_path) }
-
-      before do
-        FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
-        FileUtils.mkdir_p(File.join(pages_dir, 'parent', 'child', 'the-project'))
-      end
-
-      context 'renaming child' do
-        it 'correctly moves the repository, uploads and pages' do
-          expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
-          expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
-          expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
-
-          child.update_attributes!(path: 'renamed')
-
-          expect(File.directory?(expected_repository_path)).to be(true)
-          expect(File.directory?(expected_upload_path)).to be(true)
-          expect(File.directory?(expected_pages_path)).to be(true)
+        it 'raises an error about not movable project' do
+          expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
         end
       end
+    end
 
-      context 'renaming parent' do
-        it 'correctly moves the repository, uploads and pages' do
-          expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
-          expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
-          expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+    context 'legacy storage' do
+      let(:namespace) { create(:namespace) }
+      let!(:project) { create(:project_empty_repo, :legacy_storage, namespace: namespace) }
 
-          parent.update_attributes!(path: 'renamed')
+      it_behaves_like 'namespace restrictions'
 
-          expect(File.directory?(expected_repository_path)).to be(true)
-          expect(File.directory?(expected_upload_path)).to be(true)
-          expect(File.directory?(expected_pages_path)).to be(true)
+      it "raises error when directory exists" do
+        expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
+      end
+
+      it "moves dir if path changed" do
+        namespace.update_attributes(path: namespace.full_path + '_new')
+
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
+      end
+
+      context 'with subgroups' do
+        let(:parent) { create(:group, name: 'parent', path: 'parent') }
+        let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
+        let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
+        let(:uploads_dir) { FileUploader.root }
+        let(:pages_dir) { File.join(TestEnv.pages_path) }
+
+        before do
+          FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
+          FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
         end
+
+        context 'renaming child' do
+          it 'correctly moves the repository, uploads and pages' do
+            expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
+            expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
+            expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
+
+            child.update_attributes!(path: 'renamed')
+
+            expect(File.directory?(expected_repository_path)).to be(true)
+            expect(File.directory?(expected_upload_path)).to be(true)
+            expect(File.directory?(expected_pages_path)).to be(true)
+          end
+        end
+
+        context 'renaming parent' do
+          it 'correctly moves the repository, uploads and pages' do
+            expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
+            expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
+            expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+
+            parent.update_attributes!(path: 'renamed')
+
+            expect(File.directory?(expected_repository_path)).to be(true)
+            expect(File.directory?(expected_upload_path)).to be(true)
+            expect(File.directory?(expected_pages_path)).to be(true)
+          end
+        end
+      end
+    end
+
+    context 'hashed storage' do
+      let(:namespace) { create(:namespace) }
+      let!(:project) { create(:project_empty_repo, namespace: namespace) }
+
+      it_behaves_like 'namespace restrictions'
+
+      it "repository directory remains unchanged if path changed" do
+        before_disk_path = project.disk_path
+        namespace.update_attributes(path: namespace.full_path + '_new')
+
+        expect(before_disk_path).to eq(project.disk_path)
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
       end
     end
 
     it 'updates project full path in .git/config for each project inside namespace' do
       parent = create(:group, name: 'mygroup', path: 'mygroup')
       subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
-      project_in_parent_group = create(:project, :repository, namespace: parent, name: 'foo1')
-      hashed_project_in_subgroup = create(:project, :repository, :hashed, namespace: subgroup, name: 'foo2')
-      legacy_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo3')
+      project_in_parent_group = create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1')
+      hashed_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo2')
+      legacy_project_in_subgroup = create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3')
 
       parent.update(path: 'mygroup_new')
 
@@ -272,38 +293,18 @@ describe Namespace do
   end
 
   describe '#rm_dir', 'callback' do
-    let!(:project) { create(:project_empty_repo, namespace: namespace) }
     let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
 
-    it 'renames its dirs when deleted' do
-      allow(GitlabShellWorker).to receive(:perform_in)
-
-      namespace.destroy
-
-      expect(File.exist?(deleted_path_in_dir)).to be(true)
-    end
-
-    it 'schedules the namespace for deletion' do
-      expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
-
-      namespace.destroy
-    end
-
-    context 'in sub-groups' do
-      let(:parent) { create(:group, path: 'parent') }
-      let(:child) { create(:group, parent: parent, path: 'child') }
-      let!(:project) { create(:project_empty_repo, namespace: child) }
-      let(:path_in_dir) { File.join(repository_storage_path, 'parent', 'child') }
-      let(:deleted_path) { File.join('parent', "child+#{child.id}+deleted") }
-      let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
+    context 'legacy storage' do
+      let!(:project) { create(:project_empty_repo, :legacy_storage, namespace: namespace) }
 
       it 'renames its dirs when deleted' do
         allow(GitlabShellWorker).to receive(:perform_in)
 
-        child.destroy
+        namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(true)
       end
@@ -311,14 +312,57 @@ describe Namespace do
       it 'schedules the namespace for deletion' do
         expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
 
-        child.destroy
+        namespace.destroy
+      end
+
+      context 'in sub-groups' do
+        let(:parent) { create(:group, path: 'parent') }
+        let(:child) { create(:group, parent: parent, path: 'child') }
+        let!(:project) { create(:project_empty_repo, :legacy_storage, namespace: child) }
+        let(:path_in_dir) { File.join(repository_storage_path, 'parent', 'child') }
+        let(:deleted_path) { File.join('parent', "child+#{child.id}+deleted") }
+        let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
+
+        it 'renames its dirs when deleted' do
+          allow(GitlabShellWorker).to receive(:perform_in)
+
+          child.destroy
+
+          expect(File.exist?(deleted_path_in_dir)).to be(true)
+        end
+
+        it 'schedules the namespace for deletion' do
+          expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+
+          child.destroy
+        end
+      end
+
+      it 'removes the exports folder' do
+        expect(namespace).to receive(:remove_exports!)
+
+        namespace.destroy
       end
     end
 
-    it 'removes the exports folder' do
-      expect(namespace).to receive(:remove_exports!)
+    context 'hashed storage' do
+      let!(:project) { create(:project_empty_repo, namespace: namespace) }
 
-      namespace.destroy
+      it 'has no repositories base directories to remove' do
+        allow(GitlabShellWorker).to receive(:perform_in)
+
+        expect(File.exist?(path_in_dir)).to be(false)
+
+        namespace.destroy
+
+        expect(File.exist?(deleted_path_in_dir)).to be(false)
+      end
+
+      it 'removes the exports folder' do
+        expect(namespace).to receive(:remove_exports!)
+
+        namespace.destroy
+      end
     end
   end
 
@@ -704,8 +748,8 @@ describe Namespace do
   end
 
   describe '#remove_exports' do
-    let(:legacy_project) { create(:project, :with_export, namespace: namespace) }
-    let(:hashed_project) { create(:project, :with_export, :hashed, namespace: namespace) }
+    let(:legacy_project) { create(:project, :with_export, :legacy_storage, namespace: namespace) }
+    let(:hashed_project) { create(:project, :with_export, namespace: namespace) }
     let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
     let(:legacy_export) { legacy_project.export_project_path }
     let(:hashed_export) { hashed_project.export_project_path }
