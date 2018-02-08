@@ -27,7 +27,7 @@ module BlobHelper
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       edit_link_tag(edit_text, ide_edit_path(project, ref, path, options), common_classes)
     elsif current_user && can?(current_user, :fork_project, project)
-      edit_blob_fork(common_classes, options, path, project, ref)
+      edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project, edit_in_new_fork_notice)
     end
   end
 
@@ -56,7 +56,7 @@ module BlobHelper
     elsif current_user && can_modify_blob?(blob, project, ref)
       edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
     elsif current_user && can?(current_user, :fork_project, project)
-      edit_blob_fork(common_classes, options, path, project, ref)
+      edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project, edit_in_new_fork_notice)
     end
   end
 
@@ -76,7 +76,7 @@ module BlobHelper
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
-      edit_blob_fork(common_classes, options, path, project, ref)
+      edit_blob_fork(common_classes, request.fullpath, project, edit_in_new_fork_notice_action(action), action)
     end
   end
 
@@ -311,10 +311,10 @@ module BlobHelper
     blob if blob&.readable_text?
   end
 
-  def edit_blob_fork(common_classes, options, path, project, ref)
+  def edit_blob_fork(common_classes, path, project, notice, action = 'edit')
     continue_params = {
-        to: edit_blob_path(project, ref, path, options),
-        notice: edit_in_new_fork_notice,
+        to: path,
+        notice: notice,
         notice_now: edit_in_new_fork_notice_now
     }
     fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
