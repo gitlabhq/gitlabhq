@@ -3,11 +3,11 @@ require 'spec_helper'
 describe 'Profile > Pipeline Quota' do
   using RSpec::Parameterized::TableSyntax
 
-  set(:statistics) { create(:namespace_statistics) }
-  set(:namespace) { statistics.namespace }
+  set(:user) { create(:user) }
+  set(:namespace) { user.namespace }
+  set(:statistics) { create(:namespace_statistics, namespace: namespace) }
   set(:project) { create(:project, namespace: namespace) }
   set(:other_project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
-  set(:user) { namespace.owner }
 
   before do
     gitlab_sign_in(user)
