@@ -321,7 +321,7 @@ module BlobHelper
 
     button_tag edit_text,
                class: "#{common_classes} js-edit-blob-link-fork-toggler",
-               data: { action: 'edit', fork_path: fork_path }
+               data: { action: action, fork_path: fork_path }
   end
 
   def edit_button_tag(button_text, common_classes)
