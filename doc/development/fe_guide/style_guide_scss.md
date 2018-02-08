@@ -7,6 +7,8 @@ easy to maintain, and performant for the end-user.
 
 ### Naming
 
+Filenames should use `snake_case`.
+
 CSS classes should use the `lowercase-hyphenated` format rather than
 `snake_case` or `camelCase`.
 

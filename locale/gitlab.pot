@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-07 13:35+0100\n"
-"PO-Revision-Date: 2018-02-07 13:35+0100\n"
+"POT-Creation-Date: 2018-02-07 11:38-0600\n"
+"PO-Revision-Date: 2018-02-07 11:38-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -279,6 +279,9 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+msgid "Authors: %{authors}"
+msgstr ""
+
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
 msgstr ""
 
@@ -312,6 +315,7 @@ msgstr ""
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -364,6 +368,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
+=======
+msgid "Average per day: %{average}"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -830,6 +837,9 @@ msgstr ""
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
+msgid "ClusterIntegration|Manage"
+msgstr ""
+
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
 msgstr ""
 
@@ -970,6 +980,9 @@ msgstr ""
 msgid "Commit message"
 msgstr ""
 
+msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
+msgstr ""
+
 msgid "CommitBoxTitle|Commit"
 msgstr ""
 
@@ -980,6 +993,15 @@ msgid "Commits"
 msgstr ""
 
 msgid "Commits feed"
+msgstr ""
+
+msgid "Commits per day hour (UTC)"
+msgstr ""
+
+msgid "Commits per day of month"
+msgstr ""
+
+msgid "Commits per weekday"
 msgstr ""
 
 msgid "Commits|An error occurred while fetching merge requests data."
@@ -1490,6 +1512,7 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Geo Nodes"
 msgstr ""
 
@@ -1604,6 +1627,8 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Git revision"
 msgstr ""
 
@@ -2366,6 +2391,9 @@ msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr ""
 
 msgid "Profiles|your account"
+msgstr ""
+
+msgid "Programming languages used in this repository"
 msgstr ""
 
 msgid "Project '%{project_name}' is in the process of being deleted."
@@ -3338,10 +3366,14 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Track activity with Contribution Analytics."
 msgstr ""
 
 msgid "Track groups of issues that share a theme, across projects and milestones"
+=======
+msgid "Total: %{total}"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Track time with quick actions"
@@ -3585,6 +3617,9 @@ msgid "You are going to transfer %{project_name_with_namespace} to another owner
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can move around the graph by using the arrow keys."
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."
