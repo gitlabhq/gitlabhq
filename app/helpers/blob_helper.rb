@@ -22,10 +22,10 @@ module BlobHelper
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      button_tag 'Edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+      edit_button_tag(edit_text, common_classes)
     # This condition applies to anonymous or users who can edit directly
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
-      link_to 'Edit', edit_blob_path(project, ref, path, options), class: "#{common_classes} btn-sm"
+      edit_link_tag(edit_text, ide_edit_path(project, ref, path, options), common_classes)
     elsif current_user && can?(current_user, :fork_project, project)
       edit_blob_fork(common_classes, options, path, project, ref)
     end
@@ -35,8 +35,12 @@ module BlobHelper
     "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
   end
 
+  def edit_text
+    _('Edit')
+  end
+
   def ide_edit_text
-    "#{_('Web IDE')}"
+    _('Web IDE')
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
@@ -46,10 +50,11 @@ module BlobHelper
     common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      button_tag ide_edit_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' }
-    # This condition applies to anonymous or users who can edit directly
+      edit_button_tag(ide_edit_text, common_classes)
+    # This condition only applies to users who are logged in
+    # Web IDE (Beta) requires the user to have this feature enabled
     elsif current_user && can_modify_blob?(blob, project, ref)
-      link_to ide_edit_text, ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
+      edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
     elsif current_user && can?(current_user, :fork_project, project)
       edit_blob_fork(common_classes, options, path, project, ref)
     end
@@ -314,8 +319,16 @@ module BlobHelper
     }
     fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-    button_tag 'Edit',
+    button_tag edit_text,
                class: "#{common_classes} js-edit-blob-link-fork-toggler",
                data: { action: 'edit', fork_path: fork_path }
+  end
+
+  def edit_button_tag(button_text, common_classes)
+    button_tag(button_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' })
+  end
+
+  def edit_link_tag(link_text, edit_path, common_classes)
+    link_to link_text, edit_path, class: "#{common_classes} btn-sm"
   end
 end
