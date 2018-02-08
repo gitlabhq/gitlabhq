@@ -204,6 +204,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
         if (baseMetricsIndexed[subject] && baseMetricsIndexed[subject][metric]) {
           const baseMetricData = baseMetricsIndexed[subject][metric];
+          const metricDirection = 'desiredSize' in headMetricData && headMetricData.desiredSize === 'smaller' ? -1 : 1;
           const metricData = {
             name: metric,
             path: subject,
@@ -211,12 +212,12 @@ export default class MergeRequestStore extends CEMergeRequestStore {
             delta: headMetricData.value - baseMetricData.value,
           };
 
-          if (headMetricData.value > baseMetricData.value) {
-            improved.push(metricData);
-          } else if (headMetricData.value < baseMetricData.value) {
-            degraded.push(metricData);
-          } else {
+          if (metricData.delta === 0) {
             neutral.push(metricData);
+          } else if (metricData.delta * metricDirection > 0) {
+            improved.push(metricData);
+          } else {
+            degraded.push(metricData);
           }
         } else {
           neutral.push({
