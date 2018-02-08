@@ -9,8 +9,7 @@ Vue.use(Translate);
 export default () => {
   const stopJobsButton = document.getElementById('stop-jobs-button');
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el: '#stop-jobs-modal',
     components: {
       stopJobsModal,

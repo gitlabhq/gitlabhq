@@ -23,8 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     eventHub.$emit('dropdownOpen');
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el,
     components: {
       projectsDropdownApp,

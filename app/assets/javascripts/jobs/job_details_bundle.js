@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   mediator.fetchJob();
 
   // Header
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el: '#js-build-header-vue',
     components: {
       jobHeader,
@@ -35,8 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Sidebar information block
-  // eslint-disable-next-line
-  new Vue({
+  Vue.create({
     el: '#js-details-block-vue',
     components: {
       detailsBlock,

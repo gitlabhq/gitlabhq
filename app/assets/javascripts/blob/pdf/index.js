@@ -1,11 +1,10 @@
-/* eslint-disable no-new */
 import Vue from 'vue';
 import pdfLab from '../../pdf/index.vue';
 
 export default () => {
   const el = document.getElementById('js-pdf-viewer');
 
-  return new Vue({
+  Vue.create({
     el,
     components: {
       pdfLab,

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+document.addEventListener('DOMContentLoaded', () => Vue.create({
   el: '#js-vue-notes',
   components: {
     notesApp,

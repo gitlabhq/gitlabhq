@@ -1,4 +1,3 @@
-/* eslint-disable no-new */
 import Vue from 'vue';
 import axios from '../../lib/utils/axios_utils';
 import notebookLab from '../../notebook/index.vue';
@@ -6,7 +5,7 @@ import notebookLab from '../../notebook/index.vue';
 export default () => {
   const el = document.getElementById('js-notebook-viewer');
 
-  new Vue({
+  Vue.create({
     el,
     components: {
       notebookLab,

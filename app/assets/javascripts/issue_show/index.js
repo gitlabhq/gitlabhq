@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialDataEl = document.getElementById('js-issuable-app-initial-data');
   const props = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
 
-  return new Vue({
+  Vue.create({
     el: document.getElementById('js-issuable-app'),
     components: {
       issuableApp,

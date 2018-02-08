@@ -15,8 +15,7 @@ function mountAssigneesComponent(mediator) {
 
   if (!el) return;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el,
     components: {
       SidebarAssignees,
@@ -77,7 +76,7 @@ function mountParticipantsComponent(mediator) {
   if (!el) return;
 
   // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el,
     components: {
       sidebarParticipants,
@@ -95,8 +94,7 @@ function mountSubscriptionsComponent(mediator) {
 
   if (!el) return;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el,
     components: {
       sidebarSubscriptions,
@@ -114,8 +112,7 @@ function mountTimeTrackingComponent() {
 
   if (!el) return;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el,
     components: {
       SidebarTimeTracking,

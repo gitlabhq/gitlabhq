@@ -1,4 +1,4 @@
-/* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
+/* eslint-disable func-names, comma-dangle, new-cap, max-len */
 /* global ResolveCount */
 
 import Vue from 'vue';
@@ -67,7 +67,7 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
+  Vue.create({
     el: '#resolve-count-app',
     components: {
       'resolve-count': ResolveCount

@@ -51,7 +51,7 @@ export default () => {
     }
   });
 
-  return new Vue({
+  Vue.create({
     el: '#delete-milestone-modal',
     components: {
       deleteMilestoneModal,

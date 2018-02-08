@@ -5,7 +5,7 @@ import Translate from '../vue_shared/translate';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
+document.addEventListener('DOMContentLoaded', () => Vue.create({
   el: '#pipelines-list-vue',
   components: {
     pipelinesComponent,

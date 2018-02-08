@@ -8,8 +8,8 @@ Vue.use(Translate);
 
 const deleteAccountButton = document.getElementById('delete-account-button');
 const deleteAccountModalEl = document.getElementById('delete-account-modal');
-// eslint-disable-next-line no-new
-new Vue({
+
+Vue.create({
   el: deleteAccountModalEl,
   components: {
     deleteAccountModal,

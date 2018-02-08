@@ -22,8 +22,7 @@ export default () => {
   Vue.component('group-folder', groupFolderComponent);
   Vue.component('group-item', groupItemComponent);
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  Vue.create({
     el,
     components: {
       groupsApp,

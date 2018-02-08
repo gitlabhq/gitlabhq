@@ -12,8 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   mediator.fetchPipeline();
 
-  // eslint-disable-next-line
-  new Vue({
+  Vue.create({
     el: '#js-pipeline-graph-vue',
     components: {
       pipelineGraph,
@@ -33,8 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   });
 
-  // eslint-disable-next-line
-  new Vue({
+  Vue.create({
     el: '#js-pipeline-header-vue',
     components: {
       pipelineHeader,
