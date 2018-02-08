@@ -7,7 +7,7 @@ describe CheckGcpProjectBillingWorker do
     subject { described_class.new.perform('token_key') }
 
     before do
-      allow_any_instance_of(described_class).to receive(:check_previous_state)
+      allow(described_class).to receive(:get_billing_state)
       allow_any_instance_of(described_class).to receive(:update_billing_change_counter)
     end
 
@@ -28,11 +28,8 @@ describe CheckGcpProjectBillingWorker do
         end
 
         it 'stores billing status in redis' do
-          redis_double = double
-
           expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
-          expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-          expect(redis_double).to receive(:set).with(described_class.redis_shared_state_key_for(token), anything, anything)
+          expect(described_class).to receive(:set_billing_state).with(token, true)
 
           subject
         end
@@ -53,7 +50,7 @@ describe CheckGcpProjectBillingWorker do
 
     context 'when there is no token in redis' do
       before do
-        allow_any_instance_of(described_class).to receive(:get_session_token).and_return(nil)
+        allow(described_class).to receive(:get_session_token).and_return(nil)
       end
 
       it 'does not call the service' do
@@ -70,15 +67,12 @@ describe CheckGcpProjectBillingWorker do
     before do
       allow(described_class).to receive(:get_session_token).and_return('bogustoken')
       allow_any_instance_of(described_class).to receive(:try_obtain_lease_for).and_return('randomuuid')
-
-      Gitlab::Redis::SharedState.with do |redis|
-        allow(redis).to receive(:set)
-      end
+      allow(described_class).to receive(:set_billing_state)
     end
 
     context 'when previous state was false' do
       before do
-        expect_any_instance_of(described_class).to receive(:check_previous_state).and_return('false')
+        expect(described_class).to receive(:get_billing_state).and_return(false)
       end
 
       context 'when the current state is false' do
@@ -108,7 +102,7 @@ describe CheckGcpProjectBillingWorker do
 
     context 'when previous state was true' do
       before do
-        expect_any_instance_of(described_class).to receive(:check_previous_state).and_return('true')
+        expect(described_class).to receive(:get_billing_state).and_return(true)
         expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
       end
 
