@@ -36,8 +36,30 @@ describe('Multi-file store actions', () => {
 
   describe('discardAllChanges', () => {
     beforeEach(() => {
-      store.state.openFiles.push(file('discardAll'));
-      store.state.openFiles[0].changed = true;
+      const f = file('discardAll');
+      f.changed = true;
+
+      store.state.openFiles.push(f);
+      store.state.changedFiles.push(f);
+    });
+
+    it('discards changes in file', (done) => {
+      store.dispatch('discardAllChanges')
+        .then(() => {
+          expect(store.state.openFiles.changed).toBeFalsy();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('removes all files from changedFiles state', (done) => {
+      store.dispatch('discardAllChanges')
+        .then(() => {
+          expect(store.state.changedFiles.length).toBe(0);
+          expect(store.state.openFiles.length).toBe(1);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 

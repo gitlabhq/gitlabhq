@@ -24,6 +24,7 @@ export const TOGGLE_TREE_OPEN = 'TOGGLE_TREE_OPEN';
 export const CREATE_TMP_TREE = 'CREATE_TMP_TREE';
 export const SET_LAST_COMMIT_URL = 'SET_LAST_COMMIT_URL';
 export const CREATE_TREE = 'CREATE_TREE';
+export const REMOVE_ALL_CHANGES_FILES = 'REMOVE_ALL_CHANGES_FILES';
 
 // File mutation types
 export const SET_FILE_DATA = 'SET_FILE_DATA';

@@ -18,6 +18,8 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
       dispatch('closeFile', file);
     }
   });
+
+  commit(types.REMOVE_ALL_CHANGES_FILES);
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
