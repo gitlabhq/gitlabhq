@@ -40,7 +40,7 @@ prerequisites:
   you try to also include other files, it will break the vulnerability display
   in the merge request.
 
-The `sast` job will perform an analysis on the running web application, the
+The `dast` job will perform an analysis on the running web application, the
 resulting JSON file will be uploaded as an artifact, and GitLab will then check
 this file and show the information inside the merge request.
 
