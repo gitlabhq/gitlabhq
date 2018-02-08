@@ -104,7 +104,7 @@ describe Projects::Prometheus::MetricsController do
     context 'format json' do
       let!(:metric) { create(:prometheus_metric, project: project) }
 
-      it 'remove the metric' do
+      it 'destroys the metric' do
         delete :destroy, project_params(id: metric.id, format: :json)
 
         expect(response).to have_gitlab_http_status(200)
