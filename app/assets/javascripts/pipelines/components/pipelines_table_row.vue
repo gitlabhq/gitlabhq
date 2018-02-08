@@ -306,6 +306,9 @@
           css-class="js-pipelines-retry-button btn-default btn-retry"
           title="Retry"
           icon="repeat"
+          :id="pipeline.id"
+          data-toggle="modal"
+          data-target="#retry-confirmation-modal"
         />
 
         <async-button-component
@@ -314,7 +317,9 @@
           css-class="js-pipelines-cancel-button btn-remove"
           title="Cancel"
           icon="close"
-          confirm-action-message="Are you sure you want to cancel this pipeline?"
+          :id="pipeline.id"
+          data-toggle="modal"
+          data-target="#stop-confirmation-modal"
         />
       </div>
     </div>

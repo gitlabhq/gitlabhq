@@ -306,7 +306,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta44'
+  gem 'prometheus-client-mmap', '~> 0.9.1'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -426,7 +426,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.83.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.84.0', require: 'gitaly'
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'
 

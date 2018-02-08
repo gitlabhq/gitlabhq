@@ -1,7 +1,9 @@
 /* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len */
 import Cookies from 'js-cookie';
-import Flash from '../flash';
-import { getPagePath } from '../lib/utils/common_utils';
+import { getPagePath } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
+import flash from '../flash';
 
 ((global) => {
   class Profile {
@@ -57,8 +59,8 @@ import { getPagePath } from '../lib/utils/common_utils';
 
     onUpdateNotifs(e, data) {
       return data.saved ?
-        new Flash("Notification settings saved", "notice") :
-        new Flash("Failed to save new settings", "alert");
+        flash(__('Notification settings saved'), 'notice') :
+        flash(__('Failed to save new settings'));
     }
 
     saveForm() {
@@ -70,21 +72,18 @@ import { getPagePath } from '../lib/utils/common_utils';
         formData.append('user[avatar]', avatarBlob, 'avatar.png');
       }
 
-      return $.ajax({
+      axios({
+        method: this.form.attr('method'),
         url: this.form.attr('action'),
-        type: this.form.attr('method'),
         data: formData,
-        dataType: "json",
-        processData: false,
-        contentType: false,
-        success: response => new Flash(response.message, 'notice'),
-        error: jqXHR => new Flash(jqXHR.responseJSON.message, 'alert'),
-        complete: () => {
-          window.scrollTo(0, 0);
-          // Enable submit button after requests ends
-          return self.form.find(':input[disabled]').enable();
-        }
-      });
+      })
+      .then(({ data }) => flash(data.message, 'notice'))
+      .then(() => {
+        window.scrollTo(0, 0);
+        // Enable submit button after requests ends
+        self.form.find(':input[disabled]').enable();
+      })
+      .catch(error => flash(error.message));
     }
 
     setNewRepoCookie() {
