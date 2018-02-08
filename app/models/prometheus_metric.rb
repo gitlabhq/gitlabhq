@@ -1,5 +1,5 @@
 class PrometheusMetric < ActiveRecord::Base
-  belongs_to :project, required: true, validate: true
+  belongs_to :project, required: true, validate: true, inverse_of: :prometheus_metrics
   enum group: [:business, :response, :system]
 
   validates :title, presence: true
