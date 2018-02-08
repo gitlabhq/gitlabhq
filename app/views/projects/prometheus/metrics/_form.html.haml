@@ -5,40 +5,40 @@
   = form_for [project.namespace.becomes(Namespace), project, metric], html: { class: 'col-lg-8 col-lg-offset-2' } do |f|
     = form_errors(metric)
     .form-group
-      = f.label :title, _('Title'), class: 'label-light'
-      = f.text_field :title, required: true, class: 'form-control', placeholder: _('e.g. Throughput')
+      = f.label :title, s_('Metrics|Title'), class: 'label-light'
+      = f.text_field :title, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. Throughput')
       %span.help-block
         = _('Used as a title for the chart')
     .form-group
-      = label_tag :group, _("Metrics|Group"), class: 'append-bottom-10'
+      = label_tag :group, s_("Metrics|Group"), class: 'append-bottom-10'
       .form-group
         = f.radio_button :group, :business, checked: true
-        = f.label :group_business, _("Metrics|Business"), class: 'label-light'
+        = f.label :group_business, s_("Metrics|Business"), class: 'label-light'
       .form-group
         = f.radio_button :group, :response
-        = f.label :group_response, _("Metrics|Response"), class: 'label-light'
+        = f.label :group_response, s_("Metrics|Response"), class: 'label-light'
       .form-group
         = f.radio_button :group, :system
-        = f.label :group_system, _("Metrics|System"), class: 'label-light'
+        = f.label :group_system, s_("Metrics|System"), class: 'label-light'
     .form-group
-      = f.label :query, _('Metrics|Query'), class: 'label-light'
-      = f.text_field :query, required: true, class: 'form-control', placeholder: _('Metrics|e.g. sum(metric)')
+      = f.label :query, s_('Metrics|Query'), class: 'label-light'
+      = f.text_field :query, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. sum(metric)')
       %span.help-block
         = _('Must be a valid PromQL query.')
         = link_to "https://prometheus.io/docs/prometheus/latest/querying/basics/" do
           = sprite_icon("external-link", size: 12)
           = _('Prometheus Query Documentation')
     .form-group
-      = f.label :y_label, _('Metrics|Y-axis label'), class: 'label-light'
-      = f.text_field :y_label, class: 'form-control', placeholder: _('Metrics|e.g. Requests/second')
+      = f.label :y_label, s_('Metrics|Y-axis label'), class: 'label-light'
+      = f.text_field :y_label, class: 'form-control', placeholder: s_('Metrics|e.g. Requests/second')
       %span.help-block
         = _("Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time")
     .form-group
-      = f.label :unit, _('Metrics|Unit label'), class: 'label-light'
-      = f.text_field :unit, class: 'form-control', placeholder: _('Metrics|e.g. req/sec')
+      = f.label :unit, s_('Metrics|Unit label'), class: 'label-light'
+      = f.text_field :unit, class: 'form-control', placeholder: s_('Metrics|e.g. req/sec')
     .form-group
-      = f.label :legend, _('Metrics|Legend label'), class: 'label-light'
-      = f.text_field :legend, class: 'form-control', placeholder: _('Metrics|e.g. HTTP requests')
+      = f.label :legend, s_('Metrics|Legend label'), class: 'label-light'
+      = f.text_field :legend, class: 'form-control', placeholder: s_('Metrics|e.g. HTTP requests')
       %span.help-block
         = _('Used if the query returns a single series. If it returns multiple series, their legends labels will be picked up from the response')
 
