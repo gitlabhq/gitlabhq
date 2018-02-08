@@ -92,7 +92,7 @@ module Gitlab
           end
         end
 
-        yield(paths)
+        yield(paths) if paths.any?
       end
 
       def build_find_command(search_dir)
