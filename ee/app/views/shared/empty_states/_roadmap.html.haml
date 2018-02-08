@@ -1,0 +1,17 @@
+.row.empty-state
+  .col-xs-12
+    .svg-content
+      = image_tag 'illustrations/epics/roadmap.svg'
+  .col-xs-12
+    .text-content
+      %h4
+        = _('The roadmap shows the progress of your epics along a timeline')
+      %p
+        = _('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown.')
+      - if can?(current_user, :create_epic, @group)
+        - content_for :page_specific_javascripts do
+          = webpack_bundle_tag 'common_vue'
+          = webpack_bundle_tag 'new_epic'
+        #new-epic-app{ data: { endpoint: request.url } }
+      = link_to group_epics_path(@group), title: 'List', class: 'btn' do
+        %span= _('View epics list')

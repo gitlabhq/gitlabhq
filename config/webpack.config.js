@@ -101,6 +101,7 @@ var config = {
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  './service_desk_issues/index.js',
     registry_list:        './registry/index.js',
+    roadmap:              'ee/roadmap',
     ide:                 './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',

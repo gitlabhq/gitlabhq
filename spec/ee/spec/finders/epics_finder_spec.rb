@@ -92,19 +92,30 @@ describe EpicsFinder do
 
         context 'by timeframe' do
           it 'returns epics which start in the timeframe' do
-            expect(epics(start_date: 2.days.ago, end_date: 1.day.ago)).to contain_exactly(epic2)
+            params = {
+              start_date: 2.days.ago.strftime('%Y-%m-%d'),
+              end_date: 1.day.ago.strftime('%Y-%m-%d')
+            }
+
+            expect(epics(params)).to contain_exactly(epic2)
           end
 
           it 'returns epics which end in the timeframe' do
-            expect(epics(start_date: 4.days.ago, end_date: 3.days.ago)).to contain_exactly(epic3)
+            params = {
+              start_date: 4.days.ago.strftime('%Y-%m-%d'),
+              end_date: 3.days.ago.strftime('%Y-%m-%d')
+            }
+
+            expect(epics(params)).to contain_exactly(epic3)
           end
 
           it 'returns epics which start before and end after the timeframe' do
-            expect(epics(start_date: 4.days.ago, end_date: 4.days.ago)).to contain_exactly(epic3)
-          end
+            params = {
+              start_date: 4.days.ago.strftime('%Y-%m-%d'),
+              end_date: 4.days.ago.strftime('%Y-%m-%d')
+            }
 
-          it 'ignores epics which do not have start and end date set' do
-            expect(epics(start_date: 2.days.ago, end_date: 1.day.ago)).not_to include(epic1)
+            expect(epics(params)).to contain_exactly(epic3)
           end
         end
       end

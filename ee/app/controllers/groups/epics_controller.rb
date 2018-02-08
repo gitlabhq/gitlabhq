@@ -96,4 +96,8 @@ class Groups::EpicsController < Groups::ApplicationController
   def authorize_create_epic!
     return render_404 unless can?(current_user, :create_epic, group)
   end
+
+  def filter_params
+    super.merge(start_date: params[:start_date], end_date: params[:end_date])
+  end
 end

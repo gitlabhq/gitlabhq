@@ -53,9 +53,14 @@ class EpicsFinder < IssuableFinder
   def by_timeframe(items)
     return items unless params[:start_date] && params[:end_date]
 
+    end_date = params[:end_date].to_datetime.end_of_day
+    start_date = params[:start_date].to_datetime.beginning_of_day
+
     items
       .where('epics.start_date is not NULL or epics.end_date is not NULL')
-      .where('epics.start_date is NULL or epics.start_date <= ?', params[:end_date].end_of_day)
-      .where('epics.end_date is NULL or epics.end_date >= ?', params[:start_date].beginning_of_day)
+      .where('epics.start_date is NULL or epics.start_date <= ?', end_date)
+      .where('epics.end_date is NULL or epics.end_date >= ?', start_date)
+  rescue ArgumentError
+    items
   end
 end

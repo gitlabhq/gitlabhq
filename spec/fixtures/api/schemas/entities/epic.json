@@ -20,6 +20,8 @@
     "web_url": { "type": "string" },
     "milestone": { "type": ["object", "null"] },
     "labels": { "type": ["array", "null"] },
+    "group_name": { "type": "string" },
+    "group_full_name": { "type": "string" },
     "group": {
       "id": { "type": "integer" },
       "path": { "type": "string" }
