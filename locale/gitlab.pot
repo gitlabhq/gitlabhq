@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-07 13:35+0100\n"
-"PO-Revision-Date: 2018-02-07 13:35+0100\n"
+"POT-Creation-Date: 2018-02-07 11:38-0600\n"
+"PO-Revision-Date: 2018-02-07 11:38-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -292,6 +292,9 @@ msgid "Available"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
+msgstr ""
+
+msgid "Begin with the selected commit"
 msgstr ""
 
 msgid "Branch"
@@ -1323,6 +1326,9 @@ msgid "GPG Keys"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Git revision"
 msgstr ""
 
 msgid "Git storage health information has been reset"
@@ -3106,6 +3112,9 @@ msgid "You are on a read-only GitLab instance."
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can move around the graph by using the arrow keys."
 msgstr ""
 
 msgid "You can only add files when you are on a branch"
