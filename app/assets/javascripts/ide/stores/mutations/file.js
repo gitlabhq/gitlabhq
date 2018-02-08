@@ -71,4 +71,12 @@ export default {
   [types.CREATE_TMP_FILE](state, { file, parent }) {
     parent.tree.push(file);
   },
+  [types.ADD_FILE_TO_CHANGED](state, file) {
+    state.changedFiles.push(file);
+  },
+  [types.REMOVE_FILE_FROM_CHANGED](state, file) {
+    const indexOfChangedFile = findIndexOfFile(state.changedFiles, file);
+
+    state.changedFiles.splice(indexOfChangedFile, 1);
+  },
 };

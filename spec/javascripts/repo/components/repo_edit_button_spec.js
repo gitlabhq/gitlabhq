@@ -55,29 +55,4 @@ describe('RepoEditButton', () => {
       done();
     });
   });
-
-  describe('discardPopupOpen', () => {
-    beforeEach(() => {
-      vm.$store.state.discardPopupOpen = true;
-      vm.$store.state.editMode = true;
-      vm.$store.state.openFiles[0].changed = true;
-
-      vm.$mount();
-    });
-
-    it('renders popup', () => {
-      expect(vm.$el.querySelector('.modal')).not.toBeNull();
-    });
-
-    it('removes all changed files', (done) => {
-      vm.$el.querySelector('.btn-warning').click();
-
-      vm.$nextTick(() => {
-        expect(vm.$store.getters.changedFiles.length).toBe(0);
-        expect(vm.$el.querySelector('.modal')).toBeNull();
-
-        done();
-      });
-    });
-  });
 });

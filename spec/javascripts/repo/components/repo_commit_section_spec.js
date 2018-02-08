@@ -31,8 +31,8 @@ describe('RepoCommitSection', () => {
 
     vm.$store.state.rightPanelCollapsed = false;
     vm.$store.state.currentBranch = 'master';
-    vm.$store.state.openFiles = [file('file1'), file('file2')];
-    vm.$store.state.openFiles.forEach(f => Object.assign(f, {
+    vm.$store.state.changedFiles = [file('file1'), file('file2')];
+    vm.$store.state.changedFiles.forEach(f => Object.assign(f, {
       changed: true,
       content: 'testing',
     }));
@@ -91,7 +91,7 @@ describe('RepoCommitSection', () => {
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
-      expect(changedFile.textContent.trim()).toEqual(vm.$store.getters.changedFiles[i].path);
+      expect(changedFile.textContent.trim()).toContain(vm.$store.state.changedFiles[i].path);
     });
 
     expect(submitCommit.disabled).toBeTruthy();
@@ -103,7 +103,7 @@ describe('RepoCommitSection', () => {
 
     beforeEach(() => {
       vm.commitMessage = 'testing';
-      changedFiles = JSON.parse(JSON.stringify(vm.$store.getters.changedFiles));
+      changedFiles = JSON.parse(JSON.stringify(vm.$store.state.changedFiles));
 
       spyOn(service, 'commit').and.returnValue(Promise.resolve({
         data: {

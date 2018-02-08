@@ -33,4 +33,9 @@ export default {
   [types.CREATE_TMP_TREE](state, { parent, tmpEntry }) {
     parent.tree.push(tmpEntry);
   },
+  [types.REMOVE_ALL_CHANGES_FILES](state) {
+    Object.assign(state, {
+      changedFiles: [],
+    });
+  },
 };

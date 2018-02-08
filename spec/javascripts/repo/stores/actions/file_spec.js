@@ -31,7 +31,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('closes open files', (done) => {
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(localFile.opened).toBeFalsy();
           expect(localFile.active).toBeFalsy();
@@ -41,43 +41,18 @@ describe('Multi-file store file actions', () => {
         }).catch(done.fail);
     });
 
-    it('does not close file if has changed', (done) => {
-      localFile.changed = true;
+    it('closes file even if file has changes', (done) => {
+      store.state.changedFiles.push(localFile);
 
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
+        .then(Vue.nextTick)
         .then(() => {
-          expect(localFile.opened).toBeTruthy();
-          expect(localFile.active).toBeTruthy();
-          expect(store.state.openFiles.length).toBe(1);
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('does not close file if temp file', (done) => {
-      localFile.tempFile = true;
-
-      store.dispatch('closeFile', { file: localFile })
-        .then(() => {
-          expect(localFile.opened).toBeTruthy();
-          expect(localFile.active).toBeTruthy();
-          expect(store.state.openFiles.length).toBe(1);
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('force closes a changed file', (done) => {
-      localFile.changed = true;
-
-      store.dispatch('closeFile', { file: localFile, force: true })
-        .then(() => {
-          expect(localFile.opened).toBeFalsy();
-          expect(localFile.active).toBeFalsy();
           expect(store.state.openFiles.length).toBe(0);
+          expect(store.state.changedFiles.length).toBe(1);
 
           done();
-        }).catch(done.fail);
+        })
+        .catch(done.fail);
     });
 
     it('sets next file as active', (done) => {
@@ -86,7 +61,7 @@ describe('Multi-file store file actions', () => {
 
       expect(f.active).toBeFalsy();
 
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(f.active).toBeTruthy();
 
@@ -95,7 +70,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('calls getLastCommitData', (done) => {
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(getLastCommitDataSpy).toHaveBeenCalled();
 
@@ -194,7 +169,7 @@ describe('Multi-file store file actions', () => {
         }),
       }));
 
-      localFile = file('newCreate');
+      localFile = file(`newCreate-${Math.random()}`);
       localFile.url = 'getFileDataURL';
     });
 
@@ -315,6 +290,50 @@ describe('Multi-file store file actions', () => {
         done();
       }).catch(done.fail);
     });
+
+    it('adds file into changedFiles array', (done) => {
+      store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content',
+      })
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(1);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('adds file once into changedFiles array', (done) => {
+      store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content',
+      })
+      .then(() => store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content 123',
+      }))
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(1);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('removes file from changedFiles array if not changed', (done) => {
+      store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content',
+      })
+      .then(() => store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: '',
+      }))
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(0);
+
+        done();
+      }).catch(done.fail);
+    });
   });
 
   describe('createTempFile', () => {
@@ -367,6 +386,20 @@ describe('Multi-file store file actions', () => {
       }).then((f) => {
         expect(store.state.openFiles.length).toBe(1);
         expect(store.state.openFiles[0].name).toBe(f.name);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('adds tmp file to changed files', (done) => {
+      store.dispatch('createTempFile', {
+        name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
+      }).then((f) => {
+        expect(store.state.changedFiles.length).toBe(1);
+        expect(store.state.changedFiles[0].name).toBe(f.name);
 
         done();
       }).catch(done.fail);
@@ -426,6 +459,64 @@ describe('Multi-file store file actions', () => {
 
         done();
       }).catch(done.fail);
+    });
+  });
+
+  describe('discardFileChanges', () => {
+    let tmpFile;
+
+    beforeEach(() => {
+      tmpFile = file();
+      tmpFile.content = 'testing';
+
+      store.state.changedFiles.push(tmpFile);
+    });
+
+    it('resets file content', (done) => {
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(tmpFile.content).not.toBe('testing');
+
+        done();
+      })
+      .catch(done.fail);
+    });
+
+    it('removes file from changedFiles array', (done) => {
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(0);
+
+        done();
+      })
+      .catch(done.fail);
+    });
+
+    it('closes temp file', (done) => {
+      tmpFile.tempFile = true;
+      tmpFile.opened = true;
+
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(tmpFile.opened).toBeFalsy();
+
+        done();
+      })
+      .catch(done.fail);
+    });
+
+    it('does not re-open a closed temp file', (done) => {
+      tmpFile.tempFile = true;
+
+      expect(tmpFile.opened).toBeFalsy();
+
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(tmpFile.opened).toBeFalsy();
+
+        done();
+      })
+      .catch(done.fail);
     });
   });
 });
