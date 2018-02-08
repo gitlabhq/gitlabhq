@@ -228,6 +228,7 @@ Please check your network connection and try again.`;
               :created-at="discussion.created_at"
               :note-id="discussion.id"
               :include-toggle="true"
+              :expanded="note.expanded"
               @toggleHandler="toggleDiscussionHandler"
               action-text="started a discussion"
               class="discussion"
