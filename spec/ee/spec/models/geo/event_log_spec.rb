@@ -80,6 +80,13 @@ RSpec.describe Geo::EventLog, type: :model do
 
       expect(subject.event).to eq job_artifact_deleted_event
     end
+
+    it 'returns upload_deleted_event when set' do
+      upload_deleted_event = build(:geo_upload_deleted_event)
+      subject.upload_deleted_event = upload_deleted_event
+
+      expect(subject.event).to eq upload_deleted_event
+    end
   end
 
   describe '#project_id' do

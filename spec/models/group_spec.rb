@@ -42,7 +42,6 @@ describe Group do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }

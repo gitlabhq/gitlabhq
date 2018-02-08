@@ -4,10 +4,10 @@ module Gitlab
     Error = Class.new(StandardError)
     QueryError = Class.new(Gitlab::PrometheusClient::Error)
 
-    attr_reader :api_url
+    attr_reader :rest_client, :headers
 
-    def initialize(api_url:)
-      @api_url = api_url
+    def initialize(rest_client)
+      @rest_client = rest_client
     end
 
     def ping
@@ -41,33 +41,37 @@ module Gitlab
     private
 
     def json_api_get(type, args = {})
-      get(join_api_url(type, args))
+      path = ['api', 'v1', type].join('/')
+      get(path, args)
+    rescue JSON::ParserError
+      raise PrometheusClient::Error, 'Parsing response failed'
     rescue Errno::ECONNREFUSED
       raise PrometheusClient::Error, 'Connection refused'
     end
 
-    def join_api_url(type, args = {})
-      url = URI.parse(api_url)
-    rescue URI::Error
-      raise PrometheusClient::Error, "Invalid API URL: #{api_url}"
-    else
-      url.path = [url.path.sub(%r{/+\z}, ''), 'api', 'v1', type].join('/')
-      url.query = args.to_query
-
-      url.to_s
-    end
-
-    def get(url)
-      handle_response(HTTParty.get(url))
+    def get(path, args)
+      response = rest_client[path].get(params: args)
+      handle_response(response)
     rescue SocketError
-      raise PrometheusClient::Error, "Can't connect to #{url}"
+      raise PrometheusClient::Error, "Can't connect to #{rest_client.url}"
     rescue OpenSSL::SSL::SSLError
-      raise PrometheusClient::Error, "#{url} contains invalid SSL data"
-    rescue HTTParty::Error
+      raise PrometheusClient::Error, "#{rest_client.url} contains invalid SSL data"
+    rescue RestClient::ExceptionWithResponse => ex
+      handle_exception_response(ex.response)
+    rescue RestClient::Exception
       raise PrometheusClient::Error, "Network connection error"
     end
 
     def handle_response(response)
+      json_data = JSON.parse(response.body)
+      if response.code == 200 && json_data['status'] == 'success'
+        json_data['data'] || {}
+      else
+        raise PrometheusClient::Error, "#{response.code} - #{response.body}"
+      end
+    end
+
+    def handle_exception_response(response)
       if response.code == 200 && response['status'] == 'success'
         response['data'] || {}
       elsif response.code == 400

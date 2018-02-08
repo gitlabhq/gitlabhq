@@ -27,27 +27,80 @@ module EE
                 numericality: { allow_nil: true, only_integer: true, greater_than: 0 }
 
       validate :mirror_capacity_threshold_less_than
+
+      validates :repository_size_limit,
+                presence: true,
+                numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+      validates :elasticsearch_url,
+                presence: { message: "can't be blank when indexing is enabled" },
+                if: ->(setting) { setting.elasticsearch_indexing? }
+
+      validates :elasticsearch_aws_region,
+                presence: { message: "can't be blank when using aws hosted elasticsearch" },
+                if: ->(setting) { setting.elasticsearch_indexing? && setting.elasticsearch_aws? }
     end
 
     module ClassMethods
+      extend ::Gitlab::Utils::Override
+
+      override :defaults
       def defaults
         super.merge(
+          allow_group_owners_to_manage_ldap: true,
           default_project_creation: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS,
-          elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
           elasticsearch_aws: false,
           elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
-          repository_size_limit: 0,
-          mirror_max_delay: Settings.gitlab['mirror_max_delay'],
-          mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
+          elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
           mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
-          allow_group_owners_to_manage_ldap: true,
-          mirror_available: true
+          mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
+          mirror_max_delay: Settings.gitlab['mirror_max_delay'],
+          mirror_available: true,
+          repository_size_limit: 0,
+          slack_app_enabled: false,
+          slack_app_id: nil,
+          slack_app_secret: nil,
+          slack_app_verification_token: nil
         )
       end
     end
 
     def should_check_namespace_plan?
       check_namespace_plan? && ::Gitlab.dev_env_or_com?
+    end
+
+    def elasticsearch_indexing
+      return false unless elasticsearch_indexing_column_exists?
+
+      License.feature_available?(:elastic_search) && super
+    end
+    alias_method :elasticsearch_indexing?, :elasticsearch_indexing
+
+    def elasticsearch_search
+      return false unless elasticsearch_search_column_exists?
+
+      License.feature_available?(:elastic_search) && super
+    end
+    alias_method :elasticsearch_search?, :elasticsearch_search
+
+    def elasticsearch_url
+      read_attribute(:elasticsearch_url).split(',').map(&:strip)
+    end
+
+    def elasticsearch_url=(values)
+      cleaned = values.split(',').map {|url| url.strip.gsub(%r{/*\z}, '') }
+
+      write_attribute(:elasticsearch_url, cleaned.join(','))
+    end
+
+    def elasticsearch_config
+      {
+        url:                   elasticsearch_url,
+        aws:                   elasticsearch_aws,
+        aws_access_key:        elasticsearch_aws_access_key,
+        aws_secret_access_key: elasticsearch_aws_secret_access_key,
+        aws_region:            elasticsearch_aws_region
+      }
     end
 
     private
@@ -62,6 +115,14 @@ module EE
       if mirror_capacity_threshold > mirror_max_capacity
         errors.add(:mirror_capacity_threshold, "Project's mirror capacity threshold can't be higher than it's maximum capacity")
       end
+    end
+
+    def elasticsearch_indexing_column_exists?
+      ActiveRecord::Base.connection.column_exists?(:application_settings, :elasticsearch_indexing)
+    end
+
+    def elasticsearch_search_column_exists?
+      ActiveRecord::Base.connection.column_exists?(:application_settings, :elasticsearch_search)
     end
   end
 end

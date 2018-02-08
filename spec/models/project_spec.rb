@@ -134,7 +134,6 @@ describe Project do
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
@@ -1825,7 +1824,7 @@ describe Project do
 
       context 'elasticsearch indexing disabled' do
         before do
-          stub_application_setting(elasticsearch_indexing: false)
+          stub_ee_application_setting(elasticsearch_indexing: false)
         end
 
         it 'does not index the repository' do
@@ -1841,7 +1840,7 @@ describe Project do
         let(:project) { create(:project, :import_started, import_type: :github) }
 
         before do
-          stub_application_setting(elasticsearch_indexing: true)
+          stub_ee_application_setting(elasticsearch_indexing: true)
         end
 
         context 'no index status' do
@@ -2472,7 +2471,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for(ref: 'ref') }
+    subject { project.reload.secret_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(

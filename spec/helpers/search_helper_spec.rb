@@ -8,13 +8,13 @@ describe SearchHelper do
 
   describe '#parse_search_result_from_elastic' do
     before do
-      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       Gitlab::Elastic::Helper.create_empty_index
     end
 
     after do
       Gitlab::Elastic::Helper.delete_index
-      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+      stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
     it "returns parsed result" do

@@ -306,6 +306,25 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       end
     end
 
+    context 'when replaying a upload deleted event' do
+      context 'with default handling' do
+        let(:event_log) { create(:geo_event_log, :upload_deleted_event) }
+        let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+        let(:upload_deleted_event) { event_log.upload_deleted_event }
+        let(:upload) { upload_deleted_event.upload }
+
+        it 'does not create a tracking database entry' do
+          expect { daemon.run_once! }.not_to change(Geo::FileRegistry, :count)
+        end
+
+        it 'removes the tracking database entry if exist' do
+          create(:geo_file_registry, :avatar, file_id: upload.id)
+
+          expect { daemon.run_once! }.to change(Geo::FileRegistry.attachments, :count).by(-1)
+        end
+      end
+    end
+
     context 'when replaying a job artifact event' do
       let(:event_log) { create(:geo_event_log, :job_artifact_deleted_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }

@@ -4,7 +4,7 @@ describe ElasticIndexerWorker, elastic: true do
   subject { described_class.new }
 
   before do
-    stub_application_setting(elasticsearch_indexing: true)
+    stub_ee_application_setting(elasticsearch_indexing: true)
 
     Elasticsearch::Model.client =
       Gitlab::Elastic::Client.build(Gitlab::CurrentSettings.elasticsearch_config)
@@ -17,7 +17,7 @@ describe ElasticIndexerWorker, elastic: true do
   end
 
   it 'returns true if ES disabled' do
-    stub_application_setting(elasticsearch_indexing: false)
+    stub_ee_application_setting(elasticsearch_indexing: false)
 
     expect_any_instance_of(Elasticsearch::Model).not_to receive(:__elasticsearch__)
 

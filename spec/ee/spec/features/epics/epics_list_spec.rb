@@ -22,6 +22,12 @@ describe 'epics list', :js do
       expect(first('.nav-sidebar .active a .count')).to have_content('2')
     end
 
+    it 'renders the filtered search bar correctly' do
+      page.within('.content-wrapper .content') do
+        expect(page).to have_css('.epics-filters')
+      end
+    end
+
     it 'renders the list correctly' do
       page.within('.content-wrapper .content') do
         expect(find('.top-area')).to have_content('All 2')

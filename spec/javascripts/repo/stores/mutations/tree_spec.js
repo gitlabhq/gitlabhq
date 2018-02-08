@@ -68,4 +68,14 @@ describe('Multi-file store tree mutations', () => {
       expect(localTree.tree[0].name).toBe(tmpEntry.name);
     });
   });
+
+  describe('REMOVE_ALL_CHANGES_FILES', () => {
+    it('removes all files from changedFiles state', () => {
+      localState.changedFiles.push(file('REMOVE_ALL_CHANGES_FILES'));
+
+      mutations.REMOVE_ALL_CHANGES_FILES(localState);
+
+      expect(localState.changedFiles.length).toBe(0);
+    });
+  });
 });

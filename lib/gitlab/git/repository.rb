@@ -631,21 +631,18 @@ module Gitlab
         end
       end
 
-      # Get refs hash which key is SHA1
-      # and value is a Rugged::Reference
+      # Get refs hash which key is is the commit id
+      # and value is a Gitlab::Git::Tag or Gitlab::Git::Branch
+      # Note that both inherit from Gitlab::Git::Ref
       def refs_hash
-        # Initialize only when first call
-        if @refs_hash.nil?
-          @refs_hash = Hash.new { |h, k| h[k] = [] }
+        return @refs_hash if @refs_hash
 
-          rugged.references.each do |r|
-            # Symbolic/remote references may not have an OID; skip over them
-            target_oid = r.target.try(:oid)
-            if target_oid
-              sha = rev_parse_target(target_oid).oid
-              @refs_hash[sha] << r
-            end
-          end
+        @refs_hash = Hash.new { |h, k| h[k] = [] }
+
+        (tags + branches).each do |ref|
+          next unless ref.target && ref.name
+
+          @refs_hash[ref.dereferenced_target.id] << ref.name
         end
 
         @refs_hash

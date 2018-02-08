@@ -1,10 +1,14 @@
 /* eslint-disable class-methods-use-this */
+import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 
 const AUTHOR_PARAM_KEY = 'author_username';
 
 export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager {
   constructor(supportBotData) {
-    super('service_desk');
+    super({
+      page: 'service_desk',
+      filteredSearchTokenKeys: FilteredSearchTokenKeys,
+    });
 
     this.supportBotData = supportBotData;
   }

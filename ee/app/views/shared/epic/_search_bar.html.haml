@@ -1,0 +1,53 @@
+- type = local_assigns.fetch(:type)
+- full_path = @project.present? ? @project.full_path : @group.full_path
+
+.epics-filters
+  .epics-details-filters.filtered-search-block.row-content-block.second-block
+    = form_tag page_filter_path(without: [:author_id, :search]), method: :get, class: 'filter-form js-filter-form' do
+      - if params[:search].present?
+        = hidden_field_tag :search, params[:search]
+      .epics-other-filters.filtered-search-wrapper
+        .filtered-search-box
+          = dropdown_tag(custom_icon('icon_history'),
+            options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
+            toggle_class: "filtered-search-history-dropdown-toggle-button",
+            dropdown_class: "filtered-search-history-dropdown",
+            content_class: "filtered-search-history-dropdown-content",
+            title: "Recent searches" }) do
+            .js-filtered-search-history-dropdown{ data: { full_path: full_path } }
+          .filtered-search-box-input-container.droplab-dropdown
+            .scroll-container
+              %ul.tokens-container.list-unstyled
+                %li.input-token
+                  %input.form-control.filtered-search{ search_filter_input_options(type) }
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { action: 'submit' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = icon('search')
+                    %span
+                      Press Enter or click to search
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link{ type: 'button' }
+                    -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                    -# haml lint's ClassAttributeWithStaticValue
+                    %i.fa{ class: "#{'{{icon}}'}" }
+                    %span.js-filter-hint
+                      {{hint}}
+                    %span.js-filter-tag.dropdown-light-content
+                      {{tag}}
+            #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu
+              - if current_user
+                %ul{ data: { dropdown: true } }
+                  = render 'shared/issuable/user_dropdown_item',
+                    user: current_user
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                = render 'shared/issuable/user_dropdown_item',
+                  user: User.new(username: '{{username}}', name: '{{name}}'),
+                  avatar: { lazy: true, url: '{{avatar_url}}' }
+
+          %button.clear-search.hidden{ type: 'button' }
+            = icon('times')
+        .filter-dropdown-container
+          = render 'shared/epic/sort_dropdown'

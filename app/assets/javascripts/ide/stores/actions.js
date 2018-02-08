@@ -10,42 +10,25 @@ export const redirectToUrl = (_, url) => visitUrl(url);
 export const setInitialData = ({ commit }, data) =>
   commit(types.SET_INITIAL_DATA, data);
 
-export const closeDiscardPopup = ({ commit }) =>
-  commit(types.TOGGLE_DISCARD_POPUP, false);
-
-export const discardAllChanges = ({ commit, getters, dispatch }) => {
-  const changedFiles = getters.changedFiles;
-
-  changedFiles.forEach((file) => {
+export const discardAllChanges = ({ state, commit, dispatch }) => {
+  state.changedFiles.forEach((file) => {
     commit(types.DISCARD_FILE_CHANGES, file);
 
     if (file.tempFile) {
-      dispatch('closeFile', { file, force: true });
+      dispatch('closeFile', file);
     }
   });
+
+  commit(types.REMOVE_ALL_CHANGES_FILES);
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', { file }));
+  state.openFiles.forEach(file => dispatch('closeFile', file));
 };
 
-export const toggleEditMode = (
-  { state, commit, getters, dispatch },
-  force = false,
-) => {
-  const changedFiles = getters.changedFiles;
-
-  if (changedFiles.length && !force) {
-    commit(types.TOGGLE_DISCARD_POPUP, true);
-  } else {
-    commit(types.TOGGLE_EDIT_MODE);
-    commit(types.TOGGLE_DISCARD_POPUP, false);
-    dispatch('toggleBlobView');
-
-    if (!state.editMode) {
-      dispatch('discardAllChanges');
-    }
-  }
+export const toggleEditMode = ({ commit, dispatch }) => {
+  commit(types.TOGGLE_EDIT_MODE);
+  dispatch('toggleBlobView');
 };
 
 export const toggleBlobView = ({ commit, state }) => {
@@ -85,7 +68,7 @@ export const checkCommitStatus = ({ state }) =>
     .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
 
 export const commitChanges = (
-  { commit, state, dispatch, getters },
+  { commit, state, dispatch },
   { payload, newMr },
 ) =>
   service
@@ -125,7 +108,7 @@ export const commitChanges = (
           reference: data.id,
         });
 
-        getters.changedFiles.forEach((entry) => {
+        state.changedFiles.forEach((entry) => {
           commit(types.SET_LAST_COMMIT_DATA, {
             entry,
             lastCommit,

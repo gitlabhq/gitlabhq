@@ -1885,6 +1885,7 @@ describe MergeRequest do
     context 'on a project with several members' do
       let(:approver_2) { create(:user) }
       let(:developer) { create(:user) }
+      let(:other_developer) { create(:user) }
       let(:reporter) { create(:user) }
       let(:stranger) { create(:user) }
 
@@ -1893,6 +1894,7 @@ describe MergeRequest do
         project.add_developer(approver)
         project.add_developer(approver_2)
         project.add_developer(developer)
+        project.add_developer(other_developer)
         project.add_reporter(reporter)
       end
 
@@ -2040,6 +2042,36 @@ describe MergeRequest do
             expect(merge_request.can_approve?(reporter)).to be_falsey
             expect(merge_request.can_approve?(stranger)).to be_falsey
             expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+
+          context 'when only 1 approval approved' do
+            it 'only allows the approvers to approve the MR' do
+              create(:approval, user: approver, merge_request: merge_request)
+
+              expect(merge_request.can_approve?(developer)).to be_truthy
+              expect(merge_request.can_approve?(approver)).to be_falsey
+              expect(merge_request.can_approve?(approver_2)).to be_truthy
+
+              expect(merge_request.can_approve?(author)).to be_falsey
+              expect(merge_request.can_approve?(reporter)).to be_falsey
+              expect(merge_request.can_approve?(other_developer)).to be_falsey
+              expect(merge_request.can_approve?(stranger)).to be_falsey
+              expect(merge_request.can_approve?(nil)).to be_falsey
+            end
+          end
+
+          context 'when all approvals received' do
+            it 'allows anyone with write access except for author to approve the MR' do
+              create(:approval, user: approver, merge_request: merge_request)
+              create(:approval, user: approver_2, merge_request: merge_request)
+              create(:approval, user: developer, merge_request: merge_request)
+
+              expect(merge_request.can_approve?(author)).to be_falsey
+              expect(merge_request.can_approve?(reporter)).to be_falsey
+              expect(merge_request.can_approve?(other_developer)).to be_truthy
+              expect(merge_request.can_approve?(stranger)).to be_falsey
+              expect(merge_request.can_approve?(nil)).to be_falsey
+            end
           end
         end
       end

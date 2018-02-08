@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-07 14:09+0100\n"
-"PO-Revision-Date: 2018-02-07 14:09+0100\n"
+"POT-Creation-Date: 2018-02-07 13:35+0100\n"
+"PO-Revision-Date: 2018-02-07 13:35+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -364,6 +364,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Begin with the selected commit"
 msgstr ""
 
 msgid "Branch"
@@ -1601,6 +1604,9 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+msgid "Git revision"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -2509,7 +2515,7 @@ msgstr ""
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
 msgstr ""
 
-msgid "PrometheusService|Prometheus monitoring"
+msgid "PrometheusService|Time-series monitoring service"
 msgstr ""
 
 msgid "PrometheusService|View environments"
@@ -3579,6 +3585,9 @@ msgid "You are going to transfer %{project_name_with_namespace} to another owner
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can move around the graph by using the arrow keys."
 msgstr ""
 
 msgid "You can only add files when you are on a branch"

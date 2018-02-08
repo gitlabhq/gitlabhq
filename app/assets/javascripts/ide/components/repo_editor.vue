@@ -19,11 +19,21 @@ export default {
     shouldHideEditor() {
       return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
     },
+    activeFileChanged() {
+      return this.activeFile && this.activeFile.changed;
+    },
   },
   watch: {
     activeFile(oldVal, newVal) {
       if (newVal && !newVal.active) {
         this.initMonaco();
+      }
+    },
+    activeFileChanged(newVal) {
+      if (!this.editor) return;
+
+      if (!newVal && this.model) {
+        this.model.setValue(this.model.getOriginalModel().getValue());
       }
     },
     leftPanelCollapsed() {
@@ -78,11 +88,11 @@ export default {
     setupEditor() {
       if (!this.activeFile) return;
 
-      const model = this.editor.createModel(this.activeFile);
+      this.model = this.editor.createModel(this.activeFile);
 
-      this.editor.attachModel(model);
+      this.editor.attachModel(this.model);
 
-      model.onChange((m) => {
+      this.model.onChange((m) => {
         this.changeFileContent({
           file: this.activeFile,
           content: m.getValue(),
@@ -104,12 +114,12 @@ export default {
 
       // Handle File Language
       this.setFileLanguage({
-        fileLanguage: model.language,
+        fileLanguage: this.model.language,
       });
 
       // Get File eol
       this.setFileEOL({
-        eol: model.eol,
+        eol: this.model.eol,
       });
     },
   },

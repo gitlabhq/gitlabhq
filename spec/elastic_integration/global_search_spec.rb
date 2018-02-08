@@ -11,7 +11,7 @@ describe 'GlobalSearch' do
   let(:guest) { create :user }
 
   before do
-    stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
 
     project.add_developer(member)
@@ -21,7 +21,7 @@ describe 'GlobalSearch' do
 
   after do
     Gitlab::Elastic::Helper.delete_index
-    stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    stub_ee_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   context "Respect feature visibility levels" do

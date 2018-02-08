@@ -73,18 +73,6 @@ describe('Multi-file store mutations', () => {
     });
   });
 
-  describe('TOGGLE_DISCARD_POPUP', () => {
-    it('sets discardPopupOpen', () => {
-      mutations.TOGGLE_DISCARD_POPUP(localState, true);
-
-      expect(localState.discardPopupOpen).toBeTruthy();
-
-      mutations.TOGGLE_DISCARD_POPUP(localState, false);
-
-      expect(localState.discardPopupOpen).toBeFalsy();
-    });
-  });
-
   describe('SET_ROOT', () => {
     it('sets isRoot & initialRoot', () => {
       mutations.SET_ROOT(localState, true);

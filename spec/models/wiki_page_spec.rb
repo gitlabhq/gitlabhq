@@ -188,162 +188,181 @@ describe WikiPage do
     end
   end
 
-  describe '#create', :skip_gitaly_mock do
-    context 'with valid attributes' do
-      it 'raises an error if a page with the same path already exists' do
-        create_page('New Page', 'content')
-        create_page('foo/bar', 'content')
-        expect { create_page('New Page', 'other content') }.to raise_error Gitlab::Git::Wiki::DuplicatePageError
-        expect { create_page('foo/bar', 'other content') }.to raise_error Gitlab::Git::Wiki::DuplicatePageError
+  describe '#create' do
+    shared_examples 'create method' do
+      context 'with valid attributes' do
+        it 'raises an error if a page with the same path already exists' do
+          create_page('New Page', 'content')
+          create_page('foo/bar', 'content')
+          expect { create_page('New Page', 'other content') }.to raise_error Gitlab::Git::Wiki::DuplicatePageError
+          expect { create_page('foo/bar', 'other content') }.to raise_error Gitlab::Git::Wiki::DuplicatePageError
 
-        destroy_page('New Page')
-        destroy_page('bar', 'foo')
+          destroy_page('New Page')
+          destroy_page('bar', 'foo')
+        end
+
+        it 'if the title is preceded by a / it is removed' do
+          create_page('/New Page', 'content')
+
+          expect(wiki.find_page('New Page')).not_to be_nil
+
+          destroy_page('New Page')
+        end
       end
+    end
 
-      it 'if the title is preceded by a / it is removed' do
-        create_page('/New Page', 'content')
+    context 'when Gitaly is enabled' do
+      it_behaves_like 'create method'
+    end
 
-        expect(wiki.find_page('New Page')).not_to be_nil
-
-        destroy_page('New Page')
-      end
+    context 'when Gitaly is disabled', :skip_gitaly_mock do
+      it_behaves_like 'create method'
     end
   end
 
-  # Remove skip_gitaly_mock flag when gitaly_update_page implements moving pages
-  describe "#update", :skip_gitaly_mock do
-    before do
-      create_page("Update", "content")
-      @page = wiki.find_page("Update")
-    end
-
-    after do
-      destroy_page(@page.title, @page.directory)
-    end
-
-    context "with valid attributes" do
-      it "updates the content of the page" do
-        new_content = "new content"
-
-        @page.update(content: new_content)
+  describe "#update" do
+    shared_examples 'update method' do
+      before do
+        create_page("Update", "content")
         @page = wiki.find_page("Update")
-
-        expect(@page.content).to eq("new content")
       end
 
-      it "updates the title of the page" do
-        new_title = "Index v.1.2.4"
-
-        @page.update(title: new_title)
-        @page = wiki.find_page(new_title)
-
-        expect(@page.title).to eq(new_title)
+      after do
+        destroy_page(@page.title, @page.directory)
       end
 
-      it "returns true" do
-        expect(@page.update(content: "more content")).to be_truthy
-      end
-    end
+      context "with valid attributes" do
+        it "updates the content of the page" do
+          new_content = "new content"
 
-    context 'with same last commit sha' do
-      it 'returns true' do
-        expect(@page.update(content: 'more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
-      end
-    end
+          @page.update(content: new_content)
+          @page = wiki.find_page("Update")
 
-    context 'with different last commit sha' do
-      it 'raises exception' do
-        expect { @page.update(content: 'more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
-      end
-    end
+          expect(@page.content).to eq("new content")
+        end
 
-    context 'when renaming a page' do
-      it 'raises an error if the page already exists' do
-        create_page('Existing Page', 'content')
+        it "updates the title of the page" do
+          new_title = "Index v.1.2.4"
 
-        expect { @page.update(title: 'Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
-        expect(@page.title).to eq 'Update'
-        expect(@page.content).to eq 'new_content'
+          @page.update(title: new_title)
+          @page = wiki.find_page(new_title)
 
-        destroy_page('Existing Page')
+          expect(@page.title).to eq(new_title)
+        end
+
+        it "returns true" do
+          expect(@page.update(content: "more content")).to be_truthy
+        end
       end
 
-      it 'updates the content and rename the file' do
-        new_title = 'Renamed Page'
-        new_content = 'updated content'
-
-        expect(@page.update(title: new_title, content: new_content)).to be_truthy
-
-        @page = wiki.find_page(new_title)
-
-        expect(@page).not_to be_nil
-        expect(@page.content).to eq new_content
-      end
-    end
-
-    context 'when moving a page' do
-      it 'raises an error if the page already exists' do
-        create_page('foo/Existing Page', 'content')
-
-        expect { @page.update(title: 'foo/Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
-        expect(@page.title).to eq 'Update'
-        expect(@page.content).to eq 'new_content'
-
-        destroy_page('Existing Page', 'foo')
+      context 'with same last commit sha' do
+        it 'returns true' do
+          expect(@page.update(content: 'more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
+        end
       end
 
-      it 'updates the content and moves the file' do
-        new_title = 'foo/Other Page'
-        new_content = 'new_content'
-
-        expect(@page.update(title: new_title, content: new_content)).to be_truthy
-
-        page = wiki.find_page(new_title)
-
-        expect(page).not_to be_nil
-        expect(page.content).to eq new_content
+      context 'with different last commit sha' do
+        it 'raises exception' do
+          expect { @page.update(content: 'more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
+        end
       end
 
-      context 'in subdir' do
-        before do
+      context 'when renaming a page' do
+        it 'raises an error if the page already exists' do
+          create_page('Existing Page', 'content')
+
+          expect { @page.update(title: 'Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
+          expect(@page.title).to eq 'Update'
+          expect(@page.content).to eq 'new_content'
+
+          destroy_page('Existing Page')
+        end
+
+        it 'updates the content and rename the file' do
+          new_title = 'Renamed Page'
+          new_content = 'updated content'
+
+          expect(@page.update(title: new_title, content: new_content)).to be_truthy
+
+          @page = wiki.find_page(new_title)
+
+          expect(@page).not_to be_nil
+          expect(@page.content).to eq new_content
+        end
+      end
+
+      context 'when moving a page' do
+        it 'raises an error if the page already exists' do
           create_page('foo/Existing Page', 'content')
-          @page = wiki.find_page('foo/Existing Page')
+
+          expect { @page.update(title: 'foo/Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
+          expect(@page.title).to eq 'Update'
+          expect(@page.content).to eq 'new_content'
+
+          destroy_page('Existing Page', 'foo')
         end
 
-        it 'moves the page to the root folder if the title is preceded by /' do
-          expect(@page.slug).to eq 'foo/Existing-Page'
-          expect(@page.update(title: '/Existing Page', content: 'new_content')).to be_truthy
-          expect(@page.slug).to eq 'Existing-Page'
+        it 'updates the content and moves the file' do
+          new_title = 'foo/Other Page'
+          new_content = 'new_content'
+
+          expect(@page.update(title: new_title, content: new_content)).to be_truthy
+
+          page = wiki.find_page(new_title)
+
+          expect(page).not_to be_nil
+          expect(page.content).to eq new_content
         end
 
-        it 'does nothing if it has the same title' do
-          original_path = @page.slug
+        context 'in subdir' do
+          before do
+            create_page('foo/Existing Page', 'content')
+            @page = wiki.find_page('foo/Existing Page')
+          end
 
-          expect(@page.update(title: 'Existing Page', content: 'new_content')).to be_truthy
-          expect(@page.slug).to eq original_path
+          it 'moves the page to the root folder if the title is preceded by /', :skip_gitaly_mock do
+            expect(@page.slug).to eq 'foo/Existing-Page'
+            expect(@page.update(title: '/Existing Page', content: 'new_content')).to be_truthy
+            expect(@page.slug).to eq 'Existing-Page'
+          end
+
+          it 'does nothing if it has the same title' do
+            original_path = @page.slug
+
+            expect(@page.update(title: 'Existing Page', content: 'new_content')).to be_truthy
+            expect(@page.slug).to eq original_path
+          end
+        end
+
+        context 'in root dir' do
+          it 'does nothing if the title is preceded by /' do
+            original_path = @page.slug
+
+            expect(@page.update(title: '/Update', content: 'new_content')).to be_truthy
+            expect(@page.slug).to eq original_path
+          end
         end
       end
 
-      context 'in root dir' do
-        it 'does nothing if the title is preceded by /' do
-          original_path = @page.slug
+      context "with invalid attributes" do
+        it 'aborts update if title blank' do
+          expect(@page.update(title: '', content: 'new_content')).to be_falsey
+          expect(@page.content).to eq 'new_content'
 
-          expect(@page.update(title: '/Update', content: 'new_content')).to be_truthy
-          expect(@page.slug).to eq original_path
+          page = wiki.find_page('Update')
+          expect(page.content).to eq 'content'
+
+          @page.title = 'Update'
         end
       end
     end
 
-    context "with invalid attributes" do
-      it 'aborts update if title blank' do
-        expect(@page.update(title: '', content: 'new_content')).to be_falsey
-        expect(@page.content).to eq 'new_content'
+    context 'when Gitaly is enabled' do
+      it_behaves_like 'update method'
+    end
 
-        page = wiki.find_page('Update')
-        expect(page.content).to eq 'content'
-
-        @page.title = 'Update'
-      end
+    context 'when Gitaly is disabled', :skip_gitaly_mock do
+      it_behaves_like 'update method'
     end
   end
 

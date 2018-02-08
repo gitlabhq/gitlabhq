@@ -1,4 +1,8 @@
+require_dependency Rails.root.join('spec', 'ee', 'support', 'stub_configuration')
+
 module StubConfiguration
+  prepend EE::StubConfiguration
+
   def stub_application_setting(messages)
     add_predicates(messages)
 

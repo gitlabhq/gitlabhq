@@ -5,7 +5,7 @@ describe Gitlab::Elastic::Indexer do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'true')
-    stub_application_setting(elasticsearch_url: ['http://localhost:9200'])
+    stub_ee_application_setting(elasticsearch_url: ['http://localhost:9200'])
   end
 
   let(:project)  { create(:project, :repository) }
@@ -88,7 +88,7 @@ describe Gitlab::Elastic::Indexer do
 
   context 'experimental indexer enabled' do
     before do
-      stub_application_setting(elasticsearch_experimental_indexer: true)
+      stub_ee_application_setting(elasticsearch_experimental_indexer: true)
     end
 
     it 'uses the normal indexer when not present' do

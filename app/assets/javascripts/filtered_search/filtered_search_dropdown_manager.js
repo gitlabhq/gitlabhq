@@ -3,18 +3,14 @@ import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 
 class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', tokenizer, page, isGroup) {
+  constructor(baseEndpoint = '', tokenizer, page, isGroup, filteredSearchTokenKeys) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
-    this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+    this.filteredSearchTokenKeys = filteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
     this.groupsOnly = page === 'boards' && isGroup;
-
-    if (this.page === 'issues' || this.page === 'boards') {
-      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
-    }
 
     this.setupMapping();
 
@@ -34,11 +30,29 @@ class FilteredSearchDropdownManager {
   }
 
   setupMapping() {
-    this.mapping = {
+    const supportedTokens = this.filteredSearchTokenKeys.getKeys();
+    const allowedMappings = {
+      hint: {
+        reference: null,
+        gl: 'DropdownHint',
+        element: this.container.querySelector('#js-dropdown-hint'),
+      },
+    };
+    const availableMappings = {
       author: {
         reference: null,
         gl: 'DropdownUser',
         element: this.container.querySelector('#js-dropdown-author'),
+      },
+      label: {
+        reference: null,
+        gl: 'DropdownNonUser',
+        extraArguments: {
+          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
+          symbol: '~',
+          preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
+        },
+        element: this.container.querySelector('#js-dropdown-label'),
       },
       assignee: {
         reference: null,
@@ -54,35 +68,25 @@ class FilteredSearchDropdownManager {
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
-      label: {
-        reference: null,
-        gl: 'DropdownNonUser',
-        extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
-          symbol: '~',
-          preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
-        },
-        element: this.container.querySelector('#js-dropdown-label'),
-      },
       'my-reaction': {
         reference: null,
         gl: 'DropdownEmoji',
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
-      hint: {
-        reference: null,
-        gl: 'DropdownHint',
-        element: this.container.querySelector('#js-dropdown-hint'),
-      },
-    };
-
-    if (this.page === 'issues' || this.page === 'boards') {
-      this.mapping.weight = {
+      weight: {
         reference: null,
         gl: 'DropdownNonUser',
         element: this.container.querySelector('#js-dropdown-weight'),
-      };
-    }
+      },
+    };
+
+    supportedTokens.forEach((type) => {
+      if (availableMappings[type]) {
+        allowedMappings[type] = availableMappings[type];
+      }
+    });
+
+    this.mapping = allowedMappings;
   }
 
   static addWordToInput(tokenName, tokenValue = '', clicked = false) {

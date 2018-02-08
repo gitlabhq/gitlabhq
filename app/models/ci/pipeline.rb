@@ -406,14 +406,18 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
-      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
+        initialize_yaml_processor
+      rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
       rescue
         self.yaml_errors = 'Undefined error'
         nil
       end
+    end
+
+    def initialize_yaml_processor
+      Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
     end
 
     def ci_yaml_file_path

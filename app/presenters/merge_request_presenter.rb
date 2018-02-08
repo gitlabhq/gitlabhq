@@ -3,6 +3,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include GitlabRoutingHelper
   include MarkupHelper
   include TreeHelper
+  include Gitlab::Utils::StrongMemoize
 
   presents :merge_request
 
@@ -43,7 +44,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def revert_in_fork_path
-    if user_can_fork_project? && can_be_reverted?(current_user)
+    if user_can_fork_project? && cached_can_be_reverted?
       continue_params = {
         to: merge_request_path(merge_request),
         notice: "#{edit_in_new_fork_notice} Try to cherry-pick this commit again.",
@@ -157,7 +158,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_revert_on_current_merge_request?
-    user_can_collaborate_with_project? && can_be_reverted?(current_user)
+    user_can_collaborate_with_project? && cached_can_be_reverted?
   end
 
   def can_cherry_pick_on_current_merge_request?
@@ -169,6 +170,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   private
+
+  def cached_can_be_reverted?
+    strong_memoize(:can_be_reverted) do
+      can_be_reverted?(current_user)
+    end
+  end
 
   def conflicts
     @conflicts ||= MergeRequests::Conflicts::ListService.new(merge_request)

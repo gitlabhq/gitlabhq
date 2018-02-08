@@ -89,6 +89,12 @@
       modalIdTarget(index) {
         return `#${this.getmodalId(index)}`;
       },
+      formatScore(value) {
+        if (Math.floor(value) !== value) {
+          return parseFloat(value).toFixed(2);
+        }
+        return value;
+      },
       openDastModal(issue, index) {
         this.modalId = this.getmodalId(index);
         this.modalTitle = `${issue.priority}: ${issue.name}`;
@@ -156,11 +162,12 @@
         </button>
       </template>
       <template v-else>
-        {{ issue.name }}<template v-if="issue.score">: <strong>{{ issue.score }}</strong></template>
+        {{ issue.name }}<template v-if="issue.score">:
+        <strong>{{ formatScore(issue.score) }}</strong></template>
       </template>
 
       <template v-if="isTypePerformance && issue.delta != null">
-        ({{ issue.delta >= 0 ? '+' : '' }}{{ issue.delta }})
+        ({{ issue.delta >= 0 ? '+' : '' }}{{ formatScore(issue.delta) }})
       </template>
 
       <template v-if="issue.path">

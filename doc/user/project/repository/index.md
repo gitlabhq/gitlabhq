@@ -68,7 +68,7 @@ You can live preview changes submitted to a new branch with
 
 With [GitLab Enterprise Edition](https://about.gitlab.com/products/)
 subscriptions, you can also request
-[approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals) from your managers.
+[approval](../merge_requests/merge_request_approvals.md) from your managers.
 
 To create, delete, and [branches](branches/index.md) via GitLab's UI:
 

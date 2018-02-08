@@ -7,7 +7,7 @@ describe ElasticCommitIndexerWorker do
 
   describe '#perform' do
     before do
-      stub_application_setting(elasticsearch_indexing: true)
+      stub_ee_application_setting(elasticsearch_indexing: true)
     end
 
     it 'runs indexer' do
@@ -17,7 +17,7 @@ describe ElasticCommitIndexerWorker do
     end
 
     it 'returns true if ES disabled' do
-      stub_application_setting(elasticsearch_indexing: false)
+      stub_ee_application_setting(elasticsearch_indexing: false)
 
       expect_any_instance_of(Gitlab::Elastic::Indexer).not_to receive(:run)
 
