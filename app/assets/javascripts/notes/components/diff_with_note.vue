@@ -1,7 +1,7 @@
 <script>
   import syntaxHighlight from '~/syntax_highlight';
   import imageDiffHelper from '~/image_diff/helpers/index';
-  import { camelCaseKeys } from '~/lib/utils/text_utility';
+  import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
   import DiffFileHeader from './diff_file_header.vue';
 
   export default {
@@ -26,7 +26,7 @@
         return $(this.discussion.truncatedDiffLines);
       },
       diffFile() {
-        return camelCaseKeys(this.discussion.diffFile);
+        return convertObjectPropsToCamelCase(this.discussion.diffFile);
       },
       imageDiffHtml() {
         return this.discussion.imageDiffHtml;
