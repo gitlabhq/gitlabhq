@@ -18,10 +18,6 @@ This process promotes a secondary Geo replica to a primary. To regain
 geographical redundancy as quickly as possible, you should add a new secondary
 immediately after following these instructions.
 
-**Warning: If a primary goes offline, there may be data saved on the primary
-  that has not been replicated to the secondary. This data should be treated
-  as lost if you proceed.**
-
 ### Step 1. Allow replication to finish if possible
 
 If the secondary is still replicating data from the primary, follow
@@ -29,6 +25,10 @@ If the secondary is still replicating data from the primary, follow
 order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the primary
+
+**Warning: If a primary goes offline, there may be data saved on the primary
+  that has not been replicated to the secondary. This data should be treated
+  as lost if you proceed.**
 
 If an outage on your primary happens, you should do everything possible to
 avoid a split-brain situation where writes can occur to two different GitLab
