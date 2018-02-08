@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::RenameRepositoryService do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, :legacy_storage) }
   let(:old_path) { project.full_path }
   let(:new_path) { "#{old_path}+renamed" }
 
@@ -42,7 +42,7 @@ describe Geo::RenameRepositoryService do
     end
 
     it 'does not move project backed by hashed storage' do
-      project_hashed_storage = create(:project, :hashed)
+      project_hashed_storage = create(:project)
       service = described_class.new(project_hashed_storage.id, project_hashed_storage.full_path, new_path)
 
       expect_any_instance_of(Geo::MoveRepositoryService).not_to receive(:execute)

@@ -14,8 +14,8 @@ describe Geo::RepositoriesCleanUpWorker do
 
       context 'legacy storage' do
         it 'performs GeoRepositoryDestroyWorker for each project that does not belong to selected namespaces to replicate' do
-          project_in_synced_group = create(:project, group: synced_group)
-          unsynced_project = create(:project, :repository)
+          project_in_synced_group = create(:project, :legacy_storage, group: synced_group)
+          unsynced_project = create(:project, :repository, :legacy_storage)
           disk_path = "#{unsynced_project.namespace.full_path}/#{unsynced_project.path}"
 
           expect(GeoRepositoryDestroyWorker).to receive(:perform_async)
