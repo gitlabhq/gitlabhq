@@ -315,7 +315,9 @@ msgstr ""
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Average per day: %{average}"
+msgstr ""
+
 msgid "Billing"
 msgstr ""
 
@@ -368,9 +370,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-=======
-msgid "Average per day: %{average}"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -1512,7 +1511,6 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Geo Nodes"
 msgstr ""
 
@@ -1627,8 +1625,6 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Git revision"
 msgstr ""
 
@@ -3366,14 +3362,13 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Track activity with Contribution Analytics."
 msgstr ""
 
 msgid "Track groups of issues that share a theme, across projects and milestones"
-=======
+msgstr ""
+
 msgid "Total: %{total}"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Track time with quick actions"
