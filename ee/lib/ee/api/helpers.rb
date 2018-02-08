@@ -1,6 +1,9 @@
 module EE
   module API
     module Helpers
+      extend ::Gitlab::Utils::Override
+
+      override :current_user
       def current_user
         strong_memoize(:current_user) do
           user = super

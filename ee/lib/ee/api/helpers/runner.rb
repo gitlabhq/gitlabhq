@@ -2,6 +2,9 @@ module EE
   module API
     module Helpers
       module Runner
+        extend ::Gitlab::Utils::Override
+
+        override :authenticate_job!
         def authenticate_job!
           id = params[:id]
 
@@ -13,6 +16,7 @@ module EE
           super
         end
 
+        override :current_runner
         def current_runner
           token = params[:token]
 
