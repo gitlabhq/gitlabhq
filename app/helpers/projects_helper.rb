@@ -296,6 +296,10 @@ module ProjectsHelper
       nav_tabs << :pipelines
     end
 
+    if project.external_issue_tracker
+      nav_tabs << :external_issue_tracker
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
