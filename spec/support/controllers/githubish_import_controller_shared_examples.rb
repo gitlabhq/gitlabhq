@@ -333,7 +333,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'does not create a new namespace under the user namespace' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
-                    .and_return(double(execute: true))
+                    .and_return(double(execute: build_stubbed(:project)))
 
         expect { post :create, { target_namespace: "#{user.namespace_path}/test_group", new_name: test_name, format: :js } }
             .not_to change { Namespace.count }
@@ -347,7 +347,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'does not take the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
-                    .and_return(double(execute: true))
+                    .and_return(double(execute: build_stubbed(:project)))
 
         post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
       end
@@ -355,7 +355,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'does not create the namespaces' do
         allow(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-                    .and_return(double(execute: true))
+                    .and_return(double(execute: build_stubbed(:project)))
 
         expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
             .not_to change { Namespace.count }
@@ -372,7 +372,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, group, user, access_params, type: provider)
-                    .and_return(double(execute: true))
+                    .and_return(double(execute: build_stubbed(:project)))
 
         post :create, { target_namespace: 'foo', new_name: test_name, format: :js }
       end
