@@ -36,7 +36,7 @@
               Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
     - else
-      = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
+      = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40", alt: ''
       .user-info
         .member= member.invite_email
         .cgray
