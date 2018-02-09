@@ -261,21 +261,6 @@ describe Namespace do
       end
     end
 
-    context 'hashed storage' do
-      let(:namespace) { create(:namespace) }
-      let!(:project) { create(:project_empty_repo, namespace: namespace) }
-
-      it_behaves_like 'namespace restrictions'
-
-      it "repository directory remains unchanged if path changed" do
-        before_disk_path = project.disk_path
-        namespace.update_attributes(path: namespace.full_path + '_new')
-
-        expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
-      end
-    end
-
     it 'updates project full path in .git/config for each project inside namespace' do
       parent = create(:group, name: 'mygroup', path: 'mygroup')
       subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
