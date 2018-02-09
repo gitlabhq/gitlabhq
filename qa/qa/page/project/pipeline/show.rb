@@ -11,6 +11,7 @@ module QA::Page
 
       view 'app/assets/javascripts/pipelines/components/graph/job_component.vue' do
         element :job_component, /class.*ci-job-component.*/
+        element :job_link, /class.*js-pipeline-graph-job-link.*/
       end
 
       view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
@@ -34,7 +35,7 @@ module QA::Page
       def go_to_first_job
         css = '.js-pipeline-graph-job-link'
 
-        wait do
+        wait(reload: false) do
           has_css?(css)
         end
 

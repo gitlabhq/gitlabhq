@@ -8,7 +8,7 @@ module QA
       Service::Runner.new(runner_name).remove!
     end
 
-    scenario 'user pushes .gitlab-ci.yml to the repository' do
+    scenario 'user setup a deploy key and use it to pull from CI job' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
@@ -52,7 +52,7 @@ module QA
           cat-config:
             script:
               - mkdir -p ~/.ssh
-              - ssh-keyscan -p #{repository_uri.port} #{repository_uri.host} >> ~/.ssh/known_hosts
+              - ssh-keyscan -p #{repository_uri.port || 22} #{repository_uri.host} >> ~/.ssh/known_hosts
               - eval $(ssh-agent -s)
               - echo "$DEPLOY_KEY" | ssh-add -
               - git clone #{repository_url}
@@ -73,15 +73,8 @@ module QA
 
       Page::Project::Show.act { wait_for_push }
       Page::Menu::Side.act { click_ci_cd_pipelines }
-
-      Page::Project::Pipeline::Index.act do
-        wait_for_latest_pipeline
-        go_to_latest_pipeline
-      end
-
-      Page::Project::Pipeline::Show.act do
-        go_to_first_job
-      end
+      Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+      Page::Project::Pipeline::Show.act { go_to_first_job }
 
       Page::Project::Job::Show.perform do |job|
         expect(job.output).to include(sha1sum)

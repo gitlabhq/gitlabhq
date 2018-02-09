@@ -62,7 +62,7 @@ module QA
               click_link(kind)
             end
 
-            # Ensure git clone textbox was updated to http URI
+            # Ensure git clone textbox was updated
             repository_location.include?(detect_text)
           end
         end

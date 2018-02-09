@@ -48,10 +48,6 @@ module QA
           'gitlab-runner run'
         ]
 
-        if @executor == 'docker'
-          commands.unshift('apt-get install -y docker-ce')
-        end
-
         commands.join(' && ')
       end
     end
