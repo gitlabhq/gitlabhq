@@ -4,7 +4,7 @@ import pdfLab from '../../pdf/index.vue';
 export default () => {
   const el = document.getElementById('js-pdf-viewer');
 
-  Vue.create({
+  return Vue.create({
     el,
     components: {
       pdfLab,
