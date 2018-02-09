@@ -178,6 +178,10 @@ export default class VariableList {
     this.$container.find('.js-row-remove-button').attr('disabled', !isEnabled);
   }
 
+  hideValues() {
+    this.secretValues.updateDom(false);
+  }
+
   getAllData() {
     // Ignore the last empty row because we don't want to try persist
     // a blank variable and run into validation problems.
