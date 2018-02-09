@@ -336,7 +336,7 @@ var Dispatcher;
           // ee-end
           break;
         case 'projects:edit':
-          import('./pages/projects/edit')
+          import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/edit')
             .then(callDefault)
             .catch(fail);
           break;
