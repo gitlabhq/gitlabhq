@@ -443,7 +443,7 @@ describe Gitlab::Shell do
     end
 
     describe '#remove_repository' do
-      let!(:project) { create(:project, :repository) }
+      let!(:project) { create(:project, :repository, :legacy_storage) }
       let(:disk_path) { "#{project.disk_path}.git" }
 
       it 'returns true when the command succeeds' do

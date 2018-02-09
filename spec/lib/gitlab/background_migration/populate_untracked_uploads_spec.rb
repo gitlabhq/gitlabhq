@@ -23,8 +23,8 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
     let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
     let!(:user1) { create(:user, :with_avatar) }
     let!(:user2) { create(:user, :with_avatar) }
-    let!(:project1) { create(:project, :with_avatar) }
-    let!(:project2) { create(:project, :with_avatar) }
+    let!(:project1) { create(:project, :legacy_storage, :with_avatar) }
+    let!(:project2) { create(:project, :legacy_storage, :with_avatar) }
 
     before do
       UploadService.new(project1, uploaded_file, FileUploader).execute # Markdown upload
@@ -48,7 +48,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
 
     it 'adds untracked files to the uploads table' do
       expect do
-        subject.perform(1, untracked_files_for_uploads.last.id)
+        subject.perform(1, untracked_files_for_uploads.reorder(:id).last.id)
       end.to change { uploads.count }.from(4).to(8)
 
       expect(user2.uploads.count).to eq(1)
@@ -213,13 +213,13 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
     end
 
     context 'for a project avatar file path' do
-      let(:model) { create(:project, :with_avatar) }
+      let(:model) { create(:project, :legacy_storage, :with_avatar) }
 
       it_behaves_like 'non_markdown_file'
     end
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
-      let(:model) { create(:project) }
+      let(:model) { create(:project, :legacy_storage) }
 
       before do
         # Upload the file
@@ -304,7 +304,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       it 'returns the file path relative to the project directory in uploads' do
-        project = create(:project)
+        project = create(:project, :legacy_storage)
         random_hex = SecureRandom.hex
 
         assert_upload_path("/#{project.full_path}/#{random_hex}/Some file.jpg", "#{random_hex}/Some file.jpg")
@@ -357,7 +357,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       it 'returns FileUploader as a string' do
-        project = create(:project)
+        project = create(:project, :legacy_storage)
 
         assert_uploader("/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg", 'FileUploader')
       end
@@ -409,7 +409,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       it 'returns Project as a string' do
-        project = create(:project)
+        project = create(:project, :legacy_storage)
 
         assert_model_type("/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg", 'Project')
       end
@@ -461,7 +461,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       it 'returns the ID as a string' do
-        project = create(:project)
+        project = create(:project, :legacy_storage)
 
         assert_model_id("/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg", project.id)
       end
@@ -483,7 +483,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a project avatar file path' do
-      let(:project) { create(:project, avatar: uploaded_file) }
+      let(:project) { create(:project, :legacy_storage, avatar: uploaded_file) }
       let(:untracked_file) { described_class.create!(path: project.uploads.first.path) }
 
       it 'returns the file size' do
@@ -496,7 +496,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :legacy_storage) }
       let(:untracked_file) { create_untracked_file("/#{project.full_path}/#{project.uploads.first.path}") }
 
       before do

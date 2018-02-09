@@ -16,7 +16,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
     end
 
     describe 'legacy storage' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :legacy_storage) }
 
       subject(:restorer) { described_class.new(project: project, shared: shared) }
 
@@ -34,7 +34,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
     end
 
     describe 'hashed storage' do
-      let(:project) { create(:project, :hashed) }
+      let(:project) { create(:project) }
 
       subject(:restorer) { described_class.new(project: project, shared: shared) }
 

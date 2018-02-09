@@ -1,5 +1,6 @@
 /* eslint-disable func-names, no-new, space-before-function-paren, one-var,
    promise/catch-or-return */
+import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
 import CreateLabelDropdown from '../../create_label';
 
@@ -28,9 +29,9 @@ gl.issueBoards.newListDropdownInit = () => {
 
     $this.glDropdown({
       data(term, callback) {
-        $.get($this.attr('data-list-labels-path'))
-          .then((resp) => {
-            callback(resp);
+        axios.get($this.attr('data-list-labels-path'))
+          .then(({ data }) => {
+            callback(data);
           });
       },
       renderRow (label) {
