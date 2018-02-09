@@ -120,13 +120,8 @@ describe('note_app', () => {
       vm = mountComponent();
     });
 
-<<<<<<< HEAD
     it('renders skeleton notes', () => {
-      expect(vm.$el.querySelector('.animation-container')).toBeDefined();
-=======
-    it('should render loading icon', () => {
       expect(vm).toIncludeElement('.animation-container');
->>>>>>> c5ad5a082f85d2bcb5bb709198ac70812ae6c378
     });
 
     it('should render form', () => {

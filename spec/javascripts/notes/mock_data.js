@@ -7,6 +7,7 @@ export const notesDataMock = {
   notesPath: '/gitlab-org/gitlab-ce/noteable/issue/98/notes',
   quickActionsDocsPath: '/help/user/project/quick_actions',
   registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
+  totalNotes: 1,
 };
 
 export const userDataMock = {
