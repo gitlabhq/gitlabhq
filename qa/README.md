@@ -70,6 +70,14 @@ If you need to authenticate as a different user, you can provide the
 GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bin/qa Test::Instance https://gitlab.example.com
 ```
 
+If your user doesn't have permission to default sandbox group
+`gitlab-qa-sandbox`, you could also use another sandbox group by giving
+`GITLAB_SANDBOX_NAME`:
+
+```
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
+```
+
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa#supported-environment-variables).
 
 [GDK]: https://gitlab.com/gitlab-org/gitlab-development-kit/
