@@ -1,6 +1,7 @@
 module Geo
   class ProjectSyncWorker
     include ApplicationWorker
+    include GeoQueue
 
     sidekiq_options retry: 3, dead: false
 

@@ -1,13 +1,17 @@
 require 'spec_helper'
 
-feature 'Profile > Pipeline Quota', :postgresql do
+describe 'Profile > Pipeline Quota' do
+  using RSpec::Parameterized::TableSyntax
+
+  set(:user) { create(:user) }
+  set(:namespace) { user.namespace }
+  set(:statistics) { create(:namespace_statistics, namespace: namespace) }
+  set(:project) { create(:project, namespace: namespace) }
+  set(:other_project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
+
   before do
     gitlab_sign_in(user)
   end
-
-  let(:user) { create(:user) }
-  let(:namespace) { create(:namespace, owner: user) }
-  let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: true) }
 
   it 'is linked within the profile page' do
     visit profile_path
@@ -17,67 +21,44 @@ feature 'Profile > Pipeline Quota', :postgresql do
     end
   end
 
-  context 'with no quota' do
-    let(:namespace) { create(:namespace, :with_build_minutes, owner: user) }
-
-    it 'shows correct group quota info' do
-      visit profile_pipeline_quota_path
-
-      page.within('.pipeline-quota') do
-        expect(page).to have_content("400 / Unlimited minutes")
-        expect(page).to have_selector('.progress-bar-success')
-      end
+  describe 'shared runners use' do
+    where(:shared_runners_enabled, :used, :quota, :usage_class, :usage_text) do
+      false | 300  | 500 | 'success' | '300 / Unlimited minutes Unlimited'
+      true  | 300  | nil | 'success' | '300 / Unlimited minutes Unlimited'
+      true  | 300  | 500 | 'success' | '300 / 500 minutes 60% used'
+      true  | 1000 | 500 | 'danger'  | '1000 / 500 minutes 200% used'
     end
-  end
 
-  context 'with no projects using shared runners' do
-    let(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user) }
-    let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
+    with_them do
+      let(:no_shared_runners_text) { 'This group has no projects which use shared runners' }
 
-    it 'shows correct group quota info' do
-      visit profile_pipeline_quota_path
+      before do
+        project.update!(shared_runners_enabled: shared_runners_enabled)
+        statistics.update!(shared_runners_seconds: used.minutes.to_i)
+        namespace.update!(shared_runners_minutes_limit: quota)
 
-      page.within('.pipeline-quota') do
-        expect(page).to have_content("300 / Unlimited minutes")
-        expect(page).to have_selector('.progress-bar-success')
+        visit profile_pipeline_quota_path
       end
 
-      page.within('.pipeline-project-metrics') do
-        expect(page).to have_content('This group has no projects which use shared runners')
-      end
-    end
-  end
-
-  context 'minutes under quota' do
-    let(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user) }
-
-    it 'shows correct group quota info' do
-      visit profile_pipeline_quota_path
-
-      page.within('.pipeline-quota') do
-        expect(page).to have_content("300 / 500 minutes")
-        expect(page).to have_content("60% used")
-        expect(page).to have_selector('.progress-bar-success')
-      end
-    end
-  end
-
-  context 'minutes over quota' do
-    let(:namespace) { create(:namespace, :with_used_build_minutes_limit, owner: user) }
-    let!(:other_project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
-
-    it 'shows correct group quota and projects info' do
-      visit profile_pipeline_quota_path
-
-      page.within('.pipeline-quota') do
-        expect(page).to have_content("1000 / 500 minutes")
-        expect(page).to have_content("200% used")
-        expect(page).to have_selector('.progress-bar-danger')
+      it 'shows the correct quota status' do
+        page.within('.pipeline-quota') do
+          expect(page).to have_content(usage_text)
+          expect(page).to have_selector(".progress-bar-#{usage_class}")
+        end
       end
 
-      page.within('.pipeline-project-metrics') do
-        expect(page).to have_content(project.name)
-        expect(page).not_to have_content(other_project.name)
+      it 'shows the correct per-project metrics' do
+        page.within('.pipeline-project-metrics') do
+          expect(page).not_to have_content(other_project.name)
+
+          if shared_runners_enabled
+            expect(page).to have_content(project.name)
+            expect(page).not_to have_content(no_shared_runners_text)
+          else
+            expect(page).not_to have_content(project.name)
+            expect(page).to have_content(no_shared_runners_text)
+          end
+        end
       end
     end
   end
