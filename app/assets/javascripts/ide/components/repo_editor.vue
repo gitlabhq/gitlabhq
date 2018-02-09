@@ -93,10 +93,12 @@ export default {
       this.editor.attachModel(this.model);
 
       this.model.onChange((m) => {
-        this.changeFileContent({
-          file: this.activeFile,
-          content: m.getValue(),
-        });
+        if (this.model.file.active) {
+          this.changeFileContent({
+            file: this.model.file,
+            content: m.getValue(),
+          });
+        }
       });
 
       // Handle Cursor Position

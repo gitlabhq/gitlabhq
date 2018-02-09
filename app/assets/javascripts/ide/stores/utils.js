@@ -161,7 +161,24 @@ export const createOrMergeEntry = ({ tree,
                                      entry,
                                      type,
                                      parentTreeUrl,
-                                     level }) => {
+                                     level,
+                                     state }) => {
+  if (state.changedFiles.length) {
+    const foundChangedFileFile = findEntry(state.changedFiles, type, entry.name);
+
+    if (foundChangedFileFile) {
+      return foundChangedFileFile;
+    }
+  }
+
+  if (state.openFiles.length) {
+    const foundOpenFile = findEntry(state.openFiles, type, entry.path);
+
+    if (foundOpenFile) {
+      return foundOpenFile;
+    }
+  }
+
   const found = findEntry(tree.tree || tree, type, entry.name);
 
   if (found) {

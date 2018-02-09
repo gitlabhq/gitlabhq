@@ -27,6 +27,7 @@
       return {
         openModal: false,
         modalType: '',
+        dropdownOpen: false,
       };
     },
     methods: {
@@ -37,18 +38,26 @@
       hideModal() {
         this.openModal = false;
       },
+      openDropdown() {
+        this.dropdownOpen = !this.dropdownOpen;
+      },
     },
   };
 </script>
 
 <template>
   <div class="repo-new-btn pull-right">
-    <div class="dropdown">
+    <div
+      class="dropdown"
+      :class="{
+        open: dropdownOpen,
+      }"
+    >
       <button
         type="button"
         class="btn btn-sm btn-default dropdown-toggle add-to-tree"
-        data-toggle="dropdown"
         aria-label="Create new file or directory"
+        @click.stop="openDropdown()"
       >
         <icon
           name="plus"

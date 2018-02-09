@@ -84,7 +84,11 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   } else if (row.type === 'submodule') {
     commit(types.TOGGLE_LOADING, row);
     visitUrl(row.url);
-  } else if (row.type === 'blob' && row.opened) {
+  } else if (row.type === 'blob' && (row.opened || row.changed)) {
+    if (row.changed) {
+      commit(types.TOGGLE_FILE_OPEN, row);
+    }
+
     dispatch('setFileActive', row);
   } else {
     dispatch('getFileData', row);
@@ -176,6 +180,7 @@ export const updateDirectoryData = (
     level,
     type,
     parentTreeUrl,
+    state,
   });
 
   const formattedData = [
