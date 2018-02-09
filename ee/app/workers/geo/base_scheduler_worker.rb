@@ -1,6 +1,7 @@
 module Geo
   class BaseSchedulerWorker
     include ApplicationWorker
+    include GeoQueue
     include ExclusiveLeaseGuard
     include ::Gitlab::Utils::StrongMemoize
 
