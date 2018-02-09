@@ -1,3 +1,5 @@
+require 'digest/sha1'
+
 module QA
   feature 'pull codes with a deploy key', :core, :docker do
     let(:runner_name) { "qa-runner-#{Time.now.to_i}" }
@@ -43,18 +45,24 @@ module QA
         repository_location
       end
 
+      repository_uri = URI.parse(repository_url)
+
       gitlab_ci =
         <<~YAML
           cat-config:
             script:
+              - mkdir -p ~/.ssh
+              - ssh-keyscan -p #{repository_uri.port} #{repository_uri.host} >> ~/.ssh/known_hosts
               - eval $(ssh-agent -s)
-              - echo "$DEPLOY_KEY" | tr -d '\\r' | ssh-add - > /dev/null
+              - echo "$DEPLOY_KEY" | ssh-add -
               - git clone #{repository_url}
-              - cat #{project.name}/.gitlab-ci.yml
+              - sha1sum #{project.name}/.gitlab-ci.yml
             tags:
               - qa
               - docker
         YAML
+
+      sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
 
       Factory::Repository::Push.fabricate! do |push|
         push.project = project
@@ -76,7 +84,7 @@ module QA
       end
 
       Page::Project::Job::Show.perform do |job|
-        expect(job.output).to include(gitlab_ci.tr("\n", ' '))
+        expect(job.output).to include(sha1sum)
       end
     end
   end
