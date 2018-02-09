@@ -39,7 +39,7 @@ describe('Multi-file store tree actions', () => {
           last_commit_path: 'last_commit_path',
           parent_tree_url: 'parent_tree_url',
           path: '/',
-          trees: [{ name: 'tree' }],
+          trees: [{ name: 'tree', path: 'tree' }],
           blobs: [{ name: 'blob' }],
           submodules: [{ name: 'submodule' }],
         }),
@@ -63,6 +63,30 @@ describe('Multi-file store tree actions', () => {
           expect(projectTree.tree[0].type).toBe('tree');
           expect(projectTree.tree[1].type).toBe('submodule');
           expect(projectTree.tree[2].type).toBe('blob');
+
+          done();
+        }).catch(done.fail);
+    });
+
+    it('adds temp files into tree', (done) => {
+      const f = {
+        ...file('tempFile'),
+        path: 'tree/tempFile',
+        tempFile: true,
+      };
+
+      store.state.changedFiles.push(f);
+
+      store.dispatch('getTreeData', basicCallParameters)
+        .then(() => store.dispatch('getTreeData', {
+          ...basicCallParameters,
+          tree: store.state.trees['abcproject/master'].tree[0],
+        }))
+        .then(() => {
+          const tree = store.state.trees['abcproject/master'].tree[0].tree;
+
+          expect(tree.length).toBe(4);
+          expect(tree[3].name).toBe(f.name);
 
           done();
         }).catch(done.fail);

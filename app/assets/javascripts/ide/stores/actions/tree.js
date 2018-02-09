@@ -182,16 +182,18 @@ export const updateDirectoryData = (
     state,
   });
 
-  const formattedData = [
+  let formattedData = [
     ...data.trees.map(t => createEntry(t, 'tree')),
     ...data.submodules.map(m => createEntry(m, 'submodule')),
     ...data.blobs.map(b => createEntry(b, 'blob')),
   ];
 
-  if (!clearTree) {
-    formattedData.push(
-      state.changedFiles.filter(f => f.tempFile && f.path === `${tree.path}/${f.name}`),
-    );
+  if (!clearTree && tree) {
+    const tempFiles = state.changedFiles.filter(f => f.tempFile && f.path === `${tree.path}/${f.name}`);
+
+    if (tempFiles.length) {
+      formattedData = formattedData.concat(tempFiles);
+    }
   }
 
   commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: formattedData });
