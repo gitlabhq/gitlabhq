@@ -1,5 +1,0 @@
----
-title: Restrict LDAP API to admins only
-merge_request:
-author:
-type: security
