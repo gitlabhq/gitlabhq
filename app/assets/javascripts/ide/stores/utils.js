@@ -155,8 +155,7 @@ export const createTemp = ({
   });
 };
 
-export const createOrMergeEntry = ({ tree,
-                                     projectId,
+export const createOrMergeEntry = ({ projectId,
                                      branchId,
                                      entry,
                                      type,
@@ -177,16 +176,6 @@ export const createOrMergeEntry = ({ tree,
     if (foundOpenFile) {
       return foundOpenFile;
     }
-  }
-
-  const found = findEntry(tree.tree || tree, type, entry.name);
-
-  if (found) {
-    return Object.assign({}, found, {
-      id: entry.id,
-      url: entry.url,
-      tempFile: false,
-    });
   }
 
   return decorateData({

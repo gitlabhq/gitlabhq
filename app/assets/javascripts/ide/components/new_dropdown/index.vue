@@ -34,6 +34,7 @@
       createNewItem(type) {
         this.modalType = type;
         this.openModal = true;
+        this.dropdownOpen = false;
       },
       hideModal() {
         this.openModal = false;
@@ -75,7 +76,7 @@
           <a
             href="#"
             role="button"
-            @click.prevent="createNewItem('blob')"
+            @click.stop.prevent="createNewItem('blob')"
           >
             {{ __('New file') }}
           </a>
@@ -91,7 +92,7 @@
           <a
             href="#"
             role="button"
-            @click.prevent="createNewItem('tree')"
+            @click.stop.prevent="createNewItem('tree')"
           >
             {{ __('New directory') }}
           </a>
