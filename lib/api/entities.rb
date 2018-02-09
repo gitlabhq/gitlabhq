@@ -277,16 +277,12 @@ module API
     end
 
     class BasicRef < Grape::Entity
-      expose :name
-    end
-
-    class SimpleRef < Grape::Entity
       expose :name do |ref, options|
         ref
       end
     end
 
-    class Branch < BasicRef
+    class Branch < Grape::Entity
       expose :name
 
       expose :commit, using: Entities::Commit do |repo_branch, options|
@@ -855,8 +851,8 @@ module API
       expose :description
     end
 
-    class Tag < BasicRef
-      expose :message
+    class Tag < Grape::Entity
+      expose :name, :message
 
       expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
