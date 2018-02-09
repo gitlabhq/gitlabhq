@@ -163,10 +163,10 @@ export const createOrMergeEntry = ({ projectId,
                                      level,
                                      state }) => {
   if (state.changedFiles.length) {
-    const foundChangedFileFile = findEntry(state.changedFiles, type, entry.name);
+    const foundChangedFile = findEntry(state.changedFiles, type, entry.name);
 
-    if (foundChangedFileFile) {
-      return foundChangedFileFile;
+    if (foundChangedFile) {
+      return foundChangedFile;
     }
   }
 
