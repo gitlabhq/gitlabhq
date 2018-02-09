@@ -16,6 +16,18 @@ module QA
       def personal_access_token
         ENV['PERSONAL_ACCESS_TOKEN']
       end
+
+      def user_username
+        ENV['GITLAB_USERNAME']
+      end
+
+      def user_password
+        ENV['GITLAB_PASSWORD']
+      end
+
+      def sandbox_name
+        ENV['GITLAB_SANDBOX_NAME']
+      end
     end
   end
 end
