@@ -23,6 +23,19 @@ request widget area:
 - Your code has a potentially dangerous attribute in a class, or unsafe code
   that can lead to unintended code execution.
 
+## Supported languages and frameworks
+
+The following languages and frameworks are supported:
+
+| Language (package managers) / framework | Scan tool |
+| ---------------------- | --------- |
+| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js)
+| Python ([pip](https://pip.pypa.io/en/stable/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bandit](https://github.com/openstack/bandit) |
+| Ruby ([gem](https://rubygems.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
+| Ruby on Rails | [brakeman](https://brakemanscanner.org) |
+| Java ([Maven](http://maven.apache.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| PHP ([Composer](https://getcomposer.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+
 ## How it works
 
 In order for the report to show in the merge request, you need to specify a

@@ -8,21 +8,62 @@ This example shows how to run
 [Static Application Security Testing (SAST)](https://en.wikipedia.org/wiki/Static_program_analysis)
 on your project's source code by using GitLab CI/CD.
 
-All you need is a GitLab Runner with the Docker executor (the shared Runners on
-GitLab.com will work fine). You can then add a new job to `.gitlab-ci.yml`,
-called `sast`:
+First, you need GitLab Runner with [docker-in-docker executor](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor).
+ You can then add a new job to `.gitlab-ci.yml`,
+ called `sast`:
 
 ```yaml
 sast:
-  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:dind
   script:
-    - /app/bin/run .
+    - setup_docker
+    - sast
   artifacts:
     paths: [gl-sast-report.json]
+
+.auto_devops: &auto_devops |
+  # Auto DevOps variables and functions
+
+  function setup_docker() {
+    if ! docker info &>/dev/null; then
+      if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+        export DOCKER_HOST='tcp://localhost:2375'
+      fi
+    fi
+  }
+
+  function sast() {
+    case "$CI_SERVER_VERSION" in
+      *-ee)
+        # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
+        SAST_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+
+        docker run --volume "$PWD:/code" \
+                   --volume /var/run/docker.sock:/var/run/docker.sock \
+                   "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
+        ;;
+      *)
+        echo "GitLab EE is required"
+        ;;
+    esac
+  }
+
+before_script:
+  - *auto_devop
 ```
 
-Behind the scenes, the [gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast)
-is used to detect the language/framework and in turn runs the matching scan tool.
+Please check the [Auto-DevOps template](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml) for full reference.
+
+Behind the scenes, the [GitLab SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast)
+is used to detect the languages/frameworks and in turn runs the matching scan tools.
+
+Some security scanners require to send a list of project dependencies to GitLab central servers to check for vulnerabilities. To learn more about this or to disable it please
+check [GitLab SAST documentation](https://gitlab.com/gitlab-org/security-products/sast#remote-checks).
 
 The above example will create a `sast` job in your CI pipeline and will allow
 you to download and analyze the report artifact in JSON format.
@@ -44,13 +85,6 @@ so, the CI job must be named `sast` and the artifact path must be
 
 ## Supported languages and frameworks
 
-The following languages and frameworks are supported.
-
-| Language / framework | Scan tool |
-| -------------------- | --------- |
-| JavaScript    | [Retire.js](https://retirejs.github.io/retire.js)
-| Python        | [bandit](https://github.com/openstack/bandit) |
-| Ruby          | [bundler-audit](https://github.com/rubysec/bundler-audit) |
-| Ruby on Rails | [brakeman](https://brakemanscanner.org) |
+See [the full list of supported languages and frameworks](../../user/project/merge_requests/sast.md#supported-languages-and-frameworks).
 
 [ee]: https://about.gitlab.com/products/
