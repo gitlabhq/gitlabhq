@@ -29,7 +29,7 @@ class Projects::JobsController < Projects::ApplicationController
       :project,
       :tags
     ])
-    @builds = @builds.page(params[:page]).per(30)
+    @builds = @builds.page(params[:page]).per(30).without_count
   end
 
   def cancel_all

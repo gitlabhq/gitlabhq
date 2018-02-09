@@ -8,6 +8,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:new]
 
+  before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update]
   before_action :set_issuables_index, only: [:index]
@@ -194,10 +195,6 @@ class Projects::IssuesController < Projects::ApplicationController
     render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
-  def check_issues_available!
-    return render_404 unless @project.feature_available?(:issues, current_user)
-  end
-
   def render_issue_json
     if @issue.valid?
       render json: serializer.represent(@issue)
@@ -250,5 +247,14 @@ class Projects::IssuesController < Projects::ApplicationController
   def set_issuables_index
     @finder_type = IssuesFinder
     super
+  end
+
+  def whitelist_query_limiting
+    # Also see the following issues:
+    #
+    # 1. https://gitlab.com/gitlab-org/gitlab-ce/issues/42423
+    # 2. https://gitlab.com/gitlab-org/gitlab-ce/issues/42424
+    # 3. https://gitlab.com/gitlab-org/gitlab-ce/issues/42426
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
   end
 end

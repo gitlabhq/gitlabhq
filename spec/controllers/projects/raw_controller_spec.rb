@@ -53,7 +53,7 @@ describe Projects::RawController do
           end
 
           it 'serves the file' do
-            expect(controller).to receive(:send_file).with("#{Gitlab.config.shared.path}/lfs-objects/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: 'lfs_object.iso', disposition: 'attachment')
+            expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: 'lfs_object.iso', disposition: 'attachment')
             get(:show,
                 namespace_id: public_project.namespace.to_param,
                 project_id: public_project,

@@ -1,5 +1,0 @@
----
-title: "Ignore lost+found folder during backup on a volume"
-merge_request: 16036
-author: Julien Millau
-type: fixed

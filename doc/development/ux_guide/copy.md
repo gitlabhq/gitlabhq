@@ -27,7 +27,7 @@ This means that, as a rule, copy should be very short. A long message or label i
 
 >**Example:**
 Use `Add` instead of `Add issue` as a button label.
-Preferrably use context and placement of controls to make it obvious what clicking on them will do.
+Preferably use context and placement of controls to make it obvious what clicking on them will do.
 
 ---
 

@@ -192,6 +192,17 @@
   overflow-y: auto;
   overflow-x: hidden;
 
+  .name,
+  small.aliases,
+  small.params {
+    float: left;
+  }
+
+  small.aliases,
+  small.params {
+    padding: 2px 5px;
+  }
+
   small.description {
     float: right;
     padding: 3px 5px;
@@ -209,6 +220,7 @@
   }
 
   ul > li {
+    @include clearfix;
     white-space: nowrap;
   }
 

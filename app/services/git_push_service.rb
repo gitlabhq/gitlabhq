@@ -1,6 +1,5 @@
 class GitPushService < BaseService
   attr_accessor :push_data, :push_commits
-  include Gitlab::CurrentSettings
   include Gitlab::Access
 
   # The N most recent commits to process in a single push payload.
@@ -154,24 +153,7 @@ class GitPushService < BaseService
     offset = [@push_commits_count - PROCESS_COMMIT_LIMIT, 0].max
     @push_commits = project.repository.commits(params[:newrev], offset: offset, limit: PROCESS_COMMIT_LIMIT)
 
-    # Ensure HEAD points to the default branch in case it is not master
-    project.change_head(branch_name)
-
-    # Set protection on the default branch if configured
-    if current_application_settings.default_branch_protection != PROTECTION_NONE && !ProtectedBranch.protected?(@project, @project.default_branch)
-
-      params = {
-        name: @project.default_branch,
-        push_access_levels_attributes: [{
-          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }],
-        merge_access_levels_attributes: [{
-          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }]
-      }
-
-      ProtectedBranches::CreateService.new(@project, current_user, params).execute
-    end
+    @project.after_create_default_branch
   end
 
   def build_push_data

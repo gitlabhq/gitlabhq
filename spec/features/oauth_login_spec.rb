@@ -10,8 +10,7 @@ feature 'OAuth Login', :js, :allow_forgery_protection do
 
   def stub_omniauth_config(provider)
     OmniAuth.config.add_mock(provider, OmniAuth::AuthHash.new(provider: provider.to_s, uid: "12345"))
-    set_devise_mapping(context: Rails.application)
-    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider]
+    stub_omniauth_provider(provider)
   end
 
   providers = [:github, :twitter, :bitbucket, :gitlab, :google_oauth2,

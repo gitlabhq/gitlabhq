@@ -160,6 +160,30 @@ describe Groups::ChildrenController do
           expect(json_response).to eq([])
         end
 
+        it 'succeeds if multiple pages contain matching subgroups' do
+          create(:group, parent: group, name: 'subgroup-filter-1')
+          create(:group, parent: group, name: 'subgroup-filter-2')
+
+          # Creating the group-to-nest first so it would be loaded into the
+          # relation first before it's parents, this is what would cause the
+          # crash in: https://gitlab.com/gitlab-org/gitlab-ce/issues/40785.
+          #
+          # If we create the parent groups first, those would be loaded into the
+          # collection first, and the pagination would cut off the actual search
+          # result. In this case the hierarchy can be rendered without crashing,
+          # it's just incomplete.
+          group_to_nest = create(:group, parent: group, name: 'subsubgroup-filter-3')
+          subgroup = create(:group, parent: group)
+          3.times do |i|
+            subgroup = create(:group, parent: subgroup)
+          end
+          group_to_nest.update!(parent: subgroup)
+
+          get :index, group_id: group.to_param, filter: 'filter', per_page: 3, format: :json
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+
         it 'includes pagination headers' do
           2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
 

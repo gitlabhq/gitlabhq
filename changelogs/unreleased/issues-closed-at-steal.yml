@@ -1,0 +1,5 @@
+---
+title: Finish any remaining jobs for issues.closed_at
+merge_request:
+author:
+type: other

@@ -110,6 +110,8 @@ You can mark that content for translation with:
 In JavaScript we added the `__()` (double underscore parenthesis) function
 for translations.
 
+In order to test JavaScript translations you have to change the GitLab localization to other language than English and you have to generate JSON files using `bundle exec rake gettext:po_to_json` or `bundle exec rake gettext:compile`.
+
 ## Updating the PO files with the new content
 
 Now that the new content is marked for translation, we need to update the PO
@@ -123,6 +125,9 @@ This command will update the `locale/gitlab.pot` file with the newly externalize
 strings and remove any strings that aren't used anymore. You should check this
 file in. Once the changes are on master, they will be picked up by
 [Crowdin](http://translate.gitlab.com) and be presented for translation.
+
+If there are merge conflicts in the `gitlab.pot` file, you can delete the file
+and regenerate it using the same command. Confirm that you are not deleting any strings accidentally by looking over the diff.
 
 The command also updates the translation files for each language: `locale/*/gitlab.po`
 These changes can be discarded, the languange files will be updated by Crowdin

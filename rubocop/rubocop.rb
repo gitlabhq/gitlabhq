@@ -1,5 +1,7 @@
 require_relative 'cop/gitlab/module_with_instance_variables'
+require_relative 'cop/gitlab/predicate_memoization'
 require_relative 'cop/include_sidekiq_worker'
+require_relative 'cop/line_break_around_conditional_block'
 require_relative 'cop/migration/add_column'
 require_relative 'cop/migration/add_concurrent_foreign_key'
 require_relative 'cop/migration/add_concurrent_index'

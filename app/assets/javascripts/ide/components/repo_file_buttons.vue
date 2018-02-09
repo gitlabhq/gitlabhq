@@ -35,20 +35,24 @@ export default {
     <div
       class="btn-group"
       role="group"
-      aria-label="File actions">
+      aria-label="File actions"
+    >
       <a
         :href="activeFile.blamePath"
-        class="btn btn-default btn-sm blame">
+        class="btn btn-default btn-sm blame"
+      >
         Blame
       </a>
       <a
         :href="activeFile.commitsPath"
-        class="btn btn-default btn-sm history">
+        class="btn btn-default btn-sm history"
+      >
         History
       </a>
       <a
         :href="activeFile.permalink"
-        class="btn btn-default btn-sm permalink">
+        class="btn btn-default btn-sm permalink"
+      >
         Permalink
       </a>
     </div>

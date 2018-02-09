@@ -80,6 +80,7 @@ describe Project do
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
+    it { is_expected.to have_many(:lfs_file_locks) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -117,7 +118,6 @@ describe Project do
     it { is_expected.to include_module(Gitlab::ConfigHelper) }
     it { is_expected.to include_module(Gitlab::ShellAdapter) }
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
   end
@@ -130,7 +130,6 @@ describe Project do
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
@@ -1871,9 +1870,8 @@ describe Project do
     end
 
     it 'creates the new reference with rugged' do
-      expect(project.repository.rugged.references).to receive(:create).with('HEAD',
-                                                                            "refs/heads/#{project.default_branch}",
-                                                                            force: true)
+      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
+
       project.change_head(project.default_branch)
     end
 
@@ -1951,6 +1949,10 @@ describe Project do
         forked_project.destroy
 
         expect(second_fork.fork_source).to eq(project)
+      end
+
+      it 'returns nil if it is the root of the fork network' do
+        expect(project.fork_source).to be_nil
       end
     end
 
@@ -2069,7 +2071,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for(ref: 'ref') }
+    subject { project.reload.secret_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(
@@ -2501,6 +2503,52 @@ describe Project do
     end
   end
 
+  describe '#remove_exports' do
+    let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
+    let(:project) { create(:project, :with_export) }
+
+    it 'removes the exports directory for the project' do
+      expect(File.exist?(project.export_path)).to be_truthy
+
+      allow(FileUtils).to receive(:rm_rf).and_call_original
+      expect(FileUtils).to receive(:rm_rf).with(project.export_path).and_call_original
+      project.remove_exports
+
+      expect(File.exist?(project.export_path)).to be_falsy
+    end
+
+    it 'is a no-op on legacy projects when there is no namespace' do
+      export_path = legacy_project.export_path
+
+      legacy_project.update_column(:namespace_id, nil)
+
+      expect(FileUtils).not_to receive(:rm_rf).with(export_path)
+
+      legacy_project.remove_exports
+
+      expect(File.exist?(export_path)).to be_truthy
+    end
+
+    it 'runs on hashed storage projects when there is no namespace' do
+      export_path = project.export_path
+
+      project.update_column(:namespace_id, nil)
+
+      allow(FileUtils).to receive(:rm_rf).and_call_original
+      expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
+
+      project.remove_exports
+
+      expect(File.exist?(export_path)).to be_falsy
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_exports).and_call_original
+
+      project.destroy
+    end
+  end
+
   describe '#forks_count' do
     it 'returns the number of forks' do
       project = build(:project)
@@ -2512,7 +2560,7 @@ describe Project do
   end
 
   context 'legacy storage' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :legacy_storage) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -2686,6 +2734,8 @@ describe Project do
     let(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
+    let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
+    let(:hashed_path) { File.join(hashed_prefix, hash) }
 
     before do
       stub_application_setting(hashed_storage_enabled: true)
@@ -2711,14 +2761,12 @@ describe Project do
 
     describe '#base_dir' do
       it 'returns base_dir based on hash of project id' do
-        expect(project.base_dir).to eq("@hashed/#{hash[0..1]}/#{hash[2..3]}")
+        expect(project.base_dir).to eq(hashed_prefix)
       end
     end
 
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
-        hashed_path = "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}"
-
         expect(project.disk_path).to eq(hashed_path)
       end
     end
@@ -2727,7 +2775,7 @@ describe Project do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, "@hashed/#{hash[0..1]}/#{hash[2..3]}")
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, hashed_prefix)
 
         project.ensure_storage_path_exists
       end
@@ -2977,18 +3025,40 @@ describe Project do
 
     subject { project.auto_devops_variables }
 
-    context 'when enabled in settings' do
+    context 'when enabled in instance settings' do
       before do
         stub_application_setting(auto_devops_enabled: true)
       end
 
       context 'when domain is empty' do
         before do
+          stub_application_setting(auto_devops_domain: nil)
+        end
+
+        it 'variables does not include AUTO_DEVOPS_DOMAIN' do
+          is_expected.not_to include(domain_variable)
+        end
+      end
+
+      context 'when domain is configured' do
+        before do
+          stub_application_setting(auto_devops_domain: 'example.com')
+        end
+
+        it 'variables includes AUTO_DEVOPS_DOMAIN' do
+          is_expected.to include(domain_variable)
+        end
+      end
+    end
+
+    context 'when explicitely enabled' do
+      context 'when domain is empty' do
+        before do
           create(:project_auto_devops, project: project, domain: nil)
         end
 
-        it 'variables are empty' do
-          is_expected.to be_empty
+        it 'variables does not include AUTO_DEVOPS_DOMAIN' do
+          is_expected.not_to include(domain_variable)
         end
       end
 
@@ -2997,10 +3067,14 @@ describe Project do
           create(:project_auto_devops, project: project, domain: 'example.com')
         end
 
-        it "variables are not empty" do
-          is_expected.not_to be_empty
+        it 'variables includes AUTO_DEVOPS_DOMAIN' do
+          is_expected.to include(domain_variable)
         end
       end
+    end
+
+    def domain_variable
+      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
     end
   end
 
@@ -3079,8 +3153,50 @@ describe Project do
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
+      expect(project).to receive(:after_create_default_branch)
 
       project.after_import
+    end
+
+    context 'branch protection' do
+      let(:project) { create(:project, :repository) }
+
+      it 'does not protect when branch protection is disabled' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+
+        project.after_import
+
+        expect(project.protected_branches).to be_empty
+      end
+
+      it "gives developer access to push when branch protection is set to 'developers can push'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it "gives developer access to merge when branch protection is set to 'developers can merge'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+      end
+
+      it 'protects default branch' do
+        project.after_import
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.default_branch).to eq(project.protected_branches.first.name)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+      end
     end
   end
 
@@ -3163,6 +3279,42 @@ describe Project do
       project = create(:project_empty_repo)
 
       expect { project.write_repository_config }.not_to raise_error
+    end
+  end
+
+  describe '#execute_hooks' do
+    it 'executes the projects hooks with the specified scope' do
+      hook1 = create(:project_hook, merge_requests_events: true, tag_push_events: false)
+      hook2 = create(:project_hook, merge_requests_events: false, tag_push_events: true)
+      project = create(:project, hooks: [hook1, hook2])
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+
+      project.execute_hooks({}, :tag_push_hooks)
+    end
+
+    it 'executes the system hooks with the specified scope' do
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with({ data: 'data' }, :merge_request_hooks)
+
+      project = build(:project)
+      project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+    end
+
+    it 'executes the system hooks when inside a transaction' do
+      allow_any_instance_of(WebHookService).to receive(:execute)
+
+      create(:system_hook, merge_requests_events: true)
+
+      project = build(:project)
+
+      # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
+      # but since the entire spec run takes place in a transaction, we never
+      # actually get to the `after_commit` hook that queues these jobs.
+      expect do
+        project.transaction do
+          project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+        end
+      end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
     end
   end
 end

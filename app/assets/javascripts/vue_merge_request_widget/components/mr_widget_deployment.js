@@ -2,7 +2,7 @@ import { getTimeago } from '~/lib/utils/datetime_utility';
 import { visitUrl } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
 import MemoryUsage from './mr_widget_memory_usage';
-import StatusIcon from './mr_widget_status_icon';
+import StatusIcon from './mr_widget_status_icon.vue';
 import MRWidgetService from '../services/mr_widget_service';
 
 export default {

@@ -1,12 +1,30 @@
 require 'webpack/rails/manifest'
 
 module WebpackHelper
-  def webpack_bundle_tag(bundle)
-    javascript_include_tag(*gitlab_webpack_asset_paths(bundle))
+  def webpack_bundle_tag(bundle, force_same_domain: false)
+    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: force_same_domain))
+  end
+
+  def webpack_controller_bundle_tags
+    bundles = []
+    segments = [*controller.controller_path.split('/'), controller.action_name].compact
+
+    until segments.empty?
+      begin
+        asset_paths = gitlab_webpack_asset_paths("pages.#{segments.join('.')}", extension: 'js')
+        bundles.unshift(*asset_paths)
+      rescue Webpack::Rails::Manifest::EntryPointMissingError
+        # no bundle exists for this path
+      end
+
+      segments.pop
+    end
+
+    javascript_include_tag(*bundles)
   end
 
   # override webpack-rails gem helper until changes can make it upstream
-  def gitlab_webpack_asset_paths(source, extension: nil)
+  def gitlab_webpack_asset_paths(source, extension: nil, force_same_domain: false)
     return "" unless source.present?
 
     paths = Webpack::Rails::Manifest.asset_paths(source)
@@ -14,9 +32,11 @@ module WebpackHelper
       paths.select! { |p| p.ends_with? ".#{extension}" }
     end
 
-    force_host = webpack_public_host
-    if force_host
-      paths.map! { |p| "#{force_host}#{p}" }
+    unless force_same_domain
+      force_host = webpack_public_host
+      if force_host
+        paths.map! { |p| "#{force_host}#{p}" }
+      end
     end
 
     paths

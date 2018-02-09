@@ -42,7 +42,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Merge (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(reference)}</a>\.\)})
     end
 
     it 'ignores invalid merge IDs' do
@@ -211,7 +211,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Merge (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(merge.to_reference(project))} \(diffs, comment 123\)<\/a>\.\)/)
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(merge.to_reference(project))} \(diffs, comment 123\)</a>\.\)})
     end
   end
 

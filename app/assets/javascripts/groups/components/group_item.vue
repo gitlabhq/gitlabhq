@@ -75,7 +75,7 @@ export default {
     :id="groupDomId"
     :class="rowClass"
     class="group-row"
-    >
+  >
     <div
       class="group-row-contents"
       :class="{ 'project-row-contents': !isGroup }">
@@ -88,7 +88,8 @@ export default {
         :item="group"
       />
       <div
-        class="folder-toggle-wrap">
+        class="folder-toggle-wrap"
+      >
         <item-caret
           :is-group-open="group.isOpen"
         />
@@ -113,13 +114,14 @@ export default {
           <identicon
             v-else
             size-class="s24"
-            :entity-id=group.id
+            :entity-id="group.id"
             :entity-name="group.name"
           />
         </a>
       </div>
       <div
-        class="title namespace-title">
+        class="title namespace-title"
+      >
         <a
           v-tooltip
           :href="group.relativePath"
@@ -135,13 +137,14 @@ export default {
           v-if="group.permission"
           class="user-access-role"
         >
-          {{group.permission}}
+          {{ group.permission }}
         </span>
       </div>
       <div
         v-if="group.description"
         class="description">
-        {{group.description}}
+        <span v-html="group.description">
+        </span>
       </div>
     </div>
     <group-folder

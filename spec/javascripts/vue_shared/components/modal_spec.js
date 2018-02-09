@@ -25,7 +25,7 @@ describe('Modal', () => {
     });
 
     describe('with id', () => {
-      it('does not render a primary button', () => {
+      describe('does not render a primary button', () => {
         beforeEach(() => {
           vm = mountComponent(modalComponent, {
             id: 'my-modal',

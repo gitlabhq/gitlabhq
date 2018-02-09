@@ -19,7 +19,11 @@ export default function renderMermaid($els) {
 
   import(/* webpackChunkName: 'mermaid' */ 'blackst0ne-mermaid').then((mermaid) => {
     mermaid.initialize({
-      loadOnStart: false,
+      // mermaid core options
+      mermaid: {
+        startOnLoad: false,
+      },
+      // mermaidAPI options
       theme: 'neutral',
     });
 

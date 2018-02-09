@@ -6,6 +6,11 @@
   import icon from '../icon.vue';
 
   export default {
+    components: {
+      markdownHeader,
+      markdownToolbar,
+      icon,
+    },
     props: {
       markdownPreviewPath: {
         type: String,
@@ -24,6 +29,7 @@
       quickActionsDocsPath: {
         type: String,
         required: false,
+        default: '',
       },
       canAttachFile: {
         type: Boolean,
@@ -45,16 +51,23 @@
         previewMarkdown: false,
       };
     },
-    components: {
-      markdownHeader,
-      markdownToolbar,
-      icon,
-    },
     computed: {
       shouldShowReferencedUsers() {
         const referencedUsersThreshold = 10;
         return this.referencedUsers.length >= referencedUsersThreshold;
       },
+    },
+    mounted() {
+      /*
+        GLForm class handles all the toolbar buttons
+      */
+      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
+    },
+    beforeDestroy() {
+      const glForm = $(this.$refs['gl-form']).data('gl-form');
+      if (glForm) {
+        glForm.destroy();
+      }
     },
     methods: {
       showPreviewTab() {
@@ -98,18 +111,6 @@
         });
       },
     },
-    mounted() {
-      /*
-        GLForm class handles all the toolbar buttons
-      */
-      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
-    },
-    beforeDestroy() {
-      const glForm = $(this.$refs['gl-form']).data('gl-form');
-      if (glForm) {
-        glForm.destroy();
-      }
-    },
   };
 </script>
 
@@ -121,34 +122,39 @@
     <markdown-header
       :preview-markdown="previewMarkdown"
       @preview-markdown="showPreviewTab"
-      @write-markdown="showWriteTab" />
+      @write-markdown="showWriteTab"
+    />
     <div
       class="md-write-holder"
-      v-show="!previewMarkdown">
+      v-show="!previewMarkdown"
+    >
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
         <a
           class="zen-control zen-control-leave js-zen-leave"
           href="#"
-          aria-label="Enter zen mode">
+          aria-label="Enter zen mode"
+        >
           <icon
             name="screen-normal"
-            :size="32">
-          </icon>
+            :size="32"
+          />
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
           :can-attach-file="canAttachFile"
-          />
+        />
       </div>
     </div>
     <div
       class="md md-preview-holder md-preview"
-      v-show="previewMarkdown">
+      v-show="previewMarkdown"
+    >
       <div
         ref="markdown-preview"
-        v-html="markdownPreview">
+        v-html="markdownPreview"
+      >
       </div>
       <span v-if="markdownPreviewLoading">
         Loading...
@@ -158,23 +164,27 @@
       <div
         v-if="referencedCommands"
         v-html="referencedCommands"
-        class="referenced-commands"></div>
+        class="referenced-commands"
+      >
+      </div>
       <div
         v-if="shouldShowReferencedUsers"
-        class="referenced-users">
-          <span>
-            <i
-              class="fa fa-exclamation-triangle"
-              aria-hidden="true">
-            </i>
-            You are about to add
-            <strong>
-              <span class="js-referenced-users-count">
-                {{referencedUsers.length}}
-              </span>
-            </strong> people to the discussion. Proceed with caution.
-          </span>
-        </div>
+        class="referenced-users"
+      >
+        <span>
+          <i
+            class="fa fa-exclamation-triangle"
+            aria-hidden="true"
+          >
+          </i>
+          You are about to add
+          <strong>
+            <span class="js-referenced-users-count">
+              {{ referencedUsers.length }}
+            </span>
+          </strong> people to the discussion. Proceed with caution.
+        </span>
+      </div>
     </template>
   </div>
 </template>

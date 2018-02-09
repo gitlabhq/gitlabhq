@@ -13,6 +13,7 @@ module Labels
           update_issuables(new_label, batched_ids)
           update_issue_board_lists(new_label, batched_ids)
           update_priorities(new_label, batched_ids)
+          subscribe_users(new_label, batched_ids)
           # Order is important, project labels need to be last
           update_project_labels(batched_ids)
         end
@@ -25,6 +26,15 @@ module Labels
     end
 
     private
+
+    def subscribe_users(new_label, label_ids)
+      # users can be subscribed to multiple labels that will be merged into the group one
+      # we want to keep only one subscription / user
+      ids_to_update = Subscription.where(subscribable_id: label_ids, subscribable_type: 'Label')
+        .group(:user_id)
+        .pluck('MAX(id)')
+      Subscription.where(id: ids_to_update).update_all(subscribable_id: new_label.id)
+    end
 
     def label_ids_for_merge(new_label)
       LabelsFinder
@@ -53,7 +63,7 @@ module Labels
     end
 
     def update_project_labels(label_ids)
-      Label.where(id: label_ids).delete_all
+      Label.where(id: label_ids).destroy_all
     end
 
     def clone_label_to_group_label(label)

@@ -1,21 +1,35 @@
+import _ from 'underscore';
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
+import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
 import eventHub from './event_hub';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
 class FilteredSearchManager {
-  constructor(page) {
+  constructor({
+    page,
+    filteredSearchTokenKeys = FilteredSearchTokenKeys,
+    stateFiltersSelector = '.issues-state-filters',
+  }) {
+    this.isGroup = false;
+    this.states = ['opened', 'closed', 'merged', 'all'];
+
     this.page = page;
     this.container = FilteredSearchContainer.container;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.filteredSearchInputForm = this.filteredSearchInput.form;
     this.clearSearchButton = this.container.querySelector('.clear-search');
     this.tokensContainer = this.container.querySelector('.tokens-container');
-    this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+    this.filteredSearchTokenKeys = filteredSearchTokenKeys;
+    this.stateFiltersSelector = stateFiltersSelector;
+    this.recentsStorageKeyNames = {
+      issues: 'issue-recent-searches',
+      merge_requests: 'merge-request-recent-searches',
+    };
 
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
@@ -24,11 +38,7 @@ class FilteredSearchManager {
     this.searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
     const fullPath = this.searchHistoryDropdownElement ?
       this.searchHistoryDropdownElement.dataset.fullPath : 'project';
-    let recentSearchesPagePrefix = 'issue-recent-searches';
-    if (this.page === 'merge_requests') {
-      recentSearchesPagePrefix = 'merge-request-recent-searches';
-    }
-    const recentSearchesKey = `${fullPath}-${recentSearchesPagePrefix}`;
+    const recentSearchesKey = `${fullPath}-${this.recentsStorageKeyNames[this.page]}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
   }
 
@@ -57,7 +67,13 @@ class FilteredSearchManager {
 
     if (this.filteredSearchInput) {
       this.tokenizer = gl.FilteredSearchTokenizer;
-      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', this.tokenizer, this.page);
+      this.dropdownManager = new gl.FilteredSearchDropdownManager(
+        this.filteredSearchInput.getAttribute('data-base-endpoint') || '',
+        this.tokenizer,
+        this.page,
+        this.isGroup,
+        this.filteredSearchTokenKeys,
+      );
 
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,
@@ -85,38 +101,31 @@ class FilteredSearchManager {
   }
 
   bindStateEvents() {
-    this.stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+    this.stateFilters = document.querySelector(`.container-fluid ${this.stateFiltersSelector}`);
 
     if (this.stateFilters) {
       this.searchStateWrapper = this.searchState.bind(this);
 
-      this.stateFilters.querySelector('[data-state="opened"]')
-        .addEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="closed"]')
-        .addEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="all"]')
-        .addEventListener('click', this.searchStateWrapper);
-
-      this.mergedState = this.stateFilters.querySelector('[data-state="merged"]');
-      if (this.mergedState) {
-        this.mergedState.addEventListener('click', this.searchStateWrapper);
-      }
+      this.applyToStateFilters((filterEl) => {
+        filterEl.addEventListener('click', this.searchStateWrapper);
+      });
     }
   }
 
   unbindStateEvents() {
     if (this.stateFilters) {
-      this.stateFilters.querySelector('[data-state="opened"]')
-        .removeEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="closed"]')
-        .removeEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('[data-state="all"]')
-        .removeEventListener('click', this.searchStateWrapper);
-
-      if (this.mergedState) {
-        this.mergedState.removeEventListener('click', this.searchStateWrapper);
-      }
+      this.applyToStateFilters((filterEl) => {
+        filterEl.removeEventListener('click', this.searchStateWrapper);
+      });
     }
+  }
+
+  applyToStateFilters(callback) {
+    this.stateFilters.querySelectorAll('a[data-state]').forEach((filterEl) => {
+      if (this.states.indexOf(filterEl.dataset.state) > -1) {
+        callback(filterEl);
+      }
+    });
   }
 
   bindEvents() {

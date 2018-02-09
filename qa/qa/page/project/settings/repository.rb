@@ -5,8 +5,12 @@ module QA
         class Repository < Page::Base
           include Common
 
+          view 'app/views/projects/deploy_keys/_index.html.haml' do
+            element :deploy_keys_section, 'Deploy Keys'
+          end
+
           def expand_deploy_keys(&block)
-            expand('.qa-expand-deploy-keys') do
+            expand_section('Deploy Keys') do
               DeployKeys.perform(&block)
             end
           end

@@ -53,6 +53,7 @@ module WaitForRequests
     wait_until = Time.now + max_wait_time.seconds
     loop do
       break if yield
+
       if Time.now > wait_until
         raise "Condition not met: #{condition_name}"
       else

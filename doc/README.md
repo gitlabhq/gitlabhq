@@ -8,23 +8,13 @@ comments: false
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
-GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans:
+GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans.
 
-- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
-self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
-- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
-self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)**, **GitLab Enterprise Edition Premium (EEP)**, and **GitLab Enterprise Edition Ultimate (EEU)**.
-- **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
+With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Libre, Starter, Premium, and Ultimate.
 
-> **GitLab EE** contains all features available in **GitLab CE**,
-plus premium features available in each version: **Enterprise Edition Starter**
-(**EES**), **Enterprise Edition Premium** (**EEP**), and **Enterprise Edition Ultimate**
-(**EEU**). Everything available in **EES** is also available in **EEP**. Every feature
-available in **EEP** is also available in **EEU**.
+GitLab.com is our SaaS offering. It's hosted, managed, and administered by GitLab, with [free and paid plans](https://about.gitlab.com/gitlab-com/) for individuals and teams: Free, Bronze, Silver, and Gold.
 
-----
-
-Shortcuts to GitLab's most visited docs:
+## Shortcuts to GitLab's most visited docs
 
 | [GitLab CI/CD](ci/README.md) | Other |
 | :----- | :----- |
@@ -134,22 +124,16 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 ## Administrator documentation
 
-[Administration documentation](administration/index.md) applies to admin users of GitLab
-self-hosted instances:
-
-- GitLab Community Edition
-- GitLab [Enterprise Editions](https://about.gitlab.com/gitlab-ee/)
-  - Enterprise Edition Starter (EES)
-  - Enterprise Edition Premium (EEP)
-  - Enterprise Edition Ultimate (EEU)
+[Administration documentation](administration/index.md) applies to admin users of [GitLab
+self-hosted instances](#self-hosted-gitlab): Libre, Starter, Premium, Ultimate.
 
 Learn how to install, configure, update, upgrade, integrate, and maintain your own instance.
 Regular users don't have access to GitLab administration tools and settings.
 
 ## Contributor documentation
 
-GitLab Community Edition is [opensource](https://gitlab.com/gitlab-org/gitlab-ce/)
-and Enterprise Editions are [opencore](https://gitlab.com/gitlab-org/gitlab-ee/).
+GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
+and Enterprise Editions are [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
 Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.

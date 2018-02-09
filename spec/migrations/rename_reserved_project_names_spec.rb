@@ -5,8 +5,8 @@ require Rails.root.join('db', 'post_migrate', '20161221153951_rename_reserved_pr
 
 # This migration uses multiple threads, and thus different transactions. This
 # means data created in this spec may not be visible to some threads. To work
-# around this we use the TRUNCATE cleaning strategy.
-describe RenameReservedProjectNames, truncate: true do
+# around this we use the DELETE cleaning strategy.
+describe RenameReservedProjectNames, :delete do
   let(:migration) { described_class.new }
   let!(:project) { create(:project) }
 

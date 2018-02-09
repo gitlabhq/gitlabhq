@@ -100,7 +100,7 @@ describe ApplicationHelper do
       end
 
       it 'returns a generic avatar' do
-        expect(helper.gravatar_icon(user_email)).to match('no_avatar.png')
+        expect(helper.gravatar_icon(user_email)).to match_asset_path('no_avatar.png')
       end
     end
 
@@ -110,14 +110,14 @@ describe ApplicationHelper do
       end
 
       it 'returns a generic avatar when email is blank' do
-        expect(helper.gravatar_icon('')).to match('no_avatar.png')
+        expect(helper.gravatar_icon('')).to match_asset_path('no_avatar.png')
       end
 
       it 'returns a valid Gravatar URL' do
         stub_config_setting(https: false)
 
         expect(helper.gravatar_icon(user_email))
-          .to match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+          .to match('https://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
       end
 
       it 'uses HTTPs when configured' do

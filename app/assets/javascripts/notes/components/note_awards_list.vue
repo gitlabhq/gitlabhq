@@ -8,6 +8,9 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    directives: {
+      tooltip,
+    },
     props: {
       awards: {
         type: Array,
@@ -25,9 +28,6 @@
         type: Number,
         required: true,
       },
-    },
-    directives: {
-      tooltip,
     },
     computed: {
       ...mapGetters([
@@ -72,6 +72,11 @@
       isLoggedIn() {
         return this.getUserData.id;
       },
+    },
+    created() {
+      this.emojiSmiling = emojiSmiling;
+      this.emojiSmile = emojiSmile;
+      this.emojiSmiley = emojiSmiley;
     },
     methods: {
       ...mapActions([
@@ -168,11 +173,6 @@
           .catch(() => Flash('Something went wrong on our end.'));
       },
     },
-    created() {
-      this.emojiSmiling = emojiSmiling;
-      this.emojiSmile = emojiSmile;
-      this.emojiSmiley = emojiSmiley;
-    },
   };
 </script>
 
@@ -191,7 +191,7 @@
         type="button">
         <span v-html="getAwardHTML(awardName)"></span>
         <span class="award-control-text js-counter">
-          {{awardList.length}}
+          {{ awardList.length }}
         </span>
       </button>
       <div

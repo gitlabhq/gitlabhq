@@ -83,14 +83,14 @@ describe API::Services do
         get api("/projects/#{project.id}/services/#{dashed_service}", admin)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list.map)
+        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
       it "returns properties of service #{service} other than passwords when authenticated as project owner" do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list_without_passwords)
+        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
       it "returns error when authenticated but not a project owner" do

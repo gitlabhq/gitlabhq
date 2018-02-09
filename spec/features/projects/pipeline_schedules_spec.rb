@@ -168,11 +168,11 @@ feature 'Pipeline Schedules', :js do
 
       scenario 'user sees the new variable in edit window' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-        page.within('.pipeline-variable-list') do
-          expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('AAA')
-          expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('AAA123')
-          expect(find(".pipeline-variable-row:nth-child(2) .pipeline-variable-key-input").value).to eq('BBB')
-          expect(find(".pipeline-variable-row:nth-child(2) .pipeline-variable-value-input").value).to eq('BBB123')
+        page.within('.ci-variable-list') do
+          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('AAA')
+          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-value", visible: false).value).to eq('AAA123')
+          expect(find(".ci-variable-row:nth-child(2) .js-ci-variable-input-key").value).to eq('BBB')
+          expect(find(".ci-variable-row:nth-child(2) .js-ci-variable-input-value", visible: false).value).to eq('BBB123')
         end
       end
     end
@@ -185,16 +185,18 @@ feature 'Pipeline Schedules', :js do
 
         visit_pipelines_schedules
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-        all('[name="schedule[variables_attributes][][key]"]')[0].set('foo')
-        all('[name="schedule[variables_attributes][][value]"]')[0].set('bar')
+
+        find('.js-ci-variable-list-section .js-secret-value-reveal-button').click
+        first('.js-ci-variable-input-key').set('foo')
+        first('.js-ci-variable-input-value').set('bar')
         click_button 'Save pipeline schedule'
       end
 
       scenario 'user sees the updated variable in edit window' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-        page.within('.pipeline-variable-list') do
-          expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('foo')
-          expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('bar')
+        page.within('.ci-variable-list') do
+          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('foo')
+          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-value", visible: false).value).to eq('bar')
         end
       end
     end
@@ -207,15 +209,15 @@ feature 'Pipeline Schedules', :js do
 
         visit_pipelines_schedules
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-        find('.pipeline-variable-list .pipeline-variable-row-remove-button').click
+        find('.ci-variable-list .ci-variable-row-remove-button').click
         click_button 'Save pipeline schedule'
       end
 
       scenario 'user does not see the removed variable in edit window' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-        page.within('.pipeline-variable-list') do
-          expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('')
-          expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('')
+        page.within('.ci-variable-list') do
+          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('')
+          expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-value", visible: false).value).to eq('')
         end
       end
     end

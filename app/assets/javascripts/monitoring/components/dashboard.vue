@@ -11,6 +11,12 @@
 
   export default {
 
+    components: {
+      Graph,
+      GraphGroup,
+      EmptyState,
+    },
+
     data() {
       const metricsData = document.querySelector('#prometheus-graphs').dataset;
       const store = new MonitoringStore();
@@ -21,6 +27,7 @@
         hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
         documentationPath: metricsData.documentationPath,
         settingsPath: metricsData.settingsPath,
+        clustersPath: metricsData.clustersPath,
         tagsPath: metricsData.tagsPath,
         projectPath: metricsData.projectPath,
         metricsEndpoint: metricsData.additionalMetrics,
@@ -34,43 +41,6 @@
         hoverData: {},
         resizeThrottled: {},
       };
-    },
-
-    components: {
-      Graph,
-      GraphGroup,
-      EmptyState,
-    },
-
-    methods: {
-      getGraphsData() {
-        this.state = 'loading';
-        Promise.all([
-          this.service.getGraphsData()
-            .then(data => this.store.storeMetrics(data)),
-          this.service.getDeploymentData()
-            .then(data => this.store.storeDeploymentData(data))
-            .catch(() => new Flash('Error getting deployment information.')),
-        ])
-          .then(() => { this.showEmptyState = false; })
-          .catch(() => { this.state = 'unableToConnect'; });
-      },
-
-      resize() {
-        this.updateAspectRatio = true;
-      },
-
-      toggleAspectRatio() {
-        this.updatedAspectRatios = this.updatedAspectRatios += 1;
-        if (this.store.getMetricsCount() === this.updatedAspectRatios) {
-          this.updateAspectRatio = !this.updateAspectRatio;
-          this.updatedAspectRatios = 0;
-        }
-      },
-
-      hoverChanged(data) {
-        this.hoverData = data;
-      },
     },
 
     created() {
@@ -97,11 +67,50 @@
         window.addEventListener('resize', this.resizeThrottled, false);
       }
     },
+    methods: {
+      getGraphsData() {
+        this.state = 'loading';
+        Promise.all([
+          this.service.getGraphsData()
+            .then(data => this.store.storeMetrics(data)),
+          this.service.getDeploymentData()
+            .then(data => this.store.storeDeploymentData(data))
+            .catch(() => new Flash('Error getting deployment information.')),
+        ])
+          .then(() => {
+            if (this.store.groups.length < 1) {
+              this.state = 'noData';
+              return;
+            }
+            this.showEmptyState = false;
+          })
+          .catch(() => { this.state = 'unableToConnect'; });
+      },
+
+      resize() {
+        this.updateAspectRatio = true;
+      },
+
+      toggleAspectRatio() {
+        this.updatedAspectRatios = this.updatedAspectRatios += 1;
+        if (this.store.getMetricsCount() === this.updatedAspectRatios) {
+          this.updateAspectRatio = !this.updateAspectRatio;
+          this.updatedAspectRatios = 0;
+        }
+      },
+
+      hoverChanged(data) {
+        this.hoverData = data;
+      },
+    },
   };
 </script>
 
 <template>
-  <div v-if="!showEmptyState" class="prometheus-graphs">
+  <div
+    v-if="!showEmptyState"
+    class="prometheus-graphs"
+  >
     <graph-group
       v-for="(groupData, index) in store.groups"
       :key="index"
@@ -124,6 +133,7 @@
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
+    :clusters-path="clustersPath"
     :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
     :empty-loading-svg-path="emptyLoadingSvgPath"
     :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"

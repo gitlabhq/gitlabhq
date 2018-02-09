@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
-
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import IssuablesHelper from '~/helpers/issuables_helper';
@@ -7,11 +8,24 @@ import IssuablesHelper from '~/helpers/issuables_helper';
 (function() {
   describe('MergeRequest', function() {
     describe('task lists', function() {
+      let mock;
+
       preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       beforeEach(function() {
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+
+        spyOn(axios, 'patch').and.callThrough();
+        mock = new MockAdapter(axios);
+
+        mock.onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`).reply(200, {});
+
         return this.merge = new MergeRequest();
       });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('modifies the Markdown field', function() {
         spyOn(jQuery, 'ajax').and.stub();
         const changeEvent = document.createEvent('HTMLEvents');
@@ -19,17 +33,24 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
         return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
-      return it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`);
-          return expect(req.data.merge_request.description).not.toBe(null);
+
+      it('submits an ajax request on tasklist:changed', (done) => {
+        $('.js-task-list-field').trigger('tasklist:changed');
+
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`, {
+            merge_request: { description: '- [ ] Task List Item' },
+          });
+          done();
         });
-        return $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
 
     describe('class constructor', () => {
+      beforeEach(() => {
+        spyOn(jQuery, 'ajax').and.stub();
+      });
+
       it('calls .initCloseReopenReport', () => {
         spyOn(IssuablesHelper, 'initCloseReopenReport');
 
@@ -63,8 +84,8 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
           this.el = document.querySelector('.js-issuable-actions');
-          const merge = new MergeRequest();
-          merge.hideCloseButton();
+          new MergeRequest(); // eslint-disable-line no-new
+          MergeRequest.hideCloseButton();
         });
 
         it('hides the dropdown close item and selects the next item', () => {
@@ -83,8 +104,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
           this.el = document.querySelector('.js-issuable-actions');
-          const merge = new MergeRequest();
-          merge.hideCloseButton();
+          MergeRequest.hideCloseButton();
         });
 
         it('hides the close button', () => {

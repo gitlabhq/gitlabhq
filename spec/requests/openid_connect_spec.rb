@@ -65,10 +65,20 @@ describe 'OpenID Connect requests' do
         )
       end
 
-      let(:public_email) { build :email, email: 'public@example.com' }
-      let(:private_email) { build :email, email: 'private@example.com' }
+      let!(:public_email) { build :email, email: 'public@example.com' }
+      let!(:private_email) { build :email, email: 'private@example.com' }
 
-      it 'includes all user information' do
+      let!(:group1) { create :group, path: 'group1' }
+      let!(:group2) { create :group, path: 'group2' }
+      let!(:group3) { create :group, path: 'group3', parent: group2 }
+      let!(:group4) { create :group, path: 'group4', parent: group3 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+        group3.add_user(user, Gitlab::Access::DEVELOPER)
+      end
+
+      it 'includes all user information and group memberships' do
         request_user_info
 
         expect(json_response).to eq({
@@ -79,7 +89,13 @@ describe 'OpenID Connect requests' do
           'email_verified' => true,
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
-          'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png"
+          'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
+          'groups'         =>
+            if Group.supports_nested_groups?
+              ['group1', 'group2/group3', 'group2/group3/group4']
+            else
+              ['group1', 'group2/group3']
+            end
         })
       end
     end

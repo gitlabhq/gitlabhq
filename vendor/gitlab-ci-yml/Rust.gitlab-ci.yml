@@ -20,4 +20,4 @@ image: "rust:latest"
 test:cargo:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
-  - cargo test --verbose --jobs 1 --release # Don't parallelise to make errors more readable
+  - cargo test --all --verbose

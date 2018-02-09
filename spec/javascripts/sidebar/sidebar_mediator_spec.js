@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SidebarMediator from '~/sidebar/sidebar_mediator';

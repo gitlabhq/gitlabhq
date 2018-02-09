@@ -29,15 +29,18 @@ const mixins = {
         time.setSeconds(this.timeSeries[0].values[0].time.getSeconds());
 
         if (xPos >= 0) {
+          const seriesIndex = bisectDate(this.timeSeries[0].values, time, 1);
+
           deploymentDataArray.push({
             id: deployment.id,
             time,
             sha: deployment.sha,
             commitUrl: `${this.projectPath}/commit/${deployment.sha}`,
             tag: deployment.tag,
-            tagUrl: `${this.tagsPath}/${deployment.tag}`,
+            tagUrl: deployment.tag ? `${this.tagsPath}/${deployment.ref.name}` : null,
             ref: deployment.ref.name,
             xPos,
+            seriesIndex,
             showDeploymentFlag: false,
           });
         }

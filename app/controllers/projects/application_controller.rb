@@ -86,4 +86,8 @@ class Projects::ApplicationController < ApplicationController
   def require_pages_enabled!
     not_found unless @project.pages_available?
   end
+
+  def check_issues_available!
+    return render_404 unless @project.feature_available?(:issues, current_user)
+  end
 end

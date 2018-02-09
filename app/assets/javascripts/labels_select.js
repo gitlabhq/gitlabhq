@@ -2,9 +2,12 @@
 /* global Issuable */
 /* global ListLabel */
 import _ from 'underscore';
+import { __ } from './locale';
+import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
+import flash from './flash';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -82,99 +85,96 @@ export default class LabelsSelect {
         }
         $loading.removeClass('hidden').fadeIn();
         $dropdown.trigger('loading.gl.dropdown');
-        return $.ajax({
-          type: 'PUT',
-          url: issueUpdateURL,
-          dataType: 'JSON',
-          data: data
-        }).done(function(data) {
-          var labelCount, template, labelTooltipTitle, labelTitles;
-          $loading.fadeOut();
-          $dropdown.trigger('loaded.gl.dropdown');
-          $selectbox.hide();
-          data.issueURLSplit = issueURLSplit;
-          labelCount = 0;
-          if (data.labels.length) {
-            template = labelHTMLTemplate(data);
-            labelCount = data.labels.length;
-          }
-          else {
-            template = labelNoneHTMLTemplate;
-          }
-          $value.removeAttr('style').html(template);
-          $sidebarCollapsedValue.text(labelCount);
+        axios.put(issueUpdateURL, data)
+          .then(({ data }) => {
+            var labelCount, template, labelTooltipTitle, labelTitles;
+            $loading.fadeOut();
+            $dropdown.trigger('loaded.gl.dropdown');
+            $selectbox.hide();
+            data.issueURLSplit = issueURLSplit;
+            labelCount = 0;
+            if (data.labels.length) {
+              template = labelHTMLTemplate(data);
+              labelCount = data.labels.length;
+            }
+            else {
+              template = labelNoneHTMLTemplate;
+            }
+            $value.removeAttr('style').html(template);
+            $sidebarCollapsedValue.text(labelCount);
 
-          if (data.labels.length) {
-            labelTitles = data.labels.map(function(label) {
-              return label.title;
-            });
+            if (data.labels.length) {
+              labelTitles = data.labels.map(function(label) {
+                return label.title;
+              });
 
-            if (labelTitles.length > 5) {
-              labelTitles = labelTitles.slice(0, 5);
-              labelTitles.push('and ' + (data.labels.length - 5) + ' more');
+              if (labelTitles.length > 5) {
+                labelTitles = labelTitles.slice(0, 5);
+                labelTitles.push('and ' + (data.labels.length - 5) + ' more');
+              }
+
+              labelTooltipTitle = labelTitles.join(', ');
+            }
+            else {
+              labelTooltipTitle = '';
+              $sidebarLabelTooltip.tooltip('destroy');
             }
 
-            labelTooltipTitle = labelTitles.join(', ');
-          }
-          else {
-            labelTooltipTitle = '';
-            $sidebarLabelTooltip.tooltip('destroy');
-          }
+            $sidebarLabelTooltip
+              .attr('title', labelTooltipTitle)
+              .tooltip('fixTitle');
 
-          $sidebarLabelTooltip
-            .attr('title', labelTooltipTitle)
-            .tooltip('fixTitle');
-
-          $('.has-tooltip', $value).tooltip({
-            container: 'body'
-          });
-        });
+            $('.has-tooltip', $value).tooltip({
+              container: 'body'
+            });
+          })
+          .catch(() => flash(__('Error saving label update.')));
       };
       $dropdown.glDropdown({
         showMenuAbove: showMenuAbove,
         data: function(term, callback) {
-          return $.ajax({
-            url: labelUrl
-          }).done(function(data) {
-            data = _.chain(data).groupBy(function(label) {
-              return label.title;
-            }).map(function(label) {
-              var color;
-              color = _.map(label, function(dup) {
-                return dup.color;
-              });
-              return {
-                id: label[0].id,
-                title: label[0].title,
-                color: color,
-                duplicate: color.length > 1
-              };
-            }).value();
-            if ($dropdown.hasClass('js-extra-options')) {
-              var extraData = [];
-              if (showNo) {
-                extraData.unshift({
-                  id: 0,
-                  title: 'No Label'
+          axios.get(labelUrl)
+            .then((res) => {
+              let data = _.chain(res.data).groupBy(function(label) {
+                return label.title;
+              }).map(function(label) {
+                var color;
+                color = _.map(label, function(dup) {
+                  return dup.color;
                 });
+                return {
+                  id: label[0].id,
+                  title: label[0].title,
+                  color: color,
+                  duplicate: color.length > 1
+                };
+              }).value();
+              if ($dropdown.hasClass('js-extra-options')) {
+                var extraData = [];
+                if (showNo) {
+                  extraData.unshift({
+                    id: 0,
+                    title: 'No Label'
+                  });
+                }
+                if (showAny) {
+                  extraData.unshift({
+                    isAny: true,
+                    title: 'Any Label'
+                  });
+                }
+                if (extraData.length) {
+                  extraData.push('divider');
+                  data = extraData.concat(data);
+                }
               }
-              if (showAny) {
-                extraData.unshift({
-                  isAny: true,
-                  title: 'Any Label'
-                });
-              }
-              if (extraData.length) {
-                extraData.push('divider');
-                data = extraData.concat(data);
-              }
-            }
 
-            callback(data);
-            if (showMenuAbove) {
-              $dropdown.data('glDropdown').positionMenuAbove();
-            }
-          });
+              callback(data);
+              if (showMenuAbove) {
+                $dropdown.data('glDropdown').positionMenuAbove();
+              }
+            })
+            .catch(() => flash(__('Error fetching labels.')));
         },
         renderRow: function(label, instance) {
           var $a, $li, color, colorEl, indeterminate, removesAll, selectedClass, spacing, i, marked, dropdownName, dropdownValue;
@@ -231,7 +231,7 @@ export default class LabelsSelect {
             selectedClass.push('label-item');
             $a.attr('data-label-id', label.id);
           }
-          $a.addClass(selectedClass.join(' ')).html(colorEl + " " + label.title);
+          $a.addClass(selectedClass.join(' ')).html(`${colorEl} ${_.escape(label.title)}`);
           // Return generated html
           return $li.html($a).prop('outerHTML');
         },

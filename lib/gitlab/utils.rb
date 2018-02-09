@@ -27,6 +27,10 @@ module Gitlab
         .gsub(/(\A-+|-+\z)/, '')
     end
 
+    def remove_line_breaks(str)
+      str.gsub(/\r?\n/, '')
+    end
+
     def to_boolean(value)
       return value if [true, false].include?(value)
       return true if value =~ /^(true|t|yes|y|1|on)$/i

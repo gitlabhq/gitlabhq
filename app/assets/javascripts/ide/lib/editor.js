@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
@@ -54,7 +55,7 @@ export default class Editor {
 
   attachModel(model) {
     this.instance.setModel(model.getModel());
-    this.dirtyDiffController.attachModel(model);
+    if (this.dirtyDiffController) this.dirtyDiffController.attachModel(model);
 
     this.currentModel = model;
 
@@ -67,7 +68,7 @@ export default class Editor {
       return acc;
     }, {}));
 
-    this.dirtyDiffController.reDecorate(model);
+    if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
   }
 
   clearEditor() {

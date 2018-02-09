@@ -15,8 +15,6 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :rugged_commit
-
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -241,6 +239,24 @@ module Gitlab
             end
           end
         end
+
+        def extract_signature(repository, commit_id)
+          repository.gitaly_migrate(:extract_commit_signature) do |is_enabled|
+            if is_enabled
+              repository.gitaly_commit_client.extract_signature(commit_id)
+            else
+              rugged_extract_signature(repository, commit_id)
+            end
+          end
+        end
+
+        def rugged_extract_signature(repository, commit_id)
+          begin
+            Rugged::Commit.extract_signature(repository.rugged, commit_id)
+          rescue Rugged::OdbError
+            nil
+          end
+        end
       end
 
       def initialize(repository, raw_commit, head = nil)
@@ -386,15 +402,6 @@ module Gitlab
         end
       end
 
-      # Get a collection of Rugged::Reference objects for this commit.
-      #
-      # Ex.
-      #   commit.ref(repo)
-      #
-      def refs(repo)
-        repo.refs_hash[id]
-      end
-
       # Get ref names collection
       #
       # Ex.
@@ -402,7 +409,7 @@ module Gitlab
       #
       def ref_names(repo)
         refs(repo).map do |ref|
-          ref.name.sub(%r{^refs/(heads|remotes|tags)/}, "")
+          ref.sub(%r{^refs/(heads|remotes|tags)/}, "")
         end
       end
 
@@ -436,6 +443,16 @@ module Gitlab
 
       def merge_commit?
         parent_ids.size > 1
+      end
+
+      def tree_entry(path)
+        @repository.gitaly_migrate(:commit_tree_entry) do |is_migrated|
+          if is_migrated
+            gitaly_tree_entry(path)
+          else
+            rugged_tree_entry(path)
+          end
+        end
       end
 
       def to_gitaly_commit
@@ -498,12 +515,43 @@ module Gitlab
         SERIALIZE_KEYS
       end
 
+      def gitaly_tree_entry(path)
+        # We're only interested in metadata, so limit actual data to 1 byte
+        # since Gitaly doesn't support "send no data" option.
+        entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
+        return unless entry
+
+        # To be compatible with the rugged format
+        entry = entry.to_h
+        entry.delete(:data)
+        entry[:name] = File.basename(path)
+        entry[:type] = entry[:type].downcase
+
+        entry
+      end
+
+      # Is this the same as Blob.find_entry_by_path ?
+      def rugged_tree_entry(path)
+        rugged_commit.tree.path(path)
+      rescue Rugged::TreeError
+        nil
+      end
+
       def gitaly_commit_author_from_rugged(author_or_committer)
         Gitaly::CommitAuthor.new(
           name: author_or_committer[:name].b,
           email: author_or_committer[:email].b,
           date: Google::Protobuf::Timestamp.new(seconds: author_or_committer[:time].to_i)
         )
+      end
+
+      # Get a collection of Gitlab::Git::Ref objects for this commit.
+      #
+      # Ex.
+      #   commit.ref(repo)
+      #
+      def refs(repo)
+        repo.refs_hash[id]
       end
     end
   end

@@ -15,7 +15,7 @@ describe Users::DestroyService do
 
         expect { user_data['email'].to eq(user.email) }
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { Namespace.with_deleted.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { Namespace.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'will delete the project' do
@@ -173,7 +173,7 @@ describe Users::DestroyService do
       end
 
       context 'legacy storage' do
-        let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
+        let!(:project) { create(:project, :empty_repo, :legacy_storage, namespace: user.namespace) }
 
         it 'removes repository' do
           expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
@@ -181,7 +181,7 @@ describe Users::DestroyService do
       end
 
       context 'hashed storage' do
-        let!(:project) { create(:project, :empty_repo, :hashed, namespace: user.namespace) }
+        let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
 
         it 'removes repository' do
           expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey

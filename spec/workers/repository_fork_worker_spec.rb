@@ -47,6 +47,14 @@ describe RepositoryForkWorker do
       perform!
     end
 
+    it 'protects the default branch' do
+      expect_fork_repository.and_return(true)
+
+      perform!
+
+      expect(fork_project.protected_branches.first.name).to eq(fork_project.default_branch)
+    end
+
     it 'flushes various caches' do
       expect_fork_repository.and_return(true)
 
@@ -60,7 +68,7 @@ describe RepositoryForkWorker do
     end
 
     it "handles bad fork" do
-      error_message = "Unable to fork project #{fork_project.id} for repository #{project.full_path} -> #{fork_project.full_path}"
+      error_message = "Unable to fork project #{fork_project.id} for repository #{project.disk_path} -> #{fork_project.disk_path}"
 
       expect_fork_repository.and_return(false)
 

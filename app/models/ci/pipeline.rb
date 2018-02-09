@@ -7,7 +7,7 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
 
-    belongs_to :project
+    belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
@@ -394,7 +394,7 @@ module Ci
 
       @config_processor ||= begin
         Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
-      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
+      rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
       rescue
@@ -524,7 +524,7 @@ module Ci
       return unless sha
 
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
-    rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
+    rescue GRPC::NotFound, GRPC::Internal
       nil
     end
 

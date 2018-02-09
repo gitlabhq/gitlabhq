@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import { environmentsList } from '../mock_data';

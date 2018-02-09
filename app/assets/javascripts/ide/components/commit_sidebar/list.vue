@@ -32,7 +32,6 @@
         this.$emit('toggleCollapsed');
       },
     },
-
   };
 </script>
 

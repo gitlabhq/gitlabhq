@@ -781,11 +781,11 @@ describe 'Git LFS API and storage' do
         end
 
         context 'when deploy key has project push access' do
-          let(:key) { create(:deploy_key, can_push: true) }
+          let(:key) { create(:deploy_key) }
           let(:authorization) { authorize_deploy_key }
 
           let(:update_user_permissions) do
-            project.deploy_keys << key
+            project.deploy_keys_projects.create(deploy_key: key, can_push: true)
           end
 
           it_behaves_like 'pushes new LFS objects'
@@ -958,7 +958,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'responds with status 200, location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['StoreLFSPath']).to eq(LfsObjectUploader.workhorse_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end
@@ -1075,7 +1075,7 @@ describe 'Git LFS API and storage' do
             end
 
             it 'with location of lfs store and object details' do
-              expect(json_response['StoreLFSPath']).to eq("#{Gitlab.config.shared.path}/lfs-objects/tmp/upload")
+              expect(json_response['StoreLFSPath']).to eq(LfsObjectUploader.workhorse_upload_path)
               expect(json_response['LfsOid']).to eq(sample_oid)
               expect(json_response['LfsSize']).to eq(sample_size)
             end
@@ -1208,7 +1208,7 @@ describe 'Git LFS API and storage' do
   end
 
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/vnd.git-lfs+json'))
+    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def json_response

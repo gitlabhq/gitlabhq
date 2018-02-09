@@ -1,6 +1,6 @@
 import _ from 'underscore';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
-import ProtectedBranchDropdown from './protected_branch_dropdown';
+import CreateItemDropdown from '../create_item_dropdown';
 import AccessorUtilities from '../lib/utils/accessor';
 
 const PB_LOCAL_STORAGE_KEY = 'protected-branches-defaults';
@@ -35,10 +35,12 @@ export default class ProtectedBranchCreate {
       onSelect: this.onSelectCallback,
     });
 
-    // Protected branch dropdown
-    this.protectedBranchDropdown = new ProtectedBranchDropdown({
+    this.createItemDropdown = new CreateItemDropdown({
       $dropdown: $protectedBranchDropdown,
+      defaultToggleLabel: 'Protected Branch',
+      fieldName: 'protected_branch[name]',
       onSelect: this.onSelectCallback,
+      getData: ProtectedBranchCreate.getProtectedBranches,
     });
 
     this.loadPreviousSelection($allowedToMergeDropdown.data('glDropdown'), $allowedToPushDropdown.data('glDropdown'));
@@ -58,6 +60,10 @@ export default class ProtectedBranchCreate {
 
     this.savePreviousSelection($allowedToMergeInput.val(), $allowedToPushInput.val());
     this.$form.find('input[type="submit"]').attr('disabled', completedForm);
+  }
+
+  static getProtectedBranches(term, callback) {
+    callback(gon.open_branches);
   }
 
   loadPreviousSelection(mergeDropdown, pushDropdown) {

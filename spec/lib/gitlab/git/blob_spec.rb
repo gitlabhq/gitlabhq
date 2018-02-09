@@ -16,6 +16,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   shared_examples 'finding blobs' do
+    context 'nil path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
+
+      it { expect(blob).to eq(nil) }
+    end
+
+    context 'blank path' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, '') }
+
+      it { expect(blob).to eq(nil) }
+    end
+
     context 'file in subdir' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
 
@@ -146,7 +158,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
     context 'when sha references a tree' do
       it 'returns nil' do
-        tree = Gitlab::Git::Commit.find(repository, 'master').tree
+        tree = repository.rugged.rev_parse('master^{tree}')
 
         blob = Gitlab::Git::Blob.raw(repository, tree.oid)
 
@@ -166,71 +178,81 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   describe '.batch' do
-    let(:blob_references) do
-      [
-        [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
-        [SeedRepo::Commit::ID, 'six']
-      ]
-    end
-
-    subject { described_class.batch(repository, blob_references) }
-
-    it { expect(subject.size).to eq(blob_references.size) }
-
-    context 'first blob' do
-      let(:blob) { subject[0] }
-
-      it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
-      it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
-      it { expect(blob.path).to eq("files/ruby/popen.rb") }
-      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
-      it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
-      it { expect(blob.size).to eq(669) }
-      it { expect(blob.mode).to eq("100644") }
-    end
-
-    context 'second blob' do
-      let(:blob) { subject[1] }
-
-      it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
-      it { expect(blob.data).to eq('') }
-      it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
-      end
-    end
-
-    context 'limiting' do
-      subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
-
-      context 'positive' do
-        let(:blob_size_limit) { 10 }
-
-        it { expect(subject.first.data.size).to eq(10) }
+    shared_examples 'loading blobs in batch' do
+      let(:blob_references) do
+        [
+          [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
+          [SeedRepo::Commit::ID, 'six']
+        ]
       end
 
-      context 'zero' do
-        let(:blob_size_limit) { 0 }
+      subject { described_class.batch(repository, blob_references) }
 
-        it 'only loads the metadata' do
-          expect(subject.first.size).not_to be(0)
-          expect(subject.first.data).to eq('')
+      it { expect(subject.size).to eq(blob_references.size) }
+
+      context 'first blob' do
+        let(:blob) { subject[0] }
+
+        it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
+        it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
+        it { expect(blob.path).to eq("files/ruby/popen.rb") }
+        it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+        it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
+        it { expect(blob.size).to eq(669) }
+        it { expect(blob.mode).to eq("100644") }
+      end
+
+      context 'second blob' do
+        let(:blob) { subject[1] }
+
+        it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
+        it { expect(blob.data).to eq('') }
+        it 'does not mark the blob as binary' do
+          expect(blob).not_to be_binary
         end
       end
 
-      context 'negative' do
-        let(:blob_size_limit) { -1 }
+      context 'limiting' do
+        subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
 
-        it 'ignores MAX_DATA_DISPLAY_SIZE' do
-          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+        context 'positive' do
+          let(:blob_size_limit) { 10 }
 
-          expect(subject.first.data.size).to eq(669)
+          it { expect(subject.first.data.size).to eq(10) }
+        end
+
+        context 'zero' do
+          let(:blob_size_limit) { 0 }
+
+          it 'only loads the metadata' do
+            expect(subject.first.size).not_to be(0)
+            expect(subject.first.data).to eq('')
+          end
+        end
+
+        context 'negative' do
+          let(:blob_size_limit) { -1 }
+
+          it 'ignores MAX_DATA_DISPLAY_SIZE' do
+            stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+
+            expect(subject.first.data.size).to eq(669)
+          end
         end
       end
+    end
+
+    context 'when Gitaly list_blobs_by_sha_path feature is enabled' do
+      it_behaves_like 'loading blobs in batch'
+    end
+
+    context 'when Gitaly list_blobs_by_sha_path feature is disabled', :disable_gitaly do
+      it_behaves_like 'loading blobs in batch'
     end
   end
 
   describe '.batch_lfs_pointers' do
-    let(:tree_object) { Gitlab::Git::Commit.find(repository, 'master').tree }
+    let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
 
     let(:non_lfs_blob) do
       Gitlab::Git::Blob.find(
@@ -248,29 +270,57 @@ describe Gitlab::Git::Blob, seed_helper: true do
       )
     end
 
-    it 'returns a list of Gitlab::Git::Blob' do
-      blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
+    shared_examples 'fetching batch of LFS pointers' do
+      it 'returns a list of Gitlab::Git::Blob' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
 
-      expect(blobs.count).to eq(1)
-      expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'accepts blob IDs as a lazy enumerator' do
+        blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id].lazy)
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      end
+
+      it 'handles empty list of IDs gracefully' do
+        blobs_1 = described_class.batch_lfs_pointers(repository, [].lazy)
+        blobs_2 = described_class.batch_lfs_pointers(repository, [])
+
+        expect(blobs_1).to eq([])
+        expect(blobs_2).to eq([])
+      end
+
+      it 'silently ignores tree objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'silently ignores non lfs objects' do
+        blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
+
+        expect(blobs).to eq([])
+      end
+
+      it 'avoids loading large blobs into memory' do
+        # This line could call `lookup` on `repository`, so do here before mocking.
+        non_lfs_blob_id = non_lfs_blob.id
+
+        expect(repository).not_to receive(:lookup)
+
+        described_class.batch_lfs_pointers(repository, [non_lfs_blob_id])
+      end
     end
 
-    it 'silently ignores tree objects' do
-      blobs = described_class.batch_lfs_pointers(repository, [tree_object.oid])
-
-      expect(blobs).to eq([])
+    context 'when Gitaly batch_lfs_pointers is enabled' do
+      it_behaves_like 'fetching batch of LFS pointers'
     end
 
-    it 'silently ignores non lfs objects' do
-      blobs = described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
-
-      expect(blobs).to eq([])
-    end
-
-    it 'avoids loading large blobs into memory' do
-      expect(repository).not_to receive(:lookup)
-
-      described_class.batch_lfs_pointers(repository, [non_lfs_blob.id])
+    context 'when Gitaly batch_lfs_pointers is disabled', :disable_gitaly do
+      it_behaves_like 'fetching batch of LFS pointers'
     end
   end
 

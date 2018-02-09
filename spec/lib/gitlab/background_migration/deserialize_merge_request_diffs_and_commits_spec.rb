@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :truncate, :migration, schema: 20171114162227 do
+describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :migration, schema: 20171114162227 do
   let(:merge_request_diffs) { table(:merge_request_diffs) }
   let(:merge_requests) { table(:merge_requests) }
 
@@ -9,6 +9,11 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
     let(:merge_request) { merge_requests.create!(iid: 1, target_project_id: project.id, source_project_id: project.id, target_branch: 'feature', source_branch: 'master').becomes(MergeRequest) }
     let(:merge_request_diff) { MergeRequest.find(merge_request.id).create_merge_request_diff }
     let(:updated_merge_request_diff) { MergeRequestDiff.find(merge_request_diff.id) }
+
+    before do
+      allow_any_instance_of(MergeRequestDiff)
+        .to receive(:commits_count=).and_return(nil)
+    end
 
     def diffs_to_hashes(diffs)
       diffs.as_json(only: Gitlab::Git::Diff::SERIALIZE_KEYS).map(&:with_indifferent_access)

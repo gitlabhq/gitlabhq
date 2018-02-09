@@ -34,7 +34,7 @@ module Gitlab
         def raw(repository, sha)
           Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+              repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
               rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
             end
@@ -53,11 +53,7 @@ module Gitlab
         def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
           Gitlab::GitalyClient.migrate(:list_blobs_by_sha_path) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient.allow_n_plus_1_calls do
-                blob_references.map do |sha, path|
-                  find_by_gitaly(repository, sha, path, limit: blob_size_limit)
-                end
-              end
+              repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
             else
               blob_references.map do |sha, path|
                 find_by_rugged(repository, sha, path, limit: blob_size_limit)
@@ -70,11 +66,17 @@ module Gitlab
         # Returns array of Gitlab::Git::Blob
         # Does not guarantee blob data will be set
         def batch_lfs_pointers(repository, blob_ids)
-          blob_ids.lazy
-                  .select { |sha| possible_lfs_blob?(repository, sha) }
-                  .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
-                  .select(&:lfs_pointer?)
-                  .force
+          repository.gitaly_migrate(:batch_lfs_pointers) do |is_enabled|
+            if is_enabled
+              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids.to_a)
+            else
+              blob_ids.lazy
+                      .select { |sha| possible_lfs_blob?(repository, sha) }
+                      .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
+                      .select(&:lfs_pointer?)
+                      .force
+            end
+          end
         end
 
         def binary?(data)
@@ -101,7 +103,7 @@ module Gitlab
         def find_entry_by_path(repository, root_id, path)
           root_tree = repository.lookup(root_id)
           # Strip leading slashes
-          path[/^\/*/] = ''
+          path[%r{^/*}] = ''
           path_arr = path.split('/')
 
           entry = root_tree.find do |entry|
@@ -132,7 +134,9 @@ module Gitlab
         end
 
         def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
-          path = path.sub(/\A\/*/, '')
+          return unless path
+
+          path = path.sub(%r{\A/*}, '')
           path = '/' if path.empty?
           name = File.basename(path)
 
@@ -173,8 +177,10 @@ module Gitlab
         end
 
         def find_by_rugged(repository, sha, path, limit:)
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
+          return unless path
+
+          rugged_commit = repository.lookup(sha)
+          root_tree = rugged_commit.tree
 
           blob_entry = find_entry_by_path(repository, root_tree.oid, path)
 
@@ -254,7 +260,7 @@ module Gitlab
         Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
           @data = begin
             if is_enabled
-              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
+              repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
             else
               repository.lookup(id).content
             end

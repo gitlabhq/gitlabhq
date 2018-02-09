@@ -5,7 +5,7 @@ module Gitlab
     DEFAULT_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-ce'.freeze
     EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
-    IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
+    IGNORED_FILES_REGEX = %r{VERSION|CHANGELOG\.md|db/schema\.rb}i.freeze
     PLEASE_READ_THIS_BANNER = %Q{
       ============================================================
       ===================== PLEASE READ THIS =====================
@@ -156,12 +156,14 @@ module Gitlab
         %W[git apply --3way #{patch_path}]
       ) do |output, status|
         puts output
+
         unless status.zero?
           @failed_files = output.lines.reduce([]) do |memo, line|
             if line.start_with?('error: patch failed:')
               file = line.sub(/\Aerror: patch failed: /, '')
               memo << file unless file =~ IGNORED_FILES_REGEX
             end
+
             memo
           end
 

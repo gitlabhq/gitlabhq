@@ -5,7 +5,7 @@ describe Gitlab::SlashCommands::IssueSearch do
     let!(:issue) { create(:issue, project: project, title: 'find me') }
     let!(:confidential) { create(:issue, :confidential, project: project, title: 'mepmep find') }
     let(:project) { create(:project) }
-    let(:user) { issue.author }
+    let(:user) { create(:user) }
     let(:regex_match) { described_class.match("issue search find") }
 
     subject do

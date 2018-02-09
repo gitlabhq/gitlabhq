@@ -43,6 +43,7 @@ module AccessMatchersForController
       user = create(:user)
       membership.public_send(:"add_#{role}", user)
     end
+
     user
   end
 

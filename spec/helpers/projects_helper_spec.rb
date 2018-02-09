@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectsHelper do
+  include ProjectForksHelper
+
   describe "#project_status_css_class" do
     it "returns appropriate class" do
       expect(project_status_css_class("started")).to eq("active")
@@ -10,9 +12,9 @@ describe ProjectsHelper do
   end
 
   describe "can_change_visibility_level?" do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project) }
     let(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
-    let(:fork_project) { Projects::ForkService.new(project, user).execute }
+    let(:forked_project) { fork_project(project, user) }
 
     it "returns false if there are no appropriate permissions" do
       allow(helper).to receive(:can?) { false }
@@ -26,21 +28,29 @@ describe ProjectsHelper do
       expect(helper.can_change_visibility_level?(project, user)).to be_truthy
     end
 
+    it 'allows visibility level to be changed if the project is forked' do
+      allow(helper).to receive(:can?).with(user, :change_visibility_level, project) { true }
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      fork_project(project)
+
+      expect(helper.can_change_visibility_level?(project, user)).to be_truthy
+    end
+
     context "forks" do
       it "returns false if there are permissions and origin project is PRIVATE" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::PRIVATE
+        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
-        expect(helper.can_change_visibility_level?(fork_project, user)).to be_falsey
+        expect(helper.can_change_visibility_level?(forked_project, user)).to be_falsey
       end
 
       it "returns true if there are permissions and origin project is INTERNAL" do
         allow(helper).to receive(:can?) { true }
 
-        project.update visibility_level:  Gitlab::VisibilityLevel::INTERNAL
+        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
-        expect(helper.can_change_visibility_level?(fork_project, user)).to be_truthy
+        expect(helper.can_change_visibility_level?(forked_project, user)).to be_truthy
       end
     end
   end

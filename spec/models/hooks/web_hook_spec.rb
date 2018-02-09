@@ -29,6 +29,12 @@ describe WebHook do
         expect(hook.url).to eq('https://example.com')
       end
     end
+
+    describe 'token' do
+      it { is_expected.to allow_value("foobar").for(:token) }
+
+      it { is_expected.not_to allow_values("foo\nbar", "foo\r\nbar").for(:token) }
+    end
   end
 
   describe 'execute' do

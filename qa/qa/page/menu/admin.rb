@@ -2,8 +2,8 @@ module QA
   module Page
     module Menu
       class Admin < Page::Base
-        def go_to_license
-          click_link 'License'
+        view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
+          element :settings, "_('Settings')"
         end
 
         def go_to_settings

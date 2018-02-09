@@ -4,12 +4,8 @@ module Gitlab
       def initialize(commit)
         @commit = commit
 
-        @signature_text, @signed_text =
-          begin
-            Rugged::Commit.extract_signature(@commit.project.repository.rugged, @commit.sha)
-          rescue Rugged::OdbError
-            nil
-          end
+        repo = commit.project.repository.raw_repository
+        @signature_text, @signed_text = Gitlab::Git::Commit.extract_signature(repo, commit.sha)
       end
 
       def has_signature?

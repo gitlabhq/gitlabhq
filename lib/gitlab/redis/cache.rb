@@ -1,5 +1,5 @@
 # please require all dependencies below:
-require_relative 'wrapper' unless defined?(::Gitlab::Redis::Wrapper)
+require_relative 'wrapper' unless defined?(::Rails) && ::Rails.root.present?
 
 module Gitlab
   module Redis

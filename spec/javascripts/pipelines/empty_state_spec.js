@@ -24,11 +24,11 @@ describe('Pipelines Empty State', () => {
     expect(component.$el.querySelector('h4').textContent).toContain('Build with confidence');
 
     expect(
-      component.$el.querySelector('p').textContent,
+      component.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
     ).toContain('Continous Integration can help catch bugs by running your tests automatically');
 
     expect(
-      component.$el.querySelector('p').textContent,
+      component.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
     ).toContain('Continuous Deployment can help you deliver code to your product environment');
   });
 

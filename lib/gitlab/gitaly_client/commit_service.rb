@@ -38,19 +38,27 @@ module Gitlab
         from_id = case from
                   when NilClass
                     EMPTY_TREE_ID
-                  when Rugged::Commit
-                    from.oid
                   else
-                    from
+                    if from.respond_to?(:oid)
+                      # This is meant to match a Rugged::Commit. This should be impossible in
+                      # the future.
+                      from.oid
+                    else
+                      from
+                    end
                   end
 
         to_id = case to
                 when NilClass
                   EMPTY_TREE_ID
-                when Rugged::Commit
-                  to.oid
                 else
-                  to
+                  if to.respond_to?(:oid)
+                    # This is meant to match a Rugged::Commit. This should be impossible in
+                    # the future.
+                    to.oid
+                  else
+                    to
+                  end
                 end
 
         request_params = diff_between_commits_request_params(from_id, to_id, options)
@@ -125,11 +133,11 @@ module Gitlab
       def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
-          revision: ref
+          revision: encode_binary(ref)
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
-        request.path = options[:path] if options[:path].present?
+        request.path = encode_binary(options[:path]) if options[:path].present?
         request.max_count = options[:max_count] if options[:max_count].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
@@ -177,7 +185,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
-      rescue GRPC::Unknown # If no repository is found, happens mainly during testing
+      rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
 
@@ -214,14 +222,25 @@ module Gitlab
       end
 
       def find_commit(revision)
-        request = Gitaly::FindCommitRequest.new(
-          repository: @gitaly_repo,
-          revision: encode_binary(revision)
-        )
+        if RequestStore.active?
+          # We don't use RequeStstore.fetch(key) { ... } directly because `revision`
+          # can be a branch name, so we can't use it as a key as it could point
+          # to another commit later on (happens a lot in tests).
+          key = {
+            storage: @gitaly_repo.storage_name,
+            relative_path: @gitaly_repo.relative_path,
+            commit_id: revision
+          }
+          return RequestStore[key] if RequestStore.exist?(key)
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
+          commit = call_find_commit(revision)
+          return unless commit
 
-        response.commit
+          key[:commit_id] = commit.id
+          RequestStore[key] = commit
+        else
+          call_find_commit(revision)
+        end
       end
 
       def patch(revision)
@@ -249,7 +268,7 @@ module Gitlab
           offset:       options[:offset],
           follow:       options[:follow],
           skip_merges:  options[:skip_merges],
-          disable_walk: options[:disable_walk]
+          disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
@@ -280,6 +299,23 @@ module Gitlab
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
         end
+      end
+
+      def extract_signature(commit_id)
+        request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
+        response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request)
+
+        signature = ''.b
+        signed_text = ''.b
+
+        response.each do |message|
+          signature << message.signature
+          signed_text << message.signed_text
+        end
+
+        return if signature.blank? && signed_text.blank?
+
+        [signature, signed_text]
       end
 
       private
@@ -320,6 +356,17 @@ module Gitlab
 
       def encode_repeated(a)
         Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| encode_binary(s) } )
+      end
+
+      def call_find_commit(revision)
+        request = Gitaly::FindCommitRequest.new(
+          repository: @gitaly_repo,
+          revision: encode_binary(revision)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
+
+        response.commit
       end
     end
   end

@@ -6,14 +6,14 @@ module Gitlab
   module FileDetector
     PATTERNS = {
       # Project files
-      readme: /\Areadme[^\/]*\z/i,
-      changelog: /\A(changelog|history|changes|news)[^\/]*\z/i,
-      license: /\A(licen[sc]e|copying)(\.[^\/]+)?\z/i,
-      contributing: /\Acontributing[^\/]*\z/i,
+      readme: %r{\Areadme[^/]*\z}i,
+      changelog: %r{\A(changelog|history|changes|news)[^/]*\z}i,
+      license: %r{\A(licen[sc]e|copying)(\.[^/]+)?\z}i,
+      contributing: %r{\Acontributing[^/]*\z}i,
       version: 'version',
       avatar: /\Alogo\.(png|jpg|gif)\z/,
-      issue_template: /\A\.gitlab\/issue_templates\/[^\/]+\.md\z/,
-      merge_request_template: /\A\.gitlab\/merge_request_templates\/[^\/]+\.md\z/,
+      issue_template: %r{\A\.gitlab/issue_templates/[^/]+\.md\z},
+      merge_request_template: %r{\A\.gitlab/merge_request_templates/[^/]+\.md\z},
 
       # Configuration files
       gitignore: '.gitignore',
@@ -22,17 +22,17 @@ module Gitlab
       route_map: '.gitlab/route-map.yml',
 
       # Dependency files
-      cartfile: /\ACartfile[^\/]*\z/,
+      cartfile: %r{\ACartfile[^/]*\z},
       composer_json: 'composer.json',
       gemfile: /\A(Gemfile|gems\.rb)\z/,
       gemfile_lock: 'Gemfile.lock',
-      gemspec: /\A[^\/]*\.gemspec\z/,
+      gemspec: %r{\A[^/]*\.gemspec\z},
       godeps_json: 'Godeps.json',
       package_json: 'package.json',
       podfile: 'Podfile',
-      podspec_json: /\A[^\/]*\.podspec\.json\z/,
-      podspec: /\A[^\/]*\.podspec\z/,
-      requirements_txt: /\A[^\/]*requirements\.txt\z/,
+      podspec_json: %r{\A[^/]*\.podspec\.json\z},
+      podspec: %r{\A[^/]*\.podspec\z},
+      requirements_txt: %r{\A[^/]*requirements\.txt\z},
       yarn_lock: 'yarn.lock'
     }.freeze
 

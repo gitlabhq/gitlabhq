@@ -26,6 +26,9 @@ export default {
   components: {
     userAvatarImage,
   },
+  directives: {
+    tooltip,
+  },
   props: {
     linkHref: {
       type: String,
@@ -76,9 +79,6 @@ export default {
       return this.shouldShowUsername ? '' : this.tooltipText;
     },
   },
-  directives: {
-    tooltip,
-  },
 };
 </script>
 
@@ -98,6 +98,6 @@ export default {
       v-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
-    >{{username}}</span>
+    >{{ username }}</span>
   </a>
 </template>

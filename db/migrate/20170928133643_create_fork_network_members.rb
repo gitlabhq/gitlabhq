@@ -21,6 +21,7 @@ class CreateForkNetworkMembers < ActiveRecord::Migration
     if foreign_keys_for(:fork_network_members, :forked_from_project_id).any?
       remove_foreign_key :fork_network_members, column: :forked_from_project_id
     end
+
     drop_table :fork_network_members
   end
 end

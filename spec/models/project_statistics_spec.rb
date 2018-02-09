@@ -146,6 +146,12 @@ describe ProjectStatistics do
 
         expect(statistics.build_artifacts_size).to be(106365)
       end
+
+      it 'calculates related build artifacts by project' do
+        expect(Ci::JobArtifact).to receive(:artifacts_size_for).with(project) { 0 }
+
+        statistics.update_build_artifacts_size
+      end
     end
 
     context 'when legacy artifacts are used' do

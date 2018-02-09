@@ -46,8 +46,10 @@ describe NewMergeRequestWorker do
         expect { worker.perform(merge_request.id, user.id) }.to change { Event.count }.from(0).to(1)
       end
 
-      it 'creates a notification for the assignee' do
-        expect(Notify).to receive(:new_merge_request_email).with(mentioned.id, merge_request.id).and_return(double(deliver_later: true))
+      it 'creates a notification for the mentioned user' do
+        expect(Notify).to receive(:new_merge_request_email)
+                            .with(mentioned.id, merge_request.id, NotificationReason::MENTIONED)
+                            .and_return(double(deliver_later: true))
 
         worker.perform(merge_request.id, user.id)
       end

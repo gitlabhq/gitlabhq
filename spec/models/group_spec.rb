@@ -41,7 +41,6 @@ describe Group do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }
@@ -579,6 +578,22 @@ describe Group do
 
         expect(got_array.shift(2)).to contain_exactly(*expected_array1)
         expect(got_array).to eq(expected_array2)
+      end
+    end
+  end
+
+  describe '#has_parent?' do
+    context 'when the group has a parent' do
+      it 'should be truthy' do
+        group = create(:group, :nested)
+        expect(group.has_parent?).to be_truthy
+      end
+    end
+
+    context 'when the group has no parent' do
+      it 'should be falsy' do
+        group = create(:group, parent: nil)
+        expect(group.has_parent?).to be_falsy
       end
     end
   end

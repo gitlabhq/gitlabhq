@@ -13,6 +13,7 @@ module API
           if errors[:project_access].any?
             error!(errors[:project_access], 422)
           end
+
           not_found!
         end
 
@@ -142,7 +143,7 @@ module API
       get ":id/snippets/:snippet_id/user_agent_detail" do
         authenticated_as_admin!
 
-        snippet = Snippet.find_by!(id: params[:id])
+        snippet = Snippet.find_by!(id: params[:snippet_id], project_id: params[:id])
 
         return not_found!('UserAgentDetail') unless snippet.user_agent_detail
 

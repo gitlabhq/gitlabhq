@@ -190,6 +190,27 @@ module MarkdownMatchers
       expect(video['src']).to end_with('/assets/videos/gitlab-demo.mp4')
     end
   end
+
+  # ColorFilter
+  matcher :parse_colors do
+    set_default_markdown_messages
+
+    match do |actual|
+      color_chips = actual.css('code > span.gfm-color_chip > span')
+
+      expect(color_chips.count).to eq(9)
+
+      [
+        '#F00', '#F00A', '#FF0000', '#FF0000AA', 'RGB(0,255,0)',
+        'RGB(0%,100%,0%)', 'RGBA(0,255,0,0.7)', 'HSL(540,70%,50%)',
+        'HSLA(540,70%,50%,0.7)'
+      ].each_with_index do |color, i|
+        parsed_color = Banzai::ColorParser.parse(color)
+        expect(color_chips[i]['style']).to match("background-color: #{parsed_color};")
+        expect(color_chips[i].parent.parent.content).to match(color)
+      end
+    end
+  end
 end
 
 # Monkeypatch the matcher DSL so that we can reduce some noisy duplication for

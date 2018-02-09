@@ -6,8 +6,9 @@
 = render "home_panel"
 
 .row-content-block.second-block.center
-  %h3.page-title
+  %h4
     The repository for this project is empty
+
   - if can?(current_user, :push_code, @project)
     %p
       If you already have files you can push them using command line instructions below.
@@ -28,8 +29,8 @@
       %p
         - link = link_to(s_('AutoDevOps|Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
         = s_('AutoDevOps|You can activate %{link_to_settings} for this project.').html_safe % { link_to_settings: link }
-      %p
-        = s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
+      %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
+      %p= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master'), class: 'btn btn-new'
 
 - if can?(current_user, :push_code, @project)
   %div{ class: container_class }
@@ -79,4 +80,4 @@
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20
-              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
+              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove pull-right"

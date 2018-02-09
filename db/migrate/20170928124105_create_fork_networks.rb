@@ -23,6 +23,7 @@ class CreateForkNetworks < ActiveRecord::Migration
     if foreign_keys_for(:fork_networks, :root_project_id).any?
       remove_foreign_key :fork_networks, column: :root_project_id
     end
+
     drop_table :fork_networks
   end
 end

@@ -8,11 +8,15 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
   subject(:importer) { described_class.new(admin, bare_repository) }
 
   before do
+    @rainbow = Rainbow.enabled
+    Rainbow.enabled = false
+
     allow(described_class).to receive(:log)
   end
 
   after do
     FileUtils.rm_rf(base_dir)
+    Rainbow.enabled = @rainbow
   end
 
   shared_examples 'importing a repository' do
@@ -74,14 +78,18 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         importer.create_project_if_needed
       end
 
-      it 'creates the Git repo in disk' do
+      it 'creates the Git repo on disk with the proper symlink for hooks' do
         create_bare_repository("#{project_path}.git")
 
         importer.create_project_if_needed
 
         project = Project.find_by_full_path(project_path)
+        repo_path = File.join(project.repository_storage_path, project.disk_path + '.git')
+        hook_path = File.join(repo_path, 'hooks')
 
-        expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+        expect(File).to exist(repo_path)
+        expect(File.symlink?(hook_path)).to be true
+        expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
       end
 
       context 'hashed storage enabled' do
@@ -144,7 +152,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       # This is a quick way to get a valid repository instead of copying an
       # existing one. Since it's not persisted, the importer will try to
       # create the project.
-      project = build(:project, :repository)
+      project = build(:project, :legacy_storage, :repository)
       original_commit_count = project.repository.commit_count
 
       bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)

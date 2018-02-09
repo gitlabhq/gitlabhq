@@ -10,9 +10,9 @@ class IssueTrackerService < Service
   # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
   def self.reference_pattern(only_long: false)
     if only_long
-      %r{(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)}
+      /(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)/
     else
-      %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+      /(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)/
     end
   end
 

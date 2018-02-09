@@ -17,11 +17,11 @@ module API
             end
 
             def storage_health
-              @failing_storage_health ||= Gitlab::Git::Storage::Health.for_all_storages
+              @storage_health ||= Gitlab::Git::Storage::Health.for_all_storages
             end
           end
 
-          desc 'Get all failing git storages' do
+          desc 'Get all git storages' do
             detail 'This feature was introduced in GitLab 9.5'
             success Entities::RepositoryStorageHealth
           end

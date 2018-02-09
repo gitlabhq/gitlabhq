@@ -2,8 +2,6 @@
 require 'spec_helper'
 
 describe API::Projects do
-  include Gitlab::CurrentSettings
-
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -148,6 +146,19 @@ describe API::Projects do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
+      end
+
+      context 'and with_issues_enabled=true' do
+        it 'only returns projects with issues enabled' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get api('/projects?with_issues_enabled=true', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
       end
 
       it "does not include statistics by default" do
@@ -352,6 +363,19 @@ describe API::Projects do
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
       end
+
+      context 'and with_issues_enabled=true' do
+        it 'does not return private issue projects' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+
+          get api('/projects?with_issues_enabled=true', user2)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+      end
     end
 
     context 'when authenticated as admin' do
@@ -436,7 +460,7 @@ describe API::Projects do
       expect(response).to have_gitlab_http_status(201)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -598,12 +622,8 @@ describe API::Projects do
   end
 
   describe 'POST /projects/user/:id' do
-    before do
-      expect(project).to be_persisted
-    end
-
     it 'creates new project without path but with name and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
+      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
       project = Project.last
@@ -642,8 +662,9 @@ describe API::Projects do
       post api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_gitlab_http_status(201)
+
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker path].include?(k)
+        next if %i[has_external_issue_tracker path storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end

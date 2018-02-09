@@ -94,6 +94,18 @@ jobs = [['BackgroundMigrationClassName', [1]],
 BackgroundMigrationWorker.bulk_perform_in(5.minutes, jobs)
 ```
 
+### Rescheduling background migrations
+
+If one of the background migrations contains a bug that is fixed in a patch
+release, the background migration needs to be rescheduled so the migration would
+be repeated on systems that already performed the initial migration.
+
+When you reschedule the background migration, make sure to turn the original
+scheduling into a no-op by clearing up the `#up` and `#down` methods of the
+migration performing the scheduling. Otherwise the background migration would be
+scheduled multiple times on systems that are upgrading multiple patch releases at
+once.
+
 ## Cleaning Up
 
 >**Note:**
@@ -123,7 +135,7 @@ roughly be as follows:
      scheduling jobs for newly created data.
   1. In a post-deployment migration you'll need to ensure no jobs remain. To do
      so you can use `Gitlab::BackgroundMigration.steal` to process any remaining
-     jobs before continueing.
+     jobs before continuing.
   1. Remove the old column.
 
 ## Example

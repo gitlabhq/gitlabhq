@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: I18n.locale, class: page_class }
   = render "layouts/head"
-  %body{ class: "#{user_application_theme} #{@body_class}", data: { page: body_data_page } }
+  %body{ class: "#{user_application_theme} #{@body_class} nav-only", data: { page: body_data_page } }
     = render 'peek/bar'
     = render "layouts/header/default"
     = render 'shared/outdated_browser'
@@ -10,4 +10,5 @@
       = render "layouts/broadcast"
       = yield :flash_message
       = render "layouts/flash"
-    = yield
+    .content{ id: "content-body" }
+      = yield

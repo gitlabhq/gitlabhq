@@ -4,7 +4,7 @@ describe Projects::TransferService do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
 
   context 'namespace -> namespace' do
     before do
@@ -150,6 +150,7 @@ describe Projects::TransferService do
 
     before do
       group.add_owner(user)
+
       unless gitlab_shell.add_repository(repository_storage, "#{group.full_path}/#{project.path}")
         raise 'failed to add repository'
       end
@@ -213,7 +214,7 @@ describe Projects::TransferService do
   end
 
   context 'when hashed storage in use' do
-    let(:hashed_project) { create(:project, :repository, :hashed, namespace: user.namespace) }
+    let(:hashed_project) { create(:project, :repository, namespace: user.namespace) }
 
     before do
       group.add_owner(user)

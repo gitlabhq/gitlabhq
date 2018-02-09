@@ -32,6 +32,9 @@ class RecentSearchesRoot {
     const state = this.store.state;
     this.vm = new Vue({
       el: this.wrapperElement,
+      components: {
+        'recent-searches-dropdown-content': RecentSearchesDropdownContent,
+      },
       data() { return state; },
       template: `
         <recent-searches-dropdown-content
@@ -40,9 +43,6 @@ class RecentSearchesRoot {
           :allowed-keys="allowedKeys"
           />
       `,
-      components: {
-        'recent-searches-dropdown-content': RecentSearchesDropdownContent,
-      },
     });
   }
 

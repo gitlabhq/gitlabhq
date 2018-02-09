@@ -52,7 +52,7 @@ export const getTreeData = (
         resolve(data);
       })
       .catch((e) => {
-        flash('Error loading tree data. Please try again.');
+        flash('Error loading tree data. Please try again.', 'alert', document, null, false, true);
         if (tree) commit(types.TOGGLE_LOADING, tree);
         reject(e);
       });
@@ -151,7 +151,7 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
 
       dispatch('getLastCommitData', tree);
     })
-    .catch(() => flash('Error fetching log data.'));
+    .catch(() => flash('Error fetching log data.', 'alert', document, null, false, true));
 };
 
 export const updateDirectoryData = (

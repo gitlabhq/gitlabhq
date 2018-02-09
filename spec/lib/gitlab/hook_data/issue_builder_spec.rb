@@ -14,7 +14,6 @@ describe Gitlab::HookData::IssueBuilder do
         closed_at
         confidential
         created_at
-        deleted_at
         description
         due_date
         id

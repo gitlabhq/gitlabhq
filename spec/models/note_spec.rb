@@ -8,7 +8,7 @@ describe Note do
     it { is_expected.to belong_to(:noteable).touch(false) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:todos) }
   end
 
   describe 'modules' do
@@ -17,8 +17,6 @@ describe Note do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Mentionable) }
     it { is_expected.to include_module(Awardable) }
-
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
   end
 
   describe 'validation' do

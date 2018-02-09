@@ -64,7 +64,7 @@ export default {
   },
   [types.DISCARD_FILE_CHANGES](state, file) {
     Object.assign(file, {
-      content: '',
+      content: file.raw,
       changed: false,
     });
   },

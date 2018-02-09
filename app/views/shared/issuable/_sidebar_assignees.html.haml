@@ -1,7 +1,7 @@
 - if issuable.is_a?(Issue)
   #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]", signed_in: signed_in } }
     .title.hide-collapsed
-      Assignee
+      = _('Assignee')
       = icon('spinner spin')
 - else
   .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
@@ -10,35 +10,35 @@
     - else
       = icon('user', 'aria-hidden': 'true')
   .title.hide-collapsed
-    Assignee
+    = _('Assignee')
     = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
     - if can_edit_issuable
-      = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+      = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
     - if !signed_in
-      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => _('Toggle sidebar') }
         = sidebar_gutter_toggle_icon
   .value.hide-collapsed
     - if issuable.assignee
       = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
         - if !issuable.can_be_merged_by?(issuable.assignee)
-          %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+          %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: _('Not allowed to merge') }
             = icon('exclamation-triangle', 'aria-hidden': 'true')
         %span.username
           = issuable.assignee.to_reference
     - else
       %span.assign-yourself.no-value
-        No assignee
+        = _('No assignee')
         - if can_edit_issuable
           \-
           %a.js-assign-yourself{ href: '#' }
-            assign yourself
+            = _('assign yourself')
 
 .selectbox.hide-collapsed
   - issuable.assignees.each do |assignee|
     = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
 
-  - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: current_user&.username, current_user: true, project_id: @project&.id, author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
-  - title = 'Select assignee'
+  - options = { toggle_class: 'js-user-search js-author-search', title: _('Assign to'), filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: _('Search users'), data: { first_user: current_user&.username, current_user: true, project_id: @project&.id, author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
+  - title = _('Select assignee')
 
   - if issuable.is_a?(Issue)
     - unless issuable.assignees.any?

@@ -178,7 +178,7 @@ address. Read [IP address types and allocation methods in Azure][Azure-IP-Addres
 
 At this stage you should have a running and fully operational VM. However, none of the services on 
 your VM (e.g. GitLab) will be publicly accessible via the internet until you have opened up the 
-neccessary ports to enable access to those services.
+necessary ports to enable access to those services.
 
 Ports are opened by adding _security rules_ to the **"Network security group"** (NSG) which our VM 
 has been assigned to. If you followed the process above, then Azure will have automatically created 

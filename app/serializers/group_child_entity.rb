@@ -1,6 +1,7 @@
 class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
+  include MarkupHelper
 
   expose :id, :name, :description, :visibility, :full_name,
          :created_at, :updated_at, :avatar_url
@@ -59,6 +60,10 @@ class GroupChildEntity < Grape::Entity
     number_with_delimiter(instance.member_count)
   end
 
+  expose :markdown_description do |instance|
+    markdown_description
+  end
+
   private
 
   def membership
@@ -73,5 +78,9 @@ class GroupChildEntity < Grape::Entity
 
   def type
     object.class.name.downcase
+  end
+
+  def markdown_description
+    markdown_field(object, :description)
   end
 end

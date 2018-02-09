@@ -62,6 +62,7 @@ module Gitlab
         when :notes                          then setup_note
         when :project_label, :project_labels then setup_label
         when :milestone, :milestones         then setup_milestone
+        when 'Ci::Pipeline'                  then setup_pipeline
         else
           @relation_hash['project_id'] = @project.id
         end
@@ -112,9 +113,7 @@ module Gitlab
           @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
 
-          imported_object do |object|
-            object.commit_id = nil
-          end
+          imported_object
         elsif @relation_name == :merge_requests
           MergeRequestParser.new(@project, @relation_hash.delete('diff_head_sha'), imported_object, @relation_hash).parse!
         else
@@ -140,13 +139,12 @@ module Gitlab
       end
 
       def setup_label
-        return unless @relation_hash['type'] == 'GroupLabel'
-
         # If there's no group, move the label to a project label
-        if @relation_hash['group_id']
+        if @relation_hash['type'] == 'GroupLabel' && @relation_hash['group_id']
           @relation_hash['project_id'] = nil
           @relation_name = :group_label
         else
+          @relation_hash['group_id'] = nil
           @relation_hash['type'] = 'ProjectLabel'
         end
       end
@@ -182,8 +180,9 @@ module Gitlab
       end
 
       def imported_object
-        yield(existing_or_new_object) if block_given?
-        existing_or_new_object.importing = true if existing_or_new_object.respond_to?(:importing)
+        if existing_or_new_object.respond_to?(:importing)
+          existing_or_new_object.importing = true
+        end
 
         existing_or_new_object
       rescue ActiveRecord::RecordNotUnique
@@ -209,6 +208,14 @@ module Gitlab
 
       def setup_diff
         @relation_hash['diff'] = @relation_hash.delete('utf8_diff')
+      end
+
+      def setup_pipeline
+        @relation_hash.fetch('stages').each do |stage|
+          stage.statuses.each do |status|
+            status.pipeline = imported_object
+          end
+        end
       end
 
       def existing_or_new_object
@@ -259,6 +266,7 @@ module Gitlab
                             else
                               %w[title group_id]
                             end
+
         finder_hash = parsed_relation_hash.slice(*finder_attributes)
 
         if label?

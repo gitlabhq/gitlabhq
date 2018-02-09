@@ -85,6 +85,19 @@ describe Labels::PromoteService do
           change(project_3.labels, :count).by(-1)
       end
 
+      it 'keeps users\' subscriptions' do
+        user2 = create(:user)
+        project_label_1_1.subscriptions.create(user: user, subscribed: true)
+        project_label_2_1.subscriptions.create(user: user, subscribed: true)
+        project_label_3_2.subscriptions.create(user: user, subscribed: true)
+        project_label_2_1.subscriptions.create(user: user2, subscribed: true)
+
+        expect { service.execute(project_label_1_1) }.to change { Subscription.count }.from(4).to(3)
+
+        expect(new_label.subscribed?(user)).to be_truthy
+        expect(new_label.subscribed?(user2)).to be_truthy
+      end
+
       it 'recreates priorities' do
         service.execute(project_label_1_1)
 

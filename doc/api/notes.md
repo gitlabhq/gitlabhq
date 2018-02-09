@@ -158,7 +158,7 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project snippet
-- `note_id` (required) - The ID of an snippet note
+- `note_id` (required) - The ID of a snippet note
 
 ```json
 {

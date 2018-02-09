@@ -10,6 +10,7 @@ This is what the `.gitlab-ci.yml` file looks like for this project:
 
 ```yaml
 test:
+  stage: test
   script:
   - apt-get update -qy
   - apt-get install -y nodejs
@@ -18,7 +19,7 @@ test:
   - bundle exec rake test
 
 staging:
-  type: deploy
+  stage: deploy
   script:
   - gem install dpl
   - dpl --provider=heroku --app=gitlab-ci-ruby-test-staging --api-key=$HEROKU_STAGING_API_KEY
@@ -26,7 +27,7 @@ staging:
   - master
 
 production:
-  type: deploy
+  stage: deploy
   script:
   - gem install dpl
   - dpl --provider=heroku --app=gitlab-ci-ruby-test-prod --api-key=$HEROKU_PRODUCTION_API_KEY

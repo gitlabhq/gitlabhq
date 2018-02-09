@@ -27,12 +27,16 @@ class GroupDescendantsFinder
   end
 
   def execute
-    # The children array might be extended with the ancestors of projects when
-    # filtering. In that case, take the maximum so the array does not get limited
-    # Otherwise, allow paginating through all results
+    # The children array might be extended with the ancestors of projects and
+    # subgroups when filtering. In that case, take the maximum so the array does
+    # not get limited otherwise, allow paginating through all results.
     #
     all_required_elements = children
-    all_required_elements |= ancestors_for_projects if params[:filter]
+    if params[:filter]
+      all_required_elements |= ancestors_of_filtered_subgroups
+      all_required_elements |= ancestors_of_filtered_projects
+    end
+
     total_count = [all_required_elements.size, paginator.total_count].max
 
     Kaminari.paginate_array(all_required_elements, total_count: total_count)
@@ -49,8 +53,11 @@ class GroupDescendantsFinder
   end
 
   def paginator
-    @paginator ||= Gitlab::MultiCollectionPaginator.new(subgroups, projects,
-                                                        per_page: params[:per_page])
+    @paginator ||= Gitlab::MultiCollectionPaginator.new(
+      subgroups,
+      projects.with_route,
+      per_page: params[:per_page]
+    )
   end
 
   def direct_child_groups
@@ -63,6 +70,7 @@ class GroupDescendantsFinder
     groups_table = Group.arel_table
     visible_to_user = groups_table[:visibility_level]
                       .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
+
     if current_user
       authorized_groups = GroupsFinder.new(current_user,
                                            all_available: false)
@@ -93,15 +101,21 @@ class GroupDescendantsFinder
   #
   # So when searching 'project', on the 'subgroup' page we want to preload
   # 'nested-group' but not 'subgroup' or 'root'
-  def ancestors_for_groups(base_for_ancestors)
-    Gitlab::GroupHierarchy.new(base_for_ancestors)
+  def ancestors_of_groups(base_for_ancestors)
+    group_ids = base_for_ancestors.except(:select, :sort).select(:id)
+    Gitlab::GroupHierarchy.new(Group.where(id: group_ids))
       .base_and_ancestors(upto: parent_group.id)
   end
 
-  def ancestors_for_projects
+  def ancestors_of_filtered_projects
     projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
     groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
-    ancestors_for_groups(groups_to_load_ancestors_of)
+    ancestors_of_groups(groups_to_load_ancestors_of)
+      .with_selects_for_list(archived: params[:archived])
+  end
+
+  def ancestors_of_filtered_subgroups
+    ancestors_of_groups(subgroups)
       .with_selects_for_list(archived: params[:archived])
   end
 
@@ -111,16 +125,19 @@ class GroupDescendantsFinder
     # When filtering subgroups, we want to find all matches withing the tree of
     # descendants to show to the user
     groups = if params[:filter]
-               ancestors_for_groups(subgroups_matching_filter)
+               subgroups_matching_filter
              else
                direct_child_groups
              end
+
     groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
 
   def direct_child_projects
-    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params)
-      .execute
+    GroupProjectsFinder.new(group: parent_group,
+                            current_user: current_user,
+                            options: { only_owned: true },
+                            params: params).execute
   end
 
   # Finds all projects nested under `parent_group` or any of its descendant
@@ -140,6 +157,7 @@ class GroupDescendantsFinder
                else
                  direct_child_projects
                end
+
     projects.with_route.order_by(sort)
   end
 

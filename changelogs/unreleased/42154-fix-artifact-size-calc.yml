@@ -1,0 +1,5 @@
+---
+title: Fix a bug calculating artifact size for project statistics
+merge_request: 16539
+author:
+type: fixed

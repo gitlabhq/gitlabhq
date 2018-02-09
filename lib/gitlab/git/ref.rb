@@ -23,7 +23,7 @@ module Gitlab
       # Ex.
       #   Ref.extract_branch_name('refs/heads/master') #=> 'master'
       def self.extract_branch_name(str)
-        str.gsub(/\Arefs\/heads\//, '')
+        str.gsub(%r{\Arefs/heads/}, '')
       end
 
       # Gitaly: this method will probably be migrated indirectly via its call sites.
@@ -33,9 +33,9 @@ module Gitlab
         object
       end
 
-      def initialize(repository, name, target, derefenced_target)
+      def initialize(repository, name, target, dereferenced_target)
         @name = Gitlab::Git.ref_name(name)
-        @dereferenced_target = derefenced_target
+        @dereferenced_target = dereferenced_target
         @target = if target.respond_to?(:oid)
                     target.oid
                   elsif target.respond_to?(:name)

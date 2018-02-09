@@ -2,6 +2,8 @@
 
 import _ from 'underscore';
 import Cookies from 'js-cookie';
+import flash from './flash';
+import axios from './lib/utils/axios_utils';
 
 function Sidebar(currentUser) {
   this.toggleTodo = this.toggleTodo.bind(this);
@@ -62,7 +64,7 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
 Sidebar.prototype.toggleTodo = function(e) {
   var $btnText, $this, $todoLoading, ajaxType, url;
   $this = $(e.currentTarget);
-  ajaxType = $this.attr('data-delete-path') ? 'DELETE' : 'POST';
+  ajaxType = $this.attr('data-delete-path') ? 'delete' : 'post';
   if ($this.attr('data-delete-path')) {
     url = "" + ($this.attr('data-delete-path'));
   } else {
@@ -71,25 +73,14 @@ Sidebar.prototype.toggleTodo = function(e) {
 
   $this.tooltip('hide');
 
-  return $.ajax({
-    url: url,
-    type: ajaxType,
-    dataType: 'json',
-    data: {
-      issuable_id: $this.data('issuable-id'),
-      issuable_type: $this.data('issuable-type')
-    },
-    beforeSend: (function(_this) {
-      return function() {
-        $('.js-issuable-todo').disable()
-          .addClass('is-loading');
-      };
-    })(this)
-  }).done((function(_this) {
-    return function(data) {
-      return _this.todoUpdateDone(data);
-    };
-  })(this));
+  $('.js-issuable-todo').disable().addClass('is-loading');
+
+  axios[ajaxType](url, {
+    issuable_id: $this.data('issuable-id'),
+    issuable_type: $this.data('issuable-type'),
+  }).then(({ data }) => {
+    this.todoUpdateDone(data);
+  }).catch(() => flash(`There was an error ${ajaxType === 'post' ? 'adding a' : 'deleting the'} todo.`));
 };
 
 Sidebar.prototype.todoUpdateDone = function(data) {

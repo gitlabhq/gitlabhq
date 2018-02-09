@@ -1,7 +1,7 @@
 /**
  * Common code between environmets app and folder view
  */
-
+import _ from 'underscore';
 import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
 import {
