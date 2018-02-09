@@ -174,7 +174,7 @@ describe Import::GitlabController do
         end
       end
 
-      context 'user has chosen an existing nested namespace for the project' do
+      context 'user has chosen an existing nested namespace for the project', :postgresql do
         let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
         let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
 
@@ -191,7 +191,7 @@ describe Import::GitlabController do
         end
       end
 
-      context 'user has chosen a non-existent nested namespaces for the project' do
+      context 'user has chosen a non-existent nested namespaces for the project', :postgresql do
         let(:test_name) { 'test_name' }
 
         it 'takes the selected namespace and name' do
@@ -222,9 +222,13 @@ describe Import::GitlabController do
         end
       end
 
-      context 'user has chosen existent and non-existent nested namespaces and name for the project' do
+      context 'user has chosen existent and non-existent nested namespaces and name for the project', :postgresql do
         let(:test_name) { 'test_name' }
         let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+
+        before do
+          parent_namespace.add_owner(user)
+        end
 
         it 'takes the selected namespace and name' do
           expect(Gitlab::GitlabImport::ProjectCreator)
