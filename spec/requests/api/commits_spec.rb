@@ -492,35 +492,37 @@ describe API::Commits do
       it 'returns all refs with no scope' do
         get api(route, current_user)
 
-        repo_refs = project.repository.branch_names_contains(commit_id)
-        repo_refs.push(*project.repository.tag_names_contains(commit_id))
+        branch_refs = project.repository.branch_names_contains(commit_id)
+        tag_refs = project.repository.tag_names_contains(commit_id)
 
-        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+        expect(json_response.map { |refs| refs['branch_name'] }.compact).to eq(branch_refs)
+        expect(json_response.map { |refs| refs['tag_name'] }.compact).to eq(tag_refs)
       end
 
       it 'returns all refs' do
         get api(route, current_user), type: 'all'
 
-        repo_refs = project.repository.branch_names_contains(commit_id)
-        repo_refs.push(*project.repository.tag_names_contains(commit_id))
+        branch_refs = project.repository.branch_names_contains(commit_id)
+        tag_refs = project.repository.tag_names_contains(commit_id)
 
-        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+        expect(json_response.map { |refs| refs['branch_name'] }.compact).to eq(branch_refs)
+        expect(json_response.map { |refs| refs['tag_name'] }.compact).to eq(tag_refs)
       end
 
       it 'returns the branch refs' do
         get api(route, current_user), type: 'branches'
 
-        repo_refs = project.repository.branch_names_contains(commit_id)
+        branch_refs = project.repository.branch_names_contains(commit_id)
 
-        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+        expect(json_response.map { |refs| refs['branch_name'] }.compact).to eq(branch_refs)
       end
 
       it 'returns the tag refs' do
         get api(route, current_user), type: 'tags'
 
-        repo_refs = project.repository.tag_names_contains(commit_id)
+        tag_refs = project.repository.tag_names_contains(commit_id)
 
-        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+        expect(json_response.map { |refs| refs['tag_name'] }.compact).to eq(tag_refs)
       end
     end
   end

@@ -171,12 +171,12 @@ module API
         refs =
           case params[:type]
           when 'branches'
-            user_project.repository.branch_names_contains(commit.id)
+            user_project.repository.branch_names_contains(commit.id).map {|branch_name| [branch_name, true]}
           when 'tags'
-            user_project.repository.tag_names_contains(commit.id)
+            user_project.repository.tag_names_contains(commit.id).map {|tag_name| [tag_name, false]}
           else
-            refs = user_project.repository.branch_names_contains(commit.id)
-            refs.concat(user_project.repository.tag_names_contains(commit.id))
+            refs = user_project.repository.branch_names_contains(commit.id).map {|branch_name| [branch_name, true]}
+            refs.concat(user_project.repository.tag_names_contains(commit.id).map {|tag_name| [tag_name, false]})
           end
 
         present refs, with: Entities::BasicRef
