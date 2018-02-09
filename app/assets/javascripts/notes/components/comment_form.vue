@@ -2,6 +2,7 @@
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
+  import { __ } from '~/locale';
   import Flash from '../../flash';
   import Autosave from '../../autosave';
   import TaskList from '../../task_list';
@@ -30,9 +31,6 @@
       return {
         note: '',
         noteType: constants.COMMENT,
-        // Can't use mapGetters,
-        // this needs to be in the data object because it belongs to the state
-        issueState: this.$store.getters.getNoteableData.state,
         isSubmitting: false,
         isSubmitButtonDisabled: true,
       };
@@ -43,7 +41,11 @@
         'getUserData',
         'getNoteableData',
         'getNotesData',
+        'getIssueState',
       ]),
+      issueState() {
+        return this.getIssueState;
+      },
       isLoggedIn() {
         return this.getUserData.id;
       },
@@ -71,8 +73,6 @@
         return {
           'btn-reopen': !this.isIssueOpen,
           'btn-close': this.isIssueOpen,
-          'js-note-target-close': this.isIssueOpen,
-          'js-note-target-reopen': !this.isIssueOpen,
         };
       },
       markdownDocsPath() {
@@ -105,7 +105,7 @@
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
       $(document).on('issuable:change', (e, isClosed) => {
-        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+        this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
       });
 
       this.initAutoSave();
@@ -117,6 +117,9 @@
         'stopPolling',
         'restartPolling',
         'removePlaceholderNotes',
+        'closeIssue',
+        'reopenIssue',
+        'toggleIssueLocalState',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
         if (!_.isEmpty(note) && !isSubmitting) {
@@ -185,12 +188,13 @@ Please check your network connection and try again.`;
         }
       },
       toggleIssueState() {
-        this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
-
-        // This is out of scope for the Notes Vue component.
-        // It was the shortest path to update the issue state and relevant places.
-        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
-        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
+        if (this.isIssueOpen) {
+          this.closeIssue()
+            .catch(() => Flash(__('Something went wrong while closing the issue. Please try again later')));
+        } else {
+          this.reopenIssue()
+            .catch(() => Flash(__('Something went wrong while reopening the issue. Please try again later')));
+        }
       },
       discard(shouldClear = true) {
         // `blur` is needed to clear slash commands autocomplete cache if event fired.

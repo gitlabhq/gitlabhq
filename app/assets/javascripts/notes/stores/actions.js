@@ -61,6 +61,39 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
+export const closeIssue = ({ commit, dispatch, state }) => service
+  .toggleIssueState(state.notesData.closeIssuePath)
+  .then(res => res.json())
+  .then((data) => {
+    commit(types.CLOSE_ISSUE);
+    dispatch('emitStateChangedEvent', data);
+  });
+
+export const reopenIssue = ({ commit, dispatch, state }) => service
+  .toggleIssueState(state.notesData.reopenIssuePath)
+  .then(res => res.json())
+  .then((data) => {
+    commit(types.REOPEN_ISSUE);
+    dispatch('emitStateChangedEvent', data);
+  });
+
+export const emitStateChangedEvent = ({ commit }, data) => {
+  const event = new CustomEvent('issuable_vue_app:change', { detail: {
+    data,
+    isClosed: data.state === constants.CLOSED,
+  } });
+
+  document.dispatchEvent(event);
+};
+
+export const toggleIssueLocalState = ({ commit }, newState) => {
+  if (newState === constants.CLOSED) {
+    commit(types.CLOSE_ISSUE);
+  } else if (newState === constants.REOPENED) {
+    commit(types.REOPEN_ISSUE);
+  }
+};
+
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
   let placeholderText = note;

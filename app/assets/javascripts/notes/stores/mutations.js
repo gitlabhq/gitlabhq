@@ -152,4 +152,12 @@ export default {
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
   },
+
+  [types.CLOSE_ISSUE](state) {
+    Object.assign(state.noteableData, { state: constants.CLOSED });
+  },
+
+  [types.REOPEN_ISSUE](state) {
+    Object.assign(state.noteableData, { state: constants.REOPENED });
+  },
 };
