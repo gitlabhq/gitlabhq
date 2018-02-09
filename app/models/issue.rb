@@ -27,6 +27,7 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+  belongs_to :closed_by, class_name: 'User'
 
   has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
