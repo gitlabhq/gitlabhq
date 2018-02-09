@@ -3,7 +3,7 @@ xml.entry do
   xml.link    href: project_commit_url(@project, id: commit.id)
   xml.title   truncate(commit.title, length: 80, escape: false)
   xml.updated commit.committed_date.xmlschema
-  xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(commit.author_email))
+  xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_email(commit.author_email))
 
   xml.author do |author|
     xml.name commit.author_name
