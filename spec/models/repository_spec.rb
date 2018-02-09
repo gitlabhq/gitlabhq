@@ -36,26 +36,49 @@ describe Repository do
   end
 
   describe '#branch_names_contains' do
-    subject { repository.branch_names_contains(sample_commit.id) }
+    shared_examples '#branch_names_contains' do
+      set(:project) { create(:project, :repository) }
+      let(:repository) { project.repository }
 
-    it { is_expected.to include('master') }
-    it { is_expected.not_to include('feature') }
-    it { is_expected.not_to include('fix') }
+      subject { repository.branch_names_contains(sample_commit.id) }
 
-    describe 'when storage is broken', :broken_storage  do
-      it 'should raise a storage error' do
-        expect_to_raise_storage_error do
-          broken_repository.branch_names_contains(sample_commit.id)
+      it { is_expected.to include('master') }
+      it { is_expected.not_to include('feature') }
+      it { is_expected.not_to include('fix') }
+
+      describe 'when storage is broken', :broken_storage  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.branch_names_contains(sample_commit.id)
+          end
         end
       end
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#branch_names_contains'
+    end
+
+    context 'when gitaly is disabled', :skip_gitaly_mock do
+      it_behaves_like '#branch_names_contains'
     end
   end
 
   describe '#tag_names_contains' do
-    subject { repository.tag_names_contains(sample_commit.id) }
+    shared_examples '#tag_names_contains' do
+      subject { repository.tag_names_contains(sample_commit.id) }
 
-    it { is_expected.to include('v1.1.0') }
-    it { is_expected.not_to include('v1.0.0') }
+      it { is_expected.to include('v1.1.0') }
+      it { is_expected.not_to include('v1.0.0') }
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#tag_names_contains'
+    end
+
+    context 'when gitaly is enabled', :skip_gitaly_mock do
+      it_behaves_like '#tag_names_contains'
+    end
   end
 
   describe 'tags_sorted_by' do
@@ -236,6 +259,28 @@ describe Repository do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
 
       repository.commits('master', limit: 1)
+    end
+  end
+
+  describe '#new_commits' do
+    let(:new_refs) do
+      double(:git_rev_list, new_refs: %w[
+        c1acaa58bbcbc3eafe538cb8274ba387047b69f8
+        5937ac0a7beb003549fc5fd26fc247adbce4a52e
+      ])
+    end
+
+    it 'delegates to Gitlab::Git::RevList' do
+      expect(Gitlab::Git::RevList).to receive(:new).with(
+        repository.raw,
+        newrev: 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj').and_return(new_refs)
+
+      commits = repository.new_commits('aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj')
+
+      expect(commits).to eq([
+        repository.commit('c1acaa58bbcbc3eafe538cb8274ba387047b69f8'),
+        repository.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      ])
     end
   end
 
@@ -959,19 +1004,19 @@ describe Repository do
   end
 
   describe '#find_branch' do
-    it 'loads a branch with a fresh repo' do
-      expect(Gitlab::Git::Repository).to receive(:new).twice.and_call_original
+    context 'fresh_repo is true' do
+      it 'delegates the call to raw_repository' do
+        expect(repository.raw_repository).to receive(:find_branch).with('master', true)
 
-      2.times do
-        expect(repository.find_branch('feature')).not_to be_nil
+        repository.find_branch('master', fresh_repo: true)
       end
     end
 
-    it 'loads a branch with a cached repo' do
-      expect(Gitlab::Git::Repository).to receive(:new).once.and_call_original
+    context 'fresh_repo is false' do
+      it 'delegates the call to raw_repository' do
+        expect(repository.raw_repository).to receive(:find_branch).with('master', false)
 
-      2.times do
-        expect(repository.find_branch('feature', fresh_repo: false)).not_to be_nil
+        repository.find_branch('master', fresh_repo: false)
       end
     end
   end

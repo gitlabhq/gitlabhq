@@ -110,7 +110,7 @@ export default {
         :time-estimate-human-readable="timeEstimateHumanReadable"
       />
       <div class="title hide-collapsed">
-        Time tracking
+        {{ __('Time tracking') }}
         <div
           class="help-button pull-right"
           v-if="!showHelpState"

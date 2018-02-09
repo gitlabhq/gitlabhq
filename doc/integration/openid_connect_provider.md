@@ -39,6 +39,7 @@ Currently the following user information is shared with clients:
 | `website`        | `string`  | URL for the user's website
 | `profile`        | `string`  | URL for the user's GitLab profile
 | `picture`        | `string`  | URL for the user's GitLab avatar
+| `groups`         | `array`   | Names of the groups the user is a member of
 
 [OpenID Connect]: http://openid.net/connect/ "OpenID Connect website"
 [doorkeeper-openid_connect]: https://github.com/doorkeeper-gem/doorkeeper-openid_connect "Doorkeeper::OpenidConnect website"

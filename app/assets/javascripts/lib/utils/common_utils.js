@@ -1,5 +1,6 @@
-import { getLocationHash } from './url_utility';
 import axios from './axios_utils';
+import { getLocationHash } from './url_utility';
+import { convertToCamelCase } from './text_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -28,16 +29,11 @@ export const isInIssuePage = () => {
   return page === 'issues' && action === 'show';
 };
 
-export const ajaxGet = url => $.ajax({
-  type: 'GET',
-  url,
-  dataType: 'script',
-});
-
-export const ajaxPost = (url, data) => $.ajax({
-  type: 'POST',
-  url,
-  data,
+export const ajaxGet = url => axios.get(url, {
+  params: { format: 'js' },
+  responseType: 'text',
+}).then(({ data }) => {
+  $.globalEval(data);
 });
 
 export const rstrip = (val) => {
@@ -400,6 +396,26 @@ export const spriteIcon = (icon, className = '') => {
   return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
 };
 
+/**
+ * This method takes in object with snake_case property names
+ * and returns new object with camelCase property names
+ *
+ * Reasoning for this method is to ensure consistent property
+ * naming conventions across JS code.
+ */
+export const convertObjectPropsToCamelCase = (obj = {}) => {
+  if (obj === null) {
+    return {};
+  }
+
+  return Object.keys(obj).reduce((acc, prop) => {
+    const result = acc;
+
+    result[convertToCamelCase(prop)] = obj[prop];
+    return acc;
+  }, {});
+};
+
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
 
 window.gl = window.gl || {};
@@ -412,7 +428,6 @@ window.gl.utils = {
   getGroupSlug,
   isInIssuePage,
   ajaxGet,
-  ajaxPost,
   rstrip,
   updateTooltipTitle,
   disableButtonIfEmptyField,

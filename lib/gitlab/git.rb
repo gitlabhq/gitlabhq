@@ -6,6 +6,7 @@ module Gitlab
 
     CommandError = Class.new(StandardError)
     CommitError = Class.new(StandardError)
+    OSError = Class.new(StandardError)
 
     class << self
       include Gitlab::EncodingHelper

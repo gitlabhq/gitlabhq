@@ -15,18 +15,27 @@ module MigrationsHelpers
     ActiveRecord::Migrator.migrations(migrations_paths)
   end
 
-  def reset_column_in_migration_models
+  def clear_schema_cache!
     ActiveRecord::Base.connection_pool.connections.each do |conn|
       conn.schema_cache.clear!
     end
+  end
 
-    described_class.constants.sort.each do |name|
-      const = described_class.const_get(name)
+  def reset_column_in_all_models
+    clear_schema_cache!
 
-      if const.is_a?(Class) && const < ActiveRecord::Base
-        const.reset_column_information
-      end
-    end
+    # Reset column information for the most offending classes **after** we
+    # migrated the schema up, otherwise, column information could be
+    # outdated. We have a separate method for this so we can override it in EE.
+    ActiveRecord::Base.descendants.each(&method(:reset_column_information))
+
+    # Without that, we get errors because of missing attributes, e.g.
+    # super: no superclass method `elasticsearch_indexing' for #<ApplicationSetting:0x00007f85628508d8>
+    ApplicationSetting.define_attribute_methods
+  end
+
+  def reset_column_information(klass)
+    klass.reset_column_information
   end
 
   def previous_migration
@@ -45,7 +54,7 @@ module MigrationsHelpers
                                      migration_schema_version)
     end
 
-    reset_column_in_migration_models
+    reset_column_in_all_models
   end
 
   def schema_migrate_up!
@@ -53,7 +62,7 @@ module MigrationsHelpers
       ActiveRecord::Migrator.migrate(migrations_paths)
     end
 
-    reset_column_in_migration_models
+    reset_column_in_all_models
   end
 
   def disable_migrations_output

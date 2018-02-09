@@ -3,7 +3,6 @@ module QA
     module Project
       class Show < Page::Base
         view 'app/views/shared/_clone_panel.html.haml' do
-          element :clone_holder, '.git-clone-holder'
           element :clone_dropdown
           element :clone_options_dropdown, '.clone-options-dropdown'
           element :project_repository_location, 'text_field_tag :project_clone'
@@ -23,11 +22,11 @@ module QA
         end
 
         def choose_repository_clone_http
-          choose_repository_clone('HTTP')
+          choose_repository_clone('HTTP', 'http')
         end
 
         def choose_repository_clone_ssh
-          choose_repository_clone('SSH')
+          choose_repository_clone('SSH', '@')
         end
 
         def repository_location
@@ -55,7 +54,7 @@ module QA
 
         private
 
-        def choose_repository_clone(kind)
+        def choose_repository_clone(kind, detect_text)
           wait(reload: false) do
             click_element :clone_dropdown
 
@@ -64,8 +63,7 @@ module QA
             end
 
             # Ensure git clone textbox was updated to http URI
-            page.has_css?(
-              %Q{.git-clone-holder input#project_clone[value*="#{kind}"]})
+            repository_location.include?(detect_text)
           end
         end
       end

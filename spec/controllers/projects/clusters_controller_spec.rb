@@ -177,7 +177,7 @@ describe Projects::ClustersController do
 
           cluster.reload
           expect(response).to redirect_to(project_cluster_path(project, cluster))
-          expect(flash[:notice]).to eq('Cluster was successfully updated.')
+          expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
           expect(cluster.enabled).to be_falsey
         end
 
@@ -276,7 +276,7 @@ describe Projects::ClustersController do
 
             cluster.reload
             expect(response).to redirect_to(project_cluster_path(project, cluster))
-            expect(flash[:notice]).to eq('Cluster was successfully updated.')
+            expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
             expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
@@ -336,7 +336,7 @@ describe Projects::ClustersController do
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
-            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+            expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
           end
         end
 
@@ -349,7 +349,7 @@ describe Projects::ClustersController do
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
             expect(response).to redirect_to(project_clusters_path(project))
-            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+            expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
           end
         end
       end
@@ -364,7 +364,7 @@ describe Projects::ClustersController do
             .and change { Clusters::Providers::Gcp.count }.by(0)
 
           expect(response).to redirect_to(project_clusters_path(project))
-          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+          expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
         end
       end
     end

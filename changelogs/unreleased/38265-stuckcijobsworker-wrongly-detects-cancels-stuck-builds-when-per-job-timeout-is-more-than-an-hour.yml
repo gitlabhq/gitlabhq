@@ -1,0 +1,5 @@
+---
+title: Update runner info on all authenticated requests
+merge_request: 16756
+author:
+type: changed

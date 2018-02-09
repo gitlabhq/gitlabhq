@@ -1,7 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, max-len */
 import 'vendor/jquery.waitforimages';
+import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
-import Flash from './flash';
+import flash from './flash';
 import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import IssuablesHelper from './helpers/issuables_helper';
@@ -42,12 +43,8 @@ export default class Issue {
       this.disableCloseReopenButton($button);
 
       url = $button.attr('href');
-      return $.ajax({
-        type: 'PUT',
-        url: url
-      })
-      .fail(() => new Flash(issueFailMessage))
-      .done((data) => {
+      return axios.put(url)
+      .then(({ data }) => {
         const isClosedBadge = $('div.status-box-issue-closed');
         const isOpenBadge = $('div.status-box-open');
         const projectIssuesCounter = $('.issue_counter');
@@ -74,9 +71,10 @@ export default class Issue {
             }
           }
         } else {
-          new Flash(issueFailMessage);
+          flash(issueFailMessage);
         }
       })
+      .catch(() => flash(issueFailMessage))
       .then(() => {
         this.disableCloseReopenButton($button, false);
       });
@@ -115,24 +113,22 @@ export default class Issue {
   static initMergeRequests() {
     var $container;
     $container = $('#merge-requests');
-    return $.getJSON($container.data('url')).fail(function() {
-      return new Flash('Failed to load referenced merge requests');
-    }).done(function(data) {
-      if ('html' in data) {
-        return $container.html(data.html);
-      }
-    });
+    return axios.get($container.data('url'))
+      .then(({ data }) => {
+        if ('html' in data) {
+          $container.html(data.html);
+        }
+      }).catch(() => flash('Failed to load referenced merge requests'));
   }
 
   static initRelatedBranches() {
     var $container;
     $container = $('#related-branches');
-    return $.getJSON($container.data('url')).fail(function() {
-      return new Flash('Failed to load related branches');
-    }).done(function(data) {
-      if ('html' in data) {
-        return $container.html(data.html);
-      }
-    });
+    return axios.get($container.data('url'))
+      .then(({ data }) => {
+        if ('html' in data) {
+          $container.html(data.html);
+        }
+      }).catch(() => flash('Failed to load related branches'));
   }
 }

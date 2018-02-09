@@ -1,3 +1,4 @@
+import axios from '../lib/utils/axios_utils';
 import PANEL_STATE from './constants';
 import { backOff } from '../lib/utils/common_utils';
 
@@ -81,24 +82,20 @@ export default class PrometheusMetrics {
   loadActiveMetrics() {
     this.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
     backOff((next, stop) => {
-      $.ajax({
-        url: this.activeMetricsEndpoint,
-        dataType: 'json',
-        global: false,
-      })
-        .done((res) => {
-          if (res && res.success) {
-            stop(res);
+      axios.get(this.activeMetricsEndpoint)
+        .then(({ data }) => {
+          if (data && data.success) {
+            stop(data);
           } else {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;
             if (this.backOffRequestCounter < 3) {
               next();
             } else {
-              stop(res);
+              stop(data);
             }
           }
         })
-        .fail(stop);
+        .catch(stop);
     })
     .then((res) => {
       if (res && res.data && res.data.length) {

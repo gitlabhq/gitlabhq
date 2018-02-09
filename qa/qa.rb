@@ -64,6 +64,7 @@ module QA
       autoload :Instance, 'qa/scenario/test/instance'
 
       module Integration
+        autoload :LDAP, 'qa/scenario/test/integration/ldap'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
 

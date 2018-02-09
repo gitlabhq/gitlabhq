@@ -1,5 +1,4 @@
-/* global autosize */
-
+import autosize from 'autosize';
 import GfmAutoComplete from './gfm_auto_complete';
 import dropzoneInput from './dropzone_input';
 import textUtils from './lib/utils/text_markdown';

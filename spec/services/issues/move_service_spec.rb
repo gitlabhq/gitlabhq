@@ -6,7 +6,7 @@ describe Issues::MoveService do
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:new_project) { create(:project, group: create(:group)) }
   let(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do
@@ -250,7 +250,7 @@ describe Issues::MoveService do
 
         context 'issue description with uploads' do
           let(:uploader) { build(:file_uploader, project: old_project) }
-          let(:description) { "Text and #{uploader.to_markdown}" }
+          let(:description) { "Text and #{uploader.markdown_link}" }
 
           include_context 'issue move executed'
 

@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class BlobService
+      include Gitlab::EncodingHelper
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
       end
@@ -53,6 +55,30 @@ module Gitlab
             )
           end
         end
+      end
+
+      def get_blobs(revision_paths, limit = -1)
+        return [] if revision_paths.empty?
+
+        revision_paths.map! do |rev, path|
+          Gitaly::GetBlobsRequest::RevisionPath.new(revision: rev, path: encode_binary(path))
+        end
+
+        request = Gitaly::GetBlobsRequest.new(
+          repository: @gitaly_repo,
+          revision_paths: revision_paths,
+          limit: limit
+        )
+
+        response = GitalyClient.call(
+          @gitaly_repo.storage_name,
+          :blob_service,
+          :get_blobs,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+
+        GitalyClient::BlobsStitcher.new(response)
       end
     end
   end

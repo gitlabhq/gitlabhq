@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180115201419) do
+ActiveRecord::Schema.define(version: 20180206200543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "authorized_keys_enabled", default: true, null: false
+    t.string "auto_devops_domain"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -450,7 +451,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "lock_version"
   end
 
-  add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", using: :btree
+  add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
   add_index "ci_stages", ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
   add_index "ci_stages", ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
 
@@ -945,6 +946,16 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   add_index "labels", ["template"], name: "index_labels_on_template", where: "template", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
+
+  create_table "lfs_file_locks", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.string "path", limit: 511
+  end
+
+  add_index "lfs_file_locks", ["project_id", "path"], name: "index_lfs_file_locks_on_project_id_and_path", unique: true, using: :btree
+  add_index "lfs_file_locks", ["user_id"], name: "index_lfs_file_locks_on_user_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -1707,7 +1718,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "project_id", null: false
     t.integer "target_id"
     t.string "target_type", null: false
-    t.integer "author_id"
+    t.integer "author_id", null: false
     t.integer "action", null: false
     t.string "state", null: false
     t.datetime "created_at"
@@ -1727,7 +1738,7 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.integer "project_id", null: false
   end
 
-  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", using: :btree
+  add_index "trending_projects", ["project_id"], name: "index_trending_projects_on_project_id", unique: true, using: :btree
 
   create_table "u2f_registrations", force: :cascade do |t|
     t.text "certificate"
@@ -1751,11 +1762,13 @@ ActiveRecord::Schema.define(version: 20180115201419) do
     t.string "model_type"
     t.string "uploader", null: false
     t.datetime "created_at", null: false
+    t.string "mount_point"
+    t.string "secret"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
   add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
-  add_index "uploads", ["path"], name: "index_uploads_on_path", using: :btree
+  add_index "uploads", ["uploader", "path"], name: "index_uploads_on_uploader_and_path", using: :btree
 
   create_table "user_agent_details", force: :cascade do |t|
     t.string "user_agent", null: false
@@ -1768,6 +1781,14 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   end
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
+
+  create_table "user_callouts", force: :cascade do |t|
+    t.integer "feature_name", null: false
+    t.integer "user_id", null: false
+  end
+
+  add_index "user_callouts", ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true, using: :btree
+  add_index "user_callouts", ["user_id"], name: "index_user_callouts_on_user_id", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -1987,6 +2008,8 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
+  add_foreign_key "lfs_file_locks", "projects", on_delete: :cascade
+  add_foreign_key "lfs_file_locks", "users", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
   add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade
@@ -2037,9 +2060,13 @@ ActiveRecord::Schema.define(version: 20180115201419) do
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
+  add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
+  add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade
+  add_foreign_key "todos", "users", name: "fk_d94154aa95", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade

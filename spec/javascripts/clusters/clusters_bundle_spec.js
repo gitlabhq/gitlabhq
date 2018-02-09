@@ -71,7 +71,8 @@ describe('Clusters', () => {
         helm: { status: APPLICATION_INSTALLABLE, title: 'Helm Tiller' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeNull();
+      const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+      expect(flashMessage).toBeNull();
     });
 
     it('shows an alert when something gets newly installed', () => {
@@ -83,8 +84,9 @@ describe('Clusters', () => {
         helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller was successfully installed on your cluster');
+      const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+      expect(flashMessage).not.toBeNull();
+      expect(flashMessage.textContent.trim()).toEqual('Helm Tiller was successfully installed on your Kubernetes cluster');
     });
 
     it('shows an alert when multiple things gets newly installed', () => {
@@ -98,8 +100,9 @@ describe('Clusters', () => {
         ingress: { status: APPLICATION_INSTALLED, title: 'Ingress' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your cluster');
+      const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+      expect(flashMessage).not.toBeNull();
+      expect(flashMessage.textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your Kubernetes cluster');
     });
   });
 

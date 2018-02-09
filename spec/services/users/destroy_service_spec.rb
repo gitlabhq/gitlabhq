@@ -173,7 +173,7 @@ describe Users::DestroyService do
       end
 
       context 'legacy storage' do
-        let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
+        let!(:project) { create(:project, :empty_repo, :legacy_storage, namespace: user.namespace) }
 
         it 'removes repository' do
           expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
@@ -181,7 +181,7 @@ describe Users::DestroyService do
       end
 
       context 'hashed storage' do
-        let!(:project) { create(:project, :empty_repo, :hashed, namespace: user.namespace) }
+        let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
 
         it 'removes repository' do
           expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey

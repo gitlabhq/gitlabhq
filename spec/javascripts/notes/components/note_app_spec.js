@@ -2,14 +2,29 @@ import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
+import '~/render_gfm';
 import * as mockData from '../mock_data';
-import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
+
+const vueMatchers = {
+  toIncludeElement() {
+    return {
+      compare(vm, selector) {
+        const result = {
+          pass: vm.$el.querySelector(selector) !== null,
+        };
+        return result;
+      },
+    };
+  },
+};
 
 describe('note_app', () => {
   let mountComponent;
   let vm;
 
   beforeEach(() => {
+    jasmine.addMatchers(vueMatchers);
+
     const IssueNotesApp = Vue.extend(notesApp);
 
     mountComponent = (data) => {
@@ -105,7 +120,7 @@ describe('note_app', () => {
     });
 
     it('should render loading icon', () => {
-      expect(vm.$el.querySelector('.js-loading')).toBeDefined();
+      expect(vm).toIncludeElement('.js-loading');
     });
 
     it('should render form', () => {
@@ -118,10 +133,14 @@ describe('note_app', () => {
 
   describe('update note', () => {
     describe('individual note', () => {
-      beforeEach(() => {
+      beforeEach((done) => {
         Vue.http.interceptors.push(mockData.individualNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
+        setTimeout(() => {
+          vm.$el.querySelector('.js-note-edit').click();
+          Vue.nextTick(done);
+        }, 0);
       });
 
       afterEach(() => {
@@ -131,40 +150,32 @@ describe('note_app', () => {
         );
       });
 
-      it('renders edit form', (done) => {
-        setTimeout(() => {
-          vm.$el.querySelector('.js-note-edit').click();
-          Vue.nextTick(() => {
-            expect(vm.$el.querySelector('.js-vue-issue-note-form')).toBeDefined();
-            done();
-          });
-        }, 0);
+      it('renders edit form', () => {
+        expect(vm).toIncludeElement('.js-vue-issue-note-form');
       });
 
       it('calls the service to update the note', (done) => {
-        getSetTimeoutPromise()
-          .then(() => {
-            vm.$el.querySelector('.js-note-edit').click();
-          })
-          .then(Vue.nextTick)
-          .then(() => {
-            vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
-            vm.$el.querySelector('.js-vue-issue-save').click();
+        vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
+        vm.$el.querySelector('.js-vue-issue-save').click();
 
-            expect(service.updateNote).toHaveBeenCalled();
-          })
-          // Wait for the requests to finish before destroying
-          .then(Vue.nextTick)
+        expect(service.updateNote).toHaveBeenCalled();
+        // Wait for the requests to finish before destroying
+        Vue.nextTick()
           .then(done)
           .catch(done.fail);
       });
     });
 
-    describe('dicussion note', () => {
-      beforeEach(() => {
+    describe('discussion note', () => {
+      beforeEach((done) => {
         Vue.http.interceptors.push(mockData.discussionNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
+
+        setTimeout(() => {
+          vm.$el.querySelector('.js-note-edit').click();
+          Vue.nextTick(done);
+        }, 0);
       });
 
       afterEach(() => {
@@ -174,30 +185,17 @@ describe('note_app', () => {
         );
       });
 
-      it('renders edit form', (done) => {
-        setTimeout(() => {
-          vm.$el.querySelector('.js-note-edit').click();
-          Vue.nextTick(() => {
-            expect(vm.$el.querySelector('.js-vue-issue-note-form')).toBeDefined();
-            done();
-          });
-        }, 0);
+      it('renders edit form', () => {
+        expect(vm).toIncludeElement('.js-vue-issue-note-form');
       });
 
       it('updates the note and resets the edit form', (done) => {
-        getSetTimeoutPromise()
-          .then(() => {
-            vm.$el.querySelector('.js-note-edit').click();
-          })
-          .then(Vue.nextTick)
-          .then(() => {
-            vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
-            vm.$el.querySelector('.js-vue-issue-save').click();
+        vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
+        vm.$el.querySelector('.js-vue-issue-save').click();
 
-            expect(service.updateNote).toHaveBeenCalled();
-          })
-          // Wait for the requests to finish before destroying
-          .then(Vue.nextTick)
+        expect(service.updateNote).toHaveBeenCalled();
+        // Wait for the requests to finish before destroying
+        Vue.nextTick()
           .then(done)
           .catch(done.fail);
       });

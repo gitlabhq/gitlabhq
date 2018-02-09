@@ -4,6 +4,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include RendersCommits
 
   skip_before_action :merge_request
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :authorize_create_merge_request!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
@@ -124,5 +125,9 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     else
       @project.forked_from_project
     end
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')
   end
 end

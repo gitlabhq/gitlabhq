@@ -102,6 +102,7 @@
           .then(() => {
             this.isEditing = false;
             this.isRequesting = false;
+            this.oldContent = null;
             $(this.$refs.noteBody.$el).renderGFM();
             this.$refs.noteBody.resetAutoSave();
             callback();
