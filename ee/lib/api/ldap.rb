@@ -1,6 +1,6 @@
 module API
   class Ldap < Grape::API
-    before { authenticate! }
+    before { authenticated_as_admin! }
 
     resource :ldap do
       helpers do

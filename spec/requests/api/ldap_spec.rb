@@ -4,7 +4,8 @@ describe API::Ldap do
   include ApiHelpers
   include LdapHelpers
 
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
+  set(:admin) { create(:admin) }
   let(:adapter) { ldap_adapter }
 
   before do
@@ -27,8 +28,15 @@ describe API::Ldap do
     end
 
     context "when authenticated as user" do
-      it "returns an array of ldap groups" do
+      it "returns authentication error" do
         get api("/ldap/groups", user)
+        expect(response.status).to eq 403
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "returns an array of ldap groups" do
+        get api("/ldap/groups", admin)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.length).to eq 2
@@ -46,8 +54,15 @@ describe API::Ldap do
     end
 
     context "when authenticated as user" do
-      it "returns an array of ldap groups" do
+      it "returns authentication error" do
         get api("/ldap/ldapmain/groups", user)
+        expect(response.status).to eq 403
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "returns an array of ldap groups" do
+        get api("/ldap/ldapmain/groups", admin)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
         expect(json_response.length).to eq 2
