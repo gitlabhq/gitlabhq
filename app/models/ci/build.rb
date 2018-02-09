@@ -59,24 +59,21 @@ module Ci
       old = Ci::Build.select(:id).where(%q[artifacts_file <> ''])
       new = Ci::Build.select(:id).where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
                                         Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
-      union = Gitlab::SQL::Union.new([old, new], remove_duplicates: false)
-      where(%Q[ci_builds.id IN (#{union.to_sql})]) # rubocop:disable GitlabSecurity/SqlInjection
+      where('ci_builds.id IN (? UNION ALL ?)', old, new)
     end
 
     scope :with_artifacts_not_expired, ->() do
       old = Ci::Build.select(:id).where(%q[artifacts_file <> '' AND (artifacts_expire_at IS NULL OR artifacts_expire_at > ?)], Time.now)
       new = Ci::Build.select(:id).where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
                                         Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id AND (expire_at IS NULL OR expire_at > ?)', Time.now))
-      union = Gitlab::SQL::Union.new([old, new], remove_duplicates: false)
-      where(%Q[ci_builds.id IN (#{union.to_sql})]) # rubocop:disable GitlabSecurity/SqlInjection
+      where('ci_builds.id IN (? UNION ALL ?)', old, new)
     end
 
     scope :with_expired_artifacts, ->() do
       old = Ci::Build.select(:id).where(%q[artifacts_file <> '' AND artifacts_expire_at < ?], Time.now)
       new = Ci::Build.select(:id).where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
                                         Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id AND expire_at < ?', Time.now))
-      union = Gitlab::SQL::Union.new([old, new], remove_duplicates: false)
-      where(%Q[ci_builds.id IN (#{union.to_sql})]) # rubocop:disable GitlabSecurity/SqlInjection
+      where('ci_builds.id IN (? UNION ALL ?)', old, new)
     end
 
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
