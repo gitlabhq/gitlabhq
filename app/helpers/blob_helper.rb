@@ -12,8 +12,8 @@ module BlobHelper
 
   def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
     project_edit_blob_path(project,
-                                     tree_join(ref, path),
-                                     options[:link_opts])
+                           tree_join(ref, path),
+                           options[:link_opts])
   end
 
   def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
@@ -25,7 +25,7 @@ module BlobHelper
       edit_button_tag(edit_text, common_classes)
     # This condition applies to anonymous or users who can edit directly
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
-      edit_link_tag(edit_text, ide_edit_path(project, ref, path, options), common_classes)
+      edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
     elsif current_user && can?(current_user, :fork_project, project)
       edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project, edit_in_new_fork_notice)
     end
