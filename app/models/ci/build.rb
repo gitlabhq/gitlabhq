@@ -56,33 +56,27 @@ module Ci
     # replaced with just the new storage to avoid the extra work.
 
     scope :with_artifacts, ->() do
-      old = where(%q[artifacts_file <> ''])
-      new = where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
-                  Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
+      old = Ci::Build.select(:id).where(%q[artifacts_file <> ''])
+      new = Ci::Build.select(:id).where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
+                                        Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
       union = Gitlab::SQL::Union.new([old, new], remove_duplicates: false)
-      # XXX
-      #Ci::Build.from("(#{union.to_sql}) #{Ci::Build.table_name}")
-      where(%Q[ci_builds.id IN (SELECT ci_builds.id FROM (#{union.to_sql}))])
+      where(%Q[ci_builds.id IN (#{union.to_sql})])
     end
 
     scope :with_artifacts_not_expired, ->() do
-      old = where(%q[artifacts_file <> '' AND (artifacts_expire_at IS NULL OR artifacts_expire_at > ?)], Time.now)
-      new = where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
-                  Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id AND (expire_at IS NULL OR expire_at > ?)', Time.now))
+      old = Ci::Build.select(:id).where(%q[artifacts_file <> '' AND (artifacts_expire_at IS NULL OR artifacts_expire_at > ?)], Time.now)
+      new = Ci::Build.select(:id).where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
+                                        Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id AND (expire_at IS NULL OR expire_at > ?)', Time.now))
       union = Gitlab::SQL::Union.new([old, new], remove_duplicates: false)
-      # XXX
-      #Ci::Build.from("(#{union.to_sql}) #{Ci::Build.table_name}")
-      where(%Q[ci_builds.id IN (SELECT ci_builds.id FROM (#{union.to_sql}))])
+      where(%Q[ci_builds.id IN (#{union.to_sql})])
     end
 
     scope :with_expired_artifacts, ->() do
-      old = where(%q[artifacts_file <> '' AND artifacts_expire_at < ?], Time.now)
-      new = where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
-                  Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id AND expire_at < ?', Time.now))
+      old = Ci::Build.select(:id).where(%q[artifacts_file <> '' AND artifacts_expire_at < ?], Time.now)
+      new = Ci::Build.select(:id).where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
+                                        Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id AND expire_at < ?', Time.now))
       union = Gitlab::SQL::Union.new([old, new], remove_duplicates: false)
-      # XXX
-      #Ci::Build.from("(#{union.to_sql}) #{Ci::Build.table_name}")
-      where(%Q[ci_builds.id IN (SELECT ci_builds.id FROM (#{union.to_sql}))])
+      where(%Q[ci_builds.id IN (#{union.to_sql})])
     end
 
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
