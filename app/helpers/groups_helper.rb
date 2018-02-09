@@ -39,7 +39,7 @@ module GroupsHelper
     full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
 
     full_title += breadcrumb_list_item group_title_link(group)
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
+    full_title += ''.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
 
     full_title.html_safe
   end
