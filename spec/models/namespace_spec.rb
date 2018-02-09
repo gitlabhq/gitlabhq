@@ -215,6 +215,17 @@ describe Namespace do
           FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
           FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
         end
+<<<<<<< HEAD
+
+        context 'renaming child' do
+          it 'correctly moves the repository, uploads and pages' do
+            expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
+            expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
+            expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
+
+            child.update_attributes!(path: 'renamed')
+
+=======
 
         context 'renaming child' do
           it 'correctly moves the repository, uploads and pages' do
@@ -238,11 +249,44 @@ describe Namespace do
 
             parent.update_attributes!(path: 'renamed')
 
+>>>>>>> upstream/master
             expect(File.directory?(expected_repository_path)).to be(true)
             expect(File.directory?(expected_upload_path)).to be(true)
             expect(File.directory?(expected_pages_path)).to be(true)
           end
         end
+<<<<<<< HEAD
+
+        context 'renaming parent' do
+          it 'correctly moves the repository, uploads and pages' do
+            expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
+            expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
+            expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+
+            parent.update_attributes!(path: 'renamed')
+
+            expect(File.directory?(expected_repository_path)).to be(true)
+            expect(File.directory?(expected_upload_path)).to be(true)
+            expect(File.directory?(expected_pages_path)).to be(true)
+          end
+        end
+=======
+      end
+    end
+
+    context 'hashed storage' do
+      let(:namespace) { create(:namespace) }
+      let!(:project) { create(:project_empty_repo, namespace: namespace) }
+
+      it_behaves_like 'namespace restrictions'
+
+      it "repository directory remains unchanged if path changed" do
+        before_disk_path = project.disk_path
+        namespace.update_attributes(path: namespace.full_path + '_new')
+
+        expect(before_disk_path).to eq(project.disk_path)
+        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+>>>>>>> upstream/master
       end
     end
 
@@ -350,9 +394,15 @@ describe Namespace do
 
       it 'has no repositories base directories to remove' do
         allow(GitlabShellWorker).to receive(:perform_in)
+<<<<<<< HEAD
 
         expect(File.exist?(path_in_dir)).to be(false)
 
+=======
+
+        expect(File.exist?(path_in_dir)).to be(false)
+
+>>>>>>> upstream/master
         namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
