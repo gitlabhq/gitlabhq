@@ -302,20 +302,20 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 
 #### Naming
 1. **Extensions**: Use `.vue` extension for Vue components.
-1. **Reference Naming**: Use camelCase for their instances:
+1. **Reference Naming**: Use PascalCase for their instances:
   ```javascript
     // bad
-    import CardBoard from 'cardBoard'
+    import cardBoard from 'cardBoard.vue'
 
     components: {
-      CardBoard:
+      cardBoard,
     };
 
     // good
-    import cardBoard from 'cardBoard'
+    import CardBoard from 'cardBoard.vue'
 
     components: {
-      cardBoard:
+      CardBoard,
     };
   ```
 
