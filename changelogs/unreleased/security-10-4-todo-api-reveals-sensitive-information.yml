@@ -1,5 +1,0 @@
----
-title: Restrict Todo API mark_as_done endpoint to the user's todos only
-merge_request:
-author:
-type: security
