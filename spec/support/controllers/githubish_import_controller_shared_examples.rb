@@ -92,6 +92,7 @@ end
 
 shared_examples 'a GitHub-ish import controller: POST create' do
   let(:user) { create(:user) }
+  let(:project) { create(:project) }
   let(:provider_username) { user.username }
   let(:provider_user) { OpenStruct.new(login: provider_username) }
   let(:provider_repo) do
@@ -107,14 +108,34 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     assign_session_token(provider)
   end
 
+  it 'returns 200 response when the project is imported successfully' do
+    allow(Gitlab::LegacyGithubImport::ProjectCreator)
+      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+        .and_return(double(execute: project))
+
+    post :create, format: :json
+
+    expect(response).to have_gitlab_http_status(200)
+  end
+
+  it 'returns 422 response when the project could not be imported' do
+    allow(Gitlab::LegacyGithubImport::ProjectCreator)
+      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+        .and_return(double(execute: build(:project)))
+
+    post :create, format: :json
+
+    expect(response).to have_gitlab_http_status(422)
+  end
+
   context "when the repository owner is the provider user" do
     context "when the provider user and GitLab user's usernames match" do
       it "takes the current user's namespace" do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, format: :js
+        post :create, format: :json
       end
     end
 
@@ -124,9 +145,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it "takes the current user's namespace" do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, format: :js
+        post :create, format: :json
       end
     end
   end
@@ -151,9 +172,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         it "takes the existing namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, existing_namespace, user, access_params, type: provider)
-              .and_return(double(execute: true))
+              .and_return(double(execute: project))
 
-          post :create, format: :js
+          post :create, format: :json
         end
       end
 
@@ -163,9 +184,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-              .and_return(double(execute: true))
+              .and_return(double(execute: project))
 
-          post :create, format: :js
+          post :create, format: :json
         end
       end
     end
@@ -174,17 +195,17 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       context "when current user can create namespaces" do
         it "creates the namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
-            .to receive(:new).and_return(double(execute: true))
+            .to receive(:new).and_return(double(execute: project))
 
-          expect { post :create, target_namespace: provider_repo.name, format: :js }.to change(Namespace, :count).by(1)
+          expect { post :create, target_namespace: provider_repo.name, format: :json }.to change(Namespace, :count).by(1)
         end
 
         it "takes the new namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, an_instance_of(Group), user, access_params, type: provider)
-              .and_return(double(execute: true))
+              .and_return(double(execute: project))
 
-          post :create, target_namespace: provider_repo.name, format: :js
+          post :create, target_namespace: provider_repo.name, format: :json
         end
       end
 
@@ -195,17 +216,17 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
         it "doesn't create the namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
-            .to receive(:new).and_return(double(execute: true))
+            .to receive(:new).and_return(double(execute: project))
 
-          expect { post :create, format: :js }.not_to change(Namespace, :count)
+          expect { post :create, format: :json }.not_to change(Namespace, :count)
         end
 
         it "takes the current user's namespace" do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-              .and_return(double(execute: true))
+              .and_return(double(execute: project))
 
-          post :create, format: :js
+          post :create, format: :json
         end
       end
     end
@@ -221,17 +242,17 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'takes the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, test_namespace, user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, { target_namespace: test_namespace.name, new_name: test_name, format: :js }
+        post :create, { target_namespace: test_namespace.name, new_name: test_name, format: :json }
       end
 
       it 'takes the selected name and default namespace' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, { new_name: test_name, format: :js }
+        post :create, { new_name: test_name, format: :json }
       end
     end
 
@@ -247,9 +268,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'takes the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, nested_namespace, user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :js }
+        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :json }
       end
     end
 
@@ -259,26 +280,26 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'takes the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
+        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
       end
 
       it 'creates the namespaces' do
         allow(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js } }
+        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json } }
           .to change { Namespace.count }.by(2)
       end
 
       it 'new namespace has the right parent' do
         allow(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
+        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
 
         expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
       end
@@ -291,18 +312,28 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'takes the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
+        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json }
       end
 
       it 'creates the namespaces' do
         allow(Gitlab::LegacyGithubImport::ProjectCreator)
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-            .and_return(double(execute: true))
+            .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
+        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json } }
           .to change { Namespace.count }.by(2)
+      end
+    end
+
+    context 'when user can not create projects in the chosen namespace' do
+      it 'returns 422 response' do
+        other_namespace = create(:group, name: 'other_namespace')
+
+        post :create, { target_namespace: other_namespace.name, format: :json }
+
+        expect(response).to have_gitlab_http_status(422)
       end
     end
   end

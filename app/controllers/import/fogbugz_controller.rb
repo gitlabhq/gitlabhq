@@ -58,17 +58,17 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def create
-    @repo_id = params[:repo_id]
-    repo = client.repo(@repo_id)
+    repo = client.repo(params[:repo_id])
     fb_session = { uri: session[:fogbugz_uri], token: session[:fogbugz_token] }
-    @target_namespace = current_user.namespace
-    @project_name = repo.name
-
-    namespace = @target_namespace
-
     umap = session[:fogbugz_user_map] || client.user_map
 
-    @project = Gitlab::FogbugzImport::ProjectCreator.new(repo, fb_session, namespace, current_user, umap).execute
+    project = Gitlab::FogbugzImport::ProjectCreator.new(repo, fb_session, current_user.namespace, current_user, umap).execute
+
+    if project.persisted?
+      render json: ProjectSerializer.new.represent(project)
+    else
+      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
