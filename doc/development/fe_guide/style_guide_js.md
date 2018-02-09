@@ -207,10 +207,39 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
     var c = pureFunction(values.foo);
   ```
 
-1. Avoid constructors with side-effects
+1. Avoid constructors with side-effects.
+Although we aim for code without side-effects we need some side-effects for our code to run.
+
+If the class won't do anything if we only instantiate it, it's ok to add side effects into the constructor (_Note:_ The following is just an example. If the only purpose of the class is to add an event listener and handle the callback a function will be more suitable.)
+
+```javascript
+// Bad
+export class Foo {
+  constructor() {
+    this.init();
+  }
+  init() {
+    document.addEventListener('click', this.handleCallback)
+  },
+  handleCallback() {
+
+  }
+}
+
+// Good
+export class Foo {
+  constructor() {
+    document.addEventListener()
+  }
+  handleCallback() {
+  }
+}
+```
+
+On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized oustside of the constructor.
 
 1. Prefer `.map`, `.reduce` or `.filter` over `.forEach`
-A forEach will cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
+A forEach will most likely cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
 `.reduce` or `.filter`
   ```javascript
     const users = [ { name: 'Foo' }, { name: 'Bar' } ];
