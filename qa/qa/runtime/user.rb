@@ -4,11 +4,11 @@ module QA
       extend self
 
       def name
-        ENV['GITLAB_USERNAME'] || 'root'
+        Runtime::Env.user_username || 'root'
       end
 
       def password
-        ENV['GITLAB_PASSWORD'] || '5iveL!fe'
+        Runtime::Env.user_password || '5iveL!fe'
       end
     end
   end
