@@ -68,14 +68,6 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_or_email = nil, size = nil, scale = 2, only_path: true)
-    if user_or_email.is_a?(User)
-      avatar_icon_for_user(user_or_email, size, scale, only_path: only_path)
-    else
-      avatar_icon_for_email(user_or_email, size, scale, only_path: only_path)
-    end
-  end
-
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
     user = User.find_by_any_email(email.try(:downcase))
     if user
