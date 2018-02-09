@@ -89,6 +89,8 @@ describe 'Promotions', :js do
         find('.close').click
       end
 
+      wait_for_requests
+
       visit edit_project_path(project)
 
       expect(page).not_to have_selector('#promote_service_desk')
@@ -115,6 +117,8 @@ describe 'Promotions', :js do
       within('#promote_mr_features') do
         find('.close').click
       end
+
+      wait_for_requests
 
       visit edit_project_path(project)
 

@@ -71,9 +71,9 @@ and you can use the tabs available to quickly filter by open and closed. You can
 
 ## Merge requests per group
 
-View all the merge requests in a group (that is, all the merge requests across all projects in that
-group) by navigating to **Group > Merge Requests**. This view also has the open, merged, and closed
-merge request tabs, from which you can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group).
+View merge requests in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Merge Requests** to view these merge requests. This view also has the open and closed merge requests tabs.
+
+You can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group) from here.
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
 
@@ -154,6 +154,19 @@ administrator to do so.
 
 ![Create new merge requests by email](img/create_from_email.png)
 
+## Find the merge request that introduced a change
+
+> **Note**: this feature was [implemented in GitLab 10.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383).
+
+When viewing the commit details page, GitLab will link to the merge request (or
+merge requests, if it's in more than one) containing that commit.
+
+This only applies to commits that are in the most recent version of a merge
+request - if a commit was in a merge request, then rebased out of that merge
+request, they will not be linked.
+
+[Read more about merge request versions](versions.md)
+
 ## Revert changes
 
 GitLab implements Git's powerful feature to revert any commit with introducing
@@ -168,7 +181,7 @@ of merge request diff is created. When you visit a merge request that contains
 more than one pushes, you can select and compare the versions of those merge
 request diffs.
 
-[Read more about the merge requests versions.](versions.md)
+[Read more about merge request versions](versions.md)
 
 ## Work In Progress merge requests
 

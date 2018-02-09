@@ -64,9 +64,7 @@ You can also [search and filter](../../search/index.md#issues-and-merge-requests
 
 ### Issues per group
 
-View all the issues in a group (that is, all the issues across all projects in that
-group) by navigating to **Group > Issues**. This view also has the open and closed
-issue tabs.
+View issues in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Issues** to view these issues. This view also has the open and closed issues tabs.
 
 ![Group Issues list view](img/group_issues_list_view.png)
 
