@@ -23,27 +23,25 @@ class ProcessCommitWorker
     return unless user
 
     commit = build_commit(project, commit_hash)
-
     author = commit.author || user
 
-    process_commit_message(project, commit, user, author, default)
+    # this is a GitLab generated commit message, ignore it.
+    return if commit.merged_merge_request?(user)
 
+    process_commit_message(project, commit, user, author, default)
     update_issue_metrics(commit, author)
   end
 
   def process_commit_message(project, commit, user, author, default = false)
     closed_issues = default ? commit.closes_issues(user) : []
 
-    unless closed_issues.empty?
-      close_issues(project, user, author, commit, closed_issues)
-    end
-
+    close_issues(project, user, author, commit, closed_issues) if closed_issues.any?
     commit.create_cross_references!(author, closed_issues)
   end
 
   def close_issues(project, user, author, commit, issues)
     # We don't want to run permission related queries for every single issue,
-    # therefor we use IssueCollection here and skip the authorization check in
+    # therefore we use IssueCollection here and skip the authorization check in
     # Issues::CloseService#execute.
     IssueCollection.new(issues).updatable_by_user(user).each do |issue|
       Issues::CloseService.new(project, author)
