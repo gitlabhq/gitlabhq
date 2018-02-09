@@ -171,7 +171,7 @@ export const createOrMergeEntry = ({ projectId,
   }
 
   if (state.openFiles.length) {
-    const foundOpenFile = findEntry(state.openFiles, type, entry.path);
+    const foundOpenFile = findEntry(state.openFiles, type, entry.name);
 
     if (foundOpenFile) {
       return foundOpenFile;
