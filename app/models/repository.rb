@@ -93,6 +93,10 @@ class Repository
 
   alias_method :raw, :raw_repository
 
+  def cleanup
+    @raw_repository&.cleanup
+  end
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
@@ -158,6 +162,13 @@ class Repository
     commits = Gitlab::Git::Commit.between(raw_repository, from, to)
     commits = Commit.decorate(commits, @project) if commits.present?
     commits
+  end
+
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+
+    refs.map { |sha| commit(sha.strip) }
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384

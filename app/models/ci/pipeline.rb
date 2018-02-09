@@ -394,7 +394,7 @@ module Ci
 
       @config_processor ||= begin
         Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
-      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
+      rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
       rescue

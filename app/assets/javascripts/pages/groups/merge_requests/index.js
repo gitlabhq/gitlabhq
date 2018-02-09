@@ -3,6 +3,8 @@ import initFilteredSearch from '~/pages/search/init_filtered_search';
 import { FILTERED_SEARCH } from '~/pages/constants';
 
 export default () => {
-  initFilteredSearch(FILTERED_SEARCH.MERGE_REQUESTS);
+  initFilteredSearch({
+    page: FILTERED_SEARCH.MERGE_REQUESTS,
+  });
   projectSelect();
 };

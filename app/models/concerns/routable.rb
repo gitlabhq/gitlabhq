@@ -7,10 +7,11 @@ module Routable
     has_one :route, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-    validates_associated :route
     validates :route, presence: true
 
     scope :with_route, -> { includes(:route) }
+
+    after_validation :set_path_errors
 
     before_validation do
       if full_path_changed? || full_name_changed?
@@ -124,6 +125,11 @@ module Routable
   end
 
   private
+
+  def set_path_errors
+    route_path_errors = self.errors.delete(:"route.path")
+    self.errors[:path].concat(route_path_errors) if route_path_errors
+  end
 
   def uncached_full_path
     if route && route.path.present?

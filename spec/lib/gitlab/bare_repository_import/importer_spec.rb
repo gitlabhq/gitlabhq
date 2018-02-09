@@ -8,11 +8,15 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
   subject(:importer) { described_class.new(admin, bare_repository) }
 
   before do
+    @rainbow = Rainbow.enabled
+    Rainbow.enabled = false
+
     allow(described_class).to receive(:log)
   end
 
   after do
     FileUtils.rm_rf(base_dir)
+    Rainbow.enabled = @rainbow
   end
 
   shared_examples 'importing a repository' do
@@ -148,7 +152,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       # This is a quick way to get a valid repository instead of copying an
       # existing one. Since it's not persisted, the importer will try to
       # create the project.
-      project = build(:project, :repository)
+      project = build(:project, :legacy_storage, :repository)
       original_commit_count = project.repository.commit_count
 
       bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)

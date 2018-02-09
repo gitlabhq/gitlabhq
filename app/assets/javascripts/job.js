@@ -217,7 +217,7 @@ export default class Job {
         }
         this.isLogComplete = log.complete;
 
-        if (!log.complete) {
+        if (log.complete === false) {
           this.timeout = setTimeout(() => {
             this.getBuildTrace();
           }, 4000);

@@ -1,0 +1,5 @@
+---
+title: Remove duplicate calls of MergeRequest#can_be_reverted?
+merge_request:
+author:
+type: performance

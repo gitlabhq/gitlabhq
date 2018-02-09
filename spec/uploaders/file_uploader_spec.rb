@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe FileUploader do
   let(:group) { create(:group, name: 'awesome') }
-  let(:project) { create(:project, namespace: group, name: 'project') }
+  let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
   let(:uploader) { described_class.new(project) }
   let(:upload)  { double(model: project, path: 'secret/foo.jpg') }
 
@@ -16,11 +16,11 @@ describe FileUploader do
 
   shared_examples 'uses hashed storage' do
     context 'when rolled out attachments' do
+      let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
+
       before do
         allow(project).to receive(:disk_path).and_return('ca/fe/fe/ed')
       end
-
-      let(:project) { build_stubbed(:project, :hashed, namespace: group, name: 'project') }
 
       it_behaves_like 'builds correct paths',
                       store_dir: %r{ca/fe/fe/ed/\h+},
@@ -45,6 +45,29 @@ describe FileUploader do
     it 'accepts a secret parameter' do
       expect(described_class).not_to receive(:generate_secret)
       expect(uploader.secret).to eq('secret')
+    end
+  end
+
+  describe 'callbacks' do
+    describe '#prune_store_dir after :remove' do
+      before do
+        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
+      end
+
+      def store_dir
+        File.expand_path(uploader.store_dir, uploader.root)
+      end
+
+      it 'is called' do
+        expect(uploader).to receive(:prune_store_dir).once
+
+        uploader.remove!
+      end
+
+      it 'prune the store directory' do
+        expect { uploader.remove! }
+          .to change { File.exist?(store_dir) }.from(true).to(false)
+      end
     end
   end
 

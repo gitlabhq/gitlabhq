@@ -10,6 +10,8 @@
 module LfsRequest
   extend ActiveSupport::Concern
 
+  CONTENT_TYPE = 'application/vnd.git-lfs+json'.freeze
+
   included do
     before_action :require_lfs_enabled!
     before_action :lfs_check_access!
@@ -50,7 +52,7 @@ module LfsRequest
         message: 'Access forbidden. Check your access level.',
         documentation_url: help_url
       },
-      content_type: "application/vnd.git-lfs+json",
+      content_type: CONTENT_TYPE,
       status: 403
     )
   end
@@ -61,7 +63,7 @@ module LfsRequest
         message: 'Not found.',
         documentation_url: help_url
       },
-      content_type: "application/vnd.git-lfs+json",
+      content_type: CONTENT_TYPE,
       status: 404
     )
   end

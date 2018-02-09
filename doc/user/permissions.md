@@ -117,14 +117,16 @@ and drag issues around. Read though the
 [documentation on Issue Boards permissions](project/issue_board.md#permissions)
 to learn more.
 
-### File Locking permissions (EEP)
+### File Locking permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
 Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
 
 File Locking is available in
-[GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/) only.
+[GitLab Premium](https://about.gitlab.com/products/) only.
 
 ### Confidential Issues permissions
 
@@ -251,12 +253,14 @@ for details about the pipelines security model.
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/index.html#updating-user-permissions-new-feature) to learn more.
 
-## Auditor users permissions (EEP)
+## Auditor users permissions
+
+> Available in [GitLab Premium](https://about.gitlab.com/products/).
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
 with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
 
-Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
+Auditor users are available in [GitLab Premium](https://about.gitlab.com/products/)
 only.
 
 [^1]: On public and internal projects, all users are able to perform this action

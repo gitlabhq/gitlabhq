@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180204200836) do
+ActiveRecord::Schema.define(version: 20180206200543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 20180204200836) do
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
     t.boolean "authorized_keys_enabled", default: true, null: false
+    t.string "auto_devops_domain"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -450,7 +451,7 @@ ActiveRecord::Schema.define(version: 20180204200836) do
     t.integer "lock_version"
   end
 
-  add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", using: :btree
+  add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
   add_index "ci_stages", ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
   add_index "ci_stages", ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
 
@@ -945,6 +946,16 @@ ActiveRecord::Schema.define(version: 20180204200836) do
   add_index "labels", ["template"], name: "index_labels_on_template", where: "template", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
+
+  create_table "lfs_file_locks", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.string "path", limit: 511
+  end
+
+  add_index "lfs_file_locks", ["project_id", "path"], name: "index_lfs_file_locks_on_project_id_and_path", unique: true, using: :btree
+  add_index "lfs_file_locks", ["user_id"], name: "index_lfs_file_locks_on_user_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -1997,6 +2008,8 @@ ActiveRecord::Schema.define(version: 20180204200836) do
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
+  add_foreign_key "lfs_file_locks", "projects", on_delete: :cascade
+  add_foreign_key "lfs_file_locks", "users", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
   add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade

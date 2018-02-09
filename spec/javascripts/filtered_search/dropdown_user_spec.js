@@ -3,6 +3,8 @@ import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_dropdown';
 import '~/filtered_search/dropdown_user';
 
+import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
+
 describe('Dropdown User', () => {
   describe('getSearchInput', () => {
     let dropdownUser;
@@ -14,7 +16,7 @@ describe('Dropdown User', () => {
       spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
       dropdownUser = new gl.DropdownUser({
-        tokenKeys: gl.FilteredSearchTokenKeys,
+        tokenKeys: FilteredSearchTokenKeys,
       });
     });
 

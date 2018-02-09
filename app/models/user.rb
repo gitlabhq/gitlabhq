@@ -77,7 +77,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> do
@@ -151,12 +151,9 @@ class User < ActiveRecord::Base
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
-  validates :username,
-    user_path: true,
-    presence: true,
-    uniqueness: { case_sensitive: false }
+  validates :username, presence: true
 
-  validate :namespace_uniq, if: :username_changed?
+  validates :namespace, presence: true
   validate :namespace_move_dir_allowed, if: :username_changed?
 
   validate :unique_email, if: :email_changed?
@@ -171,7 +168,8 @@ class User < ActiveRecord::Base
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
-  after_save :ensure_namespace_correct
+  before_validation :ensure_namespace_correct
+  after_validation :set_username_errors
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -505,17 +503,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def namespace_uniq
-    # Return early if username already failed the first uniqueness validation
-    return if errors.key?(:username) &&
-        errors[:username].include?('has already been taken')
-
-    existing_namespace = Namespace.by_path(username)
-    if existing_namespace && existing_namespace != namespace
-      errors.add(:username, 'has already been taken')
-    end
-  end
-
   def namespace_move_dir_allowed
     if namespace&.any_project_has_container_registry_tags?
       errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
@@ -564,12 +551,17 @@ class User < ActiveRecord::Base
     gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
-  # Returns the groups a user has access to
+  # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
     union = Gitlab::SQL::Union
       .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  # Returns the groups a user is a member of, either directly or through a parent group
+  def membership_groups
+    Gitlab::GroupHierarchy.new(groups).base_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent
@@ -884,17 +876,16 @@ class User < ActiveRecord::Base
   end
 
   def ensure_namespace_correct
-    # Ensure user has namespace
-    create_namespace!(path: username, name: username) unless namespace
-
-    if username_changed?
-      unless namespace.update_attributes(path: username, name: username)
-        namespace.errors.each do |attribute, message|
-          self.errors.add(:"namespace_#{attribute}", message)
-        end
-        raise ActiveRecord::RecordInvalid.new(namespace)
-      end
+    if namespace
+      namespace.path = namespace.name = username if username_changed?
+    else
+      build_namespace(path: username, name: username)
     end
+  end
+
+  def set_username_errors
+    namespace_path_errors = self.errors.delete(:"namespace.path")
+    self.errors[:username].concat(namespace_path_errors) if namespace_path_errors
   end
 
   def username_changed_hook

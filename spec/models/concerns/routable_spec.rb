@@ -39,7 +39,7 @@ describe Group, 'Routable' do
       create(:group, parent: group, path: 'xyz')
       duplicate = build(:project, namespace: group, path: 'xyz')
 
-      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Route path has already been taken, Route is invalid')
+      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Path has already been taken')
     end
   end
 

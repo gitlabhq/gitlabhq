@@ -238,9 +238,96 @@ describe Gitlab::Ci::Trace do
     end
   end
 
+  describe '#read' do
+    shared_examples 'read successfully with IO' do
+      it 'yields with source' do
+        trace.read do |stream|
+          expect(stream).to be_a(Gitlab::Ci::Trace::Stream)
+          expect(stream.stream).to be_a(IO)
+        end
+      end
+    end
+
+    shared_examples 'read successfully with StringIO' do
+      it 'yields with source' do
+        trace.read do |stream|
+          expect(stream).to be_a(Gitlab::Ci::Trace::Stream)
+          expect(stream.stream).to be_a(StringIO)
+        end
+      end
+    end
+
+    shared_examples 'failed to read' do
+      it 'yields without source' do
+        trace.read do |stream|
+          expect(stream).to be_a(Gitlab::Ci::Trace::Stream)
+          expect(stream.stream).to be_nil
+        end
+      end
+    end
+
+    context 'when trace artifact exists' do
+      before do
+        create(:ci_job_artifact, :trace, job: build)
+      end
+
+      it_behaves_like 'read successfully with IO'
+    end
+
+    context 'when current_path (with project_id) exists' do
+      before do
+        expect(trace).to receive(:default_path) { expand_fixture_path('trace/sample_trace') }
+      end
+
+      it_behaves_like 'read successfully with IO'
+    end
+
+    context 'when current_path (with project_ci_id) exists' do
+      before do
+        expect(trace).to receive(:deprecated_path) { expand_fixture_path('trace/sample_trace') }
+      end
+
+      it_behaves_like 'read successfully with IO'
+    end
+
+    context 'when db trace exists' do
+      before do
+        build.send(:write_attribute, :trace, "data")
+      end
+
+      it_behaves_like 'read successfully with StringIO'
+    end
+
+    context 'when no sources exist' do
+      it_behaves_like 'failed to read'
+    end
+  end
+
   describe 'trace handling' do
+    subject { trace.exist? }
+
     context 'trace does not exist' do
       it { expect(trace.exist?).to be(false) }
+    end
+
+    context 'when trace artifact exists' do
+      before do
+        create(:ci_job_artifact, :trace, job: build)
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when the trace artifact has been erased' do
+        before do
+          trace.erase!
+        end
+
+        it { is_expected.to be_falsy }
+
+        it 'removes associations' do
+          expect(Ci::JobArtifact.exists?(job_id: build.id, file_type: :trace)).to be_falsy
+        end
+      end
     end
 
     context 'new trace path is used' do

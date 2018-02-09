@@ -1,7 +1,7 @@
 # Administrator documentation
 
 Learn how to administer your GitLab instance (Community Edition and
-[Enterprise Editions](https://about.gitlab.com/gitlab-ee/)).
+[Enterprise Editions](https://about.gitlab.com/products/)).
 Regular users don't have access to GitLab administration tools and settings.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have

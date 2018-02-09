@@ -54,7 +54,6 @@ _Blog posts for securing GitLab Pages custom domains with SSL/TLS certificates:_
 
 - [CloudFlare](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
 - [Let's Encrypt](https://about.gitlab.com/2016/04/11/tutorial-securing-your-gitlab-pages-with-tls-and-letsencrypt/) (outdated)
-- [StartSSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/) (deprecated)
 
 ## Advanced use
 

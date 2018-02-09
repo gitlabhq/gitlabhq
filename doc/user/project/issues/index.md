@@ -35,7 +35,7 @@ your project public, open to collaboration.
 ### Streamline collaboration
 
 With [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
-available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
+available in [GitLab Starter](https://about.gitlab.com/products/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
@@ -64,9 +64,7 @@ You can also [search and filter](../../search/index.md#issues-and-merge-requests
 
 ### Issues per group
 
-View all the issues in a group (that is, all the issues across all projects in that
-group) by navigating to **Group > Issues**. This view also has the open and closed
-issue tabs.
+View issues in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Issues** to view these issues. This view also has the open and closed issues tabs.
 
 ![Group Issues list view](img/group_issues_list_view.png)
 
@@ -141,7 +139,7 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-With [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/), you can also
+With [GitLab Starter](https://about.gitlab.com/products/), you can also
 create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
 
 ### External Issue Tracker
