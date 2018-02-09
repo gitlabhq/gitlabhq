@@ -23,6 +23,7 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+  belongs_to :closed_by, class_name: 'User'
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
