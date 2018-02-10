@@ -182,4 +182,9 @@ describe SnippetsFinder do
     # Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
     include_examples 'snippet visibility', described_class
   end
+
+  describe "#execute" do
+    # Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
+    include_examples 'snippet visibility', described_class
+  end
 end
