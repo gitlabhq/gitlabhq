@@ -39,6 +39,14 @@ module QA
           end
         end
 
+        def sign_in_using_credentials
+          if Runtime::User.ldap_user?
+            sign_in_using_ldap_credentials
+          else
+            sign_in_using_gitlab_credentials
+          end
+        end
+
         def sign_in_using_ldap_credentials
           using_wait_time 0 do
             set_initial_password_if_present
@@ -51,7 +59,7 @@ module QA
           end
         end
 
-        def sign_in_using_credentials
+        def sign_in_using_gitlab_credentials
           using_wait_time 0 do
             set_initial_password_if_present
 

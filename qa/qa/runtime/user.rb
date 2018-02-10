@@ -10,6 +10,10 @@ module QA
       def password
         Runtime::Env.user_password || '5iveL!fe'
       end
+
+      def ldap_user?
+        Runtime::Env.user_type == 'ldap'
+      end
     end
   end
 end
