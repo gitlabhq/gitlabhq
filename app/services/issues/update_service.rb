@@ -13,10 +13,6 @@ module Issues
       spam_check(issue, current_user)
     end
 
-    def after_update(issue)
-      schedule_due_date_email(issue)
-    end
-
     def handle_changes(issue, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
@@ -26,9 +22,6 @@ module Issues
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(issue, current_user)
       end
-
-      # TODO: If due date doesn't change, don't bother updating the due date
-      # email worker
 
       if issue.previous_changes.include?('title') ||
           issue.previous_changes.include?('description')

@@ -48,7 +48,6 @@
   - [authorized_projects, 1]
   - [expire_build_instance_artifacts, 1]
   - [group_destroy, 1]
-  - [issue_due, 1]
   - [irker, 1]
   - [namespaceless_project_destroy, 1]
   - [project_cache, 1]

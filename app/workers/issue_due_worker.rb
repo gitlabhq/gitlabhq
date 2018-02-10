@@ -1,9 +1,9 @@
 class IssueDueWorker
   include ApplicationWorker
+  include CronjobQueue
 
-  def perform(issue_id)
-    issue = Issue.find_by_id(issue_id)
-    if issue.due_date == Date.today
+  def perform
+    Issue.where(due_date: Date.today).find_each do |issue|
       NotificationService.new.issue_due_email(issue)
     end
   end

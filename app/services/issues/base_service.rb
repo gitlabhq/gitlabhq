@@ -7,12 +7,6 @@ module Issues
       hook_data
     end
 
-    def schedule_due_date_email(issuable)
-      return if issuable.due_date.nil?
-
-      IssueDueWorker.perform_at(issuable.due_date.to_time, issuable.id)
-    end
-
     def reopen_service
       Issues::ReopenService
     end

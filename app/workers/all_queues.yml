@@ -18,6 +18,7 @@
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
 - cronjob:trending_projects
+- cronjob:issue_due
 
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_provision
@@ -78,7 +79,6 @@
 - group_destroy
 - invalid_gpg_signature_update
 - irker
-- issue_due
 - merge
 - namespaceless_project_destroy
 - new_issue
