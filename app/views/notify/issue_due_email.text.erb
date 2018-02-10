@@ -1,8 +1,7 @@
-An Issue had its due date updated.
+The following issue is due on <%= @issue.due_date %>:
 
 Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
 Author:    <%= @issue.author_name %>
 Assignee:  <%= @issue.assignee_list %>
-New Due Date: <%= @issue.due_date %>
 
 <%= @issue.description %>
