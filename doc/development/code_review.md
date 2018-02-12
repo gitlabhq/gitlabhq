@@ -71,10 +71,12 @@ request is up to one the project's maintainers, denoted on the
 
 ### Maintainers
 
-- Avoid merging bad code even if that means delaying the release of a feature
-- In the unlikely event that bad code needs to be merged, the associated MR
-  should have a note from a maintainer mentioning that the code has technical
-  debt and will be fixed by X date, otherwise the MR will be reverted.
+- Do not merge code that will create technical debt even if that means
+  delaying the release of a feature.
+- In the rare event that code with technical debt needs to be merged, the
+  associated MR should have a note from a maintainer mentioning that
+  the code has technical debt and will be fixed within 2 business days,
+  otherwise the MR will be reverted.
 
 ### Having your code reviewed
 
