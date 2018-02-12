@@ -15,6 +15,14 @@ module QA
         @tags = %w[qa test]
       end
 
+      def network
+        shell "docker network inspect #{@network}"
+      rescue CommandError
+        'bridge'
+      else
+        @network
+      end
+
       def pull
         shell "docker pull #{@image}"
       end
@@ -22,7 +30,7 @@ module QA
       def register!
         shell <<~CMD.tr("\n", ' ')
           docker run -d --rm --entrypoint=/bin/sh
-          --network #{@network} --name #{@name}
+          --network #{network} --name #{@name}
           -e CI_SERVER_URL=#{@address}
           -e REGISTER_NON_INTERACTIVE=true
           -e REGISTRATION_TOKEN=#{@token}
