@@ -27,15 +27,20 @@
       return {
         openModal: false,
         modalType: '',
+        dropdownOpen: false,
       };
     },
     methods: {
       createNewItem(type) {
         this.modalType = type;
         this.openModal = true;
+        this.dropdownOpen = false;
       },
       hideModal() {
         this.openModal = false;
+      },
+      openDropdown() {
+        this.dropdownOpen = !this.dropdownOpen;
       },
     },
   };
@@ -43,12 +48,17 @@
 
 <template>
   <div class="repo-new-btn pull-right">
-    <div class="dropdown">
+    <div
+      class="dropdown"
+      :class="{
+        open: dropdownOpen,
+      }"
+    >
       <button
         type="button"
         class="btn btn-sm btn-default dropdown-toggle add-to-tree"
-        data-toggle="dropdown"
         aria-label="Create new file or directory"
+        @click.stop="openDropdown()"
       >
         <icon
           name="plus"
@@ -66,7 +76,7 @@
           <a
             href="#"
             role="button"
-            @click.prevent="createNewItem('blob')"
+            @click.stop.prevent="createNewItem('blob')"
           >
             {{ __('New file') }}
           </a>
@@ -82,7 +92,7 @@
           <a
             href="#"
             role="button"
-            @click.prevent="createNewItem('tree')"
+            @click.stop.prevent="createNewItem('tree')"
           >
             {{ __('New directory') }}
           </a>

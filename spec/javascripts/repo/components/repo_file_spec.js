@@ -66,7 +66,7 @@ describe('RepoFile', () => {
 
     spyOn(vm, 'clickFile');
 
-    vm.$el.click();
+    vm.$el.querySelector('td').click();
 
     expect(vm.clickFile).toHaveBeenCalledWith(vm.file);
   });

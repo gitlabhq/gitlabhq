@@ -155,21 +155,27 @@ export const createTemp = ({
   });
 };
 
-export const createOrMergeEntry = ({ tree,
-                                     projectId,
+export const createOrMergeEntry = ({ projectId,
                                      branchId,
                                      entry,
                                      type,
                                      parentTreeUrl,
-                                     level }) => {
-  const found = findEntry(tree.tree || tree, type, entry.name);
+                                     level,
+                                     state }) => {
+  if (state.changedFiles.length) {
+    const foundChangedFile = findEntry(state.changedFiles, type, entry.name);
 
-  if (found) {
-    return Object.assign({}, found, {
-      id: entry.id,
-      url: entry.url,
-      tempFile: false,
-    });
+    if (foundChangedFile) {
+      return foundChangedFile;
+    }
+  }
+
+  if (state.openFiles.length) {
+    const foundOpenFile = findEntry(state.openFiles, type, entry.name);
+
+    if (foundOpenFile) {
+      return foundOpenFile;
+    }
   }
 
   return decorateData({

@@ -38,7 +38,7 @@ export const getTreeData = (
           commit(types.SET_ROOT, data.path === '/');
         }
 
-        dispatch('updateDirectoryData', { data, tree, projectId, branch });
+        dispatch('updateDirectoryData', { data, tree, projectId, branch, clearTree: false });
         const selectedTree = tree || state.trees[`${projectId}/${branch}`];
 
         commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
@@ -84,7 +84,11 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   } else if (row.type === 'submodule') {
     commit(types.TOGGLE_LOADING, row);
     visitUrl(row.url);
-  } else if (row.type === 'blob' && row.opened) {
+  } else if (row.type === 'blob' && (row.opened || row.changed)) {
+    if (row.changed && !row.opened) {
+      commit(types.TOGGLE_FILE_OPEN, row);
+    }
+
     dispatch('setFileActive', row);
   } else {
     dispatch('getFileData', row);
@@ -156,7 +160,7 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
 
 export const updateDirectoryData = (
   { commit, state },
-  { data, tree, projectId, branch },
+  { data, tree, projectId, branch, clearTree = true },
 ) => {
   if (!tree) {
     const existingTree = state.trees[`${projectId}/${branch}`];
@@ -169,20 +173,28 @@ export const updateDirectoryData = (
   const level = selectedTree.level !== undefined ? selectedTree.level + 1 : 0;
   const parentTreeUrl = data.parent_tree_url ? `${data.parent_tree_url}${data.path}` : state.endpoints.rootUrl;
   const createEntry = (entry, type) => createOrMergeEntry({
-    tree: selectedTree,
     projectId: `${projectId}`,
     branchId: branch,
     entry,
     level,
     type,
     parentTreeUrl,
+    state,
   });
 
-  const formattedData = [
+  let formattedData = [
     ...data.trees.map(t => createEntry(t, 'tree')),
     ...data.submodules.map(m => createEntry(m, 'submodule')),
     ...data.blobs.map(b => createEntry(b, 'blob')),
   ];
+
+  if (!clearTree && tree) {
+    const tempFiles = state.changedFiles.filter(f => f.tempFile && f.path === `${tree.path}/${f.name}`);
+
+    if (tempFiles.length) {
+      formattedData = formattedData.concat(tempFiles);
+    }
+  }
 
   commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: formattedData });
 };

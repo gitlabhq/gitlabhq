@@ -91,10 +91,11 @@
   <tr
     class="file"
     :class="fileClass"
-    @click="clickFile(file)">
+  >
     <td
       class="multi-file-table-name"
       :colspan="submoduleColSpan"
+      @click="clickFile(file)"
     >
       <a
         class="repo-file-name str-truncated"
