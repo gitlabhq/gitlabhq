@@ -53,7 +53,7 @@ module Gitlab
         sql = <<~SQL
           SELECT count(1)
             FROM pg_foreign_server
-           WHERE srvname = '#{Gitlab::Geo::FDW_SCHEMA}';
+           WHERE srvname = '#{Gitlab::Geo::Fdw::FDW_SCHEMA}';
         SQL
 
         Gitlab::Geo::DatabaseTasks.with_geo_db do

@@ -12,8 +12,6 @@ module Gitlab
       geo_oauth_application
     ).freeze
 
-    FDW_SCHEMA = 'gitlab_secondary'.freeze
-
     def self.current_node
       self.cache_value(:geo_node_current) { GeoNode.current_node }
     end
@@ -63,26 +61,6 @@ module Gitlab
 
     def self.license_allows?
       ::License.feature_available?(:geo)
-    end
-
-    def self.fdw_capable?
-      self.cache_value(:geo_fdw_capable?) do
-        ::Geo::TrackingBase.connection.execute(
-          "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{FDW_SCHEMA}' AND table_type = 'FOREIGN TABLE'"
-        ).first.fetch('count').to_i.positive?
-      end
-    end
-
-    def self.fdw?
-      return false unless self.fdw_capable?
-
-      # FDW is enabled by default, disable it by setting `fdw: false` in config/database_geo.yml
-      value = Rails.configuration.geo_database['fdw']
-      value.nil? ? true : value
-    end
-
-    def self.fdw_table(table_name)
-      FDW_SCHEMA + ".#{table_name}"
     end
 
     def self.configure_cron_jobs!

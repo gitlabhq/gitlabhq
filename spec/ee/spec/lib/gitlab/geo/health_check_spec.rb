@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::HealthCheck, :postgresql do
+describe Gitlab::Geo::HealthCheck, :geo do
   set(:secondary) { create(:geo_node) }
 
   subject { described_class }
@@ -81,6 +81,35 @@ describe Gitlab::Geo::HealthCheck, :postgresql do
       allow(described_class).to receive(:streaming_active?).and_return(false)
 
       expect(subject.perform_checks).to be_empty
+    end
+
+    it 'returns an error when FDW is disabled' do
+      allow(described_class).to receive(:database_secondary?) { true }
+      allow(described_class).to receive(:streaming_active?) { true }
+
+      allow(Gitlab::Geo::Fdw).to receive(:enabled?) { false }
+
+      expect(subject.perform_checks).to match(/The Geo database is not configured to use Foreign Data Wrapper/)
+    end
+
+    it 'returns an error when FDW remote table is not in sync but has same amount of tables' do
+      allow(described_class).to receive(:database_secondary?) { true }
+      allow(described_class).to receive(:streaming_active?) { true }
+
+      allow(Gitlab::Geo::Fdw).to receive(:fdw_up_to_date?) { false }
+      allow(Gitlab::Geo::Fdw).to receive(:count_tables_match?) { true }
+
+      expect(subject.perform_checks).to match(/The Geo database has an outdated FDW remote schema\./)
+    end
+
+    it 'returns an error when FDW remote table is not in sync and has same different amount of tables' do
+      allow(described_class).to receive(:database_secondary?) { true }
+      allow(described_class).to receive(:streaming_active?) { true }
+
+      allow(Gitlab::Geo::Fdw).to receive(:fdw_up_to_date?) { false }
+      allow(Gitlab::Geo::Fdw).to receive(:count_tables_match?) { false }
+
+      expect(subject.perform_checks).to match(/The Geo database has an outdated FDW remote schema\. It contains [0-9]+ of [0-9]+ expected tables/)
     end
   end
 
