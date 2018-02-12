@@ -8,7 +8,7 @@ module API
       end
 
       def file_is_valid?
-        import_params[:file] && import_params[:file].respond_to?(:read)
+        import_params[:file] && import_params[:file]['tempfile'].respond_to?(:read)
       end
     end
 
@@ -26,7 +26,7 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'import' do
-        render_api_error!('The branch refname is invalid', 400) unless file_is_valid?
+        render_api_error!('The file is invalid', 400) unless file_is_valid?
 
         namespace = import_params[:namespace]
 
@@ -38,7 +38,8 @@ module API
                       Namespace.find_by_path_or_name(namespace)
                     end
 
-        project_params = import_params.merge(namespace_id: namespace.id)
+        project_params = import_params.merge(namespace_id: namespace.id,
+                                             file: import_params[:file]['tempfile'])
 
         project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
 

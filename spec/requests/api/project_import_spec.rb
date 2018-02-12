@@ -19,9 +19,9 @@ describe API::ProjectImport do
     it 'schedules an import' do
       expect_any_instance_of(Project).to receive(:import_schedule)
 
-      post api('/projects/import', user), path: 'test-import', file: file, namespace: namespace.full_path
+      post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(201)
 
       expect(Project.find_by_name('test-import').first.status).to eq('started')
     end
