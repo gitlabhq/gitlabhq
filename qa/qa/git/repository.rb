@@ -4,20 +4,9 @@ require 'uri'
 module QA
   module Git
     class Repository
-      include Scenario::Actable
+      autoload :Location, 'qa/git/repository/location'
 
-      # See: config/initializers/1_settings.rb
-      # Settings#build_gitlab_shell_ssh_path_prefix
-      def self.parse_uri(git_uri)
-        if git_uri.start_with?('ssh://')
-          URI.parse(git_uri)
-        else
-          *rest, path = git_uri.split(':')
-          # Host cannot have : so we'll need to escape it
-          user_host = rest.join('%3A').sub(/\A\[(.+)\]\z/, '\1')
-          URI.parse("ssh://#{user_host}/#{path}")
-        end
-      end
+      include Scenario::Actable
 
       def self.perform(*args)
         Dir.mktmpdir do |dir|

@@ -33,6 +33,10 @@ module QA
           find('#project_clone').value
         end
 
+        def repository_location_uri
+          Git::Repository::Location.parse(repository_location)
+        end
+
         def project_name
           find('.qa-project-name').text
         end
