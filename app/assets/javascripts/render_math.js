@@ -28,13 +28,10 @@ function renderWithKaTeX(elements, katex) {
 
 export default function renderMath($els) {
   if (!$els.length) return;
-  import(/* webpackChunkName: 'katex' */ 'katex').then((katex) => {
-    import(/* webpackChunkName: 'katex' */ 'katex/dist/katex.css')
-    .then(() => {
-      renderWithKaTeX($els, katex);
-    })
-    .catch((err) => {
-      flash(`Can't load katex css ${err}`);
-    });
+  Promise.all([
+    import(/* webpackChunkName: 'katex' */ 'katex'),
+    import(/* webpackChunkName: 'katex' */ 'katex/dist/katex.css'),
+  ]).then(([katex]) => {
+    renderWithKaTeX($els, katex);
   }).catch(() => flash(__('An error occurred while rendering KaTeX')));
 }
