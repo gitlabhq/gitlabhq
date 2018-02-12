@@ -226,12 +226,12 @@ describe Geo::FileDownloadDispatchWorker, :geo do
   # can't see changes inside a transaction of a different connection.
   describe 'when PostgreSQL FDW is available', :geo, :delete do
     # Skip if FDW isn't activated on this database
-    it_behaves_like '#perform', Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
+    it_behaves_like '#perform', Gitlab::Database.postgresql? && !Gitlab::Geo::Fdw.enabled?
   end
 
   describe 'when PostgreSQL FDW is not enabled', :geo do
     before do
-      allow(Gitlab::Geo).to receive(:fdw?).and_return(false)
+      allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(false)
     end
 
     it_behaves_like '#perform', false

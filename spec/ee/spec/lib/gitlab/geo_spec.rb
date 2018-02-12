@@ -18,59 +18,6 @@ describe Gitlab::Geo, :geo do
     end
   end
 
-  describe 'fdw_capable?' do
-    let(:fdw_check) { "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'gitlab_secondary' AND table_type = 'FOREIGN TABLE'" }
-
-    before do
-      allow(::Geo::TrackingBase.connection).to receive(:execute).with(anything).and_call_original
-    end
-
-    it 'returns true when PostgreSQL FDW is enabled' do
-      expect(::Geo::TrackingBase.connection).to receive(:execute).with(fdw_check).and_return([{ 'count' => 1 }])
-
-      expect(described_class.fdw_capable?).to be_truthy
-    end
-
-    it 'returns false when PostgreSQL FDW is not enabled' do
-      expect(::Geo::TrackingBase.connection).to receive(:execute).with(fdw_check).and_return([{ 'count' => 0 }])
-
-      expect(described_class.fdw_capable?).to be_falsey
-    end
-  end
-
-  describe 'fdw?' do
-    it 'returns false when PostgreSQL FDW is not enabled' do
-      allow(::Geo::TrackingBase.connection).to receive(:execute).and_return([{ 'count' => 0 }])
-      allow(Rails.configuration).to receive(:geo_database).and_return('fdw' => true)
-
-      expect(described_class.fdw?).to be_falsey
-    end
-
-    context 'with fdw capable' do
-      before do
-        allow(described_class).to receive(:fdw_capable?).and_return(true)
-      end
-
-      it 'returns true by default' do
-        allow(Rails.configuration).to receive(:geo_database).and_return('fdw' => nil)
-
-        expect(described_class.fdw?).to be_truthy
-      end
-
-      it 'returns false if configured in `config/database_geo.yml`' do
-        allow(Rails.configuration).to receive(:geo_database).and_return('fdw' => false)
-
-        expect(described_class.fdw?).to be_falsey
-      end
-
-      it 'returns true if configured in `config/database_geo.yml`' do
-        allow(Rails.configuration).to receive(:geo_database).and_return('fdw' => true)
-
-        expect(described_class.fdw?).to be_truthy
-      end
-    end
-  end
-
   describe 'primary?' do
     context 'when current node is a primary node' do
       it 'returns true' do

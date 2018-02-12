@@ -32,7 +32,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
   # can't see changes inside a transaction of a different connection.
   context 'FDW', :delete do
     before do
-      skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
+      skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo::Fdw.enabled?
     end
 
     describe '#find_synced_attachments' do
@@ -132,7 +132,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
 
   context 'Legacy' do
     before do
-      allow(Gitlab::Geo).to receive(:fdw?).and_return(false)
+      allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(false)
     end
 
     describe '#find_synced_attachments' do

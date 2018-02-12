@@ -13,11 +13,19 @@ module Gitlab
         migration_version = self.get_migration_version.to_i
 
         if database_version != migration_version
-          "Current Geo database version (#{database_version}) does not match latest migration (#{migration_version}).\n"\
-          "You may have to run `gitlab-rake geo:db:migrate` as root on the secondary."
-        else
-          ''
+          return "Current Geo database version (#{database_version}) does not match latest migration (#{migration_version}).\n"\
+                 'You may have to run `gitlab-rake geo:db:migrate` as root on the secondary.'
         end
+
+        return 'The Geo database is not configured to use Foreign Data Wrapper.' unless Gitlab::Geo::Fdw.enabled?
+
+        unless Gitlab::Geo::Fdw.fdw_up_to_date?
+          return "The Geo database has an outdated FDW remote schema.".tap do |output|
+            output << " It contains #{Gitlab::Geo::Fdw.count_tables} of #{ActiveRecord::Schema.tables.count} expected tables." unless Gitlab::Geo::Fdw.count_tables_match?
+          end
+        end
+
+        return ''
       rescue => e
         e.message
       end
