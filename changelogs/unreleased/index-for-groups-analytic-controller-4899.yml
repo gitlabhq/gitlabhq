@@ -1,0 +1,5 @@
+---
+title: Add index on events table on project_id, created_at to support Group::AnalyticsController
+merge_request:
+author:
+type: performance
