@@ -78,6 +78,12 @@ If your user doesn't have permission to default sandbox group
 GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
 ```
 
+In addition, the `GITLAB_USER_TYPE` can be set to "ldap" to sign in as an LDAP user:
+
+```
+GITLAB_USER_TYPE=ldap GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
+```
+
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa#supported-environment-variables).
 
 ### Building a Docker image to test

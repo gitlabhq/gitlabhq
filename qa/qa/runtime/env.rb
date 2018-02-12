@@ -17,6 +17,16 @@ module QA
         ENV['PERSONAL_ACCESS_TOKEN']
       end
 
+      # By default, "standard" denotes a standard GitLab user login.
+      # Set this to "ldap" if the user should be logged in via LDAP.
+      def user_type
+        (ENV['GITLAB_USER_TYPE'] || 'standard').tap do |type|
+          unless %w(ldap standard).include?(type)
+            raise ArgumentError.new("Invalid user type '#{type}': must be 'ldap' or 'standard'")
+          end
+        end
+      end
+
       def user_username
         ENV['GITLAB_USERNAME']
       end
