@@ -16,7 +16,7 @@
         return this.file.tempFile ? 'file-addition' : 'file-modified';
       },
       changedIconClass() {
-        return `multi-file-changed-icon ${this.file.tempFile ? 'multi-file-addition' : 'multi-file-modified'}`;
+        return `multi-${this.changedIcon}`;
       },
     },
   };
@@ -26,6 +26,6 @@
   <icon
     :name="changedIcon"
     :size="12"
-    :css-classes="changedIconClass"
+    :css-classes="`multi-file-changed-icon ${changedIconClass}`"
   />
 </template>
