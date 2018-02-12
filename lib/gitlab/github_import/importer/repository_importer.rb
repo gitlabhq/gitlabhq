@@ -58,11 +58,16 @@ module Gitlab
           wiki_url = project.import_url.sub(/\.git\z/, '.wiki.git')
           storage_path = project.repository_storage_path
 
+          if project.wiki_repository_exists? && project.wiki.repository.has_visible_content?
+            gitlab_shell.remove_repository(storage_path, wiki_path)
+          end
+
           gitlab_shell.import_repository(storage_path, wiki_path, wiki_url)
 
           true
         rescue Gitlab::Shell::Error => e
           if e.message !~ /repository not exported/
+            project.create_wiki
             fail_import("Failed to import the wiki: #{e.message}")
           else
             true
