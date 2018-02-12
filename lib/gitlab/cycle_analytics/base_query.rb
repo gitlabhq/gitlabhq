@@ -7,14 +7,14 @@ module Gitlab
 
       private
 
-      def base_query
-        @base_query ||= stage_query
+      def base_query(project_ids = nil)
+        stage_query(project_ids)
       end
 
-      def stage_query
+      def stage_query(project_ids = nil)
         query = mr_closing_issues_table.join(issue_table).on(issue_table[:id].eq(mr_closing_issues_table[:issue_id]))
           .join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id]))
-          .where(issue_table[:project_id].in(Arel.sql(@projects.select(:id).to_sql))) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          .where(issue_table[:project_id].in(project_ids || @project.id)) # rubocop:disable Gitlab/ModuleWithInstanceVariables
           .where(issue_table[:created_at].gteq(@options[:from])) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         # Load merge_requests

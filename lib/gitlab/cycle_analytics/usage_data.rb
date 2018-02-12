@@ -15,7 +15,7 @@ module Gitlab
         values = {}
 
         medians_per_stage.each do |stage_name, medians|
-          medians = medians.compact
+          medians = medians.map(&:presence).compact
 
           stage_values = {
             average: calc_average(medians),
@@ -35,7 +35,12 @@ module Gitlab
       private
 
       def medians_per_stage
-        @medians_per_stage ||= ::CycleAnalytics.all_medians_per_stage(projects, options)
+        projects.each_with_object({}) do |project, hsh|
+          ::CycleAnalytics.new(project, options).all_medians_per_stage.each do |stage_name, median|
+            hsh[stage_name] ||= []
+            hsh[stage_name] << median
+          end
+        end
       end
 
       def calc_average(values)
@@ -61,4 +66,3 @@ module Gitlab
     end
   end
 end
-

@@ -3,8 +3,8 @@ module Gitlab
     class BaseStage
       include BaseQuery
 
-      def initialize(projects:, options:)
-        @projects = projects
+      def initialize(project:, options:)
+        @project = project
         @options = options
       end
 
@@ -20,18 +20,21 @@ module Gitlab
         raise NotImplementedError.new("Expected #{self.name} to implement title")
       end
 
-      def medians
-        cte_table = Arel::Table.new("cte_table_for_#{name}")
+      def median
+        BatchLoader.for(@project.id).batch(key: name) do |project_ids, loader|
+          cte_table = Arel::Table.new("cte_table_for_#{name}")
 
-        # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
-        # Next, we find the first of the start_time_attrs that isn't `NULL` (call this start_time).
-        # We compute the (end_time - start_time) interval, and give it an alias based on the current
-        # cycle analytics stage.
-        interval_query = Arel::Nodes::As.new(
-          cte_table,
-          subtract_datetimes(base_query.dup, start_time_attrs, end_time_attrs, name.to_s))
+          # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
+          # Next, we find the first of the start_time_attrs that isn't `NULL` (call this start_time).
+          # We compute the (end_time - start_time) interval, and give it an alias based on the current
+          # cycle analytics stage.
+          interval_query = Arel::Nodes::As.new(cte_table,
+            subtract_datetimes(base_query(project_ids), start_time_attrs, end_time_attrs, name.to_s))
 
-        median_datetimes(cte_table, interval_query, name)
+          median_datetimes(cte_table, interval_query, name, :project_id)&.each do |project_id, median|
+            loader.call(project_id, median)
+          end
+        end
       end
 
       def name
