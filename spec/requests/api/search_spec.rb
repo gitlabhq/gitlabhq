@@ -276,7 +276,6 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
-<<<<<<< HEAD
 
       context 'when elasticsearch is disabled' do
         it_behaves_like 'elasticsearch disabled' do
@@ -289,8 +288,6 @@ describe API::Search do
           let(:endpoint) { "/groups/#{group.id}/-/search" }
         end
       end
-=======
->>>>>>> upstream/master
     end
   end
 
