@@ -50,9 +50,10 @@ module Gitlab
       end
 
       def wiki_restorer
-        Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: wiki_repo_path,
+        Gitlab::ImportExport::WikiRestorer.new(path_to_bundle: wiki_repo_path,
                                                shared: @shared,
-                                               project: ProjectWiki.new(project_tree.restored_project))
+                                               project: ProjectWiki.new(project_tree.restored_project),
+                                               wiki_enabled: @project.wiki_enabled?)
       end
 
       def uploads_restorer
