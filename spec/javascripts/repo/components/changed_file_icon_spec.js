@@ -32,10 +32,6 @@ describe('IDE changed file icon', () => {
   });
 
   describe('changedIconClass', () => {
-    it('includes multi-file-changed-icon as standard', () => {
-      expect(vm.changedIconClass).toContain('multi-file-changed-icon');
-    });
-
     it('includes multi-file-modified when not a temp file', () => {
       expect(vm.changedIconClass).toContain('multi-file-modified');
     });
