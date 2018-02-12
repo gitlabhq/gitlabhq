@@ -8,7 +8,7 @@ export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
-export const getIssueState = state => state.noteableData.state;
+export const issueState = state => state.noteableData.state;
 
 export const getUserData = state => state.userData || {};
 export const getUserDataByProp = state => prop => state.userData && state.userData[prop];

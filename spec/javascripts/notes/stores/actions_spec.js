@@ -109,7 +109,7 @@ describe('Actions Notes Store', () => {
     it('emits an event on the document', () => {
       document.addEventListener('issuable_vue_app:change', (event) => {
         expect(event.detail.data).toEqual({ id: '1', state: 'closed' });
-        expect(event.detail.isClosed).toEqual(true);
+        expect(event.detail.isClosed).toEqual(false);
       });
 
       store.dispatch('emitStateChangedEvent', { id: '1', state: 'closed' });

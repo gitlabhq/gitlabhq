@@ -9,10 +9,11 @@
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
-  import noteSignedOutWidget from './note_signed_out_widget.vue';
-  import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import loadingButton from '../../vue_shared/components/loading_button.vue';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
+  import discussionLockedWidget from './discussion_locked_widget.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
@@ -23,6 +24,7 @@
       discussionLockedWidget,
       markdownField,
       userAvatarLink,
+      loadingButton,
     },
     mixins: [
       issuableStateMixin,
@@ -41,11 +43,8 @@
         'getUserData',
         'getNoteableData',
         'getNotesData',
-        'getIssueState',
+        'issueState',
       ]),
-      issueState() {
-        return this.getIssueState;
-      },
       isLoggedIn() {
         return this.getUserData.id;
       },
@@ -131,6 +130,8 @@
         }
       },
       handleSave(withIssueAction) {
+        this.isSubmitting = true;
+
         if (this.note.length) {
           const noteData = {
             endpoint: this.endpoint,
@@ -147,7 +148,6 @@
           if (this.noteType === constants.DISCUSSION) {
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
-          this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
           this.resizeTextarea();
           this.stopPolling();
@@ -189,13 +189,24 @@ Please check your network connection and try again.`;
           this.toggleIssueState();
         }
       },
+      enableButton() {
+        this.isSubmitting = false;
+      },
       toggleIssueState() {
         if (this.isIssueOpen) {
           this.closeIssue()
-            .catch(() => Flash(__('Something went wrong while closing the issue. Please try again later')));
+            .then(() => this.enableButton())
+            .catch(() => {
+              this.enableButton();
+              Flash(__('Something went wrong while closing the issue. Please try again later'));
+            });
         } else {
           this.reopenIssue()
-            .catch(() => Flash(__('Something went wrong while reopening the issue. Please try again later')));
+            .then(() => this.enableButton())
+            .catch(() => {
+              this.enableButton();
+              Flash(__('Something went wrong while reopening the issue. Please try again later'));
+            });
         }
       },
       discard(shouldClear = true) {
@@ -373,15 +384,19 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     </li>
                   </ul>
                 </div>
-                <button
-                  type="button"
-                  @click="handleSave(true)"
+
+                <loading-button
                   v-if="canUpdateIssue"
-                  :class="actionButtonClassNames"
+                  :loading="isSubmitting"
+                  @click="handleSave(true)"
+                  :container-class="[
+                    actionButtonClassNames,
+                    'btn btn-comment btn-comment-and-close js-action-button'
+                  ]"
                   :disabled="isSubmitting"
-                  class="btn btn-comment btn-comment-and-close js-action-button">
-                  {{ issueActionButtonTitle }}
-                </button>
+                  :label="issueActionButtonTitle"
+                />
+
                 <button
                   type="button"
                   v-if="note.length"

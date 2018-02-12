@@ -77,10 +77,10 @@ export const reopenIssue = ({ commit, dispatch, state }) => service
     dispatch('emitStateChangedEvent', data);
   });
 
-export const emitStateChangedEvent = ({ commit }, data) => {
+export const emitStateChangedEvent = ({ commit, getters }, data) => {
   const event = new CustomEvent('issuable_vue_app:change', { detail: {
     data,
-    isClosed: data.state === constants.CLOSED,
+    isClosed: getters.issueState === constants.CLOSED,
   } });
 
   document.dispatchEvent(event);
