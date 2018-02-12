@@ -109,9 +109,9 @@ module API
       end
       get ':id/-/search' do
         check_elasticsearch_scope!
-        find_group!(params[:id])
+        group = find_group!(params[:id])
 
-        present search(group_id: params[:id]), with: entity
+        present search(group_id: group.id), with: entity
       end
     end
 
@@ -130,9 +130,9 @@ module API
         use :pagination
       end
       get ':id/-/search' do
-        find_project!(params[:id])
+        project = find_project!(params[:id])
 
-        present search(project_id: params[:id]), with: entity
+        present search(project_id: project.id), with: entity
       end
     end
   end
