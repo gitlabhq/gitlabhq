@@ -51,7 +51,7 @@
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
 
-        #commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id) } }
+        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id) } }
         = link_to commit.short_id, link, class: "commit-sha btn btn-transparent btn-link"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)
