@@ -72,52 +72,15 @@ describe Key, :mailer do
       expect(build(:key)).to be_valid
     end
 
+    it 'accepts a key with newline charecters after stripping them' do
+      key = build(:key)
+      key.key = key.key.insert(100, "\n")
+      key.key = key.key.insert(40, "\r\n")
+      expect(key).to be_valid
+    end
+
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
-    end
-
-    where(:factory, :chars, :expected_sections) do
-      [
-        [:key,                 ["\n", "\r\n"], 3],
-        [:key,                 [' ', ' '],     3],
-        [:key_without_comment, [' ', ' '],     2]
-      ]
-    end
-
-    with_them do
-      let!(:key) { create(factory) }
-      let!(:original_fingerprint) { key.fingerprint }
-
-      it 'accepts a key with blank space characters after stripping them' do
-        modified_key = key.key.insert(100, chars.first).insert(40, chars.last)
-        _, content = modified_key.split
-
-        key.update!(key: modified_key)
-
-        expect(key).to be_valid
-        expect(key.key.split.size).to eq(expected_sections)
-
-        expect(content).not_to match(/\s/)
-        expect(original_fingerprint).to eq(key.fingerprint)
-      end
-    end
-  end
-
-  context 'validate size' do
-    where(:key_content, :result) do
-      [
-        [Spec::Support::Helpers::KeyGeneratorHelper.new(512).generate,  false],
-        [Spec::Support::Helpers::KeyGeneratorHelper.new(8192).generate, false],
-        [Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate, true]
-      ]
-    end
-
-    with_them do
-      it 'validates the size of the key' do
-        key = build(:key, key: key_content)
-
-        expect(key.valid?).to eq(result)
-      end
     end
   end
 
