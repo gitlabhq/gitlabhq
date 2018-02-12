@@ -8,7 +8,7 @@ describe API::ProjectImport do
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
 
-    group.add_owner(user)
+    namespace.add_owner(user)
   end
 
   after do
@@ -19,9 +19,11 @@ describe API::ProjectImport do
     it 'schedules an import' do
       expect_any_instance_of(Project).to receive(:import_schedule)
 
-      post api('/projects/import', user), name: 'test', file: file, namespace: namespace.full_path
+      post api('/projects/import', user), path: 'test-import', file: file, namespace: namespace.full_path
 
-      expect(project.status).to eq('started')
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(Project.find_by_name('test-import').first.status).to eq('started')
     end
   end
 
