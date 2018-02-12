@@ -1,26 +1,25 @@
 require 'digest/sha1'
 
 module QA
-  feature 'pull codes with a deploy key', :core, :docker do
+  feature 'cloning code using a deploy key', :core, :docker do
     let(:runner_name) { "qa-runner-#{Time.now.to_i}" }
 
     after do
       Service::Runner.new(runner_name).remove!
     end
 
-    scenario 'user setup a deploy key and use it to pull from CI job' do
+    scenario 'user sets up a deploy key to clone code using pipelines' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
       project = Factory::Resource::Project.fabricate! do |resource|
-        resource.name = 'cicd-pull-with-deploy-key'
+        resource.name = 'deploy-key-clone-project'
       end
 
       Factory::Resource::Runner.fabricate! do |runner|
         runner.project = project
         runner.name = runner_name
         runner.tags = %w[qa docker]
-        runner.executor = 'shell'
         runner.image = 'gitlab/gitlab-runner:ubuntu'
       end
 
@@ -47,20 +46,19 @@ module QA
 
       repository_uri = Git::Repository.parse_uri(repository_url)
 
-      gitlab_ci =
-        <<~YAML
-          cat-config:
-            script:
-              - mkdir -p ~/.ssh
-              - ssh-keyscan -p #{repository_uri.port || 22} #{repository_uri.host} >> ~/.ssh/known_hosts
-              - eval $(ssh-agent -s)
-              - echo "$DEPLOY_KEY" | ssh-add -
-              - git clone #{repository_url}
-              - sha1sum #{project.name}/.gitlab-ci.yml
-            tags:
-              - qa
-              - docker
-        YAML
+      gitlab_ci = <<~YAML
+        cat-config:
+          script:
+            - mkdir -p ~/.ssh
+            - ssh-keyscan -p #{repository_uri.port || 22} #{repository_uri.host} >> ~/.ssh/known_hosts
+            - eval $(ssh-agent -s)
+            - echo "$DEPLOY_KEY" | ssh-add -
+            - git clone #{repository_url}
+            - sha1sum #{project.name}/.gitlab-ci.yml
+          tags:
+            - qa
+            - docker
+      YAML
 
       sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
 
