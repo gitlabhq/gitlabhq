@@ -16,11 +16,10 @@ describe API::ProjectImport do
   end
 
   describe 'POST /projects/import' do
-
     it 'schedules an import' do
       expect_any_instance_of(Project).to receive(:import_schedule)
 
-      post api('/projects/import', user), file: file, namespace: namespace.full_path
+      post api('/projects/import', user), name: 'test', file: file, namespace: namespace.full_path
 
       expect(project.status).to eq('started')
     end
@@ -43,7 +42,7 @@ describe API::ProjectImport do
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to include('import_status' => 'failed',
-                                  'import_error' => 'error')
+                                       'import_error' => 'error')
     end
   end
 end

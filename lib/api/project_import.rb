@@ -17,6 +17,7 @@ module API
     end
 
     params do
+      requires :name, type: String, desc: 'The new project name'
       optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
       requires :file, type: File, desc: 'The project export file to be imported'
     end
@@ -37,9 +38,11 @@ module API
                       Namespace.find_by_path_or_name(namespace)
                     end
 
-        project = ::Projects::GitlabProjectsImportService.new(current_user, import_params).execute
+        project_params = import_params.merge(namespace: namespace.id)
 
-        render_api_error!(link.project.full_messages.first, 400) unless project.saved?
+        project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
+
+        render_api_error!(project.full_messages.first, 400) unless project.saved?
 
         present project, with: Entities::ProjectImportStatus
       end
