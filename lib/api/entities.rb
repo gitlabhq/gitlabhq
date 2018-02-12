@@ -90,6 +90,11 @@ module API
       expose :created_at
     end
 
+    class ProjectImportStatus < ProjectIdentity
+      expose :import_status
+      expose :import_error, if: :import_error
+    end
+
     class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 

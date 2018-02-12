@@ -33,7 +33,7 @@ describe API::ProjectImport do
       get api("/projects/#{project.id}/import", user)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to eq('import_status' => 'started')
+      expect(json_response).to include('import_status' => 'started')
     end
 
     it 'returns the import status and the error if failed' do
@@ -42,7 +42,7 @@ describe API::ProjectImport do
       get api("/projects/#{project.id}/import", user)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to eq('import_status' => 'failed',
+      expect(json_response).to include('import_status' => 'failed',
                                   'import_error' => 'error')
     end
   end
