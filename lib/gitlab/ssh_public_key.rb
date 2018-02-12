@@ -21,22 +21,6 @@ module Gitlab
       technology(name)&.supported_sizes
     end
 
-    def self.sanitize(key_content)
-      ssh_type, *parts = key_content.strip.split
-
-      return key_content if parts.empty?
-
-      parts.each_with_object("#{ssh_type} ").with_index do |(part, content), index|
-        content << part
-
-        if Gitlab::SSHPublicKey.new(content).valid?
-          break [content, parts[index + 1]].compact.join(' ') # Add the comment part if present
-        elsif parts.size == index + 1 # return original content if we've reached the last element
-          break key_content
-        end
-      end
-    end
-
     attr_reader :key_text, :key
 
     # Unqualified MD5 fingerprint for compatibility
@@ -53,23 +37,23 @@ module Gitlab
     end
 
     def valid?
-      key.present? && bits && technology.supported_sizes.include?(bits)
+      key.present?
     end
 
     def type
-      technology.name if key.present?
+      technology.name if valid?
     end
 
     def bits
-      return if key.blank?
+      return unless valid?
 
       case type
       when :rsa
-        key.n&.num_bits
+        key.n.num_bits
       when :dsa
-        key.p&.num_bits
+        key.p.num_bits
       when :ecdsa
-        key.group.order&.num_bits
+        key.group.order.num_bits
       when :ed25519
         256
       else
