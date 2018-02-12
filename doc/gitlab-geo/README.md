@@ -191,6 +191,10 @@ Read through the [Geo High Availability documentation](ha.md).
 When you have object storage enabled, please consult the
 [Geo with Object Storage](object_storage.md) documentation.
 
+## Restore demoted primary geo node
+
+Read how to [Bring a demoted primary back](bring-primary-back.md)
+
 ## Replicating the Container Registry
 
 Read how to [replicate the Container Registry](docker_registry.md).
