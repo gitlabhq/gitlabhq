@@ -7,7 +7,7 @@ require_relative '../lib/gitlab/popen/runner'
 def emit_warnings(static_analysis)
   static_analysis.warned_results.each do |result|
     puts
-    puts "**** #{result.cmd.join(' ')} had the following warnings:"
+    puts "**** #{result.cmd.join(' ')} had the following warning(s):"
     puts
     puts result.stderr
     puts
@@ -17,7 +17,7 @@ end
 def emit_errors(static_analysis)
   static_analysis.failed_results.each do |result|
     puts
-    puts "**** #{result.cmd.join(' ')} failed with the following error:"
+    puts "**** #{result.cmd.join(' ')} failed with the following error(s):"
     puts
     puts result.stdout
     puts result.stderr
