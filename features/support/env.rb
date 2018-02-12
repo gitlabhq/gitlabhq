@@ -18,7 +18,7 @@ end
 
 # EE-only
 %w(test_license).each do |f|
-  require Rails.root.join('spec', 'support', f)
+  require Rails.root.join('ee', 'spec', 'support', f)
 end
 
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
