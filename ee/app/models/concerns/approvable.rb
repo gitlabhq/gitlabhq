@@ -13,13 +13,13 @@ module Approvable
   #
   def approvals_left
     [
-      [approvals_required - approvals.count, number_of_potential_approvers].min,
+      [approvals_required - approvals.size, number_of_potential_approvers].min,
       0
     ].max
   end
 
   def approvals_required
-    approvals_before_merge || target_project.approvals_before_merge
+    @approvals_required ||= approvals_before_merge || target_project.approvals_before_merge
   end
 
   def approvals_before_merge
