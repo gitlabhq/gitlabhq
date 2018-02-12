@@ -1,9 +1,7 @@
 module MergeRequests
   class BuildService < MergeRequests::BaseService
-    include Gitlab::Utils::StrongMemoize
-
     def execute
-      @params_issue_iid = params.delete(:issue_iid)
+      @issue_iid = params.delete(:issue_iid)
 
       self.merge_request = MergeRequest.new(params)
       merge_request.compare_commits = []
@@ -125,7 +123,7 @@ module MergeRequests
     #
     def assign_title_and_description
       assign_title_and_description_from_single_commit
-      assign_title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
+      assign_title_from_issue
 
       merge_request.title ||= source_branch.titleize.humanize
       merge_request.title = wip_title if compare_commits.empty?
@@ -134,9 +132,9 @@ module MergeRequests
     end
 
     def append_closes_description
-      return unless issue
+      return unless issue_iid
 
-      closes_issue = "Closes #{issue.to_reference}"
+      closes_issue = "Closes ##{issue_iid}"
 
       if description.present?
         merge_request.description += closes_issue.prepend("\n\n")
@@ -156,27 +154,13 @@ module MergeRequests
     end
 
     def assign_title_from_issue
-      return unless issue
+      return unless issue && issue.is_a?(Issue)
 
-      merge_request.title = "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
-
-      unless merge_request.title
-        branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
-        merge_request.title = "Resolve #{issue_iid}"
-        merge_request.title += " \"#{branch_title}\"" unless branch_title.empty?
-      end
+      merge_request.title = "Resolve \"#{issue.title}\""
     end
 
     def issue_iid
-      strong_memoize(:issue_iid) do
-        @params_issue_iid || begin
-          id = if target_project.external_issue_tracker
-                 source_branch.match(target_project.external_issue_reference_pattern).try(:[], 0)
-               end
-
-          id || source_branch.match(/\A(\d+)-/).try(:[], 1)
-        end
-      end
+      @issue_iid ||= source_branch.match(/\A(\d+)-/).try(:[], 1)
     end
 
     def issue
