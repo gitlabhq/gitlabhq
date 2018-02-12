@@ -1,7 +1,5 @@
 module Geo
   class FileUploadService < FileService
-    IAT_LEEWAY = 60.seconds.to_i
-
     attr_reader :auth_header
 
     def initialize(params, auth_header)

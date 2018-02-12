@@ -80,7 +80,7 @@ module Geo
       url = Gitlab::Geo.primary_node.url + repository.full_path + '.git'
 
       # Fetch the repository, using a JWT header for authentication
-      authorization = ::Gitlab::Geo::BaseRequest.new.authorization
+      authorization = ::Gitlab::Geo::RepoSyncRequest.new.authorization
       header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
 
       repository.with_config(header) do
