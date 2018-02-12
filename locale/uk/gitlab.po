@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-07 11:38-0600\n"
-"PO-Revision-Date: 2018-02-12 04:02-0500\n"
+"PO-Revision-Date: 2018-02-12 06:15-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -641,10 +641,10 @@ msgid "CiStatus|running"
 msgstr "виконується"
 
 msgid "CiVariables|Input variable key"
-msgstr ""
+msgstr "Ключ вхідної змінної"
 
 msgid "CiVariables|Input variable value"
-msgstr ""
+msgstr "Значення вхідної змінної"
 
 msgid "CiVariables|Remove variable row"
 msgstr ""
@@ -1544,7 +1544,7 @@ msgid "GeoNodes|Failed"
 msgstr "Невдало"
 
 msgid "GeoNodes|Full"
-msgstr ""
+msgstr "Повний"
 
 msgid "GeoNodes|GitLab version does not match the primary node version"
 msgstr ""
@@ -2741,7 +2741,7 @@ msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "Встановіть пароль для свого облікового запису, щоб мати можливість відправляти та отримувати через %{protocol}."
 
 msgid "Set up CI/CD"
-msgstr ""
+msgstr "Налаштування CI/CD"
 
 msgid "Set up Koding"
 msgstr "Налаштування Koding"
@@ -3725,7 +3725,7 @@ msgid "ciReport|Fixed:"
 msgstr ""
 
 msgid "ciReport|Instances"
-msgstr ""
+msgstr "Інстанси"
 
 msgid "ciReport|Learn more about whitelisting"
 msgstr ""
@@ -3743,7 +3743,7 @@ msgid "ciReport|Performance metrics"
 msgstr ""
 
 msgid "ciReport|SAST"
-msgstr ""
+msgstr "SAST"
 
 msgid "ciReport|SAST detected no security vulnerabilities"
 msgstr ""
@@ -3782,7 +3782,7 @@ msgstr[1] "запити на злиття"
 msgstr[2] "запитів на злиття"
 
 msgid "mrWidget|Cancel automatic merge"
-msgstr ""
+msgstr "Скасувати автоматичне злиття"
 
 msgid "mrWidget|Check out branch"
 msgstr ""
@@ -3818,7 +3818,7 @@ msgid "mrWidget|Mentions"
 msgstr ""
 
 msgid "mrWidget|Merge"
-msgstr ""
+msgstr "Злиття"
 
 msgid "mrWidget|Merge failed."
 msgstr "Злиття пройшло невдало."
