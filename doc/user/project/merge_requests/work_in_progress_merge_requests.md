@@ -7,7 +7,8 @@ have been marked a **Work In Progress**.
 ![Blocked Accept Button](img/wip_blocked_accept_button.png)
 
 To mark a merge request a Work In Progress, simply start its title with `[WIP]`
-or `WIP:`.
+or `WIP:`. As an alternative, you're also able to do it by sending a commit 
+with its title starting with `wip` or `WIP` to the merge request's source branch.
 
 ![Mark as WIP](img/wip_mark_as_wip.png)
 

@@ -82,4 +82,39 @@ describe AutoDevopsHelper do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.auto_devops_warning_message' do
+    subject { helper.auto_devops_warning_message(project) }
+
+    context 'when the service is missing' do
+      before do
+        allow(helper).to receive(:missing_auto_devops_service?).and_return(true)
+      end
+
+      context 'when the domain is missing' do
+        before do
+          allow(helper).to receive(:missing_auto_devops_domain?).and_return(true)
+        end
+
+        it { is_expected.to match(/Auto Review Apps and Auto Deploy need a domain name and a .* to work correctly./) }
+      end
+
+      context 'when the domain is not missing' do
+        before do
+          allow(helper).to receive(:missing_auto_devops_domain?).and_return(false)
+        end
+
+        it { is_expected.to match(/Auto Review Apps and Auto Deploy need a .* to work correctly./) }
+      end
+    end
+
+    context 'when the domain is missing' do
+      before do
+        allow(helper).to receive(:missing_auto_devops_service?).and_return(false)
+        allow(helper).to receive(:missing_auto_devops_domain?).and_return(true)
+      end
+
+      it { is_expected.to eq('Auto Review Apps and Auto Deploy need a domain name to work correctly.') }
+    end
+  end
 end

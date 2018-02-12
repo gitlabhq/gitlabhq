@@ -68,7 +68,7 @@ describe RepositoryForkWorker do
     end
 
     it "handles bad fork" do
-      error_message = "Unable to fork project #{fork_project.id} for repository #{project.full_path} -> #{fork_project.full_path}"
+      error_message = "Unable to fork project #{fork_project.id} for repository #{project.disk_path} -> #{fork_project.disk_path}"
 
       expect_fork_repository.and_return(false)
 

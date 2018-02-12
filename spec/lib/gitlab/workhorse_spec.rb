@@ -324,7 +324,7 @@ describe Gitlab::Workhorse do
       it 'includes a Repository param' do
         repo_param = {
           storage_name: 'default',
-          relative_path: project.full_path + '.git',
+          relative_path: project.disk_path + '.git',
           gl_repository: "project-#{project.id}"
         }
 
@@ -463,6 +463,23 @@ describe Gitlab::Workhorse do
         expect(command).to eq('git-blob')
         expect(params).to eq('RepoPath' => repository.path_to_repo, 'BlobId' => blob.id)
       end
+    end
+  end
+
+  describe '.send_url' do
+    let(:url) { 'http://example.com' }
+
+    subject { described_class.send_url(url) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("send-url")
+      expect(params).to eq({
+        'URL' => url,
+        'AllowRedirects' => false
+      }.deep_stringify_keys)
     end
   end
 end

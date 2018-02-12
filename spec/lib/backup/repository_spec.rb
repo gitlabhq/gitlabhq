@@ -33,10 +33,22 @@ describe Backup::Repository do
         allow(Gitlab::Popen).to receive(:popen).and_return(['error', 1])
       end
 
-      it 'shows the appropriate error' do
-        described_class.new.restore
+      context 'hashed storage' do
+        it 'shows the appropriate error' do
+          described_class.new.restore
 
-        expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} - error")
+          expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} (#{project.disk_path}) - error")
+        end
+      end
+
+      context 'legacy storage' do
+        let!(:project) { create(:project, :legacy_storage) }
+
+        it 'shows the appropriate error' do
+          described_class.new.restore
+
+          expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} - error")
+        end
       end
     end
   end

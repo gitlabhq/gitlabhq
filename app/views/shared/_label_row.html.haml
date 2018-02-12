@@ -1,3 +1,7 @@
+- subject = local_assigns[:subject]
+- show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
+- show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
+
 %span.label-row
   - if can?(current_user, :admin_label, @project)
     .draggable-handler
@@ -13,6 +17,14 @@
   - if defined?(@project) && @project.group.present?
     %span.label-type
       = label.model_name.human.titleize
-  - if label.description
-    %span.label-description
-      = markdown_field(label, :description)
+
+  %span.label-description
+    - if label.description.present?
+      .description-text
+        = markdown_field(label, :description)
+    .hidden-xs.hidden-sm
+      - if show_label_issues_link
+        = link_to_label(label, subject: subject) { 'Issues' }
+      - if show_label_merge_requests_link
+        &middot;
+        = link_to_label(label, subject: subject, type: :merge_request) { 'Merge requests' }

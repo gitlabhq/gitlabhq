@@ -21,7 +21,7 @@ describe ConvertCustomNotificationSettingsToColumns, :migration do
         events[event] = true
       end
 
-      user = build(:user).becomes(user_class).tap(&:save!)
+      user = user_class.create!(email: "user-#{SecureRandom.hex}@example.org", username: "user-#{SecureRandom.hex}", encrypted_password: '12345678')
       create_params = { user_id: user.id, level: params[:level], events: events }
       notification_setting = described_class::NotificationSetting.create(create_params)
 
@@ -37,7 +37,7 @@ describe ConvertCustomNotificationSettingsToColumns, :migration do
         events[event] = true
       end
 
-      user = build(:user).becomes(user_class).tap(&:save!)
+      user = user_class.create!(email: "user-#{SecureRandom.hex}@example.org", username: "user-#{SecureRandom.hex}", encrypted_password: '12345678')
       create_params = events.merge(user_id: user.id, level: params[:level])
       notification_setting = described_class::NotificationSetting.create(create_params)
 

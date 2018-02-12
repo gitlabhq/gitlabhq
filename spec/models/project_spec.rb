@@ -80,6 +80,7 @@ describe Project do
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
+    it { is_expected.to have_many(:lfs_file_locks) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -129,7 +130,6 @@ describe Project do
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
@@ -2071,7 +2071,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for(ref: 'ref') }
+    subject { project.reload.secret_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(
@@ -2092,7 +2092,7 @@ describe Project do
 
     context 'when the ref is a protected branch' do
       before do
-        create(:protected_branch, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -2100,7 +2100,7 @@ describe Project do
 
     context 'when the ref is a protected tag' do
       before do
-        create(:protected_tag, name: 'ref', project: project)
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
       it_behaves_like 'ref is protected'
@@ -2125,6 +2125,8 @@ describe Project do
 
     context 'when the ref is a protected branch' do
       before do
+        allow(project).to receive(:repository).and_call_original
+        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(true)
         create(:protected_branch, name: 'ref', project: project)
       end
 
@@ -2135,6 +2137,8 @@ describe Project do
 
     context 'when the ref is a protected tag' do
       before do
+        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(false)
+        allow(project).to receive_message_chain(:repository, :tag_exists?).and_return(true)
         create(:protected_tag, name: 'ref', project: project)
       end
 
@@ -2504,6 +2508,7 @@ describe Project do
   end
 
   describe '#remove_exports' do
+    let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
     it 'removes the exports directory for the project' do
@@ -2516,15 +2521,29 @@ describe Project do
       expect(File.exist?(project.export_path)).to be_falsy
     end
 
-    it 'is a no-op when there is no namespace' do
-      export_path = project.export_path
-      project.update_column(:namespace_id, nil)
+    it 'is a no-op on legacy projects when there is no namespace' do
+      export_path = legacy_project.export_path
+
+      legacy_project.update_column(:namespace_id, nil)
 
       expect(FileUtils).not_to receive(:rm_rf).with(export_path)
 
-      project.remove_exports
+      legacy_project.remove_exports
 
       expect(File.exist?(export_path)).to be_truthy
+    end
+
+    it 'runs on hashed storage projects when there is no namespace' do
+      export_path = project.export_path
+
+      project.update_column(:namespace_id, nil)
+
+      allow(FileUtils).to receive(:rm_rf).and_call_original
+      expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
+
+      project.remove_exports
+
+      expect(File.exist?(export_path)).to be_falsy
     end
 
     it 'is run when the project is destroyed' do
@@ -2545,7 +2564,7 @@ describe Project do
   end
 
   context 'legacy storage' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :legacy_storage) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -2719,6 +2738,8 @@ describe Project do
     let(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
+    let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
+    let(:hashed_path) { File.join(hashed_prefix, hash) }
 
     before do
       stub_application_setting(hashed_storage_enabled: true)
@@ -2744,14 +2765,12 @@ describe Project do
 
     describe '#base_dir' do
       it 'returns base_dir based on hash of project id' do
-        expect(project.base_dir).to eq("@hashed/#{hash[0..1]}/#{hash[2..3]}")
+        expect(project.base_dir).to eq(hashed_prefix)
       end
     end
 
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
-        hashed_path = "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}"
-
         expect(project.disk_path).to eq(hashed_path)
       end
     end
@@ -2760,7 +2779,7 @@ describe Project do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, "@hashed/#{hash[0..1]}/#{hash[2..3]}")
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, hashed_prefix)
 
         project.ensure_storage_path_exists
       end
@@ -3010,18 +3029,40 @@ describe Project do
 
     subject { project.auto_devops_variables }
 
-    context 'when enabled in settings' do
+    context 'when enabled in instance settings' do
       before do
         stub_application_setting(auto_devops_enabled: true)
       end
 
       context 'when domain is empty' do
         before do
+          stub_application_setting(auto_devops_domain: nil)
+        end
+
+        it 'variables does not include AUTO_DEVOPS_DOMAIN' do
+          is_expected.not_to include(domain_variable)
+        end
+      end
+
+      context 'when domain is configured' do
+        before do
+          stub_application_setting(auto_devops_domain: 'example.com')
+        end
+
+        it 'variables includes AUTO_DEVOPS_DOMAIN' do
+          is_expected.to include(domain_variable)
+        end
+      end
+    end
+
+    context 'when explicitely enabled' do
+      context 'when domain is empty' do
+        before do
           create(:project_auto_devops, project: project, domain: nil)
         end
 
-        it 'variables are empty' do
-          is_expected.to be_empty
+        it 'variables does not include AUTO_DEVOPS_DOMAIN' do
+          is_expected.not_to include(domain_variable)
         end
       end
 
@@ -3030,10 +3071,14 @@ describe Project do
           create(:project_auto_devops, project: project, domain: 'example.com')
         end
 
-        it "variables are not empty" do
-          is_expected.not_to be_empty
+        it 'variables includes AUTO_DEVOPS_DOMAIN' do
+          is_expected.to include(domain_variable)
         end
       end
+    end
+
+    def domain_variable
+      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
     end
   end
 

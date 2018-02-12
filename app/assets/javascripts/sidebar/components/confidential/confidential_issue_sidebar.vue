@@ -2,6 +2,7 @@
   import Flash from '../../../flash';
   import editForm from './edit_form.vue';
   import Icon from '../../../vue_shared/components/icon.vue';
+  import { __ } from '../../../locale';
 
   export default {
     components: {
@@ -40,8 +41,7 @@
         this.service.update('issue', { confidential })
           .then(() => location.reload())
           .catch(() => {
-            Flash(`Something went wrong trying to
-  change the confidentiality of this issue`);
+            Flash(__('Something went wrong trying to change the confidentiality of this issue'));
           });
       },
     },
@@ -58,7 +58,7 @@
       />
     </div>
     <div class="title hide-collapsed">
-      Confidentiality
+      {{ __('Confidentiality') }}
       <a
         v-if="isEditable"
         class="pull-right confidential-edit"
@@ -84,7 +84,7 @@
           aria-hidden="true"
           class="sidebar-item-icon inline"
         />
-        Not confidential
+        {{ __('Not confidential') }}
       </div>
       <div
         v-else
@@ -95,7 +95,7 @@
           aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />
-        This issue is confidential
+        {{ __('This issue is confidential') }}
       </div>
     </div>
   </div>

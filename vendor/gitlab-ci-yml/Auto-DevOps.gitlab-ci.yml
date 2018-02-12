@@ -103,18 +103,22 @@ performance:
   artifacts:
     paths:
     - performance.json
+    - sitespeed-results/
   only:
     refs:
       - branches
     kubernetes: active
 
 sast:
-  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  image: docker:latest
   variables:
-    POSTGRES_DB: "false"
+    DOCKER_DRIVER: overlay2
   allow_failure: true
+  services:
+    - docker:dind
   script:
-    - sast .
+    - setup_docker
+    - sast
   artifacts:
     paths: [gl-sast-report.json]
 
@@ -284,6 +288,12 @@ production:
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
 
   function sast_container() {
+    if [[ -n "$CI_REGISTRY_USER" ]]; then
+      echo "Logging to GitLab Container Registry with CI credentials..."
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      echo ""
+    fi
+
     docker run -d --name db arminc/clair-db:latest
     docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
     apk add -U wget ca-certificates
@@ -308,7 +318,12 @@ production:
   function sast() {
     case "$CI_SERVER_VERSION" in
       *-ee)
-        /app/bin/run "$@"
+        # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
+        SAST_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+
+        docker run --volume "$PWD:/code" \
+                   --volume /var/run/docker.sock:/var/run/docker.sock \
+                   "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
         ;;
       *)
         echo "GitLab EE is required"
@@ -345,6 +360,12 @@ production:
       replicas="$new_replicas"
     fi
 
+    if [[ "$CI_PROJECT_VISIBILITY" != "public" ]]; then
+      secret_name='gitlab-registry'
+    else
+      secret_name=''
+    fi
+
     helm upgrade --install \
       --wait \
       --set service.enabled="$service_enabled" \
@@ -352,6 +373,7 @@ production:
       --set image.repository="$CI_APPLICATION_REPOSITORY" \
       --set image.tag="$CI_APPLICATION_TAG" \
       --set image.pullPolicy=IfNotPresent \
+      --set image.secrets[0].name="$secret_name" \
       --set application.track="$track" \
       --set application.database_url="$DATABASE_URL" \
       --set service.url="$CI_ENVIRONMENT_URL" \
@@ -481,6 +503,9 @@ production:
 
   function create_secret() {
     echo "Create secret..."
+    if [[ "$CI_PROJECT_VISIBILITY" == "public" ]]; then
+      return
+    fi
 
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \
@@ -503,16 +528,16 @@ production:
     export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
 
     mkdir gitlab-exporter
-    wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-3/index.js
+    wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-5/index.js
 
     mkdir sitespeed-results
 
     if [ -f .gitlab-urls.txt ]
     then
       sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
-      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.0.3 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
+      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
     else
-      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.0.3 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
     fi
 
     mv sitespeed-results/data/performance.json performance.json

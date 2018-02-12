@@ -12,8 +12,4 @@ class NamespacePathValidator < AbstractPathValidator
   def self.format_error_message
     Gitlab::PathRegex.namespace_format_message
   end
-
-  def self.full_path(record, value)
-    record.build_full_path
-  end
 end

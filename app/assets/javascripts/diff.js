@@ -1,3 +1,6 @@
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
 import { getLocationHash } from './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
@@ -69,7 +72,9 @@ export default class Diff {
     const view = file.data('view');
 
     const params = { since, to, bottom, offset, unfold, view };
-    $.get(link, params, response => $target.parent().replaceWith(response));
+    axios.get(link, { params })
+    .then(({ data }) => $target.parent().replaceWith(data))
+    .catch(() => flash(__('An error occurred while loading diff')));
   }
 
   openAnchoredDiff(cb) {
