@@ -154,6 +154,27 @@ var config = {
         }
       },
       {
+        test: /katex.css$/,
+        include: /node_modules\/katex\/dist/,
+        use: [
+          { loader: 'style-loader' },
+          { 
+            loader: 'css-loader',
+            options: {
+              name: '[name].[hash].[ext]'
+            }
+          },
+        ],
+      },
+      {
+        test: /\.(eot|ttf|woff|woff2)$/,
+        include: /node_modules\/katex\/dist\/fonts/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[hash].[ext]',
+        }
+      },
+      {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
         use: [
           { loader: 'exports-loader', options: 'l.global' },
