@@ -1,0 +1,5 @@
+---
+title: Move IssuableTimeTracker vue component
+merge_request: 16948
+author: George Tsiolis
+type: performance
