@@ -57,7 +57,7 @@ class NotesFinder
     types = %w(commit issue merge_request snippet)
     note_relations = types.map { |t| notes_for_type(t) }
     note_relations.map! { |notes| search(notes) }
-    UnionFinder.new.find_union(note_relations, Note)
+    UnionFinder.new.find_union(note_relations, Note.includes(:author))
   end
 
   def noteables_for_type(noteable_type)
