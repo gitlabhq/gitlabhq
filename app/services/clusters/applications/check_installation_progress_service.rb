@@ -20,6 +20,7 @@ module Clusters
 
       def on_success
         app.make_installed!
+        app.post_install
       ensure
         remove_installation_pod
       end

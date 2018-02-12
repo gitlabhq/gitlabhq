@@ -13,6 +13,8 @@ module Clusters
         nginx: 1
       }
 
+      IP_ADDRESS_FETCH_RETRIES = 3
+
       def chart
         'stable/nginx-ingress'
       end
@@ -23,6 +25,11 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(name, chart: chart, chart_values_file: chart_values_file)
+      end
+
+      def post_install
+        ClusterWaitForIngressIpAddressWorker.perform_in(
+          ClusterWaitForIngressIpAddressWorker::INTERVAL, name, id, IP_ADDRESS_FETCH_RETRIES)
       end
     end
   end
