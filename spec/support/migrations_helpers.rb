@@ -58,6 +58,8 @@ module MigrationsHelpers
   end
 
   def schema_migrate_up!
+    reset_column_in_all_models
+
     disable_migrations_output do
       ActiveRecord::Migrator.migrate(migrations_paths)
     end
