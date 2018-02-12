@@ -47,7 +47,13 @@ module MigrationsHelpers
   end
 
   def migration_schema_version
-    self.class.metadata[:schema] || previous_migration.version
+    metadata_schema = self.class.metadata[:schema]
+
+    if metadata_schema == :latest
+      migrations.last.version
+    else
+      metadata_schema || previous_migration.version
+    end
   end
 
   def schema_migrate_down!
