@@ -73,6 +73,8 @@
         return {
           'btn-reopen': !this.isIssueOpen,
           'btn-close': this.isIssueOpen,
+          'js-note-target-close': this.isIssueOpen,
+          'js-note-target-reopen': !this.isIssueOpen,
         };
       },
       markdownDocsPath() {
