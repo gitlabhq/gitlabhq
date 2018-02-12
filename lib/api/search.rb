@@ -109,6 +109,7 @@ module API
       end
       get ':id/-/search' do
         check_elasticsearch_scope!
+
         group = find_group!(params[:id])
 
         present search(group_id: group.id), with: entity

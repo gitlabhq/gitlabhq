@@ -1,8 +1,9 @@
 <script>
   import Timeago from 'timeago.js';
   import _ from 'underscore';
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import { humanize } from '../../lib/utils/text_utility';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+  import { humanize } from '~/lib/utils/text_utility';
   import ActionsComponent from './environment_actions.vue';
   import ExternalUrlComponent from './environment_external_url.vue';
   import StopComponent from './environment_stop.vue';
@@ -21,14 +22,18 @@
 
   export default {
     components: {
-      userAvatarLink,
-      'commit-component': CommitComponent,
-      'actions-component': ActionsComponent,
-      'external-url-component': ExternalUrlComponent,
-      'stop-component': StopComponent,
-      'rollback-component': RollbackComponent,
-      'terminal-button-component': TerminalButtonComponent,
-      'monitoring-button-component': MonitoringButtonComponent,
+      UserAvatarLink,
+      CommitComponent,
+      ActionsComponent,
+      ExternalUrlComponent,
+      StopComponent,
+      RollbackComponent,
+      TerminalButtonComponent,
+      MonitoringButtonComponent,
+    },
+
+    directives: {
+      tooltip,
     },
 
     props: {
@@ -463,7 +468,11 @@
         v-if="!model.isFolder"
         class="environment-name flex-truncate-parent table-mobile-content"
         :href="environmentPath">
-        <span class="flex-truncate-child">{{ model.name }}</span>
+        <span
+          class="flex-truncate-child"
+          v-tooltip
+          :title="model.name"
+        >{{ model.name }}</span>
       </a>
       <span
         v-else
