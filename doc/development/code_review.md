@@ -69,6 +69,13 @@ request is up to one the project's maintainers, denoted on the
   mentioning them; this will ensure they see it if their notification level is
   set to "mentioned" and other people will understand they don't have to respond.
 
+### Maintainers
+
+- Avoid merging bad code even if that means delaying the release of a feature
+- In the unlikely event that bad code needs to be merged, the associated MR
+  should have a note from a maintainer mentioning that the code has technical
+  debt and will be fixed by X date, otherwise the MR will be reverted.
+
 ### Having your code reviewed
 
 Please keep in mind that code review is a process that can take multiple
