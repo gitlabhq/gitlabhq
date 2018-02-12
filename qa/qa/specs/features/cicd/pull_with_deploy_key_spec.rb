@@ -45,7 +45,7 @@ module QA
         repository_location
       end
 
-      repository_uri = URI.parse(repository_url)
+      repository_uri = Git::Repository.parse_uri(repository_url)
 
       gitlab_ci =
         <<~YAML
