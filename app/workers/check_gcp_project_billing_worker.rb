@@ -7,6 +7,7 @@ class CheckGcpProjectBillingWorker
   LEASE_TIMEOUT = 3.seconds.to_i
   SESSION_KEY_TIMEOUT = 5.minutes
   BILLING_TIMEOUT = 1.hour
+  BILLING_CHANGED_LABELS = { state_transition: nil }.freeze
 
   def self.get_session_token(token_key)
     Gitlab::Redis::SharedState.with do |redis|
@@ -70,26 +71,22 @@ class CheckGcpProjectBillingWorker
   def billing_changed_counter
     @billing_changed_counter ||= Gitlab::Metrics.counter(
       :gcp_billing_change_count,
-      "Counts the number of times a GCP project changed billing_enabled state from false to true"
+      "Counts the number of times a GCP project changed billing_enabled state from false to true",
+      BILLING_CHANGED_LABELS
     )
   end
 
-  def log_transition(previous_state, current_state)
-    state_message = if previous_state.nil? && !current_state
-                      "no_billing"
-                    elsif previous_state.nil? && current_state
-                      "with_billing"
-                    elsif !previous_state && current_state
-                      "billing_configured"
-                    end
-
-    Rails.logger.info "#{self.class}: state: #{state_message}"
+  def state_transition(previous_state, current_state)
+    if previous_state.nil? && !current_state
+      'no_billing'
+    elsif previous_state.nil? && current_state
+      'with_billing'
+    elsif !previous_state && current_state
+      'billing_configured'
+    end
   end
 
   def update_billing_change_counter(previous_state, current_state)
-    log_transition(previous_state, current_state)
-    return unless !previous_state && current_state
-
-    billing_changed_counter.increment
+    billing_changed_counter.increment(state_transition: state_transition(previous_state, current_state))
   end
 end

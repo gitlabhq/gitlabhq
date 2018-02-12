@@ -80,8 +80,8 @@ describe CheckGcpProjectBillingWorker do
           expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([])
         end
 
-        it 'does not increment the billing change counter' do
-          expect_any_instance_of(described_class).not_to receive(:billing_changed_counter)
+        it 'increments the billing change counter' do
+          expect_any_instance_of(described_class).to receive_message_chain(:billing_changed_counter, :increment)
 
           subject
         end
@@ -106,8 +106,8 @@ describe CheckGcpProjectBillingWorker do
         expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
       end
 
-      it 'does not increment the billing change counter' do
-        expect_any_instance_of(described_class).not_to receive(:billing_changed_counter)
+      it 'increment the billing change counter' do
+        expect_any_instance_of(described_class).to receive_message_chain(:billing_changed_counter, :increment)
 
         subject
       end
