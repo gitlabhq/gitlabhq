@@ -74,11 +74,9 @@ describe ProcessCommitWorker do
   describe '#process_commit_message' do
     context 'when pushing to the default branch' do
       it 'closes issues that should be closed per the commit message' do
-        allow(commit).to receive(:safe_message)
-                           .and_return("Closes #{issue.to_reference}")
+        allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
 
-        expect(worker).to receive(:close_issues)
-                            .with(project, user, user, commit, [issue])
+        expect(worker).to receive(:close_issues).with(project, user, user, commit, [issue])
 
         worker.process_commit_message(project, commit, user, user, true)
       end
@@ -86,8 +84,7 @@ describe ProcessCommitWorker do
 
     context 'when pushing to a non-default branch' do
       it 'does not close any issues' do
-        allow(commit).to receive(:safe_message)
-                           .and_return("Closes #{issue.to_reference}")
+        allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
 
         expect(worker).not_to receive(:close_issues)
 
@@ -128,8 +125,7 @@ describe ProcessCommitWorker do
 
   describe '#update_issue_metrics' do
     it 'updates any existing issue metrics' do
-      allow(commit).to receive(:safe_message)
-                         .and_return("Closes #{issue.to_reference}")
+      allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
 
       worker.update_issue_metrics(commit, user)
 
@@ -139,10 +135,10 @@ describe ProcessCommitWorker do
     end
 
     it "doesn't execute any queries with false conditions" do
-      allow(commit).to receive(:safe_message)
-                         .and_return("Lorem Ipsum")
+      allow(commit).to receive(:safe_message).and_return("Lorem Ipsum")
 
-      expect { worker.update_issue_metrics(commit, user) }.not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+      expect { worker.update_issue_metrics(commit, user) }
+        .not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
     end
   end
 
@@ -154,8 +150,9 @@ describe ProcessCommitWorker do
     end
 
     it 'parses date strings into Time instances' do
-      commit = worker
-                 .build_commit(project, id: '123', authored_date: Time.now.to_s)
+      commit = worker.build_commit(project,
+                                   id: '123',
+                                   authored_date: Time.now.to_s)
 
       expect(commit.authored_date).to be_an_instance_of(Time)
     end

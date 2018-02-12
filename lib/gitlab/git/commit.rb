@@ -471,6 +471,14 @@ module Gitlab
 
       private
 
+      def parent_ids=(shas)
+        @parent_ids = case shas
+                      when String then JSON.parse(shas)
+                      else
+                        shas
+                      end
+      end
+
       def init_from_hash(hash)
         raw_commit = hash.symbolize_keys
 
