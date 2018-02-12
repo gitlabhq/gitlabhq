@@ -3,12 +3,14 @@
   import fileStatusIcon from './repo_file_status_icon.vue';
   import fileIcon from '../../vue_shared/components/file_icon.vue';
   import icon from '../../vue_shared/components/icon.vue';
+  import changedFileIcon from './changed_file_icon.vue';
 
   export default {
     components: {
       fileStatusIcon,
       fileIcon,
       icon,
+      changedFileIcon,
     },
     props: {
       tab: {
@@ -30,12 +32,6 @@
       },
       showChangedIcon() {
         return this.tab.changed ? !this.tabMouseOver : false;
-      },
-      changedIcon() {
-        return this.tab.tempFile ? 'file-addition' : 'file-modified';
-      },
-      changedIconClass() {
-        return this.tab.tempFile ? 'multi-file-addition' : 'multi-file-modified';
       },
     },
 
@@ -77,11 +73,9 @@
         name="close"
         :size="12"
       />
-      <icon
+      <changed-file-icon
         v-else
-        :name="changedIcon"
-        :size="12"
-        :css-classes="changedIconClass"
+        :file="tab"
       />
     </button>
 
