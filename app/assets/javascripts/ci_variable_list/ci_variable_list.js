@@ -39,7 +39,7 @@ export default class VariableList {
       },
       protected: {
         selector: '.js-ci-variable-input-protected',
-        default: 'true',
+        default: 'false',
       },
       environment_scope: {
         // We can't use a `.js-` class here because
