@@ -31,22 +31,37 @@ module QA
           end
         end
 
-        def sign_in_using_ldap_credentials
-          click_link 'LDAP'
-
-          fill_in :username, with: Runtime::User.name
-          fill_in :password, with: Runtime::User.password
-
-          click_button 'Sign in'
+        def set_initial_password_if_present
+          if page.has_content?('Change your password')
+            fill_in :user_password, with: Runtime::User.password
+            fill_in :user_password_confirmation, with: Runtime::User.password
+            click_button 'Change your password'
+          end
         end
 
         def sign_in_using_credentials
+          if Runtime::User.ldap_user?
+            sign_in_using_ldap_credentials
+          else
+            sign_in_using_gitlab_credentials
+          end
+        end
+
+        def sign_in_using_ldap_credentials
           using_wait_time 0 do
-            if page.has_content?('Change your password')
-              fill_in :user_password, with: Runtime::User.password
-              fill_in :user_password_confirmation, with: Runtime::User.password
-              click_button 'Change your password'
-            end
+            set_initial_password_if_present
+
+            click_link 'LDAP'
+
+            fill_in :username, with: Runtime::User.name
+            fill_in :password, with: Runtime::User.password
+            click_button 'Sign in'
+          end
+        end
+
+        def sign_in_using_gitlab_credentials
+          using_wait_time 0 do
+            set_initial_password_if_present
 
             click_link 'Standard' if page.has_content?('LDAP')
 

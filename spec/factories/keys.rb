@@ -5,10 +5,6 @@ FactoryBot.define do
     title
     key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate + ' dummy@gitlab.com' }
 
-    factory :key_without_comment do
-      key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate }
-    end
-
     factory :deploy_key, class: 'DeployKey'
 
     factory :personal_key do

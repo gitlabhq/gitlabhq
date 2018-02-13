@@ -1413,7 +1413,7 @@ describe Ci::Build do
       [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: '', public: true },
+        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
@@ -1590,7 +1590,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          create(:protected_branch, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1598,7 +1598,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          create(:protected_tag, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1635,7 +1635,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          create(:protected_branch, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -1643,7 +1643,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          create(:protected_tag, project: build.project, name: build.ref)
+          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }

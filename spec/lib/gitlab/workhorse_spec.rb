@@ -324,7 +324,7 @@ describe Gitlab::Workhorse do
       it 'includes a Repository param' do
         repo_param = {
           storage_name: 'default',
-          relative_path: project.full_path + '.git',
+          relative_path: project.disk_path + '.git',
           gl_repository: "project-#{project.id}"
         }
 

@@ -1,15 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-import MergeRequest from './merge_request';
 import Flash from './flash';
 import GfmAutoComplete from './gfm_auto_complete';
-import ZenMode from './zen_mode';
-import initNotes from './init_notes';
-import initIssuableSidebar from './init_issuable_sidebar';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
-import ShortcutsIssuable from './shortcuts_issuable';
-import Diff from './diff';
 import SearchAutocomplete from './search_autocomplete';
 
 var Dispatcher;
@@ -262,17 +256,10 @@ var Dispatcher;
             .catch(fail);
           break;
         case 'projects:merge_requests:show':
-          new ZenMode();
-
-          initIssuableSidebar();
-          const mrShowNode = document.querySelector('.merge-request');
-          window.mergeRequest = new MergeRequest({
-            action: mrShowNode.dataset.mrAction,
-          });
-
-          new Diff();
-          initNotes();
-          shortcut_handler = new ShortcutsIssuable(true);
+          import('./pages/projects/merge_requests/show')
+            .then(callDefault)
+            .catch(fail);
+          shortcut_handler = true;
           break;
         case 'dashboard:activity':
           import('./pages/dashboard/activity')
