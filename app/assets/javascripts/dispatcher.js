@@ -189,7 +189,7 @@ var Dispatcher;
           new ZenMode();
           break;
         case 'groups:epics:index':
-          import(/* webpackChunkName: "ee_epics_show" */ 'ee/pages/epics')
+          import(/* webpackChunkName: "ee_epics_index" */ 'ee/pages/epics')
             .then(callDefault)
             .catch(fail);
           break;
