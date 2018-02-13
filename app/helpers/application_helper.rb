@@ -68,6 +68,18 @@ module ApplicationHelper
     end
   end
 
+  # Takes both user and email and returns the avatar_icon by
+  # user (preferred) or email.
+  def avatar_icon_for(user = nil, email = nil, size = nil, scale = 2, only_path: true)
+    if user
+      avatar_icon_for_user(user, size, scale, only_path: only_path)
+    elsif email
+      avatar_icon_for_email(email, size, scale, only_path: only_path)
+    else
+      default_avatar
+    end
+  end
+
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
     user = User.find_by_any_email(email.try(:downcase))
     if user
