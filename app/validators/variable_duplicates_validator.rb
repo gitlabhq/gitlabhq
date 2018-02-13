@@ -20,7 +20,9 @@ class VariableDuplicatesValidator < ActiveModel::EachValidator
   def validate_duplicates(record, attribute, values)
     duplicates = values.reject(&:marked_for_destruction?).group_by(&:key).select { |_, v| v.many? }.map(&:first)
     if duplicates.any?
-      record.errors.add(attribute, "Duplicate variables: #{duplicates.join(", ")}")
+      error_message = "has duplicate variables (#{duplicates.join(", ")})"
+      error_message += " in #{options[:scope]} scope" if options[:scope]
+      record.errors.add(attribute, error_message)
     end
   end
 end

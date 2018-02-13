@@ -30,7 +30,7 @@ describe VariableDuplicatesValidator do
         it 'has a duplicate key error' do
           subject
 
-          expect(project.errors[:variables]).to include("Duplicate variables: #{project.variables.last.key}")
+          expect(project.errors).to have_key(:variables)
         end
       end
     end
@@ -59,7 +59,7 @@ describe VariableDuplicatesValidator do
         it 'has a duplicate key error' do
           subject
 
-          expect(project.errors[:variables]).to include("Duplicate variables: #{project.variables.last.key}")
+          expect(project.errors).to have_key(:variables)
         end
       end
     end
