@@ -13,7 +13,7 @@ module API
     end
 
     before do
-      not_found! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+      forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
     end
 
     resource :projects, requirements: { id: %r{[^/]+} } do
@@ -22,11 +22,13 @@ module API
         requires :file, type: File, desc: 'The project export file to be imported'
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
       end
-      desc 'Get export status' do
+      desc 'Create a new project import' do
         success Entities::ProjectImportStatus
       end
       post 'import' do
         render_api_error!('The file is invalid', 400) unless file_is_valid?
+
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42437')
 
         namespace = import_params[:namespace]
         namespace = if namespace.blank?
@@ -49,7 +51,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      desc 'Get export status' do
+      desc 'Get a project export status' do
         success Entities::ProjectImportStatus
       end
       get ':id/import' do
