@@ -2,6 +2,8 @@ import _ from 'underscore';
 import Flash from '../flash';
 import AUTH_METHOD from './constants';
 import { backOff } from '../lib/utils/common_utils';
+import { __ } from '../locale';
+import axios from '../lib/utils/axios_utils';
 
 export default class MirrorPull {
   constructor(formSelector) {
@@ -67,20 +69,20 @@ export default class MirrorPull {
 
     // Make backOff polling to get data
     backOff((next, stop) => {
-      $.getJSON(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
-        .done((res, statusText, header) => {
-          if (header.status === 204) {
-            this.backOffRequestCounter = this.backOffRequestCounter += 1;
-            if (this.backOffRequestCounter < 3) {
-              next();
-            } else {
-              stop(res);
-            }
+      axios.get(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
+      .then(({ data, status }) => {
+        if (status === 204) {
+          this.backOffRequestCounter = this.backOffRequestCounter += 1;
+          if (this.backOffRequestCounter < 3) {
+            next();
           } else {
-            stop(res);
+            stop(data);
           }
-        })
-        .fail(stop);
+        } else {
+          stop(data);
+        }
+      })
+      .catch(stop);
     })
     .then((res) => {
       $btnLoadSpinner.addClass('hidden');
@@ -90,10 +92,11 @@ export default class MirrorPull {
         this.showSSHInformation(res);
       }
     })
-    .catch((res) => {
+    .catch(({ response }) => {
       // Show failure message when there's an error and re-enable Detect host keys button
-      const failureMessage = res.responseJSON ? res.responseJSON.message : 'Something went wrong on our end.';
+      const failureMessage = response.data ? response.data.message : __('An error occurred while detecting host keys');
       Flash(failureMessage); // eslint-disable-line
+
       $btnLoadSpinner.addClass('hidden');
       this.$btnDetectHostKeys.enable();
     });
