@@ -14,6 +14,10 @@
         = link_to failures_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           Failed Jobs
           %span.badge.js-failures-counter= failed_builds.count
+    - if pipeline.sast_artifact
+      %li.js-security-tab-link
+        = link_to security_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
+          Security Report
 
 .tab-content
   #js-tab-pipeline.tab-pane

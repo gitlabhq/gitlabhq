@@ -94,6 +94,14 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
+  def security
+    if @pipeline.sast_artifact
+      render_show
+    else
+      redirect_to pipeline_path(@pipeline)
+    end
+  end
+
   def status
     render json: PipelineSerializer
       .new(project: @project, current_user: @current_user)
