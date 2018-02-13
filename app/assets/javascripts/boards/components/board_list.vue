@@ -176,6 +176,7 @@ export default {
       <loading-icon />
     </div>
     <board-new-issue
+      :group-id="groupId"
       :list="list"
       v-if="list.type !== 'closed' && showIssueForm"/>
     <ul
@@ -191,6 +192,7 @@ export default {
         :list="list"
         :issue="issue"
         :issue-link-base="issueLinkBase"
+        :group-id="groupId"
         :root-path="rootPath"
         :disabled="disabled"
         :key="issue.id" />
