@@ -28,8 +28,8 @@ we still need to merge changes from GitLab CE to EE. To help us get there,
 we should make sure that we no longer edit CE files in place in order to
 implement EE features.
 
-Instead, all EE codes should be put inside the `ee/` top-level directory. The
-rest of codes should be as close as to the CE files.
+Instead, all EE code should be put inside the `ee/` top-level directory. The
+rest of the code should be as close to the CE files as possible.
 
 [single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
 

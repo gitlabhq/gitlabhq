@@ -10,10 +10,9 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
-    - 'db/*'
+    - 'db/**/*'
     - 'db/fixtures/**/*'
-    - 'db/geo/*'
-    - 'ee/db/geo/*'
+    - 'ee/db/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
@@ -27,7 +26,6 @@ Style/MutableConstant:
   Exclude:
     - 'db/migrate/**/*'
     - 'db/post_migrate/**/*'
-    - 'db/geo/migrate/**/*'
     - 'ee/db/migrate/**/*'
     - 'ee/db/post_migrate/**/*'
     - 'ee/db/geo/migrate/**/*'
@@ -52,10 +50,10 @@ GitlabSecurity/PublicSend:
   Exclude:
     - 'config/**/*'
     - 'db/**/*'
-    - 'ee/db/**/*'
     - 'features/**/*'
     - 'lib/**/*.rake'
-    - 'ee/lib/**/*.rake'
     - 'qa/**/*'
     - 'spec/**/*'
+    - 'ee/db/**/*'
+    - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
