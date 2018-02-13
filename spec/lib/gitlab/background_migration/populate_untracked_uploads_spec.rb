@@ -1,6 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
+# This migration is using UploadService, which sets uploads.secret that is only
+# added to the DB schema in 20180129193323. Since the test isn't isolated, we
+# just use the latest schema when testing this migration.
+# Ideally, the test should not use factories nor UploadService, and rely on the
+# `table` helper instead.
+describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq, :migration, schema: 20180129193323 do
   include TrackUntrackedUploadsHelpers
 
   subject { described_class.new }
