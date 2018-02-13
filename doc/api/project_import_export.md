@@ -40,7 +40,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "path=api-
 
 ## Import status
 
-Get the status of export.
+Get the status of an import.
 
 ```http
 GET /projects/:id/import
@@ -54,7 +54,9 @@ GET /projects/:id/import
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/import
 ```
 
-Status can be one of `none`, `started`, or `finished`.
+Status can be one of `none`, `scheduled`, `failed`, `started`, or `finished`.
+
+If the status is `failed`, it will include the import error message.
 
 ```json
 {
