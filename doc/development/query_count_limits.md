@@ -1,8 +1,7 @@
 # Query Count Limits
 
-Each controller or API endpoint is allowed to execute up to 100 SQL queries. In
-a production environment we'll only log an error in case this threshold is
-exceeded, but in a test environment we'll raise an error instead.
+Each controller or API endpoint is allowed to execute up to 100 SQL queries and
+in test environments we'll raise an error when this threshold is exceeded.
 
 ## Solving Failing Tests
 
