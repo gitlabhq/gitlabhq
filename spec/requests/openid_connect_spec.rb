@@ -99,6 +99,7 @@ describe 'OpenID Connect requests' do
           else
             ['group1', 'group2/group3']
           end
+
         expect(json_response['groups']).to match(array_including(expected_groups))
       end
     end
