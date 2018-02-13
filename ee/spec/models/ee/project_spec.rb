@@ -19,6 +19,32 @@ describe Project do
     it { is_expected.to have_many(:audit_events).dependent(false) }
   end
 
+  describe 'validations' do
+    let(:project) { build(:project) }
+
+    describe 'variables' do
+      let(:first_variable) { build(:ci_variable, key: 'test_key', value: 'first', environment_scope: 'prod', project: project) }
+      let(:second_variable) { build(:ci_variable, key: 'test_key', value: 'other', environment_scope: 'other', project: project) }
+
+      before do
+        project.variables << first_variable
+        project.variables << second_variable
+      end
+
+      context 'with duplicate variables with same environment scope' do
+        before do
+          project.variables.last.environment_scope = project.variables.first.environment_scope
+        end
+
+        it { expect(project).not_to be_valid }
+      end
+
+      context 'with same variable keys and different environment scope' do
+        it { expect(project).to be_valid }
+      end
+    end
+  end
+
   describe '.mirrors_to_sync' do
     let(:timestamp) { Time.now }
 
