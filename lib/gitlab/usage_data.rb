@@ -73,6 +73,9 @@ module Gitlab
       end
 
       def cycle_analytics_usage_data
+        # We only want to generate this data for instances that use PostgreSQL
+        return {} if Gitlab::Database.mysql?
+
         projects = Project.sorted_by_activity.limit(Gitlab::CycleAnalytics::UsageData::PROJECTS_LIMIT)
 
         Gitlab::CycleAnalytics::UsageData.new(projects, { from: 7.days.ago }).to_json
