@@ -325,7 +325,13 @@ class Project < ActiveRecord::Base
 
       levels = Gitlab::VisibilityLevel.levels_for_user(user)
 
-      where('EXISTS (?) OR projects.visibility_level IN (?)', authorized, levels)
+      authorized_projects = where('EXISTS (?)', authorized).select(:id)
+      visible_projects = where('visibility_level IN (?)', levels).select(:id)
+
+      # We use a UNION here instead of OR clauses since this results in better
+      # performance.
+      union = Gitlab::SQL::Union.new([authorized_projects, visible_projects])
+      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     else
       public_to_user
     end
