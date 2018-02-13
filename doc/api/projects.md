@@ -1326,6 +1326,10 @@ POST /projects/:id/housekeeping
 
 Read more in the [Branches](branches.md) documentation.
 
+## Project Import/Export
+
+Read more in the [Project export](project_import_export.md) documentation.
+
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
