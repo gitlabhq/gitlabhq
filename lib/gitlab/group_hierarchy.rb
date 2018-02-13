@@ -85,7 +85,8 @@ module Gitlab
       descendants_table = descendants.alias_to(groups_table)
 
       union = SQL::Union.new([model.unscoped.from(ancestors_table),
-                              model.unscoped.from(descendants_table)])
+                              model.unscoped.from(descendants_table)],
+                             remove_duplicates: false)
 
       relation = model
         .unscoped
