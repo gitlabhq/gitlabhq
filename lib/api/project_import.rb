@@ -19,8 +19,8 @@ module API
     resource :projects, requirements: { id: %r{[^/]+} } do
       params do
         requires :path, type: String, desc: 'The new project path and name'
-        optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
         requires :file, type: File, desc: 'The project export file to be imported'
+        optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
       end
       desc 'Get export status' do
         success Entities::ProjectImportStatus
