@@ -20,7 +20,7 @@ class CleanupMoveSystemUploadFolderSymlink < ActiveRecord::Migration
   def down
     if File.directory?(new_directory)
       say "Symlinking #{old_directory} -> #{new_directory}"
-      FileUtils.ln_s(new_directory, old_directory)
+      FileUtils.ln_s(new_directory, old_directory) unless File.exist?(old_directory)
     else
       say "#{new_directory} doesn't exist, skipping."
     end
