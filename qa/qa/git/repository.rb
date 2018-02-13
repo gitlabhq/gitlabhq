@@ -4,8 +4,6 @@ require 'uri'
 module QA
   module Git
     class Repository
-      autoload :Location, 'qa/git/repository/location'
-
       include Scenario::Actable
 
       def self.perform(*args)

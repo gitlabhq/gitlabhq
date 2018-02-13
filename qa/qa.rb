@@ -169,6 +169,7 @@ module QA
   #
   module Git
     autoload :Repository, 'qa/git/repository'
+    autoload :Location, 'qa/git/location'
   end
 
   ##

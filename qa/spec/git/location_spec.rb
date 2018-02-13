@@ -1,4 +1,4 @@
-describe QA::Git::Repository::Location do
+describe QA::Git::Location do
   describe '.parse' do
     context 'when URI starts with ssh://' do
       context 'when URI has port' do
