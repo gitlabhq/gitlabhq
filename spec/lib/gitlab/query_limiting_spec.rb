@@ -12,14 +12,16 @@ describe Gitlab::QueryLimiting do
       expect(described_class.enable?).to eq(true)
     end
 
-    it 'returns true on GitLab.com' do
+    it 'returns false on GitLab.com' do
+      expect(Rails.env).to receive(:development?).and_return(false)
+      expect(Rails.env).to receive(:test?).and_return(false)
       allow(Gitlab).to receive(:com?).and_return(true)
 
-      expect(described_class.enable?).to eq(true)
+      expect(described_class.enable?).to eq(false)
     end
 
-    it 'returns true in a non GitLab.com' do
-      expect(Gitlab).to receive(:com?).and_return(false)
+    it 'returns false in a non GitLab.com' do
+      allow(Gitlab).to receive(:com?).and_return(false)
       expect(Rails.env).to receive(:development?).and_return(false)
       expect(Rails.env).to receive(:test?).and_return(false)
 
