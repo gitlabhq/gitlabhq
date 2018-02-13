@@ -50,6 +50,28 @@ describe Gitlab::VisibilityLevel do
     end
   end
 
+  describe '.all_levels?' do
+    let(:levels) do
+      [
+        Gitlab::VisibilityLevel::PUBLIC,
+        Gitlab::VisibilityLevel::INTERNAL,
+        Gitlab::VisibilityLevel::PRIVATE
+      ].shuffle
+    end
+
+    it 'returns true only when given all levels defined at once' do
+      expect(described_class.all_levels?(levels)).to be_truthy
+    end
+
+    it 'returns true for ALL_LEVELS' do
+      expect(described_class.all_levels?(Gitlab::VisibilityLevel::ALL_LEVELS)).to be_truthy
+    end
+
+    it 'returns false if any one level is missing' do
+      expect(described_class.all_levels?(levels[0..-2])).to be_falsey
+    end
+  end
+
   describe '.allowed_levels' do
     it 'only includes the levels that arent restricted' do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])

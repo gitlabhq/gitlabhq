@@ -325,6 +325,12 @@ class Project < ActiveRecord::Base
 
       levels = Gitlab::VisibilityLevel.levels_for_user(user)
 
+      if Gitlab::VisibilityLevel.all_levels?(levels)
+        # If the user is allowed to see all projects,
+        # we can shortcut and just return.
+        return all
+      end
+
       authorized_projects = where('EXISTS (?)', authorized).select(:id)
       visible_projects = where('visibility_level IN (?)', levels).select(:id)
 
