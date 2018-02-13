@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fog::Storage::GoogleXML::File do
+describe 'Fog::Storage::GoogleXML::File' do
   let(:storage) do
     Fog.mock!
     Fog::Storage.new({
