@@ -55,16 +55,6 @@ describe('RepoTab', () => {
     expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
   });
 
-  it('shows changed icon if tab is changed', () => {
-    const tab = file('changedFile');
-    tab.changed = true;
-    vm = createComponent({
-      tab,
-    });
-
-    expect(vm.changedIcon).toBe('file-modified');
-  });
-
   it('changes icon on hover', (done) => {
     const tab = file();
     tab.changed = true;

@@ -153,7 +153,7 @@ class License < ActiveRecord::Base
     end
 
     def plans_with_feature(feature)
-      if GLOBAL_FEATURES.include?(feature)
+      if global_feature?(feature)
         raise ArgumentError, "Use `License.feature_available?` for features that cannot be restricted to only a subset of projects or namespaces"
       end
 
@@ -186,6 +186,10 @@ class License < ActiveRecord::Base
       return unless license && license.valid?
 
       license
+    end
+
+    def global_feature?(feature)
+      GLOBAL_FEATURES.include?(feature)
     end
   end
 

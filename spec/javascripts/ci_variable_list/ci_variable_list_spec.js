@@ -126,7 +126,7 @@ describe('VariableList', () => {
 
           // Check for the correct default in the new row
           const $protectedInput = $wrapper.find('.js-row:last-child').find('.js-ci-variable-input-protected');
-          expect($protectedInput.val()).toBe('true');
+          expect($protectedInput.val()).toBe('false');
         })
         .then(done)
         .catch(done.fail);

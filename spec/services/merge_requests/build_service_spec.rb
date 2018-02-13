@@ -286,32 +286,42 @@ describe MergeRequests::BuildService do
         end
       end
 
-      context 'branch starts with JIRA-formatted external issue IID' do
-        let(:source_branch) { 'EXMPL-12345' }
-
+      describe 'with JIRA enabled' do
         before do
           allow(project).to receive(:external_issue_tracker).and_return(true)
           allow(project).to receive(:issues_enabled?).and_return(false)
           allow(project).to receive(:external_issue_reference_pattern).and_return(IssueTrackerService.reference_pattern)
         end
 
-        it 'sets the title to the humanized branch title' do
-          expect(merge_request.title).to eq('Resolve EXMPL-12345')
-        end
-
-        it 'appends the closes text' do
-          expect(merge_request.description).to eq('Closes EXMPL-12345')
-        end
-
-        context 'followed by hyphenated text' do
-          let(:source_branch) { 'EXMPL-12345-fix-issue' }
+        context 'branch does not start with JIRA-formatted external issue IID' do
+          let(:source_branch) { 'test-branch' }
 
           it 'sets the title to the humanized branch title' do
-            expect(merge_request.title).to eq('Resolve EXMPL-12345 "Fix issue"')
+            expect(merge_request.title).to eq('Test branch')
+          end
+        end
+
+        context 'branch starts with JIRA-formatted external issue IID' do
+          let(:source_branch) { 'EXMPL-12345' }
+
+          it 'sets the title to the humanized branch title' do
+            expect(merge_request.title).to eq('Resolve EXMPL-12345')
           end
 
           it 'appends the closes text' do
             expect(merge_request.description).to eq('Closes EXMPL-12345')
+          end
+
+          context 'followed by hyphenated text' do
+            let(:source_branch) { 'EXMPL-12345-fix-issue' }
+
+            it 'sets the title to the humanized branch title' do
+              expect(merge_request.title).to eq('Resolve EXMPL-12345 "Fix issue"')
+            end
+
+            it 'appends the closes text' do
+              expect(merge_request.description).to eq('Closes EXMPL-12345')
+            end
           end
         end
       end

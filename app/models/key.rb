@@ -36,8 +36,9 @@ class Key < ActiveRecord::Base
   after_destroy :refresh_user_cache
 
   def key=(value)
-    write_attribute(:key, value.present? ? Gitlab::SSHPublicKey.sanitize(value) : nil)
-
+    value&.delete!("\n\r")
+    value.strip! unless value.blank?
+    write_attribute(:key, value)
     @public_key = nil
   end
 
@@ -99,7 +100,7 @@ class Key < ActiveRecord::Base
   def generate_fingerprint
     self.fingerprint = nil
 
-    return unless public_key.valid?
+    return unless self.key.present?
 
     self.fingerprint = public_key.fingerprint
   end

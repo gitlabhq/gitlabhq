@@ -38,6 +38,9 @@ describe('Board list component', () => {
       confidential: false,
       labels: [],
       assignees: [],
+      project: {
+        path: '/test',
+      },
     });
     list.issuesSize = 1;
     list.issues.push(issue);
@@ -49,7 +52,8 @@ describe('Board list component', () => {
         list,
         issues: list.issues,
         loading: false,
-        issueLinkBase: '/issues',
+        groupId: 1,
+        issueLinkBase: '/test/:project_path/issues',
         rootPath: '/',
       },
     }).$mount();
@@ -85,6 +89,12 @@ describe('Board list component', () => {
     expect(
       component.$el.querySelectorAll('.card').length,
     ).toBe(1);
+  });
+
+  it('renders link properly in issue', () => {
+    expect(
+      component.$el.querySelector('.card .card-title a').getAttribute('href'),
+    ).not.toContain(':project_path');
   });
 
   it('sets data attribute with issue id', () => {

@@ -55,20 +55,6 @@ describe('Multi-file store file actions', () => {
         .catch(done.fail);
     });
 
-    it('sets next file as active', (done) => {
-      const f = file('otherfile');
-      store.state.openFiles.push(f);
-
-      expect(f.active).toBeFalsy();
-
-      store.dispatch('closeFile', localFile)
-        .then(() => {
-          expect(f.active).toBeTruthy();
-
-          done();
-        }).catch(done.fail);
-    });
-
     it('calls getLastCommitData', (done) => {
       store.dispatch('closeFile', localFile)
         .then(() => {

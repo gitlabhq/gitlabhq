@@ -348,6 +348,7 @@ because we have not yet configured the secondary server. This is the next step.
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
+    If you bring a former primary back online to serve as a secondary then you also need to remove `geo_primary_role['enable'] = true`.
 
 1. Reconfigure GitLab for the changes to take effect:
 

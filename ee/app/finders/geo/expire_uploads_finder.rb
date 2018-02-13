@@ -1,7 +1,7 @@
 module Geo
   class ExpireUploadsFinder
     def find_project_uploads(project)
-      if Gitlab::Geo.fdw?
+      if Gitlab::Geo::Fdw.enabled?
         fdw_find_project_uploads(project)
       else
         legacy_find_project_uploads(project)
@@ -9,7 +9,7 @@ module Geo
     end
 
     def find_file_registries_uploads(project)
-      if Gitlab::Geo.fdw?
+      if Gitlab::Geo::Fdw.enabled?
         fdw_find_file_registries_uploads(project)
       else
         legacy_find_file_registries_uploads(project)

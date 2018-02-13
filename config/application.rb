@@ -13,6 +13,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
+    require_dependency Rails.root.join('lib/gitlab/current_settings')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -121,8 +122,6 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "katex.css"
-    config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"

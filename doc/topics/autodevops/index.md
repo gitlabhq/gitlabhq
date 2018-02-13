@@ -207,7 +207,7 @@ target branches are also
 > Introduced in [GitLab Ultimate][ee] 10.3.
 
 Static Application Security Testing (SAST) uses the
-[gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
+[SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
 analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.

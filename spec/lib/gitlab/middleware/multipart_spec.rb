@@ -5,15 +5,17 @@ require 'tempfile'
 describe Gitlab::Middleware::Multipart do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
+  let(:original_filename) { 'filename' }
 
   it 'opens top-level files' do
     Tempfile.open('top-level') do |tempfile|
-      env = post_env({ 'file' => tempfile.path }, { 'file.name' => 'filename' }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+      env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
       expect(app).to receive(:call) do |env|
         file = Rack::Request.new(env).params['file']
         expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
+        expect(file.original_filename).to eq(original_filename)
       end
 
       middleware.call(env)
@@ -34,13 +36,14 @@ describe Gitlab::Middleware::Multipart do
 
   it 'opens files one level deep' do
     Tempfile.open('one-level') do |tempfile|
-      in_params = { 'user' => { 'avatar' => { '.name' => 'filename' } } }
+      in_params = { 'user' => { 'avatar' => { '.name' => original_filename } } }
       env = post_env({ 'user[avatar]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
       expect(app).to receive(:call) do |env|
         file = Rack::Request.new(env).params['user']['avatar']
         expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
+        expect(file.original_filename).to eq(original_filename)
       end
 
       middleware.call(env)
@@ -49,13 +52,14 @@ describe Gitlab::Middleware::Multipart do
 
   it 'opens files two levels deep' do
     Tempfile.open('two-levels') do |tempfile|
-      in_params = { 'project' => { 'milestone' => { 'themesong' => { '.name' => 'filename' } } } }
+      in_params = { 'project' => { 'milestone' => { 'themesong' => { '.name' => original_filename } } } }
       env = post_env({ 'project[milestone][themesong]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
       expect(app).to receive(:call) do |env|
         file = Rack::Request.new(env).params['project']['milestone']['themesong']
         expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
+        expect(file.original_filename).to eq(original_filename)
       end
 
       middleware.call(env)

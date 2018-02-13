@@ -143,9 +143,9 @@ keys must be manually replicated to the secondary node.
 ### Step 3. (Optional) Enabling hashed storage (from GitLab 10.0)
 
 >**Warning**
-Hashed storage is in **Alpha**. It is considered experimental and not
-production-ready. See [Hashed Storage](../administration/repository_storage_types.md)
-for more detail, and for the latest updates, check
+Hashed storage is in **Beta**. It is not considered production-ready. See
+[Hashed Storage](../administration/repository_storage_types.md) for more detail,
+and for the latest updates, check
 [infrastructure issue #2821](https://gitlab.com/gitlab-com/infrastructure/issues/2821).
 
 Using hashed storage significantly improves Geo replication - project and group

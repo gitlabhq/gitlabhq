@@ -56,7 +56,7 @@ describe 'shared/_mirror_status.html.haml' do
 
         render 'shared/mirror_status', raw_message: true
 
-        expect(rendered).to have_content("Repository mirroring has been paused due to too many failed attempts, and can be resumed by a project admin.")
+        expect(rendered).to have_content("Repository mirroring has been paused due to too many failed attempts, and can be resumed by a project master.")
       end
     end
   end

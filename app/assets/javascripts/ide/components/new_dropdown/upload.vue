@@ -73,7 +73,7 @@
     <a
       href="#"
       role="button"
-      @click.prevent="startFileUpload"
+      @click.stop.prevent="startFileUpload"
     >
       {{ __('Upload file') }}
     </a>

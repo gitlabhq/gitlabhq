@@ -4,156 +4,181 @@
 
 ## Overview
 
-If you want to make sure every merge request is approved by one or more
-people, you can enforce this workflow by using merge request approvals.
-
-Merge request approvals allow you to set the number of necessary approvals
-and predefine a list of approvers that will need to approve every
-merge request in a project.
+Merge request approvals enable enforced code review by requiring specified people to approve a merge request before it can be unblocked for merging.
 
 ## Use cases
 
-There are numerous use cases for merge request approvals. For instance,
-let's consider you're a backend developer working in a team:
+1. Enforcing review of all code that gets merged into a repository.
+2. Specifying code maintainers for an entire repository.
+3. Specifying reviewers for a given proposed code change.
+4. Specifying categories of reviewers, such as BE, FE, QA, DB, etc., for all proposed code changes.
 
-1. You submit changes to your project via merge request
-1. You gather feedback from your team members in the merge request
-1. You build, test, and deploy your app with [GitLab CI/CD](../../../ci/README.md)
-1. Once everything is ready to ship, you add your manager and the project manager as approvers to that merge request
-1. Your approvers get a notification and review your modifications
-1. You need to address your managers' comments, so you push again to your branch
-1. Once you pushed, that merge request will need another round of approvals
-1. You ask your managers again for their approval
-1. They approve and merge
+## Activating approvals
 
-This example workflow prevents your implementations from being merged before getting approvals from both managers.
+To activate the merge request approvals:
 
-## Configuring Approvals
+1. Navigate to your project's **Settings > General** and expand the
+   **Merge requests settings**
+1. Tick the "Merge requests approvals" checkbox
+1. Search for users or groups that will be [eligible to approve](#eligible-approvers)
+   merge requests and click the **Add** button to add them as approvers
+1. Set the minimum number of required approvals under the "Approvals required"
+   box
+1. Click **Save changes**
 
-![Merge Request Approvals in Project Settings](img/approvals_settings.png)
+    ![Approvals config project](img/approvals_config_project.png)
 
-### Activate merge request approvals
+The steps above are the minimum required to get approvals working in your
+merge requests, but there are a couple more options available that might be
+suitable to your workflow:
 
-In the project settings, check this checkbox to turn on the feature.
+- Choose whether the default settings can be
+  [overridden per merge request](#overriding-the-merge-request-approvals-default-settings)
+- Choose whether [approvals will be reset with new pushed commits](#resetting-approvals-on-push)
 
-### Approvers
+NOTE: **Note:**
+If the approvers are changed via the project's settings after a merge request
+is created, the merge request retains the previous approvers, but you can always
+change them by [editing the merge request](#overriding-the-merge-request-approvals-default-settings).
 
-Select the individual users or groups that are eligible approvers for merge requests
-in this project.
+## Eligible approvers
 
-### Approvals required
+Eligible approvers can be individual users or groups that are project members,
+members of the project's immediate parent group, and members of a group who
+have access to the project via a
+[share](../members/share_project_with_groups.md).
 
-Enter the minimum number of approvals required. If the number of approvals received 
-on a merge request so far is smaller than this number, the merge request cannot
-be merged. (The merge button is disabled.)
+If a user is added as an individual approver and is also part of a group approver,
+then that user is just counted once. The merge request author does not count as
+an eligible approver.
 
-### Can override approvers and approvals required per merge request
+Let's say that `m` is the number of required approvals, and `Ω` is the set of
+explicit approvers. Depending on their number, there are different cases:
+
+- If `m <= Ω`, then only those explicit approvers can approve the merge request.
+- If `m > Ω` , then all the explicit approvers _and_ the members of the given
+  project with Developer role or higher are eligible approvers of the merge
+  request.
+
+NOTE: **Note:**
+If the approvals settings are [overridden](#overriding-the-merge-request-approvals-default-settings)
+for the particular merge request, then the set of explicit approvers is the
+union of the default approvers and the extra approvers set in the merge request.
+
+## Adding or removing an approval
+
+If approvals are activated for the given project, when a user visits an open
+merge request, depending on their [eligibility](#eligible-approvers), one of
+the following is possible:
+
+- **They are not an eligible approver**: They cannot do anything with respect
+  to approving this merge request.
+- **They have not approved this merge request**:
+  - If the required number of approvals has _not_ been yet met, they can approve
+    it by clicking the displayed **Approve** button.
+      ![Approve](img/approve.png)
+
+  - If the required number of approvals has already been met, they can still
+    approve it by clicking the displayed **Approve additionally** button.
+      ![Approve additionally](img/approve_additionally.png)
+
+    ---
+
+- **They have already approved this merge request**: They can remove their approval.
+
+    ![Remove approval](img/remove_approval.png)
+
+NOTE: **Note:**
+The merge request author is not allowed to approve their own merge request.
+
+For the given merge request, if the required number of approvals has been met
+(i.e., the number of approvals given to the merge request is greater or equal
+than the required number), then the merge request is unblocked and can be merged.
+Note, that meeting the required number of approvals is a necessary, but not
+sufficient condition for unblocking a merge request from being merged. There
+are other conditions that may block it, such as merge conflicts,
+[pending discussions](../../discussions/index.md#l#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved)
+or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
+
+## Overriding the merge request approvals default settings
 
 > Introduced in GitLab Enterprise Edition 9.4.
 
-Check this checkbox to increase the minimum number of approvals required, per merge
-request, over the project settings number above. (You cannot set a minimum below
-the project settings number.) You can also add or remove eligible approvers, per
-merge request.
+If approvals are [activated at the project level](#activating-approvals), the
+default configuration (number of required approvals and approvers) can be
+overridden for each merge request in that project.
 
-### Reset approvals on push
+One possible scenario would be to to assign a group of approvers at the project
+level and change them later when creating or editing the merge request.
 
-With this setting turned on, approvals are reset when a new push
-is done to the merge request branch.
+First, you have to enable this option in the project's settings:
 
-Turn **Reset approvals on push** off if you want approvals to persist,
-independent of changes to the merge request.
+1. Navigate to your project's **Settings > General** and expand the
+   **Merge requests settings**
+1. Tick the "Can override approvers and approvals required per merge request"
+   checkbox
 
-Approvals do not get reset when rebasing a merge request from the UI.
+    ![Approvals can override](img/approvals_can_override.png)
 
-If one of the approvers pushes a commit to the branch that is tied to the
-merge request, they automatically get excluded from the approvers list.
+1. Click **Save changes**
 
-### Approvers
+---
 
-In the Approvers section you can select the eligible users that can
-approve a merge request.
+The default approval settings can now be overridden when creating a
+[merge request](index.md) or by editing it after it's been created:
 
-Depending on the number of required approvals and the number of approvers set,
-there are different cases:
+1. Search for users or groups that will be [eligible to approve](#eligible-approvers)
+   merge requests and click the **Add** button to add them as approvers or
+   remove existing approvers that were set in the project's settings
+1. If you want to change the number of required approvals, set a new number
+   in the "Approvals required" box
+1. Click **Save changes**
 
-- If there are more approvers than required approvals, any subset of these users
-  can approve the merge request.
-- If there are less approvers than required approvals, all the set approvers plus
-  any other user(s) need to approve the merge request before being able to merge it.
-- If the approvers are equal to the amount of required approvals, all the
-  approvers are required to approve the merge request.
+There are however some restrictions:
 
-Note that approvers and the number of required approvals can be changed while
-creating or editing a merge request.
+- The amount of required approvals, if changed, must be greater than the default
+  set at the project level. This ensures that you're not forced to adjust settings
+  when someone is unavailable for approval, yet the process is still enforced.
+- The number of Approvers must be greater or equal to the as the minimum required
+  approvals as set in the default settings.
 
-When someone is marked as an eligible approver for a merge request, an email is
-sent to them and a todo is added to their list of todos.
+NOTE: **Note:**
+If you are contributing to a forked project, things are a little different.
+Read what happens  when the
+[source and target branches are not the same](#merge-requests-with-different-source-branch-and-target-branch-projects).
 
-### Selecting individual approvers
+## Resetting approvals on push
 
-GitLab restricts the users that can be selected to be individual approvers. Only these can be selected and appear in the search box:
-- Members of the project
-- Members of the parent group of the project
-- Members of a group that have access to the project [via a share](../../../workflow/share_projects_with_other_groups.md)
+If approvals are [activated at the project level](#activating-approvals),
+you can choose whether all approvals on a merge request are removed when
+new commits are pushed to the source branch of the merge request:
 
-### Selecting group approvers
+1. Navigate to your project's **Settings > General** and expand the
+   **Merge requests settings**
+1. Tick the "Can override approvers and approvals required per merge request"
+   checkbox
 
-> [Introduced][ee-743] in GitLab Enterprise Edition 8.13.
+    ![Approvals remove on push](img/approvals_remove_on_push.png)
 
-You can also define one or more groups that can be assigned as approvers. It
-works the same way like regular approvers do, the only difference is that you
-assign several users with one action. One possible scenario would be to to assign
-a group of approvers at the project level and change them later when creating
-or editing the merge request.
+1. Click **Save changes**
 
-## Removing approval
+NOTE: **Note:**
+Approvals do not get reset when [rebasing a merge request](fast_forward_merge.md)
+from the UI.
 
-A designated approver can remove their approval at any time. If, when an approver
-removes their approval, the number of approvals given falls below the number of
-required approvals, the merge request cannot be merged.
+If you want approvals to persist, independent of changes to the merge request,
+turn this setting to off by unchecking the box and saving the changes.
 
-If, on the other hand, an approver removes their approval but the number of approvals
-given stays at or above the number of required approvals, the merge request can still be
-merged.
+If one of the approvers pushes a commit to the branch that is tied to the merge 
+request, they automatically get excluded from the approvers list.
 
-## Merge request with different source branch and target branch projects
+## Merge requests with different source branch and target branch projects
 
-If the merge request source branch and target branch belong to different projects (which
-happens in merge requests in forked projects), everything is with respect to the 
-target branch's project (typically the original project). In particular, since the
-merge request in this case is part of the target branch's project, the relevant
-settings are the target project's. The source branch's project settings are not 
-applicable. Even if you start the merge request from the source branch's project
-UI, pay attention to the created merge request itself. It belongs to the target
-branch's project.
-
-## Using approvals
-
-After configuring approvals, you will be able to change the default set of
-approvers and the amount of required approvals before creating the merge request.
-The amount of required approvals, if changed, must be greater than the default
-set at the project level. This ensures that you're not forced to adjust settings
-when someone is unavailable for approval, yet the process is still enforced.
-
-If the approvers are changed via the project's settings after a merge request
-is created, the merge request retains the previous approvers, but you can always
-change them by editing the merge request.
-
-The author of a merge request cannot be set as an approver for that merge
-request.
-
-To approve a merge request, simply press the **Approve merge request** button.
-
-![Merge request approval](img/approvals_mr.png)
-
-Once you approve, the button will disappear and the number of approvers
-will be decreased by one.
-
-![Merge request approval](img/approvals_mr_approved.png)
-
-[ee-743]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/743
-
-To remove approval, just press the **Remove your approval** button
-
-![Merge request remove approval](img/remove_approval_mr.png)
+If the merge request source branch and target branch belong to different
+projects (which happens in merge requests in forked projects), everything is
+with respect to the target branch's project (typically the original project).
+In particular, since the merge request in this case is part of the target
+branch's project, the relevant settings are the target project's. The source
+branch's project settings are not applicable. Even if you start the merge
+request from the source branch's project UI, pay attention to the created merge
+request itself. It belongs to the target branch's project.

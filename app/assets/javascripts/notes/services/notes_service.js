@@ -32,4 +32,7 @@ export default {
   toggleAward(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
   },
+  toggleIssueState(endpoint, data) {
+    return Vue.http.put(endpoint, data);
+  },
 };

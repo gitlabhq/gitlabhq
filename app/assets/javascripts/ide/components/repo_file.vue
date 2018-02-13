@@ -5,6 +5,7 @@
   import fileStatusIcon from './repo_file_status_icon.vue';
   import newDropdown from './new_dropdown/index.vue';
   import fileIcon from '../../vue_shared/components/file_icon.vue';
+  import changedFileIcon from './changed_file_icon.vue';
 
   export default {
     components: {
@@ -12,6 +13,7 @@
       newDropdown,
       fileStatusIcon,
       fileIcon,
+      changedFileIcon,
     },
     mixins: [
       timeAgoMixin,
@@ -61,11 +63,6 @@
         }
         return '';
       },
-      changedClass() {
-        return {
-          'fa-circle unsaved-icon': this.file.changed || this.file.tempFile,
-        };
-      },
     },
     updated() {
       if (this.file.type === 'blob' && this.file.active) {
@@ -91,10 +88,11 @@
   <tr
     class="file"
     :class="fileClass"
-    @click="clickFile(file)">
+  >
     <td
       class="multi-file-table-name"
       :colspan="submoduleColSpan"
+      @click="clickFile(file)"
     >
       <a
         class="repo-file-name str-truncated"
@@ -117,13 +115,11 @@
         :path="file.path"
         :parent="file"
       />
-      <i
-        class="fa"
+      <changed-file-icon
         v-if="file.changed || file.tempFile"
-        :class="changedClass"
-        aria-hidden="true"
-      >
-      </i>
+        :file="file"
+        class="prepend-top-5 pull-right"
+      />
       <template v-if="isSubmodule && file.id">
         @
         <span class="commit-sha">

@@ -21,7 +21,7 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
-    dispatch('setFileActive', nextFileToOpen);
+    router.push(`/project${nextFileToOpen.url}`);
   } else if (!state.openFiles.length) {
     router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
   }
