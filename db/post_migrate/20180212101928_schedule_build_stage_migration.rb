@@ -3,18 +3,26 @@ class ScheduleBuildStageMigration < ActiveRecord::Migration
 
   DOWNTIME = false
   MIGRATION = 'MigrateBuildStage'.freeze
-  BATCH = 1000
+  BATCH_SIZE = 500
+
+  disable_ddl_transaction!
 
   class Build < ActiveRecord::Base
     include EachBatch
     self.table_name = 'ci_builds'
   end
 
-  def change
-    Build.where('stage_id IS NULL').each_batch(of: BATCH) do |builds, index|
-      builds.pluck(:id).map { |id| [MIGRATION, [id]] }.tap do |migrations|
-        BackgroundMigrationWorker.bulk_perform_in(index.minutes, migrations)
+  def up
+    disable_statement_timeout
+
+    Build.where('stage_id IS NULL').each_batch(of: BATCH_SIZE) do |builds, index|
+      builds.pluck('MIN(id)', 'MAX(id)').first.tap do |range|
+        BackgroundMigrationWorker.perform_in(index * 5.minutes, MIGRATION, range)
       end
     end
+  end
+
+  def down
+    # noop
   end
 end
