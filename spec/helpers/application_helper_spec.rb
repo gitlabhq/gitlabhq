@@ -63,6 +63,22 @@ describe ApplicationHelper do
     end
   end
 
+  describe 'avatar_icon_for' do
+    let!(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
+    let(:email) { 'foo@example.com' }
+    let!(:another_user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: email) }
+
+    it 'prefers the user to retrieve the avatar_url' do
+      expect(helper.avatar_icon_for(user, email).to_s)
+        .to eq(user.avatar.url)
+    end
+
+    it 'falls back to email lookup if no user given' do
+      expect(helper.avatar_icon_for(nil, email).to_s)
+        .to eq(another_user.avatar.url)
+    end
+  end
+
   describe 'avatar_icon_for_email' do
     let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
