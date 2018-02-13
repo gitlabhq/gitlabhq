@@ -51,13 +51,7 @@ module Gitlab
 
         error = ThresholdExceededError.new(error_message)
 
-        if raise_error?
-          raise(error)
-        else
-          # Raven automatically logs to the Rails log if disabled, thus we don't
-          # need to manually log anything in case Sentry support is not enabled.
-          Raven.capture_exception(error)
-        end
+        raise(error) if raise_error?
       end
 
       def increment
