@@ -640,9 +640,12 @@ var Dispatcher;
             .catch(fail);
           break;
         case 'projects:milestones:show':
-        case 'projects:merge_requests:creations:new':
         case 'search:show':
           new UserCallout();
+          break;
+        case 'projects:merge_requests:creations:new':
+          new UserCallout();
+          initApprovals();
           break;
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
