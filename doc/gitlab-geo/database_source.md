@@ -1,4 +1,4 @@
-# GitLab Geo database replication
+# Geo database replication
 
 >**Note:**
 This is the documentation for installations from source. For installations
@@ -142,7 +142,7 @@ The following guide assumes that:
     nodes that you may potentially have (at least 1).
 
     For security reasons, PostgreSQL by default only listens on the local
-    interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
+    interface (e.g. 127.0.0.1). However, Geo needs to communicate
     between the primary and secondary nodes over a common network, such as a
     corporate LAN or the public Internet. For this reason, we need to
     configure PostgreSQL to listen on more interfaces.
@@ -383,7 +383,7 @@ The replication process is now over.
 
 ## MySQL replication
 
-MySQL replication is not supported for GitLab Geo.
+MySQL replication is not supported for Geo.
 
 ## Troubleshooting
 

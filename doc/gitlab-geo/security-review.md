@@ -1,4 +1,4 @@
-The following security review of the GitLab Geo feature set focuses on security
+The following security review of the Geo feature set focuses on security
 aspects of the feature as they apply to customers running their own GitLab
 instances. The review questions are based in part on the [application security architecture](https://www.owasp.org/index.php/Application_Security_Architecture_Cheat_Sheet)
 questions from [owasp.org](https://www.owasp.org).

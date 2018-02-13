@@ -1,24 +1,24 @@
-# GitLab Geo
+# Geo (Geo Replication)
 
 > **Notes:**
-- GitLab Geo is part of [GitLab Premium][ee].
+- Geo is part of [GitLab Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
   We recommend you use it with at least GitLab Enterprise Edition 10.0 for
   basic Geo features, or latest version for a better experience.
 - You should make sure that all nodes run the same GitLab version.
-- GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
+- Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
-- Using GitLab Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
+- Using Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
 
 >**Note:**
-GitLab Geo changes significantly from release to release. Upgrades **are**
+Geo changes significantly from release to release. Upgrades **are**
 supported and [documented](#updating-the-geo-nodes), but you should ensure that
 you're following the right version of the documentation for your installation!
 The best way to do this is to follow the documentation from the `/help` endpoint
 on your **primary** node, but you can also navigate to [this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/README.md)
 and choose the appropriate release from the `tags` dropdown, e.g., `v10.0.0-ee`.
 
-GitLab Geo allows you to replicate your GitLab instance to other geographical
+Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
 
 ## Overview
@@ -31,7 +31,7 @@ Your Geo instance can be used for cloning and fetching projects, in addition to
 reading any data. This will make working with large repositories over large
 distances much faster.
 
-![GitLab Geo overview](img/geo-overview.png)
+![Geo overview](img/geo-overview.png)
 
 When Geo is enabled, we refer to your original instance as a **primary** node
 and the replicated read-only ones as **secondaries**.
@@ -57,9 +57,9 @@ custom integrations and internal workflows
 
 ## Architecture
 
-The following diagram illustrates the underlying architecture of GitLab Geo:
+The following diagram illustrates the underlying architecture of Geo:
 
-![GitLab Geo architecture](img/geo-architecture.png)
+![Geo architecture](img/geo-architecture.png)
 
 [Source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)
 
@@ -88,7 +88,7 @@ current version of OpenSSH:
     * Ubuntu 16.04
 
 Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
-support a feature that Geo requires. See the [documentation on GitLab Geo SSH
+support a feature that Geo requires. See the [documentation on Geo SSH
 access](../administration/operations/fast_ssh_key_lookup.md) for more details.
 
 ### LDAP
@@ -145,7 +145,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
    as the **secondary** Geo node. Do not create an account or login to the new
    secondary node.
 1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary**
-   Geo node to unlock GitLab Geo.
+   Geo node to unlock Geo.
 1. [Setup the database replication](database.md) (`primary (read-write) <->
    secondary (read-only)` topology).
 1. [Configure fast lookup of authorized SSH keys in the database](../administration/operations/fast_ssh_key_lookup.md),
@@ -165,7 +165,7 @@ If you installed GitLab from source:
    will serve as the **secondary** Geo node. Do not create an account or login
    to the new secondary node.
 1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary**
-   Geo node to unlock GitLab Geo.
+   Geo node to unlock Geo.
 1. [Setup the database replication](database_source.md) (`primary (read-write)
    <-> secondary (read-only)` topology).
 1. [Configure fast lookup of authorized SSH keys in the database](../administration/operations/fast_ssh_key_lookup.md),
@@ -176,19 +176,19 @@ If you installed GitLab from source:
 
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
 
-## Configuring GitLab Geo
+## Configuring Geo
 
-Read through the [GitLab Geo configuration](configuration.md) documentation.
+Read through the [Geo configuration](configuration.md) documentation.
 
 ## Updating the Geo nodes
 
 Read how to [update your Geo nodes to the latest GitLab version](updating_the_geo_nodes.md).
 
-## Configuring GitLab Geo HA
+## Configuring Geo HA
 
 Read through the [Geo High Availability documentation](ha.md).
 
-## Configuring GitLab Geo with Object storage
+## Configuring Geo with Object storage
 
 When you have object storage enabled, please consult the
 [Geo with Object Storage](object_storage.md) documentation.
@@ -224,13 +224,13 @@ example:
 
 This message shows that Geo detected that a repository update was needed for project 1.
 
-## Security of GitLab Geo
+## Security of Geo
 
 Read the [security review](security-review.md) page.
 
 ## Tuning Geo
 
-Read the [GitLab Geo tuning](tuning.md) documentation.
+Read the [Geo tuning](tuning.md) documentation.
 
 ## Troubleshooting
 

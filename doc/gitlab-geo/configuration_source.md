@@ -1,9 +1,9 @@
-# GitLab Geo configuration
+# Geo configuration
 
 >**Note:**
 This is the documentation for installations from source. For installations
 using the Omnibus GitLab packages, follow the
-[**Omnibus GitLab Geo nodes configuration**](configuration.md) guide.
+[**Omnibus Geo nodes configuration**](configuration.md) guide.
 
 ## Configuring a new secondary node
 
@@ -111,7 +111,7 @@ update-ca-certificates
 
 ### Step 5. Enable Git access over HTTP/HTTPS
 
-GitLab Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
+Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.

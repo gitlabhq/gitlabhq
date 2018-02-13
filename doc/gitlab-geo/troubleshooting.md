@@ -1,4 +1,4 @@
-# GitLab Geo Troubleshooting
+# Geo Troubleshooting
 
 >**Note:**
 This list is an attempt to document all the moving parts that can go wrong.
@@ -21,7 +21,7 @@ to help identify if something is wrong:
 - Is the node's secondary tracking database connected?
 - Is the node's secondary tracking database up-to-date?
 
-![GitLab Geo health check](img/geo-node-healthcheck.png)
+![Geo health check](img/geo-node-healthcheck.png)
 
 There is also an option to check the status of the secondary node by running a special rake task:
 

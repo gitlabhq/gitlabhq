@@ -1,4 +1,4 @@
-# Tuning GitLab Geo
+# Tuning Geo
 
 ## Changing the sync capacity values
 

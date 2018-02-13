@@ -4,7 +4,7 @@
 > **Alpha** development. Do not use this as your only Disaster Recovery
 > strategy as you may lose data.
 
-GitLab Geo replicates your database and your Git repositories. We will
+Geo replicates your database and your Git repositories. We will
 support and replicate more data in the future, that will enable you to
 fail-over with minimal effort, in a disaster situation.
 
@@ -147,7 +147,7 @@ secondary domain, like changing Git remotes and API URLs.
 ### Step 5. (Optional) Add secondary Geo replicas to a promoted primary
 
 Promoting a secondary to primary using the process above does not enable
-GitLab Geo on the new primary.
+Geo on the new primary.
 
 To bring a new secondary online, follow the
 [Geo setup instructions](../../gitlab-geo/README.md#setup-instructions).

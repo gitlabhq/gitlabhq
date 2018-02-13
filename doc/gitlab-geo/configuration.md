@@ -1,8 +1,8 @@
-# GitLab Geo configuration
+# Geo configuration
 
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
-from source, follow the [**GitLab Geo nodes configuration for installations
+from source, follow the [**Geo nodes configuration for installations
 from source**](configuration_source.md) guide.
 
 ## Configuring a new secondary node
@@ -169,7 +169,7 @@ on the secondary.
 
 ### Step 5. Enable Git access over HTTP/HTTPS
 
-GitLab Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
+Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
@@ -187,7 +187,7 @@ The initial replication, or 'backfill', will probably still be in progress. You
 can monitor the synchronization process on each geo node from the primary
 node's Geo Nodes dashboard in your browser.
 
-![GitLab Geo dashboard](img/geo-node-dashboard.png)
+![Geo dashboard](img/geo-node-dashboard.png)
 
 If your installation isn't working properly, check the
 [troubleshooting document](troubleshooting.md).
@@ -218,7 +218,7 @@ Currently, this is what is synced:
 
 ## Selective synchronization
 
-GitLab Geo supports selective synchronization, which allows admins to choose
+Geo supports selective synchronization, which allows admins to choose
 which projects should be synchronized by secondary nodes.
 
 It is important to note that selective synchronization does not:

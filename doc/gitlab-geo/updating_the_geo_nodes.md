@@ -5,7 +5,7 @@ different steps.
 
 ## General update steps
 
-In order to update the GitLab Geo nodes when a new GitLab version is released,
+In order to update the Geo nodes when a new GitLab version is released,
 all you need to do is update GitLab itself:
 
 1. Log into each node (primary and secondaries)

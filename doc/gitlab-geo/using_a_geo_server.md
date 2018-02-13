@@ -2,7 +2,7 @@
 
 # Using a Geo Server
 
-After you set up the [database replication and configure the GitLab Geo nodes][req],
+After you set up the [database replication and configure the Geo nodes][req],
 there are a few things to consider:
 
 1. Users need an extra step to be able to fetch code from the secondary and push

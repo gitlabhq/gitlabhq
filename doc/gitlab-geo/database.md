@@ -1,4 +1,4 @@
-# GitLab Geo database replication
+# Geo database replication
 
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
@@ -104,7 +104,7 @@ The following guide assumes that:
 1. Configure PostgreSQL to listen on network interfaces
 
     For security reasons, PostgreSQL does not listen on any network interfaces
-    by default. However, GitLab Geo requires the secondary to be able to
+    by default. However, Geo requires the secondary to be able to
     connect to the primary's database. For this reason, we need the address of
     each node. Note: For external PostgreSQL instances, see [additional instructions][external postgresql].
 
@@ -439,7 +439,7 @@ The `geo_primary_role` makes configuration changes to `pg_hba.conf` and
 
 ```
 ##
-## GitLab Geo Primary
+## Geo Primary
 ## - pg_hba.conf
 ##
 host    replication gitlab_replicator <trusted secondary IP>/32     md5
@@ -480,7 +480,7 @@ instructions for [enabling tracking database on the secondary server][tracking].
 
 ## MySQL replication
 
-MySQL replication is not supported for GitLab Geo.
+MySQL replication is not supported for Geo.
 
 ## Troubleshooting
 

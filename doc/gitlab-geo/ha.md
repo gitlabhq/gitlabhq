@@ -1,6 +1,6 @@
-# GitLab Geo High Availability
+# Geo High Availability
 
-This document describes a minimal reference architecture for running GitLab Geo
+This document describes a minimal reference architecture for running Geo
 in a high availability configuration. If your HA setup differs from the one
 described, it is possible to adapt these instructions to your needs.
 
@@ -17,11 +17,11 @@ one geographic location can communicate with each other using their private IP a
 The IP addresses given are examples and may be different depending on the
 network topology of your deployment.
 
-The only external way to access the two GitLab Geo deployments is by HTTPS at
+The only external way to access the two Geo deployments is by HTTPS at
 `gitlab.us.example.com` and `gitlab.eu.example.com` in the example above.
 
-NOTE: **Note:**
-The primary and secondary GitLab Geo deployments must be able to communicate to each other over HTTPS.
+> **Note:** The primary and secondary Geo deployments must be able to
+> communicate to each other over HTTPS.
 
 ## Redis and PostgreSQL High Availability
 
@@ -130,7 +130,7 @@ the addresses of the remote endpoints for PostgreSQL and Redis will need to be s
 On the secondary the remote endpoint for the PostgreSQL Geo database will
 be specified.
 
-1. Edit `/etc/gitlab/gitlab.rb` and ensure the following to disable PostgreSQL and Redis from running locally. Configure the secondary to connect to the GitLab Geo tracking database.
+1. Edit `/etc/gitlab/gitlab.rb` and ensure the following to disable PostgreSQL and Redis from running locally. Configure the secondary to connect to the Geo tracking database.
 
 
     ```ruby

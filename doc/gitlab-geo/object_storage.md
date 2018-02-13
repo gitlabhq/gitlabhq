@@ -1,6 +1,6 @@
-# GitLab Geo with Object storage
+# Geo with Object storage
 
-GitLab Geo can be used in combination with Object Storage (AWS S3, or
+Geo can be used in combination with Object Storage (AWS S3, or
 other compatible object storage).
 
 ## Configuration
