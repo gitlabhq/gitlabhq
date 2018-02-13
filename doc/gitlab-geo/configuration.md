@@ -90,7 +90,7 @@ with the same credentials as used in the primary.
 GitLab integrates with the system-installed SSH daemon, designating a user
 (typically named git) through which all access requests are handled.
 
-In a [Disaster Recovery](disaster-recovery.md) situation, GitLab system
+In a [Disaster Recovery](../administration/disaster_recovery/index.md) situation, GitLab system
 administrators will promote a secondary Geo replica to a primary and they can
 update the DNS records for the primary domain to point to the secondary to prevent
 the need to update all references to the primary domain to the secondary domain,

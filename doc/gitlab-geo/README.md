@@ -51,7 +51,9 @@ to reading any data available in the GitLab web interface (see [current limitati
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
-- A Geo secondary can be promoted to become the primary in a [Disaster Recovery](disaster-recovery.md) scenario
+- Quickly fail-over to a Geo secondary in a
+[Disaster Recovery](../administration/disaster_recovery/index.md) scenario
+- Allows [planned fail-over](../administration/disaster_recovery/planned-fail-over.md) to a Geo secondary
 
 ## Architecture
 
@@ -190,10 +192,6 @@ Read through the [Geo High Availability documentation](ha.md).
 
 When you have object storage enabled, please consult the
 [Geo with Object Storage](object_storage.md) documentation.
-
-## Restore demoted primary geo node
-
-Read how to [Bring a demoted primary back](bring-primary-back.md)
 
 ## Replicating the Container Registry
 
