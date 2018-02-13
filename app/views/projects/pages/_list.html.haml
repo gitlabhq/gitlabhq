@@ -7,7 +7,7 @@
         %li
           .pull-right
             = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
-            %span.btn.btn-remove.btn-sm.btn-grouped{ data: { toggle: 'modal', target: "#modal-delete-domain-#{domain.id}" } }
+            %button.btn.btn-remove.btn-sm.btn-grouped{ data: { toggle: 'modal', target: "#modal-delete-domain-#{domain.id}" } }
               Remove
           .clearfix
             %span= link_to domain.domain, domain.url
@@ -26,7 +26,7 @@
 
                 .modal-body
                   Due to an
-                  = link_to 'existing security vulnerability', 'https://about.gitlab.com/2018/02/05/gitlab-pages-custom-domain-validation/'
+                  = link_to 'existing security vulnerability', 'https://about.gitlab.com/2018/02/05/gitlab-pages-custom-domain-validation/', target: '_blank', rel: 'noopener noreferrer'
                   you will
                   %strong= 'not'
                   be able to add any custom domains at this time.
@@ -35,11 +35,11 @@
                   %br
 
                   You are about to remove
-                  = domain.domain
+                  %code= domain.domain
                   and will not be able to re-add the domain until the vulnerability is patched.
 
                 .modal-footer
-                  %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+                  %a.btn.btn-default{ href: '#', data: { dismiss: 'modal' } } Cancel
 
                   = link_to 'Delete domain',
                     project_pages_domain_path(@project, domain),
