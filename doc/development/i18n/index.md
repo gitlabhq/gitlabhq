@@ -44,33 +44,7 @@ Proof reading helps ensure the accuracy and consistency of translations.
 All translations are proof read before being accepted.
 If a translations requires changes, you will be notified with a comment explaining why.
 
-Community assistance proof reading translations is encouraged and appreciated.
-Requests to become a proof reader will be considered on the merits of previous translations.
-
-- Bulgarian
-- Chinese Simplified
-  - [Huang Tao](https://crowdin.com/profile/htve)
-- Chinese Traditional
-  - [Huang Tao](https://crowdin.com/profile/htve)
-- Chinese Traditional, Hong Kong
-  - [Huang Tao](https://crowdin.com/profile/htve)
-- Dutch
-- Esperanto
-- French
-- German
-- Italian
-  - [Paolo Falomo](https://crowdin.com/profile/paolo.falomo)
-- Japanese
-- Korean
-  - [Huang Tao](https://crowdin.com/profile/htve)
-- Portuguese, Brazilian
-- Russian
-  - [Alexy Lustin](https://crowdin.com/profile/lustin)
-  - [Nikita Grylov](https://crowdin.com/profile/nixel2007)
-- Spanish
-- Ukrainian
-
-If you would like to be added as a proof reader, please [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+See [Proofreading translations](proofreader.md).
 
 ## Release
 
