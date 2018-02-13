@@ -40,11 +40,12 @@ See [Translation guidelines](translation.md).
 
 ### Proof reading
 
-Proof reading helps ensure the accuracy and consistency of translations.
-All translations are proof read before being accepted.
-If a translations requires changes, you will be notified with a comment explaining why.
+Proof reading helps ensure the accuracy and consistency of translations. All
+translations are proof read before being accepted. If a translations requires
+changes, you will be notified with a comment explaining why.
 
-See [Proofreading translations](proofreader.md).
+See [Proofreading Translations](proofreader.md) for more information on who's
+able to proofread and instructions on becoming a proofreader yourself.
 
 ## Release
 

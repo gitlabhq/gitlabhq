@@ -1,6 +1,6 @@
 # Proofread Translations
 
-Most translations are contributed, reviewed and accepted by the community. We
+Most translations are contributed, reviewed, and accepted by the community. We
 are very appreciative of the work done by translators and proofreaders!
 
 ## Proofreaders
@@ -41,7 +41,8 @@ are very appreciative of the work done by translators and proofreaders!
    [open a merge request](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/new)
    to request Proofreader permissions and add yourself to the list above.
 
-    Please include links to any projects you have previously translated.
+    In the merge request description, please include links to any projects you
+    have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
    your previous translations.
