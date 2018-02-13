@@ -19,7 +19,7 @@ describe('PrometheusMetrics EE', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.restore();
   });
 
   describe('Custom Metrics EE', () => {
