@@ -37,7 +37,7 @@ module QA
         end
 
         def repository_location_uri
-          Git::Repository::Location.parse(repository_location)
+          Git::Location.new(repository_location)
         end
 
         def project_name

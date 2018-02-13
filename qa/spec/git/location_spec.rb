@@ -1,10 +1,10 @@
 describe QA::Git::Location do
-  describe '.parse' do
+  describe '.new' do
     context 'when URI starts with ssh://' do
       context 'when URI has port' do
         it 'parses correctly' do
           uri = described_class
-            .parse('ssh://git@qa.test:2222/sandbox/qa/repo.git')
+            .new('ssh://git@qa.test:2222/sandbox/qa/repo.git')
 
           expect(uri.user).to eq('git')
           expect(uri.host).to eq('qa.test')
@@ -16,7 +16,7 @@ describe QA::Git::Location do
       context 'when URI does not have port' do
         it 'parses correctly' do
           uri = described_class
-            .parse('ssh://git@qa.test/sandbox/qa/repo.git')
+            .new('ssh://git@qa.test/sandbox/qa/repo.git')
 
           expect(uri.user).to eq('git')
           expect(uri.host).to eq('qa.test')
@@ -30,7 +30,7 @@ describe QA::Git::Location do
       context 'when host does not have colons' do
         it 'parses correctly' do
           uri = described_class
-            .parse('git@qa.test:sandbox/qa/repo.git')
+            .new('git@qa.test:sandbox/qa/repo.git')
 
           expect(uri.user).to eq('git')
           expect(uri.host).to eq('qa.test')
@@ -42,7 +42,7 @@ describe QA::Git::Location do
       context 'when host has a colon' do
         it 'parses correctly' do
           uri = described_class
-            .parse('[git@qa:test]:sandbox/qa/repo.git')
+            .new('[git@qa:test]:sandbox/qa/repo.git')
 
           expect(uri.user).to eq('git')
           expect(uri.host).to eq('qa%3Atest')
