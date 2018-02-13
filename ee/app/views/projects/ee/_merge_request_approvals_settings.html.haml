@@ -68,7 +68,7 @@
       = form.label :disable_overriding_approvers_per_merge_request do
         = form.check_box(:disable_overriding_approvers_per_merge_request, { checked: can_override_approvers }, false, true)
         %strong Can override approvers and approvals required per merge request
-        = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals", anchor: 'can-override-approvers-and-approvals-required-per-merge-request'), target: '_blank'
+        = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals", anchor: 'overriding-the-merge-request-approvals-default-settings'), target: '_blank'
 
   .form-group.reset-approvals-on-push
     .checkbox
