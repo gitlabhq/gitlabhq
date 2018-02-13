@@ -10,7 +10,8 @@
     "id": { "type": "integer" },
     "key": { "type": "string" },
     "value": { "type": "string" },
-    "protected": { "type": "boolean" }
+    "protected": { "type": "boolean" },
+    "environment_scope": { "type": "string", "optional": true }
   },
   "additionalProperties": false
 }
