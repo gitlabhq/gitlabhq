@@ -16,12 +16,43 @@ describe API::ProjectImport do
   end
 
   describe 'POST /projects/import' do
-    it 'schedules an import' do
+    it 'schedules an import using a namespace' do
       expect_any_instance_of(Project).to receive(:import_schedule)
+      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
 
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path
 
       expect(response).to have_gitlab_http_status(201)
+    end
+
+    it 'schedules an import at the user namespace level' do
+      expect_any_instance_of(Project).to receive(:import_schedule)
+      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(user.namespace.id, any_args).and_call_original
+
+      post api('/projects/import', user), path: 'test-import2', file: fixture_file_upload(file)
+
+      expect(response).to have_gitlab_http_status(201)
+    end
+
+    it 'does not schedule an import if the user has no permission to the namespace' do
+      expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+      post(api('/projects/import', create(:user)),
+           path: 'test-import3',
+           file: fixture_file_upload(file),
+           namespace: namespace.full_path)
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['message']).to eq('Namespace is not valid')
+    end
+
+    it 'does not schedule an import if the user uploads no valid file' do
+      expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+      post api('/projects/import', user), path: 'test-import3', file: './random/test'
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['error']).to eq('file is invalid')
     end
   end
 

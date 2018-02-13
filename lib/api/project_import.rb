@@ -17,7 +17,6 @@ module API
     end
 
     resource :projects, requirements: { id: %r{[^/]+} } do
-
       params do
         requires :path, type: String, desc: 'The new project path and name'
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
@@ -30,11 +29,10 @@ module API
         render_api_error!('The file is invalid', 400) unless file_is_valid?
 
         namespace = import_params[:namespace]
-
-        namespace = if namespace && namespace =~ /^\d+$/
-                      Namespace.find_by(id: namespace)
-                    elsif namespace.blank?
+        namespace = if namespace.blank?
                       current_user.namespace
+                    elsif namespace =~ /^\d+$/
+                      Namespace.find_by(id: namespace)
                     else
                       Namespace.find_by_path_or_name(namespace)
                     end
@@ -43,7 +41,7 @@ module API
                                              file: import_params[:file]['tempfile'])
         project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
 
-        render_api_error!(project&.full_messages&.first, 400) unless project&.saved?
+        render_api_error!(project.errors.full_messages&.first, 400) unless project.saved?
 
         present project, with: Entities::ProjectImportStatus
       end
