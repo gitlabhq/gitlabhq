@@ -30,6 +30,8 @@
         - else
           = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
+.deprecation-warning
+
 .detail-page-description.milestone-detail
   %h2.title
     = markdown_field(milestone, :title)
