@@ -7,11 +7,12 @@
       "data": { "type": "string" },
       "filename": { "type": ["string"] },
       "id": { "type": ["string", "null"] },
+      "project_id": { "type": "integer" },
       "ref": { "type": "string" },
       "startline": { "type": "integer" }
     },
     "required": [
-      "basename", "data", "filename", "id", "ref", "startline"
+      "basename", "data", "filename", "id", "ref", "startline", "project_id"
     ],
     "additionalProperties": false
   }
