@@ -108,6 +108,7 @@ module Geo
         attrs["resync_#{type}"] = false
         attrs["#{type}_retry_count"] = nil
         attrs["#{type}_retry_at"] = nil
+        attrs["force_to_redownload_#{type}"] = false
       end
 
       registry.update!(attrs)
