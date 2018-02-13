@@ -1,4 +1,7 @@
 import Api from '~/api';
+import { __ } from '~/locale';
+import Flash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 
 export default class ApproversSelect {
   constructor() {
@@ -147,7 +150,7 @@ export default class ApproversSelect {
   }
 
   static saveApprovers(fieldName) {
-    const $input = window.$(`[name="${fieldName}"]`);
+    const $input = $(`[name="${fieldName}"]`);
     const newValue = $input.val();
     const $loadWrapper = $('.load-wrapper');
     const $approverSelect = $('.js-select-user-and-group');
@@ -158,23 +161,24 @@ export default class ApproversSelect {
 
     const $form = $('.js-add-approvers').closest('form');
     $loadWrapper.removeClass('hidden');
-    window.$.ajax({
-      url: $form.attr('action'),
-      type: 'POST',
-      data: {
-        _method: 'PATCH',
-        [fieldName]: newValue,
+
+    axios.post($form.attr('action'), `_method=PATCH&${[encodeURIComponent(fieldName)]}=${newValue}`, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      success: ApproversSelect.updateApproverList,
-      complete() {
-        $input.val('');
-        $approverSelect.select2('val', '');
-        $loadWrapper.addClass('hidden');
-      },
-      error() {
-        window.Flash('Failed to add Approver', 'alert');
-      },
+    }).then(({ data }) => {
+      ApproversSelect.updateApproverList(data);
+      ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
+    }).catch(() => {
+      Flash(__('An error occurred while adding approver'));
+      ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
     });
+  }
+
+  static saveApproversComplete($input, $approverSelect, $loadWrapper) {
+    $input.val('');
+    $approverSelect.select2('val', '');
+    $loadWrapper.addClass('hidden');
   }
 
   static removeApprover(e) {
@@ -182,17 +186,17 @@ export default class ApproversSelect {
     const target = e.currentTarget;
     const $loadWrapper = $('.load-wrapper');
     $loadWrapper.removeClass('hidden');
-    $.ajax({
-      url: target.getAttribute('href'),
-      type: 'POST',
-      data: {
-        _method: 'DELETE',
+
+    axios.post(target.getAttribute('href'), '_method=DELETE', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      success: ApproversSelect.updateApproverList,
-      complete: () => $loadWrapper.addClass('hidden'),
-      error() {
-        window.Flash('Failed to remove Approver', 'alert');
-      },
+    }).then(({ data }) => {
+      ApproversSelect.updateApproverList(data);
+      $loadWrapper.addClass('hidden');
+    }).catch(() => {
+      Flash(__('An error occurred while removing approver'));
+      $loadWrapper.addClass('hidden');
     });
   }
 
