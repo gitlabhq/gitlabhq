@@ -6,7 +6,9 @@
 class VariableDuplicatesValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     if options[:scope]
-      scoped = value.group_by { |variable| Array(options[:scope]).map { |attr| variable.send(attr) } } # rubocop:disable GitlabSecurity/PublicSend
+      scoped = value.group_by do |variable|
+        Array(options[:scope]).map { |attr| variable.send(attr) } # rubocop:disable GitlabSecurity/PublicSend
+      end
       scoped.each_value { |scope| validate_duplicates(record, attribute, scope) }
     else
       validate_duplicates(record, attribute, value)
