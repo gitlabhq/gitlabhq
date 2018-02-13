@@ -161,10 +161,12 @@ module MergeRequests
 
       merge_request.title = "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
 
-      unless merge_request.title
-        branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
+      return if merge_request.title.present?
+
+      if issue_iid.present?
         merge_request.title = "Resolve #{issue_iid}"
-        merge_request.title += " \"#{branch_title}\"" unless branch_title.empty?
+        branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
+        merge_request.title += " \"#{branch_title}\"" if branch_title.present?
       end
     end
 
