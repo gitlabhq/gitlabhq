@@ -69,7 +69,7 @@ module QA
             tags:
               - qa
               - test
-            script: echo "CONTENTS" > my-artifacts/artifact.txt
+            script: mkdir my-artifacts; echo "CONTENTS" > my-artifacts/artifact.txt
             artifacts:
               paths:
                 - my-artifacts/
@@ -95,7 +95,7 @@ module QA
         expect(pipeline).to have_build('test-success', status: :success)
         expect(pipeline).to have_build('test-failure', status: :failed)
         expect(pipeline).to have_build('test-tags', status: :pending)
-        expect(pipeline).to have_build('test-artifacts', status: :failed)
+        expect(pipeline).to have_build('test-artifacts', status: :success)
       end
     end
   end

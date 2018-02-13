@@ -81,7 +81,7 @@ describe 'OpenID Connect requests' do
       it 'includes all user information and group memberships' do
         request_user_info
 
-        expect(json_response).to eq({
+        expect(json_response).to match(a_hash_including({
           'sub'            => hashed_subject,
           'name'           => 'Alice',
           'nickname'       => 'alice',
@@ -90,13 +90,17 @@ describe 'OpenID Connect requests' do
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
           'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
-          'groups'         =>
-            if Group.supports_nested_groups?
-              ['group1', 'group2/group3', 'group2/group3/group4']
-            else
-              ['group1', 'group2/group3']
-            end
-        })
+          'groups'         => anything
+        }))
+
+        expected_groups =
+          if Group.supports_nested_groups?
+            ['group1', 'group2/group3', 'group2/group3/group4']
+          else
+            ['group1', 'group2/group3']
+          end
+
+        expect(json_response['groups']).to match(array_including(expected_groups))
       end
     end
 
