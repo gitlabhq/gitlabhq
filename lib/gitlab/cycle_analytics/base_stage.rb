@@ -29,7 +29,7 @@ module Gitlab
           # We compute the (end_time - start_time) interval, and give it an alias based on the current
           # cycle analytics stage.
           interval_query = Arel::Nodes::As.new(cte_table,
-            subtract_datetimes(base_query(project_ids), start_time_attrs, end_time_attrs, name.to_s))
+            subtract_datetimes(stage_query(project_ids), start_time_attrs, end_time_attrs, name.to_s))
 
           median_datetimes(cte_table, interval_query, name, :project_id)&.each do |project_id, median|
             loader.call(project_id, median)

@@ -7,6 +7,6 @@ class AnalyticsStageEntity < Grape::Entity
   expose :description
 
   expose :median, as: :value do |stage|
-    stage.median && !stage.median.blank? ? distance_of_time_in_words(stage.median) : nil
+    distance_of_time_in_words(stage.median) if stage.median && !(stage.median.blank? || stage.median.zero?)
   end
 end

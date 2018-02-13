@@ -25,7 +25,7 @@ module Gitlab
         _("Total test time for all commits/merges")
       end
 
-      def stage_query(project_ids = nil)
+      def stage_query(project_ids)
         if @options[:branch]
           super(project_ids).where(build_table[:ref].eq(@options[:branch]))
         else

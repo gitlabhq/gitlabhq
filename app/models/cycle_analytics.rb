@@ -7,8 +7,13 @@ class CycleAnalytics
   end
 
   def all_medians_per_stage
-    STAGES.each_with_object({}) do |stage_name, hsh|
-      hsh[stage_name] = self[stage_name].median
+    medians_per_stage = {}
+
+    # We only need this data for Postgres instances
+    return medians_per_stage if Gitlab::Database.mysql?
+
+    STAGES.each do |stage_name|
+      medians_per_stage[stage_name] = self[stage_name].median
     end
   end
 
