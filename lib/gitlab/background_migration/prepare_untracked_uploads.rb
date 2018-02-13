@@ -171,8 +171,10 @@ module Gitlab
       end
 
       def drop_temp_table
-        UntrackedFile.connection.drop_table(:untracked_files_for_uploads,
-                                            if_exists: true)
+        unless Rails.env.test? # Dropping a table intermittently breaks test cleanup
+          UntrackedFile.connection.drop_table(:untracked_files_for_uploads,
+                                              if_exists: true)
+        end
       end
     end
   end
