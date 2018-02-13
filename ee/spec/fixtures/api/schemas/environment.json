@@ -32,7 +32,7 @@
         "last_deployment": {
             "oneOf": [
                 {
-                    "$ref": "deployment.json"
+                    "$ref": "../../../../../spec/fixtures/api/schemas/deployment.json"
                 },
                 {
                     "type": ["null"]
