@@ -20,6 +20,15 @@ describe API::ProjectImport do
       expect_any_instance_of(Project).to receive(:import_schedule)
       expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
 
+      post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id
+
+      expect(response).to have_gitlab_http_status(201)
+    end
+
+    it 'schedules an import using the namespace path' do
+      expect_any_instance_of(Project).to receive(:import_schedule)
+      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
+
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path
 
       expect(response).to have_gitlab_http_status(201)
