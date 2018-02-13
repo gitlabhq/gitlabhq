@@ -26,6 +26,9 @@ module QA
         end
 
         def choose_repository_clone_ssh
+          # It's not always beginning with ssh:// so detecting with @
+          # would be more reliable because ssh would always contain it.
+          # We can't use .git because HTTP also contain that part.
           choose_repository_clone('SSH', '@')
         end
 
