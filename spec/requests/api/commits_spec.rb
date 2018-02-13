@@ -490,39 +490,43 @@ describe API::Commits do
 
     context 'for a valid commit' do
       it 'returns all refs with no scope' do
-        get api(route, current_user)
+        get api(route, current_user), per_page: 100
 
-        branch_refs = project.repository.branch_names_contains(commit_id)
-        tag_refs = project.repository.tag_names_contains(commit_id)
+        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
+        refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
 
-        expect(json_response.map { |refs| refs['branch_name'] }.compact).to eq(branch_refs)
-        expect(json_response.map { |refs| refs['tag_name'] }.compact).to eq(tag_refs)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
       end
 
       it 'returns all refs' do
-        get api(route, current_user), type: 'all'
+        get api(route, current_user), type: 'all', per_page: 100
 
-        branch_refs = project.repository.branch_names_contains(commit_id)
-        tag_refs = project.repository.tag_names_contains(commit_id)
+        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
+        refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
 
-        expect(json_response.map { |refs| refs['branch_name'] }.compact).to eq(branch_refs)
-        expect(json_response.map { |refs| refs['tag_name'] }.compact).to eq(tag_refs)
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
       end
 
       it 'returns the branch refs' do
-        get api(route, current_user), type: 'branches'
+        get api(route, current_user), type: 'branch', per_page: 100
 
-        branch_refs = project.repository.branch_names_contains(commit_id)
+        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
 
-        expect(json_response.map { |refs| refs['branch_name'] }.compact).to eq(branch_refs)
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
       end
 
       it 'returns the tag refs' do
-        get api(route, current_user), type: 'tags'
+        get api(route, current_user), type: 'tag', per_page: 100
 
-        tag_refs = project.repository.tag_names_contains(commit_id)
+        refs = project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]}
 
-        expect(json_response.map { |refs| refs['tag_name'] }.compact).to eq(tag_refs)
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
       end
     end
   end

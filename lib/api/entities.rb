@@ -277,13 +277,7 @@ module API
     end
 
     class BasicRef < Grape::Entity
-      expose :branch_name, if: lambda { |ref, options| ref[1] } do |ref, options|
-        ref[0]
-      end
-
-      expose :tag_name, if: lambda { |ref, options| !ref[1] } do |ref, options|
-        ref[0]
-      end
+      expose :type, :name
     end
 
     class Branch < Grape::Entity

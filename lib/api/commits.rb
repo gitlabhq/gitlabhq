@@ -162,24 +162,19 @@ module API
       end
       params do
         requires :sha, type: String, desc: 'A commit sha'
-        optional :type, type: String, values: %w[branches tags all], default: 'all', desc: 'Scope'
+        optional :type, type: String, values: %w[branch tag all], default: 'all', desc: 'Scope'
+        use :pagination
       end
       get ':id/repository/commits/:sha/refs', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
 
-        refs =
-          case params[:type]
-          when 'branches'
-            user_project.repository.branch_names_contains(commit.id).map {|branch_name| [branch_name, true]}
-          when 'tags'
-            user_project.repository.tag_names_contains(commit.id).map {|tag_name| [tag_name, false]}
-          else
-            refs = user_project.repository.branch_names_contains(commit.id).map {|branch_name| [branch_name, true]}
-            refs.concat(user_project.repository.tag_names_contains(commit.id).map {|tag_name| [tag_name, false]})
-          end
+        refs = []
+        refs.concat(user_project.repository.branch_names_contains(commit.id).map {|name| { type: 'branch', name: name }}) unless params[:type] == 'tag'
+        refs.concat(user_project.repository.tag_names_contains(commit.id).map {|name| { type: 'tag', name: name }}) unless params[:type] == 'branch'
+        refs = Kaminari.paginate_array(refs)
 
-        present refs, with: Entities::BasicRef
+        present paginate(refs), with: Entities::BasicRef
       end
 
       desc 'Post comment to commit' do
