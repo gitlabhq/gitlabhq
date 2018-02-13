@@ -1,0 +1,5 @@
+---
+title: Add cron job to email users on issue due date
+merge_request: 16957
+author: @stuartnelson3
+type: added
