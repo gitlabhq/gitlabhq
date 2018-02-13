@@ -14,6 +14,7 @@ The access levels are defined in the `ProtectedTagAccess::ALLOWED_ACCESS_LEVELS`
 ## List protected tags
 
 Gets a list of protected tags from a project.
+This function takes pagination parameters `page` and `per_page` to restrict the list of protected tags.
 
 ```
 GET /projects/:id/protected_tags
@@ -47,6 +48,7 @@ Example response:
 ## Get a single protected tag or wildcard protected tag
 
 Gets a single protected tag or wildcard protected tag.
+The pagination parameters `page` and `per_page` can be used to restrict the list of protected tags.
 
 ```
 GET /projects/:id/protected_tags/:name
@@ -55,7 +57,7 @@ GET /projects/:id/protected_tags/:name
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `name` | string | yes | The name of the branch or wildcard |
+| `name` | string | yes | The name of the tag or wildcard |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/release-1-0'
@@ -78,7 +80,7 @@ Example response:
 ## Protect repository tags
 
 Protects a single repository tag or several project repository
-tags using a wildcard protected branch.
+tags using a wildcard protected tag.
 
 ```
 POST /projects/:id/protected_tags
@@ -91,7 +93,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitl
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `name` | string | yes | The name of the branch or wildcard |
+| `name` | string | yes | The name of the tag or wildcard |
 | `create_access_level` | string | no | Access levels allowed to create (defaults: `40`, master access level) |
 
 Example response:
@@ -117,10 +119,10 @@ DELETE /projects/:id/protected_tags/:name
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable'
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable'
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `name` | string | yes | The name of the branch |
+| `name` | string | yes | The name of the tag |

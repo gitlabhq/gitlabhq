@@ -3,13 +3,14 @@ require 'spec_helper'
 describe API::ProtectedTags do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository) }
+  let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
   let(:protected_name) { 'feature' }
   let(:tag_name) { protected_name }
   let!(:protected_tag) do
     create(:protected_tag, project: project, name: protected_name)
   end
 
-  describe "GET /projects/:id/protected_tags" do
+  describe 'GET /projects/:id/protected_tags' do
     let(:route) { "/projects/#{project.id}/protected_tags" }
 
     shared_examples_for 'protected tags' do
@@ -45,7 +46,7 @@ describe API::ProtectedTags do
     end
   end
 
-  describe "GET /projects/:id/protected_tags/:tag" do
+  describe 'GET /projects/:id/protected_tags/:tag' do
     let(:route) { "/projects/#{project.id}/protected_tags/#{tag_name}" }
 
     shared_examples_for 'protected tag' do
@@ -100,7 +101,7 @@ describe API::ProtectedTags do
         project.add_master(user)
       end
 
-      it 'protects a single tag' do
+      it 'protects a single tag with masters can create tags' do
         post api("/projects/#{project.id}/protected_tags", user), name: tag_name
 
         expect(response).to have_gitlab_http_status(201)
@@ -108,7 +109,7 @@ describe API::ProtectedTags do
         expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
       end
 
-      it 'protects a single tag and developers can create' do
+      it 'protects a single tag with developers can create tags' do
         post api("/projects/#{project.id}/protected_tags", user),
             name: tag_name, create_access_level: 30
 
@@ -117,7 +118,7 @@ describe API::ProtectedTags do
         expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
 
-      it 'protects a single tag no one can create' do
+      it 'protects a single tag with no one can create tags' do
         post api("/projects/#{project.id}/protected_tags", user),
             name: tag_name, create_access_level: 0
 
@@ -126,16 +127,25 @@ describe API::ProtectedTags do
         expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
       end
 
-      it 'returns a 409 error if the same tag is protected twice' do
+      it 'returns a 422 error if the same tag is protected twice' do
         post api("/projects/#{project.id}/protected_tags", user), name: protected_name
 
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(422)
+        expect(json_response['message'][0]).to eq('Name has already been taken')
+      end
+
+      it 'returns 201 if the same tag is proteted on different projects' do
+        post api("/projects/#{project.id}/protected_tags", user), name: protected_name
+        post api("/projects/#{project2.id}/protected_tags", user), name: protected_name
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(protected_name)
       end
 
       context 'when tag has a wildcard in its name' do
         let(:tag_name) { 'feature/*' }
 
-        it "protects multiple tags with a wildcard in the name" do
+        it 'protects multiple tags with a wildcard in the name' do
           post api("/projects/#{project.id}/protected_tags", user), name: tag_name
 
           expect(response).to have_gitlab_http_status(201)
@@ -150,7 +160,7 @@ describe API::ProtectedTags do
         project.add_guest(user)
       end
 
-      it "returns a 403 error if guest" do
+      it 'returns a 403 error if guest' do
         post api("/projects/#{project.id}/protected_tags/", user), name: tag_name
 
         expect(response).to have_gitlab_http_status(403)
@@ -158,12 +168,12 @@ describe API::ProtectedTags do
     end
   end
 
-  describe "DELETE /projects/:id/protected_tags/unprotect/:tag" do
+  describe 'DELETE /projects/:id/protected_tags/unprotect/:tag' do
     before do
       project.add_master(user)
     end
 
-    it "unprotects a single tag" do
+    it 'unprotects a single tag' do
       delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
 
       expect(response).to have_gitlab_http_status(204)
@@ -182,7 +192,7 @@ describe API::ProtectedTags do
     context 'when tag has a wildcard in its name' do
       let(:protected_name) { 'feature*' }
 
-      it "unprotects a wildcard tag" do
+      it 'unprotects a wildcard tag' do
         delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
 
         expect(response).to have_gitlab_http_status(204)
