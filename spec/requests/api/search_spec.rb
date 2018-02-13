@@ -66,7 +66,7 @@ describe API::Search do
         get api(endpoint, user), scope: 'commits', search: 'folder'
       end
 
-      it_behaves_like 'response is correct', schema: 'public_api/v4/commits', size: 2
+      it_behaves_like 'response is correct', schema: 'public_api/v4/commits_details', size: 2
     end
 
     context 'for blobs scope' do
@@ -167,7 +167,7 @@ describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/snippets'
       end
 
-      context 'when elasticsearch is enabled' do
+      context 'when elasticsearch is disabled' do
         it_behaves_like 'elasticsearch disabled' do
           let(:endpoint) { '/search' }
         end
@@ -391,7 +391,7 @@ describe API::Search do
           get api("/projects/#{repo_project.id}/-/search", user), scope: 'commits', search: '498214de67004b1da3d820901307bed2a68a8ef6'
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/commits'
+        it_behaves_like 'response is correct', schema: 'public_api/v4/commits_details'
       end
 
       context 'for commits scope with project path as id' do
@@ -399,7 +399,7 @@ describe API::Search do
           get api("/projects/#{CGI.escape(repo_project.full_path)}/-/search", user), scope: 'commits', search: '498214de67004b1da3d820901307bed2a68a8ef6'
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/commits'
+        it_behaves_like 'response is correct', schema: 'public_api/v4/commits_details'
       end
 
       context 'for blobs scope' do

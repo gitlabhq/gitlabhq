@@ -54,6 +54,7 @@ following locations:
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
+- [Search](search.md)
 - [Services](services.md)
 - [Settings](settings.md)
 - [Sidekiq metrics](sidekiq_metrics.md)
