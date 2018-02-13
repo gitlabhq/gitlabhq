@@ -41,13 +41,13 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'adds new unprotected variable' do
+  it 'adds new protected variable' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
       find('.js-ci-variable-input-value').set('key value')
       find('.ci-variable-protected-item .js-project-feature-toggle').click
 
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
+      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
     end
 
     click_button('Save variables')
@@ -59,7 +59,7 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key value')
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
+      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
     end
   end
 
@@ -143,7 +143,6 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('unprotected_key')
       find('.js-ci-variable-input-value').set('unprotected_value')
-      find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
     end
@@ -178,6 +177,7 @@ shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('protected_key')
       find('.js-ci-variable-input-value').set('protected_value')
+      find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
     end

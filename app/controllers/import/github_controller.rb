@@ -36,16 +36,21 @@ class Import::GithubController < Import::BaseController
   end
 
   def create
-    @repo_id = params[:repo_id].to_i
-    repo = client.repo(@repo_id)
-    @project_name = params[:new_name].presence || repo.name
+    repo = client.repo(params[:repo_id].to_i)
+    project_name = params[:new_name].presence || repo.name
     namespace_path = params[:target_namespace].presence || current_user.namespace_path
-    @target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
+    target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
 
-    if can?(current_user, :create_projects, @target_namespace)
-      @project = Gitlab::LegacyGithubImport::ProjectCreator.new(repo, @project_name, @target_namespace, current_user, access_params, type: provider).execute
+    if can?(current_user, :create_projects, target_namespace)
+      project = Gitlab::LegacyGithubImport::ProjectCreator.new(repo, project_name, target_namespace, current_user, access_params, type: provider).execute
+
+      if project.persisted?
+        render json: ProjectSerializer.new.represent(project)
+      else
+        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render 'unauthorized'
+      render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
   end
 

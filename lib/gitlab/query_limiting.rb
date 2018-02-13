@@ -6,7 +6,7 @@ module Gitlab
     # This ensures we don't produce any errors that users can't do anything
     # about themselves.
     def self.enable?
-      Gitlab.com? || Rails.env.development? || Rails.env.test?
+      Rails.env.development? || Rails.env.test?
     end
 
     # Allows the current request to execute any number of SQL queries.

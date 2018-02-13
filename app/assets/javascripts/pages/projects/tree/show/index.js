@@ -14,7 +14,7 @@ export default () => {
   $('#tree-slider').waitForImages(() =>
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
 
-  const commitPipelineStatusEl = document.getElementById('commit-pipeline-status');
+  const commitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
   const statusLink = document.querySelector('.commit-actions .ci-status-link');
   if (statusLink != null) {
     statusLink.remove();

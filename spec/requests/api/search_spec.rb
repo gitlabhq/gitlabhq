@@ -180,6 +180,18 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
+
+      context 'for milestones scope with group path as id' do
+        before do
+          another_project = create(:project, :public)
+          create(:milestone, project: project, title: 'awesome milestone')
+          create(:milestone, project: another_project, title: 'awesome milestone other project')
+
+          get api("/groups/#{CGI.escape(group.full_path)}/-/search", user), scope: 'milestones', search: 'awesome'
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+      end
     end
   end
 
@@ -281,6 +293,14 @@ describe API::Search do
       context 'for commits scope' do
         before do
           get api("/projects/#{repo_project.id}/-/search", user), scope: 'commits', search: '498214de67004b1da3d820901307bed2a68a8ef6'
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/commits'
+      end
+
+      context 'for commits scope with project path as id' do
+        before do
+          get api("/projects/#{CGI.escape(repo_project.full_path)}/-/search", user), scope: 'commits', search: '498214de67004b1da3d820901307bed2a68a8ef6'
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/commits'

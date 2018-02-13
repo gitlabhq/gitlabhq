@@ -129,6 +129,12 @@ describe API::Todos do
 
         post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
       end
+
+      it 'returns 404 if the todo does not belong to the current user' do
+        post api("/todos/#{pending_1.id}/mark_as_done", author_1)
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 
