@@ -134,6 +134,10 @@ learn more.
 [GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
 [part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
 
+## EE-specific tests
+
+EE-specific tests follows the same organization, but under the `ee/spec` folder.
+
 ## How to test at the correct level?
 
 As many things in life, deciding what to test at each level of testing is a
