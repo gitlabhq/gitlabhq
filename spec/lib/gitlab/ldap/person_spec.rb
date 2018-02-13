@@ -66,15 +66,6 @@ describe Gitlab::LDAP::Person do
     end
   end
 
-  describe '.validate_entry' do
-    it 'raises InvalidEntryError' do
-      entry['foo'] = 'bar'
-
-      expect { described_class.new(entry, 'ldapmain') }
-        .to raise_error(Gitlab::LDAP::Person::InvalidEntryError)
-    end
-  end
-
   describe '#name' do
     it 'uses the configured name attribute and handles values as an array' do
       name = 'John Doe'
