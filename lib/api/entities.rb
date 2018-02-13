@@ -92,7 +92,9 @@ module API
 
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
-      expose :import_error, if: :import_error
+
+      # TODO: Use `expose_nil` once we upgrade the grape-entity gem
+      expose :import_error, if: lambda { |status, _ops| status.import_error }
     end
 
     class BasicProjectDetails < ProjectIdentity
