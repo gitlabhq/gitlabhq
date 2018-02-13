@@ -60,7 +60,7 @@ describe Projects::EnvironmentsController do
         end
 
         it 'responds with matching schema' do
-          expect(response).to match_response_schema('environments')
+          expect(response).to match_response_schema('environments', dir: 'ee')
         end
 
         it 'responds with a payload describing available environments' do

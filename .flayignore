@@ -19,3 +19,4 @@ app/models/project_services/kubernetes_service.rb
 ee/db/**/*
 ee/app/serializers/ee/merge_request_widget_entity.rb
 ee/lib/ee/gitlab/ldap/sync/admin_users.rb
+ee/spec/**/*

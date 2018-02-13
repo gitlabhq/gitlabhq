@@ -10,10 +10,9 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
-    - 'db/*'
+    - 'db/**/*'
     - 'db/fixtures/**/*'
-    - 'db/geo/*'
-    - 'ee/db/geo/*'
+    - 'ee/db/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
@@ -27,7 +26,6 @@ Style/MutableConstant:
   Exclude:
     - 'db/migrate/**/*'
     - 'db/post_migrate/**/*'
-    - 'db/geo/migrate/**/*'
     - 'ee/db/migrate/**/*'
     - 'ee/db/post_migrate/**/*'
     - 'ee/db/geo/migrate/**/*'
@@ -46,3 +44,16 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'features/**/*'
+    - 'lib/**/*.rake'
+    - 'qa/**/*'
+    - 'spec/**/*'
+    - 'ee/db/**/*'
+    - 'ee/lib/**/*.rake'
+    - 'ee/spec/**/*'
