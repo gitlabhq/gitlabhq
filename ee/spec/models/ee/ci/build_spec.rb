@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Build do
-  let(:project) { create(:project, :repository) }
+  set(:group) { create(:group, :access_requestable, plan: :bronze_plan) }
+  let(:project) { create(:project, :repository, group: group) }
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
@@ -124,6 +125,14 @@ describe Ci::Build do
         end
 
         it { is_expected.not_to include(environment_varialbe) }
+      end
+
+      context 'when there is a plan for the group' do
+        it 'GITLAB_FEATURES should include the features for that plan' do
+          is_expected.to include({ key: 'GITLAB_FEATURES', value: anything, public: true })
+          features_variable = subject.find { |v| v[:key] == 'GITLAB_FEATURES' }
+          expect(features_variable[:value]).to include('multiple_ldap_servers')
+        end
       end
     end
   end
