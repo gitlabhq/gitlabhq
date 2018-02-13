@@ -180,6 +180,7 @@ export default class CreateMergeRequestDropdown {
           valueAttribute: 'data-text',
         },
       ],
+      hideOnClick: false,
     };
   }
 

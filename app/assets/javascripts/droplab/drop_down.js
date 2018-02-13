@@ -1,13 +1,14 @@
 import utils from './utils';
-import { SELECTED_CLASS, IGNORE_CLASS, IGNORE_HIDING_CLASS } from './constants';
+import { SELECTED_CLASS, IGNORE_CLASS } from './constants';
 
 class DropDown {
-  constructor(list, config = {}) {
+  constructor(list, config = { }) {
     this.currentIndex = 0;
     this.hidden = true;
     this.list = typeof list === 'string' ? document.querySelector(list) : list;
     this.items = [];
     this.eventWrapper = {};
+    this.hideOnClick = config.hideOnClick !== false;
 
     if (config.addActiveClassToDropdownButton) {
       this.dropdownToggle = this.list.parentNode.querySelector('.js-dropdown-toggle');
@@ -37,15 +38,17 @@ class DropDown {
 
   clickEvent(e) {
     if (e.target.tagName === 'UL') return;
-    if (e.target.classList.contains(IGNORE_CLASS)) return;
+    if (e.target.closest(`.${IGNORE_CLASS}`)) return;
 
-    const selected = utils.closest(e.target, 'LI');
+    const selected = e.target.closest('li');
     if (!selected) return;
 
     this.addSelectedClass(selected);
 
     e.preventDefault();
-    if (!e.target.classList.contains(IGNORE_HIDING_CLASS)) this.hide();
+    if (this.hideOnClick) {
+      this.hide();
+    }
 
     const listEvent = new CustomEvent('click.dl', {
       detail: {
