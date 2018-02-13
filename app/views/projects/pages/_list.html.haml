@@ -7,7 +7,7 @@
         %li
           .pull-right
             = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
-            %button.btn.btn-remove.btn-sm.btn-grouped{ data: { toggle: 'modal', target: "#modal-delete-domain-#{domain.id}" } }
+            %button.btn.btn-remove.btn-sm.btn-grouped{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain", domain: domain.domain, domainurl: project_pages_domain_path(@project, domain) } }
               Remove
           .clearfix
             %span= link_to domain.domain, domain.url
@@ -17,32 +17,31 @@
             - if domain.expired?
               %span.label.label-danger Expired
 
-          .modal{ id: "modal-delete-domain-#{domain.id}", tabindex: -1 }
-            .modal-dialog
-              .modal-content
-                .modal-header
-                  %button.close{ data: {dismiss: 'modal' } } &times;
-                  %h3.page-title Remove #{domain.domain}?
+    .modal{ id: "modal-delete-domain", tabindex: -1 }
+      .modal-dialog
+        .modal-content
+          .modal-header
+            %button.close{ type: 'button', 'aria-label': 'Close', data: {dismiss: 'modal' } }
+              %span{ "aria-hidden": "true" } &times;
+            %h3.page-title Remove?
 
-                .modal-body
-                  Due to an
-                  = link_to 'existing security vulnerability', 'https://about.gitlab.com/2018/02/05/gitlab-pages-custom-domain-validation/', target: '_blank', rel: 'noopener noreferrer'
-                  you will
-                  %strong= 'not'
-                  be able to add any custom domains at this time.
+          .modal-body
+            Due to an
+            = link_to 'existing security vulnerability', 'https://about.gitlab.com/2018/02/05/gitlab-pages-custom-domain-validation/', target: '_blank', rel: 'noopener noreferrer'
+            you will
+            %strong= 'not'
+            be able to add any custom domains at this time.
 
-                  %br
-                  %br
+            .prepend-top-20
+              You are about to remove
+              %code{ id: "domain-name-field"}
+              and will not be able to re-add the domain until the vulnerability is patched.
 
-                  You are about to remove
-                  %code= domain.domain
-                  and will not be able to re-add the domain until the vulnerability is patched.
+          .modal-footer
+            %a.btn.btn-default{ href: '#', data: { dismiss: 'modal' } } Cancel
 
-                .modal-footer
-                  %a.btn.btn-default{ href: '#', data: { dismiss: 'modal' } } Cancel
-
-                  = link_to 'Delete domain',
-                    project_pages_domain_path(@project, domain),
-                    title: 'Delete domain',
-                    method: :delete,
-                    class: 'btn btn-remove'
+            = link_to 'Delete domain',
+              '#',
+              id: 'domain-delete-link',
+              method: :delete,
+              class: 'btn btn-remove'

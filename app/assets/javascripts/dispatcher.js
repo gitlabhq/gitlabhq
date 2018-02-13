@@ -451,6 +451,11 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
+        case 'projects:pages:show':
+          import('./pages/projects/pages/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'groups:settings:ci_cd:show':
           import('./pages/groups/settings/ci_cd/show')
             .then(callDefault)
