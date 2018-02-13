@@ -210,6 +210,14 @@ describe Geo::RepositorySyncService do
         subject.execute
       end
 
+      it 'sets the redownload flag to false after success' do
+        registry = create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1, force_to_redownload_repository: true)
+
+        subject.execute
+
+        expect(registry.reload.force_to_redownload_repository).to be false
+      end
+
       it 'tries to redownload repo' do
         create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1)
 
