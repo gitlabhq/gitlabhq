@@ -253,10 +253,12 @@ module Gitlab
       push_size_in_bytes = 0
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes_list.each do |change|
+      changes_list.each.with_index do |change, index|
+        first_change = index == 0
+
         # If user does not have access to make at least one change, cancel all
         # push by allowing the exception to bubble up
-        check_single_change_access(change)
+        check_single_change_access(change, skip_lfs_integrity_check: !first_change)
 
         if project.size_limit_enabled?
           push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
@@ -268,12 +270,13 @@ module Gitlab
       end
     end
 
-    def check_single_change_access(change)
+    def check_single_change_access(change, skip_lfs_integrity_check: false)
       Checks::ChangeAccess.new(
         change,
         user_access: user_access,
         project: project,
         skip_authorization: deploy_key?,
+        skip_lfs_integrity_check: skip_lfs_integrity_check,
         protocol: protocol
       ).exec
     end
