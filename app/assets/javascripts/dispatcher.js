@@ -672,11 +672,6 @@ var Dispatcher;
           new UsersSelect();
           new UserCallout();
           break;
-        case 'profiles:personal_access_tokens:index':
-          import('./pages/profiles/personal_access_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'admin:licenses:new':
           import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
           break;
