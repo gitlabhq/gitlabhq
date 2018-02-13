@@ -1,7 +1,6 @@
-/* eslint-disable no-new */
-
 import Vue from 'vue';
 import Flash from '../../../flash';
+import { __ } from '../../../locale';
 import './lists_dropdown';
 import { pluralize } from '../../../lib/utils/text_utility';
 
@@ -42,7 +41,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
         assignee_ids: assigneeIds,
         weight: currentBoard.weight,
       }).catch(() => {
-        new Flash('Failed to update issues, please try again.', 'alert');
+        Flash(__('Failed to update issues, please try again.'));
 
         selectedIssues.forEach((issue) => {
           list.removeIssue(issue);
