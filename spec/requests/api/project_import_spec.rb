@@ -22,14 +22,13 @@ describe API::ProjectImport do
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path
 
       expect(response).to have_gitlab_http_status(201)
-
-      expect(Project.find_by_name('test-import').first.status).to eq('started')
     end
   end
 
   describe 'GET /projects/:id/import' do
     it 'returns the import status' do
       project = create(:project, import_status: 'started')
+      project.add_master(user)
 
       get api("/projects/#{project.id}/import", user)
 
@@ -39,6 +38,7 @@ describe API::ProjectImport do
 
     it 'returns the import status and the error if failed' do
       project = create(:project, import_status: 'failed', import_error: 'error')
+      project.add_master(user)
 
       get api("/projects/#{project.id}/import", user)
 
