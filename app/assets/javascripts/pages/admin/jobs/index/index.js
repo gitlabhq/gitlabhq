@@ -1,29 +1,18 @@
 import Vue from 'vue';
-
 import Translate from '~/vue_shared/translate';
-
-import stopJobsModal from './components/stop_jobs_modal.vue';
+import mountComponent from '~/vue_shared/mount_vue_component';
+import StopJobsModal from './components/stop_jobs_modal.vue';
 
 Vue.use(Translate);
 
 export default () => {
   const stopJobsButton = document.getElementById('stop-jobs-button');
 
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#stop-jobs-modal',
-    components: {
-      stopJobsModal,
-    },
-    mounted() {
+  if (stopJobsButton) {
+    const modal = mountComponent('#stop-jobs-modal', StopJobsModal);
+
+    modal.$on('mounted', () => {
       stopJobsButton.classList.remove('disabled');
-    },
-    render(createElement) {
-      return createElement('stop-jobs-modal', {
-        props: {
-          url: stopJobsButton.dataset.url,
-        },
-      });
-    },
-  });
+    });
+  }
 };

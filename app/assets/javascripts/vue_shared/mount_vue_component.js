@@ -21,6 +21,9 @@ export default function mountComponent(target, component, extraProps = {}) {
 
   return new Vue({
     el,
+    mounted() {
+      setTimeout(() => this.$emit('mounted'));
+    },
     render(createElement) {
       return createElement(component, {
         props: { ...el.dataset, ...extraProps },

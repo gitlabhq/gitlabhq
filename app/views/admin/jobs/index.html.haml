@@ -9,11 +9,9 @@
 
     .nav-controls
       - if @all_builds.running_or_pending.any?
-        #stop-jobs-modal
+        #stop-jobs-modal{ data: { url: cancel_all_admin_jobs_path } }
 
-        %button#stop-jobs-button.btn.btn-danger{ data: { toggle: 'modal',
-          target: '#stop-jobs-modal',
-          url: cancel_all_admin_jobs_path } }
+        %button#stop-jobs-button.btn.btn-danger{ data: { toggle: 'modal', target: '#stop-jobs-modal' } }
           = s_('AdminArea|Stop all jobs')
 
   .row-content-block.second-block
