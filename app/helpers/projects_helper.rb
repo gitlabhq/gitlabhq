@@ -21,7 +21,7 @@ module ProjectsHelper
     classes = %W[avatar avatar-inline s#{opts[:size]}]
     classes << opts[:avatar_class] if opts[:avatar_class]
 
-    avatar = avatar_icon(author, opts[:size])
+    avatar = avatar_icon_for_user(author, opts[:size])
     src = opts[:lazy_load] ? nil : avatar
 
     image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)

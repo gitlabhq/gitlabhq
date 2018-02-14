@@ -71,10 +71,14 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature freeze on the 7th for the release on the 22nd
 
-After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
+After 7th at 23:59 (Pacific Standard Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
+
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
+
+Any release candidate that gets created after this date can become a final release,
+hence the name release candidate.
 
 ### Between the 1st and the 7th
 
@@ -193,11 +197,10 @@ to be backported down to the `9.5` release, you will need to assign it the
 ### Asking for an exception
 
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
-you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
+you can ask for an exception to be made.
 
-1. a Release Manager
-2. an Engineering Lead
-3. an Engineering Director, the VP of Engineering, or the CTO
+Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
+using the `Exception-request` issue template.
 
 You can find who is who on the [team page](https://about.gitlab.com/team/).
 
