@@ -247,20 +247,6 @@ describe Geo::RepositorySyncService do
         subject.execute
       end
 
-      context 'no repository' do
-        let(:project) { create(:project) }
-
-        it 'does not raise an error' do
-          project_registry = create(
-            :geo_project_registry,
-            project: project,
-            force_to_redownload_repository: true
-          )
-
-          subject.execute
-        end
-      end
-
       it 'successfully redownloads the repository even if the retry time exceeds max value' do
         timestamp = Time.now.utc
         registry = create(
@@ -278,6 +264,20 @@ describe Geo::RepositorySyncService do
         # of range" in the first update to the project registry.
         registry.reload
         expect(registry.repository_retry_at).to be_nil
+      end
+
+      context 'no repository' do
+        let(:project) { create(:project) }
+
+        it 'does not raise an error' do
+          create(
+            :geo_project_registry,
+            project: project,
+            force_to_redownload_repository: true
+          )
+
+          subject.execute
+        end
       end
     end
   end
