@@ -346,7 +346,7 @@ Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] ||
 #
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
-Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
+Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads'
 
 #
 # Mattermost

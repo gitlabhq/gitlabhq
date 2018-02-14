@@ -4,6 +4,8 @@ class AttachmentUploader < GitlabUploader
 
   storage :file
 
+  system true
+
   private
 
   def dynamic_segment

@@ -1,11 +1,13 @@
 class NamespaceFileUploader < FileUploader
+  system true
+
   # Re-Override
   def self.root
     options.storage_path
   end
 
   def self.base_dir(model)
-    File.join(options.base_dir, 'namespace', model_path_segment(model))
+    File.join(options.base_dir, system_dir, 'namespace', model_path_segment(model))
   end
 
   def self.model_path_segment(model)

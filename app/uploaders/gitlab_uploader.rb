@@ -1,10 +1,15 @@
 class GitlabUploader < CarrierWave::Uploader::Base
   class_attribute :options
+  class_attribute :_system
 
   class << self
     # DSL setter
     def storage_options(options)
       self.options = options
+    end
+
+    def system(system)
+      self._system = !!system
     end
 
     def root
@@ -16,8 +21,18 @@ class GitlabUploader < CarrierWave::Uploader::Base
       options.fetch('base_dir', '')
     end
 
+    def system_dir
+      return unless system?
+
+      "-/system"
+    end
+
     def file_storage?
       storage == CarrierWave::Storage::File
+    end
+
+    def system?
+      !!self._system
     end
 
     def absolute_path(upload_record)
@@ -27,7 +42,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   storage_options Gitlab.config.uploads
 
-  delegate :base_dir, :file_storage?, to: :class
+  delegate :base_dir, :system_dir, :file_storage?, to: :class
 
   def initialize(model, mounted_as = nil, **uploader_context)
     super(model, mounted_as)
@@ -52,7 +67,8 @@ class GitlabUploader < CarrierWave::Uploader::Base
   end
 
   def store_dir
-    File.join(base_dir, dynamic_segment)
+    segments = [base_dir, system_dir, dynamic_segment].compact
+    File.join(*segments)
   end
 
   def cache_dir

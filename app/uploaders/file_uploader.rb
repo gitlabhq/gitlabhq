@@ -17,8 +17,10 @@ class FileUploader < GitlabUploader
 
   after :remove, :prune_store_dir
 
+  system false
+
   def self.root
-    File.join(options.storage_path, 'uploads')
+    File.join(options.storage_path, GitlabUploader.base_dir)
   end
 
   def self.absolute_path(upload)

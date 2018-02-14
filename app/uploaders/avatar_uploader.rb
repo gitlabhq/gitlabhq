@@ -4,6 +4,8 @@ class AvatarUploader < GitlabUploader
 
   storage :file
 
+  system true
+
   def exists?
     model.avatar.file && model.avatar.file.present?
   end
