@@ -5,6 +5,7 @@ import router from '../../../ide_router';
 import service from '../../../services';
 import flash from '../../../../flash';
 import { stripHtml } from '../../../../lib/utils/text_utility';
+import editor from '../../../lib/editor';
 
 export const updateCommitMessage = ({ commit }, message) => {
   commit(types.UPDATE_COMMIT_MESSAGE, message);
@@ -59,11 +60,23 @@ export const updateFilesAfterCommit = (
     reference: data.id,
   }, { root: true });
 
+  const cachedEditorModels = editor.editorInstance.modelManager.models;
+
   rootState.changedFiles.forEach((entry) => {
+    const editorModel = cachedEditorModels.get(entry.path);
+
     commit(rootTypes.SET_LAST_COMMIT_DATA, {
       entry,
       lastCommit,
     }, { root: true });
+
+    commit(rootTypes.SET_FILE_RAW_DATA, {
+      file: entry,
+      raw: entry.content,
+    }, { root: true });
+
+    editorModel.originalModel.setValue(entry.raw);
+    editorModel.model.setValue(entry.raw);
   });
 
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
