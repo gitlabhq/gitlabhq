@@ -33,7 +33,7 @@ describe SystemCheck::Geo::AuthorizedKeysCheck do
 
       it 'skips when config file is not readable' do
         override_sshd_config('system_check/sshd_config')
-        allow(File).to receive(:readable?).with(expand_fixture_ee_path('system_check/sshd_config')) { false }
+        allow(File).to receive(:readable?).with(expand_fixture_path('system_check/sshd_config', dir: 'ee')) { false }
 
         expect_skipped('Cannot access OpenSSH configuration file')
 
@@ -167,6 +167,6 @@ describe SystemCheck::Geo::AuthorizedKeysCheck do
   end
 
   def override_sshd_config(relative_path)
-    allow(subject).to receive(:openssh_config_path) { expand_fixture_ee_path(relative_path) }
+    allow(subject).to receive(:openssh_config_path) { expand_fixture_path(relative_path, dir: 'ee') }
   end
 end

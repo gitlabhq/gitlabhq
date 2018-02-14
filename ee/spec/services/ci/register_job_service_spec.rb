@@ -16,7 +16,7 @@ describe Ci::RegisterJobService do
       context 'allow to pick builds' do
         let(:build) { execute(shared_runner) }
 
-        it { expect(build).to be_kind_of(Build) }
+        it { expect(build).to be_kind_of(Ci::Build) }
       end
 
       context 'when over the global quota' do
@@ -37,7 +37,7 @@ describe Ci::RegisterJobService do
           end
 
           it "does return the build" do
-            expect(build).to be_kind_of(Build)
+            expect(build).to be_kind_of(Ci::Build)
           end
         end
 
@@ -47,7 +47,7 @@ describe Ci::RegisterJobService do
           end
 
           it "does return the build" do
-            expect(build).to be_kind_of(Build)
+            expect(build).to be_kind_of(Ci::Build)
           end
         end
 
@@ -57,7 +57,7 @@ describe Ci::RegisterJobService do
           end
 
           it "does return the build" do
-            expect(build).to be_kind_of(Build)
+            expect(build).to be_kind_of(Ci::Build)
           end
         end
       end

@@ -8,7 +8,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
     stub_config_setting(host: 'localhost')
   end
 
-  let(:email_raw) { fixture_file('emails/service_desk.eml') }
+  let(:email_raw) { fixture_file('emails/service_desk.eml', dir: 'ee') }
   let(:namespace) { create(:namespace, name: "email") }
 
   context 'service desk is enabled for the project' do
@@ -64,7 +64,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
     end
 
     context 'when the email is forwarded through an alias' do
-      let(:email_raw) { fixture_file('emails/service_desk_forwarded.eml') }
+      let(:email_raw) { fixture_file('emails/service_desk_forwarded.eml', dir: 'ee') }
 
       it 'sends thank you the email and creates issue' do
         setup_attachment
