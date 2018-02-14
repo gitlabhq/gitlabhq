@@ -1,7 +1,7 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds, :failures]
+  before_action :commit, only: [:show, :builds, :failures, :security]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
@@ -83,7 +83,11 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    render_show
+    if @pipeline.sast_artifact
+      render_show
+    else
+      redirect_to pipeline_path(@pipeline)
+    end
   end
 
   def failures
