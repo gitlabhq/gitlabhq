@@ -8,10 +8,22 @@ module AvatarsHelper
     }))
   end
 
+  def user_avatar_url_for(options = {})
+    if options[:url]
+      options[:url]
+    elsif options[:user]
+      avatar_icon_for_user(options[:user], options[:size])
+    else
+      avatar_icon_for_email(options[:user_email], options[:size])
+    end
+  end
+
   def user_avatar_without_link(options = {})
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]
-    avatar_url = options[:url] || avatar_icon(options[:user] || options[:user_email], avatar_size)
+
+    avatar_url = user_avatar_url_for(options.merge(size: avatar_size))
+
     has_tooltip = options[:has_tooltip].nil? ? true : options[:has_tooltip]
     data_attributes = options[:data] || {}
     css_class = %W[avatar s#{avatar_size}].push(*options[:css_class])
