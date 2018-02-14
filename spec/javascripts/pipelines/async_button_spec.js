@@ -15,7 +15,8 @@ describe('Pipelines Async Button', () => {
         title: 'Foo',
         icon: 'repeat',
         cssClass: 'bar',
-        id: 123,
+        pipelineId: 123,
+        type: 'explode',
       },
     }).$mount();
   });
@@ -39,8 +40,9 @@ describe('Pipelines Async Button', () => {
 
   describe('With confirm dialog', () => {
     it('should call the service when confimation is positive', () => {
-      eventHub.$on('actionConfirmationModal', (data) => {
-        expect(data.id).toEqual(123);
+      eventHub.$on('openConfirmationModal', (data) => {
+        expect(data.pipelineId).toEqual(123);
+        expect(data.type).toEqual('explode');
       });
 
       component = new AsyncButtonComponent({
@@ -49,7 +51,8 @@ describe('Pipelines Async Button', () => {
           title: 'Foo',
           icon: 'fa fa-foo',
           cssClass: 'bar',
-          id: 123,
+          pipelineId: 123,
+          type: 'explode',
         },
       }).$mount();
 
