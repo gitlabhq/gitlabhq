@@ -6,7 +6,7 @@
   import Flash from '../../flash';
   import Autosave from '../../autosave';
   import TaskList from '../../task_list';
-  import { capitalizeFirstCharacter } from '../../lib/utils/text_utility';
+  import { capitalizeFirstCharacter, convertToCamelCase } from '../../lib/utils/text_utility';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -16,7 +16,6 @@
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import discussionLockedWidget from './discussion_locked_widget.vue';
   import issuableStateMixin from '../mixins/issuable_state';
-  import issuableMixin from '../../vue_shared/mixins/issuable';
 
   export default {
     name: 'CommentForm',
@@ -29,9 +28,14 @@
       loadingButton,
     },
     mixins: [
-      issuableMixin,
       issuableStateMixin,
     ],
+    props: {
+      noteableType: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return {
         note: '',
@@ -48,6 +52,9 @@
         'getNotesData',
         'openState',
       ]),
+      issuableDisplayName() {
+        return this.noteableType.replace(/_/g, ' ');
+      },
       isLoggedIn() {
         return this.getUserData.id;
       },
@@ -252,10 +259,11 @@ Please check your network connection and try again.`;
       },
       initAutoSave() {
         if (this.isLoggedIn) {
+          const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
+
           this.autosave = new Autosave(
             $(this.$refs.textarea),
-            ['Note', 'Issue', this.getNoteableData.id],
-            'issue',
+            ['Note', noteableType, this.getNoteableData.id],
           );
         }
       },

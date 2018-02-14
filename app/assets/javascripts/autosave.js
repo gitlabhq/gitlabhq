@@ -3,10 +3,9 @@
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class Autosave {
-  constructor(field, key, resource) {
+  constructor(field, key) {
     this.field = field;
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
-    this.resource = resource;
     if (key.join != null) {
       key = key.join('/');
     }
@@ -26,16 +25,14 @@ export default class Autosave {
     if ((text != null ? text.length : void 0) > 0) {
       this.field.val(text);
     }
-    if (!this.resource && this.resource !== 'issue') {
-      this.field.trigger('input');
-    } else {
-      // v-model does not update with jQuery trigger
-      // https://github.com/vuejs/vue/issues/2804#issuecomment-216968137
-      const event = new Event('change', { bubbles: true, cancelable: false });
-      const field = this.field.get(0);
-      if (field) {
-        field.dispatchEvent(event);
-      }
+
+    this.field.trigger('input');
+    // v-model does not update with jQuery trigger
+    // https://github.com/vuejs/vue/issues/2804#issuecomment-216968137
+    const event = new Event('change', { bubbles: true, cancelable: false });
+    const field = this.field.get(0);
+    if (field) {
+      field.dispatchEvent(event);
     }
   }
 

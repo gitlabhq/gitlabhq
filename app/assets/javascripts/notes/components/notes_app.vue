@@ -171,7 +171,7 @@
     </ul>
 
     <comment-form
-      :issuable-type="noteableType"
+      :noteable-type="noteableType"
     />
   </div>
 </template>
