@@ -41,7 +41,7 @@ export const checkCommitStatus = ({ rootState }) =>
 
 export const updateFilesAfterCommit = (
   { commit, dispatch, state, rootState, rootGetters },
-  { data, branch },
+  { data },
 ) => {
   const selectedProject = rootState.projects[rootState.currentProjectId];
   const lastCommit = {
@@ -82,9 +82,7 @@ export const updateFilesAfterCommit = (
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
 
   if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
-    const fileUrl = rootGetters.activeFile.url.replace(rootState.currentBranchId, branch);
-
-    router.push(`/project${fileUrl}`);
+    router.push(`/project/${rootState.currentProjectId}/blob/branch/${rootGetters.activeFile.path}`);
   }
 
   window.scrollTo(0, 0);
