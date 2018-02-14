@@ -6,7 +6,6 @@
 and [problems](https://bugs.mysql.com/bug.php?id=65830) that
 [suggested](https://bugs.mysql.com/bug.php?id=50909)
 [fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
-- We recommend using MySQL version 5.6 or later. Please see the following [issue][ce-38152].
 
 ## Initial database setup
 
