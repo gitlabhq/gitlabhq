@@ -33,7 +33,7 @@ module QA
       end
 
       def clone(opts = '')
-        `git clone #{opts} #{@uri.to_s} ./`
+        `git clone #{opts} #{@uri.to_s} ./ #{suppress_output}`
       end
 
       def shallow_clone
@@ -61,11 +61,21 @@ module QA
       end
 
       def push_changes(branch = 'master')
-        `git push #{@uri.to_s} #{branch}`
+        `git push #{@uri.to_s} #{branch} #{suppress_output}`
       end
 
       def commits
         `git log --oneline`.split("\n")
+      end
+
+      private
+
+      def suppress_output
+        # If we're running as the default user, it's probably a temporary
+        # instance and output can be useful for debugging
+        return if @username == Runtime::User.default_name
+
+        "&> #{File::NULL}"
       end
     end
   end
