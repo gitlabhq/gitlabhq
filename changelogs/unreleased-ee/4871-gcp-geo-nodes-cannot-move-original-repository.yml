@@ -1,0 +1,5 @@
+---
+title: "[Geo] Fix redownload repository recovery when there is not local repo at all"
+merge_request:
+author:
+type: fixed
