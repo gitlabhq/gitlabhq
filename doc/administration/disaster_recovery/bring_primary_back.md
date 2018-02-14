@@ -26,7 +26,7 @@ If you have lost your original primary, follow the
 
 ### Promote the secondary to primary
 
-When initial replication is complete and the primary and secondary are closely in sync you can do a [Planned Failover](planned-fail-over.md)
+When initial replication is complete and the primary and secondary are closely in sync you can do a [Planned Failover](planned_fail_over.md)
 
 ### Restore the secondary node
 

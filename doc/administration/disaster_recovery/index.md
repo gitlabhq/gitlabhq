@@ -23,7 +23,7 @@ immediately after following these instructions.
 ### Step 1. Allow replication to finish if possible
 
 If the secondary is still replicating data from the primary, follow
-[the Planned Failover doc](planned-fail-over.md) as closely as possible in
+[the Planned Failover doc](planned_fail_over.md) as closely as possible in
 order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the primary

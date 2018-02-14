@@ -53,7 +53,7 @@ improving speed for distributed teams
 custom integrations and internal workflows
 - Quickly fail-over to a Geo secondary in a
 [Disaster Recovery](../administration/disaster_recovery/index.md) scenario
-- Allows [planned fail-over](../administration/disaster_recovery/planned-fail-over.md) to a Geo secondary
+- Allows [planned fail-over](../administration/disaster_recovery/planned_fail_over.md) to a Geo secondary
 
 ## Architecture
 
