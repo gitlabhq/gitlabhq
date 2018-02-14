@@ -9,7 +9,9 @@ export default () => {
   const stopJobsButton = document.getElementById('stop-jobs-button');
 
   if (stopJobsButton) {
-    const modal = mountComponent('#stop-jobs-modal', StopJobsModal);
+    stopJobsButton.classList.add('disabled');
+
+    const modal = mountComponent(StopJobsModal, '#stop-jobs-modal');
 
     modal.$on('mounted', () => {
       stopJobsButton.classList.remove('disabled');

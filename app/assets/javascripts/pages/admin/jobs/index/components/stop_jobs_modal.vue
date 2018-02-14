@@ -20,6 +20,9 @@
         return s__('AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running.');
       },
     },
+    mounted() {
+      this.$nextTick(() => this.$emit('mounted'));
+    },
     methods: {
       onSubmit() {
         return axios.post(this.url)
