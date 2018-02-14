@@ -1,0 +1,5 @@
+---
+title: Change SQL for expired artifacts to use new ci_job_artifacts.expire_at
+merge_request: 16578
+author:
+type: performance
