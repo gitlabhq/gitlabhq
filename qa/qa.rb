@@ -117,9 +117,14 @@ module QA
         autoload :Show, 'qa/page/project/pipeline/show'
       end
 
+<<<<<<< HEAD
       module Pipeline
         autoload :Index, 'qa/page/project/pipeline/index'
         autoload :Show, 'qa/page/project/pipeline/show'
+=======
+      module Job
+        autoload :Show, 'qa/page/project/job/show'
+>>>>>>> upstream/master
       end
 
       module Settings
@@ -170,6 +175,7 @@ module QA
   #
   module Git
     autoload :Repository, 'qa/git/repository'
+    autoload :Location, 'qa/git/location'
   end
 
   ##

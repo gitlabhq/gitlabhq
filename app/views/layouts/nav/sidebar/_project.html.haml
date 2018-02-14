@@ -141,6 +141,19 @@
               = link_to project_milestones_path(@project), title: 'Milestones' do
                 %span
                   Milestones
+      - if project_nav_tab? :external_issue_tracker
+        = nav_link do
+          - issue_tracker = @project.external_issue_tracker
+          = link_to issue_tracker.issue_tracker_path, class: 'shortcuts-external_tracker' do
+            .nav-icon-container
+              = sprite_icon('issue-external')
+            %span.nav-item-name
+              = issue_tracker.title
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(html_options: { class: "fly-out-top-item" } ) do
+              = link_to issue_tracker.issue_tracker_path do
+                %strong.fly-out-top-item-name
+                  = issue_tracker.title
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do

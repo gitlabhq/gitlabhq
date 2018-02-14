@@ -309,6 +309,13 @@ module API
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
       expose :project_id
+<<<<<<< HEAD
+=======
+    end
+
+    class BasicRef < Grape::Entity
+      expose :type, :name
+>>>>>>> upstream/master
     end
 
     class Branch < Grape::Entity

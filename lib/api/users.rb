@@ -75,9 +75,12 @@ module API
         use :sort_params
         use :pagination
         use :with_custom_attributes
+<<<<<<< HEAD
 
         # EE
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
+=======
+>>>>>>> upstream/master
       end
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
