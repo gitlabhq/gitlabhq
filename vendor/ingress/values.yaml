@@ -2,7 +2,8 @@ controller:
   image:
     tag: "0.10.2"
     repository: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller"
-  stats.enabled: true
+  stats:
+    enabled: true
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "10254"

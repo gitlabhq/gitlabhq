@@ -274,6 +274,7 @@ module API
       expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
+      expose :project_id
     end
 
     class Branch < Grape::Entity
@@ -1172,6 +1173,7 @@ module API
       expose :id
       expose :ref
       expose :startline
+      expose :project_id
     end
   end
 end
