@@ -46,7 +46,7 @@ describe EE::Gitlab::Ci::Config do
 
     context "when gitlab_ci_yml has valid 'include' defined" do
       before do
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
+        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:fetch_local_content).and_return(local_file_content)
         WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
       end
 
@@ -85,7 +85,7 @@ describe EE::Gitlab::Ci::Config do
       it 'raises error YamlProcessor validationError' do
         expect { config }.to raise_error(
           ::Gitlab::Ci::YamlProcessor::ValidationError,
-          "External file: 'invalid' should be a valid local or remote file"
+          "Local file 'invalid' is not valid."
         )
       end
     end

@@ -25,7 +25,7 @@ describe Gitlab::Ci::External::File::Remote do
       end
     end
 
-    context 'when is not a valid remote url' do
+    context 'with an irregular url' do
       let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
 
       it 'should return false' do
@@ -37,6 +37,14 @@ describe Gitlab::Ci::External::File::Remote do
       before do
         allow(HTTParty).to receive(:get).and_raise(Timeout::Error)
       end
+
+      it 'should be falsy' do
+        expect(remote_file.valid?).to be_falsy
+      end
+    end
+
+    context 'when is not a yaml file' do
+      let(:location) { 'https://asdasdasdaj48ggerexample.com' }
 
       it 'should be falsy' do
         expect(remote_file.valid?).to be_falsy
@@ -63,6 +71,26 @@ describe Gitlab::Ci::External::File::Remote do
       it 'should be falsy' do
         expect(remote_file.content).to be_falsy
       end
+    end
+
+    context 'with an invalid remote url' do
+      let(:location) { 'https://asdasdasdaj48ggerexample.com' }
+
+      before do
+        WebMock.stub_request(:get, location).to_raise(SocketError.new('Some HTTP error'))
+      end
+
+      it 'should be nil' do
+        expect(remote_file.content).to be_nil
+      end
+    end
+  end
+
+  describe "#error_message" do
+    let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+
+    it 'should return an error message' do
+      expect(remote_file.error_message).to eq("Remote file '#{location}' is not valid.")
     end
   end
 end

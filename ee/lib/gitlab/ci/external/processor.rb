@@ -28,7 +28,7 @@ module Gitlab
 
         def validate_external_file(external_file)
           unless external_file.valid?
-            raise FileError, "External file: '#{external_file.location}' should be a valid local or remote file"
+            raise FileError, external_file.error_message
           end
         end
 
