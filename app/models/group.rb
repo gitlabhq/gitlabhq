@@ -26,7 +26,7 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
-  has_many :variables, class_name: 'Ci::GroupVariable'
+  has_many :variables, class_name: 'Ci::GroupVariable', validate: false
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
