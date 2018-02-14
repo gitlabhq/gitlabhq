@@ -276,6 +276,10 @@ module API
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
 
+    class BasicRef < Grape::Entity
+      expose :type, :name
+    end
+
     class Branch < Grape::Entity
       expose :name
 
