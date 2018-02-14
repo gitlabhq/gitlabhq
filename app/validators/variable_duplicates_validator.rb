@@ -20,7 +20,7 @@ class VariableDuplicatesValidator < ActiveModel::EachValidator
   def validate_duplicates(record, attribute, values)
     duplicates = values.reject(&:marked_for_destruction?).group_by(&:key).select { |_, v| v.many? }.map(&:first)
     if duplicates.any?
-      error_message = "has duplicate variables (#{duplicates.join(", ")})"
+      error_message = "have duplicate values (#{duplicates.join(", ")})"
       error_message += " for #{values.first.send(options[:scope])} scope" if options[:scope] # rubocop:disable GitlabSecurity/PublicSend
       record.errors.add(attribute, error_message)
     end
