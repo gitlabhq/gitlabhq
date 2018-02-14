@@ -1,6 +1,7 @@
 module API
   class Groups < Grape::API
     include PaginationParams
+    include Helpers::CustomAttributes
 
     before { authenticate_non_get! }
 
@@ -78,6 +79,8 @@ module API
         }
 
         groups = groups.with_statistics if options[:statistics]
+        groups, options = with_custom_attributes(groups, options)
+
         present paginate(groups), options
       end
     end
@@ -90,6 +93,7 @@ module API
       end
       params do
         use :group_list_params
+        use :with_custom_attributes
       end
       get do
         groups = find_groups(params)
@@ -176,9 +180,20 @@ module API
       desc 'Get a single group, with containing projects.' do
         success Entities::GroupDetail
       end
+      params do
+        use :with_custom_attributes
+      end
       get ":id" do
         group = find_group!(params[:id])
-        present group, with: Entities::GroupDetail, current_user: current_user
+
+        options = {
+          with: Entities::GroupDetail,
+          current_user: current_user
+        }
+
+        group, options = with_custom_attributes(group, options)
+
+        present group, options
       end
 
       desc 'Remove a group.'
@@ -212,12 +227,19 @@ module API
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
 
         use :pagination
+        use :with_custom_attributes
       end
       get ":id/projects" do
         projects = find_group_projects(params)
-        entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
 
-        present entity.prepare_relation(projects), with: entity, current_user: current_user
+        options = {
+          with: params[:simple] ? Entities::BasicProjectDetails : Entities::Project,
+          current_user: current_user
+        }
+
+        projects, options = with_custom_attributes(projects, options)
+
+        present options[:with].prepare_relation(projects), options
       end
 
       desc 'Get a list of subgroups in this group.' do
@@ -225,6 +247,7 @@ module API
       end
       params do
         use :group_list_params
+        use :with_custom_attributes
       end
       get ":id/subgroups" do
         groups = find_groups(params)

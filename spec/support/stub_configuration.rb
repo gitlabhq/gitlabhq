@@ -1,4 +1,4 @@
-require_dependency Rails.root.join('spec', 'ee', 'support', 'stub_configuration')
+require_dependency Rails.root.join('ee', 'spec', 'support', 'stub_configuration')
 
 module StubConfiguration
   prepend EE::StubConfiguration

@@ -302,7 +302,8 @@ Example response:
     "filename": "home.md",
     "id": null,
     "ref": "master",
-    "startline": 5
+    "startline": 5,
+    "project_id": 6
   }
 ]
 ```
@@ -334,7 +335,8 @@ Example response:
   "authored_date": "2013-02-18T22:02:54.000Z",
   "committer_name": "angus croll",
   "committer_email": "anguscroll@gmail.com",
-  "committed_date": "2013-02-18T22:02:54.000Z"
+  "committed_date": "2013-02-18T22:02:54.000Z",
+  "project_id": 6
   }
 ]
 ```
@@ -358,7 +360,8 @@ Example response:
     "filename": "README.md",
     "id": null,
     "ref": "master",
-    "startline": 46
+    "startline": 46,
+    "project_id": 6
   }
 ]
 ```
@@ -603,7 +606,8 @@ Example response:
     "filename": "home.md",
     "id": null,
     "ref": "master",
-    "startline": 5
+    "startline": 5,
+    "project_id": 6
   }
 ]
 ```
@@ -635,7 +639,8 @@ Example response:
   "authored_date": "2013-02-18T22:02:54.000Z",
   "committer_name": "angus croll",
   "committer_email": "anguscroll@gmail.com",
-  "committed_date": "2013-02-18T22:02:54.000Z"
+  "committed_date": "2013-02-18T22:02:54.000Z",
+  "project_id": 6
   }
 ]
 ```
@@ -659,7 +664,8 @@ Example response:
     "filename": "README.md",
     "id": null,
     "ref": "master",
-    "startline": 46
+    "startline": 46,
+    "project_id": 6
   }
 ]
 ```
@@ -901,7 +907,8 @@ Example response:
     "filename": "home.md",
     "id": null,
     "ref": "master",
-    "startline": 5
+    "startline": 5,
+    "project_id": 6
   }
 ]
 ```
@@ -931,7 +938,8 @@ Example response:
   "authored_date": "2013-02-18T22:02:54.000Z",
   "committer_name": "angus croll",
   "committer_email": "anguscroll@gmail.com",
-  "committed_date": "2013-02-18T22:02:54.000Z"
+  "committed_date": "2013-02-18T22:02:54.000Z",
+  "project_id": 6
   }
 ]
 ```
@@ -953,7 +961,8 @@ Example response:
     "filename": "README.md",
     "id": null,
     "ref": "master",
-    "startline": 46
+    "startline": 46,
+    "project_id": 6
   }
 ]
 ```

@@ -1,4 +1,6 @@
 import _ from 'underscore';
+import { __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
 import Flash from '../flash';
 import AUTH_METHOD from './constants';
 import { backOff } from '../lib/utils/common_utils';
@@ -145,22 +147,24 @@ export default class MirrorPull {
     if (selectedAuthType === AUTH_METHOD.SSH &&
         !$sshPublicKey.text().trim()) {
       this.$dropdownAuthType.disable();
-      $.ajax({
-        type: 'PUT',
-        url: projectMirrorAuthTypeEndpoint,
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(authTypeData),
+
+      axios.put(projectMirrorAuthTypeEndpoint, JSON.stringify(authTypeData), {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
       })
-      .done((res) => {
+      .then(({ data }) => {
         // Show SSH public key container and fill in public key
         this.toggleAuthWell(selectedAuthType);
         this.toggleSSHAuthWellMessage(true);
-        this.setSSHPublicKey(res.import_data_attributes.ssh_public_key);
+        this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
+
+        this.$wellAuthTypeChanging.addClass('hidden');
+        this.$dropdownAuthType.enable();
       })
-      .fail(() => {
-        Flash('Something went wrong on our end.');
-      })
-      .always(() => {
+      .catch(() => {
+        Flash(__('Something went wrong on our end.'));
+
         this.$wellAuthTypeChanging.addClass('hidden');
         this.$dropdownAuthType.enable();
       });
