@@ -38,9 +38,48 @@ export const checkCommitStatus = ({ rootState }) =>
     })
     .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
 
-export const commitChanges = ({
-  commit, state, getters, dispatch, rootState, rootGetters,
-}) => {
+export const updateFilesAfterCommit = (
+  { commit, dispatch, state, rootState, rootGetters },
+  { data, branch },
+) => {
+  const selectedProject = rootState.projects[rootState.currentProjectId];
+  const lastCommit = {
+    commit_path: `${selectedProject.web_url}/commit/${data.id}`,
+    commit: {
+      id: data.id,
+      message: data.message,
+      authored_date: data.committed_date,
+      author_name: data.committer_name,
+    },
+  };
+
+  commit(rootTypes.SET_BRANCH_WORKING_REFERENCE, {
+    projectId: rootState.currentProjectId,
+    branchId: rootState.currentBranchId,
+    reference: data.id,
+  }, { root: true });
+
+  rootState.changedFiles.forEach((entry) => {
+    commit(rootTypes.SET_LAST_COMMIT_DATA, {
+      entry,
+      lastCommit,
+    }, { root: true });
+  });
+
+  commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
+
+  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
+    const fileUrl = rootGetters.activeFile.url.replace(rootState.currentBranchId, branch);
+
+    router.push(`/project${fileUrl}`);
+  }
+
+  window.scrollTo(0, 0);
+
+  dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
+};
+
+export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
   const payload = {
     branch: getters.branchName,
@@ -76,15 +115,6 @@ export const commitChanges = ({
       return;
     }
 
-    const selectedProject = rootState.projects[rootState.currentProjectId];
-    const lastCommit = {
-      commit_path: `${selectedProject.web_url}/commit/${data.id}`,
-      commit: {
-        message: data.message,
-        authored_date: data.committed_date,
-      },
-    };
-
     let commitMsg = `Your changes have been committed. Commit ${data.short_id}`;
 
     if (data.stats) {
@@ -94,37 +124,15 @@ export const commitChanges = ({
     commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
 
     if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
-      dispatch('discardAllChanges', null, { root: true });
+      const selectedProject = rootState.projects[rootState.currentProjectId];
+
       dispatch(
         'redirectToUrl',
         `${selectedProject.web_url}/merge_requests/new?merge_request[source_branch]=${branch}&merge_request[target_branch]=${rootState.currentBranchId}`,
         { root: true },
       );
     } else {
-      commit(rootTypes.SET_BRANCH_WORKING_REFERENCE, {
-        projectId: rootState.currentProjectId,
-        branchId: rootState.currentBranchId,
-        reference: data.id,
-      }, { root: true });
-
-      rootState.changedFiles.forEach((entry) => {
-        commit(rootTypes.SET_LAST_COMMIT_DATA, {
-          entry,
-          lastCommit,
-        }, { root: true });
-      });
-
-      commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
-
-      if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
-        const fileUrl = rootGetters.activeFile.url.replace(rootState.currentBranchId, branch);
-
-        router.push(`/project${fileUrl}`);
-      }
-
-      dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
-
-      window.scrollTo(0, 0);
+      dispatch('updateFilesAfterCommit', { data, branch });
     }
   })
   .catch((err) => {

@@ -9,7 +9,8 @@
       },
       label: {
         type: String,
-        required: true,
+        required: false,
+        default: null,
       },
       checked: {
         type: Boolean,
@@ -49,10 +50,16 @@
         :checked="checked"
         v-once
       />
-      {{ label }}
+      <span class="prepend-left-10">
+        <template v-if="label">
+          {{ label }}
+        </template>
+        <slot v-else></slot>
+      </span>
     </label>
-    <template
+    <div
       v-if="commitAction === value && showInput"
+      class="prepend-left-20"
     >
       <input
         type="text"
@@ -60,6 +67,6 @@
         :placeholder="newBranchName"
         @input="updateBranchName($event.target.value)"
       />
-    </template>
+    </div>
   </fieldset>
 </template>

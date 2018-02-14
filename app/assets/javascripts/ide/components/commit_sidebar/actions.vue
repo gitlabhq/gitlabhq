@@ -23,12 +23,16 @@
 </script>
 
 <template>
-  <div class="append-bottom-15">
+  <div class="append-bottom-15 ide-commit-radios">
     <radio-group
       :value="COMMIT_TO_CURRENT_BRANCH"
-      :label="`Commit to ${currentBranchId} branch`"
       :checked="true"
-    />
+    >
+      <span
+        v-html="`Commit to <strong>${currentBranchId}</strong> branch`"
+      >
+      </span>
+    </radio-group>
     <radio-group
       :value="COMMIT_TO_NEW_BRANCH"
       label="Create a new branch"

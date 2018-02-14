@@ -90,7 +90,8 @@ export default {
       @submit="forceCreateNewBranch"
     >
       <template slot="body">
-        {{ __(`This branch has changed since you started editing. Would you like to create a new branch?`) }}
+        {{ __(`This branch has changed since you started editing.
+          Would you like to create a new branch?`) }}
       </template>
     </modal>
     <commit-files-list
