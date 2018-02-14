@@ -185,6 +185,7 @@
             :resolved-by="note.resolved_by"
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
+            @handleResolve="resolveHandler"
           />
         </div>
         <note-body
