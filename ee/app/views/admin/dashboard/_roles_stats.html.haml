@@ -1,0 +1,8 @@
+%div
+  %p Admin users: #{@admin_count}
+
+  - @roles_count.each do |row|
+    %p
+      Users with max #{row['kind']} access level:
+      %strong
+        = row['amount']

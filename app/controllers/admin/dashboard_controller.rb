@@ -4,5 +4,9 @@ class Admin::DashboardController < Admin::ApplicationController
     @users = User.order_id_desc.limit(10)
     @groups = Group.order_id_desc.with_route.limit(10)
     @license = License.current
+
+    # EE only
+    @admin_count = User.admins.count
+    @roles_count = ProjectAuthorization.roles_stats
   end
 end

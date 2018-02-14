@@ -4,6 +4,7 @@
 %div{ class: container_class }
   - if @license
     = render "admin/licenses/breakdown", license: @license
+    = render "admin/dashboard/roles_stats"
 
   .admin-dashboard.prepend-top-default
     .row
