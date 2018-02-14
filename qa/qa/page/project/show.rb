@@ -45,6 +45,10 @@ module QA
         end
 
         def new_merge_request
+          wait(reload: true) do
+            has_css?(element_selector_css(:create_merge_request))
+          end
+
           click_element :create_merge_request
         end
 
