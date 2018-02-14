@@ -12,6 +12,8 @@ in the table below.
     | `issues_url`    | The URL to the issue in Redmine project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
     | `new_issue_url` | This is the URL to create a new issue in Redmine for the project linked to this GitLab project. **This is currently not being used and will be removed in a future release.** |
 
+    Once you have configured and enabled Redmine you'll see the Redmine link on the GitLab project pages that takes you to the appropriate Redmine project.
+
     As an example, below is a configuration for a project named gitlab-ci.
 
     ![Redmine configuration](img/redmine_configuration.png)
