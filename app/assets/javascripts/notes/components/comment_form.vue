@@ -52,7 +52,7 @@
         'getNotesData',
         'openState',
       ]),
-      issuableDisplayName() {
+      noteableDisplayName() {
         return this.noteableType.replace(/_/g, ' ');
       },
       isLoggedIn() {
@@ -68,15 +68,26 @@
         return this.getNoteableData.current_user.can_create_note;
       },
       issueActionButtonTitle() {
-        const actionText = this.isOpen ? 'close' : 'reopen';
+        const openOrClose = this.isOpen ? 'close' : 'reopen';
 
         if (this.note.length) {
-          return this.noteType === constants.COMMENT ?
-            `Comment & ${actionText} ${this.issuableDisplayName}` :
-            `Start discussion & ${actionText} ${this.issuableDisplayName}`;
+          return sprintf(
+            __('%{actionText} & %{openOrClose} %{noteable}'),
+            {
+              actionText: this.commentButtonTitle,
+              openOrClose,
+              noteable: this.noteableDisplayName,
+            },
+          );
         }
 
-        return capitalizeFirstCharacter(`${actionText} ${this.issuableDisplayName}`);
+        return sprintf(
+          __('%{openOrClose} %{noteable}'),
+          {
+            openOrClose: capitalizeFirstCharacter(openOrClose),
+            noteable: this.noteableDisplayName,
+          },
+        );
       },
       actionButtonClassNames() {
         return {
@@ -211,7 +222,7 @@ Please check your network connection and try again.`;
               Flash(
                 sprintf(
                   __('Something went wrong while closing the %{issuable}. Please try again later'),
-                  { issuable: this.issuableDisplayName },
+                  { issuable: this.noteableDisplayName },
                 ),
               );
             });
@@ -223,7 +234,7 @@ Please check your network connection and try again.`;
               Flash(
                 sprintf(
                   __('Something went wrong while reopening the %{issuable}. Please try again later'),
-                  { issuable: this.issuableDisplayName },
+                  { issuable: this.noteableDisplayName },
                 ),
               );
             });
@@ -351,7 +362,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="submit">
-                    {{ commentButtonTitle }}
+                    {{ __(commentButtonTitle) }}
                   </button>
                   <button
                     :disabled="isSubmitButtonDisabled"
@@ -379,7 +390,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Comment</strong>
                           <p>
-                            Add a general comment to this {{ issuableDisplayName }}.
+                            Add a general comment to this {{ noteableDisplayName }}.
                           </p>
                         </div>
                       </button>
