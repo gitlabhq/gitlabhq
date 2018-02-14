@@ -93,14 +93,9 @@ describe 'OpenID Connect requests' do
           'groups'         => anything
         }))
 
-        expected_groups =
-          if Group.supports_nested_groups?
-            ['group1', 'group2/group3', 'group2/group3/group4']
-          else
-            ['group1', 'group2/group3']
-          end
-
-        expect(json_response['groups']).to match(array_including(expected_groups))
+        expected_groups = %w[group1 group2/group3]
+        expected_groups << 'group2/group3/group4' if Group.supports_nested_groups?
+        expect(json_response['groups']).to match_array(expected_groups)
       end
     end
 
