@@ -592,7 +592,6 @@ class Repository
 
   def license_key
     return unless exists?
-    return unless head_commit
 
     # The licensee gem creates a Rugged object from the path:
     # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
