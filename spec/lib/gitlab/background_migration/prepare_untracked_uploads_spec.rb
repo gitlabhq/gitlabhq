@@ -1,18 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
+describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq, :migration, schema: 20180129193323 do
   include TrackUntrackedUploadsHelpers
   include MigrationsHelpers
 
   let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
-
-  before do
-    DatabaseCleaner.clean
-  end
-
-  after do
-    drop_temp_table_if_exists
-  end
 
   around do |example|
     # Especially important so the follow-up migration does not get run
@@ -76,7 +68,8 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
       it 'correctly schedules the follow-up background migration jobs' do
         described_class.new.perform
 
-        expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(1, 5)
+        ids = described_class::UntrackedFile.all.order(:id).pluck(:id)
+        expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(ids.first, ids.last)
         expect(BackgroundMigrationWorker.jobs.size).to eq(1)
       end
 
@@ -150,9 +143,11 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
     it 'deletes the `untracked_files_for_uploads` table (and does not raise error)' do
-      described_class.new.perform
+      background_migration = described_class.new
 
-      expect(untracked_files_for_uploads.connection.table_exists?(:untracked_files_for_uploads)).to be_falsey
+      expect(background_migration).to receive(:drop_temp_table)
+
+      background_migration.perform
     end
   end
 end
