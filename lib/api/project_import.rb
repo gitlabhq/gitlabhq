@@ -10,19 +10,24 @@ module API
       def file_is_valid?
         import_params[:file] && import_params[:file]['tempfile'].respond_to?(:read)
       end
+
+      def validate_file!
+        render_api_error!('The file is invalid', 400) unless file_is_valid?
+      end
     end
 
     before do
       forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
     end
 
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       params do
         requires :path, type: String, desc: 'The new project path and name'
         requires :file, type: File, desc: 'The project export file to be imported'
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
       end
       desc 'Create a new project import' do
+        detail 'This feature was introduced in GitLab 10.6.'
         success Entities::ProjectImportStatus
       end
       post 'import' do
@@ -30,13 +35,10 @@ module API
 
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42437')
 
-        namespace = import_params[:namespace]
-        namespace = if namespace.blank?
-                      current_user.namespace
-                    elsif namespace =~ /^\d+$/
-                      Namespace.find_by(id: namespace)
+        namespace = if import_params[:namespace]
+                      find_namespace!(import_params[:namespace])
                     else
-                      Namespace.find_by_path_or_name(namespace)
+                      current_user.namespace
                     end
 
         project_params = import_params.merge(namespace_id: namespace.id,
@@ -52,6 +54,7 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
       end
       desc 'Get a project export status' do
+        detail 'This feature was introduced in GitLab 10.6.'
         success Entities::ProjectImportStatus
       end
       get ':id/import' do

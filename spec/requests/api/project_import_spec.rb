@@ -17,8 +17,7 @@ describe API::ProjectImport do
 
   describe 'POST /projects/import' do
     it 'schedules an import using a namespace' do
-      expect_any_instance_of(Project).to receive(:import_schedule)
-      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
+      stub_import(user.namespace)
 
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id
 
@@ -26,8 +25,7 @@ describe API::ProjectImport do
     end
 
     it 'schedules an import using the namespace path' do
-      expect_any_instance_of(Project).to receive(:import_schedule)
-      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
+      stub_import(unamespace)
 
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path
 
@@ -35,12 +33,21 @@ describe API::ProjectImport do
     end
 
     it 'schedules an import at the user namespace level' do
-      expect_any_instance_of(Project).to receive(:import_schedule)
-      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(user.namespace.id, any_args).and_call_original
+      stub_import(user.namespace)
 
       post api('/projects/import', user), path: 'test-import2', file: fixture_file_upload(file)
 
       expect(response).to have_gitlab_http_status(201)
+    end
+
+    it 'schedules an import at the user namespace level' do
+      expect_any_instance_of(Project).not_to receive(:import_schedule)
+      expect(Gitlab::ImportExport::ProjectCreator).not_to receive(:new)
+
+      post api('/projects/import', user), namespace: 'nonexistent', path: 'test-import2', file: fixture_file_upload(file)
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 Namespace Not Found')
     end
 
     it 'does not schedule an import if the user has no permission to the namespace' do
@@ -51,8 +58,8 @@ describe API::ProjectImport do
            file: fixture_file_upload(file),
            namespace: namespace.full_path)
 
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq('Namespace is not valid')
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 Namespace Not Found')
     end
 
     it 'does not schedule an import if the user uploads no valid file' do
@@ -62,6 +69,11 @@ describe API::ProjectImport do
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('file is invalid')
+    end
+
+    def stub_import(namespace)
+      expect_any_instance_of(Project).to receive(:import_schedule)
+      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
     end
   end
 
