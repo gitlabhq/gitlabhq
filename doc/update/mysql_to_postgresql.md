@@ -273,6 +273,41 @@ Now, you can verify that everything worked by visiting GitLab.
 
 ### Troubleshooting
 
+### PGLoader Heap Errors
+
+During your use of PGLoader it might stall with a Heap error:
+
+```
+Heap exhausted during garbage collection: 48 bytes available, 64 requested.
+ Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
+   0:     0     0     0     0     0     0     0     0     0        0     0 42949672    0   0  0,0000
+   1:     0     0     0     0     0     0     0     0     0        0     0 42949672    0   0  0,0000
+   2: 47576 50793     0     0 11214 24888    40     0    18 1181579552 2721504 815524392    0   1  1,5324
+   3: 130843 131071     0     0 33944 56370   715     0   225 2977160640 5677632  2000000 22947   0  1,2470
+   4:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0,0000
+   5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0,0000
+   6:     0     0     0     0  2744  1157     0     0     0 127827968     0  2000000 2568   0  0,0000
+   Total bytes allocated    = 4286568160
+   Dynamic-space-size bytes = 4294967296
+GC control variables:
+   *GC-INHIBIT* = true
+   *GC-PENDING* = true
+   *STOP-FOR-GC-PENDING* = false
+fatal error encountered in SBCL pid 24973(tid 140736921958144):
+```
+
+If that happens, you can add the following values to your WITH statement:
+
+```
+batch rows = 1000,
+batch size = 20 MB,
+prefetch rows = 1000,`
+```
+
+The values above are extremely conservative and are that way to make sure you can
+proceed. Consider doubling them or tuning them to speed up the process if you no
+longer see heap errors.
+
 #### Experiencing 500 errors after the migration
 
 If you experience 500 errors after the migration, try to clear the cache:
