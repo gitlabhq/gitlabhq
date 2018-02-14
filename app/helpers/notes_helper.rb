@@ -165,8 +165,8 @@ module NotesHelper
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),
-      close_issue_path: issue_path(@issue, issue: { state_event: :close }, format: 'json'),
-      reopen_issue_path: issue_path(@issue, issue: { state_event: :reopen }, format: 'json'),
+      closePath: close_issuable_path(issuable),
+      reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
       lastFetchedAt: Time.now

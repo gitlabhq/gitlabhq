@@ -71,7 +71,7 @@ export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion
   });
 
 export const closeIssue = ({ commit, dispatch, state }) => service
-  .toggleIssueState(state.notesData.closeIssuePath)
+  .toggleIssueState(state.notesData.closePath)
   .then(res => res.json())
   .then((data) => {
     commit(types.CLOSE_ISSUE);
@@ -79,7 +79,7 @@ export const closeIssue = ({ commit, dispatch, state }) => service
   });
 
 export const reopenIssue = ({ commit, dispatch, state }) => service
-  .toggleIssueState(state.notesData.reopenIssuePath)
+  .toggleIssueState(state.notesData.reopenPath)
   .then(res => res.json())
   .then((data) => {
     commit(types.REOPEN_ISSUE);
