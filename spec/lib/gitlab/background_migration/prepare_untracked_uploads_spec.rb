@@ -27,7 +27,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
     let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
 
     before do
-      FileUtils.mkdir(File.dirname(tmp_file))
+      FileUtils.mkdir_p(File.dirname(tmp_file))
       FileUtils.touch(tmp_file)
     end
 
