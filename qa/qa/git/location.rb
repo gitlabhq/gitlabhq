@@ -13,14 +13,15 @@ module QA
       # Settings#build_gitlab_shell_ssh_path_prefix
       def initialize(git_uri)
         @git_uri = git_uri
-        @uri = if git_uri.start_with?('ssh://')
-          URI.parse(git_uri)
-        else
-          *rest, path = git_uri.split(':')
-          # Host cannot have : so we'll need to escape it
-          user_host = rest.join('%3A').sub(/\A\[(.+)\]\z/, '\1')
-          URI.parse("ssh://#{user_host}/#{path}")
-        end
+        @uri =
+          if git_uri.start_with?('ssh://')
+            URI.parse(git_uri)
+          else
+            *rest, path = git_uri.split(':')
+            # Host cannot have : so we'll need to escape it
+            user_host = rest.join('%3A').sub(/\A\[(.+)\]\z/, '\1')
+            URI.parse("ssh://#{user_host}/#{path}")
+          end
       end
 
       def port
