@@ -1,3 +1,4 @@
+require 'cgi'
 require 'uri'
 
 module QA

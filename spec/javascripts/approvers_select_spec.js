@@ -1,32 +1,37 @@
 import ApproversSelect from 'ee/approvers_select';
-import ClassSpecHelper from './helpers/class_spec_helper';
 
 describe('ApproversSelect', () => {
-  describe('saveApprovers', () => {
-    let complete;
-    const $input = jasmine.createSpyObj('$input', ['val']);
+  describe('saveApproversComplete', () => {
+    let $input;
+    let $approverSelect;
+    let $loadWrapper;
 
     beforeEach(() => {
-      spyOn(window, '$').and.returnValue($input);
-      spyOn(window.$, 'ajax').and.callFake((options) => {
-        complete = options.complete;
-      });
+      $input = {
+        val: jasmine.createSpy(),
+      };
 
-      $input.val.and.returnValue('newValue');
+      $approverSelect = {
+        select2: jasmine.createSpy(),
+      };
 
-      ApproversSelect.saveApprovers('fieldName');
+      $loadWrapper = {
+        addClass: jasmine.createSpy(),
+      };
+
+      ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
     });
 
-    ClassSpecHelper.itShouldBeAStaticMethod(ApproversSelect, 'saveApprovers');
+    it('should empty the $input value', () => {
+      expect($input.val).toHaveBeenCalledWith('');
+    });
 
-    describe('when request completes', () => {
-      it('should empty the $input value', () => {
-        $input.val.calls.reset();
+    it('should empty the select2 value', () => {
+      expect($approverSelect.select2).toHaveBeenCalledWith('val', '');
+    });
 
-        complete();
-
-        expect($input.val).toHaveBeenCalledWith('');
-      });
+    it('should hide loadWrapper', () => {
+      expect($loadWrapper.addClass).toHaveBeenCalledWith('hidden');
     });
   });
 });

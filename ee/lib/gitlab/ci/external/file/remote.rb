@@ -2,17 +2,9 @@ module Gitlab
   module Ci
     module External
       module File
-        class Remote
+        class Remote < Base
           include Gitlab::Utils::StrongMemoize
           attr_reader :location
-
-          def initialize(location, opts = {})
-            @location = location
-          end
-
-          def valid?
-            ::Gitlab::UrlSanitizer.valid?(location) && content
-          end
 
           def content
             return @content if defined?(@content)
@@ -20,10 +12,14 @@ module Gitlab
             @content = strong_memoize(:content) do
               begin
                 HTTParty.get(location)
-              rescue HTTParty::Error, Timeout::Error
-                false
+              rescue HTTParty::Error, Timeout::Error, SocketError
+                nil
               end
             end
+          end
+
+          def error_message
+            "Remote file '#{location}' is not valid."
           end
         end
       end

@@ -2,6 +2,7 @@ module API
   class Users < Grape::API
     include PaginationParams
     include APIGuard
+    include Helpers::CustomAttributes
 
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
@@ -73,6 +74,7 @@ module API
 
         use :sort_params
         use :pagination
+        use :with_custom_attributes
 
         # EE
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
@@ -100,8 +102,9 @@ module API
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+        users, options = with_custom_attributes(users, with: entity)
 
-        present paginate(users), with: entity
+        present paginate(users), options
       end
 
       desc 'Get a single user' do
@@ -109,12 +112,16 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+
+        use :with_custom_attributes
       end
       get ":id" do
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
+        user, opts = with_custom_attributes(user, opts)
+
         present user, opts
       end
 

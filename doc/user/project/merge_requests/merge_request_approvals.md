@@ -169,9 +169,6 @@ from the UI.
 If you want approvals to persist, independent of changes to the merge request,
 turn this setting to off by unchecking the box and saving the changes.
 
-If one of the approvers pushes a commit to the branch that is tied to the merge 
-request, they automatically get excluded from the approvers list.
-
 ## Merge requests with different source branch and target branch projects
 
 If the merge request source branch and target branch belong to different

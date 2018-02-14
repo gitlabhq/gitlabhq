@@ -17,7 +17,8 @@ module QA
         start = Time.now
 
         while Time.now - start < max
-          return true if yield
+          result = yield
+          return result if result
 
           sleep(time)
 
