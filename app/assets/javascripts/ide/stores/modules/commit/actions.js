@@ -1,6 +1,7 @@
 import * as types from './mutation_types';
 import * as consts from './constants';
 import * as rootTypes from '../../mutation_types';
+import router from '../../../ide_router';
 import service from '../../../services';
 import flash from '../../../../flash';
 import { stripHtml } from '../../../../lib/utils/text_utility';
@@ -37,7 +38,9 @@ export const checkCommitStatus = ({ rootState }) =>
     })
     .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
 
-export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
+export const commitChanges = ({
+  commit, state, getters, dispatch, rootState, rootGetters,
+}) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
   const payload = {
     branch: getters.branchName,
@@ -65,6 +68,8 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
   .then(() => service.commit(rootState.currentProjectId, payload))
   .then(({ data }) => {
     const { branch } = payload;
+
+    commit(types.UPDATE_LOADING, false);
 
     if (!data.short_id) {
       flash(data.message, 'alert', document, null, false, true);
@@ -109,7 +114,15 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
         }, { root: true });
       });
 
-      dispatch('discardAllChanges', null, { root: true });
+      commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
+
+      if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
+        const fileUrl = rootGetters.activeFile.url.replace(rootState.currentBranchId, branch);
+
+        router.push(`/project${fileUrl}`);
+      }
+
+      dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
 
       window.scrollTo(0, 0);
     }

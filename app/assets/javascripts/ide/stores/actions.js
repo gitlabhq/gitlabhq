@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import { visitUrl } from '../../lib/utils/url_utility';
-import flash from '../../flash';
-import service from '../services';
 import * as types from './mutation_types';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
