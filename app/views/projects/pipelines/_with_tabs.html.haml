@@ -1,5 +1,6 @@
 - failed_builds = @pipeline.statuses.latest.failed
 - sast_artifact = @pipeline.sast_artifact
+- sast_artifact_url = raw_project_build_artifacts_url(@project, sast_artifact, path: Ci::Build::SAST_FILE) if sast_artifact
 
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator
@@ -16,7 +17,7 @@
           Failed Jobs
           %span.badge.js-failures-counter= failed_builds.count
     - if sast_artifact
-      %li.js-security-tab-link
+      %li.js-security-tab-link{ data: { endpoint: sast_artifact_url }}
         = link_to security_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
           Security Report
 
