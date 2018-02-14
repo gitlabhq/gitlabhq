@@ -31,7 +31,7 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'import' do
-        render_api_error!('The file is invalid', 400) unless file_is_valid?
+        validate_file!
 
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42437')
 
