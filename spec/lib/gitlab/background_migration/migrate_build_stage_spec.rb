@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 20180105101928 do
+describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 20180212101928 do
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }
@@ -10,15 +10,9 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
                failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
   before do
-    ##
-    # Dependencies
-    #
     projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce')
     pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
 
-    ##
-    # CI/CD jobs
-    #
     jobs.create!(id: 1, commit_id: 1, project_id: 123,
                  stage_idx: 2, stage: 'build', status: :success)
     jobs.create!(id: 2, commit_id: 1, project_id: 123,
@@ -36,9 +30,7 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
   it 'correctly migrates builds stages' do
     expect(stages.count).to be_zero
 
-    jobs.all.find_each do |job|
-      described_class.new.perform(job.id)
-    end
+    described_class.new.perform(1, 6)
 
     expect(stages.count).to eq 3
     expect(stages.all.pluck(:name)).to match_array %w[test build deploy]

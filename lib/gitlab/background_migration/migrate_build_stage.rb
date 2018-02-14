@@ -5,69 +5,45 @@
 module Gitlab
   module BackgroundMigration
     class MigrateBuildStage
-      def perform(id)
-        DatabaseBuild.find_by(id: id).try do |build|
-          MigratableStage.new(build).tap do |stage|
-            break if stage.exists? || stage.legacy?
+      module Migratable
+        class Stage < ActiveRecord::Base
+          self.table_name = 'ci_stages'
+        end
 
-            stage.ensure!
-            stage.migrate_reference!
-            stage.migrate_status!
+        class Build < ActiveRecord::Base
+          self.table_name = 'ci_builds'
+
+          def ensure_stage!
+            find || create!
+          rescue ActiveRecord::RecordNotUnique
+            # TODO
+          end
+
+          def find
+            Stage.find_by(name: self.stage,
+                          pipeline_id: self.commit_id,
+                          project_id: self.project_id)
+          end
+
+          def create!
+            Stage.create!(name: self.stage || 'test',
+                          pipeline_id: self.commit_id,
+                          project_id: self.project_id)
           end
         end
       end
 
-      class DatabaseStage < ActiveRecord::Base
-        self.table_name = 'ci_stages'
-      end
+      def perform(start_id, stop_id)
+        # TODO, should we disable_statement_timeout?
+        # TODO, use plain SQL query?
 
-      class DatabaseBuild < ActiveRecord::Base
-        self.table_name = 'ci_builds'
-      end
+        stages = Migratable::Build.where('stage_id IS NULL')
+          .where("id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}")
+          .map { |build| build.ensure_stage! }
+          .compact.map(&:id)
 
-      class MigratableStage
-        def initialize(build)
-          @build = build
-        end
-
-        def exists?
-          @build.reload.stage_id.present?
-        end
-
-        ##
-        # We can have some very old stages that do not have `ci_builds.stage` set.
-        #
-        # In that case we just don't migrate such stage.
-        #
-        def legacy?
-          @build.stage.nil?
-        end
-
-        def ensure!
-          find || create!
-        end
-
-        def find
-          DatabaseStage.find_by(name: @build.stage,
-                                pipeline_id: @build.commit_id,
-                                project_id: @build.project_id)
-        end
-
-        def create!
-          DatabaseStage.create!(name: @build.stage,
-                                pipeline_id: @build.commit_id,
-                                project_id: @build.project_id)
-        end
-
-        def migrate_reference!
-          MigrateBuildStageIdReference.new.perform(@build.id, @build.id)
-        end
-
-        def migrate_status!
-          raise ArgumentError unless exists?
-
-          MigrateStageStatus.new.perform(@build.stage_id, @build.stage_id)
-        end
+        MigrateBuildStageIdReference.new.perform(start_id, stop_id)
+        MigrateStageStatus.new.perform(stages.min, stages.max)
       end
     end
   end
