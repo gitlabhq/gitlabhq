@@ -1,0 +1,5 @@
+---
+title: Fix close button on issues not working on mobile
+merge_request:
+author:
+type: fixed

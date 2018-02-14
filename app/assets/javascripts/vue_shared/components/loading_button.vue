@@ -40,7 +40,7 @@
         required: false,
       },
       containerClass: {
-        type: String,
+        type: [String, Array, Object],
         required: false,
         default: 'btn btn-align-content',
       },

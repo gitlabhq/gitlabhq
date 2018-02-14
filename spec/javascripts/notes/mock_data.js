@@ -8,6 +8,8 @@ export const notesDataMock = {
   quickActionsDocsPath: '/help/user/project/quick_actions',
   registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
   totalNotes: 1,
+  closeIssuePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=close',
+  reopenIssuePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=reopen',
 };
 
 export const userDataMock = {

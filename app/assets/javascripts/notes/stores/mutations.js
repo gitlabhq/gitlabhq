@@ -189,4 +189,12 @@ export default {
 
     document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
   },
+
+  [types.CLOSE_ISSUE](state) {
+    Object.assign(state.noteableData, { state: constants.CLOSED });
+  },
+
+  [types.REOPEN_ISSUE](state) {
+    Object.assign(state.noteableData, { state: constants.REOPENED });
+  },
 };

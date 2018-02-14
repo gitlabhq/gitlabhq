@@ -108,8 +108,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def referenced_merge_requests
-    @merge_requests = @issue.referenced_merge_requests(current_user)
-    @closed_by_merge_requests = @issue.closed_by_merge_requests(current_user)
+    @merge_requests, @closed_by_merge_requests = ::Issues::FetchReferencedMergeRequestsService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
