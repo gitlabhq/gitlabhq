@@ -1,21 +1,6 @@
-import Vue from 'vue';
-import deployKeysApp from './components/app.vue';
+import mountComponent from '~/vue_shared/mount_vue_component';
+import DeployKeysApp from './components/app.vue';
 
-document.addEventListener('DOMContentLoaded', () => new Vue({
-  el: document.getElementById('js-deploy-keys'),
-  components: {
-    deployKeysApp,
-  },
-  data() {
-    return {
-      endpoint: this.$options.el.dataset.endpoint,
-    };
-  },
-  render(createElement) {
-    return createElement('deploy-keys-app', {
-      props: {
-        endpoint: this.endpoint,
-      },
-    });
-  },
-}));
+document.addEventListener('DOMContentLoaded', () => {
+  mountComponent('#js-deploy-keys', DeployKeysApp);
+});
