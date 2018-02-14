@@ -879,11 +879,10 @@ describe Repository do
       expect(repository.license_key).to be_nil
     end
 
-    it 'returns the license key even when master does not exist' do
+    it 'returns nil when master does not exist' do
       repository.rm_branch(user, 'master')
-      project.change_head('test')
 
-      expect(repository.license_key).to eq('mit')
+      expect(repository.license_key).to be_nil
     end
 
     it 'returns the license key' do
