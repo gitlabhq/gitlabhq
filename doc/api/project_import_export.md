@@ -22,7 +22,7 @@ The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
 ```console
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "path=api-project" -F "file=@/path/to/file" https://gitlab.example.com/api/v4/projects/import
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "path=api-project" --form "file=@/path/to/file" https://gitlab.example.com/api/v4/projects/import
 ```
 
 ```json

@@ -17,7 +17,7 @@ describe API::ProjectImport do
 
   describe 'POST /projects/import' do
     it 'schedules an import using a namespace' do
-      stub_import(user.namespace)
+      stub_import(namespace)
 
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id
 
@@ -25,7 +25,7 @@ describe API::ProjectImport do
     end
 
     it 'schedules an import using the namespace path' do
-      stub_import(unamespace)
+      stub_import(namespace)
 
       post api('/projects/import', user), path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path
 
