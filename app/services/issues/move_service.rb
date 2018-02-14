@@ -1,5 +1,7 @@
 module Issues
   class MoveService < Issues::BaseService
+    prepend ::EE::Issues::MoveService
+
     MoveError = Class.new(StandardError)
 
     def execute(issue, new_project)
