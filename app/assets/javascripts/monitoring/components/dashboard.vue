@@ -11,6 +11,53 @@
 
   export default {
 
+    props: {
+      hasMetrics: {
+        type: String,
+        required: true,
+      },
+      documentationPath: {
+        type: String,
+        required: true,
+      },
+      settingsPath: {
+        type: String,
+        required: true,
+      },
+      clustersPath: {
+        type: String,
+        required: true,
+      },
+      tagsPath: {
+        type: String,
+        required: true,
+      },
+      projectPath: {
+        type: String,
+        required: true,
+      },
+      metricsEndpoint: {
+        type: String,
+        required: true,
+      },
+      deploymentEndpoint: {
+        type: String,
+        required: true,
+      },
+      emptyGettingStartedSvgPath: {
+        type: String,
+        required: true,
+      },
+      emptyLoadingSvgPath: {
+        type: String,
+        required: true,
+      },
+      emptyUnableToConnectSvgPath: {
+        type: String,
+        required: true,
+      },
+    },
+
     components: {
       Graph,
       GraphGroup,
@@ -18,23 +65,9 @@
     },
 
     data() {
-      const metricsData = document.querySelector('#prometheus-graphs').dataset;
-      const store = new MonitoringStore();
-
       return {
-        store,
+        store: new MonitoringStore(),
         state: 'gettingStarted',
-        hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
-        documentationPath: metricsData.documentationPath,
-        settingsPath: metricsData.settingsPath,
-        clustersPath: metricsData.clustersPath,
-        tagsPath: metricsData.tagsPath,
-        projectPath: metricsData.projectPath,
-        metricsEndpoint: metricsData.additionalMetrics,
-        deploymentEndpoint: metricsData.deploymentEndpoint,
-        emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
-        emptyLoadingSvgPath: metricsData.emptyLoadingSvgPath,
-        emptyUnableToConnectSvgPath: metricsData.emptyUnableToConnectSvgPath,
         showEmptyState: true,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
@@ -60,13 +93,14 @@
 
     mounted() {
       this.resizeThrottled = _.throttle(this.resize, 600);
-      if (!this.hasMetrics) {
+      if (!convertPermissionToBoolean(this.hasMetrics)) {
         this.state = 'gettingStarted';
       } else {
         this.getGraphsData();
         window.addEventListener('resize', this.resizeThrottled, false);
       }
     },
+
     methods: {
       getGraphsData() {
         this.state = 'loading';

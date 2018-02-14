@@ -1,7 +1,4 @@
-import Vue from 'vue';
+import mountComponent from '~/vue_shared/mount_vue_component';
 import Dashboard from './components/dashboard.vue';
 
-export default () => new Vue({
-  el: '#prometheus-graphs',
-  render: createElement => createElement(Dashboard),
-});
+export default () => mountComponent('#prometheus-graphs', Dashboard);
