@@ -17,7 +17,7 @@
           Failed Jobs
           %span.badge.js-failures-counter= failed_builds.count
     - if sast_artifact
-      %li.js-security-tab-link{ data: { endpoint: sast_artifact_url }}
+      %li.js-security-tab-link{ data: { endpoint: sast_artifact_url } }
         = link_to security_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
           Security Report
 
