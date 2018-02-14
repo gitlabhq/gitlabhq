@@ -129,7 +129,62 @@ the following:
 
 Now, you can verify that everything worked by visiting GitLab.
 
-### Troubleshooting
+## Migrating to Amazon RDS-based Postgres
+
+This is possible to do, but we'll need to modify the instructions as such:
+
+1. Remove the `disable triggers` line from your command.load file
+2. Create a file called `drop_constraints.sql` which contains the following:
+  ```
+  -- create a new table to hold the constraints. this needs to be dropped after we verify data integrity.
+  create table if not exists dropped_foreign_keys (
+  seq bigserial primary key,
+  sql text
+  );
+  -- back up all constraints to the table and then drop them.
+  do $$ declare t record;
+  begin
+  for t in select conrelid::regclass::varchar table_name, conname constraint_name,
+  pg_catalog.pg_get_constraintdef(r.oid, true) constraint_definition
+  from pg_catalog.pg_constraint r
+  where r.contype = 'f'
+  -- current schema only:
+  and r.connamespace = (select n.oid from pg_namespace n where n.nspname = current_schema())
+  loop
+  insert into dropped_foreign_keys (sql) values (
+  format('alter table %s add constraint %s %s',
+  quote_ident(t.table_name), quote_ident(t.constraint_name), t.constraint_definition));
+  execute format('alter table %s drop constraint %s', quote_ident(t.table_name), quote_ident(t.constraint_name));
+  end loop;
+  end $$;
+  ```
+3. Run this against the RDS-based postgres server:
+  ```
+    psql -h <db_host> -U <db_user> -W -d <db_name> -f drop_constraints.sql
+  ```
+4. Migrate using your modified commands.load file: `pgloader commands.load`
+5. We now need to add constraints using this `add_constraints.sql`:
+  ```
+  -- add the constraints back to the database following PG Loader data import.
+  do $$ declare t record;
+  begin
+  -- order by seq for easier troubleshooting when data does not satisfy FKs
+  for t in select * from dropped_foreign_keys order by seq loop
+  execute t.sql;
+  delete from dropped_foreign_keys where seq = t.seq;
+  end loop;
+  end $$;
+  -- drop the table that held the constraints
+  drop table if exists dropped_foreign_keys;
+  ```
+6. Run this against the RDS-based postgres server:
+  ```
+    psql -h <db_host> -U <db_user> -W -d <db_name> -f add_constraints.sql
+  ```
+7. Start GitLab and confirm you have no errors.
+
+
+## Troubleshooting
 
 #### Permissions
 
