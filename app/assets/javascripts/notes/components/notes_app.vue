@@ -53,9 +53,9 @@
       ]),
       noteableType() {
         // FIXME -- @fatihacet Get this from JSON data.
-        const { NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
+        const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
 
-        return this.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : NOTEABLE_TYPE;
+        return this.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
       },
       allNotes() {
         if (this.isLoading) {
@@ -171,7 +171,7 @@
     </ul>
 
     <comment-form
-      :noteable-type="noteableType"
+      :issuable-type="noteableType"
     />
   </div>
 </template>
