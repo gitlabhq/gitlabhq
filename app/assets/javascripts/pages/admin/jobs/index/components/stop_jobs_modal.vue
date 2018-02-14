@@ -1,13 +1,13 @@
 <script>
   import axios from '~/lib/utils/axios_utils';
-  import Flash from '~/flash';
-  import modal from '~/vue_shared/components/modal.vue';
-  import { s__ } from '~/locale';
+  import createFlash from '~/flash';
+  import GlModal from '~/vue_shared/components/gl_modal.vue';
   import { redirectTo } from '~/lib/utils/url_utility';
+  import { s__ } from '~/locale';
 
   export default {
     components: {
-      modal,
+      GlModal,
     },
     props: {
       url: {
@@ -17,7 +17,7 @@
     },
     computed: {
       text() {
-        return s__('AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running.');
+        return s__('AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running.');
       },
     },
     methods: {
@@ -28,7 +28,7 @@
             redirectTo(response.request.responseURL);
           })
           .catch((error) => {
-            Flash(s__('AdminArea|Stopping jobs failed'));
+            createFlash(s__('AdminArea|Stopping jobs failed'));
             throw error;
           });
       },
@@ -37,11 +37,13 @@
 </script>
 
 <template>
-  <modal
+  <gl-modal
     id="stop-jobs-modal"
-    :title="s__('AdminArea|Stop all jobs?')"
-    :text="text"
-    kind="danger"
-    :primary-button-label="s__('AdminArea|Stop jobs')"
-    @submit="onSubmit" />
+    :header-title-text="s__('AdminArea|Stop all jobs?')"
+    footer-primary-button-variant="danger"
+    :footer-primary-button-text="s__('AdminArea|Stop jobs')"
+    @submit="onSubmit"
+  >
+    {{ text }}
+  </gl-modal>
 </template>
