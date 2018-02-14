@@ -592,8 +592,14 @@ class Repository
 
   def license_key
     return unless exists?
+    return unless head_commit
 
-    Licensee.license(path).try(:key)
+    # The licensee gem creates a Rugged object from the path:
+    # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+    begin
+      Licensee.project(path, revision: head_commit.sha).license.try(:key)
+    rescue Rugged::Error
+    end
   end
   cache_method :license_key
 

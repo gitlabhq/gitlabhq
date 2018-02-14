@@ -873,6 +873,19 @@ describe Repository do
       expect(repository.license_key).to be_nil
     end
 
+    it 'returns nil when the commit SHA does not exist' do
+      allow(repository.head_commit).to receive(:sha).and_return('1' * 40)
+
+      expect(repository.license_key).to be_nil
+    end
+
+    it 'returns the license key even when master does not exist' do
+      repository.rm_branch(user, 'master')
+      project.change_head('test')
+
+      expect(repository.license_key).to eq('mit')
+    end
+
     it 'returns the license key' do
       repository.create_file(user, 'LICENSE',
         Licensee::License.new('mit').content,
