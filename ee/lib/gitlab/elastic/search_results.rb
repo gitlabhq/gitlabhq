@@ -77,6 +77,7 @@ module Gitlab
         extname = File.extname(filename)
         basename = filename.sub(/#{extname}$/, '')
         content = result["_source"]["blob"]["content"]
+        project_id = result["_parent"].to_i
         total_lines = content.lines.size
 
         term =
@@ -113,7 +114,8 @@ module Gitlab
           basename: basename,
           ref: ref,
           startline: from + 1,
-          data: data.join
+          data: data.join,
+          project_id: project_id
         )
       end
 
