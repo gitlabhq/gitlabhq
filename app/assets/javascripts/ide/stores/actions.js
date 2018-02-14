@@ -50,22 +50,6 @@ export const setResizingStatus = ({ commit }, resizing) => {
   commit(types.SET_RESIZING_STATUS, resizing);
 };
 
-export const checkCommitStatus = ({ state }) =>
-  service
-    .getBranchData(state.currentProjectId, state.currentBranchId)
-    .then(({ data }) => {
-      const { id } = data.commit;
-      const selectedBranch =
-        state.projects[state.currentProjectId].branches[state.currentBranchId];
-
-      if (selectedBranch.workingReference !== id) {
-        return true;
-      }
-
-      return false;
-    })
-    .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
-
 export const createTempEntry = (
   { state, dispatch },
   { projectId, branchId, parent, name, type, content = '', base64 = false },

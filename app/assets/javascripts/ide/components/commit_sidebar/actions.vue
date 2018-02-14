@@ -1,8 +1,12 @@
 <script>
-  import { mapActions, mapState, mapGetters } from 'vuex';
+  import { mapState } from 'vuex';
   import * as consts from '../../stores/modules/commit/constants';
+  import RadioGroup from './radio_group.vue';
 
   export default {
+    components: {
+      RadioGroup,
+    },
     data() {
       return {
         COMMIT_TO_CURRENT_BRANCH: consts.COMMIT_TO_CURRENT_BRANCH,
@@ -14,65 +18,26 @@
       ...mapState([
         'currentBranchId',
       ]),
-      ...mapState('commit', [
-        'commitAction',
-      ]),
-      ...mapGetters('commit', [
-        'newBranchName',
-      ]),
-    },
-    methods: {
-      ...mapActions('commit', [
-        'updateCommitAction',
-        'updateBranchName',
-      ]),
     },
   };
 </script>
 
 <template>
-  <div>
-    <fieldset>
-      <label>
-        <input
-          type="radio"
-          name="commit-action"
-          :value="COMMIT_TO_CURRENT_BRANCH"
-          @change="updateCommitAction($event.target.value)"
-          checked
-        />
-        Commit to <strong>{{ currentBranchId }}</strong> branch
-      </label>
-    </fieldset>
-    <fieldset>
-      <label>
-        <input
-          type="radio"
-          name="commit-action"
-          :value="COMMIT_TO_NEW_BRANCH"
-          @change="updateCommitAction($event.target.value)"
-        />
-        Create a new branch
-      </label>
-      <template v-if="commitAction === '2'">
-        <input
-          type="text"
-          class="form-control input-sm"
-          :placeholder="newBranchName"
-          @input="updateBranchName($event.target.value)"
-        />
-      </template>
-    </fieldset>
-    <fieldset>
-      <label>
-        <input
-          type="radio"
-          name="commit-action"
-          :value="COMMIT_TO_NEW_BRANCH_MR"
-          @change="updateCommitAction($event.target.value)"
-        />
-        Create a new branch and merge request
-      </label>
-    </fieldset>
+  <div class="append-bottom-15">
+    <radio-group
+      :value="COMMIT_TO_CURRENT_BRANCH"
+      :label="`Commit to ${currentBranchId} branch`"
+      :checked="true"
+    />
+    <radio-group
+      :value="COMMIT_TO_NEW_BRANCH"
+      label="Create a new branch"
+      :show-input="true"
+    />
+    <radio-group
+      :value="COMMIT_TO_NEW_BRANCH_MR"
+      label="Create a new branch and merge request"
+      :show-input="true"
+    />
   </div>
 </template>

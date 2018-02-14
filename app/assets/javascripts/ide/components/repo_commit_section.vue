@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
+import * as consts from '../stores/modules/commit/constants';
 import tooltip from '../../vue_shared/directives/tooltip';
 import icon from '../../vue_shared/components/icon.vue';
 import modal from '../../vue_shared/components/modal.vue';
@@ -28,11 +29,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showNewBranchModal: false,
-    };
-  },
   computed: {
     ...mapState([
       'currentProjectId',
@@ -56,7 +52,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'checkCommitStatus',
       'getTreeData',
       'setPanelCollapsedStatus',
     ]),
@@ -64,30 +59,17 @@ export default {
       'updateCommitMessage',
       'discardDraft',
       'commitChanges',
+      'updateCommitAction',
     ]),
-    makeCommit() {
-      this.commitChanges();
-    },
-    tryCommit() {
-      this.submitCommitLoading = true;
-
-      this.checkCommitStatus()
-        .then((branchChanged) => {
-          if (branchChanged) {
-            this.showNewBranchModal = true;
-          } else {
-            this.makeCommit();
-          }
-        })
-        .catch(() => {
-          this.submitCommitLoading = false;
-        });
-    },
     toggleCollapsed() {
       this.setPanelCollapsedStatus({
         side: 'right',
         collapsed: !this.rightPanelCollapsed,
       });
+    },
+    forceCreateNewBranch() {
+      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH)
+        .then(() => this.commitChanges());
     },
   },
 };
@@ -101,15 +83,16 @@ export default {
     }"
   >
     <modal
-      v-if="showNewBranchModal"
+      id="ide-create-branch-modal"
       :primary-button-label="__('Create new branch')"
-      kind="primary"
+      kind="success"
       :title="__('Branch has changed')"
-      :text="__(`This branch has changed since
-you started editing. Would you like to create a new branch?`)"
-      @cancel="showNewBranchModal = false"
-      @submit="makeCommit(true)"
-    />
+      @submit="forceCreateNewBranch"
+    >
+      <template slot="body">
+        {{ __(`This branch has changed since you started editing. Would you like to create a new branch?`) }}
+      </template>
+    </modal>
     <commit-files-list
       title="Staged"
       :file-list="changedFiles"
@@ -121,7 +104,7 @@ you started editing. Would you like to create a new branch?`)"
     >
       <form
         class="form-horizontal multi-file-commit-form"
-        @submit.prevent.stop="makeCommit"
+        @submit.prevent.stop="commitChanges"
         v-if="!rightPanelCollapsed"
       >
         <div class="multi-file-commit-fieldset">
@@ -141,7 +124,7 @@ you started editing. Would you like to create a new branch?`)"
             :disabled="commitButtonDisabled"
             container-class="btn btn-success btn-sm pull-left"
             :label="__('Commit')"
-            @click="makeCommit"
+            @click="commitChanges"
           />
           <button
             type="button"
