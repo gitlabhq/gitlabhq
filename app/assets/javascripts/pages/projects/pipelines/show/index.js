@@ -1,5 +1,6 @@
 
 import Vue from 'vue';
+import { __ } from '../../../../locale';
 import Flash from '../../../../flash';
 import PipelinesMediator from '../../../../pipelines/pipeline_details_mediatior';
 import pipelineGraph from '../../../../pipelines/components/graph/graph_component.vue';
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       postAction(action) {
         this.mediator.service.postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
-          .catch(() => new Flash('An error occurred while making the request.'));
+          .catch(() => new Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
