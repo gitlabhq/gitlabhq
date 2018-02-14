@@ -107,13 +107,13 @@
     },
     mounted() {
       if (this.isReplying) {
-        this.initAutoSave(this.note.noteable_type);
+        this.initAutoSave(this.discussion.noteable_type);
       }
     },
     updated() {
       if (this.isReplying) {
         if (!this.autosave) {
-          this.initAutoSave(this.note.noteable_type);
+          this.initAutoSave(this.discussion.noteable_type);
         } else {
           this.setAutoSave();
         }

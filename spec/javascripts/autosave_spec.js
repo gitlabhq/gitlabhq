@@ -23,7 +23,7 @@ describe('Autosave', () => {
 
   describe('restore', () => {
     const key = 'key';
-    const field = jasmine.createSpyObj('field', ['trigger']);
+    const field = jasmine.createSpyObj('field', ['trigger', 'get']);
 
     beforeEach(() => {
       autosave = {

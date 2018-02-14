@@ -1,17 +1,20 @@
 import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';
-import issueCommentForm from '~/notes/components/comment_form.vue';
+import CommentForm from '~/notes/components/comment_form.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
   let vm;
-  const Component = Vue.extend(issueCommentForm);
+  const Component = Vue.extend(CommentForm);
   let mountComponent;
 
   beforeEach(() => {
     mountComponent = () => new Component({
+      propsData: {
+        noteableType: 'issue',
+      },
       store,
     }).$mount();
   });

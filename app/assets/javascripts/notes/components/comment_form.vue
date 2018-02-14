@@ -212,7 +212,7 @@ Please check your network connection and try again.`;
                 sprintf(
                   __('Something went wrong while closing the %{issuable}. Please try again later'),
                   { issuable: this.issuableDisplayName },
-                )
+                ),
               );
             });
         } else {
@@ -222,7 +222,7 @@ Please check your network connection and try again.`;
               this.enableButton();
               Flash(
                 sprintf(
-                  __('Something went wrong while reopening the ${issuable}. Please try again later'),
+                  __('Something went wrong while reopening the %{issuable}. Please try again later'),
                   { issuable: this.issuableDisplayName },
                 ),
               );
@@ -379,7 +379,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Comment</strong>
                           <p>
-                            Add a general comment to this {{ this.issuableDisplayName }}.
+                            Add a general comment to this {{ issuableDisplayName }}.
                           </p>
                         </div>
                       </button>
