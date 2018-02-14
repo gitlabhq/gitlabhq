@@ -1,13 +1,13 @@
 - if Gitlab::CurrentSettings.email_author_in_body
   %p.details
-    #{link_to @issue.author_name, user_url(@issue.author)} updated the issue's due date:
+    Issue created by #{link_to @issue.author_name, user_url(@issue.author)} is due:
 
 - if @issue.assignees.any?
   %p
     Assignee: #{@issue.assignee_list}
 
 %p
-  This issue is due on: #{ @issue.due_date }
+  This issue is due on: #{@issue.due_date}
 
 - if @issue.description
   %div
