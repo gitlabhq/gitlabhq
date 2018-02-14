@@ -146,7 +146,7 @@ stages:
     - export KNAPSACK_TEST_FILE_PATTERN="ee/spec/**{,/*/**}/*_spec.rb" KNAPSACK_GENERATE_REPORT=true CACHE_CLASSES=true
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]} CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report-ee.json
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
     - knapsack rspec "-Ispec --color --format documentation --tag ~geo"
@@ -303,7 +303,7 @@ update-tests-metadata:
     - retry gem install fog-aws mime-types
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
-    - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*-ee.json
+    - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg-ee_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
