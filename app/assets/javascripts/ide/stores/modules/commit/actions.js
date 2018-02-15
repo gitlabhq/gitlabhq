@@ -6,7 +6,7 @@ import router from '../../../ide_router';
 import service from '../../../services';
 import flash from '../../../../flash';
 import { stripHtml } from '../../../../lib/utils/text_utility';
-import editor from '../../../lib/editor';
+import eventHub from '../../../eventhub';
 
 export const updateCommitMessage = ({ commit }, message) => {
   commit(types.UPDATE_COMMIT_MESSAGE, message);
@@ -71,11 +71,7 @@ export const updateFilesAfterCommit = (
     reference: data.id,
   }, { root: true });
 
-  const cachedEditorModels = editor.editorInstance.modelManager.models;
-
   rootState.changedFiles.forEach((entry) => {
-    const editorModel = cachedEditorModels.get(entry.path);
-
     commit(rootTypes.SET_LAST_COMMIT_DATA, {
       entry,
       lastCommit,
@@ -86,8 +82,7 @@ export const updateFilesAfterCommit = (
       raw: entry.content,
     }, { root: true });
 
-    editorModel.originalModel.setValue(entry.raw);
-    editorModel.model.setValue(entry.raw);
+    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.raw);
   });
 
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });

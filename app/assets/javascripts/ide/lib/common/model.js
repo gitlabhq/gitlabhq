@@ -1,5 +1,6 @@
 /* global monaco */
 import Disposable from './disposable';
+import eventHub from '../../eventhub';
 
 export default class Model {
   constructor(monaco, file) {
@@ -22,6 +23,9 @@ export default class Model {
     );
 
     this.events = new Map();
+
+    this.updateContent = this.updateContent.bind(this);
+    eventHub.$on(`editor.update.model.content.${this.file.path}`, this.updateContent);
   }
 
   get url() {
@@ -61,8 +65,15 @@ export default class Model {
     );
   }
 
+  updateContent(content) {
+    this.getModel().setValue(content);
+    this.getOriginalModel().setValue(content);
+  }
+
   dispose() {
     this.disposable.dispose();
     this.events.clear();
+
+    eventHub.$off(`editor.update.model.content.${this.file.path}`, this.updateContent);
   }
 }
