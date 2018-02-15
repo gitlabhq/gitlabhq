@@ -23,11 +23,11 @@
     - if show_archive_options
       %li.divider
       %li.js-filter-archived-projects
-        = link_to group_children_path(@group, archived: nil), class: ("is-active" unless params[:archived].present?) do
+        = link_to filter_groups_path(archived: nil), class: ("is-active" unless params[:archived].present?) do
           Hide archived projects
       %li.js-filter-archived-projects
-        = link_to group_children_path(@group, archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
+        = link_to filter_groups_path(archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
           Show archived projects
       %li.js-filter-archived-projects
-        = link_to group_children_path(@group, archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
+        = link_to filter_groups_path(archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
           Show archived projects only
