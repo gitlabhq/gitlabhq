@@ -39,7 +39,11 @@ module Gitlab
 
         store_untracked_file_paths
 
-        schedule_populate_untracked_uploads_jobs
+        if UntrackedFile.all.empty?
+          drop_temp_table
+        else
+          schedule_populate_untracked_uploads_jobs
+        end
       end
 
       private
@@ -88,7 +92,7 @@ module Gitlab
           end
         end
 
-        yield(paths)
+        yield(paths) if paths.any?
       end
 
       def build_find_command(search_dir)
@@ -157,6 +161,11 @@ module Gitlab
       def schedule_populate_untracked_uploads_jobs
         bulk_queue_background_migration_jobs_by_range(
           UntrackedFile, FOLLOW_UP_MIGRATION)
+      end
+
+      def drop_temp_table
+        UntrackedFile.connection.drop_table(:untracked_files_for_uploads,
+                                            if_exists: true)
       end
     end
   end
