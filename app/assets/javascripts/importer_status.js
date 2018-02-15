@@ -59,29 +59,36 @@ class ImporterStatus {
     .catch(() => flash(__('An error occurred while importing project')));
   }
 
+  autoUpdate() {
+    return axios.get(this.jobsUrl)
+      .then(({ data = [] }) => {
+        data.forEach((job) => {
+          const jobItem = $(`#project_${job.id}`);
+          const statusField = jobItem.find('.job-status');
+
+          const spinner = '<i class="fa fa-spinner fa-spin"></i>';
+
+          switch (job.import_status) {
+            case 'finished':
+              jobItem.removeClass('active').addClass('success');
+              statusField.html('<span><i class="fa fa-check"></i> done</span>');
+              break;
+            case 'scheduled':
+              statusField.html(`${spinner} scheduled`);
+              break;
+            case 'started':
+              statusField.html(`${spinner} started`);
+              break;
+            default:
+              statusField.html(job.import_status);
+              break;
+          }
+        });
+      });
+  }
+
   setAutoUpdate() {
-    return setInterval(() => $.get(this.jobsUrl, data => $.each(data, (i, job) => {
-      const jobItem = $(`#project_${job.id}`);
-      const statusField = jobItem.find('.job-status');
-
-      const spinner = '<i class="fa fa-spinner fa-spin"></i>';
-
-      switch (job.import_status) {
-        case 'finished':
-          jobItem.removeClass('active').addClass('success');
-          statusField.html('<span><i class="fa fa-check"></i> done</span>');
-          break;
-        case 'scheduled':
-          statusField.html(`${spinner} scheduled`);
-          break;
-        case 'started':
-          statusField.html(`${spinner} started`);
-          break;
-        default:
-          statusField.html(job.import_status);
-          break;
-      }
-    })), 4000);
+    setInterval(this.autoUpdate.bind(this), 4000);
   }
 }
 
