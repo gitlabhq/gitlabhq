@@ -1,0 +1,5 @@
+---
+title: Prevent MR Widget error when no CI configured
+merge_request:
+author:
+type: fixed
