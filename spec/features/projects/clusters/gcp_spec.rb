@@ -25,7 +25,7 @@ feature 'Gcp Cluster', :js do
     context 'when user has a GCP project with billing enabled' do
       before do
         allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
-        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return('true')
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return(true)
       end
 
       context 'when user does not have a cluster and visits cluster index page' do
@@ -134,7 +134,7 @@ feature 'Gcp Cluster', :js do
     context 'when user does not have a GCP project with billing enabled' do
       before do
         allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
-        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return('false')
+        allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return(false)
 
         visit project_clusters_path(project)
 

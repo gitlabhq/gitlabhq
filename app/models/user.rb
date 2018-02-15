@@ -258,7 +258,7 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
-        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase)
+        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase.strip)
       else
         find_by(conditions)
       end

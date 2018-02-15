@@ -19,9 +19,13 @@ module Gitlab
       end
 
       def self.servers
+<<<<<<< HEAD
         Gitlab.config.ldap.servers.values
       rescue Settingslogic::MissingSetting
         []
+=======
+        Gitlab.config.ldap['servers']&.values || []
+>>>>>>> upstream/master
       end
 
       def self.available_servers

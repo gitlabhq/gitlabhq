@@ -40,8 +40,12 @@ Example response:
     "kind": "group"
     "full_path": "group1",
     "parent_id": null,
+<<<<<<< HEAD
     "members_count_with_descendants": 2,
     "plan": "bronze"
+=======
+    "members_count_with_descendants": 2
+>>>>>>> upstream/master
   },
   {
     "id": 3,

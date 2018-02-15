@@ -95,7 +95,9 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 
 The Auto DevOps base domain is required if you want to make use of [Auto
 Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It is defined
-under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops).
+either under the project's CI/CD settings while 
+[enabling Auto DevOps](#enabling-auto-devops) or in instance-wide settings in
+the CI/CD section.
 It can also be set at the project or group level as a variable, `AUTO_DEVOPS_DOMAIN`.
 
 A wildcard DNS A record matching the base domain is required, for example,

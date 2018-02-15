@@ -104,7 +104,10 @@ var config = {
     roadmap:              'ee/roadmap',
     ide:                 './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
+<<<<<<< HEAD
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
+=======
+>>>>>>> upstream/master
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
