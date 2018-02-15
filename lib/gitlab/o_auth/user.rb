@@ -226,7 +226,7 @@ module Gitlab
       end
 
       def clear_user_synced_attributes_metadata
-        gl_user.user_synced_attributes_metadata&.destroy
+        gl_user&.user_synced_attributes_metadata&.destroy
       end
 
       def log
