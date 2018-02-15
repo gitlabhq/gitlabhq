@@ -4,8 +4,6 @@ import axios from '~/lib/utils/axios_utils';
 import Flash from '../flash';
 import AUTH_METHOD from './constants';
 import { backOff } from '../lib/utils/common_utils';
-import { __ } from '../locale';
-import axios from '../lib/utils/axios_utils';
 
 export default class MirrorPull {
   constructor(formSelector) {
