@@ -1719,7 +1719,7 @@ ActiveRecord::Schema.define(version: 20180726172057) do
     t.datetime "updated_at"
   end
 
-  add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+  add_index "protected_tags", ["project_id", "name"], name: "index_protected_tags_on_project_id_and_name", unique: true, using: :btree
 
   create_table "protected_tag_create_access_levels", force: :cascade do |t|
     t.integer "protected_tag_id", null: false
