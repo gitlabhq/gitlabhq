@@ -40,4 +40,15 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
                                                       STATUSES[:failed],
                                                       STATUSES[:pending]]
   end
+
+  it 'recovers from unique constraint violation only twice' do
+    allow(described_class::Migratable::Stage)
+      .to receive(:find_by).and_return(nil)
+
+    expect(described_class::Migratable::Stage)
+      .to receive(:find_by).exactly(3).times
+
+    expect { described_class.new.perform(1, 6) }
+      .to raise_error ActiveRecord::RecordNotUnique
+  end
 end

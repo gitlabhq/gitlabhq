@@ -3,7 +3,7 @@ class ScheduleBuildStageMigration < ActiveRecord::Migration
 
   DOWNTIME = false
   MIGRATION = 'MigrateBuildStage'.freeze
-  BATCH_SIZE = 500
+  BATCH_SIZE = 800
 
   disable_ddl_transaction!
 

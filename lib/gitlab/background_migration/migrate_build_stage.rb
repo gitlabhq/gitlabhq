@@ -13,19 +13,20 @@ module Gitlab
         class Build < ActiveRecord::Base
           self.table_name = 'ci_builds'
 
-          def ensure_stage!
-            find || create!
+          def ensure_stage!(attempts: 2)
+            find_stage || create_stage!
           rescue ActiveRecord::RecordNotUnique
-            # TODO
+            retry if (attempts -= 1) > 0
+            raise
           end
 
-          def find
-            Stage.find_by(name: self.stage,
+          def find_stage
+            Stage.find_by(name: self.stage || 'test',
                           pipeline_id: self.commit_id,
                           project_id: self.project_id)
           end
 
-          def create!
+          def create_stage!
             Stage.create!(name: self.stage || 'test',
                           pipeline_id: self.commit_id,
                           project_id: self.project_id)
@@ -34,11 +35,10 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        # TODO, should we disable_statement_timeout?
-        # TODO, use plain SQL query?
+        # TODO, statement timeout?
 
         stages = Migratable::Build.where('stage_id IS NULL')
-          .where("id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}")
+          .where('id BETWEEN ? AND ?', start_id, stop_id)
           .map { |build| build.ensure_stage! }
           .compact.map(&:id)
 
