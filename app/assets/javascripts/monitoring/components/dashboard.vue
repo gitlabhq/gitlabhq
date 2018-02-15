@@ -10,6 +10,11 @@
   import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
+    components: {
+      Graph,
+      GraphGroup,
+      EmptyState,
+    },
 
     props: {
       hasMetrics: {
@@ -56,12 +61,6 @@
         type: String,
         required: true,
       },
-    },
-
-    components: {
-      Graph,
-      GraphGroup,
-      EmptyState,
     },
 
     data() {
