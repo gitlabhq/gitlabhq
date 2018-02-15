@@ -5,6 +5,7 @@ import AccessorUtilities from './lib/utils/accessor';
 export default class Autosave {
   constructor(field, key) {
     this.field = field;
+
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
     if (key.join != null) {
       key = key.join('/');
@@ -16,11 +17,10 @@ export default class Autosave {
   }
 
   restore() {
-    var text;
-
     if (!this.isLocalStorageAvailable) return;
+    if (!this.field.length) return;
 
-    text = window.localStorage.getItem(this.key);
+    const text = window.localStorage.getItem(this.key);
 
     if ((text != null ? text.length : void 0) > 0) {
       this.field.val(text);
@@ -31,14 +31,13 @@ export default class Autosave {
     // https://github.com/vuejs/vue/issues/2804#issuecomment-216968137
     const event = new Event('change', { bubbles: true, cancelable: false });
     const field = this.field.get(0);
-    if (field) {
-      field.dispatchEvent(event);
-    }
+    field.dispatchEvent(event);
   }
 
   save() {
-    var text;
-    text = this.field.val();
+    if (!this.field.length) return;
+
+    const text = this.field.val();
 
     if (this.isLocalStorageAvailable && (text != null ? text.length : void 0) > 0) {
       return window.localStorage.setItem(this.key, text);

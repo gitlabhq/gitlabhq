@@ -11,9 +11,9 @@ describe('issue_comment_form component', () => {
   let mountComponent;
 
   beforeEach(() => {
-    mountComponent = () => new Component({
+    mountComponent = (noteableType = 'issue') => new Component({
       propsData: {
-        noteableType: 'issue',
+        noteableType,
       },
       store,
     }).$mount();
@@ -139,6 +139,11 @@ describe('issue_comment_form component', () => {
 
           expect(vm.editCurrentUserLastNote).toHaveBeenCalled();
         });
+
+        it('inits autosave', () => {
+          expect(vm.autosave).toBeDefined();
+          expect(vm.autosave.key).toEqual(`autosave/Note/Issue/${noteableDataMock.id}`);
+        });
       });
 
       describe('event enter', () => {
@@ -182,6 +187,15 @@ describe('issue_comment_form component', () => {
         Vue.nextTick(() => {
           expect(vm.$el.querySelector('.btn-comment-and-close').textContent.trim()).toEqual('Comment & close issue');
           expect(vm.$el.querySelector('.js-note-discard')).toBeDefined();
+          done();
+        });
+      });
+
+      it('updates button text with noteable type', (done) => {
+        vm.noteableType = 'merge_request';
+
+        Vue.nextTick(() => {
+          expect(vm.$el.querySelector('.btn-comment-and-close').textContent.trim()).toEqual('Close merge request');
           done();
         });
       });
