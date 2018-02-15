@@ -143,6 +143,7 @@
           :href="issue.nameLink"
           target="_blank"
           rel="noopener noreferrer nofollow"
+          class="prepend-left-5"
         >
           {{ issue.name }}
         </a>
@@ -155,7 +156,7 @@
           type="button"
           @click="openDastModal(issue, index)"
           data-toggle="modal"
-          class="btn-link btn-blank"
+          class="btn-link btn-blank btn-open-modal"
           :data-target="modalTargetId"
         >
           {{ issue.name }}
