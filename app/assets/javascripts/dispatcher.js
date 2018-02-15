@@ -467,11 +467,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'users:show':
-          import('./pages/users/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'admin:conversational_development_index:show':
           import('./pages/admin/conversational_development_index/show')
             .then(callDefault)
