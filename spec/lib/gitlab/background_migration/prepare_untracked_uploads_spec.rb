@@ -8,8 +8,6 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
 
   before do
     DatabaseCleaner.clean
-
-    drop_temp_table_if_exists
   end
 
   after do
@@ -23,25 +21,25 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
     end
   end
 
-  it 'ensures the untracked_files_for_uploads table exists' do
-    expect do
+  # E.g. The installation is in use at the time of migration, and someone has
+  # just uploaded a file
+  shared_examples 'does not add files in /uploads/tmp' do
+    let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+
+    before do
+      FileUtils.mkdir_p(File.dirname(tmp_file))
+      FileUtils.touch(tmp_file)
+    end
+
+    after do
+      FileUtils.rm(tmp_file)
+    end
+
+    it 'does not add files from /uploads/tmp' do
       described_class.new.perform
-    end.to change { ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads) }.from(false).to(true)
-  end
 
-  it 'has a path field long enough for really long paths' do
-    described_class.new.perform
-
-    component = 'a' * 255
-
-    long_path = [
-      'uploads',
-      component, # project.full_path
-      component  # filename
-    ].flatten.join('/')
-
-    record = untracked_files_for_uploads.create!(path: long_path)
-    expect(record.reload.path.size).to eq(519)
+      expect(untracked_files_for_uploads.count).to eq(5)
+    end
   end
 
   context "test bulk insert with ON CONFLICT DO NOTHING or IGNORE" do
@@ -67,6 +65,21 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
 
         # Markdown upload after enabling hashed_storage
         UploadService.new(project2, uploaded_file, FileUploader).execute
+      end
+
+      it 'has a path field long enough for really long paths' do
+        described_class.new.perform
+
+        component = 'a' * 255
+
+        long_path = [
+          'uploads',
+          component, # project.full_path
+          component  # filename
+        ].flatten.join('/')
+
+        record = untracked_files_for_uploads.create!(path: long_path)
+        expect(record.reload.path.size).to eq(519)
       end
 
       it 'adds unhashed files to the untracked_files_for_uploads table' do
@@ -109,21 +122,17 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
         end
       end
 
-      # E.g. The installation is in use at the time of migration, and someone has
-      # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-        let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+        it_behaves_like 'does not add files in /uploads/tmp'
+      end
 
-        before do
-          FileUtils.touch(tmp_file)
-        end
+      context 'when the last batch size exactly matches the max batch size' do
+        it 'does not raise error' do
+          stub_const("#{described_class}::FIND_BATCH_SIZE", 5)
 
-        after do
-          FileUtils.rm(tmp_file)
-        end
-
-        it 'does not add files from /uploads/tmp' do
-          described_class.new.perform
+          expect do
+            described_class.new.perform
+          end.not_to raise_error
 
           expect(untracked_files_for_uploads.count).to eq(5)
         end
@@ -197,21 +206,17 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
         end
       end
 
-      # E.g. The installation is in use at the time of migration, and someone has
-      # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-        let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+        it_behaves_like 'does not add files in /uploads/tmp'
+      end
 
-        before do
-          FileUtils.touch(tmp_file)
-        end
+      context 'when the last batch size exactly matches the max batch size' do
+        it 'does not raise error' do
+          stub_const("#{described_class}::FIND_BATCH_SIZE", 5)
 
-        after do
-          FileUtils.rm(tmp_file)
-        end
-
-        it 'does not add files from /uploads/tmp' do
-          described_class.new.perform
+          expect do
+            described_class.new.perform
+          end.not_to raise_error
 
           expect(untracked_files_for_uploads.count).to eq(5)
         end
@@ -222,10 +227,10 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   # Very new or lightly-used installations that are running this migration
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
-    it 'does not add to the untracked_files_for_uploads table (and does not raise error)' do
+    it 'deletes the `untracked_files_for_uploads` table (and does not raise error)' do
       described_class.new.perform
 
-      expect(untracked_files_for_uploads.count).to eq(0)
+      expect(untracked_files_for_uploads.connection.table_exists?(:untracked_files_for_uploads)).to be_falsey
     end
   end
 end
