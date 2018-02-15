@@ -109,15 +109,17 @@ describe AutocompleteController do
     end
 
     context 'limited users per page' do
-      let(:per_page) { 2 }
-
       before do
+        25.times do
+          create(:user)
+        end
+
         sign_in(user)
-        get(:users, per_page: per_page)
+        get(:users)
       end
 
       it { expect(json_response).to be_kind_of(Array) }
-      it { expect(json_response.size).to eq(per_page) }
+      it { expect(json_response.size).to eq(20) }
     end
 
     context 'unauthenticated user' do
