@@ -134,7 +134,7 @@ module MergeRequests
     end
 
     def append_closes_description
-      return unless issue
+      return unless issue&.to_reference.present?
 
       closes_issue = "Closes #{issue.to_reference}"
 
@@ -163,7 +163,7 @@ module MergeRequests
       return if merge_request.title.present?
 
       if issue_iid.present?
-        merge_request.title = "Resolve #{issue_iid}"
+        merge_request.title = "Resolve #{issue.to_reference}"
         branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
         merge_request.title += " \"#{branch_title}\"" if branch_title.present?
       end
