@@ -5,10 +5,14 @@ module Gitlab
     # This class processes a batch of rows in `untracked_files_for_uploads` by
     # adding each file to the `uploads` table if it does not exist.
     class PopulateUntrackedUploads # rubocop:disable Metrics/ClassLength
+      include PopulateUntrackedUploadsDependencies
+
       # This class is responsible for producing the attributes necessary to
       # track an uploaded file in the `uploads` table.
       class UntrackedFile < ActiveRecord::Base # rubocop:disable Metrics/ClassLength, Metrics/LineLength
         self.table_name = 'untracked_files_for_uploads'
+
+        include PopulateUntrackedUploadsDependencies
 
         # Ends with /:random_hex/:filename
         FILE_UPLOADER_PATH = %r{/\h+/[^/]+\z}
@@ -147,11 +151,6 @@ module Gitlab
         end
       end
 
-      # This class is used to query the `uploads` table.
-      class Upload < ActiveRecord::Base
-        self.table_name = 'uploads'
-      end
-
       def perform(start_id, end_id)
         return unless migrate?
 
@@ -229,7 +228,7 @@ module Gitlab
         end
 
         ids.each do |model_type, model_ids|
-          model_class = Object.const_get(model_type)
+          model_class = self.class.const_get(model_type)
           found_ids = model_class.where(id: model_ids.uniq).pluck(:id)
           deleted_ids = ids[model_type] - found_ids
           ids[model_type] = deleted_ids
