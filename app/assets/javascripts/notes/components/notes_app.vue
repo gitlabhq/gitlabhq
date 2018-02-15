@@ -47,7 +47,7 @@
     },
     computed: {
       ...mapGetters([
-        'notes',
+        'collapsedNotes',
         'getNotesDataByProp',
         'discussionCount',
       ]),
@@ -163,7 +163,7 @@
       class="notes main-notes-list timeline">
 
       <component
-        v-for="note in allNotes"
+        v-for="note in notes"
         :is="getComponentName(note)"
         :note="getComponentData(note)"
         :key="note.id"

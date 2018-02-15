@@ -1,6 +1,10 @@
 import _ from 'underscore';
+import collapseSystemNotes from './collapse_utils';
 
 export const notes = state => state.notes;
+
+export const collapsedNotes = state => collapseSystemNotes(state.notes);
+
 export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;
