@@ -180,6 +180,11 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
+        case 'projects:boards:index':
+          import('./pages/projects/boards')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:issues:new':
           import('./pages/projects/issues/new')
             .then(callDefault)
