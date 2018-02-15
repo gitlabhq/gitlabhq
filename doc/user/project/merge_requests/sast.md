@@ -34,6 +34,9 @@ The following languages and frameworks are supported.
 | Java ([Maven](http://maven.apache.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | PHP ([Composer](https://getcomposer.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
+Some security scanners require to send a list of project dependencies to GitLab central servers to check for vulnerabilities. To learn more about this or to disable it please
+check [GitLab SAST documentation](https://gitlab.com/gitlab-org/security-products/sast#remote-checks).
+
 ## How it works
 
 First of all, you need to define a job named `sast` in your `.gitlab-ci.yml`

@@ -45,7 +45,9 @@ sast:
         # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
         SAST_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
-        docker run --volume "$PWD:/code" \
+        docker run --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}" \
+                   --env SAST_DISABLE_REMOTE_CHECKS="${SAST_DISABLE_REMOTE_CHECKS:-false}" \
+                   --volume "$PWD:/code" \
                    --volume /var/run/docker.sock:/var/run/docker.sock \
                    "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
         ;;
