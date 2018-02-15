@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180202111106_remove_project_labels_group_id.rb')
 
-describe RemoveProjectLabelsGroupId, :delete do
+describe RemoveProjectLabelsGroupId, :migration do
   let(:migration) { described_class.new }
   let(:group) { create(:group) }
   let!(:project_label) { create(:label, group_id: group.id) }
