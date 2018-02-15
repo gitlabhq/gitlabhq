@@ -11,6 +11,7 @@ module Members
 
       Member.transaction do
         unassign_issues_and_merge_requests(member) unless member.invite?
+        member.notification_setting&.destroy
 
         member.destroy
       end

@@ -26,17 +26,24 @@ Dir["#{Rails.root}/features/steps/shared/*.rb"].each { |file| require file }
 Spinach.hooks.before_run do
   include RSpec::Mocks::ExampleMethods
   include ActiveJob::TestHelper
+  include FactoryBot::Syntax::Methods
+  include GitlabRoutingHelper
+
   RSpec::Mocks.setup
   TestEnv.init(mailer: false)
+
+  # EE-specific START
+  FactoryBot.definition_file_paths = [
+    Rails.root.join('ee', 'spec', 'factories')
+  ]
+  FactoryBot.find_definitions
   License.destroy_all
   TestLicense.init
+  # EE-specific END
 
   # skip pre-receive hook check so we can use
   # web editor and merge
   TestEnv.disable_pre_receive
-
-  include FactoryBot::Syntax::Methods
-  include GitlabRoutingHelper
 end
 
 Spinach.hooks.after_scenario do |scenario_data, step_definitions|

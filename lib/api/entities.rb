@@ -311,6 +311,10 @@ module API
       expose :project_id
     end
 
+    class BasicRef < Grape::Entity
+      expose :type, :name
+    end
+
     class Branch < Grape::Entity
       expose :name
 

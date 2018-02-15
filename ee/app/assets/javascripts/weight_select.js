@@ -20,30 +20,6 @@ function WeightSelect(els, options = {}) {
       inputField.val(options.selected);
     }
 
-    updateWeight = function(selected) {
-      var data;
-      data = {};
-      data[abilityName] = {};
-      data[abilityName].weight = selected != null ? selected : null;
-      $loading.fadeIn();
-      $dropdown.trigger('loading.gl.dropdown');
-      return $.ajax({
-        type: 'PUT',
-        dataType: 'json',
-        url: updateUrl,
-        data: data
-      }).done(function(data) {
-        $dropdown.trigger('loaded.gl.dropdown');
-        $loading.fadeOut();
-        $selectbox.hide();
-        if (data.weight != null) {
-          $value.html(`<strong>${data.weight}</strong>`);
-        } else {
-          $value.html('<span class="no-value">None</span>');
-        }
-        return $sidebarCollapsedValue.html(data.weight);
-      });
-    };
     return $dropdown.glDropdown({
       selectable: true,
       fieldName,
@@ -70,13 +46,8 @@ function WeightSelect(els, options = {}) {
           e.preventDefault();
           selected = inputField.val();
           options.handleClick(selected);
-        } else if ($(dropdown).is(".js-filter-submit")) {
-          return $(dropdown).parents('form').submit();
         } else if ($dropdown.is('.js-issuable-form-weight')) {
           e.preventDefault();
-        } else {
-          selected = inputField.val();
-          return updateWeight(selected);
         }
       }
     });

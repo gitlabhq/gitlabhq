@@ -18,8 +18,9 @@ describe Gitlab::GitAccess do
                 redirected_path: redirected_path)
   end
 
-  let(:push_access_check) { access.check('git-receive-pack', '_any') }
-  let(:pull_access_check) { access.check('git-upload-pack', '_any') }
+  let(:changes) { '_any' }
+  let(:push_access_check) { access.check('git-receive-pack', changes) }
+  let(:pull_access_check) { access.check('git-upload-pack', changes) }
 
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
@@ -643,6 +644,20 @@ describe Gitlab::GitAccess do
           it { expect { pull_access_check }.not_to raise_error }
         end
       end
+    end
+  end
+
+  describe 'check LFS integrity' do
+    let(:changes) { ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature'] }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it 'checks LFS integrity only for first change' do
+      expect_any_instance_of(Gitlab::Checks::LfsIntegrity).to receive(:objects_missing?).exactly(1).times
+
+      push_access_check
     end
   end
 

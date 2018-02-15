@@ -1,12 +1,13 @@
 <script>
   import { s__ } from '~/locale';
-  import { spriteIcon } from '~/lib/utils/common_utils';
-  import expandButton from '~/vue_shared/components/expand_button.vue';
+  import Icon from '~/vue_shared/components/icon.vue';
+  import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
   export default {
     name: 'ModalDast',
     components: {
-      expandButton,
+      ExpandButton,
+      Icon,
     },
     props: {
       title: {
@@ -27,13 +28,10 @@
       instances: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
     },
     computed: {
-      cutIcon() {
-        return spriteIcon('cut');
-      },
       instancesLabel() {
         return s__('ciReport|Instances');
       },
@@ -54,7 +52,7 @@
     role="dialog"
   >
     <div
-      class="modal-dialog"
+      class="modal-dialog modal-lg"
       role="document"
     >
       <div class="modal-content">
@@ -83,18 +81,21 @@
             <li
               v-for="(instance, i) in instances"
               :key="i"
-              class="failed"
+              class="mr-widget-code-quality-list-item-modal failed"
             >
-              <span
+              <icon
                 class="mr-widget-code-quality-icon"
-                v-html="cutIcon"
-              >
-              </span>
+                name="status_failed_borderless"
+                :size="32"
+              />
+
               {{ instance.method }}
+
               <a
                 :href="instance.uri"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
+                class="prepend-left-5"
               >
                 {{ instance.uri }}
               </a>
