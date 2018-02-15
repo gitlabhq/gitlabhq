@@ -5,6 +5,14 @@ describe Gitlab::LDAP::Config do
 
   let(:config) { described_class.new('ldapmain') }
 
+  describe '.servers' do
+    it 'returns empty array if no server information is available' do
+      allow(Gitlab.config).to receive(:ldap).and_return('enabled' => false)
+
+      expect(described_class.servers).to eq []
+    end
+  end
+
   describe '#initialize' do
     it 'requires a provider' do
       expect { described_class.new }.to raise_error ArgumentError
