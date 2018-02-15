@@ -329,7 +329,7 @@ module BlobHelper
 
   def edit_modify_file_fork_params(action)
     {
-        to: request.full_path,
+        to: request.fullpath,
         notice: edit_in_new_fork_notice_action(action),
         notice_now: edit_in_new_fork_notice_now
     }
