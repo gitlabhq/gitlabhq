@@ -23,8 +23,9 @@
               %h3.text-center
                 Users:
                 = number_with_delimiter(User.count)
+            .text-center
+              = link_to 'Users statistics', admin_dashboard_stats_path
             %hr
-            = render "admin/dashboard/roles_stats"
             = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
         .info-well.dark-well
