@@ -939,6 +939,10 @@ module Gitlab
         nil
       end
 
+      def update_branch(user, branch_name, newrev, oldrev)
+        Gitlab::Git::OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+      end
+
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,

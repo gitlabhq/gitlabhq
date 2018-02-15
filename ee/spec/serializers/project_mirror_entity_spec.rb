@@ -20,6 +20,8 @@ describe ProjectMirrorEntity do
           username_only_import_url: project.username_only_import_url,
           mirror_user_id: project.mirror_user_id,
           mirror_trigger_builds: project.mirror_trigger_builds,
+          only_mirror_protected_branches: project.only_mirror_protected_branches,
+          mirror_overwrites_diverged_branches: project.mirror_overwrites_diverged_branches,
           import_data_attributes: {
             id: import_data.id,
             auth_method: 'password',
@@ -48,6 +50,8 @@ describe ProjectMirrorEntity do
           username_only_import_url: project.username_only_import_url,
           mirror_user_id: project.mirror_user_id,
           mirror_trigger_builds: project.mirror_trigger_builds,
+          only_mirror_protected_branches: project.only_mirror_protected_branches,
+          mirror_overwrites_diverged_branches: project.mirror_overwrites_diverged_branches,
           import_data_attributes: {
             id: import_data.id,
             auth_method: 'ssh_public_key',
@@ -75,6 +79,8 @@ describe ProjectMirrorEntity do
         username_only_import_url: nil,
         mirror_user_id: nil,
         mirror_trigger_builds: false,
+        only_mirror_protected_branches: true,
+        mirror_overwrites_diverged_branches: nil,
         import_data_attributes: nil,
         remote_mirrors_attributes: [
           {
