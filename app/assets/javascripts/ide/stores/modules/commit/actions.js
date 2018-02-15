@@ -101,7 +101,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
 
   commit(types.UPDATE_LOADING, true);
 
-  getCommitStatus.then(branchChanged => new Promise((resolve) => {
+  return getCommitStatus.then(branchChanged => new Promise((resolve) => {
     if (branchChanged) {
       // show the modal with a Bootstrap call
       $('#ide-create-branch-modal').modal('show');

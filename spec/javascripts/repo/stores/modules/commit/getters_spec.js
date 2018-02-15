@@ -1,4 +1,5 @@
 import commitState from '~/ide/stores/modules/commit/state';
+import * as consts from '~/ide/stores/modules/commit/constants';
 import * as getters from '~/ide/stores/modules/commit/getters';
 
 describe('IDE commit module getters', () => {
@@ -29,7 +30,35 @@ describe('IDE commit module getters', () => {
   });
 
   describe('commitButtonDisabled', () => {
+    const localGetters = {
+      discardDraftButtonDisabled: false,
+    };
+    const rootState = {
+      changedFiles: ['a'],
+    };
 
+    it('returns false when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
+      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeFalsy();
+    });
+
+    it('returns true when discardDraftButtonDisabled is false & changedFiles is empty', () => {
+      rootState.changedFiles.length = 0;
+
+      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeTruthy();
+    });
+
+    it('returns true when discardDraftButtonDisabled is true', () => {
+      localGetters.discardDraftButtonDisabled = true;
+
+      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeTruthy();
+    });
+
+    it('returns true when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
+      localGetters.discardDraftButtonDisabled = false;
+      rootState.changedFiles.length = 0;
+
+      expect(getters.commitButtonDisabled(state, localGetters, rootState)).toBeTruthy();
+    });
   });
 
   describe('newBranchName', () => {
@@ -43,6 +72,43 @@ describe('IDE commit module getters', () => {
   });
 
   describe('branchName', () => {
+    const rootState = {
+      currentBranchId: 'master',
+    };
+    const localGetters = {
+      newBranchName: 'newBranchName',
+    };
 
+    beforeEach(() => {
+      Object.assign(state, {
+        newBranchName: 'state-newBranchName',
+      });
+    });
+
+    it('defualts to currentBranchId', () => {
+      expect(getters.branchName(state, null, rootState)).toBe('master');
+    });
+
+    ['COMMIT_TO_NEW_BRANCH', 'COMMIT_TO_NEW_BRANCH_MR'].forEach((type) => {
+      describe(type, () => {
+        beforeEach(() => {
+          Object.assign(state, {
+            commitAction: consts[type],
+          });
+        });
+
+        it('uses newBranchName when not empty', () => {
+          expect(getters.branchName(state, localGetters, rootState)).toBe('state-newBranchName');
+        });
+
+        it('uses getters newBranchName when state newBranchName is empty', () => {
+          Object.assign(state, {
+            newBranchName: '',
+          });
+
+          expect(getters.branchName(state, localGetters, rootState)).toBe('newBranchName');
+        });
+      });
+    });
   });
 });
