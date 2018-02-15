@@ -1,19 +1,19 @@
 import Vue from 'vue';
-import mrWidgetCodeQualityIssues from 'ee/vue_merge_request_widget/components/mr_widget_report_issues.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import reportIssues from 'ee/vue_shared/components/security_reports/report_issues.vue';
+import mountComponent from '../../../helpers/vue_mount_component_helper';
 import {
   securityParsedIssues,
   codequalityParsedIssues,
   dockerReportParsed,
   parsedDast,
-} from '../mock_data';
+} from '../../../vue_mr_widget/mock_data';
 
-describe('merge request report issues', () => {
+describe('Report issues', () => {
   let vm;
-  let MRWidgetCodeQualityIssues;
+  let ReportIssues;
 
   beforeEach(() => {
-    MRWidgetCodeQualityIssues = Vue.extend(mrWidgetCodeQualityIssues);
+    ReportIssues = Vue.extend(reportIssues);
   });
 
   afterEach(() => {
@@ -23,7 +23,7 @@ describe('merge request report issues', () => {
   describe('for codequality issues', () => {
     describe('resolved issues', () => {
       beforeEach(() => {
-        vm = mountComponent(MRWidgetCodeQualityIssues, {
+        vm = mountComponent(ReportIssues, {
           issues: codequalityParsedIssues,
           type: 'codequality',
           status: 'success',
@@ -44,7 +44,7 @@ describe('merge request report issues', () => {
 
     describe('unresolved issues', () => {
       beforeEach(() => {
-        vm = mountComponent(MRWidgetCodeQualityIssues, {
+        vm = mountComponent(ReportIssues, {
           issues: codequalityParsedIssues,
           type: 'codequality',
           status: 'failed',
@@ -63,7 +63,7 @@ describe('merge request report issues', () => {
 
   describe('for security issues', () => {
     beforeEach(() => {
-      vm = mountComponent(MRWidgetCodeQualityIssues, {
+      vm = mountComponent(ReportIssues, {
         issues: securityParsedIssues,
         type: 'security',
         status: 'failed',
@@ -82,7 +82,7 @@ describe('merge request report issues', () => {
 
   describe('with location', () => {
     it('should render location', () => {
-      vm = mountComponent(MRWidgetCodeQualityIssues, {
+      vm = mountComponent(ReportIssues, {
         issues: securityParsedIssues,
         type: 'security',
         status: 'failed',
@@ -95,7 +95,7 @@ describe('merge request report issues', () => {
 
   describe('without location', () => {
     it('should not render location', () => {
-      vm = mountComponent(MRWidgetCodeQualityIssues, {
+      vm = mountComponent(ReportIssues, {
         issues: [{
           name: 'foo',
         }],
@@ -110,7 +110,7 @@ describe('merge request report issues', () => {
 
   describe('for docker issues', () => {
     beforeEach(() => {
-      vm = mountComponent(MRWidgetCodeQualityIssues, {
+      vm = mountComponent(ReportIssues, {
         issues: dockerReportParsed.unapproved,
         type: 'docker',
         status: 'failed',
@@ -145,7 +145,7 @@ describe('merge request report issues', () => {
 
   describe('for dast issues', () => {
     beforeEach(() => {
-      vm = mountComponent(MRWidgetCodeQualityIssues, {
+      vm = mountComponent(ReportIssues, {
         issues: parsedDast,
         type: 'dast',
         status: 'failed',

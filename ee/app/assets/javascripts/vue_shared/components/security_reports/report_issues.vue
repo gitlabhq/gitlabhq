@@ -1,7 +1,7 @@
 <script>
   import { s__ } from '~/locale';
-  import icon from '~/vue_shared/components/icon.vue';
-  import modal from './mr_widget_dast_modal.vue';
+  import Icon from '~/vue_shared/components/icon.vue';
+  import Modal from './dast_modal.vue';
 
   const modalDefaultData = {
     modalId: 'modal-mrwidget-issue',
@@ -12,10 +12,10 @@
   };
 
   export default {
-    name: 'MrWidgetReportIssues',
+    name: 'ReportIssues',
     components: {
-      modal,
-      icon,
+      Modal,
+      Icon,
     },
     props: {
       issues: {

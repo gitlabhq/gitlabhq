@@ -2,14 +2,14 @@ import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
-import collapsibleSection from './components/mr_widget_report_collapsible_section.vue';
+import CollapsibleSection from '../vue_shared/components/security_reports/report_collapsible_section.vue';
 
 export default {
   extends: CEWidgetOptions,
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
-    collapsibleSection,
+    CollapsibleSection,
   },
   data() {
     return {

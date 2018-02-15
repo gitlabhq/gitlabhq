@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import mrWidgetCodeQuality from 'ee/vue_merge_request_widget/components/mr_widget_report_collapsible_section.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
-import { codequalityParsedIssues } from '../mock_data';
+import reportCollapsibleSection from 'ee/vue_shared/components/security_reports/report_collapsible_section.vue';
+import mountComponent from '../../../helpers/vue_mount_component_helper';
+import { codequalityParsedIssues } from '../../../vue_mr_widget/mock_data';
 
-describe('Merge Request collapsible section', () => {
+describe('Report Collapsible section', () => {
   let vm;
-  let MRWidgetCodeQuality;
+  let ReportCollapsibleSection;
 
   beforeEach(() => {
-    MRWidgetCodeQuality = Vue.extend(mrWidgetCodeQuality);
+    ReportCollapsibleSection = Vue.extend(reportCollapsibleSection);
   });
 
   afterEach(() => {
@@ -17,7 +17,7 @@ describe('Merge Request collapsible section', () => {
 
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
-      vm = mountComponent(MRWidgetCodeQuality, {
+      vm = mountComponent(ReportCollapsibleSection, {
         type: 'codequality',
         status: 'loading',
         loadingText: 'Loading codeclimate report',
@@ -30,7 +30,7 @@ describe('Merge Request collapsible section', () => {
 
   describe('with success status', () => {
     it('should render provided data', () => {
-      vm = mountComponent(MRWidgetCodeQuality, {
+      vm = mountComponent(ReportCollapsibleSection, {
         type: 'codequality',
         status: 'success',
         loadingText: 'Loading codeclimate report',
@@ -50,7 +50,7 @@ describe('Merge Request collapsible section', () => {
 
     describe('toggleCollapsed', () => {
       it('toggles issues', (done) => {
-        vm = mountComponent(MRWidgetCodeQuality, {
+        vm = mountComponent(ReportCollapsibleSection, {
           type: 'codequality',
           status: 'success',
           loadingText: 'Loading codeclimate report',
@@ -88,7 +88,7 @@ describe('Merge Request collapsible section', () => {
 
   describe('with failed request', () => {
     it('should render error indicator', () => {
-      vm = mountComponent(MRWidgetCodeQuality, {
+      vm = mountComponent(ReportCollapsibleSection, {
         type: 'codequality',
         status: 'error',
         loadingText: 'Loading codeclimate report',
@@ -101,7 +101,7 @@ describe('Merge Request collapsible section', () => {
 
   describe('With full report', () => {
     beforeEach(() => {
-      vm = mountComponent(MRWidgetCodeQuality, {
+      vm = mountComponent(ReportCollapsibleSection, {
         status: 'success',
         successText: 'SAST improved on 1 security vulnerability and degraded on 1 security vulnerability',
         type: 'security',

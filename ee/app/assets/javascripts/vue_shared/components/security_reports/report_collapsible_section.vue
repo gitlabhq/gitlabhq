@@ -1,15 +1,15 @@
 <script>
   import { __ } from '~/locale';
-  import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import issuesBlock from './mr_widget_report_issues.vue';
+  import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+  import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import IssuesBlock from './report_issues.vue';
 
   export default {
-    name: 'MRWidgetCodeQualityCollapsible',
+    name: 'ReportCollapsibleSection',
     components: {
-      issuesBlock,
-      loadingIcon,
-      statusIcon,
+      IssuesBlock,
+      LoadingIcon,
+      StatusIcon,
     },
     props: {
       // security | codequality | performance | docker
@@ -37,22 +37,22 @@
       unresolvedIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       resolvedIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       neutralIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       allIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       infoText: {
         type: [String, Boolean],
