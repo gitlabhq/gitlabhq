@@ -8,7 +8,7 @@ module EpicsHelper
         name: author.name,
         url: user_path(author),
         username: "@#{author.username}",
-        src: avatar_icon(@epic.author)
+        src: avatar_icon_for_user(@epic.author)
       },
       start_date: @epic.start_date,
       end_date: @epic.end_date

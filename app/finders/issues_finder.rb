@@ -21,7 +21,7 @@ class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
 
   def klass
-    Issue
+    Issue.includes(:author)
   end
 
   def with_confidentiality_access_check
