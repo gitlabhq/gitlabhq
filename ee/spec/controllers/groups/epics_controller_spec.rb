@@ -141,7 +141,7 @@ describe Groups::EpicsController do
           show_epic(:json)
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('entities/epic')
+          expect(response).to match_response_schema('entities/epic', dir: 'ee')
         end
 
         context 'with unauthorized user' do

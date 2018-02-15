@@ -18,11 +18,11 @@ module Gitlab
         lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
       }.freeze
 
-      attr_reader :user_access, :project, :skip_authorization, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
+      attr_reader :user_access, :project, :skip_authorization, :skip_lfs_integrity_check, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
 
       def initialize(
         change, user_access:, project:, skip_authorization: false,
-        protocol:
+        skip_lfs_integrity_check: false, protocol:
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
@@ -30,6 +30,7 @@ module Gitlab
         @user_access = user_access
         @project = project
         @skip_authorization = skip_authorization
+        @skip_lfs_integrity_check = skip_lfs_integrity_check
         @protocol = protocol
       end
 
@@ -39,7 +40,7 @@ module Gitlab
         push_checks
         branch_checks
         tag_checks
-        lfs_objects_exist_check
+        lfs_objects_exist_check unless skip_lfs_integrity_check
         commits_check unless skip_commits_check
 
         true

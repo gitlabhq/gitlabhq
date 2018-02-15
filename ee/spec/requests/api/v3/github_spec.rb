@@ -56,7 +56,7 @@ describe API::V3::Github do
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(2)
 
-        expect(response).to match_response_schema('entities/github/repositories')
+        expect(response).to match_response_schema('entities/github/repositories', dir: 'ee')
       end
 
       it 'returns valid project path as name' do
@@ -104,7 +104,7 @@ describe API::V3::Github do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
 
-        expect(response).to match_response_schema('entities/github/branches')
+        expect(response).to match_response_schema('entities/github/branches', dir: 'ee')
       end
     end
 
@@ -142,7 +142,7 @@ describe API::V3::Github do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('entities/github/commit')
+        expect(response).to match_response_schema('entities/github/commit', dir: 'ee')
       end
     end
 
