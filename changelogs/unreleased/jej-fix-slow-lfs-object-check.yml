@@ -1,0 +1,5 @@
+---
+title: Only check LFS integrity for first ref in a push to avoid timeout
+merge_request: 17098
+author:
+type: performance
