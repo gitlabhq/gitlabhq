@@ -805,8 +805,17 @@
       margin: 0;
       line-height: $code_line_height;
 
+      .btn-open-modal {
+        padding: 0 5px 4px;
+      }
+
       .mr-widget-code-quality-list-item {
         display: flex;
+      }
+
+      .mr-widget-code-quality-list-item-modal {
+        display: flex;
+        flex-wrap: wrap;
       }
 
       .failed .mr-widget-code-quality-icon {
