@@ -712,6 +712,10 @@ describe Gitlab::OAuth::User do
       it "does not update the user location" do
         expect(gl_user.location).not_to eq(info_hash[:address][:country])
       end
+
+      it 'does not create associated user synced attributes metadata' do
+        expect(gl_user.user_synced_attributes_metadata).to be_nil
+      end
     end
   end
 
