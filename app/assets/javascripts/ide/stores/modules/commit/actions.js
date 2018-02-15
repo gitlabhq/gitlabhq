@@ -1,6 +1,7 @@
 import * as types from './mutation_types';
 import * as consts from './constants';
 import * as rootTypes from '../../mutation_types';
+import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import router from '../../../ide_router';
 import service from '../../../services';
 import flash from '../../../../flash';
@@ -23,6 +24,16 @@ export const updateBranchName = ({ commit }, branchName) => {
   commit(types.UPDATE_NEW_BRANCH_NAME, branchName);
 };
 
+export const setLastCommitMessage = ({ commit }, data) => {
+  let commitMsg = `Your changes have been committed. Commit ${data.short_id}`;
+
+  if (data.stats) {
+    commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
+  }
+
+  commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
+};
+
 export const checkCommitStatus = ({ rootState }) =>
   service
     .getBranchData(rootState.currentProjectId, rootState.currentBranchId)
@@ -41,7 +52,7 @@ export const checkCommitStatus = ({ rootState }) =>
 
 export const updateFilesAfterCommit = (
   { commit, dispatch, state, rootState, rootGetters },
-  { data },
+  { data, branch },
 ) => {
   const selectedProject = rootState.projects[rootState.currentProjectId];
   const lastCommit = {
@@ -82,27 +93,15 @@ export const updateFilesAfterCommit = (
   commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
 
   if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
-    router.push(`/project/${rootState.currentProjectId}/blob/branch/${rootGetters.activeFile.path}`);
+    router.push(`/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`);
   }
-
-  window.scrollTo(0, 0);
 
   dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
 };
 
 export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = {
-    branch: getters.branchName,
-    commit_message: state.commitMessage,
-    actions: rootState.changedFiles.map(f => ({
-      action: f.tempFile ? 'create' : 'update',
-      file_path: f.path,
-      content: f.content,
-      encoding: f.base64 ? 'base64' : 'text',
-    })),
-    start_branch: newBranch ? rootState.currentBranchId : undefined,
-  };
+  const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
   const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
 
   commit(types.UPDATE_LOADING, true);
@@ -117,8 +116,6 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
   }))
   .then(() => service.commit(rootState.currentProjectId, payload))
   .then(({ data }) => {
-    const { branch } = payload;
-
     commit(types.UPDATE_LOADING, false);
 
     if (!data.short_id) {
@@ -126,24 +123,20 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
       return;
     }
 
-    let commitMsg = `Your changes have been committed. Commit ${data.short_id}`;
-
-    if (data.stats) {
-      commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
-    }
-
-    commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
+    dispatch('setLastCommitMessage', data);
 
     if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
-      const selectedProject = rootState.projects[rootState.currentProjectId];
-
       dispatch(
         'redirectToUrl',
-        `${selectedProject.web_url}/merge_requests/new?merge_request[source_branch]=${branch}&merge_request[target_branch]=${rootState.currentBranchId}`,
+        createNewMergeRequestUrl(
+          rootState.projects[rootState.currentProjectId].web_url,
+          getters.branchName,
+          rootState.currentBranchId,
+        ),
         { root: true },
       );
     } else {
-      dispatch('updateFilesAfterCommit', { data, branch });
+      dispatch('updateFilesAfterCommit', { data, branch: getters.branchName });
     }
   })
   .catch((err) => {
@@ -153,5 +146,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
     }
     flash(errMsg, 'alert', document, null, false, true);
     window.dispatchEvent(new Event('resize'));
+
+    commit(types.UPDATE_LOADING, false);
   });
 };

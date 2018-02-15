@@ -133,7 +133,7 @@ export default {
             :disabled="discardDraftButtonDisabled"
             @click="discardDraft"
           >
-            Discard draft
+            {{ __('Discard draft') }}
           </button>
         </div>
       </form>
