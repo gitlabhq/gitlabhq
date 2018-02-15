@@ -68,7 +68,6 @@ var config = {
     help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
-    integrations:         './integrations',
     job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
