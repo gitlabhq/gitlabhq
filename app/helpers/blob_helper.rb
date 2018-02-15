@@ -16,7 +16,7 @@ module BlobHelper
                            options[:link_opts])
   end
 
-  def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
+  def edit_blob_element(project = @project, ref = @ref, path = @path, options = {})
     return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
@@ -24,11 +24,15 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       edit_button_tag(edit_text, common_classes)
     # This condition applies to anonymous or users who can edit directly
-    elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
+    elsif !current_user || user_can_modify_blob(blob, project, ref)
       edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
-    elsif current_user && can?(current_user, :fork_project, project)
+    elsif user_can_fork_project(project)
       edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project)
     end
+  end
+
+  def user_can_fork_project(project)
+    current_user && can?(current_user, :fork_project, project)
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
@@ -43,7 +47,7 @@ module BlobHelper
     _('Web IDE')
   end
 
-  def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
+  def ide_edit_element(project = @project, ref = @ref, path = @path, options = {})
     return unless show_new_ide?
     return unless blob = readable_blob(options, path, project, ref)
 
@@ -53,14 +57,18 @@ module BlobHelper
       edit_button_tag(ide_edit_text, common_classes)
     # This condition only applies to users who are logged in
     # Web IDE (Beta) requires the user to have this feature enabled
-    elsif current_user && can_modify_blob?(blob, project, ref)
+    elsif user_can_modify_blob(blob, project, ref)
       edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
-    elsif current_user && can?(current_user, :fork_project, project)
+    elsif user_can_fork_project(project)
       edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project)
     end
   end
 
-  def modify_file_link(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
+  def user_can_modify_blob(blob, project, ref)
+    current_user && can_modify_blob?(blob, project, ref)
+  end
+
+  def modify_file_element(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
     return unless current_user
 
     blob = project.repository.blob_at(ref, path) rescue nil
@@ -81,7 +89,7 @@ module BlobHelper
   end
 
   def replace_blob_link(project = @project, ref = @ref, path = @path)
-    modify_file_link(
+    modify_file_element(
       project,
       ref,
       path,
@@ -93,7 +101,7 @@ module BlobHelper
   end
 
   def delete_blob_link(project = @project, ref = @ref, path = @path)
-    modify_file_link(
+    modify_file_element(
       project,
       ref,
       path,
