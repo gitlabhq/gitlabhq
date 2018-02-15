@@ -11,7 +11,7 @@
     %div
       = link_to project_commits_path(@project, commit.id) do
         %code= commit.short_id
-      = image_tag avatar_icon(commit.author_email), class: "", width: 16, alt: ''
+      = image_tag avatar_icon_for_email(commit.author_email), class: "", width: 16, alt: ''
       = markdown(truncate(commit.title, length: 40), pipeline: :single_line, author: commit.author)
   %td
     %span.pull-right.cgray

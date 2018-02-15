@@ -3,6 +3,7 @@ require_dependency 'declarative_policy'
 module API
   class Projects < Grape::API
     include PaginationParams
+    include Helpers::CustomAttributes
 
     before { authenticate_non_get! }
 
@@ -80,6 +81,7 @@ module API
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = projects.with_statistics if params[:statistics]
         projects = paginate(projects)
+        projects, options = with_custom_attributes(projects, options)
 
         if current_user
           project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
@@ -107,6 +109,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":user_id/projects" do
         user = find_user(params[:user_id])
@@ -127,6 +130,7 @@ module API
       params do
         use :collection_params
         use :statistics_params
+        use :with_custom_attributes
       end
       get do
         present_projects load_projects
@@ -196,11 +200,19 @@ module API
       end
       params do
         use :statistics_params
+        use :with_custom_attributes
       end
       get ":id" do
-        entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present user_project, with: entity, current_user: current_user,
-                              user_can_admin_project: can?(current_user, :admin_project, user_project), statistics: params[:statistics]
+        options = {
+          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+          current_user: current_user,
+          user_can_admin_project: can?(current_user, :admin_project, user_project),
+          statistics: params[:statistics]
+        }
+
+        project, options = with_custom_attributes(user_project, options)
+
+        present project, options
       end
 
       desc 'Fork new project for the current user or provided namespace.' do
@@ -242,6 +254,7 @@ module API
       end
       params do
         use :collection_params
+        use :with_custom_attributes
       end
       get ':id/forks' do
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute

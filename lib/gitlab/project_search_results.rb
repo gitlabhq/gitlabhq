@@ -41,7 +41,7 @@ module Gitlab
       @commits_count ||= commits.count
     end
 
-    def self.parse_search_result(result)
+    def self.parse_search_result(result, project = nil)
       ref = nil
       filename = nil
       basename = nil
@@ -66,7 +66,8 @@ module Gitlab
         basename: basename,
         ref: ref,
         startline: startline,
-        data: data
+        data: data,
+        project_id: project ? project.id : nil
       )
     end
 

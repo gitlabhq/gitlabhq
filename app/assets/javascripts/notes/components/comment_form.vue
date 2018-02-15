@@ -2,16 +2,18 @@
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
+  import { __ } from '~/locale';
   import Flash from '../../flash';
   import Autosave from '../../autosave';
   import TaskList from '../../task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
-  import noteSignedOutWidget from './note_signed_out_widget.vue';
-  import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import loadingButton from '../../vue_shared/components/loading_button.vue';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
+  import discussionLockedWidget from './discussion_locked_widget.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
@@ -22,6 +24,7 @@
       discussionLockedWidget,
       markdownField,
       userAvatarLink,
+      loadingButton,
     },
     mixins: [
       issuableStateMixin,
@@ -30,9 +33,6 @@
       return {
         note: '',
         noteType: constants.COMMENT,
-        // Can't use mapGetters,
-        // this needs to be in the data object because it belongs to the state
-        issueState: this.$store.getters.getNoteableData.state,
         isSubmitting: false,
         isSubmitButtonDisabled: true,
       };
@@ -43,6 +43,7 @@
         'getUserData',
         'getNoteableData',
         'getNotesData',
+        'issueState',
       ]),
       isLoggedIn() {
         return this.getUserData.id;
@@ -105,7 +106,7 @@
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
       $(document).on('issuable:change', (e, isClosed) => {
-        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+        this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
       });
 
       this.initAutoSave();
@@ -117,6 +118,9 @@
         'stopPolling',
         'restartPolling',
         'removePlaceholderNotes',
+        'closeIssue',
+        'reopenIssue',
+        'toggleIssueLocalState',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
         if (!_.isEmpty(note) && !isSubmitting) {
@@ -126,6 +130,8 @@
         }
       },
       handleSave(withIssueAction) {
+        this.isSubmitting = true;
+
         if (this.note.length) {
           const noteData = {
             endpoint: this.endpoint,
@@ -142,7 +148,6 @@
           if (this.noteType === constants.DISCUSSION) {
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
-          this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
           this.resizeTextarea();
           this.stopPolling();
@@ -184,13 +189,25 @@ Please check your network connection and try again.`;
           this.toggleIssueState();
         }
       },
+      enableButton() {
+        this.isSubmitting = false;
+      },
       toggleIssueState() {
-        this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
-
-        // This is out of scope for the Notes Vue component.
-        // It was the shortest path to update the issue state and relevant places.
-        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
-        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
+        if (this.isIssueOpen) {
+          this.closeIssue()
+            .then(() => this.enableButton())
+            .catch(() => {
+              this.enableButton();
+              Flash(__('Something went wrong while closing the issue. Please try again later'));
+            });
+        } else {
+          this.reopenIssue()
+            .then(() => this.enableButton())
+            .catch(() => {
+              this.enableButton();
+              Flash(__('Something went wrong while reopening the issue. Please try again later'));
+            });
+        }
       },
       discard(shouldClear = true) {
         // `blur` is needed to clear slash commands autocomplete cache if event fired.
@@ -367,15 +384,19 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     </li>
                   </ul>
                 </div>
-                <button
-                  type="button"
-                  @click="handleSave(true)"
+
+                <loading-button
                   v-if="canUpdateIssue"
-                  :class="actionButtonClassNames"
+                  :loading="isSubmitting"
+                  @click="handleSave(true)"
+                  :container-class="[
+                    actionButtonClassNames,
+                    'btn btn-comment btn-comment-and-close js-action-button'
+                  ]"
                   :disabled="isSubmitting"
-                  class="btn btn-comment btn-comment-and-close js-action-button">
-                  {{ issueActionButtonTitle }}
-                </button>
+                  :label="issueActionButtonTitle"
+                />
+
                 <button
                   type="button"
                   v-if="note.length"

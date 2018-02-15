@@ -37,41 +37,6 @@ describe Gitlab::SSHPublicKey, lib: true do
     end
   end
 
-  describe '.sanitize(key_content)' do
-    let(:content) { build(:key).key }
-
-    context 'when key has blank space characters' do
-      it 'removes the extra blank space characters' do
-        unsanitized = content.insert(100, "\n")
-          .insert(40, "\r\n")
-          .insert(30, ' ')
-
-        sanitized = described_class.sanitize(unsanitized)
-        _, body = sanitized.split
-
-        expect(sanitized).not_to eq(unsanitized)
-        expect(body).not_to match(/\s/)
-      end
-    end
-
-    context "when key doesn't have blank space characters" do
-      it "doesn't modify the content" do
-        sanitized = described_class.sanitize(content)
-
-        expect(sanitized).to eq(content)
-      end
-    end
-
-    context "when key is invalid" do
-      it 'returns the original content' do
-        unsanitized = "ssh-foo any content=="
-        sanitized = described_class.sanitize(unsanitized)
-
-        expect(sanitized).to eq(unsanitized)
-      end
-    end
-  end
-
   describe '#valid?' do
     subject { public_key }
 

@@ -1,6 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
+# This migration is using UploadService, which sets uploads.secret that is only
+# added to the DB schema in 20180129193323. Since the test isn't isolated, we
+# just use the latest schema when testing this migration.
+# Ideally, the test should not use factories nor UploadService, and rely on the
+# `table` helper instead.
+describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq, :migration, schema: 20180129193323 do
   include TrackUntrackedUploadsHelpers
 
   subject { described_class.new }
@@ -9,14 +14,8 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
   let!(:uploads) { described_class::Upload }
 
   before do
-    DatabaseCleaner.clean
-    drop_temp_table_if_exists
     ensure_temporary_tracking_table_exists
     uploads.delete_all
-  end
-
-  after(:all) do
-    drop_temp_table_if_exists
   end
 
   context 'with untracked files and tracked files in untracked_files_for_uploads' do
@@ -117,9 +116,9 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
     end
 
     it 'drops the temporary tracking table after processing the batch, if there are no untracked rows left' do
-      subject.perform(1, untracked_files_for_uploads.last.id)
+      expect(subject).to receive(:drop_temp_table_if_finished)
 
-      expect(ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads)).to be_falsey
+      subject.perform(1, untracked_files_for_uploads.last.id)
     end
 
     it 'does not block a whole batch because of one bad path' do
@@ -253,10 +252,6 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   before(:all) do
     ensure_temporary_tracking_table_exists
-  end
-
-  after(:all) do
-    drop_temp_table_if_exists
   end
 
   describe '#upload_path' do

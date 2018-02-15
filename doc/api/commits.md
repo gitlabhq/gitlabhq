@@ -198,6 +198,41 @@ Example response:
 }
 ```
 
+## Get references a commit is pushed to
+
+> [Introduced][ce-15026] in GitLab 10.6
+
+Get all references (from branches or tags) a commit is pushed to.
+The pagination parameters `page` and `per_page` can be used to restrict the list of references.
+
+```
+GET /projects/:id/repository/commits/:sha/refs
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha` | string | yes | The commit hash  |
+| `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
+```
+
+Example response:
+
+```json
+[
+  {"type": "branch", "name": "'test'"},
+  {"type": "branch", "name": "add-balsamiq-file"},
+  {"type": "branch", "name": "wip"},
+  {"type": "tag", "name": "v1.1.0"}
+ ]
+
+```
+
 ## Cherry pick a commit
 
 > [Introduced][ce-8047] in GitLab 8.15.
@@ -500,3 +535,4 @@ Example response:
 
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"
 [ce-8047]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8047
+[ce-15026]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15026

@@ -116,6 +116,10 @@ class Commit
     raw.id
   end
 
+  def project_id
+    project.id
+  end
+
   def ==(other)
     other.is_a?(self.class) && raw == other.raw
   end

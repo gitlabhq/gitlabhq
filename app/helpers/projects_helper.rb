@@ -19,7 +19,7 @@ module ProjectsHelper
     classes = %W[avatar avatar-inline s#{opts[:size]}]
     classes << opts[:avatar_class] if opts[:avatar_class]
 
-    avatar = avatar_icon(author, opts[:size])
+    avatar = avatar_icon_for_user(author, opts[:size])
     src = opts[:lazy_load] ? nil : avatar
 
     image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
@@ -294,6 +294,10 @@ module ProjectsHelper
 
     if project.builds_enabled? && can?(current_user, :read_pipeline, project)
       nav_tabs << :pipelines
+    end
+
+    if project.external_issue_tracker
+      nav_tabs << :external_issue_tracker
     end
 
     tab_ability_map.each do |tab, ability|

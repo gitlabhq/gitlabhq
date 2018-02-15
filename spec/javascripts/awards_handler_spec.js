@@ -79,7 +79,7 @@ import '~/lib/utils/common_utils';
           return expect($emojiMenu.length).toBe(1);
         });
       });
-      return it('should remove emoji menu when body is clicked', function(done) {
+      it('should remove emoji menu when body is clicked', function(done) {
         $('.js-add-award').eq(0).click();
         return lazyAssert(done, function() {
           var $emojiMenu;
@@ -88,6 +88,17 @@ import '~/lib/utils/common_utils';
           expect($emojiMenu.length).toBe(1);
           expect($emojiMenu.hasClass('is-visible')).toBe(false);
           return expect($('.js-awards-block.current').length).toBe(0);
+        });
+      });
+      it('should not remove emoji menu when search is clicked', function(done) {
+        $('.js-add-award').eq(0).click();
+        return lazyAssert(done, function() {
+          var $emojiMenu;
+          $emojiMenu = $('.emoji-menu');
+          $('.emoji-search').click();
+          expect($emojiMenu.length).toBe(1);
+          expect($emojiMenu.hasClass('is-visible')).toBe(true);
+          return expect($('.js-awards-block.current').length).toBe(1);
         });
       });
     });

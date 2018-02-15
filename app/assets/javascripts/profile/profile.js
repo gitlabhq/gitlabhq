@@ -33,9 +33,6 @@ import flash from '../flash';
       $('input[name="user[multi_file]"]').on('change', this.setNewRepoCookie);
       $('#user_notification_email').on('change', this.submitForm);
       $('#user_notified_of_own_activity').on('change', this.submitForm);
-      $('.update-username').on('ajax:before', this.beforeUpdateUsername);
-      $('.update-username').on('ajax:complete', this.afterUpdateUsername);
-      $('.update-notifications').on('ajax:success', this.onUpdateNotifs);
       this.form.on('submit', this.onSubmitForm);
     }
 
@@ -46,21 +43,6 @@ import flash from '../flash';
     onSubmitForm(e) {
       e.preventDefault();
       return this.saveForm();
-    }
-
-    beforeUpdateUsername() {
-      $('.loading-username', this).removeClass('hidden');
-    }
-
-    afterUpdateUsername() {
-      $('.loading-username', this).addClass('hidden');
-      $('button[type=submit]', this).enable();
-    }
-
-    onUpdateNotifs(e, data) {
-      return data.saved ?
-        flash(__('Notification settings saved'), 'notice') :
-        flash(__('Failed to save new settings'));
     }
 
     saveForm() {
