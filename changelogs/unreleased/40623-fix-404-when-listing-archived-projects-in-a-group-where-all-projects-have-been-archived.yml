@@ -1,0 +1,4 @@
+title: Fix 404 when listing archived projects in a group where all projects have been archived
+merge_request: 17077
+author: Ashley Dumaine
+type: fixed
