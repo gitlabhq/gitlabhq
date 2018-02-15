@@ -1,8 +1,11 @@
 module Clusters
   module Applications
     class CheckIngressIpAddressService < BaseHelmService
+      LEASE_TIMEOUT = 3.seconds.to_i
+
       def execute(retries_remaining)
         return if app.external_ip
+        return unless try_obtain_lease
 
         service = get_service
 
@@ -17,6 +20,12 @@ module Clusters
       end
 
       private
+
+      def try_obtain_lease
+        Gitlab::ExclusiveLease
+          .new("check_ingress_ip_address_service:#{app.id}", timeout: LEASE_TIMEOUT)
+          .try_obtain
+      end
 
       def resolve_external_ip(service)
         app.update!( external_ip: service.status.loadBalancer.ingress[0].ip)

@@ -16,9 +16,14 @@ describe Clusters::Applications::CheckIngressIpAddressService do
   end
   let(:kubeclient) { double(::Kubeclient::Client, get_service: kube_service) }
   let(:ingress) { [{ ip: '111.222.111.222' }] }
+  let(:exclusive_lease) { instance_double(Gitlab::ExclusiveLease, try_obtain: true) }
 
   before do
     allow(application.cluster).to receive(:kubeclient).and_return(kubeclient)
+    allow(Gitlab::ExclusiveLease)
+      .to receive(:new)
+      .with("check_ingress_ip_address_service:#{application.id}", timeout: 3.seconds.to_i)
+      .and_return(exclusive_lease)
   end
 
   describe '#execute' do
@@ -49,6 +54,20 @@ describe Clusters::Applications::CheckIngressIpAddressService do
 
           service.execute(0)
         end
+      end
+    end
+
+    context 'when the exclusive lease cannot be obtained' do
+      before do
+        allow(exclusive_lease)
+          .to receive(:try_obtain)
+          .and_return(false)
+      end
+
+      it 'does not call kubeclient' do
+        expect(kubeclient).not_to receive(:get_service)
+
+        service.execute(1)
       end
     end
 
