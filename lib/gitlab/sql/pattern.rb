@@ -38,16 +38,14 @@ module Gitlab
           if words.any?
             words.map { |word| arel_table[column].matches(to_pattern(word)) }.reduce(:and)
           else
-            sanitized_query = sanitize_sql_like(query)
-
             # No words of at least 3 chars, but we can search for an exact
             # case insensitive match with the query as a whole
             if lower_exact_match
               Arel::Nodes::NamedFunction
                 .new('LOWER', [arel_table[column]])
-                .eq(sanitized_query)
+                .eq(query)
             else
-              arel_table[column].matches(sanitized_query)
+              arel_table[column].matches(sanitize_sql_like(query))
             end
           end
         end

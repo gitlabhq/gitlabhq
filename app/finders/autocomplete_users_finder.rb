@@ -58,7 +58,7 @@ class AutocompleteUsersFinder
   def users_from_project
     if author_id.present?
       union = Gitlab::SQL::Union
-        .new([project.team.users, User.where(id: author_id)])
+        .new([project.authorized_users, User.where(id: author_id)])
 
       User.from("(#{union.to_sql}) #{User.table_name}")
     else
