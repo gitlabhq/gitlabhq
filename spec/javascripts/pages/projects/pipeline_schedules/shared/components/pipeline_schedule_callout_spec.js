@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
-import PipelineSchedulesCallout from '~/pipeline_schedules/components/pipeline_schedules_callout.vue';
+import PipelineSchedulesCallout from '~/pages/projects/pipeline_schedules/shared/components/pipeline_schedules_callout.vue';
 
 const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 const cookieKey = 'pipeline_schedules_callout_dismissed';

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import IntervalPatternInput from '~/pipeline_schedules/components/interval_pattern_input.vue';
+import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 
 Vue.use(Translate);
 

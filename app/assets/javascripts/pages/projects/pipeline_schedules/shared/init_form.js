@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import Translate from '../vue_shared/translate';
-import GlFieldErrors from '../gl_field_errors';
+import Translate from '../../../../vue_shared/translate';
+import GlFieldErrors from '../../../../gl_field_errors';
 import intervalPatternInput from './components/interval_pattern_input.vue';
 import TimezoneDropdown from './components/timezone_dropdown';
 import TargetBranchDropdown from './components/target_branch_dropdown';
-import setupNativeFormVariableList from '../ci_variable_list/native_form_variable_list';
+import setupNativeFormVariableList from '../../../../ci_variable_list/native_form_variable_list';
 
 Vue.use(Translate);
 
@@ -27,7 +27,7 @@ function initIntervalPatternInput() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+export default () => {
   /* Most of the form is written in haml, but for fields with more complex behaviors,
    * you should mount individual Vue components here. If at some point components need
    * to share state, it may make sense to refactor the whole form to Vue */
@@ -46,4 +46,4 @@ document.addEventListener('DOMContentLoaded', () => {
     container: $('.js-ci-variable-list-section'),
     formField: 'schedule',
   });
-});
+};

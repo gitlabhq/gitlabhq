@@ -105,8 +105,6 @@ var config = {
     ide:                 './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
-    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
-    schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
@@ -173,7 +171,7 @@ var config = {
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               name: '[name].[hash].[ext]'
