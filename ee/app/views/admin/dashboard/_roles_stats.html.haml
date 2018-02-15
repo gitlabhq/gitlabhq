@@ -5,7 +5,7 @@
       = @admin_count
 
 - if @roles_count
-  - @roles_count.reverse_each do |row|
+  - @roles_count.each do |row|
     %p
       Users with highest role
       %strong
