@@ -8,6 +8,7 @@ task setup_postgresql: :environment do
   require Rails.root.join('db/migrate/20170503185032_index_redirect_routes_path_for_like')
   require Rails.root.join('db/migrate/20171220191323_add_index_on_namespaces_lower_name.rb')
   require Rails.root.join('db/migrate/20180113220114_rework_redirect_routes_indexes.rb')
+  require Rails.root.join('db/migrate/20180215181245_users_name_lower_index.rb')
 
   NamespacesProjectsPathLowerIndexes.new.up
   AddUsersLowerUsernameEmailIndexes.new.up
@@ -17,4 +18,5 @@ task setup_postgresql: :environment do
   IndexRedirectRoutesPathForLike.new.up
   AddIndexOnNamespacesLowerName.new.up
   ReworkRedirectRoutesIndexes.new.up
+  UsersNameLowerIndex.new.up
 end
