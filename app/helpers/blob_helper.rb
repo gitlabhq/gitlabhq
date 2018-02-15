@@ -336,7 +336,7 @@ module BlobHelper
     {
         to: request.fullpath,
         notice: edit_in_new_fork_notice_action(action),
-        notice_now: edit_in_new_fork_notice_now,
+        notice_now: edit_in_new_fork_notice_now
     }
   end
 
