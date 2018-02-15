@@ -154,6 +154,12 @@ describe Gitlab::SQL::Pattern do
       it 'returns a single equality condition' do
         expect(fuzzy_arel_match.to_sql).to match(/title.*I?LIKE 'fo'/)
       end
+
+      it 'uses LOWER instead of ILIKE when LOWER is enabled' do
+        rel = Issue.fuzzy_arel_match(:title, query, lower_exact_match: true)
+
+        expect(rel.to_sql).to match(/LOWER\(.*title.*\).*=.*'fo'/)
+      end
     end
 
     context 'with two words both equal to 3 chars' do
