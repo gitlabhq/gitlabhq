@@ -27,7 +27,7 @@ module BlobHelper
     elsif !current_user || user_can_modify_blob(blob, project, ref)
       edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
     elsif user_can_fork_project(project)
-      edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project)
+      edit_fork_button_tag(common_classes, project, edit_text, edit_blob_fork_params(path))
     end
   end
 
@@ -60,7 +60,7 @@ module BlobHelper
     elsif user_can_modify_blob(blob, project, ref)
       edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
     elsif user_can_fork_project(project)
-      edit_blob_fork(common_classes, edit_blob_path(project, ref, path, options), project)
+      edit_fork_button_tag(common_classes, project, ide_edit_text, edit_blob_fork_params(path))
     end
   end
 
@@ -84,7 +84,7 @@ module BlobHelper
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
-      edit_modify_file_fork(action, common_classes, label, project)
+      edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action))
     end
   end
 
@@ -319,30 +319,28 @@ module BlobHelper
     blob if blob&.readable_text?
   end
 
-  def edit_blob_fork(common_classes, path, project)
-    continue_params = {
+  def edit_blob_fork_params(path)
+    {
         to: path,
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
     }
-    fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
+  end
+
+  def edit_modify_file_fork_params(action)
+    {
+        to: request.full_path,
+        notice: edit_in_new_fork_notice_action(action),
+        notice_now: edit_in_new_fork_notice_now
+    }
+  end
+
+  def edit_fork_button_tag(common_classes, project, label, params)
+    fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: params)
 
     button_tag edit_text,
                class: "#{common_classes} js-edit-blob-link-fork-toggler",
                data: { action: 'edit', fork_path: fork_path }
-  end
-
-  def edit_modify_file_fork(action, common_classes, label, project)
-    continue_params = {
-        to: request.fullpath,
-        notice: edit_in_new_fork_notice + " Try to #{action} this file again.",
-        notice_now: edit_in_new_fork_notice_now
-    }
-    fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
-
-    button_tag label,
-               class: "#{common_classes} js-edit-blob-link-fork-toggler",
-               data: { action: action, fork_path: fork_path }
   end
 
   def edit_button_tag(button_text, common_classes)
