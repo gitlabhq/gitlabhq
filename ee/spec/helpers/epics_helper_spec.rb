@@ -13,7 +13,7 @@ describe EpicsHelper do
         'name' => user.name,
         'url' => "/#{user.username}",
         'username' => "@#{user.username}",
-        'src' => "#{avatar_icon(user)}"
+        'src' => "#{avatar_icon_for_user(user)}"
       })
     end
   end
