@@ -26,7 +26,7 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
-  has_many :variables, class_name: 'Ci::GroupVariable', validate: false
+  has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -37,6 +37,7 @@ class Group < Namespace
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
   validates :variables, variable_duplicates: true
+  validates_associated :variables, if: proc { |group| group.errors[:variables].nil? }
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 

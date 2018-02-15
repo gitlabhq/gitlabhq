@@ -210,7 +210,7 @@ class Project < ActiveRecord::Base
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, class_name: 'Ci::Variable', validate: false
+  has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
   has_many :deployments
