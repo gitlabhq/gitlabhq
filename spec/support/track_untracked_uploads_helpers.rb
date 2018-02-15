@@ -71,8 +71,8 @@ module TrackUntrackedUploadsHelpers
     )
   end
 
-  def add_markdown_attachment(project)
-    project_dir = project_uploads_dir(project)
+  def add_markdown_attachment(project, hashed_storage: false)
+    project_dir = hashed_storage ? hashed_project_uploads_dir(project) : legacy_project_uploads_dir(project)
     attachment_dir = File.join(project_dir, SecureRandom.hex)
     attachment_file_path = File.join(attachment_dir, UPLOAD_FILENAME)
     project_attachment_path_relative_to_project = attachment_file_path.sub("#{project_dir}/", '')
@@ -88,8 +88,13 @@ module TrackUntrackedUploadsHelpers
     )
   end
 
-  def project_uploads_dir(project)
-    File.join(UPLOADS_DIR, project.full_path)
+  def legacy_project_uploads_dir(project)
+    namespace = namespaces.find_by(id: project.namespace_id)
+    File.join(UPLOADS_DIR, namespace.path, project.path)
+  end
+
+  def hashed_project_uploads_dir(project)
+    File.join(UPLOADS_DIR, '@hashed', 'aa', 'aaaaaaaaaaaa')
   end
 
   def upload_file_path(model, model_type, attachment_type)
