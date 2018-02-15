@@ -27,7 +27,9 @@ module BlobHelper
     elsif !current_user || user_can_modify_blob(blob, project, ref)
       edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
     elsif user_can_fork_project(project)
-      edit_fork_button_tag(common_classes, project, edit_text, edit_blob_fork_params(path))
+      edit_fork_button_tag(common_classes,
+                           project, edit_text,
+                           edit_blob_fork_params(edit_blob_path(project, ref, path, options)))
     end
   end
 
@@ -60,7 +62,10 @@ module BlobHelper
     elsif user_can_modify_blob(blob, project, ref)
       edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
     elsif user_can_fork_project(project)
-      edit_fork_button_tag(common_classes, project, ide_edit_text, edit_blob_fork_params(path))
+      edit_fork_button_tag(common_classes,
+                           project,
+                           ide_edit_text,
+                           edit_blob_fork_params(ide_edit_path(project, ref, path, options)))
     end
   end
 
@@ -332,7 +337,6 @@ module BlobHelper
         to: request.fullpath,
         notice: edit_in_new_fork_notice_action(action),
         notice_now: edit_in_new_fork_notice_now,
-        action: action
     }
   end
 
