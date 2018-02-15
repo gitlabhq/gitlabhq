@@ -79,9 +79,7 @@ var config = {
     notes:                './notes/index.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/pipelines_bundle.js',
-    pipelines_charts:     './pipelines/pipelines_charts.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
-    pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
     prometheus_metrics:   './prometheus_metrics',
@@ -156,7 +154,7 @@ var config = {
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               name: '[name].[hash].[ext]'
