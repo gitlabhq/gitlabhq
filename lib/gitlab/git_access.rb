@@ -259,7 +259,6 @@ module Gitlab
         # If user does not have access to make at least one change, cancel all
         # push by allowing the exception to bubble up
         check_single_change_access(change, skip_lfs_integrity_check: !first_change)
-<<<<<<< HEAD
 
         if project.size_limit_enabled?
           push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
@@ -268,8 +267,6 @@ module Gitlab
 
       if project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
-=======
->>>>>>> upstream/master
       end
     end
 
