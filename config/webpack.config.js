@@ -66,7 +66,6 @@ var config = {
     graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
-    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
@@ -155,7 +154,7 @@ var config = {
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               name: '[name].[hash].[ext]'
