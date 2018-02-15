@@ -83,11 +83,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    if @pipeline.sast_artifact
-      render_show
-    else
-      redirect_to pipeline_path(@pipeline)
-    end
+    render_show
   end
 
   def failures
