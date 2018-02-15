@@ -11,10 +11,8 @@ import UsersSelect from './users_select';
 import UserCallout from './user_callout';
 import ZenMode from './zen_mode';
 import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
-import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
 import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
 import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
-import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
 var Dispatcher;
 
@@ -681,10 +679,14 @@ var Dispatcher;
           import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
           break;
         case 'groups:analytics:show':
-          initGroupAnalytics();
+          import(/* webpackChunkName: "ee_groups_analytics_show" */ 'ee/pages/groups/analytics/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:ldap_group_links:index':
-          initLDAPGroupsSelect();
+          import(/* webpackChunkName: "ee_groups_ldap_links" */ 'ee/pages/groups/ldap_group_links')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:groups:edit':
           import(/* webpackChunkName: "ee_admin_groups_edit" */ 'ee/pages/admin/groups/edit').then(m => m.default()).catch(fail);
