@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import reportCollapsibleSection from 'ee/vue_shared/components/security_reports/report_collapsible_section.vue';
+import reportCollapsibleSection from 'ee/vue_shared/security_reports/components/report_collapsible_section.vue';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 import { codequalityParsedIssues } from '../../../vue_mr_widget/mock_data';
 
@@ -63,7 +63,7 @@ describe('Report Collapsible section', () => {
 
         Vue.nextTick(() => {
           expect(
-            vm.$el.querySelector('.code-quality-container').getAttribute('style'),
+            vm.$el.querySelector('.report-block-container').getAttribute('style'),
           ).toEqual('');
           expect(
             vm.$el.querySelector('button').textContent.trim(),
@@ -73,7 +73,7 @@ describe('Report Collapsible section', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.code-quality-container').getAttribute('style'),
+              vm.$el.querySelector('.report-block-container').getAttribute('style'),
             ).toEqual('display: none;');
             expect(
               vm.$el.querySelector('button').textContent.trim(),

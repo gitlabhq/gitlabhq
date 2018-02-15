@@ -111,7 +111,7 @@
   };
 </script>
 <template>
-  <section class="mr-widget-code-quality mr-widget-section">
+  <section class="report-block mr-widget-section">
 
     <div
       v-if="isLoading"
@@ -158,7 +158,7 @@
     </div>
 
     <div
-      class="code-quality-container"
+      class="report-block-container"
       v-if="hasIssues"
       v-show="!isCollapsed"
     >
@@ -166,7 +166,7 @@
       <p
         v-if="type === 'docker' && infoText"
         v-html="infoText"
-        class="js-mr-code-quality-info mr-widget-code-quality-info"
+        class="js-mr-code-quality-info report-block-info"
       >
       </p>
 

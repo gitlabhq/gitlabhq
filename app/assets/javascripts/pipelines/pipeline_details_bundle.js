@@ -1,9 +1,14 @@
 import Vue from 'vue';
-import Flash from '../flash';
-import PipelinesMediator from './pipeline_details_mediatior';
+import Flash from '~/flash';
+import Translate from '~/vue_shared/translate';
+import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
+import SecurityReportApp from './components/security_reports/security_report_app.vue';
+
 import eventHub from './event_hub';
+
+Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
@@ -66,4 +71,36 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
+
+  /**
+   * EE only
+   */
+
+  const securityTab = document.getElementById('js-security-report-app');
+
+  if (securityTab) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: securityTab,
+      components: {
+        SecurityReportApp,
+      },
+      data() {
+        return {
+          endpoint: this.$options.el.dataset.endpoint,
+          mediator,
+        };
+      },
+      created() {
+        this.mediator.fetchSastReport(this.endpoint);
+      },
+      render(createElement) {
+        return createElement('security-report-app', {
+          props: {
+            securityReports: this.mediator.store.state.securityReports,
+          },
+        });
+      },
+    });
+  }
 });

@@ -76,15 +76,15 @@
           <h5 class="prepend-top-20">{{ instancesLabel }}</h5>
           <ul
             v-if="instances"
-            class="mr-widget-code-quality-list"
+            class="report-block-list"
           >
             <li
               v-for="(instance, i) in instances"
               :key="i"
-              class="mr-widget-code-quality-list-item-modal failed"
+              class="report-block-list-item-modal failed"
             >
               <icon
-                class="mr-widget-code-quality-icon"
+                class="report-block-icon"
                 name="status_failed_borderless"
                 :size="32"
               />
@@ -102,7 +102,7 @@
               <expand-button v-if="instance.evidence">
                 <pre
                   slot="expanded"
-                  class="block mr-widget-dast-code prepend-top-10">{{ instance.evidence }}</pre>
+                  class="block report-block-dast-code prepend-top-10">{{ instance.evidence }}</pre>
               </expand-button>
             </li>
           </ul>

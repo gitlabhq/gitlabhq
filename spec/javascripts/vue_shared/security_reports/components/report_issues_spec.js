@@ -1,12 +1,14 @@
 import Vue from 'vue';
-import reportIssues from 'ee/vue_shared/components/security_reports/report_issues.vue';
+import reportIssues from 'ee/vue_shared/security_reports/components/report_issues.vue';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 import {
-  securityParsedIssues,
   codequalityParsedIssues,
+} from '../../../vue_mr_widget/mock_data';
+import {
+  sastParsedIssues,
   dockerReportParsed,
   parsedDast,
-} from '../../../vue_mr_widget/mock_data';
+} from '../mock_data';
 
 describe('Report issues', () => {
   let vm;
@@ -31,13 +33,13 @@ describe('Report issues', () => {
       });
 
       it('should render a list of resolved issues', () => {
-        expect(vm.$el.querySelectorAll('.mr-widget-code-quality-list li').length).toEqual(codequalityParsedIssues.length);
+        expect(vm.$el.querySelectorAll('.report-block-list li').length).toEqual(codequalityParsedIssues.length);
       });
 
       it('should render "Fixed" keyword', () => {
-        expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).toContain('Fixed');
+        expect(vm.$el.querySelector('.report-block-list li').textContent).toContain('Fixed');
         expect(
-          vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.replace(/\s+/g, ' ').trim(),
+          vm.$el.querySelector('.report-block-list li').textContent.replace(/\s+/g, ' ').trim(),
         ).toEqual('Fixed: Insecure Dependency in Gemfile.lock:12');
       });
     });
@@ -52,11 +54,11 @@ describe('Report issues', () => {
       });
 
       it('should render a list of unresolved issues', () => {
-        expect(vm.$el.querySelectorAll('.mr-widget-code-quality-list li').length).toEqual(codequalityParsedIssues.length);
+        expect(vm.$el.querySelectorAll('.report-block-list li').length).toEqual(codequalityParsedIssues.length);
       });
 
       it('should not render "Fixed" keyword', () => {
-        expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).not.toContain('Fixed');
+        expect(vm.$el.querySelector('.report-block-list li').textContent).not.toContain('Fixed');
       });
     });
   });
@@ -64,7 +66,7 @@ describe('Report issues', () => {
   describe('for security issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
-        issues: securityParsedIssues,
+        issues: sastParsedIssues,
         type: 'security',
         status: 'failed',
         hasPriority: true,
@@ -72,24 +74,24 @@ describe('Report issues', () => {
     });
 
     it('should render a list of unresolved issues', () => {
-      expect(vm.$el.querySelectorAll('.mr-widget-code-quality-list li').length).toEqual(securityParsedIssues.length);
+      expect(vm.$el.querySelectorAll('.report-block-list li').length).toEqual(sastParsedIssues.length);
     });
 
     it('should render priority', () => {
-      expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).toContain(securityParsedIssues[0].priority);
+      expect(vm.$el.querySelector('.report-block-list li').textContent).toContain(sastParsedIssues[0].priority);
     });
   });
 
   describe('with location', () => {
     it('should render location', () => {
       vm = mountComponent(ReportIssues, {
-        issues: securityParsedIssues,
+        issues: sastParsedIssues,
         type: 'security',
         status: 'failed',
       });
 
-      expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).toContain('in');
-      expect(vm.$el.querySelector('.mr-widget-code-quality-list li a').getAttribute('href')).toEqual(securityParsedIssues[0].urlPath);
+      expect(vm.$el.querySelector('.report-block-list li').textContent).toContain('in');
+      expect(vm.$el.querySelector('.report-block-list li a').getAttribute('href')).toEqual(sastParsedIssues[0].urlPath);
     });
   });
 
@@ -103,8 +105,8 @@ describe('Report issues', () => {
         status: 'failed',
       });
 
-      expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).not.toContain('in');
-      expect(vm.$el.querySelector('.mr-widget-code-quality-list li a')).toEqual(null);
+      expect(vm.$el.querySelector('.report-block-list li').textContent).not.toContain('in');
+      expect(vm.$el.querySelector('.report-block-list li a')).toEqual(null);
     });
   });
 
@@ -120,25 +122,25 @@ describe('Report issues', () => {
 
     it('renders priority', () => {
       expect(
-        vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
+        vm.$el.querySelector('.report-block-list li').textContent.trim(),
       ).toContain(dockerReportParsed.unapproved[0].priority);
     });
 
     it('renders CVE link', () => {
       expect(
-        vm.$el.querySelector('.mr-widget-code-quality-list a').getAttribute('href'),
+        vm.$el.querySelector('.report-block-list a').getAttribute('href'),
       ).toEqual(dockerReportParsed.unapproved[0].nameLink);
       expect(
-        vm.$el.querySelector('.mr-widget-code-quality-list a').textContent.trim(),
+        vm.$el.querySelector('.report-block-list a').textContent.trim(),
       ).toEqual(dockerReportParsed.unapproved[0].name);
     });
 
     it('renders namespace', () => {
       expect(
-        vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
+        vm.$el.querySelector('.report-block-list li').textContent.trim(),
       ).toContain(dockerReportParsed.unapproved[0].path);
       expect(
-        vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim(),
+        vm.$el.querySelector('.report-block-list li').textContent.trim(),
       ).toContain('in');
     });
   });

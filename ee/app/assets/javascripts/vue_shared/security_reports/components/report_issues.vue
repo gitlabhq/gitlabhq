@@ -117,19 +117,19 @@
   };
 </script>
 <template>
-  <ul class="mr-widget-code-quality-list">
+  <ul class="report-block-list">
     <li
       :class="{
         failed: isStatusFailed,
         success: isStatusSuccess,
         neutral: isStatusNeutral
       }"
-      class="mr-widget-code-quality-list-item"
+      class="report-block-list-item"
       v-for="(issue, index) in issues"
       :key="index"
     >
       <icon
-        class="mr-widget-code-quality-icon"
+        class="report-block-icon"
         :name="iconName"
         :size="32"
       />

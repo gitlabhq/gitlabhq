@@ -1,19 +1,19 @@
-.mr-widget-code-quality {
-  .code-quality-container {
+.report-block {
+  .report-block-container {
     border-top: 1px solid $gray-darker;
     padding: $gl-padding-top;
     background-color: $gray-light;
     margin: $gl-padding -16px -16px;
 
-    .mr-widget-code-quality-info {
+    .report-block-info {
       padding-left: 10px;
     }
 
-    .mr-widget-dast-code {
+    .report-block-dast-code {
       margin-left: 26px;
     }
 
-    .mr-widget-code-quality-list {
+    .report-block-list {
       list-style: none;
       padding: 0 1px;
       margin: 0;
@@ -23,28 +23,28 @@
         padding: 0 5px 4px;
       }
 
-      .mr-widget-code-quality-list-item {
+      .report-block-list-item {
         display: flex;
       }
 
-      .mr-widget-code-quality-list-item-modal {
+      .report-block-list-item-modal {
         display: flex;
         flex-wrap: wrap;
       }
 
-      .failed .mr-widget-code-quality-icon {
+      .failed .report-block-icon {
         color: $red-500;
       }
 
-      .success .mr-widget-code-quality-icon {
+      .success .report-block-icon {
         color: $green-500;
       }
 
-      .neutral .mr-widget-code-quality-icon {
+      .neutral .report-block-icon {
         color: $theme-gray-700;
       }
 
-      .mr-widget-code-quality-icon {
+      .report-block-icon {
         margin: -5px 4px 0 0;
         fill: currentColor;
       }
