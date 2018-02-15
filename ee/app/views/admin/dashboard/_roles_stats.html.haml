@@ -1,12 +1,14 @@
-%div
+- if @admin_count
   %p
     Admin users
     %span.light.pull-right
       = @admin_count
 
+- if @roles_count
   - @roles_count.reverse_each do |row|
     %p
       Users with highest role
-      %strong #{row['kind']}
+      %strong
+        = row['kind']
       %span.light.pull-right
         = row['amount']
