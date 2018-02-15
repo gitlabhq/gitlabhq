@@ -26,6 +26,18 @@ module CycleAnalyticsHelpers
                        ref: 'refs/heads/master').execute
   end
 
+  def create_cycle(user, project, issue, mr, milestone, pipeline)
+    issue.update(milestone: milestone)
+    pipeline.run
+
+    ci_build = create(:ci_build, pipeline: pipeline, status: :success, author: user)
+
+    merge_merge_requests_closing_issue(issue)
+    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
+
+    ci_build
+  end
+
   def create_merge_request_closing_issue(issue, message: nil, source_branch: nil, commit_message: 'commit message')
     if !source_branch || project.repository.commit(source_branch).blank?
       source_branch = generate(:branch)

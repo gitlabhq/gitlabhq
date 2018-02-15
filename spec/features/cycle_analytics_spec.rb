@@ -41,7 +41,7 @@ feature 'Cycle Analytics', :js do
         allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
         project.add_master(user)
 
-        create_cycle
+        @build = create_cycle(user, project, issue, mr, milestone, pipeline)
         deploy_master
 
         sign_in(user)
@@ -117,7 +117,7 @@ feature 'Cycle Analytics', :js do
       project.add_guest(guest)
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
-      create_cycle
+      create_cycle(user, project, issue, mr, milestone, pipeline)
       deploy_master
 
       sign_in(guest)
@@ -164,16 +164,6 @@ feature 'Cycle Analytics', :js do
     expect(find('.stage-events')).to have_content(mr.title)
     expect(find('.stage-events')).to have_content(mr.author.name)
     expect(find('.stage-events')).to have_content("!#{mr.iid}")
-  end
-
-  def create_cycle
-    issue.update(milestone: milestone)
-    pipeline.run
-
-    @build = create(:ci_build, pipeline: pipeline, status: :success, author: user)
-
-    merge_merge_requests_closing_issue(issue)
-    ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end
 
   def click_stage(stage_name)

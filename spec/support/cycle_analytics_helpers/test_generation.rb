@@ -50,7 +50,7 @@ module CycleAnalyticsHelpers
               end
 
               median_time_difference = time_differences.sort[2]
-              expect(subject[phase].median.presence).to be_within(5).of(median_time_difference)
+              expect(subject[phase].median).to be_within(5).of(median_time_difference)
             end
 
             context "when the data belongs to another project" do

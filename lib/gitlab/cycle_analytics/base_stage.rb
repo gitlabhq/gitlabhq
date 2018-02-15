@@ -31,8 +31,12 @@ module Gitlab
           interval_query = Arel::Nodes::As.new(cte_table,
             subtract_datetimes(stage_query(project_ids), start_time_attrs, end_time_attrs, name.to_s))
 
-          median_datetimes(cte_table, interval_query, name, :project_id)&.each do |project_id, median|
-            loader.call(project_id, median)
+          if project_ids.size == 1
+            loader.call(@project.id, median_datetime(cte_table, interval_query, name))
+          else
+            median_datetimes(cte_table, interval_query, name, :project_id)&.each do |project_id, median|
+              loader.call(project_id, median)
+            end
           end
         end
       end

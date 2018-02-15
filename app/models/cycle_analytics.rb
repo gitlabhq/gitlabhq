@@ -7,8 +7,8 @@ class CycleAnalytics
   end
 
   def all_medians_per_stage
-    STAGES.each_with_object({}) do |stage_name, hsh|
-      hsh[stage_name] = self[stage_name].median
+    STAGES.each_with_object({}) do |stage_name, medians_per_stage|
+      medians_per_stage[stage_name] = self[stage_name].median
     end
   end
 

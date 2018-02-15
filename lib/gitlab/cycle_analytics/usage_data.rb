@@ -5,27 +5,21 @@ module Gitlab
 
       attr_reader :projects, :options
 
-      def initialize(projects, options)
-        @projects = projects
-        @options = options
+      def initialize
+        @projects = Project.sorted_by_activity.limit(PROJECTS_LIMIT)
+        @options = { from: 7.days.ago }
       end
 
       def to_json
         total = 0
-        values = {}
 
-        medians_per_stage.each do |stage_name, medians|
-          medians = medians.map(&:presence).compact
+        values =
+          medians_per_stage.each_with_object({}) do |(stage_name, medians), hsh|
+            calculations = stage_values(medians)
 
-          stage_values = {
-            average: calc_average(medians),
-            sd: standard_deviation(medians),
-            missing: projects.length - medians.length
-          }
-
-          total += stage_values.values.compact.sum
-          values[stage_name] = stage_values
-        end
+            total += calculations.values.compact.sum
+            hsh[stage_name] = calculations
+          end
 
         values[:total] = total
 
@@ -43,25 +37,35 @@ module Gitlab
         end
       end
 
+      def stage_values(medians)
+        medians = medians.map(&:presence).compact
+        average = calc_average(medians)
+
+        {
+          average: average,
+          sd: standard_deviation(medians, average),
+          missing: projects.length - medians.length
+        }
+      end
+
       def calc_average(values)
         return if values.empty?
 
         (values.sum / values.length).to_i
       end
 
-      def sample_variance(values)
+      def standard_deviation(values, average)
+        Math.sqrt(sample_variance(values, average)).to_i
+      end
+
+      def sample_variance(values, average)
         return 0 if values.length <= 1
 
-        avg = calc_average(values)
         sum = values.inject(0) do |acc, val|
-          acc + (val - avg)**2
+          acc + (val - average)**2
         end
 
         sum / (values.length - 1)
-      end
-
-      def standard_deviation(values)
-        Math.sqrt(sample_variance(values)).to_i
       end
     end
   end
