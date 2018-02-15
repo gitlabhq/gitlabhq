@@ -1,8 +1,12 @@
 %div
-  %p Admin users: #{@admin_count}
+  %p
+    Admin users
+    %span.light.pull-right
+      = @admin_count
 
-  - @roles_count.each do |row|
+  - @roles_count.reverse_each do |row|
     %p
-      Users with max #{row['kind']} access level:
-      %strong
+      Users with highest role
+      %strong #{row['kind']}
+      %span.light.pull-right
         = row['amount']

@@ -4,7 +4,6 @@
 %div{ class: container_class }
   - if @license
     = render "admin/licenses/breakdown", license: @license
-    = render "admin/dashboard/roles_stats"
 
   .admin-dashboard.prepend-top-default
     .row
@@ -25,6 +24,7 @@
                 Users:
                 = number_with_delimiter(User.count)
             %hr
+            = render "admin/dashboard/roles_stats"
             = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
         .info-well.dark-well
