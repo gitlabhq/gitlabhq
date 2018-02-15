@@ -192,6 +192,11 @@ var Dispatcher;
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:jobs:show':
+          import('./pages/projects/jobs/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:creations:new':
           import('./pages/projects/merge_requests/creations/new')
             .then(callDefault)

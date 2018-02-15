@@ -68,7 +68,6 @@ var config = {
     help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
-    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -155,7 +154,7 @@ var config = {
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               name: '[name].[hash].[ext]'
@@ -263,7 +262,6 @@ var config = {
         'filtered_search',
         'groups',
         'issue_show',
-        'job_details',
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',
