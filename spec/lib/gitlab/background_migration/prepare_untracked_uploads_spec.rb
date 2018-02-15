@@ -96,34 +96,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
       # E.g. The installation is in use at the time of migration, and someone has
       # just uploaded a file
       context 'when there are files in /uploads/tmp' do
-<<<<<<< HEAD
-        it_behaves_like 'does not add files in /uploads/tmp'
-      end
-    end
-  end
-
-  context 'test bulk insert without ON CONFLICT DO NOTHING or IGNORE' do
-    before do
-      # If this is CI, we use Postgres 9.2 so this stub has no effect.
-      #
-      # If this is being run on Postgres 9.5+ or MySQL, then this stub allows us
-      # to test the bulk insert functionality without ON CONFLICT DO NOTHING or
-      # IGNORE.
-      allow_any_instance_of(described_class).to receive(:postgresql_pre_9_5?).and_return(true)
-    end
-
-    context 'when files were uploaded before and after hashed storage was enabled' do
-      let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
-      let!(:user) { create(:user, :with_avatar) }
-      let!(:project1) { create(:project, :with_avatar) }
-      let(:project2) { create(:project) } # instantiate after enabling hashed_storage
-
-      before do
-        # Markdown upload before enabling hashed_storage
-        UploadService.new(project1, uploaded_file, FileUploader).execute
-=======
         let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
->>>>>>> c133f1a7480... Merge branch 'mk-fix-no-untracked-upload-files-error' into 'master'
 
         before do
           FileUtils.mkdir(File.dirname(tmp_file))
