@@ -142,7 +142,7 @@
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - if @user.note.present?
-        - text = "#{@user.note}"
+        - text = @user.note
         .panel.panel-info
           .panel-heading
             Admin Note
