@@ -84,7 +84,7 @@ module BlobHelper
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
-      edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action))
+      edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action), action)
     end
   end
 
@@ -331,16 +331,17 @@ module BlobHelper
     {
         to: request.fullpath,
         notice: edit_in_new_fork_notice_action(action),
-        notice_now: edit_in_new_fork_notice_now
+        notice_now: edit_in_new_fork_notice_now,
+        action: action
     }
   end
 
-  def edit_fork_button_tag(common_classes, project, label, params)
+  def edit_fork_button_tag(common_classes, project, label, params, action = 'edit')
     fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: params)
 
-    button_tag edit_text,
+    button_tag label,
                class: "#{common_classes} js-edit-blob-link-fork-toggler",
-               data: { action: 'edit', fork_path: fork_path }
+               data: { action: action, fork_path: fork_path }
   end
 
   def edit_button_tag(button_text, common_classes)
