@@ -8,7 +8,7 @@ Geo replicates your database and your Git repositories. We will
 support and replicate more data in the future, that will enable you to
 fail-over with minimal effort, in a disaster situation.
 
-See [Geo current limitations](../../gitlab-geo/README.md#current-limitations)
+See [Geo current limitations](../replication/index.md#current-limitations)
 for more information.
 
 ## Promoting secondary Geo replica in single-secondary configuration
@@ -150,7 +150,7 @@ Promoting a secondary to primary using the process above does not enable
 Geo on the new primary.
 
 To bring a new secondary online, follow the
-[Geo setup instructions](../../gitlab-geo/README.md#setup-instructions).
+[Geo setup instructions](../replication/index.md#setup-instructions).
 
 ## Promoting secondary Geo replica in multi-secondary configurations
 
@@ -171,6 +171,6 @@ after a fail-over.
 
 If you still have access to the old primary node, you can follow the
 instructions in the
-[Upgrading to GitLab 10.5](../../gitlab-geo/updating_the_geo_nodes.md#upgrading-to-gitlab-105)
+[Upgrading to GitLab 10.5](../replication/updating_the_geo_nodes.md#upgrading-to-gitlab-105)
 section to resolve the error. Otherwise, the secret is lost and you'll need to
-[reset two-factor authentication for all users](../../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+[reset two-factor authentication for all users](../../../security/two_factor_authentication.md#disabling-2fa-for-everyone).

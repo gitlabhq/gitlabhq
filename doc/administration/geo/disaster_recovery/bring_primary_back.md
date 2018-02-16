@@ -16,13 +16,13 @@ that have been deleted during an idle period of a primary node, will not be dele
     sudo gitlab-ctl start
     ```
 
-Note: If you [disabled the primary permanently](index.md#step-2-permanently-disable-the-primary), you need to undo those steps now. For Debian/Ubuntu you just need to run `sudo systemctl enable gitlab-runsvdir`. For CentoOS 6, you need to install GitLab instance from scratch and setup it as a secondary node by following [Setup instructions](../../gitlab-geo/README.md#setup-instructions). In this case you don't need the step below.
+Note: If you [disabled the primary permanently](index.md#step-2-permanently-disable-the-primary), you need to undo those steps now. For Debian/Ubuntu you just need to run `sudo systemctl enable gitlab-runsvdir`. For CentoOS 6, you need to install GitLab instance from scratch and setup it as a secondary node by following [Setup instructions](../replication/index.md#setup-instructions). In this case you don't need the step below.
 
-1. [Setup database replication](../../gitlab-geo/database.md). In this documentation, primary
+1. [Setup database replication](../replication/database.md). In this documentation, primary
    refers to the current primary, and secondary refers to the former primary.
 
 If you have lost your original primary, follow the
-[setup instructions](../../gitlab-geo/README.md#setup-instructions) to set up a new secondary.
+[setup instructions](../replication/index.md#setup-instructions) to set up a new secondary.
 
 ### Promote the secondary to primary
 

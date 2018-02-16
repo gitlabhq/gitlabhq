@@ -5,7 +5,7 @@
 Yes, but there are limitations to what we replicate (see
 [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)).
 
-Read the documentation for [Disaster Recovery](../../disaster_recovery/index.md).
+Read the documentation for [Disaster Recovery](../disaster_recovery/index.md).
 
 ## What data is replicated to a secondary node?
 
