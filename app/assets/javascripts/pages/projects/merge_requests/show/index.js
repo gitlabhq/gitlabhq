@@ -8,7 +8,7 @@ import Diff from '~/diff';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import howToMerge from '~/how_to_merge';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new Diff(); // eslint-disable-line no-new
   new ZenMode(); // eslint-disable-line no-new
 
@@ -25,4 +25,4 @@ export default () => {
   new ShortcutsIssuable(true); // eslint-disable-line no-new
   handleLocationHash();
   howToMerge();
-};
+});
