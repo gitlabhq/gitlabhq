@@ -293,19 +293,6 @@ var config = {
       },
     }),
 
-    // create cacheable common library bundle for all d3 chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_d3',
-      chunks: [
-        'monitoring',
-        'users',
-        'burndown_chart', // EE
-      ],
-      minChunks: function (module, count) {
-        return module.resource && /d3-/.test(module.resource);
-      },
-    }),
-
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'common', 'webpack_runtime'],
