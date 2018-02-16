@@ -593,7 +593,15 @@ class Repository
   def license_key
     return unless exists?
 
-    Licensee.license(path).try(:key)
+    # The licensee gem creates a Rugged object from the path:
+    # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
+    begin
+      Licensee.license(path).try(:key)
+    # Normally we would rescue Rugged::Error, but that is banned by lint-rugged
+    # and we need to migrate this endpoint to Gitaly:
+    # https://gitlab.com/gitlab-org/gitaly/issues/1026
+    rescue
+    end
   end
   cache_method :license_key
 

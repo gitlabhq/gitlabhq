@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import PipelineSchedulesCallout from './components/pipeline_schedules_callout.vue';
+import PipelineSchedulesCallout from '../shared/components/pipeline_schedules_callout.vue';
 
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '#pipeline-schedules-callout',

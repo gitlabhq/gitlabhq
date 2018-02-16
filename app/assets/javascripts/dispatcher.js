@@ -224,6 +224,11 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
+        case 'projects:services:edit':
+          import('./pages/projects/services/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:snippets:edit':
         case 'projects:snippets:update':
           import('./pages/projects/snippets/edit')
@@ -459,11 +464,6 @@ var Dispatcher;
         case 'ci:lints:create':
         case 'ci:lints:show':
           import('./pages/ci/lints')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'users:show':
-          import('./pages/users/show')
             .then(callDefault)
             .catch(fail);
           break;

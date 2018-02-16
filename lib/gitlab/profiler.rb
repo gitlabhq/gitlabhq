@@ -45,6 +45,7 @@ module Gitlab
 
       if user
         private_token ||= user.personal_access_tokens.active.pluck(:token).first
+        raise 'Your user must have a personal_access_token' unless private_token
       end
 
       headers['Private-Token'] = private_token if private_token

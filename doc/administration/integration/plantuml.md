@@ -9,7 +9,19 @@ created in snippets, wikis, and repos.
 ## PlantUML Server
 
 Before you can enable PlantUML in GitLab; you need to set up your own PlantUML
-server that will generate the diagrams. Installing and configuring your
+server that will generate the diagrams.
+
+### Docker
+
+With Docker, you can just run a container like this:
+
+`docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat`
+
+The **PlantUML URL** will be the hostname of the server running the container.
+
+### Debian/Ubuntu
+
+Installing and configuring your
 own PlantUML server is easy in Debian/Ubuntu distributions using Tomcat.
 
 First you need to create a `plantuml.war` file from the source code:

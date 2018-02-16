@@ -1,7 +1,7 @@
 <script>
   import Vue from 'vue';
   import Cookies from 'js-cookie';
-  import Translate from '../../vue_shared/translate';
+  import Translate from '../../../../../vue_shared/translate';
   import illustrationSvg from '../icons/intro_illustration.svg';
 
   Vue.use(Translate);
