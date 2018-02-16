@@ -14,6 +14,18 @@ module MembershipActions
     end
   end
 
+  def update
+    member = membershipable.members_and_requesters.find(params[:id])
+    @member = Members::UpdateService
+      .new(membershipable, current_user, member_params)
+      .execute(member)
+      .present(current_user: current_user)
+
+    respond_to do |format|
+      format.js { render 'shared/members/update' }
+    end
+  end
+
   def destroy
     member = membershipable.members_and_requesters.find(params[:id])
     Members::DestroyService.new(membershipable, current_user, params)

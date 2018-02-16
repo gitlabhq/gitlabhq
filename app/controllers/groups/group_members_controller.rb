@@ -34,14 +34,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @group_member = @group.group_members.new
   end
 
-  def update
-    member = @group.members_and_requesters.find(params[:id])
-    @group_member = Members::UpdateService
-      .new(@group, current_user, member_params)
-      .execute(member)
-      .present(current_user: current_user)
-  end
-
   def resend_invite
     redirect_path = group_group_members_path(@group)
 

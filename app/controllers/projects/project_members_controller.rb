@@ -26,14 +26,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_member = @project.project_members.new
   end
 
-  def update
-    member = @project.members_and_requesters.find(params[:id])
-    @project_member = Members::UpdateService
-      .new(@project, current_user, member_params)
-      .execute(member)
-      .present(current_user: current_user)
-  end
-
   def resend_invite
     redirect_path = project_project_members_path(@project)
 
