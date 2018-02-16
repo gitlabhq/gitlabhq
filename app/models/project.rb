@@ -316,59 +316,39 @@ class Project < ActiveRecord::Base
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
-  def self.public_or_visible_to_user(user = nil)
-    if user
-      authorized = user
-        .project_authorizations
-        .select(1)
-        .where('project_authorizations.project_id = projects.id')
+  #
+  # A caller may pass in a block to modify individual parts of
+  # the query, e.g. to apply .with_feature_available_for_user on top of it.
+  # This is useful for performance as we can stick those additional filters
+  # at the bottom of e.g. the UNION.
+  def self.public_or_visible_to_user(user = nil, &block)
+    # If we don't get a block passed, use identity to avoid if/else repetitions
+    block = ->(part) { part } unless block_given?
 
+    if user
       levels = Gitlab::VisibilityLevel.levels_for_user(user)
 
       if Gitlab::VisibilityLevel.all_levels?(levels)
         # If the user is allowed to see all projects,
         # we can shortcut and just return.
-        return all
+        return block.call(all)
       end
 
-      authorized_projects = where('EXISTS (?)', authorized).select(:id)
-      visible_projects = where('visibility_level IN (?)', levels).select(:id)
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = p1.id')
+      authorized_projects = block.call(from("#{table_name} AS p1").where('EXISTS (?)', authorized))
+
+      visible_projects = block.call(from("#{table_name} AS p2").where('visibility_level IN (?)', levels))
 
       # We use a UNION here instead of OR clauses since this results in better
       # performance.
-      union = Gitlab::SQL::Union.new([authorized_projects, visible_projects])
+      union = Gitlab::SQL::Union.new([authorized_projects.select('p1.id'), visible_projects.select('p2.id')])
+      # TODO: from("(#{union.to_sql}) AS #{table_name}")
       where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     else
-      public_to_user
-    end
-  end
-
-  # Combination of .public_or_visible_to_user AND .with_feature_available_for_user
-  # We duplicated this for (database) performance reasons to optimize the query.
-  def self.public_or_visible_to_user_with_feature_available(user, feature)
-    if user
-      authorized = user
-        .project_authorizations
-        .select(1)
-        .where('project_authorizations.project_id = projects.id')
-
-      levels = Gitlab::VisibilityLevel.levels_for_user(user)
-
-      if Gitlab::VisibilityLevel.all_levels?(levels)
-        # If the user is allowed to see all projects,
-        # we can shortcut and just return.
-        return all.with_feature_available_for_user(feature, user)
-      end
-
-      authorized_projects = where('EXISTS (?)', authorized).with_feature_available_for_user(feature, user).select(:id)
-      visible_projects = where('visibility_level IN (?)', levels).with_feature_available_for_user(feature, user).select(:id)
-
-      # We use a UNION here instead of OR clauses since this results in better
-      # performance.
-      union = Gitlab::SQL::Union.new([authorized_projects, visible_projects])
-      from("(#{union.to_sql}) projects")
-    else
-      public_to_user.with_feature_available_for_user(feature, user)
+      block.call(public_to_user)
     end
   end
 
