@@ -3,6 +3,8 @@ module EE
     module UpdateService
       extend ::Gitlab::Utils::Override
 
+      include CleanupApprovers
+
       override :execute
       def execute
         unless project.feature_available?(:repository_mirrors)
@@ -11,7 +13,11 @@ module EE
           params.delete(:mirror_trigger_builds)
         end
 
+        should_remove_old_approvers = params.delete(:remove_old_approvers)
+
         result = super
+
+        cleanup_approvers(project) if should_remove_old_approvers && result[:status] == :success
 
         log_audit_events if result[:status] == :success
 

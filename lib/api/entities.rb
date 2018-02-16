@@ -611,6 +611,32 @@ module API
       end
     end
 
+    class Approver < Grape::Entity
+      expose :user, using: Entities::UserBasic
+    end
+
+    class ApproverGroup < Grape::Entity
+      expose :group, using: Entities::Group
+    end
+
+    class MergeRequestApprovals < ProjectEntity
+      expose :merge_status
+      expose :approvals_required
+      expose :approvals_left
+      expose :approvals, as: :approved_by, using: Entities::Approver
+      expose :approvers_left, as: :suggested_approvers, using: Entities::UserBasic
+      expose :approvers, using: Entities::Approver
+      expose :approver_groups, using: Entities::ApproverGroup
+
+      expose :user_has_approved do |merge_request, options|
+        merge_request.has_approved?(options[:current_user])
+      end
+
+      expose :user_can_approve do |merge_request, options|
+        merge_request.can_approve?(options[:current_user])
+      end
+    end
+
     class MergeRequestDiff < Grape::Entity
       expose :id, :head_commit_sha, :base_commit_sha, :start_commit_sha,
         :created_at, :merge_request_id, :state, :real_size
@@ -1278,6 +1304,14 @@ module API
 
       klass.descendants.each { |descendant| descendant.prepend(with) }
       klass.prepend(with)
+    end
+
+    class ApprovalSettings < Grape::Entity
+      expose :approvers, using: Entities::Approver
+      expose :approver_groups, using: Entities::ApproverGroup
+      expose :approvals_before_merge
+      expose :reset_approvals_on_push
+      expose :disable_overriding_approvers_per_merge_request
     end
   end
 end

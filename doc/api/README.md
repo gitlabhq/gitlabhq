@@ -37,6 +37,7 @@ following locations:
 - [Labels](labels.md)
 - [License](license.md)
 - [Merge Requests](merge_requests.md)
+- [Merge Request Approvals](merge_request_approvals.md) - for project-level settings see [Project Approvals](project_approvals.md)
 - [Project milestones](milestones.md)
 - [Group milestones](group_milestones.md)
 - [Namespaces](namespaces.md)
@@ -48,6 +49,7 @@ following locations:
 - [Pipeline Triggers](pipeline_triggers.md)
 - [Pipeline Schedules](pipeline_schedules.md)
 - [Projects](projects.md) including setting Webhooks
+- [Project Approvals](project_approvals.md)
 - [Project Access Requests](access_requests.md)
 - [Project Badges](project_badges.md)
 - [Project import/export](project_import_export.md)
