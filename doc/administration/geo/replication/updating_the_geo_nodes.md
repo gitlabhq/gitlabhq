@@ -99,7 +99,7 @@ secondary if ever promoted to a primary:
 >**Warning**
 Hashed storage is in **Alpha**. It is considered experimental and not
 production-ready. See [Hashed
-Storage](../repository_storage_types.md) for more detail.
+Storage](../../repository_storage_types.md) for more detail.
 
 If you previously enabled Hashed Storage and migrated all your existing
 projects to Hashed Storage, disabling hashed storage will not migrate projects
@@ -111,16 +111,16 @@ migrated we recommend leaving Hashed Storage enabled.
 >**Warning**
 Hashed storage is in **Alpha**. It is considered experimental and not
 production-ready. See [Hashed
-Storage](../repository_storage_types.md) for more detail.
+Storage](../../repository_storage_types.md) for more detail.
 
-[Hashed storage](../repository_storage_types.md) was introduced
-in GitLab 10.0, and a [migration path](../raketasks/storage.md)
+[Hashed storage](../../repository_storage_types.md) was introduced
+in GitLab 10.0, and a [migration path](../../raketasks/storage.md)
 for existing repositories was added in GitLab 10.1.
 
 ## Upgrading to GitLab 10.0
 
 Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
-the database](../operations/fast_ssh_key_lookup.md) to avoid having to maintain consistency of the
+the database](../../operations/fast_ssh_key_lookup.md) to avoid having to maintain consistency of the
 `authorized_keys` file for SSH access. Failing to do this will prevent users
 from being able to clone via SSH.
 
@@ -314,4 +314,4 @@ and it is required since 10.0.
 
 1. Repeat this step for every secondary node
 
-[update]: ../update/README.md
+[update]: ../../../update/README.md

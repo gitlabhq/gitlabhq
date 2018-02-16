@@ -1,1 +1,1 @@
-This document was moved to [another location](../administration/geo/configuration.md).
+This document was moved to [another location](../administration/geo/replication/configuration.md).

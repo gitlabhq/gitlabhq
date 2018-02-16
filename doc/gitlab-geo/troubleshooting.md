@@ -1,1 +1,1 @@
-This document was moved to [another location](../administration/geo/troubleshooting.md).
+This document was moved to [another location](../administration/geo/replication/troubleshooting.md).

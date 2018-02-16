@@ -392,4 +392,4 @@ Read the [troubleshooting document](troubleshooting.md).
 [pgback]: http://www.postgresql.org/docs/9.6/static/app-pgbasebackup.html
 [replication user]:https://wiki.postgresql.org/wiki/Streaming_Replication
 [FDW]: https://www.postgresql.org/docs/9.6/static/postgres-fdw.html
-[toc]: README.md#using-gitlab-installed-from-source
+[toc]: index.md#using-gitlab-installed-from-source

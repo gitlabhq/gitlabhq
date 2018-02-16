@@ -13,10 +13,10 @@ they can use a replicated storage bucket. At this time GitLab does not
 take care of content replication in object storage.
 
 For LFS, follow the documentation to
-[set up LFS object storage](../workflow/lfs/lfs_administration.md#setting-up-s3-compatible-object-storage).
+[set up LFS object storage](../../../workflow/lfs/lfs_administration.md#setting-up-s3-compatible-object-storage).
 
 For CI job artifacts, there is similar documentation to configure
-[jobs artifact object storage](../job_artifacts.md#using-object-storage)
+[jobs artifact object storage](../../job_artifacts.md#using-object-storage)
 
 Complete these steps on all nodes, primary **and** secondary.
 

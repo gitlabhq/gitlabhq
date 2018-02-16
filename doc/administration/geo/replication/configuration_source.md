@@ -10,7 +10,7 @@ using the Omnibus GitLab packages, follow the
 >**Note:**
 This is the final step in setting up a secondary Geo node. Stages of the setup
 process must be completed in the documented order. Before attempting the steps
-in this stage, [complete all prior stages](README.md#using-gitlab-installed-from-source).
+in this stage, [complete all prior stages](index.md#using-gitlab-installed-from-source).
 
 The basic steps of configuring a secondary node are to replicate required
 configurations between the primary and the secondaries; to configure a tracking

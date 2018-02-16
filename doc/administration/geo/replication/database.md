@@ -273,7 +273,7 @@ because we have not yet configured the secondary server. This is the next step.
     sudo -i
     ```
 
-1. [Check TCP connectivity](../raketasks/maintenance.md) to the
+1. [Check TCP connectivity](../../raketasks/maintenance.md) to the
    primary's PostgreSQL server:
 
     ```bash
@@ -490,4 +490,4 @@ Read the [troubleshooting document](troubleshooting.md).
 [external postgresql]: #external-postgresql-instances
 [tracking]: database_source.md#enable-tracking-database-on-the-secondary-server
 [FDW]: https://www.postgresql.org/docs/9.6/static/postgres-fdw.html
-[toc]: README.md#using-omnibus-gitlab
+[toc]: index.md#using-omnibus-gitlab

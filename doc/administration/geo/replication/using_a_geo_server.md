@@ -20,4 +20,4 @@ there are a few things to consider:
          git remote set-url --push origin git@primary.gitlab.example.com:user/repo.git
          ```
 
-[req]: README.md#setup-instructions
+[req]: index.md#setup-instructions

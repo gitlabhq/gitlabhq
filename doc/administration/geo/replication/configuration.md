@@ -10,7 +10,7 @@ from source**](configuration_source.md) guide.
 >**Note:**
 This is the final step in setting up a secondary Geo node. Stages of the
 setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages](README.md#using-omnibus-gitlab).
+Before attempting the steps in this stage, [complete all prior stages](index.md#using-omnibus-gitlab).
 
 The basic steps of configuring a secondary node are to replicate required
 configurations between the primary and the secondaries; to configure a tracking
@@ -90,7 +90,7 @@ with the same credentials as used in the primary.
 GitLab integrates with the system-installed SSH daemon, designating a user
 (typically named git) through which all access requests are handled.
 
-In a [Disaster Recovery](../disaster_recovery/index.md) situation, GitLab system
+In a [Disaster Recovery](../../disaster_recovery/index.md) situation, GitLab system
 administrators will promote a secondary Geo replica to a primary and they can
 update the DNS records for the primary domain to point to the secondary to prevent
 the need to update all references to the primary domain to the secondary domain,
@@ -144,7 +144,7 @@ keys must be manually replicated to the secondary node.
 
 >**Warning**
 Hashed storage is in **Beta**. It is not considered production-ready. See
-[Hashed Storage](../repository_storage_types.md) for more detail,
+[Hashed Storage](../../repository_storage_types.md) for more detail,
 and for the latest updates, check
 [infrastructure issue #2821](https://gitlab.com/gitlab-com/infrastructure/issues/2821).
 
@@ -155,7 +155,7 @@ renames no longer require synchronization between nodes.
    (`/admin/application_settings`) in your browser
 1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
 
-    ![](img/hashed-storage.png)
+    ![](img/hashed_storage.png)
 
 ### Step 4. (Optional) Configuring the secondary to trust the primary
 
@@ -187,7 +187,7 @@ The initial replication, or 'backfill', will probably still be in progress. You
 can monitor the synchronization process on each geo node from the primary
 node's Geo Nodes dashboard in your browser.
 
-![Geo dashboard](img/geo-node-dashboard.png)
+![Geo dashboard](img/geo_node_dashboard.png)
 
 If your installation isn't working properly, check the
 [troubleshooting document](troubleshooting.md).

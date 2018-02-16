@@ -7,7 +7,7 @@
   basic Geo features, or latest version for a better experience.
 - You should make sure that all nodes run the same GitLab version.
 - Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
-  [minimum requirements](../install/requirements.md)
+  [minimum requirements](../../../install/requirements.md)
 - Using Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
 
 >**Note:**
@@ -31,7 +31,7 @@ Your Geo instance can be used for cloning and fetching projects, in addition to
 reading any data. This will make working with large repositories over large
 distances much faster.
 
-![Geo overview](img/geo-overview.png)
+![Geo overview](img/geo_overview.png)
 
 When Geo is enabled, we refer to your original instance as a **primary** node
 and the replicated read-only ones as **secondaries**.
@@ -52,14 +52,14 @@ improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
 - Quickly fail-over to a Geo secondary in a
-[Disaster Recovery](../disaster_recovery/index.md) scenario
-- Allows [planned fail-over](../disaster_recovery/planned_fail_over.md) to a Geo secondary
+[Disaster Recovery](../../disaster_recovery/index.md) scenario
+- Allows [planned fail-over](../../disaster_recovery/planned_fail_over.md) to a Geo secondary
 
 ## Architecture
 
 The following diagram illustrates the underlying architecture of Geo:
 
-![Geo architecture](img/geo-architecture.png)
+![Geo architecture](img/geo_architecture.png)
 
 [Source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)
 
@@ -89,7 +89,7 @@ current version of OpenSSH:
 
 Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
 support a feature that Geo requires. See the [documentation on Geo SSH
-access](../operations/fast_ssh_key_lookup.md) for more details.
+access](../../operations/fast_ssh_key_lookup.md) for more details.
 
 ### LDAP
 
@@ -144,14 +144,14 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
    as the **secondary** Geo node. Do not create an account or login to the new
    secondary node.
-1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary**
+1. [Upload the GitLab License](../../../user/admin_area/license.md) on the **primary**
    Geo node to unlock Geo.
 1. [Setup the database replication](database.md) (`primary (read-write) <->
    secondary (read-only)` topology).
-1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md),
+1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md),
    this step is required and needs to be done on both the primary AND secondary nodes.
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
-1. Optional: [Configure a secondary LDAP server](../auth/ldap.md)
+1. Optional: [Configure a secondary LDAP server](../../auth/ldap.md)
    for the secondary. See [notes on LDAP](#ldap).
 1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
 
@@ -164,11 +164,11 @@ If you installed GitLab from source:
 1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
    will serve as the **secondary** Geo node. Do not create an account or login
    to the new secondary node.
-1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary**
+1. [Upload the GitLab License](../../../user/admin_area/license.md) on the **primary**
    Geo node to unlock Geo.
 1. [Setup the database replication](database_source.md) (`primary (read-write)
    <-> secondary (read-only)` topology).
-1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md),
+1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md),
    do this step for both primary AND secondary nodes.
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.
@@ -186,7 +186,7 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 
 ## Configuring Geo HA
 
-Read through the [Geo High Availability documentation](ha.md).
+Read through the [Geo High Availability documentation](high_availability.md).
 
 ## Configuring Geo with Object storage
 
@@ -226,7 +226,7 @@ This message shows that Geo detected that a repository update was needed for pro
 
 ## Security of Geo
 
-Read the [security review](security-review.md) page.
+Read the [security review](security_review.md) page.
 
 ## Tuning Geo
 
