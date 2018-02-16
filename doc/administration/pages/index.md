@@ -61,6 +61,21 @@ Before proceeding with the Pages configuration, you will need to:
 NOTE: **Note:**
 If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites will only be accessible to devices/users that have access to the private network.
 
+### Add the domain to the Public Suffix List
+
+The [Public Suffix List](https://publicsuffix.org) is used by browsers to
+decide how to treat subdomains. If your GitLab instance allows members of the
+public to create GitLab Pages sites, it also allows those users to create
+subdomains on the pages domain (`example.io`). Adding the domain to the Public
+Suffix List prevents browsers from accepting
+[supercookies](https://en.wikipedia.org/wiki/HTTP_cookie#Supercookie),
+among other things.
+
+Follow [these instructions](https://publicsuffix.org/submit/) to submit your
+GitLab Pages subdomain. For instance, if your domain is `example.io`, you should
+request that `*.example.io` is added to the Public Suffix List. GitLab.com
+added `*.gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/issues/230).
+
 ### DNS configuration
 
 GitLab Pages expect to run on their own virtual host. In your DNS server/provider
