@@ -425,6 +425,8 @@ data before running `pg_basebackup`.
     ```
     gitlab-rake gitlab:geo:check
     ```
+    >**Note:**
+    You may need to run `gitlab-ctl reconfigure` if there are some errors. Especially, if current node use to be a primary node before.
 
 The replication process is now complete.
 

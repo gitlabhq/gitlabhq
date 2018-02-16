@@ -7,7 +7,7 @@ This process consists of two steps: making old primary a secondary and promoting
 
 Since the former primary will be out of sync with the current primary, the first
 step is to bring the former primary up to date. There is one downside though, some uploads and repositories
-that have been deleted during an idle period of a primary node, will not be deleted from the disk but the overall sync will be much faster. As an alternative, you can set up a [GitLab instance from scratch](https://docs.gitlab.com/ee/gitlab-geo/#setup-instructions) to workaround this downside.
+that have been deleted during an idle period of a primary node, will not be deleted from the disk but the overall sync will be much faster. As an alternative, you can set up a [GitLab instance from scratch](https://docs.gitlab.com/ee/gitlab-geo/#setup-instructions) to workaround this downside. Also, if you have any doubts about the consistency of the data on this node, we recommend to set up it from scratch.
 
 1. SSH into the former primary that has fallen behind.
 1. Make sure all the services are up by running the command
@@ -16,7 +16,10 @@ that have been deleted during an idle period of a primary node, will not be dele
     sudo gitlab-ctl start
     ```
 
-Note: If you [disabled primary permanently](https://docs.gitlab.com/ee/gitlab-geo/disaster-recovery.html#step-2-permanently-disable-the-primary), you need to undo those steps now. For Debian/Ubuntu you just need to run `sudo systemctl enable gitlab-runsvdir`. For CentoOS 6, you need to install GitLab instance from scratch and setup it as a secondary node by following [Setup instructions](https://docs.gitlab.com/ee/gitlab-geo/#setup-instructions). In this case you don't need the step below.
+>**Note 1:** If you [disabled primary permanently](https://docs.gitlab.com/ee/gitlab-geo/disaster-recovery.html#step-2-permanently-disable-the-primary), you need to undo those steps now. For Debian/Ubuntu you just need to run `sudo systemctl enable gitlab-runsvdir`. For CentoOS 6, you need to install GitLab instance from scratch and setup it as a secondary node by following [Setup instructions](https://docs.gitlab.com/ee/gitlab-geo/#setup-instructions). In this case you don't need the step below.
+
+>**Note 2:** If you [changed the DNS records](disaster-recovery.md#step-4-optional-updating-the-primary-domains-dns-record) for this node during disaster recovery procedure you may need to [block all the writes to this node](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/planned-failover.md#block-primary-traffic) during this procedure.
+
 1. [Setup the database replication](database.md). In this documentation, primary
    refers to the current primary, and secondary refers to the former primary.
 
