@@ -42,13 +42,43 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts_archive, ->() do
-      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
-        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+
+    # This convoluted mess is because we need to handle two cases of
+    # artifact files during the migration. And a simple OR clause
+    # makes it impossible to optimize.
+
+    # Instead we want to use UNION ALL and do two carefully
+    # constructed disjoint queries. But Rails cannot handle UNION or
+    # UNION ALL queries so we do the query in a subquery and wrap it
+    # in an otherwise redundant WHERE IN query (IN is fine for
+    # non-null columns).
+
+    # This should all be ripped out when the migration is finished and
+    # replaced with just the new storage to avoid the extra work.
+
+    scope :with_artifacts_archive_scope, ->(old_lambda, new_lambda) do
+      old = old_lambda.call(unscoped.where(%q[artifacts_file <> '']))
+      new = unscoped.where(%q[(artifacts_file IS NULL OR artifacts_file = '') AND EXISTS (?)],
+                           new_lambda.call(Ci::JobArtifact.where('ci_builds.id = ci_job_artifacts.job_id').archive).select(1))
+      Ci::Build.from("(#{Gitlab::SQL::Union.new([old, new], remove_duplicates: false).to_sql}) AS ci_builds") # rubocop:disable GitlabSecurity/SqlInjection
     end
+
+    scope :with_artifacts_archive, ->() do
+      with_artifacts_archive_scope(lambda {|old| old}, lambda {|new| new})
+    end
+
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
-    scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
-    scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
+
+    scope :with_artifacts_not_expired, ->() do
+      with_artifacts_archive_scope(lambda {|old| old.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now())},
+                                   lambda {|new| new.where('expire_at IS NULL OR expire_at > ?', Time.now())})
+    end
+
+    scope :with_expired_artifacts, ->() do
+      with_artifacts_archive_scope(lambda {|old| old.where(%q[artifacts_file <> '' AND artifacts_expire_at < ?], Time.now())},
+                                   lambda {|new| new.where('expire_at < ?', Time.now())})
+    end
+
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
