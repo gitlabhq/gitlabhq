@@ -1,5 +1,0 @@
----
-title: LDAP Person no longer throws exception on invalid entry
-merge_request:
-author:
-type: fixed
