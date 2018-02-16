@@ -117,7 +117,7 @@ secondary domain, like changing Git remotes and API URLs.
 1. Update the primary domain's DNS record.
 
     After updating the primary domain's DNS records to point to the secondary,
-    edit `/etc/gitlab/gitlab.rb` on the the secondary to reflect the new URL:
+    edit `/etc/gitlab/gitlab.rb` on the secondary to reflect the new URL:
 
     ```ruby
     # Change the existing external_url configuration
