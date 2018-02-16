@@ -6,28 +6,27 @@ describe Members::ApproveAccessRequestService do
   let(:current_user) { create(:user) }
   let(:access_requester_user) { create(:user) }
   let(:access_requester) { source.requesters.find_by!(user_id: access_requester_user.id) }
-  let(:params) { {} }
   let(:opts) { {} }
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do
     it 'raises ActiveRecord::RecordNotFound' do
-      expect { described_class.new(source, current_user, params).execute(access_requester, opts) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.new(current_user).execute(access_requester, opts) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(source, current_user, params).execute(access_requester, opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect { described_class.new(current_user).execute(access_requester, opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   shared_examples 'a service approving an access request' do
     it 'succeeds' do
-      expect { described_class.new(source, current_user, params).execute(access_requester, opts) }.to change { source.requesters.count }.by(-1)
+      expect { described_class.new(current_user).execute(access_requester, opts) }.to change { source.requesters.count }.by(-1)
     end
 
     it 'returns a <Source>Member' do
-      member = described_class.new(source, current_user, params).execute(access_requester, opts)
+      member = described_class.new(current_user).execute(access_requester, opts)
 
       expect(member).to be_a "#{source.class}Member".constantize
       expect(member.requested_at).to be_nil
@@ -35,7 +34,7 @@ describe Members::ApproveAccessRequestService do
 
     context 'with a custom access level' do
       it 'returns a ProjectMember with the custom access level' do
-        member = described_class.new(source, current_user, params.merge(access_level: Gitlab::Access::MASTER)).execute(access_requester, opts)
+        member = described_class.new(current_user, access_level: Gitlab::Access::MASTER).execute(access_requester, opts)
 
         expect(member.access_level).to eq(Gitlab::Access::MASTER)
       end
@@ -61,8 +60,8 @@ describe Members::ApproveAccessRequestService do
         end
       end
 
-      context 'and :ldap option is false' do
-        let(:opts) { { ldap: false } }
+      context 'and :skip_authorization option is false' do
+        let(:opts) { { skip_authorization: false } }
 
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
           let(:source) { project }
@@ -73,26 +72,14 @@ describe Members::ApproveAccessRequestService do
         end
       end
 
-      context 'and :ldap option is true' do
-        let(:opts) { { ldap: true } }
+      context 'and :skip_authorization option is true' do
+        let(:opts) { { skip_authorization: true } }
 
         it_behaves_like 'a service approving an access request' do
           let(:source) { project }
         end
 
         it_behaves_like 'a service approving an access request' do
-          let(:source) { group }
-        end
-      end
-
-      context 'and :ldap param is true' do
-        let(:params) { { ldap: true } }
-
-        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-          let(:source) { project }
-        end
-
-        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
           let(:source) { group }
         end
       end

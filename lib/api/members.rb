@@ -83,11 +83,9 @@ module API
 
           member = source.members.find_by!(user_id: params[:user_id])
           updated_member =
-            ::Members::UpdateService.new(
-              source,
-              current_user,
-              declared_params(include_missing: false)
-            ).execute(member)
+            ::Members::UpdateService
+              .new(current_user, declared_params(include_missing: false))
+              .execute(member)
 
           if updated_member.valid?
             present updated_member, with: Entities::Member
@@ -105,7 +103,7 @@ module API
           member = source.members.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(source, current_user).execute(member)
+            ::Members::DestroyService.new(current_user).execute(member)
           end
         end
       end

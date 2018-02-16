@@ -26,20 +26,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_member = @project.project_members.new
   end
 
-  def resend_invite
-    redirect_path = project_project_members_path(@project)
-
-    @project_member = @project.project_members.find(params[:id])
-
-    if @project_member.invite?
-      @project_member.resend_invite
-
-      redirect_to redirect_path, notice: 'The invitation was successfully resent.'
-    else
-      redirect_to redirect_path, alert: 'The invitation has already been accepted.'
-    end
-  end
-
   def import
     @projects = current_user.authorized_projects.order_id_desc
   end
@@ -56,12 +42,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     redirect_to(project_project_members_path(project),
                 notice: notice)
-  end
-
-  protected
-
-  def member_params
-    params.require(:project_member).permit(:user_id, :access_level, :expires_at)
   end
 
   # MembershipActions concern

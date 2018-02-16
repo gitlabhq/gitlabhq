@@ -2,8 +2,7 @@ module Members
   class UpdateService < Members::BaseService
     # returns the updated member
     def execute(member, permission: :update)
-      permission_target = permission == :override ? source : member
-      raise Gitlab::Access::AccessDeniedError unless can?(current_user, action_member_permission(permission, member), permission_target)
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, action_member_permission(permission, member), member)
 
       old_access_level = member.human_access
 
