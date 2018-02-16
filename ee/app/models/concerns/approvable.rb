@@ -1,4 +1,6 @@
 module Approvable
+  include Gitlab::Utils::StrongMemoize
+
   def requires_approve?
     approvals_required.nonzero?
   end
@@ -19,7 +21,7 @@ module Approvable
   end
 
   def approvals_required
-    @approvals_required ||= approvals_before_merge || target_project.approvals_before_merge
+    approvals_before_merge || target_project.approvals_before_merge
   end
 
   def approvals_before_merge
@@ -66,7 +68,9 @@ module Approvable
   # Users in the list of approvers who have not already approved this MR.
   #
   def approvers_left
-    User.where(id: all_approvers_including_groups.map(&:id)).where.not(id: approvals.select(:user_id))
+    strong_memoize(:approvers_left) do
+      User.where(id: all_approvers_including_groups.map(&:id)).where.not(id: approved_by_users.select(:id))
+    end
   end
 
   # The list of approvers from either this MR (if they've been set on the MR) or the
@@ -87,14 +91,16 @@ module Approvable
   end
 
   def all_approvers_including_groups
-    approvers = []
+    strong_memoize(:all_approvers_including_groups) do
+      approvers = []
 
-    # Approvers from direct assignment
-    approvers << approvers_from_users
+      # Approvers from direct assignment
+      approvers << approvers_from_users
 
-    approvers << approvers_from_groups
+      approvers << approvers_from_groups
 
-    approvers.flatten
+      approvers.flatten
+    end
   end
 
   def approvers_from_users
@@ -156,5 +162,13 @@ module Approvable
     value.split(",").map(&:strip).each do |group_id|
       approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
     end
+  end
+
+  def reset_approval_cache!
+    approvals(true)
+    approved_by_users(true)
+
+    clear_memoization(:approvers_left)
+    clear_memoization(:all_approvers_including_groups)
   end
 end
