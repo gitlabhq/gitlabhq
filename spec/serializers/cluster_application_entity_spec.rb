@@ -32,7 +32,7 @@ describe ClusterApplicationEntity do
         build(
           :clusters_applications_ingress,
           :installed,
-          external_ip: '111.222.111.222',
+          external_ip: '111.222.111.222'
         )
       end
 
