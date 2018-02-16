@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'Admin Dashboard' do
-  describe 'Users statistic' do
+describe ProjectAuthorization do
+  describe '.roles_stats' do
     before do
       project1 = create(:project_empty_repo)
       project1.add_reporter(create(:user))
@@ -14,18 +14,14 @@ describe 'Admin Dashboard' do
       user = create(:user)
       project1.add_reporter(user)
       project2.add_developer(user)
-
-      sign_in(create(:admin))
     end
 
-    describe 'Roles stats' do
-      it 'show correct amount of users per role' do
-        visit admin_dashboard_stats_path
+    subject { ProjectAuthorization.roles_stats.to_a }
 
-        expect(page).to have_content('Admin users 1')
-        expect(page).to have_content('Users with highest role developer 2')
-        expect(page).to have_content('Users with highest role reporter 1')
-      end
+    it do
+      expect(subject).to include({ 'kind' => 'reporter', 'amount' => '1' })
+      expect(subject).to include({ 'kind' => 'developer', 'amount' => '2' })
+      expect(subject).to include({ 'kind' => 'master', 'amount' => '2' })
     end
   end
 end
