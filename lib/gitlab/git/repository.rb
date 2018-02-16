@@ -489,13 +489,16 @@ module Gitlab
 
       # Used in gitaly-ruby
       def raw_log(options)
-        actual_ref = options[:ref] || root_ref
-        begin
-          sha = sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
+        sha =
+          unless options[:all]
+            actual_ref = options[:ref] || root_ref
+            begin
+              sha_from_ref(actual_ref)
+            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+              # Return an empty array if the ref wasn't found
+              return []
+            end
+          end
 
         log_by_shell(sha, options)
       end
@@ -1701,7 +1704,12 @@ module Gitlab
         cmd << '--no-merges' if options[:skip_merges]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd << sha
+
+        if options[:all]
+          cmd += %w[--all --reverse]
+        elsif sha
+          cmd << sha
+        end
 
         # :path can be a string or an array of strings
         if options[:path].present?
@@ -1918,8 +1926,15 @@ module Gitlab
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd << "--left-right" if options[:left_right]
-        cmd += %W[--count #{options[:ref]}]
+
+        if options[:all]
+          cmd += %w[--count --all]
+        elsif options[:ref].present?
+          cmd += %W[--count #{options[:ref]}]
+        end
+
         cmd += %W[-- #{options[:path]}] if options[:path].present?
+
         cmd
       end
 
