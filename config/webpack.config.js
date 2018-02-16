@@ -27,7 +27,7 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 
 // filter out entries currently imported dynamically in dispatcher.js
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
 pageEntries.forEach(( path ) => {
   let chunkPath = path.replace(/\/index\.js$/, '');
