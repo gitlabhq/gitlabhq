@@ -21,7 +21,7 @@
   };
 </script>
 <template>
-  <div class="pipeline-graph">
+  <div class="pipeline-tab-content">
     <report-section
       class="js-sast-widget"
       type="security"

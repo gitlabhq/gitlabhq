@@ -66,7 +66,7 @@
 </script>
 <template>
   <div class="build-content middle-block js-pipeline-graph">
-    <div class="pipeline-visualization pipeline-graph">
+    <div class="pipeline-visualization pipeline-graph pipeline-tab-content">
       <div class="text-center">
         <loading-icon
           v-if="isLoading"
