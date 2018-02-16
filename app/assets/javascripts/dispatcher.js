@@ -320,6 +320,7 @@ var Dispatcher;
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
+        case 'projects:pipelines:security':
         case 'projects:pipelines:show':
           import('./pages/projects/pipelines/builds')
             .then(callDefault)
