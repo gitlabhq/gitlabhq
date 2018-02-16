@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.4.4 (2018-02-16)
+
+### Security (1 change)
+
+- Update nokogiri to 1.8.2. !16807
+
+### Fixed (9 changes)
+
+- Fix 500 error when loading a merge request with an invalid comment. !16795
+- Cleanup new branch/merge request form in issues. !16854
+- Fix GitLab import leaving group_id on ProjectLabel. !16877
+- Fix forking projects when no restricted visibility levels are defined applicationwide. !16881
+- Resolve PrepareUntrackedUploads PostgreSQL syntax error. !17019
+- Fixed error 500 when removing an identity with synced attributes and visiting the profile page. !17054
+- Validate user namespace before saving so that errors persist on model.
+- LDAP Person no longer throws exception on invalid entry.
+- Fix JIRA not working when a trailing slash is included.
+
+
 ## 10.4.3 (2018-02-05)
 
 ### Security (4 changes)
