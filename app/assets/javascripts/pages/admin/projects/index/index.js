@@ -5,7 +5,7 @@ import csrf from '~/lib/utils/csrf';
 
 import deleteProjectModal from './components/delete_project_modal.vue';
 
-export default () => {
+document.addEventListener('DOMContntLoaded', () => {
   Vue.use(Translate);
 
   const deleteProjectModalEl = document.getElementById('delete-project-modal');
@@ -34,4 +34,4 @@ export default () => {
       deleteModal.projectName = buttonProps.projectName;
     }
   });
-};
+});

@@ -1,5 +1,5 @@
 import initForm from '../form';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   initForm();
-};
+});

@@ -1,3 +1,3 @@
 import milestones from '~/pages/milestones/shared';
 
-export default milestones;
+document.addEventListener('DOMContentLoaded', () => milestones());

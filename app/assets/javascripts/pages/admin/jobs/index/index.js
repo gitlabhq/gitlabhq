@@ -6,7 +6,7 @@ import stopJobsModal from './components/stop_jobs_modal.vue';
 
 Vue.use(Translate);
 
-export default () => {
+document.addEventListener('DOMConentLoaded', () => {
   const stopJobsButton = document.getElementById('stop-jobs-button');
   if (stopJobsButton) {
     // eslint-disable-next-line no-new
@@ -27,4 +27,4 @@ export default () => {
       },
     });
   }
-};
+});
