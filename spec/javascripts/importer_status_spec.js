@@ -3,9 +3,18 @@ import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 
 describe('Importer Status', () => {
+  let instance;
+  let mock;
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
+
   describe('addToImport', () => {
-    let instance;
-    let mock;
     const importUrl = '/import_url';
 
     beforeEach(() => {
@@ -21,11 +30,6 @@ describe('Importer Status', () => {
       spyOn(ImporterStatus.prototype, 'initStatusPage').and.callFake(() => {});
       spyOn(ImporterStatus.prototype, 'setAutoUpdate').and.callFake(() => {});
       instance = new ImporterStatus('', importUrl);
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
     });
 
     it('sets table row to active after post request', (done) => {
@@ -42,6 +46,62 @@ describe('Importer Status', () => {
         done();
       })
       .catch(done.fail);
+    });
+  });
+
+  describe('autoUpdate', () => {
+    const jobsUrl = '/jobs_url';
+
+    beforeEach(() => {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <div id="project_1">
+          <div class="job-status">
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(div);
+
+      spyOn(ImporterStatus.prototype, 'initStatusPage').and.callFake(() => {});
+      spyOn(ImporterStatus.prototype, 'setAutoUpdate').and.callFake(() => {});
+      instance = new ImporterStatus(jobsUrl);
+    });
+
+    function setupMock(importStatus) {
+      mock.onGet(jobsUrl).reply(200, [{
+        id: 1,
+        import_status: importStatus,
+      }]);
+    }
+
+    function expectJobStatus(done, status) {
+      instance.autoUpdate()
+        .then(() => {
+          expect(document.querySelector('#project_1').innerText.trim()).toEqual(status);
+          done();
+        })
+        .catch(done.fail);
+    }
+
+    it('sets the job status to done', (done) => {
+      setupMock('finished');
+      expectJobStatus(done, 'done');
+    });
+
+    it('sets the job status to scheduled', (done) => {
+      setupMock('scheduled');
+      expectJobStatus(done, 'scheduled');
+    });
+
+    it('sets the job status to started', (done) => {
+      setupMock('started');
+      expectJobStatus(done, 'started');
+    });
+
+    it('sets the job status to custom status', (done) => {
+      setupMock('custom status');
+      expectJobStatus(done, 'custom status');
     });
   });
 });
