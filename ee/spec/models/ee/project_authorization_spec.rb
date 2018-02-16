@@ -16,7 +16,7 @@ describe ProjectAuthorization do
       project2.add_developer(user)
     end
 
-    subject { ProjectAuthorization.roles_stats.to_a }
+    subject { described_class.roles_stats.to_a }
 
     it do
       expect(subject).to include({ 'kind' => 'reporter', 'amount' => '1' })
