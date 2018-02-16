@@ -657,3 +657,88 @@ export const parsedDast = [{
     param: 'X-Content-Type-Options'
   }]
 }];
+
+/**
+ * SAST report API response for no added & fixed issues but with security issues
+*/
+export const sastHeadAllIssues = [
+  {
+    tool: 'retire',
+    url: 'https://github.com/jquery/jquery/issues/2432',
+    file: '/builds/gonzoyumo/test-package-lock/node_modules/tinycolor2/demo/jquery-1.9.1.js',
+    priority: 'medium',
+    message: '3rd party CORS request may execute'
+  },
+  {
+    tool: 'retire',
+    url: 'https://bugs.jquery.com/ticket/11974',
+    file: '/builds/gonzoyumo/test-package-lock/node_modules/tinycolor2/demo/jquery-1.9.1.js',
+    priority: 'medium',
+    message: 'parseHTML() executes scripts in event handlers'
+  },
+  {
+    tool: 'retire',
+    url: 'https://nodesecurity.io/advisories/146',
+    priority: 'high',
+    message: 'growl_command-injection'
+  },
+  {
+    tool: 'retire',
+    url: 'https://nodesecurity.io/advisories/146',
+    priority: 'high',
+    message: 'growl_command-injection'
+  },
+];
+
+export const sastBaseAllIssues = [
+  {
+    tool: "gemnasium",
+    message: "Command Injection for growl",
+    url: "https://github.com/tj/node-growl/pull/61",
+    file: "package-lock.json"
+  },
+  {
+    tool: "gemnasium",
+    message: "Regular Expression Denial of Service for tough-cookie",
+    url: "https://github.com/salesforce/tough-cookie/issues/92",
+    file: "package-lock.json"
+  },
+  {
+    tool: "gemnasium",
+    message: "Regular Expression Denial of Service for string",
+    url: "https://github.com/jprichardson/string.js/issues/212",
+    file: "package-lock.json"
+  },
+  {
+    tool: "gemnasium",
+    message: "Regular Expression Denial of Service for debug",
+    url: "https://nodesecurity.io/advisories/534",
+    file: "package-lock.json"
+  },
+  {
+    tool: "retire",
+    message: "3rd party CORS request may execute",
+    url: "https://github.com/jquery/jquery/issues/2432",
+    file: "/code/node_modules/tinycolor2/demo/jquery-1.9.1.js",
+    priority: "medium",
+  },
+  {
+    tool: "retire",
+    message: "parseHTML() executes scripts in event handlers",
+    url: "https://bugs.jquery.com/ticket/11974",
+    file: "/code/node_modules/tinycolor2/demo/jquery-1.9.1.js",
+    priority: "medium",
+  },
+  {
+    tool: "retire",
+    message: "growl_command-injection",
+    url: "https://nodesecurity.io/advisories/146",
+    priority: "high",
+  },
+  {
+    tool: "retire",
+    message: "growl_command-injection",
+    url: "https://nodesecurity.io/advisories/146",
+    priority: "high",
+  },
+];
