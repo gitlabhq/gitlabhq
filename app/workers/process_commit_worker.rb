@@ -25,14 +25,14 @@ class ProcessCommitWorker
     commit = build_commit(project, commit_hash)
     author = commit.author || user
 
-    # this is a GitLab generated commit message, ignore it.
-    return if commit.merged_merge_request?(user)
-
     process_commit_message(project, commit, user, author, default)
     update_issue_metrics(commit, author)
   end
 
   def process_commit_message(project, commit, user, author, default = false)
+    # this is a GitLab generated commit message, ignore it.
+    return if commit.merged_merge_request?(user)
+
     closed_issues = default ? commit.closes_issues(user) : []
 
     close_issues(project, user, author, commit, closed_issues) if closed_issues.any?

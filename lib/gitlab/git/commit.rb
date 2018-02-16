@@ -473,7 +473,8 @@ module Gitlab
 
       def parent_ids=(shas)
         @parent_ids = case shas
-                      when String then JSON.parse(shas)
+                      when String
+                        JSON.parse(shas)
                       else
                         shas
                       end

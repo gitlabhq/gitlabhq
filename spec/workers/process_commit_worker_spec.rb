@@ -39,7 +39,7 @@ describe ProcessCommitWorker do
         project.repository.commit(sha)
       end
 
-      it 'does not process the commit' do
+      it 'it does not close any issues from the commit message' do
         expect(worker).not_to receive(:close_issues)
 
         worker.perform(project.id, user.id, commit.to_hash)
