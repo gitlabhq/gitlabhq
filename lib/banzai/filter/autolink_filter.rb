@@ -26,7 +26,7 @@ module Banzai
       # in the generated link.
       #
       # Rubular: http://rubular.com/r/cxjPyZc7Sb
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<!,|\.)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!,|\.)}
 
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
@@ -35,41 +35,15 @@ module Banzai
       TEXT_QUERY = %Q(descendant-or-self::text()[
         not(#{IGNORE_PARENTS.map { |p| "ancestor::#{p}" }.join(' or ')})
         and contains(., '://')
-        and not(starts-with(., 'http'))
-        and not(starts-with(., 'ftp'))
       ]).freeze
 
       def call
         return doc if context[:autolink] == false
 
-        rinku_parse
         text_parse
       end
 
       private
-
-      # Run the text through Rinku as a first pass
-      #
-      # This will quickly autolink http(s) and ftp links.
-      #
-      # `@doc` will be re-parsed with the HTML String from Rinku.
-      def rinku_parse
-        # Convert the options from a Hash to a String that Rinku expects
-        options = tag_options(link_options)
-
-        # NOTE: We don't parse email links because it will erroneously match
-        # external Commit and CommitRange references.
-        #
-        # The final argument tells Rinku to link short URLs that don't include a
-        # period (e.g., http://localhost:3000/)
-        rinku = Rinku.auto_link(html, :urls, options, IGNORE_PARENTS.to_a, 1)
-
-        return if rinku == html
-
-        # Rinku returns a String, so parse it back to a Nokogiri::XML::Document
-        # for further processing.
-        @doc = parse_html(rinku)
-      end
 
       # Return true if any of the UNSAFE_PROTOCOLS strings are included in the URI scheme
       def contains_unsafe?(scheme)
@@ -79,8 +53,6 @@ module Banzai
         Banzai::Filter::SanitizationFilter::UNSAFE_PROTOCOLS.any? { |protocol| scheme.include?(protocol) }
       end
 
-      # Autolinks any text matching LINK_PATTERN that Rinku didn't already
-      # replace
       def text_parse
         doc.xpath(TEXT_QUERY).each do |node|
           content = node.to_html
@@ -113,11 +85,13 @@ module Banzai
         dropped = ($1 || '').html_safe
 
         options = link_options.merge(href: match)
-        content_tag(:a, match, options) + dropped
+        content_tag(:a, match.html_safe, options) + dropped
       end
 
       def autolink_filter(text)
-        text.gsub(LINK_PATTERN) { |match| autolink_match(match) }
+        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_PATTERN) do |link, left:, right:|
+          autolink_match(link)
+        end
       end
 
       def link_options

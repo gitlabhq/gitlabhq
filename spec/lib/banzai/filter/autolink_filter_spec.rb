@@ -25,7 +25,7 @@ describe Banzai::Filter::AutolinkFilter do
     end
   end
 
-  context 'Rinku schemes' do
+  context 'Various schemes' do
     it 'autolinks http' do
       doc = filter("See #{link}")
       expect(doc.at_css('a').text).to eq link
@@ -56,32 +56,26 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.at_css('a')['href']).to eq link
     end
 
+    it 'autolinks multiple URLs' do
+      link1 = 'http://localhost:3000/'
+      link2 = 'http://google.com/'
+
+      doc = filter("See #{link1} and #{link2}")
+
+      found_links = doc.css('a')
+
+      expect(found_links.size).to eq(2)
+      expect(found_links[0].text).to eq(link1)
+      expect(found_links[0]['href']).to eq(link1)
+      expect(found_links[1].text).to eq(link2)
+      expect(found_links[1]['href']).to eq(link2)
+    end
+
     it 'accepts link_attr options' do
       doc = filter("See #{link}", link_attr: { class: 'custom' })
 
       expect(doc.at_css('a')['class']).to eq 'custom'
     end
-
-    described_class::IGNORE_PARENTS.each do |elem|
-      it "ignores valid links contained inside '#{elem}' element" do
-        exp = act = "<#{elem}>See #{link}</#{elem}>"
-        expect(filter(act).to_html).to eq exp
-      end
-    end
-
-    context 'when the input contains link' do
-      it 'does parse_html back the rinku returned value' do
-        act = HTML::Pipeline.parse("<p>See #{link}</p>")
-
-        expect_any_instance_of(described_class).to receive(:parse_html).at_least(:once).and_call_original
-
-        filter(act).to_html
-      end
-    end
-  end
-
-  context 'other schemes' do
-    let(:link) { 'foo://bar.baz/' }
 
     it 'autolinks smb' do
       link = 'smb:///Volumes/shared/foo.pdf'
@@ -89,6 +83,21 @@ describe Banzai::Filter::AutolinkFilter do
 
       expect(doc.at_css('a').text).to eq link
       expect(doc.at_css('a')['href']).to eq link
+    end
+
+    it 'autolinks multiple occurences of smb' do
+      link1 = 'smb:///Volumes/shared/foo.pdf'
+      link2 = 'smb:///Volumes/shared/bar.pdf'
+
+      doc = filter("See #{link1} and #{link2}")
+
+      found_links = doc.css('a')
+
+      expect(found_links.size).to eq(2)
+      expect(found_links[0].text).to eq(link1)
+      expect(found_links[0]['href']).to eq(link1)
+      expect(found_links[1].text).to eq(link2)
+      expect(found_links[1]['href']).to eq(link2)
     end
 
     it 'autolinks irc' do
@@ -149,6 +158,20 @@ describe Banzai::Filter::AutolinkFilter do
         exp = act = "<#{elem}>See #{link}</#{elem}>"
         expect(filter(act).to_html).to eq exp
       end
+    end
+  end
+
+  context 'when the link is inside a tag' do
+    it 'renders text after the link correctly for http' do
+      doc = filter(ERB::Util.html_escape_once("<http://link><another>"))
+
+      expect(doc.children.last.text).to include('<another>')
+    end
+
+    it 'renders text after the link correctly for not other protocol' do
+      doc = filter(ERB::Util.html_escape_once("<rdar://link><another>"))
+
+      expect(doc.children.last.text).to include('<another>')
     end
   end
 end
