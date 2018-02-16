@@ -1,3 +1,3 @@
 import initForm from '../../../../shared/milestones/form';
 
-export default () => initForm();
+document.addEventListener('DOMContentLoaded', () => initForm());
