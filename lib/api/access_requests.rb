@@ -55,7 +55,7 @@ module API
 
           access_requester = source.requesters.find_by!(user_id: params[:user_id])
           member = ::Members::ApproveAccessRequestService
-            .new(source, current_user, declared_params)
+            .new(current_user, declared_params)
             .execute(access_requester)
 
           status :created
@@ -73,7 +73,7 @@ module API
           member = source.requesters.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(source, current_user).execute(member)
+            ::Members::DestroyService.new(current_user).execute(member)
           end
         end
       end

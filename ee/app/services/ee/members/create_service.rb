@@ -12,7 +12,7 @@ module EE
       def log_audit_event(member:)
         ::AuditEventService.new(
           current_user,
-          source,
+          member.source,
           action: :create
         ).for_member(member).security_event
       end

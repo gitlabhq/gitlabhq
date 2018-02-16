@@ -1,17 +1,13 @@
 module Members
   class BaseService < ::BaseService
-    attr_accessor :source
-
-    # source - The source object that respond to `#members` (e.g. project or group)
     # current_user - The user that performs the action
     # params - A hash of parameters
-    def initialize(source, current_user, params = {})
-      @source = source
+    def initialize(current_user = nil, params = {})
       @current_user = current_user
       @params = params
     end
 
-    def after_execute(**args)
+    def after_execute(args)
       # overriden in EE::Members modules
     end
 

@@ -1,11 +1,10 @@
 module EE
   module Members
     module ApproveAccessRequestService
-      def after_execute(member:, **opts)
+      def after_execute(member:, skip_log_audit_event: false)
         super
 
-        # Don't log this event in the case of a mass-approval, e.g. LDAP group-sync
-        log_audit_event(member: member) unless opts[:ldap]
+        log_audit_event(member: member) unless skip_log_audit_event
       end
 
       private
@@ -13,7 +12,7 @@ module EE
       def log_audit_event(member:)
         ::AuditEventService.new(
           current_user,
-          source,
+          member.source,
           action: :create
         ).for_member(member).security_event
       end

@@ -4,7 +4,7 @@ module Members
 
     DEFAULT_LIMIT = 100
 
-    def execute
+    def execute(source)
       return error('No users specified.') if params[:user_ids].blank?
 
       user_ids = params[:user_ids].split(',').uniq
@@ -19,7 +19,7 @@ module Members
         current_user: current_user
       )
 
-      members.compact.each { |member| after_execute(member: member) }
+      members.each { |member| after_execute(member: member) }
 
       success
     end

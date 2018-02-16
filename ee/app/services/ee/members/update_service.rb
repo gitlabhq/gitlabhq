@@ -14,7 +14,7 @@ module EE
       def log_audit_event(action:, old_access_level:, member:)
         ::AuditEventService.new(
           current_user,
-          source,
+          member.source,
           action: action,
           old_access_level: old_access_level
         ).for_member(member).security_event

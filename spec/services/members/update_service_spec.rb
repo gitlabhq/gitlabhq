@@ -13,14 +13,14 @@ describe Members::UpdateService do
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(source, current_user, params).execute(member, permission: permission) }
+      expect { described_class.new(current_user, params).execute(member, permission: permission) }
         .to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   shared_examples 'a service updating a member' do
     it 'updates the member' do
-      updated_member = described_class.new(source, current_user, params).execute(member, permission: permission)
+      updated_member = described_class.new(current_user, params).execute(member, permission: permission)
 
       expect(updated_member).to be_valid
       expect(updated_member.access_level).to eq(Gitlab::Access::MASTER)

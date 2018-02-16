@@ -124,7 +124,7 @@ module API
               status(200  )
               { message: "Access revoked", id: params[:user_id].to_i }
             else
-              ::Members::DestroyService.new(source, current_user).execute(member)
+              ::Members::DestroyService.new(current_user).execute(member)
 
               present member, with: ::API::Entities::Member
             end

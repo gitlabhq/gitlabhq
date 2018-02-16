@@ -6,7 +6,7 @@ module EE
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def override
         member = @group.members.find_by!(id: params[:id])
-        updated_member = ::Members::UpdateService.new(@group, current_user, override_params)
+        updated_member = ::Members::UpdateService.new(current_user, override_params)
           .execute(member, permission: :override)
 
         if updated_member.valid?
