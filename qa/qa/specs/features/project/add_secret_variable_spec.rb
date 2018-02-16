@@ -4,7 +4,7 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      variable = Factory::Resource::SecretVariable.fabricate! do |resource|
+      Factory::Resource::SecretVariable.fabricate! do |resource|
         resource.key = 'VARIABLE_KEY'
         resource.value = 'some secret variable'
       end
