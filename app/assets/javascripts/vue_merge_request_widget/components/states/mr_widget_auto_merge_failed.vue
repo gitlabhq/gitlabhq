@@ -44,7 +44,10 @@
         type="button"
         class="btn btn-xs btn-default"
       >
-        <loading-icon v-if="isRefreshing" />
+        <loading-icon
+          v-if="isRefreshing"
+          :inline="true"
+        />
         {{ s__("mrWidget|Refresh") }}
       </button>
     </div>
