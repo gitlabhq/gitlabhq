@@ -1380,7 +1380,7 @@ describe API::Issues, :mailer do
   end
 
   describe '/projects/:id/issues/:issue_iid/move' do
-    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace ) }
     let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
