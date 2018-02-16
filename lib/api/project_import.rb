@@ -24,7 +24,7 @@ module API
       params do
         requires :path, type: String, desc: 'The new project path and name'
         requires :file, type: File, desc: 'The project export file to be imported'
-        optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be imported into. Defaults to the user namespace.'
+        optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
       end
       desc 'Create a new project import' do
         detail 'This feature was introduced in GitLab 10.6.'

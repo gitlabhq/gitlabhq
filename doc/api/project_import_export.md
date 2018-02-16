@@ -2,7 +2,7 @@
 
 [Introduced][ce-41899] in GitLab 10.6
 
-[Project import/export](../user/project/settings/import_export.md)
+[See also the project import/export documentation](../user/project/settings/import_export.md)
 
 ## Import a file
 
@@ -12,7 +12,7 @@ POST /projects/import
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `namespace` | integer/string | no | The ID or path of the namespace that the project will be imported to. Defaults to the user's namespace |
+| `namespace` | integer/string | no | The ID or path of the namespace that the project will be imported to. Defaults to the current user's namespace |
 | `file` | string | yes | The file to be uploaded |
 | `path` | string | yes | Name and path for new project |
 
@@ -56,7 +56,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 
 Status can be one of `none`, `scheduled`, `failed`, `started`, or `finished`.
 
-If the status is `failed`, it will include the import error message.
+If the status is `failed`, it will include the import error message under `import_error`.
 
 ```json
 {

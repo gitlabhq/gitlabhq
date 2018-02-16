@@ -1328,7 +1328,7 @@ Read more in the [Branches](branches.md) documentation.
 
 ## Project Import/Export
 
-Read more in the [Project export](project_import_export.md) documentation.
+Read more in the [Project import/export](project_import_export.md) documentation.
 
 ## Project members
 
