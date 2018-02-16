@@ -1,5 +1,0 @@
----
-title: Fix 500 error when loading a merge request with an invalid comment
-merge_request: 16795
-author:
-type: fixed
