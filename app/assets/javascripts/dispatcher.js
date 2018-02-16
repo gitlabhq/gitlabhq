@@ -6,14 +6,6 @@ import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
 import SearchAutocomplete from './search_autocomplete';
 
-// EE-only
-import UsersSelect from './users_select';
-import UserCallout from './user_callout';
-import ZenMode from './zen_mode';
-import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
-import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
-import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
-
 var Dispatcher;
 
 (function() {
@@ -620,50 +612,57 @@ var Dispatcher;
       }
 
       // EE-only route-based code
-      function initBlobEE() {
-        const dataEl = document.getElementById('js-file-lock');
-
-        if (dataEl) {
-          const {
-            toggle_path,
-            path,
-           } = JSON.parse(dataEl.innerHTML);
-
-          initPathLocks(toggle_path, path);
-        }
-      }
 
       switch (page) {
         case 'groups:epics:show':
-          new ZenMode();
+          import(/* webpackChunkName: "ee_epics_show" */ 'ee/pages/groups/epics/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'groups:epics:index':
-          import(/* webpackChunkName: "ee_epics_index" */ 'ee/pages/epics')
+          import(/* webpackChunkName: "ee_epics_index" */ 'ee/pages/groups/epics/index')
             .then(callDefault)
             .catch(fail);
           break;
         case 'projects:milestones:show':
+          import(/* webpackChunkName: "ee_projects_milestones_show" */ 'ee/pages/projects/milestones/show')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'search:show':
-          new UserCallout();
+          import(/* webpackChunkName: "ee_search_show" */ 'ee/pages/search/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:merge_requests:creations:new':
-          new UserCallout();
-          initApprovals();
+          import(/* webpackChunkName: "ee_merge_requests_creations_new" */ 'ee/pages/projects/merge_requests/creations/new')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:merge_requests:creations:diffs':
+          import(/* webpackChunkName: "ee_merge_requests_creations_diffs" */ 'ee/pages/projects/merge_requests/creations/diffs')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:merge_requests:edit':
-          initApprovals();
+          import(/* webpackChunkName: "ee_merge_requests_edit" */ 'ee/pages/projects/merge_requests/edit')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:show':
-          initGeoInfoModal();
+          import(/* webpackChunkName: "ee_projects_show" */ 'ee/pages/projects/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'projects:blob:show':
-        case 'projects:blame:show':
-          initBlobEE();
+          import(/* webpackChunkName: "ee_projects_blob_show" */ 'ee/pages/projects/blob/show')
+            .then(callDefault)
+            .catch(fail);
           break;
-        case 'projects:mirrors:show':
-        case 'projects:mirrors:update':
-          new UsersSelect();
+        case 'projects:blame:show':
+          import(/* webpackChunkName: "ee_projects_blame_show" */ 'ee/pages/projects/blame/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:emails:show':
           import(/* webpackChunkName: "ee_admin_emails_show" */ 'ee/pages/admin/emails/show').then(m => m.default()).catch(fail);
@@ -672,8 +671,9 @@ var Dispatcher;
           import(/* webpackChunkName: "ee_audit_logs" */ 'ee/pages/admin/audit_logs').then(m => m.default()).catch(fail);
           break;
         case 'projects:settings:repository:show':
-          new UsersSelect();
-          new UserCallout();
+          import(/* webpackChunkName: "ee_projects_settings_repository_show" */ 'ee/pages/projects/settings/repository/show')
+            .then(callDefault)
+            .catch(fail);
           break;
         case 'admin:licenses:new':
           import(/* webpackChunkName: "admin_licenses" */ 'ee/pages/admin/licenses/new').then(m => m.default()).catch(fail);
@@ -691,10 +691,25 @@ var Dispatcher;
         case 'admin:groups:edit':
           import(/* webpackChunkName: "ee_admin_groups_edit" */ 'ee/pages/admin/groups/edit').then(m => m.default()).catch(fail);
           break;
-        case 'admin:geo_nodes':
-          import(/* webpackChunkName: 'geo_node_form' */ './geo/geo_node_form')
-            .then(geoNodeForm => geoNodeForm.default($('.js-geo-node-form')))
-            .catch(() => {});
+        case 'admin:geo_nodes:new':
+          import(/* webpackChunkName: 'ee_admin_geo_nodes_new' */ 'ee/pages/admin/geo_nodes/new')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:geo_nodes:create':
+          import(/* webpackChunkName: 'ee_admin_geo_nodes_create' */ 'ee/pages/admin/geo_nodes/create')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:geo_nodes:edit':
+          import(/* webpackChunkName: 'ee_admin_geo_nodes_edit' */ 'ee/pages/admin/geo_nodes/edit')
+            .then(callDefault)
+            .catch(fail);
+          break;
+        case 'admin:geo_nodes:update':
+          import(/* webpackChunkName: 'ee_admin_geo_nodes_update' */ 'ee/pages/admin/geo_nodes/update')
+            .then(callDefault)
+            .catch(fail);
           break;
       }
 
