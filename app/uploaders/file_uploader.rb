@@ -51,15 +51,13 @@ class FileUploader < GitlabUploader
   #
   # Returns a String without a trailing slash
   def self.model_path_segment(model)
-    if model.hashed_storage?(:attachments)
-      model.disk_path
+    case model
+    when Storage::HashedProject then model.disk_path
+    when Project then
+      model.hashed_storage?(:attachments) ? model.disk_path : model.full_path
     else
       model.full_path
     end
-  end
-
-  def self.upload_path(secret, identifier)
-    File.join(secret, identifier)
   end
 
   def self.generate_secret
@@ -75,8 +73,12 @@ class FileUploader < GitlabUploader
     apply_context!(uploader_context)
   end
 
+  # enforce the usage of Hashed storage when storing to
+  # remote store as the FileMover doesn't support OS
   def base_dir
-    self.class.base_dir(@model)
+    model = file_storage? ? @model : Storage::HashedProject.new(@model)
+
+    self.class.base_dir(model)
   end
 
   # we don't need to know the actual path, an uploader instance should be
@@ -86,15 +88,18 @@ class FileUploader < GitlabUploader
   end
 
   def upload_path
-    self.class.upload_path(dynamic_segment, identifier)
+    if file_storage? # Legacy
+      File.join(dynamic_segment, identifier)
+    else
+      File.join(store_dir, identifier)
+    end
   end
 
-  def model_path_segment
-    self.class.model_path_segment(@model)
-  end
-
-  def store_dir
-    File.join(base_dir, dynamic_segment)
+  def store_dirs
+    {
+      Store::LOCAL => local_store_dir = File.join(base_dir, dynamic_segment),
+      Store::REMOTE => local_store_dir
+    }
   end
 
   def markdown_link
@@ -133,6 +138,9 @@ class FileUploader < GitlabUploader
   end
 
   private
+
+  def hashed_model
+  end
 
   def apply_context!(uploader_context)
     @secret, @identifier = uploader_context.values_at(:secret, :identifier)
