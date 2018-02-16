@@ -41,8 +41,12 @@ module API
                       current_user.namespace
                     end
 
-        project_params = import_params.merge(namespace_id: namespace.id,
-                                             file: import_params[:file]['tempfile'])
+        project_params = {
+            path: import_params[:path],
+            namespace_id: namespace.id,
+            file: import_params[:file]['tempfile']
+        }
+
         project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
 
         render_api_error!(project.errors.full_messages&.first, 400) unless project.saved?

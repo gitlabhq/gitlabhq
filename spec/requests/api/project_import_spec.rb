@@ -42,7 +42,7 @@ describe API::ProjectImport do
 
     it 'schedules an import at the user namespace level' do
       expect_any_instance_of(Project).not_to receive(:import_schedule)
-      expect(Gitlab::ImportExport::ProjectCreator).not_to receive(:new)
+      expect(::Projects::CreateService).not_to receive(:new)
 
       post api('/projects/import', user), namespace: 'nonexistent', path: 'test-import2', file: fixture_file_upload(file)
 
@@ -73,7 +73,7 @@ describe API::ProjectImport do
 
     def stub_import(namespace)
       expect_any_instance_of(Project).to receive(:import_schedule)
-      expect(Gitlab::ImportExport::ProjectCreator).to receive(:new).with(namespace.id, any_args).and_call_original
+      expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original
     end
   end
 
