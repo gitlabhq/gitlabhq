@@ -4,9 +4,8 @@ import Translate from '~/vue_shared/translate';
 import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
-import SecurityReportApp from './components/security_reports/security_report_app.vue';
-
 import eventHub from './event_hub';
+import SecurityReportApp from './components/security_reports/security_report_app.vue';
 
 Vue.use(Translate);
 
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       postAction(action) {
         this.mediator.service.postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
-          .catch(() => new Flash('An error occurred while making the request.'));
+          .catch(() => Flash('An error occurred while making the request.'));
       },
     },
     render(createElement) {

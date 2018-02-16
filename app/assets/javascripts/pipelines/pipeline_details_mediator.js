@@ -48,7 +48,7 @@ export default class pipelinesMediator {
 
   errorCallback() {
     this.state.isLoading = false;
-    return new Flash('An error occurred while fetching the pipeline.');
+    Flash(__('An error occurred while fetching the pipeline.'));
   }
 
   refreshPipeline() {
