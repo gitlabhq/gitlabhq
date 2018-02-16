@@ -79,7 +79,7 @@ module Approvable
     approvers_relation = approvers_overwritten? ? approvers : target_project.approvers
     approvers_relation = approvers_relation.where.not(user_id: author.id) if author
 
-    approvers_relation
+    approvers_relation.includes(:user)
   end
 
   def overall_approver_groups
@@ -142,10 +142,6 @@ module Approvable
     remaining_approvals = approvals_left
 
     remaining_approvals.zero? || remaining_approvals > approvers_left.count
-  end
-
-  def approved_by_users
-    approvals.map(&:user)
   end
 
   def approver_ids=(value)

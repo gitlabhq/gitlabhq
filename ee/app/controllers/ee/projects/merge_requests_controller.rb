@@ -41,10 +41,12 @@ module EE
         return super unless APPROVAL_RENDERING_ACTIONS.include?(action_name.to_sym)
 
         @issuable = @merge_request ||= project.merge_requests
-                                         .includes(approvals: :user,
-                                                   approvers: :user,
-                                                   approver_groups: :group)
+                                         .includes(
+                                           :approved_by_users,
+                                           approvers: :user
+                                         )
                                          .find_by!(iid: params[:id])
+        super
       end
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
