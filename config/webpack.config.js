@@ -62,7 +62,6 @@ var config = {
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
-    graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
@@ -281,7 +280,6 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
       chunks: [
-        'graphs_show',
         'monitoring',
         'users',
       ],
