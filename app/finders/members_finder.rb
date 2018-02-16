@@ -10,23 +10,34 @@ class MembersFinder
   def execute
     project_members = project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
-    wheres = ["members.id IN (#{project_members.select(:id).to_sql})"]
 
     if group
-      # We need `.where.not(user_id: nil)` here otherwise when a group has an
-      # invitee, it would make the following query return 0 rows since a NULL
-      # user_id would be present in the subquery
-      # See http://stackoverflow.com/questions/129077/not-in-clause-and-null-values
-      non_null_user_ids = project_members.where.not(user_id: nil).select(:user_id)
-
       group_members = GroupMembersFinder.new(group).execute
-      group_members = group_members.where.not(user_id: non_null_user_ids)
       group_members = group_members.non_invite unless can?(current_user, :admin_group, group)
 
-      wheres << "members.id IN (#{group_members.select(:id).to_sql})"
-    end
+      union = Gitlab::SQL::Union.new([project_members, group_members], remove_duplicates: false)
 
-    Member.where(wheres.join(' OR '))
+      # We're interested in a list of members without duplicates by user_id.
+      # We prefer project members over group members, project members should go first.
+      #
+      # We could have used a DISTINCT ON here, but MySQL does not support this.
+      sql = <<-SQL
+        SELECT member_numbered.*
+        FROM (
+          SELECT
+          member_union.*,
+          ROW_NUMBER() OVER (
+            PARTITION BY user_id ORDER BY CASE WHEN type = 'ProjectMember' THEN 1 WHEN type = 'GroupMember' THEN 2 ELSE 3 END
+          ) AS row_number
+          FROM (#{union.to_sql}) AS member_union
+       ) AS member_numbered
+       WHERE row_number = 1
+      SQL
+
+      Member.from("(#{sql}) AS #{Member.table_name}")
+    else
+      project_members
+    end
   end
 
   def can?(*args)
