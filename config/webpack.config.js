@@ -83,7 +83,6 @@ var config = {
     pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
