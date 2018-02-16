@@ -1,3 +1,3 @@
 import initMilestonesShow from '~/pages/milestones/shared/init_milestones_show';
 
-document.addEventListener('DOMContentloaded', () => initMilestonesShow());
+document.addEventListener('DOMContentLoaded', () => initMilestonesShow());
