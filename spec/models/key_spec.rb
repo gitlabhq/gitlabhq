@@ -12,6 +12,9 @@ describe Key, :mailer do
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_length_of(:key).is_at_most(5000) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_2048)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_4096)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_5120)[:key]).for(:key) }
+    it { is_expected.to allow_value(attributes_for(:rsa_key_8192)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:dsa_key_2048)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ecdsa_key_256)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:ed25519_key_256)[:key]).for(:key) }
@@ -99,24 +102,6 @@ describe Key, :mailer do
 
         expect(content).not_to match(/\s/)
         expect(original_fingerprint).to eq(key.fingerprint)
-      end
-    end
-  end
-
-  context 'validate size' do
-    where(:key_content, :result) do
-      [
-        [Spec::Support::Helpers::KeyGeneratorHelper.new(512).generate,  false],
-        [Spec::Support::Helpers::KeyGeneratorHelper.new(8192).generate, false],
-        [Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate, true]
-      ]
-    end
-
-    with_them do
-      it 'validates the size of the key' do
-        key = build(:key, key: key_content)
-
-        expect(key.valid?).to eq(result)
       end
     end
   end

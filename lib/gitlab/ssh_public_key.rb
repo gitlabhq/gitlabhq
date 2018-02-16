@@ -53,7 +53,7 @@ module Gitlab
     end
 
     def valid?
-      key.present? && bits && technology.supported_sizes.include?(bits)
+      SSHKey.valid_ssh_public_key?(key_text)
     end
 
     def type
