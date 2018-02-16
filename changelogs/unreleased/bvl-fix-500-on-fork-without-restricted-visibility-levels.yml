@@ -1,5 +1,0 @@
----
-title: Fix forking projects when no restricted visibility levels are defined applicationwide
-merge_request: 16881
-author:
-type: fixed
