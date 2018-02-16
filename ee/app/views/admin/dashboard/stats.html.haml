@@ -1,10 +1,12 @@
-%h3 Users statistics
+- page_title 'Users statistics'
 
+%h3 Users statistics
 %table.table
   %tr
     %td Users total
     %td
       = User.count
+
   - if @admin_count
     %tr
       %td Admin users
