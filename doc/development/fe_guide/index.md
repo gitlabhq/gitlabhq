@@ -21,6 +21,8 @@ Working with our frontend assets requires Node (v4.3 or greater) and Yarn
 [jQuery][jquery] is used throughout the application's JavaScript, with
 [Vue.js][vue] for particularly advanced, dynamic elements.
 
+We also use [Axios][axios] to handle all of our network requests.
+
 ### Browser Support
 
 For our currently-supported browsers, see our [requirements][requirements].
@@ -77,8 +79,10 @@ Axios specific practices and gotchas.
 ## [Icons](icons.md)
 How we use SVG for our Icons.
 
-## [Dropdowns](dropdowns.md)
-How we use dropdowns.
+## [Components](components.md)
+
+How we use UI components.
+
 ---
 
 ## Style Guides
@@ -122,6 +126,7 @@ The [externalization part of the guide](../i18n/externalization.md) explains the
 [webpack]: https://webpack.js.org/
 [jquery]: https://jquery.com/
 [vue]: http://vuejs.org/
+[axios]: https://github.com/axios/axios
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
 [scss-lint]: https://github.com/brigade/scss-lint
 [install]: ../../install/installation.md#4-node
