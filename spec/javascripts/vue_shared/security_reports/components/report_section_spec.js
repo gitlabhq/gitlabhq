@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import reportCollapsibleSection from 'ee/vue_shared/security_reports/components/report_collapsible_section.vue';
+import reportSection from 'ee/vue_shared/security_reports/components/report_section.vue';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 import { codequalityParsedIssues } from '../../../vue_mr_widget/mock_data';
 
-describe('Report Collapsible section', () => {
+describe('Report section', () => {
   let vm;
-  let ReportCollapsibleSection;
+  let ReportSection;
 
   beforeEach(() => {
-    ReportCollapsibleSection = Vue.extend(reportCollapsibleSection);
+    ReportSection = Vue.extend(reportSection);
   });
 
   afterEach(() => {
@@ -17,7 +17,7 @@ describe('Report Collapsible section', () => {
 
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
-      vm = mountComponent(ReportCollapsibleSection, {
+      vm = mountComponent(ReportSection, {
         type: 'codequality',
         status: 'loading',
         loadingText: 'Loading codeclimate report',
@@ -30,7 +30,7 @@ describe('Report Collapsible section', () => {
 
   describe('with success status', () => {
     it('should render provided data', () => {
-      vm = mountComponent(ReportCollapsibleSection, {
+      vm = mountComponent(ReportSection, {
         type: 'codequality',
         status: 'success',
         loadingText: 'Loading codeclimate report',
@@ -50,7 +50,7 @@ describe('Report Collapsible section', () => {
 
     describe('toggleCollapsed', () => {
       it('toggles issues', (done) => {
-        vm = mountComponent(ReportCollapsibleSection, {
+        vm = mountComponent(ReportSection, {
           type: 'codequality',
           status: 'success',
           loadingText: 'Loading codeclimate report',
@@ -88,7 +88,7 @@ describe('Report Collapsible section', () => {
 
   describe('with failed request', () => {
     it('should render error indicator', () => {
-      vm = mountComponent(ReportCollapsibleSection, {
+      vm = mountComponent(ReportSection, {
         type: 'codequality',
         status: 'error',
         loadingText: 'Loading codeclimate report',
@@ -101,7 +101,7 @@ describe('Report Collapsible section', () => {
 
   describe('With full report', () => {
     beforeEach(() => {
-      vm = mountComponent(ReportCollapsibleSection, {
+      vm = mountComponent(ReportSection, {
         status: 'success',
         successText: 'SAST improved on 1 security vulnerability and degraded on 1 security vulnerability',
         type: 'security',
@@ -170,6 +170,30 @@ describe('Report Collapsible section', () => {
           done();
         });
       });
+    });
+  });
+
+  describe('When it is not collapsible', () => {
+    beforeEach(() => {
+      vm = mountComponent(ReportSection, {
+        type: 'codequality',
+        status: 'success',
+        loadingText: 'Loading codeclimate report',
+        errorText: 'foo',
+        successText: 'Code quality improved on 1 point and degraded on 1 point',
+        resolvedIssues: codequalityParsedIssues,
+        isCollapsible: false,
+      });
+    });
+
+    it('should not render collapse button', () => {
+      expect(vm.$el.querySelector('.js-collapse-btn')).toBe(null);
+    });
+
+    it('should show the report by default', () => {
+      expect(
+        vm.$el.querySelectorAll('.report-block-list .report-block-list-item').length,
+      ).toEqual(codequalityParsedIssues.length);
     });
   });
 });

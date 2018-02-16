@@ -85,13 +85,15 @@ document.addEventListener('DOMContentLoaded', () => {
         SecurityReportApp,
       },
       data() {
+        const datasetOptions = this.$options.el.dataset;
         return {
-          endpoint: this.$options.el.dataset.endpoint,
+          endpoint: datasetOptions.endpoint,
+          blobPath: datasetOptions.blobPath,
           mediator,
         };
       },
       created() {
-        this.mediator.fetchSastReport(this.endpoint);
+        this.mediator.fetchSastReport(this.endpoint, this.blobPath);
       },
       render(createElement) {
         return createElement('security-report-app', {

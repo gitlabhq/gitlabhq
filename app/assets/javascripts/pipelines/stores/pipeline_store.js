@@ -20,7 +20,10 @@ export default class PipelineStore {
   /**
    * EE only
   */
-  storeSastReport(data) {
-    Object.assign(this.state.securityReports.sast, setSastReport({ head: data, headBlobPath: '' }));
+  storeSastReport(data, blobPath) {
+    Object.assign(
+      this.state.securityReports.sast,
+      setSastReport({ head: data, headBlobPath: blobPath }),
+    );
   }
 }

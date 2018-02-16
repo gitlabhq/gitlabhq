@@ -5,13 +5,18 @@
   import IssuesBlock from './report_issues.vue';
 
   export default {
-    name: 'ReportCollapsibleSection',
+    name: 'ReportSection',
     components: {
       IssuesBlock,
       LoadingIcon,
       StatusIcon,
     },
     props: {
+      isCollapsible: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       // security | codequality | performance | docker
       type: {
         type: String,
@@ -67,10 +72,16 @@
     },
 
     data() {
+      if (this.isCollapsible) {
+        return {
+          collapseText: __('Expand'),
+          isCollapsed: true,
+          isFullReportVisible: false,
+        };
+      }
+
       return {
-        collapseText: __('Expand'),
-        isCollapsed: true,
-        isFullReportVisible: false,
+        isFullReportVisible: true,
       };
     },
 
@@ -148,8 +159,8 @@
 
         <button
           type="button"
-          class="btn pull-right btn-sm"
-          v-if="hasIssues"
+          class="js-collapse-btn btn pull-right btn-sm"
+          v-if="isCollapsible && hasIssues"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -160,7 +171,7 @@
     <div
       class="report-block-container"
       v-if="hasIssues"
-      v-show="!isCollapsed"
+      v-show="!isCollapsible || (isCollapsible && !isCollapsed)"
     >
 
       <p

@@ -61,4 +61,4 @@
         %pre.build-log= build_summary(build, skip: index >= 10)
   - if sast_artifact
     #js-tab-security.build-security.tab-pane
-      #js-security-report-app{ data: { endpoint: sast_artifact_url} }
+      #js-security-report-app{ data: { endpoint: sast_artifact_url, blobPath: '' } }

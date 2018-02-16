@@ -1,5 +1,5 @@
 <script>
-  import CollapsibleSection from 'ee/vue_shared/security_reports/components/report_collapsible_section.vue';
+  import ReportSection from 'ee/vue_shared/security_reports/components/report_section.vue';
   import securityMixin from 'ee/vue_shared/security_reports/mixins/security_report_mixin';
   import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
@@ -7,7 +7,7 @@
     name: 'SecurityReportTab',
     components: {
       LoadingIcon,
-      CollapsibleSection,
+      ReportSection,
     },
     mixins: [
       securityMixin,
@@ -22,7 +22,7 @@
 </script>
 <template>
   <div class="pipeline-graph">
-    <collapsible-section
+    <report-section
       class="js-sast-widget"
       type="security"
       :status="checkReportStatus(securityReports.sast.isLoading, securityReports.sast.hasError)"
@@ -33,6 +33,7 @@
       :resolved-issues="securityReports.sast.resolvedIssues"
       :all-issues="securityReports.sast.allIssues"
       :has-priority="true"
+      :is-collapsible="false"
     />
   </div>
 </template>

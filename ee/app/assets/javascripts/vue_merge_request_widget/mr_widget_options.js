@@ -2,7 +2,7 @@ import { n__, s__, __ } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
-import CollapsibleSection from '../vue_shared/security_reports/components/report_collapsible_section.vue';
+import ReportSection from '../vue_shared/security_reports/components/report_section.vue';
 import securityMixin from '../vue_shared/security_reports/mixins/security_report_mixin';
 
 export default {
@@ -10,7 +10,7 @@ export default {
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
-    CollapsibleSection,
+    ReportSection,
   },
   mixins: [
     securityMixin,
@@ -308,7 +308,7 @@ export default {
         :mr="mr"
         :service="service"
         />
-      <collapsible-section
+      <report-section
         class="js-codequality-widget"
         v-if="shouldRenderCodeQuality"
         type="codequality"
@@ -319,7 +319,7 @@ export default {
         :unresolved-issues="mr.codeclimateMetrics.newIssues"
         :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
         />
-      <collapsible-section
+      <report-section
         class="js-performance-widget"
         v-if="shouldRenderPerformance"
         type="performance"
@@ -331,7 +331,7 @@ export default {
         :resolved-issues="mr.performanceMetrics.improved"
         :neutral-issues="mr.performanceMetrics.neutral"
         />
-      <collapsible-section
+      <report-section
         class="js-sast-widget"
         v-if="shouldRenderSecurityReport"
         type="security"
@@ -344,7 +344,7 @@ export default {
         :all-issues="mr.securityReport.allIssues"
         :has-priority="true"
         />
-      <collapsible-section
+      <report-section
         class="js-docker-widget"
         v-if="shouldRenderDockerReport"
         type="docker"
@@ -357,7 +357,7 @@ export default {
         :info-text="sastContainerInformationText()"
         :has-priority="true"
         />
-      <collapsible-section
+      <report-section
         class="js-dast-widget"
         v-if="shouldRenderDastReport"
         type="dast"
