@@ -337,14 +337,14 @@ class Project < ActiveRecord::Base
       authorized = user
         .project_authorizations
         .select(1)
-        .where('project_authorizations.project_id = p1.id')
-      authorized_projects = block.call(from("#{table_name} AS p1").where('EXISTS (?)', authorized))
+        .where('project_authorizations.project_id = projects.id')
+      authorized_projects = block.call(where('EXISTS (?)', authorized))
 
-      visible_projects = block.call(from("#{table_name} AS p2").where('visibility_level IN (?)', levels))
+      visible_projects = block.call(where('visibility_level IN (?)', levels))
 
       # We use a UNION here instead of OR clauses since this results in better
       # performance.
-      union = Gitlab::SQL::Union.new([authorized_projects.select('p1.id'), visible_projects.select('p2.id')])
+      union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
       # TODO: from("(#{union.to_sql}) AS #{table_name}")
       where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     else
