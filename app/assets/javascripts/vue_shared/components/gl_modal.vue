@@ -1,13 +1,12 @@
 <script>
-  const buttonVariants = [
-    'danger',
-    'primary',
-    'success',
-    'warning',
-  ];
+  import ModalButton from './modal_button.vue';
 
   export default {
     name: 'GlModal',
+
+    components: {
+      ModalButton,
+    },
 
     props: {
       id: {
@@ -24,18 +23,36 @@
         type: String,
         required: false,
         default: 'primary',
-        validator: value => buttonVariants.indexOf(value) !== -1,
       },
       footerPrimaryButtonText: {
         type: String,
         required: false,
         default: '',
       },
+      footerSecondaryButtonVariant: {
+        type: String,
+        required: false,
+        default: 'default',
+      },
+      footerSecondaryButtonText: {
+        type: String,
+        required: false,
+        default: '',
+      },
+    },
+
+    computed: {
+      hasSecondaryButton() {
+        return this.footerSecondaryButtonText && this.footerSecondaryButtonText !== '';
+      },
     },
 
     methods: {
       emitCancel(event) {
         this.$emit('cancel', event);
+      },
+      emitSecondaryAction(event) {
+        this.$emit('secondaryAction', event);
       },
       emitSubmit(event) {
         this.$emit('submit', event);
@@ -81,23 +98,22 @@
 
         <div class="modal-footer">
           <slot name="footer">
-            <button
-              type="button"
-              class="btn"
-              data-dismiss="modal"
-              @click="emitCancel($event)"
-            >
+            <modal-button @click="emitCancel($event)">
               {{ s__('Modal|Cancel') }}
-            </button>
-            <button
-              type="button"
-              class="btn"
-              :class="`btn-${footerPrimaryButtonVariant}`"
-              data-dismiss="modal"
+            </modal-button>
+            <modal-button
+              v-if="hasSecondaryButton"
+              :variant="footerSecondaryButtonVariant"
+              @click="emitSecondaryAction($event)"
+            >
+              {{ footerSecondaryButtonText }}
+            </modal-button>
+            <modal-button
+              :variant="footerPrimaryButtonVariant"
               @click="emitSubmit($event)"
             >
               {{ footerPrimaryButtonText }}
-            </button>
+            </modal-button>
           </slot>
         </div>
       </div>

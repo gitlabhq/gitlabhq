@@ -80,6 +80,52 @@ describe('GlModal', () => {
         expect(primaryButton.innerHTML.trim()).toBe(props.footerPrimaryButtonText);
       });
     });
+
+    describe('with footerSecondaryButtonVariant', () => {
+      const props = {
+        footerSecondaryButtonText: 'something to make the button visible',
+        footerSecondaryButtonVariant: 'danger',
+      };
+
+      beforeEach(() => {
+        vm = mountComponent(modalComponent, props);
+      });
+
+      it('sets the secondary button class', () => {
+        const secondaryButton = vm.$el.querySelector('.modal-footer button:nth-of-type(2)');
+        expect(secondaryButton.classList).toContain(`btn-${props.footerSecondaryButtonVariant}`);
+      });
+    });
+
+    describe('with footerSecondaryButtonText', () => {
+      const props = {
+        footerSecondaryButtonText: 'my second button text',
+      };
+
+      beforeEach(() => {
+        vm = mountComponent(modalComponent, props);
+      });
+
+      it('sets the secondary button text', () => {
+        const secondaryButton = vm.$el.querySelector('.modal-footer button:nth-of-type(2)');
+        expect(secondaryButton.innerHTML.trim()).toBe(props.footerSecondaryButtonText);
+      });
+    });
+
+    describe('without footerSecondaryButtonText', () => {
+      const props = {
+        footerSecondaryButtonText: null,
+      };
+
+      beforeEach(() => {
+        vm = mountComponent(modalComponent, props);
+      });
+
+      it('does not render a secondary button', () => {
+        const buttons = vm.$el.querySelectorAll('.modal-footer button');
+        expect(buttons.length).toBe(2);
+      });
+    });
   });
 
   it('works with data-toggle="modal"', (done) => {
@@ -111,6 +157,14 @@ describe('GlModal', () => {
         vm.emitCancel(dummyEvent);
 
         expect(vm.$emit).toHaveBeenCalledWith('cancel', dummyEvent);
+      });
+    });
+
+    describe('emitSecondaryAction', () => {
+      it('emits a secondaryAction event', () => {
+        vm.emitSecondaryAction(dummyEvent);
+
+        expect(vm.$emit).toHaveBeenCalledWith('secondaryAction', dummyEvent);
       });
     });
 

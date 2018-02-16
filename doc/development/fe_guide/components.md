@@ -59,3 +59,24 @@ Here is an example of how to use it:
 ```
 
 ![example modal](img/gl-modal.png)
+
+### Modals with secondary action
+
+You can also add a secondary button to modals:
+
+```html
+  <gl-modal
+    id="dogs-out-modal"
+    :header-title-text="s__('ModalExample|Let the dogs out?')"
+    footer-primary-button-variant="danger"
+    :footer-primary-button-text="s__('ModalExample|Let them out')"
+    footer-secondary-button-variant="success"
+    :footer-secondary-button-text="s__('ModalExample|Call Ghostbusters')"
+    @submit="letOut(theDogs)"
+    @secondaryAction="Ghostbusters.call()"
+  >
+    {{ s__('ModalExample|You’re about to let the dogs out.') }}
+  </gl-modal>
+```
+
+![example modal with secondary action](img/gl-modal-secondary.png)
