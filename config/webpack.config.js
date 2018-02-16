@@ -31,7 +31,7 @@ var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
 pageEntries.forEach(( path ) => {
   let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(chunkPath)) {
+  if (!dispatcherChunks.includes('./' + chunkPath)) {
     let chunkName = chunkPath.replace(/\//g, '.');
     autoEntries[chunkName] = './' + path;
   }
