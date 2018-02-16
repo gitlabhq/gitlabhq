@@ -18,6 +18,6 @@ export default class PipelineService {
   }
 
   static getSecurityReport(endpoint) {
-    return Vue.http.get(`${endpoint}.json`);
+    return Vue.http.get(endpoint);
   }
 }
