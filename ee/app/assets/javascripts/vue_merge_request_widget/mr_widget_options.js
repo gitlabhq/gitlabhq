@@ -113,11 +113,13 @@ export default {
     },
 
     securityText() {
-      const { newIssues, resolvedIssues } = this.mr.securityReport;
+      const { newIssues, resolvedIssues, allIssues } = this.mr.securityReport;
       const text = [];
 
-      if (!newIssues.length && !resolvedIssues.length) {
+      if (!newIssues.length && !resolvedIssues.length && !allIssues.length) {
         text.push(s__('ciReport|SAST detected no security vulnerabilities'));
+      } else if (!newIssues.length && !resolvedIssues.length && allIssues.length) {
+        text.push(s__('ciReport|SAST detected no new security vulnerabilities'));
       } else if (newIssues.length || resolvedIssues.length) {
         text.push(s__('ciReport|SAST'));
       }
