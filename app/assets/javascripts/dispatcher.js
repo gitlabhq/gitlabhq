@@ -359,26 +359,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'admin:jobs:index':
-          import('./pages/admin/jobs/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:projects:index':
-          import('./pages/admin/projects/index/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:users:index':
-          import('./pages/admin/users/shared')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:users:show':
-          import('./pages/admin/users/shared')
-            .then(callDefault)
-            .catch(fail);
-          break;
       }
       switch (path[0]) {
         case 'sessions':
