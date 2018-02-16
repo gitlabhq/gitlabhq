@@ -39,7 +39,6 @@ module Gitlab
                 right: line
               }
 
-              free_right_index = nil
               i += 1
             end
           elsif line.meta? || line.unchanged?
