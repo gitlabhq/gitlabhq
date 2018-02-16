@@ -56,8 +56,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def feature_available_projects
-    projects = Project.public_or_visible_to_user(current_user)
-      .with_feature_available_for_user(:snippets, current_user).select(:id)
+    projects = Project.public_or_visible_to_user_with_feature_available(current_user, :snippets).select(:id)
     arel_query = Arel::Nodes::SqlLiteral.new(projects.to_sql)
     table[:project_id].in(arel_query)
   end

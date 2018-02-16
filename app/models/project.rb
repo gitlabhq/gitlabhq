@@ -343,6 +343,35 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Combination of .public_or_visible_to_user AND .with_feature_available_for_user
+  # We duplicated this for (database) performance reasons to optimize the query.
+  def self.public_or_visible_to_user_with_feature_available(user, feature)
+    if user
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = projects.id')
+
+      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+
+      if Gitlab::VisibilityLevel.all_levels?(levels)
+        # If the user is allowed to see all projects,
+        # we can shortcut and just return.
+        return all.with_feature_available_for_user(feature, user)
+      end
+
+      authorized_projects = where('EXISTS (?)', authorized).with_feature_available_for_user(feature, user).select(:id)
+      visible_projects = where('visibility_level IN (?)', levels).with_feature_available_for_user(feature, user).select(:id)
+
+      # We use a UNION here instead of OR clauses since this results in better
+      # performance.
+      union = Gitlab::SQL::Union.new([authorized_projects, visible_projects])
+      from("(#{union.to_sql}) projects")
+    else
+      public_to_user.with_feature_available_for_user(feature, user)
+    end
+  end
+
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either enabled, or internal with permission for the user.
