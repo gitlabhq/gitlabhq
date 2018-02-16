@@ -73,8 +73,11 @@ learn how to leverage its potential even more.
 - [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 - [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
   more Kubernetes clusters to your project
+<<<<<<< HEAD
 - [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
   and status of each CI/CD environment running on Kubernetes
+=======
+>>>>>>> upstream/master
 
 ## GitLab CI/CD for Docker
 
