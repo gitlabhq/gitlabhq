@@ -1,6 +1,7 @@
 - failed_builds = @pipeline.statuses.latest.failed
 - sast_artifact = @pipeline.sast_artifact
 - sast_artifact_url = raw_project_build_artifacts_url(@project, sast_artifact, path: Ci::Build::SAST_FILE) if sast_artifact
+- blob_path = project_blob_path(@project, @pipeline.sha)
 
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator
@@ -61,4 +62,4 @@
         %pre.build-log= build_summary(build, skip: index >= 10)
   - if sast_artifact
     #js-tab-security.build-security.tab-pane
-      #js-security-report-app{ data: { endpoint: sast_artifact_url, blobPath: '' } }
+      #js-security-report-app{ data: { endpoint: sast_artifact_url, blobPath: blob_path } }
