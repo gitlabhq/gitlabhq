@@ -65,7 +65,7 @@ export default {
       };
     },
     showApproveButton() {
-      return this.userCanApprove && !this.userHasApproved;
+      return this.userCanApprove && !this.userHasApproved && this.mr.isOpen;
     },
     showSuggestedApprovers() {
       return this.suggestedApprovers && this.suggestedApprovers.length;

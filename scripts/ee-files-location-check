@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+WHITELIST = %w[
+  CHANGELOG-EE.md
+  app/assets/javascripts/**/*
+  changelogs/unreleased-ee/**/*
+  config/**/*
+  doc/**/*
+  scripts/*
+  spec/javascripts/**/*
+].freeze
+
+`git remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git`
+`git remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git`
+`git fetch canonical-ee master --quiet`
+`git fetch canonical-ce master --quiet`
+new_files_in_this_branch_not_at_the_ee_top_level =
+  `git diff canonical-ee/master...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2`.lines.map(&:strip)
+ee_specific_files_in_ce_master_not_at_the_ee_top_level =
+  `git diff canonical-ce/master...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2`.lines.map(&:strip)
+new_ee_specific_files_not_at_the_ee_top_level =
+  new_files_in_this_branch_not_at_the_ee_top_level & ee_specific_files_in_ce_master_not_at_the_ee_top_level
+
+status = 0
+
+new_ee_specific_files_not_at_the_ee_top_level.each do |file|
+  next if WHITELIST.any? { |pattern| Dir.glob(pattern).include?(file) }
+
+  puts
+  puts "* #{file} is EE-specific and should be moved to ee/#{file}:"
+  puts "  => git mv #{file} ee/#{file}"
+  status = 1
+end
+
+`git remote remove canonical-ee`
+`git remote remove canonical-ce`
+
+exit(status)

@@ -17,6 +17,8 @@ import {
   dockerReportParsed,
   dast,
   parsedDast,
+  sastBaseAllIssues,
+  sastHeadAllIssues,
 } from '../vue_shared/security_reports/mock_data';
 
 import mountComponent from '../helpers/vue_mount_component_helper';
@@ -77,6 +79,31 @@ describe('ee merge request widget options', () => {
           expect(
             vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
           ).toEqual('SAST improved on 1 security vulnerability and degraded on 2 security vulnerabilities');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with full report and no added or fixed issues', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('renders no new vulnerabilities message', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-sast-widget .js-code-text').textContent.trim(),
+          ).toEqual('SAST detected no new security vulnerabilities');
           done();
         }, 0);
       });

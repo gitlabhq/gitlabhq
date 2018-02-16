@@ -117,8 +117,8 @@ export default {
     },
 
     securityText() {
-      const { newIssues, resolvedIssues } = this.mr.securityReport;
-      return this.sastText(newIssues, resolvedIssues);
+      const { newIssues, resolvedIssues, allIssues } = this.mr.securityReport;
+      return this.sastText(newIssues, resolvedIssues, allIssues);
     },
 
     dockerText() {

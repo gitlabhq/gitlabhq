@@ -75,6 +75,7 @@ export default class AjaxVariableList {
 
         if (res.status === statusCodes.OK && res.data) {
           this.updateRowsWithPersistedVariables(res.data.variables);
+          this.variableList.hideValues();
         } else if (res.status === statusCodes.BAD_REQUEST) {
           // Validation failed
           this.errorBox.innerHTML = generateErrorBoxContent(res.data);

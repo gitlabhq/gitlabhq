@@ -19,19 +19,10 @@ module Issues
       # on rewriting notes (unfolding references)
       #
       ActiveRecord::Base.transaction do
-        # New issue tasks
-        #
         @new_issue = create_new_issue
 
-        rewrite_notes
-        rewrite_issue_award_emoji
-        add_note_moved_from
-
-        # Old issue tasks
-        #
-        add_note_moved_to
-        close_issue
-        mark_as_moved
+        update_new_issue
+        update_old_issue
       end
 
       notify_participants
@@ -40,6 +31,18 @@ module Issues
     end
 
     private
+
+    def update_new_issue
+      rewrite_notes
+      rewrite_issue_award_emoji
+      add_note_moved_from
+    end
+
+    def update_old_issue
+      add_note_moved_to
+      close_issue
+      mark_as_moved
+    end
 
     def create_new_issue
       new_params = { id: nil, iid: nil, label_ids: cloneable_label_ids,

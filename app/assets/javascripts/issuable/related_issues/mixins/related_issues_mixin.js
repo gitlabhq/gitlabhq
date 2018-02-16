@@ -63,7 +63,7 @@ const mixins = {
       return this.title.length > 0;
     },
     iconName() {
-      return this.isOpen ? 'issue-open-m' : 'cut';
+      return this.isOpen ? 'issue-open' : 'issue-close';
     },
     iconClass() {
       return this.isOpen ? 'issue-token-state-icon-open' : 'issue-token-state-icon-closed';

@@ -1,9 +1,9 @@
-import axios from '../lib/utils/axios_utils';
-import Activities from '../activities';
+import axios from '~/lib/utils/axios_utils';
+import Activities from '~/activities';
+import { localTimeAgo } from '~/lib/utils/datetime_utility';
+import { __ } from '~/locale';
+import flash from '~/flash';
 import ActivityCalendar from './activity_calendar';
-import { localTimeAgo } from '../lib/utils/datetime_utility';
-import { __ } from '../locale';
-import flash from '../flash';
 
 /**
  * UserTabs

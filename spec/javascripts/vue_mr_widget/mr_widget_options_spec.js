@@ -295,6 +295,15 @@ describe('mrWidgetOptions', () => {
 
         expect(notify.notifyMe).not.toHaveBeenCalled();
       });
+
+      it('should not notify if no pipeline provided', () => {
+        vm.handleNotification({
+          ...data,
+          pipeline: undefined,
+        });
+
+        expect(notify.notifyMe).not.toHaveBeenCalled();
+      });
     });
 
     describe('resumePolling', () => {

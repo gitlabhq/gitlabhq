@@ -17,7 +17,7 @@ describe('security report mixin', () => {
       );
     });
 
-    it('returns text for new issues', () => {
+    it('returns text for added issues', () => {
       expect(mixin.methods.sastText(parsedSastIssuesHead, [])).toEqual(
         'SAST degraded on 2 security vulnerabilities',
       );
@@ -26,6 +26,12 @@ describe('security report mixin', () => {
     it('returns text for fixed issues', () => {
       expect(mixin.methods.sastText([], parsedSastIssuesHead)).toEqual(
         'SAST improved on 2 security vulnerabilities',
+      );
+    });
+
+    it('returns text for full report and no added or fixed issues', () => {
+      expect(mixin.methods.sastText([], [], parsedSastIssuesHead)).toEqual(
+        'SAST detected no new security vulnerabilities',
       );
     });
   });
