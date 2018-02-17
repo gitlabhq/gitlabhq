@@ -101,7 +101,6 @@ describe Projects::MilestonesController do
         group_milestone = assigns(:milestone)
 
         expect(response).to redirect_to(group_milestone_path(project.group, group_milestone.iid))
-        expect(flash[:notice]).to eq('Milestone has been promoted to group milestone.')
       end
     end
 

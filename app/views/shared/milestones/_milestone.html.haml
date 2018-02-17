@@ -51,7 +51,13 @@
           \
 
           - if @project.group
-            = link_to promote_project_milestone_path(milestone.project, milestone), title: "Promote to Group Milestone", class: 'btn btn-xs btn-grouped', data: { confirm: "Promoting #{milestone.title} will make it available for all projects inside #{@project.group.name}. Existing project milestones with the same name will be merged. This action cannot be reversed.", toggle: "tooltip" }, method: :post do
+            %a.js-promote-project-milestone.btn.btn-xs.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
+              data: { url: promote_project_milestone_path(milestone.project, milestone),
+                      milestone_title: milestone.title,
+                      target: '#promote-milestone-modal',
+                      container: 'body',
+                      toggle: 'modal' },
+                      disabled: true }
               Promote
 
           = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-xs btn-close btn-grouped"

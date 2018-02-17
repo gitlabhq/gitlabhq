@@ -2,7 +2,8 @@
   background-color: $modal-body-bg;
   padding: #{3 * $grid-size} #{2 * $grid-size};
 
-  .page-title {
+  .page-title,
+  .modal-title {
     margin-top: 0;
 
     .color-label {

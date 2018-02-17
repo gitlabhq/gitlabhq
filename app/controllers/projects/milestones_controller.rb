@@ -71,8 +71,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
-    flash[:notice] = "Milestone has been promoted to group milestone."
-    redirect_to group_milestone_path(project.group, promoted_milestone.iid)
+    redirect_to group_milestone_path(project.group, promoted_milestone.iid), status: 303
   rescue Milestones::PromoteService::PromoteMilestoneError => error
     redirect_to milestone, alert: error.message
   end
