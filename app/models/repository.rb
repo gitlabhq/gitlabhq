@@ -499,12 +499,8 @@ class Repository
   end
 
   def root_ref
-    if raw_repository
-      raw_repository.root_ref
-    else
-      # When the repo does not exist we raise this error so no data is cached.
-      raise Gitlab::Git::Repository::NoRepository
-    end
+    # When the repo does not exist, or there is no root ref, we raise this error so no data is cached.
+    raw_repository&.root_ref or raise Gitlab::Git::Repository::NoRepository # rubocop:disable Style/AndOr
   end
   cache_method :root_ref
 
