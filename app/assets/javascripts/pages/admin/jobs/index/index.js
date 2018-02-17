@@ -1,7 +1,5 @@
 import Vue from 'vue';
-
 import Translate from '~/vue_shared/translate';
-
 import stopJobsModal from './components/stop_jobs_modal.vue';
 
 Vue.use(Translate);

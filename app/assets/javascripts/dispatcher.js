@@ -48,6 +48,7 @@ var Dispatcher;
         case 'projects:issues:show':
         case 'projects:issues:new':
         case 'projects:issues:edit':
+        case 'projects:merge_requests:creations:new':
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           shortcut_handler = true;
