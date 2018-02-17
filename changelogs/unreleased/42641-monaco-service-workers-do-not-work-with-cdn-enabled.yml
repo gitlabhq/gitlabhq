@@ -1,0 +1,5 @@
+---
+title: Fix monaco editor features which were incompatable with GitLab CDN settings
+merge_request: 17021
+author:
+type: fixed
