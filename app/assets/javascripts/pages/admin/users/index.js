@@ -5,7 +5,7 @@ import csrf from '~/lib/utils/csrf';
 
 import deleteUserModal from './components/delete_user_modal.vue';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   Vue.use(Translate);
 
   const deleteUserModalEl = document.getElementById('delete-user-modal');
@@ -40,4 +40,4 @@ export default () => {
       deleteModal.username = buttonProps.username;
     }
   });
-};
+});
