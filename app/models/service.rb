@@ -240,6 +240,7 @@ class Service < ActiveRecord::Base
       external_wiki
       flowdock
       gemnasium
+      github
       hipchat
       irker
       jenkins

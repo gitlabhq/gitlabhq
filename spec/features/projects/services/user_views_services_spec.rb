@@ -22,5 +22,6 @@ describe 'User views services' do
     expect(page).to have_content('Asana')
     expect(page).to have_content('Irker (IRC gateway)')
     expect(page).to have_content('Packagist')
+    expect(page).to have_content('GitHub')
   end
 end
