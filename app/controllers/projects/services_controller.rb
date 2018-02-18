@@ -3,6 +3,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!
+  before_action :ensure_service_enabled
   before_action :service, only: [:edit, :update, :test]
 
   respond_to :html
@@ -53,5 +54,9 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def service
     @service ||= @project.find_or_initialize_service(params[:id])
+  end
+
+  def ensure_service_enabled
+    render_404 unless service
   end
 end
