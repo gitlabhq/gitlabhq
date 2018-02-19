@@ -105,7 +105,7 @@ features of GitLab work with MySQL/MariaDB:
 
 1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
-1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
+1. Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
 1. [Database load balancing](../administration/database_load_balancing.md) is
    supported only for PostgreSQL.
