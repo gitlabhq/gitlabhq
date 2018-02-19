@@ -24,17 +24,22 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       edit_button_tag(edit_text, common_classes)
     # This condition applies to anonymous or users who can edit directly
-    elsif !current_user || user_can_modify_blob(blob, project, ref)
+    elsif !current_user || user_can_modify_blob?(blob, project, ref)
       edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
-    elsif user_can_fork_project(project)
+    elsif user_can_fork_project?(project)
       edit_fork_button_tag(common_classes,
-                           project, edit_text,
+                           project,
+                           edit_text,
                            edit_blob_fork_params(edit_blob_path(project, ref, path, options)))
     end
   end
 
-  def user_can_fork_project(project)
+  def user_can_fork_project?(project)
     current_user && can?(current_user, :fork_project, project)
+  end
+
+  def user_can_modify_blob?(blob, project, ref)
+    current_user && can_modify_blob?(blob, project, ref)
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
@@ -59,18 +64,14 @@ module BlobHelper
       edit_button_tag(ide_edit_text, common_classes)
     # This condition only applies to users who are logged in
     # Web IDE (Beta) requires the user to have this feature enabled
-    elsif user_can_modify_blob(blob, project, ref)
+    elsif user_can_modify_blob?(blob, project, ref)
       edit_link_tag(ide_edit_text, ide_edit_path(project, ref, path, options), common_classes)
-    elsif user_can_fork_project(project)
+    elsif user_can_fork_project?(project)
       edit_fork_button_tag(common_classes,
                            project,
                            ide_edit_text,
                            edit_blob_fork_params(ide_edit_path(project, ref, path, options)))
     end
-  end
-
-  def user_can_modify_blob(blob, project, ref)
-    current_user && can_modify_blob?(blob, project, ref)
   end
 
   def modify_file_element(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
