@@ -19,9 +19,15 @@ describe ProjectAuthorization do
     subject { described_class.roles_stats.to_a }
 
     it do
-      expect(subject).to include({ 'kind' => 'reporter', 'amount' => '1' })
-      expect(subject).to include({ 'kind' => 'developer', 'amount' => '2' })
-      expect(subject).to include({ 'kind' => 'master', 'amount' => '2' })
+      expect(amount_for_kind('reporter')).to eq(1)
+      expect(amount_for_kind('developer')).to eq(2)
+      expect(amount_for_kind('master')).to eq(2)
+    end
+
+    def amount_for_kind(access_level)
+      subject.find do |row|
+        row['kind'] == access_level
+      end['amount'].to_i
     end
   end
 end

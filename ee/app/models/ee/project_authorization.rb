@@ -3,8 +3,20 @@ module EE
     extend ActiveSupport::Concern
 
     module ClassMethods
+      # Get amout of users with highest role they have.
+      # If John is developer in one project but master in another he will be
+      # counted once as master. This is needed to count users who don't use
+      # functionality available to higher roles only.
+      #
+      # Example of result:
+      #  [{"kind"=>"guest", "amount"=>"4"},
+      #  {"kind"=>"reporter", "amount"=>"6"},
+      #  {"kind"=>"developer", "amount"=>"10"},
+      #  {"kind"=>"master", "amount"=>"9"},
+      #  {"kind"=>"owner", "amount"=>"1"}]
+      #
       def roles_stats
-        connection.execute <<-EOF.strip_heredoc
+        connection.exec_query <<-EOF.strip_heredoc
           SELECT CASE access_level
             WHEN 10 THEN 'guest'
             WHEN 20 THEN 'reporter'
