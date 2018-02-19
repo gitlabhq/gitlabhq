@@ -14,14 +14,7 @@ class SystemHooksService
       hook.async_execute(data, 'system_hooks')
     end
 
-    # Execute external plugins
-    Gitlab::Plugin.all.each do |plugin|
-      begin
-        plugin.new.execute(data)
-      rescue => e
-        Rails.logger.warn("GitLab -> Plugins -> #{plugin.class.name} raised an axception during execution. #{e}")
-      end
-    end
+    Gitlab::Plugin.execute_all_async(data)
   end
 
   private
