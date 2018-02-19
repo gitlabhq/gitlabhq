@@ -63,10 +63,10 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(repository, ref:, format:)
+      def send_git_archive(repository, ref:, format:, append_sha: true)
         format ||= 'tar.gz'
         format.downcase!
-        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
+        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha)
         raise "Repository or ref not found" if params.empty?
 
         if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)

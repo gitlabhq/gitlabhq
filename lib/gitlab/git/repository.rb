@@ -394,17 +394,24 @@ module Gitlab
         nil
       end
 
-      def archive_prefix(ref, sha)
+      def archive_prefix(ref, sha, append_sha:)
+        append_sha = (ref != sha) if append_sha.nil?
+
         project_name = self.name.chomp('.git')
-        "#{project_name}-#{ref.tr('/', '-')}-#{sha}"
+        formatted_ref = ref.tr('/', '-')
+
+        prefix_segments = [project_name, formatted_ref]
+        prefix_segments << sha if append_sha
+
+        prefix_segments.join('-')
       end
 
-      def archive_metadata(ref, storage_path, format = "tar.gz")
+      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha: true)
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
         return {} if commit.nil?
 
-        prefix = archive_prefix(ref, commit.id)
+        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
 
         {
           'RepoPath' => path,

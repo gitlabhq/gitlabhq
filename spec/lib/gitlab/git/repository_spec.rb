@@ -247,15 +247,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA')
+      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: true)
 
       expect(prefix).to eq("#{project_name}-test-branch-SHA")
     end
 
     it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA')
+      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: true)
 
       expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    end
+
+    it 'returns string with sha when append_sha is false' do
+      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: false)
+
+      expect(prefix).to eq("#{project_name}-test.branch")
     end
   end
 
