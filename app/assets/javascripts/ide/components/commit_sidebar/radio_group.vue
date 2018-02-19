@@ -30,7 +30,7 @@
         type: String,
         required: false,
         default: null,
-      }
+      },
     },
     computed: {
       ...mapState('commit', [
@@ -43,6 +43,7 @@
     methods: {
       ...mapActions('commit', [
         'updateCommitAction',
+        'updateBranchName',
       ]),
     },
   };
