@@ -38,7 +38,7 @@ module EE
     end
 
     def boards_link_text
-      if @project.multiple_issue_boards_available?
+      if parent.multiple_issue_boards_available?
         s_("IssueBoards|Boards")
       else
         s_("IssueBoards|Board")

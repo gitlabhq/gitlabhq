@@ -58,9 +58,6 @@ class GroupPolicy < BasePolicy
     enable :admin_issue
   end
 
-  rule { developer }.enable :admin_milestones
-  rule { reporter }.enable :admin_label
-
   rule { master }.policy do
     enable :create_projects
     enable :admin_pipeline

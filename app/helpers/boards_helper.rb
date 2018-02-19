@@ -63,7 +63,7 @@ module BoardsHelper
       labels: labels_filter_path(true),
       labels_endpoint: @labels_endpoint,
       namespace_path: @namespace_path,
-      project_path: @project&.try(:path),
+      project_path: @project&.path,
       group_path: @group&.path
     }
   end
@@ -76,7 +76,7 @@ module BoardsHelper
       field_name: 'issue[assignee_ids][]',
       first_user: current_user&.username,
       current_user: 'true',
-      project_id: @project&.try(:id),
+      project_id: @project&.id,
       group_id: @group&.id,
       null_user: 'true',
       multi_select: 'true',

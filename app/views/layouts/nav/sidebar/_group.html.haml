@@ -59,6 +59,7 @@
                 %strong.fly-out-top-item-name
                   #{ _('Issues') }
                 %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues_count)
+
             %li.divider.fly-out-top-item
             = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
               = link_to issues_group_path(@group), title: 'List' do
@@ -67,9 +68,9 @@
 
             - if group_sidebar_link?(:boards)
               = nav_link(path: ['boards#index', 'boards#show']) do
-                = link_to group_boards_path(@group), title: 'Boards' do
+                = link_to group_boards_path(@group), title: boards_link_text do
                   %span
-                    Boards
+                    = boards_link_text
 
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do
