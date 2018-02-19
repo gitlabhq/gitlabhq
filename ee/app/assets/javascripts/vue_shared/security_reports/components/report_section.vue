@@ -159,7 +159,7 @@
 
         <button
           type="button"
-          class="js-collapse-btn btn pull-right btn-sm"
+          class="js-collapse-btn btn bt-default pull-right btn-sm"
           v-if="isCollapsible && hasIssues"
           @click="toggleCollapsed"
         >

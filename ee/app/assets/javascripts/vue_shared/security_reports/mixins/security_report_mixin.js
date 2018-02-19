@@ -38,8 +38,8 @@ export default {
 
     translateText(type) {
       return {
-        error: s__(`ciReport|Failed to load ${type} report`),
-        loading: s__(`ciReport|Loading ${type} report`),
+        error: sprintf(s__('ciReport|Failed to load %{reportName} report'), { reportName: type }),
+        loading: sprintf(s__('ciReport|Loading %{report} report'), { reportName: type }),
       };
     },
 
