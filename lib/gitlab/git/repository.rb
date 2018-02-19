@@ -2195,6 +2195,7 @@ module Gitlab
           # Apply diff of the `diff_range` to the worktree
           diff = run_git!(%W(diff --binary #{diff_range}))
           run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+            stdin.binmode
             stdin.write(diff)
           end
 
