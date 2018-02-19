@@ -459,6 +459,7 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
     t.string "ip_address"
+    t.integer "job_upper_timeout"
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
