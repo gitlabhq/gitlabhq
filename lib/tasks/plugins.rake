@@ -27,13 +27,13 @@ namespace :plugins do
   task validate: :environment do
     puts 'Validating plugins from /plugins directory'
 
-    Gitlab::Plugin.all.each do |plugin|
-      begin
-        plugin.new.execute(Gitlab::DataBuilder::Push::SAMPLE_DATA)
-      rescue => e
-        puts "- #{plugin} raised an exception during boot check. #{e}"
+    Gitlab::Plugin.files.each do |file|
+      result = Gitlab::Plugin.execute(file, Gitlab::DataBuilder::Push::SAMPLE_DATA)
+
+      if result
+        puts "* #{file} succeed (zero exit code)"
       else
-        puts "- #{plugin} passed validation check"
+        puts "* #{file} failure (non-zero exit code)"
       end
     end
   end
