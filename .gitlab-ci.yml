@@ -291,7 +291,7 @@ retrieve-tests-metadata:
 
 ee-files-location-check:
   <<: *dedicated-runner
-  stage: prepare
+  stage: test
   before_script: []
   cache: {}
   script:
