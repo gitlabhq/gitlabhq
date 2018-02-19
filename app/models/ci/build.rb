@@ -232,8 +232,15 @@ module Ci
     end
 
     def timeout
+      return runner.job_upper_timeout if should_use_runner_timeout
+
       project.build_timeout
     end
+
+    def should_use_runner_timeout
+      runner && runner.defines_job_upper_timeout? && runner.job_upper_timeout < project.build_timeout
+    end
+    private :should_use_runner_timeout
 
     def triggered_by?(current_user)
       user == current_user

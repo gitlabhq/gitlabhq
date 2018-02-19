@@ -658,6 +658,41 @@ describe API::Runner do
               end
             end
           end
+
+          describe 'timeout support' do
+            context 'when project specifies job timeout' do
+              let(:project) { create(:project, shared_runners_enabled: false, build_timeout: 1234) }
+
+              it 'contains info about timeout taken from project' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
+              end
+
+              context 'when runner specifies lower timeout' do
+                let(:runner) { create(:ci_runner, job_upper_timeout: 1000) }
+
+                it 'contains info about timeout overridden by runner' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(201)
+                  expect(json_response['runner_info']).to include({ 'timeout' => 1000 })
+                end
+              end
+
+              context 'when runner specifies bigger timeout' do
+                let(:runner) { create(:ci_runner, job_upper_timeout: 2000) }
+
+                it 'contains info about timeout not overridden by runner' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(201)
+                  expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
+                end
+              end
+            end
+          end
         end
 
         def request_job(token = runner.token, **params)

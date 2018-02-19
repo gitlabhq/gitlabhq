@@ -556,6 +556,24 @@ describe Ci::Runner do
     end
   end
 
+  describe '#defines_job_upper_timeout?' do
+    context 'when job upper timeout is specified' do
+      subject { create(:ci_runner, job_upper_timeout: 1234) }
+
+      it 'should return true' do
+        expect(subject.defines_job_upper_timeout?).to be_truthy
+      end
+    end
+
+    context 'when job upper timeout is not specified' do
+      subject { create(:ci_runner) }
+
+      it 'should return false' do
+        expect(subject.defines_job_upper_timeout?).to be_falsey
+      end
+    end
+  end
+
   describe '.search' do
     let(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
 

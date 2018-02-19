@@ -167,6 +167,10 @@ module Ci
       end
     end
 
+    def defines_job_upper_timeout?
+      job_upper_timeout && job_upper_timeout > 0
+    end
+
     private
 
     def cleanup_runner_queue
