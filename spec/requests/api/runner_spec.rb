@@ -109,6 +109,16 @@ describe API::Runner do
         end
       end
 
+      context 'when job upper timeout is specified' do
+        it 'creates runner' do
+          post api('/runners'), token: registration_token,
+                                job_upper_timeout: 7200
+
+          expect(response).to have_gitlab_http_status 201
+          expect(Ci::Runner.first.job_upper_timeout).to eq(7200)
+        end
+      end
+
       %w(name version revision platform architecture).each do |param|
         context "when info parameter '#{param}' info is present" do
           let(:value) { "#{param}_value" }

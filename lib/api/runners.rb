@@ -57,6 +57,7 @@ module API
         optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
         optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
                                 desc: 'The access_level of the runner'
+        optional :job_upper_timeout, type: Integer, desc: 'Upper timeout set when this Runner will handle the job'
         at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
       end
       put ':id' do
