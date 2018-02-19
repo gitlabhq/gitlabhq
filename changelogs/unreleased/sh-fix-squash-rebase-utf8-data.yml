@@ -1,0 +1,5 @@
+---
+title: Fix squash rebase not working when diff contained encoded data
+merge_request:
+author:
+type: fixed
