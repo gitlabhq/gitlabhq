@@ -1,3 +1,4 @@
+# coding: utf-8
 require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
@@ -2219,6 +2220,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         it 'checkouts only the files in the diff' do
           subject
+        end
+      end
+
+      context 'with an ASCII-8BIT diff', :skip_gitaly_mock do
+        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
+
+        it 'applies a ASCII-8BIT diff' do
+          allow(repository).to receive(:run_git!).and_call_original
+          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+
+          expect(subject.length).to eq(40)
         end
       end
     end
