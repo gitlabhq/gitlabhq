@@ -101,6 +101,7 @@ class VerifyPagesDomainService < BaseService
   def notify(type)
     return unless verification_enabled?
 
+    Gitlab::AppLogger.info("Pages domain '#{domain.domain}' changed state to '#{type}'")
     notification_service.public_send("pages_domain_#{type}", domain) # rubocop:disable GitlabSecurity/PublicSend
   end
 end
