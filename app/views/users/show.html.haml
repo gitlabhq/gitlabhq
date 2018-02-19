@@ -4,9 +4,6 @@
 - page_description @user.bio
 - header_title     @user.name, user_path(@user)
 - @no_container = true
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'common_d3'
-  = webpack_bundle_tag 'users'
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")

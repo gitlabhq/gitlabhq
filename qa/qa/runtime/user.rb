@@ -18,6 +18,14 @@ module QA
       def ldap_user?
         Runtime::Env.user_type == 'ldap'
       end
+
+      def ldap_username
+        Runtime::Env.ldap_username || name
+      end
+
+      def ldap_password
+        Runtime::Env.ldap_password || password
+      end
     end
   end
 end

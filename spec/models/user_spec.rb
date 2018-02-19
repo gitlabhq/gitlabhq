@@ -893,6 +893,14 @@ describe User do
     end
   end
 
+  describe '.find_for_database_authentication' do
+    it 'strips whitespace from login' do
+      user = create(:user)
+
+      expect(described_class.find_for_database_authentication({ login: " #{user.username} " })).to eq user
+    end
+  end
+
   describe '.find_by_any_email' do
     it 'finds by primary email' do
       user = create(:user, email: 'foo@example.com')

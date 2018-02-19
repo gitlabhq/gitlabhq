@@ -20,5 +20,9 @@ describe EventsHelper do
     it 'handles nil values' do
       expect(helper.event_commit_title(nil)).to eq('')
     end
+
+    it 'does not escape HTML entities' do
+      expect(helper.event_commit_title("foo & bar")).to eq("foo & bar")
+    end
   end
 end
