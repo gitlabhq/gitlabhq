@@ -33,12 +33,29 @@
       },
     },
 
+    data() {
+      return {
+        canSubmit: true,
+      };
+    },
+
+    created() {
+      this.$on('toggleCanSubmit', this.toggleCanSubmit);
+    },
+
+    beforeDestroy() {
+      this.$off('toggleCanSubmit', this.toggleCanSubmit);
+    },
+
     methods: {
       emitCancel(event) {
         this.$emit('cancel', event);
       },
       emitSubmit(event) {
         this.$emit('submit', event);
+      },
+      toggleCanSubmit(canSubmit) {
+        this.canSubmit = canSubmit;
       },
     },
   };
@@ -94,6 +111,7 @@
               class="btn"
               :class="`btn-${footerPrimaryButtonVariant}`"
               data-dismiss="modal"
+              :disabled="!canSubmit"
               @click="emitSubmit($event)"
             >
               {{ footerPrimaryButtonText }}

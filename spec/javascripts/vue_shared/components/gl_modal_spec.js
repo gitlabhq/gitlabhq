@@ -82,22 +82,6 @@ describe('GlModal', () => {
     });
   });
 
-  it('works with data-toggle="modal"', (done) => {
-    setFixtures(`
-      <button id="modal-button" data-toggle="modal" data-target="#my-modal"></button>
-      <div id="modal-container"></div>
-    `);
-
-    const modalContainer = document.getElementById('modal-container');
-    const modalButton = document.getElementById('modal-button');
-    vm = mountComponent(modalComponent, {
-      id: 'my-modal',
-    }, modalContainer);
-    $(vm.$el).on('shown.bs.modal', () => done());
-
-    modalButton.click();
-  });
-
   describe('methods', () => {
     const dummyEvent = 'not really an event';
 
@@ -119,6 +103,38 @@ describe('GlModal', () => {
         vm.emitSubmit(dummyEvent);
 
         expect(vm.$emit).toHaveBeenCalledWith('submit', dummyEvent);
+      });
+    });
+
+    describe('toggleCanSubmit', () => {
+      let primaryButton;
+
+      beforeEach(() => {
+        primaryButton = vm.$el.querySelector('.modal-footer button:last-of-type');
+      });
+
+      it('disables primary button if called with false', (done) => {
+        expect(primaryButton).not.toHaveAttr('disabled');
+
+        vm.toggleCanSubmit(false);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(primaryButton).toHaveAttr('disabled');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('enables primary button if called with true', (done) => {
+        vm.toggleCanSubmit(true);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(primaryButton).not.toHaveAttr('disabled');
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });
@@ -187,6 +203,45 @@ describe('GlModal', () => {
         const modalFooter = vm.$el.querySelector('.modal-footer');
         expect(modalFooter.innerHTML).toBe(slotContent);
       });
+    });
+  });
+
+  describe('events', () => {
+    describe('toggleCanSubmit', () => {
+      const dummyValue = 'some value';
+
+      beforeEach(() => {
+        vm = mountComponent(modalComponent, { });
+      });
+
+      it('toggles canSubmit', (done) => {
+        vm.$emit('toggleCanSubmit', dummyValue);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.canSubmit).toBe(dummyValue);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+  });
+
+  describe('behavior', () => {
+    it('works with data-toggle="modal"', (done) => {
+      setFixtures(`
+        <button id="modal-button" data-toggle="modal" data-target="#my-modal"></button>
+        <div id="modal-container"></div>
+      `);
+
+      const modalContainer = document.getElementById('modal-container');
+      const modalButton = document.getElementById('modal-button');
+      vm = mountComponent(modalComponent, {
+        id: 'my-modal',
+      }, modalContainer);
+      $(vm.$el).on('shown.bs.modal', () => done());
+
+      modalButton.click();
     });
   });
 });
