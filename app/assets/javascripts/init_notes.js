@@ -2,6 +2,9 @@ import Notes from './notes';
 
 export default () => {
   const dataEl = document.querySelector('.js-notes-data');
+
+  if (!dataEl) return;
+
   const {
     notesUrl,
     notesIds,

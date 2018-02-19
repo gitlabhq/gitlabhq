@@ -51,90 +51,14 @@ var Dispatcher;
         case 'projects:merge_requests:creations:new':
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          shortcut_handler = true;
-          break;
-        case 'projects:services:edit':
-          import('./pages/projects/services/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:new':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:edit':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:create':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:update':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:releases:edit':
-          import('./pages/projects/releases/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:merge_requests:show':
-          import('./pages/projects/merge_requests/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'dashboard:activity':
-          import('./pages/dashboard/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:commit:show':
-          import('./pages/projects/commit/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:commit:pipelines':
-          import('./pages/projects/commit/pipelines')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:activity':
-          import('./pages/projects/activity')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:commits:show':
-          import('./pages/projects/commits/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:show':
+        case 'projects:commits:show':
+        case 'groups:show':
+        case 'projects:network:show':
           shortcut_handler = true;
-          break;
-        case 'projects:edit':
-          import('./pages/projects/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:imports:show':
-          import('./pages/projects/imports/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:new':
-        case 'projects:pipelines:create':
-          import('./pages/projects/pipelines/new')
-            .then(callDefault)
-            .catch(fail);
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -147,9 +71,6 @@ var Dispatcher;
           import('./pages/groups/activity')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'groups:show':
-          shortcut_handler = true;
           break;
         case 'groups:group_members:index':
           import('./pages/groups/group_members/index')
@@ -236,11 +157,6 @@ var Dispatcher;
           import('./pages/projects/labels/index')
             .then(callDefault)
             .catch(fail);
-          break;
-        case 'projects:network:show':
-          // Ensure we don't create a particular shortcut handler here. This is
-          // already created, where the network graph is created.
-          shortcut_handler = true;
           break;
         case 'projects:forks:new':
           import('./pages/projects/forks/new')
