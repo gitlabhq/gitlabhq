@@ -37,11 +37,60 @@ describe Gitlab::SSHPublicKey, lib: true do
     end
   end
 
+  describe '.sanitize(key_content)' do
+    let(:content) { build(:key).key }
+
+    context 'when key has blank space characters' do
+      it 'removes the extra blank space characters' do
+        unsanitized = content.insert(100, "\n")
+          .insert(40, "\r\n")
+          .insert(30, ' ')
+
+        sanitized = described_class.sanitize(unsanitized)
+        _, body = sanitized.split
+
+        expect(sanitized).not_to eq(unsanitized)
+        expect(body).not_to match(/\s/)
+      end
+    end
+
+    context "when key doesn't have blank space characters" do
+      it "doesn't modify the content" do
+        sanitized = described_class.sanitize(content)
+
+        expect(sanitized).to eq(content)
+      end
+    end
+
+    context "when key is invalid" do
+      it 'returns the original content' do
+        unsanitized = "ssh-foo any content=="
+        sanitized = described_class.sanitize(unsanitized)
+
+        expect(sanitized).to eq(unsanitized)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { public_key }
 
     context 'with a valid SSH key' do
-      it { is_expected.to be_valid }
+      where(:factory) do
+        %i(rsa_key_2048
+           rsa_key_4096
+           rsa_key_5120
+           rsa_key_8192
+           dsa_key_2048
+           ecdsa_key_256
+           ed25519_key_256)
+      end
+
+      with_them do
+        let(:key) { attributes_for(factory)[:key] }
+
+        it { is_expected.to be_valid }
+      end
     end
 
     context 'with an invalid SSH key' do
@@ -82,6 +131,9 @@ describe Gitlab::SSHPublicKey, lib: true do
     where(:factory, :bits) do
       [
         [:rsa_key_2048, 2048],
+        [:rsa_key_4096, 4096],
+        [:rsa_key_5120, 5120],
+        [:rsa_key_8192, 8192],
         [:dsa_key_2048, 2048],
         [:ecdsa_key_256, 256],
         [:ed25519_key_256, 256]
@@ -106,8 +158,11 @@ describe Gitlab::SSHPublicKey, lib: true do
 
     where(:factory, :fingerprint) do
       [
-        [:rsa_key_2048, '2e:ca:dc:e0:37:29:ed:fc:f0:1d:bf:66:d4:cd:51:b1'],
-        [:dsa_key_2048, 'bc:c1:a4:be:7e:8c:84:56:b3:58:93:53:c6:80:78:8c'],
+        [:rsa_key_2048, '58:a8:9d:cd:1f:70:f8:5a:d9:e4:24:8e:da:89:e4:fc'],
+        [:rsa_key_4096, 'df:73:db:29:3c:a5:32:cf:09:17:7e:8e:9d:de:d7:f7'],
+        [:rsa_key_5120, 'fe:fa:3a:4d:7d:51:ec:bf:c7:64:0c:96:d0:17:8a:d0'],
+        [:rsa_key_8192, 'fb:53:7f:e9:2f:f7:17:aa:c8:32:52:06:8e:05:e2:82'],
+        [:dsa_key_2048, 'c8:85:1e:df:44:0f:20:00:3c:66:57:2b:21:10:5a:27'],
         [:ecdsa_key_256, '67:a3:a9:7d:b8:e1:15:d4:80:40:21:34:bb:ed:97:38'],
         [:ed25519_key_256, 'e6:eb:45:8a:3c:59:35:5f:e9:5b:80:12:be:7e:22:73']
       ]
