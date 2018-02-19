@@ -132,6 +132,7 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
+    mount ::API::GroupBoards
     mount ::API::GroupMilestones
     mount ::API::Internal
     mount ::API::Issues
@@ -175,18 +176,19 @@ module API
     mount ::API::Wikis
 
     ## EE-specific API V4 endpoints START
+    mount ::EE::API::Boards
+    mount ::EE::API::GroupBoards
+
     mount ::API::EpicIssues
     mount ::API::Epics
     mount ::API::Geo
     mount ::API::GeoNodes
-    mount ::API::GroupBoards
     mount ::API::IssueLinks
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
     mount ::API::License
     mount ::API::ProjectImport
     mount ::API::ProjectPushRule
-    mount ::EE::API::Boards
     ## EE-specific API V4 endpoints END
 
     route :any, '*path' do

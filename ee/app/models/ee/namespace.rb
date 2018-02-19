@@ -160,6 +160,11 @@ module EE
       actual_plan&.pipeline_size_limit.to_i
     end
 
+    override :multiple_issue_boards_available?
+    def multiple_issue_boards_available?
+      feature_available?(:multiple_group_issue_boards)
+    end
+
     private
 
     def validate_plan_name

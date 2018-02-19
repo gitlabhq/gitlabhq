@@ -232,9 +232,9 @@ class Namespace < ActiveRecord::Base
     has_parent?
   end
 
-  ## EE only
-  def multiple_issue_boards_available?(user = nil)
-    feature_available?(:multiple_issue_boards)
+  # Overriden on EE module
+  def multiple_issue_boards_available?
+    false
   end
 
   def full_path_was

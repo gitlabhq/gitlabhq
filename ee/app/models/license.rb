@@ -23,7 +23,7 @@ class License < ActiveRecord::Base
     merge_request_squash
     multiple_ldap_servers
     multiple_issue_assignees
-    multiple_issue_boards
+    multiple_project_issue_boards
     push_rules
     protected_refs_for_users
     related_issues
@@ -42,10 +42,10 @@ class License < ActiveRecord::Base
     external_files_in_gitlab_ci
     file_locks
     geo
-    group_issue_boards
     jira_dev_panel_integration
     ldap_group_sync_filter
     multiple_clusters
+    multiple_group_issue_boards
     merge_request_performance_metrics
     object_storage
     service_desk
@@ -86,7 +86,8 @@ class License < ActiveRecord::Base
     merge_request_approvers
     merge_request_squash
     multiple_issue_assignees
-    multiple_issue_boards
+    multiple_project_issue_boards
+    multiple_group_issue_boards
     protected_refs_for_users
     push_rules
     related_issues

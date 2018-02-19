@@ -6,16 +6,11 @@ module API
 
     before do
       authenticate!
-      check_group_issue_boards!
     end
 
     helpers do
       def board_parent
         user_group
-      end
-
-      def check_group_issue_boards!
-        forbidden! unless ::License.feature_available?(:group_issue_boards)
       end
     end
 
@@ -25,6 +20,14 @@ module API
 
     resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       segment ':id/boards' do
+        desc 'Find a group board' do
+          detail 'This feature was introduced in 10.4'
+          success ::API::Entities::Board
+        end
+        get '/:board_id' do
+          present board, with: ::API::Entities::Board
+        end
+
         desc 'Get all group boards' do
           detail 'This feature was introduced in 10.4'
           success Entities::Board
@@ -34,38 +37,6 @@ module API
         end
         get '/' do
           present paginate(board_parent.boards), with: Entities::Board
-        end
-
-        desc 'Find a group board' do
-          detail 'This feature was introduced in 10.4'
-          success Entities::Board
-        end
-        get '/:board_id' do
-          present board, with: Entities::Board
-        end
-
-        desc 'Create a group board' do
-          detail 'This feature was introduced in 10.4'
-          success Entities::Board
-        end
-        params do
-          requires :name, type: String, desc: 'The board name'
-        end
-        post '/' do
-          authorize!(:admin_board, board_parent)
-
-          create_board
-        end
-
-        desc 'Delete a group board' do
-          detail 'This feature was introduced in 10.4'
-          success Entities::Board
-        end
-
-        delete '/:board_id' do
-          authorize!(:admin_board, board_parent)
-
-          delete_board
         end
       end
 

@@ -51,6 +51,14 @@ class GroupPolicy < BasePolicy
   rule { has_access }.enable :read_namespace
 
   rule { developer }.enable :admin_milestones
+
+  rule { reporter }.policy do
+    enable :admin_label
+    enable :admin_list
+    enable :admin_issue
+  end
+
+  rule { developer }.enable :admin_milestones
   rule { reporter }.enable :admin_label
 
   rule { master }.policy do

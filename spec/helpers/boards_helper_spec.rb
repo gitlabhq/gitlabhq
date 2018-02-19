@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe BoardsHelper do
   describe '#build_issue_link_base' do
-    it 'returns correct path for project board' do
-      @project = create(:project)
-      @board = create(:board, project: @project)
+    context 'project board' do
+      it 'returns correct path for project board' do
+        @project = create(:project)
+        @board = create(:board, project: @project)
 
-      expect(build_issue_link_base).to eq("/#{@project.namespace.path}/#{@project.path}/issues")
+        expect(build_issue_link_base).to eq("/#{@project.namespace.path}/#{@project.path}/issues")
+      end
     end
 
     context 'group board' do

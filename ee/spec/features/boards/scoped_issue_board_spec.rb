@@ -23,7 +23,6 @@ describe 'Scoped issue boards', :js do
 
   before do
     allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
-    stub_licensed_features(multiple_issue_boards: true)
     stub_licensed_features(scoped_issue_boards: true)
   end
 
@@ -86,7 +85,7 @@ describe 'Scoped issue boards', :js do
         end
 
         it 'only shows group labels in list on group boards' do
-          stub_licensed_features(group_issue_boards: true)
+          stub_licensed_features(multiple_group_issue_boards: true)
 
           visit group_boards_path(group)
           wait_for_requests

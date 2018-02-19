@@ -1,9 +1,7 @@
 class Groups::BoardsController < Groups::ApplicationController
   prepend EE::Boards::BoardsController
-  prepend EE::BoardsResponses
   include BoardsResponses
 
-  before_action :check_group_issue_boards_available!
   before_action :assign_endpoint_vars
 
   def index
@@ -22,5 +20,9 @@ class Groups::BoardsController < Groups::ApplicationController
     @boards_endpoint = group_boards_url(group)
     @namespace_path = group.to_param
     @labels_endpoint = group_labels_url(group)
+  end
+
+  def serialize_as_json(resource)
+    resource.as_json(only: [:id])
   end
 end
