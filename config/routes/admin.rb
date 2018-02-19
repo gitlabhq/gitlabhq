@@ -138,6 +138,8 @@ namespace :admin do
       get  :status
     end
   end
+
+  get '/dashboard/stats', to: 'dashboard#stats'
   ## EE-specific
 
   resources :labels

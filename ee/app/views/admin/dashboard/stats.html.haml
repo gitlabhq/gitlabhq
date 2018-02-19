@@ -1,0 +1,24 @@
+- page_title 'Users statistics'
+
+%h3 Users statistics
+%table.table
+  %tr
+    %td Users total
+    %td
+      = User.count
+
+  - if @admin_count
+    %tr
+      %td Admin users
+      %td
+        = @admin_count
+
+  - if @roles_count
+    - @roles_count.each do |row|
+      %tr
+        %td
+          Users with highest role
+          %strong
+            = row['kind']
+        %td
+          = row['amount']
