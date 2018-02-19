@@ -2,10 +2,15 @@
   import _ from 'underscore';
   import { s__, sprintf } from '../../locale';
   import applicationRow from './application_row.vue';
+  import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
+  import {
+    APPLICATION_INSTALLED,
+  } from '../constants';
 
   export default {
     components: {
       applicationRow,
+      clipboardButton,
     },
     props: {
       applications: {
@@ -43,19 +48,10 @@
           false,
         );
       },
-      helmTillerDescription() {
-        return _.escape(s__(
-          `ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
-          Tiller runs inside of your Kubernetes Cluster, and manages
-          releases of your charts.`,
-        ));
+      ingressInstalled() {
+        return this.applications.ingress.status === APPLICATION_INSTALLED;
       },
       ingressDescription() {
-        const descriptionParagraph = _.escape(s__(
-          `ClusterIntegration|Ingress gives you a way to route requests to services based on the
-          request host or path, centralizing a number of services into a single entrypoint.`,
-        ));
-
         const extraCostParagraph = sprintf(
           _.escape(s__(
             `ClusterIntegration|%{boldNotice} This will add some extra resources
@@ -83,9 +79,6 @@
         );
 
         return `
-          <p>
-            ${descriptionParagraph}
-          </p>
           <p>
             ${extraCostParagraph}
           </p>
@@ -136,33 +129,123 @@
           id="helm"
           :title="applications.helm.title"
           title-link="https://docs.helm.sh/"
-          :description="helmTillerDescription"
           :status="applications.helm.status"
           :status-reason="applications.helm.statusReason"
           :request-status="applications.helm.requestStatus"
           :request-reason="applications.helm.requestReason"
-        />
+        >
+          <div slot="description">
+            {{ s__(
+              `ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
+              Tiller runs inside of your Kubernetes Cluster, and manages releases of your charts.`,
+            ) }}
+          </div>
+        </application-row>
         <application-row
           id="ingress"
           :title="applications.ingress.title"
           title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
-          :description="ingressDescription"
           :status="applications.ingress.status"
           :status-reason="applications.ingress.statusReason"
           :request-status="applications.ingress.requestStatus"
           :request-reason="applications.ingress.requestReason"
-        />
+        >
+          <div slot="description">
+            <p>
+              {{ s__(
+                `ClusterIntegration|Ingress gives you a way to route
+                requests to services based on the request host or path,
+                centralizing a number of services into a single entrypoint.`,
+              ) }}
+            </p>
+
+            <template v-if="ingressInstalled">
+              <div class="form-group">
+                <label for="ipAddress">
+                  {{ s__("ClusterIntegration| Ingress IP Address") }}
+                </label>
+                <div
+                  v-if="applications.ingress.external_ip"
+                  class="input-group"
+                >
+                  <input
+                    type="text"
+                    id="ipAddress"
+                    class="form-control js-select-on-focus"
+                    :placeholder="applications.ingress.external_ip"
+                    readonly
+                  />
+                  <span class="input-group-btn">
+                    <clipboard-button
+                      :text="applications.ingress.external_ip"
+                      :title="s__('ClusterIntegration|Copy Ingress IP Address')"
+                      css-class="btn btn-default js-clipboard-btn"
+                    />
+                  </span>
+                </div>
+                <input
+                  v-else
+                  type="text"
+                  id="ipAddress"
+                  class="form-control"
+                  readonly
+                  placeholder="?"
+                />
+              </div>
+
+              <p
+                v-if="!applications.ingress.external_ip"
+                class="settings-message js-no-ip-message"
+              >
+                {{ s__(`ClusterIntegration|The IP address is in process
+                to be assigned, please check your Kubernetes
+                cluster or Quotas on GKE if it takes a long time.`) }}
+                <a
+                  href="TODO"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ __("More information") }}
+                </a>
+              </p>
+
+              <p>
+                {{ s__(`ClusterIntegration|Point a wildcard DNS to this
+                generated IP address in order to access
+                your application after it has been deployed.`) }}
+                <a
+                  href="TODO"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ __("More information") }}
+                </a>
+              </p>
+
+            </template>
+            <template
+              v-else
+              v-html="ingressDescription"
+            >
+            </template>
+          </div>
+        </application-row>
         <application-row
           id="prometheus"
           :title="applications.prometheus.title"
           title-link="https://prometheus.io/docs/introduction/overview/"
           :manage-link="managePrometheusPath"
-          :description="prometheusDescription"
           :status="applications.prometheus.status"
           :status-reason="applications.prometheus.statusReason"
           :request-status="applications.prometheus.requestStatus"
           :request-reason="applications.prometheus.requestReason"
-        />
+        >
+          <div
+            slot="description"
+            v-html="prometheusDescription"
+          >
+          </div>
+        </application-row>
         <!--
           NOTE: Don't forget to update `clusters.scss`
           min-height for this block and uncomment `application_spec` tests
