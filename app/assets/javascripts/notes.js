@@ -857,7 +857,7 @@ export default class Notes {
     $note.find('.note-attachment').remove();
     $note.find('.note-body > .note-text').show();
     $note.find('.note-header').show();
-    return $note.find('.diffs .current-note-edit-form').remove();
+    return $note.find('.current-note-edit-form').remove();
   }
 
   /**
