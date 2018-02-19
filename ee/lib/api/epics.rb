@@ -29,6 +29,14 @@ module API
       def epic
         @epic ||= user_group.epics.find_by(iid: params[:epic_iid])
       end
+
+      def find_epics(args = {})
+        args = declared_params.merge(args)
+
+        epics = EpicsFinder.new(current_user, args).execute
+
+        epics.reorder(args[:order_by] => args[:sort])
+      end
     end
 
     params do
@@ -39,8 +47,16 @@ module API
       desc 'Get epics for the group' do
         success Entities::Epic
       end
+      params do
+        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                            desc: 'Return epics ordered by `created_at` or `updated_at` fields.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return epics sorted in `asc` or `desc` order.'
+        optional :search, type: String, desc: 'Search epics for text present in the title or description'
+        optional :author_id, type: Integer, desc: 'Return epics which are authored by the user with the given ID'
+      end
       get ':id/-/epics' do
-        present EpicsFinder.new(current_user, group_id: user_group.id).execute, with: Entities::Epic
+        present find_epics(group_id: user_group.id), with: Entities::Epic
       end
 
       desc 'Get details of an epic' do
