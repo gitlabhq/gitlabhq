@@ -1,5 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.4.4 (2018-02-16)
+
+### Fixed (4 changes)
+
+- Handle empty event timestamp and larger memory units. !4206
+- Geo: Reset force_redownload flag after successful sync.
+- [Geo] Fix redownload repository recovery when there is not local repo at all.
+- Allow project to be set up to push to and pull from same mirror.
+
+
 ## 10.4.3 (2018-02-05)
 
 ### Security (1 change)

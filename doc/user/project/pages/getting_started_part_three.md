@@ -1,14 +1,13 @@
 ---
 last_updated: 2017-09-28
+author: Marcia Ramos
+author_gitlab: marcia
+level: beginner
+article_type: user guide
+date: 2017-02-22
 ---
 
 # GitLab Pages from A to Z: Part 3
-
-> **[Article Type](../../../development/writing_documentation.md#types-of-technical-articles)**: user guide || 
-> **Level**: beginner || 
-> **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
-> **Publication date:** 2017-02-22 ||
-> **Last updated**: 2017-09-28
 
 - [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
 - [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)

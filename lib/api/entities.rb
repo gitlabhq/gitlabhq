@@ -101,6 +101,13 @@ module API
       expose :created_at
     end
 
+    class ProjectImportStatus < ProjectIdentity
+      expose :import_status
+
+      # TODO: Use `expose_nil` once we upgrade the grape-entity gem
+      expose :import_error, if: lambda { |status, _ops| status.import_error }
+    end
+
     class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 

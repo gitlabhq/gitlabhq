@@ -27,11 +27,11 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 
 // filter out entries currently imported dynamically in dispatcher.js
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
 pageEntries.forEach(( path ) => {
   let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(chunkPath)) {
+  if (!dispatcherChunks.includes('./' + chunkPath)) {
     let chunkName = chunkPath.replace(/\//g, '.');
     autoEntries[chunkName] = './' + path;
   }
@@ -90,7 +90,6 @@ var config = {
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',

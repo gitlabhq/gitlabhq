@@ -1,5 +1,7 @@
 module Issues
   class MoveService < Issues::BaseService
+    prepend ::EE::Issues::MoveService
+
     MoveError = Class.new(StandardError)
 
     def execute(issue, new_project)
@@ -48,7 +50,8 @@ module Issues
       new_params = { id: nil, iid: nil, label_ids: cloneable_label_ids,
                      milestone_id: cloneable_milestone_id,
                      project: @new_project, author: @old_issue.author,
-                     description: rewrite_content(@old_issue.description) }
+                     description: rewrite_content(@old_issue.description),
+                     assignee_ids: @old_issue.assignee_ids }
 
       new_params = @old_issue.serializable_hash.symbolize_keys.merge(new_params)
       CreateService.new(@new_project, @current_user, new_params).execute

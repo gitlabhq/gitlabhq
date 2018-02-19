@@ -165,6 +165,11 @@ module Geo
         raise Gitlab::Shell::Error, 'Can not create a temporary repository'
       end
 
+      log_info(
+        'Created temporary repository',
+        temp_path: disk_path_temp
+      )
+
       repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
     end
 

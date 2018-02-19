@@ -1,4 +1,4 @@
-# GitLab Geo
+# Geo
 
 Geo feature requires that we orchestrate a lot of components together.
 For the Database we need to setup a streaming replication. Any operation on disk

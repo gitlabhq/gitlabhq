@@ -48,6 +48,7 @@ following locations:
 - [Pipeline Schedules](pipeline_schedules.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
+- [Project import/export](project_import_export.md)
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
 - [Protected Branches](protected_branches.md)

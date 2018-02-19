@@ -57,7 +57,7 @@ module EE
 
           commit_validation = push_rule.try(:commit_validation?)
           # if newrev is blank, the branch was deleted
-          return if deletion? || !(commit_validation || validate_path_locks?)
+          return if deletion? || !commit_validation
 
           commits.each do |commit|
             push_rule_commit_check(commit)
@@ -142,6 +142,19 @@ module EE
               ERROR_MESSAGES[:push_rule_committer_not_allowed] % { committer_email: commit.committer_email }
             end
           end
+        end
+
+        override :should_run_commit_validations?
+        def should_run_commit_validations?
+          super || validate_path_locks? || push_rule_checks_commit?
+        end
+
+        def push_rule_checks_commit?
+          return false unless push_rule
+
+          push_rule.max_file_size > 0 ||
+            push_rule.file_name_regex.present? ||
+            push_rule.prevent_secrets
         end
 
         override :validations_for_commit

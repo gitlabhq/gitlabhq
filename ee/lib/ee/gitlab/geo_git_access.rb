@@ -4,7 +4,7 @@ module EE
       include ::Gitlab::ConfigHelper
       include ::EE::GitlabRoutingHelper
 
-      GEO_SERVER_DOCS_URL = 'https://docs.gitlab.com/ee/gitlab-geo/using_a_geo_server.html'.freeze
+      GEO_SERVER_DOCS_URL = 'https://docs.gitlab.com/ee/administration/geo/replication/using_a_geo_server.html'.freeze
 
       protected
 
