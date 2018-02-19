@@ -496,6 +496,14 @@ describe User do
         user2.update_tracked_fields!(request)
       end.to change { user2.reload.current_sign_in_at }
     end
+
+    it 'does not write if the DB is in read-only mode' do
+      expect(Gitlab::Database).to receive(:read_only?).and_return(true)
+
+      expect do
+        user.update_tracked_fields!(request)
+      end.not_to change { user.reload.current_sign_in_at }
+    end
   end
 
   shared_context 'user keys' do
