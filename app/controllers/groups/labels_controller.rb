@@ -35,10 +35,18 @@ class Groups::LabelsController < Groups::ApplicationController
   def create
     @label = Labels::CreateService.new(label_params).execute(group: group)
 
-    if @label.valid?
-      redirect_to group_labels_path(@group)
-    else
-      render :new
+    respond_to do |format|
+      format.html do
+        if @label.valid?
+          redirect_to group_labels_path(@group)
+        else
+          render :new
+        end
+      end
+
+      format.json do
+        render json: LabelSerializer.new.represent_appearance(@label)
+      end
     end
   end
 

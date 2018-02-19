@@ -1695,8 +1695,9 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def multiple_issue_boards_available?(user)
-    feature_available?(:multiple_issue_boards, user)
+  # Overridden on EE module
+  def multiple_issue_boards_available?
+    false
   end
 
   def issue_board_milestone_available?(user = nil)

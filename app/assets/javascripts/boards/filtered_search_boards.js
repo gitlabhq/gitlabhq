@@ -6,6 +6,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
     super({
       page: 'boards',
+      stateFiltersSelector: '.issues-state-filters',
     });
 
     this.store = store;

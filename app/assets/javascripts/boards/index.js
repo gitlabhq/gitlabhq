@@ -13,6 +13,7 @@ import './models/issue';
 import './models/label';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';
@@ -89,7 +90,7 @@ export default () => {
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
     },
     mounted () {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;
@@ -179,6 +180,7 @@ export default () => {
       return {
         modal: ModalStore.store,
         store: Store.state,
+        canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
     },
     computed: {
@@ -232,6 +234,7 @@ export default () => {
           :class="{ 'disabled': disabled }"
           :title="tooltipTitle"
           :aria-disabled="disabled"
+          v-if="canAdminList"
           @click="openModal">
           Add issues
         </button>

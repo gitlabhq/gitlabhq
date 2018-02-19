@@ -184,11 +184,13 @@ ActiveRecord::Schema.define(version: 20180301084653) do
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
   create_table "boards", force: :cascade do |t|
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id"
   end
 
+  add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
@@ -1969,6 +1971,7 @@ ActiveRecord::Schema.define(version: 20180301084653) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+  add_foreign_key "boards", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade

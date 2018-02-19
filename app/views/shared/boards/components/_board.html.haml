@@ -42,6 +42,7 @@
       ":disabled" => "disabled",
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
+      ":groupId" => ((current_board_parent.id if @group) || 'null'),
       "ref" => "board-list" }
     - if can?(current_user, :admin_list, current_board_parent)
       %board-blank-state{ "v-if" => 'list.id == "blank"' }

@@ -56,6 +56,17 @@ constraints(GroupUrlConstrainer.new) do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
       end
     end
+
+    # On CE only index and show actions are needed
+    resources :boards, only: [:index, :show]
+
+    legacy_ee_group_boards_redirect = redirect do |params, request|
+      path = "/groups/#{params[:group_id]}/-/boards"
+      path << "/#{params[:extra_params]}" if params[:extra_params].present?
+      path << "?#{request.query_string}" if request.query_string.present?
+      path
+    end
+    get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
   end
 
   scope(path: '*id',

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/require-default-prop */
 import './issue_card_inner';
 import eventHub from '../eventhub';
 
@@ -33,6 +34,9 @@ export default {
     rootPath: {
       type: String,
       default: '',
+    },
+    groupId: {
+      type: Number,
     },
   },
   data() {
@@ -88,6 +92,7 @@ export default {
       :list="list"
       :issue="issue"
       :issue-link-base="issueLinkBase"
+      :group-id="groupId"
       :root-path="rootPath"
       :update-filters="true"
     />
