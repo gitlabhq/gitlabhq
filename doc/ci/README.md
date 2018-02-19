@@ -70,6 +70,8 @@ learn how to leverage its potential even more.
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger pipelines through the GitLab API](triggers/README.md)
 - [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
+- [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
+  more Kubernetes clusters to your project
 
 ## GitLab CI/CD for Docker
 
