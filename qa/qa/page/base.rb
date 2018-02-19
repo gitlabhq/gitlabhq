@@ -98,6 +98,10 @@ module QA
         views.map(&:errors).flatten
       end
 
+      def self.elements
+        views.map(&:elements).flatten
+      end
+
       class DSL
         attr_reader :views
 
