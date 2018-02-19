@@ -63,6 +63,7 @@ module Gitlab
           true
         rescue Gitlab::Shell::Error => e
           if e.message !~ /repository not exported/
+            project.create_wiki
             fail_import("Failed to import the wiki: #{e.message}")
           else
             true
