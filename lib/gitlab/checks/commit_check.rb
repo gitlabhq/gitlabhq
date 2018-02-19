@@ -35,13 +35,13 @@ module Gitlab
         end
       end
 
-      private
-
       def validate_lfs_file_locks?
         strong_memoize(:validate_lfs_file_locks) do
           project.lfs_enabled? && project.lfs_file_locks.any? && newrev && oldrev
         end
       end
+
+      private
 
       def lfs_file_locks_validation
         lambda do |paths|
