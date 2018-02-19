@@ -37,11 +37,13 @@
       :value="COMMIT_TO_NEW_BRANCH"
       label="Create a new branch"
       :show-input="true"
+      :help-text="`Creates a new branch from ${currentBranchId}`"
     />
     <radio-group
       :value="COMMIT_TO_NEW_BRANCH_MR"
       label="Create a new branch and merge request"
       :show-input="true"
+      :help-text="`Creates a new branch from ${currentBranchId} and re-directs to create a new merge request`"
     />
   </div>
 </template>

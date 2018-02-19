@@ -1,7 +1,11 @@
 <script>
   import { mapActions, mapState, mapGetters } from 'vuex';
+  import tooltip from '../../../vue_shared/directives/tooltip';
 
   export default {
+    directives: {
+      tooltip,
+    },
     props: {
       value: {
         type: String,
@@ -22,6 +26,11 @@
         required: false,
         default: false,
       },
+      helpText: {
+        type: String,
+        required: false,
+        default: null,
+      }
     },
     computed: {
       ...mapState('commit', [
@@ -55,11 +64,19 @@
           {{ label }}
         </template>
         <slot v-else></slot>
+        <span
+          v-if="helpText"
+          v-tooltip
+          class="help-block inline"
+          :title="helpText"
+        >
+          <i class="fa fa-question-circle"></i>
+        </span>
       </span>
     </label>
     <div
       v-if="commitAction === value && showInput"
-      class="prepend-left-20"
+      class="ide-commit-new-branch"
     >
       <input
         type="text"

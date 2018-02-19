@@ -116,7 +116,7 @@ describe('RepoCommitSection', () => {
     });
 
     it('resets commitMessage when clicking discard button', (done) => {
-      vm.$store.state.commitMessage = 'testinig commit message';
+      vm.$store.state.commit.commitMessage = 'testing commit message';
 
       getSetTimeoutPromise()
         .then(() => {
@@ -133,14 +133,17 @@ describe('RepoCommitSection', () => {
 
   describe('when submitting', () => {
     beforeEach(() => {
-      vm.$store.state.commitMessage = 'testing';
+      spyOn(vm, 'commitChanges');
     });
 
-    it('calls store', (done) => {
-      spyOn(vm, 'commitChanges');
-      vm.$el.querySelector('.multi-file-commit-form .btn-success').click();
+    it('calls commitChanges', (done) => {
+      vm.$store.state.commit.commitMessage = 'testing commit message';
 
-      Vue.nextTick()
+      getSetTimeoutPromise()
+        .then(() => {
+          vm.$el.querySelector('.multi-file-commit-form .btn-success').click();
+        })
+        .then(Vue.nextTick)
         .then(() => {
           expect(vm.commitChanges).toHaveBeenCalled();
         })

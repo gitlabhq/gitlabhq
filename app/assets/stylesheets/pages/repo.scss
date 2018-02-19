@@ -635,4 +635,13 @@ table.table tr td.multi-file-table-name {
   label {
     font-weight: normal;
   }
+
+  .help-block {
+    margin-top: 0;
+    line-height: 0;
+  }
+}
+
+.ide-commit-new-branch {
+  margin-left: 25px;
 }

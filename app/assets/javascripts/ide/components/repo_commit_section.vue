@@ -110,7 +110,7 @@ export default {
       >
         <div class="multi-file-commit-fieldset">
           <textarea
-            class="form-control multi-file-commit-message"
+            class="form-control input-sm multi-file-commit-message"
             name="commit-message"
             :value="commitMessage"
             placeholder="Write a commit message..."
