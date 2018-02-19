@@ -5,6 +5,7 @@ class DashboardController < Dashboard::ApplicationController
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests]
+  before_action :set_default_params, only: [:issues, :merge_requests]
 
   respond_to :html
 
@@ -38,5 +39,14 @@ class DashboardController < Dashboard::ApplicationController
 
   def set_show_full_reference
     @show_full_reference = true
+  end
+
+  private
+
+  def set_default_params
+    return unless current_user
+    return if params[:assignee_id].present?
+
+    params[:assignee_id] = current_user.id
   end
 end
