@@ -406,7 +406,7 @@ module Gitlab
         prefix_segments.join('-')
       end
 
-      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha: true)
+      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
         return {} if commit.nil?

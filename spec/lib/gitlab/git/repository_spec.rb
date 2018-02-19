@@ -247,13 +247,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: true)
+      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: nil)
 
       expect(prefix).to eq("#{project_name}-test-branch-SHA")
     end
 
     it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: true)
+      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: nil)
 
       expect(prefix).to eq("#{project_name}-test.branch-SHA")
     end
@@ -266,25 +266,25 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#archive' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', append_sha: true) }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
 
   describe '#archive_zip' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip', append_sha: true) }
 
     it_should_behave_like 'archive check', '.zip'
   end
 
   describe '#archive_bz2' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2', append_sha: true) }
 
     it_should_behave_like 'archive check', '.tar.bz2'
   end
 
   describe '#archive_fallback' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup') }
+    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup', append_sha: true) }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
