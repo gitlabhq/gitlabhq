@@ -197,11 +197,18 @@
       margin-left: 0;
     }
 
+    a.edit-link:not([href]):hover {
+      color: rgba($avatar-border, .2);
+    }
+
+    .lock-edit, // uses same style, different js behaviour
     .edit-link {
+      @extend .btn-blank;
       color: $gl-text-color;
 
-      &:not([href]):hover {
-        color: rgba($avatar-border, .2);
+      &:hover {
+        text-decoration: underline;
+        color: $md-link-color;
       }
     }
   }

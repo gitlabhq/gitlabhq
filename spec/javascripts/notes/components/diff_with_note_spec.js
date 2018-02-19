@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
-import { camelCaseKeys } from '~/lib/utils/text_utility';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
@@ -9,7 +9,7 @@ const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';
 describe('diff_with_note', () => {
   let vm;
   const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
-  const diffDiscussion = camelCaseKeys(diffDiscussionMock);
+  const diffDiscussion = convertObjectPropsToCamelCase(diffDiscussionMock);
   const Component = Vue.extend(DiffWithNote);
   const props = {
     discussion: diffDiscussion,
@@ -51,7 +51,7 @@ describe('diff_with_note', () => {
   describe('image diff', () => {
     beforeEach(() => {
       const imageDiffDiscussionMock = getJSONFixture(imageDiscussionFixture)[0];
-      props.discussion = camelCaseKeys(imageDiffDiscussionMock);
+      props.discussion = convertObjectPropsToCamelCase(imageDiffDiscussionMock);
     });
 
     it('shows image diff', () => {

@@ -8,10 +8,9 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 
 export default () => {
   new ZenMode(); // eslint-disable-line no-new
-  initIssuableSidebar(); // eslint-disable-line no-new
 
+  initIssuableSidebar();
   const mrShowNode = document.querySelector('.merge-request');
-
   window.mergeRequest = new MergeRequest({
     action: mrShowNode.dataset.mrAction,
   });

@@ -906,10 +906,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def discussions_rendered_on_frontend?
-    true
-  end
-
   def fetch_ref!
     target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
   end

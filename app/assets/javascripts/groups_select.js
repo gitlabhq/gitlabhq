@@ -1,5 +1,6 @@
+import axios from './lib/utils/axios_utils';
 import Api from './api';
-import { normalizeCRLFHeaders } from './lib/utils/common_utils';
+import { normalizeHeaders } from './lib/utils/common_utils';
 
 export default function groupsSelect() {
   // Needs to be accessible in rspec
@@ -17,24 +18,23 @@ export default function groupsSelect() {
         dataType: 'json',
         quietMillis: 250,
         transport(params) {
-          return $.ajax(params)
-            .then((data, status, xhr) => {
-              const results = data || [];
-
-              const headers = normalizeCRLFHeaders(xhr.getAllResponseHeaders());
+          axios[params.type.toLowerCase()](params.url, {
+            params: params.data,
+          })
+            .then((res) => {
+              const results = res.data || [];
+              const headers = normalizeHeaders(res.headers);
               const currentPage = parseInt(headers['X-PAGE'], 10) || 0;
               const totalPages = parseInt(headers['X-TOTAL-PAGES'], 10) || 0;
               const more = currentPage < totalPages;
 
-              return {
+              params.success({
                 results,
                 pagination: {
                   more,
                 },
-              };
-            })
-            .then(params.success)
-            .fail(params.error);
+              });
+            }).catch(params.error);
         },
         data(search, page) {
           return {

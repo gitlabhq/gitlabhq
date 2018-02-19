@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DiffFileHeader from '~/notes/components/diff_file_header.vue';
-import { camelCaseKeys } from '~/lib/utils/text_utility';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
@@ -8,7 +8,7 @@ const discussionFixture = 'merge_requests/diff_discussion.json';
 describe('diff_file_header', () => {
   let vm;
   const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
-  const diffFile = camelCaseKeys(diffDiscussionMock.diff_file);
+  const diffFile = convertObjectPropsToCamelCase(diffDiscussionMock.diff_file);
   const props = {
     diffFile,
   };

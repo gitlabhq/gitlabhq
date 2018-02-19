@@ -28,9 +28,8 @@ we still need to merge changes from GitLab CE to EE. To help us get there,
 we should make sure that we no longer edit CE files in place in order to
 implement EE features.
 
-Instead, all EE codes should be put inside the `ee/` top-level directory, and
-tests should be put inside `spec/ee/`. We don't use `ee/spec` for now due to
-technical limitation. The rest of codes should be as close as to the CE files.
+Instead, all EE code should be put inside the `ee/` top-level directory. The
+rest of the code should be as close to the CE files as possible.
 
 [single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
 
@@ -318,7 +317,7 @@ When you're testing EE-only features, avoid adding examples to the
 existing CE specs. Also do no change existing CE examples, since they
 should remain working as-is when EE is running without a license.
 
-Instead place EE specs in the `spec/ee/spec` folder.
+Instead place EE specs in the `ee/spec` folder.
 
 ## JavaScript code in `assets/javascripts/`
 

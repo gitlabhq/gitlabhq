@@ -1,0 +1,5 @@
+---
+title: Resolve PrepareUntrackedUploads PostgreSQL syntax error
+merge_request: 17019
+author:
+type: fixed

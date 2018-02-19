@@ -2,16 +2,19 @@
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import Autosize from 'autosize';
+  import { __, sprintf } from '~/locale';
   import Flash from '../../flash';
   import Autosave from '../../autosave';
   import TaskList from '../../task_list';
+  import { capitalizeFirstCharacter, convertToCamelCase } from '../../lib/utils/text_utility';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
-  import noteSignedOutWidget from './note_signed_out_widget.vue';
-  import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import loadingButton from '../../vue_shared/components/loading_button.vue';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
+  import discussionLockedWidget from './discussion_locked_widget.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
@@ -22,6 +25,7 @@
       discussionLockedWidget,
       markdownField,
       userAvatarLink,
+      loadingButton,
     },
     mixins: [
       issuableStateMixin,
@@ -29,17 +33,13 @@
     props: {
       noteableType: {
         type: String,
-        required: false,
-        default: constants.NOTEABLE_TYPE,
+        required: true,
       },
     },
     data() {
       return {
         note: '',
         noteType: constants.COMMENT,
-        // Can't use mapGetters,
-        // this needs to be in the data object because it belongs to the state
-        issueState: this.$store.getters.getNoteableData.state,
         isSubmitting: false,
         isSubmitButtonDisabled: true,
       };
@@ -50,36 +50,51 @@
         'getUserData',
         'getNoteableData',
         'getNotesData',
+        'openState',
       ]),
+      noteableDisplayName() {
+        return this.noteableType.replace(/_/g, ' ');
+      },
       isLoggedIn() {
         return this.getUserData.id;
       },
       commentButtonTitle() {
         return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
       },
-      isIssueOpen() {
-        return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
+      isOpen() {
+        return this.openState === constants.OPENED || this.openState === constants.REOPENED;
       },
       canCreateNote() {
         return this.getNoteableData.current_user.can_create_note;
       },
       issueActionButtonTitle() {
-        if (this.note.length) {
-          const actionText = this.isIssueOpen ? 'close' : 'reopen';
+        const openOrClose = this.isOpen ? 'close' : 'reopen';
 
-          return this.noteType === constants.COMMENT ?
-            `Comment & ${actionText} issue` :
-            `Start discussion & ${actionText} issue`;
+        if (this.note.length) {
+          return sprintf(
+            __('%{actionText} & %{openOrClose} %{noteable}'),
+            {
+              actionText: this.commentButtonTitle,
+              openOrClose,
+              noteable: this.noteableDisplayName,
+            },
+          );
         }
 
-        return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
+        return sprintf(
+          __('%{openOrClose} %{noteable}'),
+          {
+            openOrClose: capitalizeFirstCharacter(openOrClose),
+            noteable: this.noteableDisplayName,
+          },
+        );
       },
       actionButtonClassNames() {
         return {
-          'btn-reopen': !this.isIssueOpen,
-          'btn-close': this.isIssueOpen,
-          'js-note-target-close': this.isIssueOpen,
-          'js-note-target-reopen': !this.isIssueOpen,
+          'btn-reopen': !this.isOpen,
+          'btn-close': this.isOpen,
+          'js-note-target-close': this.isOpen,
+          'js-note-target-reopen': !this.isOpen,
         };
       },
       markdownDocsPath() {
@@ -112,7 +127,7 @@
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
       $(document).on('issuable:change', (e, isClosed) => {
-        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+        this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
       });
 
       this.initAutoSave();
@@ -124,6 +139,9 @@
         'stopPolling',
         'restartPolling',
         'removePlaceholderNotes',
+        'closeIssue',
+        'reopenIssue',
+        'toggleIssueLocalState',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
         if (!_.isEmpty(note) && !isSubmitting) {
@@ -133,6 +151,8 @@
         }
       },
       handleSave(withIssueAction) {
+        this.isSubmitting = true;
+
         if (this.note.length) {
           const noteData = {
             endpoint: this.endpoint,
@@ -149,7 +169,6 @@
           if (this.noteType === constants.DISCUSSION) {
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
-          this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
           this.resizeTextarea();
           this.stopPolling();
@@ -191,13 +210,35 @@ Please check your network connection and try again.`;
           this.toggleIssueState();
         }
       },
+      enableButton() {
+        this.isSubmitting = false;
+      },
       toggleIssueState() {
-        this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
-
-        // This is out of scope for the Notes Vue component.
-        // It was the shortest path to update the issue state and relevant places.
-        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
-        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
+        if (this.isOpen) {
+          this.closeIssue()
+            .then(() => this.enableButton())
+            .catch(() => {
+              this.enableButton();
+              Flash(
+                sprintf(
+                  __('Something went wrong while closing the %{issuable}. Please try again later'),
+                  { issuable: this.noteableDisplayName },
+                ),
+              );
+            });
+        } else {
+          this.reopenIssue()
+            .then(() => this.enableButton())
+            .catch(() => {
+              this.enableButton();
+              Flash(
+                sprintf(
+                  __('Something went wrong while reopening the %{issuable}. Please try again later'),
+                  { issuable: this.noteableDisplayName },
+                ),
+              );
+            });
+        }
       },
       discard(shouldClear = true) {
         // `blur` is needed to clear slash commands autocomplete cache if event fired.
@@ -229,10 +270,11 @@ Please check your network connection and try again.`;
       },
       initAutoSave() {
         if (this.isLoggedIn) {
+          const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
+
           this.autosave = new Autosave(
             $(this.$refs.textarea),
-            ['Note', 'Issue', this.getNoteableData.id],
-            'issue',
+            ['Note', noteableType, this.getNoteableData.id],
           );
         }
       },
@@ -320,7 +362,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="submit">
-                    {{ commentButtonTitle }}
+                    {{ __(commentButtonTitle) }}
                   </button>
                   <button
                     :disabled="isSubmitButtonDisabled"
@@ -348,7 +390,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Comment</strong>
                           <p>
-                            Add a general comment to this issue.
+                            Add a general comment to this {{ noteableDisplayName }}.
                           </p>
                         </div>
                       </button>
@@ -373,15 +415,19 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     </li>
                   </ul>
                 </div>
-                <button
-                  type="button"
-                  @click="handleSave(true)"
+
+                <loading-button
                   v-if="canUpdateIssue"
-                  :class="actionButtonClassNames"
+                  :loading="isSubmitting"
+                  @click="handleSave(true)"
+                  :container-class="[
+                    actionButtonClassNames,
+                    'btn btn-comment btn-comment-and-close js-action-button'
+                  ]"
                   :disabled="isSubmitting"
-                  class="btn btn-comment btn-comment-and-close js-action-button">
-                  {{ issueActionButtonTitle }}
-                </button>
+                  :label="issueActionButtonTitle"
+                />
+
                 <button
                   type="button"
                   v-if="note.length"

@@ -13,3 +13,7 @@ export const TOGGLE_AWARD = 'TOGGLE_AWARD';
 export const TOGGLE_DISCUSSION = 'TOGGLE_DISCUSSION';
 export const UPDATE_NOTE = 'UPDATE_NOTE';
 export const UPDATE_DISCUSSION = 'UPDATE_DISCUSSION';
+
+// Issue
+export const CLOSE_ISSUE = 'CLOSE_ISSUE';
+export const REOPEN_ISSUE = 'REOPEN_ISSUE';

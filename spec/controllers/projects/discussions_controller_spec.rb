@@ -74,7 +74,7 @@ describe Projects::DiscussionsController do
 
         context "when vue_mr_discussions cookie is present" do
           before do
-            allow(controller).to receive(:cookies).and_return({ vue_mr_discussions: 'true' })
+            allow(controller).to receive(:cookies).and_return(vue_mr_discussions: 'true')
           end
 
           it "renders discussion with serializer" do
