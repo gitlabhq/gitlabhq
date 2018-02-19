@@ -38,7 +38,7 @@ module API
                                                   all: all)
 
         commit_count =
-          if path || before || after
+          if all || path || before || after
             user_project.repository.count_commits(ref: ref, path: path, before: before, after: after, all: all)
           else
             # Cacheable commit count.

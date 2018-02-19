@@ -242,23 +242,51 @@ describe Repository do
   end
 
   describe '#commits' do
-    it 'sets follow when path is a single path' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
-
-      repository.commits('master', limit: 1, path: 'README.md')
-      repository.commits('master', limit: 1, path: ['README.md'])
+    context 'when neither the all flag nor a ref are specified' do
+      it 'returns every commit from default branch' do
+        expect(repository.commits(limit: 60).size).to eq(37)
+      end
     end
 
-    it 'does not set follow when path is multiple paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+    context 'when ref is passed' do
+      it 'returns every commit from the specified ref' do
+        expect(repository.commits('master', limit: 60).size).to eq(37)
+      end
 
-      repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+      context 'when all' do
+        it 'returns every commit from the repository' do
+          expect(repository.commits('master', limit: 60, all: true).size).to eq(60)
+        end
+      end
+
+      context 'with path' do
+        it 'sets follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+          repository.commits('master', limit: 1, path: 'README.md')
+          repository.commits('master', limit: 1, path: ['README.md'])
+        end
+
+        it 'does not set follow when it is multiple paths' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1, path: ['README.md', 'CHANGELOG'])
+        end
+      end
+
+      context 'without path' do
+        it 'does not set follow' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
+
+          repository.commits('master', limit: 1)
+        end
+      end
     end
 
-    it 'does not set follow when there are no paths' do
-      expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
-
-      repository.commits('master', limit: 1)
+    context "when 'all' flag is set" do
+      it 'returns every commit from the repository' do
+        expect(repository.commits(all: true, limit: 60).size).to eq(60)
+      end
     end
   end
 

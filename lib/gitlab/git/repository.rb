@@ -467,7 +467,8 @@ module Gitlab
           follow: false,
           skip_merges: false,
           after: nil,
-          before: nil
+          before: nil,
+          all: false
         }
 
         options = default_options.merge(options)
@@ -478,8 +479,9 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
+        # TODO support options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1049
         gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled
+          if is_enabled && !options[:all]
             gitaly_commit_client.find_commits(options)
           else
             raw_log(options).map { |c| Commit.decorate(self, c) }
@@ -506,8 +508,9 @@ module Gitlab
       def count_commits(options)
         count_commits_options = process_count_commits_options(options)
 
+        # TODO add support for options[:all] in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/1050
         gitaly_migrate(:count_commits) do |is_enabled|
-          if is_enabled
+          if is_enabled && !options[:all]
             count_commits_by_gitaly(count_commits_options)
           else
             count_commits_by_shelling_out(count_commits_options)
@@ -1707,7 +1710,7 @@ module Gitlab
 
         if options[:all]
           cmd += %w[--all --reverse]
-        elsif sha
+        else
           cmd << sha
         end
 
@@ -1926,15 +1929,17 @@ module Gitlab
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
         cmd << "--left-right" if options[:left_right]
+        cmd << '--count'
 
-        if options[:all]
-          cmd += %w[--count --all]
-        elsif options[:ref].present?
-          cmd += %W[--count #{options[:ref]}]
-        end
+        cmd << if options[:all]
+                 '--all'
+               elsif options[:ref]
+                 options[:ref]
+               else
+                 raise ArgumentError, "Please specify a valid ref or set the 'all' attribute to true"
+               end
 
         cmd += %W[-- #{options[:path]}] if options[:path].present?
-
         cmd
       end
 
