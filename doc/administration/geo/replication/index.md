@@ -51,17 +51,16 @@ to reading any data available in the GitLab web interface (see [current limitati
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
 custom integrations and internal workflows
-- Quickly fail-over to a Geo secondary in a
+- Quickly failover to a Geo secondary in a
 [Disaster Recovery](../disaster_recovery/index.md) scenario
-- Allows [planned fail-over](../disaster_recovery/planned_fail_over.md) to a Geo secondary
+- Allows [planned failover](../disaster_recovery/planned_failover.md) to a Geo secondary
 
 ## Architecture
 
-The following diagram illustrates the underlying architecture of Geo:
+The following diagram illustrates the underlying architecture of Geo
+([source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)).
 
 ![Geo architecture](img/geo_architecture.png)
-
-[Source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)
 
 In this diagram, there is one Geo primary node and one secondary. The
 secondary clones repositories via git over HTTPS. Attachments, LFS objects, and
