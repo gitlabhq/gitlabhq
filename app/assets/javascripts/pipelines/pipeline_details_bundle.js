@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import Flash from '~/flash';
 import Translate from '~/vue_shared/translate';
+import { __ } from '~/locale';
 import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 import SecurityReportApp from './components/security_reports/security_report_app.vue';
+import SastSummaryWidget from './components/security_reports/sast_report_summary_widget.vue';
 
 Vue.use(Translate);
 
@@ -76,8 +78,46 @@ document.addEventListener('DOMContentLoaded', () => {
    */
 
   const securityTab = document.getElementById('js-security-report-app');
+  const sastSummary = document.querySelector('.js-sast-summary');
 
-  if (securityTab) {
+  // They are being rendered under the same condition
+  if (securityTab && sastSummary) {
+    const datasetOptions = securityTab.dataset;
+    const endpoint = datasetOptions.endpoint;
+    const blobPath = datasetOptions.blobPath;
+
+    mediator.fetchSastReport(endpoint, blobPath)
+      .then(() => {
+        // update the badge
+        document.querySelector('.js-sast-counter').textContent = mediator.store.state.sast.securityReports.newIssues.length;
+      })
+      .catch(() => {
+        Flash(__('Something when wrong while fetching SAST.'));
+      });
+
+    // Widget summary
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: sastSummary,
+      components: {
+        SastSummaryWidget,
+      },
+      data() {
+        return {
+          mediator,
+        };
+      },
+      render(createElement) {
+        return createElement('sast-summary-widget', {
+          props: {
+            unresolvedIssues: this.mediator.store.state.securityReports.sast.newIssues,
+            link: sastSummary.dataset.tabPath,
+          },
+        });
+      },
+    });
+
+    // Tab content
     // eslint-disable-next-line no-new
     new Vue({
       el: securityTab,
@@ -85,15 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         SecurityReportApp,
       },
       data() {
-        const datasetOptions = this.$options.el.dataset;
         return {
-          endpoint: datasetOptions.endpoint,
-          blobPath: datasetOptions.blobPath,
           mediator,
         };
-      },
-      created() {
-        this.mediator.fetchSastReport(this.endpoint, this.blobPath);
       },
       render(createElement) {
         return createElement('security-report-app', {

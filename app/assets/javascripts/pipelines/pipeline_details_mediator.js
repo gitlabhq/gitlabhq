@@ -61,13 +61,10 @@ export default class pipelinesMediator {
    * EE only
    */
   fetchSastReport(endpoint, blobPath) {
-    PipelineService.getSecurityReport(endpoint)
+    return PipelineService.getSecurityReport(endpoint)
       .then(response => response.json())
       .then((data) => {
         this.store.storeSastReport(data, blobPath);
-      })
-      .catch(() => {
-        Flash(__('Something when wrong while fetching SAST.'));
       });
   }
 }

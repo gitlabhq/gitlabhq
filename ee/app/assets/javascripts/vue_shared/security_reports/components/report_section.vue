@@ -177,7 +177,7 @@
       <p
         v-if="type === 'docker' && infoText"
         v-html="infoText"
-        class="js-mr-code-quality-info report-block-info"
+        class="js-mr-code-quality-info prepend-left-10 report-block-info"
       >
       </p>
 

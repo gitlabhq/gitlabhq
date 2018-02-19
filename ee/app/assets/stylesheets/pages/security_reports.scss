@@ -3,11 +3,7 @@
     border-top: 1px solid $gray-darker;
     padding: $gl-padding-top;
     background-color: $gray-light;
-    margin: $gl-padding -$gl-padding -$gl-padding;
-  }
-
-  .report-block-info {
-    padding-left: 10px;
+    margin: $gl-padding #{-$gl-padding} #{-$gl-padding};
   }
 
   .report-block-dast-code {
@@ -49,5 +45,16 @@
       margin: -5px 4px 0 0;
       fill: currentColor;
     }
+  }
+}
+
+.pipeline-tab-content {
+  .space-children,
+  .space-children > * {
+    display: flex;
+  }
+
+  .media {
+    align-items: center;
   }
 }

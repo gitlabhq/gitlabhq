@@ -39,7 +39,7 @@ export default {
     translateText(type) {
       return {
         error: sprintf(s__('ciReport|Failed to load %{reportName} report'), { reportName: type }),
-        loading: sprintf(s__('ciReport|Loading %{report} report'), { reportName: type }),
+        loading: sprintf(s__('ciReport|Loading %{reportName} report'), { reportName: type }),
       };
     },
 
