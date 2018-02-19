@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Issues, :mailer do
+describe API::V3::Issues do
   set(:user)        { create(:user) }
   set(:user2)       { create(:user) }
   set(:non_member)  { create(:user) }
@@ -780,18 +780,6 @@ describe API::V3::Issues, :mailer do
       expect(json_response['error']).to eq('confidential is invalid')
     end
 
-    it "sends notifications for subscribers of newly added labels" do
-      label = project.labels.first
-      label.toggle_subscription(user2, project)
-
-      perform_enqueued_jobs do
-        post v3_api("/projects/#{project.id}/issues", user),
-          title: 'new issue', labels: label.title
-      end
-
-      should_email(user2)
-    end
-
     it "returns a 400 bad request if title not given" do
       post v3_api("/projects/#{project.id}/issues", user), labels: 'label, label2'
 
@@ -1043,18 +1031,6 @@ describe API::V3::Issues, :mailer do
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([label.title])
-    end
-
-    it "sends notifications for subscribers of newly added labels when issue is updated" do
-      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
-      label.toggle_subscription(user2, project)
-
-      perform_enqueued_jobs do
-        put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
-          title: 'updated title', labels: label.title
-      end
-
-      should_email(user2)
     end
 
     it 'removes all labels' do
