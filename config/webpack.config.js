@@ -67,8 +67,6 @@ var config = {
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     geo_nodes:            'ee/geo_nodes',
-    graphs:               './graphs/graphs_bundle.js',
-    graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
     issuable:             './issuable/issuable_bundle.js',
@@ -300,7 +298,6 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
       chunks: [
-        'graphs',
         'graphs_show',
         'monitoring',
         'users',
