@@ -321,7 +321,11 @@ class Project < ActiveRecord::Base
   # the query, e.g. to apply .with_feature_available_for_user on top of it.
   # This is useful for performance as we can stick those additional filters
   # at the bottom of e.g. the UNION.
-  def self.public_or_visible_to_user(user = nil, &block)
+  #
+  # Optionally, turning `use_conditions_only` off leads to returning a
+  # relation using #from instead of #where. This can perform much better
+  # but leads to trouble when used in conjunction with AR's #merge method.
+  def self.public_or_visible_to_user(user = nil, use_conditions_only: true, &block)
     # If we don't get a block passed, use identity to avoid if/else repetitions
     block = ->(part) { part } unless block_given?
 
@@ -345,8 +349,12 @@ class Project < ActiveRecord::Base
       # We use a UNION here instead of OR clauses since this results in better
       # performance.
       union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
-      # TODO: from("(#{union.to_sql}) AS #{table_name}")
-      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+
+      if use_conditions_only
+        where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+      else
+        from("(#{union.to_sql}) AS #{table_name}")
+      end
     else
       block.call(public_to_user)
     end

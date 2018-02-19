@@ -56,7 +56,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def feature_available_projects
-    projects = Project.public_or_visible_to_user(current_user) do |part|
+    projects = Project.public_or_visible_to_user(current_user, use_conditions_only: false) do |part|
       part.with_feature_available_for_user(:snippets, current_user)
     end.select(:id)
 
