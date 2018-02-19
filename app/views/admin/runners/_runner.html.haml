@@ -19,6 +19,11 @@
   %td
     = runner.ip_address
   %td
+    - if runner.defines_job_upper_timeout?
+      = runner.job_upper_timeout
+    - else
+      n/a
+  %td
     - if runner.shared?
       n/a
     - else

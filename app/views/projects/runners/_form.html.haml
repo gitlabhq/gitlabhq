@@ -40,6 +40,12 @@
     .col-sm-10
       = f.text_field :description, class: 'form-control'
   .form-group
+    = label_tag :job_upper_timeout, class: 'control-label' do
+      Job upper timeout
+    .col-sm-10
+      = f.text_field :job_upper_timeout, class: 'form-control'
+      .help-block This timeout will take precedence when lower than Project-defined timeout
+  .form-group
     = label_tag :tag_list, class: 'control-label' do
       Tags
     .col-sm-10

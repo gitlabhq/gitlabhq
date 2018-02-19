@@ -56,6 +56,9 @@
       %td Description
       %td= @runner.description
     %tr
+      %td Job upper timeout
+      %td= @runner.job_upper_timeout
+    %tr
       %td Last contact
       %td
         - if @runner.contacted_at

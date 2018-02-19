@@ -36,6 +36,8 @@
   - if runner.description.present?
     %p.runner-description
       = runner.description
+  - if runner.defines_job_upper_timeout?
+    %p Job upper timeout: #{runner.job_upper_timeout}
   - if runner.tag_list.present?
     %p
       - runner.tag_list.sort.each do |tag|
