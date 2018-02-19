@@ -13,7 +13,7 @@ class SystemHooksService
     end
 
     # Execute external plugins
-    PLUGINS.each do |plugin|
+    Gitlab::Plugin.all.each do |plugin|
       begin
         plugin.new.execute(data)
       rescue => e
