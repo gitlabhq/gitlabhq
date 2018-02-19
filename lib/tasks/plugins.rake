@@ -22,4 +22,19 @@ namespace :plugins do
       puts "Failed to save #{file_path}."
     end
   end
+
+  desc 'Validate existing plugins'
+  task validate: :environment do
+    puts 'Validating plugins from /plugins directory'
+
+    Gitlab::Plugin.all.each do |plugin|
+      begin
+        plugin.new.execute(Gitlab::DataBuilder::Push::SAMPLE_DATA)
+      rescue => e
+        puts "- #{plugin} raised an exception during boot check. #{e}"
+      else
+        puts "- #{plugin} passed validation check"
+      end
+    end
+  end
 end
