@@ -232,6 +232,28 @@ describe Issues::MoveService do
           end
         end
 
+        context 'issue with assignee' do
+          let(:assignee) { create(:user) }
+
+          before do
+            old_issue.assignees = [assignee]
+          end
+
+          it 'preserves assignee with access to the new issue' do
+            new_project.add_reporter(assignee)
+
+            new_issue = move_service.execute(old_issue, new_project)
+
+            expect(new_issue.assignees).to eq([assignee])
+          end
+
+          it 'ignores assignee without access to the new issue' do
+            new_issue = move_service.execute(old_issue, new_project)
+
+            expect(new_issue.assignees).to be_empty
+          end
+        end
+
         context 'notes with references' do
           before do
             create(:merge_request, source_project: old_project)
