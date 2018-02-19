@@ -254,18 +254,25 @@ through the process of how to use it systematically.
 
 #### Special format
 
-Every **Technical Article** contains, in the very beginning, a blockquote with the following information:
+Every **Technical Article** contains a frontmatter at the beginning of the doc
+with the following information:
 
-- A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
-- A reference to the **knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
-- A reference to the **author's name** and **GitLab.com handle**
-- A reference of the **publication date**
+- **Type of article** (user guide, admin guide, tech overview, tutorial)
+- **Knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
+- **Author's name** and **GitLab.com handle**
+- **Publication date**
 
-```md
-> **[Article Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Name Surname](https://gitlab.com/username) ||
-> **Publication date:** AAAA-MM-DD
+For example:
+
+
+```yaml
+---
+author: John Doe
+author_gitlab: johnDoe
+level: beginner
+article_type: user guide
+date: 2017-02-01
+---
 ```
 
 #### Technical Articles - Writing Method
