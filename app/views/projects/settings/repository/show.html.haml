@@ -3,8 +3,8 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('deploy_keys')
+  = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('deploy_keys')
 
 = render "projects/push_rules/index"
 = render "projects/mirrors/show"

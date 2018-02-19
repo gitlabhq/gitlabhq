@@ -16,5 +16,5 @@
     "ci-lint-path" => ci_lint_path,
     "reset-cache-path" => reset_cache_project_settings_ci_cd_path(@project) } }
 
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('pipelines')
+  = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('pipelines')

@@ -1,4 +1,5 @@
-/* global Chart */
+import Chart from 'chart.js';
+
 export default () => {
   const dataEl = document.getElementById('js-analytics-data');
   if (dataEl) {
