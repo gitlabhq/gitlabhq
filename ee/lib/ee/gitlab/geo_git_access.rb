@@ -18,7 +18,7 @@ module EE
         message = super
 
         if ::Gitlab::Geo.secondary_with_primary?
-          message += " Please use the Primary node URL: #{geo_primary_url_to_repo}. Documentation: #{GEO_SERVER_DOCS_URL}"
+          message += "\nPlease use the primary node URL instead: #{geo_primary_url_to_repo}.\nFor more information: #{GEO_SERVER_DOCS_URL}"
         end
 
         message
