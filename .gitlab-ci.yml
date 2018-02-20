@@ -296,6 +296,9 @@ ee-files-location-check:
   cache: {}
   script:
     - scripts/ee-files-location-check
+  only:
+    - branches
+    - //@gitlab-org/gitlab-ee
 
 update-tests-metadata:
   <<: *tests-metadata-state
