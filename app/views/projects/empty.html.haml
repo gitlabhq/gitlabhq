@@ -1,5 +1,6 @@
 - @no_container = true
 - breadcrumb_title "Details"
+- @project = @project.present(current_user: current_user)
 
 = render partial: 'flash_messages', locals: { project: @project }
 
@@ -32,8 +33,8 @@
       .prepend-top-20
 
 %nav.project-stats{ class: container_class }
-  = render 'stat_anchor_list', anchors: empty_project_stat_anchor_items(@project)
-  = render 'stat_anchor_list', anchors: empty_project_stat_button_items(@project)
+  = render 'stat_anchor_list', anchors: @project.empty_project_stat_anchor_items
+  = render 'stat_anchor_list', anchors: @project.empty_project_stat_button_items
 
 - if can?(current_user, :push_code, @project)
   %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }

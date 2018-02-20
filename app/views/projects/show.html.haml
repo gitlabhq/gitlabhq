@@ -1,6 +1,8 @@
+- project_stat_items_args = { show_auto_devops_callout: show_auto_devops_callout?(@project) }
 - @no_container = true
 - breadcrumb_title "Details"
 - @content_class = "limit-container-width" unless fluid_layout
+- @project = @project.present(current_user: current_user)
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
@@ -14,8 +16,8 @@
 
 - if can?(current_user, :download_code, @project)
   %nav.project-stats{ class: container_class }
-    = render 'stat_anchor_list', anchors: project_stat_anchor_items(@project)
-    = render 'stat_anchor_list', anchors: project_stat_button_items(@project)
+    = render 'stat_anchor_list', anchors: @project.project_stat_anchor_items(project_stat_items_args)
+    = render 'stat_anchor_list', anchors: @project.project_stat_button_items(project_stat_items_args)
 
 
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
@@ -25,7 +27,7 @@
         = icon("exclamation-triangle fw")
         #{ _('Archived project! Repository is read-only') }
 
-  - view_path = default_project_view
+  - view_path = @project.default_project_view
 
   - if show_auto_devops_callout?(@project)
     = render 'shared/auto_devops_callout'

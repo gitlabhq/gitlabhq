@@ -34,7 +34,7 @@ module ApplicationHelper
 
   def project_icon(project_id, options = {})
     project =
-      if project_id.is_a?(Project)
+      if project_id.is_a?(Project) || project_id.is_a?(ProjectPresenter)
         project_id
       else
         Project.find_by_full_path(project_id)
