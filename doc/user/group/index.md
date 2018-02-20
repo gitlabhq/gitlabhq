@@ -154,15 +154,17 @@ There are two different ways to add a new project to a group:
 
 ### Default project creation level
 
-> Available in [GitLab Premium](https://about.gitlab.com/products/) and
-[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
+> Introduced in [GitLab Premium](https://about.gitlab.com/products/) 10.5.
 
-This feature allows groups to define a default project creation level.
+Group owners or administrators can set an option that will give users with the
+Developer role the ability to create projects under groups.
 
-By default, `Developers` and `Masters` are allowed to create projects, but
-this can be changed within the group settings for a group, or the default setting
-changed within the Admin area (`Settings`, `Visibility and Access Controls`). This
-can be `None`, `Masters`, or `Developers + Masters`.
+By default, `Developers` and `Masters` are allowed to create projects under a
+group, but this can be changed either within the group settings for a group, or
+be set globally by a GitLab administrator in the Admin area
+(**Settings > Visibility and Access Controls**).
+
+The setting can set to "None", "Masters", or "Developers + Masters".
 
 ## Transfer projects into groups
 
