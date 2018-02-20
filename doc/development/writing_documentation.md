@@ -257,10 +257,10 @@ through the process of how to use it systematically.
 Every **Technical Article** contains a frontmatter at the beginning of the doc
 with the following information:
 
-- **Type of article** (user guide, admin guide, tech overview, tutorial)
+- **Type of article** (user guide, admin guide, technical overview, tutorial)
 - **Knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
 - **Author's name** and **GitLab.com handle**
-- **Publication date**
+- **Publication date** (ISO format YYYY-MM-DD)
 
 For example:
 
