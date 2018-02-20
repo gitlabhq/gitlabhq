@@ -62,9 +62,6 @@ var config = {
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
-    graphs:               './graphs/graphs_bundle.js',
-    graphs_charts:        './graphs/graphs_charts.js',
-    graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
@@ -276,20 +273,6 @@ var config = {
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
-      },
-    }),
-
-    // create cacheable common library bundle for all d3 chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_d3',
-      chunks: [
-        'graphs',
-        'graphs_show',
-        'monitoring',
-        'users',
-      ],
-      minChunks: function (module, count) {
-        return module.resource && /d3-/.test(module.resource);
       },
     }),
 

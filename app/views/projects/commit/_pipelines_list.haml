@@ -8,5 +8,5 @@
 } }
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('commit_pipelines')
+  = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('commit_pipelines')

@@ -417,6 +417,10 @@ class Commit
     !!(title =~ WIP_REGEX)
   end
 
+  def merged_merge_request?(user)
+    !!merged_merge_request(user)
+  end
+
   private
 
   def commit_reference(from, referable_commit_id, full: false)
@@ -443,10 +447,6 @@ class Commit
     end
 
     changes
-  end
-
-  def merged_merge_request?(user)
-    !!merged_merge_request(user)
   end
 
   def merged_merge_request_no_cache(user)

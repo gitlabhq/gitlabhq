@@ -1,0 +1,5 @@
+---
+title: Don't attempt to update user tracked fields if database is in read-only
+merge_request:
+author:
+type: fixed
