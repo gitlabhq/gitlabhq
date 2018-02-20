@@ -334,6 +334,30 @@ class NotificationService
     end
   end
 
+  def pages_domain_verification_succeeded(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_succeeded_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_verification_failed(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_verification_failed_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_enabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_enabled_email(domain, user).deliver_later
+    end
+  end
+
+  def pages_domain_disabled(domain)
+    recipients_for_pages_domain(domain).each do |user|
+      mailer.pages_domain_disabled_email(domain, user).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)
@@ -427,6 +451,14 @@ class NotificationService
   end
 
   private
+
+  def recipients_for_pages_domain(domain)
+    project = domain.project
+
+    return [] unless project
+
+    notifiable_users(project.team.masters, :watch, target: project)
+  end
 
   def notifiable?(*args)
     NotificationRecipientService.notifiable?(*args)

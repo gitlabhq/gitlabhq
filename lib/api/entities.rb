@@ -1138,6 +1138,10 @@ module API
       expose :domain
       expose :url
       expose :project_id
+      expose :verified?, as: :verified
+      expose :verification_code, as: :verification_code
+      expose :enabled_until
+
       expose :certificate,
         as: :certificate_expiration,
         if: ->(pages_domain, _) { pages_domain.certificate? },
@@ -1149,6 +1153,10 @@ module API
     class PagesDomain < Grape::Entity
       expose :domain
       expose :url
+      expose :verified?, as: :verified
+      expose :verification_code, as: :verification_code
+      expose :enabled_until
+
       expose :certificate,
         if: ->(pages_domain, _) { pages_domain.certificate? },
         using: PagesDomainCertificate do |pages_domain|
