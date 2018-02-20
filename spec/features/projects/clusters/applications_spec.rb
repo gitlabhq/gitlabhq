@@ -72,6 +72,7 @@ feature 'Clusters Applications', :js do
         context 'when user installs application: Ingress' do
           before do
             allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+            allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
 
             create(:clusters_applications_helm, :installed, cluster: cluster)
 
@@ -92,10 +93,19 @@ feature 'Clusters Applications', :js do
               expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
               expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
 
+              # The application becomes installed but we keep waiting for external IP address
               Clusters::Cluster.last.application_ingress.make_installed!
 
               expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
               expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
+              expect(page).to have_selector('.js-no-ip-message')
+              expect(page.find(:css, 'input#ipAddress')['placeholder']).to eq('?')
+
+              # We receive the external IP address and display
+              Clusters::Cluster.last.application_ingress.update!(external_ip: '192.168.1.100')
+
+              expect(page).not_to have_selector('.js-no-ip-message')
+              expect(page.find(:css, 'input#ipAddress')['placeholder']).to eq('192.168.1.100')
             end
 
             expect(page).to have_content('Ingress was successfully installed on your Kubernetes cluster')
