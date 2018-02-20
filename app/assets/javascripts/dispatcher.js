@@ -277,11 +277,6 @@ var Dispatcher;
           break;
       }
       switch (path[0]) {
-        case 'sessions':
-          import('./pages/sessions')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'omniauth_callbacks':
           import('./pages/omniauth_callbacks')
             .then(callDefault)
