@@ -143,10 +143,8 @@
           :request-reason="applications.helm.requestReason"
         >
           <div slot="description">
-            {{ s__(
-              `ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
-              Tiller runs inside of your Kubernetes Cluster, and manages releases of your charts.`,
-            ) }}
+            {{ s__(`ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
+              Tiller runs inside of your Kubernetes Cluster, and manages releases of your charts.`) }}
           </div>
         </application-row>
         <application-row
@@ -160,11 +158,9 @@
         >
           <div slot="description">
             <p>
-              {{ s__(
-                `ClusterIntegration|Ingress gives you a way to route
+              {{ s__(`ClusterIntegration|Ingress gives you a way to route
                 requests to services based on the request host or path,
-                centralizing a number of services into a single entrypoint.`,
-              ) }}
+                centralizing a number of services into a single entrypoint.`) }}
             </p>
 
             <template v-if="ingressInstalled">
