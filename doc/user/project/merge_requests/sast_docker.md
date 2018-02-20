@@ -11,7 +11,7 @@ a Vulnerability Static Analysis tool for containers.
 Going a step further, GitLab can show the vulnerability list right in the merge
 request widget area.
 
-![SAST Widget](img/sast-image.png)
+![SAST Docker Widget](img/sast_docker.png)
 
 ## Use cases
 
