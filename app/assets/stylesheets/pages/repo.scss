@@ -550,7 +550,7 @@ table.table tr td.multi-file-table-name {
 .ide {
   overflow: hidden;
 
-  .nav-only {
+  &.nav-only {
     .flash-container {
       margin-top: $header-height;
       margin-bottom: 0;
