@@ -270,18 +270,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'projects:clusters:show':
-        case 'projects:clusters:update':
-        case 'projects:clusters:destroy':
-          import('./pages/projects/clusters/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:clusters:index':
-          import('./pages/projects/clusters/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'dashboard:groups:index':
           import('./pages/dashboard/groups/index')
             .then(callDefault)
