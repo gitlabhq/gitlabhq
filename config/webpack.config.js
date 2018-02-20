@@ -63,7 +63,6 @@ var config = {
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
-    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
