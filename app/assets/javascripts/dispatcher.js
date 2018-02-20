@@ -54,11 +54,6 @@ var Dispatcher;
         case 'projects:merge_requests:show':
           shortcut_handler = true;
           break;
-        case 'dashboard:activity':
-          import('./pages/dashboard/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:commit:show':
           import('./pages/projects/commit/show')
             .then(callDefault)
