@@ -333,9 +333,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @target_branches = @merge_request.target_project.repository.branch_names
   end
 
-  def set_issuables_index
-    @finder_type = MergeRequestsFinder
-    super
+  def finder_type
+    MergeRequestsFinder
   end
 
   def check_user_can_push_to_source_branch!
