@@ -1,5 +1,5 @@
 ---
-last_updated: 2017-09-28
+last_updated: 2018-02-16
 author: Marcia Ramos
 author_gitlab: marcia
 level: beginner
@@ -7,20 +7,13 @@ article_type: user guide
 date: 2017-02-22
 ---
 
-# GitLab Pages from A to Z: Part 3
+# GitLab Pages custom domains and SSL/TLS Certificates
 
-- [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
-- [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
-- **Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates**
-- [Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
-
-## Setting Up Custom Domains - DNS Records and SSL/TLS Certificates
-
-As described in the previous part of this series, setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
+Setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
 
 These steps assume you've already [set your site up](getting_started_part_two.md) and and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
 
-### Adding your custom domain to GitLab Pages
+## Adding your custom domain to GitLab Pages
 
 To use one or more custom domain with your Pages site, there are two things
 you should consider first, which we'll cover in this guide:
@@ -35,7 +28,7 @@ Let's start from the beginning with [DNS records](#dns-records).
 If you already know how they work and want to skip the introduction to DNS,
 you may be interested in skipping it until the [TL;DR](#tl-dr) section below.
 
-### DNS Records
+## DNS Records
 
 A Domain Name System (DNS) web service routes visitors to websites
 by translating domain names (such as `www.example.com`) into the
@@ -71,7 +64,7 @@ for the most popular hosting services:
 If your hosting service is not listed above, you can just try to
 search the web for "how to add dns record on <my hosting service>".
 
-#### DNS A record
+### DNS A record
 
 In case you want to point a root domain (`example.com`) to your
 GitLab Pages site, deployed to `namespace.gitlab.io`, you need to
@@ -86,7 +79,7 @@ running on your instance).
 
 ![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated.png)
 
-#### DNS CNAME record
+### DNS CNAME record
 
 In case you want to point a subdomain (`hello-world.example.com`)
 to your GitLab Pages site initially deployed to `namespace.gitlab.io`,
@@ -102,7 +95,7 @@ without any `/project-name`.
 
 ![DNS CNAME record pointing to GitLab.com project](img/dns_cname_record_example.png)
 
-#### TL;DR
+### TL;DR
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
@@ -118,7 +111,7 @@ domain. E.g., **do not** point your `subdomain.domain.com` to
 `namespace.gitlab.io.` or `namespace.gitlab.io/`.
 > - GitLab Pages IP on GitLab.com [has been changed](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) from `104.208.235.32` to `52.167.214.135`.
 
-### Add your custom domain to GitLab Pages settings
+## Add your custom domain to GitLab Pages settings
 
 Once you've set the DNS record, you'll need navigate to your project's
 **Setting > Pages** and click **+ New domain** to add your custom domain to
@@ -141,7 +134,7 @@ to your domain will respond with a 404.
 Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
 custom domains to GitLab Pages sites.
 
-### SSL/TLS Certificates
+## SSL/TLS Certificates
 
 Every GitLab Pages project on GitLab.com will be available under
 HTTPS for the default Pages domain (`*.gitlab.io`). Once you set
@@ -157,7 +150,7 @@ highly recommendable.
 Let's start with an introduction to the importance of HTTPS.
 Alternatively, jump ahead to [adding certificates to your project](#adding-certificates-to-your-project).
 
-#### Why should I care about HTTPS?
+### Why should I care about HTTPS?
 
 This might be your first question. If our sites are hosted by GitLab Pages,
 they are static, hence we are not dealing with server-side scripts
@@ -178,7 +171,7 @@ authentications and validations.
 How about taking Josh's advice and protecting our sites too? We will be
 well supported, and we'll contribute to a safer internet.
 
-#### Organizations supporting HTTPS
+### Organizations supporting HTTPS
 
 There is a huge movement in favor of securing all the web. W3C fully
 [supports the cause](https://w3ctag.github.io/web-https/) and explains very well
@@ -188,7 +181,7 @@ and would no longer accept unsecured connections. Recently, Mozilla published a
 [communication](https://blog.mozilla.org/security/2016/03/29/march-2016-ca-communication/)
 reiterating the importance of HTTPS.
 
-### Issuing Certificates
+## Issuing Certificates
 
 GitLab Pages accepts [PEM](https://support.quovadisglobal.com/kb/a37/what-is-pem-format.aspx) certificates issued by
 [Certificate Authorities (CA)](https://en.wikipedia.org/wiki/Certificate_authority)
@@ -217,7 +210,7 @@ Their certs are valid up to 15 years. Read through the tutorial on
 Regardless the CA you choose, the steps to add your certificate to
 your Pages project are the same.
 
-#### What do you need
+### What do you need
 
 1. A PEM certificate
 1. An intermediate certificate
@@ -227,7 +220,7 @@ your Pages project are the same.
 
 These fields are found under your **Project**'s **Settings** > **Pages** > **New Domain**.
 
-#### What's what?
+### What's what?
 
 - A PEM certificate is the certificate generated by the CA,
 which needs to be added to the field **Certificate (PEM)**.
@@ -240,7 +233,7 @@ are one of these cases.
 - A public key is an encrypted key which validates
 your PEM against your domain.
 
-#### Now what?
+### Now what?
 
 Now that you hopefully understand why you need all
 of this, it's simple:
@@ -257,6 +250,4 @@ just jumping a line between them.
 regular text editors. Always use code editors (such as
 Sublime Text, Atom, Dreamweaver, Brackets, etc).
 
-|||
-|:--|--:|
-|[**← Part 2: Quick start guide - Setting up GitLab Pages**](getting_started_part_two.md)|[**Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages →**](getting_started_part_four.md)|
+_Read on about [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md)_
