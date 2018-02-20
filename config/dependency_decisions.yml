@@ -467,8 +467,8 @@
 - - :license
   - pikaday
   - MIT
-  - :who:
-    :why:
+  - :who: 
+    :why: 
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z
 - - :license
@@ -516,3 +516,9 @@
     :why: zlib license + Development Lib + https://github.com/uNetworking/uWebSockets/blob/master/LICENSE
     :versions: []
     :when: 2018-01-17 23:46:12.367554000 Z
+- - :approve
+  - atob
+  - :who: Mike Greiling
+    :why: https://github.com/node-browser-compat/atob/blob/master/LICENSE
+    :versions: []
+    :when: 2018-02-20 19:42:08.409887000 Z
