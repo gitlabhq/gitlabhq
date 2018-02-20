@@ -106,7 +106,6 @@ module ObjectStorage
       base.include(ObjectStorage)
 
       before :store, :verify_license!
-      after :migrate, :delete_migrated_file
     end
 
     class_methods do
@@ -205,12 +204,11 @@ module ObjectStorage
 
       cache_stored_file! if file_storage?
 
-      with_callbacks(:migrate, file_to_delete) do
-        with_callbacks(:store, file_to_delete) do # for #store_versions!
-          new_file = storage.store!(file)
-          persist_object_store!
-          self.file = new_file
-        end
+      with_callbacks(:store, file_to_delete) do # for #store_versions!
+        new_file = storage.store!(file)
+        file_to_delete.delete
+        persist_object_store!
+        self.file = new_file
       end
 
       file
@@ -242,10 +240,6 @@ module ObjectStorage
 
     def fog_public
       false
-    end
-
-    def delete_migrated_file(migrated_file)
-      migrated_file.delete if exists?
     end
 
     def verify_license!(_file)
