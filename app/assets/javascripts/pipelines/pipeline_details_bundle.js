@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(() => {
         // update the badge
         const badge = document.querySelector('.js-sast-counter');
-        badge.textContent = mediator.store.state.sast.securityReports.newIssues.length;
+        badge.textContent = mediator.store.state.securityReports.sast.newIssues.length;
         badge.classList.remove('hidden');
       })
       .catch(() => {
