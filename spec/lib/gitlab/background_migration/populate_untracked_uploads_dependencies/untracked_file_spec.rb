@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # Rollback DB to 10.5 (later than this was originally written for) because it still needs to work.
 describe Gitlab::BackgroundMigration::PopulateUntrackedUploadsDependencies::UntrackedFile, :migration, schema: 20180208183958 do
-  include TrackUntrackedUploadsHelpers
+  include MigrationsHelpers::TrackUntrackedUploadsHelpers
 
   let!(:appearances) { table(:appearances) }
   let!(:namespaces) { table(:namespaces) }

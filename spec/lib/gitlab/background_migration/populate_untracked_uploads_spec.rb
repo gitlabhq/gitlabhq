@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # Rollback DB to 10.5 (later than this was originally written for) because it still needs to work.
 describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq, :migration, schema: 20180208183958 do
-  include TrackUntrackedUploadsHelpers
+  include MigrationsHelpers::TrackUntrackedUploadsHelpers
 
   subject { described_class.new }
 
@@ -38,8 +38,8 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq, :migra
       untracked_files_for_uploads.create!(path: get_uploads(user2, 'User').first.path)
       untracked_files_for_uploads.create!(path: get_uploads(project1, 'Project').first.path)
       untracked_files_for_uploads.create!(path: get_uploads(project2, 'Project').first.path)
-      untracked_files_for_uploads.create!(path: "#{legacy_project_uploads_dir(project1).sub("#{TrackUntrackedUploadsHelpers::PUBLIC_DIR}/", '')}/#{get_uploads(project1, 'Project').last.path}")
-      untracked_files_for_uploads.create!(path: "#{legacy_project_uploads_dir(project2).sub("#{TrackUntrackedUploadsHelpers::PUBLIC_DIR}/", '')}/#{get_uploads(project2, 'Project').last.path}")
+      untracked_files_for_uploads.create!(path: "#{legacy_project_uploads_dir(project1).sub("#{MigrationsHelpers::TrackUntrackedUploadsHelpers::PUBLIC_DIR}/", '')}/#{get_uploads(project1, 'Project').last.path}")
+      untracked_files_for_uploads.create!(path: "#{legacy_project_uploads_dir(project2).sub("#{MigrationsHelpers::TrackUntrackedUploadsHelpers::PUBLIC_DIR}/", '')}/#{get_uploads(project2, 'Project').last.path}")
 
       # Untrack 4 files
       get_uploads(user2, 'User').delete_all
