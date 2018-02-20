@@ -24,7 +24,7 @@ describe('SAST report summary widget', () => {
     });
 
     it('renders summary text with link for the security tab', () => {
-      expect(vm.$el.textContent.trim()).toEqual('SAST degraded on 2 security vulnerabilities');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST degraded on 2 security vulnerabilities');
       expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('group/project/pipelines/2/security');
     });
   });
@@ -37,7 +37,7 @@ describe('SAST report summary widget', () => {
     });
 
     it('render summary text with link for the security tab', () => {
-      expect(vm.$el.textContent.trim()).toEqual('SAST detected no security vulnerabilities');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST detected no security vulnerabilities');
       expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('group/project/pipelines/2/security');
     });
   });

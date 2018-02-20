@@ -1,5 +1,5 @@
 <script>
-  import { sprintf, s__ } from '~/locale';
+  import { n__, s__ } from '~/locale';
   import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
   export default {
@@ -19,25 +19,21 @@
       },
     },
     computed: {
-      summarySastText() {
-        let text;
-        let link;
-
+      sastText() {
         if (this.unresolvedIssues.length) {
-          text = s__('ciReport|SAST degraded on %{link}');
-          link = this.unresolvedIssues.length > 1 ?
-            this.getLink(sprintf(
-              s__('ciReport|%{d} security vulnerabilities'),
-              { d: this.unresolvedIssues.length },
-              true,
-            )) :
-            this.getLink(s__('ciReport|1 security vulnerability'));
-        } else {
-          text = s__('ciReport|SAST detected %{link}');
-          link = this.getLink(s__('ciReport|no security vulnerabilities'));
+          return s__('ciReport|SAST degraded on');
         }
-
-        return sprintf(text, { link }, false);
+        return s__('ciReport|SAST detected');
+      },
+      sastLink() {
+        if (this.unresolvedIssues.length) {
+          return n__(
+            '%d security vulnerability',
+            '%d security vulnerabilities',
+            this.unresolvedIssues.length,
+          );
+        }
+        return s__('ciReport|no security vulnerabilities');
       },
       statusIcon() {
         if (this.unresolvedIssues) {
@@ -53,8 +49,11 @@
       },
     },
     methods: {
-      getLink(text) {
-        return `<a href="${this.link}" class="prepend-left-5">${text}</a>`;
+      openTab() {
+        // This opens a tab outside of this Vue application
+        // It opens the securty report tab in the pipelines page and updates the URL
+        // This is needed because the tabs are built in haml+jquery
+        $('.pipelines-tabs a[data-action="security"]').tab('show');
       },
     },
   };
@@ -68,8 +67,15 @@
 
     <span
       class="prepend-left-10 flex flex-align-self-center"
-      v-html="summarySastText"
     >
+      {{ sastText }}
+      <a
+        :href="link"
+        class="prepend-left-5"
+        @click="openTab"
+      >
+        {{ sastLink }}
+      </a>
     </span>
   </div>
 </template>
