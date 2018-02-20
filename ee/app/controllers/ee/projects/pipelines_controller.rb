@@ -6,10 +6,10 @@ module EE
       def security
         commit
 
-        if @pipeline.sast_artifact
+        if pipeline.sast_artifact
           render_show
         else
-          redirect_to pipeline_path(@pipeline)
+          redirect_to pipeline_path(pipeline)
         end
       end
     end
