@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq, :migration, schema: 20180208183958 do
   include MigrationsHelpers::TrackUntrackedUploadsHelpers
 
-  let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
+  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
   let!(:appearances) { table(:appearances) }
   let!(:namespaces) { table(:namespaces) }
   let!(:projects) { table(:projects) }
