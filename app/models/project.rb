@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   include ValidAttribute
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
+  include Presentable
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
@@ -1024,6 +1025,12 @@ class Project < ActiveRecord::Base
 
   def user_can_push_to_empty_repo?(user)
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
+  end
+
+  def user_can_push_to_branch?(user, branch_name)
+    return false unless repository.branch_exists?(branch_name)
+
+    ::Gitlab::UserAccess.new(user, project: self).can_push_to_branch?(branch_name)
   end
 
   def forked?

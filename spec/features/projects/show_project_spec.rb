@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'Project show page', :feature do
-  include ProjectsHelper
-
   context 'when project pending delete' do
     let(:project) { create(:project, :empty_repo, pending_delete: true) }
 
@@ -29,6 +27,7 @@ describe 'Project show page', :feature do
 
     describe 'empty project' do
       let(:project) { create(:project, :public, :empty_repo) }
+      let(:presenter) { project.present(current_user: user) }
 
       describe 'as a normal user' do
         before do
@@ -71,13 +70,13 @@ describe 'Project show page', :feature do
 
         it '"Add Readme" button linked to new file populated for a readme' do
           page.within('.project-stats') do
-            expect(page).to have_link('Add Readme', href: add_special_file_path(project, file_name: 'README.md'))
+            expect(page).to have_link('Add Readme', href: presenter.add_readme_path)
           end
         end
 
         it '"Add License" button linked to new file populated for a license' do
           page.within('.project-stats') do
-            expect(page).to have_link('Add License', href: add_special_file_path(project, file_name: 'LICENSE'))
+            expect(page).to have_link('Add License', href: presenter.add_license_path)
           end
         end
 
@@ -121,6 +120,7 @@ describe 'Project show page', :feature do
 
     describe 'populated project' do
       let(:project) { create(:project, :public, :repository) }
+      let(:presenter) { project.present(current_user: user) }
 
       describe 'as a normal user' do
         before do
@@ -192,7 +192,7 @@ describe 'Project show page', :feature do
             expect(project.repository.gitlab_ci_yml).to be_nil
 
             page.within('.project-stats') do
-              expect(page).to have_link('Set up CI/CD', href: add_special_file_path(project, file_name: '.gitlab-ci.yml'))
+              expect(page).to have_link('Set up CI/CD', href: presenter.add_ci_yml_path)
             end
           end
 
@@ -327,7 +327,7 @@ describe 'Project show page', :feature do
             visit project_path(project)
 
             page.within('.project-stats') do
-              expect(page).to have_link('Set up Koding', href: add_koding_stack_path(project))
+              expect(page).to have_link('Set up Koding', href: presenter.add_koding_stack_path)
             end
           end
         end
