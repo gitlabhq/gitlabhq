@@ -2,17 +2,17 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class Equality  < Expression::Token
-          PATTERN = /==/.freeze
-
-          def initialize(left, right)
-          end
-
+        class Token
           def evaluate(**variables)
-            @left.evaluate(variables) == @right.evaluate(variables)
+            raise NotImplementedError
           end
 
           def self.build(string)
+            raise NotImplementedError
+          end
+
+          def self.scan(scanner)
+            scanner.scan(PATTERN)
           end
         end
       end
