@@ -522,3 +522,9 @@
     :why: https://github.com/node-browser-compat/atob/blob/master/LICENSE
     :versions: []
     :when: 2018-02-20 19:42:08.409887000 Z
+- - :approve
+  - cyclist
+  - :who: Mike Greiling
+    :why: https://github.com/mafintosh/cyclist/blob/master/LICENSE
+    :versions: []
+    :when: 2018-02-20 21:37:43.774978000 Z
