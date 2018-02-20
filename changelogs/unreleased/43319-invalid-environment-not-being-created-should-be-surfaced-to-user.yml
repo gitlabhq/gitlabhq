@@ -1,0 +1,5 @@
+---
+title: Don't create pipeline when environment creation fails
+merge_request: 17202
+author:
+type: fixed

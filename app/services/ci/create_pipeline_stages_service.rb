@@ -6,12 +6,11 @@ module Ci
 
         seed.create! do |build|
           ##
-          # Create the environment before the build starts. This sets its slug and
-          # makes it available as an environment variable
+          # Create the environment before the build starts. This sets its
+          # slug and makes it available as an environment variable
           #
           if build.has_environment?
-            environment_name = build.expanded_environment_name
-            project.environments.find_or_create_by(name: environment_name)
+            CreateBuildEnvironmentService.new(project, current_user).execute(build)
           end
         end
       end
