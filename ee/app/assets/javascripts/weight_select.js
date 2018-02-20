@@ -11,9 +11,9 @@ function WeightSelect(els, options = {}) {
     $block = $selectbox.closest('.block');
     $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
     $value = $block.find('.value');
-    abilityName = $dropdown.data('ability-name');
+    abilityName = $dropdown.data('abilityName');
     $loading = $block.find('.block-loading').fadeOut();
-    const fieldName = options.fieldName || $dropdown.data("field-name");
+    const fieldName = options.fieldName || $dropdown.data("fieldName");
     const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
 
     if (Object.keys(options).includes('selected')) {

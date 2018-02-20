@@ -5,13 +5,13 @@ export default () => {
     const removeElement = $(this).closest('li');
     const approverId = parseInt(removeElement.attr('id').replace('user_', ''), 10);
     const approverIds = $('input#merge_request_approver_ids');
-    const skipUsers = approverIds.data('skip-users') || [];
+    const skipUsers = approverIds.data('skipUsers') || [];
     const approverIndex = skipUsers.indexOf(approverId);
 
     removeElement.remove();
 
     if (approverIndex > -1) {
-      approverIds.data('skip-users', skipUsers.splice(approverIndex, 1));
+      approverIds.data('skipUsers', skipUsers.splice(approverIndex, 1));
     }
 
     ev.preventDefault();
@@ -21,13 +21,13 @@ export default () => {
     const removeElement = $(this).closest('li');
     const approverGroupId = parseInt(removeElement.attr('id').replace('group_', ''), 10);
     const approverGroupIds = $('input#merge_request_approver_group_ids');
-    const skipGroups = approverGroupIds.data('skip-groups') || [];
+    const skipGroups = approverGroupIds.data('skipGroups') || [];
     const approverGroupIndex = skipGroups.indexOf(approverGroupId);
 
     removeElement.remove();
 
     if (approverGroupIndex > -1) {
-      approverGroupIds.data('skip-groups', skipGroups.splice(approverGroupIndex, 1));
+      approverGroupIds.data('skipGroups', skipGroups.splice(approverGroupIndex, 1));
     }
 
     ev.preventDefault();

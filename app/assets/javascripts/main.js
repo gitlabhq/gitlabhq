@@ -223,7 +223,7 @@ $(() => {
   $document.on('click', '.js-confirm-danger', (e) => {
     const btn = $(e.target);
     const form = btn.closest('form');
-    const text = btn.data('confirm-danger-message');
+    const text = btn.data('confirmDangerMessage');
     e.preventDefault();
 
     // eslint-disable-next-line no-new

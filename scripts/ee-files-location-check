@@ -8,6 +8,7 @@ WHITELIST = %w[
   doc/**/*
   scripts/*
   spec/javascripts/**/*
+  vendor/assets/javascripts/jasmine-jquery.js
 ].freeze
 
 `git remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git`
