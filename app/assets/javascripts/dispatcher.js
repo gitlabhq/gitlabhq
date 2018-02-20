@@ -58,25 +58,8 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'projects:snippets:show':
-          import('./pages/projects/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:new':
-        case 'projects:snippets:create':
-          import('./pages/projects/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:services:edit':
           import('./pages/projects/services/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:edit':
-        case 'projects:snippets:update':
-          import('./pages/projects/snippets/edit')
             .then(callDefault)
             .catch(fail);
           break;
