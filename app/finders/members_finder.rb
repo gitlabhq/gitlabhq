@@ -13,7 +13,7 @@ class MembersFinder
 
     if group
       group_members = GroupMembersFinder.new(group).execute
-      group_members = group_members.non_invite unless can?(current_user, :admin_group, group)
+      group_members = group_members.non_invite
 
       union = Gitlab::SQL::Union.new([project_members, group_members], remove_duplicates: false)
 
