@@ -67,7 +67,7 @@ Example response:
 
 ```json
 {
-  "name": "master",
+  "name": "release-1-0",
   "create_access_levels": [
     {
       "access_level": 40,

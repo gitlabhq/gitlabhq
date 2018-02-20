@@ -9,12 +9,21 @@ class AddProtectedTagsIndex < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    execute <<~SQL
+      DELETE FROM protected_tags
+      WHERE id NOT IN (
+        SELECT * FROM (
+          SELECT MAX(id) FROM protected_tags
+              GROUP BY name, project_id
+              HAVING COUNT(*) > 1
+          ) t
+        )
+    SQL
+
     add_concurrent_index :protected_tags, [:project_id, :name], unique: true
-    remove_concurrent_index :protected_tags, :project_id
   end
 
   def down
-    add_concurrent_index :protected_tags, :project_id
     remove_concurrent_index :protected_tags, [:project_id, :name]
   end
 end
