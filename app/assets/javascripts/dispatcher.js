@@ -53,11 +53,6 @@ var Dispatcher;
         case 'projects:merge_requests:edit':
           shortcut_handler = true;
           break;
-        case 'projects:services:edit':
-          import('./pages/projects/services/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:releases:edit':
           import('./pages/projects/releases/edit')
             .then(callDefault)
