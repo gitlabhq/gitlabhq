@@ -278,9 +278,6 @@ var Dispatcher;
       }
       switch (path[0]) {
         case 'admin':
-          import('./pages/admin')
-            .then(callDefault)
-            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
               import('./pages/admin/broadcast_messages')
