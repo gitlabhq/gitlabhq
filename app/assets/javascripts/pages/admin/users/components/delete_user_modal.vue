@@ -1,11 +1,14 @@
 <script>
+  import axios from '~/lib/utils/axios_utils';
   import _ from 'underscore';
-  import modal from '~/vue_shared/components/modal.vue';
+  import ConfirmationInput from '~/vue_shared/components/confirmation_input.vue';
+  import GlModal from '~/vue_shared/components/gl_modal.vue';
   import { s__, sprintf } from '~/locale';
 
   export default {
     components: {
-      modal,
+      ConfirmationInput,
+      GlModal,
     },
     props: {
       deleteUserUrl: {
@@ -28,18 +31,11 @@
         required: false,
         default: '',
       },
-      csrfToken: {
-        type: String,
-        required: false,
-        default: '',
-      },
-    },
-    data() {
-      return {
-        enteredUsername: '',
-      };
     },
     computed: {
+      id() {
+        return 'delete-user-modal';
+      },
       title() {
         const keepContributionsTitle = s__('AdminUsers|Delete User %{username}?');
         const deleteContributionsTitle = s__('AdminUsers|Delete User %{username} and contributions?');
@@ -71,14 +67,6 @@
           false,
         );
       },
-      confirmationTextLabel() {
-        return sprintf(s__('AdminUsers|To confirm, type %{username}'),
-          {
-            username: `<code>${_.escape(this.username)}</code>`,
-          },
-          false,
-        );
-      },
       primaryButtonLabel() {
         const keepContributionsLabel = s__('AdminUsers|Delete user');
         const deleteContributionsLabel = s__('AdminUsers|Delete user and contributions');
@@ -88,87 +76,48 @@
       secondaryButtonLabel() {
         return s__('AdminUsers|Block user');
       },
-      canSubmit() {
-        return this.enteredUsername === this.username;
-      },
     },
     methods: {
-      onCancel() {
-        this.enteredUsername = '';
+      clearInput() {
+        this.$refs.input.$emit('clear');
+      },
+      onConfirmed(isConfirmed) {
+        this.$refs.modal.$emit('toggleCanSubmit', isConfirmed);
       },
       onSecondaryAction() {
-        const form = this.$refs.form;
-
-        form.action = this.blockUserUrl;
-        this.$refs.method.value = 'put';
-
-        form.submit();
+        return axios.put(this.blockUserUrl)
+          .then(() => this.clearInput);
       },
       onSubmit() {
-        this.$refs.form.submit();
-        this.enteredUsername = '';
+        return axios.delete(this.deleteUserUrl)
+          .then(() => this.clearInput);
       },
     },
+    mounted() {
+      clearInput();
+    }
   };
 </script>
 
 <template>
-  <modal
-    id="delete-user-modal"
-    :title="title"
-    :text="text"
-    kind="danger"
-    :primary-button-label="primaryButtonLabel"
-    :secondary-button-label="secondaryButtonLabel"
-    :submit-disabled="!canSubmit"
+  <gl-modal
+    ref="modal"
+    :id="id"
+    :header-title-text="title"
+    footer-primary-button-variant="danger"
+    :footer-primary-button-text="primaryButtonLabel"
+    footer-secondary-button-variant="warning"
+    :footer-secondary-button-text="secondaryButtonLabel"
     @submit="onSubmit"
-    @cancel="onCancel"
+    @secondaryAction="onSecondaryAction"
+    @cancel="clearInput"
   >
-    <template
-      slot="body"
-      slot-scope="props"
-    >
-      <p v-html="props.text"></p>
-      <p v-html="confirmationTextLabel"></p>
-      <form
-        ref="form"
-        :action="deleteUserUrl"
-        method="post"
-      >
-        <input
-          ref="method"
-          type="hidden"
-          name="_method"
-          value="delete"
-        />
-        <input
-          type="hidden"
-          name="authenticity_token"
-          :value="csrfToken"
-        />
-        <input
-          type="text"
-          name="username"
-          class="form-control"
-          v-model="enteredUsername"
-          aria-labelledby="input-label"
-          autocomplete="off"
-        />
-      </form>
-    </template>
-    <template
-      slot="secondary-button"
-      slot-scope="props"
-    >
-      <button
-        type="button"
-        class="btn js-secondary-button btn-warning"
-        :disabled="!canSubmit"
-        @click="onSecondaryAction"
-        data-dismiss="modal"
-      >
-        {{ secondaryButtonLabel }}
-      </button>
-    </template>
-  </modal>
+    <p v-html="text"></p>
+    <confirmation-input
+      ref="input"
+      :id="`${this.id}-input`"
+      :confirmation-value="username"
+      @confirmed="onConfirmed"
+    />
+  </gl-modal>
 </template>

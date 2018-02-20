@@ -4,6 +4,10 @@
 
   export default {
     props: {
+      id: {
+        type: String,
+        required: true,
+      },
       confirmationValue: {
         type: String,
         required: true,
@@ -28,7 +32,17 @@
         );
       },
     },
+    mounted() {
+      this.$on('clear', this.clear);
+    },
+    beforeDestroy() {
+      this.$off('clear', this.clear);
+    },
     methods: {
+      clear() {
+        this.$refs.input.value = '';
+        this.$emit('confirmed', '' === this.confirmationValue);
+      },
       onInput(event) {
         const input = event.target;
         this.$emit(
@@ -42,13 +56,15 @@
 
 <template>
   <div>
-    <label>
-      <span v-html="inputLabel"></span>
-      <input
-        type="text"
-        class="form-control"
-        @input="onInput"
-      />
-    </label>
+    <label
+      v-html="inputLabel"
+      :for="id"></label>
+    <input
+      ref="input"
+      :id="id"
+      type="text"
+      class="form-control"
+      @input="onInput"
+    />
   </div>
 </template>
