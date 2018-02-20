@@ -15,8 +15,8 @@ describe API::Projects do
     create(:project,
     :private,
     :repository,
-    name: 'second_project',
-    path: 'second_project',
+    name: 'third_project',
+    path: 'third_project',
     creator_id: user.id,
     namespace: user.namespace,
     merge_requests_enabled: false,
@@ -32,8 +32,8 @@ describe API::Projects do
   end
   let(:project4) do
     create(:project,
-    name: 'third_project',
-    path: 'third_project',
+    name: 'fourth_project',
+    path: 'fourth_project',
     creator_id: user4.id,
     namespace: user4.namespace)
   end
@@ -222,6 +222,38 @@ describe API::Projects do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.first.keys).to match_array expected_keys
+        end
+      end
+
+      context 'and using archived' do
+        let!(:archived_project) { create(:project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived project' do
+          get api('/projects?archived=true', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(archived_project.id)
+        end
+
+        it 'returns non-archived project' do
+          get api('/projects?archived=false', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(4)
+        end
+
+        it 'returns all project' do
+          get api('/projects', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(5)
         end
       end
 

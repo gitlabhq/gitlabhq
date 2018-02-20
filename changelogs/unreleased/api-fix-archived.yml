@@ -1,0 +1,5 @@
+---
+title: 'API: Fix archived parameter for projects API'
+merge_request: 17244
+author: Robert Schilling
+type: fixed

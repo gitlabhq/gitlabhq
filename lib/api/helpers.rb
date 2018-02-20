@@ -379,7 +379,16 @@ module API
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-      finder_params[:archived] = params[:archived]
+
+      unless params[:archived].nil?
+        finder_params[:archived] =
+          if params[:archived]
+            'only'
+          else
+            false
+          end
+      end
+
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
