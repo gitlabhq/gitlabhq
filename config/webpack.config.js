@@ -66,7 +66,10 @@ var config = {
     epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
+<<<<<<< HEAD
     geo_nodes:            'ee/geo_nodes',
+=======
+>>>>>>> upstream/master
     help:                 './help/help.js',
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
