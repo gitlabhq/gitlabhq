@@ -51,8 +51,6 @@ var Dispatcher;
         case 'projects:merge_requests:creations:new':
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          shortcut_handler = true;
-          break;
         case 'projects:merge_requests:show':
           shortcut_handler = true;
           break;
