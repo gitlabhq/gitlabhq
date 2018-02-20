@@ -12,23 +12,19 @@ describe 'Pipeline', :js do
   describe 'GET /:project/pipelines/:id/security' do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
-    let(:build) do
-      create(
-        :ci_build,
-        :artifacts,
-        name: 'sast',
-        pipeline: pipeline,
-        options: {
-          artifacts: {
-            paths: [Ci::Build::SAST_FILE]
-          }
-        }
-      )
-    end
-
-    context 'when there is a sast artifact' do
+    context 'with a sast artifact' do
       before do
-        build
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'sast',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: [Ci::Build::SAST_FILE]
+            }
+          }
+        )
 
         visit security_project_pipeline_path(project, pipeline)
       end
@@ -51,6 +47,7 @@ describe 'Pipeline', :js do
       it 'displays the pipeline graph' do
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Security report')
+        expect(page).to have_selector('.pipeline-visualization')
       end
     end
   end

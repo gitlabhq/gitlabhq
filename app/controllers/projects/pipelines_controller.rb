@@ -3,7 +3,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds, :failures, :security]
+  before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]

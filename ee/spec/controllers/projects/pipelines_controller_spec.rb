@@ -13,28 +13,38 @@ describe Projects::PipelinesController do
   describe 'GET security' do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
-    let(:build) do
-      create(
-        :ci_build,
-        :artifacts,
-        name: 'sast',
-        pipeline: pipeline,
-        options: {
-          artifacts: {
-            paths: [Ci::Build::SAST_FILE]
+    context 'with a sast artifact' do
+      before do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'sast',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: [Ci::Build::SAST_FILE]
+            }
           }
-        }
-      )
+        )
+
+        get :security, namespace_id: project.namespace, project_id: project, id: pipeline
+      end
+
+      it do
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to render_template :show
+      end
     end
 
-    before do
-      build
-      get :security, namespace_id: project.namespace, project_id: project, id: pipeline
-    end
+    context 'without sast artifact' do
+      before do
+        get :security, namespace_id: project.namespace, project_id: project, id: pipeline
+      end
 
-    it do
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to render_template :show
+      it do
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to(pipeline_path(pipeline))
+      end
     end
   end
 end

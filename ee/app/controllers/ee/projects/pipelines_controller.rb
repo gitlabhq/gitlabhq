@@ -4,6 +4,8 @@ module EE
       extend ActiveSupport::Concern
 
       def security
+        commit
+
         if @pipeline.sast_artifact
           render_show
         else
