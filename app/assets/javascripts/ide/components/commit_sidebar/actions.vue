@@ -21,7 +21,7 @@
       ]),
       newMergeRequestHelpText() {
         return sprintf(
-          __(`Creates a new branch from %{branchName} and re-directs to create a new merge request`),
+          __('Creates a new branch from %{branchName} and re-directs to create a new merge request'),
           { branchName: this.currentBranchId },
         );
       },
@@ -30,7 +30,7 @@
           __('Commit to %{branchName} branch'),
           { branchName: `<strong>${this.currentBranchId}</strong>` },
           false,
-        )
+        );
       },
       commitToNewBranchText() {
         return sprintf(

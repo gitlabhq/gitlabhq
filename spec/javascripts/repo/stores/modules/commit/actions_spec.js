@@ -61,7 +61,7 @@ describe('IDE commit module actions', () => {
     it('updates commit message with short_id', (done) => {
       store.dispatch('commit/setLastCommitMessage', { short_id: '123' })
         .then(() => {
-          expect(store.state.lastCommitMsg).toBe('Your changes have been committed. Commit 123');
+          expect(store.state.lastCommitMsg).toContain('Your changes have been committed. Commit 123');
         })
         .then(done)
         .catch(done.fail);

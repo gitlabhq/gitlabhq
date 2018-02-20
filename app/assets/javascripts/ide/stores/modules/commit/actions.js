@@ -35,7 +35,7 @@ export const setLastCommitMessage = ({ commit }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commmitId: data.short_id,
+      commitId: data.short_id,
       commitStats,
     },
   );
