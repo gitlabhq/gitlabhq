@@ -113,7 +113,7 @@ export default {
             class="form-control input-sm multi-file-commit-message"
             name="commit-message"
             :value="commitMessage"
-            placeholder="Write a commit message..."
+            :placeholder="__('Write a commit message...')"
             @input="updateCommitMessage($event.target.value)"
           >
           </textarea>

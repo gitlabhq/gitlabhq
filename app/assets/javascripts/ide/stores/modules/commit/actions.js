@@ -1,3 +1,4 @@
+import { sprintf, __ } from '../../../../locale';
 import * as types from './mutation_types';
 import * as consts from './constants';
 import * as rootTypes from '../../mutation_types';
@@ -25,11 +26,19 @@ export const updateBranchName = ({ commit }, branchName) => {
 };
 
 export const setLastCommitMessage = ({ commit }, data) => {
-  let commitMsg = `Your changes have been committed. Commit ${data.short_id}`;
-
-  if (data.stats) {
-    commitMsg += ` with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`;
-  }
+  const commitStats = data.stats ?
+    sprintf(
+      __('with %{additions} additions, %{deletions} deletions.'),
+      { additions: data.stats.additions, deletions: data.stats.deletions },
+    )
+    : '';
+  const commitMsg = sprintf(
+    __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
+    {
+      commmitId: data.short_id,
+      commitStats,
+    },
+  );
 
   commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
 };
@@ -48,7 +57,7 @@ export const checkCommitStatus = ({ rootState }) =>
 
       return false;
     })
-    .catch(() => flash('Error checking branch data. Please try again.', 'alert', document, null, false, true));
+    .catch(() => flash(__('Error checking branch data. Please try again.'), 'alert', document, null, false, true));
 
 export const updateFilesAfterCommit = (
   { commit, dispatch, state, rootState, rootGetters },
@@ -135,7 +144,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
     }
   })
   .catch((err) => {
-    let errMsg = 'Error committing changes. Please try again.';
+    let errMsg = __('Error committing changes. Please try again.');
     if (err.response.data && err.response.data.message) {
       errMsg += ` (${stripHtml(err.response.data.message)})`;
     }

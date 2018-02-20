@@ -1,5 +1,6 @@
 <script>
   import { mapState } from 'vuex';
+  import { sprintf, __ } from '../../../locale';
   import * as consts from '../../stores/modules/commit/constants';
   import RadioGroup from './radio_group.vue';
 
@@ -19,7 +20,23 @@
         'currentBranchId',
       ]),
       newMergeRequestHelpText() {
-        return `Creates a new branch from ${this.currentBranchId} and re-directs to create a new merge request`;
+        return sprintf(
+          __(`Creates a new branch from %{branchName} and re-directs to create a new merge request`),
+          { branchName: this.currentBranchId },
+        );
+      },
+      commitToCurrentBranchText() {
+        return sprintf(
+          __('Commit to %{branchName} branch'),
+          { branchName: `<strong>${this.currentBranchId}</strong>` },
+          false,
+        )
+      },
+      commitToNewBranchText() {
+        return sprintf(
+          __('Creates a new branch from %{branchName}'),
+          { branchName: this.currentBranchId },
+        );
       },
     },
   };
@@ -32,7 +49,7 @@
       :checked="true"
     >
       <span
-        v-html="`Commit to <strong>${currentBranchId}</strong> branch`"
+        v-html="commitToCurrentBranchText"
       >
       </span>
     </radio-group>
@@ -40,7 +57,7 @@
       :value="COMMIT_TO_NEW_BRANCH"
       label="Create a new branch"
       :show-input="true"
-      :help-text="`Creates a new branch from ${currentBranchId}`"
+      :help-text="commitToNewBranchText"
     />
     <radio-group
       :value="COMMIT_TO_NEW_BRANCH_MR"
