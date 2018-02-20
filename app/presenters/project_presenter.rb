@@ -7,7 +7,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   presents :project
 
-  def project_stat_anchor_items(show_auto_devops_callout:)
+  def statistics_anchors(show_auto_devops_callout:)
     [
       files_anchor_data,
       commits_anchor_data,
@@ -23,7 +23,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     ].compact.reject { |i| !i[:enabled] }
   end
 
-  def project_stat_button_items(show_auto_devops_callout:)
+  def statistics_buttons(show_auto_devops_callout:)
     [
       changelog_anchor_data,
       license_anchor_data,
@@ -35,14 +35,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     ].compact.reject { |i| i[:enabled] }
   end
 
-  def empty_project_stat_anchor_items
+  def empty_repo_statistics_anchors
     [
       autodevops_anchor_data,
       kubernetes_cluster_anchor_data
     ].compact.reject { |i| !i[:enabled] }
   end
 
-  def empty_project_stat_button_items
+  def empty_repo_statistics_buttons
     [
       new_file_anchor_data,
       readme_anchor_data,

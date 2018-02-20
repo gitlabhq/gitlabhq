@@ -33,8 +33,8 @@
       .prepend-top-20
 
 %nav.project-stats{ class: container_class }
-  = render 'stat_anchor_list', anchors: @project.empty_project_stat_anchor_items
-  = render 'stat_anchor_list', anchors: @project.empty_project_stat_button_items
+  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
+  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
 - if can?(current_user, :push_code, @project)
   %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
