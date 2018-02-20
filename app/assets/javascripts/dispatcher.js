@@ -277,11 +277,6 @@ var Dispatcher;
           break;
       }
       switch (path[0]) {
-        case 'omniauth_callbacks':
-          import('./pages/omniauth_callbacks')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'admin':
           import('./pages/admin')
             .then(callDefault)
