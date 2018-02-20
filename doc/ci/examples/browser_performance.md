@@ -14,9 +14,9 @@ Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `performan
     - docker:dind
   script:
     - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-5/index.js
     - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io --plugins.add ./gitlab-exporter --outputFolder sitespeed-results https://my.website.com
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results https://my.website.com
     - mv sitespeed-results/data/performance.json performance.json
   artifacts:
     paths:
@@ -46,8 +46,11 @@ A simple `performance` job would look like:
     - docker:dind
   script:
     - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    - mkdir gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-5/index.js
     - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io --outputFolder sitespeed-results $CI_ENVIRONMENT_URL
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+    - mv sitespeed-results/data/performance.json performance.json
   artifacts:
     paths:
     - performance.json
