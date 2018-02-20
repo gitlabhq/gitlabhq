@@ -30,10 +30,6 @@ In order for the report to show in the merge request, you need to specify a
 resulting `gl-sast-container-report.json` file as an artifact (exact filename).
 GitLab will then check this file and show the information inside the merge request.
 
-This JSON file needs to be the only artifact file for the job. If you try
-to also include other files, it will break the vulnerability display in the
-merge request.
-
 For more information on how the `sast:container` job should look like, check the
 example on [analyzing a Docker image for vulnerabilities][cc-docs].
 
