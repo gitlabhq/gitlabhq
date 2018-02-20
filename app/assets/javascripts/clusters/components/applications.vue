@@ -143,8 +143,10 @@
           :request-reason="applications.helm.requestReason"
         >
           <div slot="description">
-            {{ s__(`ClusterIntegration|Helm streamlines installing and managing Kubernetes applications.
-              Tiller runs inside of your Kubernetes Cluster, and manages releases of your charts.`) }}
+            {{ s__(`ClusterIntegration|Helm streamlines installing
+              and managing Kubernetes applications.
+              Tiller runs inside of your Kubernetes Cluster,
+              and manages releases of your charts.`) }}
           </div>
         </application-row>
         <application-row
