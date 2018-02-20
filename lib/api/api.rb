@@ -38,14 +38,10 @@ module API
       mount ::API::V3::Groups
       mount ::API::V3::Issues
       mount ::API::V3::Labels
-      mount ::API::V3::LdapGroupLinks
       mount ::API::V3::Members
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
-      mount ::API::V3::Pipelines
-      mount ::API::V3::ProjectGitHook
-      mount ::API::V3::ProjectPushRule
       mount ::API::V3::Pipelines
       mount ::API::V3::ProjectHooks
       mount ::API::V3::Milestones
@@ -65,10 +61,16 @@ module API
       mount ::API::V3::Users
       mount ::API::V3::Variables
 
+      ## EE-specific API V3 endpoints START
+      mount ::API::V3::LdapGroupLinks
+      mount ::API::V3::ProjectGitHook
+      mount ::API::V3::ProjectPushRule
+      mount ::API::V3::Pipelines
       # Although the following endpoints are kept behind V3 namespace, they're not
       # deprecated neither should be removed when V3 get removed.
       # They're needed as a layer to integrate with Jira Development Panel.
       mount ::API::V3::Github
+      ## EE-specific API V3 endpoints END
     end
 
     before do
@@ -126,25 +128,17 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
-    mount ::API::EpicIssues
-    mount ::API::Epics
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
-    mount ::API::Geo
-    mount ::API::GeoNodes
     mount ::API::Groups
     mount ::API::GroupMilestones
     mount ::API::Internal
     mount ::API::Issues
-    mount ::API::IssueLinks
     mount ::API::Jobs
     mount ::API::JobArtifacts
     mount ::API::Keys
     mount ::API::Labels
-    mount ::API::Ldap
-    mount ::API::LdapGroupLinks
-    mount ::API::License
     mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequestDiffs
@@ -155,9 +149,7 @@ module API
     mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
-    mount ::API::ProjectImport
     mount ::API::ProjectHooks
-    mount ::API::ProjectPushRule
     mount ::API::Projects
     mount ::API::ProjectMilestones
     mount ::API::ProjectSnippets
@@ -182,9 +174,20 @@ module API
     mount ::API::Version
     mount ::API::Wikis
 
-    # EE-Only
+    ## EE-specific API V4 endpoints START
+    mount ::API::EpicIssues
+    mount ::API::Epics
+    mount ::API::Geo
+    mount ::API::GeoNodes
     mount ::API::GroupBoards
+    mount ::API::IssueLinks
+    mount ::API::Ldap
+    mount ::API::LdapGroupLinks
+    mount ::API::License
+    mount ::API::ProjectImport
+    mount ::API::ProjectPushRule
     mount ::EE::API::Boards
+    ## EE-specific API V4 endpoints END
 
     route :any, '*path' do
       error!('404 Not Found', 404)
