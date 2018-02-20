@@ -12,7 +12,7 @@ export default class GLForm {
     this.destroy();
     // Setup the form
     this.setupForm();
-    this.form.data('gl-form', this);
+    this.form.data('glForm', this);
   }
 
   destroy() {
@@ -21,7 +21,7 @@ export default class GLForm {
     if (this.autoComplete) {
       this.autoComplete.destroy();
     }
-    this.form.data('gl-form', null);
+    this.form.data('glForm', null);
   }
 
   setupForm() {

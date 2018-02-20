@@ -78,6 +78,7 @@
       taskListUpdateSuccess(data) {
         try {
           this.checkForSpam(data);
+          this.closeRecaptcha();
         } catch (error) {
           if (error && error.name === 'SpamError') this.openRecaptcha();
         }

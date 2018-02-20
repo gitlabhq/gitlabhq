@@ -76,8 +76,8 @@ Sidebar.prototype.toggleTodo = function(e) {
   $('.js-issuable-todo').disable().addClass('is-loading');
 
   axios[ajaxType](url, {
-    issuable_id: $this.data('issuable-id'),
-    issuable_type: $this.data('issuable-type'),
+    issuable_id: $this.data('issuableId'),
+    issuable_type: $this.data('issuableType'),
   }).then(({ data }) => {
     this.todoUpdateDone(data);
   }).catch(() => flash(`There was an error ${ajaxType === 'post' ? 'adding a' : 'deleting the'} todo.`));
@@ -96,18 +96,18 @@ Sidebar.prototype.todoUpdateDone = function(data) {
 
     $el.removeClass('is-loading')
       .enable()
-      .attr('aria-label', $el.data(`${attrPrefix}-text`))
+      .attr('aria-label', $el.data(`${attrPrefix}Text`))
       .attr('data-delete-path', deletePath)
-      .attr('title', $el.data(`${attrPrefix}-text`));
+      .attr('title', $el.data(`${attrPrefix}Text`));
 
     if ($el.hasClass('has-tooltip')) {
       $el.tooltip('fixTitle');
     }
 
-    if ($el.data(`${attrPrefix}-icon`)) {
-      $elText.html($el.data(`${attrPrefix}-icon`));
+    if ($el.data(`${attrPrefix}Icon`)) {
+      $elText.html($el.data(`${attrPrefix}Icon`));
     } else {
-      $elText.text($el.data(`${attrPrefix}-text`));
+      $elText.text($el.data(`${attrPrefix}Text`));
     }
   });
 };
