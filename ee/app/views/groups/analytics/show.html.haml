@@ -2,10 +2,6 @@
 - header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
 
 - if @group.feature_available?(:contribution_analytics)
-  - content_for :page_specific_javascripts do
-    = page_specific_javascript_bundle_tag('common_d3')
-    = page_specific_javascript_bundle_tag('graphs')
-
   .sub-header-block
     .pull-right
       .dropdown.inline

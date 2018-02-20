@@ -19,7 +19,9 @@
       "additionalProperties": false
     },
     "start_date": { "type": ["string", "null"] },
-    "end_date": { "type": ["string", "null"] }
+    "end_date": { "type": ["string", "null"] },
+    "created_at": { "type": ["string", "null"] },
+    "updated_at": { "type": ["string", "null"] }
   },
   "required": [
     "id", "iid", "group_id", "title"

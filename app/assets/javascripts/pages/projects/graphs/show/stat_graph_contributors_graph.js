@@ -7,7 +7,7 @@ import { axisLeft, axisBottom } from 'd3-axis';
 import { area } from 'd3-shape';
 import { brushX } from 'd3-brush';
 import { timeParse } from 'd3-time-format';
-import { dateTickFormat } from '../lib/utils/tick_formats';
+import { dateTickFormat } from '~/lib/utils/tick_formats';
 
 const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
 

@@ -16,11 +16,16 @@ Gets all epics of the requested group and its subgroups.
 
 ```
 GET /groups/:id/-/epics
+GET /groups/:id/-/epics?author_id=5
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                                        |
+| `order_by`          | string           | no         | Return epics ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
+| `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
+| `search`            | string           | no         | Search epics against their `title` and `description`                                                                                               |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/-/epics
@@ -45,7 +50,9 @@ Example response:
     "web_url": "http://localhost:3001/kam"
   },
   "start_date": null,
-  "end_date": null
+  "end_date": null,
+  "created_at": "2018-01-21T06:21:13.165Z",
+  "updated_at": "2018-01-22T12:41:41.166Z"
   }
 ]
 ```
@@ -85,7 +92,9 @@ Example response:
     "web_url": "http://localhost:3001/arnita"
   },
   "start_date": null,
-  "end_date": null
+  "end_date": null,
+  "created_at": "2018-01-21T06:21:13.165Z",
+  "updated_at": "2018-01-22T12:41:41.166Z"
 }
 ```
 
@@ -127,7 +136,9 @@ Example response:
     "username" : "eileen.lowe"
   },
   "start_date": null,
-  "end_date": null
+  "end_date": null,
+  "created_at": "2018-01-21T06:21:13.165Z",
+  "updated_at": "2018-01-22T12:41:41.166Z"
 }
 ```
 
@@ -170,7 +181,9 @@ Example response:
     "username" : "eileen.lowe"
   },
   "start_date": null,
-  "end_date": null
+  "end_date": null,
+  "created_at": "2018-01-21T06:21:13.165Z",
+  "updated_at": "2018-01-22T12:41:41.166Z"
 }
 ```
 

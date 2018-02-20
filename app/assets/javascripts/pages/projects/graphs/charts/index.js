@@ -1,4 +1,4 @@
-import Chart from 'vendor/Chart';
+import Chart from 'chart.js';
 import _ from 'underscore';
 
 document.addEventListener('DOMContentLoaded', () => {

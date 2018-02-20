@@ -1349,6 +1349,33 @@ describe NotificationService, :mailer do
   end
 
   describe 'GroupMember' do
+    let(:added_user) { create(:user) }
+
+    describe '#new_access_request' do
+      let(:master) { create(:user) }
+      let(:owner) { create(:user) }
+      let(:developer) { create(:user) }
+      let!(:group) do
+        create(:group, :public, :access_requestable) do |group|
+          group.add_owner(owner)
+          group.add_master(master)
+          group.add_developer(developer)
+        end
+      end
+
+      before do
+        reset_delivered_emails!
+      end
+
+      it 'sends notification to group owners_and_masters' do
+        group.request_access(added_user)
+
+        should_email(owner)
+        should_email(master)
+        should_not_email(developer)
+      end
+    end
+
     describe '#decline_group_invite' do
       let(:creator) { create(:user) }
       let(:group) { create(:group) }
@@ -1370,18 +1397,9 @@ describe NotificationService, :mailer do
 
     describe '#new_group_member' do
       let(:group) { create(:group) }
-      let(:added_user) { create(:user) }
-
-      def create_member!
-        GroupMember.create(
-          group: group,
-          user: added_user,
-          access_level: Gitlab::Access::GUEST
-        )
-      end
 
       it 'sends a notification' do
-        create_member!
+        group.add_guest(added_user)
         should_only_email(added_user)
       end
 
@@ -1391,7 +1409,7 @@ describe NotificationService, :mailer do
         end
 
         it 'does not send a notification' do
-          create_member!
+          group.add_guest(added_user)
           should_not_email_anyone
         end
       end
@@ -1399,8 +1417,42 @@ describe NotificationService, :mailer do
   end
 
   describe 'ProjectMember' do
+    let(:project) { create(:project) }
+    set(:added_user) { create(:user) }
+
+    describe '#new_access_request' do
+      context 'for a project in a user namespace' do
+        let(:project) do
+          create(:project, :public, :access_requestable) do |project|
+            project.add_master(project.owner)
+          end
+        end
+
+        it 'sends notification to project owners_and_masters' do
+          project.request_access(added_user)
+
+          should_only_email(project.owner)
+        end
+      end
+
+      context 'for a project in a group' do
+        let(:group_owner) { create(:user) }
+        let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
+        let!(:project) { create(:project, :public, :access_requestable, namespace: group) }
+
+        before do
+          reset_delivered_emails!
+        end
+
+        it 'sends notification to group owners_and_masters' do
+          project.request_access(added_user)
+
+          should_only_email(group_owner)
+        end
+      end
+    end
+
     describe '#decline_group_invite' do
-      let(:project) { create(:project) }
       let(:member) { create(:user) }
 
       before do
@@ -1417,19 +1469,12 @@ describe NotificationService, :mailer do
     end
 
     describe '#new_project_member' do
-      let(:project) { create(:project) }
-      let(:added_user) { create(:user) }
-
-      def create_member!
-        create(:project_member, user: added_user, project: project)
-      end
-
       it do
         create_member!
         should_only_email(added_user)
       end
 
-      describe 'when notifications are disabled' do
+      context 'when notifications are disabled' do
         before do
           create_global_setting_for(added_user, :disabled)
         end
@@ -1439,6 +1484,10 @@ describe NotificationService, :mailer do
           should_not_email_anyone
         end
       end
+    end
+
+    def create_member!
+      create(:project_member, user: added_user, project: project)
     end
   end
 

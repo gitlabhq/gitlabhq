@@ -1,7 +1,7 @@
 - todo = issuable_todo(issuable)
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('ee_sidebar')
+  = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('ee_sidebar')
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }

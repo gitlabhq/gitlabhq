@@ -55,6 +55,10 @@ describe 'Epic Issues', :js do
     def add_issues(references)
       find('.related-issues-block h3.panel-title button').click
       find('.js-add-issuable-form-input').set(references)
+      # When adding long references, for some reason the input gets stuck
+      # waiting for more text. Send a keystroke before clicking the button to
+      # get out of this mode.
+      find('.js-add-issuable-form-input').send_keys(:tab)
       find('.js-add-issuable-form-add-button').click
 
       wait_for_requests
