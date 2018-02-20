@@ -259,7 +259,6 @@ feature 'Expand and collapse diffs', :js do
       expect(page).to have_content('This diff was suppressed by a .gitattributes entry')
       expect(page).to have_content('This source diff could not be displayed because it is too large.')
       expect(page).to have_content('too_large_image.jpg')
-      find('.note-textarea')
 
       wait_for_requests
       execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')

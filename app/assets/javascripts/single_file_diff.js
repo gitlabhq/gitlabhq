@@ -88,6 +88,6 @@ export default class SingleFileDiff {
 
         if (cb) cb();
       })
-      .catch(createFlash(__('An error occurred while retrieving diff')));
+      .catch(() => createFlash(__('An error occurred while retrieving diff')));
   }
 }

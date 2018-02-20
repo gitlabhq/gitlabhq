@@ -24,7 +24,7 @@ import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import Autosave from './autosave';
 import TaskList from './task_list';
-import { isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import { isInViewport, getPagePath, scrollToElement, isMetaKey, isInMRPage } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 
@@ -106,7 +106,7 @@ export default class Notes {
   }
 
   addBinding() {
-    this.$wrapperEl = $(document).find('.diffs');
+    this.$wrapperEl = isInMRPage() ? $(document).find('.diffs') : $(document);
 
     // Edit note link
     this.$wrapperEl.on('click', '.js-note-edit', this.showEditForm.bind(this));
@@ -734,7 +734,7 @@ export default class Notes {
     var selector = this.getEditFormSelector($target);
     var $editForm = $(selector);
 
-    $editForm.insertBefore('.diffs');
+    $editForm.insertBefore('.notes-form:visible');
     $editForm.find('.js-comment-save-button').enable();
     $editForm.find('.js-finish-edit-warning').hide();
   }
@@ -750,7 +750,7 @@ export default class Notes {
   }
 
   removeNoteEditForm($note) {
-    var form = $note.find('.diffs .current-note-edit-form');
+    var form = $note.find('.current-note-edit-form');
 
     $note.removeClass('is-editing');
     form.removeClass('current-note-edit-form');
