@@ -23,10 +23,6 @@ module Clusters
         def name
           self.class.application_name
         end
-
-        def post_install
-          # Override for any extra work that needs to be done after install
-        end
       end
     end
   end

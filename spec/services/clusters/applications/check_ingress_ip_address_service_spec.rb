@@ -1,8 +1,13 @@
 require 'spec_helper'
 
 describe Clusters::Applications::CheckIngressIpAddressService do
+  subject { service.execute }
   let(:application) { create(:clusters_applications_ingress, :installed) }
   let(:service) { described_class.new(application) }
+  let(:kubeclient) { double(::Kubeclient::Client, get_service: kube_service) }
+  let(:ingress) { [{ ip: '111.222.111.222' }] }
+  let(:exclusive_lease) { instance_double(Gitlab::ExclusiveLease, try_obtain: true) }
+
   let(:kube_service) do
     ::Kubeclient::Resource.new(
       {
@@ -14,9 +19,6 @@ describe Clusters::Applications::CheckIngressIpAddressService do
       }
     )
   end
-  let(:kubeclient) { double(::Kubeclient::Client, get_service: kube_service) }
-  let(:ingress) { [{ ip: '111.222.111.222' }] }
-  let(:exclusive_lease) { instance_double(Gitlab::ExclusiveLease, try_obtain: true) }
 
   before do
     allow(application.cluster).to receive(:kubeclient).and_return(kubeclient)
@@ -28,10 +30,10 @@ describe Clusters::Applications::CheckIngressIpAddressService do
 
   describe '#execute' do
     context 'when the ingress ip address is available' do
-      it 'updates the external_ip for the app and does not schedule another worker' do
-        expect(ClusterWaitForIngressIpAddressWorker).not_to receive(:perform_in)
+      it { is_expected.to eq(true) }
 
-        service.execute(1)
+      it 'updates the external_ip for the app' do
+        subject
 
         expect(application.external_ip).to eq('111.222.111.222')
       end
@@ -40,21 +42,7 @@ describe Clusters::Applications::CheckIngressIpAddressService do
     context 'when the ingress ip address is not available' do
       let(:ingress) { nil }
 
-      it 'it schedules another worker with 1 less retry' do
-        expect(ClusterWaitForIngressIpAddressWorker)
-          .to receive(:perform_in)
-          .with(ClusterWaitForIngressIpAddressWorker::INTERVAL, 'ingress', application.id, 0)
-
-        service.execute(1)
-      end
-
-      context 'when no more retries remaining' do
-        it 'does not schedule another worker' do
-          expect(ClusterWaitForIngressIpAddressWorker).not_to receive(:perform_in)
-
-          service.execute(0)
-        end
-      end
+      it { is_expected.to eq(false) }
     end
 
     context 'when the exclusive lease cannot be obtained' do
@@ -64,22 +52,24 @@ describe Clusters::Applications::CheckIngressIpAddressService do
           .and_return(false)
       end
 
-      it 'does not call kubeclient' do
-        expect(kubeclient).not_to receive(:get_service)
+      it { is_expected.to eq(true) }
 
-        service.execute(1)
+      it 'does not call kubeclient' do
+        subject
+
+        expect(kubeclient).not_to have_received(:get_service)
       end
     end
 
     context 'when there is already an external_ip' do
       let(:application) { create(:clusters_applications_ingress, :installed, external_ip: '001.111.002.111') }
 
-      it 'does nothing' do
-        expect(kubeclient).not_to receive(:get_service)
+      it { is_expected.to eq(true) }
 
-        service.execute(1)
+      it 'does not call kubeclient' do
+        subject
 
-        expect(application.external_ip).to eq('001.111.002.111')
+        expect(kubeclient).not_to have_received(:get_service)
       end
     end
 
@@ -88,12 +78,9 @@ describe Clusters::Applications::CheckIngressIpAddressService do
         allow(kubeclient).to receive(:get_service).and_raise(KubeException.new(500, 'something blew up', nil))
       end
 
-      it 'it schedules another worker with 1 less retry' do
-        expect(ClusterWaitForIngressIpAddressWorker)
-          .to receive(:perform_in)
-          .with(ClusterWaitForIngressIpAddressWorker::INTERVAL, 'ingress', application.id, 0)
-
-        service.execute(1)
+      it 'it raises Clusters::Applications::CheckIngressIpAddressServiceError' do
+        expect { subject }
+          .to raise_error(Clusters::Applications::CheckIngressIpAddressService::Error, "KubeException: something blew up")
       end
     end
   end
