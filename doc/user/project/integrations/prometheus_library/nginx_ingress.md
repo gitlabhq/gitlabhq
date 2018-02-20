@@ -18,12 +18,23 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 
 ## Configuring NGINX ingress monitoring
 
-If you have deployed NGINX Ingress using GitLab's [Kubernetes cluster integration](../../clusters/index.md#installing-applications), it will automatically be monitored by Prometheus.
+If you have deployed NGINX Ingress using GitLab's [Kubernetes cluster integration](../../clusters/index.md#installing-applications), it will [automatically be monitored](#about-managed-nginx-ingress-deployments) by Prometheus.
 
-For other deployments, there is some configuration required depending on your installation:
+For other deployments, there is [some configuration](#manually-setting-up-nginx-ingress-for-prometheus-monitoring) required depending on your installation:
 * NGINX Ingress should be version 0.9.0 or above, with metrics enabled
 * NGINX Ingress should be annotated for Prometheus monitoring
 * Prometheus should be configured to monitor annotated pods
+
+### About managed NGINX Ingress deployments
+
+NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's IP](https://docs.gitlab.com/ce/user/project/clusters/index.html#getting-the-external-ip-address).
+
+NGINX is configured for Prometheus monitoring, by setting:
+* `enable-vts-status: "true"`, to export Prometheus metrics
+* `prometheus.io/scrape: "true"`, to enable automatic discovery
+* `prometheus.io/port: "10254"`, to specify the metrics port
+
+When used in conjunction with the GitLab deployed Prometheus service, response metrics will be automatically collected.
 
 ### Manually setting up NGINX Ingress for Prometheus monitoring
 
