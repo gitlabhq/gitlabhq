@@ -342,7 +342,7 @@ class Project < ActiveRecord::Base
     authorized_projects = block.call(where('EXISTS (?)', authorized))
 
     levels = Gitlab::VisibilityLevel.levels_for_user(user)
-    visible_projects = block.call(where('visibility_level IN (?)', levels))
+    visible_projects = block.call(where(visibility_level: levels))
 
     # We use a UNION here instead of OR clauses since this results in better
     # performance.
