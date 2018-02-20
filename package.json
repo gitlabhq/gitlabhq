@@ -114,7 +114,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "2.0.7",
-    "nodemon": "^1.11.0",
+    "nodemon": "^1.15.1",
     "prettier": "1.9.2",
     "webpack-dev-server": "^2.11.1"
   }
