@@ -20,10 +20,11 @@
     },
     computed: {
       summarySastText() {
-        const text = s__('ciReport|SAST detected %{link}');
+        let text;
         let link;
 
         if (this.unresolvedIssues.length) {
+          text = s__('ciReport|SAST degraded on %{link}');
           link = this.unresolvedIssues.length > 1 ?
             this.getLink(sprintf(
               s__('ciReport|%{d} security vulnerabilities'),
@@ -32,6 +33,7 @@
             )) :
             this.getLink(s__('ciReport|1 security vulnerability'));
         } else {
+          text = s__('ciReport|SAST detected %{link}');
           link = this.getLink(s__('ciReport|no security vulnerabilities'));
         }
 
