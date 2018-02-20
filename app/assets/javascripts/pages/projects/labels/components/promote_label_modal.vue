@@ -3,7 +3,7 @@
   import createFlash from '~/flash';
   import GlModal from '~/vue_shared/components/gl_modal.vue';
   import { redirectTo } from '~/lib/utils/url_utility';
-  import { s__ } from '~/locale';
+  import { s__, sprintf } from '~/locale';
   import eventHub from '../event_hub';
 
   export default {
@@ -23,11 +23,25 @@
         type: String,
         required: true,
       },
+      labelTextColor: {
+        type: String,
+        required: true,
+      },
     },
     computed: {
       text() {
         return s__(`Milestones|Promoting this label will make it available for all projects inside the group. 
         Existing project labels with the same name will be merged. This action cannot be reversed.`);
+      },
+      title() {
+        const label = `<span
+          class="label color-label"
+          style="background-color: ${this.labelColor}; color: ${this.labelTextColor};"
+        >${this.labelTitle}</span>`;
+
+        return sprintf(s__('Labels|Promote label %{labelTitle} to Group Label?'), {
+          labelTitle: label,
+        }, false);
       },
     },
     methods: {
@@ -55,15 +69,9 @@
   >
     <div
       slot="title"
+      v-html="title"
     >
-      {{ s__('Labels|Promote label') }}
-      <span
-        class="label color-label"
-        :style="{ backgroundColor: labelColor }"
-      >
-        {{ labelTitle }}
-      </span>
-      {{ s__('Labels|to Group Label?') }}
+      {{ title }}
     </div>
 
     {{ text }}

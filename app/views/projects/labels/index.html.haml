@@ -3,8 +3,8 @@
 - hide_class = ''
 - can_admin_label = can?(current_user, :admin_label, @project)
 
-#promote-label-modal
 - if @labels.exists? || @prioritized_labels.exists?
+  #promote-label-modal
   %div{ class: container_class }
     .top-area.adjust
       .nav-text

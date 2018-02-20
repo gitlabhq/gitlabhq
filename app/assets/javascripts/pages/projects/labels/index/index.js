@@ -6,84 +6,86 @@ import PromoteLabelModal from '../components/promote_label_modal.vue';
 
 Vue.use(Translate);
 
-const onRequestFinished = ({ labelUrl, successful }) => {
-  const button = document.querySelector(`.js-promote-project-label[data-url="${labelUrl}"]`);
-
-  if (!successful) {
-    button.removeAttribute('disabled');
-  }
-};
-
-const onRequestStarted = (labelUrl) => {
-  const button = document.querySelector(`.js-promote-project-label[data-url="${labelUrl}"]`);
-  button.setAttribute('disabled', '');
-  eventHub.$once('promoteLabelModal.requestFinished', onRequestFinished);
-};
-
-const onDeleteButtonClick = (event) => {
-  const button = event.currentTarget;
-  const modalProps = {
-    labelTitle: button.dataset.labelTitle,
-    labelColor: button.dataset.labelColor,
-    url: button.dataset.url,
-  };
-  eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
-  eventHub.$emit('promoteLabelModal.props', modalProps);
-};
-
-const promoteLabelButtons = document.querySelectorAll('.js-promote-project-label');
-promoteLabelButtons.forEach((button) => {
-  button.addEventListener('click', onDeleteButtonClick);
-});
-
-eventHub.$once('promoteLabelModal.mounted', () => {
-  promoteLabelButtons.forEach((button) => {
-    button.removeAttribute('disabled');
-  });
-});
-
 const initLabelIndex = () => {
   initLabels();
 
-  const promoteLabelModalComponent = new Vue({
-    el: '#promote-label-modal',
-    components: {
-      PromoteLabelModal,
-    },
-    data() {
-      return {
-        modalProps: {
-          labelTitle: '',
-          labelColor: '',
-          url: '',
-        },
-      };
-    },
-    mounted() {
-      eventHub.$on('promoteLabelModal.props', this.setModalProps);
-      eventHub.$emit('promoteLabelModal.mounted');
-    },
-    beforeDestroy() {
-      eventHub.$off('promoteLabelModal.props', this.setModalProps);
-    },
-    methods: {
-      setModalProps(modalProps) {
-        this.modalProps = modalProps;
-      },
-    },
-    render(createElement) {
-      return createElement('promote-label-modal', {
-        props: this.modalProps,
-      });
-    },
+  const onRequestFinished = ({ labelUrl, successful }) => {
+    const button = document.querySelector(`.js-promote-project-label-button[data-url="${labelUrl}"]`);
+
+    if (!successful) {
+      button.removeAttribute('disabled');
+    }
+  };
+
+  const onRequestStarted = (labelUrl) => {
+    const button = document.querySelector(`.js-promote-project-label-button[data-url="${labelUrl}"]`);
+    button.setAttribute('disabled', '');
+    eventHub.$once('promoteLabelModal.requestFinished', onRequestFinished);
+  };
+
+  const onDeleteButtonClick = (event) => {
+    const button = event.currentTarget;
+    const modalProps = {
+      labelTitle: button.dataset.labelTitle,
+      labelColor: button.dataset.labelColor,
+      labelTextColor: button.dataset.labelTextColor,
+      url: button.dataset.url,
+    };
+    eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
+    eventHub.$emit('promoteLabelModal.props', modalProps);
+  };
+
+  const promoteLabelButtons = document.querySelectorAll('.js-promote-project-label-button');
+  promoteLabelButtons.forEach((button) => {
+    button.addEventListener('click', onDeleteButtonClick);
+  });
+
+  eventHub.$once('promoteLabelModal.mounted', () => {
+    promoteLabelButtons.forEach((button) => {
+      button.removeAttribute('disabled');
+    });
   });
 
   const promoteLabelModal = document.getElementById('promote-label-modal');
-  let withLabel;
-  if (promoteLabelModal != null) {
-    withLabel = promoteLabelModalComponent;
+  let promoteLabelModalComponent;
+
+  if (promoteLabelModal) {
+    promoteLabelModalComponent = new Vue({
+      el: promoteLabelModal,
+      components: {
+        PromoteLabelModal,
+      },
+      data() {
+        return {
+          modalProps: {
+            labelTitle: '',
+            labelColor: '',
+            labelTextColor: '',
+            url: '',
+          },
+        };
+      },
+      mounted() {
+        eventHub.$on('promoteLabelModal.props', this.setModalProps);
+        eventHub.$emit('promoteLabelModal.mounted');
+      },
+      beforeDestroy() {
+        eventHub.$off('promoteLabelModal.props', this.setModalProps);
+      },
+      methods: {
+        setModalProps(modalProps) {
+          this.modalProps = modalProps;
+        },
+      },
+      render(createElement) {
+        return createElement('promote-label-modal', {
+          props: this.modalProps,
+        });
+      },
+    });
   }
-  return withLabel;
+
+  return promoteLabelModalComponent;
 };
 
 document.addEventListener('DOMContentLoaded', initLabelIndex);

@@ -48,10 +48,11 @@
 
   .pull-right.hidden-xs.hidden-sm
     - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
-      %a.js-promote-project-label.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
+      %a.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),
         data: { url: promote_project_label_path(label.project, label),
                 label_title: label.title,
                 label_color: label.color,
+                label_text_color: label.text_color,
                 target: '#promote-label-modal',
                 container: 'body',
                 toggle: 'modal' },

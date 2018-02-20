@@ -22,7 +22,7 @@
     },
     computed: {
       title() {
-        return sprintf(s__('Milestones|Promote %{title} to group milestone?'), { title: this.milestoneTitle });
+        return sprintf(s__('Milestones|Promote %{milestoneTitle} to group milestone?'), { milestoneTitle: this.milestoneTitle });
       },
       text() {
         return s__(`Milestones|Promoting this milestone will make it available for all projects inside the group.
@@ -35,11 +35,11 @@
         eventHub.$emit('promoteMilestoneModal.requestStarted', this.url);
         return axios.post(this.url)
           .then((response) => {
-            eventHub.$emit('promoteMilestoneModal.requestFinished', { labelUrl: this.url, successful: true });
+            eventHub.$emit('promoteMilestoneModal.requestFinished', { milestoneUrl: this.url, successful: true });
             redirectTo(response.request.responseURL);
           })
           .catch((error) => {
-            eventHub.$emit('promoteMilestoneModal.requestFinished', { labelUrl: this.url, successful: true });
+            eventHub.$emit('promoteMilestoneModal.requestFinished', { milestoneUrl: this.url, successful: false });
             createFlash(error);
           });
       },
@@ -53,11 +53,11 @@
     :footer-primary-button-text="s__('Milestones|Promote Milestone')"
     @submit="onSubmit"
   >
-    <div
+    <template
       slot="title"
     >
       {{ title }}
-    </div>
+    </template>
     {{ text }}
   </gl-modal>
 </template>

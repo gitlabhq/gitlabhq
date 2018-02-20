@@ -37,16 +37,14 @@ export default () => {
   };
 
   const deleteMilestoneButtons = document.querySelectorAll('.js-delete-milestone-button');
-  for (let i = 0; i < deleteMilestoneButtons.length; i += 1) {
-    const button = deleteMilestoneButtons[i];
+  deleteMilestoneButtons.forEach((button) => {
     button.addEventListener('click', onDeleteButtonClick);
-  }
+  });
 
   eventHub.$once('deleteMilestoneModal.mounted', () => {
-    for (let i = 0; i < deleteMilestoneButtons.length; i += 1) {
-      const button = deleteMilestoneButtons[i];
+    deleteMilestoneButtons.forEach((button) => {
       button.removeAttribute('disabled');
-    }
+    });
   });
 
   return new Vue({

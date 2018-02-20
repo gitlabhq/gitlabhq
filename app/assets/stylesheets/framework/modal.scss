@@ -4,12 +4,14 @@
 
   .page-title,
   .modal-title {
-    margin-top: 0;
-
     .color-label {
       font-size: $gl-font-size;
       padding: $gl-vert-padding $label-padding-modal;
     }
+  }
+
+  .page-title {
+    margin-top: 0;
   }
 }
 

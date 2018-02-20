@@ -7,35 +7,28 @@ import mountComponent from '../../../helpers/vue_mount_component_helper';
 
 describe('Promote label modal', () => {
   let vm;
-  let Component;
+  const Component = Vue.extend(promoteLabelModal);
   const labelMockData = {
     labelTitle: 'Documentation',
     labelColor: '#5cb85c',
-    url: `${gl.TEST_HOST}/dummy/endpoint`,
+    labelTextColor: '#ffffff',
+    url: `${gl.TEST_HOST}/dummy/promote/labels`,
   };
-
-  beforeEach(() => {
-    Component = Vue.extend(promoteLabelModal);
-  });
 
   describe('Modal title and description', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        ...labelMockData,
-      });
+      vm = mountComponent(Component, labelMockData);
     });
 
     afterEach(() => {
       vm.$destroy();
     });
 
-    it('should contain the proper description', () => {
+    it('contains the proper description', () => {
       expect(vm.text).toContain('Promoting this label will make it available for all projects inside the group');
-      expect(vm.text).toContain('Existing project labels with the same name will be merged');
-      expect(vm.text).toContain('This action cannot be reversed.');
     });
 
-    it('should contain a label span with the color', () => {
+    it('contains a label span with the color', () => {
       const labelFromTitle = vm.$el.querySelector('.modal-header .label.color-label');
 
       expect(labelFromTitle.style.backgroundColor).not.toBe(null);
@@ -55,7 +48,7 @@ describe('Promote label modal', () => {
       vm.$destroy();
     });
 
-    it('should redirect when a label is promoted', (done) => {
+    it('redirects when a label is promoted', (done) => {
       const responseURL = `${gl.TEST_HOST}/dummy/endpoint`;
       spyOn(axios, 'post').and.callFake((url) => {
         expect(url).toBe(labelMockData.url);
@@ -71,6 +64,7 @@ describe('Promote label modal', () => {
       vm.onSubmit()
         .then(() => {
           expect(redirectSpy).toHaveBeenCalledWith(responseURL);
+          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', { labelUrl: labelMockData.url, successful: true });
         })
         .then(done)
         .catch(done.fail);
