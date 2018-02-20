@@ -189,125 +189,95 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def files_anchor_data
-    {
-      enabled: true,
-      label: _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
-      link: project_tree_path(project)
-    }
+    OpenStruct.new(enabled: true,
+                   label: _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
+                   link: project_tree_path(project))
   end
 
   def commits_anchor_data
-    {
-      enabled: true,
-      label: n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
-      link: project_commits_path(project, repository.root_ref)
-    }
+    OpenStruct.new(enabled: true,
+                   label: n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
+                   link: project_commits_path(project, repository.root_ref))
   end
 
   def branches_anchor_data
-    {
-      enabled: true,
-      label: n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
-      link: project_branches_path(project)
-    }
+    OpenStruct.new(enabled: true,
+                   label: n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
+                   link: project_branches_path(project))
   end
 
   def tags_anchor_data
-    {
-      enabled: true,
-      label: n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
-      link: project_tags_path(project)
-    }
+    OpenStruct.new(enabled: true,
+                   label: n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
+                   link: project_tags_path(project))
   end
 
   def new_file_anchor_data
     if current_user && can_current_user_push_code?
-      {
-        enabled: false,
-        label: _('New file'),
-        link: project_new_blob_path(project, default_branch || 'master'),
-        class_modifier: 'new'
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('New file'),
+                     link: project_new_blob_path(project, default_branch || 'master'),
+                     class_modifier: 'new')
     end
   end
 
   def readme_anchor_data
     if current_user && can_current_user_push_code? && repository.readme.blank?
-      {
-        enabled: false,
-        label: _('Add Readme'),
-        link: add_readme_path
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('Add Readme'),
+                     link: add_readme_path)
     elsif repository.readme.present?
-      {
-        enabled: true,
-        label: _('Readme'),
-        link: default_view != 'readme' ? readme_path : '#readme'
-      }
+      OpenStruct.new(enabled: true,
+                     label: _('Readme'),
+                     link: default_view != 'readme' ? readme_path : '#readme')
     end
   end
 
   def changelog_anchor_data
     if current_user && can_current_user_push_code? && repository.changelog.blank?
-      {
-        enabled: false,
-        label: _('Add Changelog'),
-        link: add_special_file_path(file_name: 'CHANGELOG')
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('Add Changelog'),
+                     link: add_special_file_path(file_name: 'CHANGELOG'))
     elsif repository.changelog.present?
-      {
-        enabled: true,
-        label: _('Changelog'),
-        link: changelog_path
-      }
+      OpenStruct.new(enabled: true,
+                     label: _('Changelog'),
+                     link: changelog_path)
     end
   end
 
   def license_anchor_data
     if current_user && can_current_user_push_code? && repository.license_blob.blank?
-      {
-        enabled: false,
-        label: _('Add License'),
-        link: add_license_path
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('Add License'),
+                     link: add_license_path)
     elsif repository.license_blob.present?
-      {
-        enabled: true,
-        label: license_short_name,
-        link: license_path
-      }
+      OpenStruct.new(enabled: true,
+                     label: license_short_name,
+                     link: license_path)
     end
   end
 
   def contribution_guide_anchor_data
     if current_user && can_current_user_push_code? && repository.contribution_guide.blank?
-      {
-        enabled: false,
-        label: _('Add Contribution guide'),
-        link: add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide')
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('Add Contribution guide'),
+                     link: add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide'))
     elsif repository.contribution_guide.present?
-      {
-        enabled: true,
-        label: _('Contribution guide'),
-        link: contribution_guide_path
-      }
+      OpenStruct.new(enabled: true,
+                     label: _('Contribution guide'),
+                     link: contribution_guide_path)
     end
   end
 
   def autodevops_anchor_data(show_auto_devops_callout: false)
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
-      {
-        enabled: auto_devops_enabled?,
-        label: auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
-        link: project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings')
-      }
+      OpenStruct.new(enabled: auto_devops_enabled?,
+                     label: auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
+                     link: project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings'))
     elsif auto_devops_enabled?
-      {
-        enabled: true,
-        label: _('Auto DevOps enabled'),
-        link: nil
-      }
+      OpenStruct.new(enabled: true,
+                     label: _('Auto DevOps enabled'),
+                     link: nil)
     end
   end
 
@@ -319,37 +289,29 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         cluster_link = new_project_cluster_path(project)
       end
 
-      {
-        enabled: !clusters.empty?,
-        label: clusters.empty? ? _('Add Kubernetes cluster') : n_('Kubernetes cluster', 'Kubernetes clusters', clusters.size),
-        link: cluster_link
-      }
+      OpenStruct.new(enabled: !clusters.empty?,
+                     label: clusters.empty? ? _('Add Kubernetes cluster') : n_('Kubernetes cluster', 'Kubernetes clusters', clusters.size),
+                     link: cluster_link)
     end
   end
 
   def gitlab_ci_anchor_data
     if current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
-      {
-        enabled: false,
-        label: _('Set up CI/CD'),
-        link: add_ci_yml_path
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('Set up CI/CD'),
+                     link: add_ci_yml_path)
     elsif repository.gitlab_ci_yml.present?
-      {
-        enabled: true,
-        label: _('CI/CD configuration'),
-        link: ci_configuration_path
-      }
+      OpenStruct.new(enabled: true,
+                     label: _('CI/CD configuration'),
+                     link: ci_configuration_path)
     end
   end
 
   def koding_anchor_data
     if current_user && can_current_user_push_code? && koding_enabled? && repository.koding_yml.blank?
-      {
-        enabled: false,
-        label: _('Set up Koding'),
-        link: add_koding_stack_path
-      }
+      OpenStruct.new(enabled: false,
+                     label: _('Set up Koding'),
+                     link: add_koding_stack_path)
     end
   end
 
