@@ -10,10 +10,10 @@ $(() => {
   const deleteBlobForm = $('.js-delete-blob-form');
 
   if (editBlobForm.length) {
-    const urlRoot = editBlobForm.data('relative-url-root');
-    const assetsPath = editBlobForm.data('assets-prefix');
-    const blobLanguage = editBlobForm.data('blob-language');
-    const currentAction = $('.js-file-title').data('current-action');
+    const urlRoot = editBlobForm.data('relativeUrlRoot');
+    const assetsPath = editBlobForm.data('assetsPrefix');
+    const blobLanguage = editBlobForm.data('blobLanguage');
+    const currentAction = $('.js-file-title').data('currentAction');
 
     new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage, currentAction);
     new NewCommitForm(editBlobForm);

@@ -64,8 +64,8 @@ describe('glDropdown', function describeDropdown() {
   });
 
   afterEach(() => {
-    $('body').unbind('keydown');
-    this.dropdownContainerElement.unbind('keyup');
+    $('body').off('keydown');
+    this.dropdownContainerElement.off('keyup');
   });
 
   it('should open on click', () => {

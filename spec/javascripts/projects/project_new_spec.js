@@ -27,7 +27,7 @@ describe('New Project', () => {
     });
 
     it('does not change project path for disabled $projectImportUrl', () => {
-      $projectImportUrl.attr('disabled', true);
+      $projectImportUrl.prop('disabled', true);
 
       projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
@@ -36,7 +36,7 @@ describe('New Project', () => {
 
     describe('for enabled $projectImportUrl', () => {
       beforeEach(() => {
-        $projectImportUrl.attr('disabled', false);
+        $projectImportUrl.prop('disabled', false);
       });
 
       it('does not change project path if it is set by user', () => {

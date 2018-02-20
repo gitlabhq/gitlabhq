@@ -53,7 +53,7 @@
     "glob": "^7.1.2",
     "imports-loader": "^0.7.1",
     "jed": "^1.1.1",
-    "jquery": "^2.2.4",
+    "jquery": "^3.2.1",
     "jquery-ujs": "1.2.2",
     "jquery.waitforimages": "^2.2.0",
     "js-cookie": "^2.1.3",
