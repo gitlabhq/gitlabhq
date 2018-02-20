@@ -70,7 +70,7 @@ for the most popular hosting services:
 - [Microsoft](https://msdn.microsoft.com/en-us/library/bb727018.aspx)
 
 If your hosting service is not listed above, you can just try to
-search the web for "how to add dns record on <my hosting service>".
+search the web for `how to add dns record on <my hosting service>`.
 
 #### DNS A record
 
@@ -103,12 +103,32 @@ without any `/project-name`.
 
 ![DNS CNAME record pointing to GitLab.com project](img/dns_cname_record_example.png)
 
+#### DNS TXT record
+
+Unless your GitLab administrator has [disabled custom domain verification](../../../administration/pages/index.md#custom-domain-verification),
+you'll have to prove that you own the domain by creating a `TXT` record
+containing a verification code. The code will be displayed after you
+[add your custom domain to GitLab Pages settings](#add-your-custom-domain-to-gitlab-pages-settings).
+
+If using a [DNS A record](#dns-a-record), you can place the TXT record directly
+under the domain. If using a [DNS CNAME record](#dns-cname-record), the two record types won't
+co-exist, so you need to place the TXT record in a special subdomain of its own.
+
 #### TL;DR
+
+If the domain has multiple uses (e.g., you host email on it as well):
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
 | domain.com | A | 52.167.214.135 |
-| subdomain.domain.com | CNAME | namespace.gitlab.io |
+| domain.com | TXT | gitlab-pages-verification-code=00112233445566778899aabbccddeeff |
+
+If the domain is dedicated to GitLab Pages use and no other services run on it:
+
+| From | DNS Record | To |
+| ---- | ---------- | -- |
+| subdomain.domain.com | CNAME | gitlab.io |
+| _gitlab-pages-verification-code.subdomain.domain.com | TXT | gitlab-pages-verification-code=00112233445566778899aabbccddeeff |
 
 > **Notes**:
 >
@@ -129,6 +149,17 @@ your site will be accessible only via HTTP:
 
 ![Add new domain](img/add_certificate_to_pages.png)
 
+Once you have added a new domain, you will need to **verify your ownership**
+(unless the GitLab administrator has disabled this feature). A verification code
+will be shown to you; add it as a [DNS TXT record](#dns-txt-record), then press
+the "Verify ownership" button to activate your new domain:
+
+![Verify your domain](img/verify_your_domain.png)
+
+Once your domain has been verified, leave the verification record in place -
+your domain will be periodically reverified, and may be disabled if the record
+is removed.
+
 You can add more than one alias (custom domains and subdomains) to the same project.
 An alias can be understood as having many doors leading to the same room.
 
@@ -136,8 +167,8 @@ All the aliases you've set to your site will be listed on **Setting > Pages**.
 From that page, you can view, add, and remove them.
 
 Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/domain-names-dns-changes),
-although it's usually a matter of minutes to complete. Until it does, visit attempts
-to your domain will respond with a 404.
+although it's usually a matter of minutes to complete. Until it does, verification
+will fail and attempts to visit your domain will respond with a 404.
 
 Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
 custom domains to GitLab Pages sites.

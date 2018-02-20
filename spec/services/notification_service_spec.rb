@@ -1629,6 +1629,78 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe 'Pages domains' do
+    set(:project) { create(:project) }
+    set(:domain) { create(:pages_domain, project: project) }
+    set(:u_blocked) { create(:user, :blocked) }
+    set(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
+    set(:u_owner)   { project.owner }
+    set(:u_master1) { create(:user) }
+    set(:u_master2) { create(:user) }
+    set(:u_developer) { create(:user) }
+
+    before do
+      project.add_master(u_blocked)
+      project.add_master(u_silence)
+      project.add_master(u_master1)
+      project.add_master(u_master2)
+      project.add_developer(u_developer)
+
+      reset_delivered_emails!
+    end
+
+    %i[
+      pages_domain_enabled
+      pages_domain_disabled
+      pages_domain_verification_succeeded
+      pages_domain_verification_failed
+    ].each do |sym|
+      describe "##{sym}" do
+        subject(:notify!) { notification.send(sym, domain) }
+
+        it 'emails current watching masters' do
+          expect(Notify).to receive(:"#{sym}_email").at_least(:once).and_call_original
+
+          notify!
+
+          should_only_email(u_master1, u_master2, u_owner)
+        end
+
+        it 'emails nobody if the project is missing' do
+          domain.project = nil
+
+          notify!
+
+          should_not_email_anyone
+        end
+      end
+    end
+
+    describe '#pages_domain_verification_failed' do
+      it 'emails current watching masters' do
+        notification.pages_domain_verification_failed(domain)
+
+        should_only_email(u_master1, u_master2, u_owner)
+      end
+    end
+
+    describe '#pages_domain_enabled' do
+      it 'emails current watching masters' do
+        notification.pages_domain_enabled(domain)
+
+        should_only_email(u_master1, u_master2, u_owner)
+      end
+    end
+
+    describe '#pages_domain_disabled' do
+      it 'emails current watching masters' do
+        notification.pages_domain_disabled(domain)
+
+        should_only_email(u_master1, u_master2, u_owner)
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

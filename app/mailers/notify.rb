@@ -5,6 +5,7 @@ class Notify < BaseMailer
   include Emails::Issues
   include Emails::MergeRequests
   include Emails::Notes
+  include Emails::PagesDomains
   include Emails::Projects
   include Emails::Profile
   include Emails::Pipelines

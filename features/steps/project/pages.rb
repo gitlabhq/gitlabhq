@@ -92,7 +92,6 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I should see a new domain added' do
-    expect(page).to have_content('Domains (1)')
     expect(page).to have_content('my.test.domain.com')
   end
 

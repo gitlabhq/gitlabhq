@@ -199,6 +199,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_id,
