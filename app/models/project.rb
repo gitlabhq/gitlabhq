@@ -322,10 +322,10 @@ class Project < ActiveRecord::Base
   # This is useful for performance as we can stick those additional filters
   # at the bottom of e.g. the UNION.
   #
-  # Optionally, turning `use_conditions_only` off leads to returning a
+  # Optionally, turning `use_where_in` off leads to returning a
   # relation using #from instead of #where. This can perform much better
   # but leads to trouble when used in conjunction with AR's #merge method.
-  def self.public_or_visible_to_user(user = nil, use_conditions_only: true, &block)
+  def self.public_or_visible_to_user(user = nil, use_where_in: true, &block)
     # If we don't get a block passed, use identity to avoid if/else repetitions
     block = ->(part) { part } unless block_given?
 
@@ -348,7 +348,7 @@ class Project < ActiveRecord::Base
     # performance.
     union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
 
-    if use_conditions_only
+    if use_where_in
       where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     else
       from("(#{union.to_sql}) AS #{table_name}")
