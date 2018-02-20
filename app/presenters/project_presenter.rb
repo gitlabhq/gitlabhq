@@ -4,6 +4,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include GitlabRoutingHelper
   include StorageHelper
   include TreeHelper
+  include Gitlab::Utils::StrongMemoize
 
   presents :project
 
@@ -159,10 +160,12 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_current_user_push_code?
-    if empty_repo?
-      can?(current_user, :push_code, project)
-    else
-      user_can_push_to_branch?(current_user, default_branch)
+    strong_memoize(:can_current_user_push_code) do
+      if empty_repo?
+        can?(current_user, :push_code, project)
+      else
+        user_can_push_to_branch?(current_user, default_branch)
+      end
     end
   end
 
