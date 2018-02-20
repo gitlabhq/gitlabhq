@@ -508,7 +508,7 @@ module Gitlab
         @committed_date = Time.at(commit.committer.date.seconds).utc
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
-        @parent_ids = commit.parent_ids
+        @parent_ids = Array(commit.parent_ids)
       end
 
       def serialize_keys

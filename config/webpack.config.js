@@ -27,11 +27,11 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 
 // filter out entries currently imported dynamically in dispatcher.js
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
 pageEntries.forEach(( path ) => {
   let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(chunkPath)) {
+  if (!dispatcherChunks.includes('./' + chunkPath)) {
     let chunkName = chunkPath.replace(/\//g, '.');
     autoEntries[chunkName] = './' + path;
   }
@@ -61,8 +61,6 @@ var config = {
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
-    graphs:               './graphs/graphs_bundle.js',
-    graphs_charts:        './graphs/graphs_charts.js',
     graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
@@ -282,7 +280,6 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
       chunks: [
-        'graphs',
         'graphs_show',
         'monitoring',
         'users',

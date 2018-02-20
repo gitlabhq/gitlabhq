@@ -1,9 +1,12 @@
-# Numerous undo possibilities in Git
+---
+author: Crt Mori
+author_gitlab: Letme
+level: intermediary
+article_type: tutorial
+date: 2017-05-15
+---
 
-> **[Article Type](../../../development/writing_documentation.md#types-of-technical-articles):**  tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Crt Mori](https://gitlab.com/Letme)  ||
-> **Publication date:** 2017-08-17
+# Numerous undo possibilities in Git
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-import Chart from 'vendor/Chart';
+import Chart from 'chart.js';
 
 const options = {
   scaleOverlay: true,
