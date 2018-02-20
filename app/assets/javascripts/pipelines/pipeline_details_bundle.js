@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       postAction(action) {
         this.mediator.service.postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
-          .catch(() => Flash('An error occurred while making the request.'));
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
@@ -89,7 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
     mediator.fetchSastReport(endpoint, blobPath)
       .then(() => {
         // update the badge
-        document.querySelector('.js-sast-counter').textContent = mediator.store.state.sast.securityReports.newIssues.length;
+        const badge = document.querySelector('.js-sast-counter');
+        badge.textContent = mediator.store.state.sast.securityReports.newIssues.length;
+        badge.classList.remove('hidden');
       })
       .catch(() => {
         Flash(__('Something when wrong while fetching SAST.'));

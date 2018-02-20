@@ -1,5 +1,5 @@
 <script>
-  import { sprintf, n__, __ } from '~/locale';
+  import { sprintf, s__ } from '~/locale';
   import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
   export default {
@@ -20,21 +20,22 @@
     },
     computed: {
       summarySastText() {
+        const text = s__('ciReport|SAST detected %{link}');
+        let link;
+
         if (this.unresolvedIssues.length) {
-          return n__(
-            sprintf('SAST detected %{link}', {
-              link: `<a href=${this.link} class="prepend-left-5">%d security vulnerability</a>`,
-            }, false),
-            sprintf('SAST detected %{link}', {
-              link: `<a href=${this.link} class="prepend-left-5">%d security vulnerabilities</a>`,
-            }, false),
-            this.unresolvedIssues.length,
-          );
+          link = this.unresolvedIssues.length > 1 ?
+            this.getLink(sprintf(
+              s__('ciReport|%{d} security vulnerabilities'),
+              { d: this.unresolvedIssues.length },
+              true,
+            )) :
+            this.getLink(s__('ciReport|1 security vulnerability'));
+        } else {
+          link = this.getLink(s__('ciReport|no security vulnerabilities'));
         }
 
-        return sprintf(__('SAST detected %{link} '), {
-          link: `<a href=${this.link} class="prepend-left-5">no security vulnerabilities</a>`,
-        }, false);
+        return sprintf(text, { link }, false);
       },
       statusIcon() {
         if (this.unresolvedIssues) {
@@ -47,6 +48,11 @@
           group: 'success',
           icon: 'status_success',
         };
+      },
+    },
+    methods: {
+      getLink(text) {
+        return `<a href="${this.link}" class="prepend-left-5">${text}</a>`;
       },
     },
   };

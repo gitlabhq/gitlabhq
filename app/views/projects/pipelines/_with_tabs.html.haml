@@ -21,7 +21,7 @@
       %li.js-security-tab-link
         = link_to security_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
           = _("Security report")
-          %span.badge.js-sast-counter
+          %span.badge.js-sast-counter.hidden
 
 .tab-content
   #js-tab-pipeline.tab-pane
