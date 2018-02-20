@@ -106,9 +106,6 @@ var Dispatcher;
             .catch(fail);
           break;
         case 'projects:merge_requests:show':
-          import('./pages/projects/merge_requests/show')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
           break;
         case 'dashboard:activity':
