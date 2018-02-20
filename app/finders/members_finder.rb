@@ -19,7 +19,7 @@ class MembersFinder
 
       sql = distinct_on(union)
 
-      Member.from("(#{sql}) AS #{Member.table_name}")
+      Member.includes(:user).from("(#{sql}) AS #{Member.table_name}")
     else
       project_members
     end
