@@ -28,6 +28,11 @@
         required: false,
         default: '',
       },
+      ingressDnsHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
       managePrometheusPath: {
         type: String,
         required: false,
@@ -50,6 +55,9 @@
       },
       ingressInstalled() {
         return this.applications.ingress.status === APPLICATION_INSTALLED;
+      },
+      ingressExternalIp() {
+        return this.applications.ingress.externalIp;
       },
       ingressDescription() {
         const extraCostParagraph = sprintf(
@@ -165,19 +173,19 @@
                   {{ s__("ClusterIntegration| Ingress IP Address") }}
                 </label>
                 <div
-                  v-if="applications.ingress.external_ip"
+                  v-if="ingressExternalIp"
                   class="input-group"
                 >
                   <input
                     type="text"
                     id="ipAddress"
-                    class="form-control js-select-on-focus"
-                    :placeholder="applications.ingress.external_ip"
+                    class="form-control"
+                    :placeholder="ingressExternalIp"
                     readonly
                   />
                   <span class="input-group-btn">
                     <clipboard-button
-                      :text="applications.ingress.external_ip"
+                      :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address')"
                       css-class="btn btn-default js-clipboard-btn"
                     />
@@ -194,14 +202,14 @@
               </div>
 
               <p
-                v-if="!applications.ingress.external_ip"
+                v-if="!ingressExternalIp"
                 class="settings-message js-no-ip-message"
               >
-                {{ s__(`ClusterIntegration|The IP address is in process
-                to be assigned, please check your Kubernetes
+                {{ s__(`ClusterIntegration|The IP address is still in
+                the process of being assigned, please check your Kubernetes
                 cluster or Quotas on GKE if it takes a long time.`) }}
                 <a
-                  href="TODO"
+                  :href="ingressHelpPath"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -214,7 +222,7 @@
                 generated IP address in order to access
                 your application after it has been deployed.`) }}
                 <a
-                  href="TODO"
+                  :href="ingressDnsHelpPath"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -148,10 +148,7 @@
       </div>
       <div
         class="table-section table-button-footer section-align-top"
-        :class="{
-          'section-20': showManageButton,
-          'section-15': !showManageButton,
-        }"
+        :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
         role="gridcell"
       >
         <div

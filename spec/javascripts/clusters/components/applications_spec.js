@@ -54,14 +54,13 @@ describe('Applications', () => {
               ingress: {
                 title: 'Ingress',
                 status: 'installed',
-                external_ip: '0.0.0.0',
+                externalIp: '0.0.0.0',
               },
               helm: { title: 'Helm Tiller' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
             },
           });
-
           expect(
             vm.$el.querySelector('#ipAddress').getAttribute('placeholder'),
           ).toEqual('0.0.0.0');
@@ -92,7 +91,7 @@ describe('Applications', () => {
           expect(
             vm.$el.querySelector('.js-no-ip-message').textContent.replace(/\n(\s)+/g, ' ').trim(),
           ).toEqual(
-            'The IP address is in process to be assigned, please check your Kubernetes cluster or Quotas on GKE if it takes a long time. More information',
+            'The IP address is still in the process of being assigned, please check your Kubernetes cluster or Quotas on GKE if it takes a long time. More information',
           );
         });
       });
