@@ -15,7 +15,7 @@ class AddPartialIndexToProjectsForIndexOnlyScans < ActiveRecord::Migration
 
   def down
     if index_exists?(:projects, :id, name: INDEX_NAME)
-      remove_concurrent_index :projects, :id, name: INDEX_NAME, unique: true, where: 'visibility_level IN (10,20)'
+      remove_concurrent_index_by_name :projects, INDEX_NAME
     end
   end
 end
