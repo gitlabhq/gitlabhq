@@ -2,4 +2,11 @@
 
 - if anchors.size > 0
   %ul.nav
-    = render partial: 'stat_anchor_list_item', collection: anchors, as: :anchor
+    - anchors.each do |anchor|
+      %li
+        - if anchor[:link]
+          = link_to anchor[:link], class: anchor[:enabled] ? 'stat-link' : "btn btn-#{anchor[:class_modifier] || 'missing'}" do
+            = anchor[:label]
+        - else
+          %span.stat-text
+            = anchor[:label]
