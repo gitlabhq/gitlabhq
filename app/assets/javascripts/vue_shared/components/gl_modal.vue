@@ -31,6 +31,11 @@
         required: false,
         default: '',
       },
+      bodyComponent: {
+        type: Object,
+        required: false,
+        default: null,
+      },
     },
 
     data() {
@@ -50,9 +55,11 @@
     methods: {
       emitCancel(event) {
         this.$emit('cancel', event);
+        this.$emit('clearInputs', event);
       },
       emitSubmit(event) {
         this.$emit('submit', event);
+        this.$emit('clearInputs', event);
       },
       toggleCanSubmit(canSubmit) {
         this.canSubmit = canSubmit;
@@ -94,6 +101,7 @@
 
         <div class="modal-body">
           <slot></slot>
+          <component :is="bodyComponent" />
         </div>
 
         <div class="modal-footer">

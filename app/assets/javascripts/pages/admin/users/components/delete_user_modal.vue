@@ -1,13 +1,12 @@
 <script>
   import axios from '~/lib/utils/axios_utils';
   import _ from 'underscore';
-  import ConfirmationInput from '~/vue_shared/components/confirmation_input.vue';
+  import ConfirmationInputMixin from '~/vue_shared/mixins/confirmation_input_mixin.vue';
   import GlModal from '~/vue_shared/components/gl_modal.vue';
   import { s__, sprintf } from '~/locale';
 
   export default {
     components: {
-      ConfirmationInput,
       GlModal,
     },
     props: {
@@ -33,6 +32,17 @@
       },
     },
     computed: {
+      confirmationInput() {
+        const username = this.username;
+        return {
+          mixins: [ConfirmationInputMixin],
+          computed: {
+            confirmationValue() {
+              return username;
+            },
+          },
+        };
+      },
       id() {
         return 'delete-user-modal';
       },
@@ -78,46 +88,28 @@
       },
     },
     methods: {
-      clearInput() {
-        this.$refs.input.$emit('clear');
-      },
-      onConfirmed(isConfirmed) {
-        this.$refs.modal.$emit('toggleCanSubmit', isConfirmed);
-      },
       onSecondaryAction() {
-        return axios.put(this.blockUserUrl)
-          .then(() => this.clearInput);
+        return axios.put(this.blockUserUrl);
       },
       onSubmit() {
-        return axios.delete(this.deleteUserUrl)
-          .then(() => this.clearInput);
+        return axios.delete(this.deleteUserUrl);
       },
     },
-    mounted() {
-      clearInput();
-    }
   };
 </script>
 
 <template>
   <gl-modal
-    ref="modal"
     :id="id"
     :header-title-text="title"
     footer-primary-button-variant="danger"
     :footer-primary-button-text="primaryButtonLabel"
     footer-secondary-button-variant="warning"
     :footer-secondary-button-text="secondaryButtonLabel"
+    :body-component="confirmationInput"
     @submit="onSubmit"
     @secondaryAction="onSecondaryAction"
-    @cancel="clearInput"
   >
     <p v-html="text"></p>
-    <confirmation-input
-      ref="input"
-      :id="`${this.id}-input`"
-      :confirmation-value="username"
-      @confirmed="onConfirmed"
-    />
   </gl-modal>
 </template>
