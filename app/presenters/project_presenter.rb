@@ -100,6 +100,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     add_special_file_path(file_name: 'LICENSE')
   end
 
+  def add_changelog_path
+    add_special_file_path(file_name: 'CHANGELOG')
+  end
+
+  def add_contribution_guide_path
+    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide')
+  end
+
   def add_ci_yml_path
     add_special_file_path(file_name: '.gitlab-ci.yml')
   end
@@ -148,36 +156,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def license_short_name
     license = repository.license
     license&.nickname || license&.name || 'LICENSE'
-  end
-
-  private
-
-  def filename_path(filename)
-    if blob = repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend
-      project_blob_path(
-        project,
-        tree_join(default_branch, blob.name)
-      )
-    end
-  end
-
-  def anonymous_project_view
-    if !project.empty_repo? && can?(current_user, :download_code, project)
-      'files'
-    else
-      'activity'
-    end
-  end
-
-  def add_special_file_path(file_name:, commit_message: nil, branch_name: nil)
-    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
-    project_new_blob_path(
-      project,
-      project.default_branch || 'master',
-      file_name:      file_name,
-      commit_message: commit_message,
-      branch_name:    branch_name
-    )
   end
 
   def can_current_user_push_code?
@@ -237,7 +215,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can_current_user_push_code? && repository.changelog.blank?
       OpenStruct.new(enabled: false,
                      label: _('Add Changelog'),
-                     link: add_special_file_path(file_name: 'CHANGELOG'))
+                     link: add_changelog_path)
     elsif repository.changelog.present?
       OpenStruct.new(enabled: true,
                      label: _('Changelog'),
@@ -261,7 +239,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can_current_user_push_code? && repository.contribution_guide.blank?
       OpenStruct.new(enabled: false,
                      label: _('Add Contribution guide'),
-                     link: add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide'))
+                     link: add_contribution_guide_path)
     elsif repository.contribution_guide.present?
       OpenStruct.new(enabled: true,
                      label: _('Contribution guide'),
@@ -283,7 +261,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def kubernetes_cluster_anchor_data
     if current_user && can?(current_user, :create_cluster, project)
-      cluster_link = clusters.size == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
+      cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
       if clusters.empty?
         cluster_link = new_project_cluster_path(project)
@@ -313,6 +291,36 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      label: _('Set up Koding'),
                      link: add_koding_stack_path)
     end
+  end
+
+  private
+
+  def filename_path(filename)
+    if blob = repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend
+      project_blob_path(
+        project,
+        tree_join(default_branch, blob.name)
+      )
+    end
+  end
+
+  def anonymous_project_view
+    if !project.empty_repo? && can?(current_user, :download_code, project)
+      'files'
+    else
+      'activity'
+    end
+  end
+
+  def add_special_file_path(file_name:, commit_message: nil, branch_name: nil)
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
+    project_new_blob_path(
+      project,
+      project.default_branch || 'master',
+      file_name:      file_name,
+      commit_message: commit_message,
+      branch_name:    branch_name
+    )
   end
 
   def koding_enabled?
