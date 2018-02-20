@@ -36,11 +36,9 @@ prerequisites:
 
 - the specified job **must** be named `dast`
 - the resulting report **must** be named `gl-dast-report.json` and uploaded as an
-  artifact. This JSON file needs to be the only artifact file for the job. If
-  you try to also include other files, it will break the vulnerability display
-  in the merge request.
+  artifact
 
-The `sast` job will perform an analysis on the running web application, the
+The `dast` job will perform an analysis on the running web application, the
 resulting JSON file will be uploaded as an artifact, and GitLab will then check
 this file and show the information inside the merge request.
 

@@ -11,9 +11,7 @@ by implicitly using [Auto SAST](../../../topics/autodevops/index.md#auto-sast)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 Going a step further, GitLab can show the vulnerability list right in the merge
-request widget area:
-
-![SAST Widget](img/sast.png)
+request widget area.
 
 ## Use cases
 
@@ -25,7 +23,7 @@ request widget area:
 
 ## Supported languages and frameworks
 
-The following languages and frameworks are supported:
+The following languages and frameworks are supported.
 
 | Language (package managers) / framework | Scan tool |
 | ---------------------- | --------- |
@@ -36,19 +34,26 @@ The following languages and frameworks are supported:
 | Java ([Maven](http://maven.apache.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | PHP ([Composer](https://getcomposer.org/)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
+Some security scanners require to send a list of project dependencies to GitLab central servers to check for vulnerabilities. To learn more about this or to disable it please
+check [GitLab SAST documentation](https://gitlab.com/gitlab-org/security-products/sast#remote-checks).
+
 ## How it works
 
-In order for the report to show in the merge request, you need to specify a
-`sast` job (exact name) that will analyze the code and upload the resulting
-`gl-sast-report.json` file as an artifact. GitLab will then check this file and
-show the information inside the merge request.
+First of all, you need to define a job named `sast` in your `.gitlab-ci.yml`
+file. [Check how the `sast` job should look like][cc-docs].
 
-This JSON file needs to be the only artifact file for the job. If you try
-to also include other files, it will break the vulnerability display in the
-merge request.
+In order for the report to show in the merge request, there are two
+prerequisites:
 
-For more information on how the `sast` job should look like, check the
-[example on analyzing a project's code for vulnerabilities][cc-docs].
+- the specified job **must** be named `sast`
+- the resulting report **must** be named `gl-sast-report.json` and uploaded as
+  an artifact
+
+The `sast` job will perform an analysis on the running web application, the
+resulting JSON file will be uploaded as an artifact, and GitLab will then check
+this file and show the information inside the merge request.
+
+![SAST Widget](img/gemnasium.png)
 
 [ee-3775]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3775
 [ee]: https://about.gitlab.com/products/
