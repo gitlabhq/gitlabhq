@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'Pipeline', :js do
-  let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
 
   before do
     sign_in(user)
@@ -10,7 +10,6 @@ describe 'Pipeline', :js do
   end
 
   describe 'GET /:project/pipelines/:id/security' do
-    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     let(:build) do

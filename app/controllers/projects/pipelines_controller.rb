@@ -1,4 +1,6 @@
 class Projects::PipelinesController < Projects::ApplicationController
+  prepend ::EE::Projects::PipelinesController
+
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds, :failures, :security]
@@ -88,14 +90,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def failures
     if @pipeline.statuses.latest.failed.present?
-      render_show
-    else
-      redirect_to pipeline_path(@pipeline)
-    end
-  end
-
-  def security
-    if @pipeline.sast_artifact
       render_show
     else
       redirect_to pipeline_path(@pipeline)
