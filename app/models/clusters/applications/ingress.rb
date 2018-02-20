@@ -36,6 +36,14 @@ module Clusters
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(name, chart: chart, chart_values_file: chart_values_file)
       end
+
+      def sync_details
+        return unless installed?
+        return if external_ip
+
+        ClusterWaitForIngressIpAddressWorker.perform_in(
+          ClusterWaitForIngressIpAddressWorker::INTERVAL, name, id, IP_ADDRESS_FETCH_RETRIES)
+      end
     end
   end
 end

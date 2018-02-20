@@ -4,6 +4,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
+  before_action :sync_application_details, only: [:status]
 
   STATUS_POLLING_INTERVAL = 10_000
 
@@ -113,5 +114,9 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def authorize_admin_cluster!
     access_denied! unless can?(current_user, :admin_cluster, cluster)
+  end
+
+  def sync_application_details
+    @cluster.applications.each(&:sync_details)
   end
 end

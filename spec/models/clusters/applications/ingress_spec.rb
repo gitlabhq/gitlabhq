@@ -22,4 +22,33 @@ describe Clusters::Applications::Ingress do
         .with(ClusterWaitForIngressIpAddressWorker::INTERVAL, 'ingress', application.id, 3)
     end
   end
+
+  describe '#sync_details' do
+    let(:application) { create(:clusters_applications_ingress, :installed) }
+
+    before do
+      application.sync_details
+    end
+
+    it 'schedules a ClusterWaitForIngressIpAddressWorker' do
+      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_in)
+        .with(ClusterWaitForIngressIpAddressWorker::INTERVAL, 'ingress', application.id, 3)
+    end
+
+    context 'when the application is not installed' do
+      let(:application) { create(:clusters_applications_ingress, :installing) }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
+      end
+    end
+
+    context 'when there is already an external_ip' do
+      let(:application) { create(:clusters_applications_ingress, :installed, external_ip: '111.222.222.111') }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
+      end
+    end
+  end
 end

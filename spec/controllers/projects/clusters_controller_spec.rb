@@ -91,6 +91,12 @@ describe Projects::ClustersController do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
       end
+
+      it 'invokes sync_details on each application' do
+        expect_any_instance_of(Clusters::Applications::Ingress).to receive(:sync_details)
+
+        go
+      end
     end
 
     describe 'security' do
