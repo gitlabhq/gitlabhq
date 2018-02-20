@@ -2,16 +2,12 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class Statement
-          def initialize(pipeline, statement)
-            @pipeline = pipeline
+        class Lexer
+          def initialize(statement)
             @statement = statement
           end
 
-          def variables
-          end
-
-          def evaluate
+          def tokenize
           end
         end
       end
