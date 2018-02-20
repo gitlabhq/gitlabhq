@@ -4,16 +4,21 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      variable_key = 'VARIABLE_KEY'
-      variable_value = 'variable value'
-
-      variable = Factory::Resource::SecretVariable.fabricate! do |resource|
-        resource.key = variable_key
-        resource.value = variable_value
+      Factory::Resource::SecretVariable.fabricate! do |resource|
+        resource.key = 'VARIABLE_KEY'
+        resource.value = 'some secret variable'
       end
 
-      expect(variable.key).to eq(variable_key)
-      expect(variable.value).to eq(variable_value)
+      Page::Project::Settings::CICD.perform do |settings|
+        settings.expand_secret_variables do |page|
+          expect(page).to have_field(with: 'VARIABLE_KEY')
+          expect(page).not_to have_field(with: 'some secret variable')
+
+          page.reveal_variables
+
+          expect(page).to have_field(with: 'some secret variable')
+        end
+      end
     end
   end
 end
