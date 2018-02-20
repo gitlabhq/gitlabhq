@@ -62,7 +62,7 @@ describe('Applications', () => {
             },
           });
           expect(
-            vm.$el.querySelector('#ipAddress').getAttribute('placeholder'),
+            vm.$el.querySelector('.js-ip-address').getAttribute('placeholder'),
           ).toEqual('0.0.0.0');
           expect(
             vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text'),
@@ -85,7 +85,7 @@ describe('Applications', () => {
           });
 
           expect(
-            vm.$el.querySelector('#ipAddress').getAttribute('placeholder'),
+            vm.$el.querySelector('.js-ip-address').getAttribute('placeholder'),
           ).toEqual('?');
 
           expect(
@@ -109,7 +109,7 @@ describe('Applications', () => {
         });
 
         expect(vm.$el.textContent).not.toContain('Ingress IP Address');
-        expect(vm.$el.querySelector('#ipAddress')).toBe(null);
+        expect(vm.$el.querySelector('.js-ip-address')).toBe(null);
       });
     });
   });

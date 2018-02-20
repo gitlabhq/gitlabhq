@@ -179,7 +179,7 @@
                   <input
                     type="text"
                     id="ipAddress"
-                    class="form-control"
+                    class="form-control js-ip-address"
                     :placeholder="ingressExternalIp"
                     readonly
                   />
@@ -194,8 +194,7 @@
                 <input
                   v-else
                   type="text"
-                  id="ipAddress"
-                  class="form-control"
+                  class="form-control js-ip-address"
                   readonly
                   placeholder="?"
                 />
