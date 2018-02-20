@@ -67,7 +67,6 @@ var config = {
     new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     geo_nodes:            'ee/geo_nodes',
-    graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
@@ -291,20 +290,6 @@ var config = {
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
-      },
-    }),
-
-    // create cacheable common library bundle for all d3 chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_d3',
-      chunks: [
-        'graphs_show',
-        'monitoring',
-        'users',
-        'burndown_chart', // EE
-      ],
-      minChunks: function (module, count) {
-        return module.resource && /d3-/.test(module.resource);
       },
     }),
 
