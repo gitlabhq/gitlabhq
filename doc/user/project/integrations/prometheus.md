@@ -13,12 +13,12 @@ There are two ways to setup Prometheus integration, depending on where your apps
 * For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 
 ## Managed Prometheus on Kubernetes
+> **Note**: [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28916) in GitLab 10.5
 
 GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cluster](../clusters/index.md), making monitoring of your apps easy.
 
 ### Requirements
 
-* GitLab [10.5 or above](https://gitlab.com/gitlab-org/gitlab-ce/issues/28916)
 * A [connected Kubernetes cluster](../clusters/index.md)
 * Helm Tiller [installed by GitLab](../clusters/index.md#installing-applications)
 
