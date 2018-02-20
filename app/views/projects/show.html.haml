@@ -27,7 +27,7 @@
         = icon("exclamation-triangle fw")
         #{ _('Archived project! Repository is read-only') }
 
-  - view_path = @project.default_project_view
+  - view_path = @project.default_view
 
   - if show_auto_devops_callout?(@project)
     = render 'shared/auto_devops_callout'

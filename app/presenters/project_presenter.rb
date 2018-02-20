@@ -52,7 +52,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     ].compact.reject { |i| i[:enabled] }
   end
 
-  def default_project_view
+  def default_view
     return anonymous_project_view unless current_user
 
     user_view = current_user.project_view
@@ -242,7 +242,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       {
         enabled: true,
         label: _('Readme'),
-        link: default_project_view != 'readme' ? readme_path : '#readme'
+        link: default_view != 'readme' ? readme_path : '#readme'
       }
     end
   end
