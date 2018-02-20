@@ -276,6 +276,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
         expect(blobs.count).to eq(1)
         expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        expect(blobs).to be_an(Array)
       end
 
       it 'accepts blob IDs as a lazy enumerator' do
