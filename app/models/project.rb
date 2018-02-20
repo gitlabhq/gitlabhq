@@ -329,34 +329,29 @@ class Project < ActiveRecord::Base
     # If we don't get a block passed, use identity to avoid if/else repetitions
     block = ->(part) { part } unless block_given?
 
-    if user
-      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+    return block.call(public_to_user) unless user
 
-      if Gitlab::VisibilityLevel.all_levels?(levels)
-        # If the user is allowed to see all projects,
-        # we can shortcut and just return.
-        return block.call(all)
-      end
+    # If the user is allowed to see all projects,
+    # we can shortcut and just return.
+    return block.call(all) if user.full_private_access?
 
-      authorized = user
-        .project_authorizations
-        .select(1)
-        .where('project_authorizations.project_id = projects.id')
-      authorized_projects = block.call(where('EXISTS (?)', authorized))
+    authorized = user
+      .project_authorizations
+      .select(1)
+      .where('project_authorizations.project_id = projects.id')
+    authorized_projects = block.call(where('EXISTS (?)', authorized))
 
-      visible_projects = block.call(where('visibility_level IN (?)', levels))
+    levels = Gitlab::VisibilityLevel.levels_for_user(user)
+    visible_projects = block.call(where('visibility_level IN (?)', levels))
 
-      # We use a UNION here instead of OR clauses since this results in better
-      # performance.
-      union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
+    # We use a UNION here instead of OR clauses since this results in better
+    # performance.
+    union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
 
-      if use_conditions_only
-        where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
-      else
-        from("(#{union.to_sql}) AS #{table_name}")
-      end
+    if use_conditions_only
+      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     else
-      block.call(public_to_user)
+      from("(#{union.to_sql}) AS #{table_name}")
     end
   end
 

@@ -20,7 +20,6 @@ module Gitlab
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
     INTERNAL = 10 unless const_defined?(:INTERNAL)
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
-    ALL_LEVELS = [PRIVATE, INTERNAL, PUBLIC].freeze unless const_defined?(:ALL_LEVELS)
 
     class << self
       delegate :values, to: :options
@@ -29,16 +28,12 @@ module Gitlab
         return [PUBLIC] unless user
 
         if user.full_private_access?
-          ALL_LEVELS
+          [PRIVATE, INTERNAL, PUBLIC]
         elsif user.external?
           [PUBLIC]
         else
           [INTERNAL, PUBLIC]
         end
-      end
-
-      def all_levels?(levels = [])
-        levels&.sort == ALL_LEVELS
       end
 
       def string_values
