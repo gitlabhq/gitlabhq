@@ -600,6 +600,33 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#branch_names_contains_sha' do
+    shared_examples 'returning the right branches' do
+      let(:head_id) { repository.rugged.head.target.oid }
+      let(:new_branch) { head_id }
+
+      before do
+        repository.create_branch(new_branch, 'master')
+      end
+
+      after do
+        repository.delete_branch(new_branch)
+      end
+
+      it 'displays that branch' do
+        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch)
+      end
+    end
+
+    context 'when Gitaly is enabled' do
+      it_behaves_like 'returning the right branches'
+    end
+
+    context 'when Gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'returning the right branches'
+    end
+  end
+
   describe "#refs_hash" do
     subject { repository.refs_hash }
 
