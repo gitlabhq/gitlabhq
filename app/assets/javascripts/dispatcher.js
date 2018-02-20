@@ -294,11 +294,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'snippets:show':
-          import('./pages/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map')
             .then(callDefault)
