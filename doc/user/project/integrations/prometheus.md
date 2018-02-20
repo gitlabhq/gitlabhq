@@ -10,17 +10,17 @@ within the GitLab interface.
 
 There are two ways to setup Prometheus integration, depending on where your apps are running:
 * For deployments on Kubernetes, GitLab can [deploy and manage Prometheus](#managed-prometheus-on-kubernetes) in a cluster
-* For other deployment targets, simply [specify the Prometheus server](manual-configuration-of-prometheus).
+* For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 
 ## Managed Prometheus on Kubernetes
 
-GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cluster](../clusters/index.html), making monitoring the metrics of your deployed apps as easy as a single click.
+GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cluster](../clusters/index.md), making monitoring the metrics of your deployed apps as easy as a single click.
 
 ### Requirements
 
 * GitLab [10.5 or above](https://gitlab.com/gitlab-org/gitlab-ce/issues/28916)
-* A [connected Kubernetes cluster](../clusters/index.html)
-* Helm Tiller [installed by GitLab](../clusters/index.html#installing-applications)
+* A [connected Kubernetes cluster](../clusters/index.md)
+* Helm Tiller [installed by GitLab](../clusters/index.md#installing-applications)
 
 ### Getting started
 
@@ -45,7 +45,7 @@ To configure a resource to be monitored by Prometheus, simply set the following 
 
 CPU and Memory consumption is also monitored, but requires [naming conventions](prometheus_library/kubernetes.html#specifying-the-environment) in order to determine the environment. If you are using [Auto DevOps](../../../topics/autodevops/), this is handled automatically.
 
-The [NGINX Ingress]((../clusters/index.html#installing-applications)) that is deployed by GitLab to clusters, is automatically annotated for monitoring providing key response metrics: latency, throughput, and error rates.
+The [NGINX Ingress](../clusters/index.md#installing-applications) that is deployed by GitLab to clusters, is automatically annotated for monitoring providing key response metrics: latency, throughput, and error rates.
 
 ## Manual configuration of Prometheus
 
