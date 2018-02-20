@@ -78,6 +78,9 @@
       editHandler() {
         this.isEditing = true;
       },
+      disableEditing() {
+        this.isEditing = false;
+      },
       deleteHandler() {
         // eslint-disable-next-line no-alert
         if (confirm('Are you sure you want to delete this comment?')) {
@@ -194,6 +197,7 @@
           :is-editing="isEditing"
           @handleFormUpdate="formUpdateHandler"
           @cancelFormEdition="formCancelHandler"
+          @disableEditing="disableEditing"
           ref="noteBody"
         />
       </div>

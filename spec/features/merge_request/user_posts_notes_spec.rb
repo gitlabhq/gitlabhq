@@ -153,12 +153,14 @@ describe 'Merge request > User posts notes', :js do
 
       it 'shows the delete link' do
         page.within('.note-attachment') do
-          is_expected.to have_css('.js-note-attachment-delete')
+          is_expected.to have_css('button[title="Delete this attachment"]')
         end
       end
 
       it 'removes the attachment div and resets the edit form' do
-        accept_confirm { find('.js-note-attachment-delete').click }
+        find('button[title="Delete this attachment"]').click
+        click_button('Remove attachment')
+
         is_expected.not_to have_css('.note-attachment')
         is_expected.not_to have_css('.current-note-edit-form')
         wait_for_requests

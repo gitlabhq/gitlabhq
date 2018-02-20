@@ -40,6 +40,8 @@
       this.renderGFM();
       this.initTaskList();
 
+      console.error(this.note)
+
       if (this.isEditing) {
         this.initAutoSave(this.note.noteable_type);
       }
@@ -74,6 +76,9 @@
       },
       formCancelHandler(shouldConfirm, isDirty) {
         this.$emit('cancelFormEdition', shouldConfirm, isDirty);
+      },
+      disableEditing() {
+        this.$emit('disableEditing');
       },
     },
   };
@@ -117,6 +122,8 @@
     <note-attachment
       v-if="note.attachment"
       :attachment="note.attachment"
+      :delete-attachment-path="note.delete_attachment_path"
+      @disableEditing="disableEditing"
     />
   </div>
 </template>
