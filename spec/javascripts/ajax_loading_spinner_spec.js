@@ -1,5 +1,3 @@
-import 'jquery';
-import 'jquery-ujs';
 import AjaxLoadingSpinner from '~/ajax_loading_spinner';
 
 describe('Ajax Loading Spinner', () => {

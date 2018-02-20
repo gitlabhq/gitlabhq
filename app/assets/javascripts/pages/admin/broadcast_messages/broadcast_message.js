@@ -14,7 +14,7 @@ export default function initBroadcastMessagesForm() {
     $('div.broadcast-message-preview').css('color', previewColor);
   });
 
-  const previewPath = $('textarea#broadcast_message_message').data('preview-path');
+  const previewPath = $('textarea#broadcast_message_message').data('previewPath');
 
   $('textarea#broadcast_message_message').on('input', _.debounce(function onMessageInput() {
     const message = $(this).val();

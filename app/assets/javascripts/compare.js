@@ -13,7 +13,7 @@ export default class Compare {
         $dropdown = $(dropdown);
         return $dropdown.glDropdown({
           selectable: true,
-          fieldName: $dropdown.data('field-name'),
+          fieldName: $dropdown.data('fieldName'),
           filterable: true,
           id: function(obj, $el) {
             return $el.data('id');

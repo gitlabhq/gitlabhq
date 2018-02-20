@@ -1,6 +1,6 @@
 export default function subscriptionSelect() {
   $('.js-subscription-event').each((i, element) => {
-    const fieldName = $(element).data('field-name');
+    const fieldName = $(element).data('fieldName');
 
     return $(element).glDropdown({
       selectable: true,

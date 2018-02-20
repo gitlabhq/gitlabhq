@@ -43,7 +43,7 @@ $(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
   const $form = $(e.target).closest('form');
   const $submitButton = $form.find('input[type=submit], button[type=submit]').first();
 
-  if (!$submitButton.attr('disabled')) {
+  if (!$submitButton.prop('disabled')) {
     $submitButton.trigger('click', [e]);
 
     if (!isInIssuePage()) {
