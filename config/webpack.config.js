@@ -92,7 +92,7 @@ var config = {
     service_desk_issues:  './service_desk_issues/index.js',
     registry_list:        './registry/index.js',
     roadmap:              'ee/roadmap',
-    ide:                 './ide/index.js',
+    ide:                  './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
