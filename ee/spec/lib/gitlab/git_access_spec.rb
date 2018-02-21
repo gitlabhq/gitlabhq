@@ -25,8 +25,9 @@ describe Gitlab::GitAccess do
     end
 
     it 'denies push access with primary present' do
-      error_message = "You can't push code to a read-only GitLab instance. "\
-"Please use the Primary node URL: https://localhost:3000/gitlab/#{project.full_path}.git. Documentation: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
+      error_message = "You can't push code to a read-only GitLab instance."\
+"\nPlease use the primary node URL instead: https://localhost:3000/gitlab/#{project.full_path}.git.
+For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
 
       primary_node = create(:geo_node, :primary, url: 'https://localhost:3000/gitlab')
       allow(Gitlab::Geo).to receive(:primary).and_return(primary_node)
