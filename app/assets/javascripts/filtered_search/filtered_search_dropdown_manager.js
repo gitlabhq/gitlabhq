@@ -75,6 +75,19 @@ export default class FilteredSearchDropdownManager {
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
+<<<<<<< HEAD
+=======
+      label: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: `${this.baseEndpoint}/labels.json`,
+          symbol: '~',
+          preprocessing: DropdownUtils.duplicateLabelPreprocessing,
+        },
+        element: this.container.querySelector('#js-dropdown-label'),
+      },
+>>>>>>> upstream/master
       'my-reaction': {
         reference: null,
         gl: DropdownEmoji,

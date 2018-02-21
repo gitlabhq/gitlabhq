@@ -1,7 +1,10 @@
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import DropdownUser from '~/filtered_search/dropdown_user';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
 import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
 
 describe('Dropdown User', () => {

@@ -58,11 +58,14 @@ var Dispatcher;
         case 'projects:show':
           shortcut_handler = true;
           break;
+<<<<<<< HEAD
         case 'projects:edit':
           import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/edit')
             .then(callDefault)
             .catch(fail);
           break;
+=======
+>>>>>>> upstream/master
         case 'groups:activity':
           import('./pages/groups/activity')
             .then(callDefault)
