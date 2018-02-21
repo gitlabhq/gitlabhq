@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class Null < Expression::Token
+        class Null < Expression::Lexeme
           PATTERN = /null/.freeze
 
           def initialize(value)

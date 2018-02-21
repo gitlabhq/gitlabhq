@@ -2,12 +2,8 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class Token
+        class Lexeme
           def evaluate(**variables)
-            raise NotImplementedError
-          end
-
-          def self.build(string)
             raise NotImplementedError
           end
 

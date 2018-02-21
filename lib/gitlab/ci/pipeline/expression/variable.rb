@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class Equality < Expression::Token
+        class Equality < Expression::Lexeme
           PATTERN = /$(?<name>\w+)/.freeze
 
           def initialize(value)

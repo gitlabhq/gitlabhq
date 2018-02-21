@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class String < Expression::Token
+        class String < Expression::Lexeme
           PATTERN = /("|')(?<value>.+)('|")/.freeze
 
           def initialize(value)
