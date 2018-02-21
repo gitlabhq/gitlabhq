@@ -1,5 +1,5 @@
 import ProjectImport from '~/project_import';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new ProjectImport(); // eslint-disable-line no-new
-};
+});
