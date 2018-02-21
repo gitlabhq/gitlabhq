@@ -29,8 +29,10 @@
 }
 
 .snippet-title {
-  font-size: 24px;
+  color: $gl-text-color;
+  font-size: 2em;
   font-weight: $gl-font-weight-bold;
+  min-height: $header-height;
 }
 
 .snippet-edited-ago {
@@ -62,6 +64,12 @@
     cursor: auto;
     width: 101%;
     border-left: 0;
+    outline: none;
+    box-shadow: none;
+    
+    &:active {
+      box-shadow: none;
+    }
   }
 
   .embed-toggle {
