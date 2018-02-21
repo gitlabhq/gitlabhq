@@ -194,3 +194,6 @@ use the CI features.
 We support the current and the previous major release of Firefox, Chrome/Chromium, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
+
+Note: We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
+in the future because we have features such as Issue Boards which require JavaScript extensively.
