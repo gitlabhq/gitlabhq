@@ -83,7 +83,7 @@ module Gitlab
         end
 
         ids.each do |model_type, model_ids|
-          model_class = Object.const_get("Gitlab::BackgroundMigration::PopulateUntrackedUploadsDependencies::#{model_type}")
+          model_class = "Gitlab::BackgroundMigration::PopulateUntrackedUploadsDependencies::#{model_type}".constantize
           found_ids = model_class.where(id: model_ids.uniq).pluck(:id)
           deleted_ids = ids[model_type] - found_ids
           ids[model_type] = deleted_ids
