@@ -24,7 +24,7 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers: ['ChromeHeadlessCustom'],
+    browsers:  ['ChromeHeadlessCustom'],
     customLaunchers: {
       ChromeHeadlessCustom: {
         base: 'ChromeHeadless',

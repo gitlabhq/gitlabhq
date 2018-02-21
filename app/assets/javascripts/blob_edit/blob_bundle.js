@@ -4,7 +4,7 @@ import NewCommitForm from '../new_commit_form';
 import EditBlob from './edit_blob';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
 
-$(() => {
+export default () => {
   const editBlobForm = $('.js-edit-blob-form');
   const uploadBlobForm = $('.js-upload-blob-form');
   const deleteBlobForm = $('.js-delete-blob-form');
@@ -34,4 +34,4 @@ $(() => {
   if (deleteBlobForm.length) {
     new NewCommitForm(deleteBlobForm);
   }
-});
+};
