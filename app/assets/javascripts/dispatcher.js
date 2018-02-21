@@ -56,6 +56,10 @@ var Dispatcher;
         case 'projects:activity':
         case 'projects:commits:show':
         case 'projects:show':
+        case 'groups:show':
+        case 'projects:find_file:show':
+        case 'projects:blob:show':
+        case 'projects:blame:show':
           shortcut_handler = true;
           break;
         case 'projects:edit':
@@ -63,66 +67,8 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'groups:activity':
-          import('./pages/groups/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:show':
-          shortcut_handler = true;
-          break;
-        case 'groups:group_members:index':
-          import('./pages/groups/group_members/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:project_members:index':
-          import('./pages/projects/project_members')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:create':
-        case 'groups:new':
-          import('./pages/groups/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:edit':
-          import('./pages/groups/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:groups:create':
-        case 'admin:groups:new':
-          import('./pages/admin/groups/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:groups:edit':
-          import('./pages/admin/groups/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:tree:show':
-          import('./pages/projects/tree/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:find_file:show':
-          import('./pages/projects/find_file/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:blob:show':
-          import('./pages/projects/blob/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:blame:show':
-          import('./pages/projects/blame/show')
+          import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/tree/show')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
