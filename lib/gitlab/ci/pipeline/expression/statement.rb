@@ -17,7 +17,10 @@ module Gitlab
           def initialize(statement, pipeline)
             @pipeline = pipeline
             @lexer = Expression::Lexer.new(statement)
-            @variables = pipeline.variables # TODO
+
+            @variables = pipeline.variables.map do |variable|
+              { variable.key => variable.value }
+            end
           end
 
           def tokens

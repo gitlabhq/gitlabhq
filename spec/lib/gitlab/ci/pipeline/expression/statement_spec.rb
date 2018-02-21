@@ -8,6 +8,10 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     described_class.new(text, pipeline)
   end
 
+  before do
+    pipeline.variables.build([key: 'VARIABLE', value: 'my variable'])
+  end
+
   describe '#tokens' do
     it 'returns raw tokens' do
       expect(subject.tokens.size).to eq 2
