@@ -444,7 +444,7 @@ describe('ee merge request widget options', () => {
             vm.$el.querySelector('.js-docker-widget .js-code-text').textContent.trim(),
           ).toEqual('SAST:container found 3 vulnerabilities, of which 1 is approved');
 
-          vm.$el.querySelector('.js-docker-widget button').click();
+          vm.$el.querySelector('.js-docker-widget .js-collapse-btn').click();
 
           Vue.nextTick(() => {
             expect(
