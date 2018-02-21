@@ -6,7 +6,6 @@ module Banzai
           Filter::RedactorFilter,
           Filter::RelativeLinkFilter,
           Filter::IssuableStateFilter,
-          Filter::CrossProjectIssuableInformationFilter,
           Filter::AbsoluteLinkFilter
         ]
       end
