@@ -7,7 +7,7 @@ import BlobViewer from '../../../../blob/viewer';
 import NewCommitForm from '../../../../new_commit_form';
 import { ajaxGet } from '../../../../lib/utils/common_utils';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new ShortcutsNavigation(); // eslint-disable-line no-new
   new TreeView(); // eslint-disable-line no-new
   new BlobViewer(); // eslint-disable-line no-new
@@ -35,5 +35,4 @@ export default () => {
       },
     });
   }
-};
-
+});
