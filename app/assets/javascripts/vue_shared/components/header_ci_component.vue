@@ -6,12 +6,12 @@
   import userAvatarImage from './user_avatar/user_avatar_image.vue';
 
   /**
-  * Renders header component for job and pipeline page based on UI mockups
-  *
-  * Used in:
-  * - job show page
-  * - pipeline show page
-  */
+   * Renders header component for job and pipeline page based on UI mockups
+   *
+   * Used in:
+   * - job show page
+   * - pipeline show page
+   */
   export default {
     components: {
       ciIconBadge,
@@ -118,7 +118,8 @@
 
     <section
       class="header-action-buttons"
-      v-if="actions.length">
+      v-if="actions.length"
+    >
       <template
         v-for="(action, i) in actions"
       >

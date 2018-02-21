@@ -32,7 +32,7 @@ const Api = {
   },
 
   // Return groups list. Filtered by query
-  groups(query, options, callback) {
+  groups(query, options, callback = $.noop) {
     const url = Api.buildUrl(Api.groupsPath);
     return axios.get(url, {
       params: Object.assign({
