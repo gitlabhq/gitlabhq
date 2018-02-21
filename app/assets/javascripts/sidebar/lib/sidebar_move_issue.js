@@ -50,7 +50,7 @@ class SidebarMoveIssue {
         const selectedProjectId = options.isMarking ? project.id : 0;
         this.mediator.setMoveToProjectId(selectedProjectId);
 
-        this.$confirmButton.attr('disabled', !isValidProjectId(selectedProjectId));
+        this.$confirmButton.prop('disabled', !isValidProjectId(selectedProjectId));
       },
     });
   }

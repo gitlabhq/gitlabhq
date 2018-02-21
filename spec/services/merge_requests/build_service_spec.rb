@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequests::BuildService do
+  using RSpec::Parameterized::TableSyntax
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -111,6 +112,7 @@ describe MergeRequests::BuildService do
 
     context 'one commit in the diff' do
       let(:commits) { Commit.decorate([commit_1], project) }
+      let(:commit_description) { commit_1.safe_message.split(/\n+/, 2).last }
 
       before do
         stub_compare
@@ -125,7 +127,7 @@ describe MergeRequests::BuildService do
       end
 
       it 'uses the description of the commit as the description of the merge request' do
-        expect(merge_request.description).to eq(commit_1.safe_message.split(/\n+/, 2).last)
+        expect(merge_request.description).to eq(commit_description)
       end
 
       context 'merge request already has a description set' do
@@ -148,66 +150,30 @@ describe MergeRequests::BuildService do
         end
       end
 
-      context 'branch starts with issue IID followed by a hyphen' do
-        let(:source_branch) { "#{issue.iid}-fix-issue" }
-
-        it 'appends "Closes #$issue-iid" to the description' do
-          expect(merge_request.description).to eq("#{commit_1.safe_message.split(/\n+/, 2).last}\n\nCloses ##{issue.iid}")
+      context 'when the source branch matches an issue' do
+        where(:issue_tracker, :source_branch, :closing_message) do
+          :jira                 | 'FOO-123-fix-issue' | 'Closes FOO-123'
+          :jira                 | 'fix-issue'         | nil
+          :custom_issue_tracker | '123-fix-issue'     | 'Closes #123'
+          :custom_issue_tracker | 'fix-issue'         | nil
+          :internal             | '123-fix-issue'     | 'Closes #123'
+          :internal             | 'fix-issue'         | nil
         end
 
-        context 'merge request already has a description set' do
-          let(:description) { 'Merge request description' }
-
-          it 'appends "Closes #$issue-iid" to the description' do
-            expect(merge_request.description).to eq("#{description}\n\nCloses ##{issue.iid}")
+        with_them do
+          before do
+            if issue_tracker == :internal
+              issue.update!(iid: 123)
+            else
+              create(:"#{issue_tracker}_service", project: project)
+            end
           end
-        end
 
-        context 'commit has no description' do
-          let(:commits) { Commit.decorate([commit_2], project) }
+          it 'appends the closing description' do
+            expected_description = [commit_description, closing_message].compact.join("\n\n")
 
-          it 'sets the description to "Closes #$issue-iid"' do
-            expect(merge_request.description).to eq("Closes ##{issue.iid}")
+            expect(merge_request.description).to eq(expected_description)
           end
-        end
-      end
-
-      context 'branch starts with numeric characters followed by a hyphen with no issue tracker' do
-        let(:source_branch) { '12345-fix-issue' }
-
-        before do
-          allow(project).to receive(:external_issue_tracker).and_return(false)
-          allow(project).to receive(:issues_enabled?).and_return(false)
-        end
-
-        it 'uses the title of the commit as the title of the merge request' do
-          expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
-        end
-
-        it 'uses the description of the commit as the description of the merge request' do
-          commit_description = commit_1.safe_message.split(/\n+/, 2).last
-
-          expect(merge_request.description).to eq("#{commit_description}")
-        end
-      end
-
-      context 'branch starts with JIRA-formatted external issue IID followed by a hyphen' do
-        let(:source_branch) { 'EXMPL-12345-fix-issue' }
-
-        before do
-          allow(project).to receive(:external_issue_tracker).and_return(true)
-          allow(project).to receive(:issues_enabled?).and_return(false)
-          allow(project).to receive(:external_issue_reference_pattern).and_return(IssueTrackerService.reference_pattern)
-        end
-
-        it 'uses the title of the commit as the title of the merge request' do
-          expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
-        end
-
-        it 'uses the description of the commit as the description of the merge request and appends the closes text' do
-          commit_description = commit_1.safe_message.split(/\n+/, 2).last
-
-          expect(merge_request.description).to eq("#{commit_description}\n\nCloses EXMPL-12345")
         end
       end
     end
@@ -239,90 +205,62 @@ describe MergeRequests::BuildService do
         end
       end
 
-      context 'branch starts with GitLab issue IID followed by a hyphen' do
+      context 'when the source branch matches an issue' do
+        where(:issue_tracker, :source_branch, :title, :closing_message) do
+          :jira                 | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
+          :jira                 | 'fix-issue'         | 'Fix issue'                   | nil
+          :custom_issue_tracker | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
+          :custom_issue_tracker | 'fix-issue'         | 'Fix issue'                   | nil
+          :internal             | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
+          :internal             | 'fix-issue'         | 'Fix issue'                   | nil
+          :internal             | '124-fix-issue'     | '124 fix issue'               | nil
+        end
+
+        with_them do
+          before do
+            if issue_tracker == :internal
+              issue.update!(iid: 123)
+            else
+              create(:"#{issue_tracker}_service", project: project)
+            end
+          end
+
+          it 'sets the correct title' do
+            expect(merge_request.title).to eq(title)
+          end
+
+          it 'sets the closing description' do
+            expect(merge_request.description).to eq(closing_message)
+          end
+        end
+      end
+
+      context 'when the issue is not accessible to user' do
         let(:source_branch) { "#{issue.iid}-fix-issue" }
 
-        it 'sets the title to: Resolves "$issue-title"' do
-          expect(merge_request.title).to eq("Resolve \"#{issue.title}\"")
+        before do
+          project.team.truncate
         end
 
-        context 'when issue is not accessible to user' do
-          before do
-            project.team.truncate
-          end
-
-          it 'uses branch title as the merge request title' do
-            expect(merge_request.title).to eq("#{issue.iid} fix issue")
-          end
+        it 'uses branch title as the merge request title' do
+          expect(merge_request.title).to eq("#{issue.iid} fix issue")
         end
 
-        context 'issue does not exist' do
-          let(:source_branch) { "#{issue.iid.succ}-fix-issue" }
-
-          it 'uses the title of the branch as the merge request title' do
-            expect(merge_request.title).to eq("#{issue.iid.succ} fix issue")
-          end
-        end
-
-        context 'issue is confidential' do
-          let(:issue_confidential) { true }
-
-          it 'uses the title of the branch as the merge request title' do
-            expect(merge_request.title).to eq("#{issue.iid} fix issue")
-          end
+        it 'does not set a description' do
+          expect(merge_request.description).to be_nil
         end
       end
 
-      context 'branch starts with numeric characters followed by a hyphen with no issue tracker' do
-        let(:source_branch) { '12345-fix-issue' }
+      context 'when the issue is confidential' do
+        let(:source_branch) { "#{issue.iid}-fix-issue" }
+        let(:issue_confidential) { true }
 
-        before do
-          allow(project).to receive(:external_issue_tracker).and_return(false)
-          allow(project).to receive(:issues_enabled?).and_return(false)
+        it 'uses the title of the branch as the merge request title' do
+          expect(merge_request.title).to eq("#{issue.iid} fix issue")
         end
 
-        it 'sets the title to the humanized branch title' do
-          expect(merge_request.title).to eq('12345 fix issue')
-        end
-      end
-
-      describe 'with JIRA enabled' do
-        before do
-          allow(project).to receive(:external_issue_tracker).and_return(true)
-          allow(project).to receive(:issues_enabled?).and_return(false)
-          allow(project).to receive(:external_issue_reference_pattern).and_return(IssueTrackerService.reference_pattern)
-        end
-
-        context 'branch does not start with JIRA-formatted external issue IID' do
-          let(:source_branch) { 'test-branch' }
-
-          it 'sets the title to the humanized branch title' do
-            expect(merge_request.title).to eq('Test branch')
-          end
-        end
-
-        context 'branch starts with JIRA-formatted external issue IID' do
-          let(:source_branch) { 'EXMPL-12345' }
-
-          it 'sets the title to the humanized branch title' do
-            expect(merge_request.title).to eq('Resolve EXMPL-12345')
-          end
-
-          it 'appends the closes text' do
-            expect(merge_request.description).to eq('Closes EXMPL-12345')
-          end
-
-          context 'followed by hyphenated text' do
-            let(:source_branch) { 'EXMPL-12345-fix-issue' }
-
-            it 'sets the title to the humanized branch title' do
-              expect(merge_request.title).to eq('Resolve EXMPL-12345 "Fix issue"')
-            end
-
-            it 'appends the closes text' do
-              expect(merge_request.description).to eq('Closes EXMPL-12345')
-            end
-          end
+        it 'does not set a description' do
+          expect(merge_request.description).to be_nil
         end
       end
     end

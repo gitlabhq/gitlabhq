@@ -24,19 +24,19 @@ export default class MilestoneSelect {
     $els.each((i, dropdown) => {
       let collapsedSidebarLabelTemplate, milestoneLinkNoneTemplate, milestoneLinkTemplate, selectedMilestone, selectedMilestoneDefault;
       const $dropdown = $(dropdown);
-      const projectId = $dropdown.data('project-id');
+      const projectId = $dropdown.data('projectId');
       const milestonesUrl = $dropdown.data('milestones');
       const issueUpdateURL = $dropdown.data('issueUpdate');
-      const showNo = $dropdown.data('show-no');
-      const showAny = $dropdown.data('show-any');
+      const showNo = $dropdown.data('showNo');
+      const showAny = $dropdown.data('showAny');
       const showMenuAbove = $dropdown.data('showMenuAbove');
-      const showUpcoming = $dropdown.data('show-upcoming');
-      const showStarted = $dropdown.data('show-started');
-      const useId = $dropdown.data('use-id');
-      const defaultLabel = $dropdown.data('default-label');
-      const defaultNo = $dropdown.data('default-no');
-      const issuableId = $dropdown.data('issuable-id');
-      const abilityName = $dropdown.data('ability-name');
+      const showUpcoming = $dropdown.data('showUpcoming');
+      const showStarted = $dropdown.data('showStarted');
+      const useId = $dropdown.data('useId');
+      const defaultLabel = $dropdown.data('defaultLabel');
+      const defaultNo = $dropdown.data('defaultNo');
+      const issuableId = $dropdown.data('issuableId');
+      const abilityName = $dropdown.data('abilityName');
       const $selectBox = $dropdown.closest('.selectbox');
       const $block = $selectBox.closest('.block');
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon');
@@ -114,7 +114,7 @@ export default class MilestoneSelect {
           }
         },
         defaultLabel: defaultLabel,
-        fieldName: $dropdown.data('field-name'),
+        fieldName: $dropdown.data('fieldName'),
         text: milestone => _.escape(milestone.title),
         id: (milestone) => {
           if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
@@ -166,7 +166,7 @@ export default class MilestoneSelect {
           }
 
           if (boardsStore) {
-            boardsStore[$dropdown.data('field-name')] = selected.name;
+            boardsStore[$dropdown.data('fieldName')] = selected.name;
             e.preventDefault();
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));

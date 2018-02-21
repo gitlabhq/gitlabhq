@@ -41,11 +41,11 @@ export default class ProtectedBranchEdit {
     axios.patch(this.$wrap.data('url'), {
       protected_branch: {
         merge_access_levels_attributes: [{
-          id: this.$allowedToMergeDropdown.data('access-level-id'),
+          id: this.$allowedToMergeDropdown.data('accessLevelId'),
           access_level: $allowedToMergeInput.val(),
         }],
         push_access_levels_attributes: [{
-          id: this.$allowedToPushDropdown.data('access-level-id'),
+          id: this.$allowedToPushDropdown.data('accessLevelId'),
           access_level: $allowedToPushInput.val(),
         }],
       },

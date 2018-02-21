@@ -10,7 +10,7 @@ xml.entry do
   # eager-loaded. This allows us to re-use the user object's Email address,
   # instead of having to run additional queries to figure out what Email to use
   # for the avatar.
-  xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(event.author))
+  xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_user(event.author))
 
   xml.author do
     xml.username event.author_username

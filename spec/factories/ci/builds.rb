@@ -180,8 +180,8 @@ FactoryBot.define do
 
     trait :artifacts do
       after(:create) do |build|
-        create(:ci_job_artifact, :archive, job: build)
-        create(:ci_job_artifact, :metadata, job: build)
+        create(:ci_job_artifact, :archive, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, job: build, expire_at: build.artifacts_expire_at)
         build.reload
       end
     end

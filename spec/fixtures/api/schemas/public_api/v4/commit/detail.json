@@ -4,9 +4,9 @@
     { "$ref": "basic.json" },
     {
       "required" : [
-        "stats",
         "status",
-        "last_pipeline"
+        "last_pipeline",
+        "project_id"
       ],
       "properties": {
         "stats": { "$ref": "../commit_stats.json" },
@@ -16,7 +16,8 @@
             { "type": "null" },
             { "$ref": "../pipeline/basic.json" }
           ]
-        }
+        },
+        "project_id": { "type": "integer" }
       }
     }
   ]

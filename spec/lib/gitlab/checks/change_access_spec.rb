@@ -190,7 +190,7 @@ describe Gitlab::Checks::ChangeAccess do
 
       context 'with LFS not enabled' do
         it 'skips the validation' do
-          expect_any_instance_of(described_class).not_to receive(:lfs_file_locks_validation)
+          expect_any_instance_of(Gitlab::Checks::CommitCheck).not_to receive(:validate)
 
           subject.exec
         end
@@ -207,7 +207,7 @@ describe Gitlab::Checks::ChangeAccess do
           end
         end
 
-        context 'when change is sent by the author od the lock' do
+        context 'when change is sent by the author of the lock' do
           let(:user) { owner }
 
           it "doesn't raise any error" do

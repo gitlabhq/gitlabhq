@@ -7,7 +7,7 @@ require_relative '../lib/gitlab/popen/runner'
 def emit_warnings(static_analysis)
   static_analysis.warned_results.each do |result|
     puts
-    puts "**** #{result.cmd.join(' ')} had the following warnings:"
+    puts "**** #{result.cmd.join(' ')} had the following warning(s):"
     puts
     puts result.stderr
     puts
@@ -17,7 +17,7 @@ end
 def emit_errors(static_analysis)
   static_analysis.failed_results.each do |result|
     puts
-    puts "**** #{result.cmd.join(' ')} failed with the following error:"
+    puts "**** #{result.cmd.join(' ')} failed with the following error(s):"
     puts
     puts result.stdout
     puts result.stderr
@@ -26,15 +26,10 @@ def emit_errors(static_analysis)
 end
 
 tasks = [
-  %w[bundle exec rake config_lint],
-  %w[bundle exec rake flay],
-  %w[bundle exec rake haml_lint],
-  %w[bundle exec rake scss_lint],
+  %w[bin/rake lint:all],
   %w[bundle exec license_finder],
   %w[yarn run eslint],
   %w[bundle exec rubocop --parallel],
-  %w[bundle exec rake gettext:lint],
-  %w[bundle exec rake lint:static_verification],
   %w[scripts/lint-conflicts.sh],
   %w[scripts/lint-rugged]
 ]
