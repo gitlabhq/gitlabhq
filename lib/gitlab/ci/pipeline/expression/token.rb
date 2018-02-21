@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         class Token
+          attr_reader :value, :type
+
           def initialize(value, type)
             @value = value
             @type = type

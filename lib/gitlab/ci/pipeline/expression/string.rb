@@ -3,7 +3,7 @@ module Gitlab
     module Pipeline
       module Expression
         class String < Expression::Lexeme
-          PATTERN = /("|')(?<value>.+)('|")/.freeze
+          PATTERN = /"(?<string>.+?)"/.freeze
 
           def initialize(value)
             @value = value
