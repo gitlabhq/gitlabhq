@@ -154,6 +154,26 @@ describe 'Git HTTP requests' do
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
+        context 'when the project has no wiki repository yet' do
+          let(:env) { {} }
+
+          before { FileUtils.rm_rf(wiki.repository.path) }
+
+          it 'creates the repository' do
+            expect(wiki.repository.raw_repository.exists?).to eq(false)
+
+            download(path) do |response|
+              expect(response).to have_gitlab_http_status(:ok)
+
+              json_body = ActiveSupport::JSON.decode(response.body)
+
+              expect(json_body['RepoPath']).to include(wiki.repository.full_path)
+            end
+
+            expect(wiki.repository.raw_repository.exists?).to eq(true)
+          end
+        end
+
         context 'when unauthenticated' do
           let(:env) { {} }
 

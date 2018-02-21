@@ -86,7 +86,12 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   end
 
   def repository
-    wiki? ? project.wiki.repository : project.repository
+    if wiki?
+      project.wiki.wiki # Triggers wiki repo creation, if missing
+      project.wiki.repository
+    else
+      project.repository
+    end
   end
 
   def wiki?
