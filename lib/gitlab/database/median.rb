@@ -2,6 +2,8 @@
 module Gitlab
   module Database
     module Median
+      NotSupportedError = Class.new(StandardError)
+
       def median_datetime(arel_table, query_so_far, column_sym)
         extract_median(execute_queries(arel_table, query_so_far, column_sym)).presence
       end
@@ -23,11 +25,11 @@ module Gitlab
       end
 
       def extract_medians(results)
-        return {} if Gitlab::Database.mysql?
+        median_values = results.compact.first.values
 
-        results.compact.first.values.map do |id, median|
-          [id.to_i, median&.to_f]
-        end.to_h
+        median_values.each_with_object({}) do |(id, median), hash|
+          hash[id.to_i] = median&.to_f
+        end
       end
 
       def mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
@@ -113,6 +115,8 @@ module Gitlab
         if Gitlab::Database.postgresql?
           pg_median_datetime_sql(arel_table, query_so_far, column_sym, partition_column)
         elsif Gitlab::Database.mysql?
+          raise NotSupportedError, "partition_column is not supported for MySQL" if partition_column
+
           mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
         end
       end
@@ -159,12 +163,10 @@ module Gitlab
       end
 
       def median_projections(table, column_sym, partition_column)
-        if partition_column
-          [table[partition_column],
-           average([extract_epoch(table[column_sym])], "median")]
-        else
-          [average([extract_epoch(table[column_sym])], "median")]
-        end
+        projections = []
+        projections << table[partition_column] if partition_column
+        projections << average([extract_epoch(table[column_sym])], "median")
+        projections
       end
 
       def extract_epoch(arel_attribute)

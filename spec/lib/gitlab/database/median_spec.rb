@@ -1,15 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::Database::Median do
-  describe '#extract_medians' do
-    context 'when using MySQL' do
-      it 'returns an empty hash' do
-        values = [["1", "1000"]]
+  let(:dummy_class) do
+    Class.new do
+      include Gitlab::Database::Median
+    end
+  end
 
-        allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+  subject(:median) { dummy_class.new }
 
-        expect(described_class.new.extract_median(values)).eq({})
-      end
+  describe '#median_datetimes' do
+    it 'raises NotSupportedError', :mysql do
+      expect { median.median_datetimes(nil, nil, nil, :project_id) }.to raise_error(dummy_class::NotSupportedError, "partition_column is not supported for MySQL")
     end
   end
 end

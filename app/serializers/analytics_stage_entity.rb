@@ -7,8 +7,7 @@ class AnalyticsStageEntity < Grape::Entity
   expose :description
 
   expose :median, as: :value do |stage|
-    if stage.median && !(stage.median.nil? || stage.median.zero?)
-      distance_of_time_in_words(stage.median)
-    end
+    # median returns a BatchLoader instance which we first have to unwrap by using to_i
+    !stage.median.to_i.zero? ? distance_of_time_in_words(stage.median) : nil
   end
 end
