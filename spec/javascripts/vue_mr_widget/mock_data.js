@@ -223,6 +223,7 @@ export default {
 export const headIssues = [
   {
     check_name: 'Rubocop/Lint/UselessAssignment',
+    description: 'Insecure Dependency',
     location: {
       path: 'lib/six.rb',
       lines: {
@@ -235,6 +236,7 @@ export const headIssues = [
   {
     categories: ['Security'],
     check_name: 'Insecure Dependency',
+    description: 'Insecure Dependency',
     location: {
       path: 'Gemfile.lock',
       lines: {
@@ -249,6 +251,7 @@ export const headIssues = [
 export const parsedHeadIssues = [
   {
     check_name: 'Rubocop/Lint/UselessAssignment',
+    description: 'Insecure Dependency',
     location: {
       path: 'lib/six.rb',
       lines: {
@@ -257,7 +260,7 @@ export const parsedHeadIssues = [
       },
     },
     fingerprint: 'e879dd9bbc0953cad5037cde7ff0f627',
-    name: 'Rubocop/Lint/UselessAssignment',
+    name: 'Insecure Dependency',
     path: 'lib/six.rb',
     urlPath: 'headPath/lib/six.rb#L6',
     line: 6,
@@ -268,6 +271,7 @@ export const baseIssues = [
   {
     categories: ['Security'],
     check_name: 'Insecure Dependency',
+    description: 'Insecure Dependency',
     location: {
       path: 'Gemfile.lock',
       lines: {
@@ -280,6 +284,7 @@ export const baseIssues = [
   {
     categories: ['Security'],
     check_name: 'Insecure Dependency',
+    description: 'Insecure Dependency',
     location: {
       path: 'Gemfile.lock',
       lines: {
@@ -295,6 +300,7 @@ export const parsedBaseIssues = [
   {
     categories: ['Security'],
     check_name: 'Insecure Dependency',
+    description: 'Insecure Dependency',
     location: {
       path: 'Gemfile.lock',
       lines: {

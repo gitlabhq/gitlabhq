@@ -18,7 +18,7 @@ import { stripHtml } from '~/lib/utils/text_utility';
  */
 export const parseIssues = (issues = [], path = '') => issues.map((issue) => {
   const parsedIssue = {
-    name: issue.check_name || issue.message,
+    name: issue.description || issue.message,
     ...issue,
   };
 
