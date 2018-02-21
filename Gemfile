@@ -81,7 +81,7 @@ gem 'gollum-lib', '~> 4.2', require: false
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
-gem 'github-linguist', '~> 4.7.0', require: 'linguist'
+gem 'github-linguist', '~> 5.3.3', require: 'linguist'
 
 # API
 gem 'grape', '~> 1.0'
