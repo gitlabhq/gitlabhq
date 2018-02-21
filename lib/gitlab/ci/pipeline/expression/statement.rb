@@ -50,11 +50,7 @@ module Gitlab
           end
 
           def evaluate
-            if tokens.many?
-              parse_tree.evaluate
-            else
-              parse_tree.evaluate.present?
-            end
+            parse_tree.evaluate # evaluate(variables)
           end
         end
       end
