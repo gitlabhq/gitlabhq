@@ -36,6 +36,15 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect(tokens.third.value).to eq '"value"'
     end
 
+    it 'tokenizes tokens and operators' do
+      tokens = described_class.new('$VARIABLE == "text"').tokenize
+
+      expect(tokens.size).to eq 3
+      expect(tokens.first.value).to eq '$VARIABLE'
+      expect(tokens.second.value).to eq '=='
+      expect(tokens.third.value).to eq '"text"'
+    end
+
     it 'limits statement to 5 tokens' do
       lexer = described_class.new("$V1 $V2 $V3 $V4 $V5 $V6")
 

@@ -5,7 +5,8 @@ module Gitlab
         class Lexer
           LEXEMES = [
             Expression::Variable,
-            Expression::String
+            Expression::String,
+            Expression::Equals
           ]
 
           MAX_CYCLES = 5

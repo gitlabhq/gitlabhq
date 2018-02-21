@@ -5,11 +5,15 @@ module Gitlab
         class Variable < Expression::Lexeme
           PATTERN = /\$(?<name>\w+)/.freeze
 
-          def initialize(value)
-            @value = value
+          def initialize(name)
+            @name = name
           end
 
           def evaluate(**variables)
+          end
+
+          def self.build(string)
+            new(string.match(PATTERN)[:name])
           end
         end
       end

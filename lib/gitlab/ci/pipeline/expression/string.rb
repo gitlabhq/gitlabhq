@@ -14,6 +14,7 @@ module Gitlab
           end
 
           def self.build(string)
+            new(string.match(PATTERN)[:string])
           end
         end
       end

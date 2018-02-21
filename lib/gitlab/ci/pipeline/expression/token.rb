@@ -10,7 +10,12 @@ module Gitlab
             @type = type
           end
 
+          def build
+            @type.build(@value)
+          end
+
           def to_lexeme
+            type.name.demodulize.downcase
           end
         end
       end
