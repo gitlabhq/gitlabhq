@@ -1,8 +1,5 @@
 module Gitlab
   module Geo
-    InvalidDecryptionKeyError = Class.new(StandardError)
-    InvalidSignatureTimeError = Class.new(StandardError)
-
     class JwtRequestDecoder
       include LogHelpers
 
