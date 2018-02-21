@@ -1,7 +1,10 @@
 import _ from 'underscore';
 import Vue from 'vue';
 import PipelineMediator from '~/pipelines/pipeline_details_mediator';
+<<<<<<< HEAD
 import { sastIssues, parsedSastIssuesStore } from '../vue_shared/security_reports/mock_data';
+=======
+>>>>>>> upstream/master
 
 describe('PipelineMdediator', () => {
   let mediator;
