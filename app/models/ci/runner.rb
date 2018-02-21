@@ -3,6 +3,7 @@ module Ci
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
     include RedisCacheable
+    include ChronicDurationAttribute
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
@@ -50,6 +51,8 @@ module Ci
     }
 
     cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
+
+    chronic_duration_attribute :job_upper_timeout_user_readable, :job_upper_timeout
 
     # Searches for runners matching the given query.
     #
