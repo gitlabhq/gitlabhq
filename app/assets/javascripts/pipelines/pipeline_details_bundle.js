@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         badge.classList.remove('hidden');
       })
       .catch(() => {
-        Flash(__('Something when wrong while fetching SAST.'));
+        Flash(__('Something went wrong while fetching SAST.'));
       });
 
     // Widget summary
