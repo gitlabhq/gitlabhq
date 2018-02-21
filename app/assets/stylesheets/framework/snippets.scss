@@ -57,20 +57,10 @@
   padding-right: 0;
   padding-top: $gl-padding;
 
-  a.btn {
-    width: 100%;
-  }
-
   .form-control {
     cursor: auto;
     width: 101%;
-    border-left: 0;
-    outline: none;
-    box-shadow: none;
-
-    &:active {
-      box-shadow: none;
-    }
+    margin-left: -1;
   }
 
   .embed-toggle {
