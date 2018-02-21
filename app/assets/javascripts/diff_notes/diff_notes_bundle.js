@@ -1,6 +1,5 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
 /* global ResolveCount */
-/* global ResolveServiceClass */
 
 import Vue from 'vue';
 import './models/discussion';

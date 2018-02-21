@@ -20,11 +20,9 @@ export default {
       store: new Store(),
     };
   },
-
   created() {
     eventHub.$on('toggleSubscription', this.onToggleSubscription);
   },
-
   beforeDestroy() {
     eventHub.$off('toggleSubscription', this.onToggleSubscription);
   },

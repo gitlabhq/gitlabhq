@@ -85,7 +85,7 @@ export default class ProjectFindFile {
       .catch(() => flash(__('An error occurred while loading filenames')));
   }
 
-    // render result
+  // render result
   renderList(filePaths, searchText) {
     var blobItemUrl, filePath, html, i, j, len, matches, results;
     this.element.find(".tree-table > tbody").empty();

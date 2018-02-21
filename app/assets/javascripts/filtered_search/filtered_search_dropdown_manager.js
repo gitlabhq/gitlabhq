@@ -51,16 +51,6 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-author'),
       },
-      label: {
-        reference: null,
-        gl: DropdownNonUser,
-        extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
-          symbol: '~',
-          preprocessing: DropdownUtils.duplicateLabelPreprocessing,
-        },
-        element: this.container.querySelector('#js-dropdown-label'),
-      },
       assignee: {
         reference: null,
         gl: DropdownUser,
@@ -74,6 +64,16 @@ export default class FilteredSearchDropdownManager {
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
+      },
+      label: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
+          symbol: '~',
+          preprocessing: DropdownUtils.duplicateLabelPreprocessing,
+        },
+        element: this.container.querySelector('#js-dropdown-label'),
       },
       'my-reaction': {
         reference: null,
