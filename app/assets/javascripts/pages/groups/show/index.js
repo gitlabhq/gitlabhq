@@ -5,7 +5,7 @@ import notificationsDropdown from '~/notifications_dropdown';
 import NotificationsForm from '~/notifications_form';
 import ProjectsList from '~/projects_list';
 import ShortcutsNavigation from '~/shortcuts_navigation';
-import initGroupsList from '../../../groups';
+import initGroupsList from '~/groups';
 
 document.addEventListener('DOMContentLoaded', () => {
   const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import initBlob from '~/blob_edit/blob_bundle';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import TreeView from '../../../../tree';
 import ShortcutsNavigation from '../../../../shortcuts_navigation';
@@ -14,6 +15,7 @@ export default () => {
   $('#tree-slider').waitForImages(() =>
     ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
 
+  initBlob();
   const commitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
   const statusLink = document.querySelector('.commit-actions .ci-status-link');
   if (statusLink != null) {

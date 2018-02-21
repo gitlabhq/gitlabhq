@@ -17,9 +17,9 @@ class DueDateSelect {
     this.$value = $block.find('.value');
     this.$valueContent = $block.find('.value-content');
     this.$sidebarValue = $('.js-due-date-sidebar-value', $block);
-    this.fieldName = $dropdown.data('field-name');
-    this.abilityName = $dropdown.data('ability-name');
-    this.issueUpdateURL = $dropdown.data('issue-update');
+    this.fieldName = $dropdown.data('fieldName');
+    this.abilityName = $dropdown.data('abilityName');
+    this.issueUpdateURL = $dropdown.data('issueUpdate');
 
     this.rawSelectedDate = null;
     this.displayedDate = null;

@@ -1,3 +1,3 @@
 import initAdmin from './admin';
 
-export default () => initAdmin();
+document.addEventListener('DOMContentLoaded', initAdmin);

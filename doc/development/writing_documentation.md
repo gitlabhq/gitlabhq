@@ -240,7 +240,7 @@ Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 >
 
 A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
 
-- Live example: "GitLab Pages from A to Z - [Part 1](../user/project/pages/getting_started_part_one.md) to [Part 4](../user/project/pages/getting_started_part_four.md)"
+- Live example: "[Static sites and GitLab Pages domains (Part 1)](../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../user/project/pages/getting_started_part_four.md)"
 
 A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
 It does not only describes steps 2 and 3, but also shows you how to accomplish them.
@@ -257,10 +257,10 @@ through the process of how to use it systematically.
 Every **Technical Article** contains a frontmatter at the beginning of the doc
 with the following information:
 
-- **Type of article** (user guide, admin guide, tech overview, tutorial)
+- **Type of article** (user guide, admin guide, technical overview, tutorial)
 - **Knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
 - **Author's name** and **GitLab.com handle**
-- **Publication date**
+- **Publication date** (ISO format YYYY-MM-DD)
 
 For example:
 

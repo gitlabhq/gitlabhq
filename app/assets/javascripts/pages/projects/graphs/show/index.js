@@ -1,6 +1,6 @@
-import flash from '../flash';
-import { __ } from '../locale';
-import axios from '../lib/utils/axios_utils';
+import flash from '~/flash';
+import { __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
 import ContributorsStatGraph from './stat_graph_contributors';
 
 document.addEventListener('DOMContentLoaded', () => {
