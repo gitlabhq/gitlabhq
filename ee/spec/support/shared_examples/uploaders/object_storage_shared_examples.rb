@@ -38,6 +38,40 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     expect(File.exist?(original_file)).to be_falsey
   end
 
+  it 'can access to the original file during migration' do
+    original_file = subject.file.path
+
+    allow(subject).to receive(:delete_migrated_file) { }
+
+    expect { migrate(to) }.not_to change { File.exist?(original_file) }
+  end
+
+  context 'when migrate! is not oqqupied by another process' do
+    it 'executes migrate!' do
+      expect(subject).to receive(:object_store=)
+
+      migrate(to)
+    end
+  end
+
+  context 'when migrate! is oqqupied by another process' do
+    let(:exclusive_lease_key) { "object_storage_migrate:#{subject.store_path}" }
+
+    before do
+      @uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+    end
+
+    it 'does not execute migrate!' do
+      expect(subject).not_to receive(:object_store=)
+
+      migrate(to)
+    end
+
+    after do
+      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, @uuid)
+    end
+  end
+
   context 'migration is unsuccessful' do
     shared_examples "handles gracefully" do |error:|
       it 'does not update the object_store' do
