@@ -311,6 +311,8 @@ ActiveRecord::Schema.define(version: 20180327101207) do
     t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "used_timeout"
+    t.string "timeout_source"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree

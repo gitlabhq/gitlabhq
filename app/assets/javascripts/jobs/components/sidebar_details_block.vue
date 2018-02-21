@@ -39,6 +39,15 @@
       runnerId() {
         return `#${this.job.runner.id}`;
       },
+      timeout() {
+        let t = `${this.job.timeout.value}`;
+
+        if (this.job.timeout.source != null) {
+          t += ` (from ${this.job.timeout.source})`;
+        }
+
+        return t;
+      },
       renderBlock() {
         return this.job.merge_request ||
           this.job.duration ||
@@ -113,6 +122,12 @@
           v-if="job.queued"
           title="Queued"
           :value="queued"
+        />
+        <detail-row
+          class="js-job-timeout"
+          v-if="job.timeout"
+          title="Timeout"
+          :value="timeout"
         />
         <detail-row
           class="js-job-runner"

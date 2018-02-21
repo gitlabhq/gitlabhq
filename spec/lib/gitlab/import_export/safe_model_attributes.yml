@@ -283,6 +283,8 @@ CommitStatus:
 - retried
 - protected
 - failure_reason
+- used_timeout
+- timeout_source
 Ci::Variable:
 - id
 - project_id

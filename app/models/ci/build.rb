@@ -6,6 +6,7 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
+    include ChronicDurationAttribute
 
     MissingDependenciesError = Class.new(StandardError)
 
@@ -90,6 +91,8 @@ module Ci
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
 
+    chronic_duration_attribute_reader :used_timeout_user_readable, :used_timeout
+
     class << self
       # This is needed for url_for to work,
       # as the controller is JobsController
@@ -120,6 +123,10 @@ module Ci
       end
 
       after_transition pending: :running do |build|
+        build.used_timeout = build.timeout
+        build.timeout_source = build.should_use_runner_timeout? ? 'Runner' : 'Project'
+        build.save!
+
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
         end
@@ -232,15 +239,14 @@ module Ci
     end
 
     def timeout
-      return runner.maximum_job_timeout if should_use_runner_timeout
+      return runner.maximum_job_timeout if should_use_runner_timeout?
 
       project.build_timeout
     end
 
-    def should_use_runner_timeout
+    def should_use_runner_timeout?
       !runner.nil? && runner.defines_maximum_job_timeout? && runner.maximum_job_timeout < project.build_timeout
     end
-    private :should_use_runner_timeout
 
     def triggered_by?(current_user)
       user == current_user
