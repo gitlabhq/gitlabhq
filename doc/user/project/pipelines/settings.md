@@ -27,6 +27,13 @@ The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
 
+### Timeout overriding on Runner level
+
+> - [Introduced][ce-17221] in GitLab 10.6.
+
+Project defined timeout (either specific timeout set by user or the default
+60 minutes timeout) may be [overridden on Runner level][timeout overriding].
+
 ## Custom CI config path
 
 >  - [Introduced][ce-12509] in GitLab 9.4.
@@ -152,5 +159,7 @@ into your `README.md`:
 
 [var]: ../../../ci/yaml/README.md#git-strategy
 [coverage report]: #test-coverage-parsing
+[timeout overriding]: ../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner
 [ce-9362]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362
 [ce-12509]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509
+[ce-17221]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17221
