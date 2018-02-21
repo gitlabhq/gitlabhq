@@ -38,7 +38,7 @@ are very appreciative of the work done by translators and proofreaders!
 > project.
 
 1. Contribute translations to GitLab. See instructions for
-   [translating GitLab](../translate.md).
+   [translating GitLab](../translation.md).
 
     Translating GitLab is a community effort that requires team work and
     attention to detail. Proofreaders play an important role helping new
@@ -49,7 +49,7 @@ are very appreciative of the work done by translators and proofreaders!
 1. Request proofreader permissions by opening a merge request to add yourself
    to the list of proofreaders.
 
-    At the bottom of this page click **Edit this page**.
+    Open the [proofreader.md source file][proofreader-src] and click **Edit**.
 
     Add your language in alphabetical order, and add yourself to the list
     including:
@@ -63,3 +63,5 @@ are very appreciative of the work done by translators and proofreaders!
 
 1. Your request to become a proofreader will be considered on the merits of
    your previous translations.
+
+[proofreader-src]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/i18n/proofreader.md
