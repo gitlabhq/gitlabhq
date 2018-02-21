@@ -1,0 +1,26 @@
+.bs-callout.help-callout
+  .append-bottom-10
+    %h4= _('Setup a specific Runner automatically')
+
+  %p
+    - link_to_help_page = link_to(_('Learn more about Kubernetes'),
+                                  help_page_path('user/project/clusters/index'),
+                                  target: '_blank',
+                                  rel: 'noopener noreferrer')
+
+    = _('You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}').html_safe % { link_to_help_page: link_to_help_page }
+
+  %ol
+    %li
+      = _('Click the button below to begin the install process by navigating to the Kubernetes page')
+    %li
+      = _('Select an existing Kubernetes cluster or create a new one')
+    %li
+      = _('From the Kubernetes cluster details view, install Runner from the applications list')
+
+  = link_to _('Install Runner on Kubernetes'),
+    project_clusters_path(@project),
+    class: 'btn btn-info'
+  %hr
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: registration_token, type: 'specific' }
