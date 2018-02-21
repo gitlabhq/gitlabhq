@@ -1,6 +1,5 @@
 #js-pipeline-header-vue.pipeline-header-container
 - sast_artifact = @pipeline.sast_artifact
-- sast_tab_path = security_project_pipeline_path(@project, @pipeline)
 
 - if @commit.present?
   .commit-box
@@ -37,4 +36,4 @@
       = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
 
     - if sast_artifact
-      .js-sast-summary{ data: { tab_path: sast_tab_path } }
+      .js-sast-summary
