@@ -339,8 +339,8 @@ describe ProjectPresenter do
 
         it 'returns link to clusters page if more than one exists' do
           project.add_master(user)
-          cluster_1 = create(:cluster, projects: [project])
-          cluster_2 = create(:cluster, projects: [project])
+          create(:cluster, projects: [project])
+          create(:cluster, projects: [project])
 
           expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,
                                                                                 label: 'Kubernetes clusters',
