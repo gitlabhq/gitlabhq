@@ -13,10 +13,6 @@
         required: false,
         default: () => ([]),
       },
-      link: {
-        type: String,
-        required: true,
-      },
     },
     computed: {
       sastText() {
@@ -36,7 +32,7 @@
         return s__('ciReport|no security vulnerabilities');
       },
       statusIcon() {
-        if (this.unresolvedIssues) {
+        if (this.unresolvedIssues.length) {
           return {
             group: 'warning',
             icon: 'status_warning',
@@ -69,13 +65,13 @@
       class="prepend-left-10 flex flex-align-self-center"
     >
       {{ sastText }}
-      <a
-        :href="link"
-        class="prepend-left-5"
+      <button
+        type="button"
+        class="btn-link btn-blank prepend-left-5"
         @click="openTab"
       >
         {{ sastLink }}
-      </a>
+      </button>
     </span>
   </div>
 </template>

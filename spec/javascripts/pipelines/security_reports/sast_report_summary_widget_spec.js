@@ -19,26 +19,24 @@ describe('SAST report summary widget', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
         unresolvedIssues: parsedSastIssuesHead,
-        link: 'group/project/pipelines/2/security',
       });
     });
 
-    it('renders summary text with link for the security tab', () => {
+    it('renders summary text with warning icon', () => {
       expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST degraded on 2 security vulnerabilities');
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('group/project/pipelines/2/security');
+      expect(vm.$el.querySelector('span').classList).toContain('ci-status-icon-warning');
     });
   });
 
   describe('without vulnerabilities', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
-        link: 'group/project/pipelines/2/security',
       });
     });
 
-    it('render summary text with link for the security tab', () => {
+    it('render summary text with success icon', () => {
       expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toEqual('SAST detected no security vulnerabilities');
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('group/project/pipelines/2/security');
+      expect(vm.$el.querySelector('span').classList).toContain('ci-status-icon-success');
     });
   });
 });

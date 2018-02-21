@@ -89,9 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
     mediator.fetchSastReport(endpoint, blobPath)
       .then(() => {
         // update the badge
-        const badge = document.querySelector('.js-sast-counter');
-        badge.textContent = mediator.store.state.securityReports.sast.newIssues.length;
-        badge.classList.remove('hidden');
+        if (mediator.store.state.securityReports.sast.newIssues.length) {
+          const badge = document.querySelector('.js-sast-counter');
+          badge.textContent = mediator.store.state.securityReports.sast.newIssues.length;
+          badge.classList.remove('hidden');
+        }
       })
       .catch(() => {
         Flash(__('Something went wrong while fetching SAST.'));
@@ -113,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return createElement('sast-summary-widget', {
           props: {
             unresolvedIssues: this.mediator.store.state.securityReports.sast.newIssues,
-            link: sastSummary.dataset.tabPath,
           },
         });
       },
