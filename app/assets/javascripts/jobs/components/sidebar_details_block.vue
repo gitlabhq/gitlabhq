@@ -127,6 +127,7 @@
           class="js-job-timeout"
           v-if="job.timeout"
           title="Timeout"
+          help-url="/help/ci/runners/README.html#setting-maximum-job-timeout-for-a-runner"
           :value="timeout"
         />
         <detail-row
