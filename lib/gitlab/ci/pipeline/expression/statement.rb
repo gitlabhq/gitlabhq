@@ -31,8 +31,8 @@ module Gitlab
           end
 
           ##
-          # Our syntax is very simple, so we don't need yet to implement a
-          # recurisive parser, we can use the most simple approach to create
+          # Our syntax is very simple, so we don't yet need to implement a
+          # recursive parser, we can use the most simple approach to create
           # a reverse descent parse tree "by hand".
           #
           def parse_tree
@@ -42,7 +42,7 @@ module Gitlab
               raise ParserError, 'Unknown pipeline expression!'
             end
 
-            if lexemes.many?
+            if tokens.many?
               Expression::Equals.new(tokens.first.build, tokens.last.build)
             else
               tokens.first.build
@@ -50,6 +50,11 @@ module Gitlab
           end
 
           def evaluate
+            if tokens.many?
+              parse_tree.evaluate
+            else
+              parse_tree.evaluate.present?
+            end
           end
         end
       end
