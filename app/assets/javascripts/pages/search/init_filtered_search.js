@@ -9,11 +9,7 @@ import '~/filtered_search/filtered_search_manager';
 import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_visual_tokens';
 
-<<<<<<< HEAD
 export default ({ page, filteredSearchTokenKeys, stateFiltersSelector }) => {
-=======
-export default ({ page }) => {
->>>>>>> upstream/master
   const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
   if (filteredSearchEnabled) {
     const filteredSearchManager = new gl.FilteredSearchManager({
