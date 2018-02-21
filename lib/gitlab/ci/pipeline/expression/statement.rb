@@ -17,13 +17,11 @@ module Gitlab
           def initialize(statement, pipeline)
             @pipeline = pipeline
             @lexer = Expression::Lexer.new(statement)
-          end
-
-          def variables
+            @variables = pipeline.variables # TODO
           end
 
           def tokens
-            @lexer.tokenize
+            @tokens ||= @lexer.tokenize
           end
 
           def lexemes
@@ -50,7 +48,7 @@ module Gitlab
           end
 
           def evaluate
-            parse_tree.evaluate # evaluate(variables)
+            parse_tree.evaluate(**@variables)
           end
         end
       end
