@@ -1,51 +1,3 @@
-.report-block-container {
-  border-top: 1px solid $gray-darker;
-  padding: $gl-padding-top;
-  background-color: $gray-light;
-  margin: $gl-padding #{-$gl-padding} #{-$gl-padding};
-}
-
-.report-block-dast-code {
-  margin-left: 26px;
-}
-
-.report-block-list {
-  list-style: none;
-  padding: 0 1px;
-  margin: 0;
-  line-height: $code_line_height;
-
-  .btn-open-modal {
-    padding: 0 5px 4px;
-  }
-
-  .report-block-list-item {
-    display: flex;
-  }
-
-  .report-block-list-item-modal {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .failed .report-block-icon {
-    color: $red-500;
-  }
-
-  .success .report-block-icon {
-    color: $green-500;
-  }
-
-  .neutral .report-block-icon {
-    color: $theme-gray-700;
-  }
-
-  .report-block-icon {
-    margin: -5px 4px 0 0;
-    fill: currentColor;
-  }
-}
-
 .pipeline-tab-content {
   .space-children,
   .space-children > * {
@@ -54,5 +6,61 @@
 
   .media {
     align-items: center;
+  }
+}
+
+.report-block-container {
+  border-top: 1px solid $gray-darker;
+  padding: $gl-padding-top;
+  background-color: $gray-light;
+  margin: $gl-padding #{-$gl-padding} #{-$gl-padding};
+
+  // Clean MR widget CSS
+  line-height: 20px;
+}
+
+.report-block-list {
+  list-style: none;
+  padding: 0 1px;
+  margin: 0;
+}
+
+.report-block-list-icon {
+  display: flex;
+
+  &.failed {
+    color: $red-500;
+  }
+
+  &.success {
+    color: $green-500;
+  }
+
+  &.neutral {
+    color: $theme-gray-700;
+  }
+}
+
+.report-block-list-issue {
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.report-block-list-issue-description {
+  align-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  display: flex;
+  align-self: center;
+  margin: 5px 0px;
+
+  .break-link {
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .btn-open-modal {
+    text-align: left;
   }
 }

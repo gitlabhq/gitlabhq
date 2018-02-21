@@ -96,7 +96,9 @@
         return this.status === 'success';
       },
       statusIconName() {
-        if (this.loadingFailed || this.unresolvedIssues.length) {
+        if (this.loadingFailed ||
+          this.unresolvedIssues.length ||
+          this.neutralIssues.length) {
           return 'warning';
         }
         return 'success';
