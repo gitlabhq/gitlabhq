@@ -54,6 +54,7 @@ GitLab.com is our SaaS offering. It's hosted, managed, and administered by GitLa
 - [Groups](user/group/index.md): Organize your projects in groups.
   - [Subgroups](user/group/subgroups/index.md)
   - **(Ultimate)** [Epics](user/group/epics/index.md)
+  - **(Ultimate)** [Roadmap](user/group/roadmap/index.md)
   - **(Starter/Premium)** [Contribution Analytics](user/group/contribution_analytics/index.md): See detailed statistics of group contributors.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(Starter/Premium)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
