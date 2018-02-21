@@ -68,14 +68,10 @@ var config = {
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     geo_nodes:            'ee/geo_nodes',
     help:                 './help/help.js',
-<<<<<<< HEAD
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
     issue_show:           './issue_show/index.js',
     ldap_group_links:     './groups/ldap_group_links.js',
-=======
-    issue_show:           './issue_show/index.js',
->>>>>>> upstream/master
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
