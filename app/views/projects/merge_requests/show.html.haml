@@ -6,10 +6,7 @@
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
-<<<<<<< HEAD
   = webpack_bundle_tag('issuable')
-=======
->>>>>>> upstream/master
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"
