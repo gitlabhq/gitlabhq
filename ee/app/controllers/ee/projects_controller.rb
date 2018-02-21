@@ -35,5 +35,10 @@ module EE
       custom_params[:ci_cd_only] = ci_cd_param if ci_cd_param == 'true'
       custom_params
     end
+
+    override :active_new_project_tab
+    def active_new_project_tab
+      project_params[:ci_cd_only] == 'true' ? 'ci_cd_only' : super
+    end
   end
 end
