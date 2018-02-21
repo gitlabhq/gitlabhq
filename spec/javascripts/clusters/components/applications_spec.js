@@ -88,11 +88,7 @@ describe('Applications', () => {
             vm.$el.querySelector('.js-ip-address').getAttribute('placeholder'),
           ).toEqual('?');
 
-          expect(
-            vm.$el.querySelector('.js-no-ip-message').textContent.replace(/\n(\s)+/g, ' ').trim(),
-          ).toEqual(
-            'The IP address is still in the process of being assigned, please check your Kubernetes cluster or Quotas on GKE if it takes a long time. More information',
-          );
+          expect(vm.$el.querySelector('.js-no-ip-message')).not.toBe(null);
         });
       });
     });

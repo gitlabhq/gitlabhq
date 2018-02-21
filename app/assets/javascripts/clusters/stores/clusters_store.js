@@ -1,4 +1,5 @@
 import { s__ } from '../../locale';
+import { INGRESS } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -80,7 +81,7 @@ export default class ClusterStore {
         statusReason,
       };
 
-      if (appId === 'ingress') {
+      if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
       }
     });

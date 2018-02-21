@@ -5,6 +5,7 @@
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
   import {
     APPLICATION_INSTALLED,
+    INGRESS,
   } from '../constants';
 
   export default {
@@ -52,6 +53,9 @@
           },
           false,
         );
+      },
+      ingressId() {
+        return INGRESS;
       },
       ingressInstalled() {
         return this.applications.ingress.status === APPLICATION_INSTALLED;
@@ -150,7 +154,7 @@
           </div>
         </application-row>
         <application-row
-          id="ingress"
+          :id="ingressId"
           :title="applications.ingress.title"
           title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
           :status="applications.ingress.status"
@@ -167,7 +171,7 @@
 
             <template v-if="ingressInstalled">
               <div class="form-group">
-                <label for="ipAddress">
+                <label for="ingress-ip-address">
                   {{ s__("ClusterIntegration| Ingress IP Address") }}
                 </label>
                 <div
@@ -176,7 +180,7 @@
                 >
                   <input
                     type="text"
-                    id="ipAddress"
+                    id="ingress-ip-address"
                     class="form-control js-ip-address"
                     :placeholder="ingressExternalIp"
                     readonly
@@ -210,7 +214,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {{ __("More information") }}
+                  {{ __('More information') }}
                 </a>
               </p>
 
@@ -223,16 +227,16 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {{ __("More information") }}
+                  {{ __('More information') }}
                 </a>
               </p>
 
             </template>
-            <template
+            <div
               v-else
               v-html="ingressDescription"
             >
-            </template>
+            </div>
           </div>
         </application-row>
         <application-row
