@@ -48,7 +48,7 @@ shared_examples "migrates" do |to_store:, from_store: nil|
 
   context 'when migrate! is not oqqupied by another process' do
     it 'executes migrate!' do
-      expect(subject).to receive(:object_store=)
+      expect(subject).to receive(:object_store=).at_least(1)
 
       migrate(to)
     end

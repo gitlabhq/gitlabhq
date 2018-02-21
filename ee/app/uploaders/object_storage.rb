@@ -202,7 +202,7 @@ module ObjectStorage
 
       Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i)
         .try_obtain.tap do |uuid|
-        return unless uuid
+        return unless uuid # rubocop:disable Lint/NonLocalExitFromIterator
 
         begin
           new_file = nil
@@ -221,7 +221,7 @@ module ObjectStorage
           end
 
           return file
-        rescue Exception => e
+        rescue => e
           # in case of failure delete new file
           new_file.delete unless new_file.nil?
           # revert back to the old file
