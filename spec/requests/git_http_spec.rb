@@ -157,17 +157,15 @@ describe 'Git HTTP requests' do
         context 'when the project has no wiki repository yet' do
           let(:env) { {} }
 
-          before { FileUtils.rm_rf(wiki.repository.path) }
-
           it 'creates the repository' do
+            FileUtils.rm_rf(wiki.repository.path)
+
+            # Sanity check, did we rm_rf correctly?
             expect(wiki.repository.raw_repository.exists?).to eq(false)
 
+            # This request should create the wiki repo as a side effect
             download(path) do |response|
               expect(response).to have_gitlab_http_status(:ok)
-
-              json_body = ActiveSupport::JSON.decode(response.body)
-
-              expect(json_body['RepoPath']).to include(wiki.repository.full_path)
             end
 
             expect(wiki.repository.raw_repository.exists?).to eq(true)
