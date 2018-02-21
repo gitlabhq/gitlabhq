@@ -2,14 +2,13 @@ module Gitlab
   module Ci
     module Pipeline
       module Expression
-        class Variable < Expression::Lexeme
-          PATTERN = /\$(?<name>\w+)/.freeze
-
-          def initialize(value)
+        class Token
+          def initialize(value, type)
             @value = value
+            @type = type
           end
 
-          def evaluate(**variables)
+          def to_lexeme
           end
         end
       end

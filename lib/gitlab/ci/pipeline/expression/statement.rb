@@ -9,6 +9,7 @@ module Gitlab
             %w[variable equals null],
             %w[string equals variable],
             %w[null equals variable],
+            %w[variable]
           ]
 
           def initialize(pipeline, statement)

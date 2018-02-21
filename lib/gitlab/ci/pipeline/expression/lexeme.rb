@@ -8,7 +8,9 @@ module Gitlab
           end
 
           def self.scan(scanner)
-            scanner.scan(PATTERN)
+            if scanner.scan(self::PATTERN)
+              Expression::Token.new(scanner.matched, self)
+            end
           end
         end
       end
