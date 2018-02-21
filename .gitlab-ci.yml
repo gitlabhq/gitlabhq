@@ -686,7 +686,9 @@ codequality:
   cache: {}
   dependencies: []
   script:
-    - ./scripts/codequality analyze -f json > codeclimate.json || true
+    - ./scripts/codequality analyze -f json > raw_codeclimate.json || true
+    # The following line keeps only the fields used in the MR widget, reducing the JSON artifact size
+    - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,description,fingerprint,location})' > codeclimate.json
   artifacts:
     paths: [codeclimate.json]
     expire_in: 1 week

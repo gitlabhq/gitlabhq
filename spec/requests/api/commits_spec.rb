@@ -706,6 +706,7 @@ describe API::Commits do
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response.size).to be >= 1
         expect(json_response.first.keys).to include 'diff'
       end

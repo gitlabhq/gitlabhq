@@ -1590,7 +1590,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expected_languages = [
           { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
           { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.9, label: "HTML", color: "#e44b23", highlight: "#e44b23" },
+          { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
           { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
         ]
 

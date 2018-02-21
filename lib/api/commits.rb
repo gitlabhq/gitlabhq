@@ -102,13 +102,16 @@ module API
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+        use :pagination
       end
       get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
 
-        present commit.raw_diffs.to_a, with: Entities::Diff
+        raw_diffs = ::Kaminari.paginate_array(commit.raw_diffs.to_a)
+
+        present paginate(raw_diffs), with: Entities::Diff
       end
 
       desc "Get a commit's comments" do
