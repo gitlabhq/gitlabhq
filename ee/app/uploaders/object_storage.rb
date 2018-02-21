@@ -106,6 +106,7 @@ module ObjectStorage
       base.include(ObjectStorage)
 
       before :store, :verify_license!
+      after :migrate, :delete_migrated_file
     end
 
     class_methods do
@@ -197,28 +198,40 @@ module ObjectStorage
       return unless object_store != new_store
       return unless file
 
-      new_file = nil
-      file_to_delete = file
-      from_object_store = object_store
-      self.object_store = new_store # changes the storage and file
+      exclusive_lease_key = "object_storage_migrate:#{store_path}"
 
-      cache_stored_file! if file_storage?
+      Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i)
+        .try_obtain.tap do |uuid|
+        return unless uuid
 
-      with_callbacks(:store, file_to_delete) do # for #store_versions!
-        new_file = storage.store!(file)
-        file_to_delete.delete
-        persist_object_store!
-        self.file = new_file
+        begin
+          new_file = nil
+          file_to_delete = file
+          from_object_store = object_store
+          self.object_store = new_store # changes the storage and file
+
+          cache_stored_file! if file_storage?
+
+          with_callbacks(:migrate, file_to_delete) do
+            with_callbacks(:store, file_to_delete) do # for #store_versions!
+              new_file = storage.store!(file)
+              persist_object_store!
+              self.file = new_file
+            end
+          end
+
+          return file
+        rescue Exception => e
+          # in case of failure delete new file
+          new_file.delete unless new_file.nil?
+          # revert back to the old file
+          self.object_store = from_object_store
+          self.file = file_to_delete
+          raise e
+        ensure
+          Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+        end
       end
-
-      file
-    rescue => e
-      # in case of failure delete new file
-      new_file.delete unless new_file.nil?
-      # revert back to the old file
-      self.object_store = from_object_store
-      self.file = file_to_delete
-      raise e
     end
 
     def schedule_background_upload(*args)
@@ -240,6 +253,10 @@ module ObjectStorage
 
     def fog_public
       false
+    end
+
+    def delete_migrated_file(migrated_file)
+      migrated_file.delete if exists?
     end
 
     def verify_license!(_file)
