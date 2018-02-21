@@ -103,7 +103,7 @@ module IssuableCollections
       # @filter_params[:authorized_only] = true
     end
 
-    @filter_params.permit(IssuableFinder::VALID_PARAMS)
+    @filter_params.permit(finder_type.valid_params)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -148,7 +148,7 @@ module IssuableCollections
 
   def finder
     strong_memoize(:finder) do
-      issuable_finder_for(@finder_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      issuable_finder_for(finder_type)
     end
   end
 
