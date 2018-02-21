@@ -38,7 +38,7 @@ are very appreciative of the work done by translators and proofreaders!
 > project.
 
 1. Contribute translations to GitLab. See instructions for
-   [translating GitLab](../translation.md).
+   [translating GitLab](translation.md).
 
     Translating GitLab is a community effort that requires team work and
     attention to detail. Proofreaders play an important role helping new
