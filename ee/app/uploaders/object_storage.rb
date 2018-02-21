@@ -88,7 +88,7 @@ module ObjectStorage
     def changed_mounts
       self.class.uploaders.select do |mount, uploader_class|
         mounted_as = uploader_class.serialization_column(self.class, mount)
-        mount if send(:"#{mounted_as}_changed?") # rubocop:disable GitlabSecurity/PublicSend
+        mount if send(:"#{mounted_as}_changed?") && send(:"#{mounted_as}")&.exists? # rubocop:disable GitlabSecurity/PublicSend
       end.keys
     end
 
