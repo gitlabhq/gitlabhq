@@ -8,6 +8,7 @@ code_path=$(pwd)
 # it will break codequality json file
 [ "$CI" != "" ] || docker_tty="--tty"
 
+# The codebase and instructions for the following image can be found at https://gitlab.com/gitlab-org/codeclimate-rubocop/wikis/home
 docker pull dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-rubocop-0-52-1 > /dev/null
 docker tag dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-rubocop-0-52-1 codeclimate/codeclimate-rubocop:gitlab-codeclimate-rubocop-0-52-1 > /dev/null
 
