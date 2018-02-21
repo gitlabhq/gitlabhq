@@ -683,6 +683,34 @@ describe 'Git LFS API and storage' do
           expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
           expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
         end
+
+        ## EE-specific context
+        context 'and project is above the limit' do
+          let(:update_lfs_permissions) do
+            allow_any_instance_of(EE::Project).to receive_messages(
+              repository_and_lfs_size: 100.megabytes,
+              actual_size_limit: 99.megabytes)
+          end
+
+          it 'responds with status 406' do
+            expect(response).to have_gitlab_http_status(406)
+            expect(json_response['message']).to eql('Your push has been rejected, because this repository has exceeded its size limit of 99 MB by 1 MB. Please contact your GitLab administrator for more information.')
+          end
+        end
+
+        context 'and project will go over the limit' do
+          let(:update_lfs_permissions) do
+            allow_any_instance_of(EE::Project).to receive_messages(
+              repository_and_lfs_size: 200.megabytes,
+              actual_size_limit: 300.megabytes)
+          end
+
+          it 'responds with status 406' do
+            expect(response).to have_gitlab_http_status(406)
+            expect(json_response['documentation_url']).to include('/help')
+            expect(json_response['message']).to eql('Your push has been rejected, because this repository has exceeded its size limit of 300 MB by 50 MB. Please contact your GitLab administrator for more information.')
+          end
+        end
       end
 
       describe 'when request is authenticated' do
@@ -997,12 +1025,12 @@ describe 'Git LFS API and storage' do
 
           context 'and workhorse requests upload finalize for a new lfs object' do
             before do
-              lfs_object.destroy
+              allow_any_instance_of(LfsObjectUploader).to receive(:exists?) { false }
             end
 
             context 'with object storage disabled' do
               it "doesn't attempt to migrate file to object storage" do
-                expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+                expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
                 put_finalize(with_tempfile: true)
               end
@@ -1014,7 +1042,7 @@ describe 'Git LFS API and storage' do
               end
 
               it 'schedules migration of file to object storage' do
-                expect(ObjectStorageUploadWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
+                expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
 
                 put_finalize(with_tempfile: true)
               end

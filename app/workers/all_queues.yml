@@ -38,6 +38,9 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- object_storage:object_storage_background_move
+- object_storage:object_storage_migrate_uploads
+
 - pipeline_cache:expire_job_cache
 - pipeline_cache:expire_pipeline_cache
 - pipeline_creation:create_pipeline
@@ -102,3 +105,5 @@
 - update_user_activity
 - upload_checksum
 - web_hook
+
+
