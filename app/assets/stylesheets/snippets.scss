@@ -84,6 +84,15 @@
         font-weight: $gl-font-weight-bold;
       }
 
+      .gitlab-embedded-snippets-title {
+        text-decoration: none;
+        color: $gl-text-color;
+        
+        &:hover{
+          text-decoration: underline;
+        }
+      }
+
       .gitlab-logo {
         display: inline-block;
         padding-left: 5px;
