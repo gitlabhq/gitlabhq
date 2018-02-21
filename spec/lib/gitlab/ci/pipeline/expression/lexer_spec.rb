@@ -42,5 +42,12 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect { lexer.tokenize }
         .to raise_error described_class::SyntaxError
     end
+
+    it 'raises syntax error in case of finding unknown tokens' do
+      lexer = described_class.new('$V1 123 $V2')
+
+      expect { lexer.tokenize }
+        .to raise_error described_class::SyntaxError
+    end
   end
 end
