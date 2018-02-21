@@ -55,6 +55,7 @@
 
 .embed-snippet {
   padding-right: 0;
+  padding-top: $gl-padding;
 
   a.btn {
     width: 100%;
@@ -66,7 +67,7 @@
     border-left: 0;
     outline: none;
     box-shadow: none;
-    
+
     &:active {
       box-shadow: none;
     }
