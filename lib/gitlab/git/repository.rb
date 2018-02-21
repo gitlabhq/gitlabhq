@@ -1001,8 +1001,10 @@ module Gitlab
       # This method is around 30 times slower than `attributes`,
       # which uses `$GIT_DIR/info/attributes`
       def attributes_at(ref, file_path)
-        parser = AttributesAtRefParser.new(self, ref)
-        parser.attributes(file_path)
+        @cached_attributes ||= {}
+        @cached_attributes[ref] ||= AttributesAtRefParser.new(self, ref)
+
+        @cached_attributes[ref].attributes(file_path)
       end
 
       def languages(ref = nil)
