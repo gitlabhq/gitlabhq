@@ -355,14 +355,17 @@
   }
 }
 
-// Pipeline graph
-.pipeline-graph {
+.pipeline-tab-content {
   width: 100%;
   background-color: $gray-light;
   padding: $gl-padding;
+  overflow: auto;
+}
+
+// Pipeline graph
+.pipeline-graph {
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
-  overflow: auto;
 
   .stage-column-list,
   .builds-container > ul {

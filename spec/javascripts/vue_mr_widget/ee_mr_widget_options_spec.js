@@ -9,15 +9,18 @@ import mockData, {
   headIssues,
   basePerformance,
   headPerformance,
-  securityIssuesBase,
-  securityIssues,
+} from './mock_data';
+import {
+  sastIssues,
+  sastIssuesBase,
   dockerReport,
   dockerReportParsed,
   dast,
   parsedDast,
   sastBaseAllIssues,
   sastHeadAllIssues,
-} from './mock_data';
+} from '../vue_shared/security_reports/mock_data';
+
 import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('ee merge request widget options', () => {
@@ -62,8 +65,8 @@ describe('ee merge request widget options', () => {
 
       beforeEach(() => {
         mock = mock = new MockAdapter(axios);
-        mock.onGet('path.json').reply(200, securityIssuesBase);
-        mock.onGet('head_path.json').reply(200, securityIssues);
+        mock.onGet('path.json').reply(200, sastIssuesBase);
+        mock.onGet('head_path.json').reply(200, sastIssues);
         vm = mountComponent(Component);
       });
 
@@ -445,13 +448,13 @@ describe('ee merge request widget options', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info').textContent.trim(),
+              vm.$el.querySelector('.js-docker-widget .report-block-info').textContent.trim(),
             ).toContain('Unapproved vulnerabilities (red) can be marked as approved.');
             expect(
-              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info a').textContent.trim(),
+              vm.$el.querySelector('.js-docker-widget .report-block-info a').textContent.trim(),
             ).toContain('Learn more about whitelisting');
 
-            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-list').textContent.trim();
+            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .report-block-list').textContent.trim();
 
             expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].name);
             expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].path);
@@ -530,7 +533,7 @@ describe('ee merge request widget options', () => {
           vm.$el.querySelector('.js-dast-widget button').click();
 
           Vue.nextTick(() => {
-            const firstVulnerability = vm.$el.querySelector('.js-dast-widget .mr-widget-code-quality-list').textContent.trim();
+            const firstVulnerability = vm.$el.querySelector('.js-dast-widget .report-block-list').textContent.trim();
             expect(firstVulnerability).toContain(parsedDast[0].name);
             expect(firstVulnerability).toContain(parsedDast[0].priority);
             done();

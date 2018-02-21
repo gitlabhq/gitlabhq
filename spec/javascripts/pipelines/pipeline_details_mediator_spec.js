@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import Vue from 'vue';
-import PipelineMediator from '~/pipelines/pipeline_details_mediatior';
+import PipelineMediator from '~/pipelines/pipeline_details_mediator';
+import { sastIssues, parsedSastIssuesStore } from '../vue_shared/security_reports/mock_data';
 
 describe('PipelineMdediator', () => {
   let mediator;
@@ -37,6 +38,31 @@ describe('PipelineMdediator', () => {
         expect(mediator.store.state.pipeline).toEqual({ foo: 'bar' });
         done();
       });
+    });
+  });
+
+  describe('security reports', () => {
+    const interceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify(sastIssues), {
+        status: 200,
+      }));
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptor, interceptor);
+    });
+
+    it('fetches the requests endpoint and stores the data', (done) => {
+      mediator.fetchSastReport('sast.json', 'path');
+
+      setTimeout(() => {
+        expect(mediator.store.state.securityReports.sast.newIssues).toEqual(parsedSastIssuesStore);
+        done();
+      }, 0);
     });
   });
 });

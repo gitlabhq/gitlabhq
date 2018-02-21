@@ -1,17 +1,22 @@
 <script>
   import { __ } from '~/locale';
-  import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import issuesBlock from './mr_widget_report_issues.vue';
+  import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+  import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import IssuesBlock from './report_issues.vue';
 
   export default {
-    name: 'MRWidgetCodeQualityCollapsible',
+    name: 'ReportSection',
     components: {
-      issuesBlock,
-      loadingIcon,
-      statusIcon,
+      IssuesBlock,
+      LoadingIcon,
+      StatusIcon,
     },
     props: {
+      isCollapsible: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       // security | codequality | performance | docker
       type: {
         type: String,
@@ -37,22 +42,22 @@
       unresolvedIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       resolvedIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       neutralIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       allIssues: {
         type: Array,
         required: false,
-        default: () => [],
+        default: () => ([]),
       },
       infoText: {
         type: [String, Boolean],
@@ -67,10 +72,16 @@
     },
 
     data() {
+      if (this.isCollapsible) {
+        return {
+          collapseText: __('Expand'),
+          isCollapsed: true,
+          isFullReportVisible: false,
+        };
+      }
+
       return {
-        collapseText: __('Expand'),
-        isCollapsed: true,
-        isFullReportVisible: false,
+        isFullReportVisible: true,
       };
     },
 
@@ -111,7 +122,7 @@
   };
 </script>
 <template>
-  <section class="mr-widget-code-quality mr-widget-section">
+  <section class="report-block mr-widget-section">
 
     <div
       v-if="isLoading"
@@ -148,8 +159,8 @@
 
         <button
           type="button"
-          class="btn pull-right btn-sm"
-          v-if="hasIssues"
+          class="js-collapse-btn btn bt-default pull-right btn-sm"
+          v-if="isCollapsible && hasIssues"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -158,15 +169,15 @@
     </div>
 
     <div
-      class="code-quality-container"
+      class="report-block-container"
       v-if="hasIssues"
-      v-show="!isCollapsed"
+      v-show="!isCollapsible || (isCollapsible && !isCollapsed)"
     >
 
       <p
         v-if="type === 'docker' && infoText"
         v-html="infoText"
-        class="js-mr-code-quality-info mr-widget-code-quality-info"
+        class="js-mr-code-quality-info prepend-left-10 report-block-info"
       >
       </p>
 

@@ -212,6 +212,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :builds
           get :failures
           get :status
+          get :security
         end
       end
 

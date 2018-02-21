@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import modal from 'ee/vue_merge_request_widget/components/mr_widget_dast_modal.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import modal from 'ee/vue_shared/security_reports/components/dast_modal.vue';
+import mountComponent from '../../../helpers/vue_mount_component_helper';
 
 describe('mr widget modal', () => {
   let vm;
