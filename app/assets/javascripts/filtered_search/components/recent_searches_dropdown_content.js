@@ -1,4 +1,5 @@
 import eventHub from '../event_hub';
+import FilteredSearchTokenizer from '../filtered_search_tokenizer';
 
 export default {
   name: 'RecentSearchesDropdownContent',
@@ -23,7 +24,7 @@ export default {
     processedItems() {
       return this.items.map((item) => {
         const { tokens, searchToken }
-          = gl.FilteredSearchTokenizer.processTokens(item, this.allowedKeys);
+          = FilteredSearchTokenizer.processTokens(item, this.allowedKeys);
 
         const resultantTokens = tokens.map(token => ({
           prefix: `${token.key}:`,
