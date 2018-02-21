@@ -179,11 +179,6 @@ var Dispatcher;
             .catch(fail);
           shortcut_handler = true;
           break;
-        case 'help:index':
-          import('./pages/help')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'search:show':
           import('./pages/search/show')
             .then(callDefault)
