@@ -51,67 +51,8 @@ var Dispatcher;
         case 'projects:merge_requests:creations:new':
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          shortcut_handler = true;
-          break;
-        case 'projects:tags:new':
-          import('./pages/projects/tags/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:show':
-          import('./pages/projects/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:new':
-        case 'projects:snippets:create':
-          import('./pages/projects/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:services:edit':
-          import('./pages/projects/services/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:edit':
-        case 'projects:snippets:update':
-          import('./pages/projects/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:new':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:edit':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:create':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:update':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:releases:edit':
-          import('./pages/projects/releases/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:merge_requests:show':
           shortcut_handler = true;
-          break;
-        case 'dashboard:activity':
-          import('./pages/dashboard/activity')
-            .then(callDefault)
-            .catch(fail);
           break;
         case 'projects:commit:show':
           import('./pages/projects/commit/show')
@@ -315,11 +256,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'snippets:show':
-          import('./pages/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map')
             .then(callDefault)
@@ -335,18 +271,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'projects:clusters:show':
-        case 'projects:clusters:update':
-        case 'projects:clusters:destroy':
-          import('./pages/projects/clusters/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:clusters:index':
-          import('./pages/projects/clusters/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'dashboard:groups:index':
           import('./pages/dashboard/groups/index')
             .then(callDefault)
@@ -354,20 +278,7 @@ var Dispatcher;
           break;
       }
       switch (path[0]) {
-        case 'sessions':
-          import('./pages/sessions')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'omniauth_callbacks':
-          import('./pages/omniauth_callbacks')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'admin':
-          import('./pages/admin')
-            .then(callDefault)
-            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
               import('./pages/admin/broadcast_messages')

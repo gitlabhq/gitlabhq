@@ -11,6 +11,8 @@ import SastSummaryWidget from './components/security_reports/sast_report_summary
 
 Vue.use(Translate);
 
+Vue.use(Translate);
+
 document.addEventListener('DOMContentLoaded', () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
 
