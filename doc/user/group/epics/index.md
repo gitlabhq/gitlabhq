@@ -6,6 +6,8 @@ Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
 milestones.
 
+![epics list view](img/epics_list_view.png)
+
 ## Creating an epic
 
 A paginated list of epics is available in each group from where you can create
@@ -56,6 +58,27 @@ If an issue belongs to an epic, you can navigate to the containing epic with the
 link in the issue sidebar.
 
 ![containing epic](img/containing_epic.png)
+
+## Searching for an epic from epics list page
+
+> Introduced in [GitLab Ultimate][ee] 10.5.
+
+You can search for an epic from the list of epics using filtered search bar (similar to
+that of Issues and Merge requests) based on following parameters:
+
+- Title or description
+- Author name / username
+
+![epics search](img/epics_search.png)
+
+To search, go to the list of epics and click on the field **Search or filter results...**.
+It will display a dropdown menu, from which you can add an author. You can also enter plain
+text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
+keyboard to filter the list.
+
+You can also sort epics list by **Created date** or **Last updated**.
+
+![epics sort](img/epics_sort.png)
 
 ## Permissions
 
