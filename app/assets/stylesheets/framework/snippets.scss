@@ -50,3 +50,21 @@
 .snippet-embed-input {
   height: 35px;
 }
+
+.embed-snippet {
+  padding-right: 0;
+
+  a.btn {
+    width: 100%;
+  }
+
+  .form-control {
+    cursor: auto;
+    width: 101%;
+    border-left: 0;
+  }
+
+  .embed-toggle {
+    height: 35px;
+  }
+}
