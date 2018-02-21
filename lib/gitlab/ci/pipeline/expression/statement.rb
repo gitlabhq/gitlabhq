@@ -12,7 +12,7 @@ module Gitlab
             %w[string equals variable],
             %w[null equals variable],
             %w[variable]
-          ]
+          ].freeze
 
           def initialize(statement, pipeline)
             @pipeline = pipeline

@@ -29,11 +29,22 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     end
 
     context 'when expression grammar is correct' do
-      let(:text) { '$VAR == "value"' }
+      context 'when using an operator' do
+        let(:text) { '$VAR == "value"' }
 
-      it 'returns a reverse descent parse tree when using operator' do
-        expect(subject.parse_tree)
-          .to be_a Gitlab::Ci::Pipeline::Expression::Equals
+        it 'returns a reverse descent parse tree' do
+          expect(subject.parse_tree)
+            .to be_a Gitlab::Ci::Pipeline::Expression::Equals
+        end
+      end
+
+      context 'when using a single token' do
+        let(:text) { '$VARIABLE' }
+
+        it 'returns a single token instance' do
+          expect(subject.parse_tree)
+            .to be_a Gitlab::Ci::Pipeline::Expression::Variable
+        end
       end
     end
   end

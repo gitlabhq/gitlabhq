@@ -7,7 +7,7 @@ module Gitlab
             Expression::Variable,
             Expression::String,
             Expression::Equals
-          ]
+          ].freeze
 
           MAX_CYCLES = 5
           SyntaxError = Class.new(StandardError)
