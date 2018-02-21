@@ -8,7 +8,6 @@
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'filtered_search'
 
 %div{ class: container_class }
   = render 'projects/last_push'
