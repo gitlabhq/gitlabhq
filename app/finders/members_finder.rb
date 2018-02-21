@@ -38,9 +38,13 @@ class MembersFinder
       <<~SQL
           SELECT DISTINCT ON (user_id, invite_email) member_union.*
           FROM (#{union.to_sql}) AS member_union
-          ORDER BY
-            user_id, invite_email,
-            CASE WHEN type = 'ProjectMember' THEN 1 WHEN type = 'GroupMember' THEN 2 ELSE 3 END
+          ORDER BY user_id,
+            invite_email,
+            CASE
+              WHEN type = 'ProjectMember' THEN 1
+              WHEN type = 'GroupMember' THEN 2
+              ELSE 3
+            END
       SQL
     else
       # Older versions of MySQL do not support window functions (and DISTINCT ON is postgres-specific).
