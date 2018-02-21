@@ -84,7 +84,7 @@ gem 'gollum-lib', '~> 4.2', require: false
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
-gem 'github-linguist', '~> 4.7.0', require: 'linguist'
+gem 'github-linguist', '~> 5.3.3', require: 'linguist'
 
 # API
 gem 'grape', '~> 1.0'
@@ -430,7 +430,7 @@ gem 'gitaly-proto', '~> 0.84.0', require: 'gitaly'
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'
 
-gem 'toml-rb', '~> 0.3.15', require: false
+gem 'toml-rb', '~> 1.0.0', require: false
 
 # Feature toggles
 gem 'flipper', '~> 0.11.0'
