@@ -1,6 +1,6 @@
 import AjaxVariableList from '~/ci_variable_list/ajax_variable_list';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   const variableListEl = document.querySelector('.js-ci-variable-list-section');
   // eslint-disable-next-line no-new
   new AjaxVariableList({
@@ -9,4 +9,4 @@ export default () => {
     errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
     saveEndpoint: variableListEl.dataset.saveEndpoint,
   });
-};
+});

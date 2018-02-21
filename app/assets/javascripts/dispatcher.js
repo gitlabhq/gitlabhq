@@ -60,6 +60,9 @@ var Dispatcher;
         case 'projects:find_file:show':
         case 'projects:blob:show':
         case 'projects:blame:show':
+        case 'projects:network:show':
+        case 'projects:artifacts:browse':
+        case 'projects:artifacts:file':
           shortcut_handler = true;
           break;
         case 'projects:edit':
@@ -72,78 +75,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
-          break;
-        case 'groups:labels:new':
-          import('./pages/groups/labels/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:labels:edit':
-          import('./pages/groups/labels/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:new':
-          import('./pages/projects/labels/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:edit':
-          import('./pages/projects/labels/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:labels:index':
-          import('./pages/groups/labels/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:index':
-          import('./pages/projects/labels/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:network:show':
-          // Ensure we don't create a particular shortcut handler here. This is
-          // already created, where the network graph is created.
-          shortcut_handler = true;
-          break;
-        case 'projects:forks:new':
-          import('./pages/projects/forks/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:artifacts:browse':
-          import('./pages/projects/artifacts/browse')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:artifacts:file':
-          import('./pages/projects/artifacts/file')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'search:show':
-          import('./pages/search/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:settings:repository:show':
-          import('./pages/projects/settings/repository/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:settings:ci_cd:show':
-          import('./pages/projects/settings/ci_cd/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:settings:ci_cd:show':
-          import('./pages/groups/settings/ci_cd/show')
-            .then(callDefault)
-            .catch(fail);
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
