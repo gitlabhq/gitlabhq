@@ -1,16 +1,13 @@
-# GitLab Pages from A to Z: Part 4
+---
+last_updated: 2018-02-16
+author: Marcia Ramos
+author_gitlab: marcia
+level: intermediate
+article_type: user guide
+date: 2017-02-22
+---
 
-> **Article [Type](../../../development/writing_documentation.html#types-of-technical-articles)**: user guide || 
-> **Level**: intermediate || 
-> **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
-> **Publication date:** 2017/02/22
-
-- [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
-- [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
-- [Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md)
-- **Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages**
-
-## Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages
+# Creating and Tweaking GitLab CI/CD for GitLab Pages
 
 [GitLab CI](https://about.gitlab.com/gitlab-ci/) serves
 numerous purposes, to build, test, and deploy your app
@@ -19,10 +16,13 @@ from GitLab through
 methods. You will need it to build your website with GitLab Pages,
 and deploy it to the Pages server.
 
+To implement GitLab CI/CD, the first thing we need is a configuration
+file called `.gitlab-ci.yml` placed at your website's root directory.
+
 What this file actually does is telling the
 [GitLab Runner](https://docs.gitlab.com/runner/) to run scripts
 as you would do from the command line. The Runner acts as your
-terminal. GitLab CI tells the Runner which commands to run.
+terminal. GitLab CI/CD tells the Runner which commands to run.
 Both are built-in in GitLab, and you don't need to set up
 anything for them to work.
 
@@ -34,7 +34,7 @@ need to understand just a few things to be able to write our own
 with its own syntax. You can always check your CI syntax with
 the [GitLab CI Lint Tool](https://gitlab.com/ci/lint).
 
-**Practical Example:**
+## Practical example
 
 Let's consider you have a [Jekyll](https://jekyllrb.com/) site.
 To build it locally, you would open your terminal, and run `jekyll build`.
@@ -384,7 +384,3 @@ in parallel, or build a custom pipeline](https://about.gitlab.com/2016/07/29/the
 [pulling specific directories from different projects](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
 to deploy this website you're looking at, docs.gitlab.com.
 - On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
-
-|||
-|:--|--:|
-|[**← Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates**](getting_started_part_three.md)||

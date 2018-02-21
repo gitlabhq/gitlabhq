@@ -10,7 +10,7 @@
 (function($) {
   var fetchRequestResults, getRequestId, peekEnabled, updatePerformanceBar;
   getRequestId = function() {
-    return $('#peek').data('request-id');
+    return $('#peek').data('requestId');
   };
   peekEnabled = function() {
     return $('#peek').length;

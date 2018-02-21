@@ -58,7 +58,7 @@
             - if @project.avatar?
               %hr
               = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
-        = f.submit 'Save changes', class: "btn btn-success"
+        = f.submit 'Save changes', class: "btn btn-success js-btn-save-general-project-settings"
 
   %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
     .settings-header

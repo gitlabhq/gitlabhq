@@ -53,8 +53,8 @@ module QA
 
             click_link 'LDAP'
 
-            fill_in :username, with: Runtime::User.name
-            fill_in :password, with: Runtime::User.password
+            fill_in :username, with: Runtime::User.ldap_username
+            fill_in :password, with: Runtime::User.ldap_password
             click_button 'Sign in'
           end
         end

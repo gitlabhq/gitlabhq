@@ -152,6 +152,7 @@ export default {
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;
+      if (!data.pipeline) return;
 
       const label = data.pipeline.details.status.label;
       const title = `Pipeline ${label}`;

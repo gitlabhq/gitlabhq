@@ -31,7 +31,7 @@ export default class ProtectedTagEdit {
     axios.patch(this.$wrap.data('url'), {
       protected_tag: {
         create_access_levels_attributes: [{
-          id: this.$allowedToCreateDropdownButton.data('access-level-id'),
+          id: this.$allowedToCreateDropdownButton.data('accessLevelId'),
           access_level: $allowedToCreateInput.val(),
         }],
       },

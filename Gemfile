@@ -401,6 +401,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
 gem 'net-ssh', '~> 4.1.0'
+gem 'sshkey', '~> 1.9.0'
 
 # Required for ED25519 SSH host key support
 group :ed25519 do

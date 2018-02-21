@@ -39,7 +39,7 @@ class ExternalIssue
   end
 
   def to_reference(_from = nil, full: nil)
-    id
+    reference_link_text
   end
 
   def reference_link_text(from = nil)

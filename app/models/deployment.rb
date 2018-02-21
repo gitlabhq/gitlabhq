@@ -1,8 +1,8 @@
 class Deployment < ActiveRecord::Base
   include InternalId
 
-  belongs_to :project, required: true, validate: true
-  belongs_to :environment, required: true, validate: true
+  belongs_to :project, required: true
+  belongs_to :environment, required: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 

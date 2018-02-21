@@ -22,6 +22,7 @@ describe 'Rack Attack global throttles' do
 
   let(:url_that_does_not_require_authentication) { '/users/sign_in' }
   let(:url_that_requires_authentication) { '/dashboard/snippets' }
+  let(:url_api_internal) { '/api/v4/internal/check' }
   let(:api_partial_url) { '/todos' }
 
   around do |example|
@@ -171,6 +172,15 @@ describe 'Rack Attack global throttles' do
         # would be over limit for the same IP
         get url_that_does_not_require_authentication
         expect(response).to have_http_status 200
+      end
+
+      context 'when the request is to the api internal endpoints' do
+        it 'allows requests over the rate limit' do
+          (1 + requests_per_period).times do
+            get url_api_internal, secret_token: Gitlab::Shell.secret_token
+            expect(response).to have_http_status 200
+          end
+        end
       end
     end
 

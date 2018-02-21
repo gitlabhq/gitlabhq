@@ -16,9 +16,9 @@ export default function adminInit() {
   $('input#user_force_random_password').on('change', function randomPasswordClick() {
     const $elems = $('#user_password, #user_password_confirmation');
     if ($(this).attr('checked')) {
-      $elems.val('').attr('disabled', true);
+      $elems.val('').prop('disabled', true);
     } else {
-      $elems.removeAttr('disabled');
+      $elems.prop('disabled', false);
     }
   });
 

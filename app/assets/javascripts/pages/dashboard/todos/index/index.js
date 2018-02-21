@@ -1,3 +1,3 @@
 import Todos from './todos';
 
-export default () => new Todos();
+document.addEventListener('DOMContentLoaded', () => new Todos());

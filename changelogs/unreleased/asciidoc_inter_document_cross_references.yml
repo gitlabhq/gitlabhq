@@ -1,0 +1,5 @@
+---
+title: Asciidoc now support inter-document cross references between files in repository
+merge_request: 17125
+author: Turo Soisenniemi
+type: changed

@@ -7,17 +7,24 @@ module WebpackHelper
 
   def webpack_controller_bundle_tags
     bundles = []
-    segments = [*controller.controller_path.split('/'), controller.action_name].compact
 
-    until segments.empty?
+    action = case controller.action_name
+             when 'create' then 'new'
+             when 'update' then 'edit'
+             else controller.action_name
+             end
+
+    route = [*controller.controller_path.split('/'), action].compact
+
+    until route.empty?
       begin
-        asset_paths = gitlab_webpack_asset_paths("pages.#{segments.join('.')}", extension: 'js')
+        asset_paths = gitlab_webpack_asset_paths("pages.#{route.join('.')}", extension: 'js')
         bundles.unshift(*asset_paths)
       rescue Webpack::Rails::Manifest::EntryPointMissingError
         # no bundle exists for this path
       end
 
-      segments.pop
+      route.pop
     end
 
     javascript_include_tag(*bundles)

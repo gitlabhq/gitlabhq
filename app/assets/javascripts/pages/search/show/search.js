@@ -9,7 +9,7 @@ export default class Search {
     this.searchInput = '.js-search-input';
     this.searchClear = '.js-search-clear';
 
-    this.groupId = $groupDropdown.data('group-id');
+    this.groupId = $groupDropdown.data('groupId');
     this.eventListeners();
 
     $groupDropdown.glDropdown({
@@ -36,7 +36,7 @@ export default class Search {
         return obj.full_name;
       },
       toggleLabel(obj) {
-        return `${($groupDropdown.data('default-label'))} ${obj.full_name}`;
+        return `${($groupDropdown.data('defaultLabel'))} ${obj.full_name}`;
       },
       clicked: () => Search.submitSearch(),
     });
@@ -69,7 +69,7 @@ export default class Search {
         return obj.name_with_namespace;
       },
       toggleLabel(obj) {
-        return `${($projectDropdown.data('default-label'))} ${obj.name_with_namespace}`;
+        return `${($projectDropdown.data('defaultLabel'))} ${obj.name_with_namespace}`;
       },
       clicked: () => Search.submitSearch(),
     });
