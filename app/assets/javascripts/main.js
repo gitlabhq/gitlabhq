@@ -61,7 +61,7 @@ gl.lazyLoader = new LazyLoader({
   observerNode: '#content-body',
 });
 
-$(() => {
+document.addEventListener('DOMContentLoaded', () => {
   const $body = $('body');
   const $document = $(document);
   const $window = $(window);
