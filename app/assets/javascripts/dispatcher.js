@@ -52,55 +52,14 @@ var Dispatcher;
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
         case 'projects:merge_requests:show':
-          shortcut_handler = true;
-          break;
         case 'projects:commit:show':
-          import('./pages/projects/commit/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:commit:pipelines':
-          import('./pages/projects/commit/pipelines')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:activity':
-          import('./pages/projects/activity')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:commits:show':
-          import('./pages/projects/commits/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:show':
           shortcut_handler = true;
           break;
         case 'projects:edit':
           import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:imports:show':
-          import('./pages/projects/imports/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:new':
-        case 'projects:pipelines:create':
-          import('./pages/projects/pipelines/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:builds':
-        case 'projects:pipelines:failures':
-        case 'projects:pipelines:security':
-        case 'projects:pipelines:show':
-          import('./pages/projects/pipelines/builds')
             .then(callDefault)
             .catch(fail);
           break;
