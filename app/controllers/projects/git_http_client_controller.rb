@@ -87,7 +87,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def repository
     if wiki?
-      project.wiki.wiki # Triggers wiki repo creation, if missing
+      project.create_wiki # Some legacy projects don't have a wiki repository on disk
       project.wiki.repository
     else
       project.repository
