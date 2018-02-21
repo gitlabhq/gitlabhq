@@ -1,7 +1,7 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
-  before_action :authorize_google_project_billing, only: [:new, :create]
+  before_action :authorize_google_project_billing, only: [:create]
   before_action :authorize_create_cluster!, only: [:new, :create]
   before_action :verify_billing, only: [:create]
 
@@ -77,7 +77,10 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
 
   def authorize_google_project_billing
     redis_token_key = CheckGcpProjectBillingWorker.store_session_token(token_in_session)
-    CheckGcpProjectBillingWorker.perform_async(redis_token_key)
+    project_id = params[:cluster][:provider_gcp_attributes][:gcp_project_id]
+    return unless project_id
+
+    CheckGcpProjectBillingWorker.perform_async(redis_token_key, project_id)
   end
 
   def google_project_billing_status

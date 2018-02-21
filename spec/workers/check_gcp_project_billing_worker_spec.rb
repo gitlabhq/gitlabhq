@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe CheckGcpProjectBillingWorker do
+  let(:project_id) { 'project-123' }
+
   describe '.perform' do
     let(:token) { 'bogustoken' }
 
-    subject { described_class.new.perform('token_key') }
+    subject { described_class.new.perform('token_key', project_id) }
 
     before do
       allow(described_class).to receive(:get_billing_state)
@@ -22,13 +24,13 @@ describe CheckGcpProjectBillingWorker do
         end
 
         it 'calls the service' do
-          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
+          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return(true)
 
           subject
         end
 
         it 'stores billing status in redis' do
-          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return([double])
+          expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return(true)
           expect(described_class).to receive(:set_billing_state).with(token, true)
 
           subject
@@ -62,7 +64,7 @@ describe CheckGcpProjectBillingWorker do
   end
 
   describe 'billing change counter' do
-    subject { described_class.new.perform('token_key') }
+    subject { described_class.new.perform('token_key', project_id) }
 
     before do
       allow(described_class).to receive(:get_session_token).and_return('bogustoken')

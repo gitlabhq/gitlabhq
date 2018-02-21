@@ -11,14 +11,14 @@ describe CheckGcpProjectBillingService do
       stub_cloud_platform_projects_list(project_id: project_id)
     end
 
-    subject { service.execute('bogustoken') }
+    subject { service.execute('bogustoken', project_id) }
 
     context 'google account has a billing enabled gcp project' do
       before do
         stub_cloud_platform_projects_get_billing_info(project_id, true)
       end
 
-      it { is_expected.to all(satisfy { |project| project.project_id == project_id }) }
+      it { is_expected.to be_truthy }
     end
 
     context 'google account does not have a billing enabled gcp project' do
@@ -26,7 +26,7 @@ describe CheckGcpProjectBillingService do
         stub_cloud_platform_projects_get_billing_info(project_id, false)
       end
 
-      it { is_expected.to eq([]) }
+      it { is_expected.to be_falsy }
     end
   end
 end

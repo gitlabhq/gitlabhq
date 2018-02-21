@@ -30,14 +30,14 @@ class CheckGcpProjectBillingWorker
     end
   end
 
-  def perform(token_key)
+  def perform(token_key, project_id)
     return unless token_key
 
     token = self.class.get_session_token(token_key)
     return unless token
     return unless try_obtain_lease_for(token)
 
-    billing_enabled_state = !CheckGcpProjectBillingService.new.execute(token).empty?
+    billing_enabled_state = CheckGcpProjectBillingService.new.execute(token, project_id)
     update_billing_change_counter(self.class.get_billing_state(token), billing_enabled_state)
     self.class.set_billing_state(token, billing_enabled_state)
   end
