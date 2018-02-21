@@ -160,15 +160,11 @@ describe 'Git HTTP requests' do
           it 'creates the repository' do
             FileUtils.rm_rf(wiki.repository.path)
 
-            # Sanity check, did we rm_rf correctly?
-            expect(wiki.repository.raw_repository.exists?).to eq(false)
-
-            # This request should create the wiki repo as a side effect
-            download(path) do |response|
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-
-            expect(wiki.repository.raw_repository.exists?).to eq(true)
+            expect do
+              download(path) do |response|
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end.to change(wiki.repository.raw_repository, :exists?).from(false).to(true)
           end
         end
 
