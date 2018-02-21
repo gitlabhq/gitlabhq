@@ -105,13 +105,16 @@
   }
 
   .label {
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 4px $grid-size;
+    font-size: $label-font-size;
+    position: relative;
+    top: ($grid-size / 2);
   }
 }
 
 .color-label {
-  padding: 3px $label-padding;
+  padding: 0 $grid-size;
+  line-height: 16px;
   border-radius: $label-border-radius;
 }
 
@@ -302,10 +305,11 @@
 }
 
 .label-link {
-  display: inline-block;
+  display: inline-flex;
   vertical-align: top;
 
   .label {
     vertical-align: inherit;
+    font-size: $label-font-size;
   }
 }
