@@ -3,6 +3,7 @@ export const baseIssues = [
   {
     categories: ['Security'],
     check_name: 'Insecure Dependency',
+    description: 'Insecure Dependency',
     location: {
       path: 'Gemfile.lock',
       lines: {
@@ -15,6 +16,7 @@ export const baseIssues = [
   {
     categories: ['Security'],
     check_name: 'Insecure Dependency',
+    description: 'Insecure Dependency',
     location: {
       path: 'Gemfile.lock',
       lines: {
