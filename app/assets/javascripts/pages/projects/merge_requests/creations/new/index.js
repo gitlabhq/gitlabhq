@@ -1,7 +1,7 @@
 import Compare from '~/compare';
 import MergeRequest from '~/merge_request';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
   if (mrNewCompareNode) {
     new Compare({ // eslint-disable-line no-new
@@ -15,4 +15,4 @@ export default () => {
       action: mrNewSubmitNode.dataset.mrSubmitAction,
     });
   }
-};
+});

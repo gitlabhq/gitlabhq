@@ -1,3 +1,3 @@
 import initForm from '~/pages/projects/init_form';
 
-export default initForm($('.snippet-form'));
+document.addEventListener('DOMContentLoaded', () => initForm($('.snippet-form')));

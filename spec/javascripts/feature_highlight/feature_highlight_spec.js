@@ -1,11 +1,13 @@
 import * as featureHighlightHelper from '~/feature_highlight/feature_highlight_helper';
 import * as featureHighlight from '~/feature_highlight/feature_highlight';
+import axios from '~/lib/utils/axios_utils';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('feature highlight', () => {
   beforeEach(() => {
     setFixtures(`
       <div>
-        <div class="js-feature-highlight" data-highlight="test" data-highlight-priority="10" disabled>
+        <div class="js-feature-highlight" data-highlight="test" data-highlight-priority="10" data-dismiss-endpoint="/test" disabled>
           Trigger
         </div>
       </div>
@@ -19,11 +21,19 @@ describe('feature highlight', () => {
   });
 
   describe('setupFeatureHighlightPopover', () => {
+    let mock;
     const selector = '.js-feature-highlight[data-highlight=test]';
+
     beforeEach(() => {
+      mock = new MockAdapter(axios);
+      mock.onGet('/test').reply(200);
       spyOn(window, 'addEventListener');
       spyOn(window, 'removeEventListener');
       featureHighlight.setupFeatureHighlightPopover('test', 0);
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('setup popover content', () => {
@@ -51,15 +61,6 @@ describe('feature highlight', () => {
       }, 0);
     });
 
-    it('setup inserted.bs.popover', () => {
-      $(selector).trigger('mouseenter');
-      const popoverId = $(selector).attr('aria-describedby');
-      const spyEvent = spyOnEvent(`#${popoverId} .dismiss-feature-highlight`, 'click');
-
-      $(`#${popoverId} .dismiss-feature-highlight`).click();
-      expect(spyEvent).toHaveBeenTriggered();
-    });
-
     it('setup show.bs.popover', () => {
       $(selector).trigger('show.bs.popover');
       expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function));
@@ -75,9 +76,19 @@ describe('feature highlight', () => {
     });
 
     it('displays popover', () => {
-      expect($(selector).attr('aria-describedby')).toBeFalsy();
+      expect(document.querySelector(selector).getAttribute('aria-describedby')).toBeFalsy();
       $(selector).trigger('mouseenter');
-      expect($(selector).attr('aria-describedby')).toBeTruthy();
+      expect(document.querySelector(selector).getAttribute('aria-describedby')).toBeTruthy();
+    });
+
+    it('toggles when clicked', () => {
+      $(selector).trigger('mouseenter');
+      const popoverId = $(selector).attr('aria-describedby');
+      const toggleSpy = spyOn(featureHighlightHelper.togglePopover, 'call');
+
+      $(`#${popoverId} .dismiss-feature-highlight`).click();
+
+      expect(toggleSpy).toHaveBeenCalled();
     });
   });
 

@@ -1,3 +1,4 @@
+# coding: utf-8
 require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
@@ -1589,7 +1590,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expected_languages = [
           { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
           { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.9, label: "HTML", color: "#e44b23", highlight: "#e44b23" },
+          { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
           { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
         ]
 
@@ -2219,6 +2220,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         it 'checkouts only the files in the diff' do
           subject
+        end
+      end
+
+      context 'with an ASCII-8BIT diff', :skip_gitaly_mock do
+        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
+
+        it 'applies a ASCII-8BIT diff' do
+          allow(repository).to receive(:run_git!).and_call_original
+          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+
+          expect(subject.length).to eq(40)
         end
       end
     end

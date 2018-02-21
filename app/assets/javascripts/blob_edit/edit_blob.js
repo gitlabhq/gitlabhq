@@ -59,7 +59,7 @@ export default class EditBlob {
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();
-      axios.post(currentLink.data('preview-url'), {
+      axios.post(currentLink.data('previewUrl'), {
         content: this.editor.getValue(),
       })
       .then(({ data }) => {

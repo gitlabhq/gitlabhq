@@ -219,7 +219,7 @@ export default class Notes {
         }
         editNote = $textarea.closest('.note');
         if (editNote.length) {
-          originalText = $textarea.closest('form').data('original-note');
+          originalText = $textarea.closest('form').data('originalNote');
           newText = $textarea.val();
           if (originalText !== newText) {
             if (!confirm('Are you sure you want to cancel editing this comment?')) {
@@ -609,9 +609,9 @@ export default class Notes {
    */
   addDiscussionNote($form, note, isNewDiffComment) {
     if ($form.attr('data-resolve-all') != null) {
-      var projectPath = $form.data('project-path');
-      var discussionId = $form.data('discussion-id');
-      var mergeRequestId = $form.data('noteable-iid');
+      var projectPath = $form.data('projectPath');
+      var discussionId = $form.data('discussionId');
+      var mergeRequestId = $form.data('noteableIid');
 
       if (ResolveService != null) {
         ResolveService.toggleResolveForDiscussion(mergeRequestId, discussionId);
@@ -751,7 +751,7 @@ export default class Notes {
     form.removeClass('current-note-edit-form');
     form.find('.js-finish-edit-warning').hide();
     // Replace markdown textarea text with original note text.
-    return form.find('.js-note-text').val(form.find('form.edit-note').data('original-note'));
+    return form.find('.js-note-text').val(form.find('form.edit-note').data('originalNote'));
   }
 
   /**
@@ -776,7 +776,7 @@ export default class Notes {
         var $note, $notes;
         $note = $(el);
         $notes = $note.closest('.discussion-notes');
-        const discussionId = $('.notes', $notes).data('discussion-id');
+        const discussionId = $('.notes', $notes).data('discussionId');
 
         if (typeof gl.diffNotesCompileComponents !== 'undefined') {
           if (gl.diffNoteApps[noteElId]) {
@@ -897,7 +897,7 @@ export default class Notes {
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
-    form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
+    form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancelText'));
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
     this.setupNoteForm(form);
@@ -1037,7 +1037,7 @@ export default class Notes {
   removeDiscussionNoteForm(form) {
     var glForm, row;
     row = form.closest('tr');
-    glForm = form.data('gl-form');
+    glForm = form.data('glForm');
     glForm.destroy();
     form.find('.js-note-text').data('autosave').reset();
     // show the reply button (will only work for replies)
@@ -1122,8 +1122,8 @@ export default class Notes {
         return discardbtn.show();
       }
     } else {
-      reopentext = reopenbtn.data('original-text');
-      closetext = closebtn.data('original-text');
+      reopentext = reopenbtn.data('originalText');
+      closetext = closebtn.data('originalText');
       if (reopenbtn.text() !== reopentext) {
         reopenbtn.text(reopentext);
       }
@@ -1150,9 +1150,9 @@ export default class Notes {
 
     var $originalContentEl = $note.find('.original-note-content');
     var originalContent = $originalContentEl.text().trim();
-    var postUrl = $originalContentEl.data('post-url');
-    var targetId = $originalContentEl.data('target-id');
-    var targetType = $originalContentEl.data('target-type');
+    var postUrl = $originalContentEl.data('postUrl');
+    var targetId = $originalContentEl.data('targetId');
+    var targetType = $originalContentEl.data('targetType');
 
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
@@ -1513,9 +1513,9 @@ export default class Notes {
           // If comment intends to resolve discussion, do the same.
           if (isDiscussionResolve) {
             $form
-              .attr('data-discussion-id', $submitBtn.data('discussion-id'))
+              .attr('data-discussion-id', $submitBtn.data('discussionId'))
               .attr('data-resolve-all', 'true')
-              .attr('data-project-path', $submitBtn.data('project-path'));
+              .attr('data-project-path', $submitBtn.data('projectPath'));
           }
 
           // Show final note element on UI
@@ -1587,7 +1587,7 @@ export default class Notes {
         this.addNoteError($form);
       });
 
-    return $closeBtn.text($closeBtn.data('original-text'));
+    return $closeBtn.text($closeBtn.data('originalText'));
   }
 
   /**
@@ -1642,7 +1642,7 @@ export default class Notes {
         this.updateNoteError();
       });
 
-    return $closeBtn.text($closeBtn.data('original-text'));
+    return $closeBtn.text($closeBtn.data('originalText'));
   }
 }
 

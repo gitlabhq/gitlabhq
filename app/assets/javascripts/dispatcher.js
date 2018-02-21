@@ -43,282 +43,20 @@ var Dispatcher;
       });
 
       switch (page) {
-        case 'projects:environments:metrics':
-          import('./pages/projects/environments/metrics')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
         case 'projects:issues:show':
-          shortcut_handler = true;
-          break;
-        case 'projects:milestones:index':
-          import('./pages/projects/milestones/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:milestones:show':
-          import('./pages/projects/milestones/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:milestones:show':
-          import('./pages/groups/milestones/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:milestones:show':
-          import('./pages/dashboard/milestones/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:issues':
-          import('./pages/dashboard/issues')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:merge_requests':
-          import('./pages/dashboard/merge_requests')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:issues':
-          import('./pages/groups/issues')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:merge_requests':
-          import('./pages/groups/merge_requests')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:todos:index':
-          import('./pages/dashboard/todos/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:jobs:index':
-          import('./pages/admin/jobs/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:projects:index':
-          import('./pages/admin/projects/index/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:users:index':
-          import('./pages/admin/users/shared')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:users:show':
-          import('./pages/admin/users/shared')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:projects:index':
-        case 'dashboard:projects:starred':
-          import('./pages/dashboard/projects')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'explore:projects:index':
-        case 'explore:projects:trending':
-        case 'explore:projects:starred':
-          import('./pages/explore/projects')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'explore:groups:index':
-          import('./pages/explore/groups')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:milestones:new':
-        case 'projects:milestones:create':
-          import('./pages/projects/milestones/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:milestones:edit':
-        case 'projects:milestones:update':
-          import('./pages/projects/milestones/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:milestones:new':
-        case 'groups:milestones:create':
-          import('./pages/groups/milestones/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:milestones:edit':
-        case 'groups:milestones:update':
-          import('./pages/groups/milestones/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:compare:show':
-          import('./pages/projects/compare/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:branches:new':
-          import('./pages/projects/branches/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:branches:create':
-          import('./pages/projects/branches/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:branches:index':
-          import('./pages/projects/branches/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:issues:new':
-          import('./pages/projects/issues/new')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:issues:edit':
-          import('./pages/projects/issues/edit')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:merge_requests:creations:new':
-          import('./pages/projects/merge_requests/creations/new')
-            .then(callDefault)
-            .catch(fail);
         case 'projects:merge_requests:creations:diffs':
-          import('./pages/projects/merge_requests/creations/diffs')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:merge_requests:edit':
-          import('./pages/projects/merge_requests/edit')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:tags:new':
-          import('./pages/projects/tags/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:show':
-          import('./pages/projects/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:new':
-        case 'projects:snippets:create':
-          import('./pages/projects/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:services:edit':
-          import('./pages/projects/services/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:edit':
-        case 'projects:snippets:update':
-          import('./pages/projects/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:new':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:edit':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:create':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:update':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:releases:edit':
-          import('./pages/projects/releases/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:merge_requests:show':
-          import('./pages/projects/merge_requests/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'dashboard:activity':
-          import('./pages/dashboard/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:commit:show':
-          import('./pages/projects/commit/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:commit:pipelines':
-          import('./pages/projects/commit/pipelines')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:activity':
-          import('./pages/projects/activity')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:commits:show':
-          import('./pages/projects/commits/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:show':
           shortcut_handler = true;
-          break;
-        case 'projects:edit':
-          import('./pages/projects/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:imports:show':
-          import('./pages/projects/imports/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:new':
-        case 'projects:pipelines:create':
-          import('./pages/projects/pipelines/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:builds':
-        case 'projects:pipelines:failures':
-        case 'projects:pipelines:show':
-          import('./pages/projects/pipelines/builds')
-            .then(callDefault)
-            .catch(fail);
           break;
         case 'groups:activity':
           import('./pages/groups/activity')
@@ -436,11 +174,6 @@ var Dispatcher;
             .catch(fail);
           shortcut_handler = true;
           break;
-        case 'help:index':
-          import('./pages/help')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'search:show':
           import('./pages/search/show')
             .then(callDefault)
@@ -472,11 +205,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'snippets:show':
-          import('./pages/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map')
             .then(callDefault)
@@ -492,18 +220,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'projects:clusters:show':
-        case 'projects:clusters:update':
-        case 'projects:clusters:destroy':
-          import('./pages/projects/clusters/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:clusters:index':
-          import('./pages/projects/clusters/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'dashboard:groups:index':
           import('./pages/dashboard/groups/index')
             .then(callDefault)
@@ -511,20 +227,7 @@ var Dispatcher;
           break;
       }
       switch (path[0]) {
-        case 'sessions':
-          import('./pages/sessions')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'omniauth_callbacks':
-          import('./pages/omniauth_callbacks')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'admin':
-          import('./pages/admin')
-            .then(callDefault)
-            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
               import('./pages/admin/broadcast_messages')

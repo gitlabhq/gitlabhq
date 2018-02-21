@@ -1,5 +1,3 @@
-import initGroupsList from '../../../../groups';
+import initGroupsList from '~/groups';
 
-export default () => {
-  initGroupsList();
-};
+export default initGroupsList;

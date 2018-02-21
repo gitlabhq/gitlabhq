@@ -11,7 +11,7 @@ export default class GpgBadges {
     badges.html('<i class="fa fa-spinner fa-spin"></i>');
 
     const params = parseQueryStringIntoObject(form.serialize());
-    return axios.get(form.data('signatures-path'), { params })
+    return axios.get(form.data('signaturesPath'), { params })
     .then(({ data }) => {
       data.signatures.forEach((signature) => {
         badges.filter(`[data-commit-sha="${signature.commit_sha}"]`).replaceWith(signature.html);

@@ -1,0 +1,5 @@
+---
+title: Allow to call PUT /projects/:id API with only ci_config_path specified
+merge_request: 17105
+author: Laszlo Karpati
+type: fixed
