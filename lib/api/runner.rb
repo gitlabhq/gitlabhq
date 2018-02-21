@@ -14,10 +14,10 @@ module API
         optional :locked, type: Boolean, desc: 'Should Runner be locked for current project'
         optional :run_untagged, type: Boolean, desc: 'Should Runner handle untagged jobs'
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
-        optional :job_upper_timeout, type: Integer, desc: 'Upper timeout set when this Runner will handle the job'
+        optional :maximum_job_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
       post '/' do
-        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list, :job_upper_timeout])
+        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list, :maximum_job_timeout])
           .merge(get_runner_details_from_request)
 
         runner =

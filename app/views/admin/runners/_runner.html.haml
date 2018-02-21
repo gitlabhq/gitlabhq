@@ -19,8 +19,8 @@
   %td
     = runner.ip_address
   %td
-    - if runner.defines_job_upper_timeout?
-      = runner.job_upper_timeout
+    - if runner.defines_maximum_job_timeout?
+      = runner.maximum_job_timeout_user_readable
     - else
       n/a
   %td

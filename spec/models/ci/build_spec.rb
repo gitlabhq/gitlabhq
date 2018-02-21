@@ -1281,7 +1281,7 @@ describe Ci::Build do
       end
 
       context 'when runner sets timeout to bigger value' do
-        let(:runner2) { create(:ci_runner, job_upper_timeout: 2000) }
+        let(:runner2) { create(:ci_runner, maximum_job_timeout: 2000) }
         let(:build) { create(:ci_build, :manual, pipeline: pipeline2, runner: runner2) }
 
         it 'returns project timeout configuration' do
@@ -1290,11 +1290,11 @@ describe Ci::Build do
       end
 
       context 'when runner sets timeout to smaller value' do
-        let(:runner2) { create(:ci_runner, job_upper_timeout: 500) }
+        let(:runner2) { create(:ci_runner, maximum_job_timeout: 500) }
         let(:build) { create(:ci_build, :manual, pipeline: pipeline2, runner: runner2) }
 
         it 'returns project timeout configuration' do
-          expect(build.timeout).to eq(runner2.job_upper_timeout)
+          expect(build.timeout).to eq(runner2.maximum_job_timeout)
         end
       end
     end

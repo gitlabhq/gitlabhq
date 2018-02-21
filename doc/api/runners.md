@@ -154,7 +154,7 @@ Example response:
     ],
     "version": null,
     "access_level": "ref_protected",
-    "job_upper_timeout": 3600
+    "maximum_job_timeout": 3600
 }
 ```
 
@@ -175,7 +175,7 @@ PUT /runners/:id
 | `run_untagged`    | boolean   | no       | Flag indicating the runner can execute untagged jobs |
 | `locked`    | boolean   | no       | Flag indicating the runner is locked |
 | `access_level`    | string   | no       | The access_level of the runner; `not_protected` or `ref_protected` |
-| `job_upper_timeout` | integer | no | Upper timeout set when this Runner will handle the job |
+| `maximum_job_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
 
 ```
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -214,7 +214,7 @@ Example response:
     ],
     "version": null,
     "access_level": "ref_protected",
-    "job_upper_timeout": null
+    "maximum_job_timeout": null
 }
 ```
 
