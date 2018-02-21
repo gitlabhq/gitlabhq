@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-01 18:03+0100\n"
-"PO-Revision-Date: 2018-03-01 18:03+0100\n"
+"POT-Creation-Date: 2018-03-05 13:02-0600\n"
+"PO-Revision-Date: 2018-03-05 13:02-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -100,6 +100,9 @@ msgid "2FA enabled"
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
+msgstr ""
+
+msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
 msgid "About auto deploy"
@@ -199,6 +202,9 @@ msgid "Advanced settings"
 msgstr ""
 
 msgid "All"
+msgstr ""
+
+msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -698,6 +704,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
@@ -744,6 +753,9 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
+msgstr ""
+
+msgid "ClusterIntegration|Ingress IP Address"
 msgstr ""
 
 msgid "ClusterIntegration|Install"
@@ -1444,6 +1456,9 @@ msgstr ""
 msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
 msgstr ""
 
+msgid "Forking in progress"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -1460,6 +1475,9 @@ msgid "GPG Keys"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Git repository URL"
 msgstr ""
 
 msgid "Git revision"
@@ -1585,6 +1603,12 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "If you already have files you can push them using the %{link_to_cli} below."
+msgstr ""
+
+msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
+msgid "Import in progress"
 msgstr ""
 
 msgid "Import repository"
@@ -1821,6 +1845,9 @@ msgid "Modal|Close"
 msgstr ""
 
 msgid "Monitoring"
+msgstr ""
+
+msgid "More information"
 msgstr ""
 
 msgid "More information is available|here"
@@ -2162,6 +2189,9 @@ msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener norefe
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
+msgstr ""
+
+msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
 msgid "Preferences"
@@ -2520,6 +2550,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
+msgid "Send email"
+msgstr ""
+
 msgid "Sep"
 msgstr ""
 
@@ -2833,6 +2866,9 @@ msgstr ""
 msgid "The fork relationship has been removed."
 msgstr ""
 
+msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
+msgstr ""
+
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
@@ -2864,6 +2900,9 @@ msgid "The repository for this project does not exist."
 msgstr ""
 
 msgid "The repository for this project is empty"
+msgstr ""
+
+msgid "The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -3129,6 +3168,9 @@ msgid "Time|s"
 msgstr ""
 
 msgid "Tip:"
+msgstr ""
+
+msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
 msgid "Todo"
@@ -3437,6 +3479,9 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
+msgid "among other things"
+msgstr ""
+
 msgid "assign yourself"
 msgstr ""
 
@@ -3630,6 +3675,9 @@ msgid "source"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
+msgstr ""
+
+msgid "this document"
 msgstr ""
 
 msgid "username"

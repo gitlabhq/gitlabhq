@@ -12,7 +12,7 @@ $(() => {
     const $container = $(container);
 
     $container
-      .find('.js-toggle-button .fa')
+      .find('.js-toggle-button .fa-chevron-up, .js-toggle-button .fa-chevron-down')
       .toggleClass('fa-chevron-up', toggleState)
       .toggleClass('fa-chevron-down', toggleState !== undefined ? !toggleState : undefined);
 
@@ -22,7 +22,7 @@ $(() => {
   }
 
   $('body').on('click', '.js-toggle-button', function toggleButton(e) {
-    e.target.classList.toggle('open');
+    e.currentTarget.classList.toggle(e.currentTarget.dataset.toggleOpenClass || 'open');
     toggleContainer($(this).closest('.js-toggle-container'));
 
     const targetTag = e.currentTarget.tagName.toLowerCase();

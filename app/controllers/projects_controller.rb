@@ -45,7 +45,7 @@ class ProjectsController < Projects::ApplicationController
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
-      render 'new', locals: { active_tab: ('import' if project_params[:import_url].present?) }
+      render 'new', locals: { active_tab: active_new_project_tab }
     end
   end
 
@@ -361,6 +361,10 @@ class ProjectsController < Projects::ApplicationController
 
   def custom_import_params
     {}
+  end
+
+  def active_new_project_tab
+    project_params[:import_url].present? ? 'import' : 'blank'
   end
 
   def repo_exists?
