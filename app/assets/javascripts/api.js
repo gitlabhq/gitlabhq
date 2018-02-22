@@ -9,7 +9,7 @@ const Api = {
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
-  groupLabelsPath: '/groups/:namespace_path/labels',
+  groupLabelsPath: '/groups/:namespace_path/-/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
@@ -32,7 +32,7 @@ const Api = {
   },
 
   // Return groups list. Filtered by query
-  groups(query, options, callback) {
+  groups(query, options, callback = $.noop) {
     const url = Api.buildUrl(Api.groupsPath);
     return axios.get(url, {
       params: Object.assign({

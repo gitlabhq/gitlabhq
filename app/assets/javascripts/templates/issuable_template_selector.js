@@ -6,9 +6,9 @@ import TemplateSelector from '../blob/template_selector';
 export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {
     super(...args);
-    this.projectPath = this.dropdown.data('project-path');
-    this.namespacePath = this.dropdown.data('namespace-path');
-    this.issuableType = this.$dropdownContainer.data('issuable-type');
+    this.projectPath = this.dropdown.data('projectPath');
+    this.namespacePath = this.dropdown.data('namespacePath');
+    this.issuableType = this.$dropdownContainer.data('issuableType');
     this.titleInput = $(`#${this.issuableType}_title`);
 
     const initialQuery = {

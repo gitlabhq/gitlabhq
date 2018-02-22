@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
+    return if Gitlab::Database.read_only?
+
     update_tracked_fields(request)
 
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
@@ -249,7 +251,7 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
-        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase)
+        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase.strip)
       else
         find_by(conditions)
       end

@@ -40,7 +40,7 @@ export default class TaskList {
       [this.fieldName]: $target.val(),
     };
 
-    return axios.patch($target.data('update-url') || $('form.js-issuable-update').attr('action'), patchData)
+    return axios.patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
       .then(({ data }) => this.onSuccess(data))
       .catch(err => this.onError(err));
   }

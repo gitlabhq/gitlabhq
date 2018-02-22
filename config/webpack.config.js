@@ -27,15 +27,17 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 
 // filter out entries currently imported dynamically in dispatcher.js
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
-var dispatcherChunks = dispatcher.match(/(?!import\('.\/)pages\/[^']+/g);
+var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
-pageEntries.forEach(( path ) => {
-  let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes(chunkPath)) {
-    let chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = './' + path;
+function generateAutoEntries(path, prefix = '.') {
+  const chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
-});
+}
+
+pageEntries.forEach(( path ) => generateAutoEntries(path));
 
 // report our auto-generated bundle count
 var autoEntriesCount = Object.keys(autoEntries).length;
@@ -48,7 +50,6 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
-    account:              './profile/account/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -57,41 +58,28 @@ var config = {
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
-    docs:                 './docs/docs_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
-    graphs:               './graphs/graphs_bundle.js',
-    graphs_charts:        './graphs/graphs_charts.js',
-    graphs_show:          './graphs/graphs_show.js',
     help:                 './help/help.js',
-    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
-    integrations:         './integrations',
-    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
-    notes:                './notes/index.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/pipelines_bundle.js',
-    pipelines_charts:     './pipelines/pipelines_charts.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
-    pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
     project_import_gl:    './projects/project_import_gitlab_project.js',
-    prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-    ide:                 './ide/index.js',
+    ide:                  './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
-    schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
-    schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     stl_viewer:           './blob/stl_viewer.js',
@@ -102,7 +90,6 @@ var config = {
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
-    users:                './users/index.js',
     webpack_runtime:      './webpack.js',
   },
 
@@ -158,7 +145,7 @@ var config = {
         include: /node_modules\/katex\/dist/,
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               name: '[name].[hash].[ext]'
@@ -266,11 +253,9 @@ var config = {
         'filtered_search',
         'groups',
         'issue_show',
-        'job_details',
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',
-        'notes',
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
@@ -283,20 +268,6 @@ var config = {
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
-      },
-    }),
-
-    // create cacheable common library bundle for all d3 chunks
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common_d3',
-      chunks: [
-        'graphs',
-        'graphs_show',
-        'monitoring',
-        'users',
-      ],
-      minChunks: function (module, count) {
-        return module.resource && /d3-/.test(module.resource);
       },
     }),
 

@@ -1,5 +1,0 @@
----
-title: Fix protected branches API to accept name parameter with dot
-merge_request:
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Disable throwOnError in KaTeX to reveal user where is the problem
-merge_request: 16684
-author: Jakub Jirutka
-type: other

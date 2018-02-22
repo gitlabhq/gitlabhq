@@ -1,5 +1,0 @@
----
-title: Add reason to keep postgresql 9.2 for CI
-merge_request: 16277
-author: Takuya Noguchi
-type: other

@@ -215,7 +215,7 @@ describe ProjectsHelper do
     let(:expected) { double }
 
     before do
-      expect(helper).to receive(:avatar_icon).with(user, 16).and_return(expected)
+      expect(helper).to receive(:avatar_icon_for_user).with(user, 16).and_return(expected)
     end
 
     it 'returns image tag for member avatar' do

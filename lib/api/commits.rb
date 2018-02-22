@@ -97,13 +97,16 @@ module API
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+        use :pagination
       end
       get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
 
-        present commit.raw_diffs.to_a, with: Entities::Diff
+        raw_diffs = ::Kaminari.paginate_array(commit.raw_diffs.to_a)
+
+        present paginate(raw_diffs), with: Entities::Diff
       end
 
       desc "Get a commit's comments" do
@@ -156,6 +159,27 @@ module API
         end
       end
 
+      desc 'Get all references a commit is pushed to' do
+        detail 'This feature was introduced in GitLab 10.6'
+        success Entities::BasicRef
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit sha'
+        optional :type, type: String, values: %w[branch tag all], default: 'all', desc: 'Scope'
+        use :pagination
+      end
+      get ':id/repository/commits/:sha/refs', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        commit = user_project.commit(params[:sha])
+        not_found!('Commit') unless commit
+
+        refs = []
+        refs.concat(user_project.repository.branch_names_contains(commit.id).map {|name| { type: 'branch', name: name }}) unless params[:type] == 'tag'
+        refs.concat(user_project.repository.tag_names_contains(commit.id).map {|name| { type: 'tag', name: name }}) unless params[:type] == 'branch'
+        refs = Kaminari.paginate_array(refs)
+
+        present paginate(refs), with: Entities::BasicRef
+      end
+
       desc 'Post comment to commit' do
         success Entities::CommitNote
       end
@@ -165,7 +189,7 @@ module API
         optional :path, type: String, desc: 'The file path'
         given :path do
           requires :line, type: Integer, desc: 'The line number'
-          requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w[new old], default: 'new', desc: 'The type of the line'
         end
       end
       post ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do

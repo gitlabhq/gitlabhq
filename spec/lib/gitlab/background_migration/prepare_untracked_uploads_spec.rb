@@ -1,18 +1,16 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
-  include TrackUntrackedUploadsHelpers
-  include MigrationsHelpers
+# Rollback DB to 10.5 (later than this was originally written for) because it still needs to work.
+describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq, :migration, schema: 20180208183958 do
+  include MigrationsHelpers::TrackUntrackedUploadsHelpers
 
-  let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
-
-  before do
-    DatabaseCleaner.clean
-  end
-
-  after do
-    drop_temp_table_if_exists
-  end
+  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
+  let!(:appearances) { table(:appearances) }
+  let!(:namespaces) { table(:namespaces) }
+  let!(:projects) { table(:projects) }
+  let!(:routes) { table(:routes) }
+  let!(:uploads) { table(:uploads) }
+  let!(:users) { table(:users) }
 
   around do |example|
     # Especially important so the follow-up migration does not get run
@@ -23,19 +21,17 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
 
   shared_examples 'prepares the untracked_files_for_uploads table' do
     context 'when files were uploaded before and after hashed storage was enabled' do
-      let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
-      let!(:user) { create(:user, :with_avatar) }
-      let!(:project1) { create(:project, :with_avatar, :legacy_storage) }
-      let(:project2) { create(:project) } # instantiate after enabling hashed_storage
+      let!(:appearance) { create_or_update_appearance(logo: true, header_logo: true) }
+      let!(:user) { create_user(avatar: true) }
+      let!(:project1) { create_project(avatar: true) }
+      let(:project2) { create_project } # instantiate after enabling hashed_storage
 
       before do
         # Markdown upload before enabling hashed_storage
-        UploadService.new(project1, uploaded_file, FileUploader).execute
-
-        stub_application_setting(hashed_storage_enabled: true)
+        add_markdown_attachment(project1)
 
         # Markdown upload after enabling hashed_storage
-        UploadService.new(project2, uploaded_file, FileUploader).execute
+        add_markdown_attachment(project2, hashed_storage: true)
       end
 
       it 'has a path field long enough for really long paths' do
@@ -69,14 +65,15 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
       it 'does not add hashed files to the untracked_files_for_uploads table' do
         described_class.new.perform
 
-        hashed_file_path = project2.uploads.where(uploader: 'FileUploader').first.path
+        hashed_file_path = get_uploads(project2, 'Project').where(uploader: 'FileUploader').first.path
         expect(untracked_files_for_uploads.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
       end
 
       it 'correctly schedules the follow-up background migration jobs' do
         described_class.new.perform
 
-        expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(1, 5)
+        ids = described_class::UntrackedFile.all.order(:id).pluck(:id)
+        expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(ids.first, ids.last)
         expect(BackgroundMigrationWorker.jobs.size).to eq(1)
       end
 
@@ -150,9 +147,11 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
     it 'deletes the `untracked_files_for_uploads` table (and does not raise error)' do
-      described_class.new.perform
+      background_migration = described_class.new
 
-      expect(untracked_files_for_uploads.connection.table_exists?(:untracked_files_for_uploads)).to be_falsey
+      expect(background_migration).to receive(:drop_temp_table)
+
+      background_migration.perform
     end
   end
 end

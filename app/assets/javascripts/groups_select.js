@@ -7,8 +7,8 @@ export default function groupsSelect() {
   window.GROUP_SELECT_PER_PAGE = 20;
   $('.ajax-groups-select').each(function setAjaxGroupsSelect2() {
     const $select = $(this);
-    const allAvailable = $select.data('all-available');
-    const skipGroups = $select.data('skip-groups') || [];
+    const allAvailable = $select.data('allAvailable');
+    const skipGroups = $select.data('skipGroups') || [];
     $select.select2({
       placeholder: 'Search for a group',
       multiple: $select.hasClass('multiselect'),

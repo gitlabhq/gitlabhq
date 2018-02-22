@@ -361,7 +361,7 @@ export default class MergeRequestTabs {
   }
 
   diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('view-type');
+    return $('.inline-parallel-buttons a.active').data('viewType');
   }
 
   isDiffAction(action) {

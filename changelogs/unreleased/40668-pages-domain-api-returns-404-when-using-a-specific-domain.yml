@@ -1,0 +1,5 @@
+---
+title: Fix get a single pages domain when project path contains a period
+merge_request: 17206
+author: Travis Miller
+type: fixed

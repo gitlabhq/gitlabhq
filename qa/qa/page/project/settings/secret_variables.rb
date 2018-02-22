@@ -6,39 +6,37 @@ module QA
           include Common
 
           view 'app/views/ci/variables/_variable_row.html.haml' do
+            element :variable_row, '.ci-variable-row-body'
             element :variable_key, '.js-ci-variable-input-key'
             element :variable_value, '.js-ci-variable-input-value'
+            element :key_placeholder, 'Input variable key'
+            element :value_placeholder, 'Input variable value'
           end
 
           view 'app/views/ci/variables/_index.html.haml' do
             element :save_variables, '.js-secret-variables-save-button'
+            element :reveal_values, '.js-secret-value-reveal-button'
           end
 
           def fill_variable_key(key)
-            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
-              page.find('.js-ci-variable-input-key').set(key)
-            end
+            fill_in('Input variable key', with: key, match: :first)
           end
 
           def fill_variable_value(value)
-            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
-              page.find('.js-ci-variable-input-value').set(value)
-            end
+            fill_in('Input variable value', with: value, match: :first)
           end
 
           def save_variables
-            click_button('Save variables')
+            find('.js-secret-variables-save-button').click
           end
 
-          def variable_key
-            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
-              page.find('.js-ci-variable-input-key').value
-            end
+          def reveal_variables
+            find('.js-secret-value-reveal-button').click
           end
 
-          def variable_value
-            page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
-              page.find('.js-ci-variable-input-value').value
+          def variable_value(key)
+            within('.ci-variable-row-body', text: key) do
+              find('.js-ci-variable-input-value').value
             end
           end
         end

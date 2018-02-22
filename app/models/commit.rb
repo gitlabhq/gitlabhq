@@ -116,6 +116,10 @@ class Commit
     raw.id
   end
 
+  def project_id
+    project.id
+  end
+
   def ==(other)
     other.is_a?(self.class) && raw == other.raw
   end
@@ -413,6 +417,10 @@ class Commit
     !!(title =~ WIP_REGEX)
   end
 
+  def merged_merge_request?(user)
+    !!merged_merge_request(user)
+  end
+
   private
 
   def commit_reference(from, referable_commit_id, full: false)
@@ -439,10 +447,6 @@ class Commit
     end
 
     changes
-  end
-
-  def merged_merge_request?(user)
-    !!merged_merge_request(user)
   end
 
   def merged_merge_request_no_cache(user)
