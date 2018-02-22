@@ -1,5 +1,78 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.5.0 (2018-02-22)
+
+### Fixed (23 changes, 1 of them is from the community)
+
+- Geo - Add a rake task to update Geo primary node URL. !4097
+- Capture push rule regex errors and present them to user. !4102
+- Fixed membership Lock should propagate from parent group to sub-groups. !4111
+- Fix Epic sidebar toggle button icon positioning. !4138
+- Update the Geo documentation to replicate all secrets to the secondary. !4188
+- Update Geo documentation to reuse the primary node SSH host key on secondary node. !4198
+- Override group sidebar links. !4234 (George Tsiolis)
+- Improve Geo Disaster Recovery docs for systems in multi-secondary configurations. !4285
+- Fix 500 errors caused by large replication slot wal retention. !4347
+- Report the correct version and revision for Geo node status requests. !4353
+- Don't show Member Lock setting for unlicensed system. !4355
+- Fix the background_upload configuration being ignored. !4507
+- Geo: Reset force_redownload flag after successful sync.
+- [Geo] Skip attachments that is stored in the object storage.
+- [Geo] Fix redownload repository recovery when there is not local repo at all.
+- Fix broken CSS in modal for DAST report.
+- Improve SAST description for no new vulnerabilities.
+- Geo - Remove duplicated message on on geo:update_primary_node_url rake task.
+- Fix the geo::db:seeds rake task.
+- Allow project to be set up to push to and pull from same mirror.
+- Include epics from subgroups on Epic index page.
+- Fix validation of environment scope of variables.
+- Support SendURL for performing indirect download of artifacts if clients does not specify that it supports that.
+
+### Changed (9 changes)
+
+- Geo Logger will use the same log level defined in Rails. !4066
+- Approve merge requests additionally. !4134
+- Geo: sync .gitattributes to info/attributes in secondary nodes. !4159
+- Update behavior of MR widgets that require pipeline artifacts to allow jobs with multiple artifacts. !4203
+- Add details on how to disable GitLab to the DR documentation. !4239
+- Ports remote removal to a background job.
+- Adds support to show added, fixed and all vulnerabilties for SAST in merge request widget.
+- Geo: Don't attempt to schedule a repository sync for downed Gitaly shards.
+- Update UI for merge widget reports.
+
+### Performance (3 changes)
+
+- Bump Geo JWT timeout from 1 minute to 10 minutes.
+- FIx N+1 queries with /api/v4/groups endpoint.
+- Properly memoize ChangeAccess#validate_path_locks? to avoid excessive queries.
+
+### Added (17 changes, 1 of them is from the community)
+
+- Add object storage support for uploads. !3867
+- Add support within Browser Performance Testing for metrics where smaller is better. !3891 (joshlambert)
+- Add more endpoints for Geo Nodes API. !3923
+- (EEP) Allow developers to create projects in group. !4046
+- Integrate current File Locking feature with LFS File Locking. !4091
+- Add Epic information for selected issue in Issue boards sidebar. !4104
+- Update CI/CD secret variables list to be dynamic and save without reloading the page. !4110
+- Add object storage migration task for uploads. !4215
+- Filtered search support for Epics list page. !4223
+- Add multi-file editor usage metrics. !4226
+- Dry up CI/CD gitlab-ci.yml configuration by allowing inclusion of external files. !4262
+- Implement selective synchronization by repository shard for Geo. !4286
+- Show Group level Roadmap. !4361
+- Add Geo Prometheus metrics about the various number of events. !4413
+- Geo - Improve node status report by adding one more indicator of health: last time when primary pulled the status of the secondary.
+- Add rake task to print Geo node status.
+- Add system notes when moving issues between epics.
+
+### Other (3 changes)
+
+- Geo - add documentation about using shared a S3 bucket with GitLab Container Registry.
+- Geo: Improve replication status. Using pg_stat_wal_receiver.
+- Remove unaproved typo check in sast:container report.
+
+
 ## 10.4.4 (2018-02-16)
 
 ### Fixed (4 changes)
