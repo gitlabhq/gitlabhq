@@ -60,7 +60,11 @@
   .form-control {
     cursor: auto;
     width: 101%;
-    margin-left: -1;
+    margin-left: -1px;
+  }
+
+  .embed-toggle-list li a {
+    padding: 8px 40px;
   }
 
   .embed-toggle {
