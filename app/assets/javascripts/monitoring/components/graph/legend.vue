@@ -62,8 +62,9 @@
       },
 
       rectTransform() {
-        const yCoordinate = ((this.graphHeight - this.margin.top) / 2)
-                            + (this.yLabelWidth / 2) + 10 || 0;
+        const yCoordinate = (((this.graphHeight - this.margin.top)
+                            + this.measurements.axisLabelLineOffset) / 2)
+                            + (this.yLabelWidth / 2) || 0;
 
         return `translate(0, ${yCoordinate}) rotate(-90)`;
       },
