@@ -8,7 +8,7 @@ WHITELIST = [
   'qa/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
   'scripts/*',
   'spec/javascripts/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/3871
-  'vendor/assets/javascripts/jasmine-jquery.js',
+  'vendor/assets/javascripts/jasmine-jquery.js'
 ].freeze
 
 `git remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git`
