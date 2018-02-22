@@ -57,10 +57,15 @@ var Dispatcher;
         case 'projects:commits:show':
         case 'projects:show':
         case 'groups:show':
-        case 'projects:tree:show':
         case 'projects:find_file:show':
         case 'projects:blob:show':
         case 'projects:blame:show':
+          shortcut_handler = true;
+          break;
+        case 'projects:tree:show':
+          import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/tree/show')
+            .then(callDefault)
+            .catch(fail);
           shortcut_handler = true;
           break;
         case 'groups:labels:new':
