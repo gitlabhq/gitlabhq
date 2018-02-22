@@ -164,9 +164,15 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       if empty_repo?
         can?(current_user, :push_code, project)
       else
-        user_can_push_to_branch?(current_user, default_branch)
+        can_current_user_push_to_branch?(default_branch)
       end
     end
+  end
+
+  def can_current_user_push_to_branch?(branch)
+    return false unless repository.branch_exists?(branch)
+
+    ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
   end
 
   def files_anchor_data
