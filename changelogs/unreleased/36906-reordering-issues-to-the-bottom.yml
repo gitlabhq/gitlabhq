@@ -1,5 +1,0 @@
----
-title: "Issue board: fix for dragging an issue to the very bottom in long lists"
-merge_request: 16250
-author: David Kuri
-type: fixed

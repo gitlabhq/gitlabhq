@@ -1,5 +1,0 @@
----
-title: Add a gRPC health check to ensure Gitaly is up
-merge_request:
-author:
-type: added

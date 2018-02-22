@@ -1,5 +1,0 @@
----
-title: Close and do not reload MR diffs when source branch is deleted
-merge_request:
-author:
-type: fixed

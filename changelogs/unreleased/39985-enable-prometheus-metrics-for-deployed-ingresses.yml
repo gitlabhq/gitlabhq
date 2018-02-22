@@ -1,5 +1,0 @@
----
-title: Enable Prometheus metrics for deployed Ingresses
-merge_request: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/16866
-author: joshlambert
-type: changed

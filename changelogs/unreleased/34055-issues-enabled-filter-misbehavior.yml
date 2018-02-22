@@ -1,6 +1,0 @@
----
-title: Fix the Projects API with_issues_enabled filter behaving incorrectly
-  any user
-merge_request: 12724  
-author: Jan Christophersen
-type: fixed

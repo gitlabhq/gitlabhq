@@ -1,5 +1,0 @@
----
-title: Validate user namespace before saving so that errors persist on model
-merge_request:
-author:
-type: fixed
