@@ -4,17 +4,22 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      merge_request =
-        Factory::Resource::MergeRequest.fabricate! do |merge_request|
-          merge_request.title = 'Squashing commits'
-        end
+      project = Factory::Resource::Project.fabricate! do |project|
+        project.name = "squash-before-merge"
+      end
+
+      merge_request = Factory::Resource::MergeRequest.fabricate! do |merge_request|
+        merge_request.project = project
+        merge_request.title = 'Squashing commits'
+      end
 
       Factory::Repository::Push.fabricate! do |push|
-        push.project = merge_request.project
+        push.project = project
         push.commit_message = 'to be squashed'
         push.branch_name = merge_request.source_branch
         push.new_branch = false
         push.file_name = 'other.txt'
+        push.file_content = "Test with unicode characters ❤✓€❄"
       end
 
       merge_request.visit!

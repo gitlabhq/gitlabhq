@@ -26,7 +26,7 @@ module QA
         end
 
         def fast_forward_possible?
-          !page.has_text?("Fast-forward merge is not possible")
+          !has_text?("Fast-forward merge is not possible")
         end
 
         def has_merge_button?

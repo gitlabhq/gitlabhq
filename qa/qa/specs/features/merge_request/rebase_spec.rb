@@ -5,7 +5,7 @@ module QA
       Page::Main::Login.act { sign_in_using_credentials }
 
       project = Factory::Resource::Project.fabricate! do |project|
-        project.name = "no-fast-forward"
+        project.name = "only-fast-forward"
       end
 
       Page::Menu::Side.act { go_to_settings }
