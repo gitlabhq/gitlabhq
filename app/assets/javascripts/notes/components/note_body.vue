@@ -40,8 +40,6 @@
       this.renderGFM();
       this.initTaskList();
 
-      console.error(this.note)
-
       if (this.isEditing) {
         this.initAutoSave(this.note.noteable_type);
       }

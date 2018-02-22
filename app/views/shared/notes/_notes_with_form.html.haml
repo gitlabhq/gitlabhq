@@ -1,10 +1,14 @@
 - issuable = @issue || @merge_request
 - discussion_locked = issuable&.discussion_locked?
 
+- unless @merge_request
+  %ul#notes-list.notes.main-notes-list.timeline
+    = render "shared/notes/notes"
+
 = render 'shared/notes/edit_form', project: @project
 
 - if can_create_note?
-  %ul.notes.notes-form.timeline.hidden
+  %ul.notes.notes-form.timeline
     %li.timeline-entry
       .timeline-entry-inner
         .flash-container.timeline-content

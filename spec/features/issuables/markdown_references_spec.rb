@@ -15,7 +15,7 @@ describe 'Markdown References', :js do
       "and non existing #999"
 
     page.within('#diff-notes-app') do
-      fill_in 'note_note', with: markdown
+      fill_in 'note-body', with: markdown
     end
   end
 
@@ -51,7 +51,7 @@ describe 'Markdown References', :js do
     end
 
     it 'creates a link to the referenced issue on the preview' do
-      find('.js-md-preview-button').click
+      find('.js-preview-link').click
       wait_for_requests
 
       page.within('.md-preview-holder') do
