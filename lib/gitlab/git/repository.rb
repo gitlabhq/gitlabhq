@@ -2200,7 +2200,7 @@ module Gitlab
         )
         diff_range = "#{start_sha}...#{end_sha}"
         diff_files = run_git!(
-          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+          %W(diff --name-only --diff-filter=ar --binary #{diff_range})
         ).chomp
 
         with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
