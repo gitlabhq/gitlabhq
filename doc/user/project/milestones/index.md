@@ -6,6 +6,7 @@ Milestones in GitLab are a way to track issues and merge requests created to ach
 
 Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.
 
+<<<<<<< doc/user/project/milestones/index.md
 <<<<<<< HEAD
 With [GitLab Starter](https://about.gitlab.com/products/),
 you will also see a [Burndown Chart](#burndown-charts) for your milestone, which
@@ -16,6 +17,8 @@ gives a visual insight over the progress of the conclusion of that milestone:
 
 =======
 >>>>>>> upstream/master
+=======
+>>>>>>> doc/user/project/milestones/index.md
 ## Project milestones and group milestones
 
 - **Project milestones** can be assigned to issues or merge requests in that project only. 
@@ -74,7 +77,12 @@ From the project issue/merge request list pages and the group issue/merge reques
 
 ### Filtering in issue boards
 
-From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [search and filter bar](../../search/index.md#issue-boards).
+- From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [search and filter bar](../../search/index.md#issue-boards).
+- From [group issue boards](../issue_board.md#group-issue-boards) (available in [GitLab Premium](https://about.gitlab.com/products), you can filter by only group milestones in the [search and filter bar](../../search/index.md#issue-boards).
+- From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [issue board configuration](../issue_board.md#board-with-configuration) (available in [GitLab Starter](https://about.gitlab.com/products)) .
+- From [group issue boards](../issue_board.md#group-issue-boards) (available in [GitLab Premium](https://about.gitlab.com/products)), you can filter by only group milestones in the [issue board configuration](../issue_board.md#board-with-configuration).
+
+
 
 ### Special milestone filters
 
@@ -98,6 +106,7 @@ Not all features in the project milestone view are available in the group milest
 | Start date and due date | ✓ | ✓ |
 | Total issue time spent | ✓ | ✓ |
 | Total issue weight | ✓ |  |
+| Burndown chart | ✓ |  |
 
 The milestone view shows the title and description.
 
@@ -108,6 +117,15 @@ These features are only available for project milestones and not group milestone
 - Issues assigned to the milestone are displayed in three columns: Unstarted issues, ongoing issues, and completed issues.
 - Merge requests assigned to the milestone are displayed in four columns: Work in progress merge requests, waiting for merge, rejected, and closed.
 - Participants and labels that are used in issues and merge requests that have the milestone assigned are displayed.
+- [Burndown chart](#burndown-charts).
+
+### Burndown Charts
+
+For project milestones only, and in [GitLab Starter](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+
+![burndown chart](img/burndown_chart.png)
+
+A burndown chart will be shown in group milestones [in the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/3064).
 
 ### Milestone sidebar
 
@@ -119,6 +137,7 @@ The milestone sidebar on the milestone view shows the following:
 
 For project milestones only, the milestone sidebar shows the total issue weight of all issues that have the milestone assigned.
 
+<<<<<<< doc/user/project/milestones/index.md
 ![Project milestone page](img/milestones_project_milestone_page.png)
 
 ### Burndown Charts
@@ -231,3 +250,6 @@ For project milestones only, the milestone sidebar shows the total issue weight 
 
 ![Project milestone page](img/milestones_project_milestone_page.png)
 >>>>>>> upstream/master
+=======
+![Project milestone page](img/milestones_project_milestone_page.png)
+>>>>>>> doc/user/project/milestones/index.md

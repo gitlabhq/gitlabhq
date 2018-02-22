@@ -60,50 +60,15 @@ var Dispatcher;
         case 'projects:find_file:show':
         case 'projects:blob:show':
         case 'projects:blame:show':
-<<<<<<< HEAD
+        case 'projects:network:show':
+        case 'projects:artifacts:browse':
+        case 'projects:artifacts:file':
           shortcut_handler = true;
           break;
         case 'projects:tree:show':
           import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/tree/show')
             .then(callDefault)
             .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'groups:labels:new':
-          import('./pages/groups/labels/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:labels:edit':
-          import('./pages/groups/labels/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:new':
-          import('./pages/projects/labels/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:edit':
-          import('./pages/projects/labels/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:labels:index':
-          import('./pages/groups/labels/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:labels:index':
-          import('./pages/projects/labels/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-=======
->>>>>>> upstream/master
-        case 'projects:network:show':
-        case 'projects:artifacts:browse':
-        case 'projects:artifacts:file':
           shortcut_handler = true;
           break;
       }
