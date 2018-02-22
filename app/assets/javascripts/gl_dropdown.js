@@ -630,10 +630,13 @@ GitLabDropdown = (function() {
     }
     html = document.createElement('li');
 
+<<<<<<< HEAD
     if (rowHidden) {
       html.style.display = 'none';
     }
 
+=======
+>>>>>>> upstream/master
     if (data === 'divider' || data === 'separator') {
       html.className = data;
       return html;
