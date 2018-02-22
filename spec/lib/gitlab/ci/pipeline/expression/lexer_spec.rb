@@ -5,30 +5,30 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
     Gitlab::Ci::Pipeline::Expression::Token
   end
 
-  describe '#tokenize' do
-    it 'tokenizes single value' do
-      tokens = described_class.new('$VARIABLE').tokenize
+  describe '#tokens' do
+    it 'tokenss single value' do
+      tokens = described_class.new('$VARIABLE').tokens
 
       expect(tokens).to be_one
       expect(tokens).to all(be_an_instance_of(token_class))
     end
 
     it 'does ignore whitespace characters' do
-      tokens = described_class.new("\t$VARIABLE ").tokenize
+      tokens = described_class.new("\t$VARIABLE ").tokens
 
       expect(tokens).to be_one
       expect(tokens).to all(be_an_instance_of(token_class))
     end
 
-    it 'tokenizes multiple values of the same token' do
-      tokens = described_class.new("$VARIABLE1 $VARIABLE2").tokenize
+    it 'tokenss multiple values of the same token' do
+      tokens = described_class.new("$VARIABLE1 $VARIABLE2").tokens
 
       expect(tokens.size).to eq 2
       expect(tokens).to all(be_an_instance_of(token_class))
     end
 
-    it 'tokenizes multiple values with different tokens' do
-      tokens = described_class.new('$VARIABLE "text" "value"').tokenize
+    it 'tokenss multiple values with different tokens' do
+      tokens = described_class.new('$VARIABLE "text" "value"').tokens
 
       expect(tokens.size).to eq 3
       expect(tokens.first.value).to eq '$VARIABLE'
@@ -36,8 +36,8 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect(tokens.third.value).to eq '"value"'
     end
 
-    it 'tokenizes tokens and operators' do
-      tokens = described_class.new('$VARIABLE == "text"').tokenize
+    it 'tokenss tokens and operators' do
+      tokens = described_class.new('$VARIABLE == "text"').tokens
 
       expect(tokens.size).to eq 3
       expect(tokens.first.value).to eq '$VARIABLE'
@@ -48,15 +48,24 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
     it 'limits statement to 5 tokens' do
       lexer = described_class.new("$V1 $V2 $V3 $V4 $V5 $V6")
 
-      expect { lexer.tokenize }
+      expect { lexer.tokens }
         .to raise_error described_class::SyntaxError
     end
 
     it 'raises syntax error in case of finding unknown tokens' do
       lexer = described_class.new('$V1 123 $V2')
 
-      expect { lexer.tokenize }
+      expect { lexer.tokens }
         .to raise_error described_class::SyntaxError
     end
   end
+
+  describe '#lexemes' do
+    it 'returns an array of syntax lexemes' do
+      lexer = described_class.new('$VAR "text"')
+
+      expect(lexer.lexemes).to eq %w[variable string]
+    end
+  end
+
 end

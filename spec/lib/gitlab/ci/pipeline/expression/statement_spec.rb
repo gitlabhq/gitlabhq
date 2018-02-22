@@ -12,18 +12,6 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
     pipeline.variables.build([key: 'VARIABLE', value: 'my variable'])
   end
 
-  describe '#tokens' do
-    it 'returns raw tokens' do
-      expect(subject.tokens.size).to eq 2
-    end
-  end
-
-  describe '#lexemes' do
-    it 'returns an array of syntax lexemes' do
-      expect(subject.lexemes).to eq %w[variable string]
-    end
-  end
-
   describe '#parse_tree' do
     context 'when expression is empty' do
       let(:text) { '' }

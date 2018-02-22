@@ -23,31 +23,14 @@ module Gitlab
             end
           end
 
-          def tokens
-            @tokens ||= @lexer.tokenize
-          end
-
-          def lexemes
-            @lexemes ||= tokens.map(&:to_lexeme)
-          end
-
-          ##
-          # Our syntax is very simple, so we don't yet need to implement a
-          # recursive parser, we can use the most simple approach to create
-          # a reverse descent parse tree "by hand".
-          #
           def parse_tree
-            raise StatementError if lexemes.empty?
+            raise StatementError if @lexer.lexemes.empty?
 
-            unless GRAMMAR.find { |syntax| syntax == lexemes }
+            unless GRAMMAR.find { |syntax| syntax == @lexer.lexemes }
               raise StatementError, 'Unknown pipeline expression!'
             end
 
-            if tokens.many?
-              Expression::Equals.new(tokens.first.build, tokens.last.build)
-            else
-              tokens.first.build
-            end
+            Expression::Parser.new(@lexer).tree
           end
 
           def evaluate

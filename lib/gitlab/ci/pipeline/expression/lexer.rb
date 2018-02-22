@@ -17,7 +17,9 @@ module Gitlab
             @tokens = []
           end
 
-          def tokenize
+          def tokens
+            return @tokens if @tokens.any?
+
             MAX_CYCLES.times do
               LEXEMES.each do |lexeme|
                 @scanner.skip(/\s+/) # ignore whitespace
@@ -31,6 +33,10 @@ module Gitlab
             end
 
             raise Lexer::SyntaxError unless @scanner.eos?
+          end
+
+          def lexemes
+            tokens.map(&:to_lexeme)
           end
         end
       end
