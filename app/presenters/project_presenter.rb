@@ -21,7 +21,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       gitlab_ci_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data
-    ].compact.reject { |item| !item.enabled }
+    ].compact.select { |item| item.enabled }
   end
 
   def statistics_buttons(show_auto_devops_callout:)
@@ -40,7 +40,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     [
       autodevops_anchor_data,
       kubernetes_cluster_anchor_data
-    ].compact.reject { |item| !item.enabled }
+    ].compact.select { |item| item.enabled }
   end
 
   def empty_repo_statistics_buttons
