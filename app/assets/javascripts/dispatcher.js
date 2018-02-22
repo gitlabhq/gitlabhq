@@ -60,6 +60,7 @@ var Dispatcher;
         case 'projects:find_file:show':
         case 'projects:blob:show':
         case 'projects:blame:show':
+<<<<<<< HEAD
           shortcut_handler = true;
           break;
         case 'projects:tree:show':
@@ -98,78 +99,12 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
+=======
+>>>>>>> upstream/master
         case 'projects:network:show':
-          // Ensure we don't create a particular shortcut handler here. This is
-          // already created, where the network graph is created.
-          shortcut_handler = true;
-          break;
-        case 'projects:forks:new':
-          import('./pages/projects/forks/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:artifacts:browse':
-          import('./pages/projects/artifacts/browse')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:artifacts:file':
-          import('./pages/projects/artifacts/file')
-            .then(callDefault)
-            .catch(fail);
           shortcut_handler = true;
-          break;
-        case 'search:show':
-          import('./pages/search/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:settings:repository:show':
-          import('./pages/projects/settings/repository/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:settings:ci_cd:show':
-          import('./pages/projects/settings/ci_cd/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:settings:ci_cd:show':
-          import('./pages/groups/settings/ci_cd/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'ci:lints:create':
-        case 'ci:lints:show':
-          import('./pages/ci/lints')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:conversational_development_index:show':
-          import('./pages/admin/conversational_development_index/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'import:fogbugz:new_user_map':
-          import('./pages/import/fogbugz/new_user_map')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'profiles:personal_access_tokens:index':
-          import('./pages/profiles/personal_access_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:impersonation_tokens:index':
-          import('./pages/admin/impersonation_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:groups:index':
-          import('./pages/dashboard/groups/index')
-            .then(callDefault)
-            .catch(fail);
           break;
       }
       switch (path[0]) {
