@@ -4,6 +4,7 @@ describe Banzai::Filter::AutolinkFilter do
   include FilterSpecHelper
 
   let(:link) { 'http://about.gitlab.com/' }
+  let(:quotes) { ['"', "'"] }
 
   it 'does nothing when :autolink is false' do
     exp = act = link
@@ -13,16 +14,6 @@ describe Banzai::Filter::AutolinkFilter do
   it 'does nothing with non-link text' do
     exp = act = 'This text contains no links to autolink'
     expect(filter(act).to_html).to eq exp
-  end
-
-  context 'when the input contains no links' do
-    it 'does not parse_html back the rinku returned value' do
-      act = HTML::Pipeline.parse('<p>This text contains no links to autolink</p>')
-
-      expect_any_instance_of(described_class).not_to receive(:parse_html)
-
-      filter(act).to_html
-    end
   end
 
   context 'Various schemes' do
@@ -141,6 +132,45 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.at_css('a').text).to eq link
     end
 
+    it 'includes trailing punctuation when part of a balanced pair' do
+      described_class::PUNCTUATION_PAIRS.each do |close, open|
+        next if open.in?(quotes)
+
+        balanced_link = "#{link}#{open}abc#{close}"
+        balanced_actual = filter("See #{balanced_link}...")
+        unbalanced_link = "#{link}#{close}"
+        unbalanced_actual = filter("See #{unbalanced_link}...")
+
+        expect(balanced_actual.at_css('a').text).to eq(balanced_link)
+        expect(unescape(balanced_actual.to_html)).to eq(Rinku.auto_link("See #{balanced_link}..."))
+        expect(unbalanced_actual.at_css('a').text).to eq(link)
+        expect(unescape(unbalanced_actual.to_html)).to eq(Rinku.auto_link("See #{unbalanced_link}..."))
+      end
+    end
+
+    it 'removes trailing quotes' do
+      quotes.each do |quote|
+        balanced_link = "#{link}#{quote}abc#{quote}"
+        balanced_actual = filter("See #{balanced_link}...")
+        unbalanced_link = "#{link}#{quote}"
+        unbalanced_actual = filter("See #{unbalanced_link}...")
+
+        expect(balanced_actual.at_css('a').text).to eq(balanced_link[0...-1])
+        expect(unescape(balanced_actual.to_html)).to eq(Rinku.auto_link("See #{balanced_link}..."))
+        expect(unbalanced_actual.at_css('a').text).to eq(link)
+        expect(unescape(unbalanced_actual.to_html)).to eq(Rinku.auto_link("See #{unbalanced_link}..."))
+      end
+    end
+
+    it 'removes one closing punctuation mark when the punctuation in the link is unbalanced' do
+      complicated_link = "(#{link}(a'b[c'd]))'"
+      expected_complicated_link = %Q{(<a href="#{link}(a'b[c'd]))">#{link}(a'b[c'd]))</a>'}
+      actual = unescape(filter(complicated_link).to_html)
+
+      expect(actual).to eq(Rinku.auto_link(complicated_link))
+      expect(actual).to eq(expected_complicated_link)
+    end
+
     it 'does not include trailing HTML entities' do
       doc = filter("See &lt;&lt;&lt;#{link}&gt;&gt;&gt;")
 
@@ -162,16 +192,27 @@ describe Banzai::Filter::AutolinkFilter do
   end
 
   context 'when the link is inside a tag' do
-    it 'renders text after the link correctly for http' do
-      doc = filter(ERB::Util.html_escape_once("<http://link><another>"))
+    %w[http rdar].each do |protocol|
+      it "renders text after the link correctly for #{protocol}" do
+        doc = filter(ERB::Util.html_escape_once("<#{protocol}://link><another>"))
 
-      expect(doc.children.last.text).to include('<another>')
+        expect(doc.children.last.text).to include('<another>')
+      end
+    end
+  end
+
+  # Rinku does not escape these characters in HTML attributes, but content_tag
+  # does. We don't care about that difference for these specs, though.
+  def unescape(html)
+    %w([ ] { }).each do |cgi_escape|
+      html.sub!(CGI.escape(cgi_escape), cgi_escape)
     end
 
-    it 'renders text after the link correctly for not other protocol' do
-      doc = filter(ERB::Util.html_escape_once("<rdar://link><another>"))
-
-      expect(doc.children.last.text).to include('<another>')
+    quotes.each do |html_escape|
+      html.sub!(CGI.escape_html(html_escape), html_escape)
+      html.sub!(CGI.escape(html_escape), CGI.escape_html(html_escape))
     end
+
+    html
   end
 end
