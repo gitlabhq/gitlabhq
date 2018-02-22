@@ -1,7 +1,18 @@
 import Vue from 'vue';
 import Dashboard from './components/dashboard.vue';
 
-export default () => new Vue({
-  el: '#prometheus-graphs',
-  render: createElement => createElement(Dashboard),
-});
+export default () => {
+  const el = document.querySelector('#prometheus-graphs');
+
+  if (el && el.dataset) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el,
+      render(createElement) {
+        return createElement(Dashboard, {
+          props: el.dataset,
+        });
+      },
+    });
+  }
+};

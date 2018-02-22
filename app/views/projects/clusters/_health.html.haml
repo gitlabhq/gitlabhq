@@ -10,11 +10,10 @@
         "empty-getting-started-svg-path": image_path('illustrations/monitoring/getting_started.svg'),
         "empty-loading-svg-path": image_path('illustrations/monitoring/loading.svg'),
         "empty-unable-to-connect-svg-path": image_path('illustrations/monitoring/unable_to_connect.svg'),
-        "additional-metrics": metrics_namespace_project_cluster_path( format: :json ),
+        "metrics-endpoint": metrics_namespace_project_cluster_path( format: :json ),
         "project-path": project_path(@project),
         "tags-path": project_tags_path(@project),
-        "has-metrics": "true",
-        "deployment-endpoint": nil } }
+        "has-metrics": "true" } }
 
     - else
       %p= s_("ClusterIntegration|In order to show the health of the cluster, we'll need to provision your cluster with Prometheus to collect the required data.")
