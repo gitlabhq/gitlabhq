@@ -15,7 +15,8 @@
       "has-metrics": "true" } }
 
   - else
-    %p= s_("ClusterIntegration|In order to show the health of the cluster, we'll need to provision your cluster with Prometheus to collect the required data.")
+    .settings-content
+      %p= s_("ClusterIntegration|In order to show the health of the cluster, we'll need to provision your cluster with Prometheus to collect the required data.")
 
-    %a.btn{ href: '#cluster-applications' }
-      = s_('ClusterIntegration|Install Prometheus')
+      %a.btn{ href: '#cluster-applications' }
+        = s_('ClusterIntegration|Install Prometheus')
