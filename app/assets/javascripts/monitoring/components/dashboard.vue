@@ -21,6 +21,11 @@
         type: String,
         required: true,
       },
+      showLegend: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       documentationPath: {
         type: String,
         required: true,
@@ -159,6 +164,7 @@
         :deployment-data="store.deploymentData"
         :project-path="projectPath"
         :tags-path="tagsPath"
+        :show-legend="showLegend"
       />
     </graph-group>
   </div>

@@ -10,7 +10,7 @@ export default () => {
       el,
       render(createElement) {
         return createElement(Dashboard, {
-          props: el.dataset,
+          props: { ...el.dataset, showLegend: false },
         });
       },
     });

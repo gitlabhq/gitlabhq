@@ -52,6 +52,11 @@
         type: String,
         required: true,
       },
+      showLegend: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
 
     data() {
@@ -182,7 +187,9 @@
           this.graphHeightOffset,
         );
 
-        if (this.timeSeries.length > 3) {
+        if (!this.showLegend) {
+          this.baseGraphHeight -= 60;
+        } else if (this.timeSeries.length > 3) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
 
@@ -246,6 +253,7 @@
           transform="translate(70, 20)"
         />
         <graph-legend
+          v-if="showLegend"
           :graph-width="graphWidth"
           :graph-height="graphHeight"
           :margin="margin"
