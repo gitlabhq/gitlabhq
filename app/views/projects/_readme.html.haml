@@ -20,4 +20,4 @@
         distributed with computer software, forming part of its documentation.
         GitLab will render it here instead of this message.
       %p
-        = link_to "Add Readme", add_special_file_path(@project, file_name: 'README.md'),  class: 'btn btn-new'
+        = link_to "Add Readme", @project.add_readme_path, class: 'btn btn-new'
