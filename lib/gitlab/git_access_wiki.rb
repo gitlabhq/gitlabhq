@@ -30,5 +30,11 @@ module Gitlab
     def push_to_read_only_message
       ERROR_MESSAGES[:read_only]
     end
+
+    private
+
+    def repository
+      project.wiki.repository
+    end
   end
 end

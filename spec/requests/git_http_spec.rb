@@ -150,7 +150,7 @@ describe 'Git HTTP requests' do
       let(:path) { "/#{wiki.repository.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) { create(:project, :repository, :public, :wiki_enabled) }
+        let(:project) { create(:project, :wiki_repo, :public, :wiki_enabled) }
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
@@ -177,7 +177,7 @@ describe 'Git HTTP requests' do
             end
 
             context 'but the repo is disabled' do
-              let(:project) { create(:project, :repository, :public, :repository_disabled, :wiki_enabled) }
+              let(:project) { create(:project, :wiki_repo, :public, :repository_disabled, :wiki_enabled) }
 
               it_behaves_like 'pulls are allowed'
               it_behaves_like 'pushes are allowed'
@@ -198,7 +198,7 @@ describe 'Git HTTP requests' do
       end
 
       context "when the project is private" do
-        let(:project) { create(:project, :repository, :private, :wiki_enabled) }
+        let(:project) { create(:project, :wiki_repo, :private, :wiki_enabled) }
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
@@ -210,7 +210,7 @@ describe 'Git HTTP requests' do
             end
 
             context 'but the repo is disabled' do
-              let(:project) { create(:project, :repository, :private, :repository_disabled, :wiki_enabled) }
+              let(:project) { create(:project, :wiki_repo, :private, :repository_disabled, :wiki_enabled) }
 
               it 'allows clones' do
                 download(path, user: user.username, password: user.password) do |response|
