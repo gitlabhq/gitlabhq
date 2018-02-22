@@ -1145,6 +1145,7 @@ ActiveRecord::Schema.define(version: 20180307012445) do
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
     t.string "rebase_commit_sha"
+    t.boolean "allow_maintainer_to_push"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
