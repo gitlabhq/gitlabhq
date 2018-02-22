@@ -104,7 +104,8 @@
       hasIssues() {
         return this.unresolvedIssues.length ||
           this.resolvedIssues.length ||
-          this.allIssues.length;
+          this.allIssues.length ||
+          this.neutralIssues.length;
       },
     },
 
