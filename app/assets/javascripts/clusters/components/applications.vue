@@ -206,9 +206,10 @@
                 v-if="!ingressExternalIp"
                 class="settings-message js-no-ip-message"
               >
-                {{ s__(`ClusterIntegration|The IP address is still in
-                the process of being assigned, please check your Kubernetes
+                {{ s__(`ClusterIntegration|The IP address is in
+                the process of being assigned. Please check your Kubernetes
                 cluster or Quotas on GKE if it takes a long time.`) }}
+
                 <a
                   :href="ingressHelpPath"
                   target="_blank"
