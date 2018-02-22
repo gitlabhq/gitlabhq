@@ -117,6 +117,8 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
+        @project = @project.present(current_user: current_user)
+
         render_landing_page
       end
 
