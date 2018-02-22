@@ -1,8 +1,18 @@
 # Administrator documentation
 
 Learn how to administer your GitLab instance (Community Edition and
-[Enterprise Editions](https://about.gitlab.com/products/)).
+Enterprise Edition).
 Regular users don't have access to GitLab administration tools and settings.
+
+GitLab has two product distributions: the open source
+[GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
+and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
+available through [different subscriptions](https://about.gitlab.com/products/).
+
+You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
+but the features you'll have access to depend on the subscription you choose
+(Libre, Starter, Premium, or Ultimate). GitLab Community Edition installations
+only have access to Libre features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
