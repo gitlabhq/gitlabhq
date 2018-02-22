@@ -12,6 +12,7 @@
     mixins: [
       issuableMixin,
     ],
+
     props: {
       isLocked: {
         required: true,
@@ -31,6 +32,7 @@
         },
       },
     },
+
     computed: {
       lockIcon() {
         return this.isLocked ? 'lock' : 'lock-open';

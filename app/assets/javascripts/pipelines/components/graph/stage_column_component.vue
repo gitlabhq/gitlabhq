@@ -62,7 +62,8 @@
           :class="{
             'left-connector': index === 0 && (!isFirstColumn || hasTriggeredBy)
           }"
-          :id="jobId(job)">
+          :id="jobId(job)"
+        >
 
           <div class="curve"></div>
 

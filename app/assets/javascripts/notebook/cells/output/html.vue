@@ -33,4 +33,3 @@
     <div v-html="sanitizedOutput"></div>
   </div>
 </template>
-

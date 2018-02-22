@@ -12,6 +12,7 @@
       projectFeatureToggle,
       projectSettingRow,
     },
+
     props: {
       currentSettings: {
         type: Object,
@@ -95,6 +96,7 @@
         return visibilityLevelDescriptions[this.visibilityLevel];
       },
     },
+
     watch: {
       visibilityLevel(value, oldValue) {
         if (value === visibilityOptions.PRIVATE) {
@@ -151,6 +153,7 @@
         else if (oldValue === 0) toggleHiddenClassBySelector('.builds-feature', false);
       },
     },
+
     methods: {
       highlightChanges() {
         this.highlightChangesClass = true;
