@@ -34,7 +34,7 @@ class PersonalFileUploader < FileUploader
   def store_dirs
     {
       Store::LOCAL => File.join(base_dir, dynamic_segment),
-      Store::REMOTE => File.join(model_path_segment, dynamic_segment)
+      Store::REMOTE => File.join(self.class.model_path_segment(model), dynamic_segment)
     }
   end
 
