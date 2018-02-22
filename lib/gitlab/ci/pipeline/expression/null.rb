@@ -4,6 +4,7 @@ module Gitlab
       module Expression
         class Null < Expression::Lexeme
           PATTERN = /null/.freeze
+          TYPE = :value
 
           def initialize(value)
             @value = value

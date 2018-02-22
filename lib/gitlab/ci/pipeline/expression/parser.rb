@@ -3,20 +3,31 @@ module Gitlab
     module Pipeline
       module Expression
         class Parser
-          def initialize(syntax)
-            if syntax.is_a?(Expression::Lexer)
-              @tokens = syntax.tokens
-            else
-              @tokens = syntax.to_a
-            end
+          def initialize(tokens)
+            # raise ArgumentError unless tokens.enumerator?
+
+            @tokens = tokens
+            @nodes = []
           end
 
           def tree
-            if @tokens.many?
-              Expression::Equals.new(@tokens.first.build, @tokens.last.build)
-            else
-              @tokens.first.build
+            while token = @tokens.next
+              case token.type
+              when :operator
+                lookbehind = @nodes.last
+                lookahead = Parser.new(@tokens).tree
+
+                token.build(lookbehind, lookahead).tap do |node|
+                  @nodes.push(node)
+                end
+              when :value
+                token.build.tap do |leaf|
+                  @nodes.push(leaf)
+                end
+              end
             end
+          rescue StopIteration
+            @nodes.last
           end
         end
       end

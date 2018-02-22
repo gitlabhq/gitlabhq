@@ -4,6 +4,7 @@ module Gitlab
       module Expression
         class Equals < Expression::Lexeme
           PATTERN = /==/.freeze
+          TYPE = :operator
 
           def initialize(left, right)
             @left = left
@@ -12,6 +13,10 @@ module Gitlab
 
           def evaluate(**variables)
             @left.evaluate(variables) == @right.evaluate(variables)
+          end
+
+          def self.build(value, behind, ahead)
+            new(behind, ahead)
           end
         end
       end

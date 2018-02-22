@@ -4,6 +4,7 @@ module Gitlab
       module Expression
         class Variable < Expression::Lexeme
           PATTERN = /\$(?<name>\w+)/.freeze
+          TYPE = :value
 
           def initialize(name)
             @name = name

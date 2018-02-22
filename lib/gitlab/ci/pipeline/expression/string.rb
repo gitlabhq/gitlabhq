@@ -4,6 +4,7 @@ module Gitlab
       module Expression
         class String < Expression::Lexeme
           PATTERN = /"(?<string>.+?)"/.freeze
+          TYPE = :value
 
           def initialize(value)
             @value = value

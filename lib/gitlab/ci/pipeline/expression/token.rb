@@ -3,19 +3,23 @@ module Gitlab
     module Pipeline
       module Expression
         class Token
-          attr_reader :value, :type
+          attr_reader :value, :lexeme
 
-          def initialize(value, type)
+          def initialize(value, lexeme)
             @value = value
-            @type = type
+            @lexeme = lexeme
           end
 
-          def build
-            @type.build(@value)
+          def build(*args)
+            @lexeme.build(@value, *args)
+          end
+
+          def type
+            @lexeme.type
           end
 
           def to_lexeme
-            type.name.demodulize.downcase
+            @lexeme.name.demodulize.downcase
           end
         end
       end

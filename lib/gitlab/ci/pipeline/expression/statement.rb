@@ -15,7 +15,6 @@ module Gitlab
           ].freeze
 
           def initialize(statement, pipeline)
-            @pipeline = pipeline
             @lexer = Expression::Lexer.new(statement)
 
             @variables = pipeline.variables.map do |variable|
@@ -30,7 +29,7 @@ module Gitlab
               raise StatementError, 'Unknown pipeline expression!'
             end
 
-            Expression::Parser.new(@lexer).tree
+            Expression::Parser.new(@lexer.tokens.to_enum).tree
           end
 
           def evaluate
