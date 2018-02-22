@@ -1406,78 +1406,94 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#copy_gitattributes" do
-    let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
-
-    it "raises an error with invalid ref" do
-      expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-    end
-
-    context "with no .gitattrbutes" do
-      before do
-        repository.copy_gitattributes("master")
-      end
-
-      it "does not have an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_falsey
-      end
+    shared_examples 'applying git attributes' do
+      let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
 
       after do
-        FileUtils.rm_rf(attributes_path)
+        FileUtils.rm_rf(attributes_path) if Dir.exist?(attributes_path)
+      end
+
+      it "raises an error with invalid ref" do
+        expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
+      end
+
+      context 'when forcing encoding issues' do
+        let(:branch_name) { "ʕ•ᴥ•ʔ" }
+
+        before do
+          repository.create_branch(branch_name, "master")
+        end
+
+        after do
+          repository.rm_branch(branch_name, user: build(:admin))
+        end
+
+        it "doesn't raise with a valid unicode ref" do
+          expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
+
+          repository
+        end
+      end
+
+      context "with no .gitattrbutes" do
+        before do
+          repository.copy_gitattributes("master")
+        end
+
+        it "does not have an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_falsey
+        end
+      end
+
+      context "with .gitattrbutes" do
+        before do
+          repository.copy_gitattributes("gitattributes")
+        end
+
+        it "has an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_truthy
+        end
+
+        it "has the same content in info/attributes as .gitattributes" do
+          contents = File.open(attributes_path, "rb") { |f| f.read }
+          expect(contents).to eq("*.md binary\n")
+        end
+      end
+
+      context "with updated .gitattrbutes" do
+        before do
+          repository.copy_gitattributes("gitattributes")
+          repository.copy_gitattributes("gitattributes-updated")
+        end
+
+        it "has an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_truthy
+        end
+
+        it "has the updated content in info/attributes" do
+          contents = File.read(attributes_path)
+          expect(contents).to eq("*.txt binary\n")
+        end
+      end
+
+      context "with no .gitattrbutes in HEAD but with previous info/attributes" do
+        before do
+          repository.copy_gitattributes("gitattributes")
+          repository.copy_gitattributes("master")
+        end
+
+        it "does not have an info/attributes" do
+          expect(File.exist?(attributes_path)).to be_falsey
+        end
       end
     end
 
-    context "with .gitattrbutes" do
-      before do
-        repository.copy_gitattributes("gitattributes")
-      end
-
-      it "has an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_truthy
-      end
-
-      it "has the same content in info/attributes as .gitattributes" do
-        contents = File.open(attributes_path, "rb") { |f| f.read }
-        expect(contents).to eq("*.md binary\n")
-      end
-
-      after do
-        FileUtils.rm_rf(attributes_path)
-      end
+    context 'when gitaly is enabled' do
+      it_behaves_like 'applying git attributes'
     end
 
-    context "with updated .gitattrbutes" do
-      before do
-        repository.copy_gitattributes("gitattributes")
-        repository.copy_gitattributes("gitattributes-updated")
-      end
-
-      it "has an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_truthy
-      end
-
-      it "has the updated content in info/attributes" do
-        contents = File.read(attributes_path)
-        expect(contents).to eq("*.txt binary\n")
-      end
-
-      after do
-        FileUtils.rm_rf(attributes_path)
-      end
-    end
-
-    context "with no .gitattrbutes in HEAD but with previous info/attributes" do
-      before do
-        repository.copy_gitattributes("gitattributes")
-        repository.copy_gitattributes("master")
-      end
-
-      it "does not have an info/attributes" do
-        expect(File.exist?(attributes_path)).to be_falsey
-      end
-
-      after do
-        FileUtils.rm_rf(attributes_path)
-      end
+    context 'when gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'applying git attributes'
     end
   end
 
