@@ -264,6 +264,10 @@ class License < ActiveRecord::Base
     features.include?(feature)
   end
 
+  def license_id
+    restricted_attr(:id)
+  end
+
   def restricted_user_count
     restricted_attr(:active_user_count)
   end
