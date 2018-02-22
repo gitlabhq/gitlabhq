@@ -6,19 +6,6 @@ Milestones in GitLab are a way to track issues and merge requests created to ach
 
 Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.
 
-<<<<<<< doc/user/project/milestones/index.md
-<<<<<<< HEAD
-With [GitLab Starter](https://about.gitlab.com/products/),
-you will also see a [Burndown Chart](#burndown-charts) for your milestone, which
-gives a visual insight over the progress of the conclusion of that milestone:
-
-![milestones with burndown charts](img/milestones.gif)
-
-
-=======
->>>>>>> upstream/master
-=======
->>>>>>> doc/user/project/milestones/index.md
 ## Project milestones and group milestones
 
 - **Project milestones** can be assigned to issues or merge requests in that project only. 
