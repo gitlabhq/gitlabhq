@@ -2204,7 +2204,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       context 'sparse checkout', :skip_gitaly_mock do
         let(:expected_files) { %w(files files/js files/js/application.js) }
 
-        before do
+        it 'checks out only the files in the diff' do
           allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
             m.call(*args) do
               worktree_path = args[0]
@@ -2216,10 +2216,33 @@ describe Gitlab::Git::Repository, seed_helper: true do
               expect(Dir[files_pattern]).to eq(expected)
             end
           end
+
+          subject
         end
 
-        it 'checkouts only the files in the diff' do
-          subject
+        context 'when the diff contains a rename' do
+          let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
+          let(:end_sha) { new_commit_move_file(repo).oid }
+
+          after do
+            # Erase our commits so other tests get the original repo
+            repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+            repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+          end
+
+          it 'does not include the renamed file in the sparse checkout' do
+            allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+              m.call(*args) do
+                worktree_path = args[0]
+                files_pattern = File.join(worktree_path, '**', '*')
+
+                expect(Dir[files_pattern]).not_to include('CHANGELOG')
+                expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
+              end
+            end
+
+            subject
+          end
         end
       end
 
@@ -2230,7 +2253,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           allow(repository).to receive(:run_git!).and_call_original
           allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect(subject.length).to eq(40)
+          expect(subject).to match(/\h{40}/)
         end
       end
     end
