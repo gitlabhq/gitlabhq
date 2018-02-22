@@ -1,7 +1,7 @@
 import BuildArtifacts from '~/build_artifacts';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 
-export default function () {
+document.addEventListener('DOMContentLoaded', () => {
   new ShortcutsNavigation(); // eslint-disable-line no-new
   new BuildArtifacts(); // eslint-disable-line no-new
-}
+});

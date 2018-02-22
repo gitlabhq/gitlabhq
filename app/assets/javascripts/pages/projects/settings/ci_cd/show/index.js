@@ -2,7 +2,7 @@ import initSettingsPanels from '~/settings_panels';
 import SecretValues from '~/behaviors/secret_values';
 import AjaxVariableList from '~/ci_variable_list/ajax_variable_list';
 
-export default function () {
+document.addEventListener('DOMContentLoaded', () => {
   // Initialize expandable settings panels
   initSettingsPanels();
 
@@ -22,4 +22,4 @@ export default function () {
     errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
     saveEndpoint: variableListEl.dataset.saveEndpoint,
   });
-}
+});
