@@ -48,10 +48,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
-<<<<<<< HEAD
     add_gitlab_slack_application: './add_gitlab_slack_application/index.js',
-=======
->>>>>>> upstream/master
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
