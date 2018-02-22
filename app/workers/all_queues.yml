@@ -38,6 +38,7 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- object_storage_upload
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
