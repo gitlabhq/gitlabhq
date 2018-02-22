@@ -105,7 +105,6 @@ module ObjectStorage
     included do |base|
       base.include(ObjectStorage)
 
-      before :store, :verify_license!
       after :migrate, :delete_migrated_file
     end
 
@@ -128,10 +127,6 @@ module ObjectStorage
 
       def remote_store_path
         object_store_options.remote_directory
-      end
-
-      def licensed?
-        License.feature_available?(:object_storage)
       end
 
       def serialization_column(model_class, mount_point)
@@ -248,12 +243,6 @@ module ObjectStorage
       migrated_file.delete if exists?
     end
 
-    def verify_license!(_file)
-      return if file_storage?
-
-      raise(ObjectStorageUnavailable, 'Object Storage feature is missing') unless self.class.licensed?
-    end
-
     def exists?
       file.present?
     end
@@ -274,7 +263,6 @@ module ObjectStorage
     def schedule_background_upload?
       self.class.object_store_enabled? &&
         self.class.background_upload_enabled? &&
-        self.class.licensed? &&
         self.file_storage?
     end
 

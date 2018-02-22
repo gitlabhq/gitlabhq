@@ -43,18 +43,6 @@ describe LfsObjectUploader do
         lfs_object
       end
     end
-
-    context 'with object storage unlicenced' do
-      before do
-        stub_lfs_object_storage(licensed: false)
-      end
-
-      it 'is skipped' do
-        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-        lfs_object
-      end
-    end
   end
 
   describe 'remote file' do
@@ -73,16 +61,6 @@ describe LfsObjectUploader do
 
         expect(lfs_object.file_store).to eq remote
         expect(lfs_object.file.path).not_to be_blank
-      end
-    end
-
-    context 'with object storage unlicenced' do
-      before do
-        stub_lfs_object_storage(licensed: false)
-      end
-
-      it 'can not store file remotely' do
-        expect { store_file(lfs_object) }.to raise_error('Object Storage feature is missing')
       end
     end
   end
