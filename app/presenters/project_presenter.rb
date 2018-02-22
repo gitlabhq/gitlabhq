@@ -271,7 +271,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       end
 
       OpenStruct.new(enabled: !clusters.empty?,
-                     label: clusters.empty? ? _('Add Kubernetes cluster') : n_('Kubernetes cluster', 'Kubernetes clusters', clusters.size),
+                     label: clusters.empty? ? _('Add Kubernetes cluster') : _('Kubernetes configured'),
                      link: cluster_link)
     end
   end

@@ -333,7 +333,7 @@ describe ProjectPresenter do
           cluster = create(:cluster, projects: [project])
 
           expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                                label: 'Kubernetes cluster',
+                                                                                label: 'Kubernetes configured',
                                                                                 link: presenter.project_cluster_path(project, cluster)))
         end
 
@@ -343,7 +343,7 @@ describe ProjectPresenter do
           create(:cluster, projects: [project])
 
           expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                                label: 'Kubernetes clusters',
+                                                                                label: 'Kubernetes configured',
                                                                                 link: presenter.project_clusters_path(project)))
         end
 

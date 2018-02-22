@@ -111,7 +111,7 @@ describe 'Project show page', :feature do
             visit project_path(project)
 
             page.within('.project-stats') do
-              expect(page).to have_link('Kubernetes cluster', href: project_cluster_path(project, cluster))
+              expect(page).to have_link('Kubernetes configured', href: project_cluster_path(project, cluster))
             end
           end
         end
@@ -149,7 +149,7 @@ describe 'Project show page', :feature do
         it 'no Kubernetes cluster button if can not manage clusters' do
           page.within('.project-stats') do
             expect(page).not_to have_link('Add Kubernetes cluster')
-            expect(page).not_to have_link('Kubernetes cluster')
+            expect(page).not_to have_link('Kubernetes configured')
           end
         end
       end
@@ -292,7 +292,7 @@ describe 'Project show page', :feature do
             visit project_path(project)
 
             page.within('.project-stats') do
-              expect(page).to have_link('Kubernetes cluster', href: project_cluster_path(project, cluster))
+              expect(page).to have_link('Kubernetes configured', href: project_cluster_path(project, cluster))
             end
           end
         end
