@@ -55,7 +55,9 @@ module TreeHelper
   def tree_edit_branch(project = @project, ref = @ref)
     return unless can_edit_tree?(project, ref)
 
-    if project.user_can_push_to_branch?(current_user, ref)
+    project = project.present(current_user: current_user)
+
+    if project.can_current_user_push_to_branch?(ref)
       ref
     else
       project = tree_edit_project(project)

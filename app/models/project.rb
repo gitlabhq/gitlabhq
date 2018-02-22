@@ -1027,12 +1027,6 @@ class Project < ActiveRecord::Base
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
-  def user_can_push_to_branch?(user, branch_name)
-    return false unless repository.branch_exists?(branch_name)
-
-    ::Gitlab::UserAccess.new(user, project: self).can_push_to_branch?(branch_name)
-  end
-
   def forked?
     return true if fork_network && fork_network.root_project != self
 
