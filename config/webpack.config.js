@@ -38,13 +38,10 @@ function generateAutoEntries(path, prefix = '.') {
 }
 
 pageEntries.forEach(( path ) => generateAutoEntries(path));
-<<<<<<< HEAD
 
 // add and replace any ce entries with ee entries
 const eePageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts') });
 eePageEntries.forEach(( path ) => generateAutoEntries(path, 'ee'));
-=======
->>>>>>> upstream/master
 
 // report our auto-generated bundle count
 var autoEntriesCount = Object.keys(autoEntries).length;
