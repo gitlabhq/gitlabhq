@@ -67,6 +67,7 @@
             .issuable-discussion.js-vue-notes-event
               .hidden
                 = render "shared/notes/form", view: diff_view, supports_autocomplete: true
+                = render 'shared/notes/edit_form', project: @project
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
                 noteable_data: serialize_issuable(@merge_request),
                 current_user_data: UserSerializer.new.represent(current_user).to_json} }
