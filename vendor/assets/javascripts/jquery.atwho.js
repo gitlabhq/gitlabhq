@@ -448,7 +448,7 @@ Controller = (function() {
   Controller.prototype.insertContentFor = function($li) {
     var data, tpl;
     tpl = this.getOpt('insertTpl');
-    data = $.extend({}, $li.data('item-data'), {
+    data = $.extend({}, $li.data('itemData'), {
       'atwho-at': this.at
     });
     return this.callbacks("tplEval").call(this, tpl, data, "onInsert");
@@ -824,7 +824,7 @@ EditableController = (function(superClass) {
       this.$inputor.focus();
     }
     suffix = (suffix = this.getOpt('suffix')) === "" ? suffix : suffix || "\u00A0";
-    data = $li.data('item-data');
+    data = $li.data('itemData');
     this.query.el.removeClass('atwho-query').addClass('atwho-inserted').html(content).attr('data-atwho-at-query', "" + data['atwho-at'] + this.query.text);
     if (range = this._getRange()) {
       range.setEndAfter(this.query.el[0]);

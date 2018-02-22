@@ -1,6 +1,0 @@
----
-title: Fix file search results when they match file contents with a number between
-  two colons
-merge_request: 16462
-author:
-type: fixed

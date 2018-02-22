@@ -365,6 +365,20 @@ describe Gitlab::ClosingIssueExtractor do
             .to match_array([issue, other_issue, third_issue])
       end
 
+      it 'allows oxford commas (comma before and) when referencing multiple issues' do
+        message = "Closes #{reference}, #{reference2}, and #{reference3}"
+
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
+      end
+
+      it 'allows spaces before commas when referencing multiple issues' do
+        message = "Closes #{reference} , #{reference2} , and #{reference3}"
+
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
+      end
+
       it 'fetches issues in multi-line message' do
         message = "Awesome commit (closes #{reference})\nAlso fixes #{reference2}"
 

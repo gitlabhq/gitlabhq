@@ -9,8 +9,8 @@ export default class ProtectedTagAccessDropdown {
     this.options.$dropdown.glDropdown({
       data: this.options.data,
       selectable: true,
-      inputId: this.options.$dropdown.data('input-id'),
-      fieldName: this.options.$dropdown.data('field-name'),
+      inputId: this.options.$dropdown.data('inputId'),
+      fieldName: this.options.$dropdown.data('fieldName'),
       toggleLabel(item, $el) {
         if ($el.is('.is-active')) {
           return item.text;

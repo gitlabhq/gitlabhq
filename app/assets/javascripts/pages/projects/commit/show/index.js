@@ -7,7 +7,7 @@ import initNotes from '~/init_notes';
 import initChangesDropdown from '~/init_changes_dropdown';
 import { fetchCommitMergeRequests } from '~/commit_merge_requests';
 
-export default () => {
+document.addEventListener('DOMContentLoaded', () => {
   new Diff();
   new ZenMode();
   new ShortcutsNavigation();
@@ -19,4 +19,4 @@ export default () => {
   initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
   $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
   fetchCommitMergeRequests();
-};
+});

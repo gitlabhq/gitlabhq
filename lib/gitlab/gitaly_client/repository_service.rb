@@ -134,6 +134,23 @@ module Gitlab
         response.in_progress
       end
 
+      def squash_in_progress?(squash_id)
+        request = Gitaly::IsSquashInProgressRequest.new(
+          repository: @gitaly_repo,
+          squash_id: squash_id.to_s
+        )
+
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          :is_squash_in_progress,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+
+        response.in_progress
+      end
+
       def fetch_source_branch(source_repository, source_branch, local_ref)
         request = Gitaly::FetchSourceBranchRequest.new(
           repository: @gitaly_repo,

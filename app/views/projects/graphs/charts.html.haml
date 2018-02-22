@@ -1,9 +1,5 @@
 - @no_container = true
 - page_title "Charts"
-- content_for :page_specific_javascripts do
-  = webpack_bundle_tag('common_d3')
-  = webpack_bundle_tag('graphs')
-  = webpack_bundle_tag('graphs_charts')
 
 .repo-charts{ class: container_class }
   %h4.sub-header

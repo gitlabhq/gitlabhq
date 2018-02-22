@@ -14,7 +14,7 @@ describe QA::Page::Base do
         end
 
         view 'path/to/some/_partial.html.haml' do
-          element :something, 'string pattern'
+          element :another_element, 'string pattern'
         end
       end
     end
@@ -25,11 +25,10 @@ describe QA::Page::Base do
     end
 
     it 'populates views objects with data about elements' do
-      subject.views.first.elements.tap do |elements|
-        expect(elements.size).to eq 2
-        expect(elements).to all(be_an_instance_of QA::Page::Element)
-        expect(elements.map(&:name)).to eq [:something, :something_else]
-      end
+      expect(subject.elements.size).to eq 3
+      expect(subject.elements).to all(be_an_instance_of QA::Page::Element)
+      expect(subject.elements.map(&:name))
+        .to eq [:something, :something_else, :another_element]
     end
   end
 

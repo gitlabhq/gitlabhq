@@ -6,8 +6,8 @@ export default class IntegrationSettingsForm {
     this.$form = $(formSelector);
 
     // Form Metadata
-    this.canTestService = this.$form.data('can-test');
-    this.testEndPoint = this.$form.data('test-url');
+    this.canTestService = this.$form.data('canTest');
+    this.testEndPoint = this.$form.data('testUrl');
 
     // Form Child Elements
     this.$serviceToggle = this.$form.find('#service_active');

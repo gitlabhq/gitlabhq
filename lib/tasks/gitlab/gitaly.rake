@@ -2,7 +2,7 @@ namespace :gitlab do
   namespace :gitaly do
     desc "GitLab | Install or upgrade gitaly"
     task :install, [:dir, :repo] => :gitlab_environment do |t, args|
-      require 'toml'
+      require 'toml-rb'
 
       warn_user_is_not_gitlab
 
@@ -38,7 +38,7 @@ namespace :gitlab do
 
     desc "GitLab | Print storage configuration in TOML format"
     task storage_config: :environment do
-      require 'toml'
+      require 'toml-rb'
 
       puts "# Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}"
       puts "# This is in TOML format suitable for use in Gitaly's config.toml file."

@@ -4,18 +4,6 @@ module QA
       class SecretVariable < Factory::Base
         attr_accessor :key, :value
 
-        product :key do
-          Page::Project::Settings::CICD.act do
-            expand_secret_variables(&:variable_key)
-          end
-        end
-
-        product :value do
-          Page::Project::Settings::CICD.act do
-            expand_secret_variables(&:variable_value)
-          end
-        end
-
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-secret-variables'
           project.description = 'project for adding secret variable test'

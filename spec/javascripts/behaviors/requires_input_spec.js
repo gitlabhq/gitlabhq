@@ -15,7 +15,7 @@ describe('requiresInput', () => {
   });
 
   it('enables submit when no field is required', () => {
-    $('*[required=required]').removeAttr('required');
+    $('*[required=required]').prop('required', false);
     $('.js-requires-input').requiresInput();
     expect(submitButton).not.toBeDisabled();
   });

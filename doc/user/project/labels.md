@@ -15,7 +15,7 @@ In GitLab, you can create project and group labels:
 ## Creating labels
 
 >**Note:**
-A permission level of `Developer` or higher is required in order to create labels.
+A permission level of `Developer` or higher is required to create labels.
 
 ### New project label
 
@@ -27,7 +27,7 @@ If a project has no labels, you can generate a default set of project labels fro
 
 ![Labels generate default](img/labels_generate_default.png)
 
-GitLab will add the following default labels to the  project:
+GitLab will add the following default labels to the project:
 
 ![Labels default](img/labels_default.png)
 
@@ -48,9 +48,9 @@ From the sidebar of an issue or a merge request, you can create a create a new *
 ## Editing labels
 
 NOTE: **Note:**
-A permission level of `Developer` or higher is required in order to edit labels.
+A permission level of `Developer` or higher is required to edit labels.
 
-You can update a label by navigating to **Issues > Labels** in the project ot group and clicking the pencil icon.
+You can update a label by navigating to **Issues > Labels** in the project or group and clicking the pencil icon.
 
 You can delete a label by clicking the trash icon.
 
