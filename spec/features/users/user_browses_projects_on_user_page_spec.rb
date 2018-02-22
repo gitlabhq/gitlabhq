@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User page', :js do
+describe 'Users > User browses projects on user page', :js do
   let!(:user) { create :user }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|
@@ -24,6 +24,28 @@ describe 'User page', :js do
     page.within '.nav-links' do
       click_link name
     end
+  end
+
+  it 'paginates projects', :js do
+    project = create(:project, namespace: user.namespace)
+    project2 = create(:project, namespace: user.namespace)
+    allow(Project).to receive(:default_per_page).and_return(1)
+
+    sign_in(user)
+
+    visit user_path(user)
+
+    page.within('.user-profile-nav') do
+      click_link('Personal projects')
+    end
+
+    wait_for_requests
+
+    expect(page).to have_content(project2.name)
+
+    click_link('Next')
+
+    expect(page).to have_content(project.name)
   end
 
   context 'when not signed in' do
