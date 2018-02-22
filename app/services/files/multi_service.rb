@@ -5,13 +5,11 @@ module Files
     def create_commit!
       handler = Lfs::FileModificationHandler.new(project, @branch_name)
 
-      actions = actions_after_lfs_transformation(handler, params[:actions])
+      handler.begin_commit do |file_handler|
+        actions = actions_after_lfs_transformation(file_handler, params[:actions])
 
-      success = commit_actions!(actions)
-
-      handler.on_success if success
-
-      success
+        commit_actions!(actions)
+      end
     end
 
     private

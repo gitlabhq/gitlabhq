@@ -3,7 +3,8 @@ module Files
     def create_commit!
       handler = Lfs::FileModificationHandler.new(project, @branch_name)
 
-      handler.new_file(@file_path, @file_content) do |content_or_lfs_pointer|
+      handler.begin_commit do |file_handler|
+        content_or_lfs_pointer = file_handler.new_file(@file_path, @file_content)
         create_transformed_commit(content_or_lfs_pointer)
       end
     end

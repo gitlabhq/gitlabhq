@@ -1,4 +1,13 @@
 module Lfs
+  # Usage: Open a `begin_commit` block, call `new_file` on the yielded object
+  #        as many times as needed, and return the commit result to the block
+  #
+  # handler = Lfs::FileModificationHandler.new(project, branch_name)
+  #
+  # handler.begin_commit do |file_handler|
+  #   content_or_lfs_pointer = file_handler.new_file(file_path, file_content)
+  #   create_transformed_commit(content_or_lfs_pointer)
+  # end
   class FileModificationHandler
     attr_reader :project, :branch_name
 
@@ -9,27 +18,23 @@ module Lfs
       @branch_name = branch_name
     end
 
-    def on_success
-      on_success_actions.map(&:call)
+    def begin_commit
+      result = yield(self)
+
+      on_success
+
+      result
     end
 
-    # In the block form this yields content to commit and links LfsObjectsProject on success
-    # In the non-block form this returns content to commit and requires handler.on_success to be called to link LfsObjectsProjects
     def new_file(file_path, file_content)
-      content = transform_content(file_path, file_content)
-
-      if block_given?
-        result = yield(content)
-
-        on_success if result
-
-        result
-      else
-        content
-      end
+      transform_content(file_path, file_content)
     end
 
     private
+
+    def on_success
+      on_success_actions.map(&:call)
+    end
 
     def transform_content(file_path, file_content)
       if project.lfs_enabled? && lfs_file?(file_path)
