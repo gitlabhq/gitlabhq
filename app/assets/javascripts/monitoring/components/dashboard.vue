@@ -26,6 +26,11 @@
         required: false,
         default: true,
       },
+      forceSmallGraph: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
       documentationPath: {
         type: String,
         required: true,
@@ -165,6 +170,7 @@
         :project-path="projectPath"
         :tags-path="tagsPath"
         :show-legend="showLegend"
+        :small-graph="forceSmallGraph"
       />
     </graph-group>
   </div>

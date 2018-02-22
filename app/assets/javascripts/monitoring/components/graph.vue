@@ -57,6 +57,11 @@
         required: false,
         default: true,
       },
+      smallGraph: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
 
     data() {
@@ -135,7 +140,7 @@
         const breakpointSize = bp.getBreakpointSize();
         const query = this.graphData.queries[0];
         this.margin = measurements.large.margin;
-        if (breakpointSize === 'xs' || breakpointSize === 'sm') {
+        if (this.smallGraph || breakpointSize === 'xs' || breakpointSize === 'sm') {
           this.graphHeight = 300;
           this.margin = measurements.small.margin;
           this.measurements = measurements.small;
