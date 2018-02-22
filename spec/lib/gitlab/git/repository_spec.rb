@@ -600,6 +600,33 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#branch_names_contains_sha' do
+    shared_examples 'returning the right branches' do
+      let(:head_id) { repository.rugged.head.target.oid }
+      let(:new_branch) { head_id }
+
+      before do
+        repository.create_branch(new_branch, 'master')
+      end
+
+      after do
+        repository.delete_branch(new_branch)
+      end
+
+      it 'displays that branch' do
+        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch)
+      end
+    end
+
+    context 'when Gitaly is enabled' do
+      it_behaves_like 'returning the right branches'
+    end
+
+    context 'when Gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'returning the right branches'
+    end
+  end
+
   describe "#refs_hash" do
     subject { repository.refs_hash }
 
@@ -1590,7 +1617,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expected_languages = [
           { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
           { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.9, label: "HTML", color: "#e44b23", highlight: "#e44b23" },
+          { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
           { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
         ]
 
@@ -2204,7 +2231,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       context 'sparse checkout', :skip_gitaly_mock do
         let(:expected_files) { %w(files files/js files/js/application.js) }
 
-        before do
+        it 'checks out only the files in the diff' do
           allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
             m.call(*args) do
               worktree_path = args[0]
@@ -2216,10 +2243,33 @@ describe Gitlab::Git::Repository, seed_helper: true do
               expect(Dir[files_pattern]).to eq(expected)
             end
           end
+
+          subject
         end
 
-        it 'checkouts only the files in the diff' do
-          subject
+        context 'when the diff contains a rename' do
+          let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
+          let(:end_sha) { new_commit_move_file(repo).oid }
+
+          after do
+            # Erase our commits so other tests get the original repo
+            repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+            repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+          end
+
+          it 'does not include the renamed file in the sparse checkout' do
+            allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+              m.call(*args) do
+                worktree_path = args[0]
+                files_pattern = File.join(worktree_path, '**', '*')
+
+                expect(Dir[files_pattern]).not_to include('CHANGELOG')
+                expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
+              end
+            end
+
+            subject
+          end
         end
       end
 
@@ -2230,7 +2280,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
           allow(repository).to receive(:run_git!).and_call_original
           allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect(subject.length).to eq(40)
+          expect(subject).to match(/\h{40}/)
         end
       end
     end

@@ -29,13 +29,15 @@ var pageEntries = glob.sync('pages/**/index.js', { cwd: path.join(ROOT_PATH, 'ap
 var dispatcher = fs.readFileSync(path.join(ROOT_PATH, 'app/assets/javascripts/dispatcher.js')).toString();
 var dispatcherChunks = dispatcher.match(/(?!import\(')\.\/pages\/[^']+/g);
 
-pageEntries.forEach(( path ) => {
-  let chunkPath = path.replace(/\/index\.js$/, '');
-  if (!dispatcherChunks.includes('./' + chunkPath)) {
-    let chunkName = chunkPath.replace(/\//g, '.');
-    autoEntries[chunkName] = './' + path;
+function generateAutoEntries(path, prefix = '.') {
+  const chunkPath = path.replace(/\/index\.js$/, '');
+  if (!dispatcherChunks.includes(`${prefix}/${chunkPath}`)) {
+    const chunkName = chunkPath.replace(/\//g, '.');
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
-});
+}
+
+pageEntries.forEach(( path ) => generateAutoEntries(path));
 
 // report our auto-generated bundle count
 var autoEntriesCount = Object.keys(autoEntries).length;
@@ -48,7 +50,6 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
-    account:              './profile/account/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -57,22 +58,18 @@ var config = {
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
-    docs:                 './docs/docs_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     help:                 './help/help.js',
-    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
-    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
-    notes:                './notes/index.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
@@ -81,7 +78,7 @@ var config = {
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     registry_list:        './registry/index.js',
-    ide:                 './ide/index.js',
+    ide:                  './ide/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     sketch_viewer:        './blob/sketch_viewer.js',
@@ -256,11 +253,9 @@ var config = {
         'filtered_search',
         'groups',
         'issue_show',
-        'job_details',
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',
-        'notes',
         'pdf_viewer',
         'pipelines',
         'pipelines_details',

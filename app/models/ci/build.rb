@@ -467,7 +467,7 @@ module Ci
 
       if cache && project.jobs_cache_index
         cache = cache.merge(
-          key: "#{cache[:key]}_#{project.jobs_cache_index}")
+          key: "#{cache[:key]}-#{project.jobs_cache_index}")
       end
 
       [cache]

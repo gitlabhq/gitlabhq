@@ -23,7 +23,7 @@ describe('Merge request notes', () => {
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
       $('body').attr('data-page', 'projects:merge_requests:show');
-      window.gon.current_user_id = $('.note:last').data('author-id');
+      window.gon.current_user_id = $('.note:last').data('authorId');
 
       return new Notes('', []);
     });
@@ -76,7 +76,7 @@ describe('Merge request notes', () => {
       </form>`;
       setFixtures(diffsResponse.html + noteFormHtml);
       $('body').attr('data-page', 'projects:merge_requests:show');
-      window.gon.current_user_id = $('.note:last').data('author-id');
+      window.gon.current_user_id = $('.note:last').data('authorId');
 
       return new Notes('', []);
     });

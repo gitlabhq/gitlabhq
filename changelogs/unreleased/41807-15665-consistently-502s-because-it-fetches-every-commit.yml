@@ -1,6 +1,0 @@
----
-title: Speed up loading merged merge requests when they contained a lot of commits
-  before merging
-merge_request: 16320
-author:
-type: performance

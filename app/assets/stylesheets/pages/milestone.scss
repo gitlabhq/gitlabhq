@@ -115,6 +115,10 @@
     display: block;
     margin-top: 7px;
 
+    .issue-link {
+      display: inline-block;
+    }
+
     .issuable-number {
       color: $gl-text-color-secondary;
       margin-right: 5px;

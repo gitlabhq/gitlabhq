@@ -7,7 +7,6 @@
     mixins: [
       pipelinesMixin,
     ],
-
     props: {
       endpoint: {
         type: String,

@@ -30,10 +30,10 @@ module Clusters
           ca_cert: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           username: gke_cluster.master_auth.username,
           password: gke_cluster.master_auth.password,
-          token: request_kuberenetes_token)
+          token: request_kubernetes_token)
       end
 
-      def request_kuberenetes_token
+      def request_kubernetes_token
         Ci::FetchKubernetesTokenService.new(
           'https://' + gke_cluster.endpoint,
           Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),

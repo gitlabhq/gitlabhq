@@ -1,5 +1,0 @@
----
-title: Substitute deprecated ui_charcoal with new default ui_indigo
-merge_request: 16271
-author: Takuya Noguchi
-type: fixed

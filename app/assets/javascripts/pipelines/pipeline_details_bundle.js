@@ -1,9 +1,13 @@
 import Vue from 'vue';
-import Flash from '../flash';
-import PipelinesMediator from './pipeline_details_mediatior';
+import Flash from '~/flash';
+import Translate from '~/vue_shared/translate';
+import { __ } from '~/locale';
+import PipelinesMediator from './pipeline_details_mediator';
 import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
+
+Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => {
   const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
@@ -54,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       postAction(action) {
         this.mediator.service.postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
-          .catch(() => new Flash('An error occurred while making the request.'));
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
