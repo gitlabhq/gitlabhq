@@ -61,9 +61,11 @@ describe('Applications', () => {
               prometheus: { title: 'Prometheus' },
             },
           });
+
           expect(
-            vm.$el.querySelector('.js-ip-address').getAttribute('placeholder'),
+            vm.$el.querySelector('.js-ip-address').value,
           ).toEqual('0.0.0.0');
+
           expect(
             vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text'),
           ).toEqual('0.0.0.0');
@@ -85,7 +87,7 @@ describe('Applications', () => {
           });
 
           expect(
-            vm.$el.querySelector('.js-ip-address').getAttribute('placeholder'),
+            vm.$el.querySelector('.js-ip-address').value,
           ).toEqual('?');
 
           expect(vm.$el.querySelector('.js-no-ip-message')).not.toBe(null);
