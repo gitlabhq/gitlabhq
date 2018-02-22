@@ -16,13 +16,13 @@ module BlobHelper
                            options[:link_opts])
   end
 
-  def edit_blob_element(project = @project, ref = @ref, path = @path, options = {})
+  def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
     return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      edit_button_tag(edit_text, common_classes)
+      edit_disabled_button_tag(edit_text, common_classes)
     # This condition applies to anonymous or users who can edit directly
     elsif !current_user || user_can_modify_blob?(blob, project, ref)
       edit_link_tag(edit_text, edit_blob_path(project, ref, path, options), common_classes)
@@ -54,14 +54,14 @@ module BlobHelper
     _('Web IDE')
   end
 
-  def ide_edit_element(project = @project, ref = @ref, path = @path, options = {})
+  def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
     return unless show_new_ide?
     return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      edit_button_tag(ide_edit_text, common_classes)
+      edit_disabled_button_tag(ide_edit_text, common_classes)
     # This condition only applies to users who are logged in
     # Web IDE (Beta) requires the user to have this feature enabled
     elsif user_can_modify_blob?(blob, project, ref)
@@ -327,17 +327,17 @@ module BlobHelper
 
   def edit_blob_fork_params(path)
     {
-        to: path,
-        notice: edit_in_new_fork_notice,
-        notice_now: edit_in_new_fork_notice_now
+      to: path,
+      notice: edit_in_new_fork_notice,
+      notice_now: edit_in_new_fork_notice_now
     }
   end
 
   def edit_modify_file_fork_params(action)
     {
-        to: request.fullpath,
-        notice: edit_in_new_fork_notice_action(action),
-        notice_now: edit_in_new_fork_notice_now
+      to: request.fullpath,
+      notice: edit_in_new_fork_notice_action(action),
+      notice_now: edit_in_new_fork_notice_now
     }
   end
 
@@ -349,7 +349,7 @@ module BlobHelper
                data: { action: action, fork_path: fork_path }
   end
 
-  def edit_button_tag(button_text, common_classes)
+  def edit_disabled_button_tag(button_text, common_classes)
     button_tag(button_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' })
   end
 
