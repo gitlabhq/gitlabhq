@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180213131630) do
+ActiveRecord::Schema.define(version: 20180215143644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1913,6 +1913,7 @@ ActiveRecord::Schema.define(version: 20180213131630) do
     t.boolean "only_mirror_protected_branches"
     t.boolean "pull_mirror_available_overridden"
     t.integer "jobs_cache_index"
+    t.boolean "mirror_overwrites_diverged_branches"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

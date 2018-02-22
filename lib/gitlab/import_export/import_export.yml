@@ -111,6 +111,7 @@ excluded_attributes:
     - :remote_mirror_available_overridden
     - :only_mirror_protected_branches
     - :pull_mirror_available_overridden
+    - :mirror_overwrites_diverged_branches
   snippets:
     - :expired_at
   merge_request_diff:
