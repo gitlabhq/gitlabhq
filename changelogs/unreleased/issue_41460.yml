@@ -1,5 +1,0 @@
----
-title: Fix error on changes tab when merge request cannot be created
-merge_request:
-author:
-type: fixed

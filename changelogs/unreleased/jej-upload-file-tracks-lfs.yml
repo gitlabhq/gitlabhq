@@ -1,5 +1,0 @@
----
-title: File Upload UI can create LFS pointers based on .gitattributes
-merge_request: 16412
-author:
-type: fixed

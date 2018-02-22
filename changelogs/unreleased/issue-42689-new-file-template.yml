@@ -1,5 +1,0 @@
----
-title: Trigger change event on filename input when file template is applied
-merge_request: 16911
-author: Sebastian Klingler
-type: fixed

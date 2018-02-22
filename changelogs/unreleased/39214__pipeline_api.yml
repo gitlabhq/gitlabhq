@@ -1,5 +1,0 @@
----
-title: Add `pipelines` endpoint to merge requests API
-merge_request: 15454
-author: Tony Rom <thetonyrom@gmail.com>
-type: added

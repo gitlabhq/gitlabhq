@@ -1,6 +1,0 @@
----
-title: 'Closes #38540 - Remove .ssh/environment file that now breaks the gitlab:check
-  rake task'
-merge_request:
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Stop checking if discussions are in a mergeable state if the MR isn't
-merge_request:
-author:
-type: performance

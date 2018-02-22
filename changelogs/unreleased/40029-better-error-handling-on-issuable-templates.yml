@@ -1,5 +1,0 @@
----
-title: Stop loading spinner on error of issuable templates
-merge_request: 16600
-author: Takuya Noguchi
-type: fixed
