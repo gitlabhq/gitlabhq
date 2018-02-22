@@ -188,7 +188,7 @@
         );
 
         if (!this.showLegend) {
-          this.baseGraphHeight -= 60;
+          this.baseGraphHeight -= 50;
         } else if (this.timeSeries.length > 3) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
@@ -253,7 +253,6 @@
           transform="translate(70, 20)"
         />
         <graph-legend
-          v-if="showLegend"
           :graph-width="graphWidth"
           :graph-height="graphHeight"
           :margin="margin"
@@ -263,6 +262,7 @@
           :time-series="timeSeries"
           :unit-of-display="unitOfDisplay"
           :current-data-index="currentDataIndex"
+          :show-legend-group="showLegend"
         />
         <svg
           class="graph-data"
