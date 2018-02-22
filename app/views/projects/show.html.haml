@@ -1,7 +1,6 @@
 - @no_container = true
 - breadcrumb_title "Details"
 - @content_class = "limit-container-width" unless fluid_layout
-- @project = @project.present(current_user: current_user)
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 
 = content_for :meta_tags do
