@@ -20,15 +20,6 @@ class PersonalFileUploader < FileUploader
     true
   end
 
-<<<<<<< HEAD
-  def object_store
-    return Store::LOCAL unless model
-
-    super
-  end
-
-=======
->>>>>>> upstream/master
   # Revert-Override
   def store_dir
     store_dirs[object_store]
