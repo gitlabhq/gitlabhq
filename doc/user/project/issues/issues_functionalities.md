@@ -50,8 +50,8 @@ Often multiple people likely work on the same issue together,
 which can especially be difficult to track in large teams
 where there is shared ownership of an issue.
 
-In GitLab Enterprise Edition, you can also select multiple assignees
-to an issue.
+In [GitLab Starter](https://about.gitlab.com/products/), you can also
+select multiple assignees to an issue.
 
 Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
 
