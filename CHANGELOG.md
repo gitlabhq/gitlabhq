@@ -165,14 +165,8 @@ entry.
 - Log and send a system hook if a blocked user attempts to login.
 - Add Gitaly Servers admin dashboard.
 
-<<<<<<< HEAD
-### Other (26 changes, 7 of them are from the community)
-
-- Activated the Web IDE Button also on the main project page. !4250
-=======
 ### Other (25 changes, 7 of them are from the community)
 
->>>>>>> upstream/master
 - Updated the katex library. !15864
 - Add modal for deleting a milestone. !16229
 - Remove unused CSS selectors for Cycle Analytics. !16270 (Takuya Noguchi)
