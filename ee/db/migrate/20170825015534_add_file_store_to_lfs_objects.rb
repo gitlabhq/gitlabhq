@@ -26,10 +26,14 @@ class AddFileStoreToLfsObjects < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column(:lfs_objects, :file_store, :integer)
+    unless column_exists?(:lfs_objects, :file_store)
+      add_column(:lfs_objects, :file_store, :integer)
+    end
   end
 
   def down
-    remove_column(:lfs_objects, :file_store)
+    if column_exists?(:lfs_objects, :file_store)
+      remove_column(:lfs_objects, :file_store)
+    end
   end
 end
