@@ -1,3 +1,3 @@
 import ZenMode from '~/zen_mode';
 
-export default () => new ZenMode();
+document.addEventListener('DOMContentLoaded', () => new ZenMode());
