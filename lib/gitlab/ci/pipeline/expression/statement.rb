@@ -3,7 +3,7 @@ module Gitlab
     module Pipeline
       module Expression
         class Statement
-          ParserError = Class.new(StandardError)
+          StatementError = Class.new(StandardError)
 
           GRAMMAR = [
             %w[variable equals string],
@@ -37,10 +37,10 @@ module Gitlab
           # a reverse descent parse tree "by hand".
           #
           def parse_tree
-            raise ParserError if lexemes.empty?
+            raise StatementError if lexemes.empty?
 
             unless GRAMMAR.find { |syntax| syntax == lexemes }
-              raise ParserError, 'Unknown pipeline expression!'
+              raise StatementError, 'Unknown pipeline expression!'
             end
 
             if tokens.many?

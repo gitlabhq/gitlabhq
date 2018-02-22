@@ -25,10 +25,21 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
   end
 
   describe '#parse_tree' do
-    context 'when expression grammar is incorrect' do
+    context 'when expression is empty' do
+      let(:text) { '' }
+
       it 'raises an error' do
         expect { subject.parse_tree }
-          .to raise_error described_class::ParserError
+          .to raise_error described_class::StatementError
+      end
+    end
+
+    context 'when expression grammar is incorrect' do
+      let(:text) { '$VAR "text"' }
+
+      it 'raises an error' do
+        expect { subject.parse_tree }
+          .to raise_error described_class::StatementError
       end
     end
 

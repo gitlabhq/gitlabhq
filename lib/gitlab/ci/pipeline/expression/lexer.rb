@@ -20,7 +20,7 @@ module Gitlab
           def tokenize
             MAX_CYCLES.times do
               LEXEMES.each do |lexeme|
-                @scanner.scan(/\s+/) # ignore whitespace
+                @scanner.skip(/\s+/) # ignore whitespace
 
                 lexeme.scan(@scanner).tap do |token|
                   @tokens.push(token) if token.present?
