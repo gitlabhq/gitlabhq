@@ -37,6 +37,22 @@ describe UsersController, "routing" do
   it "to #calendar_activities" do
     expect(get("/users/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
   end
+
+  describe 'redirect alias routes' do
+    include RSpec::Rails::RequestExampleGroup
+
+    it '/u/user1 redirects to /user1' do
+      expect(get("/u/user1")).to redirect_to('/user1')
+    end
+
+    it '/u/user1/groups redirects to /user1/groups' do
+      expect(get("/u/user1/groups")).to redirect_to('/users/user1/groups')
+    end
+
+    it '/u/user1/projects redirects to /user1/projects' do
+      expect(get("/u/user1/projects")).to redirect_to('/users/user1/projects')
+    end
+  end
 end
 
 # search GET    /search(.:format) search#show
