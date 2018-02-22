@@ -20,6 +20,19 @@ shared_examples "migrates" do |to_store:, from_store: nil|
     migrate(from)
   end
 
+  it 'returns corresponding file type' do
+    expect(subject).to be_an(CarrierWave::Uploader::Base)
+    expect(subject).to be_a(ObjectStorage::Concern)
+
+    if from == described_class::Store::REMOTE
+      expect(subject.file).to be_a(CarrierWave::Storage::Fog::File)
+    elsif from == described_class::Store::LOCAL
+      expect(subject.file).to be_a(CarrierWave::SanitizedFile)
+    else
+      raise 'Enexpected file type'
+    end
+  end
+
   it 'does nothing when migrating to the current store' do
     expect { migrate(from) }.not_to change { subject.object_store }.from(from)
   end
@@ -39,13 +52,13 @@ shared_examples "migrates" do |to_store:, from_store: nil|
   end
 
   it 'can access to the original file during migration' do
-    original_file = subject.file.path
+    file = subject.file
 
     allow(subject).to receive(:delete_migrated_file) { } # Remove as a callback of :migrate
     allow(subject).to receive(:record_upload) { } # Remove as a callback of :store (:record_upload)
 
-    expect(File.exist?(original_file)).to be_truthy
-    expect { migrate(to) }.not_to change { File.exist?(original_file) }
+    expect(file.exists?).to be_truthy
+    expect { migrate(to) }.not_to change { file.exists? }
   end
 
   context 'when migrate! is not oqqupied by another process' do
