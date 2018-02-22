@@ -1,5 +1,0 @@
----
-title: Allows html text in commits atom feed
-merge_request: 16603
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

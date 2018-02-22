@@ -1,5 +1,0 @@
----
-title: Fix squash not working when diff contained non-ASCII data
-merge_request:
-author:
-type: fixed

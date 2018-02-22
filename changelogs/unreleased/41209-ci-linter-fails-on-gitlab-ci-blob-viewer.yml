@@ -1,5 +1,0 @@
----
-title: 'Handle all Psych YAML parser exceptions (fixes #41209)'
-merge_request:
-author:
-type: fixed

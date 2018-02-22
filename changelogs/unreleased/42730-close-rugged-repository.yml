@@ -1,5 +1,0 @@
----
-title: Close low level rugged repository in project cache worker
-merge_request: 16930
-author: Bastian Blank
-type: fixed
