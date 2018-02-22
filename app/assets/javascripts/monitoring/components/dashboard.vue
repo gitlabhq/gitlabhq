@@ -26,6 +26,11 @@
         required: false,
         default: true,
       },
+      showPanels: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       forceSmallGraph: {
         type: Boolean,
         required: false,
@@ -159,6 +164,7 @@
       v-for="(groupData, index) in store.groups"
       :key="index"
       :name="groupData.group"
+      :show-panels="showPanels"
     >
       <graph
         v-for="(graphData, index) in groupData.metrics"
