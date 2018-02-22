@@ -1,3 +1,4 @@
+import '~/pages/projects/settings/repository/show/index';
 import UsersSelect from '~/users_select';
 import UserCallout from '~/user_callout';
 
