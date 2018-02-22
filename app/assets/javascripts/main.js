@@ -64,7 +64,7 @@ gl.lazyLoader = new LazyLoader({
   observerNode: '#content-body',
 });
 
-$(() => {
+document.addEventListener('DOMContentLoaded', () => {
   const $body = $('body');
   const $document = $(document);
   const $window = $(window);
@@ -223,7 +223,7 @@ $(() => {
   $document.on('click', '.js-confirm-danger', (e) => {
     const btn = $(e.target);
     const form = btn.closest('form');
-    const text = btn.data('confirm-danger-message');
+    const text = btn.data('confirmDangerMessage');
     e.preventDefault();
 
     // eslint-disable-next-line no-new

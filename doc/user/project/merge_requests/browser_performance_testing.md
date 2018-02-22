@@ -36,7 +36,7 @@ First of all, you need to define a job named `performance` in your `.gitlab-ci.y
 file. [Check how the `performance` job should look like](../../../ci/examples/browser_performance.md).
 
 GitLab runs the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/)
-and compares the performance scores for each page between the source and target
+and compares key performance metrics for each page between the source and target
 branches of a merge request. The difference for each page is then shown right on
 the merge request.
 

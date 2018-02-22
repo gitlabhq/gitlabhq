@@ -1,5 +1,7 @@
 - affix_offset = local_assigns.fetch(:affix_offset, "50")
 - project = local_assigns[:project]
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
 
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar.milestone-sidebar
@@ -85,24 +87,14 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
+    .block
+      #issuable-time-tracker{ data: { time_estimate: @milestone.total_issue_time_estimate, time_spent: @milestone.total_issue_time_spent, human_time_estimate: @milestone.human_total_issue_time_estimate, human_time_spent: @milestone.human_total_issue_time_spent } }
+        // Fallback while content is loading
+        .title.hide-collapsed
+          = _('Time tracking')
+          = icon('spinner spin')
 
     = render 'shared/milestones/weight', milestone: milestone
-
-    .block.time_spent
-      .sidebar-collapsed-icon
-        = custom_icon('icon_hourglass')
-        %span.collapsed-milestone-total-time-spent
-        - if milestone.human_total_issue_time_spent
-          = milestone.human_total_issue_time_spent
-        - else
-          = _("None")
-      .title.hide-collapsed
-        = _("Total issue time spent")
-      .value.hide-collapsed
-        - if milestone.human_total_issue_time_spent
-          %span.bold= milestone.human_total_issue_time_spent
-        - else
-          %span.no-value= _("No time spent")
 
     .block.merge-requests
       .sidebar-collapsed-icon

@@ -102,6 +102,10 @@ describe Gitlab::Git::Commit, seed_helper: true do
         expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_valid_commit
       end
 
+      it "returns an array of parent ids" do
+        expect(described_class.find(repository, SeedRepo::Commit::ID).parent_ids).to be_an(Array)
+      end
+
       it "should return valid commit for tag" do
         expect(described_class.find(repository, 'v1.0.0').id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
       end

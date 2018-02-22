@@ -22,19 +22,19 @@ describe('Abuse Reports', () => {
 
   it('should truncate long messages', () => {
     const $longMessage = findMessage('LONG MESSAGE');
-    expect($longMessage.data('original-message')).toEqual(jasmine.anything());
+    expect($longMessage.data('originalMessage')).toEqual(jasmine.anything());
     assertMaxLength($longMessage);
   });
 
   it('should not truncate short messages', () => {
     const $shortMessage = findMessage('SHORT MESSAGE');
-    expect($shortMessage.data('original-message')).not.toEqual(jasmine.anything());
+    expect($shortMessage.data('originalMessage')).not.toEqual(jasmine.anything());
   });
 
   it('should allow clicking a truncated message to expand and collapse the full message', () => {
     const $longMessage = findMessage('LONG MESSAGE');
     $longMessage.click();
-    expect($longMessage.data('original-message').length).toEqual($longMessage.text().length);
+    expect($longMessage.data('originalMessage').length).toEqual($longMessage.text().length);
     $longMessage.click();
     assertMaxLength($longMessage);
   });

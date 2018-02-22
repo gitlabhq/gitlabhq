@@ -51,95 +51,15 @@ var Dispatcher;
         case 'projects:merge_requests:creations:new':
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          shortcut_handler = true;
-          break;
-        case 'projects:tags:new':
-          import('./pages/projects/tags/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:show':
-          import('./pages/projects/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:new':
-        case 'projects:snippets:create':
-          import('./pages/projects/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:services:edit':
-          import('./pages/projects/services/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:snippets:edit':
-        case 'projects:snippets:update':
-          import('./pages/projects/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:new':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:edit':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:create':
-          import('./pages/snippets/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'snippets:update':
-          import('./pages/snippets/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:releases:edit':
-          import('./pages/projects/releases/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:merge_requests:show':
-          import('./pages/projects/merge_requests/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'dashboard:activity':
-          import('./pages/dashboard/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:commit:show':
-          import('./pages/projects/commit/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:commit:pipelines':
-          import('./pages/projects/commit/pipelines')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:activity':
-          import('./pages/projects/activity')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:commits:show':
-          import('./pages/projects/commits/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
         case 'projects:show':
+        case 'groups:show':
+        case 'projects:find_file:show':
+        case 'projects:blob:show':
+        case 'projects:blame:show':
           shortcut_handler = true;
           break;
         case 'projects:edit':
@@ -147,84 +67,8 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'projects:imports:show':
-          import('./pages/projects/imports/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:new':
-        case 'projects:pipelines:create':
-          import('./pages/projects/pipelines/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:pipelines:builds':
-        case 'projects:pipelines:failures':
-        case 'projects:pipelines:show':
-          import('./pages/projects/pipelines/builds')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:activity':
-          import('./pages/groups/activity')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:show':
-          shortcut_handler = true;
-          break;
-        case 'groups:group_members:index':
-          import('./pages/groups/group_members/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:project_members:index':
-          import('./pages/projects/project_members')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:create':
-        case 'groups:new':
-          import('./pages/groups/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'groups:edit':
-          import('./pages/groups/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:groups:create':
-        case 'admin:groups:new':
-          import('./pages/admin/groups/new')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:groups:edit':
-          import('./pages/admin/groups/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:tree:show':
-          import('./pages/projects/tree/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:find_file:show':
-          import('./pages/projects/find_file/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:blob:show':
-          import('./pages/projects/blob/show')
-            .then(callDefault)
-            .catch(fail);
-          shortcut_handler = true;
-          break;
-        case 'projects:blame:show':
-          import('./pages/projects/blame/show')
+          import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/tree/show')
             .then(callDefault)
             .catch(fail);
           shortcut_handler = true;
@@ -281,11 +125,6 @@ var Dispatcher;
             .catch(fail);
           shortcut_handler = true;
           break;
-        case 'help:index':
-          import('./pages/help')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'search:show':
           import('./pages/search/show')
             .then(callDefault)
@@ -317,11 +156,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'snippets:show':
-          import('./pages/snippets/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'import:fogbugz:new_user_map':
           import('./pages/import/fogbugz/new_user_map')
             .then(callDefault)
@@ -337,18 +171,6 @@ var Dispatcher;
             .then(callDefault)
             .catch(fail);
           break;
-        case 'projects:clusters:show':
-        case 'projects:clusters:update':
-        case 'projects:clusters:destroy':
-          import('./pages/projects/clusters/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'projects:clusters:index':
-          import('./pages/projects/clusters/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'dashboard:groups:index':
           import('./pages/dashboard/groups/index')
             .then(callDefault)
@@ -356,20 +178,7 @@ var Dispatcher;
           break;
       }
       switch (path[0]) {
-        case 'sessions':
-          import('./pages/sessions')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'omniauth_callbacks':
-          import('./pages/omniauth_callbacks')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'admin':
-          import('./pages/admin')
-            .then(callDefault)
-            .catch(fail);
           switch (path[1]) {
             case 'broadcast_messages':
               import('./pages/admin/broadcast_messages')

@@ -70,9 +70,8 @@ class Groups::EpicsController < Groups::ApplicationController
     Epics::UpdateService.new(nil, current_user, epic_params)
   end
 
-  def set_issuables_index
-    @finder_type = EpicsFinder
-    super
+  def finder_type
+    EpicsFinder
   end
 
   def collection_type

@@ -550,7 +550,7 @@ table.table tr td.multi-file-table-name {
 .ide {
   overflow: hidden;
 
-  .nav-only {
+  &.nav-only {
     .flash-container {
       margin-top: $header-height;
       margin-bottom: 0;
@@ -561,8 +561,9 @@ table.table tr td.multi-file-table-name {
       margin-bottom: 0;
     }
 
-    .content {
+    .content-wrapper {
       margin-top: $header-height;
+      padding-bottom: 0;
     }
 
     .multi-file-commit-panel .multi-file-commit-panel-inner-scroll {
@@ -571,7 +572,7 @@ table.table tr td.multi-file-table-name {
     }
 
     &.flash-shown {
-      .content {
+      .content-wrapper {
         margin-top: 0;
       }
 
@@ -592,8 +593,9 @@ table.table tr td.multi-file-table-name {
     margin-top: #{$header-height + $performance-bar-height};
   }
 
-  .content {
+  .content-wrapper {
     margin-top: #{$header-height + $performance-bar-height};
+    padding-bottom: 0;
   }
 
   .ide-view {
@@ -606,7 +608,7 @@ table.table tr td.multi-file-table-name {
   }
 
   &.flash-shown {
-    .content {
+    .content-wrapper {
       margin-top: 0;
     }
 

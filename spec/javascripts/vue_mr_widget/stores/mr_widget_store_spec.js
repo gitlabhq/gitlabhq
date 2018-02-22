@@ -3,19 +3,21 @@ import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData, {
   headIssues,
   baseIssues,
-  securityIssues,
-  securityIssuesBase,
   parsedBaseIssues,
   parsedHeadIssues,
-  parsedSecurityIssuesStore,
-  parsedSecurityIssuesBaseStore,
+} from '../mock_data';
+import {
+  sastIssues,
+  sastIssuesBase,
+  parsedSastBaseStore,
+  parsedSastIssuesHead,
+  parsedSastIssuesStore,
   allIssuesParsed,
-  parsedSecurityIssuesHead,
   dockerReport,
   dockerReportParsed,
   dast,
   parsedDast,
-} from '../mock_data';
+} from '../../vue_shared/security_reports/mock_data';
 
 describe('MergeRequestStore', () => {
   let store;
@@ -98,34 +100,21 @@ describe('MergeRequestStore', () => {
 
   describe('setSecurityReport', () => {
     it('should set security issues with head', () => {
-      store.setSecurityReport({ head: securityIssues, headBlobPath: 'path' });
-      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesStore);
+      store.setSecurityReport({ head: sastIssues, headBlobPath: 'path' });
+      expect(store.securityReport.newIssues).toEqual(parsedSastIssuesStore);
     });
 
     it('should set security issues with head and base', () => {
       store.setSecurityReport({
-        head: securityIssues,
+        head: sastIssues,
         headBlobPath: 'path',
-        base: securityIssuesBase,
+        base: sastIssuesBase,
         baseBlobPath: 'path',
       });
 
-      expect(store.securityReport.newIssues).toEqual(parsedSecurityIssuesHead);
-      expect(store.securityReport.resolvedIssues).toEqual(parsedSecurityIssuesBaseStore);
+      expect(store.securityReport.newIssues).toEqual(parsedSastIssuesHead);
+      expect(store.securityReport.resolvedIssues).toEqual(parsedSastBaseStore);
       expect(store.securityReport.allIssues).toEqual(allIssuesParsed);
-    });
-  });
-
-  describe('parseIssues', () => {
-    it('should parse the received issues', () => {
-      const codequality = MergeRequestStore.parseIssues(baseIssues, 'path')[0];
-      expect(codequality.name).toEqual(baseIssues[0].check_name);
-      expect(codequality.path).toEqual(baseIssues[0].location.path);
-      expect(codequality.line).toEqual(baseIssues[0].location.lines.begin);
-
-      const security = MergeRequestStore.parseIssues(securityIssues, 'path')[0];
-      expect(security.name).toEqual(securityIssues[0].message);
-      expect(security.path).toEqual(securityIssues[0].file);
     });
   });
 
@@ -160,16 +149,6 @@ describe('MergeRequestStore', () => {
       expect(store.dockerReport.vulnerabilities).toEqual(dockerReportParsed.vulnerabilities);
       expect(store.dockerReport.approved).toEqual(dockerReportParsed.approved);
       expect(store.dockerReport.unapproved).toEqual(dockerReportParsed.unapproved);
-    });
-  });
-
-  describe('parseDockerVulnerabilities', () => {
-    it('parses docker report', () => {
-      expect(
-        MergeRequestStore.parseDockerVulnerabilities(dockerReport.vulnerabilities),
-      ).toEqual(
-        dockerReportParsed.vulnerabilities,
-      );
     });
   });
 

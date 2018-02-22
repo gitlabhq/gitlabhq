@@ -43,10 +43,12 @@ change them by [editing the merge request](#overriding-the-merge-request-approva
 
 ## Eligible approvers
 
-Eligible approvers can be individual users or groups that are project members,
-members of the project's immediate parent group, and members of a group who
-have access to the project via a
-[share](../members/share_project_with_groups.md).
+An individual user is an eligible approver if they are a member of the given project,
+a member of the project's immediate parent group, or a member of a group that has share access
+to the project via a [share](../members/share_project_with_groups.md).
+
+A group is also an eligible approver. [In the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/2048),
+group approvers will be restricted.
 
 If a user is added as an individual approver and is also part of a group approver,
 then that user is just counted once. The merge request author does not count as

@@ -7,7 +7,7 @@ export default class EETrialBanner {
     this.$mainNavbar = this.$trialBanner.siblings('.js-navbar-gitlab');
     this.$secondaryNavbar = this.$mainNavbar.siblings('.js-page-with-sidebar');
 
-    this.licenseExpiresOn = new Date(this.$trialBanner.data('license-expiry'));
+    this.licenseExpiresOn = new Date(this.$trialBanner.data('licenseExpiry'));
   }
 
   init() {

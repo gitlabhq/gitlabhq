@@ -687,8 +687,11 @@
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
             Version check enabled
+            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
           .help-block
-            Let GitLab inform you when an update is available.
+            Let GitLab inform you when an update is available. When
+            enabled, GitLab Inc. will collect info about your hostname
+            and version.
     .form-group
       .col-sm-offset-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?

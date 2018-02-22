@@ -25,19 +25,19 @@ export default class LabelsSelect {
       $dropdown = $(dropdown);
       $dropdownContainer = $dropdown.closest('.labels-filter');
       $toggleText = $dropdown.find('.dropdown-toggle-text');
-      namespacePath = $dropdown.data('namespace-path');
-      projectPath = $dropdown.data('project-path');
+      namespacePath = $dropdown.data('namespacePath');
+      projectPath = $dropdown.data('projectPath');
       labelUrl = $dropdown.data('labels');
       issueUpdateURL = $dropdown.data('issueUpdate');
       selectedLabel = $dropdown.data('selected');
       if ((selectedLabel != null) && !$dropdown.hasClass('js-multiselect')) {
         selectedLabel = selectedLabel.split(',');
       }
-      showNo = $dropdown.data('show-no');
-      showAny = $dropdown.data('show-any');
+      showNo = $dropdown.data('showNo');
+      showAny = $dropdown.data('showAny');
       showMenuAbove = $dropdown.data('showMenuAbove');
-      defaultLabel = $dropdown.data('default-label');
-      abilityName = $dropdown.data('ability-name');
+      defaultLabel = $dropdown.data('defaultLabel');
+      abilityName = $dropdown.data('abilityName');
       $selectbox = $dropdown.closest('.selectbox');
       $block = $selectbox.closest('.block');
       $form = $dropdown.closest('form, .js-issuable-update');
@@ -45,11 +45,11 @@ export default class LabelsSelect {
       $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
       $value = $block.find('.value');
       $loading = $block.find('.block-loading').fadeOut();
-      fieldName = $dropdown.data('field-name');
+      fieldName = $dropdown.data('fieldName');
       useId = $dropdown.is('.js-issuable-form-dropdown, .js-filter-bulk-update, .js-label-sidebar-dropdown');
       propertyName = useId ? 'id' : 'title';
       initialSelected = $selectbox
-        .find('input[name="' + $dropdown.data('field-name') + '"]')
+        .find('input[name="' + $dropdown.data('fieldName') + '"]')
         .map(function () {
           return this.value;
         }).get();
@@ -268,7 +268,7 @@ export default class LabelsSelect {
             return defaultLabel;
           }
         },
-        fieldName: $dropdown.data('field-name'),
+        fieldName: $dropdown.data('fieldName'),
         id: function(label) {
           if (label.id <= 0) return label.title;
 

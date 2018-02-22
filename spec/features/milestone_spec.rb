@@ -66,15 +66,16 @@ feature 'Milestone' do
     end
   end
 
-  feature 'Open a milestone' do
+  feature 'Open a milestone', :js do
     scenario 'shows total issue time spent correctly when no time has been logged' do
       milestone = create(:milestone, project: project, title: 8.7)
 
       visit project_milestone_path(project, milestone)
 
-      page.within('.block.time_spent') do
-        expect(page).to have_content 'No time spent'
-        expect(page).to have_content 'None'
+      wait_for_requests
+
+      page.within('.time-tracking-no-tracking-pane') do
+        expect(page).to have_content 'No estimate or time spent'
       end
     end
 
@@ -89,8 +90,10 @@ feature 'Milestone' do
 
       visit project_milestone_path(project, milestone)
 
-      page.within('.block.time_spent') do
-        expect(page).to have_content '3h'
+      wait_for_requests
+
+      page.within('.time-tracking-spend-only-pane') do
+        expect(page).to have_content 'Spent: 3h'
       end
     end
   end

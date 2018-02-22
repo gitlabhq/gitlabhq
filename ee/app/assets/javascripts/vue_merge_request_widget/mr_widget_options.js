@@ -1,16 +1,20 @@
-import { n__, s__, __, sprintf } from '~/locale';
+import { n__, s__, __ } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
-import collapsibleSection from './components/mr_widget_report_collapsible_section.vue';
+import ReportSection from '../vue_shared/security_reports/components/report_section.vue';
+import securityMixin from '../vue_shared/security_reports/mixins/security_report_mixin';
 
 export default {
   extends: CEWidgetOptions,
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
-    collapsibleSection,
+    ReportSection,
   },
+  mixins: [
+    securityMixin,
+  ],
   data() {
     return {
       isLoadingCodequality: false,
@@ -114,81 +118,16 @@ export default {
 
     securityText() {
       const { newIssues, resolvedIssues, allIssues } = this.mr.securityReport;
-      const text = [];
-
-      if (!newIssues.length && !resolvedIssues.length && !allIssues.length) {
-        text.push(s__('ciReport|SAST detected no security vulnerabilities'));
-      } else if (!newIssues.length && !resolvedIssues.length && allIssues.length) {
-        text.push(s__('ciReport|SAST detected no new security vulnerabilities'));
-      } else if (newIssues.length || resolvedIssues.length) {
-        text.push(s__('ciReport|SAST'));
-      }
-
-      if (resolvedIssues.length) {
-        text.push(n__(
-          ' improved on %d security vulnerability',
-          ' improved on %d security vulnerabilities',
-          resolvedIssues.length,
-        ));
-      }
-
-      if (newIssues.length > 0 && resolvedIssues.length > 0) {
-        text.push(__(' and'));
-      }
-
-      if (newIssues.length) {
-        text.push(n__(
-          ' degraded on %d security vulnerability',
-          ' degraded on %d security vulnerabilities',
-          newIssues.length,
-        ));
-      }
-
-      return text.join('');
+      return this.sastText(newIssues, resolvedIssues, allIssues);
     },
 
     dockerText() {
       const { vulnerabilities, approved, unapproved } = this.mr.dockerReport;
-
-      if (!vulnerabilities.length) {
-        return s__('ciReport|SAST:container no vulnerabilities were found');
-      }
-
-      if (!unapproved.length && approved.length) {
-        return n__(
-          'SAST:container found %d approved vulnerability',
-          'SAST:container found %d approved vulnerabilities',
-          approved.length,
-        );
-      } else if (unapproved.length && !approved.length) {
-        return n__(
-          'SAST:container found %d vulnerability',
-          'SAST:container found %d vulnerabilities',
-          unapproved.length,
-        );
-      }
-
-      return `${n__(
-        'SAST:container found %d vulnerability,',
-        'SAST:container found %d vulnerabilities,',
-        vulnerabilities.length,
-      )} ${n__(
-        'of which %d is approved',
-        'of which %d are approved',
-        approved.length,
-      )}`;
+      return this.sastContainerText(vulnerabilities, approved, unapproved);
     },
 
-    dastText() {
-      if (this.mr.dastReport.length) {
-        return n__(
-          'DAST detected %d alert by analyzing the review app',
-          'DAST detected %d alerts by analyzing the review app',
-          this.mr.dastReport.length,
-        );
-      }
-
-      return s__('ciReport|DAST detected no alerts by analyzing the review app');
+    getDastText() {
+      return this.dastText(this.mr.dastReport);
     },
 
     codequalityStatus() {
@@ -210,29 +149,8 @@ export default {
     dastStatus() {
       return this.checkReportStatus(this.isLoadingDast, this.loadingDastFailed);
     },
-
-    dockerInformationText() {
-      return sprintf(
-        s__('ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}'), {
-          helpLink: `<a href="https://gitlab.com/gitlab-org/clair-scanner#example-whitelist-yaml-file" target="_blank" rel="noopener noreferrer nofollow">
-            ${s__('ciReport|Learn more about whitelisting')}
-          </a>`,
-        },
-        false,
-      );
-    },
   },
   methods: {
-    checkReportStatus(loading, error) {
-      if (loading) {
-        return 'loading';
-      } else if (error) {
-        return 'error';
-      }
-
-      return 'success';
-    },
-
     fetchCodeQuality() {
       const { head_path, base_path } = this.mr.codeclimate;
 
@@ -349,13 +267,6 @@ export default {
           this.loadingDastFailed = true;
         });
     },
-
-    translateText(type) {
-      return {
-        error: s__(`ciReport|Failed to load ${type} report`),
-        loading: s__(`ciReport|Loading ${type} report`),
-      };
-    },
   },
   created() {
     if (this.shouldRenderCodeQuality) {
@@ -397,7 +308,7 @@ export default {
         :mr="mr"
         :service="service"
         />
-      <collapsible-section
+      <report-section
         class="js-codequality-widget"
         v-if="shouldRenderCodeQuality"
         type="codequality"
@@ -408,7 +319,7 @@ export default {
         :unresolved-issues="mr.codeclimateMetrics.newIssues"
         :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
         />
-      <collapsible-section
+      <report-section
         class="js-performance-widget"
         v-if="shouldRenderPerformance"
         type="performance"
@@ -420,7 +331,7 @@ export default {
         :resolved-issues="mr.performanceMetrics.improved"
         :neutral-issues="mr.performanceMetrics.neutral"
         />
-      <collapsible-section
+      <report-section
         class="js-sast-widget"
         v-if="shouldRenderSecurityReport"
         type="security"
@@ -433,7 +344,7 @@ export default {
         :all-issues="mr.securityReport.allIssues"
         :has-priority="true"
         />
-      <collapsible-section
+      <report-section
         class="js-docker-widget"
         v-if="shouldRenderDockerReport"
         type="docker"
@@ -443,17 +354,17 @@ export default {
         :success-text="dockerText"
         :unresolved-issues="mr.dockerReport.unapproved"
         :neutral-issues="mr.dockerReport.approved"
-        :info-text="dockerInformationText"
+        :info-text="sastContainerInformationText()"
         :has-priority="true"
         />
-      <collapsible-section
+      <report-section
         class="js-dast-widget"
         v-if="shouldRenderDastReport"
         type="dast"
         :status="dastStatus"
         :loading-text="translateText('DAST').loading"
         :error-text="translateText('DAST').error"
-        :success-text="dastText"
+        :success-text="getDastText"
         :unresolved-issues="mr.dastReport"
         :has-priority="true"
         />

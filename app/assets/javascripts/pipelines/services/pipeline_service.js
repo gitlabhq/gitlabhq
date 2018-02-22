@@ -16,4 +16,8 @@ export default class PipelineService {
   postAction(endpoint) {
     return Vue.http.post(`${endpoint}.json`);
   }
+
+  static getSecurityReport(endpoint) {
+    return Vue.http.get(endpoint);
+  }
 }
