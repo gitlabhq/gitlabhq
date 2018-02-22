@@ -62,11 +62,6 @@ var Dispatcher;
         case 'projects:blame:show':
           shortcut_handler = true;
           break;
-        case 'projects:edit':
-          import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/edit')
-            .then(callDefault)
-            .catch(fail);
-          break;
         case 'projects:tree:show':
           import(/* webpackChunkName: "ee_projects_edit" */ 'ee/pages/projects/tree/show')
             .then(callDefault)
