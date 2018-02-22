@@ -6,6 +6,7 @@ describe Clusters::Applications::Ingress do
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+    allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
   include_examples 'cluster application specs', described_class
@@ -23,23 +24,23 @@ describe Clusters::Applications::Ingress do
     end
   end
 
-  describe '#sync_details' do
+  describe '#schedule_status_update' do
     let(:application) { create(:clusters_applications_ingress, :installed) }
 
     before do
-      application.sync_details
+      application.schedule_status_update
     end
 
     it 'schedules a ClusterWaitForIngressIpAddressWorker' do
-      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_in)
-        .with(ClusterWaitForIngressIpAddressWorker::INTERVAL, 'ingress', application.id, 3)
+      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_async)
+        .with('ingress', application.id, 3)
     end
 
     context 'when the application is not installed' do
       let(:application) { create(:clusters_applications_ingress, :installing) }
 
       it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
-        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_async)
       end
     end
 

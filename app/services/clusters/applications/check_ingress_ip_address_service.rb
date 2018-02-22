@@ -1,24 +1,17 @@
 module Clusters
   module Applications
     class CheckIngressIpAddressService < BaseHelmService
+      include Gitlab::Utils::StrongMemoize
+
       Error = Class.new(StandardError)
 
       LEASE_TIMEOUT = 3.seconds.to_i
 
       def execute
-        return true if app.external_ip
-        return true unless try_obtain_lease
+        return if app.external_ip
+        return unless try_obtain_lease
 
-        service = get_service
-
-        if service.status.loadBalancer.ingress
-          resolve_external_ip(service)
-        else
-          false
-        end
-
-      rescue KubeException => e
-        raise Error, "#{e.class}: #{e.message}"
+        app.update!(external_ip: ingress_ip) if ingress_ip
       end
 
       private
@@ -29,12 +22,14 @@ module Clusters
           .try_obtain
       end
 
-      def resolve_external_ip(service)
-        app.update!(external_ip: service.status.loadBalancer.ingress[0].ip)
+      def ingress_ip
+        service.status.loadBalancer.ingress&.first&.ip
       end
 
-      def get_service
-        kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
+      def service
+        strong_memoize(:ingress_service) do
+          kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
+        end
       end
     end
   end

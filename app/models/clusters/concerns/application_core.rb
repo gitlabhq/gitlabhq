@@ -24,7 +24,7 @@ module Clusters
           self.class.application_name
         end
 
-        def sync_details
+        def schedule_status_update
           # Override if you need extra data synchronized
           # from K8s after installation
         end
