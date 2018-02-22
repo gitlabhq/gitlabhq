@@ -76,37 +76,6 @@ var Dispatcher;
             .catch(fail);
           shortcut_handler = true;
           break;
-        case 'ci:lints:create':
-        case 'ci:lints:show':
-          import('./pages/ci/lints')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:conversational_development_index:show':
-          import('./pages/admin/conversational_development_index/show')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'import:fogbugz:new_user_map':
-          import('./pages/import/fogbugz/new_user_map')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'profiles:personal_access_tokens:index':
-          import('./pages/profiles/personal_access_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'admin:impersonation_tokens:index':
-          import('./pages/admin/impersonation_tokens')
-            .then(callDefault)
-            .catch(fail);
-          break;
-        case 'dashboard:groups:index':
-          import('./pages/dashboard/groups/index')
-            .then(callDefault)
-            .catch(fail);
-          break;
       }
       switch (path[0]) {
         case 'admin':
