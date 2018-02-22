@@ -1,0 +1,5 @@
+---
+title: Enable Legacy Authorization by default on Cluster creations
+merge_request: 17302
+author:
+type: fixed
