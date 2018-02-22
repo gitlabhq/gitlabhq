@@ -1234,7 +1234,13 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+        gitaly_migrate(:squash_in_progress) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.squash_in_progress?(squash_id)
+          else
+            fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+          end
+        end
       end
 
       def push_remote_branches(remote_name, branch_names, forced: true)
