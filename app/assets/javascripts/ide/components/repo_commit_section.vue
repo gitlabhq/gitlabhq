@@ -166,8 +166,7 @@ export default {
           <h4>
             {{ __('All changes are committed') }}
           </h4>
-          <p>
-            {{ lastCommitMsg }}
+          <p v-html="lastCommitMsg">
           </p>
         </div>
       </div>

@@ -58,10 +58,23 @@ describe('IDE commit module actions', () => {
   });
 
   describe('setLastCommitMessage', () => {
+    beforeEach(() => {
+      Object.assign(store.state, {
+        currentProjectId: 'abcproject',
+        projects: {
+          abcproject: {
+            web_url: 'http://testing',
+          },
+        },
+      });
+    });
+
     it('updates commit message with short_id', (done) => {
       store.dispatch('commit/setLastCommitMessage', { short_id: '123' })
         .then(() => {
-          expect(store.state.lastCommitMsg).toContain('Your changes have been committed. Commit 123');
+          expect(store.state.lastCommitMsg).toContain(
+            'Your changes have been committed. Commit <a href="http://testing/commit/123" class="commit-sha">123</a>',
+          );
         })
         .then(done)
         .catch(done.fail);
@@ -76,7 +89,7 @@ describe('IDE commit module actions', () => {
         },
       })
         .then(() => {
-          expect(store.state.lastCommitMsg).toBe('Your changes have been committed. Commit 123 with 1 additions, 2 deletions.');
+          expect(store.state.lastCommitMsg).toBe('Your changes have been committed. Commit <a href="http://testing/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.');
         })
         .then(done)
         .catch(done.fail);
@@ -350,7 +363,7 @@ describe('IDE commit module actions', () => {
         store.dispatch('commit/commitChanges')
           .then(() => {
             expect(store.state.lastCommitMsg).toBe(
-              'Your changes have been committed. Commit 123 with 1 additions, 2 deletions.',
+              'Your changes have been committed. Commit <a href="webUrl/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
             );
 
             done();

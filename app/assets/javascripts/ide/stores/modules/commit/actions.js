@@ -25,7 +25,8 @@ export const updateBranchName = ({ commit }, branchName) => {
   commit(types.UPDATE_NEW_BRANCH_NAME, branchName);
 };
 
-export const setLastCommitMessage = ({ commit }, data) => {
+export const setLastCommitMessage = ({ rootState, commit }, data) => {
+  const currentProject = rootState.projects[rootState.currentProjectId];
   const commitStats = data.stats ?
     sprintf(
       __('with %{additions} additions, %{deletions} deletions.'),
@@ -35,9 +36,10 @@ export const setLastCommitMessage = ({ commit }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commitId: data.short_id,
+      commitId: `<a href="${currentProject.web_url}/commit/${data.short_id}" class="commit-sha">${data.short_id}</a>`,
       commitStats,
     },
+    false,
   );
 
   commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
@@ -144,6 +146,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
     }
   })
   .catch((err) => {
+    console.log(err);
     let errMsg = __('Error committing changes. Please try again.');
     if (err.response.data && err.response.data.message) {
       errMsg += ` (${stripHtml(err.response.data.message)})`;

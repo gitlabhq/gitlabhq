@@ -466,6 +466,10 @@ table.table tr td.multi-file-table-name {
 .multi-file-commit-form {
   padding: $gl-padding;
   border-top: 1px solid $white-dark;
+
+  .btn {
+    font-size: $gl-font-size;
+  }
 }
 
 .multi-file-commit-message.form-control {
