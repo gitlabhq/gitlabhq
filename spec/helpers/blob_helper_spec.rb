@@ -74,7 +74,7 @@ describe BlobHelper do
     end
   end
 
-  describe "#edit_blob_element" do
+  describe "#edit_blob_link" do
     let(:namespace) { create(:namespace, name: 'gitlab' )}
     let(:project) { create(:project, :repository, namespace: namespace) }
 

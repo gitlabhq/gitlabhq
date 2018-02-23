@@ -74,7 +74,7 @@
 .tree-controls
   - if show_new_ide?
     = succeed " " do
-      = link_to "#{ide_path}/project#{edit_blob_path(@project, @id, @path, {})}", class: 'btn btn-default' do
+      = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
         = _('Web IDE')
 
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
