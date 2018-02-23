@@ -172,7 +172,7 @@
             <template v-if="ingressInstalled">
               <div class="form-group">
                 <label for="ingress-ip-address">
-                  {{ s__('ClusterIntegration| Ingress IP Address') }}
+                  {{ s__('ClusterIntegration|Ingress IP Address') }}
                 </label>
                 <div
                   v-if="ingressExternalIp"
