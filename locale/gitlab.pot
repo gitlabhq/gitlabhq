@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-02-22 17:55+0100\n"
 "PO-Revision-Date: 2018-02-22 17:55+0100\n"
+=======
+"POT-Creation-Date: 2018-02-20 10:26+0100\n"
+"PO-Revision-Date: 2018-02-20 10:26+0100\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -195,9 +200,12 @@ msgstr ""
 msgid "AdminUsers|To confirm, type %{username}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Advanced"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Advanced settings"
 msgstr ""
 
@@ -243,9 +251,12 @@ msgstr ""
 msgid "An error occurred while importing project"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "An error occurred while loading commits"
 msgstr ""
 
@@ -258,12 +269,15 @@ msgstr ""
 msgid "An error occurred while loading the file"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred while making the request."
 msgstr ""
 
 msgid "An error occurred while removing approver"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "An error occurred while rendering KaTeX"
 msgstr ""
 
@@ -276,9 +290,12 @@ msgstr ""
 msgid "An error occurred while retrieving diff"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "An error occurred while saving assignees"
 msgstr ""
 
@@ -2990,9 +3007,12 @@ msgstr ""
 msgid "Something went wrong while closing the issue. Please try again later"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Something went wrong while fetching SAST."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -3593,9 +3613,12 @@ msgstr ""
 msgid "Trigger this manual action"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Turn on Service Desk"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Unable to reset project cache."
 msgstr ""
 
@@ -4008,6 +4031,7 @@ msgstr[1] ""
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "mrWidget|An error occured while removing your approval."
 msgstr ""
 
@@ -4026,6 +4050,8 @@ msgstr ""
 msgid "mrWidget|Approved by"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "mrWidget|Cancel automatic merge"
 msgstr ""
 

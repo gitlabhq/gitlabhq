@@ -47,7 +47,7 @@ class ProjectsController < Projects::ApplicationController
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
-      render 'new'
+      render 'new', locals: { active_tab: ('import' if project_params[:import_url].present?) }
     end
   end
 

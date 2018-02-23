@@ -418,6 +418,16 @@ export const convertObjectPropsToCamelCase = (obj = {}) => {
 
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
 
+export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
+  // Click a .js-select-on-focus field, select the contents
+  // Prevent a mouseup event from deselecting the input
+  $(selector).on('focusin', function selectOnFocusCallback() {
+    $(this).select().one('mouseup', (e) => {
+      e.preventDefault();
+    });
+  });
+};
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),

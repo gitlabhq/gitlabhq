@@ -455,6 +455,22 @@ describe ProjectsHelper do
     end
   end
 
+  describe('#push_to_create_project_command') do
+    let(:user) { create(:user, username: 'john') }
+
+    it 'returns the command to push to create project over HTTP' do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'http' }
+
+      expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream http://test.host/john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
+    end
+
+    it 'returns the command to push to create project over SSH' do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'ssh' }
+
+      expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream git@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
+    end
+  end
+
   describe '#any_projects?' do
     let!(:project) { create(:project) }
 

@@ -88,6 +88,55 @@ describe Banzai::Redactor do
     end
   end
 
+  context 'when the user cannot read cross project' do
+    include ActionView::Helpers::UrlHelper
+    let(:project) { create(:project) }
+    let(:other_project) { create(:project, :public) }
+
+    def create_link(issuable)
+      type = issuable.class.name.underscore.downcase
+      link_to(issuable.to_reference, '',
+              class: 'gfm has-tooltip',
+              title: issuable.title,
+              data: {
+                reference_type: type,
+                "#{type}": issuable.id
+              })
+    end
+
+    before do
+      project.add_developer(user)
+
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global) { false }
+      allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+    end
+
+    it 'skips links to issues within the same project' do
+      issue = create(:issue, project: project)
+      link = create_link(issue)
+      doc = Nokogiri::HTML.fragment(link)
+
+      redactor.redact([doc])
+      result = doc.css('a').last
+
+      expect(result['class']).to include('has-tooltip')
+      expect(result['title']).to eq(issue.title)
+    end
+
+    it 'removes info from a cross project reference' do
+      issue = create(:issue, project: other_project)
+      link = create_link(issue)
+      doc = Nokogiri::HTML.fragment(link)
+
+      redactor.redact([doc])
+      result = doc.css('a').last
+
+      expect(result['class']).not_to include('has-tooltip')
+      expect(result['title']).to be_empty
+    end
+  end
+
   describe '#redact_nodes' do
     it 'redacts an Array of nodes' do
       doc = Nokogiri::HTML.fragment('<a href="foo">foo</a>')

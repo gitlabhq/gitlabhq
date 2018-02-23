@@ -2,8 +2,11 @@
 - merge_requests_count = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute.count
 
 - issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
+<<<<<<< HEAD
 - if @group.feature_available?(:group_issue_boards)
   - issues_sub_menu_items.push('boards#index', 'boards#show')
+=======
+>>>>>>> upstream/master
 
 .nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
@@ -39,6 +42,7 @@
                   %span
                     Activity
 
+<<<<<<< HEAD
             - if group_sidebar_link?(:contribution_analytics)
               = nav_link(path: 'analytics#show') do
                 = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
@@ -47,6 +51,8 @@
 
       = render "layouts/nav/ee/epic_link", group: @group
 
+=======
+>>>>>>> upstream/master
       - if group_sidebar_link?(:issues)
         = nav_link(path: issues_sub_menu_items) do
           = link_to issues_group_path(@group) do
@@ -68,12 +74,15 @@
                 %span
                   List
 
+<<<<<<< HEAD
             - if group_sidebar_link?(:boards)
               = nav_link(path: ['boards#index', 'boards#show']) do
                 = link_to group_boards_path(@group), title: 'Boards' do
                   %span
                     Boards
 
+=======
+>>>>>>> upstream/master
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: 'Labels' do

@@ -117,7 +117,11 @@ class IssuableFinder
 
     counts[:all] = counts.values.sum
 
+<<<<<<< HEAD
     counts.with_indifferent_access
+=======
+    counts
+>>>>>>> upstream/master
   end
 
   def group

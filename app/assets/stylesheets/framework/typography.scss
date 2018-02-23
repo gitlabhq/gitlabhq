@@ -333,6 +333,10 @@ a > code {
   font-family: $monospace_font;
 }
 
+.weight-normal {
+  font-weight: $gl-font-weight-normal;
+}
+
 .commit-sha,
 .ref-name {
   @extend .monospace;
