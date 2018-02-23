@@ -126,6 +126,7 @@ pipelines:
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
+- chat_data # EE only
 pipeline_variables:
 - pipeline
 stages:

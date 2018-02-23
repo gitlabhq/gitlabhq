@@ -62,7 +62,8 @@ module Ci
       schedule: 4,
       api: 5,
       external: 6,
-      pipeline: 7
+      pipeline: 7,
+      chat: 8
     }
 
     enum config_source: {

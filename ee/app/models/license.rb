@@ -62,6 +62,7 @@ class License < ActiveRecord::Base
     dast
     epics
     ide
+    chatops
   ].freeze
 
   # List all features available for early adopters,
@@ -316,6 +317,7 @@ class License < ActiveRecord::Base
 
   def reset_current
     self.class.reset_current
+    Gitlab::Chat.flush_available_cache
   end
 
   def reset_license
