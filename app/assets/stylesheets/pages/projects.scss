@@ -896,6 +896,12 @@ pre.light-well {
   }
 }
 
+.project-tip-command {
+  > .input-group-btn:first-child {
+    width: auto;
+  }
+}
+
 .protected-branches-list,
 .protected-tags-list {
   margin-bottom: 30px;
