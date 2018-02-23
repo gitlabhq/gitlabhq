@@ -8,13 +8,6 @@
     components: {
       RadioGroup,
     },
-    data() {
-      return {
-        COMMIT_TO_CURRENT_BRANCH: consts.COMMIT_TO_CURRENT_BRANCH,
-        COMMIT_TO_NEW_BRANCH: consts.COMMIT_TO_NEW_BRANCH,
-        COMMIT_TO_NEW_BRANCH_MR: consts.COMMIT_TO_NEW_BRANCH_MR,
-      };
-    },
     computed: {
       ...mapState([
         'currentBranchId',
@@ -39,13 +32,16 @@
         );
       },
     },
+    commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
+    commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
+    commitToNewBranchMR: consts.COMMIT_TO_NEW_BRANCH_MR,
   };
 </script>
 
 <template>
   <div class="append-bottom-15 ide-commit-radios">
     <radio-group
-      :value="COMMIT_TO_CURRENT_BRANCH"
+      :value="$options.commitToCurrentBranch"
       :checked="true"
     >
       <span
@@ -54,13 +50,13 @@
       </span>
     </radio-group>
     <radio-group
-      :value="COMMIT_TO_NEW_BRANCH"
+      :value="$options.commitToNewBranch"
       label="Create a new branch"
       :show-input="true"
       :help-text="commitToNewBranchText"
     />
     <radio-group
-      :value="COMMIT_TO_NEW_BRANCH_MR"
+      :value="$options.commitToNewBranchMR"
       label="Create a new branch and merge request"
       :show-input="true"
       :help-text="newMergeRequestHelpText"
