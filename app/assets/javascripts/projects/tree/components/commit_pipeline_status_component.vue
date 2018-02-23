@@ -98,7 +98,7 @@
   };
 </script>
 <template>
-  <div>
+  <div class="realtime-ci-status-wrapper">
     <loading-icon
       label="Loading pipeline status"
       size="3"

@@ -196,16 +196,16 @@
   @media (min-width: $screen-sm-min) {
     font-size: 0;
 
-    div {
+    .realtime-ci-status-wrapper {
       display: inline;
+
+      .ci-status-icon {
+        font-size: 6px;
+      }
     }
 
     .fa-spinner {
       font-size: 12px;
-    }
-
-    span {
-      font-size: 6px;
     }
   }
 
