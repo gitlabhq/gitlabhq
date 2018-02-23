@@ -12,10 +12,6 @@ module Gitlab
               raise NotImplementedError
             end
 
-            def self.type
-              self::TYPE
-            end
-
             def self.scan(scanner)
               if scanner.scan(self::PATTERN)
                 Expression::Token.new(scanner.matched, self)
