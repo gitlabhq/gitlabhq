@@ -7,7 +7,7 @@ module Ci
         break unless stream.file?
 
         temp_file!(JobArtifactUploader.workhorse_upload_path) do |temp_path|
-          FileUtils.cp(stream.path, temp_path)
+          FileUtils.copy(stream.path, temp_path)
           create_job_trace!(job, temp_path)
           FileUtils.rm(stream.path)
         end
