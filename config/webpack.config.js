@@ -57,7 +57,6 @@ var config = {
     common_vue:           './vue_shared/vue_resource_interceptor.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
-    deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
