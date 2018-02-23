@@ -282,19 +282,14 @@ module Ci
     # contain unexpanded variables.
     def variables(environment: persisted_environment)
       variables = predefined_variables
-      variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
-      variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
-      variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
       variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
-      variables += pipeline.variables.map(&:to_runner_variable)
-      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
       variables += persisted_environment_variables if environment
 
       variables
@@ -570,12 +565,6 @@ module Ci
 
     def predefined_variables
       variables = [
-        { key: 'CI', value: 'true', public: true },
-        { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_JOB_ID', value: id.to_s, public: true },
         { key: 'CI_JOB_NAME', value: name, public: true },
         { key: 'CI_JOB_STAGE', value: stage, public: true },

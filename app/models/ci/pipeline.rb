@@ -473,11 +473,21 @@ module Ci
     end
 
     def predefined_variables
-      [
+      variables = [
+        { key: 'CI', value: 'true', public: true },
+        { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
         { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
       ]
+
+      variables += project.predefined_variables
+      variables += variables.map(&:to_runner_variable)
+      variables += pipeline_schedule.job_variables if pipeline_schedule
     end
 
     def queued_duration
