@@ -56,10 +56,8 @@ class FileUploader < GitlabUploader
   def self.model_path_segment(model)
     case model
     when Storage::HashedProject then model.disk_path
-    when Project then
-      model.hashed_storage?(:attachments) ? model.disk_path : model.full_path
     else
-      model.full_path
+      model.hashed_storage?(:attachments) ? model.disk_path : model.full_path
     end
   end
 
@@ -147,9 +145,6 @@ class FileUploader < GitlabUploader
   end
 
   private
-
-  def hashed_model
-  end
 
   def apply_context!(uploader_context)
     @secret, @identifier = uploader_context.values_at(:secret, :identifier)
