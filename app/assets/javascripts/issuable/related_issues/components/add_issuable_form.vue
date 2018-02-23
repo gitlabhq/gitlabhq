@@ -123,9 +123,10 @@ export default {
           and cause odd behavior when one is removed.
         -->
         <li
-          :key="`${pendingReferences.length}-${reference}`"
           v-for="(reference, index) in pendingReferences"
-          class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item">
+          :key="`related-issues-token-${index}`"
+          class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item"
+        >
           <issue-token
             event-namespace="pendingIssuable"
             :id-key="index"
