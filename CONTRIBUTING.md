@@ -160,9 +160,12 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team Boards
+### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
 
-An issue should be placed on the issue board of the team that will likely handle the issue _e.g._ CI/CD, Discussion, Platform
+Team labels specify what team is responsible for this issue.
+Assigning a team label makes sure issues get the attention of the appropriate
+people.
+
 
 ### Priority labels (~P1, ~P2, etc.)
 
