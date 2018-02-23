@@ -66,4 +66,4 @@ eslint-report.html
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec
-/plugins/*
+/plugins/enabled/*
