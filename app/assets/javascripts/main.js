@@ -10,7 +10,7 @@ window.jQuery = jQuery;
 window.$ = jQuery;
 
 // lib/utils
-import { handleLocationHash } from './lib/utils/common_utils';
+import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
@@ -107,13 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   });
 
-  // Click a .js-select-on-focus field, select the contents
-  // Prevent a mouseup event from deselecting the input
-  $('.js-select-on-focus').on('focusin', function selectOnFocusCallback() {
-    $(this).select().one('mouseup', (e) => {
-      e.preventDefault();
-    });
-  });
+  addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
     $(this).tooltip('destroy')

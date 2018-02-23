@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-22 17:55+0100\n"
-"PO-Revision-Date: 2018-02-22 17:55+0100\n"
+"POT-Creation-Date: 2018-02-23 13:23+0100\n"
+"PO-Revision-Date: 2018-02-23 13:23+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -135,7 +135,13 @@ msgstr ""
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
+msgid "Add Kubernetes cluster"
+msgstr ""
+
 msgid "Add License"
+msgstr ""
+
+msgid "Add Readme"
 msgstr ""
 
 msgid "Add new directory"
@@ -354,6 +360,9 @@ msgstr ""
 msgid "Authors: %{authors}"
 msgstr ""
 
+msgid "Auto DevOps enabled"
+msgstr ""
+
 msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
 msgstr ""
 
@@ -378,7 +387,13 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
-msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
+msgid "AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}."
+msgstr ""
+
+msgid "AutoDevOps|add a Kubernetes cluster"
+msgstr ""
+
+msgid "AutoDevOps|enable Auto DevOps (Beta)"
 msgstr ""
 
 msgid "Available"
@@ -447,8 +462,8 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
-msgid "Branch"
-msgid_plural "Branches"
+msgid "Branch (%{branch_count})"
+msgid_plural "Branches (%{branch_count})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1042,6 +1057,11 @@ msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Commit (%{commit_count})"
+msgid_plural "Commits (%{commit_count})"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Commit Message"
 msgstr ""
 
@@ -1193,6 +1213,9 @@ msgid "Copy URL to clipboard"
 msgstr ""
 
 msgid "Copy branch name to clipboard"
+msgstr ""
+
+msgid "Copy command to clipboard"
 msgstr ""
 
 msgid "Copy commit SHA to clipboard"
@@ -1404,6 +1427,9 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
+msgid "Enable Auto DevOps"
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -1573,6 +1599,9 @@ msgid "File name"
 msgstr ""
 
 msgid "Files"
+msgstr ""
+
+msgid "Files (%{human_size})"
 msgstr ""
 
 msgid "Filter by commit message"
@@ -1873,6 +1902,9 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "If you already have files you can push them using the %{link_to_cli} below."
+msgstr ""
+
 msgid "Import repository"
 msgstr ""
 
@@ -1968,6 +2000,9 @@ msgstr ""
 msgid "Kubernetes cluster was successfully updated."
 msgstr ""
 
+msgid "Kubernetes configured"
+msgstr ""
+
 msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
 msgstr ""
 
@@ -2013,6 +2048,9 @@ msgid "LastPushEvent|at"
 msgstr ""
 
 msgid "Learn more"
+msgstr ""
+
+msgid "Learn more about protected branches"
 msgstr ""
 
 msgid "Learn more in the"
@@ -2251,6 +2289,9 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
+msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
+msgstr ""
+
 msgid "Notification events"
 msgstr ""
 
@@ -2351,6 +2392,9 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Options"
+msgstr ""
+
+msgid "Otherwise it is recommended you start with one of the options below."
 msgstr ""
 
 msgid "Overview"
@@ -2461,19 +2505,19 @@ msgstr ""
 msgid "Pipeline|Retry pipeline"
 msgstr ""
 
-msgid "Pipeline|Retry pipeline #%{id}?"
+msgid "Pipeline|Retry pipeline #%{pipelineId}?"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
 msgstr ""
 
-msgid "Pipeline|Stop pipeline #%{id}?"
+msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
-msgid "Pipeline|You’re about to retry pipeline %{id}."
+msgid "Pipeline|You’re about to retry pipeline %{pipelineId}."
 msgstr ""
 
-msgid "Pipeline|You’re about to stop pipeline %{id}."
+msgid "Pipeline|You’re about to stop pipeline %{pipelineId}."
 msgstr ""
 
 msgid "Pipeline|all"
@@ -2507,6 +2551,9 @@ msgid "Private - Project access must be granted explicitly to each user."
 msgstr ""
 
 msgid "Private - The group and its projects can only be viewed by members."
+msgstr ""
+
+msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
 msgid "Profile"
@@ -2746,6 +2793,12 @@ msgstr ""
 msgid "Push events"
 msgstr ""
 
+msgid "Push project from command line"
+msgstr ""
+
+msgid "Push to create a project"
+msgstr ""
+
 msgid "PushRule|Committer restriction"
 msgstr ""
 
@@ -2928,9 +2981,6 @@ msgstr ""
 msgid "Set up Koding"
 msgstr ""
 
-msgid "Set up auto deploy"
-msgstr ""
-
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
@@ -2944,6 +2994,9 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
+msgstr ""
+
+msgid "Show command"
 msgstr ""
 
 msgid "Show parent pages"
@@ -3149,8 +3202,8 @@ msgstr ""
 msgid "System Hooks"
 msgstr ""
 
-msgid "Tag"
-msgid_plural "Tags"
+msgid "Tag (%{tag_count})"
+msgid_plural "Tags (%{tag_count})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3281,6 +3334,9 @@ msgid "The project can be accessed without any authentication."
 msgstr ""
 
 msgid "The repository for this project does not exist."
+msgstr ""
+
+msgid "The repository for this project is empty"
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -3552,6 +3608,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Time|s"
+msgstr ""
+
+msgid "Tip:"
 msgstr ""
 
 msgid "Title"
@@ -3827,6 +3886,9 @@ msgstr ""
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You can also create a project from the command line."
+msgstr ""
+
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
@@ -3972,6 +4034,9 @@ msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{he
 msgstr ""
 
 msgid "ciReport|no security vulnerabilities"
+msgstr ""
+
+msgid "command line instructions"
 msgstr ""
 
 msgid "commit"

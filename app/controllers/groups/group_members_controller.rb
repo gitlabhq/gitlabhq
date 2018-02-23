@@ -13,6 +13,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
                                   :approve_access_request, :leave, :resend_invite,
                                   :override
 
+  skip_cross_project_access_check :index, :create, :update, :destroy, :request_access,
+                                  :approve_access_request, :leave, :resend_invite,
+                                  :override
+
   def index
     @sort = params[:sort].presence || sort_value_name
     @project = @group.projects.find(params[:project_id]) if params[:project_id]

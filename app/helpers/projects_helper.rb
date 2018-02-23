@@ -263,6 +263,17 @@ module ProjectsHelper
     !!(params[:personal] || params[:name] || any_projects?(projects))
   end
 
+  def push_to_create_project_command(user = current_user)
+    repository_url =
+      if Gitlab::CurrentSettings.current_application_settings.enabled_git_access_protocol == 'http'
+        user_url(user)
+      else
+        Gitlab.config.gitlab_shell.ssh_path_prefix + user.username
+      end
+
+    "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)"
+  end
+
   private
 
   def repo_children_classes(field)
